@@ -19,20 +19,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.IShellProvider;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.RectangleAnimation;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.WorkbenchWindow;
+import org.eclipse.ui.*;
+import org.eclipse.ui.internal.*;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.progress.IProgressConstants;
@@ -59,7 +52,12 @@ public class ProgressManagerUtil {
 	static final QualifiedName INFRASTRUCTURE_PROPERTY = new QualifiedName(
 			WorkbenchPlugin.PI_WORKBENCH, "INFRASTRUCTURE_PROPERTY");//$NON-NLS-1$
 
-	private static String ellipsis = ProgressMessages.ProgressFloatingWindow_EllipsisValue;
+// RAP [fappel]: session aware NLS
+//	private static String ellipsis = ProgressMessages.ProgressFloatingWindow_EllipsisValue;
+	// private static String ellipsis = ProgressMessages.get().ProgressFloatingWindow_EllipsisValue;
+    private static String getEllipsis() {
+      return ProgressMessages.get().ProgressFloatingWindow_EllipsisValue;
+    }
 
 	/**
 	 * Return a status for the exception.
@@ -145,51 +143,82 @@ public class ProgressManagerUtil {
 	 */
 
 	static String shortenText(String textValue, Control control) {
-		if (textValue == null) {
-			return null;
-		}
-		GC gc = new GC(control);
-		int maxWidth = control.getBounds().width - 5;
-		int maxExtent = gc.textExtent(textValue).x;
-		if (maxExtent < maxWidth) {
-			gc.dispose();
-			return textValue;
-		}
-		int length = textValue.length();
-		int charsToClip = Math.round(0.95f * length
-				* (1 - ((float) maxWidth / maxExtent)));
-		int secondWord = findSecondWhitespace(textValue, gc, maxWidth);
-		int pivot = ((length - secondWord) / 2) + secondWord;
-		int start = pivot - (charsToClip / 2);
-		int end = pivot + (charsToClip / 2) + 1;
-		while (start >= 0 && end < length) {
-			String s1 = textValue.substring(0, start);
-			String s2 = textValue.substring(end, length);
-			String s = s1 + ellipsis + s2;
-			int l = gc.textExtent(s).x;
-			if (l < maxWidth) {
-				gc.dispose();
-				return s;
-			}
-			start--;
-			end++;
-		}
-		gc.dispose();
-		return textValue;
+// RAP [fappel]: GC not supported
+//		if (textValue == null) {
+//			return null;
+//		}
+//		GC gc = new GC(control);
+//		int maxWidth = control.getBounds().width - 5;
+//		int maxExtent = gc.textExtent(textValue).x;
+//		if (maxExtent < maxWidth) {
+//			gc.dispose();
+//			return textValue;
+//		}
+//		int length = textValue.length();
+//		int charsToClip = Math.round(0.95f * length
+//				* (1 - ((float) maxWidth / maxExtent)));
+//		int secondWord = findSecondWhitespace(textValue, gc, maxWidth);
+//		int pivot = ((length - secondWord) / 2) + secondWord;
+//		int start = pivot - (charsToClip / 2);
+//		int end = pivot + (charsToClip / 2) + 1;
+//		while (start >= 0 && end < length) {
+//			String s1 = textValue.substring(0, start);
+//			String s2 = textValue.substring(end, length);
+//			String s = s1 + ellipsis + s2;
+//			int l = gc.textExtent(s).x;
+//			if (l < maxWidth) {
+//				gc.dispose();
+//				return s;
+//			}
+//			start--;
+//			end++;
+//		}
+//		gc.dispose();
+//		return textValue;
+	  if (textValue == null) {
+        return null;
+      }
+      int maxWidth = control.getBounds().width - 5;
+      Font font = control.getFont();
+      if (Graphics.textExtent(font, textValue, 0).x < maxWidth) {
+        return textValue;
+      }
+      int length = textValue.length();
+      int ellipsisWidth = Graphics.textExtent(font, getEllipsis(), 0).x;
+      // Find the second space seperator and start from there
+      int secondWord = findSecondWhitespace(textValue, font, maxWidth);
+      int pivot = ((length - secondWord) / 2) + secondWord;
+      int start = pivot;
+      int end = pivot + 1;
+      while (start >= secondWord && end < length) {
+        String s1 = textValue.substring(0, start);
+        String s2 = textValue.substring(end, length);
+        int l1 = Graphics.textExtent(font, s1, 0).x;
+        int l2 = Graphics.textExtent(font, s2, 0).x;
+        if (l1 + ellipsisWidth + l2 < maxWidth) {
+          return s1 + getEllipsis() + s2;
+        }
+        start--;
+        end++;
+      }
+      return textValue;
 	}
 
-	/**
-	 * Find the second index of a whitespace. Return the first index if there
-	 * isn't one or 0 if there is no space at all.
-	 * 
-	 * @param textValue
-	 * @param gc
-	 *            The GC to test max length
-	 * @param maxWidth
-	 *            The maximim extent
-	 * @return int
-	 */
-	private static int findSecondWhitespace(String textValue, GC gc,
+// RAP [fappel]: GC not supported
+//	/**
+//	 * Find the second index of a whitespace. Return the first index if there
+//	 * isn't one or 0 if there is no space at all.
+//	 * 
+//	 * @param textValue
+//	 * @param gc
+//	 *            The GC to test max length
+//	 * @param maxWidth
+//	 *            The maximim extent
+//	 * @return int
+//	 */
+//	private static int findSecondWhitespace(String textValue, GC gc,
+//	        int maxWidth) {
+    private static int findSecondWhitespace(String textValue, Font font,
 			int maxWidth) {
 		int firstCharacter = 0;
 		char[] chars = textValue.toCharArray();
@@ -215,9 +244,12 @@ public class ProgressManagerUtil {
 		}
 		// Check that we haven't gone over max width. Throw
 		// out an index that is too high
-		if (gc.textExtent(textValue.substring(0, secondCharacter)).x > maxWidth) {
-			if (gc.textExtent(textValue.substring(0, firstCharacter)).x > maxWidth) {
-				return 0;
+// RAP [fappel]: GC not supported
+//		if (gc.textExtent(textValue.substring(0, secondCharacter)).x > maxWidth) {
+//			if (gc.textExtent(textValue.substring(0, firstCharacter)).x > maxWidth) {
+        if (Graphics.textExtent(font, textValue.substring(0, secondCharacter), 0).x > maxWidth) {
+          if (Graphics.textExtent(font, textValue.substring(0, firstCharacter), 0).x > maxWidth) {
+		      return 0;
 			}
 			return firstCharacter;
 		}
@@ -279,8 +311,10 @@ public class ProgressManagerUtil {
 	public static Shell getModalShellExcluding(Shell shell) {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		Shell[] shells = workbench.getDisplay().getShells();
-		int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL
-				| SWT.PRIMARY_MODAL;
+// RAP [fappel]: SWT.SYSTEM_MODAL and SWT.PRIMARY_MODAL not supported
+//		int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL
+//				| SWT.PRIMARY_MODAL;
+		int modal = SWT.APPLICATION_MODAL;
 		for (int i = 0; i < shells.length; i++) {
 			if (shells[i].equals(shell)) {
 				break;

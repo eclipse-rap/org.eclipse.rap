@@ -12,9 +12,7 @@ package org.eclipse.ui.internal.progress;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -23,16 +21,10 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.internal.misc.Policy;
 
 /**
@@ -111,7 +103,7 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
             viewer = null;
             composite.layout();
             shell.setSize(shellSize.x, shellSize.y - viewerHeight);
-            detailsButton.setText(ProgressMessages.ProgressMonitorJobsDialog_DetailsTitle);
+            detailsButton.setText(ProgressMessages.get().ProgressMonitorJobsDialog_DetailsTitle);
         } else {
             //Abort if there are no jobs visible
             if (ProgressManager.getInstance().getRootElements(Policy.DEBUG_SHOW_ALL_JOBS).length == 0) {
@@ -148,7 +140,7 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
             viewerComposite.layout(true);
             viewer.getControl().setVisible(true);
             viewerHeight = viewerComposite.computeTrim(0, 0, 0, viewerCompositeData.heightHint).height;
-            detailsButton.setText(ProgressMessages.ProgressMonitorJobsDialog_HideTitle); 
+            detailsButton.setText(ProgressMessages.get().ProgressMonitorJobsDialog_HideTitle); 
             shell.setSize(shellSize.x, shellSize.y + viewerHeight);
         }
     }
@@ -184,7 +176,7 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
      */
     protected void createDetailsButton(Composite parent) {
         detailsButton = createButton(parent, IDialogConstants.DETAILS_ID,
-                ProgressMessages.ProgressMonitorJobsDialog_DetailsTitle, 
+                ProgressMessages.get().ProgressMonitorJobsDialog_DetailsTitle, 
                 false);
         detailsButton.addSelectionListener(new SelectionAdapter() {
             /*
@@ -196,7 +188,8 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
                 handleDetailsButtonSelect();
             }
         });
-        detailsButton.setCursor(arrowCursor);
+// RAP [fappel]: Cursor not supported 
+//        detailsButton.setCursor(arrowCursor);
         detailsButton.setEnabled(enableDetailsButton);
     }
 
@@ -224,9 +217,10 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
         composite.setLayoutData(data);
         composite.setFont(parent.getFont());
         // Add the buttons to the button bar.
-        if (arrowCursor == null) {
-			arrowCursor = new Cursor(parent.getDisplay(), SWT.CURSOR_ARROW);
-		}
+// RAP [fappel]: Cursor not suppoorted
+//        if (arrowCursor == null) {
+//			arrowCursor = new Cursor(parent.getDisplay(), SWT.CURSOR_ARROW);
+//		}
         createButtonsForButtonBar(composite);
         return composite;
     }
@@ -237,9 +231,10 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
      * @see org.eclipse.jface.dialogs.ProgressMonitorDialog#clearCursors()
      */
     protected void clearCursors() {
-        if (detailsButton != null && !detailsButton.isDisposed()) {
-            detailsButton.setCursor(null);
-        }
+// RAP [fappel]: Cursor not supported
+//        if (detailsButton != null && !detailsButton.isDisposed()) {
+//            detailsButton.setCursor(null);
+//        }
         super.clearCursors();
     }
 
@@ -337,12 +332,18 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
              * Open the dialog in the ui Thread
              */
             private void openDialog() {
-                if (!PlatformUI.isWorkbenchRunning()) {
-					return;
-				}
+// RAP [fappel]: use session aware approach
+//                if (!PlatformUI.isWorkbenchRunning()) {
+//					return;
+//				}
+//
+//                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                Display display = getShell().getDisplay();
+                if (!ProgressUtil.isWorkbenchRunning( display )) {
+                    return;
+                }
 
-                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                    /* (non-Javadoc)
+                display.syncExec(new Runnable() {                    /* (non-Javadoc)
                      * @see java.lang.Runnable#run()
                      */
                     public void run() {

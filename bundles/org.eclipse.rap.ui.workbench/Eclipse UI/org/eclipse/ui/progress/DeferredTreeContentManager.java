@@ -10,21 +10,16 @@
  *******************************************************************************/
 package org.eclipse.ui.progress;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.progress.ProgressMessages;
+import org.eclipse.ui.internal.progress.ProgressUtil;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -42,7 +37,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * content.
  * 
  * @see IDeferredWorkbenchAdapter
- * @since 3.0
+ * @since 1.0
  */
 public class DeferredTreeContentManager {
 
@@ -56,9 +51,6 @@ public class DeferredTreeContentManager {
 	 * The DeferredContentFamily is a class used to keep track of a
 	 * manager-object pair so that only jobs scheduled by the receiver are
 	 * cancelled by the receiver.
-	 * 
-	 * @since 3.1
-	 * 
 	 */
 	class DeferredContentFamily {
 		protected DeferredTreeContentManager manager;
@@ -114,7 +106,7 @@ public class DeferredTreeContentManager {
 	 * @param viewer
 	 * @param site
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public DeferredTreeContentManager(AbstractTreeViewer viewer,
 			IWorkbenchPartSite site) {
@@ -133,7 +125,7 @@ public class DeferredTreeContentManager {
 	 * @param viewer
 	 *            The tree viewer that the results are added to
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public DeferredTreeContentManager(AbstractTreeViewer viewer) {
 		treeViewer = viewer;
@@ -153,7 +145,7 @@ public class DeferredTreeContentManager {
 	 */
 	public boolean mayHaveChildren(Object element) {
 		Assert.isNotNull(element,
-				ProgressMessages.DeferredTreeContentManager_NotDeferred);
+				ProgressMessages.get().DeferredTreeContentManager_NotDeferred);
 		IDeferredWorkbenchAdapter adapter = getAdapter(element);
 		return adapter != null && adapter.isContainer();
 	}
@@ -183,7 +175,7 @@ public class DeferredTreeContentManager {
 	 * placeholder node. Subclasses may override.
 	 * 
 	 * @return a pending update adapter
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	protected PendingUpdateAdapter createPendingUpdateAdapter() {
 		return new PendingUpdateAdapter();
@@ -324,7 +316,7 @@ public class DeferredTreeContentManager {
 	protected String getFetchJobName(Object parent,
 			IDeferredWorkbenchAdapter adapter) {
 		return NLS.bind(
-				ProgressMessages.DeferredTreeContentManager_FetchingName,
+				ProgressMessages.get().DeferredTreeContentManager_FetchingName,
 				adapter.getLabel(parent));
 	}
 
@@ -338,7 +330,7 @@ public class DeferredTreeContentManager {
 	protected void addChildren(final Object parent, final Object[] children,
 			IProgressMonitor monitor) {
 		WorkbenchJob updateJob = new WorkbenchJob(
-				ProgressMessages.DeferredTreeContentManager_AddingChildren) {
+				ProgressMessages.get().DeferredTreeContentManager_AddingChildren) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -379,12 +371,18 @@ public class DeferredTreeContentManager {
 	 * @param placeholder
 	 */
 	protected void runClearPlaceholderJob(final PendingUpdateAdapter placeholder) {
-		if (placeholder.isRemoved() || !PlatformUI.isWorkbenchRunning()) {
+// RAP [fappel]: uses session aware approach
+//		if (placeholder.isRemoved() || !PlatformUI.isWorkbenchRunning()) {
+//			return;
+//		}
+        Display display = treeViewer.getControl().getDisplay();
+        if (placeholder.isRemoved() || !ProgressUtil.isWorkbenchRunning( display )) {
 			return;
 		}
+
 		// Clear the placeholder if it is still there
 		WorkbenchJob clearJob = new WorkbenchJob(
-				ProgressMessages.DeferredTreeContentManager_ClearJob) {
+				ProgressMessages.get().DeferredTreeContentManager_ClearJob) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -471,7 +469,7 @@ public class DeferredTreeContentManager {
 	 * Add a listener to the job that updates the content after all
 	 * has been loaded by clearing the Pending entry etc.
 	 * @param listener
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public void addUpdateCompleteListener(IJobChangeListener listener){
 		updateCompleteListener = listener;

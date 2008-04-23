@@ -42,7 +42,7 @@ class SubTaskInfo extends JobTreeElement {
      */
     String getDisplayString() {
         if (taskName == null) {
-			return ProgressMessages.SubTaskInfo_UndefinedTaskName;
+			return ProgressMessages.get().SubTaskInfo_UndefinedTaskName;
 		}
         return taskName;
     }

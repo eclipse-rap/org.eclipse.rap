@@ -77,7 +77,7 @@ public class ErrorInfo extends JobTreeElement {
 	 * @see org.eclipse.ui.internal.progress.JobTreeElement#getDisplayString()
 	 */
 	String getDisplayString() {
-		return NLS.bind(ProgressMessages.JobInfo_Error, (new Object[] {
+		return NLS.bind(ProgressMessages.get().JobInfo_Error, (new Object[] {
 				job.getName(),
 				DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG).format(new Date(timestamp)) }));
 	}

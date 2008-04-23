@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter
  * @see org.eclipse.ui.progress.DeferredTreeContentManager
- * @since 3.0
+ * @since 1.0
  */
 public interface IElementCollector {
     /**

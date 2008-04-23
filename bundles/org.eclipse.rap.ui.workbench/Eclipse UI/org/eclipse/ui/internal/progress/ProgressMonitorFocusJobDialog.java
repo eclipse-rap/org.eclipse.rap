@@ -10,30 +10,25 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IPreferenceConstants;
-import org.eclipse.ui.internal.WorkbenchMessages;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.*;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.eclipse.ui.progress.WorkbenchJob;
 
@@ -55,8 +50,13 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 	public ProgressMonitorFocusJobDialog(Shell parentShell) {
 		super(parentShell == null ? ProgressManagerUtil.getNonModalShell()
 				: parentShell);
+        // RAP [fappel]: fix this, switched to modal since we do not have
+        //               a client side window management system to keep
+        //               the dialog in front...
+//		setShellStyle(getDefaultOrientation() | SWT.BORDER | SWT.TITLE
+//				| SWT.RESIZE | SWT.MAX | SWT.MODELESS);
 		setShellStyle(getDefaultOrientation() | SWT.BORDER | SWT.TITLE
-				| SWT.RESIZE | SWT.MAX | SWT.MODELESS);
+		              | SWT.RESIZE | SWT.MAX | SWT.APPLICATION_MODAL);
 		setCancelable(true);
 		enableDetailsButton = true;
 	}
@@ -91,7 +91,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 		Button runInWorkspace = createButton(
 				parent,
 				IDialogConstants.CLOSE_ID,
-				ProgressMessages.ProgressMonitorFocusJobDialog_RunInBackgroundButton,
+				ProgressMessages.get().ProgressMonitorFocusJobDialog_RunInBackgroundButton,
 				true);
 		runInWorkspace.addSelectionListener(new SelectionAdapter() {
 			/*
@@ -107,11 +107,13 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				ProgressManagerUtil.animateDown(shellPosition);
 			}
 		});
-		runInWorkspace.setCursor(arrowCursor);
+// RAP [fappel]: Cursor not supported
+//		runInWorkspace.setCursor(arrowCursor);
 
 		cancel = createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
-		cancel.setCursor(arrowCursor);
+				IDialogConstants.get().CANCEL_LABEL, false);
+// RAP [fappel]: Cursor not supported
+//		cancel.setCursor(arrowCursor);
 
 		createDetailsButton(parent);
 	}
@@ -122,7 +124,11 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 	 * @return IJobChangeListener
 	 */
 	private IJobChangeListener createCloseListener() {
-		return new JobChangeAdapter() {
+      // RAP: Obtain localized message here as within the JobChangeAdapter#done
+      //      method there is no session context available
+      final String closeJobDialogMsg 
+        = ProgressMessages.get().ProgressMonitorFocusJobDialog_CLoseDialogJob;
+	  return new JobChangeAdapter() {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -130,16 +136,30 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 			 */
 			public void done(IJobChangeEvent event) {
 				// first of all, make sure this listener is removed
-				event.getJob().removeJobChangeListener(this);
-				if (!PlatformUI.isWorkbenchRunning()) {
-					return;
-				}
+			    event.getJob().removeJobChangeListener(this);
+// RAP [fappel]: uses session aware approach
+//				if (!PlatformUI.isWorkbenchRunning()) {
+//					return;
+//				}
+			    Display display;
+                if( getShell() == null ) {
+                  if( !ContextProvider.hasContext() ) {
+                    return;
+                  }
+                  display = Display.getCurrent();
+                } else {
+                  display = getShell().getDisplay();
+                  
+                }
+                if (!ProgressUtil.isWorkbenchRunning( display ) ) {
+                    return;
+                }
+                
 				// nothing to do if the dialog is already closed
 				if (getShell() == null) {
 					return;
 				}
-				WorkbenchJob closeJob = new WorkbenchJob(
-						ProgressMessages.ProgressMonitorFocusJobDialog_CLoseDialogJob) {
+				final WorkbenchJob closeJob = new WorkbenchJob(closeJobDialogMsg) {
 					/*
 					 * (non-Javadoc)
 					 * 
@@ -155,7 +175,12 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 					}
 				};
 				closeJob.setSystem(true);
-				closeJob.schedule();
+				// RAP [fappel]: ensure mapping to context
+                UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+                  public void run() {
+                    closeJob.schedule();
+                  }
+                } );
 			}
 		};
 	}
@@ -267,6 +292,10 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 				Display display;
 				if (currentShell == null) {
+				    // RAP [fappel]: ensure that the thread has a context associated
+	                if( !ContextProvider.hasContext() ) {
+	                    return;
+                    }
 					display = Display.getDefault();
 				} else {
 					if (currentShell.isDisposed())// Don't bother if it has
@@ -382,7 +411,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 		int result = super.open();
 
 		// add a listener that will close the dialog when the job completes.
-		IJobChangeListener listener = createCloseListener();
+		final IJobChangeListener listener = createCloseListener();
 		job.addJobChangeListener(listener);
 		if (job.getState() == Job.NONE) {
 			// if the job completed before we had a chance to add
@@ -390,7 +419,38 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 			job.removeJobChangeListener(listener);
 			finishedRun();
 			cleanUpFinishedJob();
-		}
+		} else {
+          // RAP [fappel]: Ensure that job changed listener is removed in case
+		  //               of session timeout before the job ends. Note that
+		  //               this is still under investigation
+          final ISessionStore session = RWT.getSessionStore();          
+          final JobChangeAdapter doneListener[] = new JobChangeAdapter[ 1 ];
+          final HttpSessionBindingListener invalidateHandler
+            = new HttpSessionBindingListener()
+          {
+            public void valueBound( final HttpSessionBindingEvent event ) {
+            }
+            public void valueUnbound( final HttpSessionBindingEvent event ) {
+              job.removeJobChangeListener( listener );
+              if( doneListener[ 0 ] != null ) {
+                job.removeJobChangeListener( doneListener[ 0 ] );
+              }
+              job.cancel();
+              job.addJobChangeListener( new JobCanceler() );
+            }
+          };
+          final String watchDogKey = String.valueOf( job.hashCode() );
+          if( session.getAttribute( watchDogKey ) == null ) {
+            session.setAttribute( watchDogKey, invalidateHandler );
+          }
+          doneListener[ 0 ] = new JobChangeAdapter() {
+            public void done( IJobChangeEvent event ) {
+              job.removeJobChangeListener( this );
+              session.removeAttribute( watchDogKey );
+            }
+          };
+          job.addJobChangeListener( doneListener[ 0 ] );
+        }
 
 		return result;
 	}
@@ -429,7 +489,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				});
 
 		WorkbenchJob openJob = new WorkbenchJob(
-				ProgressMessages.ProgressMonitorFocusJobDialog_UserDialogJob) {
+				ProgressMessages.get().ProgressMonitorFocusJobDialog_UserDialogJob) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -498,9 +558,9 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				.getBoolean(IPreferenceConstants.RUN_IN_BACKGROUND);
 		final Button showUserDialogButton = new Button(parent, SWT.CHECK);
 		showUserDialogButton
-				.setText(WorkbenchMessages.WorkbenchPreference_RunInBackgroundButton);
+				.setText(WorkbenchMessages.get().WorkbenchPreference_RunInBackgroundButton);
 		showUserDialogButton
-				.setToolTipText(WorkbenchMessages.WorkbenchPreference_RunInBackgroundToolTip);
+				.setToolTipText(WorkbenchMessages.get().WorkbenchPreference_RunInBackgroundToolTip);
 		GridData gd = new GridData();
 		gd.horizontalSpan = 2;
 		gd.horizontalAlignment = GridData.FILL;

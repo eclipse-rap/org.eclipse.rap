@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * The ProgressAnimationProcessor is the processor for the animation using the
@@ -51,10 +50,14 @@ class ProgressAnimationProcessor implements IAnimationProcessor {
         if (items.size() == 0) {
 			return;
 		}
-        if (!PlatformUI.isWorkbenchRunning()) {
-			return;
-		}
-
+// RAP [fappel]: use session aware approach
+//        if (!PlatformUI.isWorkbenchRunning()) {
+//			return;
+//		}
+        if (!ProgressUtil.isWorkbenchRunning( manager.display )) {
+          return;
+        }
+        
         while (manager.isAnimated() && !monitor.isCanceled()) {
             //Do nothing while animation is happening
         }

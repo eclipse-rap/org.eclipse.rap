@@ -12,59 +12,31 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.IJobManager;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.core.runtime.jobs.ProgressProvider;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.*;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IPreferenceConstants;
-import org.eclipse.ui.internal.Workbench;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.*;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.dialogs.WorkbenchDialogBlockedHandler;
 import org.eclipse.ui.internal.misc.Policy;
-import org.eclipse.ui.progress.IProgressConstants;
-import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.ui.progress.WorkbenchJob;
+import org.eclipse.ui.progress.*;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 
@@ -87,7 +59,33 @@ public class ProgressManager extends ProgressProvider implements
 
 	static final String ERROR_JOB_KEY = "ERROR_JOB"; //$NON-NLS-1$
 
-	private static ProgressManager singleton;
+// RAP [fappel]: ProgressManager needs to be session aware	
+//	private static ProgressManager singleton;
+    Display display;
+    public static class ProgressManagerProvider extends SessionSingletonBase {
+      public static ProgressManager getInstance() {
+    	ProgressManager instance 
+    	  = ( ProgressManager )getInstance( ProgressManager.class );
+    	if( instance.display == null ) {
+    	  Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
+    	  instance.display = Display.getCurrent();
+    	  // TODO [fappel]: find a better place for initialization...
+    	  ProgressInfoItem.init();
+    
+    	  URL iconsRoot = ProgressManagerUtil.getIconsRoot();
+    	  try {
+    	    instance.setUpImage(iconsRoot, SLEEPING_JOB, SLEEPING_JOB_KEY);
+    	    instance.setUpImage(iconsRoot, WAITING_JOB, WAITING_JOB_KEY);
+    	    instance.setUpImage(iconsRoot, BLOCKED_JOB, BLOCKED_JOB_KEY);
+    	    // Let the error manager set up its own icons
+    	    instance.setUpImages(iconsRoot);
+    	  } catch (MalformedURLException e) {
+    	    ProgressManagerUtil.logException(e);
+    	  }
+    	}
+    	return instance;
+      }
+    }
 
 	final private Map jobs = Collections.synchronizedMap(new HashMap());
 
@@ -145,20 +143,28 @@ public class ProgressManager extends ProgressProvider implements
 	 * @return JobProgressManager
 	 */
 	public static ProgressManager getInstance() {
-		if (singleton == null) {
-			singleton = new ProgressManager();
-		}
-		return singleton;
+// RAP [fappel]: ProgressManager needs to be session aware
+//		if (singleton == null) {
+//			singleton = new ProgressManager();
+//		}
+//		return singleton;
+	  return ProgressManagerProvider.getInstance();
 	}
 
 	/**
 	 * Shutdown the singleton if there is one.
 	 */
 	public static void shutdownProgressManager() {
-		if (singleton == null) {
-			return;
-		}
-		singleton.shutdown();
+// RAP [fappel]: ProgressManager needs to be session aware
+//		if (singleton == null) {
+//			return;
+//		}
+//		singleton.shutdown();
+       if (getInstance() == null) {
+           return;
+       }
+       getInstance().shutdown();
+
 	}
 
 	/**
@@ -355,21 +361,23 @@ public class ProgressManager extends ProgressProvider implements
 	 * Create a new instance of the receiver.
 	 */
 	ProgressManager() {
-		Job.getJobManager().setProgressProvider(this);
-		Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
+// RAP [fappel]:	  
+//		Job.getJobManager().setProgressProvider(this);
+//		Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
 		createChangeListener();
-		Job.getJobManager().addJobChangeListener(this.changeListener);
-		URL iconsRoot = ProgressManagerUtil.getIconsRoot();
-		try {
-			setUpImage(iconsRoot, SLEEPING_JOB, SLEEPING_JOB_KEY);
-			setUpImage(iconsRoot, WAITING_JOB, WAITING_JOB_KEY);
-			setUpImage(iconsRoot, BLOCKED_JOB, BLOCKED_JOB_KEY);
-
-			// Let the error manager set up its own icons
-			setUpImages(iconsRoot);
-		} catch (MalformedURLException e) {
-			ProgressManagerUtil.logException(e);
-		}
+// RAP [fappel]:	  
+//		Job.getJobManager().addJobChangeListener(this.changeListener);
+//		URL iconsRoot = ProgressManagerUtil.getIconsRoot();
+//		try {
+//			setUpImage(iconsRoot, SLEEPING_JOB, SLEEPING_JOB_KEY);
+//			setUpImage(iconsRoot, WAITING_JOB, WAITING_JOB_KEY);
+//			setUpImage(iconsRoot, BLOCKED_JOB, BLOCKED_JOB_KEY);
+//
+//			// Let the error manager set up its own icons
+//			setUpImages(iconsRoot);
+//		} catch (MalformedURLException e) {
+//			ProgressManagerUtil.logException(e);
+//		}
 	}
 
 	/**
@@ -414,9 +422,13 @@ public class ProgressManager extends ProgressProvider implements
 			 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 			 */
 			public void done(IJobChangeEvent event) {
-				if (!PlatformUI.isWorkbenchRunning()) {
-					return;
-				}
+// RAP [fappel]: use session aware approach
+//				if (!PlatformUI.isWorkbenchRunning()) {
+//					return;
+//				}
+			    if (!ProgressUtil.isWorkbenchRunning(display)) {
+                  return;
+                }
 				Iterator startListeners = busyListenersForJob(event.getJob())
 						.iterator();
 				while (startListeners.hasNext()) {
@@ -463,7 +475,7 @@ public class ProgressManager extends ProgressProvider implements
 					if (!noDialog) {
 						final IJobChangeEvent finalEvent = event;
 						WorkbenchJob showJob = new WorkbenchJob(
-								ProgressMessages.ProgressManager_showInDialogName) {
+								ProgressMessages.get().ProgressManager_showInDialogName) {
 							/*
 							 * (non-Javadoc)
 							 * 
@@ -603,10 +615,12 @@ public class ProgressManager extends ProgressProvider implements
 	public IProgressMonitor getDefaultMonitor() {
 		// only need a default monitor for operations the UI thread
 		// and only if there is a display
-		Display display;
-		if (PlatformUI.isWorkbenchRunning()
+// RAP [fappel]:
+//		Display display;
+//		if (PlatformUI.isWorkbenchRunning()
+		if (ProgressUtil.isWorkbenchRunning( display )
 				&& !((Workbench) PlatformUI.getWorkbench()).isStarting()) {
-			display = PlatformUI.getWorkbench().getDisplay();
+//			display = PlatformUI.getWorkbench().getDisplay();
 			if (!display.isDisposed()
 					&& (display.getThread() == Thread.currentThread())) {
 				return new EventLoopProgressMonitor(new NullProgressMonitor());
@@ -928,8 +942,10 @@ public class ProgressManager extends ProgressProvider implements
 	 * @return Image
 	 */
 	Image getImage(ImageData source) {
-		ImageData mask = source.getTransparencyMask();
-		return new Image(null, source, mask);
+// RAP [fappel]: constructing image from ImageData not supported
+//		ImageData mask = source.getTransparencyMask();
+//		return new Image(null, source, mask);
+	  return ResourceFactory.findImage( source );
 	}
 
 	/**
@@ -1022,7 +1038,7 @@ public class ProgressManager extends ProgressProvider implements
 			final ProgressMonitorJobsDialog dialog) {
 
 		final WorkbenchJob updateJob = new WorkbenchJob(
-				ProgressMessages.ProgressManager_openJobName) {
+				ProgressMessages.get().ProgressManager_openJobName) {
 			/*
 			 * (non-Javadoc)
 			 * 

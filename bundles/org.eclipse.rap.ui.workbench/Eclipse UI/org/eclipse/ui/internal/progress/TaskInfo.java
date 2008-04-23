@@ -95,13 +95,13 @@ public class TaskInfo extends SubTaskInfo {
 			messageValues[2] = taskName;
 
 			return NLS
-					.bind(ProgressMessages.JobInfo_DoneMessage, messageValues);
+					.bind(ProgressMessages.get().JobInfo_DoneMessage, messageValues);
 		}
 		String[] messageValues = new String[2];
 		messageValues[0] = jobInfo.getJob().getName();
 		messageValues[1] = taskName;
 
-		return NLS.bind(ProgressMessages.JobInfo_DoneNoProgressMessage,
+		return NLS.bind(ProgressMessages.get().JobInfo_DoneNoProgressMessage,
 				messageValues);
 
 	}
@@ -120,7 +120,7 @@ public class TaskInfo extends SubTaskInfo {
 			return jobInfo.getJob().getName();
 		}
 
-		return NLS.bind(ProgressMessages.JobInfo_NoTaskNameDoneMessage, jobInfo
+		return NLS.bind(ProgressMessages.get().JobInfo_NoTaskNameDoneMessage, jobInfo
 				.getJob().getName(), String.valueOf(getPercentDone()));
 	}
 
@@ -152,7 +152,7 @@ public class TaskInfo extends SubTaskInfo {
 		messageValues[0] = jobInfo.getJob().getName();
 		messageValues[1] = taskName;
 		return NLS
-				.bind(ProgressMessages.JobInfo_UnknownProgress, messageValues);
+				.bind(ProgressMessages.get().JobInfo_UnknownProgress, messageValues);
 
 	}
 }

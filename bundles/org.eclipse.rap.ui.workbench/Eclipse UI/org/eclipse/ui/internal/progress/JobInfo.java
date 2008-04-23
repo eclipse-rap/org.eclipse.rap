@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -262,7 +260,7 @@ class JobInfo extends JobTreeElement {
     String getDisplayString(boolean showProgress) {
         String name = getDisplayStringWithStatus(showProgress);
         if (job.isSystem()) {
-			return NLS.bind(ProgressMessages.JobInfo_System, (new Object[] { name }));
+			return NLS.bind(ProgressMessages.get().JobInfo_System, (new Object[] { name }));
 		}
         return name;
     }
@@ -277,10 +275,10 @@ class JobInfo extends JobTreeElement {
      */
     private String getDisplayStringWithStatus(boolean showProgress) {
         if (isCanceled()) {
-			return NLS.bind(ProgressMessages.JobInfo_Cancelled, (new Object[] { getJob().getName() }));
+			return NLS.bind(ProgressMessages.get().JobInfo_Cancelled, (new Object[] { getJob().getName() }));
 		}
         if (isBlocked()) {
-			return NLS.bind(ProgressMessages.JobInfo_Blocked, (new Object[] { getJob().getName(),
+			return NLS.bind(ProgressMessages.get().JobInfo_Blocked, (new Object[] { getJob().getName(),
 			blockedStatus.getMessage() }));
 		}
         if (getJob().getState() == Job.RUNNING) {
@@ -291,10 +289,10 @@ class JobInfo extends JobTreeElement {
             return info.getDisplayString(showProgress);
         }
         if (getJob().getState() == Job.SLEEPING) {
-			return NLS.bind(ProgressMessages.JobInfo_Sleeping, (new Object[] { getJob().getName() }));
+			return NLS.bind(ProgressMessages.get().JobInfo_Sleeping, (new Object[] { getJob().getName() }));
 		}
 
-        return NLS.bind(ProgressMessages.JobInfo_Waiting, (new Object[] { getJob().getName() }));
+        return NLS.bind(ProgressMessages.get().JobInfo_Waiting, (new Object[] { getJob().getName() }));
 
     }
 

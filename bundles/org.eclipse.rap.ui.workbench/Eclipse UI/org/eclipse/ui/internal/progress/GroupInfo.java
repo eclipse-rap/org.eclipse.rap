@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -82,7 +80,7 @@ class GroupInfo extends JobTreeElement implements IProgressMonitor {
 		String[] messageValues = new String[2];
 		messageValues[0] = taskName;
 		messageValues[1] = String.valueOf(getPercentDone());
-		return NLS.bind(ProgressMessages.JobInfo_NoTaskNameDoneMessage,
+		return NLS.bind(ProgressMessages.get().JobInfo_NoTaskNameDoneMessage,
 				messageValues);
 
 	}

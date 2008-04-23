@@ -10,15 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.progress.IProgressConstants;
 
@@ -48,7 +45,15 @@ public class FinishedJobs extends EventManager {
 		void removed(JobTreeElement jte);
 	}
 
-	private static FinishedJobs theInstance;
+// RAP [fappel]: FinishedJobs need to be session aware
+//  private static FinishedJobs theInstance;
+    public final static class FinishedJobsProvider
+      extends SessionSingletonBase
+    {
+      public static FinishedJobs getInstance() {
+        return ( FinishedJobs )getInstance( FinishedJobs.class );
+      }
+    }
 
 	private IJobProgressManagerListener listener;
 
@@ -56,14 +61,20 @@ public class FinishedJobs extends EventManager {
 
 	private HashMap finishedTime = new HashMap();
 
-	private static JobTreeElement[] EMPTY_INFOS;
+// RAP [fappel]:
+//	private static JobTreeElement[] EMPTY_INFOS;
+    private static JobTreeElement[] EMPTY_INFOS = new JobTreeElement[0];
 
-	public static synchronized FinishedJobs getInstance() {
-		if (theInstance == null) {
-			theInstance = new FinishedJobs();
-			EMPTY_INFOS = new JobTreeElement[0];
-		}
-		return theInstance;
+// RAP [fappel]: FinishedJobs need to be session aware
+//	public static synchronized FinishedJobs getInstance() {
+	public static FinishedJobs getInstance() {
+//	  if (theInstance == null) {
+//	    theInstance = new FinishedJobs();
+//	    EMPTY_INFOS = new JobTreeElement[0];
+//	  }
+//	  return theInstance;
+	   return FinishedJobsProvider.getInstance();
+
 	}
 
 	private FinishedJobs() {

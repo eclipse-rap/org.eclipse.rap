@@ -118,7 +118,9 @@ class ProgressInfoItem extends Composite {
 
 	private boolean isShowing = true;
 
-	static {
+// RAP [fappel]: static initializer would fail to access image registry
+//	static {
+	static void init() {
 		JFaceResources
 				.getImageRegistry()
 				.put(
@@ -209,7 +211,9 @@ class ProgressInfoItem extends Composite {
 		setMainText();
 
 		actionBar = new ToolBar(this, SWT.FLAT);
-		actionBar.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW)); // set
+		
+// RAP [fappel]: Cursor not supported
+//		actionBar.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW)); // set
 		// cursor
 		// to
 		// overwrite
@@ -219,7 +223,7 @@ class ProgressInfoItem extends Composite {
 		// cursor we might have
 		actionButton = new ToolItem(actionBar, SWT.NONE);
 		actionButton
-				.setToolTipText(ProgressMessages.NewProgressView_CancelJobToolTip);
+				.setToolTipText(ProgressMessages.get().NewProgressView_CancelJobToolTip);
 		actionButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				actionButton.setEnabled(false);
@@ -227,26 +231,27 @@ class ProgressInfoItem extends Composite {
 			}
 
 		});
-		actionBar.addListener(SWT.Traverse, new Listener() {
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-			 */
-			public void handleEvent(Event event) {
-				if (indexListener == null) {
-					return;
-				}
-				int detail = event.detail;
-				if (detail == SWT.TRAVERSE_ARROW_NEXT) {
-					indexListener.selectNext();
-				}
-				if (detail == SWT.TRAVERSE_ARROW_PREVIOUS) {
-					indexListener.selectPrevious();
-				}
-
-			}
-		});
+// RAP [fappel]: traverse listener not supported
+//		actionBar.addListener(SWT.Traverse, new Listener() {
+//			/*
+//			 * (non-Javadoc)
+//			 * 
+//			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+//			 */
+//			public void handleEvent(Event event) {
+//				if (indexListener == null) {
+//					return;
+//				}
+//				int detail = event.detail;
+//				if (detail == SWT.TRAVERSE_ARROW_NEXT) {
+//					indexListener.selectNext();
+//				}
+//				if (detail == SWT.TRAVERSE_ARROW_PREVIOUS) {
+//					indexListener.selectPrevious();
+//				}
+//
+//			}
+//		});
 		updateToolBarValues();
 
 		FormData progressData = new FormData();
@@ -387,19 +392,19 @@ class ProgressInfoItem extends Composite {
 		String name = job.getName();
 
 		if (job.isSystem()) {
-			name = NLS.bind(ProgressMessages.JobInfo_System, name);
+			name = NLS.bind(ProgressMessages.get().JobInfo_System, name);
 		}
 
 		if (jobInfo.isCanceled()) {
 			if (job.getState() == Job.RUNNING)
 				return NLS
-						.bind(ProgressMessages.JobInfo_Cancel_Requested, name);
-			return NLS.bind(ProgressMessages.JobInfo_Cancelled, name);
+						.bind(ProgressMessages.get().JobInfo_Cancel_Requested, name);
+			return NLS.bind(ProgressMessages.get().JobInfo_Cancelled, name);
 		}
 
 		if (jobInfo.isBlocked()) {
 			IStatus blockedStatus = jobInfo.getBlockedStatus();
-			return NLS.bind(ProgressMessages.JobInfo_Blocked, name,
+			return NLS.bind(ProgressMessages.get().JobInfo_Blocked, name,
 					blockedStatus.getMessage());
 		}
 
@@ -407,13 +412,13 @@ class ProgressInfoItem extends Composite {
 		case Job.RUNNING:
 			return name;
 		case Job.SLEEPING: {
-			return NLS.bind(ProgressMessages.JobInfo_Sleeping, name);
+			return NLS.bind(ProgressMessages.get().JobInfo_Sleeping, name);
 
 		}
 		case Job.NONE: // Only happens for kept jobs
 			return getJobInfoFinishedString(job, true);
 		default:
-			return NLS.bind(ProgressMessages.JobInfo_Waiting, name);
+			return NLS.bind(ProgressMessages.get().JobInfo_Waiting, name);
 		}
 	}
 
@@ -431,10 +436,10 @@ class ProgressInfoItem extends Composite {
 			time = getTimeString();
 		}
 		if (time != null) {
-			return NLS.bind(ProgressMessages.JobInfo_FinishedAt, job.getName(),
+			return NLS.bind(ProgressMessages.get().JobInfo_FinishedAt, job.getName(),
 					time);
 		}
-		return NLS.bind(ProgressMessages.JobInfo_Finished, job.getName());
+		return NLS.bind(ProgressMessages.get().JobInfo_Finished, job.getName());
 	}
 
 	/**
@@ -519,7 +524,7 @@ class ProgressInfoItem extends Composite {
 						taskString = subTaskString;
 					} else {
 						taskString = NLS.bind(
-								ProgressMessages.JobInfo_DoneNoProgressMessage,
+								ProgressMessages.get().JobInfo_DoneNoProgressMessage,
 								taskString, subTaskString);
 					}
 				}
@@ -638,14 +643,16 @@ class ProgressInfoItem extends Composite {
 		if (isCompleted()) {
 			actionButton.setImage(JFaceResources
 					.getImage(CLEAR_FINISHED_JOB_KEY));
-			actionButton.setDisabledImage(JFaceResources
-					.getImage(DISABLED_CLEAR_FINISHED_JOB_KEY));
+// RAP [fappel]: disabled image not supported
+//			actionButton.setDisabledImage(JFaceResources
+//					.getImage(DISABLED_CLEAR_FINISHED_JOB_KEY));
 			actionButton
-					.setToolTipText(ProgressMessages.NewProgressView_ClearJobToolTip);
+					.setToolTipText(ProgressMessages.get().NewProgressView_ClearJobToolTip);
 		} else {
 			actionButton.setImage(JFaceResources.getImage(STOP_IMAGE_KEY));
-			actionButton.setDisabledImage(JFaceResources
-					.getImage(DISABLED_STOP_IMAGE_KEY));
+// RAP [fappel]: disabled image not supported
+//			actionButton.setDisabledImage(JFaceResources
+//					.getImage(DISABLED_STOP_IMAGE_KEY));
 
 		}
 		JobInfo[] infos = getJobInfos();

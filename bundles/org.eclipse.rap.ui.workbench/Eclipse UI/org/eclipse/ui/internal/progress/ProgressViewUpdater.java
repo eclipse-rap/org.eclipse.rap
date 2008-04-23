@@ -10,25 +10,33 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.progress.WorkbenchJob;
 
 /**
  * The ProgressViewUpdater is the singleton that updates viewers.
  */
-class ProgressViewUpdater implements IJobProgressManagerListener {
-
-    private static ProgressViewUpdater singleton;
+// RAP [fappel]: ProgressViewUpdater needs to be a singleton per session
+// class ProgressViewUpdater implements IJobProgressManagerListener {
+//
+//    private static ProgressViewUpdater singleton;
+public class ProgressViewUpdater
+  extends SessionSingletonBase
+  implements IJobProgressManagerListener
+{
 
     private IProgressUpdateCollector[] collectors;
 
@@ -39,6 +47,9 @@ class ProgressViewUpdater implements IJobProgressManagerListener {
     Object updateLock = new Object();
 
     boolean debug;
+    
+    // RAP [fappel]:
+    private Display display;
     
    
     /**
@@ -147,10 +158,17 @@ class ProgressViewUpdater implements IJobProgressManagerListener {
      * @return ProgressViewUpdater
      */
    static ProgressViewUpdater getSingleton() {
-        if (singleton == null) {
-			singleton = new ProgressViewUpdater();
-		}
-        return singleton;
+// RAP [fappel]: session aware implementation
+//        if (singleton == null) {
+//			singleton = new ProgressViewUpdater();
+//		}
+//        return singleton;
+       ProgressViewUpdater instance
+         = ( ProgressViewUpdater )getInstance( ProgressViewUpdater.class );
+       if( instance.display == null ) {
+         instance.display = Display.getCurrent();
+       }
+       return instance;
     }
 
     /**
@@ -161,14 +179,20 @@ class ProgressViewUpdater implements IJobProgressManagerListener {
      * a singleton
      */
     static boolean hasSingleton() {
-        return singleton != null;
+// RAP [fappel]:
+//        return singleton != null;
+        return getSingleton() != null;
     }
 
     static void clearSingleton() {
-        if (singleton != null) {
-			ProgressManager.getInstance().removeListener(singleton);
-		}
-        singleton = null;
+// RAP [fappel]:
+//        if (singleton != null) {
+//			ProgressManager.getInstance().removeListener(singleton);
+//		}
+//        singleton = null;
+        if (getSingleton() != null) {
+			ProgressManager.getInstance().removeListener(getSingleton());
+        }
     }
 
     /**
@@ -181,6 +205,22 @@ class ProgressViewUpdater implements IJobProgressManagerListener {
         debug = 
         	PrefUtil.getAPIPreferenceStore().
         		getBoolean(IWorkbenchPreferenceConstants.SHOW_SYSTEM_JOBS);
+        // RAP [fappel]: Ensure that job is removed in case of session timeout.
+        //               Note that this is still under investigation.
+        ISessionStore session = RWT.getSessionStore();
+        String watchDogKey = getClass().getName() + ".watchDog";
+        if( session.getAttribute( watchDogKey ) == null ) {
+          session.setAttribute( watchDogKey, new HttpSessionBindingListener() {
+            public void valueBound( final HttpSessionBindingEvent event ) {
+            }
+            public void valueUnbound( final HttpSessionBindingEvent event ) {
+              if( updateJob != null ) {
+                updateJob.cancel();
+                updateJob.addJobChangeListener( new JobCanceler() );
+              }
+            }
+          } );
+        }
     }
 
     /**
@@ -221,9 +261,18 @@ class ProgressViewUpdater implements IJobProgressManagerListener {
      * Schedule an update.
      */
     void scheduleUpdate() {
-        if (PlatformUI.isWorkbenchRunning()) {
-            //Add in a 100ms delay so as to keep priority low
-            updateJob.schedule(100);
+// RAP [fappel]: session aware implementation
+//        if (PlatformUI.isWorkbenchRunning()) {
+//            //Add in a 100ms delay so as to keep priority low
+//            updateJob.schedule(100);
+//        }
+        if (ProgressUtil.isWorkbenchRunning( display )) {
+          //Add in a 100ms delay so as to keep priority low
+          UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+            public void run() {
+              updateJob.schedule(100);
+            }
+          } );
         }
     }
 
@@ -231,7 +280,7 @@ class ProgressViewUpdater implements IJobProgressManagerListener {
      * Create the update job that handles the updatesInfo.
      */
     private void createUpdateJob() {
-        updateJob = new WorkbenchJob(ProgressMessages.ProgressContentProvider_UpdateProgressJob) {
+        updateJob = new WorkbenchJob(ProgressMessages.get().ProgressContentProvider_UpdateProgressJob) {
             /*
              * (non-Javadoc)
              * 

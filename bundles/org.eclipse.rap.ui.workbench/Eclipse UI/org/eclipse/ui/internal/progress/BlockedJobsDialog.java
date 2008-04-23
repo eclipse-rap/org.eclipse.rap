@@ -10,21 +10,16 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.progress.WorkbenchJob;
@@ -39,7 +34,23 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 * recursive dialogs being created. The singleton is created when a dialog
 	 * is requested, and cleared when the dialog is disposed.
 	 */
-	protected static BlockedJobsDialog singleton;
+// RAP [fappel]: BlockedJobsDialog needs to be session aware
+//  protected static BlockedJobsDialog singleton;
+  public static class BlockedJobsDialogProvider extends SessionSingletonBase {
+    public BlockedJobsDialog blockedJobsDialog;
+
+    protected static BlockedJobsDialogProvider getInstance() {
+      Class clazz = BlockedJobsDialogProvider.class;
+      return ( BlockedJobsDialogProvider )getInstance( clazz );
+    }
+  }
+  private static BlockedJobsDialog getSingleton() {
+    return BlockedJobsDialogProvider.getInstance().blockedJobsDialog;
+  }
+  private static void setSingleton( final BlockedJobsDialog dialog ) {
+    BlockedJobsDialogProvider.getInstance().blockedJobsDialog = dialog;
+  }
+  
 
 	/**
 	 * The running jobs progress viewer.
@@ -59,12 +70,14 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * The cursor for the buttons.
 	 */
-	private Cursor arrowCursor;
+// RAP [fappel]: cursor not supported
+//	private Cursor arrowCursor;
 
 	/**
 	 * The cursor for the Shell.
 	 */
-	private Cursor waitCursor;
+// RAP [fappel]: cursor not supported
+//	private Cursor waitCursor;
 
 	private IProgressMonitor blockingMonitor;
 
@@ -92,7 +105,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 		 */
 		String getDisplayString() {
 			if (blockedTaskName == null || blockedTaskName.length() == 0) {
-				return ProgressMessages.BlockedJobsDialog_UserInterfaceTreeElement;
+				return ProgressMessages.get().BlockedJobsDialog_UserInterfaceTreeElement;
 			}
 			return blockedTaskName;
 		}
@@ -184,17 +197,19 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 */
 	public static BlockedJobsDialog createBlockedDialog(Shell parentShell,
 			IProgressMonitor blockedMonitor, IStatus reason, String taskName) {
+// RAP [fappel]: use session aware getSingleton() call in this method
+	  
 		// use an existing dialog if available
-		if (singleton != null) {
-			return singleton;
-		}
-		singleton = new BlockedJobsDialog(parentShell, blockedMonitor, reason);
+        if (getSingleton() != null) {
+            return getSingleton();
+        }
+        setSingleton( new BlockedJobsDialog(parentShell, blockedMonitor, reason) );
 
-		if (taskName == null || taskName.length() == 0)
-			singleton
-					.setBlockedTaskName(ProgressMessages.BlockedJobsDialog_UserInterfaceTreeElement);
-		else
-			singleton.setBlockedTaskName(taskName);
+        if (taskName == null || taskName.length() == 0)
+            getSingleton()
+                    .setBlockedTaskName(ProgressMessages.get().BlockedJobsDialog_UserInterfaceTreeElement);
+        else
+            getSingleton().setBlockedTaskName(taskName);
 
 		/**
 		 * If there is no parent shell we have not been asked for a parent so we
@@ -203,20 +218,20 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 		if (parentShell == null) {
 			// create the job that will open the dialog after a delay.
 			WorkbenchJob dialogJob = new WorkbenchJob(
-					WorkbenchMessages.EventLoopProgressMonitor_OpenDialogJobName) {
+					WorkbenchMessages.get().EventLoopProgressMonitor_OpenDialogJobName) {
 				/*
 				 * (non-Javadoc)
 				 * 
 				 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
 				 */
 				public IStatus runInUIThread(IProgressMonitor monitor) {
-					if (singleton == null) {
+					if (getSingleton() == null) {
 						return Status.CANCEL_STATUS;
 					}
 					if (ProgressManagerUtil.rescheduleIfModalShellOpen(this)) {
 						return Status.CANCEL_STATUS;
 					}
-					singleton.open();
+					getSingleton().open();
 					return Status.OK_STATUS;
 				}
 			};
@@ -226,10 +241,10 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 			dialogJob.schedule(PlatformUI.getWorkbench().getProgressService()
 					.getLongOperationTime());
 		} else {
-			singleton.open();
+			getSingleton().open();
 		}
 
-		return singleton;
+		return getSingleton();
 	}
 
 	/**
@@ -239,10 +254,11 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 *            The monitor that is now cleared.
 	 */
 	public static void clear(IProgressMonitor monitor) {
-		if (singleton == null) {
+// RAP [fappel]: use session aware getSingleton() call in this method
+		if (getSingleton() == null) {
 			return;
 		}
-		singleton.close(monitor);
+		getSingleton().close(monitor);
 
 	}
 
@@ -347,14 +363,15 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	private void clearCursors() {
 		clearCursor(cancelSelected);
 		clearCursor(getShell());
-		if (arrowCursor != null) {
-			arrowCursor.dispose();
-		}
-		if (waitCursor != null) {
-			waitCursor.dispose();
-		}
-		arrowCursor = null;
-		waitCursor = null;
+// RAP [fappel]: Cursor not supported
+//		if (arrowCursor != null) {
+//			arrowCursor.dispose();
+//		}
+//		if (waitCursor != null) {
+//			waitCursor.dispose();
+//		}
+//		arrowCursor = null;
+//		waitCursor = null;
 	}
 
 	/**
@@ -363,9 +380,10 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 * @param control
 	 */
 	private void clearCursor(Control control) {
-		if (control != null && !control.isDisposed()) {
-			control.setCursor(null);
-		}
+// RAP [fappel]: Cursor not supported
+//		if (control != null && !control.isDisposed()) {
+//			control.setCursor(null);
+//		}
 	}
 
 	/*
@@ -375,11 +393,12 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 */
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText(ProgressMessages.BlockedJobsDialog_BlockedTitle);
-		if (waitCursor == null) {
-			waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
-		}
-		shell.setCursor(waitCursor);
+		shell.setText(ProgressMessages.get().BlockedJobsDialog_BlockedTitle);
+// RAP [fappel]: Cursor not supported
+//		if (waitCursor == null) {
+//			waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
+//		}
+//		shell.setCursor(waitCursor);
 	}
 
 	/**
@@ -438,7 +457,9 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 */
 	public boolean close() {
 		// Clear the singleton first
-		singleton = null;
+// RAP [fappel]:	  
+//		singleton = null;
+	    setSingleton( null );
 		clearCursors();
 		return super.close();
 	}

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 /**
  * Interface for runnables that can be run as jobs.
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IJobRunnable {
 

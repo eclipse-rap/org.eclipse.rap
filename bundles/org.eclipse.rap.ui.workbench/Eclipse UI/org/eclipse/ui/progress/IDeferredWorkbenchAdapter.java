@@ -19,7 +19,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * that are displayed visually. This adapter is used with an associated deferred content provider.
  * 
  * @see DeferredTreeContentManager
- * @since 3.0
+ * @since 1.0
  */
 public interface IDeferredWorkbenchAdapter extends IWorkbenchAdapter {
 

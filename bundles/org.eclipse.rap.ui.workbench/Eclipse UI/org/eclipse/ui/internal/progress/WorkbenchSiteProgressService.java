@@ -28,8 +28,6 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -59,7 +57,8 @@ public class WorkbenchSiteProgressService implements
 
     IPropertyChangeListener[] changeListeners = new IPropertyChangeListener[0];
 
-    private Cursor waitCursor;
+// RAP [fappel]: Cursor not supported
+//    private Cursor waitCursor;
 
     private SiteUpdateJob updateJob;
 
@@ -71,7 +70,8 @@ public class WorkbenchSiteProgressService implements
     private class SiteUpdateJob extends WorkbenchJob {
         private boolean busy;
 
-        private boolean useWaitCursor = false;
+// RAP [fappel]: Cursor not supported
+//        private boolean useWaitCursor = false;
 
         Object lock = new Object();
 
@@ -87,7 +87,7 @@ public class WorkbenchSiteProgressService implements
         }
 
         private SiteUpdateJob() {
-            super(ProgressMessages.WorkbenchSiteProgressService_CursorJob);
+            super(ProgressMessages.get().WorkbenchSiteProgressService_CursorJob);
         }
 
         /**
@@ -95,12 +95,13 @@ public class WorkbenchSiteProgressService implements
          * @param display the display to create the cursor on.
          * @return the created cursor
          */
-        private Cursor getWaitCursor(Display display) {
-            if (waitCursor == null) {
-                waitCursor = new Cursor(display, SWT.CURSOR_APPSTARTING);
-            }
-            return waitCursor;
-        }
+// RAP [fappel]: Cursor not supported
+//        private Cursor getWaitCursor(Display display) {
+//            if (waitCursor == null) {
+//                waitCursor = new Cursor(display, SWT.CURSOR_APPSTARTING);
+//            }
+//            return waitCursor;
+//        }
 
         /*
          * (non-Javadoc)
@@ -114,13 +115,14 @@ public class WorkbenchSiteProgressService implements
 			}
             synchronized (lock) {
                 //Update cursors if we are doing that
-                if (useWaitCursor) {
-                    Cursor cursor = null;
-                    if (busy) {
-						cursor = getWaitCursor(control.getDisplay());
-					}
-                    control.setCursor(cursor);
-                }
+// RAP [fappel]: Cursor not supported
+//                if (useWaitCursor) {
+//                    Cursor cursor = null;
+//                    if (busy) {
+//						cursor = getWaitCursor(control.getDisplay());
+//					}
+//                    control.setCursor(cursor);
+//                }
                 site.getPane().setBusy(busy);
                 IWorkbenchPart part = site.getPart();
                  if (part instanceof WorkbenchPart) {
@@ -131,10 +133,11 @@ public class WorkbenchSiteProgressService implements
         }
 
         void clearCursors() {
-            if (waitCursor != null) {
-                waitCursor.dispose();
-                waitCursor = null;
-            }
+// RAP [fappel]: Cursor not supported
+//            if (waitCursor != null) {
+//                waitCursor.dispose();
+//                waitCursor = null;
+//            }
         }
     }
 
@@ -161,11 +164,12 @@ public class WorkbenchSiteProgressService implements
 
         ProgressManager.getInstance().removeListener(this);
 
-        if (waitCursor == null) {
-			return;
-		}
-        waitCursor.dispose();
-        waitCursor = null;
+// RAP [fappel]: Cursor not supported
+//        if (waitCursor == null) {
+//			return;
+//		}
+//        waitCursor.dispose();
+//        waitCursor = null;
     }
 
     /*
@@ -227,7 +231,8 @@ public class WorkbenchSiteProgressService implements
     public IJobChangeListener getJobChangeListener(final Job job,
             boolean useHalfBusyCursor) {
         if (listener == null) {
-            updateJob.useWaitCursor = useHalfBusyCursor;
+// RAP [fappel]: Cursor not supported
+//            updateJob.useWaitCursor = useHalfBusyCursor;
             listener = new JobChangeAdapter() {
                 /*
                  * (non-Javadoc)
@@ -368,15 +373,24 @@ public class WorkbenchSiteProgressService implements
 			}
 			updateJob.setBusy(true);
 		}
-		if (PlatformUI.isWorkbenchRunning()) {
-			updateJob.schedule(100);
-		} else {
-			updateJob.cancel();
-		}
+// RAP [fappel]: use session aware approach 
+//		if (PlatformUI.isWorkbenchRunning()) {
+//			updateJob.schedule(100);
+//		} else {
+//			updateJob.cancel();
+//		}
+	    Display display = site.getShell().getDisplay();
+	    if( !ProgressUtil.isWorkbenchRunning( display ) ) {
+	        updateJob.schedule( 100 );
+	    } else {
+	      updateJob.cancel();
+	    }
     }
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.progress.IWorkbenchSiteProgressService#showBusy(boolean)
-	 */
+	/*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.progress.IWorkbenchSiteProgressService#showBusy(boolean)
+     */
 	public void decrementBusy() {
 		synchronized (busyLock) {
 			Assert

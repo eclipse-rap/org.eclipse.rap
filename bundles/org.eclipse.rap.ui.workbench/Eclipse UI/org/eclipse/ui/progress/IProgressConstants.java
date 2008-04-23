@@ -20,7 +20,7 @@ import org.eclipse.ui.PlatformUI;
  * UI related information with Jobs (<code>org.eclipse.core.runtime.jobs.Job</code>).
  * 
  * @see org.eclipse.core.runtime.jobs.Job#setProperty
- * @since 3.0
+ * @since 1.0
  */
 public interface IProgressConstants {
 
@@ -122,7 +122,6 @@ public interface IProgressConstants {
      * The property must be of type <code>Boolean</code> and the hint is used
      * if its value is <code>true</code>.
      * </p>
-     * @since 3.1
      */
     public static final QualifiedName NO_IMMEDIATE_ERROR_PROMPT_PROPERTY = new QualifiedName(
             PROPERTY_PREFIX, "delayErrorPrompt"); //$NON-NLS-1$

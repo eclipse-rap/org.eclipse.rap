@@ -10,25 +10,30 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.WorkbenchJob;
 
 /**
  * The AnimationManager is the class that keeps track of the animation items to
  * update.
  */
-public class AnimationManager {
-    private static AnimationManager singleton;
+//RAP {fappel]: AnimationManager needs to be session aware
+public class AnimationManager extends SessionSingletonBase {
+//    private static AnimationManager singleton;
 
     boolean animated = false;
 
@@ -38,11 +43,20 @@ public class AnimationManager {
 
     WorkbenchJob animationUpdateJob;
 
+    Display display;
+
     public static AnimationManager getInstance() {
-        if (singleton == null) {
-			singleton = new AnimationManager();
-		}
-        return singleton;
+// RAP [fappel]: AnimationManager needs to be session aware
+//      if (singleton == null) {
+//          singleton = new AnimationManager();
+//      }
+//      return singleton;
+      AnimationManager instance
+        = ( AnimationManager )getInstance( AnimationManager.class );
+      if( instance.display == null ) {
+        instance.display = Display.getCurrent();
+      }
+      return instance;
     }
 
     /**
@@ -57,10 +71,16 @@ public class AnimationManager {
     }
 
     AnimationManager() {
+         // RAP [fappel]: This is a helping flag used to avoid a memory leak
+         //               due to thread management.
+         //               Note that this is still under investigation.
+         //               See comment in JobManagerAdapter
+         final boolean[] done = new boolean[ 1 ];
+
 
         animationProcessor = new ProgressAnimationProcessor(this);
 
-        animationUpdateJob = new WorkbenchJob(ProgressMessages.AnimationManager_AnimationStart) {
+        animationUpdateJob = new WorkbenchJob(ProgressMessages.get().AnimationManager_AnimationStart) {
 
             /*
              * (non-Javadoc)
@@ -76,13 +96,50 @@ public class AnimationManager {
 				}
                 return Status.OK_STATUS;
             }
+            
+            // RAP [fappel]: This is a helping mechanism used to avoid a memory
+            //               leak due to thread management.
+            //               Note that this is still under investigation.
+            //               See comment in JobManagerAdapter
+            public Object getAdapter( final Class adapter ) {
+              Object result;
+              if( adapter == IJobMarker.class ) {
+                result = new IJobMarker() {
+                  public boolean canBeRemoved() {
+                    return done[ 0 ];
+                  }
+                };
+              } else {
+                result = super.getAdapter( adapter );
+              }
+              return result;
+            }
+
         };
         animationUpdateJob.setSystem(true);
         
         listener = getProgressListener();
         ProgressManager.getInstance().addListener(listener);
 
-
+        // RAP [fappel]: This is a helping mechanism used to avoid a memory leak
+        //               due to thread management.
+        //               Note that this is still under investigation.
+        //               See comment in JobManagerAdapter
+        ISessionStore session = RWT.getSessionStore();
+        String watchDogKey = getClass().getName() + ".watchDog";
+        if( session.getAttribute( watchDogKey ) == null ) {
+          session.setAttribute( watchDogKey, new HttpSessionBindingListener() {
+            public void valueBound( final HttpSessionBindingEvent event ) {
+            }
+            public void valueUnbound( final HttpSessionBindingEvent event ) {
+              if( animationUpdateJob != null ) {
+                animationUpdateJob.cancel();
+                animationUpdateJob.addJobChangeListener( new JobCanceler() );
+                done[ 0 ] = true;
+              }
+            }
+          } );
+        }
     }
 
     /**
@@ -115,11 +172,21 @@ public class AnimationManager {
     /**
      * Set whether or not the receiver is animated.
      * 
-     * @param boolean
+     * @param bool
      */
+// RAP [fappel]: map job to session
+//    void setAnimated(final boolean bool) {
+//      animated = bool;
+//      animationUpdateJob.schedule(100);
+//    }
     void setAnimated(final boolean bool) {
-        animated = bool;
-        animationUpdateJob.schedule(100);
+      animated = bool;
+      Runnable scheduler = new Runnable() {
+        public void run() {
+          animationUpdateJob.schedule(100);
+        }
+      };
+      UICallBack.runNonUIThreadWithFakeContext( display, scheduler );
     }
 
     /**

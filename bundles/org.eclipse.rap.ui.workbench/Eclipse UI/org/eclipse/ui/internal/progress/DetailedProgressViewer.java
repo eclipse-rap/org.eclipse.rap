@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -31,14 +30,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 
 /**
  * The DetailedProgressViewer is a viewer that shows the details of all in
  * progress job or jobs that are finished awaiting user input.
  * 
- * @since 3.2
+ * @since 1.0
  * 
  */
 public class DetailedProgressViewer extends AbstractProgressViewer {
@@ -58,9 +55,10 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 	 */
 	public DetailedProgressViewer(Composite parent, int style) {
 		scrolled = new ScrolledComposite(parent, SWT.V_SCROLL | style);
-		int height = JFaceResources.getDefaultFont().getFontData()[0]
-				.getHeight();
-		scrolled.getVerticalBar().setIncrement(height * 2);
+// RAP [fappel]: setIncrement not available
+//		int height = JFaceResources.getDefaultFont().getFontData()[0]
+//				.getHeight();
+//		scrolled.getVerticalBar().setIncrement(height * 2);
 		scrolled.setExpandHorizontal(true);
 		scrolled.setExpandVertical(true);
 
@@ -113,8 +111,9 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 			}
 		});
 
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(control,
-				IWorkbenchHelpContextIds.RESPONSIVE_UI);
+// RAP [fappel]: help system not available
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(control,
+//				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 
 		scrolled.setContent(control);
 		hookControl(control);
@@ -123,15 +122,17 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 		noEntryArea.setLayout(new GridLayout());
 
 		Text noEntryLabel = new Text(noEntryArea, SWT.SINGLE);
-		noEntryLabel.setText(ProgressMessages.ProgressView_NoOperations);
+		noEntryLabel.setText(ProgressMessages.get().ProgressView_NoOperations);
 		noEntryLabel.setBackground(noEntryArea.getDisplay().getSystemColor(
 				SWT.COLOR_WIDGET_BACKGROUND));
 		GridData textData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		noEntryLabel.setLayoutData(textData);
 		noEntryLabel.setEditable(false);
 
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(noEntryLabel,
-				IWorkbenchHelpContextIds.RESPONSIVE_UI);
+		
+// RAP [fappel]: help system not available
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(noEntryLabel,
+//				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 
 	}
 

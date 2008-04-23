@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.preferences.ViewPreferencesAction;
@@ -58,8 +56,9 @@ public class ProgressView extends ViewPart implements IViewPart {
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-				IWorkbenchHelpContextIds.RESPONSIVE_UI);
+// RAP [fappel]: help system not supported
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+//				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 		
 		initContentProvider();
 		createClearAllAction();
@@ -175,7 +174,7 @@ public class ProgressView extends ViewPart implements IViewPart {
 	 * Create the cancel action for the receiver.
 	 */
 	private void createCancelAction() {
-		cancelAction = new Action(ProgressMessages.ProgressView_CancelAction) {
+		cancelAction = new Action(ProgressMessages.get().ProgressView_CancelAction) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -193,7 +192,7 @@ public class ProgressView extends ViewPart implements IViewPart {
 	 */
 	private void createClearAllAction() {
 		clearAllAction = new Action(
-				ProgressMessages.ProgressView_ClearAllAction) {
+				ProgressMessages.get().ProgressView_ClearAllAction) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -204,7 +203,7 @@ public class ProgressView extends ViewPart implements IViewPart {
 			}
 		};
 		clearAllAction
-				.setToolTipText(ProgressMessages.NewProgressView_RemoveAllJobsToolTip);
+				.setToolTipText(ProgressMessages.get().NewProgressView_RemoveAllJobsToolTip);
 		ImageDescriptor id = WorkbenchImages
 				.getWorkbenchImageDescriptor("/elcl16/progress_remall.gif"); //$NON-NLS-1$
 		if (id != null) {

@@ -24,7 +24,7 @@ import org.eclipse.ui.internal.progress.ProgressMessages;
 /**
  * The UIJob is a Job that runs within the UI Thread via an asyncExec.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class UIJob extends Job {
     private Display cachedDisplay;
@@ -39,7 +39,10 @@ public abstract class UIJob extends Job {
      *  
      */
     public UIJob(String name) {
-        super(name);
+// RAP [fappel]: discovering the display at runtime of a job is not
+//               possible in RAP
+//        super(name);
+        this( Display.getCurrent(), name );
     }
 
     /**
@@ -52,7 +55,9 @@ public abstract class UIJob extends Job {
      * @see Job
      */
     public UIJob(Display jobDisplay, String name) {
-        this(name);
+// RAP [fappel]: avoid recursive constructor call
+//        this( name );
+        super(name);
         setDisplay(jobDisplay);
     }
 
@@ -99,7 +104,7 @@ public abstract class UIJob extends Job {
                     if (result == null) {
 						result = new Status(IStatus.ERROR,
                                 PlatformUI.PLUGIN_ID, IStatus.ERROR,
-                                ProgressMessages.Error,
+                                ProgressMessages.get().Error,
                                 null);
 					}
                     done(result);

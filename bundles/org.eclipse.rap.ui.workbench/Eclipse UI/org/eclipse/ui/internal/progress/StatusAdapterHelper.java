@@ -19,7 +19,7 @@ import org.eclipse.ui.statushandlers.StatusAdapter;
 /**
  * StatusAdapterHelper is a class for caching {@link StatusAdapter} instances to make sure
  * they are not created twice within the progress service.
- * @since 3.3
+ * @since 1.0
  */
 public class StatusAdapterHelper {
 	private static StatusAdapterHelper instance;

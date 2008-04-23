@@ -15,26 +15,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.accessibility.AccessibleAdapter;
-import org.eclipse.swt.accessibility.AccessibleEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.eclipse.ui.statushandlers.StatusAdapter;
@@ -151,9 +136,14 @@ public class ProgressAnimationItem extends AnimationItem implements
 	private void refresh() {
 
 		// Abort the refresh if we are in the process of shutting down
-		if (!PlatformUI.isWorkbenchRunning()) {
-			return;
-		}
+// RAP [fappel]: use session aware approach
+//		if (!PlatformUI.isWorkbenchRunning()) {
+//			return;
+//		}
+		Display display = AnimationManager.getInstance().display;
+        if (!ProgressUtil.isWorkbenchRunning( display )) {
+            return;
+        }
 
 		if (toolbar == null || toolbar.isDisposed()) {
 			return;
@@ -171,7 +161,7 @@ public class ProgressAnimationItem extends AnimationItem implements
 					if (status != null && status.getSeverity() == IStatus.ERROR) {
 						// green arrow with error overlay
 						initButton(errorImage, NLS.bind(
-								ProgressMessages.ProgressAnimationItem_error,
+								ProgressMessages.get().ProgressAnimationItem_error,
 								job.getName()));
 						return;
 					}
@@ -181,7 +171,7 @@ public class ProgressAnimationItem extends AnimationItem implements
 						String tt = action.getToolTipText();
 						if (tt == null || tt.trim().length() == 0) {
 							tt = NLS.bind(
-									ProgressMessages.ProgressAnimationItem_ok,
+									ProgressMessages.get().ProgressAnimationItem_ok,
 									job.getName());
 						}
 						initButton(okImage, tt);
@@ -189,14 +179,14 @@ public class ProgressAnimationItem extends AnimationItem implements
 					}
 					// just the green arrow
 					initButton(noneImage,
-							ProgressMessages.ProgressAnimationItem_tasks);
+							ProgressMessages.get().ProgressAnimationItem_tasks);
 					return;
 				}
 			}
 		}
 
 		if (animationRunning) {
-			initButton(noneImage, ProgressMessages.ProgressAnimationItem_tasks);
+			initButton(noneImage, ProgressMessages.get().ProgressAnimationItem_tasks);
 			return;
 		}
 
@@ -209,12 +199,13 @@ public class ProgressAnimationItem extends AnimationItem implements
 		toolButton.setToolTipText(tt);
     	toolbar.setVisible(true);
 		toolbar.getParent().layout(); // must layout
-		
-    	toolbar.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-        	public void getName(AccessibleEvent e) {
-        		e.result = tt;
-        	}
-        });
+
+// RAP [fappel]: accessibility not supported		
+//    	toolbar.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+//        	public void getName(AccessibleEvent e) {
+//        		e.result = tt;
+//        	}
+//        });
 	}
 
 	/*
@@ -239,9 +230,10 @@ public class ProgressAnimationItem extends AnimationItem implements
 			public void widgetDisposed(DisposeEvent e) {
 				FinishedJobs.getInstance().removeListener(
 						ProgressAnimationItem.this);
-				noneImage.dispose();
-				okImage.dispose();
-				errorImage.dispose();
+// RAP [fappel]: resources don't support dispose
+//				noneImage.dispose();
+//				okImage.dispose();
+//				errorImage.dispose();
 			}
 		});
 

@@ -15,12 +15,13 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.progress.ProgressUtil;
 
 /**
  * WorkbenchJob is a type of job that implements a done listener
  * and does the shutdown checks before scheduling. This is used if 
  * a job is not meant to run when the Workbench is shutdown.
- * @since 3.0
+ * @since 1.0
  */
 public abstract class WorkbenchJob extends UIJob {
 
@@ -62,9 +63,13 @@ public abstract class WorkbenchJob extends UIJob {
             public void done(IJobChangeEvent event) {
 
                 //Abort if it is not running
-                if (!PlatformUI.isWorkbenchRunning()) {
-					return;
-				}
+// RAP [fappel]: use sesssion aware approach
+//                if (!PlatformUI.isWorkbenchRunning()) {
+//					return;
+//				}
+                if (!ProgressUtil.isWorkbenchRunning( getDisplay() )) {
+                    return;
+                }
 
                 if (event.getResult().getCode() == IStatus.OK) {
 					performDone(event);
