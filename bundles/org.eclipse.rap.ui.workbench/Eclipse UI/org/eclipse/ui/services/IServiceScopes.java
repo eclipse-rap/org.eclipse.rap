@@ -15,7 +15,7 @@ package org.eclipse.ui.services;
 /**
  * Different levels of service locators supported by the workbench.
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IServiceScopes {
 	/**

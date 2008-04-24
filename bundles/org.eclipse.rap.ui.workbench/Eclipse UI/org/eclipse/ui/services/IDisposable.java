@@ -32,7 +32,7 @@ package org.eclipse.ui.services;
  * This interface can be extended or implemented by clients.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IDisposable {
 

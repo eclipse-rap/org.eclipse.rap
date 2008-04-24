@@ -24,7 +24,7 @@ package org.eclipse.ui.services;
  * touch.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public abstract class AbstractServiceFactory {
 

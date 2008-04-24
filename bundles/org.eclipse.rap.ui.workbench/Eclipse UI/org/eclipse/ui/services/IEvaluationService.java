@@ -50,7 +50,7 @@ import org.eclipse.ui.ISources;
  * Note: Clients should not extend or implement this interface.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface IEvaluationService extends IServiceWithSources {
 	/**
@@ -172,7 +172,6 @@ public interface IEvaluationService extends IServiceWithSources {
 	 *            The fully qualified property name, like
 	 *            <code>org.eclipse.core.resources.name</code>. Must not be
 	 *            <code>null</code>.
-	 * @since 3.4
 	 */
 	public void requestEvaluation(String propertyName);
 }

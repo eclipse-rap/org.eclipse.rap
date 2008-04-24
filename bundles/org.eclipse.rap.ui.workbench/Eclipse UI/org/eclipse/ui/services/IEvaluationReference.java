@@ -27,7 +27,7 @@ import org.eclipse.ui.internal.services.IEvaluationResultCache;
  * consulting with the Platform/UI team. This might disappear in 3.4 M5.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface IEvaluationReference extends IEvaluationResultCache {
 	/**

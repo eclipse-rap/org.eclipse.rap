@@ -27,7 +27,7 @@ package org.eclipse.ui.services;
  * This interface is not to be implemented or extended by clients.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IServiceLocator {
 

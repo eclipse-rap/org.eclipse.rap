@@ -25,7 +25,7 @@ import org.eclipse.ui.ISources;
  * This API is experimental and may change before the end of M6.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface ISourceProviderService {
 

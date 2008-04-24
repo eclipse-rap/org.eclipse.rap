@@ -22,7 +22,7 @@ import org.eclipse.ui.ISourceProvider;
  * Clients must not extend or implement.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IServiceWithSources extends IDisposable {
 
