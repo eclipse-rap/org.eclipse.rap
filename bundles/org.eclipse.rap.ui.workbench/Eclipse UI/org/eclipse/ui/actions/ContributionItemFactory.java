@@ -86,6 +86,7 @@ public abstract class ContributionItemFactory {
     /**
      * Workbench action (id "pinEditor"): Toggle whether the editor is pinned.
      * This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ContributionItemFactory PIN_EDITOR = new ContributionItemFactory(
             "pinEditor") { //$NON-NLS-1$
@@ -105,6 +106,7 @@ public abstract class ContributionItemFactory {
      * currently open in the workbench. Selecting one of the items makes the
      * corresponding window the active window.
      * This action dynamically maintains the list of windows.
+     * @since 1.1
      */
     public static final ContributionItemFactory OPEN_WINDOWS = new ContributionItemFactory(
             "openWindows") { //$NON-NLS-1$
@@ -141,6 +143,7 @@ public abstract class ContributionItemFactory {
      * alternate views to show the same item currently selected. Selecting
      * one of the items opens the corresponding view in the active window.
      * This action dynamically maintains the view list.
+     * @since 1.1
      */
     public static final ContributionItemFactory VIEWS_SHOW_IN = new ContributionItemFactory(
             "viewsShowIn") { //$NON-NLS-1$
@@ -162,6 +165,7 @@ public abstract class ContributionItemFactory {
      * editors (with inputs) available to be reopened in the window. Selecting
      * one of the items reopens the corresponding editor on its input in the
      * active window. This action dynamically maintains the list of editors.
+     * @since 1.1
      */
     public static final ContributionItemFactory REOPEN_EDITORS = new ContributionItemFactory(
             "reopenEditors") { //$NON-NLS-1$
@@ -200,6 +204,7 @@ public abstract class ContributionItemFactory {
      * promising new item wizards and an "Other" subitem. Selecting
      * one of the items invokes the corresponding new item wizard. 
      * This action dynamically maintains the new item wizard shortlist.
+     * @since 1.1
      */
     public static final ContributionItemFactory NEW_WIZARD_SHORTLIST = new ContributionItemFactory(
             "newWizardShortlist") { //$NON-NLS-1$

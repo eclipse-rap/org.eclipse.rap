@@ -158,6 +158,7 @@ public abstract class ActionFactory {
 	 * Workbench action (id "back"): Back. This action is a
 	 * {@link RetargetAction} with id "back". This action maintains its
 	 * enablement state.
+	 * @since 1.1
 	 */
     public static final ActionFactory BACK = new ActionFactory("back") {//$NON-NLS-1$
         /* (non-Javadoc)
@@ -178,6 +179,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "backardHistory"): Backward in the navigation
      * history. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory BACKWARD_HISTORY = new ActionFactory(
             "backardHistory") {//$NON-NLS-1$
@@ -259,6 +261,7 @@ public abstract class ActionFactory {
     /**
 	 * Workbench action (id "closeAllPerspectives"): Closes all perspectives.
 	 * This action maintains its enablement state.
+	 * @since 1.1
 	 */
     public static final ActionFactory CLOSE_ALL_PERSPECTIVES = new ActionFactory(
             "closeAllPerspectives") {//$NON-NLS-1$
@@ -285,6 +288,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "closeAllSaved"): Close all open editors except
      * those with unsaved changes. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory CLOSE_ALL_SAVED = new ActionFactory(
             "closeAllSaved") {//$NON-NLS-1$
@@ -304,6 +308,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "closePerspective"): Closes the current
      * perspective. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory CLOSE_PERSPECTIVE = new ActionFactory(
     "closePerspective") {//$NON-NLS-1$
@@ -333,6 +338,7 @@ public abstract class ActionFactory {
 
     /**
      * Workbench action (id "intro"): Activate the introduction extension.
+     * @since 1.1
      */
     public static final ActionFactory INTRO = new ActionFactory("intro") {//$NON-NLS-1$
         /* (non-Javadoc)
@@ -348,61 +354,62 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "copy"): Copy. This action is a
-     * {@link RetargetAction} with id "copy". This action maintains
-     * its enablement state.
-     */
-    public static final ActionFactory COPY = new ActionFactory("copy") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_copy);
-            action.setToolTipText(WorkbenchMessages.get().Workbench_copyToolTip); 
-            window.getPartService().addPartListener(action);
-            action.setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
-            ISharedImages sharedImages = window.getWorkbench()
-                    .getSharedImages();
-            action.setImageDescriptor(sharedImages
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-            action.setDisabledImageDescriptor(sharedImages
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
-            return action;
-        }
-    };
-
-    /**
-     * Workbench action (id "cut"): Cut. This action is a
-     * {@link RetargetAction} with id "cut". This action maintains
-     * its enablement state.
-     */
-    public static final ActionFactory CUT = new ActionFactory("cut") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_cut); 
-            action.setToolTipText(WorkbenchMessages.get().Workbench_cutToolTip);
-            window.getPartService().addPartListener(action);
-            action.setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$
-            ISharedImages sharedImages = window.getWorkbench()
-                    .getSharedImages();
-            action.setImageDescriptor(sharedImages
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
-            action.setDisabledImageDescriptor(sharedImages
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED));
-            return action;
-        }
-    };
+    // RAP [bm]: clipboard
+//    /**
+//     * Workbench action (id "copy"): Copy. This action is a
+//     * {@link RetargetAction} with id "copy". This action maintains
+//     * its enablement state.
+//     */
+//    public static final ActionFactory COPY = new ActionFactory("copy") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_copy);
+//            action.setToolTipText(WorkbenchMessages.get().Workbench_copyToolTip); 
+//            window.getPartService().addPartListener(action);
+//            action.setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
+//            ISharedImages sharedImages = window.getWorkbench()
+//                    .getSharedImages();
+//            action.setImageDescriptor(sharedImages
+//                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+//            action.setDisabledImageDescriptor(sharedImages
+//                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
+//            return action;
+//        }
+//    };
+//
+//    /**
+//     * Workbench action (id "cut"): Cut. This action is a
+//     * {@link RetargetAction} with id "cut". This action maintains
+//     * its enablement state.
+//     */
+//    public static final ActionFactory CUT = new ActionFactory("cut") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_cut); 
+//            action.setToolTipText(WorkbenchMessages.get().Workbench_cutToolTip);
+//            window.getPartService().addPartListener(action);
+//            action.setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$
+//            ISharedImages sharedImages = window.getWorkbench()
+//                    .getSharedImages();
+//            action.setImageDescriptor(sharedImages
+//                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
+//            action.setDisabledImageDescriptor(sharedImages
+//                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED));
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "delete"): Delete. This action is a
@@ -440,6 +447,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "editActionSets"): Edit the action sets. This
      * action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory EDIT_ACTION_SETS = new ActionFactory(
             "editActionSets") {//$NON-NLS-1$
@@ -495,6 +503,7 @@ public abstract class ActionFactory {
      * Workbench action (id "find"): Find. This action is a
      * {@link RetargetAction} with id "find". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory FIND = new ActionFactory("find") {//$NON-NLS-1$
         
@@ -521,6 +530,7 @@ public abstract class ActionFactory {
      * Workbench action (id "forward"): Forward. This action is a
      * {@link RetargetAction} with id "forward". This action
      * maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory FORWARD = new ActionFactory("forward") {//$NON-NLS-1$
         
@@ -542,6 +552,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "forwardHistory"): Forward in the navigation
      * history. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory FORWARD_HISTORY = new ActionFactory(
             "forwardHistory") {//$NON-NLS-1$
@@ -563,6 +574,7 @@ public abstract class ActionFactory {
      * Workbench action (id "goInto"): Go Into. This action is a
      * {@link RetargetAction} with id "goInto". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory GO_INTO = new ActionFactory("goInto") {//$NON-NLS-1$
         
@@ -612,6 +624,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "lockToolBar"): Lock/unlock the workbench window
      * tool bar. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory LOCK_TOOL_BAR = new ActionFactory(
             "lockToolBar") {//$NON-NLS-1$
@@ -683,6 +696,7 @@ public abstract class ActionFactory {
 	 * Workbench action (id "move"): Move. This action is a
 	 * {@link RetargetAction} with id "move". This action maintains its
 	 * enablement state.
+	 * @since 1.1
 	 */
     public static final ActionFactory MOVE = new ActionFactory("move") {//$NON-NLS-1$
         
@@ -704,6 +718,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "new"): Opens the new wizard dialog. This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory NEW = new ActionFactory("new") {//$NON-NLS-1$
         
@@ -734,7 +749,7 @@ public abstract class ActionFactory {
      * Workbench action (id "newWizardDropDown"): Drop-down action which shows shows the new wizard drop down, 
      * or opens the new wizard dialog when pressed.  For use in the toolbar.
      * This action maintains its enablement state.
-     * 
+     * @since 1.1
      */
     public static final ActionFactory NEW_WIZARD_DROP_DOWN = new ActionFactory(
             "newWizardDropDown") { //$NON-NLS-1$
@@ -756,6 +771,7 @@ public abstract class ActionFactory {
      * Workbench action (id "next"): Next. This action is a
      * {@link RetargetAction} with id "next". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory NEXT = new ActionFactory("next") {//$NON-NLS-1$
         
@@ -876,6 +892,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "openNewWindow"): Open a new workbench window. This
      * action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory OPEN_NEW_WINDOW = new ActionFactory(
             "openNewWindow") {//$NON-NLS-1$
@@ -893,33 +910,34 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "paste"): Paste. This action is a
-     * {@link RetargetAction} with id "paste". This action maintains
-     * its enablement state.
-     */
-    public static final ActionFactory PASTE = new ActionFactory("paste") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_paste);
-            action.setToolTipText(WorkbenchMessages.get().Workbench_pasteToolTip); 
-            window.getPartService().addPartListener(action);
-            action.setActionDefinitionId("org.eclipse.ui.edit.paste"); //$NON-NLS-1$
-            ISharedImages sharedImages = window.getWorkbench()
-                    .getSharedImages();
-            action.setImageDescriptor(sharedImages
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
-            action.setDisabledImageDescriptor(sharedImages
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
-            return action;
-        }
-    };
+    // RAP [bm]: Clipboard
+//    /**
+//     * Workbench action (id "paste"): Paste. This action is a
+//     * {@link RetargetAction} with id "paste". This action maintains
+//     * its enablement state.
+//     */
+//    public static final ActionFactory PASTE = new ActionFactory("paste") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_paste);
+//            action.setToolTipText(WorkbenchMessages.get().Workbench_pasteToolTip); 
+//            window.getPartService().addPartListener(action);
+//            action.setActionDefinitionId("org.eclipse.ui.edit.paste"); //$NON-NLS-1$
+//            ISharedImages sharedImages = window.getWorkbench()
+//                    .getSharedImages();
+//            action.setImageDescriptor(sharedImages
+//                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
+//            action.setDisabledImageDescriptor(sharedImages
+//                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "preferences"): Displays the Preferences dialog.
@@ -945,6 +963,7 @@ public abstract class ActionFactory {
      * Workbench action (id "previous"): Previous. This action is a
      * {@link RetargetAction} with id "previous". This action
      * maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory PREVIOUS = new ActionFactory("previous") {//$NON-NLS-1$
         
@@ -1062,38 +1081,40 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "print"): Print. This action is a
-     * {@link RetargetAction} with id "print". This action maintains
-     * its enablement state.
-     */
-    public static final ActionFactory PRINT = new ActionFactory("print") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_print); 
-            action.setToolTipText(WorkbenchMessages.get().Workbench_printToolTip); 
-            window.getPartService().addPartListener(action);
-            action.setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
-            action
-                    .setImageDescriptor(WorkbenchImages
-                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
-            action
-                    .setDisabledImageDescriptor(WorkbenchImages
-                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT_DISABLED));
-            return action;
-        }
-    };
+    // RAP [bm]: Printing? Maybe possible as Retargetable
+//    /**
+//     * Workbench action (id "print"): Print. This action is a
+//     * {@link RetargetAction} with id "print". This action maintains
+//     * its enablement state.
+//     */
+//    public static final ActionFactory PRINT = new ActionFactory("print") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_print); 
+//            action.setToolTipText(WorkbenchMessages.get().Workbench_printToolTip); 
+//            window.getPartService().addPartListener(action);
+//            action.setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
+//            action
+//                    .setImageDescriptor(WorkbenchImages
+//                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
+//            action
+//                    .setDisabledImageDescriptor(WorkbenchImages
+//                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT_DISABLED));
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "properties"): Properties. This action is a
      * {@link RetargetAction} with id "properties". This action
      * maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory PROPERTIES = new ActionFactory(
             "properties") {//$NON-NLS-1$
@@ -1141,6 +1162,7 @@ public abstract class ActionFactory {
      * Workbench action (id "redo"): Redo. This action is a
      * {@link RetargetAction} with id "redo". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory REDO = new ActionFactory("redo") {//$NON-NLS-1$
         
@@ -1169,6 +1191,7 @@ public abstract class ActionFactory {
      * Workbench action (id "refresh"): Refresh. This action is a
      * {@link RetargetAction} with id "refresh". This action
      * maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory REFRESH = new ActionFactory("refresh") {//$NON-NLS-1$
         
@@ -1191,6 +1214,7 @@ public abstract class ActionFactory {
      * Workbench action (id "rename"): Rename. This action is a
      * {@link RetargetAction} with id "rename". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory RENAME = new ActionFactory("rename") {//$NON-NLS-1$
        
@@ -1212,6 +1236,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "resetPerspective"): Resets the current
      * perspective. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory RESET_PERSPECTIVE = new ActionFactory(
             "resetPerspective") {//$NON-NLS-1$
@@ -1233,6 +1258,7 @@ public abstract class ActionFactory {
      * Workbench action (id "revert"): Revert. This action is a
      * {@link RetargetAction} with id "revert". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory REVERT = new ActionFactory("revert") {//$NON-NLS-1$
         
@@ -1292,6 +1318,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "saveAs"): Save As for the active editor. This
      * action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory SAVE_AS = new ActionFactory("saveAs") {//$NON-NLS-1$
         
@@ -1311,6 +1338,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "savePerspective"): Save the current perspective.
      * This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory SAVE_PERSPECTIVE = new ActionFactory(
             "savePerspective") {//$NON-NLS-1$
@@ -1332,6 +1360,7 @@ public abstract class ActionFactory {
      * Workbench action (id "selectAll"): Select All. This action is a
      * {@link RetargetAction} with id "selectAll". This action
      * maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory SELECT_ALL = new ActionFactory(
             "selectAll") {//$NON-NLS-1$
@@ -1354,6 +1383,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "showEditor"): Show/hide the editor area. This
      * action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory SHOW_EDITOR = new ActionFactory(
             "showEditor") {//$NON-NLS-1$
@@ -1374,6 +1404,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "showOpenEditors"): Show a list of open (and
      * recently closed) editors. This action maintains its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory SHOW_OPEN_EDITORS = new ActionFactory(
             "showOpenEditors") {//$NON-NLS-1$
@@ -1399,6 +1430,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "showWorkbookEditors"): Shows a list of open editors
      * in the current or last active workbook.
+     * @since 1.1
      */
     public static final ActionFactory SHOW_WORKBOOK_EDITORS = new ActionFactory(
             "showWorkBookEditors") {//$NON-NLS-1$
@@ -1418,29 +1450,29 @@ public abstract class ActionFactory {
             return action;
         }
     };
-    
-    /**
-	 * Workbench action (id "showQuickAccess"): Shows a list of UI elements like
-	 * editors, views, perspectives etc.
-	 * 
-	 */
-	public static final ActionFactory SHOW_QUICK_ACCESS = new ActionFactory(
-			"showQuickAccess") { //$NON-NLS-1$
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-		 */
-		public IWorkbenchAction create(IWorkbenchWindow window) {
-			WorkbenchCommandAction action = new WorkbenchCommandAction("org.eclipse.ui.window.quickAccess", window); //$NON-NLS-1$
-			action.setId(getId());
-			action.setText(WorkbenchMessages.get().QuickAccessAction_text);
-			action.setToolTipText(WorkbenchMessages.get().QuickAccessAction_toolTip);
-			return action;
-		}
-
-	};
+    // RAP [bm]: QuickAccess
+//    /**
+//	 * Workbench action (id "showQuickAccess"): Shows a list of UI elements like
+//	 * editors, views, perspectives etc.
+//	 * 
+//	 */
+//	public static final ActionFactory SHOW_QUICK_ACCESS = new ActionFactory(
+//			"showQuickAccess") { //$NON-NLS-1$
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//		 */
+//		public IWorkbenchAction create(IWorkbenchWindow window) {
+//			WorkbenchCommandAction action = new WorkbenchCommandAction("org.eclipse.ui.window.quickAccess", window); //$NON-NLS-1$
+//			action.setId(getId());
+//			action.setText(WorkbenchMessages.get().QuickAccessAction_text);
+//			action.setToolTipText(WorkbenchMessages.get().QuickAccessAction_toolTip);
+//			return action;
+//		}
+//
+//	};
 
     /**
 	 * Workbench action (id "showPartPaneMenu"): Show the part pane menu. This
@@ -1490,6 +1522,7 @@ public abstract class ActionFactory {
      * Workbench action (id "undo"): Undo. This action is a
      * {@link RetargetAction} with id "undo". This action maintains
      * its enablement state.
+     * @since 1.1
      */
     public static final ActionFactory UNDO = new ActionFactory("undo") {//$NON-NLS-1$
         
@@ -1518,6 +1551,7 @@ public abstract class ActionFactory {
      * Workbench action (id "up"): Up. This action is a
      * {@link RetargetAction} with id "up". This action maintains its
      * enablement state.
+     * @since 1.1
      */
     public static final ActionFactory UP = new ActionFactory("up") {//$NON-NLS-1$
         
@@ -1606,7 +1640,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "openPerspectiveDialog"): Open the Open Perspective dialog. This action
      * is always enabled.
-     *
+     * @since 1.1
      */
     public static final ActionFactory OPEN_PERSPECTIVE_DIALOG = new ActionFactory(
             "openPerspectiveDialog") {//$NON-NLS-1$
@@ -1634,7 +1668,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "newEditor"): Open a new editor on the active editor's input. 
      * This action maintains its enablement state.
-     *
+     * @since 1.1
      */
     public static final ActionFactory NEW_EDITOR = new ActionFactory(
             "newEditor") {//$NON-NLS-1$
