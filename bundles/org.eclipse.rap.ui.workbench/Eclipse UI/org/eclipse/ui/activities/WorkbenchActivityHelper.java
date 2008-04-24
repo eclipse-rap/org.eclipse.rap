@@ -113,6 +113,7 @@ public final class WorkbenchActivityHelper {
 	 *            the object to restrict
 	 * @return <code>true</code> if this object is matched by a disabled
 	 *         activity with an expression.
+     * @since 1.1
 	 */
 	public static boolean restrictUseOf(Object object) {
 		return !allowUseOf(getTriggerPoint(TRIGGER_PRE_UI_POINT), object);
@@ -578,6 +579,7 @@ public final class WorkbenchActivityHelper {
 	 * @param toBeFiltered the input collection
 	 * @param result the collection to which objects passing the test should be added
 	 * @return the <code>result</code> collection for convenience
+     * @since 1.1
 	 */
 	public static Collection restrictCollection(Collection toBeFiltered, Collection result) {
 		for (Iterator iterator = toBeFiltered.iterator(); iterator.hasNext();) {
@@ -597,6 +599,7 @@ public final class WorkbenchActivityHelper {
 	 *            the input array
 	 * @return a new array of the same type as the argument array, containing
 	 *         objects that pass the test
+     * @since 1.1
 	 */
 	public static Object[] restrictArray(Object[] array) {
 		ArrayList list = new ArrayList(array.length);
@@ -615,6 +618,7 @@ public final class WorkbenchActivityHelper {
 	 * @param toBeFiltered the input collection
 	 * @param result the collection to which objects passing the test should be added
 	 * @return the <code>result</code> collection for convenience
+     * @since 1.1
 	 */
 	public static Collection filterCollection(Collection toBeFiltered, Collection result) {
 		for (Iterator iterator = toBeFiltered.iterator(); iterator.hasNext();) {
@@ -634,6 +638,7 @@ public final class WorkbenchActivityHelper {
 	 *            the input array
 	 * @return a new array of the same type as the argument array, containing
 	 *         objects that pass the test
+     * @since 1.1
 	 */
 	public static Object[] filterArray(Object[] array) {
 		ArrayList list = new ArrayList(array.length);

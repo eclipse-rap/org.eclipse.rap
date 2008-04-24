@@ -158,6 +158,7 @@ public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
 	 * 
 	 * @see WorkbenchTriggerPointAdvisor#doComputeEnablement(IActivityManager,
 	 *      IIdentifier, boolean)
+     * @since 1.1
 	 */
 	public boolean computeEnablement(IActivityManager activityManager, IIdentifier identifier) {
 		return doComputeEnablement(activityManager, identifier, false);
@@ -181,6 +182,7 @@ public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
 	 * 
 	 * @return <code>true</code> if this identifier should be enabled,
 	 *         <code>false</code> otherwise
+     * @since 1.1
 	 */
 	protected boolean doComputeEnablement(IActivityManager activityManager,
 			IIdentifier identifier, boolean disabledExpressionActivitiesTakePrecedence) {
