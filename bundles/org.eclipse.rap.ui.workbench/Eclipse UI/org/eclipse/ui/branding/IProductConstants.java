@@ -14,23 +14,24 @@ package org.eclipse.ui.branding;
  * These constants define the set of properties that the UI expects to
  * be available via <code>IProduct.getProperty(String)</code>.
  * 
- * @since 3.0
+ * @since 1.1
  * @see org.eclipse.core.runtime.IProduct#getProperty(String)
  */
 public interface IProductConstants {
-    /**
-     * The SWT application name, used to initialize the SWT Display.
-     * <p>  
-     * This value is used to refer to the application in .XDefaults
-     * files on X server based window systems such as Motif.
-     * </p>
-     * <p>
-     * To obtain a human-readable name for the product, use
-     * <code>IProduct.getName()</code>.
-     * </p>
-     * @see org.eclipse.swt.widgets.Display#setAppName
-     */
-    public static final String APP_NAME = "appName"; //$NON-NLS-1$
+	// RAP [bm]: Display#setAppName
+//    /**
+//     * The SWT application name, used to initialize the SWT Display.
+//     * <p>  
+//     * This value is used to refer to the application in .XDefaults
+//     * files on X server based window systems such as Motif.
+//     * </p>
+//     * <p>
+//     * To obtain a human-readable name for the product, use
+//     * <code>IProduct.getName()</code>.
+//     * </p>
+//     * @see org.eclipse.swt.widgets.Display#setAppName
+//     */
+//    public static final String APP_NAME = "appName"; //$NON-NLS-1$
 
     /**
      * The text to show in an "about" dialog for this product.
@@ -124,46 +125,44 @@ public interface IProductConstants {
      */
     public static final String WELCOME_PAGE = "welcomePage"; //$NON-NLS-1$
 
-    /**
-     * The rectangle relative to the splash image's top left corner where
-     * the progress bar for reporting progress at startup should be shown.  
-     * Products designed to run "headless" typically would not define this
-     * property.
-     * <p>
-     * The value is a comma-separated list of four integer values, specifying
-     * x, y, width, and height of the rectangle in pixel coordinates.
-     * </p>
-     * @since 3.2
-     * @see org.eclipse.ui.IWorkbenchPreferenceConstants#SHOW_PROGRESS_ON_STARTUP
-     */
-    public static final String STARTUP_PROGRESS_RECT = "startupProgressRect"; //$NON-NLS-1$
-
-    /**
-     * The rectangle relative to the splash image's top left corner where
-     * messages for reporting progress at startup should be shown.  
-     * Products designed to run "headless" typically would not define this
-     * property.
-     * <p>
-     * The value is a comma-separated list of four integer values, specifying
-     * x, y, width, and height of the rectangle in pixel coordinates.
-     * </p> 
-     * @since 3.2
-     * @see org.eclipse.ui.IWorkbenchPreferenceConstants#SHOW_PROGRESS_ON_STARTUP
-     */
-    public static final String STARTUP_MESSAGE_RECT = "startupMessageRect"; //$NON-NLS-1$
-
-    /**
-     * The foreground color to be used when reporting progress at startup.  
-     * Products designed to run "headless" typically would not define this
-     * property.
-     * <p>
-     * The value is a six-digit hexadecimal number. The first two digits
-     * specify the red component of the color, the next two digits the
-     * green component, and the last two digits the blue component.
-     * </p> 
-     * @since 3.2
-     * @see org.eclipse.ui.IWorkbenchPreferenceConstants#SHOW_PROGRESS_ON_STARTUP
-     */
-    public static final String STARTUP_FOREGROUND_COLOR = "startupForegroundColor"; //$NON-NLS-1$
+    // RAP [bm]: no splash
+//    /**
+//     * The rectangle relative to the splash image's top left corner where
+//     * the progress bar for reporting progress at startup should be shown.  
+//     * Products designed to run "headless" typically would not define this
+//     * property.
+//     * <p>
+//     * The value is a comma-separated list of four integer values, specifying
+//     * x, y, width, and height of the rectangle in pixel coordinates.
+//     * </p>
+//     * @see org.eclipse.ui.IWorkbenchPreferenceConstants#SHOW_PROGRESS_ON_STARTUP
+//     */
+//    public static final String STARTUP_PROGRESS_RECT = "startupProgressRect"; //$NON-NLS-1$
+//
+//    /**
+//     * The rectangle relative to the splash image's top left corner where
+//     * messages for reporting progress at startup should be shown.  
+//     * Products designed to run "headless" typically would not define this
+//     * property.
+//     * <p>
+//     * The value is a comma-separated list of four integer values, specifying
+//     * x, y, width, and height of the rectangle in pixel coordinates.
+//     * </p> 
+//     * @see org.eclipse.ui.IWorkbenchPreferenceConstants#SHOW_PROGRESS_ON_STARTUP
+//     */
+//    public static final String STARTUP_MESSAGE_RECT = "startupMessageRect"; //$NON-NLS-1$
+//
+//    /**
+//     * The foreground color to be used when reporting progress at startup.  
+//     * Products designed to run "headless" typically would not define this
+//     * property.
+//     * <p>
+//     * The value is a six-digit hexadecimal number. The first two digits
+//     * specify the red component of the color, the next two digits the
+//     * green component, and the last two digits the blue component.
+//     * </p> 
+//     * @see org.eclipse.ui.IWorkbenchPreferenceConstants#SHOW_PROGRESS_ON_STARTUP
+//     */
+//    public static final String STARTUP_FOREGROUND_COLOR = "startupForegroundColor"; //$NON-NLS-1$
 
 }

@@ -14,7 +14,7 @@ package org.eclipse.ui.branding;
  * These constants define the set of properties that the UI expects to
  * be available via <code>IBundleGroup.getProperty(String)</code>.
  * 
- * @since 3.0
+ * @since 1.1
  * @see org.eclipse.core.runtime.IBundleGroup#getProperty(String)
  */
 public interface IBundleGroupConstants {
