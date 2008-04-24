@@ -164,7 +164,7 @@ public class RectangleAnimation extends Job {
      */
     public RectangleAnimation(Shell parentShell, Rectangle start,
             Rectangle end, int duration) {
-        super(WorkbenchMessages.RectangleAnimation_Animating_Rectangle);
+        super(WorkbenchMessages.get().RectangleAnimation_Animating_Rectangle);
 
         // if animations aren't on this is a NO-OP
         IPreferenceStore preferenceStore = PrefUtil.getAPIPreferenceStore();

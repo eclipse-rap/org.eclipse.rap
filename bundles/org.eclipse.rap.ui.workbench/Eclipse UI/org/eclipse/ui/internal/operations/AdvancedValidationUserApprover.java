@@ -31,6 +31,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
@@ -259,8 +260,8 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 	private void reportException(Exception e, IAdaptable uiInfo) {
 		Throwable nestedException = StatusUtil.getCause(e);
 		Throwable exception = (nestedException == null) ? e : nestedException;
-		String title = WorkbenchMessages.Error;
-		String message = WorkbenchMessages.WorkbenchWindow_exceptionMessage;
+		String title = WorkbenchMessages.get().Error;
+		String message = WorkbenchMessages.get().WorkbenchWindow_exceptionMessage;
 		String exceptionMessage = exception.getMessage();
 		if (exceptionMessage == null) {
 			exceptionMessage = message;
@@ -273,7 +274,10 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 		Shell shell = getShell(uiInfo);
 		if (shell == null) {
 			createdShell = true;
-			shell = new Shell();
+			// RAP [bm]: 
+//			shell = new Shell();
+			shell = new Shell(Display.getCurrent());
+			// RAPEND: [bm]
 		}
 		ErrorDialog.openError(shell, title, message, status);
 		if (createdShell) {
@@ -309,7 +313,10 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 		Shell shell = getShell(uiInfo);
 		if (shell == null) {
 			createdShell = true;
-			shell = new Shell();
+			// RAP [bm]: 
+//			shell = new Shell();
+			shell = new Shell(Display.getCurrent());
+			// RAPEND: [bm] 
 		}
 
 		// Set up the dialog. For non-error statuses, we use a warning dialog
@@ -319,34 +326,34 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 			String warning, title;
 			switch (doing) {
 			case UNDOING:
-				warning = WorkbenchMessages.Operations_proceedWithNonOKUndoStatus;
+				warning = WorkbenchMessages.get().Operations_proceedWithNonOKUndoStatus;
 				if (status.getSeverity() == IStatus.INFO) {
-					title = WorkbenchMessages.Operations_undoInfo;
+					title = WorkbenchMessages.get().Operations_undoInfo;
 				} else {
-					title = WorkbenchMessages.Operations_undoWarning;
+					title = WorkbenchMessages.get().Operations_undoWarning;
 				}
 				break;
 			case REDOING:
-				warning = WorkbenchMessages.Operations_proceedWithNonOKRedoStatus;
+				warning = WorkbenchMessages.get().Operations_proceedWithNonOKRedoStatus;
 				if (status.getSeverity() == IStatus.INFO) {
-					title = WorkbenchMessages.Operations_redoInfo;
+					title = WorkbenchMessages.get().Operations_redoInfo;
 				} else {
-					title = WorkbenchMessages.Operations_redoWarning;
+					title = WorkbenchMessages.get().Operations_redoWarning;
 				}
 				break;
 			default: // EXECUTING
-				warning = WorkbenchMessages.Operations_proceedWithNonOKExecuteStatus;
+				warning = WorkbenchMessages.get().Operations_proceedWithNonOKExecuteStatus;
 				if (status.getSeverity() == IStatus.INFO) {
-					title = WorkbenchMessages.Operations_executeInfo;
+					title = WorkbenchMessages.get().Operations_executeInfo;
 				} else {
-					title = WorkbenchMessages.Operations_executeWarning;
+					title = WorkbenchMessages.get().Operations_executeWarning;
 				}
 				break;
 			}
 
 			String message = NLS.bind(warning, new Object[] { status.getMessage(), operation.getLabel() });
-			String[] buttons = new String[] { IDialogConstants.YES_LABEL,
-					IDialogConstants.NO_LABEL };
+			String[] buttons = new String[] { IDialogConstants.get().YES_LABEL,
+					IDialogConstants.get().NO_LABEL };
 			MessageDialog dialog = new MessageDialog(shell, title, null,
 					message, MessageDialog.WARNING, buttons, 0);
 			int dialogAnswer = dialog.open();
@@ -362,16 +369,16 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 			String title, stopped;
 			switch (doing) {
 			case UNDOING:
-				title = WorkbenchMessages.Operations_undoProblem;
-				stopped = WorkbenchMessages.Operations_stoppedOnUndoErrorStatus;
+				title = WorkbenchMessages.get().Operations_undoProblem;
+				stopped = WorkbenchMessages.get().Operations_stoppedOnUndoErrorStatus;
 				break;
 			case REDOING:
-				title = WorkbenchMessages.Operations_redoProblem;
-				stopped = WorkbenchMessages.Operations_stoppedOnRedoErrorStatus;
+				title = WorkbenchMessages.get().Operations_redoProblem;
+				stopped = WorkbenchMessages.get().Operations_stoppedOnRedoErrorStatus;
 				break;
 			default: // EXECUTING
-				title = WorkbenchMessages.Operations_executeProblem;
-				stopped = WorkbenchMessages.Operations_stoppedOnExecuteErrorStatus;
+				title = WorkbenchMessages.get().Operations_executeProblem;
+				stopped = WorkbenchMessages.get().Operations_stoppedOnExecuteErrorStatus;
 
 				break;
 			}
@@ -385,7 +392,7 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 
 			MessageDialog dialog = new MessageDialog(shell, title, null,
 					message, MessageDialog.WARNING,
-					new String[] { IDialogConstants.OK_LABEL }, 0); // ok
+					new String[] { IDialogConstants.get().OK_LABEL }, 0); // ok
 			dialog.open();
 		}
 

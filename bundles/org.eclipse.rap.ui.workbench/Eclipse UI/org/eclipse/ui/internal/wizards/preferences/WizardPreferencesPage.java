@@ -513,8 +513,8 @@ public abstract class WizardPreferencesPage extends WizardPage implements
 	protected boolean queryYesNoQuestion(String message) {
 		MessageDialog dialog = new MessageDialog(getContainer().getShell(),
 				PreferencesMessages.Question, (Image) null, message,
-				MessageDialog.NONE, new String[] { IDialogConstants.YES_LABEL,
-						IDialogConstants.NO_LABEL }, 0);
+				MessageDialog.NONE, new String[] { IDialogConstants.get().YES_LABEL,
+						IDialogConstants.get().NO_LABEL }, 0);
 		// ensure yes is the default
 
 		return dialog.open() == 0;
@@ -991,11 +991,11 @@ public abstract class WizardPreferencesPage extends WizardPage implements
 		final MessageDialog dialog = new MessageDialog(getContainer()
 				.getShell(), PreferencesMessages.Question, null, messageString,
 				MessageDialog.QUESTION, new String[] {
-						IDialogConstants.YES_LABEL,
-						IDialogConstants.YES_TO_ALL_LABEL,
-						IDialogConstants.NO_LABEL,
-						IDialogConstants.NO_TO_ALL_LABEL,
-						IDialogConstants.CANCEL_LABEL }, 0);
+						IDialogConstants.get().YES_LABEL,
+						IDialogConstants.get().YES_TO_ALL_LABEL,
+						IDialogConstants.get().NO_LABEL,
+						IDialogConstants.get().NO_TO_ALL_LABEL,
+						IDialogConstants.get().CANCEL_LABEL }, 0);
 		String[] response = new String[] { YES, ALL, NO, NO_ALL, CANCEL };
 		// run in syncExec because callback is from an operation,
 		// which is probably not running in the UI thread.

@@ -161,24 +161,25 @@ public class NativeStackPresentation extends StackPresentation {
         // RAP [bm]: 
 //        tabFolder.addListener(SWT.MenuDetect, menuListener);
 
-        dragListener = new Listener() {
-            public void handleEvent(Event event) {
-                Point localPos = new Point(event.x, event.y);
-                //				TabItem tabUnderPointer = tabFolder.getItem(localPos);
-                TabItem tabUnderPointer = null;
-
-                if (tabUnderPointer == null) {
-                    return;
-                }
-
-                IPresentablePart part = getPartForTab(tabUnderPointer);
-
-                if (getSite().isPartMoveable(part)) {
-                    getSite().dragStart(part, tabFolder.toDisplay(localPos),
-                            false);
-                }
-            }
-        };
+        // RAP [bm]: 
+//        dragListener = new Listener() {
+//            public void handleEvent(Event event) {
+//                Point localPos = new Point(event.x, event.y);
+//                //				TabItem tabUnderPointer = tabFolder.getItem(localPos);
+//                TabItem tabUnderPointer = null;
+//
+//                if (tabUnderPointer == null) {
+//                    return;
+//                }
+//
+//                IPresentablePart part = getPartForTab(tabUnderPointer);
+//
+//                if (getSite().isPartMoveable(part)) {
+//                    getSite().dragStart(part, tabFolder.toDisplay(localPos),
+//                            false);
+//                }
+//            }
+//        };
 
         // RAP [bm]: 
 //        PresentationUtil.addDragListener(tabFolder, dragListener);
