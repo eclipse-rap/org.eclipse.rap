@@ -36,7 +36,7 @@ import org.eclipse.jface.commands.ToggleState;
  * Clients may instantiate this class, but must not extend.
  * </p>
  * 
- * @since 3.2
+ * @since 1.1
  */
 public final class RegistryToggleState extends ToggleState implements
 		IExecutableExtension {

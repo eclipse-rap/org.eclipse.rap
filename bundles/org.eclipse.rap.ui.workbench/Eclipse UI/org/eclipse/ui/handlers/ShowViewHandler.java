@@ -35,7 +35,7 @@ import org.eclipse.ui.views.IViewDescriptor;
  * Shows the given view. If no view is specified in the parameters, then this
  * opens the view selection dialog.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class ShowViewHandler extends AbstractHandler {
 

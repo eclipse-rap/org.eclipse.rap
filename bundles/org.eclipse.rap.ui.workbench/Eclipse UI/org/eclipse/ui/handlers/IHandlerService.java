@@ -35,7 +35,7 @@ import org.eclipse.ui.services.IServiceWithSources;
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IHandlerService extends IServiceWithSources {
 
@@ -56,7 +56,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *         which this service was retrieved is destroyed. This activation is
 	 *         local to this service (i.e., it is not the activation that is
 	 *         passed as a parameter).
-	 * @since 3.2
 	 */
 	public IHandlerActivation activateHandler(IHandlerActivation activation);
 
@@ -116,7 +115,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *         which this service was retrieved is destroyed.
 	 * 
 	 * @see org.eclipse.ui.ISources
-	 * @since 3.2
 	 */
 	public IHandlerActivation activateHandler(String commandId,
 			IHandler handler, Expression expression);
@@ -156,7 +154,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *         which this service was retrieved is destroyed.
 	 * 
 	 * @see org.eclipse.ui.ISources
-	 * @since 3.2
 	 */
 	public IHandlerActivation activateHandler(String commandId,
 			IHandler handler, Expression expression, boolean global);
@@ -210,7 +207,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *            <code>null</code>.
 	 * @return An execution event suitable for calling
 	 *         {@link Command#executeWithChecks(ExecutionEvent)}.
-	 * @since 3.2
 	 * @see Command#executeWithChecks(ExecutionEvent)
 	 */
 	public ExecutionEvent createExecutionEvent(Command command, Event event);
@@ -228,7 +224,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *            <code>null</code>.
 	 * @return An execution event suitable for calling
 	 *         {@link Command#executeWithChecks(ExecutionEvent)}.
-	 * @since 3.2
 	 * @see ParameterizedCommand#getCommand()
 	 * @see Command#executeWithChecks(ExecutionEvent)
 	 */
@@ -281,7 +276,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *             If the command you are trying to execute is not enabled.
 	 * @throws NotHandledException
 	 *             If there is no handler.
-	 * @since 3.2
 	 * @see Command#executeWithChecks(ExecutionEvent)
 	 */
 	public Object executeCommand(String commandId, Event event)
@@ -306,7 +300,6 @@ public interface IHandlerService extends IServiceWithSources {
 	 *             If the command you are trying to execute is not enabled.
 	 * @throws NotHandledException
 	 *             If there is no handler.
-	 * @since 3.2
 	 * @see Command#executeWithChecks(ExecutionEvent)
 	 */
 	public Object executeCommand(ParameterizedCommand command, Event event)
@@ -337,7 +330,7 @@ public interface IHandlerService extends IServiceWithSources {
 	 *             If the command you are trying to execute is not enabled.
 	 * @throws NotHandledException
 	 *             If there is no handler.
-	 * @since 3.4
+	 * @since 1.1
 	 * @see Command#executeWithChecks(ExecutionEvent)
 	 * @see #createContextSnapshot(boolean)
 	 */
@@ -354,7 +347,7 @@ public interface IHandlerService extends IServiceWithSources {
 	 *            selection variables
 	 * @return an context filled with the current set of variables. If selection
 	 *         is not included, the default variable is an empty collection
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public IEvaluationContext createContextSnapshot(boolean includeSelection);
 
@@ -380,17 +373,17 @@ public interface IHandlerService extends IServiceWithSources {
 	 */
 	public void readRegistry();
 
-	/**
-	 * Sets the help context identifier to associate with a particular handler.
-	 * 
-	 * @param handler
-	 *            The handler with which to register a help context identifier;
-	 *            must not be <code>null</code>.
-	 * @param helpContextId
-	 *            The help context identifier to register; may be
-	 *            <code>null</code> if the help context identifier should be
-	 *            removed.
-	 * @since 3.2
-	 */
-	public void setHelpContextId(IHandler handler, String helpContextId);
+	// RAP [bm]: Help
+//	/**
+//	 * Sets the help context identifier to associate with a particular handler.
+//	 * 
+//	 * @param handler
+//	 *            The handler with which to register a help context identifier;
+//	 *            must not be <code>null</code>.
+//	 * @param helpContextId
+//	 *            The help context identifier to register; may be
+//	 *            <code>null</code> if the help context identifier should be
+//	 *            removed.
+//	 */
+//	public void setHelpContextId(IHandler handler, String helpContextId);
 }

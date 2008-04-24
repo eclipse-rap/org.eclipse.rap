@@ -35,7 +35,7 @@ import org.eclipse.ui.internal.dialogs.SelectPerspectiveDialog;
  * Shows the given perspective. If no perspective is specified in the
  * parameters, then this opens the perspective selection dialog.
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class ShowPerspectiveHandler extends AbstractHandler {
 

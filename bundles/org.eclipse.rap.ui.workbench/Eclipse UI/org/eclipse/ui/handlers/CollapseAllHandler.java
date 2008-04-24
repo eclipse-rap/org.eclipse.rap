@@ -36,7 +36,7 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
  * <b>Note</b>: This class can be instantiated. It should not be subclasses.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public class CollapseAllHandler extends AbstractHandler {
 	/**

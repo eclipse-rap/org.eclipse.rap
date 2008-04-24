@@ -30,7 +30,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * <b>Note</b>: this class should not be instantiated or extended by clients.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public class HandlerUtil {
 	private static void noVariableFound(ExecutionEvent event, String name)
@@ -97,7 +97,7 @@ public class HandlerUtil {
 	 *            The variable name to extract.
 	 * @return The object from the application context, or <code>null</code>
 	 *         if it could not be found.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static Object getVariable(Object context, String name) {
 		if (context instanceof IEvaluationContext) {
@@ -535,7 +535,7 @@ public class HandlerUtil {
 	 * @param event
 	 *            The execution event that contains the application context
 	 * @return the show in selection, or <code>null</code>.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static ISelection getShowInSelection(ExecutionEvent event) {
 		Object o = getVariable(event, ISources.SHOW_IN_SELECTION);
@@ -553,7 +553,7 @@ public class HandlerUtil {
 	 * @return the show in selection, or <code>null</code>.
 	 * @throws ExecutionException
 	 *             If the show in selection variable is not found.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static ISelection getShowInSelectionChecked(ExecutionEvent event)
 			throws ExecutionException {
@@ -571,7 +571,7 @@ public class HandlerUtil {
 	 * @param event
 	 *            The execution event that contains the application context
 	 * @return the show in input, or <code>null</code>.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static Object getShowInInput(ExecutionEvent event) {
 		Object var = getVariable(event, ISources.SHOW_IN_INPUT);
@@ -589,7 +589,7 @@ public class HandlerUtil {
 	 * @return the show in input, or <code>null</code>.
 	 * @throws ExecutionException
 	 *             If the show in input variable is not found.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static Object getShowInInputChecked(ExecutionEvent event)
 			throws ExecutionException {
