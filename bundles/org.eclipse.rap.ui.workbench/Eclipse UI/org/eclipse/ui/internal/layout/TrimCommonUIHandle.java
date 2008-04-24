@@ -19,12 +19,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.internal.IChangeListener;
@@ -64,7 +61,8 @@ public class TrimCommonUIHandle extends Composite {
 	 */
 	private TrimLayout  layout;
     private IWindowTrim trim;
-	private Control     toDrag;
+    // RAP [bm]: 
+//	private Control     toDrag;
 	private int orientation;
 
 	// CoolBar handling
@@ -107,14 +105,15 @@ public class TrimCommonUIHandle extends Composite {
     /**
      * This listener brings up the context menu
      */
-    private Listener menuListener = new Listener() {
-        public void handleEvent(Event event) {
-            Point loc = new Point(event.x, event.y);
-            if (event.type == SWT.MenuDetect) {
-                showDockTrimPopup(loc);
-            }
-        }
-    };
+    // RAP [bm]: 
+//    private Listener menuListener = new Listener() {
+//        public void handleEvent(Event event) {
+//            Point loc = new Point(event.x, event.y);
+//            if (event.type == SWT.MenuDetect) {
+//                showDockTrimPopup(loc);
+//            }
+//        }
+//    };
 
     /**
      * Listen to size changes in the control so we can adjust the
@@ -163,7 +162,8 @@ public class TrimCommonUIHandle extends Composite {
 	public void setup(TrimLayout layout, IWindowTrim trim, int curSide) {    	
     	this.layout = layout;
     	this.trim = trim;
-    	this.toDrag = trim.getControl();
+    	// RAP [bm]: 
+//    	this.toDrag = trim.getControl();
     	this.radioVal.set(curSide);
     	
     	// remember the orientation to use
@@ -187,7 +187,8 @@ public class TrimCommonUIHandle extends Composite {
     	dockContributionItem = getDockingContribution();
         dockMenuManager.add(dockContributionItem);
 
-        cb.addListener(SWT.MenuDetect, menuListener);
+        // RAP [bm]: 
+//        cb.addListener(SWT.MenuDetect, menuListener);
         
         setVisible(true);
     }
@@ -480,7 +481,8 @@ public class TrimCommonUIHandle extends Composite {
 
         // tidy up...
         removeControlListener(controlListener);
-        removeListener(SWT.MenuDetect, menuListener);
+        // RAP [bm]: 
+//        removeListener(SWT.MenuDetect, menuListener);
         
         super.dispose();
     }
@@ -496,12 +498,13 @@ public class TrimCommonUIHandle extends Composite {
 //        DragUtil.performDrag(trim, fakeBounds, position, true);
 //    }
 
-    /**
-     * Shows the popup menu for an item in the fast view bar.
-     */
-    private void showDockTrimPopup(Point pt) {
-        Menu menu = dockMenuManager.createContextMenu(toDrag);
-        menu.setLocation(pt.x, pt.y);
-        menu.setVisible(true);
-    }	    
+    // RAP [bm]: 
+//    /**
+//     * Shows the popup menu for an item in the fast view bar.
+//     */
+//    private void showDockTrimPopup(Point pt) {
+//        Menu menu = dockMenuManager.createContextMenu(toDrag);
+//        menu.setLocation(pt.x, pt.y);
+//        menu.setVisible(true);
+//    }	    
 }

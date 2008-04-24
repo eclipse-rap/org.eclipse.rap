@@ -57,7 +57,7 @@ class FullDecoratorDefinition extends DecoratorDefinition {
         if (decorator == null) {
             Platform
                     .run(new SafeRunnable(
-                            NLS.bind(WorkbenchMessages.DecoratorManager_ErrorActivatingDecorator, getName() )) { 
+                            NLS.bind(WorkbenchMessages.get().DecoratorManager_ErrorActivatingDecorator, getName() )) { 
                         public void run() {
                             try {
                                 decorator = (ILabelDecorator) WorkbenchPlugin

@@ -15,9 +15,6 @@ import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -124,19 +121,19 @@ public class StandardSystemToolbar extends EventManager {
 		}
     }
     
-    
-    private MouseListener mouseListener = new MouseAdapter() {
-    	/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
-		 */
-		public void mouseDown(MouseEvent e) {
-			ToolItem item = toolbarManager.getControl().getItem(new Point(e.x, e.y));
-			
-    		if (item == paneMenu.item && e.button == 1) {
-    			fireEvent(TabFolderEvent.EVENT_PANE_MENU);
-    		}
-		}
-    };
+    // RAP [bm]: no menu at all
+//    private MouseListener mouseListener = new MouseAdapter() {
+//    	/* (non-Javadoc)
+//		 * @see org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
+//		 */
+//		public void mouseDown(MouseEvent e) {
+//			ToolItem item = toolbarManager.getControl().getItem(new Point(e.x, e.y));
+//			
+//    		if (item == paneMenu.item && e.button == 1) {
+//    			fireEvent(TabFolderEvent.EVENT_PANE_MENU);
+//    		}
+//		}
+//    };
     
     private SystemMenuContribution paneMenu = new PaneMenu();
     private SystemMenuContribution showToolbar = new SystemMenuContribution();
@@ -183,7 +180,8 @@ public class StandardSystemToolbar extends EventManager {
         
         toolbarManager = new ToolBarManager(SWT.FLAT);
         toolbarManager.createControl(control);
-        toolbarManager.getControl().addMouseListener(mouseListener);
+        // RAP [bm]: 
+//        toolbarManager.getControl().addMouseListener(mouseListener);
         
         toolbarManager.add(paneMenu);
         paneMenu.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_VIEW_MENU_THIN));

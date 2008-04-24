@@ -69,10 +69,11 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 				.putBoolean(
 						IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
 						true);
-		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, true);
+		// RAP [bm]: disabled animations
+		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, false);
 		node.putBoolean(IWorkbenchPreferenceConstants.USE_COLORED_LABELS, true);
 		node.put(IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR,
-				IWorkbenchPreferenceConstants.TOP_LEFT);
+				IWorkbenchPreferenceConstants.TOP_RIGHT);
 		node.putBoolean(
 				IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR,
 				true);

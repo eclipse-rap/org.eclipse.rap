@@ -131,7 +131,7 @@ public class ContentAssistField extends DecoratedField {
 		IBindingService bindingService = (IBindingService) PlatformUI
 				.getWorkbench().getService(IBindingService.class);
 		dec.setDescription(NLS.bind(
-				WorkbenchMessages.ContentAssist_Cue_Description_Key,
+				WorkbenchMessages.get().ContentAssist_Cue_Description_Key,
 				bindingService.getBestActiveBindingFormattedFor(adapter
 						.getCommandId())));
 

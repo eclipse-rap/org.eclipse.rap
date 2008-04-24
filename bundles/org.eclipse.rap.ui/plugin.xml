@@ -1391,9 +1391,10 @@
                ws="motif"
                value="COLOR_TITLE_INACTIVE_FOREGROUND">
          </colorValue>
+         <!-- RAP [bm] changed bundle id -->
          <colorFactory
                class="org.eclipse.ui.internal.themes.LightColorFactory"
-               plugin="org.eclipse.ui">
+               plugin="org.eclipse.rap.ui">
           <parameter
                   name="base" value="COLOR_TITLE_FOREGROUND">
           </parameter>
@@ -1413,9 +1414,10 @@
                ws="motif"
                value="COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT">
          </colorValue>
+         <!-- RAP [bm] changed bundle id -->
          <colorFactory
                class="org.eclipse.ui.internal.themes.LightColorFactory"
-               plugin="org.eclipse.ui">
+               plugin="org.eclipse.rap.ui">
           <parameter
                   name="base" value="COLOR_TITLE_BACKGROUND">
           </parameter>
@@ -1435,9 +1437,10 @@
                ws="motif"
                value="COLOR_TITLE_INACTIVE_BACKGROUND">
          </colorValue>
+         <!-- RAP [bm] changed bundle id -->
          <colorFactory
                class="org.eclipse.ui.internal.themes.LightColorFactory"
-               plugin="org.eclipse.ui">
+               plugin="org.eclipse.rap.ui">
           <parameter
                   name="base" value="COLOR_TITLE_BACKGROUND">
           </parameter>
@@ -1472,9 +1475,10 @@
          <description>
             %Color.activeNofocusTabBGStartDesc
          </description>
+         <!-- RAP [bm] changed bundle id -->
          <colorFactory
                class="org.eclipse.ui.internal.themes.LightColorFactory"
-               plugin="org.eclipse.ui">
+               plugin="org.eclipse.rap.ui">
           <parameter
                   name="base" value="COLOR_TITLE_INACTIVE_BACKGROUND">
           </parameter>
@@ -1492,12 +1496,13 @@
             %Color.inactiveTabTextDesc
          </description>
       </colorDefinition>
+      <!-- RAP [bm] changed bundle id -->
       <colorDefinition
             label="%Color.inactiveTabBGStart"
             categoryId="org.eclipse.ui.presentation.default"
             id="org.eclipse.ui.workbench.INACTIVE_TAB_BG_START">
          <colorFactory
-               plugin="org.eclipse.ui"
+               plugin="org.eclipse.rap.ui"
                class="org.eclipse.ui.internal.themes.RGBContrastFactory">
             <parameter
                   name="foreground"
@@ -1608,11 +1613,12 @@
                id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"
                value="COLOR_TITLE_BACKGROUND">
          </colorOverride>
+         <!-- RAP [bm] changed bundle id -->
          <colorOverride
                id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END">
             <colorFactory
                   class="org.eclipse.ui.themes.RGBBlendColorFactory"
-                  plugin="org.eclipse.ui">
+                  plugin="org.eclipse.rap.ui">
                <parameter
                      name="color1"
                      value="COLOR_TITLE_BACKGROUND_GRADIENT">

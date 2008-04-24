@@ -473,7 +473,7 @@ public class DecoratorManager implements ILabelProviderListener,
 		}
 
 		WorkbenchJob updateJob = new WorkbenchJob(
-				WorkbenchMessages.DecorationScheduler_UpdateJobName) {
+				WorkbenchMessages.get().DecorationScheduler_UpdateJobName) {
 			/*
 			 * (non-Javadoc)
 			 * 

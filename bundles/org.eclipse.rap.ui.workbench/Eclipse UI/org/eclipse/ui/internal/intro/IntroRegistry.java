@@ -53,9 +53,15 @@ public class IntroRegistry implements IIntroRegistry {
 	 * @see org.eclipse.ui.internal.intro.IIntroRegistry#getIntros()
 	 */
 	public IIntroDescriptor[] getIntros() {
+		// RAP [bm]: 
+//		IExtensionPoint point = Platform.getExtensionRegistry()
+//				.getExtensionPoint(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_INTRO);
 		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(PlatformUI.PLUGIN_ID,
-						IWorkbenchRegistryConstants.PL_INTRO);
+		.getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+				IWorkbenchRegistryConstants.PL_INTRO);
+		// RAPEND: [bm] 
+
 		if (point == null) {
 			return new IIntroDescriptor[0];
 		}
@@ -93,9 +99,14 @@ public class IntroRegistry implements IIntroRegistry {
 	 * @see org.eclipse.ui.internal.intro.IIntroRegistry#getIntroForProduct(java.lang.String)
 	 */
 	public IIntroDescriptor getIntroForProduct(String targetProductId) {
+		// RAP [bm]: 
+//		IExtensionPoint point = Platform.getExtensionRegistry()
+//				.getExtensionPoint(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_INTRO);
 		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(PlatformUI.PLUGIN_ID,
-						IWorkbenchRegistryConstants.PL_INTRO);
+		.getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+				IWorkbenchRegistryConstants.PL_INTRO);
+		// RAPEND: [bm] 
 		if (point == null) {
 			return null;
 		}

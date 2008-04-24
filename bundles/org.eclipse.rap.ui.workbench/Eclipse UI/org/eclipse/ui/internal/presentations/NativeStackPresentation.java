@@ -37,8 +37,6 @@ import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IStackPresentationSite;
-import org.eclipse.ui.presentations.PresentationUtil;
-import org.eclipse.ui.presentations.StackDropResult;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
@@ -53,7 +51,8 @@ public class NativeStackPresentation extends StackPresentation {
 
     private TabFolder tabFolder;
 
-    private Listener dragListener;
+    // RAP [bm]: 
+//    private Listener dragListener;
 
     private IPresentablePart current;
 
@@ -87,21 +86,22 @@ public class NativeStackPresentation extends StackPresentation {
         }
     };
 
-    private Listener menuListener = new Listener() {
-        /* (non-Javadoc)
-         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-         */
-        public void handleEvent(Event event) {
-            Point pos = new Point(event.x, event.y);
-            //			TabItem item = tabFolder.getItem(pos);
-            TabItem item = null;
-            IPresentablePart part = null;
-            if (item != null) {
-                part = getPartForTab(item);
-            }
-            showPaneMenu(part, pos);
-        }
-    };
+    // RAP [bm]: 
+//    private Listener menuListener = new Listener() {
+//        /* (non-Javadoc)
+//         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+//         */
+//        public void handleEvent(Event event) {
+//            Point pos = new Point(event.x, event.y);
+//            //			TabItem item = tabFolder.getItem(pos);
+//            TabItem item = null;
+//            IPresentablePart part = null;
+//            if (item != null) {
+//                part = getPartForTab(item);
+//            }
+//            showPaneMenu(part, pos);
+//        }
+//    };
 
     private Listener selectionListener = new Listener() {
         public void handleEvent(Event e) {
@@ -158,7 +158,8 @@ public class NativeStackPresentation extends StackPresentation {
         // listen for mouse down on tab to set focus.
         tabFolder.addMouseListener(mouseListener);
 
-        tabFolder.addListener(SWT.MenuDetect, menuListener);
+        // RAP [bm]: 
+//        tabFolder.addListener(SWT.MenuDetect, menuListener);
 
         dragListener = new Listener() {
             public void handleEvent(Event event) {
@@ -179,7 +180,8 @@ public class NativeStackPresentation extends StackPresentation {
             }
         };
 
-        PresentationUtil.addDragListener(tabFolder, dragListener);
+        // RAP [bm]: 
+//        PresentationUtil.addDragListener(tabFolder, dragListener);
 
     }
 
@@ -287,7 +289,8 @@ public class NativeStackPresentation extends StackPresentation {
         if (isDisposed()) {
             return;
         }
-        PresentationUtil.removeDragListener(tabFolder, dragListener);
+        // RAP [bm]: 
+//        PresentationUtil.removeDragListener(tabFolder, dragListener);
 
         //systemMenuManager.dispose();
 
@@ -426,23 +429,24 @@ public class NativeStackPresentation extends StackPresentation {
     /* (non-Javadoc)
      * @see org.eclipse.ui.internal.skins.StackPresentation#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
      */
-    public StackDropResult dragOver(Control currentControl, Point location) {
-
-        // Determine which tab we're currently dragging over
-        //		Point localPos = tabFolder.toControl(location);
-        //		final TabItem tabUnderPointer = tabFolder.getItem(localPos);
-        final TabItem tabUnderPointer = null;
-
-        // This drop target only deals with tabs... if we're not dragging over
-        // a tab, exit.
-        if (tabUnderPointer == null) {
-            return null;
-        }
-
-        //		return new StackDropResult(Geometry.toDisplay(tabFolder, tabUnderPointer.getBounds()),
-        //			tabFolder.indexOf(tabUnderPointer));
-        return null;
-    }
+    // RAP [bm]: 
+//    public StackDropResult dragOver(Control currentControl, Point location) {
+//
+//        // Determine which tab we're currently dragging over
+//        //		Point localPos = tabFolder.toControl(location);
+//        //		final TabItem tabUnderPointer = tabFolder.getItem(localPos);
+//        final TabItem tabUnderPointer = null;
+//
+//        // This drop target only deals with tabs... if we're not dragging over
+//        // a tab, exit.
+//        if (tabUnderPointer == null) {
+//            return null;
+//        }
+//
+//        //		return new StackDropResult(Geometry.toDisplay(tabFolder, tabUnderPointer.getBounds()),
+//        //			tabFolder.indexOf(tabUnderPointer));
+//        return null;
+//    }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.presentations.StackPresentation#showSystemMenu()

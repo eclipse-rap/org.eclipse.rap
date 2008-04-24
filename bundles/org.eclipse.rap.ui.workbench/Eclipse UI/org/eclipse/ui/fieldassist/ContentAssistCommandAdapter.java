@@ -263,7 +263,7 @@ public class ContentAssistCommandAdapter extends ContentProposalAdapter {
 		dec
 				.setDescription(NLS
 						.bind(
-								WorkbenchMessages.ContentAssist_Cue_Description_Key,
+								WorkbenchMessages.get().ContentAssist_Cue_Description_Key,
 								bindingService
 										.getBestActiveBindingFormattedFor(getCommandId())));
 
