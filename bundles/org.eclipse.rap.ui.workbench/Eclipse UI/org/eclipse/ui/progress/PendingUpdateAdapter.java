@@ -87,7 +87,7 @@ public class PendingUpdateAdapter implements IWorkbenchAdapter, IAdaptable {
     }
     
     /**
-	 * @since 3.4
+	 * @since 1.1
 	 */
     public String toString() {
     	return getLabel(null);
