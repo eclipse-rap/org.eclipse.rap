@@ -211,7 +211,6 @@ class LightweightDecoratorDefinition extends DecoratorDefinition implements
 	 * Get the constant value based on the location supplied. Default to bottom
 	 * right.
 	 * 
-	 * @since 3.1
 	 */
 	private int getLocationConstant(String locationDefinition,
 			IConfigurationElement element) {

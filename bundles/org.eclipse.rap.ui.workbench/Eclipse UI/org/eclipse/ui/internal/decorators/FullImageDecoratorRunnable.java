@@ -55,7 +55,6 @@ class FullImageDecoratorRunnable extends FullDecoratorRunnable {
 
 	/**
 	 * Clear decorator references.
-	 * @since 3.1
 	 */
 	void clearReferences() {
 		decorator = null;		

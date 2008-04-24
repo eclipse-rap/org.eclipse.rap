@@ -76,7 +76,6 @@ public class LightweightDecoratorManager extends ObjectContributorManager {
 		/**
 		 * Clear all of the references in the receiver.
 		 * 
-		 * @since 3.1
 		 */
 		void clearReferences() {
 			decorator = null;
@@ -127,7 +126,6 @@ public class LightweightDecoratorManager extends ObjectContributorManager {
 	 * @param decorator
 	 *            the definition to add
 	 * @return whether the definition was added
-	 * @since 3.0
 	 */
 	public boolean addDecorator(LightweightDecoratorDefinition decorator) {
 		if (getLightweightDecoratorDefinition(decorator.getId()) == null) {
@@ -162,7 +160,6 @@ public class LightweightDecoratorManager extends ObjectContributorManager {
 	 * @param decorator
 	 *            the definition to remove
 	 * @return whether the definition was removed
-	 * @since 3.1
 	 */
 	public boolean removeDecorator(LightweightDecoratorDefinition decorator) {
 		int idx = getLightweightDecoratorDefinitionIdx(decorator.getId());
@@ -191,7 +188,6 @@ public class LightweightDecoratorManager extends ObjectContributorManager {
 	 *         not found
 	 * @param decoratorId
 	 *            String
-	 * @since 3.0
 	 */
 	private LightweightDecoratorDefinition getLightweightDecoratorDefinition(
 			String decoratorId) {
@@ -208,7 +204,6 @@ public class LightweightDecoratorManager extends ObjectContributorManager {
 	 * @param decoratorId
 	 *            the id
 	 * @return the index of the definition in the array or <code>-1</code>
-	 * @since 3.1
 	 */
 	private int getLightweightDecoratorDefinitionIdx(String decoratorId) {
 		for (int i = 0; i < lightweightDefinitions.length; i++) {

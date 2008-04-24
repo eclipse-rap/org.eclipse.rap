@@ -63,7 +63,6 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * The DecoratorManager is the class that handles all of the decorators defined
  * in the image.
  * 
- * @since 2.0
  */
 public class DecoratorManager implements ILabelProviderListener,
 		IDecoratorManager, IExtensionChangeHandler {
@@ -107,7 +106,6 @@ public class DecoratorManager implements ILabelProviderListener,
 	/**
 	 * ManagedWorkbenchLabelDecorator is the internal LabelDecorator
 	 * passed as result of calls to {@link IDecoratorManager#getLabelDecorator()}
-	 * @since 3.4
 	 *
 	 */
 	private static class ManagedWorkbenchLabelDecorator extends LabelDecorator
@@ -335,7 +333,6 @@ public class DecoratorManager implements ILabelProviderListener,
 	 * 
 	 * @param definition
 	 *            the definition to add
-	 * @since 3.0
 	 */
 	public void addDecorator(DecoratorDefinition definition) {
 		if (definition.isFull()) {
@@ -1041,7 +1038,6 @@ public class DecoratorManager implements ILabelProviderListener,
 	 * @param decoratorId
 	 *            the id
 	 * @return the index of the definition in the array or <code>-1</code>
-	 * @since 3.1
 	 */
 	private int getFullDecoratorDefinitionIdx(String decoratorId) {
 		FullDecoratorDefinition[] full = getFullDefinitions();
