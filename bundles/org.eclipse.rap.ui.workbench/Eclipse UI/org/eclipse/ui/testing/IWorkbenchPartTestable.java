@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
  * This interface is not intended to be implemented or extended by clients.
  * </p>
  * 
- * @since 3.3
+ * @since 1.1
  */
 public interface IWorkbenchPartTestable {
 

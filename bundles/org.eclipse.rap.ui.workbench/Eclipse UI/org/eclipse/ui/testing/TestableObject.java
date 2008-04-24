@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Assert;
  * via <code>PlatformUI.getTestableObject()</code>.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  */
 public class TestableObject {
 

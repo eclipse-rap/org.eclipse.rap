@@ -14,7 +14,7 @@ package org.eclipse.ui.testing;
 /**
  * Represents an arbitrary test harness.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public interface ITestHarness {
 
