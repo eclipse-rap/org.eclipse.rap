@@ -865,7 +865,7 @@ public abstract class WorkbenchAdvisor {
 	 *            the contribution type
 	 * @return the comparator, must not return <code>null</code>
 	 * @see IContributionService#getComparatorFor(String)
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public ContributionComparator getComparatorFor(String contributionType) {
 		return new ContributionComparator();
