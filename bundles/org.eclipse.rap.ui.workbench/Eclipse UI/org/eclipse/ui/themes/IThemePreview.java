@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
  * Interface used by theme element developers to preview the usage of their 
  * elements within the colors and fonts preference page.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public interface IThemePreview {
 

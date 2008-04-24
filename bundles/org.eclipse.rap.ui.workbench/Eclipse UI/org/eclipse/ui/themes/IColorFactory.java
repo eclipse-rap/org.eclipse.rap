@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.RGB;
  * </code>
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  */
 public interface IColorFactory {
 

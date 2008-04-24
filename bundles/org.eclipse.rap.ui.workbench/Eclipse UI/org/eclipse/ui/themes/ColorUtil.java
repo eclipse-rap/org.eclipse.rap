@@ -23,8 +23,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Useful color utilities.
  * 
- * @since 3.0 - initial release
- * @since 3.2 - public API
+ * @since 1.1
  */
 public final class ColorUtil {
 
@@ -61,7 +60,6 @@ public final class ColorUtil {
 	 * Get the SWT constant fields.
 	 * 
 	 * @return the fields
-	 * @since 3.3
 	 */
 	private static Field[] getFields() {
 		if (cachedFields == null) {
@@ -96,7 +94,6 @@ public final class ColorUtil {
 	 *            percentage of the first color in the blend (0-100)
 	 * @return the RGB value of the blended color
 	 * 
-	 * @since 3.3
 	 */
 	public static RGB blend(RGB c1, RGB c2, int ratio) {
 		int r = blend(c1.red, c2.red, ratio);

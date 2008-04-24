@@ -43,7 +43,7 @@ import org.eclipse.swt.graphics.RGB;
  * </p>
  * 
  * @see org.eclipse.swt.SWT
- * @since 3.0
+ * @since 1.1
  */
 public class RGBBlendColorFactory implements IColorFactory,
         IExecutableExtension {
