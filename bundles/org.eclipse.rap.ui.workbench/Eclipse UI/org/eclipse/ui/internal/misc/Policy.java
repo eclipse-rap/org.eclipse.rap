@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal.misc;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.graphics.Device;
+//import org.eclipse.swt.graphics.Device;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.PlatformUI;
 
@@ -192,8 +192,9 @@ public class Policy {
             DEBUG_MPE = getDebugOption("/trace/multipageeditor"); //$NON-NLS-1$
             DEBUG_WORKING_SETS = getDebugOption("/debug/workingSets"); //$NON-NLS-1$
             
-            if(DEBUG_SWT_DEBUG_GLOBAL)
-            	Device.DEBUG = true;
+// RAP [rh] Device#DEBUG not implemented            
+//            if(DEBUG_SWT_DEBUG_GLOBAL)
+//            	Device.DEBUG = true;
         }
     }
 

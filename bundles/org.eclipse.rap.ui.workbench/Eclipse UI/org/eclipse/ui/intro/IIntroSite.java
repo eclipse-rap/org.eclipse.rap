@@ -11,7 +11,7 @@
 package org.eclipse.ui.intro;
 
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IKeyBindingService;
+//import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchSite;
 
 /** 
@@ -46,18 +46,19 @@ public interface IIntroSite extends IWorkbenchSite {
      */
     public String getPluginId();
 
-    /**
-     * Returns the key binding service in use.
-     * <p>
-     * The part will access this service to register
-     * all of its actions, to set the active scope.
-     * </p>
-     * 
-     * @return the key binding service in use
-     * @deprecated Use IServiceLocator#getService(*) to retrieve
-     * IContextService and IHandlerService instead.
-     */
-    public IKeyBindingService getKeyBindingService();
+// RAP [rh] key bindings not available    
+//    /**
+//     * Returns the key binding service in use.
+//     * <p>
+//     * The part will access this service to register
+//     * all of its actions, to set the active scope.
+//     * </p>
+//     * 
+//     * @return the key binding service in use
+//     * @deprecated Use IServiceLocator#getService(*) to retrieve
+//     * IContextService and IHandlerService instead.
+//     */
+//    public IKeyBindingService getKeyBindingService();
 
     /**
      * Returns the action bars for this part site.
