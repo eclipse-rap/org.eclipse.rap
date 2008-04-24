@@ -32,7 +32,7 @@ import org.eclipse.core.commands.IHandlerListener;
  * {@link AbstractHandler#getAttributeValuesByName()}if they have any
  * attributes.
  * 
- * @since 3.0
+ * @since 1.0
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  * @see org.eclipse.core.commands.AbstractHandler
  */
@@ -182,7 +182,6 @@ public abstract class AbstractHandler extends
      * 
      * @return true iff there is one or more IHandlerListeners attached to this
      *         AbstractHandler
-     * @since 3.1
      */
     protected final boolean hasListeners() {
         return super.hasListeners() || handlerListeners != null;

@@ -33,7 +33,7 @@ import org.eclipse.ui.internal.util.Util;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see HandlerSubmission
  * @see org.eclipse.ui.ISources
  * @see org.eclipse.ui.handlers.IHandlerService#activateHandler(String,

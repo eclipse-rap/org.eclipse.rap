@@ -21,7 +21,7 @@ package org.eclipse.ui.commands;
  * This interface may be implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see CategoryEvent
  * @see org.eclipse.ui.commands.ICategory#addCategoryListener(ICategoryListener)
  * @see org.eclipse.ui.commands.ICategory#removeCategoryListener(ICategoryListener)

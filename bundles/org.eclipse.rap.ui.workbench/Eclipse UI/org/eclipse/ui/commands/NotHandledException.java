@@ -17,7 +17,7 @@ package org.eclipse.ui.commands;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  * @see org.eclipse.core.commands.NotHandledException
  */
@@ -25,8 +25,6 @@ public final class NotHandledException extends CommandException {
 
     /**
      * Generated serial version UID for this class.
-     * 
-     * @since 3.1
      */
     private static final long serialVersionUID = 3256446914827726904L;
 
@@ -47,7 +45,6 @@ public final class NotHandledException extends CommandException {
      * @param e
      *            The exception from which this exception should be created;
      *            must not be <code>null</code>.
-     * @since 3.1
      */
     public NotHandledException(final org.eclipse.core.commands.NotHandledException e) {
         super(e.getMessage(), e);

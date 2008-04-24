@@ -23,7 +23,7 @@ import org.eclipse.ui.menus.UIElement;
  * not be implemented or extended by clients.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IElementReference {
 	/**

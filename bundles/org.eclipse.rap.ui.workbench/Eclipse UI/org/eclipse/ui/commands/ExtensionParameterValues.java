@@ -45,7 +45,7 @@ import org.eclipse.core.runtime.IExecutableExtension;
  *     &lt;/command&gt; 
  * </code></pre></p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class ExtensionParameterValues implements IParameterValues,
 		IExecutableExtension {

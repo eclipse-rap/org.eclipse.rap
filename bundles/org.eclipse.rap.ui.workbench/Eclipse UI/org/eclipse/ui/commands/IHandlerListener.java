@@ -17,7 +17,7 @@ package org.eclipse.ui.commands;
  * This interface may be implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  * @see IHandler#addHandlerListener(IHandlerListener)
  * @see IHandler#removeHandlerListener(IHandlerListener)
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.

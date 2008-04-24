@@ -21,7 +21,7 @@ import org.eclipse.ui.internal.util.Util;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  * @see IHandlerListener#handlerChanged(HandlerEvent)
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  */
@@ -52,8 +52,6 @@ public final class HandlerEvent {
      * returns a copy of this map, not the original. However the constructor of
      * this object is called very frequently and the map is rarely requested,
      * so we only copy the map the first time it is requested. 
-     * 
-     * @since 3.1
      */
     private final Map originalPreviousAttributeValuesByName;
     

@@ -25,7 +25,7 @@ import org.eclipse.ui.actions.RetargetAction;
  * This class adapts instances of <code>IAction</code> to
  * <code>IHandler</code>.
  * 
- * @since 3.0
+ * @since 1.1
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  * @see org.eclipse.jface.commands.ActionHandler
  */
@@ -103,7 +103,6 @@ public final class ActionHandler extends AbstractHandler {
 
     /**
      * @see org.eclipse.ui.commands.IHandler#addHandlerListener(org.eclipse.ui.commands.IHandlerListener)
-     * @since 3.1
      */
     public void addHandlerListener(IHandlerListener handlerListener) {
         if (!hasListeners()) {
@@ -116,8 +115,6 @@ public final class ActionHandler extends AbstractHandler {
     /**
      * When a listener is attached to this handler, then this registers a
      * listener with the underlying action.
-     * 
-     * @since 3.1
      */
     private final void attachListener() {
         if (propertyChangeListener == null) {
@@ -151,8 +148,6 @@ public final class ActionHandler extends AbstractHandler {
     /**
      * When no more listeners are registered, then this is used to removed the
      * property change listener from the underlying action.
-     * 
-     * @since 3.1
      *  
      */
     private final void detachListener() {
@@ -194,7 +189,6 @@ public final class ActionHandler extends AbstractHandler {
      * Returns the action associated with this handler
      * 
      * @return the action associated with this handler (not null)
-     * @since 3.1
      */
     public IAction getAction() {
         return action;
@@ -238,7 +232,6 @@ public final class ActionHandler extends AbstractHandler {
 
     /**
      * @see org.eclipse.ui.commands.IHandler#removeHandlerListener(org.eclipse.ui.commands.IHandlerListener)
-     * @since 3.1
      */
     public void removeHandlerListener(IHandlerListener handlerListener) {
         super.removeHandlerListener(handlerListener);

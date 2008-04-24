@@ -19,7 +19,7 @@ import org.eclipse.ui.menus.UIElement;
  * An IHandler for a command that expects to provide feedback through the
  * registered element mechanism must implement this interface.
  * 
- * @since 3.3
+ * @since 1.0
  * 
  */
 public interface IElementUpdater {

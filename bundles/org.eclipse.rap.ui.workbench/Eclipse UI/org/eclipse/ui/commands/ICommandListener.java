@@ -17,7 +17,7 @@ package org.eclipse.ui.commands;
  * This interface may be implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see ICommand#addCommandListener(ICommandListener)
  * @see ICommand#removeCommandListener(ICommandListener)
  * @see org.eclipse.core.commands.ICommandListener

@@ -43,7 +43,7 @@ import org.eclipse.ui.services.IDisposable;
  * change between now and M6.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface ICommandImageService extends IDisposable {
 
