@@ -17,7 +17,7 @@ import org.eclipse.ui.PartInitException;
  * to the implementors. Classes that extend this abstract class are meant to be
  * contributed via 'org.eclipse.ui.browserSupport' extension point.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class AbstractWorkbenchBrowserSupport implements
 		IWorkbenchBrowserSupport {

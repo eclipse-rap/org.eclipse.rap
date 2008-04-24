@@ -15,7 +15,7 @@ package org.eclipse.ui.browser;
  * extend this class for web browser instances they manage. Clients should not
  * implement the <code>IWebBrowser</code> interface.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class AbstractWebBrowser implements IWebBrowser {
 	private String id;
