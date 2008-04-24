@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.activities.IWorkbenchActivitySupport;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.commands.IWorkbenchCommandSupport;
+//import org.eclipse.ui.commands.IWorkbenchCommandSupport;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -462,17 +462,18 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 	 */
 	IWorkbenchActivitySupport getActivitySupport();
 
-	/**
-	 * Returns an interface to manage commands at the workbench level.
-	 * 
-	 * @return an interface to manage commands at the workbench level.
-	 *         Guaranteed not to be <code>null</code>.
-	 * @since 1.1
-	 * @deprecated Please use {@link IServiceLocator#getService(Class)} instead.
-	 * @see ICommandService
-	 * @see IHandlerService
-	 */
-	IWorkbenchCommandSupport getCommandSupport();
+// RAP [rh] useless API: IWorkbenchCommandSupport heavily relies on keys 
+//	/**
+//	 * Returns an interface to manage commands at the workbench level.
+//	 * 
+//	 * @return an interface to manage commands at the workbench level.
+//	 *         Guaranteed not to be <code>null</code>.
+//	 * @since 1.1
+//	 * @deprecated Please use {@link IServiceLocator#getService(Class)} instead.
+//	 * @see ICommandService
+//	 * @see IHandlerService
+//	 */
+//	IWorkbenchCommandSupport getCommandSupport();
 
 	/**
 	 * Returns an interface to manage contexts at the workbench level.

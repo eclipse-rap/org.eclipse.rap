@@ -129,7 +129,7 @@ public class DefaultDetailsArea extends AbstractStatusAreaProvider {
 				String date = DateFormat.getDateTimeInstance(DateFormat.LONG,
 						DateFormat.LONG)
 						.format(new Date(timestamp.longValue()));
-				list.add(NLS.bind(ProgressMessages.JobInfo_Error,
+				list.add(NLS.bind(ProgressMessages.get().JobInfo_Error,
 						(new Object[] { "", date }))); //$NON-NLS-1$
 			}
 		}

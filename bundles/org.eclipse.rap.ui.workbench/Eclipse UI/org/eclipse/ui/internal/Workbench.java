@@ -117,7 +117,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.commands.IWorkbenchCommandSupport;
+//import org.eclipse.ui.commands.IWorkbenchCommandSupport;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -128,7 +128,7 @@ import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
 import org.eclipse.ui.internal.commands.CommandImageManager;
 import org.eclipse.ui.internal.commands.CommandImageService;
 import org.eclipse.ui.internal.commands.CommandService;
-import org.eclipse.ui.internal.commands.WorkbenchCommandSupport;
+//import org.eclipse.ui.internal.commands.WorkbenchCommandSupport;
 import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
 import org.eclipse.ui.internal.contexts.ContextService;
 import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
@@ -1697,8 +1697,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		});
 		workbenchContextSupport = new WorkbenchContextSupport(this,
 				contextManager);
-		workbenchCommandSupport = new WorkbenchCommandSupport(bindingManager,
-				commandManager, contextManager, handlerService[0]);
+// RAP [rh] getCommandSupport is disabled		
+//		workbenchCommandSupport = new WorkbenchCommandSupport(bindingManager,
+//				commandManager, contextManager, handlerService[0]);
 		initializeCommandResolver();
 
 		addWindowListener(windowListener);
@@ -2908,7 +2909,8 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 
 	private WorkbenchActivitySupport workbenchActivitySupport;
 
-	private WorkbenchCommandSupport workbenchCommandSupport;
+// RAP [rh] unused code: getCommandSupport is disabled	
+//	private WorkbenchCommandSupport workbenchCommandSupport;
 
 	private WorkbenchContextSupport workbenchContextSupport;
 
@@ -2940,9 +2942,10 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		return workbenchActivitySupport;
 	}
 
-	public IWorkbenchCommandSupport getCommandSupport() {
-		return workbenchCommandSupport;
-	}
+// RAP [rh] useless API: IWorkbenchCommandSupport heavily relies on keys	
+//	public IWorkbenchCommandSupport getCommandSupport() {
+//		return workbenchCommandSupport;
+//	}
 
 	public IWorkbenchContextSupport getContextSupport() {
 		return workbenchContextSupport;
