@@ -18,15 +18,11 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.events.MouseAdapter;
-//import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
-//import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.dnd.DragUtil;
@@ -238,12 +234,14 @@ public class ViewPane extends PartPane {
         if (fastViewBar == null || getPage().getActivePerspective() == null)
             return;
 
-        Shell shell = window.getShell();
-
-        RectangleAnimation animation = new RectangleAnimation(shell,
-                getParentBounds(), fastViewBar.getLocationOfNextIcon());
-
-        animation.schedule();
+        // RAP [bm]: no animations
+//        Shell shell = window.getShell();
+//
+//        RectangleAnimation animation = new RectangleAnimation(shell,
+//                getParentBounds(), fastViewBar.getLocationOfNextIcon());
+//
+//        animation.schedule();
+        // RAPEND: [bm] 
 
         FastViewManager fvm = getPage().getActivePerspective().getFastViewManager();
         fvm.addViewReference(FastViewBar.FASTVIEWBAR_ID, -1, getViewReference(), true);
@@ -253,9 +251,11 @@ public class ViewPane extends PartPane {
         if (getPage().getActivePerspective() == null)
             return;
 
-        Shell shell = getControl().getShell();
-
-        Rectangle initialBounds = getParentBounds();
+        // RAP [bm]: not used
+//        Shell shell = getControl().getShell();
+//
+//        Rectangle initialBounds = getParentBounds();
+        // RAPEND: [bm] 
 
         FastViewManager fvm = getPage().getActivePerspective().getFastViewManager();
         fvm.removeViewReference(getViewReference(), true, true);
@@ -265,12 +265,15 @@ public class ViewPane extends PartPane {
             getPage().activate(toActivate);
         }
 
-        Rectangle finalBounds = getParentBounds();
+        // RAP [bm]: no animations
+//        Rectangle finalBounds = getParentBounds();
 
-        RectangleAnimation animation = new RectangleAnimation(shell,
-                initialBounds, finalBounds);
+//        RectangleAnimation animation = new RectangleAnimation(shell,
+//                initialBounds, finalBounds);
+//
+//        animation.schedule();
+        // RAPEND: [bm] 
 
-        animation.schedule();
     }
 
     /**

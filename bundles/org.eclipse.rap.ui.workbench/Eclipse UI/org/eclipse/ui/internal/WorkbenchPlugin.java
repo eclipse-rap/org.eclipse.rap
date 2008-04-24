@@ -45,6 +45,7 @@ import org.eclipse.ui.internal.intro.IIntroRegistry;
 import org.eclipse.ui.internal.intro.IntroRegistry;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.operations.WorkbenchOperationSupport;
+import org.eclipse.ui.internal.progress.JobManagerAdapter;
 import org.eclipse.ui.internal.progress.ProgressManager;
 import org.eclipse.ui.internal.registry.ActionSetRegistry;
 import org.eclipse.ui.internal.registry.EditorRegistry;
@@ -1017,8 +1018,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 		 */
 
         // RAP [fappel]: fixes of memory consumption problems
-//        JobManagerAdapter.getInstance();
-        System.err.println("JobManager missing");
+        JobManagerAdapter.getInstance();
         // RAPEND
 
     }
@@ -1166,22 +1166,23 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     	return bundleContext;
     }
 
-    /**
-     * Returns the application name.
-     * <p>
-     * Note this is never shown to the user.
-     * It is used to initialize the SWT Display.
-     * On Motif, for example, this can be used
-     * to set the name used for resource lookup.
-     * </p>
-     *
-     * @return the application name, or <code>null</code>
-     * @see org.eclipse.swt.widgets.Display#setAppName
-     * @since 1.1
-     */
-    public String getAppName() {
-        return getProductInfo().getAppName();
-    }
+    // RAP [bm]: 
+//    /**
+//     * Returns the application name.
+//     * <p>
+//     * Note this is never shown to the user.
+//     * It is used to initialize the SWT Display.
+//     * On Motif, for example, this can be used
+//     * to set the name used for resource lookup.
+//     * </p>
+//     *
+//     * @return the application name, or <code>null</code>
+//     * @see org.eclipse.swt.widgets.Display#setAppName
+//     * @since 1.1
+//     */
+//    public String getAppName() {
+//        return getProductInfo().getAppName();
+//    }
 
     /**
      * Returns the name of the product.

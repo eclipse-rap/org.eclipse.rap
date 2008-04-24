@@ -188,10 +188,11 @@ public final class HandlerService implements IHandlerService {
 		// this is a no-op
 	}
 
-	public final void setHelpContextId(final IHandler handler,
-			final String helpContextId) {
-		commandService.setHelpContextId(handler, helpContextId);
-	}
+	// RAP [bm]: 
+//	public final void setHelpContextId(final IHandler handler,
+//			final String helpContextId) {
+//		commandService.setHelpContextId(handler, helpContextId);
+//	}
 
 	/**
 	 * <p>

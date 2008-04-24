@@ -36,8 +36,6 @@ import org.eclipse.ui.internal.layout.LayoutUtil;
 import org.eclipse.ui.internal.layout.TrimLayout;
 import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.internal.presentations.util.TabbedStackPresentation;
-import org.eclipse.ui.internal.tweaklets.Animations;
-import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IStackPresentationSite;
@@ -78,7 +76,8 @@ public class FastViewManager {
 	 * animation whose life-cycle spans a
 	 * 'deferUpdates' cycle.
 	 */
-	private AnimationEngine batchAnimation = null;
+	// RAP [bm]: 
+//	private AnimationEngine batchAnimation = null;
 	
 	/**
 	 * Used for non-deferred animations
@@ -957,16 +956,18 @@ public class FastViewManager {
 	 *  false when ending the operation
 	 */
 	private void deferAnimations(boolean defer) {
-		if (defer) {
-			RectangleAnimationFeedbackBase feedback = ((Animations) Tweaklets
-					.get(Animations.KEY)).createFeedback(wbw.getShell());
-			batchAnimation = new AnimationEngine(feedback, 400);
-			return;
-		}
-
-		if (batchAnimation != null)
-			batchAnimation.schedule();
-		batchAnimation = null;
+		// RAP [bm]: no animations
+//		if (defer) {
+//			RectangleAnimationFeedbackBase feedback = ((Animations) Tweaklets
+//					.get(Animations.KEY)).createFeedback(wbw.getShell());
+//			batchAnimation = new AnimationEngine(feedback, 400);
+//			return;
+//		}
+//
+//		if (batchAnimation != null)
+//			batchAnimation.schedule();
+//		batchAnimation = null;
+		// RAPEND: [bm] 
 	}
 
 	// RAP [bm]: no animations

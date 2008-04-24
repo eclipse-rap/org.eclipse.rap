@@ -236,12 +236,12 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
     
     // RAP [fappel]: override to allow multiple sessions 
     public void setPage( final IPreferencePage newPage ) {
-      RWT.getSessionStore().setAttribute( ID_PAGE, newPage );
+      RWT.getSessionStore().setAttribute( ID_PAGE + getId() , newPage );
     }
     
     // RAP [fappel]: override to allow multiple sessions 
     public IPreferencePage getPage() {
-      return ( IPreferencePage )RWT.getSessionStore().getAttribute( ID_PAGE );
+      return ( IPreferencePage )RWT.getSessionStore().getAttribute( ID_PAGE  + getId() );
     }
 
 }

@@ -390,9 +390,13 @@ public class ProgressManagerUtil {
 		Point windowLocation = internalWindow.getShell().getLocation();
 		endPosition.x += windowLocation.x;
 		endPosition.y += windowLocation.y;
-		RectangleAnimation animation = new RectangleAnimation(internalWindow
-				.getShell(), startPosition, endPosition);
-		animation.schedule();
+		
+		// RAP [bm]: 
+//		RectangleAnimation animation = new RectangleAnimation(internalWindow
+//				.getShell(), startPosition, endPosition);
+//		animation.schedule();
+		// RAPEND: [bm] 
+
 	}
 
 	/**
@@ -419,9 +423,12 @@ public class ProgressManagerUtil {
 		startPosition.x += windowLocation.x;
 		startPosition.y += windowLocation.y;
 
-		RectangleAnimation animation = new RectangleAnimation(internalWindow
-				.getShell(), startPosition, endPosition);
-		animation.schedule();
+		// RAP [bm]: 
+//		RectangleAnimation animation = new RectangleAnimation(internalWindow
+//				.getShell(), startPosition, endPosition);
+//		animation.schedule();
+		// RAPEND: [bm] 
+
 	}
 
 	/**

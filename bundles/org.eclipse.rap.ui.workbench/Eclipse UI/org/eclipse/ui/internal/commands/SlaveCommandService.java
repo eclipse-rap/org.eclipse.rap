@@ -20,13 +20,12 @@ import java.util.Set;
 import org.eclipse.core.commands.Category;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IExecutionListener;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.ParameterType;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.SerializationException;
 import org.eclipse.core.commands.common.NotDefinedException;
-import org.eclipse.ui.commands.IElementReference;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.commands.IElementReference;
 import org.eclipse.ui.menus.UIElement;
 
 /**
@@ -249,10 +248,11 @@ public class SlaveCommandService implements ICommandService {
 		fParentService.removeExecutionListener(listener);
 	}
 
-	public final void setHelpContextId(final IHandler handler,
-			final String helpContextId) {
-		fParentService.setHelpContextId(handler, helpContextId);
-	}
+	// RAP [bm]: Help
+//	public final void setHelpContextId(final IHandler handler,
+//			final String helpContextId) {
+//		fParentService.setHelpContextId(handler, helpContextId);
+//	}
 
 	/*
 	 * (non-Javadoc)

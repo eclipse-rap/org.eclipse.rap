@@ -39,7 +39,8 @@ public class ProductProperties extends BrandingProperties implements
 
     private final IProduct product;
 
-    private String appName;
+    // RAP [bm]: 
+//    private String appName;
 
     private String aboutText;
 
@@ -129,22 +130,23 @@ public class ProductProperties extends BrandingProperties implements
         this.product = product;
     }
 
-    /**
-     * The application name, used to initialize the SWT Display.  This
-     * value is distinct from the string displayed in the application
-     * title bar.
-     * <p>
-     * E.g., On motif, this can be used to set the name used for
-     * resource lookup.
-     * </p>
-     * @see org.eclipse.swt.widgets.Display#setAppName
-     */
-    public String getAppName() {
-        if (appName == null) {
-			appName = getAppName(product);
-		}
-        return appName;
-    }
+    // RAP [bm]: 
+//    /**
+//     * The application name, used to initialize the SWT Display.  This
+//     * value is distinct from the string displayed in the application
+//     * title bar.
+//     * <p>
+//     * E.g., On motif, this can be used to set the name used for
+//     * resource lookup.
+//     * </p>
+//     * @see org.eclipse.swt.widgets.Display#setAppName
+//     */
+//    public String getAppName() {
+//        if (appName == null) {
+//			appName = getAppName(product);
+//		}
+//        return appName;
+//    }
 
     /**
      * The text to show in an "about" dialog for this product.
@@ -226,30 +228,31 @@ public class ProductProperties extends BrandingProperties implements
         return productId;
     }
 
-    /**
-     * The application name, used to initialize the SWT Display.  This
-     * value is distinct from the string displayed in the application
-     * title bar.
-     * <p>
-     * E.g., On motif, this can be used to set the name used for
-     * resource lookup.
-     * </p>
-     * <p>
-     * The returned value will have {n} values substituted based on the
-     * current product's mappings regardless of the given product argument.
-     * </p>
-     * @see org.eclipse.swt.widgets.Display#setAppName
-     */
-    public static String getAppName(IProduct product) {
-        String property = product.getProperty(APP_NAME);
-        if (property == null) {
-			return ""; //$NON-NLS-1$
-		}
-        if (property.indexOf('{') == -1) {
-			return property;
-		}
-        return MessageFormat.format(property, mappings);
-    }
+    // RAP [bm]: Display#setAppName
+//    /**
+//     * The application name, used to initialize the SWT Display.  This
+//     * value is distinct from the string displayed in the application
+//     * title bar.
+//     * <p>
+//     * E.g., On motif, this can be used to set the name used for
+//     * resource lookup.
+//     * </p>
+//     * <p>
+//     * The returned value will have {n} values substituted based on the
+//     * current product's mappings regardless of the given product argument.
+//     * </p>
+//     * @see org.eclipse.swt.widgets.Display#setAppName
+//     */
+//    public static String getAppName(IProduct product) {
+//        String property = product.getProperty(APP_NAME);
+//        if (property == null) {
+//			return ""; //$NON-NLS-1$
+//		}
+//        if (property.indexOf('{') == -1) {
+//			return property;
+//		}
+//        return MessageFormat.format(property, mappings);
+//    }
 
     /**
      * The text to show in an "about" dialog for this product.

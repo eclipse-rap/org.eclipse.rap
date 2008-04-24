@@ -309,9 +309,12 @@ public final class HandlerPersistence extends RegistryPersistence {
 					proxy, activeWhenExpression));
 
 			// Read out the help context identifier.
-			final String helpContextId = readOptional(configurationElement,
-					ATT_HELP_CONTEXT_ID);
-			handlerService.setHelpContextId(proxy, helpContextId);
+			// RAP [bm]: Help
+//			final String helpContextId = readOptional(configurationElement,
+//					ATT_HELP_CONTEXT_ID);
+//			handlerService.setHelpContextId(proxy, helpContextId);
+			// RAPEND: [bm] 
+
 		}
 
 		logWarnings(

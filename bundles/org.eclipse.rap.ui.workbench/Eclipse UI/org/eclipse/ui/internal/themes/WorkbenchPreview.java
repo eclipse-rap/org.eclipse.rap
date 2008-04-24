@@ -30,7 +30,6 @@ import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.IWorkbenchThemeConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemePreview;
 
@@ -47,7 +46,8 @@ public class WorkbenchPreview implements IThemePreview {
 	//   75422 [Presentations] Switching presentation to R21 switches immediately, but only partially
     private static int tabPos = preferenceStore.getInt(IWorkbenchPreferenceConstants.VIEW_TAB_POSITION);
   
-    private IPreferenceStore apiStore = PrefUtil.getAPIPreferenceStore();
+    // RAP [bm]: 
+//    private IPreferenceStore apiStore = PrefUtil.getAPIPreferenceStore();
 
     private boolean disposed = false;
 
@@ -128,9 +128,11 @@ public class WorkbenchPreview implements IThemePreview {
      * Set the tab style from preferences.
      */
     protected void setTabStyle() {
-        boolean traditionalTab = apiStore
-                .getBoolean(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS);
-        folder.setSimple(traditionalTab);
+    	// RAP [bm]: CTabFolder#setSimple
+//        boolean traditionalTab = apiStore
+//                .getBoolean(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS);
+//        folder.setSimple(traditionalTab);
+    	// RAPEND: [bm] 
     }
 
     /**
@@ -159,9 +161,12 @@ public class WorkbenchPreview implements IThemePreview {
                 IWorkbenchThemeConstants.ACTIVE_TAB_BG_START);
         colors[1] = theme.getColorRegistry().get(
                 IWorkbenchThemeConstants.ACTIVE_TAB_BG_END);
-        folder.setSelectionBackground(colors, new int[] { theme
-                .getInt(IWorkbenchThemeConstants.ACTIVE_TAB_PERCENT) }, theme
-                .getBoolean(IWorkbenchThemeConstants.ACTIVE_TAB_VERTICAL));
+        // RAP [bm]: CTabFolder gradient
+//        folder.setSelectionBackground(colors, new int[] { theme
+//                .getInt(IWorkbenchThemeConstants.ACTIVE_TAB_PERCENT) }, theme
+//                .getBoolean(IWorkbenchThemeConstants.ACTIVE_TAB_VERTICAL));
+        folder.setSelectionBackground(colors[0]);
+        // RAPEND: [bm] 
 
         folder.setFont(theme.getFontRegistry().get(
                 IWorkbenchThemeConstants.TAB_TEXT_FONT));
