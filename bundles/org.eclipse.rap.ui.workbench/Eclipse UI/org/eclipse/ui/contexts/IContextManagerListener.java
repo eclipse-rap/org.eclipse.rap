@@ -18,7 +18,7 @@ package org.eclipse.ui.contexts;
  * This interface may be implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IContextManager#addContextManagerListener(IContextManagerListener)
  * @see IContextManager#removeContextManagerListener(IContextManagerListener)
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.

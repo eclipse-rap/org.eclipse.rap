@@ -24,7 +24,7 @@ import java.util.SortedSet;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  * @see org.eclipse.core.commands.contexts.ContextManager
  * @noimplement This interface is not intended to be implemented by clients.

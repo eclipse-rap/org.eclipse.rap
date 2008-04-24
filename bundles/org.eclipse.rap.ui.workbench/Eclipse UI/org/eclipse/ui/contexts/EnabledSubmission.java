@@ -34,7 +34,7 @@ import org.eclipse.ui.internal.util.Util;
  * Note: this class has a natural ordering that is inconsistent with equals.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IWorkbenchContextSupport
  * @deprecated Please use <code>IContextService.activateContext</code>
  *             instead.

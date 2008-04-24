@@ -25,7 +25,7 @@ import org.eclipse.ui.internal.services.IEvaluationResultCache;
  * This interface is not intended to be implemented or extended by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  * @see org.eclipse.ui.ISources
  * @see org.eclipse.ui.ISourceProvider
  */

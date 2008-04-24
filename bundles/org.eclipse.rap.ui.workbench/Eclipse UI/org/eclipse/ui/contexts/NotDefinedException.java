@@ -17,7 +17,7 @@ package org.eclipse.ui.contexts;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  * @see org.eclipse.core.commands.common.NotDefinedException
  */
@@ -25,8 +25,6 @@ public final class NotDefinedException extends ContextException {
 
 	/**
 	 * Generated serial version UID for this class.
-	 * 
-	 * @since 3.1
 	 */
 	private static final long serialVersionUID = 3833750983926167092L;
 
@@ -45,7 +43,6 @@ public final class NotDefinedException extends ContextException {
 	 * 
 	 * @param e
 	 *            The exception being thrown; must not be <code>null</code>.
-	 * @since 3.1
 	 */
 	public NotDefinedException(
 			org.eclipse.core.commands.common.NotDefinedException e) {

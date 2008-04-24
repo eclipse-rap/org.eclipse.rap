@@ -16,7 +16,7 @@ package org.eclipse.ui.contexts;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
  * @see org.eclipse.core.commands.common.CommandException
  * @noextend This class is not intended to be subclassed by clients.
@@ -25,8 +25,6 @@ public abstract class ContextException extends Exception {
 	
 	/**
 	 * Generated serial version UID for this class.
-	 * 
-	 * @since 3.4
 	 */
 	private static final long serialVersionUID= -5143404124388080211L;
 	
@@ -63,7 +61,6 @@ public abstract class ContextException extends Exception {
      * cause is nonexistent or unknown. 
      *
      * @return the cause or <code>null</code>
-     * @since 3.1
      */
     public Throwable getCause() {
         return cause;

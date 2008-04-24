@@ -27,7 +27,7 @@ import org.eclipse.ui.services.IServiceWithSources;
  * This interface should not be implemented or extended by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public interface IContextService extends IServiceWithSources {
 
@@ -123,7 +123,6 @@ public interface IContextService extends IServiceWithSources {
 	 *         which this service was retrieved is destroyed.
 	 * 
 	 * @see org.eclipse.ui.ISources
-	 * @since 3.2
 	 */
 	public IContextActivation activateContext(String contextId,
 			Expression expression);
@@ -159,7 +158,6 @@ public interface IContextService extends IServiceWithSources {
 	 *         which this service was retrieved is destroyed.
 	 * 
 	 * @see org.eclipse.ui.ISources
-	 * @since 3.2
 	 */
 	public IContextActivation activateContext(String contextId,
 			Expression expression, boolean global);
@@ -211,7 +209,6 @@ public interface IContextService extends IServiceWithSources {
 	 * 
 	 * @param listener
 	 *            The listener to attach; must not be <code>null</code>.
-	 * @since 3.2
 	 * @see #removeContextManagerListener(IContextManagerListener)
 	 */
 	public void addContextManagerListener(IContextManagerListener listener);
@@ -252,7 +249,6 @@ public interface IContextService extends IServiceWithSources {
 	 *         <code>null</code> if no active contexts have been set yet. If
 	 *         the set is not <code>null</code>, then it contains only
 	 *         instances of <code>String</code>.
-	 * @since 3.2
 	 */
 	public Collection getActiveContextIds();
 
@@ -271,7 +267,6 @@ public interface IContextService extends IServiceWithSources {
 	 * 
 	 * @return The collection of contexts (<code>Context</code>) that are
 	 *         defined; never <code>null</code>, but may be empty.
-	 * @since 3.2
 	 */
 	public Context[] getDefinedContexts();
 
@@ -347,7 +342,6 @@ public interface IContextService extends IServiceWithSources {
 	 * 
 	 * @param listener
 	 *            The listener to be removed; must not be <code>null</code>.
-	 * @since 3.2
 	 */
 	public void removeContextManagerListener(IContextManagerListener listener);
 

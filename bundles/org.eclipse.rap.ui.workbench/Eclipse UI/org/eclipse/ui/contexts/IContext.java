@@ -31,7 +31,7 @@ package org.eclipse.ui.contexts;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see org.eclipse.ui.contexts.IContextManager
  * @see org.eclipse.core.commands.contexts.Context
  * @deprecated Please use the "org.eclipse.core.commands" plug-in instead.
