@@ -109,8 +109,10 @@ public final class ThemeElementHelper {
                     .getInstance().getDisplay());
 		} else {
             // values pushed in from jface property files.  Very ugly.
-			defaultFont = registry.bestDataArray(JFaceResources.getFontRegistry().getFontData(id),
-                    Workbench.getInstance().getDisplay());
+// RAP [rh] work around missing FontRegistry#bestDataArray()		  
+//			defaultFont = registry.bestDataArray(JFaceResources.getFontRegistry().getFontData(id),
+//                    Workbench.getInstance().getDisplay());
+			    defaultFont = JFaceResources.getFontRegistry().getFontData(id);
         }
 
         if (setInRegistry) {
