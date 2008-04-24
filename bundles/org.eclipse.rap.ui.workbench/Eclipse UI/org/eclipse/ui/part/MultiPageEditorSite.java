@@ -218,6 +218,7 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 	 * 
 	 * @return The decorator from the workbench window.
 	 * @deprecated use IWorkbench.getDecoratorManager()
+	 * @since 1.1
 	 */
 	public ILabelDecorator getDecoratorManager() {
 		return getWorkbenchWindow().getWorkbench().getDecoratorManager()
