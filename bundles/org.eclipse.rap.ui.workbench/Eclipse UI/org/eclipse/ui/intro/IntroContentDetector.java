@@ -22,7 +22,7 @@ package org.eclipse.ui.intro;
  * to avoid confusion about why the intro view part was opened again without the
  * user requesting it.
  * 
- * @since 3.3
+ * @since 1.1
  * 
  */
 public abstract class IntroContentDetector {

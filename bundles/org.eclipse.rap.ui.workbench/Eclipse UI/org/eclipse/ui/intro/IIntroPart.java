@@ -40,7 +40,7 @@ import org.eclipse.ui.PartInitException;
  * </p>
  * 
  * @see org.eclipse.ui.intro.IIntroManager#showIntro(org.eclipse.ui.IWorkbenchWindow, boolean)
- * @since 3.0
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IIntroPart extends IAdaptable {
@@ -48,9 +48,6 @@ public interface IIntroPart extends IAdaptable {
     /**
 	 * The property id for <code>getTitleImage</code> and
 	 * <code>getTitle</code>.
-	 * 
-	 * @since 3.2 this property now covers changes to <code>getTitle</code> in
-	 *        addition to <code>getTitleImage</code>
 	 */
 	public static final int PROP_TITLE = IWorkbenchPart.PROP_TITLE;
 
@@ -189,7 +186,6 @@ public interface IIntroPart extends IAdaptable {
      * </p>
      *
      * @return the intro part title (not <code>null</code>)
-     * @since 3.2
      */
     public String getTitle();
 

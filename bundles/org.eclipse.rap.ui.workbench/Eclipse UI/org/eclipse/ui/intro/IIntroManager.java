@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * </p>
  * 
  * @see org.eclipse.ui.IWorkbench#getIntroManager()
- * @since 3.0
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IIntroManager {
@@ -117,7 +117,7 @@ public interface IIntroManager {
 	 * 
 	 * @return <code>true</code> if new intro content is available
 	 * 
-	 * @since 3.3
+	 * @since 1.1
 	 */
     public boolean isNewContentAvailable();
 }
