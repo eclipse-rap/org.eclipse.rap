@@ -39,6 +39,7 @@ public interface IViewReference extends IWorkbenchPartReference {
 
     /**
      * Returns true if the view is a fast view otherwise returns false.
+     * @since 1.1
      */
     public boolean isFastView();
 }

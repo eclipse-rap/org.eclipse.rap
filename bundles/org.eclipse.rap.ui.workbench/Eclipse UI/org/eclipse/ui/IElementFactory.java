@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * @see IPersistableElement
  * @see IMemento
  * @see org.eclipse.ui.IWorkbench#getElementFactory
+ * @since 1.1
  */
 public interface IElementFactory {
     /**

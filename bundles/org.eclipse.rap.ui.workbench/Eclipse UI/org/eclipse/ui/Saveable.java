@@ -40,7 +40,7 @@ import org.eclipse.ui.progress.IJobRunnable;
  * </p>
  * 
  * @see ISaveablesSource
- * @since 1.1
+ * @since 1.0
  */
 public abstract class Saveable extends InternalSaveable implements IAdaptable {
   

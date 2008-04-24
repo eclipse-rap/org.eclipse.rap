@@ -450,6 +450,7 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 	 *            the id of the element factory
 	 * @return the element factory, or <code>null</code> if none
 	 * @see IElementFactory
+	 * @since 1.1
 	 */
 	public IElementFactory getElementFactory(String factoryId);
 

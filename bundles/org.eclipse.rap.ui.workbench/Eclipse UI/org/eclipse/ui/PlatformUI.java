@@ -32,6 +32,7 @@ import org.eclipse.ui.testing.TestableObject;
  * <p>
  *
  * @see IWorkbench
+ * @since 1.0
  */
 public final class PlatformUI {
     /**
@@ -39,7 +40,7 @@ public final class PlatformUI {
      */
 	public static final String PLUGIN_ID = "org.eclipse.rap.ui";  //$NON-NLS-1$
 	
-	// RAP [bm]: 
+	// RAP [bm]: namespace of EP != bundle id
 	/**
 	 * Identifies the namespace for extension points (RAP only)
 	 */
@@ -49,7 +50,6 @@ public final class PlatformUI {
      * Return code (value 0) indicating that the workbench terminated normally.
      * 
      * @see #createAndRunWorkbench
-     * @since 3.0
      */
     public static final int RETURN_OK = 0;
 
@@ -59,7 +59,6 @@ public final class PlatformUI {
      * 
      * @see #createAndRunWorkbench
      * @see IWorkbench#restart
-     * @since 3.0
      */
     public static final int RETURN_RESTART = 1;
 
@@ -68,7 +67,6 @@ public final class PlatformUI {
      * 
      * @see #createAndRunWorkbench
      * @see IWorkbench#restart
-     * @since 3.0
      */
     public static final int RETURN_UNSTARTABLE = 2;
 
@@ -77,7 +75,6 @@ public final class PlatformUI {
      * a call to IWorkbenchConfigurer#emergencyClose.
      * 
      * @see #createAndRunWorkbench
-     * @since 3.0
      */
     public static final int RETURN_EMERGENCY_CLOSE = 3;
 
@@ -114,7 +111,6 @@ public final class PlatformUI {
 	 * @return <code>true</code> if the workbench has been created and is
 	 *         still running, and <code>false</code> if the workbench has not
 	 *         yet been created or has completed
-	 * @since 3.0
 	 */
     public static boolean isWorkbenchRunning() {
     	// RAP [fappel]: should only called by UI-Threads. May cause trouble 
@@ -155,7 +151,6 @@ public final class PlatformUI {
      * not be started; 
      * {@link #RETURN_EMERGENCY_CLOSE RETURN_EMERGENCY_CLOSE} if the UI quit
      * because of an emergency; other values reserved for future use
-     * @since 3.0
      */
     public static int createAndRunWorkbench(Display display,
             WorkbenchAdvisor advisor) {
@@ -168,7 +163,6 @@ public final class PlatformUI {
      * not the workbench's.
      * 
      * @return the display
-     * @since 3.0
      */
     public static Display createDisplay() {
         return Workbench.createDisplay();
@@ -182,7 +176,7 @@ public final class PlatformUI {
      * </p> 
      * 
      * @return the testable object facade
-     * @since 3.0
+     * @since 1.1
      */
     public static TestableObject getTestableObject() {
         return Workbench.getWorkbenchTestable();
@@ -194,7 +188,7 @@ public final class PlatformUI {
      * {@link org.eclipse.ui.IWorkbenchPreferenceConstants}.
      * 
      * @return the workbench public preference store
-     * @since 3.0
+     * @since 1.1
      */
     public static IPreferenceStore getPreferenceStore() {
         return PrefUtil.getAPIPreferenceStore();

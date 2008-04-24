@@ -171,7 +171,7 @@ public interface ISources {
 	 * The variable name for the current perspective of the active workbench
 	 * window. This is for use with the <code>ISourceProvider</code> and
 	 * <code>IEvaluationContext</code>.
-	 * 
+	 * @since 1.1
 	 */
 	public static final String ACTIVE_WORKBENCH_WINDOW_ACTIVE_PERSPECTIVE_NAME = ACTIVE_WORKBENCH_WINDOW_NAME
 	+ ".activePerspective"; //$NON-NLS-1$
@@ -241,6 +241,7 @@ public interface ISources {
 	 * The variable for the showIn selection.  This is for use with the
 	 * <code>ISourceProvider</code> and <code>IEvaluationContext</code>.
 	 * @see IShowInSource
+	 * @since 1.1
 	 */
 	public static final String SHOW_IN_SELECTION = "showInSelection"; //$NON-NLS-1$
 	
@@ -248,6 +249,7 @@ public interface ISources {
 	 * The variable for the showIn input.  This is for use with the
 	 * <code>ISourceProvider</code> and <code>IEvaluationContext</code>.
 	 * @see IShowInSource
+	 * @since 1.1
 	 */
 	public static final String SHOW_IN_INPUT = "showInInput"; //$NON-NLS-1$
 

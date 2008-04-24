@@ -50,6 +50,7 @@ public interface IWorkbenchPartConstants {
 
     /**
      * The property id for any method on the optional <code>ISizeProvider</code> interface
+     * @since 1.1
      */
     int PROP_PREFERRED_SIZE = 0x303;
     

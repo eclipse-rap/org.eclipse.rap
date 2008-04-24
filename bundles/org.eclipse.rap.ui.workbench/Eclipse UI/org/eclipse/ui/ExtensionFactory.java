@@ -18,19 +18,12 @@ import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.internal.ShowInMenu;
-//import org.eclipse.ui.internal.dialogs.ContentTypesPreferencePage;
 import org.eclipse.ui.internal.dialogs.DecoratorsPreferencePage;
 import org.eclipse.ui.internal.dialogs.EditorsPreferencePage;
-//import org.eclipse.ui.internal.dialogs.FileEditorsPreferencePage;
 import org.eclipse.ui.internal.dialogs.PerspectivesPreferencePage;
 import org.eclipse.ui.internal.dialogs.ViewsPreferencePage;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferencePage;
-//import org.eclipse.ui.internal.keys.KeysPreferencePage;
-//import org.eclipse.ui.internal.keys.NewKeysPreferencePage;
 import org.eclipse.ui.internal.progress.ProgressView;
-import org.eclipse.ui.internal.themes.ColorsAndFontsPreferencePage;
-import org.eclipse.ui.internal.wizards.preferences.PreferencesExportWizard;
-import org.eclipse.ui.internal.wizards.preferences.PreferencesImportWizard;
 
 /**
  * Factory for the workbench's public extensions.
@@ -146,9 +139,12 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 		if (APPEARANCE_PREFERENCE_PAGE.equals(id)) {
 			return configure(new ViewsPreferencePage());
 		}
-		if (COLORS_AND_FONTS_PREFERENCE_PAGE.equals(id)) {
-			return configure(new ColorsAndFontsPreferencePage());
-		}
+		// RAP [bm]: ColorsAndFontsPreferencePage disabled
+//		if (COLORS_AND_FONTS_PREFERENCE_PAGE.equals(id)) {
+//			return configure(new ColorsAndFontsPreferencePage());
+//		}
+		// RAPEND: [bm] 
+
 		if (DECORATORS_PREFERENCE_PAGE.equals(id)) {
 			return configure(new DecoratorsPreferencePage());
 		}
@@ -169,12 +165,13 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 		if (PERSPECTIVES_PREFERENCE_PAGE.equals(id)) {
 			return configure(new PerspectivesPreferencePage());
 		}
-		if (PREFERENCES_EXPORT_WIZARD.equals(id)) {
-			return configure(new PreferencesExportWizard());
-		}
-		if (PREFERENCES_IMPORT_WIZARD.equals(id)) {
-			return configure(new PreferencesImportWizard());
-		}
+		// RAP [bm]: missing file handling - download/upload?
+//		if (PREFERENCES_EXPORT_WIZARD.equals(id)) {
+//			return configure(new PreferencesExportWizard());
+//		}
+//		if (PREFERENCES_IMPORT_WIZARD.equals(id)) {
+//			return configure(new PreferencesImportWizard());
+//		}
 		if (PROGRESS_VIEW.equals(id)) {
 			return configure(new ProgressView());
 		}

@@ -484,6 +484,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @return the working set of this page.
 	 * @deprecated individual views should store a working set if needed
+	 * @since 1.1
 	 */
 	public IWorkingSet getWorkingSet();
 
@@ -706,6 +707,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * Saves the visible views, their layout, and the visible action sets for
 	 * this page to the current perspective descriptor. The contents of the
 	 * current perspective descriptor are overwritten.
+	 * @since 1.1
 	 */
 	public void savePerspective();
 
@@ -717,6 +719,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @param perspective
 	 *            the perspective descriptor to save to
+	 * @since 1.1
 	 */
 	public void savePerspectiveAs(IPerspectiveDescriptor perspective);
 
@@ -831,6 +834,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * @param editor
 	 *            the editor to test
 	 * @return boolean whether the editor is pinned
+	 * @since 1.1
 	 */
 	public boolean isEditorPinned(IEditorPart editor);
 
@@ -840,6 +844,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * @return a int
 	 * 
 	 * @deprecated
+	 * @since 1.1
 	 */
 	public int getEditorReuseThreshold();
 
@@ -851,6 +856,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 *            the threshold
 	 * @deprecated use IPageLayout.setEditorReuseThreshold(int openEditors)
 	 *             instead.
+	 * @since 1.1
 	 */
 	public void setEditorReuseThreshold(int openEditors);
 
@@ -861,6 +867,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * context.
 	 * 
 	 * @return the navigation history
+	 * @since 1.1
 	 */
 	public INavigationHistory getNavigationHistory();
 
@@ -881,6 +888,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @see IPageLayout#addNewWizardShortcut(String)
 	 * @return an array of wizard identifiers
+	 * @since 1.1
 	 */
 	public String[] getNewWizardShortcuts();
 
@@ -974,6 +982,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @return the visible working sets for this page
 	 * @see IWorkbench#getActivitySupport()
+	 * @since 1.1
 	 */
 	public IWorkingSet[] getWorkingSets();
 
@@ -984,6 +993,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * @param sets
 	 *            the new working sets for this page. The array may be empty,
 	 *            but no element in the array may be <code>null</code>.
+	 * @since 1.1
 	 */
 	public void setWorkingSets(IWorkingSet[] sets);
 
@@ -1037,6 +1047,7 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * </p>
 	 * 
 	 * @return the aggregate working set for this page
+	 * @since 1.1
 	 */
 	public IWorkingSet getAggregateWorkingSet();
 
