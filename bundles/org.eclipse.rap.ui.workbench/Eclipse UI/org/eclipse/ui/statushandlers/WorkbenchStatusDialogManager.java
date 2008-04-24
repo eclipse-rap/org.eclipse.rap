@@ -52,21 +52,13 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -131,14 +123,13 @@ import com.ibm.icu.text.DateFormat;
  * @see Policy#setErrorSupportProvider(ErrorSupportProvider)
  * @see ErrorSupportProvider
  * @see AbstractStatusAreaProvider
- * @since 3.4
+ * @since 1.1
  */
 public class WorkbenchStatusDialogManager {
 
 	/**
 	 * This class is responsible for managing details area.
 	 * 
-	 * @since 3.4
 	 * 
 	 */
 	private final class DetailsAreaManager {
@@ -212,7 +203,6 @@ public class WorkbenchStatusDialogManager {
 	 * window passes the shell to the InternalDialog, and it can do switching
 	 * modality and recreate the window silently.
 	 * 
-	 * @since 3.4
 	 */
 	private class InternalDialog extends TrayDialog {
 
@@ -386,7 +376,6 @@ public class WorkbenchStatusDialogManager {
 	 * This class is responsible for disposing dialog elements when the dialog
 	 * is closed.
 	 * 
-	 * @since 3.4
 	 * 
 	 */
 	private final class StatusDialogDisposeListener implements DisposeListener {
@@ -408,7 +397,6 @@ public class WorkbenchStatusDialogManager {
 	 * This class is responsible for displaying the support area on the right
 	 * side of the status dialog.
 	 * 
-	 * @since 3.4
 	 * 
 	 */
 	private class SupportTray extends DialogTray implements
@@ -416,7 +404,8 @@ public class WorkbenchStatusDialogManager {
 
 		private IContributionItem closeAction;
 		private Image normal;
-		private Image hover;
+		// RAP [bm]: 
+//		private Image hover;
 
 		private Composite supportArea;
 		private Composite supportAreaContent;
@@ -433,7 +422,8 @@ public class WorkbenchStatusDialogManager {
 				public void fill(ToolBar parent, int index) {
 					final ToolItem item = new ToolItem(parent, SWT.PUSH);
 					item.setImage(normal);
-					item.setHotImage(hover);
+					// RAP [bm]: ToolItem#setHotImage
+//					item.setHotImage(hover);
 					item.setToolTipText(JFaceResources.getString("close")); //$NON-NLS-1$
 					item.addListener(SWT.Selection, new Listener() {
 						public void handleEvent(Event event) {
@@ -517,45 +507,50 @@ public class WorkbenchStatusDialogManager {
 		 * Creates any custom needed by the tray, such as the close button.
 		 */
 		private void createImages() {
-			Display display = Display.getCurrent();
-			int[] shape = new int[] { 3, 3, 5, 3, 7, 5, 8, 5, 10, 3, 12, 3, 12,
-					5, 10, 7, 10, 8, 12, 10, 12, 12, 10, 12, 8, 10, 7, 10, 5,
-					12, 3, 12, 3, 10, 5, 8, 5, 7, 3, 5 };
-
-			/*
-			 * Use magenta as transparency color since it is used infrequently.
-			 */
-			Color border = display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			Color background = display
-					.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-			Color backgroundHot = new Color(display, new RGB(252, 160, 160));
-			Color transparent = display.getSystemColor(SWT.COLOR_MAGENTA);
-
-			PaletteData palette = new PaletteData(new RGB[] {
-					transparent.getRGB(), border.getRGB(), background.getRGB(),
-					backgroundHot.getRGB() });
-			ImageData data = new ImageData(16, 16, 8, palette);
-			data.transparentPixel = 0;
-
-			normal = new Image(display, data);
-			normal.setBackground(transparent);
-			GC gc = new GC(normal);
-			gc.setBackground(background);
-			gc.fillPolygon(shape);
-			gc.setForeground(border);
-			gc.drawPolygon(shape);
-			gc.dispose();
-
-			hover = new Image(display, data);
-			hover.setBackground(transparent);
-			gc = new GC(hover);
-			gc.setBackground(backgroundHot);
-			gc.fillPolygon(shape);
-			gc.setForeground(border);
-			gc.drawPolygon(shape);
-			gc.dispose();
-
-			backgroundHot.dispose();
+			// RAP [bm]: replaced owner drawed with a static image
+//			Display display = Display.getCurrent();
+//			int[] shape = new int[] { 3, 3, 5, 3, 7, 5, 8, 5, 10, 3, 12, 3, 12,
+//					5, 10, 7, 10, 8, 12, 10, 12, 12, 10, 12, 8, 10, 7, 10, 5,
+//					12, 3, 12, 3, 10, 5, 8, 5, 7, 3, 5 };
+//
+//			/*
+//			 * Use magenta as transparency color since it is used infrequently.
+//			 */
+//			Color border = display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+//			Color background = display
+//					.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+//			// RAP [bm]: 
+////			Color backgroundHot = new Color(display, new RGB(252, 160, 160));
+//			Color backgroundHot = Graphics.getColor(new RGB(252, 160, 160));
+//			// RAPEND: [bm] 
+//			Color transparent = display.getSystemColor(SWT.COLOR_MAGENTA);
+//
+//			PaletteData palette = new PaletteData(new RGB[] {
+//					transparent.getRGB(), border.getRGB(), background.getRGB(),
+//					backgroundHot.getRGB() });
+//			ImageData data = new ImageData(16, 16, 8, palette);
+//			data.transparentPixel = 0;
+//
+//			normal = new Image(display, data);
+//			normal.setBackground(transparent);
+//			GC gc = new GC(normal);
+//			gc.setBackground(background);
+//			gc.fillPolygon(shape);
+//			gc.setForeground(border);
+//			gc.drawPolygon(shape);
+//			gc.dispose();
+//
+//			hover = new Image(display, data);
+//			hover.setBackground(transparent);
+//			gc = new GC(hover);
+//			gc.setBackground(backgroundHot);
+//			gc.fillPolygon(shape);
+//			gc.setForeground(border);
+//			gc.drawPolygon(shape);
+//			gc.dispose();
+//
+//			backgroundHot.dispose();
+			// TODO [bm]: create close image
 		}
 
 		/**
@@ -769,13 +764,14 @@ public class WorkbenchStatusDialogManager {
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 		 */
 		public void dispose() {
-			if (!imageTable.isEmpty()) {
-				for (Iterator iter = imageTable.values().iterator(); iter
-						.hasNext();) {
-					Image image = (Image) iter.next();
-					image.dispose();
-				}
-			}
+			// RAP [bm]: Image#dispose
+//			if (!imageTable.isEmpty()) {
+//				for (Iterator iter = imageTable.values().iterator(); iter
+//						.hasNext();) {
+//					Image image = (Image) iter.next();
+//					image.dispose();
+//				}
+//			}
 		}
 
 		/*
@@ -803,7 +799,7 @@ public class WorkbenchStatusDialogManager {
 		 */
 		public String getColumnText(Object element, int columnIndex) {
 			StatusAdapter statusAdapter = (StatusAdapter) element;
-			String text = WorkbenchMessages.WorkbenchStatusDialog_ProblemOccurred;
+			String text = WorkbenchMessages.get().WorkbenchStatusDialog_ProblemOccurred;
 			if (getStatusAdapters().size() == 1) {
 				Job job = (Job) (statusAdapter.getAdapter(Job.class));
 				if (job != null) {
@@ -826,7 +822,7 @@ public class WorkbenchStatusDialogManager {
 				String date = DateFormat.getDateTimeInstance(DateFormat.LONG,
 						DateFormat.LONG)
 						.format(new Date(timestamp.longValue()));
-				return NLS.bind(ProgressMessages.JobInfo_Error, (new Object[] {
+				return NLS.bind(ProgressMessages.get().JobInfo_Error, (new Object[] {
 						text, date }));
 			}
 			return text;
@@ -905,7 +901,8 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * The current clipboard. To be disposed when closing the dialog.
 	 */
-	private Clipboard clipboard;
+	// RAP [bm]: 
+//	private Clipboard clipboard;
 
 	/**
 	 * Filter mask for determining which status items to display. Default allows
@@ -1099,9 +1096,10 @@ public class WorkbenchStatusDialogManager {
 			closeTray();
 		}
 		shellBounds = getShell().getBounds();
-		if (clipboard != null) {
-			clipboard.dispose();
-		}
+		// RAP [bm]: Clipboard
+//		if (clipboard != null) {
+//			clipboard.dispose();
+//		}
 		statusListViewer = null;
 		boolean result = this.dialog.close();
 		if (!modalitySwitch) {
@@ -1184,7 +1182,7 @@ public class WorkbenchStatusDialogManager {
 			hideButton(button, true);
 
 		dialog.createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, true);
+				IDialogConstants.get().OK_LABEL, true);
 		createDetailsButton(parent);
 
 	}
@@ -1199,7 +1197,7 @@ public class WorkbenchStatusDialogManager {
 		if (shouldShowDetailsButton()) {
 			detailsButton = dialog.createButton(parent,
 					IDialogConstants.DETAILS_ID,
-					IDialogConstants.SHOW_DETAILS_LABEL, false);
+					IDialogConstants.get().SHOW_DETAILS_LABEL, false);
 		}
 	}
 
@@ -1299,19 +1297,21 @@ public class WorkbenchStatusDialogManager {
 		ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.NO_FOCUS);
 		((GridLayout) parent.getLayout()).numColumns++;
 		toolBar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-		final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-		toolBar.setCursor(cursor);
-		toolBar.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				cursor.dispose();
-			}
-		});
+		// RAP [bm]: Cursor
+//		final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
+//		toolBar.setCursor(cursor);
+//		toolBar.addDisposeListener(new DisposeListener() {
+//			public void widgetDisposed(DisposeEvent e) {
+//				cursor.dispose();
+//			}
+//		});
+		// RAPEND: [bm] 
 
 		launchTrayButton = new ToolItem(toolBar, SWT.NONE);
 		launchTrayButton.setImage(WorkbenchImages
 				.getImage(IWorkbenchGraphicConstants.IMG_DTOOL_SHOW_SUPPORT));
 		launchTrayButton
-				.setToolTipText(WorkbenchMessages.WorkbenchStatusDialog_Support);
+				.setToolTipText(WorkbenchMessages.get().WorkbenchStatusDialog_Support);
 		launchTrayButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				openTray(supportTray);
@@ -1524,7 +1524,7 @@ public class WorkbenchStatusDialogManager {
 			if (job != null) {
 				return NLS
 						.bind(
-								WorkbenchMessages.WorkbenchStatusDialog_ProblemOccurredInJob,
+								WorkbenchMessages.get().WorkbenchStatusDialog_ProblemOccurredInJob,
 								job.getName());
 			}
 			// we are not handling job
@@ -1543,7 +1543,7 @@ public class WorkbenchStatusDialogManager {
 			// plain status
 			return getSecondaryMessage(statusAdapter);
 		}
-		return WorkbenchMessages.WorkbenchStatusDialog_ProblemOccurred;
+		return WorkbenchMessages.get().WorkbenchStatusDialog_ProblemOccurred;
 	}
 
 	/**
@@ -1597,7 +1597,7 @@ public class WorkbenchStatusDialogManager {
 
 		// if status has children
 		if (status.getChildren().length > 0) {
-			return WorkbenchMessages.WorkbenchStatusDialog_StatusWithChildren;
+			return WorkbenchMessages.get().WorkbenchStatusDialog_StatusWithChildren;
 		}
 
 		// check the exception
@@ -1608,7 +1608,7 @@ public class WorkbenchStatusDialogManager {
 			}
 			return t.getClass().getName();
 		}
-		return WorkbenchMessages.WorkbenchStatusDialog_ProblemOccurred;
+		return WorkbenchMessages.get().WorkbenchStatusDialog_ProblemOccurred;
 	}
 
 	/**
@@ -1646,7 +1646,7 @@ public class WorkbenchStatusDialogManager {
 		// if status has children
 		if (status.getChildren().length > 0
 				&& !primary.equals(status.getMessage())) {
-			return WorkbenchMessages.WorkbenchStatusDialog_StatusWithChildren;
+			return WorkbenchMessages.get().WorkbenchStatusDialog_StatusWithChildren;
 		}
 
 		// check the exception
@@ -1658,7 +1658,7 @@ public class WorkbenchStatusDialogManager {
 			}
 			return t.getClass().getName();
 		}
-		return WorkbenchMessages.WorkbenchStatusDialog_SeeDetails;
+		return WorkbenchMessages.get().WorkbenchStatusDialog_SeeDetails;
 	}
 
 	/**
@@ -1872,9 +1872,9 @@ public class WorkbenchStatusDialogManager {
 			MessageDialogWithToggle dialog = MessageDialogWithToggle
 					.openOkCancelConfirm(
 							getShell(),
-							ProgressMessages.JobErrorDialog_CloseDialogTitle,
-							ProgressMessages.JobErrorDialog_CloseDialogMessage,
-							ProgressMessages.JobErrorDialog_DoNotShowAgainMessage,
+							ProgressMessages.get().JobErrorDialog_CloseDialogTitle,
+							ProgressMessages.get().JobErrorDialog_CloseDialogMessage,
+							ProgressMessages.get().JobErrorDialog_DoNotShowAgainMessage,
 							false, store, PREF_SKIP_GOTO_ACTION_PROMPT);
 			return dialog.getReturnCode() == Window.OK;
 		}
@@ -1965,7 +1965,7 @@ public class WorkbenchStatusDialogManager {
 			if (statusListViewer.getTable().getItemCount() > 1) {
 				getShell()
 						.setText(
-								WorkbenchMessages.WorkbenchStatusDialog_MultipleProblemsHaveOccured);
+								WorkbenchMessages.get().WorkbenchStatusDialog_MultipleProblemsHaveOccured);
 			} else {
 				getShell().setText(this.title);
 			}
@@ -2107,11 +2107,11 @@ public class WorkbenchStatusDialogManager {
 		Point oldSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		if (detailsManager.isOpen()) {
 			detailsManager.close();
-			detailsButton.setText(IDialogConstants.SHOW_DETAILS_LABEL);
+			detailsButton.setText(IDialogConstants.get().SHOW_DETAILS_LABEL);
 			opened = false;
 		} else {
 			detailsManager.createDetailsArea(dialogArea, statusAdapter);
-			detailsButton.setText(IDialogConstants.HIDE_DETAILS_LABEL);
+			detailsButton.setText(IDialogConstants.get().HIDE_DETAILS_LABEL);
 			opened = true;
 		}
 		Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);

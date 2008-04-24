@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Control;
  * @see Policy#setErrorSupportProvider(ErrorSupportProvider)
  * @see WorkbenchStatusDialogManager#setSupportAreaProvider(AbstractStatusAreaProvider)
  * @see WorkbenchStatusDialogManager#setDetailsAreaProvider(AbstractStatusAreaProvider)
- * @since 3.4
+ * @since 1.1
  */
 public abstract class AbstractStatusAreaProvider extends ErrorSupportProvider {
 

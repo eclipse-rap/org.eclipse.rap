@@ -22,7 +22,7 @@ import org.eclipse.ui.PlatformUI;
  * This interface should not be implemented or extended by clients.
  * </p>
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface IStatusAdapterConstants {
 

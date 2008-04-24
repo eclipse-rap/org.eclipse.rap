@@ -70,7 +70,7 @@ import org.eclipse.ui.progress.IProgressConstants;
  * associated with a product, it is used instead of this defined in advisor.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  * @see AbstractStatusHandler
  */
 public class StatusManager {
@@ -267,7 +267,7 @@ public class StatusManager {
 	 * @param pluginId
 	 *            the unique identifier of the relevant plug-in
 	 * @see StatusManager#handle(IStatus)
-	 * @since 3.4
+	 * @since 1.1
 	 * 
 	 */
 	public void handle(CoreException coreException,String pluginId) {

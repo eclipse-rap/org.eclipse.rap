@@ -52,7 +52,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
  * <code>statusHandler</code> element.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public abstract class AbstractStatusHandler {
 

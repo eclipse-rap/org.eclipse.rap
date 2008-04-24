@@ -22,7 +22,7 @@ import org.eclipse.ui.internal.progress.ProgressManagerUtil;
  * This is a default workbench error handler.
  * 
  * @see WorkbenchAdvisor#getWorkbenchErrorHandler()
- * @since 3.3
+ * @since 1.0
  */
 public class WorkbenchErrorHandler extends AbstractStatusHandler {
 
@@ -96,7 +96,7 @@ public class WorkbenchErrorHandler extends AbstractStatusHandler {
 	 * 
 	 * @param statusDialog
 	 *            a status dialog to be configured.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected void configureStatusDialog(
 			final WorkbenchStatusDialogManager statusDialog) {
