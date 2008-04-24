@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchPartDescriptor;
  * </p>
  * 
  * @see org.eclipse.ui.views.IViewRegistry
- * @since 3.1 
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IViewDescriptor extends IWorkbenchPartDescriptor, IAdaptable {
@@ -94,7 +94,7 @@ public interface IViewDescriptor extends IWorkbenchPartDescriptor, IAdaptable {
      * Returns whether this view can be restored upon workbench restart.
      * 
      * @return whether whether this view can be restored upon workbench restart
-     * @since 3.4
+     * @since 1.1
      */
     public boolean isRestorable();
 
