@@ -196,6 +196,7 @@ public abstract class AbstractUIPlugin extends Plugin {
      *
      * @return ImageRegistry the resulting registry.
      * @see #getImageRegistry
+     * @since 1.1
      */
     protected ImageRegistry createImageRegistry() {
     	
