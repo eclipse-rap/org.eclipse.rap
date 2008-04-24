@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchWizard;
  * This interface is not intended to be implemented by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWizardDescriptor extends IWorkbenchPartDescriptor, IAdaptable {
