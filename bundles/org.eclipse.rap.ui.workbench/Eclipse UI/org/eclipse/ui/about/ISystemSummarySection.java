@@ -18,7 +18,7 @@ import java.io.PrintWriter;
  * constructor.  A new instance of the class will be created each time the system
  * summary is created. 
  * 
- * @since 3.0
+ * @since 1.1
  */
 public interface ISystemSummarySection {
     /**
