@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Control;
  * </p>
  * 
  * @see org.eclipse.ui.ISources
- * @since 3.3
+ * @since 1.1
  */
 public interface IFocusService {
 	/**
