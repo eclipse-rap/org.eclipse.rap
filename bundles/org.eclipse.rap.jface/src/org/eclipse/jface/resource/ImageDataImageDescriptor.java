@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,13 @@ package org.eclipse.jface.resource;
 
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.ImageData;
 
 /**
  * @since 1.0
  */
 class ImageDataImageDescriptor extends ImageDescriptor {
 
-    private ImageData data;
+//    private ImageData data;
     
     /**
      * Original image being described, or null if this image is described
@@ -37,15 +36,15 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         this.originalImage = originalImage;
     }
     
-    /**
-     * Creates an image descriptor, given some image data.
-     * 
-     * @param data describing the image
-     */
-
-    ImageDataImageDescriptor(ImageData data) {
-        this.data = data;
-    }
+//    /**
+//     * Creates an image descriptor, given some image data.
+//     * 
+//     * @param data describing the image
+//     */
+//
+//    ImageDataImageDescriptor(ImageData data) {
+//        this.data = data;
+//    }
     
     /* (non-Javadoc)
      * @see org.eclipse.jface.resource.DeviceResourceDescriptor#create(org.eclipse.swt.graphics.Device)
@@ -56,13 +55,9 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         // if this is the same device.
         if (originalImage != null) {
             // If we're allocating on the same device as the original font, return the original.
-        	// RAP [bm]: 
 //            if (originalImage.getDevice() == device) {
-//                return originalImage;
+                return originalImage;
 //            }
-            return originalImage;
-            // RAPEND: [bm] 
-
         }
         
         return super.createResource(device);
@@ -82,19 +77,16 @@ class ImageDataImageDescriptor extends ImageDescriptor {
     /* (non-Javadoc)
      * @see org.eclipse.jface.resource.ImageDescriptor#getImageData()
      */
-    public ImageData getImageData() {
-        return data;
-    }
+//    public ImageData getImageData() {
+//        return data;
+//    }
     
     /* (non-Javadoc)
      * @see Object#hashCode
      */
-    public int hashCode() {
-    	 if (originalImage != null) {
-             return System.identityHashCode(originalImage);
-         }
-         return data.hashCode();
-    }
+//    public int hashCode() {
+//        return data.hashCode();
+//    }
 
     /* (non-Javadoc)
      * @see Object#equals
@@ -105,15 +97,16 @@ class ImageDataImageDescriptor extends ImageDescriptor {
 		} 
         
         ImageDataImageDescriptor imgWrap = (ImageDataImageDescriptor) obj;
-        
-        //Intentionally using == instead of equals() as Image.hashCode() changes
-        //when the image is disposed and so leaks may occur with equals()
        
-        if (originalImage != null) {
+//        if (originalImage != null) {
             return imgWrap.originalImage == originalImage;
-        }
-        
-        return (imgWrap.originalImage == null && data.equals(imgWrap.data));
+//        }
+//        
+//        return (imgWrap.originalImage == null && data.equals(imgWrap.data));
+    }
+    
+    public Image createImage(boolean returnMissingImageOnError, Device device) {
+      return originalImage;
     }
     
 }

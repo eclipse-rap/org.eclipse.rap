@@ -13,19 +13,7 @@ package org.eclipse.ui.tests.activities;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ui.activities.ActivityEvent;
-import org.eclipse.ui.activities.ActivityManagerEvent;
-import org.eclipse.ui.activities.CategoryEvent;
-import org.eclipse.ui.activities.IActivity;
-import org.eclipse.ui.activities.IActivityListener;
-import org.eclipse.ui.activities.IActivityManagerListener;
-import org.eclipse.ui.activities.ICategory;
-import org.eclipse.ui.activities.ICategoryListener;
-import org.eclipse.ui.activities.IIdentifier;
-import org.eclipse.ui.activities.IIdentifierListener;
-import org.eclipse.ui.activities.IdentifierEvent;
-import org.eclipse.ui.activities.NotDefinedException;
-//import org.eclipse.ui.activities.WorkbenchTriggerPointAdvisor;
+import org.eclipse.ui.activities.*;
 import org.eclipse.ui.internal.activities.MutableActivityManager;
 import org.eclipse.ui.tests.harness.util.UITestCase;
 
@@ -74,8 +62,8 @@ public class DynamicTest extends UITestCase {
     public DynamicTest(String testName) {
         super(testName);
         fixedModelRegistry = new DynamicModelActivityRegistry();
-//        activityManager = new MutableActivityManager(new WorkbenchTriggerPointAdvisor(), fixedModelRegistry);
-        activityManager = new MutableActivityManager(fixedModelRegistry);
+        activityManager = new MutableActivityManager(new WorkbenchTriggerPointAdvisor(), fixedModelRegistry);
+//        activityManager = new MutableActivityManager(fixedModelRegistry);
         listenerType = -1;
     }
 

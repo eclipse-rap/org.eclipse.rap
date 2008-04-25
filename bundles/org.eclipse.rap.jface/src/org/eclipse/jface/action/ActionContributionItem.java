@@ -1072,7 +1072,9 @@ public class ActionContributionItem extends ContributionItem {
 //					hoverImage = image;
 //					image = ImageDescriptor.createWithFlags(action
 //							.getImageDescriptor(), SWT.IMAGE_GRAY);
+				  if( disabledImage != null ) {
 					System.out.println("GRAY" + disabledImage.toString()); //$NON-NLS-1$
+				  }
 				}
 			}
 

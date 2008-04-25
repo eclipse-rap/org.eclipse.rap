@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.internal.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.PaletteData;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.*;
 
 /**
  * Abstract base class for image descriptors that synthesize an image from other
@@ -47,7 +45,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	 * the given bounds using one or more calls to the <code>drawImage</code>
 	 * framework method.
 	 * </p>
-	 * 
+	 *
 	 * @param width
 	 *            the width
 	 * @param height
@@ -62,7 +60,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	 * Call this internal framework method to superimpose another image atop
 	 * this composite image.
 	 * </p>
-	 * 
+	 *
 	 * @param src
 	 *            the source image data
 	 * @param ox
@@ -70,7 +68,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	 * @param oy
 	 *            the y position
 	 */
-	final protected void drawImage(ImageData src, int ox, int oy) {
+	final protected void drawImage(ImageData src, final int ox, final int oy) {
 		ImageData dst = imageData;
 		PaletteData srcPalette = src.palette;
 		ImageData srcMask = null;
@@ -144,16 +142,15 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	/*
 	 * (non-Javadoc) Method declared on ImageDesciptor.
 	 */
-	// RAP [bm]: made private to void publishing ImageData
-	protected ImageData getImageData() {
-		Point size = getSize();		
-		
+	/*public*/ private ImageData getImageData() {
+		Point size = getSize();
+
 		/* Create a 24 bit image data with alpha channel */
 		imageData = new ImageData(size.x, size.y, 24, new PaletteData(0xFF, 0xFF00, 0xFF0000));
 		imageData.alphaData = new byte[imageData.width * imageData.height];
-		
+
 		drawCompositeImage(size.x, size.y);
-		
+
 		/* Detect minimum transparency */
 		boolean transparency = false;
 		byte[] alphaData = imageData.alphaData;
@@ -180,14 +177,17 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 		}
 		return imageData;
 	}
-	
+
+	public Image createImage( final boolean returnMissingImageOnError,
+	                          final Device device ) {
+	  return ResourceFactory.findImage( getImageData() );
+	}
 
 	/**
 	 * Return the transparent pixel for the receiver.
-	 * <strong>NOTE</strong> This value is not currently in use in the 
+	 * <strong>NOTE</strong> This value is not currently in use in the
 	 * default implementation.
 	 * @return int
-	 * @since 1.0
 	 */
 	protected int getTransparentPixel() {
 		return 0;
@@ -198,14 +198,13 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	 * <p>
 	 * Subclasses must implement this framework method.
 	 * </p>
-	 * 
+	 *
 	 * @return the x and y size of the image expressed as a point object
 	 */
 	protected abstract Point getSize();
 
 	/**
 	 * @param imageData The imageData to set.
-	 * @since 1.0
 	 */
 	protected void setImageData(ImageData imageData) {
 		this.imageData = imageData;

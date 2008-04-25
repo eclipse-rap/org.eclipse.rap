@@ -4,7 +4,8 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.demo.databinding;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
-Require-Bundle: org.eclipse.rap.jface.databinding,
- org.eclipse.rap.ui.workbench,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.rap.jface.databinding,
  org.eclipse.core.databinding,
- org.eclipse.core.databinding.beans
+ org.eclipse.core.databinding.beans,
+ org.eclipse.rap.ui

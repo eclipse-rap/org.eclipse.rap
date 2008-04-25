@@ -978,12 +978,17 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         super.start(context);
         bundleContext = context;
         
+
+        // RAP [fappel]: fixes of memory consumption problems
+        JobManagerAdapter.getInstance();
+        // RAPEND
+        
         // RAP [bm]: 
         // initialise the servlet names -> ensure that the http registry
         // bundle was loaded befort the service tracker gets opened.
         String id = "org.eclipse.equinox.http.registry";
         Bundle httpRegistry = Platform.getBundle( id );
-        httpRegistry.start( Bundle.START_ACTIVATION_POLICY );
+        httpRegistry.start();
         httpServiceTracker = new HttpServiceTracker(context);
         BrandingExtension.read();
         httpServiceTracker.open();
@@ -991,7 +996,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
         JFaceUtil.initializeJFace();
 		
-		 Window.setDefaultOrientation(getDefaultOrientation());
+		Window.setDefaultOrientation(getDefaultOrientation());
 
         // The UI plugin needs to be initialized so that it can install the callback in PrefUtil,
         // which needs to be done as early as possible, before the workbench
@@ -1016,11 +1021,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 		 * likely to cause a deadlock in class loader code.  Please see Bug 86450
 		 * for more information.
 		 */
-
-        // RAP [fappel]: fixes of memory consumption problems
-        JobManagerAdapter.getInstance();
-        // RAPEND
-
     }
 
 	/**
