@@ -473,6 +473,19 @@ public class ProgressManager extends ProgressProvider implements
 				if (event.getJob().isUser()) {
 					boolean noDialog = shouldRunInBackground();
 					if (!noDialog) {
+					  Job job = new Job( "test" ) {
+					    /* (non-Javadoc)
+					     * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+					     */
+					    protected IStatus run( IProgressMonitor monitor ) {
+					      // TODO Auto-generated method stub
+System.out.println( "test job" );
+					      return Status.OK_STATUS;
+					    }
+					  };
+					  job.setSystem( true );
+					  job.schedule();
+					  
 						final IJobChangeEvent finalEvent = event;
 						WorkbenchJob showJob = new WorkbenchJob(
 								ProgressMessages.get().ProgressManager_showInDialogName) {

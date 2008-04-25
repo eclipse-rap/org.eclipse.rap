@@ -159,25 +159,25 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				if (getShell() == null) {
 					return;
 				}
-				final WorkbenchJob closeJob = new WorkbenchJob(closeJobDialogMsg) {
-					/*
-					 * (non-Javadoc)
-					 * 
-					 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
-					 */
-					public IStatus runInUIThread(IProgressMonitor monitor) {
-						Shell currentShell = getShell();
-						if (currentShell == null || currentShell.isDisposed()) {
-							return Status.CANCEL_STATUS;
-						}
-						finishedRun();
-						return Status.OK_STATUS;
-					}
-				};
-				closeJob.setSystem(true);
 				// RAP [fappel]: ensure mapping to context
-                UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-                  public void run() {
+				UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+				  public void run() {
+    				final WorkbenchJob closeJob = new WorkbenchJob(closeJobDialogMsg) {
+    					/*
+    					 * (non-Javadoc)
+    					 * 
+    					 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+    					 */
+    					public IStatus runInUIThread(IProgressMonitor monitor) {
+    						Shell currentShell = getShell();
+    						if (currentShell == null || currentShell.isDisposed()) {
+    							return Status.CANCEL_STATUS;
+    						}
+    						finishedRun();
+    						return Status.OK_STATUS;
+    					}
+    				};
+    				closeJob.setSystem(true);
                     closeJob.schedule();
                   }
                 } );

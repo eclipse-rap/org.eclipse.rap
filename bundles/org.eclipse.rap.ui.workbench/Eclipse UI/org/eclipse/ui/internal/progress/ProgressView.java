@@ -10,23 +10,13 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.*;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.preferences.ViewPreferencesAction;
@@ -53,8 +43,10 @@ public class ProgressView extends ViewPart implements IViewPart {
 		viewer = new DetailedProgressViewer(parent, SWT.MULTI | SWT.H_SCROLL);
 		viewer.setComparator(ProgressManagerUtil.getProgressViewerComparator());
 
-		viewer.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
+// RAP [fappel]: seems to be a bug in original workbench, parent has no gridlayout
+// TODO: file bug
+//		viewer.getControl().setLayoutData(
+//				new GridData(SWT.FILL, SWT.FILL, true, true));
 
 // RAP [fappel]: help system not supported
 //		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,

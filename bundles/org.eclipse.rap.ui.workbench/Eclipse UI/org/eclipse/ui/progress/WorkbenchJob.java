@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.progress.ProgressUtil;
 
 /**
@@ -93,14 +92,21 @@ public abstract class WorkbenchJob extends UIJob {
      * @see org.eclipse.core.internal.jobs.InternalJob#shouldSchedule()
      */
     public boolean shouldSchedule() {
-        return super.shouldSchedule() && PlatformUI.isWorkbenchRunning();
+// RAP [fappel]: session aware implementation
+//        return super.shouldSchedule() && PlatformUI.isWorkbenchRunning();
+        return    super.shouldSchedule() 
+               && ProgressUtil.isWorkbenchRunning( getDisplay() );
+
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.jobs.Job#shouldRun()
      */
     public boolean shouldRun() {
-        return super.shouldRun() && PlatformUI.isWorkbenchRunning();
+// RAP [fappel]: session aware implementation
+//        return super.shouldRun() && PlatformUI.isWorkbenchRunning();
+        return    super.shouldRun() 
+               && ProgressUtil.isWorkbenchRunning( getDisplay() );
     }
 
 }
