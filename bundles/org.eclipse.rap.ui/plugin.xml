@@ -935,12 +935,14 @@
             description="%command.openEditorDropDown.description"
             categoryId="org.eclipse.ui.category.window"
             id="org.eclipse.ui.window.openEditorDropDown" />
+      <!-- RAP [rh] QuickAccessHandler disabled in ui.workbench
       <command
             categoryId="org.eclipse.ui.category.window"
             defaultHandler="org.eclipse.ui.internal.quickaccess.QuickAccessHandler"
             description="%command.quickAccess.description"
             id="org.eclipse.ui.window.quickAccess"
             name="%command.quickAccess.name"/>
+      -->
       <command
             categoryId="org.eclipse.ui.category.window"
             defaultHandler="org.eclipse.ui.internal.WorkbenchEditorsHandler"
