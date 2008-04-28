@@ -137,6 +137,7 @@ There is an implementation limitation which currently affects action sets.  It i
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not used
          <attribute name="accelerator" type="string">
             <annotation>
                <documentation>
@@ -147,6 +148,7 @@ There is an implementation limitation which currently affects action sets.  It i
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="definitionId" type="string">
             <annotation>
                <documentation>
@@ -184,6 +186,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not used
          <attribute name="disabledIcon" type="string">
             <annotation>
                <documentation>
@@ -204,6 +207,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="tooltip" type="string">
             <annotation>
                <documentation>
@@ -214,6 +218,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not used
          <attribute name="helpContextId" type="string">
             <annotation>
                <documentation>
@@ -221,6 +226,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </documentation>
             </annotation>
          </attribute>
+         -->
          <attribute name="style" use="default" value="push">
             <annotation>
                <documentation>

@@ -213,6 +213,7 @@ This element is deprecated. Users of this extension point should now define the 
                <element ref="popup"/>
             </choice>
          </sequence>
+         <!-- RAP [bm] not supported
          <attribute name="mnemonic" type="string">
             <annotation>
                <documentation>
@@ -223,6 +224,7 @@ This element is deprecated. Users of this extension point should now define the 
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="imageStyle" type="string">
             <annotation>
                <documentation>
@@ -557,6 +559,7 @@ Query: The query format is &amp;lt;placement&amp;gt;=&amp;lt;id&amp;gt; where:
                </documentation>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not supported
          <attribute name="mnemonic" type="string">
             <annotation>
                <documentation>
@@ -567,6 +570,7 @@ Query: The query format is &amp;lt;placement&amp;gt;=&amp;lt;id&amp;gt; where:
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="icon" type="string">
             <annotation>
                <documentation>
@@ -638,6 +642,7 @@ Query: The query format is &amp;lt;placement&amp;gt;=&amp;lt;id&amp;gt; where:
                </documentation>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not supported
          <attribute name="mnemonic" type="string">
             <annotation>
                <documentation>
@@ -648,6 +653,7 @@ Query: The query format is &amp;lt;placement&amp;gt;=&amp;lt;id&amp;gt; where:
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="icon" type="string">
             <annotation>
                <documentation>
@@ -659,6 +665,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not supported
          <attribute name="disabledIcon" type="string">
             <annotation>
                <documentation>
@@ -679,6 +686,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="label" type="string">
             <annotation>
                <documentation>
@@ -699,6 +707,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not supported
          <attribute name="helpContextId" type="string">
             <annotation>
                <documentation>
@@ -706,6 +715,7 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </documentation>
             </annotation>
          </attribute>
+         -->
          <attribute name="style" use="default" value="push">
             <annotation>
                <documentation>

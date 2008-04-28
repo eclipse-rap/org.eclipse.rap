@@ -192,6 +192,7 @@ default (org.eclipse.core.resources.ProjectScope.SCOPE)
                </appInfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] help
          <attribute name="helpContext" type="string">
             <annotation>
                <documentation>
@@ -199,6 +200,7 @@ default (org.eclipse.core.resources.ProjectScope.SCOPE)
                </documentation>
             </annotation>
          </attribute>
+         -->
       </complexType>
    </element>
 

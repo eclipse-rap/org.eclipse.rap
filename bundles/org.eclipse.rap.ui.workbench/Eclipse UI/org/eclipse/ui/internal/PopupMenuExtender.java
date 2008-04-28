@@ -40,6 +40,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.menus.InternalMenuService;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.menus.IMenuService;
@@ -481,8 +482,9 @@ public class PopupMenuExtender implements IMenuListener2,
 		for (int i = 0; i < deltas.length; i++) {
 			IExtensionDelta delta = deltas[i];
 			IExtensionPoint extensionPoint = delta.getExtensionPoint();
+			// RAP [bm]: namespace
 			if (extensionPoint.getNamespace().equals(
-					WorkbenchPlugin.PI_WORKBENCH)
+					PlatformUI.PLUGIN_EXTENSION_NAME_SPACE)
 					&& extensionPoint.getSimpleIdentifier().equals(
 							IWorkbenchRegistryConstants.PL_POPUP_MENU)) {
 

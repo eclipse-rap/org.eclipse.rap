@@ -131,16 +131,17 @@ final class ContextPersistence extends RegistryPersistence {
 	}
 
 	protected final boolean isChangeImportant(final IRegistryChangeEvent event) {
+		// RAP [bm]: replaced namespace
 		final IExtensionDelta[] acceleratorScopeDeltas = event
-				.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+				.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 						IWorkbenchRegistryConstants.PL_ACCELERATOR_SCOPES);
 		if (acceleratorScopeDeltas.length == 0) {
 			final IExtensionDelta[] contextDeltas = event.getExtensionDeltas(
-					PlatformUI.PLUGIN_ID,
+					PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 					IWorkbenchRegistryConstants.PL_CONTEXTS);
 			if (contextDeltas.length == 0) {
 				final IExtensionDelta[] commandDeltas = event
-						.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+						.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 								IWorkbenchRegistryConstants.PL_COMMANDS);
 				if (commandDeltas.length == 0) {
 					return false;

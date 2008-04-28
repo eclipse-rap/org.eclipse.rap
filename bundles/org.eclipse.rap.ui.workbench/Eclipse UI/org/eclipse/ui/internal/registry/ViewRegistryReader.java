@@ -105,6 +105,7 @@ public class ViewRegistryReader extends RegistryReader {
     public void readViews(IExtensionRegistry in, ViewRegistry out) {
         // this does not seem to really ever be throwing an the exception
         viewRegistry = out;
+        // RAP [bm]: namespace
         readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_VIEWS);
     }
 }

@@ -204,6 +204,7 @@ public class PropertyPagesRegistryReader extends CategorizedPageRegistryReader {
 	 *            the registry
 	 */
 	public void registerPropertyPages(IExtensionRegistry registry) {
+		// RAP [bm]: namespace
 		readRegistry(registry, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_PROPERTY_PAGES);
 		processNodes();

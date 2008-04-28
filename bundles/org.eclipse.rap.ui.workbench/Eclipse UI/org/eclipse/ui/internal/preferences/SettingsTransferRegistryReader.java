@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.RegistryReader;
 
@@ -50,7 +50,8 @@ public class SettingsTransferRegistryReader extends RegistryReader {
 
 		settingsTransfers = new ArrayList();
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		readRegistry(registry, WorkbenchPlugin.PI_WORKBENCH,
+		// RAP [bm]: namespace
+		readRegistry(registry, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_PREFERENCE_TRANSFER);
 
 		IConfigurationElement[] transfers = new IConfigurationElement[settingsTransfers

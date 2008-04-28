@@ -59,7 +59,8 @@ public class WorkbenchPreferenceManager extends PreferenceManager implements
 					 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 					 */
 					public void registryChanged(IRegistryChangeEvent event) {
-						if (event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+						// RAP [bm]: replaced namespace
+						if (event.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 								IWorkbenchRegistryConstants.PL_KEYWORDS).length > 0) {
 							for (Iterator j = getElements(
 									PreferenceManager.POST_ORDER).iterator(); j
@@ -154,8 +155,9 @@ public class WorkbenchPreferenceManager extends PreferenceManager implements
 	 * @see org.eclipse.core.runtime.dynamicHelpers.IExtensionAdditionHandler#getExtensionPointFilter()
 	 */
 	private IExtensionPoint getExtensionPointFilter() {
+		// RAP [bm]: namespace
 		return Platform.getExtensionRegistry().getExtensionPoint(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_PREFERENCES);
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_PREFERENCES);
 	}
 
 	/* (non-Javadoc)

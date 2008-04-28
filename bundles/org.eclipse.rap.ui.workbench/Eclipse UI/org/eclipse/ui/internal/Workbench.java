@@ -80,10 +80,13 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorPart;
@@ -117,7 +120,6 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.commands.ICommandService;
-//import org.eclipse.ui.commands.IWorkbenchCommandSupport;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -128,7 +130,6 @@ import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
 import org.eclipse.ui.internal.commands.CommandImageManager;
 import org.eclipse.ui.internal.commands.CommandImageService;
 import org.eclipse.ui.internal.commands.CommandService;
-//import org.eclipse.ui.internal.commands.WorkbenchCommandSupport;
 import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
 import org.eclipse.ui.internal.contexts.ContextService;
 import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
@@ -1066,6 +1067,12 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		if (exceptions[0] != null)
 			throw exceptions[0];
 
+		// RAP [bm]: this is added to have filter capability in ActiveShellSourceProvider
+		newWindow.getShell().addListener(SWT.Activate, new Listener() {
+			public void handleEvent(Event event) {
+			}
+		});
+		
 		// Open window after opening page, to avoid flicker.
 		StartupThreading.runWithWorkbenchExceptions(new StartupRunnable() {
 
@@ -2135,8 +2142,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	 * @return the ids of all plug-ins containing 1 or more startup extensions
 	 */
 	public String[] getEarlyActivatedPlugins() {
+		// RAP [bm]: namespace
 		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(PlatformUI.PLUGIN_ID,
+				.getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 						IWorkbenchRegistryConstants.PL_STARTUP);
 		IExtension[] extensions = point.getExtensions();
 		ArrayList pluginIds = new ArrayList(extensions.length);
@@ -3110,8 +3118,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 		 */
 		public void registryChanged(IRegistryChangeEvent event) {
+			// RAP [bm]: namespace
 			final IExtensionDelta[] deltas = event.getExtensionDeltas(
-					PlatformUI.PLUGIN_ID,
+					PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 					IWorkbenchRegistryConstants.PL_STARTUP);
 			if (deltas.length == 0) {
 				return;

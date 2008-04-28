@@ -11,7 +11,6 @@
 
 package org.eclipse.ui.internal.registry;
 
-import com.ibm.icu.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,8 +22,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.PreferenceFilterEntry;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.preferences.PreferenceTransferElement;
+
+import com.ibm.icu.text.Collator;
 
 /**
  * Preference Transfer registry reader to read extenders of the
@@ -118,7 +119,8 @@ public class PreferenceTransferRegistryReader extends RegistryReader {
 	protected void readPreferenceTransfers() {
 		preferenceTransfers = new ArrayList();
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		readRegistry(registry, WorkbenchPlugin.PI_WORKBENCH, pluginPoint);
+		// RAP [bm]: namespace
+		readRegistry(registry, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, pluginPoint);
 	}
 
 	/**

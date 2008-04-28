@@ -198,6 +198,7 @@ The path is relative to the location of the plugin.xml file of the contributing 
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not used
          <attribute name="helpContextId" type="string">
             <annotation>
                <documentation>
@@ -205,6 +206,7 @@ The path is relative to the location of the plugin.xml file of the contributing 
                </documentation>
             </annotation>
          </attribute>
+         -->
          <attribute name="style">
             <annotation>
                <documentation>

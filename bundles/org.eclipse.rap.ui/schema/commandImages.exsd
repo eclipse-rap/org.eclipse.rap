@@ -77,6 +77,7 @@ Commands placed in menus using the &lt;a href=&quot;org_eclipse_ui_menus.html&qu
                </appinfo>
             </annotation>
          </attribute>
+         <!-- RAP [bm] not used
          <attribute name="disabledIcon" type="string">
             <annotation>
                <documentation>
@@ -97,6 +98,7 @@ Commands placed in menus using the &lt;a href=&quot;org_eclipse_ui_menus.html&qu
                </appinfo>
             </annotation>
          </attribute>
+         -->
          <attribute name="style" type="string">
             <annotation>
                <documentation>

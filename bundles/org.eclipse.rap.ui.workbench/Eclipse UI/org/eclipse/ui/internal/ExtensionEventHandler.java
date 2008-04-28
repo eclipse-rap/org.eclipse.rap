@@ -51,8 +51,9 @@ class ExtensionEventHandler implements IRegistryChangeListener {
 
     public void registryChanged(IRegistryChangeEvent event) {
         try {
+        	// RAP [bm]: replaced namespace
             IExtensionDelta delta[] = event
-                    .getExtensionDeltas(WorkbenchPlugin.PI_WORKBENCH);
+                    .getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE);
             IExtension ext;
             IExtensionPoint extPt;
             IWorkbenchWindow[] win = PlatformUI.getWorkbench()

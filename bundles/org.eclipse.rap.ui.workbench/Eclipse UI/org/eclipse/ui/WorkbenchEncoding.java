@@ -96,7 +96,8 @@ public class WorkbenchEncoding {
 		List definedEncodings = Collections.synchronizedList(new ArrayList());
 		EncodingsRegistryReader reader = new EncodingsRegistryReader(definedEncodings);
 
-		reader.readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_ID,
+		// RAP [bm]: namedspace
+		reader.readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_ENCODINGS);
 
 		//Make it an array in case of concurrency issues with Iterators

@@ -51,6 +51,7 @@ public final class PreferencePageParameterValues implements IParameterValues {
 					 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 					 */
 					public void registryChanged(IRegistryChangeEvent event) {
+						// RAP [bm]: namespace
 						if (event.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 								IWorkbenchRegistryConstants.PL_PREFERENCES).length > 0) {
 							preferenceMap = null;
