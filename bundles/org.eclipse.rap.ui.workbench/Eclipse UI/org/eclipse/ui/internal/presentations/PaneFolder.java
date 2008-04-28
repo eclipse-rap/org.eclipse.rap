@@ -25,9 +25,9 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+//import org.eclipse.swt.events.MouseAdapter;
+//import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -65,7 +65,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
  * To be consistent with SWT composites, this object can deal with its children
  * being disposed without warning. This is treated like a removal.
  * 
- * @since 3.0
  */
 public final class PaneFolder {
     // Tab folder and associated proxy controls
@@ -155,12 +154,13 @@ public final class PaneFolder {
 
     private int state = IStackPresentationSite.STATE_RESTORED;
 
-    /**
-     * State of the folder at the last mousedown event. This is used to prevent
-     * a mouseup over the minimize or maximize buttons from undoing a state
-     * change that was caused by the mousedown.
-     */
-    private int mousedownState = -1;
+// RAP [rh] unused code    
+//    /**
+//     * State of the folder at the last mousedown event. This is used to prevent
+//     * a mouseup over the minimize or maximize buttons from undoing a state
+//     * change that was caused by the mousedown.
+//     */
+//    private int mousedownState = -1;
     
     // RAP [bm]: not used
 //    /**
@@ -215,18 +215,15 @@ public final class PaneFolder {
 
     };
 
-    private MouseListener mouseListener = new MouseAdapter() {
-        public void mouseDown(MouseEvent e) {
-            mousedownState = getState();
+// RAP [rh] MouseListener useless: no event.time, don't work reliably on CTabFolder    
+//    private MouseListener mouseListener = new MouseAdapter() {
+//        public void mouseDown(MouseEvent e) {
+//            mousedownState = getState();
 //            mousedownPoint = new Point(e.x, e.y);
-            // RAP [bm]: Event#time
 //            mousedownTime = e.time & 0x0FFFFFFFFL;
-        }
-
-        public void mouseUp(MouseEvent e) {
-        	// RAP [bm]: MouseEvent#count
-        	// RAP [bm]: Event#time
-        	// RAP [bm]: TabFolder#getItem(Point)
+//        }
+//
+//        public void mouseUp(MouseEvent e) {
 //			if (e.button == 2 && e.count == 1) {
 //				Point mouseupPoint = new Point(e.x, e.y);
 //				CTabItem item = tabFolder.getItem(mouseupPoint);
@@ -238,11 +235,11 @@ public final class PaneFolder {
 //					}
 //				}
 //			}
-        }
-        
-        public void mouseDoubleClick(MouseEvent e) {
-        }
-    };
+//        }
+//        
+//        public void mouseDoubleClick(MouseEvent e) {
+//        }
+//    };
 
     private boolean showButtons = true;
     private boolean minimizeVisible = false;
@@ -297,7 +294,8 @@ public final class PaneFolder {
 
             tabFolder.addCTabFolder2Listener(expandListener);
 
-            tabFolder.addMouseListener(mouseListener);
+// RAP [rh] MouseListener useless: no event.time, don't work reliably on CTabFolder    
+//            tabFolder.addMouseListener(mouseListener);
 
             tabFolder.addDisposeListener(tabFolderDisposeListener);
         }
@@ -458,7 +456,6 @@ public final class PaneFolder {
 	 * 
 	 * @param show
 	 *            <code>true</code> - the min/max buttons are visible.
-	 * @since 3.3
 	 */
     public void showMinMax(boolean show) {
     	showButtons = show;
@@ -599,7 +596,8 @@ public final class PaneFolder {
      *            one of the IStackPresentationSite.STATE_* constants
      */
     protected void notifyButtonListeners(int buttonId) {
-        if (mousedownState == getState()) {
+// RAP [rh] mousedownState unused, since CTabFolderEvents are used insted of MouseListeners    	
+//        if (mousedownState == getState()) {
             Iterator iter = buttonListeners.iterator();
 
             while (iter.hasNext()) {
@@ -608,7 +606,7 @@ public final class PaneFolder {
 
                 listener.stateButtonPressed(buttonId);
             }
-        }
+//        }
     }
 
     public Control getContent() {
@@ -851,7 +849,6 @@ public final class PaneFolder {
      *            The number of characters to display in the tab folder; this
      *            value should be a positive integer.
      * @see org.eclipse.swt.custom.CTabFolder#setMinimumCharacters(int)
-     * @since 3.1
      */
     public void setMinimumCharacters(int count) {
         tabFolder.setMinimumCharacters(count);
@@ -906,7 +903,6 @@ public final class PaneFolder {
 	 * 
 	 * @param visible
 	 *            <code>true</code> - it's visible.
-	 * @since 3.2
 	 */
     public void setVisible(boolean visible) {
 		contentProxy.setVisible(visible);

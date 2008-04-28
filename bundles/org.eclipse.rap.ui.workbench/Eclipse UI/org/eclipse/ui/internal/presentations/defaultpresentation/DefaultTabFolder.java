@@ -18,14 +18,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseAdapter;
+//import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.ActivateAdapter;
+import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.events.ActivateListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -125,11 +128,12 @@ public class DefaultTabFolder extends AbstractTabFolder {
 //	        pullDownButton.setDisabledImage(hoverImage);
 	        pullDownButton.setImage(hoverImage);
 	        pullDownButton.setToolTipText(WorkbenchMessages.get().Menu); 
-            actualToolBar.addMouseListener(new MouseAdapter() {
-                public void mouseDown(MouseEvent e) {
-                    fireEvent(TabFolderEvent.EVENT_PANE_MENU, getSelection(), getPaneMenuLocation());
-                }
-            });
+// RAP [rh] disabled MouseListener for the view menu dropdown
+//            actualToolBar.addMouseListener(new MouseAdapter() {
+//                public void mouseDown(MouseEvent e) {
+//                    fireEvent(TabFolderEvent.EVENT_PANE_MENU, getSelection(), getPaneMenuLocation());
+//                }
+//            });
             pullDownButton.addSelectionListener(new SelectionAdapter() {
             	public void widgetSelected(SelectionEvent e) {
                     fireEvent(TabFolderEvent.EVENT_PANE_MENU, getSelection(), getPaneMenuLocation());
@@ -138,6 +142,14 @@ public class DefaultTabFolder extends AbstractTabFolder {
             	}
             });
         }
+
+// RAP [rh] create ActivateListener, used below       
+        ActivateListener activateListener = new ActivateAdapter() {
+            public void activated( ActivateEvent event ) {
+              fireEvent( TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART );
+            }
+        };
+// END RAP-specific        
         
         // Initialize content description label
         {
@@ -145,8 +157,14 @@ public class DefaultTabFolder extends AbstractTabFolder {
 	        titleLabel.moveAbove(null);
 	        titleLabel.setVisible(false);
             attachListeners(titleLabel, false);
+// RAP [rh] Mimic the part activation that is done via mouse listeners in attachListeners()  
+            ActivateEvent.addListener( titleLabel , activateListener );
         }
         
+// RAP [rh] Mimic the part activation that is done via mouse listeners in attachListeners()  
+        ActivateEvent.addListener( paneFolder.getControl(), activateListener );
+        ActivateEvent.addListener( paneFolder.getViewForm(), activateListener );
+
         attachListeners(paneFolder.getControl(), false);
         attachListeners(paneFolder.getViewForm(), false);
         

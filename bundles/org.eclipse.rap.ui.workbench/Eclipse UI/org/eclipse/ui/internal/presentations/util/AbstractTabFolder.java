@@ -15,14 +15,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+//import org.eclipse.swt.events.MouseAdapter;
+//import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
+//import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
 /**
@@ -60,32 +60,33 @@ public abstract class AbstractTabFolder {
 //		}
 //	};
 
-    // RAP [bm]: 
+    // RAP [bm]: DnD not supported
 //    private Listener dragListener = new Listener() {
 //        public void handleEvent(Event e) {
 //            Point globalPos = ((Control)e.widget).toDisplay(e.x, e.y);
 //            handleDragStarted(globalPos, e);
 //        }
 //    };
-	
-	private MouseListener mouseListener = new MouseAdapter() {
-		
-		// If we single-click on an empty space on the toolbar, move focus to the
-		// active control
-		public void mouseDown(MouseEvent e) {
-			Point p = ((Control)e.widget).toDisplay(e.x, e.y);
 
-			handleMouseDown(p, e);
-		}
-		
-		
-		// If we double-click on the toolbar, maximize the presentation
-		public void mouseDoubleClick(MouseEvent e) {
-			Point p = ((Control)e.widget).toDisplay(e.x, e.y);
-
-			handleDoubleClick(p, e);						
-		}
-	};
+// RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
+//	private MouseListener mouseListener = new MouseAdapter() {
+//		
+//		// If we single-click on an empty space on the toolbar, move focus to the
+//		// active control
+//		public void mouseDown(MouseEvent e) {
+//			Point p = ((Control)e.widget).toDisplay(e.x, e.y);
+//
+//			handleMouseDown(p, e);
+//		}
+//		
+//		
+//		// If we double-click on the toolbar, maximize the presentation
+//		public void mouseDoubleClick(MouseEvent e) {
+//			Point p = ((Control)e.widget).toDisplay(e.x, e.y);
+//
+//			handleDoubleClick(p, e);						
+//		}
+//	};
     
     public void setActive(int activeState) {
         this.activeState = activeState;
@@ -290,7 +291,8 @@ public abstract class AbstractTabFolder {
     protected void attachListeners(Control theControl, boolean recursive) {
     	// RAP [bm]: 
 //        theControl.addListener(SWT.MenuDetect, menuListener);
-        theControl.addMouseListener(mouseListener);
+// RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
+//        theControl.addMouseListener(mouseListener);
         // RAP [bm]: 
 //        PresentationUtil.addDragListener(theControl, dragListener);
         
@@ -309,7 +311,8 @@ public abstract class AbstractTabFolder {
     protected void detachListeners(Control theControl, boolean recursive) {
     	// RAP [bm]: 
 //        theControl.removeListener(SWT.MenuDetect, menuListener);
-        theControl.removeMouseListener(mouseListener);
+// RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
+//        theControl.removeMouseListener(mouseListener);
         // RAP [bm]: 
 //        PresentationUtil.removeDragListener(theControl, dragListener);
         
@@ -325,41 +328,43 @@ public abstract class AbstractTabFolder {
         }
     }
     
-    protected void handleContextMenu(Point displayPos, Event e) {
-        if (isOnBorder(displayPos)) {
-            return;
-        }
+// RAP [rh] unused code: MouseListener deactivated    
+//    protected void handleContextMenu(Point displayPos, Event e) {
+//        if (isOnBorder(displayPos)) {
+//            return;
+//        }
+//
+//        AbstractTabItem tab = getItem(displayPos); 
+//        
+//        fireEvent(TabFolderEvent.EVENT_SYSTEM_MENU, tab, displayPos);
+//    }
+//    
+//    protected void handleMouseDown(Point displayPos, MouseEvent e) {
+//        fireEvent(TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART);
+//    }
+//
+//    protected void handleDoubleClick(Point displayPos, MouseEvent e) {
+//        if (isOnBorder(displayPos)) {
+//            return;
+//        }
+//        
+//		if (getState() == IStackPresentationSite.STATE_MAXIMIZED) {
+//			fireEvent(TabFolderEvent.EVENT_RESTORE);
+//		} else {
+//		    fireEvent(TabFolderEvent.EVENT_MAXIMIZE);
+//		}
+//    }
 
-        AbstractTabItem tab = getItem(displayPos); 
-        
-        fireEvent(TabFolderEvent.EVENT_SYSTEM_MENU, tab, displayPos);
-    }
-    
-    protected void handleMouseDown(Point displayPos, MouseEvent e) {
-        fireEvent(TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART);
-    }
-
-    protected void handleDoubleClick(Point displayPos, MouseEvent e) {
-        if (isOnBorder(displayPos)) {
-            return;
-        }
-        
-		if (getState() == IStackPresentationSite.STATE_MAXIMIZED) {
-			fireEvent(TabFolderEvent.EVENT_RESTORE);
-		} else {
-		    fireEvent(TabFolderEvent.EVENT_MAXIMIZE);
-		}
-    }
-    
-    protected void handleDragStarted(Point displayPos, Event e) {
-
-        if (isOnBorder(displayPos)) {
-            return;
-        }
-        
-        AbstractTabItem tab = getItem(displayPos);
-        fireEvent(TabFolderEvent.EVENT_DRAG_START, tab, displayPos);
-    }
+// RAP [rh] unused code: DnD code disabled    
+//    protected void handleDragStarted(Point displayPos, Event e) {
+//
+//        if (isOnBorder(displayPos)) {
+//            return;
+//        }
+//        
+//        AbstractTabItem tab = getItem(displayPos);
+//        fireEvent(TabFolderEvent.EVENT_DRAG_START, tab, displayPos);
+//    }
 
     /**
      * Returns true iff the given point is on the border of the folder.
