@@ -22,6 +22,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 //import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
@@ -87,6 +89,15 @@ public abstract class AbstractTabFolder {
 //			handleDoubleClick(p, e);						
 //		}
 //	};
+
+// RAP [rh] workaround for MouseListeners to allow dbl-click on tab item to maximize    
+    private Listener mouseListener = new Listener() {
+    	public void handleEvent(Event e) {
+    		if(e.type == SWT.DefaultSelection) {
+    			handleDoubleClick( new Point(e.x, e.y), e );
+    		}
+    	}
+    };
     
     public void setActive(int activeState) {
         this.activeState = activeState;
@@ -293,6 +304,8 @@ public abstract class AbstractTabFolder {
 //        theControl.addListener(SWT.MenuDetect, menuListener);
 // RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
 //        theControl.addMouseListener(mouseListener);
+// RAP [rh] replace 'manual' double-click detection with default-selected    	
+    	theControl.addListener(SWT.DefaultSelection, mouseListener);    	
         // RAP [bm]: 
 //        PresentationUtil.addDragListener(theControl, dragListener);
         
@@ -313,6 +326,8 @@ public abstract class AbstractTabFolder {
 //        theControl.removeListener(SWT.MenuDetect, menuListener);
 // RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
 //        theControl.removeMouseListener(mouseListener);
+// RAP [rh] replace 'manual' double-click detection with default-selected    	
+    	theControl.removeListener(SWT.DefaultSelection, mouseListener);    	
         // RAP [bm]: 
 //        PresentationUtil.removeDragListener(theControl, dragListener);
         
@@ -343,17 +358,21 @@ public abstract class AbstractTabFolder {
 //        fireEvent(TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART);
 //    }
 //
+
+// RAP [rh] replaced mouse event with default-selected    
 //    protected void handleDoubleClick(Point displayPos, MouseEvent e) {
+    protected void handleDoubleClick(Point displayPos, Event e) {    
+// RAP [rh] unnecessary, mouse-listener specific code    	
 //        if (isOnBorder(displayPos)) {
 //            return;
 //        }
-//        
-//		if (getState() == IStackPresentationSite.STATE_MAXIMIZED) {
-//			fireEvent(TabFolderEvent.EVENT_RESTORE);
-//		} else {
-//		    fireEvent(TabFolderEvent.EVENT_MAXIMIZE);
-//		}
-//    }
+        
+		if (getState() == IStackPresentationSite.STATE_MAXIMIZED) {
+			fireEvent(TabFolderEvent.EVENT_RESTORE);
+		} else {
+		    fireEvent(TabFolderEvent.EVENT_MAXIMIZE);
+		}
+    }
 
 // RAP [rh] unused code: DnD code disabled    
 //    protected void handleDragStarted(Point displayPos, Event e) {
