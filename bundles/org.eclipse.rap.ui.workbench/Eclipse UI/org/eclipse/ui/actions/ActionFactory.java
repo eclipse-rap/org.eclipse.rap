@@ -12,15 +12,11 @@ package org.eclipse.ui.actions;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.IProduct;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.CloseAllSavedAction;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.IntroAction;
 import org.eclipse.ui.internal.LockToolBarAction;
 import org.eclipse.ui.internal.NavigationHistoryAction;
@@ -34,9 +30,6 @@ import org.eclipse.ui.internal.ToggleEditorsVisibilityAction;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.actions.CommandAction;
-//import org.eclipse.ui.internal.actions.DynamicHelpAction;
-//import org.eclipse.ui.internal.actions.HelpContentsAction;
-//import org.eclipse.ui.internal.actions.HelpSearchAction;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
@@ -90,45 +83,46 @@ public abstract class ActionFactory {
 		}
 	}
 
-    /**
-     * Workbench action: Displays the About dialog. This action maintains its
-     * enablement state.
-     */
-    public static final ActionFactory ABOUT = new ActionFactory("about") { //$NON-NLS-1$
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-		 */
-		public IWorkbenchAction create(IWorkbenchWindow window) {
-			if (window == null) {
-				throw new IllegalArgumentException();
-			}
-
-			WorkbenchCommandAction action = new WorkbenchCommandAction(
-					"org.eclipse.ui.help.aboutAction", window); //$NON-NLS-1$
-
-			action.setId(getId());
-			IProduct product = Platform.getProduct();
-			String productName = null;
-			if (product != null) {
-				productName = product.getName();
-			}
-			if (productName == null) {
-				productName = ""; //$NON-NLS-1$
-			}
-
-			action.setText(NLS.bind(WorkbenchMessages.get().AboutAction_text,
-					productName));
-			action.setToolTipText(NLS.bind(
-					WorkbenchMessages.get().AboutAction_toolTip, productName));
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//			window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.ABOUT_ACTION);
-			return action;
-		}
-	};
+    // RAP [bm]: No about dialog yet
+//    /**
+//     * Workbench action: Displays the About dialog. This action maintains its
+//     * enablement state.
+//     */
+//    public static final ActionFactory ABOUT = new ActionFactory("about") { //$NON-NLS-1$
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//		 */
+//		public IWorkbenchAction create(IWorkbenchWindow window) {
+//			if (window == null) {
+//				throw new IllegalArgumentException();
+//			}
+//
+//			WorkbenchCommandAction action = new WorkbenchCommandAction(
+//					"org.eclipse.ui.help.aboutAction", window); //$NON-NLS-1$
+//
+//			action.setId(getId());
+//			IProduct product = Platform.getProduct();
+//			String productName = null;
+//			if (product != null) {
+//				productName = product.getName();
+//			}
+//			if (productName == null) {
+//				productName = ""; //$NON-NLS-1$
+//			}
+//
+//			action.setText(NLS.bind(WorkbenchMessages.get().AboutAction_text,
+//					productName));
+//			action.setToolTipText(NLS.bind(
+//					WorkbenchMessages.get().AboutAction_toolTip, productName));
+//// RAP [rh] IWorkbench#getHelpSystem not implemented            
+////			window.getWorkbench().getHelpSystem().setHelp(action,
+////					IWorkbenchHelpContextIds.ABOUT_ACTION);
+//			return action;
+//		}
+//	};
 
     /**
 	 * Workbench action (id "activateEditor"): Activate the most recently used
@@ -1474,27 +1468,28 @@ public abstract class ActionFactory {
 //
 //	};
 
-    /**
-	 * Workbench action (id "showPartPaneMenu"): Show the part pane menu. This
-	 * action maintains its enablement state.
-	 */
-    public static final ActionFactory SHOW_PART_PANE_MENU = new ActionFactory(
-            "showPartPaneMenu") {//$NON-NLS-1$
-       
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            WorkbenchCommandAction action=new WorkbenchCommandAction("org.eclipse.ui.window.showSystemMenu",window); //$NON-NLS-1$
-            action.setId(getId());
-            action.setText(WorkbenchMessages.get().ShowPartPaneMenuAction_text); 
-            action.setToolTipText(WorkbenchMessages.get().ShowPartPaneMenuAction_toolTip); 
-            return action;
-        }
-    };
+    // RAP [bm]: no need for a part menu action
+//    /**
+//	 * Workbench action (id "showPartPaneMenu"): Show the part pane menu. This
+//	 * action maintains its enablement state.
+//	 */
+//    public static final ActionFactory SHOW_PART_PANE_MENU = new ActionFactory(
+//            "showPartPaneMenu") {//$NON-NLS-1$
+//       
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            WorkbenchCommandAction action=new WorkbenchCommandAction("org.eclipse.ui.window.showSystemMenu",window); //$NON-NLS-1$
+//            action.setId(getId());
+//            action.setText(WorkbenchMessages.get().ShowPartPaneMenuAction_text); 
+//            action.setToolTipText(WorkbenchMessages.get().ShowPartPaneMenuAction_toolTip); 
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "showViewMenu"): Show the view menu. This action
