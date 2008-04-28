@@ -21,7 +21,6 @@ import org.eclipse.ui.internal.ShowInMenu;
 import org.eclipse.ui.internal.dialogs.DecoratorsPreferencePage;
 import org.eclipse.ui.internal.dialogs.EditorsPreferencePage;
 import org.eclipse.ui.internal.dialogs.PerspectivesPreferencePage;
-import org.eclipse.ui.internal.dialogs.ViewsPreferencePage;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferencePage;
 import org.eclipse.ui.internal.progress.ProgressView;
 
@@ -37,15 +36,17 @@ import org.eclipse.ui.internal.progress.ProgressView;
 public class ExtensionFactory implements IExecutableExtensionFactory,
 		IExecutableExtension {
 
-	/**
-	 * Factory ID for the Appearance preference page.
-	 */
-	public static final String APPEARANCE_PREFERENCE_PAGE = "appearancePreferencePage"; //$NON-NLS-1$
+	// RAP [bm]: IWorkbench#restart 
+//	/**
+//	 * Factory ID for the Appearance preference page.
+//	 */
+//	public static final String APPEARANCE_PREFERENCE_PAGE = "appearancePreferencePage"; //$NON-NLS-1$
 
-	/**
-	 * Factory ID for the Colors and Fonts preference page.
-	 */
-	public static final String COLORS_AND_FONTS_PREFERENCE_PAGE = "colorsAndFontsPreferencePage"; //$NON-NLS-1$
+	// RAP [bm]: Color+Font Dialog
+//	/**
+//	 * Factory ID for the Colors and Fonts preference page.
+//	 */
+//	public static final String COLORS_AND_FONTS_PREFERENCE_PAGE = "colorsAndFontsPreferencePage"; //$NON-NLS-1$
 
 	/**
 	 * Factory ID for the Decorators preference page.
@@ -62,31 +63,33 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 	 */
 	public static final String FILE_ASSOCIATIONS_PREFERENCE_PAGE = "fileAssociationsPreferencePage"; //$NON-NLS-1$
 
-	/**
-	 * Factory ID for the Keys preference page.
-	 */
-	public static final String KEYS_PREFERENCE_PAGE = "keysPreferencePage"; //$NON-NLS-1$
-
-	/**
-	 * Factory ID for the new (and improved) keys preference page.
-	 * 
-	 */
-	public static final String NEW_KEYS_PREFERENCE_PAGE = "newKeysPreferencePage"; //$NON-NLS-1$
+	// RAP [bm]: bindings
+//	/**
+//	 * Factory ID for the Keys preference page.
+//	 */
+//	public static final String KEYS_PREFERENCE_PAGE = "keysPreferencePage"; //$NON-NLS-1$
+//
+//	/**
+//	 * Factory ID for the new (and improved) keys preference page.
+//	 * 
+//	 */
+//	public static final String NEW_KEYS_PREFERENCE_PAGE = "newKeysPreferencePage"; //$NON-NLS-1$
 
 	/**
 	 * Factory ID for the Perspectives preference page.
 	 */
 	public static final String PERSPECTIVES_PREFERENCE_PAGE = "perspectivesPreferencePage"; //$NON-NLS-1$
 
-	/**
-	 * Factory ID for the Preferences export wizard.
-	 */
-	public static final String PREFERENCES_EXPORT_WIZARD = "preferencesExportWizard"; // $//$NON-NLS-1$
-
-	/**
-	 * Factory ID for the Preferences import wizard.
-	 */
-	public static final String PREFERENCES_IMPORT_WIZARD = "preferencesImportWizard"; // $//$NON-NLS-1$
+	// RAP [bm]: file handling
+//	/**
+//	 * Factory ID for the Preferences export wizard.
+//	 */
+//	public static final String PREFERENCES_EXPORT_WIZARD = "preferencesExportWizard"; // $//$NON-NLS-1$
+//
+//	/**
+//	 * Factory ID for the Preferences import wizard.
+//	 */
+//	public static final String PREFERENCES_IMPORT_WIZARD = "preferencesImportWizard"; // $//$NON-NLS-1$
 
 	/**
 	 * Factory ID for the Progress view.
@@ -136,9 +139,10 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 	 * extension data.
 	 */
 	public Object create() throws CoreException {
-		if (APPEARANCE_PREFERENCE_PAGE.equals(id)) {
-			return configure(new ViewsPreferencePage());
-		}
+		// RAP [bm]: 
+//		if (APPEARANCE_PREFERENCE_PAGE.equals(id)) {
+//			return configure(new ViewsPreferencePage());
+//		}
 		// RAP [bm]: ColorsAndFontsPreferencePage disabled
 //		if (COLORS_AND_FONTS_PREFERENCE_PAGE.equals(id)) {
 //			return configure(new ColorsAndFontsPreferencePage());

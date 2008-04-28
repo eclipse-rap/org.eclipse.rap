@@ -304,18 +304,19 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 	public IWorkbenchWindow openWorkbenchWindow(IAdaptable input)
 			throws WorkbenchException;
 
-	/**
-	 * Closes then restarts this workbench.
-	 * <p>
-	 * If the workbench has an open editor with unsaved content, the user will
-	 * be given the opportunity to save it.
-	 * </p>
-	 * 
-	 * @return <code>true</code> if the workbench was successfully closed, and
-	 *         <code>false</code> if it could not be closed
-	 * 
-	 */
-	public boolean restart();
+	// RAP [bm]: no restart
+//	/**
+//	 * Closes then restarts this workbench.
+//	 * <p>
+//	 * If the workbench has an open editor with unsaved content, the user will
+//	 * be given the opportunity to save it.
+//	 * </p>
+//	 * 
+//	 * @return <code>true</code> if the workbench was successfully closed, and
+//	 *         <code>false</code> if it could not be closed
+//	 * 
+//	 */
+//	public boolean restart();
 
 	/**
 	 * Shows the specified perspective to the user. The caller should use this

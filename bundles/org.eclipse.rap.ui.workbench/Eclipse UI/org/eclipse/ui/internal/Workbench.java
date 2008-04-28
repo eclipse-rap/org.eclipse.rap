@@ -2083,13 +2083,14 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		return memento;
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on IWorkbench.
-	 */
-	public boolean restart() {
-		// this is the return code from run() to trigger a restart
-		return close(PlatformUI.RETURN_RESTART, false);
-	}
+	// RAP [bm]: no restart
+//	/*
+//	 * (non-Javadoc) Method declared on IWorkbench.
+//	 */
+//	public boolean restart() {
+//		// this is the return code from run() to trigger a restart
+//		return close(PlatformUI.RETURN_RESTART, false);
+//	}
 
 	/*
 	 * Restores the state of the previously saved workbench
