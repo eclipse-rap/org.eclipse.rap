@@ -29,6 +29,8 @@ import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -356,10 +358,12 @@ public class JFaceResources {
 	 */
 	public static ColorRegistry getColorRegistry() {
       return ColorRegistryStore.getInstance().getColorRegistry();
+      // RAP [bm]: 
 //		if (colorRegistry == null) {
 //			colorRegistry = new ColorRegistry();
 //		}
 //		return colorRegistry;
+      // RAPEND: [bm] 
 	}
 
 	/**
@@ -372,7 +376,7 @@ public class JFaceResources {
 	 * @return the global resource manager for the given display
 	 */
 	public static ResourceManager getResources(final Display toQuery) {
-        Map registries = Registries.getInstance().getMap();
+        final Map registries = Registries.getInstance().getMap();
       
 		ResourceManager reg = (ResourceManager) registries.get(toQuery);
 
@@ -380,6 +384,7 @@ public class JFaceResources {
 			final DeviceResourceManager mgr = new DeviceResourceManager(toQuery);
 			reg = mgr;
 			registries.put(toQuery, reg);
+			// RAP [bm]: 
 //			toQuery.disposeExec(new Runnable() {
 //				/*
 //				 * (non-Javadoc)
@@ -391,7 +396,21 @@ public class JFaceResources {
 //					registries.remove(toQuery);
 //				}
 //			});
-			System.out.println("TODO DISPOSE EXEC"); //$NON-NLS-1$
+	    	RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
+
+				public void beforeDestroy( SessionStoreEvent event ) {
+					toQuery.syncExec( new Runnable() {
+
+						public void run() {
+							mgr.dispose();
+							registries.remove( toQuery );							
+						}
+						
+					});
+				}
+	    		
+	    	});
+			// RAPEND: [bm] 
 		}
 
 		return reg;

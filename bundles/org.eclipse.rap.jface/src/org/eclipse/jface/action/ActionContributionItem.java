@@ -1055,33 +1055,34 @@ public class ActionContributionItem extends ContributionItem {
 				return image != null;
 			}
 			ImageDescriptor image = action.getImageDescriptor();
-			ImageDescriptor hoverImage = action.getHoverImageDescriptor();
-			ImageDescriptor disabledImage = action.getDisabledImageDescriptor();
+//			ImageDescriptor hoverImage = action.getHoverImageDescriptor();
+//			ImageDescriptor disabledImage = action.getDisabledImageDescriptor();
 
 			// If there is no regular image, but there is a hover image,
 			// convert the hover image to gray and use it as the regular image.
-			if (image == null && hoverImage != null) {
+			// RAP [bm]: 
+//			if (image == null && hoverImage != null) {
 //				image = ImageDescriptor.createWithFlags(action
 //						.getHoverImageDescriptor(), SWT.IMAGE_GRAY);
-				System.out.println("GRAY"); //$NON-NLS-1$
-			} else {
-				// If there is no hover image, use the regular image as the
-				// hover image,
-				// and convert the regular image to gray
-				if (hoverImage == null && image != null) {
+//			} else {
+//				// If there is no hover image, use the regular image as the
+//				// hover image,
+//				// and convert the regular image to gray
+//				if (hoverImage == null && image != null) {
 //					hoverImage = image;
 //					image = ImageDescriptor.createWithFlags(action
 //							.getImageDescriptor(), SWT.IMAGE_GRAY);
-				  if( disabledImage != null ) {
-					System.out.println("GRAY" + disabledImage.toString()); //$NON-NLS-1$
-				  }
-				}
-			}
-
-			// Make sure there is a valid image.
-			if (hoverImage == null && image == null && forceImage) {
+//				}
+//			}
+//			
+//			// Make sure there is a valid image.
+//			if (/* hoverImage == null &&  */ image == null && forceImage) {
+//				image = ImageDescriptor.getMissingImageDescriptor();
+//			}
+			if(image == null) {
 				image = ImageDescriptor.getMissingImageDescriptor();
 			}
+			// RAPEND: [bm] 
 
 			// Create a local resource manager to remember the images we've
 			// allocated for this tool item
