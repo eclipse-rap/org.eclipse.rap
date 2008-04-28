@@ -71,7 +71,7 @@ public interface ISettingStore {
    * If the value argument is <code>null</code>, this has the same effect 
    * as calling {@link #removeAttribute(String)}.
    * <p>
-   * {@link ISettingStoreListener}s attached to this instance will be notified
+   * {@link SettingStoreListener}s attached to this instance will be notified
    * after an attribute has been stored.
    * 
    * @param name   the name of the attribute; cannot be <code>null</code>
@@ -88,7 +88,7 @@ public interface ISettingStore {
    * {@link ISettingStore}. If no attribute is stored under the specified name,
    * this method does nothing.
    * <p>
-   * {@link ISettingStoreListener}s attached to this instance will be notified
+   * {@link SettingStoreListener}s attached to this instance will be notified
    * after an attribute has been removed.
    * 
    * @param name    the name of the attribute to remove;
@@ -106,11 +106,11 @@ public interface ISettingStore {
    * <p>
    * The attributes of this setting store before the load operation will remain
    * associated with the old id, but will be removed from this store instance.
-   * {@link ISettingStoreListener}s attached to this store will receive a
+   * {@link SettingStoreListener}s attached to this store will receive a
    * notification for each removed attribute.
    * <p> 
    * During the load operation this store will be filled with the attributes
-   * associated with the new id value. {@link ISettingStoreListener}s attached
+   * associated with the new id value. {@link SettingStoreListener}s attached
    * to this store will receive a notification for each added attribute.
    * <p>
    * After the load operation this store will only hold attributes associated 
@@ -138,20 +138,20 @@ public interface ISettingStore {
   String getId();
   
   /**
-   * Attaches an {@link ISettingStoreListener} to this {@link ISettingStore}.
+   * Attaches an {@link SettingStoreListener} to this {@link ISettingStore}.
    * <p>
    * Listeners attached to this instance will notified of changes in the store.
    * 
-   * @param listener the {@link ISettingStoreListener} to add; non-null
+   * @param listener the {@link SettingStoreListener} to add; non-null
    * @throw {@link NullPointerException} if listener is <code>null</code>
    */
-  void addSettingStoreListener( ISettingStoreListener listener );
+  void addSettingStoreListener( SettingStoreListener listener );
   
   /**
-   * Removes an {@link ISettingStoreListener} from this {@link ISettingStore}.
+   * Removes an {@link SettingStoreListener} from this {@link ISettingStore}.
    *
-   * @param listener the {@link ISettingStoreListener} to remove; non-null
+   * @param listener the {@link SettingStoreListener} to remove; non-null
    * @throw {@link NullPointerException} if listener is <code>null</code>
    */
-  void removeSettingStoreListener( ISettingStoreListener listener );
+  void removeSettingStoreListener( SettingStoreListener listener );
 }

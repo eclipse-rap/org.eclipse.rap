@@ -8,17 +8,16 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.service;
 
 final class FTSettingStoreListener 
-  implements ISettingStoreListener
+  implements SettingStoreListener
 {
 
   private int count = 0;
-  private ISettingStoreEvent lastEvent;
+  private SettingStoreEvent lastEvent;
   
-  public void settingChanged( final ISettingStoreEvent event ) {
+  public void settingChanged( final SettingStoreEvent event ) {
       count++;
       lastEvent = event;
   }
@@ -27,7 +26,7 @@ final class FTSettingStoreListener
     return count;
   }
   
-  ISettingStoreEvent getEvent() {
+  SettingStoreEvent getEvent() {
     return lastEvent;
   }
 }

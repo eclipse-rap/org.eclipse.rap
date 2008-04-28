@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.service;
 
 import java.util.*;
@@ -98,7 +97,8 @@ public final class MemorySettingStore implements ISettingStore {
   }
 
   public synchronized void setAttribute( final String name, 
-                                         final String value ) {
+                                         final String value ) 
+  {
     ParamCheck.notNull( name, "name" );
     if( value == null ) {
       removeAttribute( name );
@@ -113,14 +113,14 @@ public final class MemorySettingStore implements ISettingStore {
   }
 
   public synchronized void addSettingStoreListener( 
-    final ISettingStoreListener listener ) 
+    final SettingStoreListener listener ) 
   {
     ParamCheck.notNull( listener, "listener" );
     LISTENERS.add( listener );
   }
 
   public synchronized void removeSettingStoreListener( 
-    final ISettingStoreListener listener ) 
+    final SettingStoreListener listener ) 
   {
     ParamCheck.notNull( listener, "listener" );
     LISTENERS.remove( listener );
@@ -157,11 +157,11 @@ public final class MemorySettingStore implements ISettingStore {
   private synchronized void notifyListeners( final String attribute,
                                              final String oldValue, 
                                              final String newValue ) {
-    ISettingStoreEvent event 
-      = new SettingStoreEvent( attribute, oldValue, newValue );
+    SettingStoreEvent event 
+      = new SettingStoreEvent( this, attribute, oldValue, newValue );
     Iterator iter = LISTENERS.iterator();
     while( iter.hasNext() ) {
-      ISettingStoreListener listener = ( ISettingStoreListener )iter.next();
+      SettingStoreListener listener = ( SettingStoreListener )iter.next();
       try {
         listener.settingChanged( event );
       } catch( Exception exc ) {

@@ -8,20 +8,20 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.service;
+
 
 /**
  * Setting store listeners are notified by an {@link ISettingStore}, when
  * an attribute inside the store has been changed (i.e. added, modified, 
  * removed).
  * <p>
- * @see ISettingStore#addSettingStoreListener(ISettingStoreListener)
- * @see ISettingStore#removeSettingStoreListener(ISettingStoreListener)
+ * @see ISettingStore#addSettingStoreListener(SettingStoreListener)
+ * @see ISettingStore#removeSettingStoreListener(SettingStoreListener)
  * <p>
  * @since 1.1
  */
-public interface ISettingStoreListener {
+public interface SettingStoreListener {
   
   /**
    * This method is invoked by the setting store, when an attribute inside
@@ -30,6 +30,6 @@ public interface ISettingStoreListener {
    * @param event a non-null {@link ISettingStoreEvent} instance with
    *                   specific information about the change
    */
-  void settingChanged( ISettingStoreEvent event );
+  void settingChanged( SettingStoreEvent event );
   
 }

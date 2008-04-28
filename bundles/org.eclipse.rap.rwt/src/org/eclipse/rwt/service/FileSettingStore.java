@@ -8,14 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.service;
 
 import java.io.*;
 import java.util.*;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.service.SettingStoreEvent;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 /**
@@ -133,12 +131,12 @@ public final class FileSettingStore implements ISettingStore {
     }
   }
 
-  public synchronized void addSettingStoreListener( final ISettingStoreListener listener ) {
+  public synchronized void addSettingStoreListener( final SettingStoreListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     listeners.add( listener );
   }
 
-  public synchronized void removeSettingStoreListener( final ISettingStoreListener listener ) {
+  public synchronized void removeSettingStoreListener( final SettingStoreListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     listeners.remove( listener );
   }
@@ -194,11 +192,11 @@ public final class FileSettingStore implements ISettingStore {
   private synchronized void notifyListeners( final String attribute,
                                              final String oldValue, 
                                              final String newValue ) {
-    ISettingStoreEvent event 
-      = new SettingStoreEvent( attribute, oldValue, newValue );
+    SettingStoreEvent event 
+      = new SettingStoreEvent( this, attribute, oldValue, newValue );
     Iterator iter = listeners.iterator();
     while( iter.hasNext() ) {
-      ISettingStoreListener listener = ( ISettingStoreListener )iter.next();
+      SettingStoreListener listener = ( SettingStoreListener )iter.next();
       try {
         listener.settingChanged( event );
       } catch( Exception exc ) {

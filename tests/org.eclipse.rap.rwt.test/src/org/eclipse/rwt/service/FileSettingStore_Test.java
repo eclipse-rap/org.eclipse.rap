@@ -218,16 +218,18 @@ public class FileSettingStore_Test extends TestCase {
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
     
-    ISettingStoreEvent event;
+    SettingStoreEvent event;
 
     store.setAttribute( "key", "value" );
     event = listener.getEvent();
+    assertSame( store, event.getSource() );
     assertEquals( "key", event.getAttributeName() );
     assertNull( event.getOldValue() );
     assertEquals( "value", event.getNewValue() );
       
     store.setAttribute( "key", "value2" );
     event = listener.getEvent();
+    assertSame( store, event.getSource() );
     assertEquals( "key", event.getAttributeName() );
     assertEquals( "value", event.getOldValue() );
     assertEquals( "value2", event.getNewValue() );
@@ -237,6 +239,7 @@ public class FileSettingStore_Test extends TestCase {
     
     store.removeAttribute( "key" );
     event = listener.getEvent();
+    assertSame( store, event.getSource() );
     assertEquals( "key", event.getAttributeName() );
     assertEquals( "value2", event.getOldValue() );
     assertNull( event.getNewValue() );
@@ -252,7 +255,7 @@ public class FileSettingStore_Test extends TestCase {
     store.loadById( "newId" );
 
     assertEquals( 2, listener.getCount() );
-    ISettingStoreEvent lastEvent = listener.getEvent();
+    SettingStoreEvent lastEvent = listener.getEvent();
     assertNotNull( lastEvent.getAttributeName() );
     assertNotNull( lastEvent.getOldValue() );
     assertNull( lastEvent.getNewValue() );
@@ -271,7 +274,7 @@ public class FileSettingStore_Test extends TestCase {
     assertEquals( 2, countElements( store.getAttributeNames() ) );
     
     assertEquals( 2, listener.getCount() );
-    ISettingStoreEvent lastEvent = listener.getEvent();
+    SettingStoreEvent lastEvent = listener.getEvent();
     assertNotNull( lastEvent.getAttributeName() );
     assertNull( lastEvent.getOldValue() );
     assertNotNull( lastEvent.getNewValue() );

@@ -32,7 +32,7 @@ final class SessionPreferenceNodeCore {
 
 
   /* tracks changes in RWT setting store and notifies the prefListeners */
-  private ISettingStoreListener rwtListener;
+  private SettingStoreListener rwtListener;
   /* true to track RWT changes */
   private boolean trackChanges = true;
   /* ignore changes to this key for a short time */
@@ -122,8 +122,8 @@ final class SessionPreferenceNodeCore {
     this.trackChanges = doTrack;
     if( trackChanges ) {
       if( rwtListener == null ) {
-       rwtListener = new ISettingStoreListener() {
-        public void settingChanged( ISettingStoreEvent event ) {
+       rwtListener = new SettingStoreListener() {
+        public void settingChanged( SettingStoreEvent event ) {
           if( trackChanges ) {
             String fullKey = event.getAttributeName();
             if( !fullKey.equals( ignoreKey ) ) {
