@@ -392,7 +392,10 @@ public class TrimLayout extends Layout implements ICachingLayout, ITrimManager {
 		
 		// Tile the trim into the allotted space
 		top.tileTrim(clientArea.x, clientArea.y, clientArea.width);
-		bottom.tileTrim(clientArea.x, clientArea.height-trim_bottom, clientArea.width);
+		// RAP [bm]: Added clientarea.y to y coord due to your calcs
+//		bottom.tileTrim(clientArea.x, clientArea.height-trim_bottom, clientArea.width);
+		bottom.tileTrim(clientArea.x, clientArea.y+clientArea.height-trim_bottom, clientArea.width);
+		// RAPEND: [bm] 
 		left.tileTrim(clientArea.x, clientArea.y + trim_top, verticalMajor);
 		right.tileTrim(clientArea.width-trim_right, clientArea.y + trim_top, verticalMajor);
 
