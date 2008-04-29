@@ -518,7 +518,9 @@ public class PerspectiveSwitcher implements IWindowTrim {
 		}
 		hookDragSupport();
 
-		perspectiveBar.getControl().addDisposeListener(toolBarListener);
+    	// RAP [bm]: dispose listener gets called twice as platform calls dispose on the parents
+    	// which leads to an endless loop. See bug 229309
+//		perspectiveBar.getControl().addDisposeListener(toolBarListener);
 	}
 
 	/**
