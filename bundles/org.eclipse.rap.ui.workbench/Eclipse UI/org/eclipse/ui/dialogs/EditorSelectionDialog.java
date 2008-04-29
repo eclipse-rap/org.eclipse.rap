@@ -192,8 +192,8 @@ public final class EditorSelectionDialog extends Dialog {
 		editorTable = new Table(contents, SWT.SINGLE | SWT.BORDER);
 		editorTable.addListener(SWT.Selection, listener);
 // RAP [rh] Mouse events don't work reliably with Table     
-//		editorTable.addListener(SWT.DefaultSelection, listener);
-		editorTable.addListener(SWT.MouseDoubleClick, listener);
+//		editorTable.addListener(SWT.MouseDoubleClick, listener);
+		editorTable.addListener(SWT.DefaultSelection, listener);
 		data = new GridData();
 		data.widthHint = convertHorizontalDLUsToPixels(TABLE_WIDTH);
 		data.horizontalAlignment = GridData.FILL;
