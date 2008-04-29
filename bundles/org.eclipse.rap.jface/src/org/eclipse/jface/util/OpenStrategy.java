@@ -201,10 +201,10 @@ public class OpenStrategy {
 //        c.addListener(SWT.MouseExit, eventHandler);
 //        c.addListener(SWT.MouseMove, eventHandler);
 //        c.addListener(SWT.KeyDown, eventHandler);
+//    	  c.addListener(SWT.MouseDown, eventHandler);
+//    	  c.addListener(SWT.MouseUp, eventHandler);
     	// RAPEND: [bm] 
 
-        c.addListener(SWT.MouseDown, eventHandler);
-        c.addListener(SWT.MouseUp, eventHandler);
         c.addListener(SWT.Selection, eventHandler);
         c.addListener(SWT.DefaultSelection, eventHandler);
         c.addListener(SWT.Collapse, eventHandler);
@@ -273,7 +273,8 @@ public class OpenStrategy {
 
             Event mouseUpEvent = null;
 
-            SelectionEvent selectionPendent = null;
+            // RAP [bm]: 
+//            SelectionEvent selectionPendent = null;
 
             boolean enterKeyDown = false;
 
@@ -282,10 +283,12 @@ public class OpenStrategy {
             final int[] count = new int[1];
 
 
-            boolean collapseOccurred = false;
+            // RAP [bm]: unused
+//            boolean collapseOccurred = false;
 
-            boolean expandOccurred = false;
-
+//            boolean expandOccurred = false;
+            // RAPEND: [bm] 
+            
             public void handleEvent(final Event e) {
                 if (e.type == SWT.DefaultSelection) {
                     SelectionEvent event = new SelectionEvent(e);
@@ -344,38 +347,31 @@ public class OpenStrategy {
 //                        display.timerExec(TIME * 2 / 3, runnable[0]);
 //                    }
 //                    break;
-                // RAPEND: [bm] 
-                case SWT.MouseDown:
-                    mouseUpEvent = null;
-                    arrowKeyDown = false;
-                    break;
-                case SWT.Expand:
-                    expandOccurred = true;
-                    break;
-                case SWT.Collapse:
-                    collapseOccurred = true;
-                    break;
-                case SWT.MouseUp:
-                	// RAP [bm]: 
+//                case SWT.MouseDown:
+//                    mouseUpEvent = null;
+//                    arrowKeyDown = false;
+//                    break;
+//                case SWT.Expand:
+//                    expandOccurred = true;
+//                    break;
+//                case SWT.Collapse:
+//                    collapseOccurred = true;
+//                    break;
+//                case SWT.MouseUp:
 //                    mouseMoveEvent = null;
-                    // RAP [bm]: 
 //                    if ((e.button != 1) || ((e.stateMask & ~SWT.BUTTON1) != 0)) {
 //						return;
 //					}
-                    if(e.button != 1) {
-                    	return;
-                    }
-                    // RAPEND: [bm] 
-
-                    if (selectionPendent != null
-                            && !(collapseOccurred || expandOccurred)) {
-                        mouseSelectItem(selectionPendent);
-                    } else {
-                        mouseUpEvent = e;
-                        collapseOccurred = false;
-                        expandOccurred = false;
-                    }
-                    break;
+//
+//                    if (selectionPendent != null
+//                            && !(collapseOccurred || expandOccurred)) {
+//                        mouseSelectItem(selectionPendent);
+//                    } else {
+//                        mouseUpEvent = e;
+//                        collapseOccurred = false;
+//                        expandOccurred = false;
+//                    }
+//                    break;
                 // RAP [bm]: 
 //                case SWT.KeyDown:
 //                    mouseMoveEvent = null;
@@ -401,7 +397,8 @@ public class OpenStrategy {
                     if (mouseUpEvent != null) {
 						mouseSelectItem(event);
 					} else {
-						selectionPendent = event;
+						// RAP [bm]: ununsed
+//						selectionPendent = event;
 					}
                     count[0]++;
                     final int id = count[0];
@@ -440,7 +437,8 @@ public class OpenStrategy {
 					fireOpenEvent(e);
 				}
                 mouseUpEvent = null;
-                selectionPendent = null;
+                // RAP [bm]: unused
+//                selectionPendent = null;
             }
 
             // RAP [bm]: 
