@@ -41,8 +41,8 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.branding.BrandingExtension;
 import org.eclipse.ui.internal.decorators.DecoratorManager;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceManager;
-import org.eclipse.ui.internal.intro.IIntroRegistry;
-import org.eclipse.ui.internal.intro.IntroRegistry;
+//import org.eclipse.ui.internal.intro.IIntroRegistry;
+//import org.eclipse.ui.internal.intro.IntroRegistry;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.operations.WorkbenchOperationSupport;
 import org.eclipse.ui.internal.progress.JobManagerAdapter;
@@ -232,7 +232,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      */
     private ProductInfo productInfo = null;
 
-    private IntroRegistry introRegistry;
+// RAP [rh] Intro mechanism not supported
+//    private IntroRegistry introRegistry;
     
     private WorkbenchOperationSupport operationSupport;
 	private BundleListener bundleListener;
@@ -290,7 +291,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         sharedImages = null;
 
         productInfo = null;
-        introRegistry = null;
+// RAP [rh] Intro mechanism not supported
+//        introRegistry = null;
         
         if (operationSupport != null) {
         	operationSupport.dispose();
@@ -699,18 +701,19 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         return workingSetRegistry;
     }
 
-    /**
-     * Returns the introduction registry.
-     *
-     * @return the introduction registry.
-     * @since 1.1
-     */
-    public IIntroRegistry getIntroRegistry() {
-        if (introRegistry == null) {
-            introRegistry = new IntroRegistry();
-        }
-        return introRegistry;
-    }
+// RAP [rh] Intro mechanism not supported
+//    /**
+//     * Returns the introduction registry.
+//     *
+//     * @return the introduction registry.
+//     * @since 1.1
+//     */
+//    public IIntroRegistry getIntroRegistry() {
+//        if (introRegistry == null) {
+//            introRegistry = new IntroRegistry();
+//        }
+//        return introRegistry;
+//    }
     
     /**
 	 * Returns the operation support.

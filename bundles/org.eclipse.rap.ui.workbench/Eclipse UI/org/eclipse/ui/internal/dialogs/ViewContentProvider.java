@@ -12,13 +12,13 @@ package org.eclipse.ui.internal.dialogs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-import org.eclipse.ui.internal.intro.IIntroConstants;
+//import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.views.IViewCategory;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
@@ -116,12 +116,13 @@ public class ViewContentProvider implements ITreeContentProvider {
      * @return the modified list.
      */
     private ArrayList removeIntroView(ArrayList list) {
-        for (Iterator i = list.iterator(); i.hasNext();) {
-            IViewDescriptor view = (IViewDescriptor) i.next();
-            if (view.getId().equals(IIntroConstants.INTRO_VIEW_ID)) {
-                i.remove();
-            }
-        }
+// RAP [rh] Intro mechanism not supported
+//        for (Iterator i = list.iterator(); i.hasNext();) {
+//            IViewDescriptor view = (IViewDescriptor) i.next();
+//            if (view.getId().equals(IIntroConstants.INTRO_VIEW_ID)) {
+//                i.remove();
+//            }
+//        }
         return list;
     }
 

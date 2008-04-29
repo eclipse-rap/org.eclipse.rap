@@ -88,6 +88,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+//import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
@@ -104,7 +105,7 @@ import org.eclipse.ui.internal.dialogs.CustomizePerspectiveDialog;
 import org.eclipse.ui.internal.dnd.SwtUtil;
 import org.eclipse.ui.internal.handlers.ActionCommandMappingService;
 import org.eclipse.ui.internal.handlers.IActionCommandMappingService;
-import org.eclipse.ui.internal.intro.IIntroConstants;
+//import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.layout.CacheWrapper;
 import org.eclipse.ui.internal.layout.ITrimManager;
 import org.eclipse.ui.internal.layout.IWindowTrim;
@@ -129,6 +130,7 @@ import org.eclipse.ui.internal.services.IServiceLocatorCreator;
 import org.eclipse.ui.internal.services.ServiceLocator;
 import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
+//import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
@@ -731,7 +733,8 @@ public class WorkbenchWindow extends ApplicationWindow implements
 			showEmptyWindowContents();
 		}
 		fireWindowCreated();
-		getWindowAdvisor().openIntro();
+// RAP [rh] Intro mechanism not supported
+//		getWindowAdvisor().openIntro();
 		int result = super.open();
 
 		// It's time for a layout ... to insure that if TrimLayout
@@ -2122,24 +2125,25 @@ public class WorkbenchWindow extends ApplicationWindow implements
 			}});
 		
 
-		final IMemento introMem = memento.getChild(IWorkbenchConstants.TAG_INTRO);
-		if (introMem != null) {
-			StartupThreading.runWithoutExceptions(new StartupRunnable() {
-
-				public void runWithException() throws Throwable {
-					getWorkbench()
-							.getIntroManager()
-							.showIntro(
-									WorkbenchWindow.this,
-									Boolean
-											.valueOf(
-													introMem
-															.getString(IWorkbenchConstants.TAG_STANDBY))
-											.booleanValue());
-				}
-			});
-
-		}
+// RAP [rh] Intro mechanism not supported
+//		final IMemento introMem = memento.getChild(IWorkbenchConstants.TAG_INTRO);
+//		if (introMem != null) {
+//			StartupThreading.runWithoutExceptions(new StartupRunnable() {
+//
+//				public void runWithException() throws Throwable {
+//					getWorkbench()
+//							.getIntroManager()
+//							.showIntro(
+//									WorkbenchWindow.this,
+//									Boolean
+//											.valueOf(
+//													introMem
+//															.getString(IWorkbenchConstants.TAG_STANDBY))
+//											.booleanValue());
+//				}
+//			});
+//
+//		}
 		
 		// Only restore the trim state if we're using the default layout
 		if (defaultLayout != null) {
@@ -2503,17 +2507,18 @@ public class WorkbenchWindow extends ApplicationWindow implements
 		memento.putInteger(IWorkbenchConstants.TAG_WIDTH, normalBounds.width);
 		memento.putInteger(IWorkbenchConstants.TAG_HEIGHT, normalBounds.height);
 
-		IWorkbenchPage activePage = getActivePage();
-		if (activePage != null
-				&& activePage.findView(IIntroConstants.INTRO_VIEW_ID) != null) {
-			IMemento introMem = memento
-					.createChild(IWorkbenchConstants.TAG_INTRO);
-			boolean isStandby = getWorkbench()
-					.getIntroManager()
-					.isIntroStandby(getWorkbench().getIntroManager().getIntro());
-			introMem.putString(IWorkbenchConstants.TAG_STANDBY, String
-					.valueOf(isStandby));
-		}
+// RAP [rh] Intro mechanism not supported
+//		IWorkbenchPage activePage = getActivePage();
+//		if (activePage != null
+//				&& activePage.findView(IIntroConstants.INTRO_VIEW_ID) != null) {
+//			IMemento introMem = memento
+//					.createChild(IWorkbenchConstants.TAG_INTRO);
+//			boolean isStandby = getWorkbench()
+//					.getIntroManager()
+//					.isIntroStandby(getWorkbench().getIntroManager().getIntro());
+//			introMem.putString(IWorkbenchConstants.TAG_STANDBY, String
+//					.valueOf(isStandby));
+//		}
 
 		// save the width of the perspective bar
 		IMemento persBarMem = memento

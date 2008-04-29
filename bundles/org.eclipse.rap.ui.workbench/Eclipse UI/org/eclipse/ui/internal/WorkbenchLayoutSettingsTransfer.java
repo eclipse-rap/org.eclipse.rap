@@ -28,13 +28,13 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbench;
+//import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.XMLMemento;
-import org.eclipse.ui.internal.intro.IIntroConstants;
+//import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.preferences.WorkbenchSettingsTransfer;
 import org.eclipse.ui.internal.presentations.PresentationFactoryUtil;
 import org.eclipse.ui.internal.util.PrefUtil;
@@ -117,17 +117,18 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
 				WorkbenchMessages.get().WorkbenchWindow_problemsSavingWindow, null);
 
-		IWorkbenchPage activePage = window.getActivePage();
-		if (activePage != null
-				&& activePage.findView(IIntroConstants.INTRO_VIEW_ID) != null) {
-			IMemento introMem = memento
-					.createChild(IWorkbenchConstants.TAG_INTRO);
-			boolean isStandby = getWorkbench()
-					.getIntroManager()
-					.isIntroStandby(getWorkbench().getIntroManager().getIntro());
-			introMem.putString(IWorkbenchConstants.TAG_STANDBY, String
-					.valueOf(isStandby));
-		}
+// RAP [rh] Intro mechanism not supported
+//		IWorkbenchPage activePage = window.getActivePage();
+//		if (activePage != null
+//				&& activePage.findView(IIntroConstants.INTRO_VIEW_ID) != null) {
+//			IMemento introMem = memento
+//					.createChild(IWorkbenchConstants.TAG_INTRO);
+//			boolean isStandby = getWorkbench()
+//					.getIntroManager()
+//					.isIntroStandby(getWorkbench().getIntroManager().getIntro());
+//			introMem.putString(IWorkbenchConstants.TAG_STANDBY, String
+//					.valueOf(isStandby));
+//		}
 
 		// Save each page.
 		IWorkbenchPage[] pages = window.getPages();
@@ -297,14 +298,15 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 
 	}
 
-	/**
-	 * Return the workbench we are using.
-	 * 
-	 * @return IWorkbench
-	 */
-	private IWorkbench getWorkbench() {
-		return PlatformUI.getWorkbench();
-	}
+// RAP [rh] unused code	
+//	/**
+//	 * Return the workbench we are using.
+//	 * 
+//	 * @return IWorkbench
+//	 */
+//	private IWorkbench getWorkbench() {
+//		return PlatformUI.getWorkbench();
+//	}
 
 	/*
 	 * (non-Javadoc)

@@ -17,7 +17,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.CloseAllSavedAction;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.IntroAction;
+//import org.eclipse.ui.internal.IntroAction;
 import org.eclipse.ui.internal.NavigationHistoryAction;
 import org.eclipse.ui.internal.OpenPreferencesAction;
 import org.eclipse.ui.internal.SaveAction;
@@ -327,23 +327,24 @@ public abstract class ActionFactory {
     	}
     };
 
-    /**
-     * Workbench action (id "intro"): Activate the introduction extension.
-     * @since 1.1
-     */
-    public static final ActionFactory INTRO = new ActionFactory("intro") {//$NON-NLS-1$
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            IWorkbenchAction action = new IntroAction(window);
-            action.setId(getId());
-            return action;
-        }
-    };
+// RAP [rh] Intro mechanism not supported
+//    /**
+//     * Workbench action (id "intro"): Activate the introduction extension.
+//     * @since 1.1
+//     */
+//    public static final ActionFactory INTRO = new ActionFactory("intro") {//$NON-NLS-1$
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            IWorkbenchAction action = new IntroAction(window);
+//            action.setId(getId());
+//            return action;
+//        }
+//    };
 
     // RAP [bm]: clipboard
 //    /**

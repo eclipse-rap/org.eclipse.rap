@@ -55,7 +55,7 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.contexts.ContextAuthority;
-import org.eclipse.ui.internal.intro.IIntroConstants;
+//import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.layout.ITrimManager;
 import org.eclipse.ui.internal.layout.IWindowTrim;
 import org.eclipse.ui.internal.layout.TrimLayout;
@@ -1122,10 +1122,11 @@ public class Perspective {
             // Get the view details.
             IMemento childMem = views[x];
             String id = childMem.getString(IWorkbenchConstants.TAG_ID);
-            // skip creation of the intro reference -  it's handled elsewhere.
-            if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
-				continue;
-			}
+// RAP [rh] Intro mechanism not supported
+//            // skip creation of the intro reference -  it's handled elsewhere.
+//            if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
+//				continue;
+//			}
 
             String secondaryId = ViewFactory.extractSecondaryId(id);
             if (secondaryId != null) {
@@ -1216,10 +1217,11 @@ public class Perspective {
                 id = ViewFactory.extractPrimaryId(id);
             }
 
-            // skip the intro as it is restored higher up in workbench.
-            if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
-				continue;
-			}
+// RAP [rh] Intro mechanism not supported
+//            // skip the intro as it is restored higher up in workbench.
+//            if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
+//				continue;
+//			}
             
             // Create and open the view.
             IViewReference viewRef = viewFactory.getView(id, secondaryId);
@@ -2026,13 +2028,14 @@ public class Perspective {
 
         saveFastViewWidthRatio();
 
-        // Special check to ensure that a 'minimized' intro view shows
-        // as 'standby'
-        if (ref.getId().equals("org.eclipse.ui.internal.introview")) { //$NON-NLS-1$
-        	if (refPart instanceof ViewIntroAdapterPart) {
-	        	((ViewIntroAdapterPart)refPart).setStandby(true);
-        	}
-        }
+// RAP [rh] Intro mechanism not supported
+//        // Special check to ensure that a 'minimized' intro view shows
+//        // as 'standby'
+//        if (ref.getId().equals("org.eclipse.ui.internal.introview")) { //$NON-NLS-1$
+//        	if (refPart instanceof ViewIntroAdapterPart) {
+//	        	((ViewIntroAdapterPart)refPart).setStandby(true);
+//        	}
+//        }
         
 		// Determine the display orientation
 		int side = fastViewManager.getViewSide(ref);

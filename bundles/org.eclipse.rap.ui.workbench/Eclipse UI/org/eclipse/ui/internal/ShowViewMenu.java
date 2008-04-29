@@ -43,7 +43,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.intro.IIntroConstants;
+//import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.views.IViewDescriptor;
@@ -193,9 +193,10 @@ public class ShowViewMenu extends ContributionItem {
 		List actions = new ArrayList(viewIds.size());
 		for (Iterator i = viewIds.iterator(); i.hasNext();) {
 			String id = (String) i.next();
-			if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
-				continue;
-			}
+// RAP [rh] Intro mechanism not supported
+//			if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
+//				continue;
+//			}
 			CommandContributionItemParameter item = getItem(id);
 			if (item != null) {
 				actions.add(item);

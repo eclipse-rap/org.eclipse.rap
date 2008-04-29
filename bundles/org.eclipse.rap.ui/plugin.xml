@@ -49,7 +49,9 @@
    <extension-point id="org.eclipse.ui.helpSupport" name="%ExtPoint.helpSupport" schema="schema/helpSupport.exsd"/>
    -->
    <extension-point id="org.eclipse.ui.importWizards" name="%ExtPoint.importWizards" schema="schema/importWizards.exsd"/>
+   <!-- RAP [rh] intro not supported as it is only useful in conjunction with product extension point
    <extension-point id="org.eclipse.ui.intro" name="%ExtPoint.intro" schema="schema/intro.exsd"/>
+   -->
    <extension-point id="org.eclipse.ui.keywords" name="%ExtPoint.keywords" schema="schema/keywords.exsd"/>
    <extension-point id="org.eclipse.ui.menus" name="%ExtPoint.menus" schema="schema/menus.exsd"/>
    <extension-point id="org.eclipse.ui.newWizards" name="%ExtPoint.newWizards" schema="schema/newWizards.exsd"/>

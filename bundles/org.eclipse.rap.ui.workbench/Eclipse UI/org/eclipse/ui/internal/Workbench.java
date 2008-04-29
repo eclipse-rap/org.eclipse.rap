@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.IExtensionDelta;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProduct;
+//import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
@@ -134,8 +134,8 @@ import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
 import org.eclipse.ui.internal.contexts.ContextService;
 import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
 import org.eclipse.ui.internal.dialogs.PropertyPageContributorManager;
-import org.eclipse.ui.internal.intro.IIntroRegistry;
-import org.eclipse.ui.internal.intro.IntroDescriptor;
+//import org.eclipse.ui.internal.intro.IIntroRegistry;
+//import org.eclipse.ui.internal.intro.IntroDescriptor;
 import org.eclipse.ui.internal.keys.BindingService;
 import org.eclipse.ui.internal.menus.FocusControlSourceProvider;
 import org.eclipse.ui.internal.menus.WorkbenchMenuService;
@@ -166,7 +166,7 @@ import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.internal.util.Util;
-import org.eclipse.ui.intro.IIntroManager;
+//import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.model.IContributionService;
@@ -1327,15 +1327,16 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		// create workbench window manager
 		windowManager = new WindowManager();
 
-		IIntroRegistry introRegistry = WorkbenchPlugin.getDefault()
-				.getIntroRegistry();
-		if (introRegistry.getIntroCount() > 0) {
-			IProduct product = Platform.getProduct();
-			if (product != null) {
-				introDescriptor = (IntroDescriptor) introRegistry
-						.getIntroForProduct(product.getId());
-			}
-		}
+// RAP [rh] Intro mechanism not supported
+//		IIntroRegistry introRegistry = WorkbenchPlugin.getDefault()
+//				.getIntroRegistry();
+//		if (introRegistry.getIntroCount() > 0) {
+//			IProduct product = Platform.getProduct();
+//			if (product != null) {
+//				introDescriptor = (IntroDescriptor) introRegistry
+//						.getIntroForProduct(product.getId());
+//			}
+//		}
 
 		// TODO Correctly order service initialization
 		// there needs to be some serious consideration given to
@@ -3061,53 +3062,54 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 
 	private ActivityPersistanceHelper activityHelper;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IWorkbench#getIntroManager()
-	 */
-	public IIntroManager getIntroManager() {
-		return getWorkbenchIntroManager();
-	}
-
-	/**
-	 * @return the workbench intro manager
-	 */
-	/* package */WorkbenchIntroManager getWorkbenchIntroManager() {
-		if (introManager == null) {
-			introManager = new WorkbenchIntroManager(this);
-		}
-		return introManager;
-	}
-
-	private WorkbenchIntroManager introManager;
-
-	/**
-	 * @return the intro extension for this workbench.
-	 */
-	public IntroDescriptor getIntroDescriptor() {
-		return introDescriptor;
-	}
-
-	/**
-	 * This method exists as a test hook. This method should <strong>NEVER</strong>
-	 * be called by clients.
-	 * 
-	 * @param descriptor
-	 *            The intro descriptor to use.
-	 */
-	public void setIntroDescriptor(IntroDescriptor descriptor) {
-		if (getIntroManager().getIntro() != null) {
-			getIntroManager().closeIntro(getIntroManager().getIntro());
-		}
-		introDescriptor = descriptor;
-	}
-
-	/**
-	 * The descriptor for the intro extension that is valid for this workspace,
-	 * <code>null</code> if none.
-	 */
-	private IntroDescriptor introDescriptor;
+// RAP [rh] Intro mechanism not supported
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.eclipse.ui.IWorkbench#getIntroManager()
+//	 */
+//	public IIntroManager getIntroManager() {
+//		return getWorkbenchIntroManager();
+//	}
+//
+//	/**
+//	 * @return the workbench intro manager
+//	 */
+//	/* package */WorkbenchIntroManager getWorkbenchIntroManager() {
+//		if (introManager == null) {
+//			introManager = new WorkbenchIntroManager(this);
+//		}
+//		return introManager;
+//	}
+//
+//	private WorkbenchIntroManager introManager;
+//
+//	/**
+//	 * @return the intro extension for this workbench.
+//	 */
+//	public IntroDescriptor getIntroDescriptor() {
+//		return introDescriptor;
+//	}
+//
+//	/**
+//	 * This method exists as a test hook. This method should <strong>NEVER</strong>
+//	 * be called by clients.
+//	 * 
+//	 * @param descriptor
+//	 *            The intro descriptor to use.
+//	 */
+//	public void setIntroDescriptor(IntroDescriptor descriptor) {
+//		if (getIntroManager().getIntro() != null) {
+//			getIntroManager().closeIntro(getIntroManager().getIntro());
+//		}
+//		introDescriptor = descriptor;
+//	}
+//
+//	/**
+//	 * The descriptor for the intro extension that is valid for this workspace,
+//	 * <code>null</code> if none.
+//	 */
+//	private IntroDescriptor introDescriptor;
 
 	private IExtensionTracker tracker;
 
