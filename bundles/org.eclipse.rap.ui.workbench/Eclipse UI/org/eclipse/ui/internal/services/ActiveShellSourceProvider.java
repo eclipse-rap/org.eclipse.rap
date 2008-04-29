@@ -27,7 +27,7 @@ import org.eclipse.ui.IPerspectiveListener;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.contexts.IContextService;
+//import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.services.IServiceLocator;
@@ -354,10 +354,13 @@ public final class ActiveShellSourceProvider extends AbstractSourceProvider {
 		 * We will fallback to the workbench window, but only if a dialog is not
 		 * open.
 		 */
-		final IContextService contextService = (IContextService) workbench
-				.getService(IContextService.class);
-		final int shellType = contextService.getShellType(newActiveShell);
-		if (shellType != IContextService.TYPE_DIALOG) {
+// RAP [rh] preliminary (as in 3.3): ignore current shellType		
+//		 This was done to prevent occasional ExecutionExceptions 
+//		 "No activeWorkbenchWindow found while executing <command-id>"
+//		final IContextService contextService = (IContextService) workbench
+//				.getService(IContextService.class);
+//		final int shellType = contextService.getShellType(newActiveShell);
+//		if (shellType != IContextService.TYPE_DIALOG) {
 			final WorkbenchWindow newActiveWorkbenchWindow = (WorkbenchWindow) workbench
 					.getActiveWorkbenchWindow();
 			final Shell newActiveWorkbenchWindowShell;
@@ -404,7 +407,7 @@ public final class ActiveShellSourceProvider extends AbstractSourceProvider {
 					ISources.ACTIVE_WORKBENCH_WINDOW_ACTIVE_PERSPECTIVE_NAME,
 					perspectiveId);
 
-		}
+//		}
 
 		return currentState;
 	}

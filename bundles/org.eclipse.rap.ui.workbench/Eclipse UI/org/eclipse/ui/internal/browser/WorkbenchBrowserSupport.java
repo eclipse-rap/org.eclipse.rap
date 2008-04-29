@@ -19,8 +19,6 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
  * Implements the support interface and delegates the calls to the active
  * support if contributed via the extension point, or the default support
  * otherwise.
- * 
- * @since 3.1
  */
 public class WorkbenchBrowserSupport extends AbstractWorkbenchBrowserSupport {
 

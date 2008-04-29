@@ -130,7 +130,7 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 
 		selection = null;
 // RAP [rh] SWT.MODELESS not implemented, use APPLICATION_MODAL instead		
-		final Shell dialog = new Shell(window.getShell(), SWT.APPLICATION_MODAL /*SWT.MODELESS*/);
+		final Shell dialog = new Shell(window.getShell(), SWT.NONE /*SWT.MODELESS*/);
 		Display display = dialog.getDisplay();
 		dialog.setLayout(new FillLayout());
 
