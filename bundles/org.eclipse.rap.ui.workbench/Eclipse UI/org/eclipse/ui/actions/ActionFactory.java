@@ -18,14 +18,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.CloseAllSavedAction;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.IntroAction;
-import org.eclipse.ui.internal.LockToolBarAction;
 import org.eclipse.ui.internal.NavigationHistoryAction;
 import org.eclipse.ui.internal.OpenPreferencesAction;
-import org.eclipse.ui.internal.ResetPerspectiveAction;
 import org.eclipse.ui.internal.SaveAction;
 import org.eclipse.ui.internal.SaveAllAction;
 import org.eclipse.ui.internal.SaveAsAction;
-import org.eclipse.ui.internal.SavePerspectiveAction;
 import org.eclipse.ui.internal.ToggleEditorsVisibilityAction;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
@@ -615,26 +612,27 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "lockToolBar"): Lock/unlock the workbench window
-     * tool bar. This action maintains its enablement state.
-     * @since 1.1
-     */
-    public static final ActionFactory LOCK_TOOL_BAR = new ActionFactory(
-            "lockToolBar") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            IWorkbenchAction action = new LockToolBarAction(window);
-            action.setId(getId());
-            return action;
-        }
-    };
+    // RAP [bm]: not needed
+//    /**
+//     * Workbench action (id "lockToolBar"): Lock/unlock the workbench window
+//     * tool bar. This action maintains its enablement state.
+//     * @since 1.1
+//     */
+//    public static final ActionFactory LOCK_TOOL_BAR = new ActionFactory(
+//            "lockToolBar") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            IWorkbenchAction action = new LockToolBarAction(window);
+//            action.setId(getId());
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "maximize"): Maximize/restore the active part. This
@@ -883,26 +881,27 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "openNewWindow"): Open a new workbench window. This
-     * action maintains its enablement state.
-     * @since 1.1
-     */
-    public static final ActionFactory OPEN_NEW_WINDOW = new ActionFactory(
-            "openNewWindow") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            IWorkbenchAction action = new OpenInNewWindowAction(window);
-            action.setId(getId());
-            return action;
-        }
-    };
+    // RAP [bm]: too many problems with active workbench window
+//    /**
+//     * Workbench action (id "openNewWindow"): Open a new workbench window. This
+//     * action maintains its enablement state.
+//     * @since 1.1
+//     */
+//    public static final ActionFactory OPEN_NEW_WINDOW = new ActionFactory(
+//            "openNewWindow") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            IWorkbenchAction action = new OpenInNewWindowAction(window);
+//            action.setId(getId());
+//            return action;
+//        }
+//    };
 
     // RAP [bm]: Clipboard
 //    /**
@@ -1227,26 +1226,27 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "resetPerspective"): Resets the current
-     * perspective. This action maintains its enablement state.
-     * @since 1.1
-     */
-    public static final ActionFactory RESET_PERSPECTIVE = new ActionFactory(
-            "resetPerspective") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            IWorkbenchAction action = new ResetPerspectiveAction(window);
-            action.setId(getId());
-            return action;
-        }
-    };
+    // RAP [bm]: minor problems with the actionsets
+//    /**
+//     * Workbench action (id "resetPerspective"): Resets the current
+//     * perspective. This action maintains its enablement state.
+//     * @since 1.1
+//     */
+//    public static final ActionFactory RESET_PERSPECTIVE = new ActionFactory(
+//            "resetPerspective") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            IWorkbenchAction action = new ResetPerspectiveAction(window);
+//            action.setId(getId());
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "revert"): Revert. This action is a
@@ -1329,26 +1329,27 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "savePerspective"): Save the current perspective.
-     * This action maintains its enablement state.
-     * @since 1.1
-     */
-    public static final ActionFactory SAVE_PERSPECTIVE = new ActionFactory(
-            "savePerspective") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            IWorkbenchAction action = new SavePerspectiveAction(window);
-            action.setId(getId());
-            return action;
-        }
-    };
+    // RAP [bm]: review if this works correctly
+//    /**
+//     * Workbench action (id "savePerspective"): Save the current perspective.
+//     * This action maintains its enablement state.
+//     * @since 1.1
+//     */
+//    public static final ActionFactory SAVE_PERSPECTIVE = new ActionFactory(
+//            "savePerspective") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            IWorkbenchAction action = new SavePerspectiveAction(window);
+//            action.setId(getId());
+//            return action;
+//        }
+//    };
 
     /**
      * Workbench action (id "selectAll"): Select All. This action is a
@@ -1421,29 +1422,31 @@ public abstract class ActionFactory {
         }
     };
 
-    /**
-     * Workbench action (id "showWorkbookEditors"): Shows a list of open editors
-     * in the current or last active workbook.
-     * @since 1.1
-     */
-    public static final ActionFactory SHOW_WORKBOOK_EDITORS = new ActionFactory(
-            "showWorkBookEditors") {//$NON-NLS-1$
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-         */
-        public IWorkbenchAction create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            
-            WorkbenchCommandAction action = new WorkbenchCommandAction("org.eclipse.ui.window.openEditorDropDown", window); //$NON-NLS-1$
-            action.setId(getId());
-            action.setText(WorkbenchMessages.get().WorkbookEditorsAction_label);
-            
-            return action;
-        }
-    };
+    // RAP [bm]: ugly - disabled
+//    /**
+//     * Workbench action (id "showWorkbookEditors"): Shows a list of open editors
+//     * in the current or last active workbook.
+//     * @since 1.1
+//     */
+//    public static final ActionFactory SHOW_WORKBOOK_EDITORS = new ActionFactory(
+//            "showWorkBookEditors") {//$NON-NLS-1$
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+//         */
+//        public IWorkbenchAction create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            
+//            WorkbenchCommandAction action = new WorkbenchCommandAction("org.eclipse.ui.window.openEditorDropDown", window); //$NON-NLS-1$
+//            action.setId(getId());
+//            action.setText(WorkbenchMessages.get().WorkbookEditorsAction_label);
+//            
+//            return action;
+//        }
+//    };
+    
     // RAP [bm]: QuickAccess
 //    /**
 //	 * Workbench action (id "showQuickAccess"): Shows a list of UI elements like

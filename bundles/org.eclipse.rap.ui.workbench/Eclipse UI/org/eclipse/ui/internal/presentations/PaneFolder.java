@@ -210,7 +210,9 @@ public final class PaneFolder {
         }
 
         public void showList(CTabFolderEvent event) {
-            notifyShowListeners(event);
+        	// RAP [bm]: disabled part list to use the native one
+//            notifyShowListeners(event);
+        	// RAPEND: [bm] 
         }
 
     };
