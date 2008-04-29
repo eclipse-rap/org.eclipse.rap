@@ -28,14 +28,15 @@ import org.eclipse.swt.SWT;
  */
 public interface IWorkbenchPreferenceConstants {
 
-	/**
-	 * A named preference for whether to show an editor when its input file is
-	 * selected in the Navigator (and vice versa).
-	 * <p>
-	 * Value is of type <code>boolean</code>.
-	 * </p>
-	 */
-	public static final String LINK_NAVIGATOR_TO_EDITOR = "LINK_NAVIGATOR_TO_EDITOR"; //$NON-NLS-1$
+	// RAP [bm]: navigator? :)
+//	/**
+//	 * A named preference for whether to show an editor when its input file is
+//	 * selected in the Navigator (and vice versa).
+//	 * <p>
+//	 * Value is of type <code>boolean</code>.
+//	 * </p>
+//	 */
+//	public static final String LINK_NAVIGATOR_TO_EDITOR = "LINK_NAVIGATOR_TO_EDITOR"; //$NON-NLS-1$
 
 	/**
 	 * A named preference for how a new perspective is opened.
@@ -45,82 +46,87 @@ public interface IWorkbenchPreferenceConstants {
 	 * OPEN_PERSPECTIVE_REPLACE</code>.
 	 * </p>
 	 * 
-	 * @see #OPEN_PERSPECTIVE_WINDOW
-	 * @see #OPEN_PERSPECTIVE_PAGE
+	 * <!-- @see #OPEN_PERSPECTIVE_WINDOW -->
+	 * <!-- @see #OPEN_PERSPECTIVE_PAGE -->
 	 * @see #OPEN_PERSPECTIVE_REPLACE
 	 * @see #NO_NEW_PERSPECTIVE
 	 */
 	public static final String OPEN_NEW_PERSPECTIVE = "OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
 
-	/**
-	 * A named preference for how a new perspective is opened when the alternate
-	 * key modifiers are pressed. The alternate key modifiers are platform
-	 * dependent.
-	 * <p>
-	 * Value is of type <code>String</code>. The possible values are defined
-	 * by <code>OPEN_PERSPECTIVE_WINDOW, OPEN_PERSPECTIVE_PAGE and 
-	 * OPEN_PERSPECTIVE_REPLACE</code>.
-	 * </p>
-	 * 
-	 * @deprecated Workbench no longer supports alternate key modifier to open a
-	 *             new perspective. Callers should use
-	 *             IWorkbench.showPerspective methods.
-	 */
-	public static final String ALTERNATE_OPEN_NEW_PERSPECTIVE = "ALTERNATE_OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
+	// RAP [bm]: deprecated
+//	/**
+//	 * A named preference for how a new perspective is opened when the alternate
+//	 * key modifiers are pressed. The alternate key modifiers are platform
+//	 * dependent.
+//	 * <p>
+//	 * Value is of type <code>String</code>. The possible values are defined
+//	 * by <code>OPEN_PERSPECTIVE_WINDOW, OPEN_PERSPECTIVE_PAGE and 
+//	 * OPEN_PERSPECTIVE_REPLACE</code>.
+//	 * </p>
+//	 * 
+//	 * @deprecated Workbench no longer supports alternate key modifier to open a
+//	 *             new perspective. Callers should use
+//	 *             IWorkbench.showPerspective methods.
+//	 */
+//	public static final String ALTERNATE_OPEN_NEW_PERSPECTIVE = "ALTERNATE_OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
 
-	/**
-	 * A named preference for how a new perspective is opened when the shift key
-	 * modifier is pressed.
-	 * <p>
-	 * Value is of type <code>String</code>. The possible values are defined
-	 * by <code>OPEN_PERSPECTIVE_WINDOW, OPEN_PERSPECTIVE_PAGE and 
-	 * OPEN_PERSPECTIVE_REPLACE</code>.
-	 * </p>
-	 * 
-	 * @deprecated Workbench no longer supports shift key modifier to open a new
-	 *             perspective. Callers should use IWorkbench.showPerspective
-	 *             methods.
-	 */
-	public static final String SHIFT_OPEN_NEW_PERSPECTIVE = "SHIFT_OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
+	// RAP [bm]: deprecated
+//	/**
+//	 * A named preference for how a new perspective is opened when the shift key
+//	 * modifier is pressed.
+//	 * <p>
+//	 * Value is of type <code>String</code>. The possible values are defined
+//	 * by <code>OPEN_PERSPECTIVE_WINDOW, OPEN_PERSPECTIVE_PAGE and 
+//	 * OPEN_PERSPECTIVE_REPLACE</code>.
+//	 * </p>
+//	 * 
+//	 * @deprecated Workbench no longer supports shift key modifier to open a new
+//	 *             perspective. Callers should use IWorkbench.showPerspective
+//	 *             methods.
+//	 */
+//	public static final String SHIFT_OPEN_NEW_PERSPECTIVE = "SHIFT_OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
 
-	/**
-	 * A named preference for how a new perspective should be opened when a new
-	 * project is created.
-	 * <p>
-	 * Value is of type <code>String</code>. The possible values are defined
-	 * by the constants <code>OPEN_PERSPECTIVE_WINDOW, OPEN_PERSPECTIVE_PAGE, 
-	 * OPEN_PERSPECTIVE_REPLACE, and NO_NEW_PERSPECTIVE</code>.
-	 * </p>
-	 * 
-	 * @see #OPEN_PERSPECTIVE_WINDOW
-	 * @see #OPEN_PERSPECTIVE_PAGE
-	 * @see #OPEN_PERSPECTIVE_REPLACE
-	 * @see #NO_NEW_PERSPECTIVE
-	 * @deprecated in 3.0. This preference is IDE-specific, and is therefore
-	 *             found only in IDE configurations. IDE-specific tools should
-	 *             use
-	 *             <code>org.eclipse.ui.ide.IDE.Preferences.PROJECT_OPEN_NEW_PERSPECTIVE</code>
-	 *             instead.
-	 */
-	public static final String PROJECT_OPEN_NEW_PERSPECTIVE = "PROJECT_OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
+	// RAP [bm]: deprecated
+//	/**
+//	 * A named preference for how a new perspective should be opened when a new
+//	 * project is created.
+//	 * <p>
+//	 * Value is of type <code>String</code>. The possible values are defined
+//	 * by the constants <code>OPEN_PERSPECTIVE_WINDOW, OPEN_PERSPECTIVE_PAGE, 
+//	 * OPEN_PERSPECTIVE_REPLACE, and NO_NEW_PERSPECTIVE</code>.
+//	 * </p>
+//	 * 
+//	 * @see #OPEN_PERSPECTIVE_WINDOW
+//	 * @see #OPEN_PERSPECTIVE_PAGE
+//	 * @see #OPEN_PERSPECTIVE_REPLACE
+//	 * @see #NO_NEW_PERSPECTIVE
+//	 * @deprecated in 3.0. This preference is IDE-specific, and is therefore
+//	 *             found only in IDE configurations. IDE-specific tools should
+//	 *             use
+//	 *             <code>org.eclipse.ui.ide.IDE.Preferences.PROJECT_OPEN_NEW_PERSPECTIVE</code>
+//	 *             instead.
+//	 */
+//	public static final String PROJECT_OPEN_NEW_PERSPECTIVE = "PROJECT_OPEN_NEW_PERSPECTIVE"; //$NON-NLS-1$
 
-	/**
-	 * A preference value indicating that an action should open a new
-	 * perspective in a new window.
-	 * 
-	 * @see #PROJECT_OPEN_NEW_PERSPECTIVE
-	 */
-	public static final String OPEN_PERSPECTIVE_WINDOW = "OPEN_PERSPECTIVE_WINDOW"; //$NON-NLS-1$
+	// RAP [bm]: 
+//	/**
+//	 * A preference value indicating that an action should open a new
+//	 * perspective in a new window.
+//	 * 
+//	 * @see #PROJECT_OPEN_NEW_PERSPECTIVE
+//	 */
+//	public static final String OPEN_PERSPECTIVE_WINDOW = "OPEN_PERSPECTIVE_WINDOW"; //$NON-NLS-1$
 
-	/**
-	 * A preference value indicating that an action should open a new
-	 * perspective in a new page.
-	 * 
-	 * @see #PROJECT_OPEN_NEW_PERSPECTIVE
-	 * @deprecated Opening a Perspective in a new page is no longer supported
-	 *             functionality as of 2.0.
-	 */
-	public static final String OPEN_PERSPECTIVE_PAGE = "OPEN_PERSPECTIVE_PAGE"; //$NON-NLS-1$
+	// RAP [bm]: 
+//	/**
+//	 * A preference value indicating that an action should open a new
+//	 * perspective in a new page.
+//	 * 
+//	 * @see #PROJECT_OPEN_NEW_PERSPECTIVE
+//	 * @deprecated Opening a Perspective in a new page is no longer supported
+//	 *             functionality as of 2.0.
+//	 */
+//	public static final String OPEN_PERSPECTIVE_PAGE = "OPEN_PERSPECTIVE_PAGE"; //$NON-NLS-1$
 
 	/**
 	 * A preference value indicating that an action should open a new
@@ -214,31 +220,33 @@ public interface IWorkbenchPreferenceConstants {
 	 */
 	public static final String RIGHT = "right"; //$NON-NLS-1$
 
-	/**
-	 * A named preference indicating whether the workbench should show the
-	 * introduction component (if available) on startup.
-	 * 
-	 * <p>
-	 * The default value for this preference is: <code>true</code> (show
-	 * intro)
-	 * </p>
-	 * 
-	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#openIntro()
-	 */
-	public static final String SHOW_INTRO = "showIntro"; //$NON-NLS-1$
+	// RAP [bm]: intro
+//	/**
+//	 * A named preference indicating whether the workbench should show the
+//	 * introduction component (if available) on startup.
+//	 * 
+//	 * <p>
+//	 * The default value for this preference is: <code>true</code> (show
+//	 * intro)
+//	 * </p>
+//	 * 
+//	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#openIntro()
+//	 */
+//	public static final String SHOW_INTRO = "showIntro"; //$NON-NLS-1$
 
-	/**
-	 * A named preference for whether the workbench should show traditional
-	 * style tabs in editors and views.
-	 * 
-	 * Boolean-valued: <code>true</code> if editors and views should use a
-	 * traditional style of tab and <code>false</code> if editors should show
-	 * new style tab (3.0 style)
-	 * <p>
-	 * The default value for this preference is: <code>true</code>
-	 * </p>
-	 */
-	public static String SHOW_TRADITIONAL_STYLE_TABS = "SHOW_TRADITIONAL_STYLE_TABS"; //$NON-NLS-1$
+	// RAP [bm]: no different tab styles in ctabfolder
+//	/**
+//	 * A named preference for whether the workbench should show traditional
+//	 * style tabs in editors and views.
+//	 * 
+//	 * Boolean-valued: <code>true</code> if editors and views should use a
+//	 * traditional style of tab and <code>false</code> if editors should show
+//	 * new style tab (3.0 style)
+//	 * <p>
+//	 * The default value for this preference is: <code>true</code>
+//	 * </p>
+//	 */
+//	public static String SHOW_TRADITIONAL_STYLE_TABS = "SHOW_TRADITIONAL_STYLE_TABS"; //$NON-NLS-1$
 
 	/**
 	 * A named preference for whether the workbench should show text on the
@@ -284,72 +292,76 @@ public interface IWorkbenchPreferenceConstants {
 	 */
 	public static String SHOW_OTHER_IN_PERSPECTIVE_MENU = "SHOW_OTHER_IN_PERSPECTIVE_MENU"; //$NON-NLS-1$
 
-	/**
-	 * A named preference for the text of the Help Contents action.
-	 * 
-	 * String-valued. If not specified, <code>"&Help Contents"</code> is used.
-	 * <p>
-	 * The default value for this preference is: <code>null</code>
-	 * </p>
-	 * 
-	 * @since 3.0
-	 */
-	public static String HELP_CONTENTS_ACTION_TEXT = "helpContentsActionText"; //$NON-NLS-1$
+	// RAP [bm]: help
+//	/**
+//	 * A named preference for the text of the Help Contents action.
+//	 * 
+//	 * String-valued. If not specified, <code>"&Help Contents"</code> is used.
+//	 * <p>
+//	 * The default value for this preference is: <code>null</code>
+//	 * </p>
+//	 * 
+//	 * @since 3.0
+//	 */
+//	public static String HELP_CONTENTS_ACTION_TEXT = "helpContentsActionText"; //$NON-NLS-1$
+//
+//	/**
+//	 * A named preference for the text of the Help Search action.
+//	 * 
+//	 * String-valued. If not specified, <code>"S&earch"</code> is used.
+//	 * <p>
+//	 * The default value for this preference is: <code>null</code>
+//	 * </p>
+//	 */
+//	public static String HELP_SEARCH_ACTION_TEXT = "helpSearchActionText"; //$NON-NLS-1$
+//
+//	/**
+//	 * A named preference for the text of the Dynamic Help action.
+//	 * 
+//	 * String-valued. If not specified, <code>"&Dynamic Help"</code> is used.
+//	 * <p>
+//	 * The default value for this preference is: <code>null</code>
+//	 * </p>
+//	 */
+//	public static String DYNAMIC_HELP_ACTION_TEXT = "dynamicHelpActionText"; //$NON-NLS-1$
 
-	/**
-	 * A named preference for the text of the Help Search action.
-	 * 
-	 * String-valued. If not specified, <code>"S&earch"</code> is used.
-	 * <p>
-	 * The default value for this preference is: <code>null</code>
-	 * </p>
-	 */
-	public static String HELP_SEARCH_ACTION_TEXT = "helpSearchActionText"; //$NON-NLS-1$
-
-	/**
-	 * A named preference for the text of the Dynamic Help action.
-	 * 
-	 * String-valued. If not specified, <code>"&Dynamic Help"</code> is used.
-	 * <p>
-	 * The default value for this preference is: <code>null</code>
-	 * </p>
-	 */
-	public static String DYNAMIC_HELP_ACTION_TEXT = "dynamicHelpActionText"; //$NON-NLS-1$
-
-	/**
-	 * A named preference for enabling animations when a layout transition
-	 * occurs
-	 * <p>
-	 * The default value for this preference is: <code>true</code> (show
-	 * animations when a transition occurs)
-	 * </p>
-	 */
-	public static final String ENABLE_ANIMATIONS = "ENABLE_ANIMATIONS"; //$NON-NLS-1$
+	// RAP [bm]: no animations
+//	/**
+//	 * A named preference for enabling animations when a layout transition
+//	 * occurs
+//	 * <p>
+//	 * The default value for this preference is: <code>true</code> (show
+//	 * animations when a transition occurs)
+//	 * </p>
+//	 */
+//	public static final String ENABLE_ANIMATIONS = "ENABLE_ANIMATIONS"; //$NON-NLS-1$
 	
-	/**
-	 * A named preference that view implementors can used to determine whether
-	 * or not they should utilize colored labels.
-	 * 
-	 * <p>
-	 * The default value for this preference is: <code>true</code> (show
-	 * colored labels)
-	 * </p>
-	 * 
-	 * @since 1.1
-	 */
-	public static final String USE_COLORED_LABELS = "USE_COLORED_LABELS"; //$NON-NLS-1$
+	// RAP [bm]: no colored labels
+//	/**
+//	 * A named preference that view implementors can used to determine whether
+//	 * or not they should utilize colored labels.
+//	 * 
+//	 * <p>
+//	 * The default value for this preference is: <code>true</code> (show
+//	 * colored labels)
+//	 * </p>
+//	 * 
+//	 * @since 1.1
+//	 */
+//	public static final String USE_COLORED_LABELS = "USE_COLORED_LABELS"; //$NON-NLS-1$
 
-	/**
-	 * <p>
-	 * Workbench preference id for the key configuration identifier to be
-	 * treated as the default.
-	 * </p>
-	 * <p>
-	 * The default value for this preference is
-	 * <code>"org.eclipse.ui.defaultAcceleratorConfiguration"</code>.
-	 * <p>
-	 */
-	public static final String KEY_CONFIGURATION_ID = "KEY_CONFIGURATION_ID"; //$NON-NLS-1$
+	// RAP [bm]: no key configurations
+//	/**
+//	 * <p>
+//	 * Workbench preference id for the key configuration identifier to be
+//	 * treated as the default.
+//	 * </p>
+//	 * <p>
+//	 * The default value for this preference is
+//	 * <code>"org.eclipse.ui.defaultAcceleratorConfiguration"</code>.
+//	 * <p>
+//	 */
+//	public static final String KEY_CONFIGURATION_ID = "KEY_CONFIGURATION_ID"; //$NON-NLS-1$
 
 	/**
 	 * <p>
@@ -397,10 +409,11 @@ public interface IWorkbenchPreferenceConstants {
 	 */
 	public static final String SHOW_PROGRESS_ON_STARTUP = "SHOW_PROGRESS_ON_STARTUP"; //$NON-NLS-1$
 
-	/**
-	 * Stores whether or not to show the memory monitor in the workbench window.
-	 */
-	public static final String SHOW_MEMORY_MONITOR = "SHOW_MEMORY_MONITOR"; //$NON-NLS-1$
+	// RAP [bm]: no memory monitor
+//	/**
+//	 * Stores whether or not to show the memory monitor in the workbench window.
+//	 */
+//	public static final String SHOW_MEMORY_MONITOR = "SHOW_MEMORY_MONITOR"; //$NON-NLS-1$
 
 	/**
 	 * Stores whether or not to use the window working set as the default
@@ -416,11 +429,12 @@ public interface IWorkbenchPreferenceConstants {
 	 */
 	public static final String SHOW_FILTERED_TEXTS = "SHOW_FILTERED_TEXTS"; //$NON-NLS-1$
 
-	/**
-	 * Stores whether or not views may be detached. The default is
-	 * <code>true</code>.
-	 */
-	public static final String ENABLE_DETACHED_VIEWS = "ENABLE_DETACHED_VIEWS"; //$NON-NLS-1$
+	// RAP [bm]: detached views
+//	/**
+//	 * Stores whether or not views may be detached. The default is
+//	 * <code>true</code>.
+//	 */
+//	public static final String ENABLE_DETACHED_VIEWS = "ENABLE_DETACHED_VIEWS"; //$NON-NLS-1$
 
 	/**
 	 * Stores whether or not the workbench prompts for saving when a dirty

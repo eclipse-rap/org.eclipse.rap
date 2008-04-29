@@ -935,10 +935,11 @@ public class Perspective {
 			// Move any minimized extension stacks to the trim			
 			if (layout != null) {
 				// Turn aimations off
-		        IPreferenceStore preferenceStore = PrefUtil.getAPIPreferenceStore();
-				boolean useAnimations = preferenceStore
-						.getBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS);
-				preferenceStore.setValue(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, false);
+				// RAP [bm]: no animations
+//		        IPreferenceStore preferenceStore = PrefUtil.getAPIPreferenceStore();
+//				boolean useAnimations = preferenceStore
+//						.getBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS);
+//				preferenceStore.setValue(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, false);
 				
 				List minStacks = layout.getMinimizedStacks();
 				for (Iterator msIter = minStacks.iterator(); msIter.hasNext();) {
@@ -947,7 +948,8 @@ public class Perspective {
 				}
 
 				// Restore the animation pref
-				preferenceStore.setValue(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, useAnimations);
+				// RAP [bm]: no animations
+//				preferenceStore.setValue(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, useAnimations);
 
 				// this is a one-off deal...set during the extension reading
 				minStacks.clear();

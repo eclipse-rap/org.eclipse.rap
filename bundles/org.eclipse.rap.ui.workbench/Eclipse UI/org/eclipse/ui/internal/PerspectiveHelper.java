@@ -20,23 +20,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.graphics.Cursor;
-//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-//import org.eclipse.swt.widgets.Control;
-//import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.IWorkbenchPreferenceConstants;
-import org.eclipse.ui.PlatformUI;
-//import org.eclipse.ui.internal.dnd.AbstractDropTarget;
-//import org.eclipse.ui.internal.dnd.DragUtil;
-//import org.eclipse.ui.internal.dnd.IDragOverListener;
-//import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.misc.StringMatcher;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
@@ -232,8 +221,11 @@ public class PerspectiveHelper {
 		// use the plug-in customization file to disable), and if the platform
 		// supports detaching.
          
-        final IPreferenceStore store = PlatformUI.getPreferenceStore();
-        this.detachable = store.getBoolean(IWorkbenchPreferenceConstants.ENABLE_DETACHED_VIEWS);
+        // RAP [bm]: no detachable view
+//        final IPreferenceStore store = PlatformUI.getPreferenceStore();
+//        this.detachable = store.getBoolean(IWorkbenchPreferenceConstants.ENABLE_DETACHED_VIEWS);
+        this.detachable = false;
+        // RAPEND: [bm] 
 
         if (this.detachable) {
 			// Check if some arbitrary Composite supports reparenting. If it

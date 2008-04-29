@@ -98,23 +98,25 @@ public class PlatformUIPreferenceListener implements
 		}
 
 		// TODO the banner apperance should have its own preference
-		if (IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS
-				.equals(propertyName)) {
-			boolean newValue = PrefUtil.getAPIPreferenceStore().getBoolean(
-					IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS);
-
-			IWorkbench workbench = PlatformUI.getWorkbench();
-			IWorkbenchWindow[] workbenchWindows = workbench
-					.getWorkbenchWindows();
-			for (int i = 0; i < workbenchWindows.length; i++) {
-				IWorkbenchWindow window = workbenchWindows[i];
-				if (window instanceof WorkbenchWindow) {
-					((WorkbenchWindow) window).setBannerCurve(newValue);
-				}
-			}
-			return;
-		}
-
+		// RAP [bm]: no styled tabs
+//		if (IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS
+//				.equals(propertyName)) {
+//			boolean newValue = PrefUtil.getAPIPreferenceStore().getBoolean(
+//					IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS);
+//
+//			IWorkbench workbench = PlatformUI.getWorkbench();
+//			IWorkbenchWindow[] workbenchWindows = workbench
+//					.getWorkbenchWindows();
+//			for (int i = 0; i < workbenchWindows.length; i++) {
+//				IWorkbenchWindow window = workbenchWindows[i];
+//				if (window instanceof WorkbenchWindow) {
+//					((WorkbenchWindow) window).setBannerCurve(newValue);
+//				}
+//			}
+//			return;
+//		}
+		// RAPEND: [bm] 
+		
 		// Update the file associations if they have changed due to an import
 		if (IPreferenceConstants.RESOURCES.equals(propertyName)) {
 			IEditorRegistry registry = WorkbenchPlugin.getDefault()

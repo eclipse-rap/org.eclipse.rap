@@ -88,7 +88,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
@@ -130,7 +129,6 @@ import org.eclipse.ui.internal.services.IServiceLocatorCreator;
 import org.eclipse.ui.internal.services.ServiceLocator;
 import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
-import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
@@ -1003,8 +1001,11 @@ public class WorkbenchWindow extends ApplicationWindow implements
 
 		// the banner gets a curve along with the new tab style
 		// TODO create a dedicated preference for this
-		setBannerCurve(PrefUtil.getAPIPreferenceStore().getBoolean(
-				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS));
+		// RAP [bm]: not needed
+//		setBannerCurve(PrefUtil.getAPIPreferenceStore().getBoolean(
+//				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS));
+		setBannerCurve(false);
+		// RAPEND: [bm] 
 
 		CacheWrapper coolbarCacheWrapper = new CacheWrapper(topBar);
 

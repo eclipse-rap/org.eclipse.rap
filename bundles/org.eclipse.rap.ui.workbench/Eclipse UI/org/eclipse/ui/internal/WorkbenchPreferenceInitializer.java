@@ -94,9 +94,12 @@ public class WorkbenchPreferenceInitializer extends
 		node.putBoolean("DISABLE_DIALOG_FONT", false); //$NON-NLS-1$
 
 		// Heap status preferences
-		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, false);
-		node.putInt(IHeapStatusConstants.PREF_UPDATE_INTERVAL, 500);
-		node.putBoolean(IHeapStatusConstants.PREF_SHOW_MAX, false);
+		// RAP [bm]: no heap status
+//		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, false);
+//		node.putInt(IHeapStatusConstants.PREF_UPDATE_INTERVAL, 500);
+//		node.putBoolean(IHeapStatusConstants.PREF_SHOW_MAX, false);
+		// RAPEND: [bm] 
+		
 		node.putBoolean(IPreferenceConstants.OVERRIDE_PRESENTATION, false);
 
 		IEclipsePreferences rootNode = (IEclipsePreferences) Platform

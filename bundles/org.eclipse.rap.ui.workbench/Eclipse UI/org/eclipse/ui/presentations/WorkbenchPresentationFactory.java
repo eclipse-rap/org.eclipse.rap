@@ -19,7 +19,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.preferences.IDynamicPropertyMap;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultMultiTabListener;
-import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultSimpleTabListener;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultTabFolder;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultThemeListener;
 import org.eclipse.ui.internal.presentations.defaultpresentation.EmptyTabFolder;
@@ -83,10 +82,12 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
 		new DefaultMultiTabListener(workbenchPreferences,
 				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, folder);
 
-		new DefaultSimpleTabListener(result.getApiPreferences(),
-				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
-				folder);        
-        
+		// RAP [bm]: tab style cannot change 
+//		new DefaultSimpleTabListener(result.getApiPreferences(),
+//				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
+//				folder);        
+        // RAPEND: [bm] 
+		
         return result;
     }
 
@@ -121,10 +122,12 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
         DefaultThemeListener themeListener = new DefaultThemeListener(folder, result.getTheme());
         result.getTheme().addListener(themeListener);
         
-		new DefaultSimpleTabListener(result.getApiPreferences(),
-				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
-				folder);
-
+        // RAP [bm]: not needed as tab style does not change
+//		new DefaultSimpleTabListener(result.getApiPreferences(),
+//				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
+//				folder);
+        // RAPEND: [bm] 
+        
         return result;
     }
 

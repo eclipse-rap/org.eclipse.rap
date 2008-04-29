@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultSimpleTabListener;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultTabFolder;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultThemeListener;
 import org.eclipse.ui.internal.presentations.util.PresentablePartFolder;
@@ -71,10 +70,12 @@ public class WorkbenchPresentationFactoryClassic extends
 				result.getTheme());
 		result.getTheme().addListener(themeListener);
 
-		new DefaultSimpleTabListener(result.getApiPreferences(),
-				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
-				folder);
-
+		// RAP [bm]: only one style available
+//		new DefaultSimpleTabListener(result.getApiPreferences(),
+//				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
+//				folder);
+		// RAPEND: [bm] 
+		
 		return result;
 	}
 }

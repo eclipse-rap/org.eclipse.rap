@@ -47,31 +47,35 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
 
 		// Deprecated but kept for backwards compatibility
-		node.put(IWorkbenchPreferenceConstants.PROJECT_OPEN_NEW_PERSPECTIVE,
-				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
-		node.put(IWorkbenchPreferenceConstants.SHIFT_OPEN_NEW_PERSPECTIVE,
-				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
-		node.put(IWorkbenchPreferenceConstants.ALTERNATE_OPEN_NEW_PERSPECTIVE,
-				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
-
+		// RAP [bm]: disabled
+//		node.put(IWorkbenchPreferenceConstants.PROJECT_OPEN_NEW_PERSPECTIVE,
+//				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
+//		node.put(IWorkbenchPreferenceConstants.SHIFT_OPEN_NEW_PERSPECTIVE,
+//				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
+//		node.put(IWorkbenchPreferenceConstants.ALTERNATE_OPEN_NEW_PERSPECTIVE,
+//				IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE);
+		
 		// Although there is no longer any item on the preference pages
 		// for setting the linking preference, since it is now a per-part
 		// setting, it remains as a preference to allow product overrides of the
 		// initial state of linking in the Navigator. By default, linking is
 		// off.
-		node.putBoolean(IWorkbenchPreferenceConstants.LINK_NAVIGATOR_TO_EDITOR,
-				false);
+//		node.putBoolean(IWorkbenchPreferenceConstants.LINK_NAVIGATOR_TO_EDITOR,
+//				false);
+		// RAPEND: [bm]
 
 		// Appearance / Presentation preferences
 		node.put(IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
 				IWorkbenchConstants.DEFAULT_PRESENTATION_ID);
-		node
-				.putBoolean(
-						IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
-						true);
-		// RAP [bm]: disabled animations
-		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, false);
-		node.putBoolean(IWorkbenchPreferenceConstants.USE_COLORED_LABELS, true);
+		// RAP [bm]: no sense, disabled in IWPC
+//		node
+//				.putBoolean(
+//						IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
+//						true);
+//		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS, true);
+//		node.putBoolean(IWorkbenchPreferenceConstants.USE_COLORED_LABELS, true);
+		// RAPEND: [bm] 
+		
 		node.put(IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR,
 				IWorkbenchPreferenceConstants.TOP_RIGHT);
 		node.putBoolean(
@@ -89,7 +93,8 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 				IWorkbenchPreferenceConstants.BOTTOM);
 
 		// default to showing intro on startup
-		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_INTRO, true);
+		// RAP [bm]: no intro
+//		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_INTRO, true);
 
 		// Default to the standard key configuration.
 		// RAP [bm]: Bindings
@@ -127,8 +132,9 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 						true);
 
 		// Default for enabling detached views
-		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_DETACHED_VIEWS,
-				true);
+		// RAP [bm]: no detached view
+//		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_DETACHED_VIEWS,
+//				true);
 
 		// Default for prompting for save when saveables are still held on to by other parts
 		node.putBoolean(IWorkbenchPreferenceConstants.PROMPT_WHEN_SAVEABLE_STILL_OPEN,

@@ -479,7 +479,6 @@ public class ProgressManager extends ProgressProvider implements
 					     */
 					    protected IStatus run( IProgressMonitor monitor ) {
 					      // TODO Auto-generated method stub
-System.out.println( "test job" );
 					      return Status.OK_STATUS;
 					    }
 					  };
