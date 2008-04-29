@@ -1174,9 +1174,10 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         sashComposite.setWeights(new int[] { 30, 70 });
 
         // Use F2... label
-        label = new Label(actionSetsComposite, SWT.WRAP);
-        label.setText(WorkbenchMessages.get().ActionSetSelection_selectActionSetsHelp);
-        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        // RAP [bm]: 
+//        label = new Label(actionSetsComposite, SWT.WRAP);
+//        label.setText(WorkbenchMessages.get().ActionSetSelection_selectActionSetsHelp);
+//        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         return actionSetsComposite;
     }

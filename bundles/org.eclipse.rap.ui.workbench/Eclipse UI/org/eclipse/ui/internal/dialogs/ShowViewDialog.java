@@ -17,40 +17,27 @@ import java.util.Iterator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
-//import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-//import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.events.DisposeEvent;
-//import org.eclipse.swt.events.DisposeListener;
-//import org.eclipse.swt.events.FocusAdapter;
-//import org.eclipse.swt.events.FocusEvent;
-//import org.eclipse.swt.events.KeyAdapter;
-//import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
-//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-//import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
-//import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.ViewRegistry;
@@ -166,9 +153,9 @@ public class ShowViewDialog extends Dialog implements
         layoutTopControl(filteredTree);
         
         // Use F2... label
-        Label label = new Label(composite, SWT.WRAP);
-        label.setText(WorkbenchMessages.get().ShowView_selectViewHelp);
-        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+//        Label label = new Label(composite, SWT.WRAP);
+//        label.setText(WorkbenchMessages.get().ShowView_selectViewHelp);
+//        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         // Restore the last state
         restoreWidgetValues();
