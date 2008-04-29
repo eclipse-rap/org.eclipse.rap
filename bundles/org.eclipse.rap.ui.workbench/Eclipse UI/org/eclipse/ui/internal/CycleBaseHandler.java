@@ -23,10 +23,12 @@ import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.KeyEvent;
 //import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+//import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseListener;
 //import org.eclipse.swt.events.TraverseEvent;
 //import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -169,6 +171,10 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		Rectangle tableBounds = table.getBounds();
 		tableBounds.height = Math.min(tableBounds.height, table.getItemHeight()
 				* MAX_ITEMS);
+// RAP [rh] Since Table always show scroll bar sm add some pixels to width and height  
+		tableBounds.height += 20;
+		tableBounds.width += 20;
+// RAP end		
 		table.setBounds(tableBounds);
 
 		dialog.setBounds(dialog.computeTrim(tableBounds.x, tableBounds.y,
@@ -448,19 +454,25 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 	 * Add mouse listener to the table closing it when the mouse is pressed.
 	 */
 	protected void addMouseListener(final Table table, final Shell dialog) {
-		table.addMouseListener(new MouseListener() {
-			public void mouseDoubleClick(MouseEvent e) {
-				ok(dialog, table);
-			}
-
-			public void mouseDown(MouseEvent e) {
-				ok(dialog, table);
-			}
-
-			public void mouseUp(MouseEvent e) {
-				ok(dialog, table);
-			}
-		});
+// RAP [rh] Mouse events don't work reliably with Table, replaced with SelectionListener 	  
+//		table.addMouseListener(new MouseListener() {
+//			public void mouseDoubleClick(MouseEvent e) {
+//				ok(dialog, table);
+//			}
+//
+//			public void mouseDown(MouseEvent e) {
+//				ok(dialog, table);
+//			}
+//
+//			public void mouseUp(MouseEvent e) {
+//				ok(dialog, table);
+//			}
+//		});
+	  table.addSelectionListener( new SelectionAdapter() {
+	    public void widgetSelected( SelectionEvent event ) {
+	      ok( dialog, table );
+	    }
+	  } );
 	}
 
 	protected abstract String getTableHeader(IWorkbenchPart activePart);

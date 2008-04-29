@@ -770,7 +770,8 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
                 if (s.getMinimized()) {
 					s.setMinimized(false);
 				}
-                s.moveAbove(null);
+// RAP [rh] Shell#moveAbove(null) throws NullPointerException                
+//                s.moveAbove(null);
                 p.getWorkbenchWindow().setActivePage(p);
                 p.activate(editor);
             } else {

@@ -22,9 +22,9 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
+//import org.eclipse.swt.events.MouseAdapter;
+//import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -37,13 +37,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+//import org.eclipse.swt.widgets.Menu;
+//import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.WorkbenchMessages;
+//import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.misc.StringMatcher;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultTabItem;
 
@@ -292,39 +292,40 @@ public abstract class AbstractTableInformationControl {
 //        });
         // RAPEND: [bm] 
 
-        table.addMouseListener(new MouseAdapter() {
-            public void mouseUp(MouseEvent e) {
-                if (table.getSelectionCount() < 1) {
-					return;
-				}
-
-                if (e.button == 1) {
-					if (table.equals(e.getSource())) {
-                        Object o = table.getItem(new Point(e.x, e.y));
-                        TableItem selection = table.getSelection()[0];
-                        if (selection.equals(o)) {
-							gotoSelectedElement();
-						}
-                    }
-				}
-                if (e.button == 3) {
-                    TableItem tItem = fTableViewer.getTable().getItem(
-                            new Point(e.x, e.y));
-                    if (tItem != null) {
-                        Menu menu = new Menu(fTableViewer.getTable());
-                        MenuItem mItem = new MenuItem(menu, SWT.NONE);
-                        mItem.setText(WorkbenchMessages.get().PartPane_close);
-                        mItem.addSelectionListener(new SelectionAdapter() {
-                            public void widgetSelected(
-                                    SelectionEvent selectionEvent) {
-                                removeSelectedItems();
-                            }
-                        });
-                        menu.setVisible(true);
-                    }
-                }
-            }
-        });
+// RAP [rh] MouseListener on Table don't work reliably        
+//        table.addMouseListener(new MouseAdapter() {
+//            public void mouseUp(MouseEvent e) {
+//                if (table.getSelectionCount() < 1) {
+//					return;
+//				}
+//
+//                if (e.button == 1) {
+//					if (table.equals(e.getSource())) {
+//                        Object o = table.getItem(new Point(e.x, e.y));
+//                        TableItem selection = table.getSelection()[0];
+//                        if (selection.equals(o)) {
+//							gotoSelectedElement();
+//						}
+//                    }
+//				}
+//                if (e.button == 3) {
+//                    TableItem tItem = fTableViewer.getTable().getItem(
+//                            new Point(e.x, e.y));
+//                    if (tItem != null) {
+//                        Menu menu = new Menu(fTableViewer.getTable());
+//                        MenuItem mItem = new MenuItem(menu, SWT.NONE);
+//                        mItem.setText(WorkbenchMessages.get().PartPane_close);
+//                        mItem.addSelectionListener(new SelectionAdapter() {
+//                            public void widgetSelected(
+//                                    SelectionEvent selectionEvent) {
+//                                removeSelectedItems();
+//                            }
+//                        });
+//                        menu.setVisible(true);
+//                    }
+//                }
+//            }
+//        });
 
         int border = ((shellStyle & SWT.NO_TRIM) == 0) ? 0 : BORDER;
         fShell.setLayout(new BorderFillLayout(border));

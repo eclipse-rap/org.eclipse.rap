@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -153,11 +155,21 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
                 handleLowerSelectionChanged();
             }
         });
-        list.addListener(SWT.MouseDoubleClick, new Listener() {
-            public void handleEvent(Event evt) {
+// RAP [rh] safer to replace MouseDoubleClick with WdigetDefaultSelected event for now        
+//        list.addListener(SWT.MouseDoubleClick, new Listener() {
+//            public void handleEvent(Event evt) {
+//                handleDefaultSelected();
+//            }
+//        });
+        list.addSelectionListener( new SelectionAdapter() {
+          /* (non-Javadoc)
+           * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+           */
+          public void widgetDefaultSelected( SelectionEvent event ) {
                 handleDefaultSelected();
-            }
-        });
+          }
+        } );
+        
         list.addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                 fQualifierRenderer.dispose();

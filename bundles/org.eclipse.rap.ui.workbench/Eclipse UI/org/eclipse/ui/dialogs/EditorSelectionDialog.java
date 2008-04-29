@@ -191,7 +191,8 @@ public final class EditorSelectionDialog extends Dialog {
 
 		editorTable = new Table(contents, SWT.SINGLE | SWT.BORDER);
 		editorTable.addListener(SWT.Selection, listener);
-		editorTable.addListener(SWT.DefaultSelection, listener);
+// RAP [rh] Mouse events don't work reliably with Table     
+//		editorTable.addListener(SWT.DefaultSelection, listener);
 		editorTable.addListener(SWT.MouseDoubleClick, listener);
 		data = new GridData();
 		data.widthHint = convertHorizontalDLUsToPixels(TABLE_WIDTH);
@@ -506,10 +507,11 @@ public final class EditorSelectionDialog extends Dialog {
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
 		public void handleEvent(Event event) {
-			if (event.type == SWT.MouseDoubleClick) {
-				handleDoubleClickEvent();
-				return;
-			}
+// RAP [rh] Mouse events don't work reliably with Table		  
+//			if (event.type == SWT.MouseDoubleClick) {
+//				handleDoubleClickEvent();
+//				return;
+//			}
 // RAP [rh] external editors not supported				
 //			if (event.widget == externalButton) {
 //				fillEditorTable();
