@@ -28,7 +28,6 @@ import org.osgi.framework.Bundle;
  * configuration element. There are a few steps to the process in order to
  * ensure compatibility with pre-3.0 plugins.
  * 
- * @since 3.0
  */
 public class EarlyStartupRunnable extends SafeRunnable {
 

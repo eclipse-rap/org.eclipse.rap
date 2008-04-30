@@ -77,6 +77,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.window.WindowManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
@@ -2190,23 +2191,35 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		if (extensions.length == 0) {
 			return;
 		}
+// RAP [rh] extracted access to Workbenchmessages        
+		final String taskName = WorkbenchMessages.get().Workbench_startingPlugins;
 		Job job = new Job("Workbench early startup") { //$NON-NLS-1$
 			protected IStatus run(IProgressMonitor monitor) {
 				HashSet disabledPlugins = new HashSet(Arrays
 						.asList(getDisabledEarlyActivatedPlugins()));
-				monitor.beginTask(WorkbenchMessages.get().Workbench_startingPlugins,
+//RAP [rh] extracted access to Workbenchmessages				
+//				monitor.beginTask(WorkbenchMessages.get().Workbench_startingPlugins,
+//						extensions.length);
+				monitor.beginTask(taskName,
 						extensions.length);
 				for (int i = 0; i < extensions.length; ++i) {
 					if (monitor.isCanceled() || !isRunning()) {
 						return Status.CANCEL_STATUS;
 					}
-					IExtension extension = extensions[i];
+// RAP [rh] needs to be final, see Runnable below
+					final IExtension extension = extensions[i];
 
 					// if the plugin is not in the set of disabled plugins, then
 					// execute the code to start it
 					if (!disabledPlugins.contains(extension.getNamespace())) {
 						monitor.subTask(extension.getNamespace());
-						SafeRunner.run(new EarlyStartupRunnable(extension));
+// RAP [rh] fake service context						
+//						SafeRunner.run(new EarlyStartupRunnable(extension));
+				    UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+				      public void run() {
+				        SafeRunner.run(new EarlyStartupRunnable(extension));
+				      }
+				    } );
 					}
 					monitor.worked(1);
 				}
