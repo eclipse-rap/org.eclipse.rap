@@ -13,15 +13,14 @@
 feature@org.eclipse.rap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.feature,org.eclipse.rap
 
 plugin@org.eclipse.rap.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt
-plugin@org.eclipse.rap.jface=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.jface
-plugin@org.eclipse.rap.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui
-plugin@org.eclipse.rap.ui.views=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.views
-plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.workbench
+plugin@org.eclipse.rap.jface=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.jface
+plugin@org.eclipse.rap.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui
+plugin@org.eclipse.rap.ui.views=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui.views
+plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui.workbench
 plugin@org.eclipse.rap.w4t=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.w4t
 
 # rwt flavors
 fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.q07
-
 
 # demo
 plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo
@@ -40,12 +39,12 @@ plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tec
 #  plugin@org.eclipse.equinox.http.servlet=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
 
 # databinding
-plugin@org.eclipse.rap.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding
-plugin@org.eclipse.rap.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding.beans
-plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.jface.databinding
+#plugin@org.eclipse.rap.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding
+#plugin@org.eclipse.rap.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding.beans
+plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.jface.databinding
 
 # forms
-plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.forms
+plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui.forms
 
 # jetty
 #  plugin@org.eclipse.equinox.http.jetty=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
