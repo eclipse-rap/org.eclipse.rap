@@ -68,9 +68,7 @@
    -->
    <extension-point id="org.eclipse.ui.startup" name="%ExtPoint.startup" schema="schema/startup.exsd"/>
    <extension-point id="org.eclipse.ui.statusHandlers" name="%ExtPoint.statusHandlers" schema="schema/statusHandlers.exsd"/>
-   <!-- RAP [bm] not needed yet
    <extension-point id="org.eclipse.ui.systemSummarySections" name="%ExtPoint.systemSummarySections" schema="schema/systemSummarySections.exsd"/>
-   -->
    <extension-point id="org.eclipse.ui.themes" name="%ExtPoint.themes" schema="schema/themes.exsd"/>
    <extension-point id="org.eclipse.ui.viewActions" name="%ExtPoint.viewActions" schema="schema/viewActions.exsd"/>
    <extension-point id="org.eclipse.ui.views" name="%ExtPoint.views" schema="schema/views.exsd"/>

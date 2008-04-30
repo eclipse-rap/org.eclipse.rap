@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: org.eclipse.rap.ui.workbench; singleton:=true
+Bundle-SymbolicName: org.eclipse.rap.ui.workbench;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-ClassPath: patch.jar,
  .
