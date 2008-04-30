@@ -559,15 +559,38 @@ public class FilteredTree extends Composite {
 				Display display = filterText.getDisplay();
 				display.asyncExec(new Runnable() {
 					public void run() {
-						if (!filterText.isDisposed()) {
-							if (getInitialText().equals(
-									filterText.getText().trim())) {
-								filterText.selectAll();
-							}
-						}
+// RAP [fappel]: workaround since Text#selectAll doesn't work (bug #223903)
+//						if (!filterText.isDisposed()) {
+//							if (getInitialText().equals(
+//									filterText.getText().trim())) {
+//								filterText.selectAll();
+//							}
+//						}
+                        if (!filterText.isDisposed()){
+                          if (getInitialText().equals(filterText.getText().trim())){
+//                            filterText.selectAll();
+                            filterText.setText( "" );
+                          }
+                      }
 					}
 				});
 			}
+			
+// RAP [fappel]: workaround since Text#selectAll doesn't work (bug #223903)
+            public void focusLost( final FocusEvent event ) {
+              Display display = filterText.getDisplay();
+              display.asyncExec(new Runnable() {
+                  public void run() {
+                      if (!filterText.isDisposed()){
+                          if ("".equals(filterText.getText().trim())){
+//                            filterText.selectAll();
+                            filterText.setText( getInitialText() );
+                          }
+                      }
+                  }
+              });
+            }
+
 		});
 
 // RAP [rh] missing key yevents		
