@@ -165,6 +165,7 @@ Also causes the wizard to appear as a choice within the &quot;New Project Dialog
                </documentation>
             </annotation>
          </attribute>
+         <!-- RAP [bm]: help
          <attribute name="helpHref" type="string">
             <annotation>
                <documentation>
@@ -175,6 +176,7 @@ Since 3.0
                </documentation>
             </annotation>
          </attribute>
+         -->
          <attribute name="descriptionImage" type="string">
             <annotation>
                <documentation>
