@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.internal.ShowInMenu;
 import org.eclipse.ui.internal.dialogs.DecoratorsPreferencePage;
+import org.eclipse.ui.internal.dialogs.EditorsPreferencePage;
+import org.eclipse.ui.internal.dialogs.PerspectivesPreferencePage;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferencePage;
 import org.eclipse.ui.internal.progress.ProgressView;
 
@@ -51,11 +53,10 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 	 */
 	public static final String DECORATORS_PREFERENCE_PAGE = "decoratorsPreferencePage"; //$NON-NLS-1$
 
-	// RAP [bm]: not fully applicable
-//	/**
-//	 * Factory ID for the Editors preference page.
-//	 */
-//	public static final String EDITORS_PREFERENCE_PAGE = "editorsPreferencePage"; //$NON-NLS-1$
+	/**
+	 * Factory ID for the Editors preference page.
+	 */
+	public static final String EDITORS_PREFERENCE_PAGE = "editorsPreferencePage"; //$NON-NLS-1$
 
 	// RAP [bm]: 
 //	/**
@@ -75,11 +76,10 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 //	 */
 //	public static final String NEW_KEYS_PREFERENCE_PAGE = "newKeysPreferencePage"; //$NON-NLS-1$
 
-	// RAP [bm]: 
-//	/**
-//	 * Factory ID for the Perspectives preference page.
-//	 */
-//	public static final String PERSPECTIVES_PREFERENCE_PAGE = "perspectivesPreferencePage"; //$NON-NLS-1$
+	/**
+	 * Factory ID for the Perspectives preference page.
+	 */
+	public static final String PERSPECTIVES_PREFERENCE_PAGE = "perspectivesPreferencePage"; //$NON-NLS-1$
 
 	// RAP [bm]: file handling
 //	/**
@@ -155,10 +155,9 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 		if (DECORATORS_PREFERENCE_PAGE.equals(id)) {
 			return configure(new DecoratorsPreferencePage());
 		}
-		// RAP [bm]: 
-//		if (EDITORS_PREFERENCE_PAGE.equals(id)) {
-//			return configure(new EditorsPreferencePage());
-//		}
+		if (EDITORS_PREFERENCE_PAGE.equals(id)) {
+			return configure(new EditorsPreferencePage());
+		}
 // RAP [rh] FileEditorsPreferencePage is disabled in RAP
 //		if (FILE_ASSOCIATIONS_PREFERENCE_PAGE.equals(id)) {
 //			return configure(new FileEditorsPreferencePage());
@@ -170,10 +169,9 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 //		if (NEW_KEYS_PREFERENCE_PAGE.equals(id)) {
 //			return configure(new NewKeysPreferencePage());
 //		}
-		// RAP [bm]: new window
-//		if (PERSPECTIVES_PREFERENCE_PAGE.equals(id)) {
-//			return configure(new PerspectivesPreferencePage());
-//		}
+		if (PERSPECTIVES_PREFERENCE_PAGE.equals(id)) {
+			return configure(new PerspectivesPreferencePage());
+		}
 		// RAP [bm]: missing file handling - download/upload?
 //		if (PREFERENCES_EXPORT_WIZARD.equals(id)) {
 //			return configure(new PreferencesExportWizard());
