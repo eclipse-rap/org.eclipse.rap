@@ -96,7 +96,7 @@ public class WorkbenchEncoding {
 		List definedEncodings = Collections.synchronizedList(new ArrayList());
 		EncodingsRegistryReader reader = new EncodingsRegistryReader(definedEncodings);
 
-		// RAP [bm]: namedspace
+		// RAP [bm]: namespace
 		reader.readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_ENCODINGS);
 

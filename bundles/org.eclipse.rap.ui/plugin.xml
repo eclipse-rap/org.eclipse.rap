@@ -38,9 +38,7 @@
    <extension-point id="org.eclipse.ui.editorActions" name="%ExtPoint.editorActions" schema="schema/editorActions.exsd"/>
    <extension-point id="org.eclipse.ui.editors" name="%ExtPoint.editors" schema="schema/editors.exsd"/>
    <extension-point id="org.eclipse.ui.elementFactories" name="%ExtPoint.elementFactories" schema="schema/elementFactories.exsd"/>
-   <!-- RAP [bm] not needed
    <extension-point id="org.eclipse.ui.encodings" name="%ExtPoint.encodings" schema="schema/encodings.exsd"/>
-   -->
    <extension-point id="org.eclipse.ui.exportWizards" name="%ExtPoint.exportWizards" schema="schema/exportWizards.exsd"/>
    <!-- RAP [bm] deprecated
    <extension-point id="org.eclipse.ui.fontDefinitions" name="%ExtPoint.fontDefinitions" schema="schema/fontDefinitions.exsd"/>

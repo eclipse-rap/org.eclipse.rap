@@ -882,27 +882,26 @@ public abstract class ActionFactory {
         }
     };
 
-    // RAP [bm]: too many problems with active workbench window
-//    /**
-//     * Workbench action (id "openNewWindow"): Open a new workbench window. This
-//     * action maintains its enablement state.
-//     * @since 1.1
-//     */
-//    public static final ActionFactory OPEN_NEW_WINDOW = new ActionFactory(
-//            "openNewWindow") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            IWorkbenchAction action = new OpenInNewWindowAction(window);
-//            action.setId(getId());
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "openNewWindow"): Open a new workbench window. This
+     * action maintains its enablement state.
+     * @since 1.1
+     */
+    public static final ActionFactory OPEN_NEW_WINDOW = new ActionFactory(
+            "openNewWindow") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            IWorkbenchAction action = new OpenInNewWindowAction(window);
+            action.setId(getId());
+            return action;
+        }
+    };
 
     // RAP [bm]: Clipboard
 //    /**
