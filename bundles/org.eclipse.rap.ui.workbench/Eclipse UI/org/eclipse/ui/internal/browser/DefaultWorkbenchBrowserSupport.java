@@ -21,7 +21,6 @@ import org.eclipse.ui.browser.IWebBrowser;
  * external browsers. This class is used when no alternative implementation is
  * plugged in via the 'org.eclipse.ui.browserSupport' extension point.
  * 
- * @since 3.1
  */
 public class DefaultWorkbenchBrowserSupport extends
 		AbstractWorkbenchBrowserSupport {
