@@ -8,7 +8,7 @@
     <theme
         id="org.eclipse.rap.demo.alttheme"
         name="Alternative Demo Theme"
-        file="theme1/theme.properties"/>
+        file="theme1/theme.css"/>
   </extension>
   
   <extension

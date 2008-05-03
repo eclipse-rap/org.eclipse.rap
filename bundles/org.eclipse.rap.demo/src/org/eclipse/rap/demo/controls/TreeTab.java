@@ -146,6 +146,13 @@ public class TreeTab extends ExampleTab {
       }
     } );
     tree.setSelection( tree.getItem( 0 ) );
+    tree.setHeaderVisible( true );
+    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+    col1.setText( "Col 1" );
+    col1.setWidth( 150 );
+    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
+    col2.setText( "Col 2" );
+    col2.setWidth( 50 );
     registerControl( tree );
   }
 

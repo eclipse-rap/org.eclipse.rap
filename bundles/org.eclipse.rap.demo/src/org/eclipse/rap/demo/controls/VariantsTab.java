@@ -23,6 +23,8 @@ import org.eclipse.swt.widgets.*;
 
 public class VariantsTab extends ExampleTab {
 
+  private static final String VARIANT_SPECIAL = "special";
+
   private static final String USE_VARIANTS = "useVariants";
 
   private static final String BUTTON_IMAGE_PATH
@@ -44,7 +46,8 @@ public class VariantsTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
-    createPropertyCheckbox( "Create with Custom Variant", USE_VARIANTS );
+    String text = "Create with Custom Variant '" + VARIANT_SPECIAL + "'";
+    createPropertyCheckbox( text, USE_VARIANTS );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -58,7 +61,7 @@ public class VariantsTab extends ExampleTab {
     mybutton1.setText( "Push Button" );
     mybutton1.setImage( buttonImage );
     if( hasCreateProperty( USE_VARIANTS ) ) {
-      mybutton1.setData( WidgetUtil.CUSTOM_VARIANT, "mybutton" );
+      mybutton1.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_SPECIAL );
     }
     registerControl( mybutton1 );
 
@@ -71,7 +74,7 @@ public class VariantsTab extends ExampleTab {
         Shell myShell = new Shell( parent.getShell(),
                                    SWT.CLOSE | SWT.APPLICATION_MODAL );
         if( hasCreateProperty( USE_VARIANTS ) ) {
-          myShell.setData( WidgetUtil.CUSTOM_VARIANT, "myshell" );
+          myShell.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_SPECIAL );
         }
         myShell.setText( "My Shell" );
         myShell.setSize( 200, 150 );

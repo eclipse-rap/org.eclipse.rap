@@ -1,0 +1,216 @@
+/* Alternative RAP theme */
+
+/* All Widgets and Controls */
+
+* {
+  color: rgb( 112, 94, 66 );
+  background-color: rgb( 255, 255, 255 );
+  rwt-selectionmarker-color: #56a0ea;
+}
+
+List, Tree, Table, Text, Spinner, Combo {
+  color: rgb( 39, 64, 139 );
+  background-color: #fff1a1;
+}
+
+/* Tooltips */
+
+Tooltip {
+  background-color: rgb( 255, 255, 196 );
+}
+
+/* Button */
+
+Button {
+  color: #705e42;
+  padding: 12px 6px;
+  font: bold 12px Arial, Helvetica, sans-serif;
+}
+
+Button[PUSH], Button[TOGGLE] {
+  background-color: #9dd0ea;
+  border: 2px #1695d4;
+}
+
+Button[TOGGLE][FLAT]:pressed {
+  background-color: rgb( 227, 221, 158 );
+}
+
+Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
+  border: 2px outset;
+}
+
+Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
+  border: 1px blue;
+}
+
+Button.special {
+  color: red;
+}
+
+/* CTabFolder */
+
+CTabFolder {
+  background-color: transparent;
+}
+
+CTabItem:selected {
+  color: white;
+  background-color: #c0c0c0;
+}
+
+/* Group */
+
+Group-Frame {
+  border: 1px dashed #56a0ea;
+}
+
+Group-Label {
+  padding: 0px 6px;
+  font: bold 12px Arial, Helvetica, sans-serif;
+}
+
+/* Link */
+
+Link-Link {
+  color: rgb( 34, 139, 34 );
+}
+
+/* List */
+
+List-Item:selected, TableItem:selected, TreeItem:selected {
+  color: white;
+  background-color: #56a0ea;
+}
+
+List-Item:selected:inactive {
+  background-color: #c0c0c0;
+}
+
+/* Menu */
+
+Menu {
+  border: 1px #1695d4;
+  padding: 0px;
+}
+
+MenuItem:hover {
+  color: white;
+  background-color: #56a0ea;
+}
+
+/* ProgressBar */
+
+ProgressBar {
+  background-image: url( "/theme1/icons/barbg.png" );
+}
+
+ProgressBar-Bar {
+  background-image: url( "/theme1/icons/bar.png" );
+}
+
+/* Shell */
+
+Shell {
+  border: 1px gray;
+  padding: 3px;
+}
+
+Shell[BORDER] {
+  border: 3px #1695d4;
+}
+
+Shell.special {
+  border: 3px solid red;
+  padding: 10px;
+}
+
+Shell-Titlebar {
+  color: white;
+  background-color: #9dd0ea;
+  background-gradient-color: rgb( 114, 114, 114 );
+  background-image: none;
+  padding: 2px 5px 2px;
+  margin: 0px;
+  height: 25px;
+  font: bold 15px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Shell-Titlebar:inactive {
+  color: rgb( 128, 128, 128 );
+  background-color: rgb( 205, 197, 191 );
+  background-gradient-color: rgb( 205, 197, 191 );
+  background-image: none;
+}
+
+Shell-Button {
+  margin: 0px 2px 8px 0px;
+}
+
+Shell-Button:min {
+  background-image: url( "/theme1/icons/minimize.png" );
+}
+
+Shell-Button:min:hover {
+  background-image: url( "/theme1/icons/minimize.over.png" );
+}
+
+Shell-Button:max {
+  background-image: url( "/theme1/icons/maximize.png" );
+}
+
+Shell-Button:max:hover {
+  background-image: url( "/theme1/icons/maximize.over.png" );
+}
+
+Shell-Button:max:maximized {
+  background-image: url( "/theme1/icons/restore.png" );
+}
+
+Shell-Button:max:maximized:hover {
+  background-image: url( "/theme1/icons/restore.over.png" );
+}
+
+Shell-Button:close {
+  background-image: url( "/theme1/icons/close.png" );
+}
+
+Shell-Button:close:hover {
+  background-image: url( "/theme1/icons/close.over.png" );
+}
+
+/* TabFolder */
+
+TabItem {
+  background-color: rgb( 242, 238, 189 );
+}
+
+TabItem:selected {
+  background-color: rgb( 255, 255, 255 );
+}
+
+/* Text */
+
+Text[BORDER] {
+  border: 1px solid #1695d4;
+}
+
+/* Toolbar */
+
+ToolItem:hover {
+  background-color: rgb( 238, 233, 233 );
+}
+
+/* Table and Tree */
+
+TreeColumn:hover, TableColumn:hover {
+  background-color: #9dd0ea;
+}
+
+TreeColumn-SortIndicator:up, TableColumn-SortIndicator:up {
+  background-image: url( "/theme1/icons/sort-up.png" );
+}
+
+TreeColumn-SortIndicator:down, TableColumn-SortIndicator:down {
+  background-image: url( "/theme1/icons/sort-down.png" );
+}
