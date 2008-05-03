@@ -2,7 +2,8 @@
 
 <!-- Themeable properties for SWT Groups -->
 
-<theme>
+<theme
+    css-elements="Group">
 
   <!-- Note: Theming of groups is likely to change in the future, as the group
        widget does not yet adapt to font size changes (Qx bug 507) -->
@@ -10,31 +11,53 @@
   <color name="group.background"
       description="Background color for group boxes"
       transparentAllowed="true"
-      default="248, 248, 255"/>
+      default="248, 248, 255"
+      css-property="background-color"
+      />
   <!-- defaults to widget background -->
 
   <boxdim name="group.margin"
       description="Margin for group boxes (space between frame and parent)"
-      default="8px 0px 0px"/>
+      default="8px 0px 0px"
+      css-property="margin"
+      />
 
   <boxdim name="group.padding"
       description="Padding for group boxes (space between frame and content)"
-      default="8px 2px 2px"/>
+      default="8px 2px 2px"
+      css-property="padding"
+      />
+
+  <!-- F r a m e -->
 
   <border name="group.frame.border"
       description="Frame border for group boxes"
-      default="1px solid #aca899"/>
+      default="1px solid #aca899"
+      css-property="border"
+      css-elements="Group-Frame"
+      />
 
+  <!-- L a b e l -->
+  
   <boxdim name="group.label.margin"
       description="Margin for group box labels (defines offset of the group label)"
-      default="1px 10px"/>
+      default="1px 10px"
+      css-property="margin"
+      css-elements="Group-Label"
+      />
 
   <boxdim name="group.label.padding"
       description="Padding for group box labels (defines space around group label text)"
-      default="0px 3px 0px 4px"/>
+      default="0px 3px 0px 4px"
+      css-property="padding"
+      css-elements="Group-Label"
+      />
 
   <font name="group.label.font"
       description="Font for group box labels"
-      default="11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
+      default="11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"
+      css-property="font"
+      css-elements="Group-Label"
+      />
 
 </theme>

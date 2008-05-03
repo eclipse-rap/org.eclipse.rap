@@ -47,6 +47,17 @@ public class QxFont implements QxType {
     this.italic = italic;
   }
 
+  public static QxFont create( final String[] families,
+                               final int size,
+                               final boolean bold,
+                               final boolean italic )
+  {
+    if( size < 0 ) {
+      throw new IllegalArgumentException( "Negative width: " + size );
+    }
+    return new QxFont( families, size, bold, italic );
+  }
+
   public static QxFont valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
@@ -74,9 +85,6 @@ public class QxFont implements QxType {
       } else {
         Integer parsedSize = QxDimension.parseLength( part );
         if( parsedSize != null ) {
-          if( parsedSize.intValue() < 0 ) {
-            throw new IllegalArgumentException( "Negative width: " + part );
-          }
           size = parsedSize.intValue();
         } else {
           // TODO [rst] Check commas
@@ -86,8 +94,7 @@ public class QxFont implements QxType {
     }
     // TODO [rst] Check for illegal input and throw exception
     String[] familyArr = ( String[] )family.toArray( new String[ family.size() ] );
-    QxFont result = new QxFont( familyArr, size, bold, italic );
-    return result ;
+    return new QxFont( familyArr, size, bold, italic ) ;
   }
 
   public String getFamilyAsString() {
@@ -153,15 +160,15 @@ public class QxFont implements QxType {
   public String toString() {
     StringBuffer result = new StringBuffer();
     result.append( "QxFont{ " );
-    result.append( getFamilyAsString() );
-    result.append( " " );
-    result.append( size );
     if( bold ) {
-      result.append( " bold" );
+      result.append( "bold " );
     }
     if( italic ) {
-      result.append( " italic" );
+      result.append( "italic " );
     }
+    result.append( size );
+    result.append( "px " );
+    result.append( getFamilyAsString() );
     result.append( " }" );
     return result.toString();
   }

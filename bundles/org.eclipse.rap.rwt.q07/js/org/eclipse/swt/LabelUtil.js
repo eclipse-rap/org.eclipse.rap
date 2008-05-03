@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     APPEARANCE : "label-wrapper",
     
     initialize : function( widget ) {
+
       widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
       if( !widget.getUserData( "pooled" ) ) {
         widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
@@ -43,6 +44,10 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
                                  org.eclipse.swt.LabelUtil._onRemoveDom );
         widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._onInsertDom );
+        widget.addEventListener( "mouseover",
+                                 org.eclipse.swt.LabelUtil._onMouseOver );
+        widget.addEventListener( "mouseout",
+                                 org.eclipse.swt.LabelUtil._onMouseOut );
       }
     },
     
@@ -133,6 +138,14 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.resetIcon();
         widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
       }
+    },
+    
+    _onMouseOver : function() {
+      this.addState( "over" );
+    },
+    
+    _onMouseOut : function() {
+      this.removeState( "over" );
     }
   }
 });

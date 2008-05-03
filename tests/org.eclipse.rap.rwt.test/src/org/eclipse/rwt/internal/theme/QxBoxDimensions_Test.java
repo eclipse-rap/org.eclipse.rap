@@ -18,7 +18,7 @@ public class QxBoxDimensions_Test extends TestCase {
 
   public void testIllegalArguments() throws Exception {
     try {
-      QxBoxDimensions.valueOf( null );
+      QxBoxDimensions.valueOf( ( String )null );
       fail( "NPE expected" );
     } catch( final NullPointerException e ) {
       // expected
@@ -90,13 +90,13 @@ public class QxBoxDimensions_Test extends TestCase {
   }
 
   public void testDefaultString() throws Exception {
-    QxBoxDimensions dim0123 = QxBoxDimensions.valueOf( "0px 1px 2px 3px" );
+    QxBoxDimensions dim0123 = QxBoxDimensions.create( 0, 1, 2, 3 );
     assertEquals( "0px 1px 2px 3px", dim0123.toDefaultString() );
-    QxBoxDimensions dim123 = QxBoxDimensions.valueOf( "1px 2px 3px" );
+    QxBoxDimensions dim123 = QxBoxDimensions.create( 1, 2, 3, 2 );
     assertEquals( "1px 2px 3px", dim123.toDefaultString() );
-    QxBoxDimensions dim01 = QxBoxDimensions.valueOf( "0px 1px" );
+    QxBoxDimensions dim01 = QxBoxDimensions.create( 0, 1, 0, 1 );
     assertEquals( "0px 1px", dim01.toDefaultString() );
-    QxBoxDimensions dim11 = QxBoxDimensions.valueOf( "1px 1px" );
-    assertEquals( "1px", dim11.toDefaultString() );
+    QxBoxDimensions dim1 = QxBoxDimensions.create( 1, 1, 1, 1 );
+    assertEquals( "1px", dim1.toDefaultString() );
   }
 }

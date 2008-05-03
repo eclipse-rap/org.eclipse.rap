@@ -4,6 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt
 Bundle-Version: 1.1.0.qualifier
 Bundle-ClassPath: patch.jar,
+ lib/org.w3c.css.sac_1.3.jar,
  .
 Eclipse-ExtensibleAPI: true
 Bundle-Localization: plugin

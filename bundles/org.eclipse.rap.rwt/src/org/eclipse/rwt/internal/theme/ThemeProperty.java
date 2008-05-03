@@ -12,9 +12,15 @@
 package org.eclipse.rwt.internal.theme;
 
 
+/**
+ * Holds all data read from a single property of a theme definition
+ * (*.theme.xml) file.
+ */
 // TODO [rst] Make immutable?
 // TODO [rst] implements equals and hashcode
-public class ThemeDef {
+public class ThemeProperty {
+
+  private static final String[] EMPTY = new String[ 0 ];
 
   public final String name;
 
@@ -27,15 +33,23 @@ public class ThemeDef {
   public String targetPath;
 
   public boolean transparentAllowed;
+  
+  public String cssProperty;
 
-  public ThemeDef( final String name,
-                   final String inherit,
-                   final QxType defValue,
-                   final String description )
+  public String[] cssElements;
+
+  public String[] cssSelectors;
+
+  public ThemeProperty( final String name,
+                        final String inherit,
+                        final QxType defValue,
+                        final String description )
   {
     this.name = name;
     this.inherit = inherit;
     this.defValue = defValue;
     this.description = description;
+    this.cssElements = EMPTY;
+    this.cssSelectors = EMPTY;
   }
 }

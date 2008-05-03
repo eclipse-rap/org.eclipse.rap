@@ -2,26 +2,40 @@
 
 <!-- Themeable properties for SWT Tree widget -->
 
-<theme>
+<theme
+    css-elements="Tree">
 
-  <color name = "tree.column.background"
-      description = "Background color for tree column headers"
-      default = "248, 248, 255" />
-  
-  <color name = "tree.column.hover.background"
-      description = "Background color for tree column headers on mouse over"
-      default = "248, 248, 255" />
-  
+  <color name="tree.column.background"
+      description="Background color for tree column headers"
+      default="248, 248, 255"
+      css-elements="TreeColumn"
+      css-property="background-color"
+      />
+
+  <color name="tree.column.hover.background"
+      description="Background color for tree column headers on mouse over"
+      default="248, 248, 255"
+      css-elements="TreeColumn"
+      css-property="background-color"
+      css-selectors=":hover"
+      />
+
   <image name="tree.column.sort.up"
       description="Indicator image for tree sorting (up)"
-      targetPath="tree/column/up.gif"
-      default="resource/widget/rap/column/up.gif"/>
-  
+      default="resource/widget/rap/column/up.gif"
+      css-elements="TreeColumn-SortIndicator"
+      css-property="background-image"
+      css-selectors=":up"
+      />
+
   <image name="tree.column.sort.down"
       description="Indicator image for tree sorting (down)"
-      targetPath="tree/column/down.gif"
-      default="resource/widget/rap/column/down.gif"/>
-      
+      default="resource/widget/rap/column/down.gif"
+      css-elements="TreeColumn-SortIndicator"
+      css-property="background-image"
+      css-selectors=":down"
+      />
+
   <!--
   <boolean name="tree.lines.visible"
       description="Whether tree lines should be shown"

@@ -2,80 +2,132 @@
 
 <!-- Themeable properties for SWT Buttons -->
 
-<theme>
+<theme
+    css-elements="Button">
 
   <color name="button.foreground"
       description="Text color for PUSH and TOGGLE buttons"
-      default="0, 0, 0" />
+      default="0, 0, 0"
+      css-property="color"
+      css-selectors="[PUSH] [TOGGLE]"
+      />
 
   <color name="button.hover.foreground"
       description="Text color for PUSH and TOGGLE buttons on mouse over"
-      default="0, 0, 0" />
+      default="0, 0, 0"
+      css-property="color"
+      css-selectors="[PUSH]:hover [TOGGLE]:hover"
+      />
 
   <color name="button.CHECK.foreground"
       description="Text color for with style CHECK and RADIO"
-      default="0, 0, 0" />
+      default="0, 0, 0"
+      css-property="color"
+      css-selectors="[CHECK] [RADIO]"
+      />
 
   <color name="button.background"
       description="Background color for PUSH and TOGGLE buttons"
       transparentAllowed="true"
-      default="247, 247, 251" />
+      default="247, 247, 251"
+      css-property="background-color"
+      css-selectors="[PUSH] [TOGGLE]"
+      />
 
   <color name="button.CHECK.background"
       description="Background color for buttons with style CHECK and RADIO"
       transparentAllowed="true"
-      default="247, 247, 251" />
+      default="247, 247, 251"
+      css-property="background-color"
+      css-selectors="[CHECK] [RADIO]"
+      />
 
   <color name="button.hover.background"
       description="Hover color for buttons"
       transparentAllowed="true"
-      default="251, 251, 254" />
+      default="251, 251, 254"
+      css-property="background-color"
+      css-selectors=":hover"
+      />
 
   <color name="button.FLAT.pressed.background"
       description="Background color for selected toggle buttons with FLAT style"
       transparentAllowed="true"
-      default="225, 225, 230" />
+      default="225, 225, 230"
+      css-property="background-color"
+      css-selectors="[TOGGLE][FLAT]:pressed"
+      />
 
   <color name="button.FLAT.pressed.foreground"
       description="Foreground color for selected toggle buttons with FLAT style"
       transparentAllowed="true"
-      default="0, 0, 0" />
+      default="0, 0, 0"
+      css-property="color"
+      css-selectors="[TOGGLE][FLAT]:pressed"
+      />
 
   <border name="button.border"
       description="Border for buttons without BORDER and FLAT style"
-      default="1 outset" />
+      default="1 outset"
+      css-property="border"
+      css-selectors="[PUSH] [TOGGLE]"
+      />
 
   <border name="button.pressed.border"
       description="Border for pressed buttons without BORDER and FLAT style"
-      default="1 inset" />
+      default="1 inset"
+      css-property="border"
+      css-selectors="[PUSH]:pressed [TOGGLE]:pressed"
+      />
 
   <border name="button.FLAT.border"
       description="Border for buttons with FLAT style"
-      default="1 solid black" />
-  
+      default="1 solid black"
+      css-property="border"
+      css-selectors="[PUSH][FLAT] [TOGGLE][FLAT]"
+      />
+
   <border name="button.FLAT.pressed.border"
       description="Border for pressed buttons with FLAT style"
-      default="1 solid black" />
+      default="1 solid black"
+      css-property="border"
+      css-selectors="[PUSH][FLAT]:pressed [TOGGLE][FLAT]:pressed"
+      />
 
   <border name="button.BORDER.border"
       description="Border for buttons with BORDER style"
-      default="2 outset" />
+      default="2 outset"
+      css-property="border"
+      css-selectors="[PUSH][BORDER] [TOGGLE][BORDER]"
+      />
 
   <border name="button.BORDER.pressed.border"
       description="Border for pressed buttons with BORDER style"
-      default="2 inset" />
-  
+      default="2 inset"
+      css-property="border"
+      css-selectors="[PUSH][BORDER]:pressed [TOGGLE][BORDER]:pressed"
+      />
+
   <boxdim name="button.padding"
       description="Padding for buttons"
-      default="2" />
+      default="2"
+      css-property="padding"
+      css-selectors=""
+      />
 
   <dimension name="button.spacing"
       description="Space between image and text"
-      default="2" />
+      default="2"
+      css-property="spacing"
+      css-selectors=""
+      />
 
   <font name="button.font"
       description="Font for buttons with style PUSH or TOGGLE"
-      default="11 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
+      default="11 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"
+      css-property="font"
+      css-selectors="[PUSH] [TOGGLE]"
+      />
 
   <!-- TODO pressed offset
        button.pressed.offset

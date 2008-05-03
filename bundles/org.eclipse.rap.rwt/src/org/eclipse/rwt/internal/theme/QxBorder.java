@@ -16,15 +16,16 @@ public class QxBorder implements QxType {
   public static final QxBorder NONE = new QxBorder( 0, null, null );
 
   private static final String[] VALID_STYLES = new String[] {
+    "none",
+    "hidden",
+    "dotted",
+    "dashed",
+    "solid",
+    "double",
     "groove",
     "ridge",
     "inset",
-    "outset",
-    "solid",
-    "dotted",
-    "dashed",
-    "double",
-    "none"
+    "outset"
   };
 
   // TODO [rst] Implement properties for left, right, etc.
@@ -55,6 +56,19 @@ public class QxBorder implements QxType {
     this.color = color;
   }
 
+  public static QxBorder create( final int width,
+                                 final String style,
+                                 final String color )
+  {
+    QxBorder result;
+    if( width == 0 || "none".equals( style ) || "hidden".equals( style ) ) {
+      result = NONE;
+    } else {
+      result = new QxBorder( width, style == null ? "solid" : style, color );
+    }
+    return result;
+  }
+
   public static QxBorder valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
@@ -72,14 +86,6 @@ public class QxBorder implements QxType {
     for( int i = 0; i < parts.length; i++ ) {
       String part = parts[ i ];
       boolean consumed = "".equals( part );
-      // parse style
-      if( !consumed && style == null ) {
-        String parsedStyle = parseStyle( part );
-        if( parsedStyle != null ) {
-          style = parsedStyle;
-          consumed = true;
-        }
-      }
       // parse width
       if( !consumed && width == -1 ) {
         Integer parsedWidth = QxDimension.parseLength( part );
@@ -88,6 +94,14 @@ public class QxBorder implements QxType {
             throw new IllegalArgumentException( "Negative width: " + part );
           }
           width = parsedWidth.intValue();
+          consumed = true;
+        }
+      }
+      // parse style
+      if( !consumed && style == null ) {
+        String parsedStyle = parseStyle( part );
+        if( parsedStyle != null ) {
+          style = parsedStyle;
           consumed = true;
         }
       }
@@ -101,23 +115,10 @@ public class QxBorder implements QxType {
                                             + part );
       }
     }
-    if( "none".equals( style ) ) {
-      style = "solid";
-      width = 0;
-    }
     if( width == -1 ) {
       width = 1;
     }
-    if( style == null ) {
-      style = "solid";
-    }
-    QxBorder result;
-    if( width == 0 ) {
-      result = NONE;
-    } else {
-      result = new QxBorder( width, style, color );
-    }
-    return result;
+    return QxBorder.create( width, style, color );
   }
 
   public String getQxStyle() {
@@ -205,17 +206,18 @@ public class QxBorder implements QxType {
 
   public boolean equals( final Object object ) {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc. exist
-    boolean result;
+    boolean result = false;
     if( object == this ) {
       result = true;
     } else if( object instanceof QxBorder ) {
       QxBorder other = (QxBorder)object;
-      result = false;
-      result = ( other.width == this.width )
-               && ( other.style.equals( this.style ) )
-               && ( other.color.equals( this.color ) );
-    } else {
-      result = false;
+      result = other.width == this.width
+               && style == null
+                  ? other.style == null
+                  : style.equals( other.style )
+               && color == null
+                  ? other.color == null
+                  : color.equals( other.color );
     }
     return result;
   }
@@ -225,8 +227,12 @@ public class QxBorder implements QxType {
     //            exist
     int result = 23;
     result += 37 * result + width;
-    result += 37 * result + style.hashCode();
-    result += 37 * result + color.hashCode();
+    if( style != null ) {
+      result += 37 * result + style.hashCode();
+    }
+    if( color != null ) {
+      result += 37 * result + color.hashCode();
+    }
     return result;
   }
 

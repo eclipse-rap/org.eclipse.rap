@@ -2,10 +2,14 @@
 
 <!-- Themeable properties for SWT Link -->
 
-<theme>
-  
-  <color name = "link.foreground"
-      description = "Text color for hyperlinks in Link widget"
-      default = "0, 0, 127" />
+<theme
+  css-elements="Link">
+
+  <color name="link.foreground"
+      description="Text color for hyperlinks in Link widget"
+      default="0, 0, 127"
+      css-elements="Link-Link"
+      css-property="color"
+      />
 
 </theme>

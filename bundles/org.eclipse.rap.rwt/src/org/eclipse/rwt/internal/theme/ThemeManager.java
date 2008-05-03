@@ -23,6 +23,7 @@ import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
+import org.w3c.css.sac.CSSException;
 import org.xml.sax.SAXException;
 
 
@@ -171,7 +172,7 @@ public final class ThemeManager {
 
   private final Set customAppearances;
 
-  private final Map themeDefs;
+  private final Map themeProperties;
 
   private final Map themes;
 
@@ -189,7 +190,7 @@ public final class ThemeManager {
     initialized = false;
     customWidgets = new HashSet();
     customAppearances = new HashSet();
-    themeDefs = new LinkedHashMap();
+    themeProperties = new LinkedHashMap();
     themes = new HashMap();
     adapters = new HashMap();
     registeredThemeFiles = new HashSet();
@@ -231,10 +232,10 @@ public final class ThemeManager {
       }
       // initialize predefined theme
       predefinedTheme = new Theme( PREDEFINED_THEME_NAME );
-      Iterator iterator = themeDefs.keySet().iterator();
+      Iterator iterator = themeProperties.keySet().iterator();
       while( iterator.hasNext() ) {
         String key = ( String )iterator.next();
-        ThemeDef def = ( ThemeDef )themeDefs.get( key );
+        ThemeProperty def = ( ThemeProperty )themeProperties.get( key );
         predefinedTheme.setValue( key, def.defValue );
       }
       themes.put( PREDEFINED_THEME_ID,
@@ -254,7 +255,7 @@ public final class ThemeManager {
     if( initialized ) {
       customWidgets.clear();
       customAppearances.clear();
-      themeDefs.clear();
+      themeProperties.clear();
       themes.clear();
       adapters.clear();
       predefinedTheme = null;
@@ -309,19 +310,59 @@ public final class ThemeManager {
                              final ResourceLoader loader )
     throws IOException
   {
+    registerTheme( id, name, properties, "", loader );
+  }
+
+  public void registerTheme( final String id,
+                             final String name,
+                             final InputStream inputStream,
+                             final String url,
+                             final ResourceLoader loader )
+    throws IOException
+  {
     checkInitialized();
-    log( "Register theme " + id + ": " + properties );
+    log( "Register theme " + id + ": " + inputStream );
     checkId( id );
+    if( url == null ) {
+      throw new NullPointerException( "null argument" );
+    }
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
       Object[] arguments = new Object[] { id };
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
-    Theme theme = Theme.loadFromFile( name != null ? name : "",
-                                      predefinedTheme,
-                                      properties,
-                                      loader );
+    Theme theme;
+    // TODO [rst] cleanup
+    if( url.toLowerCase().endsWith( ".css" ) ) {
+      try {
+        ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
+        Iterator iterator = themeProperties.keySet().iterator();
+        for( int i = 0; i < propArray.length; i++ ) {
+          if( iterator.hasNext() ) {
+            Object key = iterator.next();
+            propArray[ i ] = ( ThemeProperty ) themeProperties.get( key );
+          }
+        }
+        theme = ThemeCssAdapter.loadThemeFromCssFile( name != null
+                                                      ? name
+                                                      : "",
+                                                      predefinedTheme,
+                                                      inputStream,
+                                                      loader,
+                                                      url,
+                                                      propArray  );
+      } catch( CSSException e ) {
+        throw new ThemeManagerException( "Failed parsing CSS file", e );
+      }
+    } else {
+      theme = Theme.loadFromFile( name != null
+                                              ? name
+                                              : "",
+                                  predefinedTheme,
+                                  inputStream,
+                                  loader );
+    }
     themes.put( id, new ThemeWrapper( theme, themeCount++ ) );
   }
 
@@ -457,11 +498,11 @@ public final class ThemeManager {
     StringBuffer sb = new StringBuffer();
     sb.append( "# Generated RAP theme file template\n" );
     sb.append( "#\n" );
-    Iterator iterator = manager.themeDefs.keySet().iterator();
+    Iterator iterator = manager.themeProperties.keySet().iterator();
     while( iterator.hasNext() ) {
       sb.append( "\n" );
       String key = ( String )iterator.next();
-      ThemeDef def = ( ThemeDef )manager.themeDefs.get( key );
+      ThemeProperty def = ( ThemeProperty )manager.themeProperties.get( key );
       if( def.description == null ) {
         throw new NullPointerException( "Description missing for " + key );
       }
@@ -545,19 +586,19 @@ public final class ThemeManager {
       result = true;
       try {
         ThemeDefinitionReader reader
-          = new ThemeDefinitionReader( inStream, themeWidget.loader );
+          = new ThemeDefinitionReader( inStream, fileName, themeWidget.loader );
         reader.read( new ThemeDefHandler() {
-          public void readThemeDef( final ThemeDef def ) {
-            if( themeDefs.containsKey( def.name ) ) {
+          public void readThemeProperty( final ThemeProperty prop ) {
+            if( themeProperties.containsKey( prop.name ) ) {
               throw new IllegalArgumentException( "key defined twice: "
-                                                  + def.name );
+                                                  + prop.name );
             }
-            themeDefs.put( def.name, def );
+            themeProperties.put( prop.name, prop );
           }
         } );
       } catch( final SAXException e ) {
         String message = "Failed to parse theme definition file " + fileName;
-        throw new IllegalArgumentException( message );
+        throw new RuntimeException( message, e );
       } finally {
         inStream.close();
       }
@@ -702,6 +743,8 @@ public final class ThemeManager {
         log( " register theme image " + key + ", path=" + path );
         InputStream inputStream;
         if( !image.none ) {
+          // TODO [rst] in case of a none image, overwrite potentially existing
+          //            image in the resource directory by registering a blank
           try {
             inputStream = image.loader.getResourceAsStream( path );
           } catch( IOException e ) {
@@ -718,8 +761,9 @@ public final class ThemeManager {
             String jsId = getJsThemeId( themeId );
             // TODO [rst] implement proper path join
             String widgetDestPath = getWidgetDestPath( jsId  );
-            ThemeDef def = ( ThemeDef )themeDefs.get( stripVariant( key ) );
-            String targetPath = def.targetPath != null ? def.targetPath : key;
+            ThemeProperty prop
+              = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
+            String targetPath = prop.targetPath != null ? prop.targetPath : key;
             String registerPath = widgetDestPath + "/" + targetPath ;
             IResourceManager resMgr = ResourceManager.getInstance();
             resMgr.register( registerPath, inputStream );
@@ -886,15 +930,17 @@ public final class ThemeManager {
         if( image.none ) {
           jsValue = "null";
         } else {
-          ThemeDef def = ( ThemeDef )themeDefs.get( stripVariant( key ) );
-          String targetPath = def.targetPath != null ? def.targetPath : key;
+          ThemeProperty prop
+            = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
+          String targetPath = prop.targetPath != null ? prop.targetPath : key;
           jsValue = "\"" + targetPath + "\"";
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
         if( color.transparent ) {
-          ThemeDef def = ( ThemeDef )themeDefs.get( stripVariant( key ) );
-          if( !def.transparentAllowed ) {
+          ThemeProperty prop
+            = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
+          if( !prop.transparentAllowed ) {
             // TODO [rst] Move this check to Theme class
             String message = "Transparency not allowed for key " + key;
             throw new IllegalArgumentException( message );

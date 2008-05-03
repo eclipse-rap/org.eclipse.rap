@@ -36,6 +36,20 @@ public class QxBoxDimensions implements QxType {
     this.left = left;
   }
 
+  public static QxBoxDimensions create( final int top,
+                                        final int right,
+                                        final int bottom,
+                                        final int left )
+  {
+    QxBoxDimensions result;
+    if( top == 0 && right == 0 && bottom == 0 && left == 0 ) {
+      result = ZERO;
+    } else {
+      result = new QxBoxDimensions( top, right, bottom, left );
+    }
+    return result;
+  }
+
   public static QxBoxDimensions valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
@@ -56,13 +70,7 @@ public class QxBoxDimensions implements QxType {
     if( parts.length == 4 ) {
       left = parsePxValue( parts[ 3 ] );
     }
-    QxBoxDimensions result;
-    if( top == 0 && right == 0 && bottom == 0 && left == 0 ) {
-      result = ZERO;
-    } else {
-      result = new QxBoxDimensions( top, right, bottom, left );
-    }
-    return result;
+    return create( top, right, bottom, left );
   }
 
   /**
@@ -122,14 +130,14 @@ public class QxBoxDimensions implements QxType {
   }
 
   public String toString () {
-    return "QxDimensions{ "
+    return "QxBoxDimensions{ "
            + top
            + ", "
-           + left
+           + right
            + ", "
            + bottom
            + ", "
-           + right
+           + left
            + " }";
   }
 

@@ -27,11 +27,11 @@ public class ThemeDefinitionReader_Test extends TestCase {
   public void testRead() throws Exception {
     ClassLoader loader = Widget.class.getClassLoader();
     InputStream is = loader.getResourceAsStream( WIDGET_THEME_FILE );
-    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, null );
+    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, "test", null );
     final Map result = new HashMap();
     try {
       reader.read( new ThemeDefHandler() {
-        public void readThemeDef( final ThemeDef def ) {
+        public void readThemeProperty( final ThemeProperty def ) {
           result.put( def.name, def.defValue );
         }
       } );

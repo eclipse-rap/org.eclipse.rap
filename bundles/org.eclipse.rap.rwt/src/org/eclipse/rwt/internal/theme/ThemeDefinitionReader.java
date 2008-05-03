@@ -28,7 +28,7 @@ import org.xml.sax.*;
 public class ThemeDefinitionReader {
 
   public static interface ThemeDefHandler {
-    public abstract void readThemeDef( ThemeDef def );
+    public abstract void readThemeProperty( ThemeProperty def );
   }
 
   private static final String NODE_ROOT = "theme";
@@ -44,6 +44,12 @@ public class ThemeDefinitionReader {
   private static final String ATTR_TARGET_PATH = "targetPath";
 
   private static final String ATTR_TRANSPARENT_ALLOWED = "transparentAllowed";
+
+  private static final String ATTR_CSS_ELEMENTS = "css-elements";
+
+  private static final String ATTR_CSS_PROPERTY = "css-property";
+
+  private static final String ATTR_CSS_SELECTORS = "css-selectors";
 
   private static final String TYPE_BOOLEAN = "boolean";
 
@@ -71,14 +77,18 @@ public class ThemeDefinitionReader {
 
   private final ResourceLoader loader;
 
+  private final String fileName;
+
   /**
    * An instance of this class reads theme definitions from an XML resource.
    *
    * @param inputStream input stream from a theme definition XML
    */
   public ThemeDefinitionReader( final InputStream inputStream,
+                                final String fileName,
                                 final ResourceLoader loader )
   {
+    this.fileName = fileName;
     if( inputStream == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -105,49 +115,70 @@ public class ThemeDefinitionReader {
     for( int i = 0; i < childNodes.getLength(); i++ ) {
       Node node = childNodes.item( i );
       if( node.getNodeType() == Node.ELEMENT_NODE ) {
-        ThemeDef def = readElement( node );
-        callback.readThemeDef( def );
+        ThemeProperty property = readElement( node );
+        if( property != null ) {
+          callback.readThemeProperty( property );
+        }
       }
     }
   }
 
-  private ThemeDef readElement( final Node node ) {
+  private ThemeProperty readElement( final Node node ) {
     String type = node.getNodeName();
     String name = getAttributeValue( node, ATTR_NAME );
     String description = getAttributeValue( node, ATTR_DESCRIPTION );
     String inherit = getAttributeValue( node, ATTR_INHERIT );
     String defaultStr = getAttributeValue( node, ATTR_DEFAULT );
+    String cssElements = getAttributeValue( node, ATTR_CSS_ELEMENTS );
+    if( cssElements == null ) {
+      cssElements = getAttributeValue( node.getParentNode(), ATTR_CSS_ELEMENTS );
+    }
+    String cssProperty = getAttributeValue( node, ATTR_CSS_PROPERTY );
+    String cssSelectors = getAttributeValue( node, ATTR_CSS_SELECTORS );
     QxType value;
     String targetPath = null;
     boolean transparentAllowed = false;
-    if( TYPE_FONT.equals( type ) ) {
-      value = QxFont.valueOf( defaultStr );
-    } else if( TYPE_COLOR.equals( type ) ) {
-      String transpValue = getAttributeValue( node, ATTR_TRANSPARENT_ALLOWED );
-      transparentAllowed = Boolean.valueOf( transpValue ).booleanValue();
-      value = QxColor.valueOf( defaultStr );
-    } else if( TYPE_BOOLEAN.equals( type ) ) {
-      value = QxBoolean.valueOf( defaultStr );
-    } else if( TYPE_BORDER.equals( type ) ) {
-      value = QxBorder.valueOf( defaultStr );
-    } else if( TYPE_BOXDIMENSION.equals( type ) ) {
-      value = QxBoxDimensions.valueOf( defaultStr );
-    } else if( TYPE_DIMENSION.equals( type ) ) {
-      value = QxDimension.valueOf( defaultStr );
-    } else if( TYPE_IMAGE.equals( type ) ) {
-      targetPath = getAttributeValue( node, ATTR_TARGET_PATH );
-      value = QxImage.valueOf( defaultStr, loader );
+    ThemeProperty result = null;
+    if( "property".equals( type ) || "element".equals( type ) ) {
+      // new syntax, ignore for now
     } else {
-      // TODO [rst] Remove when XML validation is active
-      throw new IllegalArgumentException( "Illegal type: " + type );
+      if( TYPE_FONT.equals( type ) ) {
+        value = QxFont.valueOf( defaultStr );
+      } else if( TYPE_COLOR.equals( type ) ) {
+        String transpValue = getAttributeValue( node, ATTR_TRANSPARENT_ALLOWED );
+        transparentAllowed = Boolean.valueOf( transpValue ).booleanValue();
+        value = QxColor.valueOf( defaultStr );
+      } else if( TYPE_BOOLEAN.equals( type ) ) {
+        value = QxBoolean.valueOf( defaultStr );
+      } else if( TYPE_BORDER.equals( type ) ) {
+        value = QxBorder.valueOf( defaultStr );
+      } else if( TYPE_BOXDIMENSION.equals( type ) ) {
+        value = QxBoxDimensions.valueOf( defaultStr );
+      } else if( TYPE_DIMENSION.equals( type ) ) {
+        value = QxDimension.valueOf( defaultStr );
+      } else if( TYPE_IMAGE.equals( type ) ) {
+        targetPath = getAttributeValue( node, ATTR_TARGET_PATH );
+        value = QxImage.valueOf( defaultStr, loader );
+      } else {
+        // TODO [rst] Remove when XML validation is active
+        throw new IllegalArgumentException( "Illegal type: " + type );
+      }
+      result = new ThemeProperty( name, inherit, value, description );
+      result.targetPath = targetPath;
+      result.transparentAllowed = transparentAllowed;
+      if( cssElements != null && cssProperty != null ) {
+        result.cssElements = cssElements.split( "\\s+" );
+        result.cssProperty = cssProperty;
+        if( cssSelectors != null ) {
+          result.cssSelectors = cssSelectors.split( "\\s+" );
+        }
+      }
     }
-    ThemeDef result = new ThemeDef( name, inherit, value, description );
-    result.targetPath = targetPath;
-    result.transparentAllowed = transparentAllowed ;
     return result;
   }
 
-  private static String getAttributeValue( final Node node, final String name ) {
+  private static String getAttributeValue( final Node node, final String name )
+  {
     String result = null;
     NamedNodeMap attributes = node.getAttributes();
     if( attributes != null ) {
@@ -195,33 +226,44 @@ public class ThemeDefinitionReader {
 //        return result;
 //      }
 //    } );
-    builder.setErrorHandler( getErrorHandler() );
+    builder.setErrorHandler( new ThemeDefinitionErrorHandler() );
     return builder.parse( is );
   }
 
-  private ErrorHandler getErrorHandler() {
-    // TODO: decent error handling
-    return new ErrorHandler() {
-
-      public void error( final SAXParseException spe ) throws SAXException {
-        System.out.println( "Error parsing theme definition:" );
-        System.out.println( spe.getMessage() );
-      }
-
-      public void fatalError( final SAXParseException spe )
-        throws SAXException
-      {
-        String msg = "Fatal error parsing theme definition:";
-        System.out.println( msg );
-        System.out.println( spe.getMessage() );
-      }
-
-      public void warning( final SAXParseException spe )
-        throws SAXException
-      {
-        System.out.println( "Warning parsing theme definition:" );
-        System.out.println( spe.getMessage() );
-      }
-    };
+  // TODO: Logging instead of sysout
+  private class ThemeDefinitionErrorHandler implements ErrorHandler {
+    public void error( final SAXParseException spe ) throws SAXException {
+      System.err.println( "Error parsing theme definition "
+                          + getPosition( spe )
+                          + ":" );
+      System.err.println( spe.getMessage() );
+    }
+    
+    public void fatalError( final SAXParseException spe )
+    throws SAXException
+    {
+      System.err.println( "Fatal error parsing theme definition "
+                          + getPosition( spe )
+                          + ":" );
+      System.err.println( spe.getMessage() );
+    }
+    
+    public void warning( final SAXParseException spe )
+    throws SAXException
+    {
+      System.err.println( "Warning parsing theme definition "
+                          + getPosition( spe )
+                          + ":" );
+      System.err.println( spe.getMessage() );
+    }
+    
+    private String getPosition( final SAXParseException spe ) {
+      return "in file '"
+      + fileName
+      + "' at line "
+      + spe.getLineNumber()
+      + ", col "
+      + spe.getColumnNumber();
+    }
   }
 }

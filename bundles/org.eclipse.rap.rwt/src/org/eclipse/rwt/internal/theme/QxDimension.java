@@ -27,6 +27,16 @@ public class QxDimension implements QxType {
     this.value = value;
   }
 
+  public static QxDimension create( final int value ) {
+    QxDimension result;
+    if( value == 0 ) {
+      result = ZERO;
+    } else {
+      result = new QxDimension( value );
+    }
+    return result;
+  }
+
   public static QxDimension valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
@@ -35,13 +45,7 @@ public class QxDimension implements QxType {
     if( parsed == null ) {
       throw new IllegalArgumentException( "Illegal dimension parameter: " + input );
     }
-    QxDimension result;
-    if( parsed.intValue() == 0 ) {
-      result = ZERO;
-    } else {
-      result = new QxDimension( parsed.intValue() );
-    }
-    return result;
+    return create( parsed.intValue() );
   }
 
   public String toDefaultString() {

@@ -2,32 +2,48 @@
 
 <!-- Themeable properties for SWT Labels -->
 
-<theme>
-
+<theme
+    css-elements="Label">
+ 
   <color name="label.foreground"
       description="Text color for labels"
-      default="0, 0, 0" />
+      default="0, 0, 0"
+      css-property="color"
+      />
 
   <color name="label.hover.foreground"
       description="Text color for labels on mouse over"
-      default="0, 0, 0" />
+      default="0, 0, 0"
+      css-property="color"
+      css-selectors=":hover"
+      />
 
   <color name="label.background"
       description="Background color for labels"
       transparentAllowed="true"
-      default="248, 248, 255" />
+      default="248, 248, 255"
+      css-property="background-color"
+      />
 
   <color name="label.hover.background"
       description="Background color for labels on mouse over"
       transparentAllowed="true"
-      default="248, 248, 255" />
+      default="248, 248, 255"
+      css-property="background-color"
+      css-selectors=":hover"
+      />
 
   <border name="label.border"
       description="Default border for labels"
-      default="none"/>
+      default="none"
+      css-property="border"
+      />
 
   <border name="label.BORDER.border"
       description="Default border for labels with BORDER style"
-      default="1 inset"/>
+      default="1 inset"
+      css-property="border"
+      css-selectors="[BORDER]"
+      />
 
 </theme>

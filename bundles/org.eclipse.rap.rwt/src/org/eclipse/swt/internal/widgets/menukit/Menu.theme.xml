@@ -2,31 +2,49 @@
 
 <!-- Themeable properties for SWT Menu -->
 
-<theme>
+<theme
+   css-elements="Menu">
 
   <color name="menu.foreground"
       description="Text color for menu items"
-      default="0, 0, 0" />
-  
+      default="0, 0, 0"
+      css-property="color"
+      />
+
   <color name="menu.hover.foreground"
       description="Text for menu items on mouse over"
-      default="255, 255, 255" />
+      default="255, 255, 255"
+      css-elements="MenuItem"
+      css-property="color"
+      css-selectors=":hover"
+      />
   
   <!-- == control.background -->
   <color name="menu.background"
       description="Background color for menus"
-      default="248, 248, 255" />
-  
+      default="248, 248, 255"
+      css-property="background-color"
+      />
+
   <!-- == list.focused.background -->
   <color name="menu.hover.background"
       description="Background color for menus on mouse over"
-      default="49, 106, 197" />
+      default="49, 106, 197"
+      css-elements="MenuItem"
+      css-property="background-color"
+      css-selectors=":hover"
+      />
 
   <border name="menu.border"
       description="Border for menus"
-      default="2px outset" />
+      default="2px outset"
+      css-property="border"
+      />
 
   <boxdim name="menu.padding"
       description="Padding for menus"
-      default="1px" />
+      default="1px"
+      css-property="padding"
+      />
+
 </theme>

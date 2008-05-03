@@ -2,32 +2,54 @@
 
 <!-- Themeable properties for SWT Table -->
 
-<theme>
+<theme
+    css-elements="Table">
   
-  <color name = "table.column.background"
-      description = "Background color for table column headers"
-      default = "248, 248, 255" />
-  
-  <color name = "table.column.hover.background"
-      description = "Background color for table column headers on mouse over"
-      default = "248, 248, 255" />
-  
+  <color name="table.column.background"
+      description="Background color for table column headers"
+      default="248, 248, 255"
+      css-elements="TableColumn"
+      css-property="background-color"
+      />
+
+  <color name="table.column.hover.background"
+      description="Background color for table column headers on mouse over"
+      default="248, 248, 255"
+      css-elements="TableColumn"
+      css-property="background-color"
+      css-selectors=":hover"
+      />
+
   <image name="table.column.sort.up"
       description="Indicator image for table sorting (up)"
-      targetPath="table/column/up.gif"
-      default="resource/widget/rap/column/up.gif"/>
-  
+      default="resource/widget/rap/column/up.gif"
+      css-elements="TableColumn-SortIndicator"
+      css-property="background-image"
+      css-selectors=":up"
+      />
+
   <image name="table.column.sort.down"
       description="Indicator image for table sorting (down)"
-      targetPath="table/column/down.gif"
-      default="resource/widget/rap/column/down.gif"/>
-      
-  <color name = "table.row.line"
-      description = "Grid line color when linesVisible is true"
-      default = "238, 238, 238" />
-  
-  <dimension name = "table.checkbox.width" 
-      description = "Width of check boxes"
-      default="21" />
-      
+      default="resource/widget/rap/column/down.gif"
+      css-elements="TableColumn-SortIndicator"
+      css-property="background-image"
+      css-selectors=":down"
+      />
+
+  <color name="table.row.line"
+      description="Grid line color when linesVisible is true"
+      default="238, 238, 238"
+      css-elements="Table-Gridline"
+      css-property="color"
+      />
+
+  <!-- C h e c k b o x -->
+
+  <dimension name="table.checkbox.width"
+      description="Width of check boxes"
+      default="21"
+      css-elements="Table-Checkbox"
+      css-property="width"
+      />
+
 </theme>

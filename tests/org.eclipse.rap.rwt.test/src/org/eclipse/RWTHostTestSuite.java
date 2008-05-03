@@ -26,6 +26,8 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.css.CssFileReader_Test;
+import org.eclipse.rwt.internal.theme.css.PropertyResolver_Test;
 import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
@@ -170,6 +172,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxFont_Test.class );
     suite.addTestSuite( QxImage_Test.class );
+    suite.addTestSuite( CssFileReader_Test.class );
+    suite.addTestSuite( PropertyResolver_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );

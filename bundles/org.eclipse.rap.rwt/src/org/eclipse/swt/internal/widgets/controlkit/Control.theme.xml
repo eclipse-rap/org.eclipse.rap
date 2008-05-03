@@ -2,14 +2,20 @@
 
 <!-- Themeable properties for SWT Controls -->
 
-<theme>
+<theme
+    css-elements="NONE">
 
-  <border name = "control.border"
-      description = "Default border for controls"
-      default = "none"/>
+  <border name="control.border"
+      description="Default border for controls"
+      default="none"
+      css-property="border"
+      />
 
-  <border name = "control.BORDER.border"
-      description = "Default border for controls with BORDER style"
-      default = "2 inset"/>
+  <border name="control.BORDER.border"
+      description="Default border for controls with BORDER style"
+      default="2 inset"
+      css-property="border"
+      css-selectors="[BORDER]"
+      />
 
 </theme>

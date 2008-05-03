@@ -73,6 +73,19 @@ public class QxColor implements QxType {
     this.transparent = false;
   }
 
+  public static QxColor create( final int red, final int green, final int blue )
+  {
+    QxColor result;
+    if( red == 0 && green == 0 && blue == 0 ) {
+      result = BLACK;
+    } else if( red == 255 && green == 255 && blue == 255 ) {
+      result = WHITE;
+    } else {
+      result = new QxColor( red, green, blue );
+    }
+    return result;
+  }
+
   public static QxColor valueOf( final String input ) {
     QxColor result;
     if( input == null ) {
@@ -129,13 +142,7 @@ public class QxColor implements QxType {
           throw new IllegalArgumentException( message );
         }
       }
-      if( red == 0 && green == 0 && blue == 0 ) {
-        result = BLACK;
-      } else if( red == 255 && green == 255 && blue == 255 ) {
-        result = WHITE;
-      } else {
-        result = new QxColor( red, green, blue );
-      }
+      result = create( red, green, blue );
     }
     return result;
   }

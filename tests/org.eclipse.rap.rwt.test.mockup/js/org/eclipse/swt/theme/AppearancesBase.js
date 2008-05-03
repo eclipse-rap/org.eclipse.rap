@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -102,7 +102,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   // Note: This appearance applies to qooxdoo labels (as embedded in Atom,
   //       Button, etc.). For SWT Label, see apperance "label-wrapper".
   //       Any styles set for this appearance cannot be overridden by themeing
@@ -116,8 +116,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "label-graytext" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor : states.disabled ? "widget.graytext" : "undefined"
+        textColor : states.disabled ? tv.getColor( "widget.graytext" ) : "undefined"
       };
     }
   },
@@ -149,7 +150,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = { };
+      var result = {};
       result.textColor = states.disabled ? "widget.graytext" : "widget.foreground";
       result.backgroundColor = tv.getColor( "widget.background" );
       result.font = tv.getFont( "widget.font" );
@@ -170,12 +171,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     include : "label"
   },
-  
+
   "popup" :
   {
-
   },
-  
+
   "tool-tip" :
   {
     include : "popup",
@@ -188,8 +188,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding         : [ 1, 3, 2, 3 ]
       };
     }
-  },    
-  
+  },
+
   "iframe" :
   {
     style : function( states ) {
@@ -198,7 +198,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "check-box" :
   {
     style : function( states ) {
@@ -215,7 +215,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       result.backgroundColor = tv.getColor( "button.CHECK.background" );
       if( states.disabled ) {
-        result.textColor = "widget.graytext";
+        result.textColor = tv.getColor( "widget.graytext" );
       } else {
         result.textColor = tv.getColor( "button.CHECK.foreground" );
       }
@@ -243,13 +243,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "atom",
 
     style : function( states ) {
-      var result = { };
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.font = tv.getFont( "button.font" );
 
       // foreground color
       if( states.disabled ) {
-        result.textColor = "widget.graytext";
+        result.textColor = tv.getColor( "widget.graytext" );
       } else if( states.rwt_FLAT && ( states.pressed || states.checked ) ) {
         result.textColor = tv.getColor( "button.FLAT.pressed.foreground" );
       } else if( states.over ) {
@@ -294,12 +294,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.padding = [ 3, 4, 3, 4 ];
       }
-      
+
       result.spacing = tv.getDimension( "button.spacing" );
       return result;
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     TOOLBAR
@@ -311,15 +311,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : "widget.font",
+        font : tv.getFont( "widget.font" ),
         overflow : "hidden",
         border : tv.getBorder( states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border" ),
-        textColor : states.disabled ? "widget.graytext" : "widget.foreground",
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "widget.foreground" ),
         backgroundColor : tv.getColor( "toolbar.background" )
       };
     }
   },
-  
+
   "toolbar-separator" :
   {
     style : function( states ) {
@@ -341,7 +341,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "toolbar-button" :
   {
     style : function( states ) {
@@ -379,19 +379,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     WINDOW (SHELL)
   ---------------------------------------------------------------------------
   */
-  
+
   "window" :
   {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor : "widget.foreground",
+        textColor : tv.getColor( "widget.foreground" ),
         backgroundColor : tv.getColor( "shell.background" ),
         border : tv.getBorder( ( states.rwt_TITLE || states.rwt_BORDER ) && !states.maximized
                                ? "shell.BORDER.border"
@@ -439,7 +439,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "window-captionbar-icon" :
   {
     style : function( states ) {
@@ -448,7 +448,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "window-captionbar-title" :
   {
     style : function( states ) {
@@ -459,7 +459,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "window-captionbar-button" :
   {
     style : function( states ) {
@@ -470,7 +470,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "window-captionbar-minimize-button" :
   {
     include : "window-captionbar-button",
@@ -562,7 +562,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "window-statusbar" :
   {
     style : function( states ) {
@@ -572,7 +572,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "window-statusbar-text" :
   {
     style : function( states ) {
@@ -631,7 +631,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "menu-layout" :
   {
     style : function( states ) {
@@ -643,10 +643,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "menu-button" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         minWidth : "auto",
         height : "auto",
@@ -654,19 +655,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : [ 2, 4 ],
         cursor : "default",
         verticalChildrenAlign : "middle",
-        backgroundColor : states.over ? "menu.hover.background" : "menu.background"
+        backgroundColor : tv.getColor( states.over ? "menu.hover.background" : "menu.background" )
       };
       if( states.disabled ) {
-        result.textColor = "widget.graytext";
+        result.textColor = tv.getColor( "widget.graytext" );
       } else if( states.over ) {
-        result.textColor = "menu.hover.foreground";
+        result.textColor = tv.getColor( "menu.hover.foreground" );
       } else {
-        result.textColor = "menu.foreground";
+        result.textColor = tv.getColor( "menu.foreground" );
       }
       return result;
     }
   },
-  
+
   "menu-button-arrow" :
   {
     style : function( states ) {
@@ -675,11 +676,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "menu-check-box" :
   {
     include : "menu-button",
-    
+
     style : function(states)
     {
       return {
@@ -687,7 +688,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "menu-radio-button" :
   {
     include : "menu-button",
@@ -697,9 +698,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         icon : states.checked ? "widget/menu/radiobutton.gif" : "static/image/blank.gif"
       };
-    }    
+    }
   },
-  
+
   "menu-separator" :
   {
     style : function( states ) {
@@ -724,7 +725,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "menubar-button" :
   {
     style : function( states ) {
@@ -751,7 +752,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     LIST
@@ -761,9 +762,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "list" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         overflow : "hidden",
-        backgroundColor : "list.background",
+        backgroundColor : tv.getColor( "list.background" ),
         border : states.rwt_BORDER ? "thinInset" : "undefined"
       };
     }
@@ -772,6 +774,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "list-item" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor                  : "default",
         height                  : "auto",
@@ -783,14 +786,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       if( states.selected ) {
         if( states.parent_unfocused ) {
-          result.textColor = states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground";
-          result.backgroundColor = "list.selection.unfocused.background";
+          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground" );
+          result.backgroundColor = tv.getColor( "list.selection.unfocused.background" );
         } else {
-          result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
-          result.backgroundColor = "list.selection.background";
+          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.foreground" );
+          result.backgroundColor = tv.getColor( "list.selection.background" );
         }
       } else {
-        result.textColor = states.disabled ? "widget.graytext" : "undefined";
+        result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
         result.backgroundColor = null;
       }
       return result;
@@ -805,13 +808,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "text-field" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );        
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
-        font : "widget.font",
+        border : tv.getBorder( states.rwt_BORDER ? "text.BORDER.border" : "text.border" ),
+        font : tv.getFont( "widget.font" ),
         padding : tv.getBoxDimensions( "text.SINGLE.padding" ),
-        textColor : states.disabled ? "widget.graytext" : "list.foreground",
-        backgroundColor : "list.background"
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "list.foreground" ),
+        backgroundColor : tv.getColor( "list.background" )
       };
     }
   },
@@ -830,17 +833,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     COMBOBOX
   ---------------------------------------------------------------------------
   */
-  
+
   "combo-box" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border          : "inset",
-        backgroundColor : "list.background"
+        border : "inset",
+        backgroundColor : tv.getColor( "list.background" )
       };
     }
   },
-  
+
   "combo-box-list" :
   {
     include : "list",
@@ -852,47 +856,50 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "combo-box-popup" :
   {
     include : "list",
 
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         height    : "auto",
         border    : "shadow",
-        textColor : states.selected ? "list.selection.foreground" : "list.foreground",
-        backgroundColor : states.selected ? "list.selection.background" : "list.background"
+        textColor : tv.getColor( states.selected ? "list.selection.foreground" : "list.foreground" ),
+        backgroundColor : tv.getColor( states.selected ? "list.selection.background" : "list.background" )
       };
     }
   },
-  
+
   "combo-box-text-field" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : "widget.font",
+        font : tv.getFont( "widget.font" ),
         padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
-        textColor       : states.disabled ? "widget.graytext" : "widget.foreground",
-        backgroundColor : "list.background"
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "widget.foreground" ),
+        backgroundColor : tv.getColor( "list.background" )
       };
     }
   },
-  
+
   // Used both for ComboBox and ComboBoxEx
   "combo-box-button" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : "thinOutset",
         padding : [ 0, 3, 0, 2 ],
         icon : "widget/arrows/down.gif",
         // TODO [rst] rather use button.bgcolor?
-        backgroundColor : "widget.background"
+        backgroundColor : tv.getColor( "widget.background" )
       };
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     TREE
@@ -924,6 +931,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "label",
 
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         height : 16,
@@ -931,20 +939,20 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       if( states.selected ) {
         if( states.parent_unfocused ) {
-          result.textColor = states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground";
-          result.backgroundColor = "list.selection.unfocused.background";
+          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground" );
+          result.backgroundColor = tv.getColor( "list.selection.unfocused.background" );
         } else {
-          result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
-          result.backgroundColor = "list.selection.background";
+          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.foreground" );
+          result.backgroundColor = tv.getColor( "list.selection.background" );
         }
       } else {
-        result.textColor = states.disabled ? "widget.graytext" : "undefined";
+        result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
         result.backgroundColor = "transparent";
       }
       return result;
     }
   },
-  
+
   "tree-folder" :
   {
     include : "tree-element"
@@ -963,25 +971,27 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "tree-container" :
   {
     style : function( states ) {
-      return {
-        border : states.rwt_BORDER
-          ? "control.BORDER.border"
-          : "control.border"
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = states.rwt_BORDER
+                      ? "control.BORDER.border"
+                      : "control.border";
+      return result;
     }
   },
-  
+
   "tree" :
   {
     include : "tree-folder",
     style : function( states ) {
-      return {
-        verticalChildrenAlign : "top",
-        backgroundColor : "list.background",
-        border : states.rwt_BORDER
-          ? "control.BORDER.border"
-          : "control.border"
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.verticalChildrenAlign = "top";
+      result.backgroundColor = tv.getColor( "list.background" );
+      result.border = tv.getBorder( states.rwt_BORDER
+                                    ? "control.BORDER.border"
+                                    : "control.border" );
+      return result;
     }
   },
 
@@ -1016,22 +1026,22 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "tree-column" : {
     style : function( states ) {
-      var result = {
-        cursor : "default",
-        paddingLeft : 2,
-        paddingRight : 2,
-        spacing : 2,
-        textColor : states.disabled ? "widget.graytext" : "undefined"
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.cursor = "default";
+      result.paddingLeft = 2;
+      result.paddingRight = 2;
+      result.spacing = 2;
+      result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
       if( states.mouseover && !states.disabled ) {
-        result.backgroundColor = "tree.column.hover.background";
-        result.border          = "tree.column.hover.border";
+        result.backgroundColor = tv.getColor( "tree.column.hover.background" );
+        result.border = tv.getBorder( "tree.column.hover.border" );
       } else {
-        result.backgroundColor = "tree.column.background";
-        result.border          = "tree.column.border";
+        result.backgroundColor = tv.getColor( "tree.column.background" );
+        result.border = tv.getBorder( "tree.column.border" );
       }
       if( states.moving ) {
         result.opacity = 0.6;
@@ -1041,7 +1051,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "tree-column-resizer" : {
     style : function( sates ) {
       return {
@@ -1051,7 +1061,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     TAB FOLDER
@@ -1061,14 +1071,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "tab-view" :
   {
     style : function( states ) {
-      return {
-        textColor : "widget.foreground",
-        font : "widget.font",
-        spacing : -1,
-        border : states.rwt_BORDER 
-          ? "control.BORDER.border" 
-          : "control.border"
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.textColor = tv.getColor( "widget.foreground" );
+      result.font = tv.getFont( "widget.font" );
+      result.spacing = -1;
+      result.border = tv.getBorder( states.rwt_BORDER
+                                    ? "control.BORDER.border"
+                                    : "control.border" );
+      return result;
     }
   },
 
@@ -1084,13 +1095,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "tab-view-pane" :
   {
     style : function( states ) {
-      return {
-//          height          : "1*",
-        overflow : "hidden",
-        backgroundColor : "widget.background",
-        border : new qx.ui.core.Border(1, "solid", "widget.thinborder"),
-        padding : 10
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+//    result.height = "1*";
+      result.overflow = "hidden";
+      result.backgroundColor = tv.getColor( "widget.background" );
+      result.border = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      result.padding = 10;
+      return result;
     }
   },
 
@@ -1106,36 +1118,35 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 //        };
 //      }
   },
-  
+
   "tab-view-button" :
   {
     include : "atom",
 
     style : function( states ) {
-      var border_top_normal = new qx.ui.core.Border(1, "solid", "widget.thinborder");
-      border_top_normal.setWidthBottom(0);
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
 
-      var border_top_checked = new qx.ui.core.Border(1, "solid", "widget.thinborder");
-      border_top_checked.setWidthBottom(0);
-      border_top_checked.setTop(3, "solid", "widget.selection-marker");
+      var border_top_normal = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      border_top_normal.setWidthBottom( 0 );
 
-      var border_bottom_normal = new qx.ui.core.Border(1, "solid", "widget.thinborder");
-      border_bottom_normal.setWidthTop(0);
+      var border_top_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      border_top_checked.setWidthBottom( 0 );
+      border_top_checked.setTop( 3, "solid", "widget.selection-marker" );
 
-      var border_bottom_checked = new qx.ui.core.Border(1, "solid", "widget.thinborder");
-      border_bottom_checked.setWidthTop(0);
-      border_bottom_checked.setBottom(3, "solid", "widget.selection-marker");
+      var border_bottom_normal = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      border_bottom_normal.setWidthTop( 0 );
 
-      var result;
+      var border_bottom_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      border_bottom_checked.setWidthTop( 0 );
+      border_bottom_checked.setBottom( 3, "solid", "widget.selection-marker" );
 
       if( states.checked ) {
-        result = {
-          backgroundColor : "tabfolder.checked.background",
-          zIndex : 1, // TODO [rst] Doesn't this interfere with our z-order?
-          padding : [ 2, 8, 4, 7 ],
-          border : states.barTop ? border_top_checked : border_bottom_checked,
-          margin : [ 0, -1, 0, -2 ]
-        };
+        result.backgroundColor = tv.getColor( "tabfolder.checked.background" );
+        result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
+        result.padding = [ 2, 8, 4, 7 ];
+        result.border = states.barTop ? border_top_checked : border_bottom_checked;
+        result.margin = [ 0, -1, 0, -2 ];
         if( states.alignLeft ) {
           if( states.firstChild ) {
             result.paddingLeft = 6;
@@ -1150,13 +1161,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           }
         }
       } else {
-        result = {
-          backgroundColor : states.over ? "tabfolder.hover.background" : "tabfolder.background",
-          zIndex          : 0, // TODO [rst] Doesn't this interfere with our z-order?
-          padding         : [ 2, 6, 2, 5 ],
-          marginRight     : 1,
-          marginLeft      : 0
-        };
+        result.backgroundColor = tv.getColor( states.over ? "tabfolder.hover.background" : "tabfolder.background" ),
+        result.zIndex = 0, // TODO [rst] Doesn't this interfere with our z-order?
+        result.padding = [ 2, 6, 2, 5 ];
+        result.marginRight = 1;
+        result.marginLeft = 0;
         if( states.alignLeft ) {
           if( states.firstChild ) {
             result.paddingLeft = 6;
@@ -1179,11 +1188,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           result.marginBottom = 3;
         }
       }
-      result.textColor = states.disabled ? "widget.graytext" : "undefined";
+      result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
       return result;
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     GROUP BOX
@@ -1196,9 +1205,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getColor( "group.background" ),
-        border : states.rwt_BORDER
-          ? "control.BORDER.border"
-          : "control.border"
+        border : tv.getBorder( states.rwt_BORDER
+                               ? "control.BORDER.border"
+                               : "control.border" )
       };
     }
   },
@@ -1242,13 +1251,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     SPINNER
   ---------------------------------------------------------------------------
   */
-  
+
   "spinner" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : "list.background",
-        border : states.rwt_BORDER ? "text.BORDER.border" : "text.border"
+        backgroundColor : tv.getColor( "list.background" ),
+        border : tv.getColor( states.rwt_BORDER ? "text.BORDER.border" : "text.border" )
       };
     }
   },
@@ -1263,7 +1273,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         right : 0,
         bottom : 0,
         padding : tv.getBoxDimensions( "text.SINGLE.padding" ),
-        textColor : states.disabled ? "widget.graytext" : "undefined"
+        textColor : states.disabled ? tv.getColor( "widget.graytext" ) : "undefined"
       };
     }
   },
@@ -1271,9 +1281,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "spinner-button" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         width : 16,
-        backgroundColor : "widget.background"
+        backgroundColor : tv.getColor( "widget.background" )
       };
       if( states.rwt_FLAT ) {
         result.border = "undefined";
@@ -1285,7 +1296,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "spinner-button-up" :
   {
     include : "spinner-button",
@@ -1307,45 +1318,47 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     TABLE
   ---------------------------------------------------------------------------
   */
-  
+
   "table" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : "list.background",
-        textColor : "list.foreground",
-        font : "widget.font",
-        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+        backgroundColor : tv.getColor( "list.background" ),
+        textColor : tv.getColor( "list.foreground" ),
+        font : tv.getFont( "widget.font" ),
+        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" )
       };
     }
   },
-  
+
   "table-column" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         paddingLeft : 2,
         paddingRight : 2,
         spacing : 2,
-        textColor : states.disabled ? "widget.graytext" : "widget.foreground",
-        opacity : states.moving ? 0.6 : 1.0 
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "widget.foreground" ),
+        opacity : states.moving ? 0.6 : 1.0
       };
       if( states.mouseover && !states.disabled ) {
-        result.backgroundColor = "table.column.hover.background";
-        result.border = "table.column.hover.border";
+        result.backgroundColor = tv.getColor( "table.column.hover.background" );
+        result.border = tv.getColor( "table.column.hover.border" );
       } else {
-        result.backgroundColor = "table.column.background";
-        result.border = "table.column.border";
+        result.backgroundColor = tv.getColor( "table.column.background" );
+        result.border = tv.getColor( "table.column.border" );
       }
       return result;
     }
   },
-  
+
   "table-column-resizer" : {
     style : function( sates ) {
       return {
@@ -1355,32 +1368,33 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
     }
   },
-  
+
   "table-row" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         border : states.lines ? "table.row.horizontalLine" : "undefined"
       };
       if( states.selected ) {
-        result.textColor = states.disabled
-                         ? "widget.graytext" 
-                         : "list.selection.foreground";
-        result.backgroundColor = states.disabled 
-                               ? "list.selection.unfocused.background" 
-                               : "list.selection.background";
+        result.textColor = tv.getColor( states.disabled
+                                        ? "widget.graytext"
+                                        : "list.selection.foreground" );
+        result.backgroundColor = tv.getColor( states.disabled
+                                              ? "list.selection.unfocused.background"
+                                              : "list.selection.background" );
       } else {
-        result.textColor = states.disabled 
-                         ? "widget.graytext" 
-                         : "undefined";
-        result.backgroundColor = states.disabled 
-                               ? "list.background" 
-                               : "undefined";
+        result.textColor = states.disabled
+                           ? tv.getColor( "widget.graytext" )
+                           : "undefined";
+        result.backgroundColor = states.disabled
+                                 ? tv.getColor( "list.background" )
+                                 : "undefined";
       }
       return result;
     }
   },
-  
+
   "table-check-box" : {
     include : "image",
     style : function( states ) {
@@ -1404,18 +1418,20 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   // ------------------------------------------------------------------------
   // Sash
-  
+
   "sash" : {
     style : function( states ) {
       return {
         border : states.rwt_BORDER ? "inset" : "undefined",
-        cursor : states.disabled ? "undefined"
-                                 : states.horizontal ? "row-resize"
-                                                     : "col-resize"
+        cursor : states.disabled
+                 ? "undefined"
+                 : states.horizontal
+                   ? "row-resize"
+                   : "col-resize"
       };
     }
   },
-  
+
   "sash-slider" : {
     style : function( states ) {
       return {
@@ -1425,16 +1441,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   // ------------------------------------------------------------------------
   // CTabFolder
 
   "ctabfolder" : {
     style: function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.font = "widget.font";
-      result.textColor = tv.getColor( "ctabfolder.foreground");
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.font = tv.getFont( "widget.font" );
+      result.textColor = tv.getColor( "ctabfolder.foreground" );
       result.backgroundColor = tv.getColor( "ctabfolder.background" );
       return result;
     }
@@ -1442,8 +1458,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "ctabfolder-body" : {
     style: function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = "undefined";
       result.textColor = "undefined";
       if( states.rwt_BORDER ) {
@@ -1457,8 +1473,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "ctabfolder-frame" : {
     style: function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( !states.rwt_FLAT ) {
         var color = tv.getColor( "ctabfolder.selection.background" );
         result.border = new qx.ui.core.Border( 2, "solid", color );
@@ -1472,8 +1488,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "ctabfolder-separator" : {
     style: function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = new qx.ui.core.Border();
       if( states.barTop ) {
         border.setBottom( 1, "solid", "#c0c0c0" );
@@ -1489,8 +1505,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include: "atom",
 
     style: function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.paddingLeft = 4;
       result.border = new qx.ui.core.Border();
       result.border.setRight( 1, "solid", "#c0c0c0" );
@@ -1517,10 +1533,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     include : "image",
     style : function( states ) {
-      var result = { };
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( states.over ) {
         result.backgroundColor = "white";
-        result.border = "ctabfolder.button.border";
+        result.border = tv.getBorder( "ctabfolder.button.border" );
       } else {
         result.backgroundColor = "undefined";
         result.border = "undefined";
@@ -1532,7 +1549,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "ctab-close-button" :
   {
     include : "image",
-    
+
     style : function( states ) {
       return {
         source : states.over
@@ -1544,11 +1561,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   // ------------------------------------------------------------------------
   // Composite
-  
+
   "composite" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = tv.getColor( "widget.background" );
       result.border = tv.getBorder( states.rwt_BORDER
                                     ? "control.BORDER.border"
@@ -1556,29 +1573,31 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-    
+
   // ------------------------------------------------------------------------
   // ScrolledComposite
-  
+
   "scrolledcomposite" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "shadow" : "control.border"
+        border : states.rwt_BORDER ? "shadow" : tv.getBorder( "control.border" )
       }
     }
   },
-    
+
   // ------------------------------------------------------------------------
   // CoolBar
-  
+
   "coolbar" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" )
       }
     }
   },
-  
+
   "coolitem-handle" : {
     style : function( states ) {
       return {
@@ -1589,14 +1608,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
     }
   },
-  
+
   // ------------------------------------------------------------------------
   // Browser
-  
+
   "browser" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border",
+        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" ),
         backgroundColor : "white"
       }
     }
@@ -1630,60 +1650,65 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   // ------------------------------------------------------------------------
   // Link
-  
+
   "link" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : "widget.font",
-        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+        font : tv.getFont( "widget.font" ),
+        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" )
       }
     }
   },
-  
+
   "link-text" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor : states.disabled ? "widget.graytext" : "undefined"
+        textColor : states.disabled ? tv.getColor( "widget.graytext" ) : "undefined"
       }
     }
   },
-  
+
   "link-href" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         cursor : "pointer",
-        textColor : states.disabled ? "widget.graytext" : "link.foreground"
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "link.foreground" )
       }
     }
   },
- 
+
   // ------------------------------------------------------------------------
   // Progress Bar
-  
+
   "progressbar" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : "thinInset",
         backgroundImage : "widget/progressbar.bgimage",
-        backgroundColor : "progressbar.background"
+        backgroundColor : tv.getColor( "progressbar.background" )
       }
     }
   },
 
   "progressbar-bar" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         backgroundImage : "widget/progressbar.fgimage",
-        backgroundColor : "progressbar.foreground"
+        backgroundColor : tv.getColor( "progressbar.foreground" )
       }
-      }
+    }
   },
 
   "scrollbar-blocker" : {
     style : function( states ) {
-      return { 
-        backgroundColor : "black", 
-        opacity : 0.2 
+      return {
+        backgroundColor : "black",
+        opacity : 0.2
       };
     }
   }
