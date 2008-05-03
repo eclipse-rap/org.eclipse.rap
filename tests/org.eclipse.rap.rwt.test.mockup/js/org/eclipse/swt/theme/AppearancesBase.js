@@ -765,6 +765,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         overflow : "hidden",
+        textColor : tv.getColor( "list.foreground" ),
         backgroundColor : tv.getColor( "list.background" ),
         border : states.rwt_BORDER ? "thinInset" : "undefined"
       };
@@ -879,7 +880,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font : tv.getFont( "widget.font" ),
         padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
-        textColor : tv.getColor( states.disabled ? "widget.graytext" : "widget.foreground" ),
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "list.foreground" ),
         backgroundColor : tv.getColor( "list.background" )
       };
     }
@@ -932,23 +933,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        cursor : "default",
-        height : 16,
-        padding : 2
-      };
-      if( states.selected ) {
+      var result = {};
+      result.cursor = "default";
+      result.height = 16;
+      result.padding = 2;
+      if( states.disabled ) {
+        result.textColor = tv.getColor( "widget.graytext" );
+        result.backgroundColor = "undefined";
+      } else if( states.selected ) {
         if( states.parent_unfocused ) {
-          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground" );
+          result.textColor = tv.getColor( "list.selection.unfocused.foreground" );
           result.backgroundColor = tv.getColor( "list.selection.unfocused.background" );
         } else {
-          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.foreground" );
+          result.textColor = tv.getColor( "list.selection.foreground" );
           result.backgroundColor = tv.getColor( "list.selection.background" );
         }
       } else {
-        result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
-        result.backgroundColor = "transparent";
-      }
+        result.textColor = tv.getColor( "list.foreground" );
+        result.backgroundColor = "undefined";
+      }      
       return result;
     }
   },
@@ -1376,20 +1379,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         cursor : "default",
         border : states.lines ? "table.row.horizontalLine" : "undefined"
       };
-      if( states.selected ) {
-        result.textColor = tv.getColor( states.disabled
-                                        ? "widget.graytext"
-                                        : "list.selection.foreground" );
-        result.backgroundColor = tv.getColor( states.disabled
-                                              ? "list.selection.unfocused.background"
-                                              : "list.selection.background" );
+      if( states.disabled ) {
+        result.textColor = tv.getColor( "widget.graytext" );
+        result.textColor = tv.getColor( "undiefined" );
+      } else if( states.selected ) {
+        result.textColor = tv.getColor( "list.selection.foreground" );
+        result.backgroundColor = tv.getColor( "list.selection.background" );
       } else {
-        result.textColor = states.disabled
-                           ? tv.getColor( "widget.graytext" )
-                           : "undefined";
-        result.backgroundColor = states.disabled
-                                 ? tv.getColor( "list.background" )
-                                 : "undefined";
+        result.textColor = "list.foreground";
+        result.backgroundColor = "list.background";
       }
       return result;
     }

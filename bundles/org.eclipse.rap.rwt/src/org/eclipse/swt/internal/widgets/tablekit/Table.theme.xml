@@ -4,6 +4,38 @@
 
 <theme
     css-elements="Table">
+
+  <element name="TableColumn"
+      description="Column header of Table controls">
+
+    <property name="background"
+        states="hover"/>
+
+  </element>
+
+  <element name="TableColumn-SortIndicator"
+      description="Sort indicators in Table column headers">
+
+    <property name="background-image"
+        states="up down"/>
+
+  </element>
+
+  <element name="Table-GridLine"
+      description="Grid lines in Table controls">
+
+    <property name="color"/>
+
+  </element>
+
+  <element name="Table-Checkbox"
+      description="Checkboxes in Table controls">
+
+    <property name="width"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
   
   <color name="table.column.background"
       description="Background color for table column headers"

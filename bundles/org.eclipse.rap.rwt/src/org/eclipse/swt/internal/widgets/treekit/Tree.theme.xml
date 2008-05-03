@@ -2,8 +2,25 @@
 
 <!-- Themeable properties for SWT Tree widget -->
 
-<theme
-    css-elements="Tree">
+<theme>
+
+  <element name="TreeColumn"
+      description="Column header of Tree controls">
+
+    <property name="background"
+        states="hover"/>
+
+  </element>
+
+  <element name="TreeColumn-SortIndicator"
+      description="Sort indicators in Tree column headers">
+
+    <property name="background-image"
+        states="up down"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
 
   <color name="tree.column.background"
       description="Background color for tree column headers"
@@ -35,11 +52,5 @@
       css-property="background-image"
       css-selectors=":down"
       />
-
-  <!--
-  <boolean name="tree.lines.visible"
-      description="Whether tree lines should be shown"
-      default="true"/>
-  -->
 
 </theme>

@@ -5,9 +5,36 @@
 <theme
    css-elements="Menu">
 
+  <element name="Menu"
+      description="Menus">
+
+    <property name="color"/>
+
+    <property name="background-color"/>
+
+    <property name="border"/>
+
+    <property name="padding"/>
+
+  </element>
+
+  <element name="MenuItem"
+      description="Menu items">
+
+    <property name="color"
+        states="hover"/>
+
+    <property name="background-color"
+        states="hover"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <color name="menu.foreground"
       description="Text color for menu items"
       default="0, 0, 0"
+      css-elements="Menu MenuItem"
       css-property="color"
       />
 
@@ -23,6 +50,7 @@
   <color name="menu.background"
       description="Background color for menus"
       default="248, 248, 255"
+      css-elements="Menu MenuItem"
       css-property="background-color"
       />
 

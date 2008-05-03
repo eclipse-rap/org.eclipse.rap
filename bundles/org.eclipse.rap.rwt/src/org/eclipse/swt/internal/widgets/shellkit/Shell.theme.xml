@@ -5,43 +5,51 @@
 <theme
     css-elements="Shell">
 
-  <property name="border"
-      styles="BORDER" />
+  <element name="Shell"
+      description="Controls of type Shell (the window in SWT)">
 
-  <property name="padding" />
+    <property name="border"
+        styles="BORDER"/>
 
-  <property name="background-color"
-      states="" styles="inactive" />
-
-  <element name="Shell-Titlebar"
-      description="The titlebar of shells">
-
-    <property name="color"
-        styles="inactive" />
+    <property name="padding"/>
 
     <property name="background-color"
-        styles="inactive" />
-
-    <property name="background-gradient-color"
-        styles="inactive"
-        description="Maps to SWT System Colors XXX and XXX" />
-
-    <property name="background-image"
-        styles="inactive" />
-
-    <property name="font" />
-
-    <property name="padding" />
-
-    <property name="height" />
+        states="inactive"/>
 
   </element>
 
-  <element name="Shell-Button">
+  <element name="Shell-Titlebar"
+      description="The window titlebar">
 
-    <property name="height" />
+    <property name="color"
+        states="inactive"/>
 
-    <property name="background-image" />
+    <property name="background-color"
+        description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND and SWT.COLOR_TITLE_INACTIVE_BACKGROUND"
+        states="inactive"/>
+
+    <property name="background-gradient-color"
+        description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT"
+        states="inactive"/>
+
+    <property name="background-image"
+        states="inactive"/>
+
+    <property name="font"/>
+
+    <property name="padding"/>
+
+    <property name="height"/>
+
+  </element>
+
+  <element name="Shell-Button"
+      description="The window buttons (minimize, maximize, close)">
+
+    <property name="margin"/>
+
+    <property name="background-image"
+        states="min max close maximized inactive hover"/>
 
   </element>
 

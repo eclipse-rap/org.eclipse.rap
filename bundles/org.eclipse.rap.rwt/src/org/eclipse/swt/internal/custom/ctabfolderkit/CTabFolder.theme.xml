@@ -2,19 +2,33 @@
 
 <!-- Themeable properties for CTabFolder -->
 
-<theme
-    css-elements="CTabFolder">
+<theme>
+
+  <element name="CTabItem"
+      description="Items of a CTabFolder control">
+
+    <property name="color"
+        states="selected"/>
+
+    <property name="background-color"
+        states="selected"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
 
   <color name="ctabfolder.background"
       description="Background color for CTabFolders"
       transparentAllowed="true"
       default="248, 248, 255"
+      css-elements="CTabItem"
       css-property="background-color"
       />
 
   <color name="ctabfolder.foreground"
       description="Foreground color for CTabFolders"
       default="black"
+      css-elements="CTabItem"
       css-property="color"
       />
 

@@ -5,6 +5,19 @@
 <theme
     css-elements="Text">
 
+  <element name="Text"
+      description="Single-line and multi-line text widgets">
+
+    <property name="border"
+        styles="BORDER"/>
+
+    <property name="padding"
+        styles="SINGLE MULTI"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <border name="text.border"
       description="Border for text fields. Also used for spinner widget."
       default="none"

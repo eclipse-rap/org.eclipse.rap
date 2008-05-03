@@ -5,6 +5,28 @@
 <theme
     css-elements="List">
 
+  <element name="List"
+      description="List elements">
+
+    <property name="color"/>
+
+    <property name="background-color"/>
+
+  </element>
+
+  <element name="List-Item"
+      description="Item elements of List controls">
+
+    <property name="color"
+        states="selected inactive"/>
+
+    <property name="background-color"
+        states="selected inactive"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <color name="list.background"
       description="Background color for List, also applies to Text, Combo, Tree, Table, etc."
       default="255, 255, 255"

@@ -5,6 +5,37 @@
 <theme
     css-elements="Group">
 
+  <element name="Group"
+      description="Controls of type Group">
+
+    <property name="background-color"/>
+
+    <property name="margin"/>
+
+    <property name="padding"/>
+
+  </element>
+
+  <element name="Group-Frame"
+      description="The frame around the children of a group box">
+
+    <property name="border"/>
+
+  </element>
+
+  <element name="Group-Frame"
+      description="The label of a group box">
+
+    <property name="padding"/>
+
+    <property name="margin"/>
+
+    <property name="font"/>
+
+  </element>
+  
+  <!-- C O M P A T I B I L I T Y -->
+
   <!-- Note: Theming of groups is likely to change in the future, as the group
        widget does not yet adapt to font size changes (Qx bug 507) -->
 

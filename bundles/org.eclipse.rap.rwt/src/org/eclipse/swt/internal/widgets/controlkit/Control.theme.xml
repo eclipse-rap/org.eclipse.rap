@@ -5,6 +5,16 @@
 <theme
     css-elements="NONE">
 
+  <element name="*"
+      description="All elements">
+
+    <property name="border"
+        styles="BORDER"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <border name="control.border"
       description="Default border for controls"
       default="none"

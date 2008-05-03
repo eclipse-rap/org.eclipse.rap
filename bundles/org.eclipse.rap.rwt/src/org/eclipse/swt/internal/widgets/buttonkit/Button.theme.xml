@@ -5,6 +5,36 @@
 <theme
     css-elements="Button">
 
+  <element name="Button"
+      description="Push-buttons, Toggle-buttons, Radio-buttons and Checkboxes">
+
+    <property name="color"
+        styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
+        states="hover pressed"
+        />
+
+    <property name="background-color"
+        styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
+        states="hover pressed"
+        />
+
+    <property name="border"
+        styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
+        states="pressed"
+        />
+
+    <property name="padding"/>
+
+    <property name="spacing"/>
+
+    <property name="font"
+        styles="PUSH TOGGLE CHECK RADIO"
+        />
+
+  </element>
+  
+  <!-- C O M P A T I B I L I T Y -->
+
   <color name="button.foreground"
       description="Text color for PUSH and TOGGLE buttons"
       default="0, 0, 0"
@@ -112,14 +142,12 @@
       description="Padding for buttons"
       default="2"
       css-property="padding"
-      css-selectors=""
       />
 
   <dimension name="button.spacing"
       description="Space between image and text"
       default="2"
       css-property="spacing"
-      css-selectors=""
       />
 
   <font name="button.font"

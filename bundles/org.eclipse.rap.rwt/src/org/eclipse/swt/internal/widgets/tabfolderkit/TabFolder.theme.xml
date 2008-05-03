@@ -2,8 +2,17 @@
 
 <!-- Themeable properties for SWT TabFolder -->
 
-<theme
-    css-elements="TabFolder">
+<theme>
+
+  <element name="TabItem"
+      description="Items of TabFolder controls (don't mix up with CTabFolder)">
+
+    <property name="background-color"
+        states="selected hover"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
 
   <color name="tabfolder.background"
       description="Background color for TabFolder headers"

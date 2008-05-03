@@ -5,6 +5,26 @@
 <theme
     css-elements="ProgressBar">
 
+  <element name="ProgressBar"
+      description="Progress bar controls">
+
+    <property name="background-color"/>
+
+    <property name="background-image"/>
+
+  </element>
+
+  <element name="ProgressBar-InnerBar"
+      description="The inner movable bar within a progress bar">
+
+    <property name="background-color"/>
+
+    <property name="background-image"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <!--  == control.background -->
   <color name="progressbar.background"
       description="Background color for progress bars"
@@ -15,7 +35,7 @@
   <color name="progressbar.foreground"
       description="Foreground color for progress bars"
       default="0, 128, 192"
-      css-elements="ProgressBar-Bar"
+      css-elements="ProgressBar-InnerBar"
       css-property="background-color"
       />
 
@@ -28,7 +48,7 @@
   <image name="progressbar.fgimage"
       description="Foreground image for progress bars"
       default="none"
-      css-elements="ProgressBar-Bar"
+      css-elements="ProgressBar-InnerBar"
       css-property="background-image"
       />
 

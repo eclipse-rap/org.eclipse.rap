@@ -5,6 +5,28 @@
 <theme
     css-elements="ToolBar">
 
+  <element name="ToolBar"
+      description="Tool bar controls">
+
+    <property name="color"/>
+
+    <property name="background-color"/>
+
+  </element>
+
+  <element name="ToolItem"
+      description="Items of ToolBar controls">
+
+    <property name="color"
+        states="hover"/>
+
+    <property name="background-color"
+        states="hover"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <color name="toolbar.foreground"
       description="Text color for tool bar"
       default="0, 0, 0"

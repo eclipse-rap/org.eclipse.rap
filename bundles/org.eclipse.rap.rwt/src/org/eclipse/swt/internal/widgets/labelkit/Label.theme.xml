@@ -4,7 +4,23 @@
 
 <theme
     css-elements="Label">
- 
+
+  <element name="Label"
+      description="Label controls">
+
+    <property name="color"
+        states="hover"/>
+
+    <property name="background-color"
+        states="hover"/>
+
+    <property name="border"
+        styles="BORDER"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <color name="label.foreground"
       description="Text color for labels"
       default="0, 0, 0"

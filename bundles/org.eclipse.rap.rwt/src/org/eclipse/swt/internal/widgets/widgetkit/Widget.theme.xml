@@ -5,6 +5,47 @@
 <theme
     css-elements="NONE">
 
+  <element name="*"
+      description="All elements">
+
+    <property name="color"
+        states="disabled"/>
+
+    <property name="background-color"/>
+
+    <property name="font"/>
+
+    <property name="rwt-shadow-color"
+        description="Color used to draw (outer) shadow line in 3d borders"/>
+
+    <property name="rwt-highlight-color"
+        description="Color used to draw (outer) highlight line in 3d borders"/>
+
+    <property name="rwt-darkshadow-color"
+        description="Color used to draw (inner) shadow line in 3d borders"/>
+
+    <property name="rwt-lightshadow-color"
+        description="Color used to draw (inner) highlight line in 3d borders"/>
+
+    <property name="rwt-thinborder-color"
+        description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."/>
+
+    <property name="rwt-selectionmarker-color"
+        description="Color used to mark selected items like TreeColumns and TabViews"/>
+
+  </element>
+
+  <element name="ToolTip"
+      description="Tooltips">
+
+    <property name="color"/>
+
+    <property name="background-color"/>
+
+  </element>
+
+  <!-- C O M P A T I B I L I T Y -->
+
   <color name="widget.foreground"
       description="Default text color"
       default="0, 0, 0"
