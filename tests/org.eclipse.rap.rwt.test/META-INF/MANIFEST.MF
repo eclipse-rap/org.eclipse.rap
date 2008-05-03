@@ -6,6 +6,7 @@ Bundle-SymbolicName: org.eclipse.rap.rwt.test
 Bundle-Version: 1.1.0.qualifier
 Fragment-Host: org.eclipse.rap.rwt;bundle-version="1.1.0"
 Bundle-ClassPath: .,
- lib/resource_manager_test.jar
+ lib/resource_manager_test.jar,
+ lib/org.w3c.css.sac_1.3.jar
 Require-Bundle: org.junit
 Bundle-Localization: fragment
