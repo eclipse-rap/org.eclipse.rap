@@ -166,9 +166,11 @@ public class LinkLCA extends AbstractWidgetLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( link );
-    Object[] args = new Object[]{
+    Object[] args = new Object[] {
       link,
-      WidgetLCAUtil.escapeText( text, true )
+      // TODO [rst] mnemonics are already parsed by Link#parse()
+      //            Revise when we're going to support underline once
+      WidgetLCAUtil.escapeText( text, false )
     };
     writer.callStatic( JS_FUNC_ADD_TEXT, args );
   }
@@ -178,12 +180,13 @@ public class LinkLCA extends AbstractWidgetLCA {
                               final int index ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( link );
-    Object[] args = new Object[]{
+    Object[] args = new Object[] {
       link,
-      WidgetLCAUtil.escapeText( text, true ),
+      // TODO [rst] mnemonics are already parsed by Link#parse()
+      //            Revise when we're going to support underline once
+      WidgetLCAUtil.escapeText( text, false ),
       new Integer( index )
     };
     writer.callStatic( JS_FUNC_ADD_LINK, args );
   }
-
 }

@@ -154,6 +154,8 @@ public class WidgetLCAUtil_Test extends TestCase {
 //                  WidgetLCAUtil.escapeText( "&&&File\">", true ) );
     assertEquals( "Open &amp; Close",
                   WidgetLCAUtil.escapeText( "Open && Close", true ) );
+    assertEquals( "E&lt;s&gt;ca'pe&quot; &amp; me",
+                  WidgetLCAUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
     // Quotes
     expected = "&quot;File&quot;";
     assertEquals( expected, WidgetLCAUtil.escapeText( "\"File\"", false ) );

@@ -226,16 +226,19 @@ public class LinkLCA_Test extends TestCase {
   public void testEscape() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    Link link = new Link( shell, SWT.NONE );
-    link.setText( "&E<s>ca'pe\" && me" );
+    Link link1 = new Link( shell, SWT.NONE );
+    Link link2 = new Link( shell, SWT.NONE );
+    link1.setText( "test.<" );
+    link2.setText( "&E<s>ca'pe\" && me" );
     Fixture.fakeResponseWriter();
     LinkLCA lca = new LinkLCA();
-    lca.renderChanges( link );
-    // TODO [rst] Bug in SWT Link#parse code - adjust when bug is fixed
-    // String expected = "\"E&lt;s&gt;ca'pe&quot; &amp; me\"";
-    String expected = "\"EE&lt;s&gt;ca'pe&quot;  me\"";
+    lca.renderChanges( link1 );
+    lca.renderChanges( link2 );
     String actual = Fixture.getAllMarkup();
-    assertTrue( actual.indexOf( expected ) != -1 );
+    String expected1 = "\"test.&lt;\"";
+    assertTrue( actual.indexOf( expected1 ) != -1 );
+    String expected2 = "\"E&lt;s&gt;ca'pe&quot; &amp; me\"";
+    assertTrue( actual.indexOf( expected2 ) != -1 );
   }
 
   private void assertContains( final String expected, final String string ) {

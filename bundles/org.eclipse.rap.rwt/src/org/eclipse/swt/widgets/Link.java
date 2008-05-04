@@ -258,43 +258,43 @@ public class Link extends Control {
             tagStart = index;
             state++;
           }
-          break;
+        break;
         case 1:
           if( c == 'a' )
             state++;
-          break;
+        break;
         case 2:
           switch( c ) {
             case 'h':
               state = 7;
-              break;
+            break;
             case '>':
               linkStart = index + 1;
               state++;
-              break;
+            break;
             default:
               if( Character.isWhitespace( c ) )
                 break;
               else
                 state = 13;
           }
-          break;
+        break;
         case 3:
           if( c == '<' ) {
             endtagStart = index;
             state++;
           }
-          break;
+        break;
         case 4:
           state = c == '/'
-            ? state + 1
-            : 3;
-          break;
+                          ? state + 1
+                          : 3;
+        break;
         case 5:
           state = c == 'a'
-            ? state + 1
-            : 3;
-          break;
+                          ? state + 1
+                          : 3;
+        break;
         case 6:
           if( c == '>' ) {
             mnemonics[ linkIndex ] = parseMnemonics( buffer,
@@ -306,7 +306,7 @@ public class Link extends Control {
             offsets[ linkIndex ] = new Point( offset, result.length() - 1 );
             if( ids[ linkIndex ] == null ) {
               ids[ linkIndex ] = new String( buffer, linkStart, endtagStart
-                                             - linkStart );
+                                                                - linkStart );
             }
             linkIndex++;
             start = tagStart = linkStart = endtagStart = refStart = index + 1;
@@ -314,27 +314,27 @@ public class Link extends Control {
           } else {
             state = 3;
           }
-          break;
+        break;
         case 7:
           state = c == 'r'
-            ? state + 1
-            : 0;
-          break;
+                          ? state + 1
+                          : 0;
+        break;
         case 8:
           state = c == 'e'
-            ? state + 1
-            : 0;
-          break;
+                          ? state + 1
+                          : 0;
+        break;
         case 9:
           state = c == 'f'
-            ? state + 1
-            : 0;
-          break;
+                          ? state + 1
+                          : 0;
+        break;
         case 10:
           state = c == '='
-            ? state + 1
-            : 0;
-          break;
+                          ? state + 1
+                          : 0;
+        break;
         case 11:
           if( c == '"' ) {
             state++;
@@ -342,29 +342,29 @@ public class Link extends Control {
           } else {
             state = 0;
           }
-          break;
+        break;
         case 12:
           if( c == '"' ) {
             ids[ linkIndex ] = new String( buffer, refStart, index - refStart );
             state = 2;
           }
-          break;
+        break;
         case 13:
           if( Character.isWhitespace( c ) ) {
             state = 0;
           } else if( c == '=' ) {
             state++;
           }
-          break;
+        break;
         case 14:
           state = c == '"'
-            ? state + 1
-            : 0;
-          break;
+                          ? state + 1
+                          : 0;
+        break;
         case 15:
           if( c == '"' )
             state = 2;
-          break;
+        break;
         default:
           state = 0;
         break;
@@ -373,7 +373,10 @@ public class Link extends Control {
     }
     if( start < length ) {
       int tmp = parseMnemonics( buffer, start, tagStart, result );
-      int mnemonic = parseMnemonics( buffer, linkStart, index, result );
+      int mnemonic = parseMnemonics( buffer,
+                                     Math.max( tagStart, linkStart ),
+                                     length,
+                                     result );
       if( mnemonic == -1 )
         mnemonic = tmp;
       mnemonics[ linkIndex ] = mnemonic;
