@@ -516,9 +516,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //            editorRegistry = new EditorRegistry();
 //        }
 //        return editorRegistry;
-    	// RAPEND: [bm] 
         return EditorRegistry.getInstance();
-
+        // RAPEND: [bm] 
     }
 
     /**
