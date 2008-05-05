@@ -343,27 +343,14 @@ public final class RWTServletContextListener implements ServletContextListener {
           String themeId = parts[ 0 ];
           String fileName = parts[ 1 ];
           try {
-            InputStream inStream = loader.getResourceAsStream( fileName );
-            if( inStream != null ) {
-              try {
-                String themeName = "Unnamed Theme: " + themeId;
-                manager.registerTheme( themeId, themeName, inStream, loader );
-              } finally {
-                inStream.close();
-              }
-            } else {
-              String text = "Theme file ''{0}'' could not be found.";
-              Object[] args = new Object[] { fileName };
-              String msg = MessageFormat.format( text, args );
-              context.log( msg );
-            }
-          } catch( final IOException ex ) {
-            String text 
-              = "Failed to register custom theme ''{0}'' "
-              + "from resource ''{1}''.";
+            String themeName = "Unnamed Theme: " + themeId;
+            manager.registerTheme( themeId, themeName, fileName, loader );
+          } catch( Exception e ) {
+            String text = "Failed to register custom theme ''{0}'' "
+                          + "from resource ''{1}''";
             Object[] args = new Object[] { themeId, fileName };
             String msg = MessageFormat.format( text, args );
-            context.log( msg, ex );
+            context.log( msg, e );
           }
         }
       }

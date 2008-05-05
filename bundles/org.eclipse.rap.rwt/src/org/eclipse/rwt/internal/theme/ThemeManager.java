@@ -298,7 +298,7 @@ public final class ThemeManager {
    *            id is not valid on the client-side. To get the id that is used
    *            on the client, see method <code>getJsThemeId</code>
    * @param name a name that describes the theme. Currently not used
-   * @param properties an input stream to read the theme from
+   * @param fileName the filename of the theme file
    * @param loader a ResourceLoader instance that is able to load resources
    *            needed by this theme
    * @throws IOException if an I/O error occurs
@@ -306,24 +306,14 @@ public final class ThemeManager {
    */
   public void registerTheme( final String id,
                              final String name,
-                             final InputStream properties,
-                             final ResourceLoader loader )
-    throws IOException
-  {
-    registerTheme( id, name, properties, "", loader );
-  }
-
-  public void registerTheme( final String id,
-                             final String name,
-                             final InputStream inputStream,
-                             final String url,
+                             final String fileName,
                              final ResourceLoader loader )
     throws IOException
   {
     checkInitialized();
-    log( "Register theme " + id + ": " + inputStream );
+    log( "Register theme " + id + " from " + fileName );
     checkId( id );
-    if( url == null ) {
+    if( fileName == null ) {
       throw new NullPointerException( "null argument" );
     }
     if( themes.containsKey( id ) ) {
@@ -332,38 +322,43 @@ public final class ThemeManager {
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
-    Theme theme;
-    // TODO [rst] cleanup
-    if( url.toLowerCase().endsWith( ".css" ) ) {
-      try {
-        ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
-        Iterator iterator = themeProperties.keySet().iterator();
-        for( int i = 0; i < propArray.length; i++ ) {
-          if( iterator.hasNext() ) {
-            Object key = iterator.next();
-            propArray[ i ] = ( ThemeProperty ) themeProperties.get( key );
-          }
-        }
-        theme = ThemeCssAdapter.loadThemeFromCssFile( name != null
-                                                      ? name
-                                                      : "",
-                                                      predefinedTheme,
-                                                      inputStream,
-                                                      loader,
-                                                      url,
-                                                      propArray  );
-      } catch( CSSException e ) {
-        throw new ThemeManagerException( "Failed parsing CSS file", e );
-      }
-    } else {
-      theme = Theme.loadFromFile( name != null
-                                              ? name
-                                              : "",
-                                  predefinedTheme,
-                                  inputStream,
-                                  loader );
+    InputStream inputStream = loader.getResourceAsStream( fileName );
+    if( inputStream == null ) {
+      throw new IllegalArgumentException( "Could not open resource "
+                                          + fileName );
     }
-    themes.put( id, new ThemeWrapper( theme, themeCount++ ) );
+    try {
+      // TODO [rst] cleanup
+      Theme theme;
+      if( fileName.toLowerCase().endsWith( ".css" ) ) {
+        try {
+          ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
+          Iterator iterator = themeProperties.keySet().iterator();
+          for( int i = 0; i < propArray.length; i++ ) {
+            if( iterator.hasNext() ) {
+              Object key = iterator.next();
+              propArray[ i ] = ( ThemeProperty )themeProperties.get( key );
+            }
+          }
+          theme = ThemeCssAdapter.loadThemeFromCssFile( name != null ? name : "",
+                                                        predefinedTheme,
+                                                        inputStream,
+                                                        loader,
+                                                        fileName,
+                                                        propArray );
+        } catch( CSSException e ) {
+          throw new ThemeManagerException( "Failed parsing CSS file", e );
+        }
+      } else {
+        theme = Theme.loadFromFile( name != null ? name : "",
+                                    predefinedTheme,
+                                    inputStream,
+                                    loader );
+      }
+      themes.put( id, new ThemeWrapper( theme, themeCount++ ) );
+    } finally {
+      inputStream.close();
+    }
   }
 
   /**

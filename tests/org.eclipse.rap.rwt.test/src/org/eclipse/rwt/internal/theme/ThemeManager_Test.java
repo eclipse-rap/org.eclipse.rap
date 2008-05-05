@@ -204,21 +204,14 @@ public class ThemeManager_Test extends TestCase {
                              final String themeName,
                              final String themeFile ) throws IOException
   {
-    InputStream inputStr = null;
-    final ClassLoader loader = ThemeManager_Test.class.getClassLoader();
-    try {
-      inputStr = loader.getResourceAsStream( themeFile );
-      assertNotNull( inputStr );
-      ResourceLoader resLoader = new ResourceLoader() {
-        public InputStream getResourceAsStream( final String resourceName )
-          throws IOException
-        {
-          return loader.getResourceAsStream( resourceName );
-        }
-      };
-      manager.registerTheme( themeId, themeName, inputStr, resLoader );
-    } finally {
-      inputStr.close();
-    }
+    final ClassLoader classLoader = ThemeManager_Test.class.getClassLoader();
+    ResourceLoader resLoader = new ResourceLoader() {
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        return classLoader.getResourceAsStream( resourceName );
+      }
+    };
+    manager.registerTheme( themeId, themeName, themeFile, resLoader );
   }
 }
