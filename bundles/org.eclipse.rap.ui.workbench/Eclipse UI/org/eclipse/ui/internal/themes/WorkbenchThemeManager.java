@@ -112,29 +112,28 @@ public class WorkbenchThemeManager extends EventManager implements
 		if (PlatformUI.getWorkbench().getDisplay() != null) {
 			// Determine the high contrast setting before
 			// any access to preferences
-			final boolean[] highContrast = new boolean[] { false };
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see java.lang.Runnable#run()
-				 */
-				public void run() {
-					// RAP [bm]: Display#getHighContrast
-					// RAP [bm]: SWT.Settings
+			final boolean[] highContrast = new boolean[] { true };
+			// RAP [bm]: Display#getHighContrast
+			// RAP [bm]: SWT.Settings
+//			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+//
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see java.lang.Runnable#run()
+//				 */
+//				public void run() {
 //					highContrast[0] = Display.getCurrent().getHighContrast();
-					highContrast[0] = false;
-
+//
 //					Display.getCurrent().addListener(SWT.Settings, new Listener() {
 //						public void handleEvent(Event event) {
 //							updateThemes();
 //						}
 //					});
-					// RAPEND: [bm] 
-
-				}
-			});
+//
+//				}
+//			});
+			// RAPEND: [bm] 
 			
 			//If in HC, *always* use the system default.
 			//This ignores any default theme set via plugin_customization.ini

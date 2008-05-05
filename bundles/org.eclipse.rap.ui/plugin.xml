@@ -1629,21 +1629,22 @@
             name="%ThemeName.R30">
              <colorOverride
                id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"
-               value="COLOR_TITLE_BACKGROUND">
+               value="COLOR_LIST_SELECTION">
          </colorOverride>
          <!-- RAP [bm] changed bundle id -->
          <colorOverride
-               id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END">
+               id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"
+               value="COLOR_LIST_SELECTION">
             <colorFactory
                   class="org.eclipse.ui.themes.RGBBlendColorFactory"
                   plugin="org.eclipse.rap.ui">
                <parameter
                      name="color1"
-                     value="COLOR_TITLE_BACKGROUND_GRADIENT">
+                     value="COLOR_LIST_SELECTION">
                </parameter>
                <parameter
                      name="color2"
-                     value="COLOR_TITLE_BACKGROUND_GRADIENT">
+                     value="COLOR_LIST_SELECTION">
                </parameter>
             </colorFactory>
          </colorOverride>
@@ -1653,10 +1654,10 @@
          </data>
          <colorOverride
                id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR"
-               value="COLOR_TITLE_FOREGROUND">
+               value="COLOR_LIST_SELECTION_TEXT">
          </colorOverride>
 		 <data
-      		name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="false">
+      		name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="true">
 		 </data>
       </theme>
    </extension>
