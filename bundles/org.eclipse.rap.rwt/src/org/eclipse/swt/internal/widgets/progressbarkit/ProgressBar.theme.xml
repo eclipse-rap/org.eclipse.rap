@@ -14,8 +14,8 @@
 
   </element>
 
-  <element name="ProgressBar-InnerBar"
-      description="The inner movable bar within a progress bar">
+  <element name="ProgressBar-Indicator"
+      description="The movable bar that indicates the progress">
 
     <property name="background-color"/>
 

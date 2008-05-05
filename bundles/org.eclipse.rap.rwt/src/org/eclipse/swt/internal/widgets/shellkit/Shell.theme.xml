@@ -43,13 +43,33 @@
 
   </element>
 
-  <element name="Shell-Button"
-      description="The window buttons (minimize, maximize, close)">
+  <element name="Shell-MinButton"
+      description="The minimize button of a window">
 
     <property name="margin"/>
 
     <property name="background-image"
-        states="min max close maximized inactive hover"/>
+        states="maximized inactive hover"/>
+
+  </element>
+
+  <element name="Shell-MaxButton"
+      description="The maximize button of a window">
+
+    <property name="margin"/>
+
+    <property name="background-image"
+        states="maximized inactive hover"/>
+
+  </element>
+
+  <element name="Shell-CloseButton"
+      description="The close button of a window">
+
+    <property name="margin"/>
+
+    <property name="background-image"
+        states="maximized inactive hover"/>
 
   </element>
 
@@ -172,136 +192,133 @@
   <boxdim name="shell.button.margin"
       description="Margin for the min/max/close buttons on shells"
       default="2 0 2 1"
-      css-elements="Shell-Button"
+      css-elements="Shell-MinButton Shell-MaxButton Shell-CloseButton"
       css-property="margin"
       />
 
   <image name="shell.minbutton.image"
       description="Image for minimize button on shells"
       default="resource/widget/rap/window/minimize.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":min"
       />
 
   <image name="shell.minbutton.over.image"
       description="Image for minimize button on shells on mouse over"
       default="resource/widget/rap/window/minimize.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":min:hover"
+      css-selectors=":hover"
       />
 
   <image name="shell.minbutton.inactive.image"
       description="Image for minimize button on inactive shells"
       default="resource/widget/rap/window/minimize.inactive.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":min:inactive"
+      css-selectors=":inactive"
       />
 
   <image name="shell.minbutton.inactive.over.image"
       description="Image for minimize button on inactive shells on mouse over"
       default="resource/widget/rap/window/minimize.inactive.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":min:inactive:hover"
+      css-selectors=":inactive:hover"
       />
 
   <image name="shell.maxbutton.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":max"
       />
 
   <image name="shell.maxbutton.over.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":max:hover"
+      css-selectors=":hover"
       />
 
   <image name="shell.maxbutton.inactive.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.inactive.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":max:inactive"
+      css-selectors=":inactive"
       />
 
   <image name="shell.maxbutton.inactive.over.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.inactive.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":max:inactive:hover"
+      css-selectors=":inactive:hover"
       />
 
   <image name="shell.restorebutton.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":max:maximized"
+      css-selectors=":maximized"
       />
 
   <image name="shell.restorebutton.over.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":max:maximized:hover"
+      css-selectors=":maximized:hover"
       />
 
   <image name="shell.restorebutton.inactive.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.inactive.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":restore:inactive"
+      css-selectors=":inactive"
       />
 
   <image name="shell.restorebutton.inactive.over.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.inactive.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":restore:inactive:hover"
+      css-selectors=":inactive:hover"
       />
 
   <image name="shell.closebutton.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":close"
       />
 
   <image name="shell.closebutton.over.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":close:hover"
+      css-selectors=":hover"
       />
 
   <image name="shell.closebutton.inactive.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.inactive.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":close:inactive"
+      css-selectors=":inactive"
       />
 
   <image name="shell.closebutton.inactive.over.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.inactive.over.png"
-      css-elements="Shell-Button"
+      css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":close:inactive:hover"
+      css-selectors=":inactive:hover"
       />
 
 </theme>

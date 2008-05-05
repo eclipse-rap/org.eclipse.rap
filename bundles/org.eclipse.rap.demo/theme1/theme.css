@@ -105,7 +105,7 @@ ProgressBar {
   background-image: url( "/theme1/icons/barbg.png" );
 }
 
-ProgressBar-InnerBar {
+ProgressBar-Indicator {
   background-image: url( "/theme1/icons/bar.png" );
 }
 
@@ -143,39 +143,39 @@ Shell-Titlebar:inactive {
   background-image: none;
 }
 
-Shell-Button {
+Shell-MinButton, Shell-MaxButton, Shell-CloseButton {
   margin: 0px 2px 8px 0px;
 }
 
-Shell-Button:min {
+Shell-MinButton {
   background-image: url( "/theme1/icons/minimize.png" );
 }
 
-Shell-Button:min:hover {
+Shell-MinButton:hover {
   background-image: url( "/theme1/icons/minimize.over.png" );
 }
 
-Shell-Button:max {
+Shell-MaxButton {
   background-image: url( "/theme1/icons/maximize.png" );
 }
 
-Shell-Button:max:hover {
+Shell-MaxButton:hover {
   background-image: url( "/theme1/icons/maximize.over.png" );
 }
 
-Shell-Button:max:maximized {
+Shell-MaxButton:maximized {
   background-image: url( "/theme1/icons/restore.png" );
 }
 
-Shell-Button:max:maximized:hover {
+Shell-MaxButton:maximized:hover {
   background-image: url( "/theme1/icons/restore.over.png" );
 }
 
-Shell-Button:close {
+Shell-CloseButton {
   background-image: url( "/theme1/icons/close.png" );
 }
 
-Shell-Button:close:hover {
+Shell-CloseButton:hover {
   background-image: url( "/theme1/icons/close.over.png" );
 }
 
