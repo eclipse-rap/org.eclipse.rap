@@ -141,11 +141,11 @@ final class EngineConfigWrapper implements IEngineConfig {
   private static void registerResourceManagerFactory() {
     ResourceManager.register( new ResourceManagerFactory() );
   }
-  
+
   private static void registerSettingStoreFactory() {
     // determine which factory to use via an environment setting / config.ini
     ISettingStoreFactory result = null;
-    String factoryId 
+    String factoryId
       = System.getProperty( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM );
     if( factoryId != null ) {
       IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -165,7 +165,7 @@ final class EngineConfigWrapper implements IEngineConfig {
         }
       }
       if( result == null ) {
-        String msg =   "Warning: could not find the factory with id '" 
+        String msg =   "Warning: could not find the factory with id '"
                      + factoryId
                      + "' in org.eclipse.rap.ui.settingstores";
         WorkbenchPlugin.log( WorkbenchPlugin.getStatus( new Throwable( msg ) ) );
@@ -244,7 +244,7 @@ final class EngineConfigWrapper implements IEngineConfig {
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
         ResourceLoader resLoader = new ResourceLoader() {
-          
+
           public InputStream getResourceAsStream( final String resourceName )
             throws IOException
           {
@@ -280,7 +280,7 @@ final class EngineConfigWrapper implements IEngineConfig {
       }
     }
   }
-  
+
   private static void registerThemes() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
@@ -293,31 +293,23 @@ final class EngineConfigWrapper implements IEngineConfig {
       String themeName = elements[ i ].getAttribute( "name" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        URL url = bundle.getResource( themeFile );
-        InputStream inStream = url.openStream();
-        if( inStream != null ) {
-          try {
-            ResourceLoader resLoader = new ResourceLoader() {
-              
-              public InputStream getResourceAsStream( final String resourceName )
-                throws IOException
-              {
-                InputStream result = null;
-                URL url = bundle.getResource( resourceName );
-                if( url != null ) {
-                  result = url.openStream();
-                }
-                return result;
-              }
-            };
-            ThemeManager.getInstance().registerTheme( themeId,
-                                                      themeName,
-                                                      inStream,
-                                                      resLoader );
-          } finally {
-            inStream.close();
+        ResourceLoader resLoader = new ResourceLoader() {
+
+          public InputStream getResourceAsStream( final String resourceName )
+            throws IOException
+          {
+            InputStream result = null;
+            URL url = bundle.getResource( resourceName );
+            if( url != null ) {
+              result = url.openStream();
+            }
+            return result;
           }
-        }
+        };
+        ThemeManager.getInstance().registerTheme( themeId,
+                                                  themeName,
+                                                  themeFile,
+                                                  resLoader );
       } catch( final Throwable e ) {
         String text = "Could not register custom theme ''{0}'' "
                       + "from file ''{1}''.";
@@ -334,7 +326,7 @@ final class EngineConfigWrapper implements IEngineConfig {
       }
     }
   }
-  
+
   private static void registerRWTLifeCycle() {
     // TODO: [fappel] ugly, ugly, ugly - replace this.
     //                Create the only valid lifecycle for RAP
