@@ -17,6 +17,11 @@ import org.eclipse.ui.application.*;
 
 public class DemoPresentationWorkbenchAdvisor extends WorkbenchAdvisor {
 
+  public void initialize( IWorkbenchConfigurer configurer ) {
+    getWorkbenchConfigurer().setSaveAndRestore( true );
+    super.initialize( configurer );
+  }
+
   public String getInitialWindowPerspectiveId() {
     return "org.eclipse.rap.demo.perspective";
   }

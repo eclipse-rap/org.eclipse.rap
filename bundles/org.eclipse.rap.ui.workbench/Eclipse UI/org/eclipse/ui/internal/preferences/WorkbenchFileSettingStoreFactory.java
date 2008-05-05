@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.*;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 
@@ -47,7 +47,9 @@ import org.osgi.framework.Bundle;
  * 
  * @since 1.1
  */
-public final class WorkbenchFileSettingStoreFactory implements ISettingStoreFactory {
+public final class WorkbenchFileSettingStoreFactory
+  implements ISettingStoreFactory
+{
   
   public ISettingStore createSettingStore( final String storeId ) {
     ParamCheck.notNullOrEmpty( storeId, "storeId" ); //$NON-NLS-1$
@@ -67,7 +69,7 @@ public final class WorkbenchFileSettingStoreFactory implements ISettingStoreFact
   private File getWorkDir() {
     File result = getWorkDirFromEnvironment();
     if( result == null ) {
-      Bundle bundle = WorkbenchPlugin.getDefault().getBundle();
+      Bundle bundle = Platform.getBundle( PlatformUI.PLUGIN_ID );
       IPath stateLoc = Platform.getStateLocation( bundle );
       File parentDir = stateLoc.toFile();
       result = new File( parentDir, FileSettingStore.class.getName() );

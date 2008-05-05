@@ -13,57 +13,22 @@
 
 package org.eclipse.ui.internal;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.io.*;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.contexts.ContextManager;
 import org.eclipse.core.databinding.observable.Realm;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionDelta;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IPath;
-//import org.eclipse.core.runtime.IProduct;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IRegistryChangeEvent;
-import org.eclipse.core.runtime.IRegistryChangeListener;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.ExternalActionManager;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.ExternalActionManager.CommandCallback;
-import org.eclipse.jface.action.ExternalActionManager.IActiveChecker;
-import org.eclipse.jface.action.ExternalActionManager.IExecuteApplicable;
-import org.eclipse.jface.bindings.BindingManager;
-import org.eclipse.jface.bindings.BindingManagerEvent;
-import org.eclipse.jface.bindings.IBindingManagerListener;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.ExternalActionManager.*;
+import org.eclipse.jface.bindings.*;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -72,11 +37,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.window.IShellProvider;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.window.WindowManager;
+import org.eclipse.jface.window.*;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.service.SessionStoreEvent;
@@ -84,37 +49,8 @@ import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IDecoratorManager;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IElementFactory;
-import org.eclipse.ui.ILocalWorkingSetManager;
-import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IPerspectiveDescriptor;
-import org.eclipse.ui.IPerspectiveRegistry;
-import org.eclipse.ui.ISaveableFilter;
-import org.eclipse.ui.ISaveablePart;
-import org.eclipse.ui.ISaveablesLifecycleListener;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.ISourceProvider;
-import org.eclipse.ui.ISources;
-import org.eclipse.ui.IWindowListener;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchListener;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPreferenceConstants;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.Saveable;
-import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.XMLMemento;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
 import org.eclipse.ui.activities.IWorkbenchActivitySupport;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -128,54 +64,27 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.actions.CommandAction;
 import org.eclipse.ui.internal.activities.ws.WorkbenchActivitySupport;
 import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
-import org.eclipse.ui.internal.commands.CommandImageManager;
-import org.eclipse.ui.internal.commands.CommandImageService;
-import org.eclipse.ui.internal.commands.CommandService;
-import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
-import org.eclipse.ui.internal.contexts.ContextService;
-import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
+import org.eclipse.ui.internal.commands.*;
+import org.eclipse.ui.internal.contexts.*;
 import org.eclipse.ui.internal.dialogs.PropertyPageContributorManager;
-//import org.eclipse.ui.internal.intro.IIntroRegistry;
-//import org.eclipse.ui.internal.intro.IntroDescriptor;
 import org.eclipse.ui.internal.keys.BindingService;
 import org.eclipse.ui.internal.menus.FocusControlSourceProvider;
 import org.eclipse.ui.internal.menus.WorkbenchMenuService;
-import org.eclipse.ui.internal.misc.Policy;
-import org.eclipse.ui.internal.misc.StatusUtil;
-import org.eclipse.ui.internal.misc.UIStats;
+import org.eclipse.ui.internal.misc.*;
 import org.eclipse.ui.internal.model.ContributionService;
 import org.eclipse.ui.internal.progress.ProgressManager;
-import org.eclipse.ui.internal.registry.IActionSetDescriptor;
-import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
-import org.eclipse.ui.internal.registry.UIExtensionTracker;
-import org.eclipse.ui.internal.services.ActionSetSourceProvider;
-import org.eclipse.ui.internal.services.EvaluationService;
-import org.eclipse.ui.internal.services.IRestrictionService;
-import org.eclipse.ui.internal.services.IServiceLocatorCreator;
-import org.eclipse.ui.internal.services.MenuSourceProvider;
-import org.eclipse.ui.internal.services.ServiceLocator;
-import org.eclipse.ui.internal.services.ServiceLocatorCreator;
-import org.eclipse.ui.internal.services.SourceProviderService;
+import org.eclipse.ui.internal.registry.*;
+import org.eclipse.ui.internal.services.*;
 import org.eclipse.ui.internal.testing.WorkbenchTestable;
-import org.eclipse.ui.internal.themes.ColorDefinition;
-import org.eclipse.ui.internal.themes.FontDefinition;
-import org.eclipse.ui.internal.themes.ThemeElementHelper;
-import org.eclipse.ui.internal.themes.WorkbenchThemeManager;
-import org.eclipse.ui.internal.tweaklets.GrabFocus;
-import org.eclipse.ui.internal.tweaklets.Tweaklets;
-import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
-import org.eclipse.ui.internal.util.PrefUtil;
-import org.eclipse.ui.internal.util.SessionSingletonEventManager;
-import org.eclipse.ui.internal.util.Util;
-//import org.eclipse.ui.intro.IIntroManager;
+import org.eclipse.ui.internal.themes.*;
+import org.eclipse.ui.internal.tweaklets.*;
+import org.eclipse.ui.internal.util.*;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.model.IContributionService;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.ui.services.IDisposable;
-import org.eclipse.ui.services.IEvaluationService;
-import org.eclipse.ui.services.ISourceProviderService;
+import org.eclipse.ui.services.*;
 import org.eclipse.ui.swt.IFocusService;
 import org.eclipse.ui.themes.IThemeManager;
 import org.eclipse.ui.views.IViewRegistry;
@@ -200,10 +109,16 @@ import org.eclipse.ui.wizards.IWizardRegistry;
 public final class Workbench extends SessionSingletonEventManager implements IWorkbench {
 // RAPEND: [bm] 
 
-
+  // RAP [fappel]: key for storing workbench state into setting store
+  private static final String KEY_WORKBENCH_STATE
+    = Workbench.class.getName() + "#XMLMemento";
+  
 	// RAP [fappel]: ensure that workbench is properly shutdown in case of session timeout
 	  
-	  private boolean started;
+  /**
+   * 
+   */
+    private boolean started;
 	  private boolean sessionInvalidated;
 	  
 	  private static final class ShutdownHandler
@@ -1115,6 +1030,16 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	 */
 	/* package */
 	boolean close(int returnCode, final boolean force) {
+// RAP [fappel]: take care of the started flag
+//		this.returnCode = returnCode;
+//		final boolean[] ret = new boolean[1];
+//		BusyIndicator.showWhile(null, new Runnable() {
+//			public void run() {
+//				ret[0] = busyClose(force);
+//			}
+//		});
+//		return ret[0];
+	  try {
 		this.returnCode = returnCode;
 		final boolean[] ret = new boolean[1];
 		BusyIndicator.showWhile(null, new Runnable() {
@@ -1123,6 +1048,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 			}
 		});
 		return ret[0];
+      } finally {
+	    started = false;
+	  }
 	}
 
 	/*
@@ -1269,14 +1197,15 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	/*
 	 * Answer the workbench state file.
 	 */
-	private File getWorkbenchStateFile() {
-		IPath path = WorkbenchPlugin.getDefault().getDataLocation();
-		if (path == null) {
-			return null;
-		}
-		path = path.append(DEFAULT_WORKBENCH_STATE_FILENAME);
-		return path.toFile();
-	}
+// RAP [fappel]: use SettingStore mechanism for cluster support
+//	private File getWorkbenchStateFile() {
+//		IPath path = WorkbenchPlugin.getDefault().getDataLocation();
+//		if (path == null) {
+//			return null;
+//		}
+//		path = path.append(DEFAULT_WORKBENCH_STATE_FILENAME);
+//		return path.toFile();
+//	}
 
 	/*
 	 * (non-Javadoc) Method declared on IWorkbench.
@@ -1316,6 +1245,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	 * @return true if init succeeded.
 	 */
 	private boolean init() {
+	    // RAP [fappel]: take care of the started flag
+	    started = true;
+	    
 		// setup debug mode if required.
 		if (WorkbenchPlugin.getDefault().isDebugging()) {
 			WorkbenchPlugin.DEBUG = true;
@@ -1887,22 +1819,35 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 			return new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
 					IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, null);
 		}
-		// Read the workbench state file.
-		final File stateFile = getWorkbenchStateFile();
-		// If there is no state file cause one to open.
-		if (stateFile == null || !stateFile.exists()) {
-			String msg = WorkbenchMessages.get().Workbench_noStateToRestore;
-			return new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
-					IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, null);
-		}
+// RAP [fappel]: need solution that allows cluster support
+//		// Read the workbench state file.
+//		final File stateFile = getWorkbenchStateFile();
+//		// If there is no state file cause one to open.
+//		if (stateFile == null || !stateFile.exists()) {
+//			String msg = WorkbenchMessages.get().Workbench_noStateToRestore;
+//			return new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
+//					IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, null);
+//		}
+        final ISettingStore settingStore = RWT.getSettingStore();
+        final String state = settingStore.getAttribute( KEY_WORKBENCH_STATE );
+        if( state == null ) {
+          String msg = WorkbenchMessages.get().Workbench_noStateToRestore;
+          return new Status( IStatus.WARNING,
+                             WorkbenchPlugin.PI_WORKBENCH,
+                             IWorkbenchConfigurer.RESTORE_CODE_RESET,
+                             msg,
+                             null );
+        }
 
 		final IStatus result[] = { new Status(IStatus.OK,
 				WorkbenchPlugin.PI_WORKBENCH, IStatus.OK, "", null) }; //$NON-NLS-1$
 		SafeRunner.run(new SafeRunnable(WorkbenchMessages.get().ErrorReadingState) {
 			public void run() throws Exception {
-				FileInputStream input = new FileInputStream(stateFile);
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(input, "utf-8")); //$NON-NLS-1$
+// RAP [fappel]: need solution that allows cluster support			  
+//				FileInputStream input = new FileInputStream(stateFile);
+//				BufferedReader reader = new BufferedReader(
+//						new InputStreamReader(input, "utf-8")); //$NON-NLS-1$
+			    StringReader reader = new StringReader( state );
 				IMemento memento = XMLMemento.createReadRoot(reader);
 
 				// Validate known version format
@@ -1920,7 +1865,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 					String msg = WorkbenchMessages.get().Invalid_workbench_state_ve;
 					MessageDialog.openError((Shell) null,
 							WorkbenchMessages.get().Restoring_Problems, msg);
-					stateFile.delete();
+// RAP [fappel]: need solution that allows cluster support			  
+//					stateFile.delete();
+					settingStore.removeAttribute( KEY_WORKBENCH_STATE );
 					result[0] = new Status(IStatus.ERROR,
 							WorkbenchPlugin.PI_WORKBENCH,
 							IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, null);
@@ -1939,7 +1886,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 									IDialogConstants.get().CANCEL_LABEL }, 0).open() == 0;
 					// OK is the default
 					if (ignoreSavedState) {
-						stateFile.delete();
+// RAP [fappel]: need solution that allows cluster support            
+//  	                  stateFile.delete();
+	                    settingStore.removeAttribute( KEY_WORKBENCH_STATE );
 						result[0] = new Status(IStatus.WARNING,
 								WorkbenchPlugin.PI_WORKBENCH,
 								IWorkbenchConfigurer.RESTORE_CODE_RESET, msg,
@@ -1982,7 +1931,13 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 						result[0] = new Status(IStatus.ERROR,
 								WorkbenchPlugin.PI_WORKBENCH,
 								IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, e);
-						stateFile.delete();
+// RAP [fappel]: need solution that allows cluster support            
+//  	                  stateFile.delete();
+	                    try {
+                          settingStore.removeAttribute( KEY_WORKBENCH_STATE );
+                        } catch( final SettingStoreException sse ) {
+                          WorkbenchPlugin.log( WorkbenchMessages.get().Workbench_problemsRestoringMsg, sse );
+                        }
 					}});
 			}
 			
@@ -2217,8 +2172,8 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //						SafeRunner.run(new EarlyStartupRunnable(extension));
 				    UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
 				      public void run() {
-				        SafeRunner.run(new EarlyStartupRunnable(extension));
-				      }
+						SafeRunner.run(new EarlyStartupRunnable(extension));
+					}
 				    } );
 					}
 					monitor.worked(1);
@@ -2487,25 +2442,36 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	private boolean saveMementoToFile(XMLMemento memento) {
 		// Save it to a file.
 		// XXX: nobody currently checks the return value of this method.
-		File stateFile = getWorkbenchStateFile();
-		if (stateFile == null) {
-			return false;
-		}
+// RAP [fappel]: need solution that allows cluster support
+//		File stateFile = getWorkbenchStateFile();
+//		if (stateFile == null) {
+//			return false;
+//		}
+//		try {
+//			FileOutputStream stream = new FileOutputStream(stateFile);
+//			OutputStreamWriter writer = new OutputStreamWriter(stream, "utf-8"); //$NON-NLS-1$
+//			memento.save(writer);
+//			writer.close();			
+//		} catch (IOException e) {
+//			stateFile.delete();
+//			MessageDialog.openError((Shell) null,
+//					WorkbenchMessages.get().SavingProblem,
+//					WorkbenchMessages.get().ProblemSavingState);
+//			return false;
+//		}
+	    boolean result = false;
 		try {
-			FileOutputStream stream = new FileOutputStream(stateFile);
-			OutputStreamWriter writer = new OutputStreamWriter(stream, "utf-8"); //$NON-NLS-1$
-			memento.save(writer);
-			writer.close();
-		} catch (IOException e) {
-			stateFile.delete();
-			MessageDialog.openError((Shell) null,
-					WorkbenchMessages.get().SavingProblem,
-					WorkbenchMessages.get().ProblemSavingState);
-			return false;
+		  StringWriter writer = new StringWriter();
+          memento.save( writer );
+          ISettingStore settingStore = RWT.getSettingStore();
+          settingStore.setAttribute( KEY_WORKBENCH_STATE, writer.toString() );
+          result = true;
+		} catch( final IOException ioe ) {
+		  WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingState, ioe );
+		} catch( final SettingStoreException sse ) {
+		  WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingState, sse );
 		}
-
-		// Success !
-		return true;
+		return result;
 	}
 
 	/*

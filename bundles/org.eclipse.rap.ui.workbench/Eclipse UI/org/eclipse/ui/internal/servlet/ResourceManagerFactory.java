@@ -20,8 +20,7 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.resources.JsConcatenator;
@@ -42,6 +41,7 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
     private final HttpContext context;
     
     private HttpContextWrapper( final HttpContext context ) {
+      Assert.isNotNull( context );
       this.context = context;
     }
     

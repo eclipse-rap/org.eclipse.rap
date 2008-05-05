@@ -12,25 +12,16 @@ package org.eclipse.jface.resource;
 
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.internal.JFaceActivator;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -396,20 +387,6 @@ public class JFaceResources {
 //					registries.remove(toQuery);
 //				}
 //			});
-	    	RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
-
-				public void beforeDestroy( SessionStoreEvent event ) {
-					toQuery.syncExec( new Runnable() {
-
-						public void run() {
-							mgr.dispose();
-							registries.remove( toQuery );							
-						}
-						
-					});
-				}
-	    		
-	    	});
 			// RAPEND: [bm] 
 		}
 
