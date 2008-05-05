@@ -105,7 +105,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	// TODO [bm]: turn into real session scoped manager
 	// RAP [rs]:
 	private final static class DecoratorManagerStore extends
-			SessionSingletonBase {
+			SessionSingletonBase
+	{
 		private final DecoratorManager decoratorManager;
 
 		private DecoratorManagerStore() {
@@ -123,7 +124,9 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	}
 	// RAPEND]
 	
-	private final static class PerspectiveRegistryStore extends SessionSingletonBase {
+	private final static class PerspectiveRegistryStore
+	  extends SessionSingletonBase
+	{
 		private final PerspectiveRegistry perspectiveRegistry;
 		
 		private PerspectiveRegistryStore() {
@@ -145,6 +148,66 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 		}
 	}
 	
+// RAP [rh] session-singleton-wrapper for getThemeRegistry
+	private final static class ThemeRegistryStore extends SessionSingletonBase {
+	  private final ThemeRegistry themeRegistry;
+	  
+	  static ThemeRegistryStore getInstance() {
+      Class clazz = ThemeRegistryStore.class;
+      return ( ThemeRegistryStore )getInstance( clazz );
+	  }
+	  
+	  public ThemeRegistryStore() {
+	    // RAP [rh] ThemeRegistry initialization code, copied from getThemeRegistry()
+      themeRegistry = new ThemeRegistry();
+      ThemeRegistryReader reader = new ThemeRegistryReader();
+      reader.readThemes( Platform.getExtensionRegistry(), themeRegistry );
+	  }
+	  
+	  public IThemeRegistry getThemeRegistry() {
+	    return themeRegistry;
+	  }
+	}
+
+// RAP [rh] session-singleton-wrapper for getWorkingSetManager()	
+  private final static class WorkingSetManagerStore extends SessionSingletonBase {
+    private WorkingSetManager workingSetManager;
+    
+    static WorkingSetManagerStore getInstance() {
+      Class clazz = WorkingSetManagerStore.class;
+      return ( WorkingSetManagerStore )getInstance( clazz );
+    }
+    
+    public IWorkingSetManager getWorkingSetManager( BundleContext context ) {
+// RAP [rh] WorkingSetManager initialization code, copied from getWorkingSetManager()
+      if( workingSetManager == null ) {
+        workingSetManager = new WorkingSetManager( context );
+        workingSetManager.restoreState();
+      }
+      return workingSetManager;
+    }
+  }
+	
+//RAP [rh] session-singleton-wrapper for getWorkingSetRegistry()  
+  private final static class WorkingSetRegistryStore extends SessionSingletonBase {
+    private WorkingSetRegistry workingSetRegistry;
+    
+    static WorkingSetRegistryStore getInstance() {
+      Class clazz = WorkingSetRegistryStore.class;
+      return ( WorkingSetRegistryStore )getInstance( clazz );
+    }
+    
+    public WorkingSetRegistryStore() {
+// RAP [rh] WorkingSetRegistry initialization code, copied from getWorkingSetRegistry()
+      workingSetRegistry = new WorkingSetRegistry();
+      workingSetRegistry.load();
+    }
+    
+    public WorkingSetRegistry getWorkingSetRegistry() {
+      return workingSetRegistry;
+    }
+  }
+  
 	// RAP [bm]:
 // /**
 // * Splash shell constant.
@@ -179,14 +242,16 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     // Manager for the DecoratorManager
     private DecoratorManager decoratorManager;
 
+// RAP [rh] themeRegistry field unneeded, replaced by session-singleton    
     // Theme registry
-    private ThemeRegistry themeRegistry;
+//    private ThemeRegistry themeRegistry;
 
     // Manager for working sets (IWorkingSet)
     private WorkingSetManager workingSetManager;
 
+// RAP [rh] workingSetRegistry field unneeded, replaced by session-singleton    
     // Working set registry, stores working set dialogs
-    private WorkingSetRegistry workingSetRegistry;
+//    private WorkingSetRegistry workingSetRegistry;
 
     // The context within which this plugin was started.
     private BundleContext bundleContext;
@@ -267,12 +332,14 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
         ProgressManager.shutdownProgressManager();
 
-        themeRegistry = null;
+// RAP [rh] themeRegistry field unneeded, replaced by session-singleton    
+//        themeRegistry = null;
         if (workingSetManager != null) {
         	workingSetManager.dispose();
         	workingSetManager = null;
         }
-        workingSetRegistry = null;
+// RAP [rh] workingSetRegistry field unneeded, replaced by session-singleton    
+//        workingSetRegistry = null;
 
         preferenceManager = null;
 
@@ -517,7 +584,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //        }
 //        return editorRegistry;
         return EditorRegistry.getInstance();
-        // RAPEND: [bm] 
+    	// RAPEND: [bm] 
     }
 
     /**
@@ -679,11 +746,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @since 1.1
      */
     public IWorkingSetManager getWorkingSetManager() {
-        if (workingSetManager == null) {
-            workingSetManager = new WorkingSetManager(bundleContext);
-            workingSetManager.restoreState();
-        }
-        return workingSetManager;
+// RAP [rh] WorkingSetManager must be a session-singleton
+//        if (workingSetManager == null) {
+//            workingSetManager = new WorkingSetManager(bundleContext);
+//            workingSetManager.restoreState();
+//        }
+//        return workingSetManager;
+      return WorkingSetManagerStore.getInstance().getWorkingSetManager( bundleContext );
     }
 
     /**
@@ -693,11 +762,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @since 1.1
      */
     public WorkingSetRegistry getWorkingSetRegistry() {
-        if (workingSetRegistry == null) {
-            workingSetRegistry = new WorkingSetRegistry();
-            workingSetRegistry.load();
-        }
-        return workingSetRegistry;
+// RAP [rh] WorkingSetRegistry must be a session-singleton      
+//        if (workingSetRegistry == null) {
+//            workingSetRegistry = new WorkingSetRegistry();
+//            workingSetRegistry.load();
+//        }
+//        return workingSetRegistry;
+      return WorkingSetRegistryStore.getInstance().getWorkingSetRegistry();
     }
 
 // RAP [rh] Intro mechanism not supported
@@ -769,13 +840,15 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @since 1.1
      */
     public IThemeRegistry getThemeRegistry() {
-        if (themeRegistry == null) {
-            themeRegistry = new ThemeRegistry();
-            ThemeRegistryReader reader = new ThemeRegistryReader();
-            reader.readThemes(Platform.getExtensionRegistry(),
-                    themeRegistry);
-        }
-        return themeRegistry;
+// RAP [rh] ThemeRegistry must be a session-singleton       
+//        if (themeRegistry == null) {
+//            themeRegistry = new ThemeRegistry();
+//            ThemeRegistryReader reader = new ThemeRegistryReader();
+//            reader.readThemes(Platform.getExtensionRegistry(),
+//                    themeRegistry);
+//        }
+//        return themeRegistry;
+      return ThemeRegistryStore.getInstance().getThemeRegistry();
     }
 
     /**

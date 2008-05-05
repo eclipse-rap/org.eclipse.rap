@@ -23,8 +23,6 @@ import org.eclipse.ui.internal.*;
  * The WorkingSetSettingsTransfer is the settings transfer for the workbench
  * working sets.
  * 
- * @since 1.1
- * 
  */
 public class WorkingSetSettingsTransfer extends WorkbenchSettingsTransfer {
 
