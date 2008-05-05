@@ -951,7 +951,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.textColor = tv.getColor( "list.foreground" );
         result.backgroundColor = "undefined";
-      }      
+      }
       return result;
     }
   },
@@ -1261,7 +1261,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getColor( "list.background" ),
-        border : tv.getColor( states.rwt_BORDER ? "text.BORDER.border" : "text.border" )
+        border : tv.getBorder( states.rwt_BORDER ? "text.BORDER.border" : "text.border" )
       };
     }
   },
@@ -1353,10 +1353,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       if( states.mouseover && !states.disabled ) {
         result.backgroundColor = tv.getColor( "table.column.hover.background" );
-        result.border = tv.getColor( "table.column.hover.border" );
+        result.border = tv.getBorder( "table.column.hover.border" );
       } else {
         result.backgroundColor = tv.getColor( "table.column.background" );
-        result.border = tv.getColor( "table.column.border" );
+        result.border = tv.getBorder( "table.column.border" );
       }
       return result;
     }
