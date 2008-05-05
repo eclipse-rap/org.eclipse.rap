@@ -1731,7 +1731,7 @@
       </triggerPoint>    
    </extension>
  
-
+<!-- RAP [rh] preferenceTransfer not supported
    <extension
          point="org.eclipse.ui.preferenceTransfer">
       <settingsTransfer
@@ -1739,14 +1739,15 @@
             id="org.eclipse.ui.workbenchTransfer"
             name="%SettingsTransfer.WorkbenchLayout">
       </settingsTransfer>
-<!--            helpContext="org.eclipse.ui.switch_workspace_dialog_context" -->
+            helpContext="org.eclipse.ui.switch_workspace_dialog_context"
       <settingsTransfer
             class="org.eclipse.ui.internal.preferences.WorkingSetSettingsTransfer"
             id="org.eclipse.ui.workingSets"
             name="%SettingsTransfer.WorkingSets">
       </settingsTransfer>
-<!--            helpContext="org.eclipse.ui.switch_workspace_dialog_context" -->
+            helpContext="org.eclipse.ui.switch_workspace_dialog_context"
    </extension>
+-->
    
    <extension
            point="org.eclipse.core.expressions.propertyTesters">
