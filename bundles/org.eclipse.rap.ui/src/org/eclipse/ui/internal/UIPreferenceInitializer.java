@@ -141,10 +141,11 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 				true);
 
 		// Default the min/max behaviour to the old (3.2) style
-		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_NEW_MIN_MAX, true);
+		// RAP [bm]: disabled new min max story due to missing vertical toolbar
+		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_NEW_MIN_MAX, false);
 		
 		// By default the Fast View Bar allows to select a new fast view from the view list
-		node.putBoolean(IWorkbenchPreferenceConstants.DISABLE_NEW_FAST_VIEW, false);
+		node.putBoolean(IWorkbenchPreferenceConstants.DISABLE_NEW_FAST_VIEW, true);
 		
 		// Default the sticky view close behaviour to the new style
 		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_32_STICKY_CLOSE_BEHAVIOR, false);
