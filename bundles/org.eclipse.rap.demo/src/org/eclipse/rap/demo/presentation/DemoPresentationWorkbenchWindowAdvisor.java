@@ -327,7 +327,6 @@ public class DemoPresentationWorkbenchWindowAdvisor
                   };
                 }
                 
-System.out.println( contributionItem );
               }
               content.pack();
 
@@ -374,7 +373,6 @@ System.out.println( contributionItem );
               new ActionBarButton( action, content );
             }
             
-System.out.println( contributionItem );
           }
           content.pack();
           
@@ -448,7 +446,6 @@ System.out.println( contributionItem );
                                 content.getSize().y + 10 );
         }
       } );
-      System.out.println( "menuitems: " + menuManager.getMenuText() );
     }
     ActionBar.create( actions, menuBar );
   }

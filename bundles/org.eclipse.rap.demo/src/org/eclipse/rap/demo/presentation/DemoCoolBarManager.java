@@ -46,11 +46,9 @@ class DemoCoolBarManager
   }
 
   public void setItems( final IContributionItem[] newItems ) {
-System.out.println( "setItems" );
   }
 
   public void add( final IToolBarManager toolBarManager ) {
-System.out.println( "add" );
   }
 
   public IMenuManager getContextMenuManager() {
@@ -88,8 +86,7 @@ System.out.println( "add" );
           }
         }
       } else {
-        // TODO
-        System.out.println( contributionItems[ i ] );
+        // TODO [fappel]
       }
       if( i + 2 < contributionItems.length ) {
         actions.add( "Separator" );
