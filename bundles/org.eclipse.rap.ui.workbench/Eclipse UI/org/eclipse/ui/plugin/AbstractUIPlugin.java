@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+//import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WWinPluginAction;
+import org.eclipse.ui.internal.preferences.SessionScope;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.Bundle;
@@ -280,12 +281,20 @@ public abstract class AbstractUIPlugin extends Plugin {
      * @return the preference store 
      */
     public IPreferenceStore getPreferenceStore() {
-        // Create the preference store lazily.
-        if (preferenceStore == null) {
-            preferenceStore = new ScopedPreferenceStore(new InstanceScope(),getBundle().getSymbolicName());
-
-        }
-        return preferenceStore;
+// RAP [rh] session scoped preference store      
+//        // Create the preference store lazily.
+//        if (preferenceStore == null) {
+//            preferenceStore = new ScopedPreferenceStore(new InstanceScope(),getBundle().getSymbolicName());
+//
+//        }
+//        return preferenceStore;
+      // Create the preference store lazily.
+      if (preferenceStore == null) {
+        String pluginId = getBundle().getSymbolicName();
+        preferenceStore 
+          = new ScopedPreferenceStore( new SessionScope(), pluginId );
+      }
+      return preferenceStore;
     }
 
     /**
