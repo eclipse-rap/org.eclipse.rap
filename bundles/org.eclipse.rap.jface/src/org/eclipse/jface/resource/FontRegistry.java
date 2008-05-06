@@ -23,10 +23,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -726,15 +723,8 @@ public class FontRegistry extends ResourceRegistry {
      * Hook a dispose listener on the SWT display.
      */
     private void hookDisplayDispose(final Display display) {
+// TODO [rh] Display#disposeExec missing     
 //        display.disposeExec(displayRunnable);
-    	RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
-
-			public void beforeDestroy( SessionStoreEvent event ) {
-				display.syncExec(displayRunnable);
-			}
-    		
-    	});
-    	// RAPEND: [bm] 
     }
     
     // RAP [bm]: 

@@ -19,10 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -260,16 +257,8 @@ public class ColorRegistry extends ResourceRegistry {
      * Hook a dispose listener on the SWT display.
      */
     private void hookDisplayDispose() {
-    	// RAP [bm]: replaced with session unbound listener
+// RAP [rh] Display#disposeExec missing
 //        display.disposeExec(displayRunnable);
-    	RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
-
-			public void beforeDestroy( SessionStoreEvent event ) {
-				display.syncExec(displayRunnable);
-			}
-    		
-    	});
-    	// RAPEND: [bm] 
     }
 
     /**
