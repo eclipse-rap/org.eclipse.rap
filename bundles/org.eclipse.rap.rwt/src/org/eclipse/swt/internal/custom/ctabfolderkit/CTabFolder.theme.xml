@@ -4,6 +4,18 @@
 
 <theme>
 
+  <!-- C S S   T H E M I N G
+
+    The following section is needed to support the new CSS-based theming.
+    It describes the elements this widget adds to the virtual element
+    tree which the CSS rules relate to.
+    Please note that the syntax is considered preliminary and is still subject
+    to change. Also note that this section is not interpreted as long as RAP
+    uses the old property-based system internally. We publish it here anyway
+    to introduce the new syntax to interested developers soon.
+
+    -->
+
   <element name="CTabItem"
       description="Items of a CTabFolder control">
 
@@ -15,7 +27,13 @@
 
   </element>
 
-  <!-- C O M P A T I B I L I T Y -->
+
+  <!-- C O M P A T I B I L I T Y
+
+    The following section is needed to maintain the deprecated property-based
+    theming.
+
+    -->
 
   <color name="ctabfolder.background"
       description="Background color for CTabFolders"
