@@ -28,7 +28,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 /**
  * Menu contribution item which shows a working set.
  * 
- * @since 2.1
  */
 public class WorkingSetMenuContributionItem extends ContributionItem {
     private Image image;

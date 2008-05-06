@@ -11,7 +11,6 @@
 package org.eclipse.ui.internal;
 
 /**
- * @since 3.1
  */
 public class DirtyPerspectiveMarker {
 	/**

@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Shell;
  * shells to use as a parent for dialogs. It also works around bug 86226 (SWT menus
  * cannot be reparented).
  * 
- * @since 3.1
  */
 public class ShellPool {
     
@@ -116,7 +115,6 @@ public class ShellPool {
      * Disposes this pool. Any unused shells in the pool are disposed immediately,
      * and any shells in use will be disposed once they are closed.
      * 
-     * @since 3.1
      */
     public void dispose() {
         for (Iterator iter = availableShells.iterator(); iter.hasNext();) {

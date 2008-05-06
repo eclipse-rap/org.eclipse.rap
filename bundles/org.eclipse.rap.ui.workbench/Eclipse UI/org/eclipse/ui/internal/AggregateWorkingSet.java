@@ -27,7 +27,6 @@ import org.eclipse.ui.internal.util.Util;
 
 /**
  * 
- * @since 3.2
  */
 public class AggregateWorkingSet extends AbstractWorkingSet implements
 		IPropertyChangeListener {

@@ -26,7 +26,6 @@ import org.eclipse.ui.internal.util.Util;
 /**
  * Abstract baseclass for IWorkingSet implementations.
  * 
- * @since 3.2
  */
 public abstract class AbstractWorkingSet implements IAdaptable, IWorkingSet {
 

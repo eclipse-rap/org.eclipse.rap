@@ -17,7 +17,6 @@ import org.eclipse.ui.IPageLayout;
 /**
  * Encapsulates the perspective layout information for a view.
  * 
- * @since 3.0
  */
 public class ViewLayoutRec {
     boolean isCloseable = true;

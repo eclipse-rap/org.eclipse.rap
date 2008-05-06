@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.ToolBar;
  * contribution items are disposed (freeing their resources), but that layout
  * information about the item is not lost.
  * 
- * @since 3.0
  */
 final class PlaceholderContributionItem implements IContributionItem {
 

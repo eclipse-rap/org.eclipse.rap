@@ -17,7 +17,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
- * @since 3.0
  */
 public abstract class DefaultStackPresentationSite implements
         IStackPresentationSite {

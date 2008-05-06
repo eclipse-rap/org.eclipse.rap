@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.ui.IMemento;
 
 /**
- * @since 3.3
  *
  */
 interface IStickyViewManager {

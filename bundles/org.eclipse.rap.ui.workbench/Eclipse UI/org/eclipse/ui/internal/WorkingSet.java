@@ -34,7 +34,6 @@ import org.eclipse.ui.internal.util.Util;
  * a set of elements.
  * 
  * @see org.eclipse.ui.IWorkingSet
- * @since 2.0
  */
 public class WorkingSet extends AbstractWorkingSet {
 	private static final String DEFAULT_ID = "org.eclipse.ui.resourceWorkingSetPage"; //$NON-NLS-1$

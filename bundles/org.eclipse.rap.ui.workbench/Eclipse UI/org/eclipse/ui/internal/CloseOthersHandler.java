@@ -30,7 +30,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * Replacement for CloseOthersHandler
  * </p>
  * 
- * @since 3.3
  * 
  */
 public class CloseOthersHandler extends AbstractEvaluationHandler {

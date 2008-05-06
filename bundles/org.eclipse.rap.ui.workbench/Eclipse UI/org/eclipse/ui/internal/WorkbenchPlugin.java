@@ -98,7 +98,6 @@ import com.ibm.icu.text.MessageFormat;
  *      calls createExecutableExtension to create an executable
  *      instance of our workbench class.
  *      
- * @since 1.0
  */
 public class WorkbenchPlugin extends AbstractUIPlugin {
 	
@@ -293,7 +292,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     /**
      * Information describing the product (formerly called "primary plugin"); lazily
      * initialized.
-     * @since 1.1
      */
     private ProductInfo productInfo = null;
 
@@ -591,7 +589,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Answer the element factory for an id, or <code>null</code. if not found.
      * @param targetID
      * @return IElementFactory
-     * @since 1.1
      */
     public IElementFactory getElementFactory(String targetID) {
 
@@ -641,7 +638,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @param targetID The id of the presentation factory to use.
      * @return AbstractPresentationFactory or <code>null</code>
      * if not factory matches that id.
-     * @since 1.1
      */
     public AbstractPresentationFactory getPresentationFactory(String targetID) {
         Object o = createExtension(
@@ -743,7 +739,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the working set manager
      * 
      * @return the working set manager
-     * @since 1.1
      */
     public IWorkingSetManager getWorkingSetManager() {
 // RAP [rh] WorkingSetManager must be a session-singleton
@@ -759,7 +754,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the working set registry
      * 
      * @return the working set registry
-     * @since 1.1
      */
     public WorkingSetRegistry getWorkingSetRegistry() {
 // RAP [rh] WorkingSetRegistry must be a session-singleton      
@@ -803,7 +797,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Get the preference manager.
      * @return PreferenceManager the preference manager for
      * the receiver.
-     * @since 1.1
      */
     public PreferenceManager getPreferenceManager() {
         if (preferenceManager == null) {
@@ -837,7 +830,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the theme registry for the workbench.
      * 
      * @return the theme registry
-     * @since 1.1
      */
     public IThemeRegistry getThemeRegistry() {
 // RAP [rh] ThemeRegistry must be a session-singleton       
@@ -1019,7 +1011,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Get the decorator manager for the receiver
      * @return DecoratorManager the decorator manager
      * for the receiver.
-     * @since 1.1
      */
     public DecoratorManager getDecoratorManager() {
     	// RAP [rs]: 
@@ -1263,7 +1254,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the name of the product.
      * 
      * @return the product name, or <code>null</code> if none
-     * @since 1.1
      */
     public String getProductName() {
         return getProductInfo().getProductName();
@@ -1283,7 +1273,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns an instance that describes this plugin's product (formerly "primary
      * plugin").
      * @return ProductInfo the product info for the receiver
-     * @since 1.1
      */
     private ProductInfo getProductInfo() {
         if (productInfo == null) {
@@ -1322,7 +1311,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return the new wizard registry.
      * 
      * @return the new wizard registry
-     * @since 1.1
      */
     public IWizardRegistry getNewWizardRegistry() {
     	return NewWizardRegistry.getInstance();
@@ -1332,7 +1320,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return the import wizard registry.
      * 
      * @return the import wizard registry
-     * @since 1.1
      */
     public IWizardRegistry getImportWizardRegistry() {
     	return ImportWizardRegistry.getInstance();
@@ -1342,7 +1329,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return the export wizard registry.
      * 
      * @return the export wizard registry
-     * @since 1.1
      */
     public IWizardRegistry getExportWizardRegistry() {
     	return ExportWizardRegistry.getInstance();

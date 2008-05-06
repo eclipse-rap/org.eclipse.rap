@@ -30,7 +30,6 @@ import org.eclipse.ui.activities.NotDefinedException;
 /**
  * Utility class that manages the persistance of enabled activities.
  * 
- * @since 3.0
  */
 final class ActivityPersistanceHelper {
 

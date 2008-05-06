@@ -30,7 +30,6 @@ import org.eclipse.ui.internal.util.Util;
  * plug-ins.
  * </p>
  * 
- * @since 3.2
  */
 public class SelectionConversionService implements ISelectionConversionService {
 

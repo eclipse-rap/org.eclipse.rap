@@ -124,7 +124,6 @@ public interface IPreferenceConstants {
      * The default value for this preference is: <code>false</code> (prompt)
      * </p>
      * 
-     * @since 3.2
      */
     public static final String OVERRIDE_PRESENTATION = "overridepresentation"; //$//$NON-NLS-1$
     
@@ -139,7 +138,6 @@ public interface IPreferenceConstants {
      * <code>0</code>.
      * </p>
      * 
-     * @since 3.1
      */
     public static final String KEYS_PREFERENCE_SELECTED_TAB = "KEYS_PREFERENCE_SELECTED_TAB"; //$NON-NLS-1$
 
@@ -155,7 +153,6 @@ public interface IPreferenceConstants {
      * <code>false</code>.
      * </p>
      * 
-     * @since 3.0
      */
     public static final String MULTI_KEY_ASSIST = "MULTI_KEY_ASSIST"; //$NON-NLS-1$
 
@@ -171,7 +168,6 @@ public interface IPreferenceConstants {
      * <code>1000</code>.
      * </p>
      * 
-     * @since 3.0
      */
     public static final String MULTI_KEY_ASSIST_TIME = "MULTI_KEY_ASSIST_TIME"; //$NON-NLS-1$
 
@@ -179,7 +175,6 @@ public interface IPreferenceConstants {
      * Workbench preference to use the new IPersistableEditor interface
      * throughout the workbench new editor/open editor calls.
      * 
-     * @since 3.3
      */
     public static String USE_IPERSISTABLE_EDITORS = "USE_IPERSISTABLE_EDITORS"; //$NON-NLS-1$
     
@@ -198,7 +193,6 @@ public interface IPreferenceConstants {
      * The default value for this preference is: <code>true</code> (prompt)
      * </p>
      * 
-     * @since 3.0
      */
     public static final String SHOULD_PROMPT_FOR_ENABLEMENT = "shouldPromptForEnablement"; //$NON-NLS-1$
 

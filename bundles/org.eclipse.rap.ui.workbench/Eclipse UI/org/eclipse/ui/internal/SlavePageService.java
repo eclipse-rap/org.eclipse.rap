@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.services.IDisposable;
 
 /**
- * @since 3.4
  * 
  */
 public class SlavePageService implements IPageService, IDisposable {

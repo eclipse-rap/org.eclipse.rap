@@ -24,7 +24,6 @@ import org.eclipse.ui.branding.IBundleGroupConstants;
  * choose to subclass this.
  * 
  * @see org.eclipse.ui.branding.IBundleGroupConstants
- * @since 3.0
  */
 public class BundleGroupProperties extends BrandingProperties implements
         IBundleGroupConstants {

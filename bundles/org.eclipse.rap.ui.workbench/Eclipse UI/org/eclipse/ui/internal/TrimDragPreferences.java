@@ -19,7 +19,6 @@ package org.eclipse.ui.internal;
  * before the release of 3.2.
  * </b></p>
  * 
- * @since 3.2
  *
  */
 public class TrimDragPreferences {

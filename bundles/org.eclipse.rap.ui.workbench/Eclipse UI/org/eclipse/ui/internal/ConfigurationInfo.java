@@ -33,7 +33,6 @@ import com.ibm.icu.text.DateFormat;
  * This class contains utility methods that clients may use to obtain
  * information about the system configuration.
  * 
- * @since 3.4
  * 
  */
 public final class ConfigurationInfo {

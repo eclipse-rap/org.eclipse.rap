@@ -32,7 +32,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * Replacement for: ActivateEditorAction
  * </p>
  * 
- * @since 3.3
  */
 public class ActivateEditorHandler extends AbstractEvaluationHandler {
 

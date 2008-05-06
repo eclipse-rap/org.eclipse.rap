@@ -32,7 +32,6 @@ import org.eclipse.ui.branding.IProductConstants;
  * choose to subclass this.
  * 
  * @see org.eclipse.ui.branding.IProductConstants
- * @since 3.0
  */
 public class ProductProperties extends BrandingProperties implements
         IProductConstants {

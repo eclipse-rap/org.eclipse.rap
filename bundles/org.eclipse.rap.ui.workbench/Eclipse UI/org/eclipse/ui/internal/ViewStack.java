@@ -194,7 +194,6 @@ public class ViewStack extends PartStack {
      * purposes <b>ONLY</b>.
      *
      * @return the presentation in use for this view stack
-     * @since 3.2
      */
     public StackPresentation getTestPresentation() {
     	return getPresentation();

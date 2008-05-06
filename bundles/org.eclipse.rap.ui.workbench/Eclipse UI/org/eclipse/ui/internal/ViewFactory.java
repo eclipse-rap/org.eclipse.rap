@@ -110,7 +110,6 @@ public class ViewFactory implements IExtensionChangeHandler {
      * @return <code>true</code> if the given view id contains a wildcard,
      *         <code>false</code> otherwise
      * 
-     * @since 3.1
      */
     static boolean hasWildcard(String viewId) {
         return viewId.indexOf(PartPlaceholder.WILD_CARD) >= 0;
@@ -204,7 +203,6 @@ public class ViewFactory implements IExtensionChangeHandler {
 
     /**
      * @return the <code>IViewRegistry</code> used by this factory.
-     * @since 3.0
      */
     public IViewRegistry getViewRegistry() {
         return viewReg;
@@ -222,7 +220,6 @@ public class ViewFactory implements IExtensionChangeHandler {
 
     /**
      * @return the <code>WorkbenchPage</code> used by this factory.
-     * @since 3.0
      */
     public WorkbenchPage getWorkbenchPage() {
         return page;

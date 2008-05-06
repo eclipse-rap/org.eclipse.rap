@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * plug-ins.
  * </p>
  * 
- * @since 3.2
  */
 public interface ISelectionConversionService {
 

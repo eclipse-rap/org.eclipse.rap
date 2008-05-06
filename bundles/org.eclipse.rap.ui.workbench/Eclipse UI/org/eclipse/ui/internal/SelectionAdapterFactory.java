@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * Adapts ISelection instances to either IIterable or ICountable. For use with
  * core expressions.
  * 
- * @since 3.3
  */
 public class SelectionAdapterFactory implements IAdapterFactory {
 	private static final ICountable ICOUNT_0 = new ICountable() {

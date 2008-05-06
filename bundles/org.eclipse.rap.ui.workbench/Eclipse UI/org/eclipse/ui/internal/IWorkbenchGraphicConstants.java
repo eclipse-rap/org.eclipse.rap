@@ -124,35 +124,30 @@ public interface IWorkbenchGraphicConstants {
     /**
      * Identifies an activity category.
      * 
-     * @since 3.0
      */
     public static final String IMG_OBJ_ACTIVITY_CATEGORY = "IMG_OBJ_ACTIVITY_CATEGORY"; //$NON-NLS-1$
 
     /**
      * Identifies an activity.
      * 
-     * @since 3.0
      */
     public static final String IMG_OBJ_ACTIVITY = "IMG_OBJ_ACTIVITY"; //$NON-NLS-1$
 
     /**
      * Identifies a font.
      * 
-     * @since 3.0
      */
     public static final String IMG_OBJ_FONT = "IMG_OBJ_FONT"; //$NON-NLS-1$
 
     /**
      * Identifies a theme category.
      * 
-     * @since 3.0
      */
     public static final String IMG_OBJ_THEME_CATEGORY = "IMG_OBJ_THEME_CATEGORY"; //$NON-NLS-1$
     
     /**
      * Generic working set icon.
      * 
-     * @since 3.2
      */
     public static final String IMG_OBJ_WORKING_SETS = "IMG_OBJ_WORKING_SETS"; //$NON-NLS-1$
     
@@ -174,21 +169,18 @@ public interface IWorkbenchGraphicConstants {
     /**
      * Icon for signed objects (such as bundles).
      * 
-     * @since 3.3
      */
 	public static final String IMG_OBJ_SIGNED_YES = "IMG_OBJ_SIGNED_YES"; //$NON-NLS-1$
 
 	/**
      * Icon for unsigned objects (such as bundles).
      * 
-     * @since 3.3
      */
 	public static final String IMG_OBJ_SIGNED_NO = "IMG_OBJ_SIGNED_NO"; //$NON-NLS-1$
 
 	/**
      * Icon for objects whos signing state is not known (such as bundles).
      * 
-     * @since 3.3
      */
 	public static final String IMG_OBJ_SIGNED_UNKNOWN = "IMG_OBJ_SIGNED_UNKNOWN"; //$NON-NLS-1$
 }

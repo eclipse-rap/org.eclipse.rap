@@ -303,7 +303,6 @@ public abstract class PluginAction extends Action implements
      * For testing purposes only.
      * 
      * @return the selection 
-     * @since 3.1
      */
     public ISelection getSelection() {
     	return selection;
@@ -322,7 +321,6 @@ public abstract class PluginAction extends Action implements
     /**
      * @return the IConfigurationElement used to create this PluginAction.
      * 
-     * @since 3.0
      */
     protected IConfigurationElement getConfigElement() {
         return configElement;
@@ -345,7 +343,6 @@ public abstract class PluginAction extends Action implements
     /**
      * Disposes the delegate, if created.
      * 
-     * @since 3.1
      */
     public void disposeDelegate() {
         // avoid calling dispose() twice if the delegate implements
@@ -362,7 +359,6 @@ public abstract class PluginAction extends Action implements
     /**
      * Disposes this plugin action.
      * 
-     * @since 3.1
      */
     public void dispose() {
         disposeDelegate();

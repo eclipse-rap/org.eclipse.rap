@@ -29,7 +29,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * Replacement for CloseEditorAction
  * </p>
  * 
- * @since 3.3
  * 
  */
 public class CloseEditorHandler extends AbstractEvaluationHandler {

@@ -22,7 +22,6 @@ import org.eclipse.ui.actions.ActionFactory;
  * Abstract superclass of actions which are enabled iff there is an active perspective 
  * in the window.
  * 
- * @since 3.1
  */
 public abstract class PerspectiveAction extends Action implements ActionFactory.IWorkbenchAction {
     

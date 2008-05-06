@@ -16,7 +16,6 @@ package org.eclipse.ui.internal;
  * elsewhere that declares some methods that existed on IWorkbenchPage
  * in 2.1 that were removed in 3.0 (because they referenced resource API).
  * 
- * @since 3.0
  */
 public interface ICompatibleWorkbenchPage {
     // dummy version that declares no methods

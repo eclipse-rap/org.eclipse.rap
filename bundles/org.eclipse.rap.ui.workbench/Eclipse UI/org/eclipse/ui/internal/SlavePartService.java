@@ -28,7 +28,6 @@ import org.eclipse.ui.services.IDisposable;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.4
  * 
  */
 public class SlavePartService implements IPartService, IDisposable {

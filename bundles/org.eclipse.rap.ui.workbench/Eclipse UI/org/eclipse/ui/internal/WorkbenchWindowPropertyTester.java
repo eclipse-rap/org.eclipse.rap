@@ -16,7 +16,6 @@ import org.eclipse.core.expressions.PropertyTester;
 /**
  * Tests various workbench window properties.
  * 
- * @since 3.3
  * 
  */
 public class WorkbenchWindowPropertyTester extends PropertyTester {

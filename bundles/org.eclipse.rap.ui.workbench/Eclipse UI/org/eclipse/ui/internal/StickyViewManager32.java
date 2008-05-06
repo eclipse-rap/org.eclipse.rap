@@ -26,7 +26,6 @@ import org.eclipse.ui.views.IStickyViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
 /**
- * @since 3.3
  *
  */
 class StickyViewManager32 implements IStickyViewManager {

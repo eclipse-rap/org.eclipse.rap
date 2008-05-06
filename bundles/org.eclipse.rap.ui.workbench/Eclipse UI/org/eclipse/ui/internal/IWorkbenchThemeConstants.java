@@ -13,7 +13,6 @@ package org.eclipse.ui.internal;
 /**
  * A source of color/font/theme data constants used throughout the workbench.
  * 
- * @since 3.0
  */
 public interface IWorkbenchThemeConstants {
     public static final String TAB_TEXT_FONT = "org.eclipse.ui.workbench.TAB_TEXT_FONT"; //$NON-NLS-1$    

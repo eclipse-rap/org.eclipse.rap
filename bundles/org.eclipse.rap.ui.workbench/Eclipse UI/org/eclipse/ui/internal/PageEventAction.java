@@ -150,7 +150,6 @@ public abstract class PageEventAction extends PartEventAction implements
      * Subclasses should extend this method to do additional
      * cleanup.
      * 
-     * @since 3.0
      */
     public void dispose() {
         if (workbenchWindow == null) {

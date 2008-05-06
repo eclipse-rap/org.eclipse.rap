@@ -30,7 +30,6 @@ import org.eclipse.ui.statushandlers.StatusManager;
 /**
  * Utility class for setting up JFace for use by Eclipse.
  * 
- * @since 3.1
  */
 final class JFaceUtil {
 

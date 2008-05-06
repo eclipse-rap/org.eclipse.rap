@@ -22,7 +22,6 @@ import org.eclipse.ui.PerspectiveAdapter;
 /**
  * Utility class for tracking the active perspective in a window.
  *
- * @since 3.1
  */
 public class PerspectiveTracker extends PerspectiveAdapter implements
         IPageListener {

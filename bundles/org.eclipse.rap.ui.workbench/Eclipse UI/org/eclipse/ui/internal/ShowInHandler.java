@@ -33,7 +33,6 @@ import org.eclipse.ui.views.IViewRegistry;
 /**
  * The show in command, which only needs a target id.
  * 
- * @since 3.4
  */
 public class ShowInHandler extends AbstractHandler implements IElementUpdater {
 	static final String SHOW_IN_ID = "org.eclipse.ui.navigate.showIn"; //$NON-NLS-1$

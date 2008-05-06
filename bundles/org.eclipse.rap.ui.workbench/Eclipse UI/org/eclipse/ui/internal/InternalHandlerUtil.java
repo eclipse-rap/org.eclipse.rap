@@ -35,7 +35,6 @@ import org.eclipse.ui.IWorkbenchWindow;
  * consulting with the Platform/UI team.
  * </p>
  * 
- * @since 3.3
  */
 public class InternalHandlerUtil {
 	/**

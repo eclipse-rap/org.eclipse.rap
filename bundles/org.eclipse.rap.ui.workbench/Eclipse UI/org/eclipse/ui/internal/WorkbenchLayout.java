@@ -37,7 +37,6 @@ import org.eclipse.ui.internal.layout.TrimCommonUIHandle;
  * stability of the API.
  * </p>
  * 
- * @since 3.2
  * 
  */
 public class WorkbenchLayout extends Layout {

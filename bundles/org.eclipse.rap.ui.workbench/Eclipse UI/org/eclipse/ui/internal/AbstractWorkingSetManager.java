@@ -547,7 +547,6 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     
     /**
      * @see org.eclipse.ui.IWorkingSetManager#createWorkingSetEditWizard(org.eclipse.ui.IWorkingSet)
-     * @since 2.1
      */
     public IWorkingSetEditWizard createWorkingSetEditWizard(
             IWorkingSet workingSet) {

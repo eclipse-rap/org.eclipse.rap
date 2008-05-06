@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.Rectangle;
  * @see TrimLayoutData
  *      </p>
  * 
- * @since 3.2
  * 
  */
 public class TrimArea {

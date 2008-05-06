@@ -33,7 +33,6 @@ import org.eclipse.ui.internal.registry.IActionSetDescriptor;
  * <code>org.eclipse.jface.menus</code>.
  * </p>
  * 
- * @since 3.2
  */
 public final class ActionSetsEvent {
 

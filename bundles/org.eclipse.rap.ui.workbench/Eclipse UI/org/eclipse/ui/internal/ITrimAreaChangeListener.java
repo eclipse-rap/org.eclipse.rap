@@ -20,7 +20,6 @@ package org.eclipse.ui.internal;
  * stability of the API (except that the javadoc will get better...;-).
  * </p>
  * 
- * @since 3.2
  * 
  */
 public interface ITrimAreaChangeListener {

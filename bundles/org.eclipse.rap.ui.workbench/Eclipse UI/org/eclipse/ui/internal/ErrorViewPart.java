@@ -20,7 +20,6 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * This part is shown instead the views with errors.
  * 
- * @since 3.3
  */
 public class ErrorViewPart extends ViewPart {
 

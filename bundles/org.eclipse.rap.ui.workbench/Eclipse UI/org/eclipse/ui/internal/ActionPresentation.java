@@ -199,7 +199,6 @@ public class ActionPresentation {
      * @param existingRegistrations the array to check
      * @param set the set to look for
      * @return whether the set is in the array
-     * @since 3.1
      */
     private boolean containsRegistration(Object[] existingRegistrations, IActionSetDescriptor set) {
         for (int i = 0; i < existingRegistrations.length; i++) {
