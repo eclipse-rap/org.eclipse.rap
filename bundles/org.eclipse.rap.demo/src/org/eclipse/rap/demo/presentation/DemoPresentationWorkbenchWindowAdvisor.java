@@ -59,10 +59,10 @@ public class DemoPresentationWorkbenchWindowAdvisor
     final IWorkbenchWindow window = getWindowConfigurer().getWindow();
     Shell shell = window.getShell();
     shell.setMaximized( true );
-    shell.setBackground( COLOR_SHELL_BG );
   }
   
   public void createWindowContents( final Shell shell ) {
+    shell.setBackground( COLOR_SHELL_BG );
     shell.setLayout( new FormLayout() );
     createBanner( shell );
     createPageComposite( shell );    
@@ -463,6 +463,16 @@ public class DemoPresentationWorkbenchWindowAdvisor
     fillLayout.marginWidth = 3;
     content.setLayout( fillLayout );
     IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-    configurer.createPageComposite( content );
+    // add a hack to set the bgcolor of the inner page composite
+    final Composite composite
+      = ( Composite )configurer.createPageComposite( content );
+    composite.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent e ) {
+        Control[] children = composite.getChildren();
+        for( int i = 0; i < children.length; i++ ) {
+          children[ i ].setBackground( COLOR_SHELL_BG );
+        }
+      }
+    } );
   }
 }
