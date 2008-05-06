@@ -22,7 +22,6 @@ import org.eclipse.ui.themes.ColorUtil;
  * A <code>ColorDefiniton </code> is the representation of the extensions 
  * defined by the <code>org.eclipse.ui.colorDefinitions</code> extension point.
  * 
- *  @since 3.0
  */
 public class ColorDefinition implements IPluginContribution,
         IHierarchalThemeElementDefinition, ICategorizedThemeElementDefinition,

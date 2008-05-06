@@ -412,7 +412,6 @@ public class ShowViewDialog extends Dialog implements
 	/* (non-Javadoc)
      * @see org.eclipse.jface.window.Dialog#getDialogBoundsSettings()
      * 
-     * @since 3.4
      */
 	protected IDialogSettings getDialogBoundsSettings() {
         return getDialogSettings();

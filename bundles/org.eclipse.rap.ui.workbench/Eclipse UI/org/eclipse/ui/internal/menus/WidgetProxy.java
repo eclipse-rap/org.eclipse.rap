@@ -31,7 +31,6 @@ import org.eclipse.ui.menus.IWorkbenchWidget;
  * the widget for anything will instantiate the class.
  * </p>
  * 
- * @since 3.2
  */
 final class WidgetProxy implements IWorkbenchWidget {
 

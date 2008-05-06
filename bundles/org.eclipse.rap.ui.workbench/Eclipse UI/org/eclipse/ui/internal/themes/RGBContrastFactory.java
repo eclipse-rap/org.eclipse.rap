@@ -47,7 +47,6 @@ import org.eclipse.ui.themes.IColorFactory;
  * </p>
  * 
  * @see org.eclipse.swt.SWT
- * @since 3.0
  */
 public class RGBContrastFactory implements IColorFactory, IExecutableExtension {
     private String fg, bg1, bg2;

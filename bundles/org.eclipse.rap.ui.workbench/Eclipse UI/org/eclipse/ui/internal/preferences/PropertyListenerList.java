@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.preferences;
 import java.util.*;
 
 /**
- * @since 1.1
  */
 public final class PropertyListenerList {
     private Map listeners;

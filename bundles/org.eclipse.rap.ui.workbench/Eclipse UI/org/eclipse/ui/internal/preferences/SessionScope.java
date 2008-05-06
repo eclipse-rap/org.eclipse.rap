@@ -39,7 +39,6 @@ import org.eclipse.rwt.service.FileSettingStore;
  * <p>
  * This class is not intented to be subclassed. It may be instantiated.
  *
- * @since 1.1
  */
 public final class SessionScope implements IScopeContext {
 

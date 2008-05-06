@@ -15,7 +15,6 @@ package org.eclipse.ui.internal.activities;
 /**
  * Utility helper class for regular expression string patterns. 
  * 
- * @since 1.1
  * @author Jan Diederich
  */
 public class PatternUtil {

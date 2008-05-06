@@ -21,7 +21,6 @@ import org.eclipse.ui.presentations.WorkbenchPresentationFactory;
  * EXPERIMENTAL
  * </p>
  * 
- * @since 3.0
  */
 public class NativePresentationFactory extends WorkbenchPresentationFactory {
 

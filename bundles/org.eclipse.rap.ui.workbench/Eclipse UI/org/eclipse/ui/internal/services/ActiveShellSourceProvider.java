@@ -35,7 +35,6 @@ import org.eclipse.ui.services.IServiceLocator;
 /**
  * A provider of notifications for when the active shell changes.
  * 
- * @since 3.1
  */
 public final class ActiveShellSourceProvider extends AbstractSourceProvider {
 

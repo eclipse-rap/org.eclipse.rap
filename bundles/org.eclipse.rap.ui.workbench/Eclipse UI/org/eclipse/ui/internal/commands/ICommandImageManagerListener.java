@@ -29,7 +29,6 @@ package org.eclipse.ui.internal.commands;
  * <code>org.eclipse.jface.commands</code>.
  * </p>
  * 
- * @since 3.2
  */
 public interface ICommandImageManagerListener {
 

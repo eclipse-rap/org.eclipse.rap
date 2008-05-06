@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.presentations;
 import org.eclipse.jface.action.IAction;
 
 /**
- * @since 3.0
  */
 public interface ISelfUpdatingAction extends IAction {
     /**

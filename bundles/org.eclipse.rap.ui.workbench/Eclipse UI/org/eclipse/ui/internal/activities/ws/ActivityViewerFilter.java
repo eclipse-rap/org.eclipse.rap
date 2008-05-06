@@ -17,7 +17,6 @@ import org.eclipse.ui.activities.WorkbenchActivityHelper;
 /**
  * Generic viewer filter that works based on activity enablement.
  * 
- * @since 1.1
  */
 public class ActivityViewerFilter extends ViewerFilter {
 

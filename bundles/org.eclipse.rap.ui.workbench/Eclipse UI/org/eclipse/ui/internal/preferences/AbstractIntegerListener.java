@@ -11,7 +11,6 @@
 package org.eclipse.ui.internal.preferences;
 
 /**
- * @since 1.1
  */
 public abstract class AbstractIntegerListener extends AbstractPropertyListener {
 

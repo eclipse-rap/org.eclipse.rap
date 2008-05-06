@@ -45,7 +45,6 @@ import org.osgi.framework.Bundle;
  * RAP deployment. For an RWT only deployment use the 
  * {@link RWTFileSettingStoreFactory}.
  * 
- * @since 1.1
  */
 public final class WorkbenchFileSettingStoreFactory
   implements ISettingStoreFactory

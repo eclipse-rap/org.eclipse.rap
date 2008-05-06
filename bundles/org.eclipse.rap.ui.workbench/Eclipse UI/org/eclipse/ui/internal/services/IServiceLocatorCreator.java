@@ -28,7 +28,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * </p>
  * 
  * 
- * @since 3.4
  */
 public interface IServiceLocatorCreator {
 	/**

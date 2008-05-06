@@ -21,7 +21,6 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.services.IEvaluationReference;
 
 /**
- * @since 3.3
  * 
  */
 public final class EvaluationService implements IRestrictionService {

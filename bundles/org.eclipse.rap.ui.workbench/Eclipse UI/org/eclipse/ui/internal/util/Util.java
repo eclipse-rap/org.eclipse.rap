@@ -636,7 +636,6 @@ public final class Util {
      * @param array1
      * @param array2
      * @return
-     * @since 3.1
      */
     public static Object[] appendArray(Object[] array1, Object[] array2) {        
         Object[] result = new Object[array1.length + array2.length];

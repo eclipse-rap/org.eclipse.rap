@@ -31,7 +31,6 @@ import org.eclipse.ui.contexts.IContextManagerListener;
  * A wrapper around the new API that supports the old API. This manager also
  * adds support for reading from the registry.
  * 
- * @since 3.1
  */
 public final class ContextManagerLegacyWrapper implements
 		org.eclipse.core.commands.contexts.IContextManagerListener,

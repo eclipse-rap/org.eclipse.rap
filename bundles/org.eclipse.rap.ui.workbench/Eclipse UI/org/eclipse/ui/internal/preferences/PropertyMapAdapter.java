@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.preferences;
 import java.util.ArrayList;
 
 /**
- * @since 1.1
  */
 public abstract class PropertyMapAdapter implements IDynamicPropertyMap {
 

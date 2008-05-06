@@ -16,7 +16,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 /**
  * 
  * 
- * @since 3.0
  */
 public class SystemMenuStateChange extends Action implements
         ISelfUpdatingAction {

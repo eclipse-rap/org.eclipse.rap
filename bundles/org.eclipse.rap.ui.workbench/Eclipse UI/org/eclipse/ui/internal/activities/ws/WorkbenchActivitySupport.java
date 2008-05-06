@@ -32,7 +32,6 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
 /**
  * Implementation of {@link org.eclipse.ui.activities.IWorkbenchActivitySupport}.
- * @since 1.1
  */
 public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExtensionChangeHandler {
     private MutableActivityManager mutableActivityManager;

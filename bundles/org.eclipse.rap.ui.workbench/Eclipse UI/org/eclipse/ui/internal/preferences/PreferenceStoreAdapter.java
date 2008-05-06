@@ -17,7 +17,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
- * @since 1.1
  */
 public final class PreferenceStoreAdapter extends PropertyMapAdapter {
 

@@ -39,7 +39,6 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * Manage trim contributions added through the 'org.eclipse.ui.menus'
  * extension point.
  * 
- * @since 3.3
  *
  */
 public class TrimContributionManager extends ContributionManager {

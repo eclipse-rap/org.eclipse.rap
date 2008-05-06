@@ -31,7 +31,6 @@ import org.eclipse.ui.activities.*;
  * A simple control provider that will allow the user to toggle on/off the
  * activities bound to categories.
  * 
- * @since 1.1
  */
 public class ActivityEnabler {
 

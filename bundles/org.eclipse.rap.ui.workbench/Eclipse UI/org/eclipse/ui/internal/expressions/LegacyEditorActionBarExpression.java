@@ -28,7 +28,6 @@ import org.eclipse.ui.internal.services.SourcePriorityNameMapping;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 public class LegacyEditorActionBarExpression extends Expression {
 	/**

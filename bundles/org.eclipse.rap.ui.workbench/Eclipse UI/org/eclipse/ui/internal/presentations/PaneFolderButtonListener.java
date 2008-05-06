@@ -17,7 +17,6 @@ import org.eclipse.swt.custom.CTabItem;
  * This listener receives notifications when the user clicks on one of
  * the buttons (minimize, maximize, or restore) on a pane folder.  
  * 
- * @since 3.0
  */
 public abstract class PaneFolderButtonListener {
 
@@ -39,7 +38,6 @@ public abstract class PaneFolderButtonListener {
 
     /**
      * 
-     * @since 3.0
      */
     public void showList(CTabFolderEvent event) {
     }

@@ -14,7 +14,6 @@ package org.eclipse.ui.internal.themes;
  * A basic element (color, font) of a theme must implement this 
  * interface.
  * 
- * @since 3.0
  */
 public interface IThemeElementDefinition {
 

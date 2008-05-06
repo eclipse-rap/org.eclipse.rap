@@ -24,7 +24,6 @@ import org.eclipse.ui.activities.NotDefinedException;
  * proxy keeps a pointer to the <code>ICategory</code> under which it is being 
  * provided.
  * 
- * @since 1.1
  */
 public class CategorizedActivity implements IActivity {
 

@@ -27,7 +27,6 @@ import org.eclipse.ui.internal.registry.RegistryReader;
  * extension point.
  * 
  * 
- * @since 1.1
  * 
  */
 public class SettingsTransferRegistryReader extends RegistryReader {

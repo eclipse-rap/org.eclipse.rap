@@ -22,7 +22,6 @@ import org.eclipse.ui.internal.util.Util;
  * context implementation in <code>org.eclipse.ui.contexts</code>. This is a
  * wrapper.
  * 
- * @since 3.1
  */
 public class ContextLegacyWrapper implements IContext {
 

@@ -42,7 +42,6 @@ import org.eclipse.ui.internal.util.Util;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 public abstract class PreferencePersistence extends RegistryPersistence {
 

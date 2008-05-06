@@ -24,7 +24,6 @@ import org.eclipse.ui.ISources;
  * necessary.
  * </p>
  * 
- * @since 3.2
  */
 public abstract class EvaluationResultCache implements IEvaluationResultCache {
 

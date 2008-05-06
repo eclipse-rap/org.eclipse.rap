@@ -45,7 +45,6 @@ import org.eclipse.ui.presentations.StackPresentation;
  * EXPERIMENTAL
  * </p> 
  * 
- * @since 3.0
  */
 public class NativeStackPresentation extends StackPresentation {
 

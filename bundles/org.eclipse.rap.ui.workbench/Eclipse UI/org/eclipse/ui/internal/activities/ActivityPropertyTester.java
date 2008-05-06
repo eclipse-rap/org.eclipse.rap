@@ -21,7 +21,6 @@ import org.eclipse.ui.activities.WorkbenchActivityHelper;
  * category of activities is enabled. Useful for cross-component links and to
  * control discoverability of functionality.
  * 
- * @since 1.1
  */
 public class ActivityPropertyTester extends PropertyTester {
 

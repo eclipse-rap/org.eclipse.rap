@@ -32,7 +32,6 @@ import org.eclipse.ui.internal.services.EvaluationResultCache;
  * Note: this class has a natural ordering that is inconsistent with equals.
  * </p>
  * 
- * @since 3.1
  */
 final class ContextActivation extends EvaluationResultCache implements
 		IContextActivation {

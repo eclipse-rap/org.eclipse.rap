@@ -20,7 +20,6 @@ import org.eclipse.ui.services.IDisposable;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
- * @since 3.2
  * 
  */
 public final class ServiceLocator implements IDisposable, INestable,

@@ -21,7 +21,6 @@ import org.eclipse.ui.IWorkbenchWindow;
  * the control as well as the side of the workbench that the control is
  * currently being displayed on.
  * 
- * @since 3.3
  *
  */
 public abstract class InternalControlContribution extends ControlContribution {

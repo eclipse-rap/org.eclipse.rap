@@ -25,7 +25,6 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
  * and are obtained from the <code>org.eclipse.ui.workbench</code> plug-in's preference store.
  * </p>
  * 
- * @since 3.0
  */
 public class PrefUtil {
 

@@ -23,7 +23,6 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * @since 1.1
  */
 public class ImageBindingRegistry implements IExtensionChangeHandler {
 	private String tag; 

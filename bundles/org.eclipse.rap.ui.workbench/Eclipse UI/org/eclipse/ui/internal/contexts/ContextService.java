@@ -29,7 +29,6 @@ import org.eclipse.ui.contexts.IContextService;
  * access to contexts.
  * </p>
  * 
- * @since 3.1
  */
 public final class ContextService implements IContextService {
 

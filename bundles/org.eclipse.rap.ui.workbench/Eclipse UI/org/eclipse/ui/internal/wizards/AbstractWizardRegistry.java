@@ -19,7 +19,6 @@ import org.eclipse.ui.wizards.IWizardRegistry;
 /**
  * Abstract base class for various workbench wizards.
  * 
- * @since 3.1
  */
 public abstract class AbstractWizardRegistry implements IWizardRegistry {
 

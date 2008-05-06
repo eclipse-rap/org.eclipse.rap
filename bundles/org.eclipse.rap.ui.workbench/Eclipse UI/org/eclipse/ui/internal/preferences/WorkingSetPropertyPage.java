@@ -24,7 +24,6 @@ import org.eclipse.ui.preferences.WizardPropertyPage;
 /**
  * Embeds a working set wizard for a given working set into a property page.
  *
- * @since 1.1
  */
 public class WorkingSetPropertyPage extends WizardPropertyPage {
 	

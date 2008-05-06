@@ -27,7 +27,6 @@ import org.eclipse.ui.commands.NotHandledException;
  * A wrapper around a core command so that it satisfies the deprecated
  * <code>ICommand</code> interface.
  * 
- * @since 3.1
  */
 final class CommandLegacyWrapper implements ICommand {
 

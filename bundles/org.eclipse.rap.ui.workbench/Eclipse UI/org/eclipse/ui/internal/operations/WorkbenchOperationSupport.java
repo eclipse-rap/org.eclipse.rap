@@ -28,7 +28,6 @@ import org.eclipse.ui.operations.IWorkbenchOperationSupport;
  * undo strategy.
  * </p>
  * 
- * @since 3.1
  */
 public class WorkbenchOperationSupport implements IWorkbenchOperationSupport {
 

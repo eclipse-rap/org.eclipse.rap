@@ -53,7 +53,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 final class PulldownDelegateWidgetProxy implements IWidget {
 

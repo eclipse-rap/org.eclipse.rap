@@ -22,7 +22,6 @@ import org.eclipse.ui.services.IEvaluationReference;
 import org.eclipse.ui.services.IEvaluationService;
 
 /**
- * @since 3.4
  * 
  */
 public class SlaveEvaluationService implements IEvaluationService {

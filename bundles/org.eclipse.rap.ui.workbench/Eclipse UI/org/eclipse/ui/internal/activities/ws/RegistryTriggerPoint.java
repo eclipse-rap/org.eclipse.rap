@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
 /**
- * @since 1.1
  */
 public class RegistryTriggerPoint extends AbstractTriggerPoint {
 

@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.activities.IActivityManager;
 
 /**
- * @since 1.1
  */
 public class ActivityContentProvider implements IStructuredContentProvider {
 

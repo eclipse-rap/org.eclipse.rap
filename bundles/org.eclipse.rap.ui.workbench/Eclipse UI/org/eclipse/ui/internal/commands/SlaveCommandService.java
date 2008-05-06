@@ -36,7 +36,6 @@ import org.eclipse.ui.menus.UIElement;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 public class SlaveCommandService implements ICommandService {
 

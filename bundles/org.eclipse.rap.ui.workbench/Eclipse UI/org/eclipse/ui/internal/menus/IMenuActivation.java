@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.ui.internal.services.IEvaluationResultCache;
 
 /**
- * @since 3.3
  *
  */
 public interface IMenuActivation extends IEvaluationResultCache {

@@ -34,7 +34,6 @@ import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemePreview;
 
 /**
- * @since 3.0
  */
 public class WorkbenchPreview implements IThemePreview {
 

@@ -26,7 +26,6 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
  * consulting with the Platform/UI team.
  * </p>
  * 
- * @since 3.2
  */
 public interface IActionBarPresentationFactory {
 	

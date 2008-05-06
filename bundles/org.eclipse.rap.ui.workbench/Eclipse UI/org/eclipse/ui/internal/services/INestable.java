@@ -39,7 +39,6 @@ package org.eclipse.ui.internal.services;
  * This class should eventually move to <code>org.eclipse.ui.services</code>.
  * </p>
  * 
- * @since 3.2
  */
 public interface INestable {
 

@@ -19,7 +19,6 @@ import org.eclipse.core.commands.contexts.ContextManager;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
  */
 public final class ContextManagerFactory {
 

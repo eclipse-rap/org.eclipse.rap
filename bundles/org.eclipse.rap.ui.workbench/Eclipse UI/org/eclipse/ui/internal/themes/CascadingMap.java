@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @since 3.0
  */
 public class CascadingMap {
 

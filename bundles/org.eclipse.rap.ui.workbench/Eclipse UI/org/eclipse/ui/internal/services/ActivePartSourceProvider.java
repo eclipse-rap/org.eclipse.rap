@@ -35,7 +35,6 @@ import org.eclipse.ui.services.IServiceLocator;
 /**
  * Provides notifications when the active part changes.
  * 
- * @since 3.1
  */
 public class ActivePartSourceProvider extends AbstractSourceProvider {
 

@@ -25,7 +25,6 @@ import org.eclipse.ui.PlatformUI;
  * The TimeTriggeredProgressMonitorDialog is a progress monitor dialog that only
  * opens if the runnable provided exceeds the specified long operation time.
  * 
- * @since 3.1
  */
 public class TimeTriggeredProgressMonitorDialog extends ProgressMonitorDialog {
 

@@ -35,7 +35,6 @@ import org.eclipse.ui.internal.expressions.AndExpression;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  * 
  */
 public class SlaveContextService implements IContextService {

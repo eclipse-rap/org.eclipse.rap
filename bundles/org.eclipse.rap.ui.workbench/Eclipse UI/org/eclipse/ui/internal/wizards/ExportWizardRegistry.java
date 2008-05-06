@@ -17,7 +17,6 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
  * Registry that contains wizards contributed via the <code>exportWizards</code>
  * extension point.
  * 
- * @since 3.1
  */
 public class ExportWizardRegistry extends AbstractExtensionWizardRegistry {
 

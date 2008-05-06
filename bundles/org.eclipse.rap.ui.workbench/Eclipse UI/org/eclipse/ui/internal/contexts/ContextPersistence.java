@@ -31,7 +31,6 @@ import org.eclipse.ui.internal.services.RegistryPersistence;
  * A static class for accessing the registry.
  * </p>
  * 
- * @since 3.1
  */
 final class ContextPersistence extends RegistryPersistence {
 

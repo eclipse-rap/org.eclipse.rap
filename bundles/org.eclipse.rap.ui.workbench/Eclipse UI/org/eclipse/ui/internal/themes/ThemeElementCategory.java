@@ -18,7 +18,6 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.themes.IThemePreview;
 
 /**
- * @since 3.0
  */
 public class ThemeElementCategory implements IPluginContribution,
         IThemeElementDefinition {

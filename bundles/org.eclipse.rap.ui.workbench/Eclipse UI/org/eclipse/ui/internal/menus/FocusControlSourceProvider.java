@@ -26,7 +26,6 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.swt.IFocusService;
 
 /**
- * @since 3.3
  * 
  */
 public class FocusControlSourceProvider extends AbstractSourceProvider

@@ -34,7 +34,6 @@ import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
 
 /**
- * @since 3.0
  */
 public class Theme extends EventManager implements ITheme {
 

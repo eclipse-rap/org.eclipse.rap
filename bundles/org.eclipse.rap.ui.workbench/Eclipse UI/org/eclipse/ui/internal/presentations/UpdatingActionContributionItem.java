@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.presentations;
 import org.eclipse.jface.action.ActionContributionItem;
 
 /**
- * @since 3.0
  */
 public class UpdatingActionContributionItem extends ActionContributionItem {
 

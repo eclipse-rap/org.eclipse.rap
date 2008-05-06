@@ -19,7 +19,6 @@ import org.eclipse.ui.commands.ICommand;
  * Wraps a legacy listener in a new listener interface. This simply forwards
  * incoming events through to the old interface.
  * 
- * @since 3.1
  */
 final class LegacyCommandListenerWrapper implements ICommandListener {
 

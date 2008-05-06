@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * @since 3.0
  */
 public class CascadingFontRegistry extends FontRegistry {
 

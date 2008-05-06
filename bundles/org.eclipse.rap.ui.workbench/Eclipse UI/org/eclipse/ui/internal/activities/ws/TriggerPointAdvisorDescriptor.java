@@ -19,7 +19,6 @@ import org.eclipse.ui.internal.registry.RegistryReader;
 /**
  * Descriptor for trigger point advisor extensions.
  * 
- * @since 1.1
  */
 public final class TriggerPointAdvisorDescriptor {
 

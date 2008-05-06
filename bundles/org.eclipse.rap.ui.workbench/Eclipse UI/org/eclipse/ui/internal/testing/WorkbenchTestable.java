@@ -24,7 +24,6 @@ import org.eclipse.ui.testing.TestableObject;
 /**
  * The Workbench's testable object facade to a test harness.
  * 
- * @since 3.0
  */
 public class WorkbenchTestable extends TestableObject {
 

@@ -25,7 +25,6 @@ import org.eclipse.ui.themes.IThemeManager;
 /**
  * The central manager for Theme descriptors.
  *
- * @since 3.0
  */
 public class ThemeRegistry implements IThemeRegistry {
 

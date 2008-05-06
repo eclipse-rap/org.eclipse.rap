@@ -28,7 +28,6 @@ import org.eclipse.ui.IWorkbenchWindow;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 public final class LegacyEditorContributionExpression extends
 		WorkbenchWindowExpression {

@@ -22,7 +22,6 @@ import org.eclipse.ui.commands.ICommandService;
  * This service can be used to access the set of commands and handlers.
  * </p>
  * 
- * @since 3.2
  */
 public final class CommandImageService implements ICommandImageService {
 

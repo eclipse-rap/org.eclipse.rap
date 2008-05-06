@@ -25,7 +25,6 @@ import org.eclipse.ui.contexts.IContext;
  * to support attaching old-style listens to the new context objects.
  * </p>
  * 
- * @since 3.1
  */
 public class LegacyContextListenerWrapper implements IContextListener,
 		IContextManagerListener {

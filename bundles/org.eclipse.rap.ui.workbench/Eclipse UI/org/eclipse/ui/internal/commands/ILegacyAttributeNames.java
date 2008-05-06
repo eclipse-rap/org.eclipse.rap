@@ -16,7 +16,6 @@ import org.eclipse.jface.action.IAction;
  * This defines attribute names that were understood in Eclipse 3.0. This is
  * used to provide legacy support for the attribute map property.
  * 
- * @since 3.1
  */
 public interface ILegacyAttributeNames {
 

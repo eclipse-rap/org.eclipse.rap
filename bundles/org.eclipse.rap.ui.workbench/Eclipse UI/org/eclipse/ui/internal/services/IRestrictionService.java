@@ -14,7 +14,6 @@ package org.eclipse.ui.internal.services;
 import org.eclipse.ui.services.IEvaluationService;
 
 /**
- * @since 3.4
  *
  */
 public interface IRestrictionService extends IEvaluationService {

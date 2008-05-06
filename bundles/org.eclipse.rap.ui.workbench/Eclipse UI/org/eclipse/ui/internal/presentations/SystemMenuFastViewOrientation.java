@@ -26,7 +26,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchWindow;
 
 /**
- * @since 3.0
  */
 public class SystemMenuFastViewOrientation extends ContributionItem {
 

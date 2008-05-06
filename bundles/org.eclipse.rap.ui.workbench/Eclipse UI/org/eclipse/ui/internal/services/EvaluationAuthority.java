@@ -35,7 +35,6 @@ import org.eclipse.ui.services.IEvaluationReference;
 import org.eclipse.ui.services.IEvaluationService;
 
 /**
- * @since 3.3
  * 
  */
 public class EvaluationAuthority extends ExpressionAuthority {

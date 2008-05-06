@@ -25,7 +25,6 @@ import org.eclipse.ui.IWorkbenchWindow;
  * workbench window matches the window held by this expression.
  * </p>
  * 
- * @since 3.2
  */
 public class WorkbenchWindowExpression extends Expression {
 

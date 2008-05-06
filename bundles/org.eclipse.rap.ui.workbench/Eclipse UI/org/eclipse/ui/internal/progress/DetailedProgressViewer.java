@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Widget;
  * The DetailedProgressViewer is a viewer that shows the details of all in
  * progress job or jobs that are finished awaiting user input.
  * 
- * @since 1.0
  * 
  */
 public class DetailedProgressViewer extends AbstractProgressViewer {

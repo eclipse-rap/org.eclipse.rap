@@ -30,7 +30,6 @@ import org.eclipse.ui.internal.provisional.presentations.IActionBarPresentationF
  * consulting with the Platform/UI team.
  * </p>
  * 
- * @since 3.2
  */
 public class DefaultActionBarPresentationFactory implements IActionBarPresentationFactory {
 

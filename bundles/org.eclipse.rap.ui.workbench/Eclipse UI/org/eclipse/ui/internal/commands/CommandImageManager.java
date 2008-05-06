@@ -38,7 +38,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * <code>org.eclipse.jface.commands</code>.
  * </p>
  * 
- * @since 3.2
  */
 public final class CommandImageManager extends EventManager {
 

@@ -20,7 +20,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.menus.IWorkbenchWidget;
 
 /**
- * @since 3.3
  *
  */
 public class AbstractWorkbenchWidget implements IWorkbenchWidget {

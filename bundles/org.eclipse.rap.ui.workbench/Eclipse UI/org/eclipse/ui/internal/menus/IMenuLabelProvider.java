@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 /**
  * Label provider for menu / toolbar items
  * 
- * @since 3.3
  *
  */
 public interface IMenuLabelProvider extends ILabelProvider {

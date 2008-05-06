@@ -20,7 +20,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
  * the currently selected pane in a presentation. Presentations can use
  * this to add a close item to their system menu.
  * 
- * @since 3.0
  */
 public final class SystemMenuClose extends Action implements ISelfUpdatingAction {
 

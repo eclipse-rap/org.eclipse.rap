@@ -31,7 +31,6 @@ import org.eclipse.ui.internal.ActionExpression;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 public final class LegacyActionExpressionWrapper extends
 		WorkbenchWindowExpression {

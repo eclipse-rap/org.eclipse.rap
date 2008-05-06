@@ -55,7 +55,6 @@ import org.eclipse.ui.internal.util.Util;
  * Since 3.3, this operation approver also checks the validity of a proposed
  * execute by determining whether the redo is viable.
  * 
- * @since 3.1
  */
 public class AdvancedValidationUserApprover implements IOperationApprover,
 		IOperationApprover2 {
@@ -63,7 +62,6 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
     /**
      * Static to prevent opening of error dialogs for automated testing.
      * 
-     * @since 3.3
      */
     public static boolean AUTOMATED_MODE = false;
 

@@ -18,7 +18,6 @@ import java.util.Set;
 /**
  * Registry of color, font, gradient, category and theme descriptors.
  *
- * @since 3.0
  */
 public interface IThemeRegistry {
 
@@ -26,7 +25,6 @@ public interface IThemeRegistry {
      * A comparator that will sort IHierarchalThemeElementDefinition elements
      * by defaultsTo depth.
      * 
-     * @since 3.0
      */
     public static class HierarchyComparator implements Comparator {
 
@@ -88,7 +86,6 @@ public interface IThemeRegistry {
      * <code>IThemeElementDefinition</code> objects in order to perform 
      * searching.
      * 
-     * @since 3.0
      */
     public static final Comparator ID_COMPARATOR = new Comparator() {
 

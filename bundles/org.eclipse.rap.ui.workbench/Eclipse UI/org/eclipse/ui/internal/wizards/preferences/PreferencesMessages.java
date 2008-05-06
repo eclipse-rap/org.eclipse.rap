@@ -14,8 +14,6 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * NLS messages class for preferences messages. 
-
- * @since 3.1
  * 
  */
 public class PreferencesMessages extends NLS {

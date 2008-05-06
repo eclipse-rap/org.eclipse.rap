@@ -52,7 +52,6 @@ public class SystemMenuCloseOthers extends Action implements
 
     /**
      * @param currentSelection
-     * @since 3.1
      */
     public void setTarget(IPresentablePart current) {
         this.current = current;

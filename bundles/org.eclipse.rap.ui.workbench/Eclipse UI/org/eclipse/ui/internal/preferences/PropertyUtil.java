@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * @since 1.1
  */
 public class PropertyUtil {
     private PropertyUtil() {

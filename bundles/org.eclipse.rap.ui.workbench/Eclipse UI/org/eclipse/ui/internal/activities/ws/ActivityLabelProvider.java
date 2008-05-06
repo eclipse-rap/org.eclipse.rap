@@ -19,7 +19,6 @@ import org.eclipse.ui.activities.*;
  * directly or as <code>String</code> identifiers that are matched against
  * the activity manager.
  * 
- * @since 1.1
  */
 public class ActivityLabelProvider extends LabelProvider {
 

@@ -30,7 +30,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * The WorkbenchPreferenceExtensionNode is the abstract class for all property
  * and page nodes in the workbench.
  * 
- * @since 1.1
  */
 public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferenceExpressionNode 
     implements IComparableContribution {

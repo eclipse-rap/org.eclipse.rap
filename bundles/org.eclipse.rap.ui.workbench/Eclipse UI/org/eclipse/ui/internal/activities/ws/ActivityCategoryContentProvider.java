@@ -33,7 +33,6 @@ import org.eclipse.ui.activities.ICategoryActivityBinding;
  * that also have a pointer to the <code>ICategory</code> for which the 
  * <code>IActivity</code> should be represented under. 
  * 
- * @since 1.1
  */
 public class ActivityCategoryContentProvider implements ITreeContentProvider {
 

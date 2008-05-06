@@ -42,7 +42,6 @@ import org.eclipse.ui.internal.services.ExpressionAuthority;
  * manager if changes occur.
  * </p>
  * 
- * @since 3.1
  */
 public final class ContextAuthority extends ExpressionAuthority {
 	public static final String DEFER_EVENTS = "org.eclipse.ui.internal.contexts.deferEvents"; //$NON-NLS-1$

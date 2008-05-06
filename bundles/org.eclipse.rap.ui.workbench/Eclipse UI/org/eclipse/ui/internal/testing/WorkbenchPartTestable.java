@@ -18,7 +18,6 @@ import org.eclipse.ui.testing.IWorkbenchPartTestable;
 /**
  * Implementation of {@link IWorkbenchPartTestable}.
  * 
- * @since 3.3
  */
 public class WorkbenchPartTestable implements IWorkbenchPartTestable {
 

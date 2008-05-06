@@ -17,7 +17,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.services.IEvaluationReference;
 
 /**
- * @since 3.4
  * 
  */
 public class RestrictionListener implements IPropertyChangeListener {

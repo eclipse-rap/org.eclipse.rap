@@ -37,7 +37,6 @@ import org.eclipse.ui.ISources;
  * TODO Move to "org.eclipse.ui" and resolve the above issue.
  * </p>
  * 
- * @since 3.2
  * @see org.eclipse.ui.ISources
  * @see org.eclipse.ui.contexts.IContextService
  * @see org.eclipse.ui.handlers.IHandlerService

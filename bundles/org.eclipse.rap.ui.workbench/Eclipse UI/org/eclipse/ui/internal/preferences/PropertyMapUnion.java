@@ -15,7 +15,6 @@ import java.util.*;
 import org.eclipse.ui.internal.util.Util;
 
 /**
- * @since 1.1
  */
 public class PropertyMapUnion implements IPropertyMap {
 

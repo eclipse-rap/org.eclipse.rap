@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  * Interface for the Theme descriptors
  *
- * @since 3.0
  */
 public interface IThemeDescriptor extends IThemeElementDefinition {
     public static final String TAB_BORDER_STYLE = "TAB_BORDER_STYLE"; //$NON-NLS-1$

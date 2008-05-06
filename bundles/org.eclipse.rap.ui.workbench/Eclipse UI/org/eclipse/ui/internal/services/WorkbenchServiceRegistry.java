@@ -32,7 +32,6 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * This class will create a service from the matching factory. If the factory
  * doesn't exist, it will try and load it from the registry.
  * 
- * @since 3.4
  */
 public class WorkbenchServiceRegistry {
 	/**

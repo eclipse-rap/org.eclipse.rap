@@ -23,7 +23,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * Internal baseclass for Workbench and Window menu service implementations.
  * Methods in this class might some day make sense to live in IMenuService.
  * 
- * @since 3.3
  * 
  */
 public abstract class InternalMenuService implements IMenuService {

@@ -29,7 +29,6 @@ import org.eclipse.ui.internal.services.INestable;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
- * @since 3.2
  */
 public class NestableContextService extends SlaveContextService implements
 		INestable {

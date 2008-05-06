@@ -29,7 +29,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * which events are communicated to services).
  * </p>
  * 
- * @since 3.2
  */
 public final class ActiveContextSourceProvider extends AbstractSourceProvider
 		implements IContextManagerListener {

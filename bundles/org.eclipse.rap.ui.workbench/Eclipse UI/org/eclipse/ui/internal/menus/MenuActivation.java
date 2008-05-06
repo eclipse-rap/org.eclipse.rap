@@ -16,7 +16,6 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.ui.internal.services.EvaluationResultCache;
 
 /**
- * @since 3.3
  * 
  */
 public class MenuActivation extends EvaluationResultCache implements

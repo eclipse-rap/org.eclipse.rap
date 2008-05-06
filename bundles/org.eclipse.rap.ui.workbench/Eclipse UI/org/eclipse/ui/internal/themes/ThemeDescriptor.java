@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 /**
  * Concrete implementation of a theme descriptor.
  *
- * @since 3.0
  */
 public class ThemeDescriptor implements IThemeDescriptor {
 

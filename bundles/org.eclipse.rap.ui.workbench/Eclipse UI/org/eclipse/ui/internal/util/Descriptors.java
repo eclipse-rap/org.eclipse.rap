@@ -85,7 +85,6 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
  * on the widget which cleans up as soon as the widget is disposed). 
  * </p>
  * 
- * @since 3.1
  */
 public final class Descriptors {
     private static final String DISPOSE_LIST = "Descriptors.disposeList"; //$NON-NLS-1$

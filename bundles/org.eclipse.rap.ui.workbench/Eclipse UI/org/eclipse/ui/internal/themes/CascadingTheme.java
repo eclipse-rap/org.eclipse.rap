@@ -20,7 +20,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.themes.ITheme;
 
 /**
- * @since 3.0
  */
 public class CascadingTheme extends EventManager implements ITheme {
 

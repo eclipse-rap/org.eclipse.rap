@@ -31,7 +31,6 @@ import com.ibm.icu.text.MessageFormat;
  * Dialog that will prompt the user and confirm that they wish to activate a set
  * of activities.
  * 
- * @since 1.1
  */
 public class EnablementDialog extends Dialog {
 

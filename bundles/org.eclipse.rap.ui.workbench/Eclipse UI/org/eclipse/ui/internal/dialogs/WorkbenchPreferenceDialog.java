@@ -165,7 +165,6 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	/* (non-Javadoc)
      * @see org.eclipse.jface.window.Dialog#getDialogBoundsSettings()
      * 
-     * @since 3.2
      */
 	protected IDialogSettings getDialogBoundsSettings() {
         IDialogSettings settings = WorkbenchPlugin.getDefault().getDialogSettings();
@@ -181,7 +180,6 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
      * 
      * Overridden to persist only the location, not the size, since the current
      * page dictates the most appropriate size for the dialog.
-     * @since 3.2
      */
 	protected int getDialogBoundsStrategy() {
 		return DIALOG_PERSISTLOCATION;

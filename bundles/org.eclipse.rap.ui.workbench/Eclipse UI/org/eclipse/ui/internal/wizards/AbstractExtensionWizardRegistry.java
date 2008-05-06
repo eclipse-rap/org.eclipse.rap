@@ -27,7 +27,6 @@ import org.eclipse.ui.wizards.IWizardDescriptor;
 /**
  * Abstract baseclass for wizard registries that listen to extension changes.
  * 
- * @since 3.1
  */
 public abstract class AbstractExtensionWizardRegistry extends
 		AbstractWizardRegistry implements IExtensionChangeHandler{

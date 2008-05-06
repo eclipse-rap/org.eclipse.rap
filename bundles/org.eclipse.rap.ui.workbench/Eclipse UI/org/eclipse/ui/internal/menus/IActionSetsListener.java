@@ -26,7 +26,6 @@ import org.eclipse.ui.internal.ActionSetsEvent;
  * This class will eventually exist in <code>org.eclipse.jface.menus</code>.
  * </p>
  * 
- * @since 3.2
  */
 public interface IActionSetsListener {
 

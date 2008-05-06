@@ -55,7 +55,6 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * An activity registry that may be altered.
  * 
- * @since 1.1
  */
 public final class MutableActivityManager extends AbstractActivityManager
         implements IMutableActivityManager, Cloneable {

@@ -28,7 +28,6 @@ import org.eclipse.ui.activities.NotDefinedException;
  * Provides labels for elements drawn from <code>IActivityManagers</code>.  
  * Ie:  <code>IActivity</code> and <code>ICategory</code> objects.
  * 
- * @since 1.1
  */
 public class ActivityCategoryLabelProvider extends LabelProvider {
 

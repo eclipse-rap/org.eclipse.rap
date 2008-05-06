@@ -18,7 +18,6 @@ import java.util.Set;
  * xml nodes, property providers, and others). This interface is intended to provide
  * interoperability between these various classes. 
  * 
- * @since 1.1
  */
 public interface IPropertyMap {
     
