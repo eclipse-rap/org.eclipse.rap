@@ -25,6 +25,9 @@ import org.eclipse.core.runtime.IExtensionDelta;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.util.ConfigurationElementMemento;
@@ -52,22 +55,44 @@ final class ExtensionActivityRegistry extends AbstractActivityRegistry {
 
         this.extensionRegistry = extensionRegistry;
 
-        this.extensionRegistry
-                .addRegistryChangeListener(new IRegistryChangeListener() {
-                    public void registryChanged(
-                            IRegistryChangeEvent registryChangeEvent) {
-                        IExtensionDelta[] extensionDeltas = registryChangeEvent
-                                .getExtensionDeltas(Persistence.PACKAGE_PREFIX,
-                                        Persistence.PACKAGE_BASE);
-
-                        if (extensionDeltas.length != 0) {
-							try {
-                                load();
-                            } catch (IOException eIO) {
-                            }
-						}
-                    }
-                });
+// RAP [fappel]: changelistener needs to be removed on session end to avoid
+//               memory leak
+//        this.extensionRegistry
+//                .addRegistryChangeListener(new IRegistryChangeListener() {
+//                    public void registryChanged(
+//                            IRegistryChangeEvent registryChangeEvent) {
+//                        IExtensionDelta[] extensionDeltas = registryChangeEvent
+//                                .getExtensionDeltas(Persistence.PACKAGE_PREFIX,
+//                                        Persistence.PACKAGE_BASE);
+//
+//                        if (extensionDeltas.length != 0) {
+//							try {
+//                                load();
+//                            } catch (IOException eIO) {
+//                            }
+//						}
+//                    }
+//                });
+        final IRegistryChangeListener listener = new IRegistryChangeListener() {
+          public void registryChanged(IRegistryChangeEvent registryChangeEvent) {
+            IExtensionDelta[] extensionDeltas
+              = registryChangeEvent.getExtensionDeltas(Persistence.PACKAGE_PREFIX,
+                                                       Persistence.PACKAGE_BASE);
+          
+            if (extensionDeltas.length != 0) {
+              try {
+                load();
+              } catch (IOException eIO) {
+              }
+            }
+          }
+        };
+        this.extensionRegistry.addRegistryChangeListener(listener);
+        RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
+          public void beforeDestroy( final SessionStoreEvent event ) {
+            ExtensionActivityRegistry.this.extensionRegistry.removeRegistryChangeListener( listener );
+          }
+        } );
 
         try {
             load();
