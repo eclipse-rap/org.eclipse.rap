@@ -4,26 +4,56 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt
 Bundle-Version: 1.1.0.qualifier
 Bundle-ClassPath: patch.jar,
- lib/org.w3c.css.sac_1.3.jar,
  .
 Eclipse-ExtensibleAPI: true
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
 Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
  javax.servlet.http;version="[2.3.0,2.5.0]"
-Export-Package: org.eclipse.rwt,
+Export-Package: org.apache.batik.css.parser;x-internal:=true,
+ org.apache.batik.util.io;x-internal:=true,
+ org.eclipse.rwt,
  org.eclipse.rwt.branding,
  org.eclipse.rwt.graphics,
- org.eclipse.rwt.internal;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
+ org.eclipse.rwt.internal;
+  x-friends:="org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.rwt.test,
+   org.eclipse.rap.ui.workbench",
  org.eclipse.rwt.internal.branding;x-friends:="org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
- org.eclipse.rwt.internal.browser;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
- org.eclipse.rwt.internal.engine;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
+ org.eclipse.rwt.internal.browser;
+  x-friends:="org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.rwt.test,
+   org.eclipse.rap.ui.workbench",
+ org.eclipse.rwt.internal.engine;
+  x-friends:="org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.rwt.test,
+   org.eclipse.rap.ui.workbench",
  org.eclipse.rwt.internal.events;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test",
- org.eclipse.rwt.internal.lifecycle;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
- org.eclipse.rwt.internal.resources;x-friends:="org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench,org.eclipse.rap.w4t,org.eclipse.rap.w4t.test",
- org.eclipse.rwt.internal.service;x-friends:="org.eclipse.rap.rwt.test,org.eclipse.rap.w4t.test,org.eclipse.rap.ui.workbench,org.eclipse.rap.w4t",
+ org.eclipse.rwt.internal.lifecycle;
+  x-friends:="org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.rwt.test,
+   org.eclipse.rap.ui.workbench",
+ org.eclipse.rwt.internal.resources;
+  x-friends:="org.eclipse.rap.rwt.test,
+   org.eclipse.rap.ui.workbench,
+   org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test",
+ org.eclipse.rwt.internal.service;
+  x-friends:="org.eclipse.rap.rwt.test,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.ui.workbench,
+   org.eclipse.rap.w4t",
  org.eclipse.rwt.internal.theme,
- org.eclipse.rwt.internal.util;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
+ org.eclipse.rwt.internal.theme.css;x-internal:=true,
+ org.eclipse.rwt.internal.util;
+  x-friends:="org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.rwt.test,
+   org.eclipse.rap.ui.workbench",
  org.eclipse.rwt.lifecycle,
  org.eclipse.rwt.resources,
  org.eclipse.rwt.service,
@@ -74,5 +104,6 @@ Export-Package: org.eclipse.rwt,
  org.eclipse.swt.internal.widgets.treeitemkit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.swt.internal.widgets.treekit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.swt.layout,
- org.eclipse.swt.widgets
+ org.eclipse.swt.widgets,
+ org.w3c.css.sac;x-internal:=true
 
