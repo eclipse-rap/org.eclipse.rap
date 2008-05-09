@@ -80,19 +80,4 @@ public class LabelLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-
-  static String getTypePoolId( final Label label,
-                               final String idBorder,
-                               final String idFlat )
-  {
-//    String result;
-//    if( ( label.getStyle() & SWT.BORDER ) != 0 ) {
-//      result = idBorder;
-//    } else {
-//      result = idFlat;
-//    }
-//    return result;
-    return null;
-  }
-
 }
