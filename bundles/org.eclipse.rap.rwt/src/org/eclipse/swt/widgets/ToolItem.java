@@ -359,7 +359,8 @@ public class ToolItem extends Item {
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
    * </ul>
    */
   // TODO [rh] decent implementation for VERTICAL adlignment missing
@@ -369,10 +370,16 @@ public class ToolItem extends Item {
     int left = clientArea.x;
     int top = clientArea.y;
     int index = parent.indexOf( this );
-    for( int i = 0; i < index; i++ ) {
-      left += parent.getItem( i ).getBounds().width;
-    }
     
+    ////////////////////////////////////////////////////////////////////////////
+    // RAP [fappel]: Implementation for performance reason done like suggested:
+    //               https://bugs.eclipse.org/bugs/show_bug.cgi?id=231308
+    if( index > 0 ) {
+      Rectangle leftBrotherBounds = parent.getItem( index - 1 ).getBounds();
+      left += leftBrotherBounds.x + leftBrotherBounds.width;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
     int height = DEFAULT_HEIGHT;
     if( !"".equals( getText() ) ) {
       int charHeight = TextSizeDetermination.getCharHeight( parent.getFont()  );
@@ -391,7 +398,8 @@ public class ToolItem extends Item {
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
    * </ul>
    */
   public int getWidth() {
