@@ -15,13 +15,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,52 +24,28 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IElementFactory;
-import org.eclipse.ui.IPerspectiveRegistry;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.*;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.branding.BrandingExtension;
 import org.eclipse.ui.internal.decorators.DecoratorManager;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceManager;
-//import org.eclipse.ui.internal.intro.IIntroRegistry;
-//import org.eclipse.ui.internal.intro.IntroRegistry;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.operations.WorkbenchOperationSupport;
 import org.eclipse.ui.internal.progress.JobManagerAdapter;
 import org.eclipse.ui.internal.progress.ProgressManager;
-import org.eclipse.ui.internal.registry.ActionSetRegistry;
-import org.eclipse.ui.internal.registry.EditorRegistry;
-import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
-import org.eclipse.ui.internal.registry.PerspectiveRegistry;
-import org.eclipse.ui.internal.registry.PreferencePageRegistryReader;
-import org.eclipse.ui.internal.registry.ViewRegistry;
-import org.eclipse.ui.internal.registry.WorkingSetRegistry;
+import org.eclipse.ui.internal.registry.*;
 import org.eclipse.ui.internal.servlet.EntryPointExtension;
 import org.eclipse.ui.internal.servlet.HttpServiceTracker;
-import org.eclipse.ui.internal.themes.IThemeRegistry;
-import org.eclipse.ui.internal.themes.ThemeRegistry;
-import org.eclipse.ui.internal.themes.ThemeRegistryReader;
+import org.eclipse.ui.internal.themes.*;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.internal.util.SWTResourceUtil;
-import org.eclipse.ui.internal.wizards.ExportWizardRegistry;
-import org.eclipse.ui.internal.wizards.ImportWizardRegistry;
-import org.eclipse.ui.internal.wizards.NewWizardRegistry;
+import org.eclipse.ui.internal.wizards.*;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.presentations.AbstractPresentationFactory;
 import org.eclipse.ui.views.IViewRegistry;
 import org.eclipse.ui.wizards.IWizardRegistry;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.framework.*;
 
 import com.ibm.icu.text.MessageFormat;
 
@@ -1044,43 +1014,54 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         super.start(context);
         bundleContext = context;
         
+        Window.setDefaultOrientation(getDefaultOrientation());
 
-        // RAP [fappel]: fixes of memory consumption problems
-        JobManagerAdapter.getInstance();
-        // RAPEND
+        JFaceUtil.initializeJFace();
         
-        // RAP [bm]: 
-        // initialise the servlet names -> ensure that the http registry
-        // bundle was loaded befort the service tracker gets opened.
-        String id = "org.eclipse.equinox.http.registry";
-        Bundle httpRegistry = Platform.getBundle( id );
-        httpRegistry.start();
+        // RAP [fappel]: initialize session aware job management
+        JobManagerAdapter.getInstance();
+        
+        // RAP [fappel]: To me it seems that there could be a timing problem
+        //               in case that the http service was already started. If
+        //               so starting the http registry comes too late. But
+        //               before tackeling this, lets see whether the deadlock
+        //               problem (see below) is solved by this excecution order.
         httpServiceTracker = new HttpServiceTracker(context);
         BrandingExtension.read();
         httpServiceTracker.open();
-        // RAPEND: [bm] 
 
-        JFaceUtil.initializeJFace();
+        
+		// RAP [fappel]: initialise the servlet names -> ensure that the http
+		//               registry bundle was loaded befort the http service
+		//               starts.
+		//               Note that order is crucial here. Do not add
+		//               any code between or after the bundle start calls for
+		//               the same reason mentioned below for the UI bundle 
+		//               start. See Bug 86450.
+		String id = "org.eclipse.equinox.http.registry";
+		Bundle httpRegistry = Platform.getBundle( id );
+		try {
+		  if( httpRegistry != null ) {
+		    httpRegistry.start( Bundle.START_TRANSIENT );
+		  }
+		} catch( final BundleException be ) {
+		  WorkbenchPlugin.log( "Unable to load http registry", be ); //$NON-NLS-1$
+		}
 		
-		Window.setDefaultOrientation(getDefaultOrientation());
-
         // The UI plugin needs to be initialized so that it can install the callback in PrefUtil,
         // which needs to be done as early as possible, before the workbench
         // accesses any API preferences.
-		
-		// RAP [bm]: 
-//        Bundle uiBundle = Platform.getBundle(PlatformUI.PLUGIN_ID);
-//        try {
-//            // Attempt to load the activator of the ui bundle.  This will force lazy start
-//            // of the ui bundle.  Using the bundle activator class here because it is a
-//            // class that needs to be loaded anyway so it should not cause extra classes
-//            // to be loaded.s
-//        	if(uiBundle != null)
-//        		uiBundle.start(Bundle.START_TRANSIENT);
-//        } catch (BundleException e) {
-//            WorkbenchPlugin.log("Unable to load UI activator", e); //$NON-NLS-1$
-//        }
-		 // RAPEND: [bm] 
+        Bundle uiBundle = Platform.getBundle(PlatformUI.PLUGIN_ID);
+        try {
+            // Attempt to load the activator of the ui bundle.  This will force lazy start
+            // of the ui bundle.  Using the bundle activator class here because it is a
+            // class that needs to be loaded anyway so it should not cause extra classes
+            // to be loaded.s
+        	if(uiBundle != null)
+        		uiBundle.start(Bundle.START_TRANSIENT);
+        } catch (BundleException e) {
+            WorkbenchPlugin.log("Unable to load UI activator", e); //$NON-NLS-1$
+        }
 
 		/*
 		 * DO NOT RUN ANY OTHER CODE AFTER THIS LINE.  If you do, then you are
