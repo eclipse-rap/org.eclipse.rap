@@ -1052,48 +1052,32 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         // RAP [fappel]: initialize session aware job management
         JobManagerAdapter.getInstance();
         
-        // RAP [fappel]: To me it seems that there could be a timing problem
-        //               in case that the http service was already started. If
-        //               so starting the http registry comes too late. But
-        //               before tackeling this, lets see whether the deadlock
-        //               problem (see below) is solved by this excecution order.
-        ServiceTracker myTracker = new ServiceTracker(context, HttpContextExtensionService.class.getName(), null) {
-          public Object addingService( ServiceReference reference ) {
+        // RAP [fappel]: ensure that the rap http context was loaded before
+        //               the mapping of servlets from branding takes place
+        String serviceName = HttpContextExtensionService.class.getName();
+        ServiceTracker httpContextExtensionServiceTracker
+          = new ServiceTracker( context, serviceName, null )
+        {
+          public Object addingService( final ServiceReference reference ) {
             Object result = super.addingService( reference );
             httpServiceTracker = new HttpServiceTracker(context);
             try {
               BrandingExtension.read();
-            } catch( IOException e ) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
+            } catch( final IOException ioe ) {
+              WorkbenchPlugin.log( "Unable to read branding extension", ioe ); //$NON-NLS-1$
             }
             httpServiceTracker.open();
             return result;
           }
         };
-        myTracker.open();
+        httpContextExtensionServiceTracker.open();
 
         
-		// RAP [fappel]: initialise the servlet names -> ensure that the http
-		//               registry bundle was loaded befort the http service
-		//               starts.
-		//               Note that order is crucial here. Do not add
-		//               any code between or after the bundle start calls for
-		//               the same reason mentioned below for the UI bundle 
-		//               start. See Bug 86450.
-//		String id = "org.eclipse.equinox.http.registry";
-//		Bundle httpRegistry = Platform.getBundle( id );
-//		try {
-//		  if( httpRegistry != null ) {
-//		    httpRegistry.start( Bundle.START_TRANSIENT );
-//		  }
-//		} catch( final BundleException be ) {
-//		  WorkbenchPlugin.log( "Unable to load http registry", be ); //$NON-NLS-1$
-//		}
-		
-        // The UI plugin needs to be initialized so that it can install the callback in PrefUtil,
-        // which needs to be done as early as possible, before the workbench
-        // accesses any API preferences.
+// RAP [fappel]: as workbench instances in RAP run in session scope the
+//               UI bundle should be initialized in time
+//        // The UI plugin needs to be initialized so that it can install the callback in PrefUtil,
+//        // which needs to be done as early as possible, before the workbench
+//        // accesses any API preferences.
 //        Bundle uiBundle = Platform.getBundle(PlatformUI.PLUGIN_ID);
 //        try {
 //            // Attempt to load the activator of the ui bundle.  This will force lazy start
@@ -1105,12 +1089,12 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //        } catch (BundleException e) {
 //            WorkbenchPlugin.log("Unable to load UI activator", e); //$NON-NLS-1$
 //        }
-
-		/*
-		 * DO NOT RUN ANY OTHER CODE AFTER THIS LINE.  If you do, then you are
-		 * likely to cause a deadlock in class loader code.  Please see Bug 86450
-		 * for more information.
-		 */
+//
+//		/*
+//		 * DO NOT RUN ANY OTHER CODE AFTER THIS LINE.  If you do, then you are
+//		 * likely to cause a deadlock in class loader code.  Please see Bug 86450
+//		 * for more information.
+//		 */
     }
 
 	/**
