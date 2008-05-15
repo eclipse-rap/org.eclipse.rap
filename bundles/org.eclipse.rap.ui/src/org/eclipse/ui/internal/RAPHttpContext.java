@@ -25,7 +25,7 @@ public class RAPHttpContext implements HttpContext {
   private final Bundle bundle;
 
   public RAPHttpContext() {
-    bundle = Platform.getBundle( "org.eclipse.ui" ); //$NON-NLS-1$
+    bundle = Platform.getBundle( "org.eclipse.rap.ui" ); //$NON-NLS-1$
   }
 
   public boolean handleSecurity( final HttpServletRequest request,
