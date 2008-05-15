@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.RWT;
 
 /**
@@ -19,7 +18,9 @@ import org.eclipse.rwt.RWT;
  * throughout the workbench. 
  *
  */
-public class WorkbenchMessages extends NLS {
+// RAP [fappel]: need session aware NLS
+//public class WorkbenchMessages extends NLS {
+public class WorkbenchMessages {
 	private static final String BUNDLE_NAME = "org.eclipse.ui.internal.messages";//$NON-NLS-1$
 
 
@@ -1008,10 +1009,11 @@ public class WorkbenchMessages extends NLS {
     public String FilteredItemsSelectionDialog_taskProgressMessage;
     public String FilteredItemsSelectionDialog_subtaskProgressMessage;
     	
-    static {
-		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, WorkbenchMessages.class);
-	}
+// RAP [fappel]: need session aware NLS
+//    static {
+//		// load message values from bundle file
+//		NLS.initializeMessages(BUNDLE_NAME, WorkbenchMessages.class);
+//	}
 
 
     public String FastViewBar_show_view;
