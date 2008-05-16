@@ -622,6 +622,10 @@ public class Shell extends Decorations {
         event.processEvent();
         if( event.doit ) {
           Shell.this.dispose();
+          Shell[] dialogShells = getShells();
+          for( int i = 0; i < dialogShells.length; i++ ) {
+            dialogShells[ i ].dispose();
+          }
         }
       }
     } );

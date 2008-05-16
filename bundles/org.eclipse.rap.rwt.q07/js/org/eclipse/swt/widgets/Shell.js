@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this._captionTitle.setMode( "html" );
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
-    this._dialogMode = false;
+    this._parentShell = null;
     // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
@@ -50,22 +50,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     
     preloadDone : false,
 
-    onClose : function( evt ) {
+    _onParentClose : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var shell = evt.getData();
-        shell.hide();
-        org.eclipse.swt.widgets.Shell._appendCloseRequestParam( shell );
+        this.doClose();
       }
     },
-    
-    onCloseAction : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var shell = evt.getData();
-        org.eclipse.swt.widgets.Shell._appendCloseRequestParam( shell );
-        org.eclipse.swt.Request.getInstance().send();
-      }
-    },
-    
+
     _appendCloseRequestParam : function( shell ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -99,10 +89,76 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         preloader.start();
         org.eclipse.swt.widgets.Shell.preloadDone = true;
       }
-    }
+    },
+
+    reorderShells : function( vWindowManager ) {
+      var shells = qx.lang.Object.getValues( vWindowManager.getAll() );
+      shells = shells.sort( org.eclipse.swt.widgets.Shell._compareShells );
+      var vLength = shells.length;
+      var upperModalShell = null;
+      if( vLength > 0 ) {
+        var vTop = shells[ 0 ].getTopLevelWidget();
+        var vZIndex = org.eclipse.swt.widgets.Shell.MIN_ZINDEX;
+        vTop._getBlocker().hide();
+        for( var i = 0; i < vLength; i++ ) {
+          vZIndex += 10;
+          shells[ i ].setZIndex( vZIndex );
+          if( shells[ i ]._appModal ) {
+            upperModalShell = shells[ i ];
+          }
+        }
+        if( upperModalShell != null ) {
+          vTop._getBlocker().show();
+          vTop._getBlocker().setZIndex( upperModalShell.getZIndex() - 1 );
+        }
+      }
+      org.eclipse.swt.widgets.Shell._upperModalShell = upperModalShell;
+    },
+
+    /*
+     * Compares two Shells regarding their desired z-order.
+     * 
+     * Result is
+     * - positive if sh1 is higher
+     * - negative if sh2 is higher
+     * - zero if equal
+     */
+    _compareShells : function( sh1, sh2 ) {
+      var result = 0;
+      // check for dialog relationship
+      if( sh1.isDialogOf( sh2 ) ) {
+        result = 1;
+      } else if( sh2.isDialogOf( sh1 ) ) {
+        result = -1;
+      }
+      // compare by onTop property
+      if( result == 0 ) {
+        result = ( sh1._onTop ? 1 : 0 ) - ( sh2._onTop ? 1 : 0 );
+      }
+      // compare by appModal property
+      if( result == 0 ) {
+        result = ( sh1._appModal ? 1 : 0 ) - ( sh2._appModal ? 1 : 0 );
+      }
+      // compare by top-level parent's z-order
+      if( result == 0 ) {
+        var top1 = sh1.getTopLevelShell();
+        var top2 = sh2.getTopLevelShell();
+        result = top1.getZIndex() - top2.getZIndex();
+      }
+      // compare by actual z-order      
+      if( result == 0 ) {
+        result = sh1.getZIndex() - sh2.getZIndex();
+      }
+      return result;
+    },
+
+    MIN_ZINDEX : 1e5,
+
+    MAX_ZINDEX : 1e7
   },
   
   destruct : function() {
+    this.setParentShell( null );
     this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.removeEventListener( "changeActive", this._onChangeActive );
     this.removeEventListener( "keydown", this._onKeydown );
@@ -123,42 +179,48 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     "close" : "qx.event.type.DataEvent"
   },
 
-  properties : {
-    alwaysOnTop : {
-      check : "Boolean"
-    }
-  },
-
   members : {
     setDefaultButton : function( value ) {
       this._defaultButton = value;
     },
-    
+
     getDefaultButton : function() {
       return this._defaultButton;  
     },
-    
-    setDialogMode : function( value ) {
-      this._dialogMode = value;
+
+    setParentShell : function( parentShell ) {
+      var oldParentShell = this._parentShell;
+      this._parentShell = parentShell;
+      var listener = org.eclipse.swt.widgets.Shell._onParentClose;
+      if( oldParentShell != null ) {
+        oldParentShell.removeEventListener( "close", listener, this );
+      }
+      if( parentShell != null ) {
+        parentShell.addEventListener( "close", listener, this );
+      }
+    },
+
+    setHasShellListener : function( hasListener ) {
+      this._hasShellListener = hasListener;
     },
     
     setActiveControl : function( control ) {
       this._activeControl = control;
     },
 
-    /** To be called after rwt_TITLE is set */
-    fixTitlebar : function() {
-      if( this.hasState( "rwt_TITLE" ) ) {
-        this._captionBar.addState( "rwt_TITLE" );
-      } else {
-        this.setShowCaption( false );
-      }
+    /** To be called after rwt_XXX states are set */
+    initialize : function() {
+      this.setShowCaption( this.hasState( "rwt_TITLE" ) );
+      this._onTop = ( this._parentShell != null && this._parentShell._onTop )
+                    || this.hasState( "rwt_ON_TOP" );
+      this._appModal = this.hasState( "rwt_APPLICATION_MODAL" );
     },
 
     // TODO [rst] Find a generic solution for state inheritance
     addState : function( state ) {
       this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
+      {
         this._captionBar.addState( state );
         this._minimizeButton.addState( state );
         this._maximizeButton.addState( state );
@@ -167,12 +229,33 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
     },
 
-    /** Overrides qx.ui.window.Window#close() */    
+    /**
+     * Overrides qx.ui.window.Window#close()
+     * 
+     * Called when user tries to close the shell.
+     */
     close : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.swt.widgets.Shell._appendCloseRequestParam( this );
+        if( this._hasShellListener ) {
+          org.eclipse.swt.Request.getInstance().send();
+        } else {
+          this.doClose();
+        }
+      }
+    },
+
+    /**
+     * Really closes the shell.
+     */
+    doClose : function() {
+      var wm = this.getWindowManager();
+      this.hide();
       if( this.hasEventListeners( "close" ) ) {
         var event = new qx.event.type.DataEvent( "close", this );
         this.dispatchEvent( event, true );
       }
+      org.eclipse.swt.widgets.Shell.reorderShells( wm );
     },
 
     /**
@@ -228,6 +311,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       //      See http://bugzilla.qooxdoo.org/show_bug.cgi?id=345
       if( !this.getActive() && !isFinite( this.getZIndex() ) ) {
         this.setZIndex( 1e8 );
+        // TODO [rst] Obsoleted by rewrite. Let the warning here for safety.
+        this.warn( "--- INFINITE Z-ORDER ---" );
       }
       // end of workaround
       if( !org_eclipse_rap_rwt_EventUtil_suspend && this.getActive() ) {
@@ -245,6 +330,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
       var active = evt.getValue();
       if( active ) {
+
+        // workaround: Do not activate Shells that are blocked by a modal Shell
+        var modalShell = org.eclipse.swt.widgets.Shell._upperModalShell;
+        if( modalShell != null && modalShell.getZIndex() > this.getZIndex() ) {
+          this.setActive( false );
+          modalShell.setActive( true );
+        }
+        // end of workaround
+
         this._minimizeButton.addState( "active" );
         this._maximizeButton.addState( "active" );
         this._restoreButton.addState( "active" );
@@ -269,7 +363,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         if( defButton != null && defButton.isSeeable() ) {
           defButton.execute();
         }
-      } else if( keyId == "Escape" && this._dialogMode ) {
+      } else if( keyId == "Escape" && this._parentShell != null ) {
         this.close();
       }
     },
@@ -304,21 +398,85 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       return result;
     },
 
+    /**
+     * Returns true if the receiver is a dialog shell of the given parent shell,
+     * directly or indirectly.
+     */
+    isDialogOf : function( shell ) {
+      var result = false;
+      var parentShell = this._parentShell;
+      while( !result && parentShell != null ) {
+        result = shell === parentShell;
+        parentShell = parentShell._parentShell;
+      }
+      return result;
+    },
+
+    /**
+     * Returns the top-level shell if the receiver is a dialog or the shell
+     * itself if it is a top-level shell.
+     */
+    getTopLevelShell : function() {
+      var result = this;
+      while( result._parentShell != null ) {
+        result = result._parentShell;
+      }
+      return result;
+    },
+
     /* TODO [rst] Revise when upgrading: overrides the _sendTo() function in
      *      superclass Window to allow for always-on-top.
      *      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=367
      */
     _sendTo : function() {
-      var vAll = qx.lang.Object.getValues( this.getWindowManager().getAll() );
-      vAll = vAll.sort( qx.util.Compare.byZIndex );
-      var vLength = vAll.length;
-      var vIndex = this._minZIndex;
-      for( var i = 0; i < vLength; i++ ) {
-        var newZIndex = vIndex++;
-        if( vAll[ i ].getAlwaysOnTop() ) {
-          newZIndex += vLength;
+      org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
+    },
+
+    /*
+     * Overwrites Popup#bringToFront
+     */
+    bringToFront : function() {
+      var targetShell = this;
+      while( targetShell._parentShell != null ) {
+        targetShell = targetShell._parentShell;
+      }
+      this.setZIndex( org.eclipse.swt.widgets.Shell.MAX_ZINDEX + 1 );
+      targetShell.setZIndex( org.eclipse.swt.widgets.Shell.MAX_ZINDEX + 1 );
+      org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
+    },
+
+    /*
+     * Overwrites Popup#sendToBack
+     */
+    sendToBack : function() {
+      var targetShell = this;
+      while( targetShell._parentShell != null ) {
+        targetShell = targetShell._parentShell;
+      }
+      this.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );      
+      targetShell.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );      
+      org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
+    },
+
+    /*
+     * E X P E R I M E N T A L
+     * (for future PRIMARY_MODAL support)
+     */
+    setBlocked : function( blocked ) {
+      if( blocked ) {
+        if( !this._blocker ) {
+          this._blocker = new qx.ui.layout.CanvasLayout();
+          this._blocker.setAppearance( "client-document-blocker" );
+          this.add( this._blocker );
         }
-        vAll[ i ].setZIndex( newZIndex );
+        this._blocker.setSpace( 0, 0, 10000, 10000 );
+        this._blocker.setZIndex( 1000 );
+      } else {
+        if( this._blocker ) {
+          this.remove( this._blocker );
+          this._blocker.dispose();
+          this._blocker = null;
+        }
       }
     },
     

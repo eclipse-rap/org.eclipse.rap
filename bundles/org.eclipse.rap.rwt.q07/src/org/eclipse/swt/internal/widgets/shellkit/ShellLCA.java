@@ -41,11 +41,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_MODE = "mode";
   static final String PROP_SHELL_LISTENER = "shellListener";
 
-  private static final JSListenerInfo JS_CLOSE_LISTENER_INFO
-    = new JSListenerInfo( "close",
-                          "org.eclipse.swt.widgets.Shell.onClose",
-                          JSListenerType.STATE_AND_ACTION );
-
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     Shell shell = ( Shell )widget;
@@ -74,17 +69,19 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
-    writer.newWidget( QX_TYPE, null );
+    writer.newWidget( QX_TYPE );
     WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( shell );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
-      writer.set( "modal", true );
+      writer.call( "addState", new Object[] { "rwt_APPLICATION_MODAL" } );
+    }
+    if( ( style & SWT.ON_TOP ) != 0 ) {
+      writer.call( "addState", new Object[] { "rwt_ON_TOP" } );
     }
     if( ( style & SWT.TITLE ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_TITLE" } );
     }
-    writer.call( "fixTitlebar", new Object[ 0 ] );
     writer.set( "showMinimize", ( style & SWT.MIN ) != 0 );
     writer.set( "allowMinimize", ( style & SWT.MIN ) != 0 );
     writer.set( "showMaximize", ( style & SWT.MAX ) != 0 );
@@ -94,10 +91,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Boolean resizable = Boolean.valueOf( ( style & SWT.RESIZE ) != 0 );
     writer.set( "resizable",
                 new Object[] { resizable, resizable, resizable, resizable } );
-    writer.set( "alwaysOnTop", ( style & SWT.ON_TOP ) != 0 );
-    if( ( shell.getParent() instanceof Shell ) ) {
-      writer.set( "dialogMode", true );
+    Composite parent = shell.getParent();
+    if( ( parent instanceof Shell ) ) {
+      writer.set( "parentShell", parent );
     }
+    writer.call( "initialize", null );
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
   }
@@ -119,7 +117,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.set( "visibility", false );
+    writer.call( "doClose", null );
     writer.dispose();
   }
 
@@ -128,8 +126,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.call( "removeState", new Object[]{ "rwt_TITLE" } );
-    writer.set( "modal", false );
-    writer.set( "dialogMode", false );
+    // TODO [rst] If this is ever being reactivated, all Shell style-flag states
+    //            must be removed
+    writer.set( "parentShell", ( Object )null );
     ControlLCAUtil.resetStyleFlags();
     ControlLCAUtil.resetResizeNotificator();
     ControlLCAUtil.resetMoveNotificator();
@@ -303,9 +302,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void writeCloseListener( final Shell shell ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( shell );
-    writer.updateListener( JS_CLOSE_LISTENER_INFO,
-                           PROP_SHELL_LISTENER,
-                           ShellEvent.hasListener( shell ) );
+    boolean hasListener = ShellEvent.hasListener( shell );
+    writer.set( "hasShellListener", hasListener );
   }
 
   private static String getMode( final Shell shell ) {
