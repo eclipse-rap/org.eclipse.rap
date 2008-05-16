@@ -27,13 +27,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
-
     org.eclipse.swt.widgets.Shell._preloadIcons();
-    
-////////////////////////////////////////////////
-// TODO [fappel] experimental (rounded corners)
-//    this._createRoundedCorners();
-////////////////////////////////////////////////    
   },
   
   statics : {
@@ -165,14 +159,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
     this._activateListenerWidgets = null;
-
-////////////////////////////////////////////////
-// TODO [fappel] experimental (rounded corners)
-//    this.removeEventListener( "changeWidth", this._adjustCornerLeft() );
-//    this.removeEventListener( "changeHeight", this._adjustCornerTop() );
-// TODO [fappel]: remove rounded corners
-/////////////////////////////////////////////////
-    
   },
 
   events : {
@@ -478,168 +464,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           this._blocker = null;
         }
       }
-    },
-    
-    
-    //////////////////
-    // rounded corners
-    
-    _createRoundedCorners : function() {
-      this._corners = new Object();
-      this._radius = 20;
-      this._titleBarSpacer = 26 - this._radius;
-
-      this._blockBackgroundColorListener = false;
-      this._clientAreaBg = new qx.ui.layout.VerticalBoxLayout();
-      this._clientAreaBg.setEdge( 0 );
-      this.add( this._clientAreaBg );
-      
-      this.addEventListener( "appear", function() {
-        var bgColor = this.getBackgroundColor();
-        this._clientAreaBg.setBackgroundColor( bgColor );
-        this.setBackgroundColor( "transparent" );
-        
-        var element = this.getElement();
-        for( i = 0; i < 4; i++ ) {
-          var corner = document.createElement( "div" );
-          corner.id = i;
-          corner.style.position = "absolute";
-          corner.style.width = this._radius + "px";
-          if( i > 2 ) {
-            corner.style.height = this._radius + "px";
-          } else {
-            corner.style.height
-              = ( this._radius + this._titleBarSpacer ) + "px";
-          }
-          corner.style.backgroundColor = "transparent";
-          
-          this._computeCurve( corner );
-          var cornerName = org.eclipse.swt.widgets.Shell.CORNER_NAMES[ i ];
-          this._corners[ cornerName ] = corner.cloneNode( true );
-          element.appendChild( this._corners[ cornerName ] );
-        }
-        var bottom = document.createElement( "div" );
-        bottom.style.position = "absolute";
-        bottom.style.left = this._radius;
-        bottom.style.height = this._radius - 1;
-        bottom.style.backgroundColor = "#9dd0ea"; // TODO Color
-        this._bottom = bottom.cloneNode( true );
-        element.appendChild( this._bottom );
-        
-        this.addEventListener( "changeWidth", function() {
-          this._adjustCornerLeft();
-        } );
-        this.addEventListener( "changeHeight", function() {
-          this._adjustCornerTop();
-        } );
-        this.addEventListener( "changeBackgroundColor", function() {
-          if( !this._blockBackgroundColorListener ) {
-            this._clientAreaBg.setBackgroundColor( this.getBackgroundColor() );
-            this._blockBackgroundColorListener = true;
-            this.setBackgroundColor( "transparent" );
-            this._blockBackgroundColorListener = false;
-          }
-        } );
-        
-        this._captionBar.setLeft( this._radius );
-        this._adjustCornerLeft();
-        this._adjustCornerTop();
-      } );
-      
-    },
-    
-    _computeCurve : function( corner ) {
-      for( var i = 0; i < this._radius; i++ ) {
-        var angle = Math.asin( i / this._radius );
-        var ak;
-        if( angle != 0 ) {
-          var hyp = i / Math.sin( angle );
-          ak = Math.cos( angle ) * hyp;
-        } else {
-          ak = this._radius;
-        }
-       
-        var span = document.createElement( "span" );
-        span.style.position = "absolute";
-        span.style.height = "1px";
-        span.style.backgroundColor = "#9dd0ea"; // TODO Color
-        span.style.display = "block";
-        switch( eval( corner.id ) ) {
-          case 0:
-            span.style.left = ( this._radius - ak ) + "px";
-            span.style.width = ak + "px";
-            span.style.top = ( this._radius - i ) + "px";
-          break;
-          case 1:
-            span.style.left = "0px";
-            span.style.width = ak + "px";
-            span.style.top = ( this._radius - i ) + "px";
-          break;
-          case 2:
-            span.style.left = ( this._radius - ak ) + "px";
-            span.style.width = ak + "px";
-            span.style.top = ( i - 1 ) + "px";
-          break;
-          case 3:
-            span.style.left = "0px";
-            span.style.width = ak + "px";
-            span.style.top = ( i - 1 ) + "px";
-          break;
-        }
-        corner.appendChild( span.cloneNode( true ) );
-        this._appendTitleBarSpacer( corner );
-      }
-    },
-    
-    _appendTitleBarSpacer : function( corner ) {
-      if( eval( corner.id ) < 3 ) {
-        var titleBarSpacer = document.createElement( "span" );
-        titleBarSpacer.style.position = "absolute";
-        titleBarSpacer.style.top = this._radius;
-        titleBarSpacer.style.left = 0;
-        titleBarSpacer.style.width = this._radius;
-        titleBarSpacer.style.height = this._titleBarSpacer;
-        titleBarSpacer.style.backgroundColor = "#9dd0ea"; // TODO color
-        corner.appendChild( titleBarSpacer.cloneNode( true ) );
-      }
-    },
-    
-    _adjustCornerLeft : function() {
-      var width = this.getWidth();
-      this._getTopLeft().style.left = "0px";
-      this._getTopRight().style.left = ( width - this._radius ) + "px";
-      this._getBottomLeft().style.left = "0px";
-      this._getBottomRight().style.left = ( width - this._radius ) + "px";
-      this._captionBar.setWidth( width - 2 * this._radius );
-      this._bottom.style.width = ( width - this._radius * 2 ) + "px";
-    },
-    
-    _adjustCornerTop : function() {
-      var height = this.getHeight();
-      var clientAreaHeight
-        = this.getHeight() + 1 - this._titleBarSpacer - this._radius * 2;
-      this._clientAreaBg.setHeight( clientAreaHeight );
-      this._getTopLeft().style.top = "-1px";
-      this._getTopRight().style.top = "-1px";
-      this._getBottomLeft().style.top = ( height - this._radius ) + "px";
-      this._getBottomRight().style.top = ( height - this._radius ) + "px";
-      this._bottom.style.top = ( height - this._radius ) + "px";
-    },
-    
-    _getTopLeft : function() {
-      return this._corners[ org.eclipse.swt.widgets.Shell.TOP_LEFT ];
-    },
-    
-    _getTopRight : function() {
-      return this._corners[ org.eclipse.swt.widgets.Shell.TOP_RIGHT ];
-    },
-    
-    _getBottomLeft : function() {
-      return this._corners[ org.eclipse.swt.widgets.Shell.BOTTOM_LEFT ];
-    },
-    
-    _getBottomRight : function() {
-      return this._corners[ org.eclipse.swt.widgets.Shell.BOTTOM_RIGHT ];
     }
   }
-});
+} );
