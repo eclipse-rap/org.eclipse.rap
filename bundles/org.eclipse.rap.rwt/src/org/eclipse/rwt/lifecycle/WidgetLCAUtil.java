@@ -444,7 +444,9 @@ public final class WidgetLCAUtil {
       // Under Windows, ampersand characters are not correctly displayed:
       // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271
       // However, it is correct not to escape mnemonics in tool tips
-      Object[] args = new Object[] { widget, escapeText( text, false ) };
+      text = escapeText( text, false );
+      text = replaceNewLines( text, "<br/>" );
+      Object[] args = new Object[] { widget, text };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_TOOL_TIP, args );
     }
   }
