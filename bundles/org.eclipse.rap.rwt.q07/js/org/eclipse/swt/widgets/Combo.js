@@ -136,6 +136,63 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // == BEGIN OVERWRITTEN METHODS ==
 
     // == BEGIN MODIFIED QX COPY ==
+    _onkeydown : function(e)
+    {
+      var vManager = this._manager;
+      var vVisible = this._popup.isSeeable();
+
+      switch(e.getKeyIdentifier())
+      {
+          // Handle <ENTER>
+        case "Enter":
+          if (vVisible)
+          {
+            this.setSelected(this._manager.getSelectedItem());
+            this._closePopup();
+            this.setFocused(true);
+          }
+          else
+          {
+            this._openPopup();
+          }
+
+          return;
+
+          // Handle <ESC>
+
+        case "Escape":
+          if (vVisible)
+          {
+            vManager.setLeadItem(this._oldSelected);
+            vManager.setAnchorItem(this._oldSelected);
+
+            vManager.setSelectedItem(this._oldSelected);
+
+            this._field.setValue(this._oldSelected ? this._oldSelected.getLabel() : "");
+
+            this._closePopup();
+            this.setFocused(true);
+            // Workaround for http://bugzilla.qooxdoo.org/show_bug.cgi?id=878
+            e.stopPropagation();
+          }
+
+          return;
+
+          // Handle Alt+Down
+
+        case "Down":
+          if (e.isAltPressed())
+          {
+            this._togglePopup();
+            return;
+          }
+
+          break;
+      }
+    },
+    // == END MODIFIED QX COPY ==
+
+    // == BEGIN MODIFIED QX COPY ==
     _onkeypress : function(e)
     {
       var vVisible = this._popup.isSeeable();
