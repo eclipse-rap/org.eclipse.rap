@@ -155,6 +155,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           {
             this._openPopup();
           }
+          // Workaround for http://bugzilla.qooxdoo.org/show_bug.cgi?id=878
+          e.stopPropagation();
 
           return;
 
