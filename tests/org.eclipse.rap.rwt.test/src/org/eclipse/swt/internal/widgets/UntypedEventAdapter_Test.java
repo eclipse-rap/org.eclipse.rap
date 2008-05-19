@@ -161,21 +161,39 @@ public class UntypedEventAdapter_Test extends TestCase {
   }
   
   public void testEventFields() {
-    final boolean[] eventOccured = { false };
+    final Event[] eventLog = { null };
     final Display display = new Display();
     final Shell shell = new Shell( display );
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
-        eventOccured[ 0 ] = true;
-        assertSame( display, event.display );
-        assertSame( shell, event.widget );
+        eventLog[ 0 ] = event;
       }
     };
-    
+    // Move event
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.Move, listener );
     ControlEvent event = new ControlEvent( shell, ControlEvent.CONTROL_MOVED );
     adapter.controlMoved( event );
-    assertTrue( eventOccured [ 0 ] );
+    assertNotNull( eventLog[ 0 ] );
+    assertSame( display, eventLog [ 0 ].display );
+    assertSame( shell, eventLog [ 0 ].widget );
+    // Selection event
+    adapter = new UntypedEventAdapter();
+    adapter.addListener( SWT.Selection, listener );
+    SelectionEvent selEvent
+      = new SelectionEvent( shell, null, SelectionEvent.WIDGET_SELECTED );
+    selEvent.x = 1;
+    selEvent.y = 2;
+    selEvent.width = 3;
+    selEvent.height = 4;
+    selEvent.text = "some text";
+    selEvent.detail = 123;
+    adapter.widgetSelected( selEvent );
+    assertEquals( selEvent.text, eventLog[ 0 ].text );
+    assertEquals( selEvent.x, eventLog[ 0 ].x );
+    assertEquals( selEvent.y, eventLog[ 0 ].y );
+    assertEquals( selEvent.height, eventLog[ 0 ].height );
+    assertEquals( selEvent.width, eventLog[ 0 ].width );
+    assertEquals( selEvent.detail, eventLog[ 0 ].detail );
   }
 }

@@ -75,6 +75,7 @@ public final class UntypedEventAdapter
     event.width = evt.width;
     event.detail = evt.detail;
     event.item = evt.item;
+    event.text = evt.text;
     dispatchEvent( SWT.Selection, event );
   }
 
