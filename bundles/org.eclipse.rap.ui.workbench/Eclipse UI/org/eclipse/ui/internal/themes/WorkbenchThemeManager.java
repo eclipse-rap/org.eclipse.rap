@@ -40,6 +40,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	private static final String SYSTEM_DEFAULT_THEME = "org.eclipse.ui.ide.systemDefault";//$NON-NLS-1$
 
+
 	// RAP [bm]: 
 //	private static WorkbenchThemeManager instance;
 //
@@ -55,8 +56,18 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 //		}
 //		return instance;
 //	}
+	private boolean initialized;
+	
 	public static WorkbenchThemeManager getInstance() {
-		return ( WorkbenchThemeManager )getInstance( WorkbenchThemeManager.class );
+		WorkbenchThemeManager result
+		  = ( WorkbenchThemeManager )getInstance( WorkbenchThemeManager.class );
+		synchronized( result ) {
+		  if( !result.initialized ) {
+		    result.initialized = true;
+		    result.getCurrentTheme();
+		  }          
+        }
+		return result;
 	}
 	// RAPEND: [bm] 
 
@@ -149,10 +160,6 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 		PrefUtil.getAPIPreferenceStore().setDefault(
 				IWorkbenchPreferenceConstants.CURRENT_THEME_ID, themeId);
-		
-		// RAP [bm]: done in old getInstance and now lives here
-		getCurrentTheme();
-		// RAPEND: [bm] 
 	}
 
 	/*
