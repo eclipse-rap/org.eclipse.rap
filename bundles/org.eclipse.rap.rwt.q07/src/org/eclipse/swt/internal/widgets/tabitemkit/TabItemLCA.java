@@ -109,9 +109,8 @@ public class TabItemLCA extends AbstractWidgetLCA {
   private static void setJSParent( final TabItem tabItem ) {
     Control control = tabItem.getControl();
     if( control != null ) {
-      IWidgetAdapter itemAdapter = WidgetUtil.getAdapter( tabItem );
       StringBuffer replacementId = new StringBuffer();
-      replacementId.append( itemAdapter.getId() );
+      replacementId.append( WidgetUtil.getId( tabItem ) );
       replacementId.append( "pg" );
       WidgetAdapter controlAdapter 
         = ( WidgetAdapter )WidgetUtil.getAdapter( control );
