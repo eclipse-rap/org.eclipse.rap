@@ -33,17 +33,11 @@ public class LinkLCA extends AbstractWidgetLCA {
 //  private static final String TYPE_POOL_ID = LinkLCA.class.getName();
 
   private static final String JS_LINK_UTIL = "org.eclipse.swt.LinkUtil";
-
   private static final String JS_FUNC_INIT = JS_LINK_UTIL + ".init";
-
   private static final String JS_FUNC_ADD_LINK = JS_LINK_UTIL + ".addLink";
-
   private static final String JS_FUNC_ADD_TEXT = JS_LINK_UTIL + ".addText";
-
   private static final String JS_FUNC_CLEAR = JS_LINK_UTIL + ".clear";
-
   private static final String JS_FUNC_DESTROY = JS_LINK_UTIL + ".destroy";
-
   private static final String JS_FUNC_SET_SELECTION_LISTENER
     = JS_LINK_UTIL + ".setSelectionListener";
 
@@ -117,8 +111,8 @@ public class LinkLCA extends AbstractWidgetLCA {
   private void writeSelectionListener( final Link link ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
     Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( link, PROP_SEL_LISTENER, newValue, defValue ) )
-    {
+    String prop = PROP_SEL_LISTENER;
+    if( WidgetLCAUtil.hasChanged( link, prop, newValue, defValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( link );
       Object[] args = new Object[]{ link, newValue };
       writer.callStatic( JS_FUNC_SET_SELECTION_LISTENER, args );
@@ -126,7 +120,8 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   private String getIdText( final Link link, final int index ) {
-    ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
+    ILinkAdapter adapter
+      = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
     String[] ids = adapter.getIds();
     return ids[ index ];
   }
@@ -137,7 +132,8 @@ public class LinkLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( link );
       Object[] args = new Object[]{ link };
       writer.callStatic( JS_FUNC_CLEAR, args );
-      ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
+      ILinkAdapter adapter
+        = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
       String displayText = adapter.getDisplayText();
       Point[] offsets = adapter.getOffsets();
       int length = displayText.length();
