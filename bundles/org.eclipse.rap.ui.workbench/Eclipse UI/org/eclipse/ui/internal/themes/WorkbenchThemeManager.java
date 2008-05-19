@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -27,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
@@ -34,25 +34,31 @@ import org.eclipse.ui.themes.IThemeManager;
 /**
  * Theme manager for the Workbench.
  */
-public class WorkbenchThemeManager extends EventManager implements
+// RAP [bm]: moved to session scope
+public class WorkbenchThemeManager extends SessionSingletonEventManager implements
 		IThemeManager {
 
 	private static final String SYSTEM_DEFAULT_THEME = "org.eclipse.ui.ide.systemDefault";//$NON-NLS-1$
 
-	private static WorkbenchThemeManager instance;
-
-	/**
-	 * Returns the singelton instance of the WorkbenchThemeManager
-	 * 
-	 * @return singleton instance
-	 */
-	public static synchronized WorkbenchThemeManager getInstance() {
-		if (instance == null) {
-			instance = new WorkbenchThemeManager();
-			instance.getCurrentTheme(); // initialize the current theme
-		}
-		return instance;
+	// RAP [bm]: 
+//	private static WorkbenchThemeManager instance;
+//
+//	/**
+//	 * Returns the singelton instance of the WorkbenchThemeManager
+//	 * 
+//	 * @return singleton instance
+//	 */
+//	public static synchronized WorkbenchThemeManager getInstance() {
+//		if (instance == null) {
+//			instance = new WorkbenchThemeManager();
+//			instance.getCurrentTheme(); // initialize the current theme
+//		}
+//		return instance;
+//	}
+	public static WorkbenchThemeManager getInstance() {
+		return ( WorkbenchThemeManager )getInstance( WorkbenchThemeManager.class );
 	}
+	// RAPEND: [bm] 
 
 	private ITheme currentTheme;
 
@@ -143,6 +149,10 @@ public class WorkbenchThemeManager extends EventManager implements
 
 		PrefUtil.getAPIPreferenceStore().setDefault(
 				IWorkbenchPreferenceConstants.CURRENT_THEME_ID, themeId);
+		
+		// RAP [bm]: done in old getInstance and now lives here
+		getCurrentTheme();
+		// RAPEND: [bm] 
 	}
 
 	/*

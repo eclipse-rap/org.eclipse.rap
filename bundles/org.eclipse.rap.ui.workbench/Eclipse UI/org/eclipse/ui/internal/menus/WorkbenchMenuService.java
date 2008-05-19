@@ -42,6 +42,9 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.IWorkbench;
@@ -262,8 +265,9 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				.getActivitySupport().getActivityManager()
 				.addActivityManagerListener(getActivityManagerListener());
 		
+		// RAP [bm]: extracted listener to detach it on session timeout
 		final IExtensionRegistry registry = Platform.getExtensionRegistry();
-		registry.addRegistryChangeListener(new IRegistryChangeListener() {
+		final IRegistryChangeListener registryChangeListener = new IRegistryChangeListener() {
 			public void registryChanged(final IRegistryChangeEvent event) {
 				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 					public void run() {
@@ -271,7 +275,16 @@ public final class WorkbenchMenuService extends InternalMenuService {
 					}
 				});
 			}
+		};
+		registry.addRegistryChangeListener(registryChangeListener);
+		RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
+
+			public void beforeDestroy(SessionStoreEvent event) {
+				registry.removeRegistryChangeListener(registryChangeListener);
+			}
+			
 		});
+		// RAPEND: [bm] 
 	}
 
 	/**

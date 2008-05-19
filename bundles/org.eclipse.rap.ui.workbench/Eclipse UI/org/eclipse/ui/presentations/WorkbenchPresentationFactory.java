@@ -12,6 +12,9 @@
 package org.eclipse.ui.presentations;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
@@ -79,13 +82,24 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
         
         IDynamicPropertyMap workbenchPreferences = result.getPluginPreferences(WorkbenchPlugin.getDefault()); 
         
-		new DefaultMultiTabListener(workbenchPreferences,
+		final DefaultMultiTabListener defaultMultiTabListener = new DefaultMultiTabListener(workbenchPreferences,
 				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, folder);
 
+		// RAP [bm]: 
+		RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
+
+			public void beforeDestroy(SessionStoreEvent event) {
+				defaultMultiTabListener.attach(null, IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, true);
+			}
+			
+		});
+		// RAPEND: [bm] 
+		
 		// RAP [bm]: tab style cannot change 
 //		new DefaultSimpleTabListener(result.getApiPreferences(),
 //				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
-//				folder);        
+//				folder);
+//		TODO: needs SessionStoreListener too when activated
         // RAPEND: [bm] 
 		
         return result;
