@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     MAX_ZINDEX : 1e7
   },
-  
+
   destruct : function() {
     this.setParentShell( null );
     this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
@@ -235,13 +235,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
      * Really closes the shell.
      */
     doClose : function() {
-      var wm = this.getWindowManager();
-      this.hide();
-      if( this.hasEventListeners( "close" ) ) {
-        var event = new qx.event.type.DataEvent( "close", this );
-        this.dispatchEvent( event, true );
+      // Note [rst]: Fixes bug 232977
+      // Background: There are situations where a shell is disposed twice, thus
+      // doClose is called on an already disposed shell at the second time
+      if( !this.isDisposed() ) {
+        this.hide();
+        if( this.hasEventListeners( "close" ) ) {
+          var event = new qx.event.type.DataEvent( "close", this );
+          this.dispatchEvent( event, true );
+        }
+        var wm = this.getWindowManager();
+        org.eclipse.swt.widgets.Shell.reorderShells( wm );
       }
-      org.eclipse.swt.widgets.Shell.reorderShells( wm );
     },
 
     /**
