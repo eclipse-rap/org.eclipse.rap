@@ -256,7 +256,7 @@ public final class RWT {
 
   /**
    * Returns the preferred <code>Locale</code> that the client will accept
-   * content in. This is eighter the <code>Locale</code> that was set in 
+   * content in. This is eihter the <code>Locale</code> that was set in 
    * session-scope using the {@link #setLocale(Locale)} method or the locale
    * based on the Accept-Language header of the current request. If neighter
    * the <code>Locale</code> was set programmatically, nor the client request
