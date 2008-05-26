@@ -82,6 +82,7 @@ public class TableTab extends ExampleTab {
     createAlignmentControl();
     createBackgroundControl();
     createSelectAtPointControl();
+    createQueryTopIndex();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -636,6 +637,18 @@ public class TableTab extends ExampleTab {
           String msg = "Invalid x or y coordinate.";
           MessageDialog.openError( shell, "Error", msg );
         }
+      }
+    } );
+  }
+
+  private void createQueryTopIndex() {
+    Button btn = new Button( styleComp, SWT.PUSH );
+    btn.setText( "Query topIndex" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        Shell shell = styleComp.getShell();
+        String msg = "Current topIndex: " + getTable().getTopIndex();
+        MessageDialog.openInformation( shell, "Information", msg );
       }
     } );
   }
