@@ -302,8 +302,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void writeCloseListener( final Shell shell ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( shell );
-    boolean hasListener = ShellEvent.hasListener( shell );
-    writer.set( "hasShellListener", hasListener );
+    Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );
+    Boolean defValue = Boolean.FALSE;
+    writer.set( PROP_SHELL_LISTENER, "hasShellListener", newValue, defValue );
   }
 
   private static String getMode( final Shell shell ) {
