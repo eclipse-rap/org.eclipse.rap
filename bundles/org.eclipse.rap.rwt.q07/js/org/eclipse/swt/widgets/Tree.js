@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,12 +114,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   },
   
   members : {
-    
-    // delegater
+
+    // delegator methods
     setBackgroundColor : function( color ) {
       this._tree.setBackgroundColor( color );
     },
-    
+
+    resetBackgroundColor : function() {
+      this._tree.resetBackgroundColor();
+    },
+
+    setTextColor : function( color ) {
+      this._tree.setTextColor( color );
+    },
+
+    resetTextColor : function() {
+      this._tree.resetTextColor();
+    },
+
     _onTreeElementChange : function( evt ) {
       var value = evt.getValue();
       if ( value )

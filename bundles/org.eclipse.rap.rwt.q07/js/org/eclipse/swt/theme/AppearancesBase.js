@@ -949,7 +949,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           result.backgroundColor = tv.getColor( "list.selection.background" );
         }
       } else {
-        result.textColor = tv.getColor( "list.foreground" );
+        result.textColor = "undefined";
         result.backgroundColor = "undefined";
       }
       return result;
@@ -991,9 +991,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.verticalChildrenAlign = "top";
       result.backgroundColor = tv.getColor( "list.background" );
-      result.border = tv.getBorder( states.rwt_BORDER
-                                    ? "control.BORDER.border"
-                                    : "control.border" );
+      result.textColor = tv.getColor( "list.foreground" );
       return result;
     }
   },
