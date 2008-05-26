@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import junit.framework.TestCase;
@@ -100,8 +101,8 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( new Integer( TableColumnLCA.getZIndex( column ) ), zIndex );
     Object left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
     assertEquals( new Integer( TableColumnLCA.getLeft( column ) ), left );
-    Object sortImage = adapter.getPreserved( TableColumnLCA.PROP_SORT_IMAGE );
-    assertEquals( TableColumnLCA.getSortImage( column ), sortImage );
+    Object sortDir = adapter.getPreserved( TableColumnLCA.PROP_SORT_DIRECTION );
+    assertEquals( TableColumnLCA.getSortDirection( column ), sortDir );
     Object resizable = adapter.getPreserved( TableColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.TRUE, resizable );
     Object moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
@@ -122,8 +123,8 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( new Integer( TableColumnLCA.getZIndex( column ) ), zIndex );
     left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
     assertEquals( new Integer( TableColumnLCA.getLeft( column ) ), left );
-    sortImage = adapter.getPreserved( TableColumnLCA.PROP_SORT_IMAGE );
-    assertEquals( TableColumnLCA.getSortImage( column ), sortImage );
+    sortDir = adapter.getPreserved( TableColumnLCA.PROP_SORT_DIRECTION );
+    assertEquals( TableColumnLCA.getSortDirection( column ), sortDir );
     resizable = adapter.getPreserved( TableColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.FALSE, resizable );
     moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
@@ -135,7 +136,7 @@ public class TableColumnLCA_Test extends TestCase {
     RWTFixture.clearPreserved();
     display.dispose();
   }
-  
+
   public void testResizeEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();

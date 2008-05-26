@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -23,27 +23,23 @@ import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.widgets.*;
 
+
 public final class TableColumnLCA extends AbstractWidgetLCA {
 
-  private static final String SORT_IMAGE_UP 
-    = "widget/table/column/up.gif";
-  private static final String SORT_IMAGE_DOWN 
-    = "widget/table/column/down.gif";
-
-  // Property names to preserve values
+// Property names to preserve values
   static final String PROP_LEFT = "left";
   static final String PROP_WIDTH = "width";
   static final String PROP_Z_INDEX = "zIndex";
-  static final String PROP_SORT_IMAGE = "sortImage";
+  static final String PROP_SORT_DIRECTION = "sortDirection";
   static final String PROP_RESIZABLE = "resizable";
   static final String PROP_MOVEABLE = "moveable";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
-  
+
   private static final Integer DEFAULT_LEFT = new Integer( 0 );
-  
+
   private static final JSListenerInfo SELECTION_LISTENER
     = new JSListenerInfo( "click", "this.onClick", JSListenerType.ACTION );
-  
+
   public void preserveValues( final Widget widget ) {
     TableColumn column = ( TableColumn )widget;
     ItemLCAUtil.preserve( column );
@@ -53,20 +49,20 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
-    adapter.preserve( PROP_SORT_IMAGE, getSortImage( column ) );
-    adapter.preserve( PROP_RESIZABLE, 
+    adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
+    adapter.preserve( PROP_RESIZABLE,
                       Boolean.valueOf( column.getResizable() ) );
-    adapter.preserve( PROP_MOVEABLE, 
+    adapter.preserve( PROP_MOVEABLE,
                       Boolean.valueOf( column.getMoveable() ) );
-    adapter.preserve( PROP_SELECTION_LISTENERS, 
+    adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
   }
-  
+
   public void readData( final Widget widget ) {
     final TableColumn column = ( TableColumn )widget;
-    // Though there is sent an event parameter called 
+    // Though there is sent an event parameter called
     // org.eclipse.swt.events.controlResized
-    // we will ignore it since setting the new width itself fires the 
+    // we will ignore it since setting the new width itself fires the
     // desired controlResized-event
     String value = WidgetLCAUtil.readPropertyValue( column, "width" );
     if( value != null ) {
@@ -94,7 +90,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.processSelection( column, null, false );
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
@@ -110,7 +106,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writeWidth( column );
     writeZIndex( column );
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
-    writeSortImage( column );
+    writeSortDirection( column );
     writeResizable( column );
     writeMoveable( column );
     writeAlignment( column );
@@ -123,26 +119,26 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) 
-    throws IOException 
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
   {
   }
-  
+
   public String getTypePoolId( final Widget widget ) {
     return null;
   }
-  
-  
+
+
   //////////////////////////////////////////
   // Helping method to write JavaScript code
-  
+
   private static void writeLeft( final TableColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( getLeft( column ) );
     writer.set( PROP_LEFT, "left", newValue, DEFAULT_LEFT );
   }
 
-  private static void writeWidth( final TableColumn column ) throws IOException 
+  private static void writeWidth( final TableColumn column ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( column.getWidth() );
@@ -151,38 +147,39 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 
   // TODO [rh] writing Z-Index seems unnecessary since it is relative to the
   //      parent and thus could be hard-coded client-side
-  private static void writeZIndex( final TableColumn column ) throws IOException 
+  private static void writeZIndex( final TableColumn column ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( getZIndex( column ) );
     writer.set( PROP_Z_INDEX, "zIndex", newValue, null );
   }
 
-  private static void writeSortImage( final TableColumn column ) 
-    throws IOException 
+  private static void writeSortDirection( final TableColumn column )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( column );
-    writer.set( PROP_SORT_IMAGE, "sortImage", getSortImage( column ), "" );
+    String newValue = getSortDirection( column );
+    writer.set( PROP_SORT_DIRECTION, "sortDirection", newValue, null );
   }
 
-  private static void writeResizable( final TableColumn column ) 
-    throws IOException 
+  private static void writeResizable( final TableColumn column )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( column.getResizable() );
     writer.set( PROP_RESIZABLE, "resizable", newValue, Boolean.TRUE );
   }
 
-  private static void writeMoveable( final TableColumn column ) 
-    throws IOException 
+  private static void writeMoveable( final TableColumn column )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( column.getMoveable() );
     writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
   }
-  
-  private static void writeAlignment( final TableColumn column ) 
-    throws IOException 
+
+  private static void writeAlignment( final TableColumn column )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( column );
     if( TableLCAUtil.hasAlignmentChanged( column ) ) {
@@ -203,40 +200,40 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   {
     // TODO [rh] dispose of selection listener when widget is disposed of
     JSWriter writer = JSWriter.getWriterFor( column );
-    writer.updateListener( SELECTION_LISTENER, 
-                           PROP_SELECTION_LISTENERS, 
+    writer.updateListener( SELECTION_LISTENER,
+                           PROP_SELECTION_LISTENERS,
                            SelectionEvent.hasListener( column ) );
   }
 
   //////////////////////////////////////////////////
   // Helping methods to obtain calculated properties
-  
+
   static int getLeft( final TableColumn column ) {
     Object adapter = column.getParent().getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return tableAdapter.getColumnLeft( column );
   }
-  
+
   static int getZIndex( final TableColumn column ) {
     return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
   }
 
-  static String getSortImage( final TableColumn column ) {
-    String result = "";
+  static String getSortDirection( final TableColumn column ) {
+    String result = null;
     Table table = column.getParent();
     if( table.getSortColumn() == column ) {
       if( table.getSortDirection() == SWT.UP ) {
-        result = SORT_IMAGE_UP;
+        result = "up";
       } else if( table.getSortDirection() == SWT.DOWN ) {
-        result = SORT_IMAGE_DOWN;
+        result = "down";
       }
     }
     return result;
   }
-  
+
   /////////////////////////////////
   // Helping methods to move column
-  
+
   static void moveColumn( final TableColumn column, final int newLeft ) {
     Table table = column.getParent();
     int targetColumn = findMoveTarget( table, newLeft );
@@ -259,12 +256,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       table.setColumnOrder( columnOrder );
     }
   }
-  
+
   /* (intentionally non-JavaDoc'ed)
    * Returns the index in the columnOrder array at which the moved column
    * should be inserted (moving remaining columns to the right). A return
-   * value of columnCount indicates that the moved column should be inserted 
-   * after the right-most column. 
+   * value of columnCount indicates that the moved column should be inserted
+   * after the right-most column.
    */
   private static int findMoveTarget( final Table table, final int newLeft ) {
     int result = -1;
@@ -300,7 +297,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static int[] arrayRemove( final int[] array, final int index ) {
     int length = array.length;
     int[] result = new int[ length - 1 ];
@@ -310,12 +307,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
-  private static int[] arrayInsert( final int[] array, 
-                                    final int index, 
-                                    final int value ) 
+
+  private static int[] arrayInsert( final int[] array,
+                                    final int index,
+                                    final int value )
   {
-    
+
     int length = array.length;
     int[] result = new int[ length + 1 ];
     System.arraycopy( array, 0, result, 0, length );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,8 +99,8 @@ public class TreeColumnLCA_Test extends TestCase {
     assertEquals( new Integer( TreeColumnLCA.getZIndex( column ) ), zindex );
     Object left = adapter.getPreserved( TreeColumnLCA.PROP_LEFT );
     assertEquals( new Integer( TreeColumnLCA.getLeft( column ) ), left );
-    Object sortimage = adapter.getPreserved( TreeColumnLCA.PROP_SORT_IMAGE );
-    assertEquals( TreeColumnLCA.getSortImage( column ), sortimage );
+    Object sortDir = adapter.getPreserved( TreeColumnLCA.PROP_SORT_DIRECTION );
+    assertEquals( TreeColumnLCA.getSortDirection( column ), sortDir );
     Object resizable = adapter.getPreserved( TreeColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.TRUE, resizable );
     Object moveable = adapter.getPreserved( TreeColumnLCA.PROP_MOVEABLE );
@@ -120,8 +120,8 @@ public class TreeColumnLCA_Test extends TestCase {
     assertEquals( new Integer( TreeColumnLCA.getZIndex( column ) ), zindex );
     left = adapter.getPreserved( TreeColumnLCA.PROP_LEFT );
     assertEquals( new Integer( TreeColumnLCA.getLeft( column ) ), left );
-    sortimage = adapter.getPreserved( TreeColumnLCA.PROP_SORT_IMAGE );
-    assertEquals( TreeColumnLCA.getSortImage( column ), sortimage );
+    sortDir = adapter.getPreserved( TreeColumnLCA.PROP_SORT_DIRECTION );
+    assertEquals( TreeColumnLCA.getSortDirection( column ), sortDir );
     resizable = adapter.getPreserved( TreeColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.FALSE, resizable );
     moveable = adapter.getPreserved( TreeColumnLCA.PROP_MOVEABLE );
@@ -133,7 +133,7 @@ public class TreeColumnLCA_Test extends TestCase {
     RWTFixture.clearPreserved();
     display.dispose();
   }
-  
+
   public void testResizeEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();

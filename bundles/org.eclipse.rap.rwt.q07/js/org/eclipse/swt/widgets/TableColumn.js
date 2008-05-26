@@ -22,7 +22,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT ); 
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     // Getter/setter variables
-    this._sortImage = null;
     this._resizable = true;
     this._moveable = false;
     // Internally used fields for resizing
@@ -54,6 +53,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "mousedown", this._onMouseDown, this );
     this.addEventListener( "mouseup", this._onMouseUp, this );
+    // Create sort image
+    this._sortImage = new qx.ui.basic.Image();
+    this._sortImage.setAnonymous( true );
+    this._sortImage.setAppearance( "table-column-sort-indicator" );
+    this.add( this._sortImage );
   },
 
   destruct : function() {
@@ -64,7 +68,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
-    this._disposeSortImage();
+    this._disposeFields( "_sortImage" );
     if( !this._table.getDisposed() ) {
       this._table._removeColumn( this );
     }
@@ -84,33 +88,25 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
    
   members : {
     
-    setSortImage : function( value ) {
-      if( value == "" ) {
-        this._disposeSortImage();
+    setSortDirection : function( value ) {
+      if( value == "up" ) {
+        this._sortImage.addState( "up" );
       } else {
-        if( this._sortImage == null ) {
-          this._sortImage = new qx.ui.basic.Image();
-          this._sortImage.setAnonymous( true );
-          this.add( this._sortImage );
-        }
-        this._sortImage.setSource( value );
+        this._sortImage.removeState( "up" );
+      }
+      if( value == "down" ) {
+        this._sortImage.addState( "down" );
+      } else {
+        this._sortImage.removeState( "down" );
       }
     },
-    
+
     setResizable : function( value ) {
       this._resizable = value;
     },
     
     setMoveable : function( value ) {
       this._moveable = value;
-    },
-    
-    _disposeSortImage : function() {
-      if( this._sortImage != null ) {
-        this._sortImage.setParent( null );
-        this._sortImage.dispose();
-        this._sortImage = null;
-      }
     },
     
     /** This listener function is added and removed server-side */

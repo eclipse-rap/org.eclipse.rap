@@ -1054,12 +1054,27 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "tree-column-resizer" : {
-    style : function( sates ) {
+    style : function( states ) {
       return {
         // TODO [rh] use same bg-color as splitpane-spltter (see there)
         backgroundColor : "#d6d5d9",
         width : 3
       }
+    }
+  },
+
+  "tree-column-sort-indicator" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      if( states.up ) {
+        result.source = tv.getImage( "tree.column.sort.up" );
+      } else if( states.down ) {
+        result.source = tv.getImage( "tree.column.sort.down" );
+      } else {
+        result.source = "undefined";
+      }
+      return result;
     }
   },
 
@@ -1361,12 +1376,27 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "table-column-resizer" : {
-    style : function( sates ) {
+    style : function( states ) {
       return {
         width : 3,
         opacity : 0.3,
         backgroundColor : "black"
       }
+    }
+  },
+
+  "table-column-sort-indicator" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      if( states.up ) {
+        result.source = tv.getImage( "table.column.sort.up" );
+      } else if( states.down ) {
+        result.source = tv.getImage( "table.column.sort.down" );
+      } else {
+        result.source = "undefined";
+      }
+      return result;
     }
   },
 
