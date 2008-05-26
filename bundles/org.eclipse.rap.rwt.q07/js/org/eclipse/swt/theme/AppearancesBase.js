@@ -1618,20 +1618,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "coolbar" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" )
-      }
+      var result = {};
+      result.border = tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" );
+      return result;
+    }
+  },
+
+  "coolitem" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" );
+      return result;
     }
   },
 
   "coolitem-handle" : {
     style : function( states ) {
-      return {
-        width : "100%",
-        border : "thinOutset",
-        margin : [ 1, 2, 1, 0 ],
-        cursor : "w-resize"
-      }
+      var result = {};
+      result.width = "100%";
+      result.border = "thinOutset";
+      result.margin = [ 1, 2, 1, 0 ];
+      result.cursor = "w-resize";
+      return result;
     }
   },
 

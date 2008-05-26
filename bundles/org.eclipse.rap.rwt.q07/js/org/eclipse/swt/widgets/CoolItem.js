@@ -19,6 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
   construct : function( orientation ) {
     this.base( arguments );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setAppearance( "coolitem" );
     this._orientation = orientation;
     // Create handle to drag this CoolItem around
     this._handle = new qx.ui.basic.Terminator();
@@ -30,7 +31,6 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     this.add( this._handle );
     // buffers zIndex and background during drag to be restored when dropped
     this._bufferedZIndex = null;
-    this._bufferedBackground = null;
   },
 
   destruct : function() {
@@ -71,7 +71,6 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       // In some cases the coolItem appeare transparent when dragged around
       // To fix this, walk along the parent hierarchy and use the first explicitly
       // set background color.
-      this._bufferedBackground = this.getBackgroundColor();
       this.setBackgroundColor( this._findBackground() );
     },
 
@@ -85,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     _onHandleMouseUp : function( evt ) {
       this._handle.setCapture( false );
       this.setZIndex( this._bufferedZIndex );
-      this.setBackgroundColor( this._bufferedBackground );
+      this.resetBackgroundColor();
       this.getTopLevelWidget().setGlobalCursor( null );
 
       // Send request that informs about dragged CoolItem

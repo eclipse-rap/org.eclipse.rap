@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -30,8 +30,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
 
   /* (intentionally not JavaDoc'ed)
    * Unnecesary to call ItemLCAUtil.preserve, CoolItem does neither use text
-   * nor image  
-   */ 
+   * nor image
+   */
   public void preserveValues( final Widget widget ) {
     CoolItem coolItem = ( CoolItem )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
@@ -54,7 +54,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       } );
     }
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     CoolItem coolItem = ( CoolItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -64,14 +64,13 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( widget );
     writer.set( "minWidth", 0 );
     writer.set( "minHeight", 0 );
-    writer.set( "backgroundColor", coolItem.getParent().getBackground() );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     CoolItem coolItem = ( CoolItem )widget;
     writeBounds( coolItem );
     setJSParent( coolItem );
-    // TODO [rh] find a decent solution to place the ctrl contained in CoolItem 
+    // TODO [rh] find a decent solution to place the ctrl contained in CoolItem
     Control control = coolItem.getControl();
     if( control != null ) {
       Point location = control.getLocation();
@@ -86,19 +85,19 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
-  
+
   public String getTypePoolId( final Widget widget ) {
     return null;
   }
-  
+
 
   //////////////////
   // Helping methods
-  
-  private static void writeBounds( final CoolItem coolItem ) throws IOException 
+
+  private static void writeBounds( final CoolItem coolItem ) throws IOException
   {
     Rectangle bounds = coolItem.getBounds();
     WidgetLCAUtil.writeBounds( coolItem, coolItem.getParent(), bounds );
@@ -108,13 +107,13 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeLocked( final CoolItem coolItem ) throws IOException 
+  private static void writeLocked( final CoolItem coolItem ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( coolItem );
     CoolBar parent = coolItem.getParent();
     Boolean oldValue = Boolean.valueOf( parent.getLocked() );
     Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( parent, Props.LOCKED, oldValue, defValue ) ) 
+    if( WidgetLCAUtil.hasChanged( parent, Props.LOCKED, oldValue, defValue ) )
     {
       writer.set( "locked", parent.getLocked() );
     }
@@ -123,7 +122,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   private static void setJSParent( final CoolItem coolItem ) {
     Control control = coolItem.getControl();
     if( control != null ) {
-      WidgetAdapter controlAdapter 
+      WidgetAdapter controlAdapter
         = ( WidgetAdapter )WidgetUtil.getAdapter( control );
       controlAdapter.setJSParent( WidgetUtil.getId( coolItem ) );
     }
@@ -140,8 +139,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   }
 
   ///////////////////////////////
-  // Methods for item re-ordering 
-  
+  // Methods for item re-ordering
+
   private static void moveItem( final CoolItem coolItem, final int newX ) {
     CoolItem[] items = coolItem.getParent().getItems();
     boolean changed = false;
@@ -178,8 +177,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static boolean changeOrder( final CoolItem coolItem, 
-                                      final int newOrder ) 
+  private static boolean changeOrder( final CoolItem coolItem,
+                                      final int newOrder )
   {
     boolean result;
     CoolBar coolBar = coolItem.getParent();
@@ -190,9 +189,9 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       if( newOrder < oldOrder ) {
         for( int i = 0; i < itemOrder.length; i++ ) {
           CoolItem item = coolBar.getItem( i );
-          if(    item != coolItem 
-              && itemOrder[ i ] >= newOrder 
-              && itemOrder[ i ] < itemOrder[ itemIndex ] ) 
+          if(    item != coolItem
+              && itemOrder[ i ] >= newOrder
+              && itemOrder[ i ] < itemOrder[ itemIndex ] )
           {
             itemOrder[ i ] += 1;
           }
@@ -200,9 +199,9 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       } else {
         for( int i = 0; i < itemOrder.length; i++ ) {
           CoolItem item = coolBar.getItem( i );
-          if(     item != coolItem 
-              && itemOrder[ i ] <= newOrder 
-              && itemOrder[ i ] > itemOrder[ itemIndex ] ) 
+          if(     item != coolItem
+              && itemOrder[ i ] <= newOrder
+              && itemOrder[ i ] > itemOrder[ itemIndex ] )
           {
             itemOrder[ i ] -= 1;
           }
@@ -211,10 +210,10 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       result = itemOrder[ itemIndex ] != newOrder;
       if( result ) {
         itemOrder[ itemIndex ] = newOrder;
-        
+
         Object adapter = coolBar.getAdapter( ICoolBarAdapter.class );
         ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-        
+
         cba.setItemOrder( itemOrder );
       }
     } else {
