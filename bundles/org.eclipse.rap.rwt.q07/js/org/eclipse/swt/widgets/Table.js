@@ -288,16 +288,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       return this._itemTextWidth[ columnIndex ];
     },
     
+    /** Only called by server-side */
     setTopIndex : function( value ) {
-      this._vertScrollBar.setValue( value * this._itemHeight );
-      this._internalSetTopIndex( value );
+      this._internalSetTopIndex( value, true );
       this._topIndexChanged = false;
     },
 
-    _internalSetTopIndex : function( value ) {
+    _internalSetTopIndex : function( value, updateVertScrollBar ) {
       if( this._topIndex !== value ) {
+      	if( updateVertScrollBar ) {
+	        this._vertScrollBar.setValue( value * this._itemHeight );
+      	}
         this._topIndex = value;
         this._updateRows();
+        this._topIndexChanged = true;
       }
     },
     
@@ -597,7 +601,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             if( topIndex < 0 ) {
               topIndex = 0;
             }
-            this.setTopIndex( topIndex );
+            this._internalSetTopIndex( topIndex, true );
           }
           this._keyboardSelecionChanged = true;
         }
@@ -657,12 +661,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var scrollTop = this._clientArea.isCreated() ? this._vertScrollBar.getValue() : 0;
         newTopIndex = Math.floor( scrollTop / this._itemHeight );
       }
-      // update topIndex request parameter
-      if( newTopIndex !== this._topIndex ) {
-        this._topIndexChanged = true;
-      }
       // set new topIndex -> rows are updateded if necessary
-      this._internalSetTopIndex( newTopIndex );
+      this._internalSetTopIndex( newTopIndex, false );
     },
 
     _onHorzScrollBarChangeValue : function() {
@@ -709,7 +709,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if(    row !== null 
             && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
         {
-          this.setTopIndex( this._topIndex + 1 );
+          this._internalSetTopIndex( this._topIndex + 1, false );
           changed = true;
         }
         if( !changed ) {

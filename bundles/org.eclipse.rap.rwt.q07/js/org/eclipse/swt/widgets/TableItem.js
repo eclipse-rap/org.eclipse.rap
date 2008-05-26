@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this._foregrounds = null;
     // HACK: Table needs one 'emptyItem' (draws the remaining space that is not 
     //       occupied by actual items) and a 'virtualItem' (represents a not
-    //       yet resolved item) 
+    //       yet resolved items) 
     // Those have an index of -1
     if ( index >= 0 ) {
       parent._addItem( this, index );
