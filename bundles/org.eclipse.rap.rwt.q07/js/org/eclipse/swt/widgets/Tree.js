@@ -149,7 +149,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     {
       this._tree.focus();
     },
-    
+
+    // TODO [rst] Find a generic solution for state inheritance
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
+      {
+        this._tree.addState( state );
+      }
+    },
+
     _onTreeScroll : function( e ) {
       var target = e.target;
       if( e.target == null ) {
@@ -588,8 +597,5 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     _enableClicks : function() {
       this._clicksSuspended = false;
     }
-    
   }
-  
-  
-});
+} );
