@@ -210,14 +210,14 @@ public class QxBorder implements QxType {
     if( object == this ) {
       result = true;
     } else if( object instanceof QxBorder ) {
-      QxBorder other = (QxBorder)object;
+      QxBorder other = ( QxBorder )object;
       result = other.width == this.width
-               && style == null
-                  ? other.style == null
-                  : style.equals( other.style )
-               && color == null
-                  ? other.color == null
-                  : color.equals( other.color );
+               && ( style == null
+                    ? other.style == null
+                    : style.equals( other.style ) )
+               && ( color == null
+                    ? other.color == null
+                    : color.equals( other.color ) );
     }
     return result;
   }

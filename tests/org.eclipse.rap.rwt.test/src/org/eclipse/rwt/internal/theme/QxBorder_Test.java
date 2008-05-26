@@ -133,4 +133,13 @@ public class QxBorder_Test extends TestCase {
     QxBorder border2 = QxBorder.valueOf( "1 dashed #ff0000" );
     assertEquals( "1px dashed #ff0000", border2.toDefaultString() );
   }
+
+  public void testEquals() throws Exception {
+    QxBorder border1 = QxBorder.create( 0, null, null );
+    QxBorder border2 = QxBorder.create( 1, null, null );
+    assertNotNull( border1 );
+    assertNull( border1.style );
+    assertNull( border1.color );
+    assertFalse( border1.equals( border2 ) );
+  }
 }
