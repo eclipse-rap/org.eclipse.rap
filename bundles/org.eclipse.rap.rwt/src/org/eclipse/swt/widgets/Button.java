@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
@@ -354,10 +353,9 @@ public class Button extends Control {
     boolean hasImage = image != null;
     boolean hasText = text.length() > 0;
     if( hasImage ) {
-      // TODO [rst] Change this as soon as Image.getBounds is implemented.
-      // Rectangle rect = image.getBounds ();
-      width = 16;
-      height = 16;
+      Rectangle imageBounds = image.getBounds ();
+      width = imageBounds.width;
+      height = imageBounds.height;
       extra = MARGIN * 2;
       if( hasText ) {
         width += MARGIN * 2;
