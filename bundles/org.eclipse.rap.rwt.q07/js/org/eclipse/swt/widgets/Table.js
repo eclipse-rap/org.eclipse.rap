@@ -37,6 +37,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._defaultColumnWidth = 0;
     // The item index that is currently displayed in the first visible row
     this._topIndex = 0;
+    this._topIndexChanging = false;
     // indicates that topIndex was changed client-side (e.g. by scrolling)
     this._topIndexChanged = false;
     // Internally used fields to manage visible rows and scrolling
@@ -296,12 +297,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _internalSetTopIndex : function( value, updateVertScrollBar ) {
       if( this._topIndex !== value ) {
+      	this._topIndexChanging = true;
       	if( updateVertScrollBar ) {
 	        this._vertScrollBar.setValue( value * this._itemHeight );
       	}
         this._topIndex = value;
         this._updateRows();
         this._topIndexChanged = true;
+        this._topIndexChanging = false;
       }
     },
     
@@ -598,8 +601,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               // Move topIndex the same distance as the selection was moved
               topIndex = this._topIndex - focusedItemIndex + gotoIndex;
             }
+            // Fix for bug #233964: 
+            // Ensure that the topIndex does not exceed the range of items
+            // this would cause a VIRTUAL table to redraw the wrong items as
+            // it relies on the topIndex to determine currently visible items 
             if( topIndex < 0 ) {
               topIndex = 0;
+            } else if( topIndex > this._itemCount ) {
+            	topIndex = this._itemCount;
             }
             this._internalSetTopIndex( topIndex, true );
           }
@@ -655,14 +664,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Scroll bar listeners
     
     _onVertScrollBarChangeValue : function() {
-      // Calculate new topIndex
-      var newTopIndex = 0;
-      if( this._itemHeight !== 0 ) {
-        var scrollTop = this._clientArea.isCreated() ? this._vertScrollBar.getValue() : 0;
-        newTopIndex = Math.floor( scrollTop / this._itemHeight );
-      }
-      // set new topIndex -> rows are updateded if necessary
-      this._internalSetTopIndex( newTopIndex, false );
+    	// Prevent _internalSetTopIndex() from being called when we are currently
+    	// changing the topIndex. _internalSetTopIndex() calls
+    	// _vertScrollBar.setValue() which fires this event handler
+    	if( !this._topIndexChanging ) {
+	      // Calculate new topIndex
+	      var newTopIndex = 0;
+	      if( this._itemHeight !== 0 ) {
+	        var scrollTop 
+	          = this._clientArea.isCreated()
+	          ? this._vertScrollBar.getValue()
+	          : 0;
+	        newTopIndex = Math.floor( scrollTop / this._itemHeight );
+	      }
+	      // set new topIndex -> rows are updateded if necessary
+	      this._internalSetTopIndex( newTopIndex, false );
+    	}
     },
 
     _onHorzScrollBarChangeValue : function() {
