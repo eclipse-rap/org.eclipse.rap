@@ -1850,7 +1850,7 @@ public class SWT {
    */
    // TODO [bm]: Improve to support different fragments
   public static String getPlatform () {
-  	return "rap";
+  	return "rap"; //$NON-NLS-1$
   }
   
   /**

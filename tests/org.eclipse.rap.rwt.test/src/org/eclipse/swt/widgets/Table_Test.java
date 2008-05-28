@@ -282,6 +282,64 @@ public class Table_Test extends TestCase {
     assertEquals( 1, table.getSelectionCount() );
   }
 
+  public void testReduceSetItemCountWithSelection() {
+    // Create a table that is populated with setItemCount with all selected
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.MULTI );
+    new TableColumn( table, SWT.NONE );
+    shell.layout();
+    shell.open();
+    table.setItemCount( 4 );
+    table.setSelection( 0, table.getItemCount() - 1 );
+    // Name items to ease debugging    
+    for( int i = 0; i < table.getItemCount(); i++ ) {
+      table.getItem( i ).setText( "Item " + i );
+    }
+    // reduce the number of items by half
+    table.setItemCount( table.getItemCount() / 2 );
+    // Ensure that the selection contains all the remaining items and all
+    // indices returned are valid
+    int[] selectionIndices = table.getSelectionIndices();
+    for( int i = 0; i < selectionIndices.length; i++ ) {
+      assertTrue( selectionIndices[ i ] >= 0 );
+      assertTrue( selectionIndices[ i ] < table.getItemCount() );
+    }
+    assertEquals( table.getItemCount(), selectionIndices.length );
+  }
+  
+  public void testReduceSetItemCountWithSelectionVirtual() {
+    // Create a table that is populated with setItemCount with all selected
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 800, 800 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    new TableColumn( table, SWT.NONE );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        event.item.setText( "Item " + event.index );
+      }
+    } );
+    shell.layout();
+    shell.open();
+    table.setItemCount( 4 );
+    table.setSelection( 0, table.getItemCount() - 1 );
+    // reduce the number of items by half
+    table.setItemCount( table.getItemCount() / 2 );
+    // Ensure that the selection contains all the remaining items and all
+    // indices returned are valid
+    int[] selectionIndices = table.getSelectionIndices();
+    for( int i = 0; i < selectionIndices.length; i++ ) {
+      assertTrue( selectionIndices[ i ] >= 0 );
+      assertTrue( selectionIndices[ i ] < table.getItemCount() );
+    }
+    assertEquals( table.getItemCount(), selectionIndices.length );
+  }
+  
   public void testFocusIndex() {
     Display display = new Display();
     Shell shell = new Shell( display );

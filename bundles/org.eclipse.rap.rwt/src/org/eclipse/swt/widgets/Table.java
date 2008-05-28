@@ -507,20 +507,20 @@ public class Table extends Composite {
     checkWidget();
     int count = Math.max( 0, newCount );
     if( count != itemCount ) {
-      boolean isVirtual = ( style & SWT.VIRTUAL ) != 0;
       int index = count;
       while( index < itemCount ) {
         TableItem item = items[ index ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
+        } else {
+          index++;
         }
-        index++;
       }
       int length = Math.max( 4, ( count + 3 ) / 4 * 4 );
       TableItem[] newItems = new TableItem[ length ];
       System.arraycopy( items, 0, newItems, 0, Math.min( count, itemCount ) );
       items = newItems;
-      if( !isVirtual ) {
+      if( ( style & SWT.VIRTUAL ) == 0 ) {
         for( int i = itemCount; i < count; i++ ) {
           items[ i ] = new TableItem( this, SWT.NONE, i, true );
         }
