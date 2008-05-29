@@ -280,6 +280,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
 
 			public void beforeDestroy(SessionStoreEvent event) {
+			  // TODO [fappel]: check whether this should be moved into dispose method
 				registry.removeRegistryChangeListener(registryChangeListener);
 			}
 			
