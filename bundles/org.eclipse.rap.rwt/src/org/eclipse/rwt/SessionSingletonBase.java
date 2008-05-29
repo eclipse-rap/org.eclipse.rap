@@ -78,7 +78,7 @@ public abstract class SessionSingletonBase {
    * @return the unique instance of the specified type that is associated
    *         with the current user session context.  
    */
-  protected static Object getInstance( final Class type ) {
+  public static Object getInstance( final Class type ) {
     // Note [fappel]: Since this code is performance critical, don't change
     //                anything without checking it against a profiler.
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
