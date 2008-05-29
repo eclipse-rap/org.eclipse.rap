@@ -39,8 +39,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
                                      org.eclipse.swt.TabUtil._onTabItemChangeFocus );
       tabButton.removeEventListener( "click", 
                                      org.eclipse.swt.TabUtil._onTabItemClick );
-      var tabPage = widgetManager.findWidgetById( itemId + "pg" );
-      widgetManager.dispose( tabPage );
+      widgetManager.dispose( itemId + "pg" );
     },
 
     _onTabItemChangeFocus : function( evt ) {
