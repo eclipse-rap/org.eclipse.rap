@@ -47,14 +47,7 @@ public class FinishedJobs extends EventManager {
 
 // RAP [fappel]: FinishedJobs need to be session aware
 //  private static FinishedJobs theInstance;
-    public final static class FinishedJobsProvider
-      extends SessionSingletonBase
-    {
-      public static FinishedJobs getInstance() {
-        return ( FinishedJobs )getInstance( FinishedJobs.class );
-      }
-    }
-
+	
 	private IJobProgressManagerListener listener;
 
 	private HashSet keptjobinfos = new HashSet();
@@ -73,8 +66,8 @@ public class FinishedJobs extends EventManager {
 //	    EMPTY_INFOS = new JobTreeElement[0];
 //	  }
 //	  return theInstance;
-	   return FinishedJobsProvider.getInstance();
-
+	   Object result = SessionSingletonBase.getInstance( FinishedJobs.class );
+	   return ( FinishedJobs )result;
 	}
 
 	private FinishedJobs() {

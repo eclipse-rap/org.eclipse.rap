@@ -1073,11 +1073,13 @@ public class ProgressManager extends ProgressProvider implements
 	 * Shutdown the receiver.
 	 */
 	private void shutdown() {
-		synchronized (listenersKey) {
-			this.listeners = new IJobProgressManagerListener[0];
-		}
-		Job.getJobManager().setProgressProvider(null);
-		Job.getJobManager().removeJobChangeListener(this.changeListener);
+// RAP [fappel]: progress manager must not be shutdown since its not directly
+//               added to jobmanager
+//		synchronized (listenersKey) {
+//			this.listeners = new IJobProgressManagerListener[0];
+//		}
+//		Job.getJobManager().setProgressProvider(null);
+//		Job.getJobManager().removeJobChangeListener(this.changeListener);
 	}
 
 	/*
