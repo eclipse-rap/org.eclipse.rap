@@ -20,8 +20,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.ExternalBrowser",
     
     open : function( id, url, features ) {
       var win = window.open( url, id, features, true );
-      win.focus();
-      org.eclipse.rwt.widgets.ExternalBrowser._map[ id ] = win; 
+      if( win !== null ) {
+        win.focus();
+        org.eclipse.rwt.widgets.ExternalBrowser._map[ id ] = win; 
+      }
     },
     
     close : function( id ) {
