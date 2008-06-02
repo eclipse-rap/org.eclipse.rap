@@ -19,6 +19,8 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.layout.FillLayout;
@@ -440,7 +442,8 @@ public class TableItem_Test extends TestCase {
    * a SetData event.
    * This may lead to items e.g. without proper text as no SetData event gets
    * fired when the item becomes visible. SWT (on Windows) behaves the same. */
-  public void testSetterWidthVirtual() {
+  public void testSetterWithVirtual() {
+    // set up virtual table with unresolved items
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List eventLog = new ArrayList();
     Display display = new Display();
@@ -455,7 +458,11 @@ public class TableItem_Test extends TestCase {
     } );
     shell.open();
     table.setItemCount( 1000 );
-    
+    // ensure precondition
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    assertTrue( adapter.isItemVirtual( 999 ) );
+    // change background color and ensure that no SetData event was fired
     eventLog.clear();
     TableItem item = table.getItem( 999 );
     item.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
@@ -484,6 +491,30 @@ public class TableItem_Test extends TestCase {
       selection[ i ].dispose();
     }
     assertEquals( 0, table.getItemCount() );
+  }
+  
+  public void testSetItemCountDisposeOrder() {
+    final java.util.List log = new ArrayList();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 30; i++ ) {
+      final TableItem item = new TableItem( table, SWT.NONE );
+      item.setData( new Integer( i ) );
+      item.addDisposeListener( new DisposeListener() {
+        public void widgetDisposed( DisposeEvent event ) {
+          log.add( item.getData() );
+        }
+      } );
+    }
+    table.setItemCount( 25 );
+    assertEquals( 5, log.size() );
+    assertEquals( new Integer( 25 ), log.get( 0 ) );
+    assertEquals( new Integer( 26 ), log.get( 1 ) );
+    assertEquals( new Integer( 27 ), log.get( 2 ) );
+    assertEquals( new Integer( 28 ), log.get( 3 ) );
+    assertEquals( new Integer( 29 ), log.get( 4 ) );
   }
 
   private static int getCheckWidth( final Table table ) {

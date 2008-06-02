@@ -29,6 +29,8 @@ public final class TableLCAUtil {
   public static final String PROP_ALIGNMENT = "alignment";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
 
+  static final String PROP_FOCUS_INDEX = "focusIndex";
+
   ////////////////////////////
   // Column and Item alignment
   
@@ -85,6 +87,21 @@ public final class TableLCAUtil {
         writer.set( "itemMetrics", args );
       }
     }
+  }
+  
+  ////////
+  // Focus
+  
+  public static void preserveFocusIndex( final Table table ) {
+    ITableAdapter tableAdapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    int focusIndex = tableAdapter.getFocusIndex();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
+    adapter.preserve( PROP_FOCUS_INDEX, new Integer( focusIndex ) );
+  }
+  
+  public static boolean hasFocusIndexChanged( final Table table ) {
+    return false;
   }
   
   //////////////////

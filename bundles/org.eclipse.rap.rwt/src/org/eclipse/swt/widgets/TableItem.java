@@ -928,7 +928,7 @@ public class TableItem extends Item {
   }
 
   void releaseParent() {
-    parent.destroyItem( this );
+    parent.destroyItem( this, parent.indexOf( this ) );
   }
 
   void releaseWidget() {

@@ -176,7 +176,7 @@ public class Table extends Composite {
   private static final int GRID_WIDTH = 1;
   private static final int CHECK_HEIGHT = 13;
 
-  private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
+  private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
   final private CompositeItemHolder itemHolder;
   private final ITableAdapter tableAdapter;
@@ -185,7 +185,7 @@ public class Table extends Composite {
   private TableItem[] items;
   private final ItemHolder columnHolder;
   private int[] columnOrder;
-  private TableItem[] selection;
+  private int[] selection;
   private boolean linesVisible;
   private boolean headerVisible;
   private int topIndex;
@@ -237,7 +237,7 @@ public class Table extends Composite {
     itemHolder = new CompositeItemHolder();
     columnHolder = new ItemHolder( TableColumn.class );
     setTableEmpty();
-    selection = EMPTY_ITEMS;
+    selection = EMPTY_SELECTION;
     if( ( this.style & SWT.VIRTUAL ) != 0 ) {
       resizeListener = new ResizeListener();
       addControlListener( resizeListener );
@@ -503,17 +503,16 @@ public class Table extends Composite {
    */
   // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this
   //      method to ensure that items are drawn when inside the visible bounds
-  public void setItemCount( int newCount ) {
+  public void setItemCount( final int newCount ) {
     checkWidget();
     int count = Math.max( 0, newCount );
     if( count != itemCount ) {
-      int index = count;
-      while( index < itemCount ) {
-        TableItem item = items[ index ];
+      while( count < itemCount ) {
+        TableItem item = items[ count ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         } else {
-          index++;
+          destroyItem( null, count );
         }
       }
       int length = Math.max( 4, ( count + 3 ) / 4 * 4 );
@@ -987,12 +986,12 @@ public class Table extends Composite {
     checkWidget();
     int result = -1;
     if( selection.length > 0 ) {
-      result = indexOf( selection[ selection.length - 1 ] );
+      result = selection[ selection.length - 1 ];
     }
     if( focusIndex != result ) {
       boolean found = false;
       for( int i = 0; !found && i < selection.length; i++ ) {
-        if( focusIndex == indexOf( selection[ 0 ] ) ) {
+        if( focusIndex == selection[ i ] ) {
           result = focusIndex;
           found = true;
         }
@@ -1040,7 +1039,7 @@ public class Table extends Composite {
    */
   public int getSelectionCount() {
     checkWidget();
-    return getSelection().length;
+    return selection.length;
   }
 
   /**
@@ -1103,7 +1102,9 @@ public class Table extends Composite {
     checkWidget();
     int length = selection.length;
     TableItem[] result = new TableItem[ length ];
-    System.arraycopy( selection, 0, result, 0, length );
+    for( int i = 0; i < selection.length; i++ ) {
+      result[ i ] = _getItem( selection[ i ] );
+    }
     return result;
   }
 
@@ -1256,10 +1257,9 @@ public class Table extends Composite {
   public boolean isSelected( final int index ) {
     checkWidget();
     boolean result = false;
-    if( index >= 0 && index < itemCount && items[ index ] != null ) {
-      Item item = _getItem( index );
+    if( index >= 0 && index < itemCount ) {
       for( int i = 0; !result && i < selection.length; i++ ) {
-        result = selection[ i ] == item;
+        result = selection[ i ] == index;
       }
     }
     return result;
@@ -1282,15 +1282,14 @@ public class Table extends Composite {
   public void select( final int index ) {
     checkWidget();
     if( index >= 0 && index < itemCount ) {
-      TableItem item = _getItem( index );
       if( ( style & SWT.SINGLE ) != 0 ) {
-        selection = new TableItem[] { item };
+        selection = new int[] { index };
       } else {
-        int length = selection.length;
         if( !isSelected( index ) ) {
-          TableItem[] newSelection = new TableItem[ length + 1 ];
+          int length = selection.length;
+          int[] newSelection = new int[ length + 1 ];
           System.arraycopy( selection, 0, newSelection, 0, length );
-          newSelection[ length ] = item;
+          newSelection[ length ] = index;
           selection = newSelection;
         }
       }
@@ -1487,7 +1486,7 @@ public class Table extends Composite {
    */
   public void deselectAll() {
     checkWidget();
-    selection = EMPTY_ITEMS;
+    selection = EMPTY_SELECTION;
   }
 
   //////////////////////////////////
@@ -2002,18 +2001,26 @@ public class Table extends Composite {
     System.arraycopy( items, index, items, index + 1, count - index );
     items[ index ] = item;
     itemCount++;
+    // adjust the selection indices
+    for( int i = 0; i < selection.length; i++ ) {
+      if( selection[ i ] >= index ) {
+        selection[ i ] = selection[ i ] + 1;
+      }
+    }
     // advance focusIndex when an item is inserted before the focused item
     if( index <= focusIndex ) {
       focusIndex++;
     }
   }
 
-  final void destroyItem( final TableItem item ) {
-    int index = indexOf( item );
+  final void destroyItem( final TableItem item,  final int index ) {
     removeFromSelection( index );
+    adjustSelectionIdices( index );
     itemCount--;
-    System.arraycopy( items, index + 1, items, index, itemCount - index );
-    items[ itemCount ] = null;
+    if( item != null ) {
+      System.arraycopy( items, index + 1, items, index, itemCount - index );
+      items[ itemCount ] = null;
+    }
     if( itemCount == 0 ) {
       setTableEmpty();
     }
@@ -2181,12 +2188,11 @@ public class Table extends Composite {
 
   private void removeFromSelection( final int index ) {
     if( index >= 0 && index < itemCount ) {
-      TableItem item = _getItem( index );
       boolean found = false;
       for( int i = 0; !found && i < selection.length; i++ ) {
-        if( item == selection[ i ] ) {
+        if( index == selection[ i ] ) {
           int length = selection.length;
-          TableItem[] newSel = new TableItem[ length - 1 ];
+          int[] newSel = new int[ length - 1 ];
           System.arraycopy( selection, 0, newSel, 0, i );
           if( i < length - 1 ) {
             System.arraycopy( selection, i + 1, newSel, i, length - i - 1 );
@@ -2194,6 +2200,14 @@ public class Table extends Composite {
           selection = newSel;
           found = true;
         }
+      }
+    }
+  }
+
+  private void adjustSelectionIdices( final int removedIndex ) {
+    for( int i = 0; i < selection.length; i++ ) {
+      if( selection[ i ] >= removedIndex ) {
+        selection[ i ] = selection[ i ] - 1;
       }
     }
   }

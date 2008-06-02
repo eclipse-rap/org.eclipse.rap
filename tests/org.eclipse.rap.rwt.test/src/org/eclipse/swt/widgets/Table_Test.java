@@ -280,6 +280,26 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelectionIndices()[ 0 ] );
     assertEquals( 2, table.getItemCount() );
     assertEquals( 1, table.getSelectionCount() );
+    
+    table.removeAll();
+    item0 = new TableItem( table, SWT.NONE );
+    item1 = new TableItem( table, SWT.NONE );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    table.selectAll();
+    table.remove( 1 );
+    assertEquals( 2, table.getSelectionIndices().length );
+    assertTrue( find( table.indexOf( item0 ), table.getSelectionIndices() ) );
+    assertTrue( find( table.indexOf( item2 ), table.getSelectionIndices() ) );
+  }
+  
+  private static boolean find( final int element, final int[] array ) {
+    boolean result = false;
+    for( int i = 0; i < array.length; i++ ) {
+      if( element == array[ i ] ) {
+        result = true;
+      }
+    }
+    return result;
   }
 
   public void testReduceSetItemCountWithSelection() {
@@ -404,10 +424,15 @@ public class Table_Test extends TestCase {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
 
+//    table.setItemCount( 100 );
+//    table.setSelection( 90 );
+//    table.setSize( 501, 501 );
+//    table.setItemCount( 10 );
     table.setItemCount( 100 );
-    table.setSelection( 90 );
+    table.setSelection( 99 );
     table.setSize( 501, 501 );
-    table.setItemCount( 10 );
+    table.setItemCount( 98 );
+    assertEquals( 0, table.getSelectionCount() );
     assertEquals( -1, tableAdapter.getFocusIndex() );
   }
 

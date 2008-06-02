@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
@@ -75,13 +76,16 @@ public final class TableLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( SelectionEvent.hasListener( table ) ) );
     adapter.preserve( PROP_DEFAULT_COLUMN_WIDTH, 
                       new Integer( getDefaultColumnWidth( table ) ) );
+    TableLCAUtil.preserveFocusIndex( table );
   }
 
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
-    readSelection( table );
     readTopIndex( table ); // topIndex MUST be read *before* processSetData
+    readSelection( table );
     processSetData( table );
+    readWidgetSelected( table );
+    readWidgetDefaultSelected( table );
     ControlLCAUtil.processMouseEvents( table );
   }
 
@@ -139,7 +143,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   ////////////////////////////////////////////////////
-  // Helping method sto read client-side state changes
+  // Helping methods to read client-side state changes
   
   private static void readSelection( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "selection" );
@@ -179,6 +183,46 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
+  private void readWidgetSelected( final Table table ) {
+    if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      // TODO [rh] do something about when index points to unresolved item! 
+      TableItem item = table.getItem( getWidgetSelectedIndex() );
+      int detail = getWidgetSelectedDetail();
+      int id = SelectionEvent.WIDGET_SELECTED;
+      SelectionEvent event = new SelectionEvent( table,
+                                                 item,
+                                                 id,
+                                                 new Rectangle( 0, 0, 0, 0 ),
+                                                 "",
+                                                 true,
+                                                 detail );
+      event.processEvent();
+    }
+  }
+
+  private void readWidgetDefaultSelected( final Table table ) {
+    String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( table, defaultSelectedParam ) ) {
+      // TODO [rh] do something about when index points to unresolved item! 
+      TableItem item = table.getItem( getWidgetSelectedIndex() );
+      int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
+      SelectionEvent event = new SelectionEvent( table, item, id );
+      event.processEvent();
+    }
+  }
+
+  private static int getWidgetSelectedDetail() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
+    return "check".equals( value ) ? SWT.CHECK : SWT.NONE;
+  }
+
+  private static int getWidgetSelectedIndex() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
+    return Integer.parseInt( value );
+  }
+  
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
   

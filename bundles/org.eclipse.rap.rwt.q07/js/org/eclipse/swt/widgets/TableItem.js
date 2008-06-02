@@ -104,19 +104,17 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
     
     setSelection : function( value ) {
+      // TODO [rh] improve this: don't access internal structures of Table
+      var index = this._parent._items.indexOf( this );
       if( value ) {
-        this._parent._selectItem( this, false );
+        this._parent._selectItem( index, false );
         // reset selection start index when selection changes server-side
         this._parent._resetSelectionStart();
       } else {
-        this._parent._deselectItem( this, false );
+        this._parent._deselectItem( index, false );
       }
     },
     
-    focus : function() {
-      this._parent.setFocusedItem( this );
-    },
-
     setTexts : function( texts ) {
       this._texts = texts;
     },
@@ -139,7 +137,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     update : function() {
       this._cached = true;
-      this._parent.updateItem( this, true );
+      // TODO [rh] improve this: don't access internal structures of Table
+      var index = this._parent._items.indexOf( this );
+      this._parent.updateItem( index, true );
     },
     
     clear : function() {

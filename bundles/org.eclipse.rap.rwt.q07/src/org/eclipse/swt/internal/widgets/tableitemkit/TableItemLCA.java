@@ -13,13 +13,8 @@ package org.eclipse.swt.internal.widgets.tableitemkit;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
@@ -39,7 +34,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   static final String PROP_GRAYED = "grayed";
   static final String PROP_INDEX = "index";
   static final String PROP_SELECTED = "selected";
-  static final String PROP_FOCUSED = "focused";
   static final String PROP_FONT = "font";
   static final String PROP_BACKGROUND = "background";
   static final String PROP_FOREGROUND = "foreground";
@@ -53,14 +47,15 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     // don't resolve items unintentionally
     if( isCached( table, index ) ) {
       ItemLCAUtil.preserve( item );
-      adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
-      adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
+      if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
+        adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
+        adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
+      }      
       adapter.preserve( PROP_TEXTS, getTexts( item ) );
       adapter.preserve( PROP_IMAGES, getImages( item ) );
       adapter.preserve( PROP_INDEX, new Integer( index ) );
       adapter.preserve( PROP_SELECTED,
                         Boolean.valueOf( isSelected( table, index ) ) );
-      adapter.preserve( PROP_FOCUSED, Boolean.valueOf( isFocused( item ) ) );
       adapter.preserve( PROP_FONT, getFonts( item ) );
       adapter.preserve( PROP_BACKGROUND, getBackgrounds( item ) );
       adapter.preserve( PROP_FOREGROUND, getForegrounds( item ) );
@@ -72,8 +67,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     TableItem item = ( TableItem )widget;
     readChecked( item );
-    readWidgetSelected( item );
-    readWidgetDefaultSelected( item );
+//    readWidgetSelected( item );
+//    readWidgetDefaultSelected( item );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -137,42 +132,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     if( value != null ) {
       item.setChecked( Boolean.valueOf( value ).booleanValue() );
     }
-  }
-
-  private void readWidgetSelected( final TableItem item ) {
-    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      Table parent = item.getParent();
-      int detail = getWidgetSelectedDetail();
-      int id = SelectionEvent.WIDGET_SELECTED;
-      SelectionEvent event = new SelectionEvent( parent,
-                                                 item,
-                                                 id,
-                                                 new Rectangle( 0, 0, 0, 0 ),
-                                                 "",
-                                                 true,
-                                                 detail );
-      event.processEvent();
-    }
-  }
-
-  private void readWidgetDefaultSelected( final TableItem item ) {
-    String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( item, defaultSelectedParam ) ) {
-      Table parent = item.getParent();
-      int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-      SelectionEvent event = new SelectionEvent( parent, item, id );
-      event.processEvent();
-    }
-  }
-
-  private static int getWidgetSelectedDetail() {
-    int result = SWT.NONE;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
-    if( "check".equals( value ) ) {
-      result = SWT.CHECK;
-    }
-    return result;
   }
 
   ///////////////////////
@@ -277,16 +236,28 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static boolean writeChecked( final TableItem item )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( item.getChecked() );
-    return writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
+    boolean result;
+    if( ( item.getParent().getStyle() & SWT.CHECK ) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      Boolean newValue = Boolean.valueOf( item.getChecked() );
+      result = writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   private static boolean writeGrayed( final TableItem item ) throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( item.getGrayed() );
-    return writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
+    boolean result;
+    if( ( item.getParent().getStyle() & SWT.CHECK ) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      Boolean newValue = Boolean.valueOf( item.getGrayed() );
+      result = writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   private static boolean writeSelection( final TableItem item )
@@ -301,13 +272,13 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   //      call jsTable.setFocusedItem( null ) in TableLCA
   private static void writeFocused( final TableItem item ) throws IOException
   {
-    Boolean newValue = Boolean.valueOf( isFocused( item ) );
-    Boolean defValue = Boolean.FALSE;
-    if(    newValue.booleanValue()
-        && WidgetLCAUtil.hasChanged( item, PROP_FOCUSED, newValue, defValue ) )
+    if(    TableLCAUtil.hasFocusIndexChanged( item.getParent() ) 
+        && isFocused( item ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( item );
-      writer.call( "focus", null );
+      int index = getTableAdapter( item ).getFocusIndex();
+      Object[] args = new Object[] { new Integer( index ) };
+      writer.call( item.getParent(), "setFocusIndex", args );
     }
   }
 

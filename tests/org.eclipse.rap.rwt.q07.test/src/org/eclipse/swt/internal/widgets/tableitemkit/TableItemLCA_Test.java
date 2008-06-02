@@ -54,24 +54,22 @@ public class TableItemLCA_Test extends TestCase {
 //    Object top = adapter.getPreserved( TableItemLCA.PROP_TOP );
 //    assertEquals( new Integer( item1.getBounds().y ), top );
     Object checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
-    assertEquals( Boolean.FALSE, checked );
+    assertNull( checked );
     Object grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
-    assertEquals( Boolean.FALSE, grayed );
+    assertNull( grayed );
     Object index = adapter.getPreserved( TableItemLCA.PROP_INDEX );
     assertEquals( new Integer( 0 ), index );
     Object selected = adapter.getPreserved( TableItemLCA.PROP_SELECTED );
     assertEquals( Boolean.FALSE, selected );
-    Object focused = adapter.getPreserved( TableItemLCA.PROP_FOCUSED );
-    assertEquals( Boolean.FALSE, focused );
     String[] texts1 = TableItemLCA.getTexts( item1 );
     String[] texts2
-     = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
+      = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
     assertEquals( texts1[ 0 ], texts2[ 0 ] );
     assertEquals( texts1[ 1 ], texts2[ 1 ] );
     assertEquals( texts1[ 2 ], texts2[ 2 ] );
     Image[] images1 = TableItemLCA.getImages( item1 );
     Image[] images2
-     = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
+      = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( images1[ 0 ], images2[ 0 ] );
     assertEquals( images1[ 1 ], images2[ 1 ] );
     assertEquals( images1[ 2 ], images2[ 2 ] );
@@ -82,13 +80,13 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( fonts1[ 2 ], fonts2[ 2 ] );
     Color[] backgrounds1 = TableItemLCA.getBackgrounds( item1 );
     Color[] backgrounds2
-     = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_BACKGROUND );
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_BACKGROUND );
     assertEquals( backgrounds1[ 0 ], backgrounds2[ 0 ] );
     assertEquals( backgrounds1[ 1 ], backgrounds2[ 1 ] );
     assertEquals( backgrounds1[ 2 ], backgrounds2[ 2 ] );
     Color[] foregrounds1 = TableItemLCA.getForegrounds( item1 );
     Color[] foregrounds2
-     = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_FOREGROUND );
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_FOREGROUND );
     assertEquals( foregrounds1[ 0 ], foregrounds2[ 0 ] );
     assertEquals( foregrounds1[ 1 ], foregrounds2[ 1 ] );
     assertEquals( foregrounds1[ 2 ], foregrounds2[ 2 ] );
@@ -122,7 +120,7 @@ public class TableItemLCA_Test extends TestCase {
     item1.setForeground( 2, foreground3 );
     table.setSelection( 0 );
     ITableAdapter tableAdapter
-    = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     tableAdapter.setFocusIndex( 0 );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item1 );
@@ -131,13 +129,10 @@ public class TableItemLCA_Test extends TestCase {
     grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
     index = adapter.getPreserved( TableItemLCA.PROP_INDEX );
     selected = adapter.getPreserved( TableItemLCA.PROP_SELECTED );
-    focused = adapter.getPreserved( TableItemLCA.PROP_FOCUSED );
-//    assertEquals( new Integer( item1.getBounds().y ), top );
-    assertEquals( Boolean.FALSE, checked );
-    assertEquals( Boolean.FALSE, grayed );
+    assertNull( checked );
+    assertNull( grayed );
     assertEquals( Boolean.TRUE, selected );
     assertEquals( new Integer( 0 ), index );
-    assertEquals( Boolean.TRUE, focused );
     texts2 = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
     assertEquals( "item11", texts2[ 0 ] );
     assertEquals( "item12", texts2[ 1 ] );
@@ -151,12 +146,12 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( font2, fonts2[ 1 ] );
     assertEquals( font3, fonts2[ 2 ] );
     backgrounds2
-     = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_BACKGROUND );
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_BACKGROUND );
     assertEquals( background1, backgrounds2[ 0 ] );
     assertEquals( background2, backgrounds2[ 1 ] );
     assertEquals( background3, backgrounds2[ 2 ] );
     foregrounds2
-     = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_FOREGROUND );
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_FOREGROUND );
     assertEquals( foreground1, foregrounds2[ 0 ] );
     assertEquals( foreground2, foregrounds2[ 1 ] );
     assertEquals( foreground3, foregrounds2[ 2 ] );
@@ -225,45 +220,6 @@ public class TableItemLCA_Test extends TestCase {
     tableItemLCA.renderChanges( item );
     String expected = "w.setTexts( [ \"newText\" ] )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
-  public void testWidgetSelectedWithCheck() {
-    final SelectionEvent[] events = new SelectionEvent[ 1 ];
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    final Table table = new Table( shell, SWT.CHECK );
-    TableItem item1 = new TableItem( table, SWT.NONE );
-    final TableItem item2 = new TableItem( table, SWT.NONE );
-    table.setSelection( 0 );
-    table.addSelectionListener( new SelectionListener() {
-
-      public void widgetSelected( final SelectionEvent event ) {
-        events[ 0 ] = event;
-      }
-
-      public void widgetDefaultSelected( final SelectionEvent event ) {
-        fail( "unexpected event: widgetDefaultSelected" );
-      }
-    } );
-    // Simulate request that comes in after item2 was checked (but not selected)
-    RWTFixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
-    String item2Id = WidgetUtil.getId( item2 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( item2Id + ".checked", "true" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, item2Id );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
-    RWTFixture.executeLifeCycleFromServerThread( );
-    assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
-    assertEquals( table, events[ 0 ].getSource() );
-    assertEquals( item2, events[ 0 ].item );
-    assertEquals( true, events[ 0 ].doit );
-    assertEquals( 0, events[ 0 ].x );
-    assertEquals( 0, events[ 0 ].y );
-    assertEquals( 0, events[ 0 ].width );
-    assertEquals( 0, events[ 0 ].height );
-    assertEquals( 1, table.getSelectionCount() );
-    assertEquals( item1, table.getSelection()[ 0 ] );
   }
 
   public void testDisposeSelected() {
@@ -384,5 +340,37 @@ public class TableItemLCA_Test extends TestCase {
     item.setBackground( red );
     backgrounds = TableItemLCA.getBackgrounds( item );
     assertEquals( red, backgrounds[ 0 ] );
+  }
+
+  
+  public void testCheckAndGrayedAccess() throws IOException {
+    final String[] lcaMethod = { "" };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE ) {
+      public boolean getChecked() {
+        fail(   lcaMethod[ 0 ] 
+              + ": Must not call getChecked() from LCA when no CHECK style" );
+        return false;
+      }
+      public boolean getGrayed() {
+        fail(   lcaMethod[ 0 ] 
+               + ": Must not call getGrayed() from LCA when no CHECK style" );
+        return false;
+      }
+    };
+    Fixture.fakeResponseWriter();
+    TableItemLCA lca = new TableItemLCA();
+    lcaMethod[ 0 ] = "preserveValues";
+    lca.preserveValues( item );
+    lcaMethod[ 0 ] = "readData";
+    lca.readData( item );
+    lcaMethod[ 0 ] = "renderInitialization";
+    lca.renderInitialization( item );
+    lcaMethod[ 0 ] = "renderChanges";
+    lca.renderChanges( item );
+    lcaMethod[ 0 ] = "renderDispose";
+    lca.renderDispose( item );
   }
 }
