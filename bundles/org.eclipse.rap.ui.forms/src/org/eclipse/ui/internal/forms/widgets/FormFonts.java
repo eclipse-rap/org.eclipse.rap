@@ -12,6 +12,7 @@ package org.eclipse.ui.internal.forms.widgets;
 
 import java.util.HashMap;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -19,12 +20,17 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 public class FormFonts {
-	private static FormFonts instance;
+// RAP [fappel]: use session singleton approach since FontIdentifier holds
+//               reference to display
+//	private static FormFonts instance;
 
 	public static FormFonts getInstance() {
-		if (instance == null)
-			instance = new FormFonts();
-		return instance;
+// RAP [fappel]: use session singleton approach since FontIdentifier holds
+//               reference to display
+//		if (instance == null)
+//			instance = new FormFonts();
+//		return instance;
+	    return ( FormFonts )SessionSingletonBase.getInstance( FormFonts.class );
 	}
 	
 	private HashMap fonts;

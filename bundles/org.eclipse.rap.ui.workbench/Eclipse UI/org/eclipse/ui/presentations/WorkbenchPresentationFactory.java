@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.preferences.IDynamicPropertyMap;
 import org.eclipse.ui.internal.presentations.defaultpresentation.DefaultMultiTabListener;
@@ -82,17 +83,20 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
         
         IDynamicPropertyMap workbenchPreferences = result.getPluginPreferences(WorkbenchPlugin.getDefault()); 
         
-		final DefaultMultiTabListener defaultMultiTabListener = new DefaultMultiTabListener(workbenchPreferences,
-				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, folder);
-
-		// RAP [bm]: 
-		RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
-
-			public void beforeDestroy(SessionStoreEvent event) {
-				defaultMultiTabListener.attach(null, IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, true);
-			}
-			
-		});
+        
+        // RAP [bm]: 
+        if( !Workbench.getInstance().isClosing() ) {
+          final DefaultMultiTabListener defaultMultiTabListener = new DefaultMultiTabListener(workbenchPreferences,
+  				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, folder);
+  
+          RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
+  
+            public void beforeDestroy(SessionStoreEvent event) {
+                defaultMultiTabListener.attach(null, IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, true);
+            }
+  			
+          });
+        }
 		// RAPEND: [bm] 
 		
 		// RAP [bm]: tab style cannot change 

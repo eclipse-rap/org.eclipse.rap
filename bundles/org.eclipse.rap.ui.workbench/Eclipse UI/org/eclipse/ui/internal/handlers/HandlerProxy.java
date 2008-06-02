@@ -14,23 +14,13 @@ package org.eclipse.ui.internal.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.HandlerEvent;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandler2;
-import org.eclipse.core.commands.IHandlerListener;
-import org.eclipse.core.expressions.EvaluationResult;
-import org.eclipse.core.expressions.Expression;
-import org.eclipse.core.expressions.IEvaluationContext;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.commands.*;
+import org.eclipse.core.expressions.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -53,7 +43,11 @@ import org.eclipse.ui.services.IEvaluationService;
 public final class HandlerProxy extends AbstractHandler implements
 		IElementUpdater {
 
-	private static Map CEToProxyMap = new HashMap();
+// RAP [fappel]: change this due to memory problems
+//	private static Map CEToProxyMap = new HashMap();
+    public final static class CEToProxyMap extends HashMap {
+      private static final long serialVersionUID = 1L;
+    }
 
 	/**
 	 * 
@@ -172,12 +166,21 @@ public final class HandlerProxy extends AbstractHandler implements
 			setProxyEnabled(true);
 		}
 
-		CEToProxyMap.put(configurationElement, this);
+// RAP [fappel]: change this due to memory problems
+//		CEToProxyMap.put(configurationElement, this);
+		Map ceToProxyMap
+		  = ( Map )SessionSingletonBase.getInstance( CEToProxyMap.class );
+		ceToProxyMap.put(configurationElement, this);
 	}
 
 	public static void updateStaleCEs(IConfigurationElement[] replacements) {
 		for (int i = 0; i < replacements.length; i++) {
-			HandlerProxy proxy = (HandlerProxy) CEToProxyMap
+// RAP [fappel]: change this due to memory problems
+//		    HandlerProxy proxy = (HandlerProxy) CEToProxyMap
+//		            .get(replacements[i]);
+		    Map ceToProxyMap
+		      = ( Map )SessionSingletonBase.getInstance( CEToProxyMap.class );
+			HandlerProxy proxy = (HandlerProxy) ceToProxyMap
 					.get(replacements[i]);
 			if (proxy != null)
 				proxy.configurationElement = replacements[i];

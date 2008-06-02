@@ -40,6 +40,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.Util;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.widgets.Event;
 
 /**
@@ -723,7 +724,8 @@ public final class ExternalActionManager {
 	 * The singleton instance of this class. This value may be <code>null</code>--
 	 * if it has not yet been initialized.
 	 */
-	private static ExternalActionManager instance;
+// RAP [fappel]: change to session singleton due to memory leaking problems
+//	private static ExternalActionManager instance;
 
 	/**
 	 * Retrieves the current singleton instance of this class.
@@ -731,11 +733,15 @@ public final class ExternalActionManager {
 	 * @return The singleton instance; this value is never <code>null</code>.
 	 */
 	public static ExternalActionManager getInstance() {
-		if (instance == null) {
-			instance = new ExternalActionManager();
-		}
-
-		return instance;
+// RAP [fappel]: change to session singleton due to memory leaking problems
+//		if (instance == null) {
+//			instance = new ExternalActionManager();
+//		}
+//
+//		return instance;
+	  Object result
+	    = SessionSingletonBase.getInstance( ExternalActionManager.class );
+      return ( ExternalActionManager )result;
 	}
 
 	/**
