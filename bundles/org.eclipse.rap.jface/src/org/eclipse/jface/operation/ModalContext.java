@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -150,6 +151,16 @@ public class ModalContext {
 				// Force the event loop to return from sleep () so that
 				// it stops event dispatching.
 				display.asyncExec(null);
+				
+                // RAP [fappel]: deactivate UI-Callback for this thread
+				UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+                  public void run() {
+                    String key 
+                      = String.valueOf( ModalContextThread.this.hashCode() );
+                    UICallBack.deactivate( key );
+                  }
+				} );
+
 			}
 		}
 
@@ -356,6 +367,9 @@ public class ModalContext {
 					if (operation instanceof IThreadListener) {
 						((IThreadListener) operation).threadChange(t);
 					}
+					// RAP [fappel]: start UI-Callback to enable UI-updates
+					UICallBack.activate( String.valueOf( t.hashCode() ) );
+					
 					t.start();
 					t.block();
 					Throwable throwable = t.throwable;
