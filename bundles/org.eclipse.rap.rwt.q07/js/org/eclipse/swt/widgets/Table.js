@@ -106,8 +106,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     // Keyboard navigation
     this._keyboardSelecionChanged = false;
-    // TODO [rh] key events in Safari not working properly 
-    //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
+    // TODO [rh] key events in Safari not working properly, see
+    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531 
+    //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
     if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
       this.addEventListener( "keypress", this._onKeyPress, this );
       this.addEventListener( "keyup", this._onKeyUp, this );
@@ -127,8 +128,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
-    // TODO [rh] key events in Safari not working properly 
-    //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
+    // TODO [rh] key events in Safari not working properly, see
+    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531 
+    //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
     if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
       this.removeEventListener( "keypress", this._onKeyPress, this );
       this.removeEventListener( "keyup", this._onKeyUp, this );
