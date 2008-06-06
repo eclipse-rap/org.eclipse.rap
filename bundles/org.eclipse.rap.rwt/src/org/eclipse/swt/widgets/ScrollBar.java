@@ -86,6 +86,8 @@ import org.eclipse.swt.graphics.Point;
  * <li>size (width when V_SCROLL, height when H_SCROLL) is hard-coded and may
  * not match what the browser actually shows</li>
  * </ul>
+ * 
+ * @since 1.0
  */
 // TODO [rh] include ScrollBar in widget hierarchy (child of Scrollable)?
 public class ScrollBar extends Widget {
