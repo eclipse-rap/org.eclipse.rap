@@ -354,15 +354,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     _updateLayout : function() {
       if( !this._tree.isCreated() ) {
         this._tree.addEventListener( "appear",
-                                 this._updateLayout, this );
-        return;
+                                     this._updateLayout, this );
+      } else {
+        var bw = this._getBorderWidth() * 2;
+        this._columnArea.setWidth( this.getWidth() - bw );
+        this._columnArea.setHeight( this.getColumnAreaHeight() );
+        this._tree.setLeft( 0 );
+        this._tree.setWidth( this.getWidth() - bw );
+        this._tree.setHeight( this.getHeight() - this.getColumnAreaHeight() - bw );
+        this._tree.setTop( this.getColumnAreaHeight() );
       }
-      this._columnArea.setWidth( this.getWidth() );
-      this._columnArea.setHeight( this.getColumnAreaHeight() );
-      this._tree.setWidth( this.getWidth() );
-      this._tree.setHeight( this.getHeight() - this.getColumnAreaHeight() );
-      this._tree.setTop( this.getColumnAreaHeight() );
-      
+    },
+
+    // TODO [rst] This is a workaround for bug 226726. Replace with decent layout.
+    _getBorderWidth : function() {
+      var result = 0;
+      var borderName = this.getBorder();
+      if( borderName ) {
+        var borderTheme = qx.theme.manager.Border.getInstance().getBorderTheme();
+        var border = borderTheme.borders[ borderName ];
+        if( border && typeof border.width == "number" ) {
+          result = border.width;
+        }
+      }
+      return result;
     },
 
     _onChangeSize : function( evt ) {
