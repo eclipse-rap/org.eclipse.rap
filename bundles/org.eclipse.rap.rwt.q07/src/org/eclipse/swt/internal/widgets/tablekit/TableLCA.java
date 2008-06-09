@@ -83,7 +83,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     Table table = ( Table )widget;
     readTopIndex( table ); // topIndex MUST be read *before* processSetData
     readSelection( table );
-    processSetData( table );
+    readSetData( table );
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
     ControlLCAUtil.processMouseEvents( table );
@@ -169,7 +169,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static void processSetData( final Table table ) {
+  private static void readSetData( final Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_SET_DATA ) ) {
       HttpServletRequest request = ContextProvider.getRequest();
       String value = request.getParameter( JSConst.EVENT_SET_DATA_INDEX );
@@ -178,7 +178,9 @@ public final class TableLCA extends AbstractWidgetLCA {
       ITableAdapter tableAdapter = ( ITableAdapter )adapter;
       for( int i = 0; i < indices.length; i++ ) {
         int index = Integer.parseInt( indices[ i ] );
-        tableAdapter.checkData( index );
+        if (index >-1 && index < table.getItemCount()) {
+            tableAdapter.checkData( index );
+        }
       }
     }
   }
@@ -186,17 +188,21 @@ public final class TableLCA extends AbstractWidgetLCA {
   private void readWidgetSelected( final Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
       // TODO [rh] do something about when index points to unresolved item! 
-      TableItem item = table.getItem( getWidgetSelectedIndex() );
-      int detail = getWidgetSelectedDetail();
-      int id = SelectionEvent.WIDGET_SELECTED;
-      SelectionEvent event = new SelectionEvent( table,
-                                                 item,
-                                                 id,
-                                                 new Rectangle( 0, 0, 0, 0 ),
-                                                 "",
-                                                 true,
-                                                 detail );
-      event.processEvent();
+      final int widgetSelectedIndex = getWidgetSelectedIndex();
+      // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
+      if (widgetSelectedIndex > -1 && widgetSelectedIndex < table.getItemCount()) {
+          TableItem item = table.getItem( widgetSelectedIndex );
+          int detail = getWidgetSelectedDetail();
+          int id = SelectionEvent.WIDGET_SELECTED;
+          SelectionEvent event = new SelectionEvent( table,
+                  item,
+                  id,
+                  new Rectangle( 0, 0, 0, 0 ),
+                  "",
+                  true,
+                  detail );
+          event.processEvent();
+      }
     }
   }
 

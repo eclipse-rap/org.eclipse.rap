@@ -127,7 +127,9 @@ public class Table extends Composite {
     }
 
     public void checkData( final int index ) {
-      Table.this.checkData( Table.this._getItem( index ), index );
+      if( index >= 0 && index < Table.this.itemCount ) {
+        Table.this.checkData( Table.this._getItem( index ), index );
+      }
     }
 
     public int getDefaultColumnWidth() {
@@ -1920,7 +1922,7 @@ public class Table extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-
+  
   /////////////////////////////
   // Create and destroy columns
 
@@ -2134,12 +2136,14 @@ public class Table extends Composite {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          item.cached = true;
-          SetDataEvent event = new SetDataEvent( Table.this, item, index );
-          event.processEvent();
-          // widget could be disposed at this point
-          if( isDisposed() || item.isDisposed() ) {
-            SWT.error( SWT.ERROR_WIDGET_DISPOSED );
+          if( index >= 0 && index < itemCount ) {
+            item.cached = true;
+            SetDataEvent event = new SetDataEvent( Table.this, item, index );
+            event.processEvent();
+            // widget could be disposed at this point
+            if( isDisposed() || item.isDisposed() ) {
+              SWT.error( SWT.ERROR_WIDGET_DISPOSED );
+            }
           }
         }
       } );

@@ -516,6 +516,44 @@ public class TableLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( "Item 500" ) != -1 );
   }
   
+  /*
+   * Ensures that checkData calls with an invalid index are silently ignored.
+   * This may happen, when the itemCount is reduced during a SetData event.
+   * Queued SetData events may then have stale (out-of-bounds) indices.
+   * See 235368: [table] [table] ArrayIndexOutOfBoundsException in virtual 
+   *     TableViewer 
+   *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
+   */
+  public void testReduceItemCountInSetData() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        fail( "Must not trigger SetData event" ); 
+      }
+    } );
+
+    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    table.setItemCount( 1 );
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.checkData( 0 );
+    
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    table.setItemCount( 0 );
+    int eventCount = 0;
+    while( ProcessActionRunner.executeNext() ) {
+      eventCount++;
+    }
+    while( SetDataEvent.executeNext() ) {
+      eventCount++;
+    }
+    assertEquals( 1, eventCount );
+  }
+  
   private static int countResolvedItems( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;

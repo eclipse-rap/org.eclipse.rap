@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -424,10 +423,6 @@ public class Table_Test extends TestCase {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
 
-//    table.setItemCount( 100 );
-//    table.setSelection( 90 );
-//    table.setSize( 501, 501 );
-//    table.setItemCount( 10 );
     table.setItemCount( 100 );
     table.setSelection( 99 );
     table.setSize( 501, 501 );
@@ -1446,6 +1441,27 @@ public class Table_Test extends TestCase {
     item = table.getItem( new Point( 0, table.getItemHeight() ) );
     assertNotNull( item );
     assertEquals( 0, table.indexOf( item ) );
+  }
+
+  /*
+   * Ensures that checkData calls with an invalid index are silently ignored.
+   * This may happen, when the itemCount is reduced during a SetData event.
+   * Queued SetData events may then have stale (out-of-bounds) indices.
+   * See 235368: [table] [table] ArrayIndexOutOfBoundsException in virtual 
+   *     TableViewer 
+   *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
+   */
+  public void testCheckDataWithInvalidIndex() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 10 );
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.checkData( 99 );
+    // No assert - the purpose of this test is to ensure that no 
+    // ArrayIndexOutOfBoundsException is thrown 
   }
   
   private static void clearColumns( final Table table ) {
