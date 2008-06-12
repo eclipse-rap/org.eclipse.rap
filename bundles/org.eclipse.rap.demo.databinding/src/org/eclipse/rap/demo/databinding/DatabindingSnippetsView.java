@@ -1,10 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007 NOMAD business software GmbH. All rights reserved. This
- * program and the accompanying materials are made available under the terms of
- * the Eclipse Public License v1.0 which accompanies this distribution, and is
- * available at http://www.eclipse.org/legal/epl-v10.html Contributors: NOMAD
- * business software GmbH GmbH - initial Databinding migration
+ * Copyright (c) 2007 NOMAD business software GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Samy Abou-Shama NOMAD business software GmbH - initial Databinding migration
  ******************************************************************************/
+
 package org.eclipse.rap.demo.databinding;
 
 import org.eclipse.swt.SWT;

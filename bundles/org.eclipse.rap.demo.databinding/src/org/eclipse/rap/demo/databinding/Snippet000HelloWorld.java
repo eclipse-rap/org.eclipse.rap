@@ -1,11 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2006 The Pampered Chef, Inc. and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html Contributors:
- * The Pampered Chef, Inc. - initial API and implementation Brad Reynolds - bug
- * 116920 Samy Abou-Shama - adapted for RAP and implemented Snippet as Control
+ * Copyright (c) 2006 The Pampered Chef, Inc. and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     The Pampered Chef, Inc. - initial API and implementation
+ *     Brad Reynolds - bug 116920
+ *     Samy Abou-Shama - adapted for RAP and implemented Snippet as Control
  ******************************************************************************/
+
 package org.eclipse.rap.demo.databinding;
 
 import org.eclipse.core.databinding.DataBindingContext;
