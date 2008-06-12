@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this._foregrounds = null;
     // HACK: Table needs one 'emptyItem' (draws the remaining space that is not 
     //       occupied by actual items) and a 'virtualItem' (represents a not
-    //       yet resolved item) 
+    //       yet resolved items) 
     // Those have an index of -1
     if ( index >= 0 ) {
       parent._addItem( this, index );
@@ -104,19 +104,17 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
     
     setSelection : function( value ) {
+      // TODO [rh] improve this: don't access internal structures of Table
+      var index = this._parent._items.indexOf( this );
       if( value ) {
-        this._parent._selectItem( this, false );
+        this._parent._selectItem( index, false );
         // reset selection start index when selection changes server-side
         this._parent._resetSelectionStart();
       } else {
-        this._parent._deselectItem( this, false );
+        this._parent._deselectItem( index, false );
       }
     },
     
-    focus : function() {
-      this._parent.setFocusedItem( this );
-    },
-
     setTexts : function( texts ) {
       this._texts = texts;
     },
@@ -139,7 +137,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     update : function() {
       this._cached = true;
-      this._parent.updateItem( this, true );
+      // TODO [rh] improve this: don't access internal structures of Table
+      var index = this._parent._items.indexOf( this );
+      this._parent.updateItem( index, true );
     },
     
     clear : function() {

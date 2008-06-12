@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -134,6 +134,65 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // =======================================================================
     
     // == BEGIN OVERWRITTEN METHODS ==
+
+    // == BEGIN MODIFIED QX COPY ==
+    _onkeydown : function(e)
+    {
+      var vManager = this._manager;
+      var vVisible = this._popup.isSeeable();
+
+      switch(e.getKeyIdentifier())
+      {
+          // Handle <ENTER>
+        case "Enter":
+          if (vVisible)
+          {
+            this.setSelected(this._manager.getSelectedItem());
+            this._closePopup();
+            this.setFocused(true);
+          }
+          else
+          {
+            this._openPopup();
+          }
+          // Workaround for http://bugzilla.qooxdoo.org/show_bug.cgi?id=878
+          e.stopPropagation();
+
+          return;
+
+          // Handle <ESC>
+
+        case "Escape":
+          if (vVisible)
+          {
+            vManager.setLeadItem(this._oldSelected);
+            vManager.setAnchorItem(this._oldSelected);
+
+            vManager.setSelectedItem(this._oldSelected);
+
+            this._field.setValue(this._oldSelected ? this._oldSelected.getLabel() : "");
+
+            this._closePopup();
+            this.setFocused(true);
+            // Workaround for http://bugzilla.qooxdoo.org/show_bug.cgi?id=878
+            e.stopPropagation();
+          }
+
+          return;
+
+          // Handle Alt+Down
+
+        case "Down":
+          if (e.isAltPressed())
+          {
+            this._togglePopup();
+            return;
+          }
+
+          break;
+      }
+    },
+    // == END MODIFIED QX COPY ==
 
     // == BEGIN MODIFIED QX COPY ==
     _onkeypress : function(e)

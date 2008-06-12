@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -39,8 +39,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
                                      org.eclipse.swt.TabUtil._onTabItemChangeFocus );
       tabButton.removeEventListener( "click", 
                                      org.eclipse.swt.TabUtil._onTabItemClick );
-      var tabPage = widgetManager.findWidgetById( itemId + "pg" );
-      widgetManager.dispose( tabPage );
+      widgetManager.dispose( itemId + "pg" );
     },
 
     _onTabItemChangeFocus : function( evt ) {

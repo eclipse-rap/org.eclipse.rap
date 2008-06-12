@@ -1,11 +1,10 @@
-
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -115,12 +114,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   },
   
   members : {
-    
-    // delegater
+
+    // delegator methods
     setBackgroundColor : function( color ) {
       this._tree.setBackgroundColor( color );
     },
-    
+
+    resetBackgroundColor : function() {
+      this._tree.resetBackgroundColor();
+    },
+
+    setTextColor : function( color ) {
+      this._tree.setTextColor( color );
+    },
+
+    resetTextColor : function() {
+      this._tree.resetTextColor();
+    },
+
     _onTreeElementChange : function( evt ) {
       var value = evt.getValue();
       if ( value )
@@ -138,7 +149,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     {
       this._tree.focus();
     },
-    
+
+    // TODO [rst] Find a generic solution for state inheritance
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
+      {
+        this._tree.addState( state );
+      }
+    },
+
     _onTreeScroll : function( e ) {
       var target = e.target;
       if( e.target == null ) {
@@ -334,15 +354,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     _updateLayout : function() {
       if( !this._tree.isCreated() ) {
         this._tree.addEventListener( "appear",
-                                 this._updateLayout, this );
-        return;
+                                     this._updateLayout, this );
+      } else {
+        var bw = this._getBorderWidth() * 2;
+        this._columnArea.setWidth( this.getWidth() - bw );
+        this._columnArea.setHeight( this.getColumnAreaHeight() );
+        this._tree.setLeft( 0 );
+        this._tree.setWidth( this.getWidth() - bw );
+        this._tree.setHeight( this.getHeight() - this.getColumnAreaHeight() - bw );
+        this._tree.setTop( this.getColumnAreaHeight() );
       }
-      this._columnArea.setWidth( this.getWidth() );
-      this._columnArea.setHeight( this.getColumnAreaHeight() );
-      this._tree.setWidth( this.getWidth() );
-      this._tree.setHeight( this.getHeight() - this.getColumnAreaHeight() );
-      this._tree.setTop( this.getColumnAreaHeight() );
-      
+    },
+
+    // TODO [rst] This is a workaround for bug 226726. Replace with decent layout.
+    _getBorderWidth : function() {
+      var result = 0;
+      var borderName = this.getBorder();
+      if( borderName ) {
+        var borderTheme = qx.theme.manager.Border.getInstance().getBorderTheme();
+        var border = borderTheme.borders[ borderName ];
+        if( border && typeof border.width == "number" ) {
+          result = border.width;
+        }
+      }
+      return result;
     },
 
     _onChangeSize : function( evt ) {
@@ -577,8 +612,5 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     _enableClicks : function() {
       this._clicksSuspended = false;
     }
-    
   }
-  
-  
-});
+} );

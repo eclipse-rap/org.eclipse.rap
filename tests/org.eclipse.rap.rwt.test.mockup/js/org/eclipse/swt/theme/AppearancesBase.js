@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -949,9 +949,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           result.backgroundColor = tv.getColor( "list.selection.background" );
         }
       } else {
-        result.textColor = tv.getColor( "list.foreground" );
+        result.textColor = "undefined";
         result.backgroundColor = "undefined";
-      }      
+      }
       return result;
     }
   },
@@ -991,9 +991,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.verticalChildrenAlign = "top";
       result.backgroundColor = tv.getColor( "list.background" );
-      result.border = tv.getBorder( states.rwt_BORDER
-                                    ? "control.BORDER.border"
-                                    : "control.border" );
+      result.textColor = tv.getColor( "list.foreground" );
       return result;
     }
   },
@@ -1056,12 +1054,27 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "tree-column-resizer" : {
-    style : function( sates ) {
+    style : function( states ) {
       return {
         // TODO [rh] use same bg-color as splitpane-spltter (see there)
         backgroundColor : "#d6d5d9",
         width : 3
       }
+    }
+  },
+
+  "tree-column-sort-indicator" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      if( states.up ) {
+        result.source = tv.getImage( "tree.column.sort.up" );
+      } else if( states.down ) {
+        result.source = tv.getImage( "tree.column.sort.down" );
+      } else {
+        result.source = "undefined";
+      }
+      return result;
     }
   },
 
@@ -1261,7 +1274,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getColor( "list.background" ),
-        border : tv.getColor( states.rwt_BORDER ? "text.BORDER.border" : "text.border" )
+        border : tv.getBorder( states.rwt_BORDER ? "text.BORDER.border" : "text.border" )
       };
     }
   },
@@ -1353,22 +1366,37 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       if( states.mouseover && !states.disabled ) {
         result.backgroundColor = tv.getColor( "table.column.hover.background" );
-        result.border = tv.getColor( "table.column.hover.border" );
+        result.border = tv.getBorder( "table.column.hover.border" );
       } else {
         result.backgroundColor = tv.getColor( "table.column.background" );
-        result.border = tv.getColor( "table.column.border" );
+        result.border = tv.getBorder( "table.column.border" );
       }
       return result;
     }
   },
 
   "table-column-resizer" : {
-    style : function( sates ) {
+    style : function( states ) {
       return {
         width : 3,
         opacity : 0.3,
         backgroundColor : "black"
       }
+    }
+  },
+
+  "table-column-sort-indicator" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      if( states.up ) {
+        result.source = tv.getImage( "table.column.sort.up" );
+      } else if( states.down ) {
+        result.source = tv.getImage( "table.column.sort.down" );
+      } else {
+        result.source = "undefined";
+      }
+      return result;
     }
   },
 
@@ -1590,20 +1618,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "coolbar" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" )
-      }
+      var result = {};
+      result.border = tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" );
+      return result;
+    }
+  },
+
+  "coolitem" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" );
+      return result;
     }
   },
 
   "coolitem-handle" : {
     style : function( states ) {
-      return {
-        width : "100%",
-        border : "thinOutset",
-        margin : [ 1, 2, 1, 0 ],
-        cursor : "w-resize"
-      }
+      var result = {};
+      result.width = "100%";
+      result.border = "thinOutset";
+      result.margin = [ 1, 2, 1, 0 ];
+      result.cursor = "w-resize";
+      return result;
     }
   },
 

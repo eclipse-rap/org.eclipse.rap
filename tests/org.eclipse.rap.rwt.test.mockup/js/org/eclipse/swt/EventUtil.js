@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -175,19 +175,22 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     /**
      * Determines whether the event is relevant (i.e. should be sent) for the
      * given widget.
-     * In case a Control that is contained in widget was clicked, the widget
-     * must not be notified. On the other hand, when an item (e.g. TreeItem)
-     * was clicked, the widget (Tree in this case) must be notified.
-     * If the widget itself was clicked, it must be notified.
      * @param widget - the listening widget
      * @param evt - the mouse event
      */
     _isRelevantMouseEvent : function( widget, evt ) {
       var result = true;
       if(    widget !== org.eclipse.swt.EventUtil._capturingWidget
-          && widget !== evt.getOriginalTarget() ) {
+          && widget !== evt.getOriginalTarget() )
+      {
+        // find parent control and ensure that it is the same as the widget-
+        // parameter. Otherwise the mouse event is ignored.  
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        result = !widgetManager.isControl( evt.getOriginalTarget() );
+        var parent = evt.getOriginalTarget();
+        while( parent != null && !widgetManager.isControl( parent ) ) {
+          parent = parent.getParent ? parent.getParent() : null;
+        }
+        result = widget === parent;
       }
       return result;
     },
