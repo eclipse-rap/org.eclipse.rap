@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.theme;
 
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
