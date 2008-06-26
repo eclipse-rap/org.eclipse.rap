@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,23 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.internal.graphics.IColor;
+import org.eclipse.rwt.graphics.Graphics;
 
 /**
- * Instances of this class manage the operating system resources that implement
- * SWT's RGB color model. To create a color you can either specify the
- * individual color components as integers in the range 0 to 255 or provide an
- * instance of an <code>RGB</code>.
- *
+ * Instances of this class manage resources that implement SWT's RGB color 
+ * model. 
+ * 
+ * <p>To create a color, use one of the <code>getColor</code> methods in class 
+ * <code>Graphics</code> and either specify the individual color components as 
+ * integers in the range 0 to 255 or provide an instance of an <code>RGB</code>.
+ * </p>
+ * 
  * @see RGB
+ * @see Device#getSystemColor
+ * @see Graphics
  * 
  * @since 1.0
  */

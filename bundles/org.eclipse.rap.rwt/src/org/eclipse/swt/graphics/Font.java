@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,24 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.rwt.graphics.Graphics;
 
-// TODO [bm] Javadoc
-// TODO [rh] font property (according and LCA functionality) for the following
-//      widget missing: TableItem, TreeColumn
 /**
+ * Instances of this class manage resources that define how text looks when 
+ * it is displayed. 
+ * 
+ * <p>Fonts may be constructed using one of the <code>getFont</code> methods 
+ * in class <code>Graphics</code> by providing a name, size and style information 
+ * or a <code>FontData</code> object which encapsulates this data.
+ * </p>
+ *
+ * @see FontData
+ * @see Graphics
  * 
  * @since 1.0
- * 
  */
 public final class Font extends Resource {
 
