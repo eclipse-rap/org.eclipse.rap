@@ -110,6 +110,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531 
     //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
     if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+      this.addEventListener( "keydown", this._onKeyDown, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
       this.addEventListener( "keyup", this._onKeyUp, this );
     }
@@ -132,6 +133,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531 
     //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
     if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+      this.removeEventListener( "keydown", this._onKeyDown, this );
       this.removeEventListener( "keypress", this._onKeyPress, this );
       this.removeEventListener( "keyup", this._onKeyUp, this );
     }
@@ -394,7 +396,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _onCheckBoxClick : function( evt ) {
       var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
-      this._toggleCheckBox( rowIndex );
+      var itemIndex = this._getItemIndexFromRowIndex( rowIndex );
+      this._toggleCheckState( itemIndex );
     },
     
     _onRowClick : function( evt ) {
@@ -506,25 +509,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
     
-    _onRowKeyDown : function( evt ) {
-      switch( evt.getKeyIdentifier() ) {
-        case "Space":
-          this._toggleCheckBox( this._rows.indexOf( evt.getTarget() ) );
-          break;
-      }
-    },
-
-    _toggleCheckBox : function( rowIndex ) {
+    _toggleCheckState : function( itemIndex ) {
       if( this._checkBoxes != null ) {
-        var itemIndex = this._topIndex + rowIndex;
-        if(    itemIndex >= 0 
-            && itemIndex < this._itemCount 
-            && this._items[ itemIndex ] )
-        {
-          var item = this._items[ itemIndex ];
+        var item = this._items[ itemIndex ];
+        if( itemIndex >= 0 && itemIndex < this._itemCount && item ) {
           item.setChecked( !item.getChecked() );
-          // Reflect changed check-state in case there is no server-side listener
-          this._updateRow( rowIndex, itemIndex );
+          // Reflect changed check-state in case there is no server-side listener 
+          // If changed item is currently not visible, omit update
+          var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
+          if( rowIndex !== -1 ) {
+	          this._updateRow( rowIndex, itemIndex );
+          }
           this._updateCheckParam( item );
           this.createDispatchDataEvent( "itemchecked", itemIndex );
         }
@@ -568,6 +563,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     ///////////////////////
     // Keyboard navigation
+    
+    _onKeyDown : function( evt ) {
+      switch( evt.getKeyIdentifier() ) {
+        case "Space":
+          this._toggleCheckState( this._focusIndex );
+          break;
+      }
+    },
     
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
@@ -928,14 +931,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       row.addEventListener( "click", this._onRowClick, this );
       row.addEventListener( "dblclick", this._onRowDblClick, this );
       row.addEventListener( "contextmenu", this._onRowContextMenu, this );
-      row.addEventListener( "keydown", this._onRowKeyDown, this );
     },
     
     _unhookRowEventListener : function( row ) {
       row.removeEventListener( "click", this._onRowClick, this );
       row.removeEventListener( "dblclick", this._onRowDblClick, this );
       row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
-      row.removeEventListener( "keydown", this._onRowKeyDown, this );
     },
     
     _updateRowBounds : function() {
