@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     setSelection : function( value ) {
       // TODO [rh] improve this: don't access internal structures of Table
-      var index = this._parent._items.indexOf( this );
+      var index = this._getIndex();
       if( value ) {
         this._parent._selectItem( index, false );
         // reset selection start index when selection changes server-side
@@ -137,9 +137,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     update : function() {
       this._cached = true;
-      // TODO [rh] improve this: don't access internal structures of Table
-      var index = this._parent._items.indexOf( this );
-      this._parent.updateItem( index, true );
+      this._parent.updateItem( this._getIndex(), true );
     },
     
     clear : function() {
@@ -190,7 +188,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             + ";";
         }
         // Foreground and background color
-        if( parent.getEnabled() && !parent._isItemSelected( this ) ) {
+        if( parent.getEnabled() && !parent._isItemSelected( this._getIndex() ) )
+        {
           if( this._foregrounds && this._foregrounds[ i ] ) {
             foreground
               = org.eclipse.swt.widgets.TableItem.FOREGROUND 
@@ -204,7 +203,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
               = org.eclipse.swt.widgets.TableItem.BACKGROUND 
               + this._backgrounds[ i ] 
               + ";";
-          }
+          } 
         }
         // Draw image
         if( this._images && this._images[ i ] ) {
@@ -293,6 +292,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           + org.eclipse.swt.widgets.TableItem.TEXT_END;
       }
       return result;
+    },
+    
+    _getIndex : function() {
+      // TODO [rh] improve this: don't access internal structures of Table
+      return this._parent._items.indexOf( this );
     }
 
   }
