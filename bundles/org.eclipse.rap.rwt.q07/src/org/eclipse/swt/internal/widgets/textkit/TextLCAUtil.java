@@ -17,6 +17,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 
@@ -73,41 +74,51 @@ final class TextLCAUtil {
                       Boolean.valueOf( hasListener ) );
   }
 
-  static void readText( final Text text ) {
-    final String value = WidgetLCAUtil.readPropertyValue( text, "text" );
-    if( value != null ) {
+  static void readTextAndSelection( final Text text ) {
+    final Point selection = readSelection( text );
+    final String txt = WidgetLCAUtil.readPropertyValue( text, "text" );
+    if( txt != null ) {
       if( VerifyEvent.hasListener( text ) ) {
         // setText needs to be executed in a ProcessAction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            text.setText( value );
-            // Reset preserved value in case the values wasn't set as-is as this
-            // means that a VerifyListener manipulated or rejected the value
-            if( !value.equals( text.getText() ) ) {
-              IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+            ITextAdapter textAdapter = getTextAdapter( text );
+            textAdapter.setText( txt, selection );
+            // Reset preserved value in case the values weren't set as-is as 
+            // this means that a VerifyListener manipulated or rejected the value
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+            if( !txt.equals( text.getText() ) ) {
               adapter.preserve( PROP_TEXT, null );
+            }
+            if( !selection.equals( text.getSelection() ) ) {
+              adapter.preserve( PROP_SELECTION, null );
             }
           }
         } );
       } else {
-        text.setText( value );
+        text.setText( txt );
+        text.setSelection( selection );
       }
     }
   }
 
-  static void readSelection( final Text text ) {
-    Point selection = text.getSelection();
-    String value = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
-    if( value != null ) {
-      selection.x = Integer.parseInt( value );
+  private static Point readSelection( final Text text ) {
+    Point result = text.getSelection();
+    // TODO [rh] selection handling broken on client-side multi-line text widget 
+    //      see http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
+    if( ( text.getStyle() & SWT.MULTI ) == 0 ) {
+      String value = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
+      if( value != null ) {
+        result.x = Integer.parseInt( value );
+      }
+      value = WidgetLCAUtil.readPropertyValue( text, "selectionCount" );
+      if( value != null ) {
+        result.y = result.x + Integer.parseInt( value );
+      }
     }
-    value = WidgetLCAUtil.readPropertyValue( text, "selectionCount" );
-    if( value != null ) {
-      selection.y = selection.x + Integer.parseInt( value );
-    }
-    text.setSelection( selection );
+    return result;
   }
 
   static void writeHijack( final Text text ) throws IOException {
@@ -259,5 +270,9 @@ final class TextLCAUtil {
     Button defButton = text.getShell().getDefaultButton();
     boolean hasDefaultButton = defButton != null && defButton.isVisible();
     return !hasDefaultButton && SelectionEvent.hasListener( text );
+  }
+
+  private static ITextAdapter getTextAdapter( final Text text ) {
+    return ( ITextAdapter )text.getAdapter( ITextAdapter.class );
   }
 }

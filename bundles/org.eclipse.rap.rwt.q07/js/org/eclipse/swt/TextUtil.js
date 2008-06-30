@@ -119,11 +119,11 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _isModified : function( widget ) {
-      return widget.getUserData("modified") == true;
+      return widget.getUserData( "modified" ) == true;
     },
 
     _setModified : function( widget, modified ) {
-      return widget.setUserData("modified", modified);
+      return widget.setUserData( "modified", modified );
     },
 
     /**
@@ -190,6 +190,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
     },
 
+    // Note: be aware that this function is also called from ComboUtil
     updateSelection : function( text, enclosingWidget ) {
       // TODO [rh] executing the code below for a TextArea leads to Illegal 
       //      Argument
@@ -197,13 +198,13 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         var widget = enclosingWidget != null ? enclosingWidget : text;
         var start = text.getSelectionStart();
         var length = text.getSelectionLength();
-        if( text.getUserData( "selectionStart" ) != start ) {
+        if(    text.getUserData( "selectionStart" ) != start 
+            || text.getUserData( "selectionLength" ) != length )
+        {
           text.setUserData( "selectionStart", start );
           org.eclipse.swt.TextUtil._setPropertyParam( widget,
                                                       "selectionStart",
                                                       start );
-        }
-        if( text.getUserData( "selectionLength" ) != length ) {
           text.setUserData( "selectionLength", length );
           org.eclipse.swt.TextUtil._setPropertyParam( widget,
                                                       "selectionCount",
@@ -223,8 +224,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     setSelection : function( text, start, length ) {
       if( text.isCreated() && !text.getUserData( "pooled" ) ) {
         org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
-      }
-      else {
+      } else {
         text.setUserData( "onAppear.selectionStart", start );
         text.setUserData( "onAppear.selectionLength", length );
         text.addEventListener( "appear", 

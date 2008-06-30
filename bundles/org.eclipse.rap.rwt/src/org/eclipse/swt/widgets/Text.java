@@ -13,10 +13,12 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 /**
@@ -49,6 +51,7 @@ public class Text extends Scrollable {
    */
   public static final int LIMIT = Integer.MAX_VALUE;
 
+  private final ITextAdapter textAdapter;
   private String text = "";
   private int textLimit = LIMIT;
   private final Point selection = new Point( 0, 0 );
@@ -86,6 +89,11 @@ public class Text extends Scrollable {
    */
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    textAdapter = new ITextAdapter() {
+      public void setText( String text, Point selection ) {
+        Text.this.setText( text, selection );
+      }
+    };
   }
 
   void initState() {
@@ -94,6 +102,16 @@ public class Text extends Scrollable {
         state |= THEME_BACKGROUND;
       }
     }
+  }
+
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if( ITextAdapter.class.equals( adapter ) ) {
+      result = textAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
   }
 
   /**
@@ -143,6 +161,32 @@ public class Text extends Scrollable {
   public String getText() {
     checkWidget();
     return text;
+  }
+
+  /**
+   * Appends a string.
+   * <p>
+   * The new text is appended to the text at
+   * the end of the widget.
+   * </p>
+   *
+   * @param string the string to be appended
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  // TODO [rh] fire VerifyEvent missing
+  public void append( final String string ) {
+    checkWidget();
+    if( string == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setText( text + string );
   }
 
   /**
@@ -219,30 +263,6 @@ public class Text extends Scrollable {
   public int getTextLimit() {
     checkWidget ();
     return textLimit;
-  }
-
-  /**
-   * Appends a string.
-   * <p>
-   * The new text is appended to the text at
-   * the end of the widget.
-   * </p>
-   *
-   * @param string the string to be appended
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-   * </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // TODO [rh] fire VerifyEvent missing
-  public void append (String string) {
-  	checkWidget();
-  	if (string == null) error (SWT.ERROR_NULL_ARGUMENT);
-  	setText(getText() + string);
   }
 
   ///////////////////////////////////////////
@@ -707,6 +727,16 @@ public class Text extends Scrollable {
     return true;
   }
 
+  private Rectangle getPadding() {
+    ThemeManager manager = ThemeManager.getInstance();
+    TextThemeAdapter adapter
+      = ( TextThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getPadding( this );
+  }
+
+  ////////////////////////////////////////////
+  // Text modification and verify event helper
+  
   private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
@@ -728,11 +758,14 @@ public class Text extends Scrollable {
     return result;
   }
 
-  private Rectangle getPadding() {
-    ThemeManager manager = ThemeManager.getInstance();
-    TextThemeAdapter adapter
-      = ( TextThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getPadding( this );
+  private void setText( final String text, final Point selection ) {
+    String verifiedText = verifyText( text, 0, this.text.length() );
+    if( verifiedText != null ) {
+      this.text = verifiedText;
+      setSelection( selection.x, selection.y );
+      ModifyEvent modifyEvent = new ModifyEvent( this );
+      modifyEvent.processEvent();
+    }
   }
 
   ///////////////////////////////////////

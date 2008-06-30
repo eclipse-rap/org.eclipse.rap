@@ -31,9 +31,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
    * by updating the text property in TextLCAUtil.readText( Text ).
    */
   void readData( final Text text ) {
-    // order is crucial: first read text then read what part of it is selected
-    TextLCAUtil.readText( text );
-    TextLCAUtil.readSelection( text );
+    TextLCAUtil.readTextAndSelection( text );
     ControlLCAUtil.processSelection( text, null, false );
     ControlLCAUtil.processMouseEvents( text );
   }
