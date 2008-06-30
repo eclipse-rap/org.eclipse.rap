@@ -40,13 +40,15 @@ public class RWTDelegate extends HttpServlet {
 
   public void doGet( final HttpServletRequest request,
                      final HttpServletResponse response )
-    throws ServletException, IOException {
+    throws ServletException, IOException
+  {
     doPost( request, response );
   }
 
   public void doPost( final HttpServletRequest request,
                       final HttpServletResponse response )
-    throws ServletException, IOException {
+    throws ServletException, IOException 
+  {
     request.setCharacterEncoding( "UTF-8" );
     HttpServletRequest wrappedRequest = getWrappedRequest( request );
     try {

@@ -274,7 +274,7 @@ public class RWTLifeCycle extends LifeCycle {
   {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Throwable throwable
-    = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
+      = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
     if( throwable != null ) {
       if( throwable instanceof PhaseExecutionError ) {
         throwable = throwable.getCause();
@@ -311,7 +311,7 @@ public class RWTLifeCycle extends LifeCycle {
     result.getThread().setDaemon( true );
     result.getThread().setName( "UIThread [" + session.getId() + "]" );
     session.setAttribute( UI_THREAD, result );
-    final SessionStoreImpl sessionStore = ( SessionStoreImpl )session;
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )session;
     sessionStore.setShutdownAdapter( ( ISessionShutdownAdapter )result );
     return result;
   }
