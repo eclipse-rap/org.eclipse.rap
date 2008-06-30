@@ -322,6 +322,43 @@ public class TableLCA_Test extends TestCase {
     assertEquals( item1, table.getSelection()[ 0 ] );
   }
 
+  public void testWidgetDefaultSelected() {
+    final SelectionEvent[] events = new SelectionEvent[ 1 ];
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Table table = new Table( shell, SWT.NONE );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    final TableItem item2 = new TableItem( table, SWT.NONE );
+    table.setSelection( 0 );
+    table.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
+        fail( "unexpected event: widgetSelected" );
+      }
+      public void widgetDefaultSelected( final SelectionEvent event ) {
+        events[ 0 ] = event;
+      }
+    } );
+    // Simulate request that comes in after item2 was checked (but not selected)
+    RWTFixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( display );
+    String tableId = WidgetUtil.getId( table );
+    String item2Index = String.valueOf( table.indexOf( item2 ));
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
+    assertEquals( table, events[ 0 ].getSource() );
+    assertEquals( item2, events[ 0 ].item );
+    assertEquals( true, events[ 0 ].doit );
+    assertEquals( 0, events[ 0 ].x );
+    assertEquals( 0, events[ 0 ].y );
+    assertEquals( 0, events[ 0 ].width );
+    assertEquals( 0, events[ 0 ].height );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( item1, table.getSelection()[ 0 ] );
+  }
+  
   public void testGetMeasureItemWithoutColumnsVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final String[] data = new String[ 1000 ];

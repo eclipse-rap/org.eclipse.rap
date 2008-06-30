@@ -569,6 +569,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         case "Space":
           this._toggleCheckState( this._focusIndex );
           break;
+        case "Enter":
+          // in sync with SWT: fire defaultSelection when <Return> is pressed, 
+          // regardless which modifier-key(s) are held down
+          if( this._focusIndex !== -1 ) {
+            var itemIndex = this._getItemIndexFromRowIndex( this._focusIndex );
+            if( itemIndex !== -1 ) {
+              this.createDispatchDataEvent( "itemdefaultselected", itemIndex );
+            }
+          }
+          break;
       }
     },
     
