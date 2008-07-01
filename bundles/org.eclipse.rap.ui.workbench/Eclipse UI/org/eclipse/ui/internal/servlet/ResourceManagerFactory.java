@@ -36,7 +36,6 @@ import org.osgi.service.http.*;
 final class ResourceManagerFactory implements IResourceManagerFactory {
 
   private final class HttpContextWrapper implements HttpContext {
-    
     private final HttpContext context;
     
     private HttpContextWrapper( final HttpContext context ) {
@@ -69,8 +68,12 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
   private final class ResourceManagerWrapper 
     implements IResourceManager, Adaptable
   {
-
     private final IResourceManager resourceManager;
+    // TODO [fappel]: think of a better solution
+    // This field is set to true the first time the HttpService is used.
+    // If the HttpService isn't available anymore we assume that the
+    // system is in shutdown process.
+    private boolean httpServiceLoaded;
 
     private ResourceManagerWrapper( final IResourceManager internal ) {
       this.resourceManager = internal;
@@ -153,17 +156,19 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
       IPath path = new Path( name ).removeLastSegments( 1 );
       IPath location = new Path( contextRoot ).append( path );
       HttpService httpService = getHttpService();
-      HttpContext httpContext = getHttpContext();
-      HttpContext wrapper = new HttpContextWrapper( httpContext );
-      try {
-        httpService.registerResources( "/" + path.toString(),
-                                       location.toString(),
-                                       wrapper );
-      } catch( final NamespaceException ignore ) {
-        // TODO: [fappel] for the first shot we simply ignore the exception
-        //                that's thrown if we register an alias twice. A better
-        //                approach could be to take track of the namespaces that
-        //                have already been registered
+      if( httpService != null ) {
+        HttpContext httpContext = getHttpContext();
+        HttpContext wrapper = new HttpContextWrapper( httpContext );
+        try {
+          httpService.registerResources( "/" + path.toString(),
+                                         location.toString(),
+                                         wrapper );
+        } catch( final NamespaceException ignore ) {
+          // TODO: [fappel] for the first shot we simply ignore the exception
+          //                that's thrown if we register an alias twice. A better
+          //                approach could be to take track of the namespaces that
+          //                have already been registered
+        }
       }
     }
 
@@ -174,19 +179,49 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
       HttpContextExtensionService service
         = ( HttpContextExtensionService )context.getService( ref );
       String id = HttpServiceTracker.ID_HTTP_CONTEXT;
-      return service.getHttpContext( getHttpServiceRef(), id );
+      HttpContext result = null;
+      ServiceReference httpServiceRef = getHttpServiceRef();
+      if( httpServiceRef != null ) {
+        result = service.getHttpContext( httpServiceRef, id );
+      } else {
+        throw new IllegalStateException( "HttpService is not available." );
+      }
+      return result;
     }
 
     private HttpService getHttpService() {
       ServiceReference reference = getHttpServiceRef();
       BundleContext context = WorkbenchPlugin.getDefault().getBundleContext();
-      return ( HttpService )context.getService( reference );
+      HttpService result = null;
+      // TODO [fappel]: think of a better solution
+      // This field httpServiceLoaded is set to true the first time the
+      // HttpService is used. If the HttpService isn't available anymore we
+      // assume that the system is in shutdown process. NPE would prevent
+      // a proper shutdown of the workbench due to some unneeded image
+      // registration.
+      if( reference != null ) {
+        result = ( HttpService )context.getService( reference );
+        httpServiceLoaded = true;
+      } else if( !httpServiceLoaded ) {
+        throw new IllegalStateException( "HttpService is not available." );
+      }
+      return result;
     }
 
     private ServiceReference getHttpServiceRef() {
       BundleContext context = WorkbenchPlugin.getDefault().getBundleContext();
+      ServiceReference result = null;
       String serviceName = HttpService.class.getName();
-      return context.getServiceReference( serviceName );
+      try {
+        result = context.getServiceReference( serviceName );
+      } catch( final IllegalStateException ignore ) {
+        // TODO [fappel]: think of a better solution
+        // ignore exception: nothing we can do about, if called during
+        // shutdown. Calling methods have to handle the return value null.
+        // Throwing the Exception would prevent a proper shutdown of the
+        // workbench due to unneeded image registration.
+      }
+      return result;
     }
 
     public InputStream getRegisteredContent( final String name ) {

@@ -605,12 +605,21 @@ public class Fixture {
     }
   }
   
+  public static interface TestLogger {
+    void log( String message, Throwable throwable );
+  }
+  
   public final static class TestServletContext implements ServletContext {
 
     private String servletContextName;
     private final Map initParameters = new HashMap();
     private Map attributes = new HashMap();
+    private TestLogger logger;
 
+    public void setLogger( final TestLogger logger ) {
+      this.logger = logger;
+    }
+    
     public ServletContext getContext( final String arg0 ) {
       return null;
     }
@@ -660,12 +669,17 @@ public class Fixture {
     }
 
     public void log( final String arg0 ) {
+      log( arg0, null );
     }
 
     public void log( final Exception arg0, final String arg1 ) {
+      log( arg1, arg0 );
     }
 
     public void log( final String arg0, final Throwable arg1 ) {
+      if( logger != null ) {
+        logger.log( arg0, arg1 );
+      }
     }
 
     public String getRealPath( final String arg0 ) {

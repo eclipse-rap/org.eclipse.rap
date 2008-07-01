@@ -11,15 +11,16 @@
 
 package org.eclipse.rwt.service;
 
-import java.util.Enumeration;
+import java.util.*;
 
 import javax.servlet.http.*;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.TestSession;
+import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 
 public class SessionStore_Test extends TestCase {
@@ -135,8 +136,9 @@ public class SessionStore_Test extends TestCase {
     }
 
 
+    TestSession checkAboutUnboundHttpSession = new TestSession();
     final SessionStoreImpl checkAboutUnbound
-      = new SessionStoreImpl( new TestSession() );
+      = new SessionStoreImpl( checkAboutUnboundHttpSession );
     checkAboutUnbound.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( final SessionStoreEvent event ) {
         checkAboutUnbound.addSessionStoreListener( new SessionStoreListener() {
@@ -145,11 +147,17 @@ public class SessionStore_Test extends TestCase {
         } );
       }
     } );
-    try {
-      checkAboutUnbound.getHttpSession().invalidate();
-      fail();
-    } catch( final IllegalStateException iae ) {
-    }
+    TestServletContext servletContext
+      = ( TestServletContext )checkAboutUnboundHttpSession.getServletContext();
+    final Set problems = new HashSet();
+    servletContext.setLogger( new TestLogger() {
+      public void log( final String message, final Throwable throwable ) {
+        problems.add( throwable );
+      }
+    } );
+    checkAboutUnbound.getHttpSession().invalidate();
+    assertEquals( 1, problems.size() );
+    servletContext.setLogger( null );
 
     final boolean[] hasContext = { false };
     SessionStoreImpl checkContext = new SessionStoreImpl( new TestSession() );
@@ -191,5 +199,31 @@ public class SessionStore_Test extends TestCase {
     shutdownCallback[ 0 ].run();
     assertTrue( listenerWasCalled[ 0 ] );
     assertFalse( sessionStore.isBound() );
+  }
+  
+  public void testExceptionCase() {
+    final TestSession httpSession = new TestSession();
+    ISessionStore session = new SessionStoreImpl( httpSession );
+    session.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( SessionStoreEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+    session.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( SessionStoreEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+    TestServletContext servletContext
+      = ( TestServletContext )httpSession.getServletContext();
+    final Set problems = new HashSet();
+    servletContext.setLogger( new TestLogger() {
+      public void log( final String message, final Throwable throwable ) {
+        problems.add( throwable );
+      }
+    } );
+    httpSession.invalidate();
+    assertEquals( 2, problems.size() );
+    
   }
 }

@@ -607,8 +607,12 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 		if (event.getBundle().getSymbolicName() == null)
 			return;
 		// If the workbench isn't running anymore simply return.
-		if (!Workbench.getInstance().isRunning()) {
-			return;
+// RAP [fappel]: need a multi user environment aware solution
+//		if (!Workbench.getInstance().isRunning()) {
+//			return;
+//		}
+		if( !PlatformUI.isWorkbenchRunning() ) {
+		  return;
 		}
 		
 		if (event.getBundle().getState() == Bundle.ACTIVE) {

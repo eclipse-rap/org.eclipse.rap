@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -169,7 +171,14 @@ public final class SessionStoreImpl
     }
     SessionStoreEvent evt = new SessionStoreEvent( this );
     for( int i = 0; i < lsnrs.length; i++ ) {
-      ( ( SessionStoreListener )lsnrs[ i ] ).beforeDestroy( evt );
+      try {
+        ( ( SessionStoreListener )lsnrs[ i ] ).beforeDestroy( evt );
+      } catch( final RuntimeException re ) {
+        String txt = "Could not execute {0}.beforeDestroy(SessionStoreEvent).";
+        Object[] param = new Object[] { lsnrs[ i ].getClass().getName() };
+        String msg = MessageFormat.format( txt, param );
+        logProblem( msg, re );
+      }
     }
     Object[] names;
     synchronized( attributes ) {      
@@ -189,7 +198,15 @@ public final class SessionStoreImpl
           attribute = attributes.get( name );
         }
         removedAttributes.add( name );
-        fireValueUnbound( name, attribute );
+        try {
+          fireValueUnbound( name, attribute );
+        } catch( final RuntimeException re ) {
+          String txt
+            = "Could not execute {0}.valueUnbound(HttpSessionBindingEvent).";
+          Object[] param = new Object[] { attribute.getClass().getName() };
+          String msg = MessageFormat.format( txt, param );
+          logProblem( msg, re );
+        }
       }
     } finally {
       synchronized( attributes ) {
@@ -203,6 +220,16 @@ public final class SessionStoreImpl
     listeners.clear();
     bound = false;
     aboutUnbound = false;
+  }
+
+  private void logProblem( final String msg, final Throwable thr ) {
+    try {
+      session.getServletContext().log( msg, thr );
+    } catch( final RuntimeException re ) {
+      // in case the servlet context is not available
+      System.err.println( msg );
+      thr.printStackTrace();
+    }
   }
   
   private Object removeAttributeInternal( final String name ) {
