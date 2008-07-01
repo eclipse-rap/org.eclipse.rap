@@ -727,7 +727,7 @@ public class Fixture {
     public String getId() {
       if( isInvalidated ) {
         String text 
-          = "Unabled to obtain session id. Session already invalidated.";
+          = "Unable to obtain session id. Session already invalidated.";
         throw new IllegalStateException( text );
       }
       return String.valueOf( hashCode() );
