@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.Enumeration;
@@ -61,10 +60,10 @@ public class LifeCycleAdapter_Test extends TestCase {
 
   public void testWidgetLifeCycleAdapter() {
     Display display = new Display();
-    Composite shell1 = new Shell( display , SWT.NONE );
+    Composite shell1 = new Shell( display, SWT.NONE );
     Object shell1LCA = shell1.getAdapter( ILifeCycleAdapter.class );
     assertTrue( shell1LCA instanceof IWidgetLifeCycleAdapter );
-    Composite shell2 = new Shell( display , SWT.NONE );
+    Composite shell2 = new Shell( display, SWT.NONE );
     Object shell2LCA = shell2.getAdapter( ILifeCycleAdapter.class );
     assertTrue( shell2LCA instanceof IWidgetLifeCycleAdapter );
     assertSame( shell1LCA, shell2LCA );
@@ -72,10 +71,12 @@ public class LifeCycleAdapter_Test extends TestCase {
     Object buttonLCA = button.getAdapter( ILifeCycleAdapter.class );
     assertTrue( buttonLCA instanceof IWidgetLifeCycleAdapter );
     CustomComposite customComposite = new CustomComposite( shell2 );
-    Object customComposite1LCA = customComposite.getAdapter( ILifeCycleAdapter.class );
+    Object customComposite1LCA
+      = customComposite.getAdapter( ILifeCycleAdapter.class );
     assertTrue( customComposite1LCA.getClass().equals( CompositeLCA.class ) );
     CustomComposite customComposite2 = new CustomComposite( shell2 );
-    Object customComposite2LCA = customComposite2.getAdapter( ILifeCycleAdapter.class );
+    Object customComposite2LCA
+      = customComposite2.getAdapter( ILifeCycleAdapter.class );
     assertSame( customComposite1LCA, customComposite2LCA );
     Composite composite = new Composite( shell2, SWT.NONE );
     Object compositeLCA = composite.getAdapter( ILifeCycleAdapter.class );
@@ -85,14 +86,16 @@ public class LifeCycleAdapter_Test extends TestCase {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();
     display = new Display();
-    Composite otherSessionShell = new Shell( display , SWT.NONE );
-    Object otherSessionAdapter = otherSessionShell.getAdapter( ILifeCycleAdapter.class );
+    Composite otherSessionShell = new Shell( display, SWT.NONE );
+    Object otherSessionAdapter
+      = otherSessionShell.getAdapter( ILifeCycleAdapter.class );
     assertSame( shell1LCA, otherSessionAdapter );
   }
 
   public void testLCAClassNameVariants() {
     String packageName = "org.eclipse.swt.widgets";
-    String[] variants = LifeCycleAdapterFactory.getPackageVariants( packageName );
+    String[] variants
+      = LifeCycleAdapterFactory.getPackageVariants( packageName );
     String expected = "internal.org.eclipse.swt.widgets";
     assertEquals( expected, variants[ 0 ] );
     expected = "org.internal.eclipse.swt.widgets";
