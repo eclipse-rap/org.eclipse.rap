@@ -42,7 +42,7 @@ public class RWTLifeCycleServiceHandlerSync
     try {
       if(    RWTRequestVersionControl.isValid()
           || LifeCycleServiceHandler.isSessionRestart()
-          || ContextProvider.getRequest().getSession().isNew())
+          || ContextProvider.getRequest().getSession().isNew() )
       {
         doService();
       } else {
