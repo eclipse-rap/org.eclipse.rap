@@ -80,6 +80,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ControlLCAUtil_Test.class );
     suite.addTestSuite( UITestUtil_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
+    suite.addTestSuite( RWTLifeCycle2_Test.class );
     
     // == LCA == 
     suite.addTestSuite( DisplayLCA_Test.class );

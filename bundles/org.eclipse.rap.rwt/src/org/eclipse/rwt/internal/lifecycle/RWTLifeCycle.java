@@ -118,18 +118,16 @@ public class RWTLifeCycle extends LifeCycle {
           UICallBackManager.getInstance().notifyUIThreadEnd();
           // TODO [rh] preliminary solution: see 
           //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
-          SessionStoreImpl sessionStoreImpl 
-            = ( SessionStoreImpl )ContextProvider.getSession();
-          sessionStoreImpl.setShutdownAdapter( null );
+          setShutdownAdapter( null );
         }
-// TODO [rh] revise this before finalizing readAndDispatch        
-// a)       uiThread.switchThread();
-// b)       synchronized( uiThread ) {
-//           uiThread.notifyAll();
-//         }
       } catch( final UIThreadTerminatedError e ) {
         ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
       } catch( final Throwable thr ) {
+        // TODO [rh] preliminary fix for 
+        //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=232289
+        //      For a decent solution, see these ideas
+        //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
+        setShutdownAdapter( null );
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         stateInfo.setAttribute( UI_THREAD_THROWABLE, thr );
       }
@@ -311,8 +309,7 @@ public class RWTLifeCycle extends LifeCycle {
     result.getThread().setDaemon( true );
     result.getThread().setName( "UIThread [" + session.getId() + "]" );
     session.setAttribute( UI_THREAD, result );
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )session;
-    sessionStore.setShutdownAdapter( ( ISessionShutdownAdapter )result );
+    setShutdownAdapter( ( ISessionShutdownAdapter )result );
     return result;
   }
 
@@ -336,6 +333,14 @@ public class RWTLifeCycle extends LifeCycle {
       result = EntryPointManager.DEFAULT;
     }
     return result;
+  }
+
+  private static void setShutdownAdapter( 
+    final ISessionShutdownAdapter adapter ) 
+  {
+    ISessionStore sessionStore = ContextProvider.getSession();
+    SessionStoreImpl sessionStoreImpl = ( SessionStoreImpl )sessionStore;
+    sessionStoreImpl.setShutdownAdapter( adapter );
   }
 
   PhaseId executePhase( final PhaseId current ) throws IOException {
