@@ -45,6 +45,7 @@ public class ContextProvider {
   // The context mapping mechanism used in standard UI requests from
   // the client is the CONTEXT_HOLDER.
   private final static ThreadLocal CONTEXT_HOLDER = new ThreadLocal();
+  
   // For background threads that need access to data stored in the session
   // a context can be mapped from outside the thread execution.
   // Herefore the CONTEXT_HOLDER_FOR_BG_THREADS is used. In theory it would
@@ -231,7 +232,7 @@ public class ContextProvider {
   }
  
   /**
-   * Returns whether the current thread has an mapped service context.
+   * Returns whether the current thread has a mapped service context.
    */
   public static boolean hasContext() {
     return getContextInternal() != null;    
