@@ -123,7 +123,8 @@ public final class BrandingExtension {
     BrandingManager.register( branding );
   }
 
-  private static IExitConfirmation findExitConfirmationImpl( final IConfigurationElement element )
+  private static IExitConfirmation findExitConfirmationImpl(
+    final IConfigurationElement element )
   {
     IExitConfirmation result = null;
     String className = element.getAttribute( ATT_EXIT_CONFIRMATION_CLASS );
@@ -144,7 +145,7 @@ public final class BrandingExtension {
         try {
           result = ( IExitConfirmation )clazz.newInstance();
         } catch( Exception e ) {
-          String pattern = "Class not instantiate class {0}.";
+          String pattern = "Can not instantiate class {0}.";
           Object[] args = new Object[] { clazz.getName() };
           String msg = MessageFormat.format( pattern, args );
           throw new IllegalArgumentException( msg );

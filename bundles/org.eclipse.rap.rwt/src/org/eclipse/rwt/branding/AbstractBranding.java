@@ -166,7 +166,7 @@ public abstract class AbstractBranding {
   }
 
   /**
-   * Indictes whether an exit confirmation dialog should be shown.
+   * Indicates whether an exit confirmation dialog should be shown.
    * <p>
    * The exit confirmation dialog is shown whenever the user tries to close the
    * browser window or tab or to navigate to another URL. From within this
