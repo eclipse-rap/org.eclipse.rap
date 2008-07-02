@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.lifecycle.IExitConfirmation;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.servlet.HttpServiceTracker;
 import org.osgi.framework.Bundle;

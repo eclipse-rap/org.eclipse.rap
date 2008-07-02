@@ -9,7 +9,8 @@ Bundle-Activator: org.eclipse.ui.internal.WorkbenchPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.eclipse.ui;ui.workbench=split;mandatory:="ui.workbench",
+Export-Package: org.eclipse.rap.ui.branding,
+ org.eclipse.ui;ui.workbench=split;mandatory:="ui.workbench",
  org.eclipse.ui.about,
  org.eclipse.ui.actions;ui.workbench=split;mandatory:="ui.workbench",
  org.eclipse.ui.activities,
@@ -23,8 +24,7 @@ Export-Package: org.eclipse.ui;ui.workbench=split;mandatory:="ui.workbench",
  org.eclipse.ui.fieldassist,
  org.eclipse.ui.handlers,
  org.eclipse.ui.help,
- org.eclipse.ui.internal;ui.workbench=split;mandatory:="ui.workbench";
-  x-friends:="org.eclipse.rap.ui",
+ org.eclipse.ui.internal;ui.workbench=split;mandatory:="ui.workbench";x-friends:="org.eclipse.rap.ui",
  org.eclipse.ui.internal.about;x-friends:="org.eclipse.rap.ui",
  org.eclipse.ui.internal.actions;x-internal:=true,
  org.eclipse.ui.internal.activities;x-friends:="org.eclipse.rap.ui",
