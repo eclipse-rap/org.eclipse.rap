@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class BrowserLCA extends AbstractWidgetLCA {
+  
+  static final String BLANK_HTML = "<html><script></script></html>";
 
   private static final String QX_TYPE = "org.eclipse.swt.browser.Browser";
   private static final String QX_FIELD_SOURCE = "source";
@@ -63,7 +65,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     // TODO [rh] though implemented in DefaultAppearanceTheme, setting border 
     //      does not work
     ControlLCAUtil.writeChanges( browser );
-    writeUrlAndText( browser );
+    writeUrl( browser );
     writeExecute( browser );
   }
 
@@ -87,24 +89,34 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return null;
   }
 
-  private static void writeUrlAndText( final Browser browser ) 
+  private static void writeUrl( final Browser browser ) 
     throws IOException 
   {
-    JSWriter writer = JSWriter.getWriterFor( browser );
+    if( hasUrlChanged( browser ) ) {
+      JSWriter writer = JSWriter.getWriterFor( browser );
+      writer.set( QX_FIELD_SOURCE, getUrl( browser ) );
+    }
+  }
+  
+  static boolean hasUrlChanged( final Browser browser ) {
+    boolean initialized = WidgetUtil.getAdapter( browser ).isInitialized();
+    return    !initialized
+           || WidgetLCAUtil.hasChanged( browser, PROP_TEXT, getText( browser ) )
+           || WidgetLCAUtil.hasChanged( browser, PROP_URL, browser.getUrl() );
+  }
+  
+  static String getUrl( final Browser browser ) throws IOException {
     String text = getText( browser );
     String url = browser.getUrl();
-    if(    WidgetLCAUtil.hasChanged( browser, PROP_TEXT, text, null )
-        || WidgetLCAUtil.hasChanged( browser, PROP_URL, url, null ) )
-    {
-      if( text != null ) {
-        String textUrl = registerHtml( text );
-        writer.set( QX_FIELD_SOURCE, textUrl );
-      } else if( !"".equals( url ) ) {
-        writer.set( QX_FIELD_SOURCE, url );
-      } else {
-        writer.set( QX_FIELD_SOURCE, "" );
-      }
+    String result;
+    if( text != null && !"".equals( text.trim() ) ) {       
+      result = registerHtml( text );
+    } else if( url != null && !"".equals( url.trim() ) ) {        
+      result = url;
+    } else {        
+      result = registerHtml( BLANK_HTML );
     }
+    return result;
   }
 
   private static void writeExecute( final Browser browser ) throws IOException {
@@ -120,14 +132,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String name = createUrlFromHtml( html );
     byte[] bytes = html.getBytes( "UTF-8" );
     InputStream inputStream = new ByteArrayInputStream( bytes );
-    try {
-      // TODO [rh] ResourceManager should be able to deregister a resource,
-      //      thus we could cleanup the here registered resource when text
-      //      is changed and in renderDispose
-      ResourceManager.getInstance().register( name, inputStream );
-    } finally {
-      inputStream.close();
-    }
+    ResourceManager.getInstance().register( name, inputStream );
     return ResourceManager.getInstance().getLocation( name );
   }
 

@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse;
 
 import junit.framework.Test;
@@ -17,6 +16,7 @@ import junit.framework.TestSuite;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.browser.browserkit.BrowserLCA_Test;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
@@ -108,6 +108,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ToolItemLCA_Test.class );
     suite.addTestSuite( TabFolderLCA_Test.class );
     suite.addTestSuite( ScrolledCompositeLCA_Test.class );
+    suite.addTestSuite( BrowserLCA_Test.class );
 
     return suite;
   }
