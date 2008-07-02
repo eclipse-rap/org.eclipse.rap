@@ -51,8 +51,18 @@ qx.Class.define( "org.eclipse.swt.Application", {
   },
 
   members : {
-    setExitConfirmation : function( msg ) {
-    	this._exitConfirmation = msg;
+    /**
+     * An exit confirmation dialog will be displayed if the given message is not
+     * null. If the message is empty, the dialog will be displayed but without a
+     * message.
+     */
+    setExitConfirmation : function( message ) {
+      // IE shows exit dialog also on empty string
+      if( message == "" ) {
+        this._exitConfirmation = " ";
+      } else {
+        this._exitConfirmation = message;
+      }
     },
     
     main : function( evt ) {

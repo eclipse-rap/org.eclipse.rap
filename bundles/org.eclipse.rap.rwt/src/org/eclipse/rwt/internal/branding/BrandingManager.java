@@ -49,7 +49,7 @@ public final class BrandingManager {
       return null;
     }
     public String getExitMessage() {
-      return "";
+      return null;
     }
     public String getFavIcon() {
       return null;

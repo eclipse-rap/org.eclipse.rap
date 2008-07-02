@@ -65,6 +65,8 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
     Object currTheme = adapter.getPreserved( DisplayLCA.PROP_CURR_THEME );
     assertEquals( ThemeUtil.getCurrentThemeId(), currTheme );
+    Object exitConf = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
+    assertNull( exitConf );
     display.dispose();
   }
 

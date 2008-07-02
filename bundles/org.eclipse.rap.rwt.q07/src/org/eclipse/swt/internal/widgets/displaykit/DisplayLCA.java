@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.browser.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
@@ -64,6 +67,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURR_THEME = "currTheme";
+  static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
+  static final String PROP_TIMEOUT_PAGE = "timeoutPage";
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
@@ -123,6 +128,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
     adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
+    adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
+    adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
   }
   
   public void render( final Display display ) throws IOException {
@@ -139,6 +146,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       out.write( getRequestCounter() );
       disposeWidgets();
       writeTheme( display );
+      writeErrorPages( display );
+      writeExitConfirmation( display );
       RenderVisitor visitor = new RenderVisitor();
       Composite[] shells = display.getShells();
       for( int i = 0; i < shells.length; i++ ) {
@@ -173,6 +182,74 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
+  private static void writeErrorPages( final Display display )
+    throws IOException
+  {
+    String timeoutPage = getTimeoutPage();
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
+    if( !timeoutPage.equals( oldTimeoutPage ) ) {
+      String pattern = "org.eclipse.swt.Request.getInstance().setTimeoutPage( \"{0}\" );";
+      Object[] param = new Object[] { timeoutPage };
+      String jsCode = MessageFormat.format( pattern, param );
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      HtmlResponseWriter out = stateInfo.getResponseWriter();
+      out.write( jsCode );
+    }
+  }
+
+  private static String getTimeoutPage() {
+    String timeoutTitle = RWTMessages.get().RWT_SessionTimeoutPageTitle;
+    String timeoutHeadline = RWTMessages.get().RWT_SessionTimeoutPageHeadline;
+    String pattern = RWTMessages.get().RWT_SessionTimeoutPageMessage;
+    Object[] arguments = new Object[]{ "<a {HREF_URL}>", "</a>" };
+    String timeoutMessage = MessageFormat.format( pattern, arguments );
+    // TODO Escape umlauts etc
+    String timeoutPage = "<html><head><title>"
+                         + timeoutTitle
+                         + "</title></head><body><p>"
+                         + timeoutHeadline
+                         + "</p><p>"
+                         + timeoutMessage
+                         + "</p></body></html>";
+    return timeoutPage;
+  }
+
+  private static void writeExitConfirmation( final Display display )
+    throws IOException
+  {
+    String exitConfirmation = getExitConfirmation();
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
+    boolean hasChanged = exitConfirmation == null
+                         ? oldExitConfirmation != null
+                         : !exitConfirmation.equals( oldExitConfirmation );
+    if( hasChanged ) {
+      String exitConfirmationStr = exitConfirmation == null
+                                   ? "null"
+                                   : "\"" + exitConfirmation + "\"";
+      String code = "qx.core.Init.getInstance().getApplication()"
+                    + ".setExitConfirmation( "
+                    + exitConfirmationStr 
+                    + " );";
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      HtmlResponseWriter out = stateInfo.getResponseWriter();
+      out.write( code );
+    }
+  }
+
+  private static String getExitConfirmation() {
+    AbstractBranding branding = BrandingUtil.findBranding();
+    String result = null; // does not display exit dialog
+    if( branding.showExitDialog() ) {
+      result = branding.getExitMessage();
+      if( result == null ) {
+        result = ""; // displays an exit dialog with empty message
+      }
+    }
+    return result;
+  }
+
   private static void writeClientDocument( final Display display )
     throws IOException
   {
@@ -199,6 +276,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
 
     writeAppScript( id );
+    writeErrorPages( display );
+    writeExitConfirmation( display );
     
     out.endElement( HTML.SCRIPT );
     out.endElement( HTML.BODY );

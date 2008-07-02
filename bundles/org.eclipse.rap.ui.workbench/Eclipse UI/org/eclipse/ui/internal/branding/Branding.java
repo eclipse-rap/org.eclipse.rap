@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.resources.ResourceManager;
@@ -34,7 +35,10 @@ public final class Branding extends AbstractBranding {
   private String favIcon;
   private List headers;
   private String body;
+  // TODO [rst] Remove as soon as deprecated parameter "exitConfiramtion" is
+  //            dropped from branding extension point
   private String exitMessage;
+  private IExitConfirmation exitConfirmation;
   private String themeId;
   private String brandingId;
   
@@ -82,6 +86,10 @@ public final class Branding extends AbstractBranding {
 
   public void setExitMessage( final String exitMessage ) {
     this.exitMessage = exitMessage;
+  }
+
+  public void setExitConfirmation( final IExitConfirmation exitConfirmation ) {
+    this.exitConfirmation = exitConfirmation;
   }
 
   public void setThemeId( final String themeId ) {
@@ -140,10 +148,26 @@ public final class Branding extends AbstractBranding {
     return body;
   }
 
-  public String getExitMessage() {
-    return exitMessage;
+  public boolean showExitDialog() {
+    boolean result;
+    if( exitConfirmation != null ) {
+      result = exitConfirmation.showExitDialog();
+    } else {
+      result = exitMessage != null;
+    }
+    return result;
   }
-  
+
+  public String getExitMessage() {
+    String result;
+    if( exitConfirmation != null ) {
+      result  = exitConfirmation.getExitMessage();
+    } else {
+      result = exitMessage;
+    }
+    return result;
+  }
+
   public String getThemeId() {
     return themeId;
   }

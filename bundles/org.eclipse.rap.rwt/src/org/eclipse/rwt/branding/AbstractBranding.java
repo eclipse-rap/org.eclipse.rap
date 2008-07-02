@@ -164,20 +164,36 @@ public abstract class AbstractBranding {
   public String getBody() {
     return null;
   }
+
+  /**
+   * Indictes whether an exit confirmation dialog should be shown.
+   * <p>
+   * The exit confirmation dialog is shown whenever the user tries to close the
+   * browser window or tab or to navigate to another URL. From within this
+   * dialog, the user can cancel the operation.
+   * </p>
+   * </p>
+   * Note that this is a <em>hint</em>. Currently, only Internet Explorer and
+   * browsers of the Mozilla family respect this setting.
+   * </p>
+   * 
+   * @return <code>true</code> if an exit confirmation dialog should be shown
+   * @see #getExitMessage()
+   */
+  // keep Javadoc in sync with IExitConfirmation
+  public boolean showExitDialog() {
+    return getExitMessage() != null;
+  }
   
   /**
-   * Returns the exit confirmation message or <code>null</code> to indicate 
-   * that no exit confirmation dialog should be shown.
-   * <p>The exit confirmation message, if any, is shown in a confirmation 
-   * dialog whenever the user tries to close the browser window or tab or 
-   * navigates to another URL. From within this dialog, the user can cancel the 
-   * operation.</p> 
-   * <p>Note that this is a <em>hint</em>. Currently, only Internet Explorer 
-   * and browsers of the Mozilla family respect this setting.</p>  
-   * <p>The default behavior is to return <code>null</code>.</p>
+   * Returns the message to display in the exit confirmation dialog. Note that
+   * <code>showExitDialog()</code> must return <code>true</code> to enable this
+   * message.
    * 
-   * @return the confirmation message or <code>null</code> 
+   * @return the message to be displayed in the exit confirmation dialog
+   * @see #showExitDialog()
    */
+  // keep Javadoc in sync with IExitConfirmation
   public String getExitMessage() {
     return null;
   }

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.rap.ui">
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="branding" name="Branding"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="branding"/>
@@ -114,12 +119,40 @@
          <attribute name="exitConfirmation" type="string">
             <annotation>
                <documentation>
-                  The attribute &quot;exitConfirmation&quot; gives you the ability to set a message which will be shown when the user tries to close your application. This can happen when the browser is closed or the user just navigates to another URI.
+                  Allows to show a confirmation dialog when the user tries to close the browser tab or window or to navigate away from the application.
+&lt;p&gt;
+If the argument is a non-empty string, a confirmation dialog will be shown that contains this message.
+The attribute exitConfirmation overrides this setting.
+&lt;/p&gt;
+&lt;p&gt;
+This attribute is &lt;b&gt;deprecated&lt;/b&gt;. Use &lt;code&gt;exitConfirmationClass&lt;/code&gt; instead.
+&lt;/p&gt;
 &lt;p&gt;
 &lt;b&gt;NOTE:&lt;/b&gt;
 This will only work in browsers of the Mozilla family and Internet Explorer.
 &lt;/p&gt;
                </documentation>
+               <appInfo>
+                  <meta.attribute deprecated="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="exitConfirmationClass" type="string">
+            <annotation>
+               <documentation>
+                  Allows to show a confirmation dialog when the user tries to close the browser tab or window or to navigate away from the application.
+&lt;p&gt;
+The argument must be a class that implements the interface IExitConfirmation.
+This setting overrides the attribute exitConfirmation.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;b&gt;NOTE:&lt;/b&gt;
+This will only work in browsers of the Mozilla family and Internet Explorer.
+&lt;/p&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.ui.branding.IExitConfirmation"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -286,14 +319,6 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>

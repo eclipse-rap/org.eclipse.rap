@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 
 import javax.servlet.ServletException;
 
+import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 
@@ -24,11 +25,8 @@ import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleService
 public class RWTLifeCycleServiceHandlerSync
   extends LifeCycleServiceHandlerSync
 {
-  private static final String MSG
-    =   "Multiple browser-instances or browser-tabs per session are not\\n"
-      + "supported. You may click OK for restarting the session.";
   private static final String PATTERN_RELOAD
-    = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'";
+    = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'"; //$NON-NLS-1$
 
   public void service() throws ServletException, IOException {
     synchronized( ContextProvider.getSession() ) {
@@ -59,8 +57,10 @@ public class RWTLifeCycleServiceHandlerSync
     LifeCycleServiceHandler.initializeStateInfo();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
-    Object[] param = new Object[] { MSG };
-    out.writeText( MessageFormat.format( PATTERN_RELOAD, param ), null );
+    String message = RWTMessages.get().RWT_MultipleInstancesError;
+    Object[] param = new Object[] { message };
+    // Note: [rst] Do not use writeText as umlauts must not be encoded here
+    out.write( MessageFormat.format( PATTERN_RELOAD, param ) );
     LifeCycleServiceHandler.writeOutput();
   }
 }

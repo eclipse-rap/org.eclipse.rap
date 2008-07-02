@@ -13,12 +13,16 @@ package org.eclipse.ui.internal.branding;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
+import org.eclipse.rwt.lifecycle.IExitConfirmation;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.servlet.HttpServiceTracker;
+import org.osgi.framework.Bundle;
 
 public final class BrandingExtension {
 
@@ -30,6 +34,8 @@ public final class BrandingExtension {
     = "defaultEntrypointId"; //$NON-NLS-1$
   private static final String ATT_EXIT_CONFIRMATION 
     = "exitConfirmation"; //$NON-NLS-1$
+  private static final String ATT_EXIT_CONFIRMATION_CLASS
+    = "exitConfirmationClass"; //$NON-NLS-$
   private static final String ATT_THEME_ID 
     = "themeId"; //$NON-NLS-1$
   private static final String ATT_FAVICON 
@@ -85,6 +91,7 @@ public final class BrandingExtension {
     String favIcon = element.getAttribute( ATT_FAVICON );
     String themeId = element.getAttribute( ATT_THEME_ID );
     String exitMessage = element.getAttribute( ATT_EXIT_CONFIRMATION );
+    IExitConfirmation exitConfirmation = findExitConfirmationImpl( element );
     Branding branding = new Branding( contributor );
     branding.setId( id );
     branding.setBody( readBody( contributor, body ) );
@@ -93,6 +100,7 @@ public final class BrandingExtension {
     branding.setFavIcon( favIcon );
     branding.setServletName( servletName );
     branding.setExitMessage( exitMessage );
+    branding.setExitConfirmation( exitConfirmation );
     branding.setDefaultEntryPointId( defEntryPointId );
     // loop through all additional headers
     IConfigurationElement[] additionalHeaders 
@@ -113,6 +121,42 @@ public final class BrandingExtension {
     }
     registerServletName( servletName );
     BrandingManager.register( branding );
+  }
+
+  private static IExitConfirmation findExitConfirmationImpl( final IConfigurationElement element )
+  {
+    IExitConfirmation result = null;
+    String className = element.getAttribute( ATT_EXIT_CONFIRMATION_CLASS );
+    if( className != null ) {
+      try {
+        String contributorName = element.getContributor().getName();
+        Bundle bundle = Platform.getBundle( contributorName );
+        Class clazz = bundle.loadClass( className );
+        if( !IExitConfirmation.class.isAssignableFrom( clazz ) ) {
+          String text = "The argument ''{0}'' must implement {0}.";
+          Object[] args = new Object[] {
+            ATT_EXIT_CONFIRMATION_CLASS,
+            IExitConfirmation.class.getName()
+          };
+          String msg = MessageFormat.format( text, args );
+          throw new IllegalArgumentException( msg );
+        }
+        try {
+          result = ( IExitConfirmation )clazz.newInstance();
+        } catch( Exception e ) {
+          String pattern = "Class not instantiate class {0}.";
+          Object[] args = new Object[] { clazz.getName() };
+          String msg = MessageFormat.format( pattern, args );
+          throw new IllegalArgumentException( msg );
+        }
+      } catch( ClassNotFoundException e ) {
+        String pattern = "Class ''{0}'' not found.";
+        Object[] args = new Object[] { className };
+        String msg = MessageFormat.format( pattern, args );
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    return result;
   }
 
   private static void registerServletName( final String servletName ) {
