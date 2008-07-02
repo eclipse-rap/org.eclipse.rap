@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import java.io.IOException;
@@ -52,7 +51,7 @@ public class ControlLCA_Test extends TestCase {
     Boolean hasListeners;
     RWTFixture.markInitialized( display );
     //bound
-    Rectangle rectangle = new Rectangle(10, 10, 10, 10);
+    Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     button.setBounds( rectangle );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
@@ -89,13 +88,7 @@ public class ControlLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();    
-    button.addControlListener( new ControlListener (){
-
-      public void controlMoved( ControlEvent e ) {
-      }
-
-      public void controlResized( ControlEvent e ) {
-      }});
+    button.addControlListener( new ControlAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -135,12 +128,7 @@ public class ControlLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved(); 
-    button.addFocusListener( new FocusListener () {
-      public void focusGained( FocusEvent event ) {
-      }
-
-      public void focusLost( FocusEvent event ) {
-      }} );
+    button.addFocusListener( new FocusAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -151,8 +139,7 @@ public class ControlLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();   
-    ActivateEvent.addListener( button, new ActivateAdapter() {
-    } );    
+    ActivateEvent.addListener( button, new ActivateAdapter() { } );    
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
