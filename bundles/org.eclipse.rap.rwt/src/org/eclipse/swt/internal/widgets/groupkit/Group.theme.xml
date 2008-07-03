@@ -45,7 +45,7 @@
 
   </element>
 
-  <element name="Group-Frame"
+  <element name="Group-Label"
       description="The label of a group box">
 
     <property name="padding"/>
