@@ -133,13 +133,13 @@ public class Display_Test extends TestCase {
   }
 
   
-  public void testCoordinateMappings() {
+  public void testMap() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Rectangle shellBounds = new Rectangle( 10, 10, 400, 400 );
     shell.setBounds( shellBounds );
     
-    Rectangle actual = display.map( shell, shell, 1, 2 , 3, 4 );
+    Rectangle actual = display.map( shell, shell, 1, 2, 3, 4 );
     Rectangle expected = new Rectangle( 1, 2, 3, 4 );
     assertEquals( expected, actual );
     
@@ -165,6 +165,26 @@ public class Display_Test extends TestCase {
                               2 - shell.getBounds().y - folder.getBounds().y,
                               3,
                               4 );
+    assertEquals( expected, actual );
+  }
+  
+  public void testMapWithChildShell() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setBounds( 100, 100, 800, 600 );
+    Shell childShell1 = new Shell( shell, SWT.NONE );
+    childShell1.setBounds( 200, 200, 800, 600 );
+    Point expected = new Point( 200, 200 );
+    Point actual = display.map( childShell1, null, 0, 0 );
+    assertEquals( expected, actual );
+    expected = new Point( 100, 100 );
+    actual = display.map( childShell1, shell, 0, 0 );
+    assertEquals( expected, actual );
+    
+    Shell childShell2 = new Shell( shell, SWT.NONE );
+    childShell2.setBounds( 200, 200, 800, 600 );
+    expected = new Point( 14, 17 );
+    actual = display.map( childShell1, childShell2, 14, 17 );
     assertEquals( expected, actual );
   }
   

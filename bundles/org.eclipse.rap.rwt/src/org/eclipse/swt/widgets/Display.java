@@ -433,28 +433,31 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     int newX = x;
     int newY = y;
-    if( from != null ) {
-      Control currentFrom = from;
-      do {
-        Rectangle bounds = currentFrom.getBounds();
-        newX += bounds.x;
-        newY += bounds.y;
+    Control currentFrom = from;
+    while( currentFrom != null ) {
+      Rectangle bounds = currentFrom.getBounds();
+      newX += bounds.x;
+      newY += bounds.y;
+      if( currentFrom instanceof Shell ) {
+        currentFrom = null;
+      } else {
         currentFrom = currentFrom.getParent();
-      } while( currentFrom != null );
+      }
     }
-
-    if( to != null ) {
-      Control currentTo = to;
-      do {
-        Rectangle bounds = currentTo.getBounds();
-        newX -= bounds.x;
-        newY -= bounds.y;
+    Control currentTo = to;
+    while( currentTo != null ) {
+      Rectangle bounds = currentTo.getBounds();
+      newX -= bounds.x;
+      newY -= bounds.y;
+      if( currentTo instanceof Shell ) {
+        currentTo = null;
+      } else {
         currentTo = currentTo.getParent();
-      } while( currentTo != null );
+      }
     }
     return new Rectangle( newX, newY, width, height );
   }
-
+  
   //////////
   // Dispose
 
@@ -973,6 +976,50 @@ public class Display extends Device implements Adaptable {
     }
   }
 
+  /**
+   * Does whatever display specific cleanup is required, and then uses the code
+   * in <code>SWTError.error</code> to handle the error.
+   *
+   * @param code the descriptive error code
+   * @see SWT#error(int)
+   */
+  void error( int code ) {
+    SWT.error( code );
+  }
+  
+  //////////////////
+  // Helping methods
+
+  static boolean isValidClass( final Class clazz ) {
+//    String name = clazz.getName();
+//    int index = name.lastIndexOf( '.' );
+//    return name.substring( 0, index + 1 ).equals( PACKAGE_PREFIX );
+    return true;
+  }
+
+  private void readInitialBounds() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String widthVal = request.getParameter( RequestParams.AVAILABLE_WIDTH );
+    int width = 1024;
+    if( widthVal != null ) {
+      width = Integer.parseInt( widthVal );
+    }
+    String height_val = request.getParameter( RequestParams.AVAILABLE_HEIGHT );
+    int height = 768;
+    if( height_val != null ) {
+      height = Integer.parseInt( height_val );
+    }
+    bounds = new Rectangle( 0, 0, width, height );
+  }
+
+  private IFilterEntry[] getFilterEntries() {
+    IFilterEntry[] result = IDisplayAdapter.EMPTY_FILTERS;
+    if( filters != null ) {
+      result = new IFilterEntry[ filters.size() ];
+      filters.toArray( result );
+    }
+    return result;
+  }
 
   /////////////////
   // Inner classes
@@ -1017,50 +1064,5 @@ public class Display extends Device implements Adaptable {
     public IFilterEntry[] getFilters() {
       return getFilterEntries();
     }
-  }
-
-  //////////////////
-  // Helping methods
-
-  /**
-   * Does whatever display specific cleanup is required, and then uses the code
-   * in <code>SWTError.error</code> to handle the error.
-   *
-   * @param code the descriptive error code
-   * @see SWT#error(int)
-   */
-  void error( int code ) {
-    SWT.error( code );
-  }
-
-  static boolean isValidClass( final Class clazz ) {
-//    String name = clazz.getName();
-//    int index = name.lastIndexOf( '.' );
-//    return name.substring( 0, index + 1 ).equals( PACKAGE_PREFIX );
-    return true;
-  }
-
-  private void readInitialBounds() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String widthVal = request.getParameter( RequestParams.AVAILABLE_WIDTH );
-    int width = 1024;
-    if( widthVal != null ) {
-      width = Integer.parseInt( widthVal );
-    }
-    String height_val = request.getParameter( RequestParams.AVAILABLE_HEIGHT );
-    int height = 768;
-    if( height_val != null ) {
-      height = Integer.parseInt( height_val );
-    }
-    bounds = new Rectangle( 0, 0, width, height );
-  }
-
-  private IFilterEntry[] getFilterEntries() {
-    IFilterEntry[] result = IDisplayAdapter.EMPTY_FILTERS;
-    if( filters != null ) {
-      result = new IFilterEntry[ filters.size() ];
-      filters.toArray( result );
-    }
-    return result;
   }
 }

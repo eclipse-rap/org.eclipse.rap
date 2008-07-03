@@ -35,6 +35,8 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
  * within the SWT implementation.
  * </p>
+ * 
+ * @since 1.0
  */
 public abstract class Control extends Widget {
 
@@ -83,27 +85,16 @@ public abstract class Control extends Widget {
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
   private final IControlAdapter controlAdapter;
-
   final Composite parent;
-
   private Rectangle bounds = EMPTY_RECTANGLE;
-
   private Object layoutData;
-
   private String toolTipText;
-
   private Menu menu;
-
   private DisposeListener menuDisposeListener;
-
   private Color foreground;
-
   private Color background;
-
   private Image backgroundImage = null;
-
   private boolean backgroundTransparency;
-
   private Font font;
 
   Control( final Composite parent ) {
@@ -363,7 +354,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *                </ul>
+   * </ul>
    */
   public Color getBackground() {
     checkWidget();
@@ -535,7 +526,7 @@ public abstract class Control extends Widget {
    * Applies the background according to PARENT_BACKGROUND state.
    */
   private void updateBackground() {
-    backgroundTransparency = background == null
+    backgroundTransparency =    background == null
                              && backgroundImage == null
                              && ( state & PARENT_BACKGROUND ) != 0;
   }
@@ -1080,12 +1071,9 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *                </ul>
-   *
-   * @since 1.0
+   * </ul>
    */
   public Point toDisplay( final int x, final int y ) {
-    // TODO: [fappel] doesn't seem to work right, revise this
     checkWidget();
     return getDisplay().map( this, null, x, y );
   }
