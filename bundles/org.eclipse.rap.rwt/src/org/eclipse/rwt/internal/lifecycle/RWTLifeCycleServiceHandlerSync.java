@@ -57,7 +57,7 @@ public class RWTLifeCycleServiceHandlerSync
     LifeCycleServiceHandler.initializeStateInfo();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
-    String message = RWTMessages.get().RWT_MultipleInstancesError;
+    String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
     Object[] param = new Object[] { message };
     // Note: [rst] Do not use writeText as umlauts must not be encoded here
     out.write( MessageFormat.format( PATTERN_RELOAD, param ) );

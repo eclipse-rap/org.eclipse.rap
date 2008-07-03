@@ -11,30 +11,54 @@
 
 package org.eclipse.rwt.internal;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import org.eclipse.rwt.RWT;
+import org.eclipse.swt.SWT;
 
 public final class RWTMessages {
 
-  private static final String BUNDLE_NAME = "org.eclipse.rwt.internal.messages"; //$NON-NLS-1$
-  
-  public String RWT_SessionTimeoutPageTitle;
-
-  public String RWT_SessionTimeoutPageHeadline;
-  
-  public String RWT_SessionTimeoutPageMessage;
-
-  public String RWT_MultipleInstancesError;
-
-  /**
-   * @return the session/request specific localized messages object
-   */
-  public static RWTMessages get() {
-    Class clazz = RWTMessages.class;
-    Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-    return ( RWTMessages )result;
-  }
+  private static final String BUNDLE_NAME
+    = "org.eclipse.rwt.internal.RWTMessages"; //$NON-NLS-1$
 
   private RWTMessages() {
     // prevent instantiation
+  }
+
+  public static String getMessage( final String key ) {
+    return getMessage( key, BUNDLE_NAME );
+  }
+  
+  public static String getMessage( final String key, String bundleName ) {
+    String result = key;
+    ResourceBundle bundle = null;
+    try {
+      bundle = getBundle( bundleName );
+    } catch( MissingResourceException ex ) {
+      result = key + " (no resource bundle)"; //$NON-NLS-1$
+    }
+    if( bundle != null ) {
+      try {
+        result = bundle.getString( key );
+      } catch( MissingResourceException ex2 ) {
+      }
+    }
+    return result;
+  }
+
+  private static ResourceBundle getBundle( final String baseName ) {
+    ResourceBundle result = null;
+    try {
+      ClassLoader loader = SWT.class.getClassLoader();
+      result = ResourceBundle.getBundle( baseName, RWT.getLocale(), loader );
+    } catch( final RuntimeException re ) {
+      // TODO [fappel]: improve this
+      String msg =   "Warning: could not retrieve resource bundle "
+        + "- loading system default";
+      System.out.println( msg );
+      result = ResourceBundle.getBundle( baseName );
+    }
+    return result;
   }
 }

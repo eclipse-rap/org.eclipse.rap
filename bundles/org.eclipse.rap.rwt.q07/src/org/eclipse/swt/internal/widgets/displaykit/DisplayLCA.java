@@ -189,7 +189,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
     if( !timeoutPage.equals( oldTimeoutPage ) ) {
-      String pattern = "org.eclipse.swt.Request.getInstance().setTimeoutPage( \"{0}\" );";
+      String pattern
+        = "org.eclipse.swt.Request.getInstance().setTimeoutPage( \"{0}\" );";
       Object[] param = new Object[] { timeoutPage };
       String jsCode = MessageFormat.format( pattern, param );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -199,9 +200,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String getTimeoutPage() {
-    String timeoutTitle = RWTMessages.get().RWT_SessionTimeoutPageTitle;
-    String timeoutHeadline = RWTMessages.get().RWT_SessionTimeoutPageHeadline;
-    String pattern = RWTMessages.get().RWT_SessionTimeoutPageMessage;
+    String timeoutTitle
+      = RWTMessages.getMessage( "RWT_SessionTimeoutPageTitle" );
+    String timeoutHeadline
+      = RWTMessages.getMessage( "RWT_SessionTimeoutPageHeadline" );
+    String pattern = RWTMessages.getMessage( "RWT_SessionTimeoutPageMessage" );
     Object[] arguments = new Object[]{ "<a {HREF_URL}>", "</a>" };
     String timeoutMessage = MessageFormat.format( pattern, arguments );
     // TODO Escape umlauts etc
