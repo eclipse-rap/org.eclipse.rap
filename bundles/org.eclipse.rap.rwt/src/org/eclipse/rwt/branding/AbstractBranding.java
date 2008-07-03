@@ -198,7 +198,7 @@ public abstract class AbstractBranding {
    * 
    * @return <code>true</code> if an exit confirmation should be shown
    * @see #getExitConfirmationText()
-   * @since 1.1
+   * @since 1.1.1
    */
   // keep Javadoc in sync with IExitConfirmation
   public boolean showExitConfirmation() {
@@ -212,7 +212,7 @@ public abstract class AbstractBranding {
    * 
    * @return the message to be displayed in the exit confirmation
    * @see #showExitConfirmation()
-   * @since 1.1
+   * @since 1.1.1
    */
   // keep Javadoc in sync with IExitConfirmation
   public String getExitConfirmationText() {
