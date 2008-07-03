@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -197,6 +198,17 @@ public class RWTLifeCycle2_Test extends TestCase {
     AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
                                 Display.class );
     session = new TestSession();
+    ServletContext servletContext = session.getServletContext();
+    TestServletContext servletContextImpl
+      = ( TestServletContext )servletContext;
+    servletContextImpl.setLogger( new TestLogger() {
+      public void log( final String message, final Throwable throwable ) {
+        System.err.println( message );
+        if( throwable != null ) {
+          throwable.printStackTrace();
+        }
+      }
+    } );
   }
 
   protected void tearDown() throws Exception {
