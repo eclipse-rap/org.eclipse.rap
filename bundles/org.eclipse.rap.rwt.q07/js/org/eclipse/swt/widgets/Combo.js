@@ -87,7 +87,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var item = new qx.ui.form.ListItem();
         item.setLabel( "(empty)" );
         item.getLabelObject().setMode( "html" );
-        item.setLabel( items[ i ] );
+        // empty items are rendered too small (bug 223202)
+        item.setLabel( items[ i ] != "" ? items[ i ] : "&nbsp;" );
         item.setFont( this.getFont() );
         this.add( item );
       }
