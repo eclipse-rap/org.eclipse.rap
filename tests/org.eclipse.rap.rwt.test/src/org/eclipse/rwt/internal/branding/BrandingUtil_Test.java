@@ -23,12 +23,16 @@ public class BrandingUtil_Test extends TestCase {
   private static class TestBranding extends AbstractBranding {
     String favIcon;
     Header[] headers;
-    String exitMessage;
+    String exitConfMessage;
+    boolean showExitConf;
     public String getBody() {
       return null;
     }
-    public String getExitMessage() {
-      return exitMessage;
+    public boolean showExitConfirmation() {
+      return showExitConf;
+    }
+    public String getExitConfirmationText() {
+      return exitConfMessage;
     }
     public String getFavIcon() {
       return favIcon;
@@ -114,12 +118,14 @@ public class BrandingUtil_Test extends TestCase {
     String script;
     TestBranding branding = new TestBranding();
     assertEquals( "", BrandingUtil.exitMessageScript( branding ) );
-    branding.exitMessage = "";
+    branding.exitConfMessage = "";
     assertEquals( "", BrandingUtil.exitMessageScript( branding ) );
-    branding.exitMessage = "want to exit?";
+    branding.exitConfMessage = "want to exit?";
+    assertEquals( "", BrandingUtil.exitMessageScript( branding ) );
+    branding.showExitConf = true;
     script = BrandingUtil.exitMessageScript( branding );
     assertTrue( script.indexOf( "want to exit?" ) != -1 );
-    branding.exitMessage = "\"\n";
+    branding.exitConfMessage = "\"\n";
     script = BrandingUtil.exitMessageScript( branding );
     assertEquals( "app.setExitConfirmation( \"\\\"\\n\" );", script );
   }

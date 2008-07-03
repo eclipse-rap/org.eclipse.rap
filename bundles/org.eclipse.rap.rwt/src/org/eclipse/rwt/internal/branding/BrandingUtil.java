@@ -48,10 +48,12 @@ public final class BrandingUtil {
   
   public static String exitMessageScript( final AbstractBranding branding ) {
     String result = "";
-    String exitMessage = branding.getExitMessage();
-    if( exitMessage != null && exitMessage != "" ) {
-      exitMessage = escapeString( exitMessage );
-      result = "app.setExitConfirmation( \"" + exitMessage + "\" );";
+    if( branding.showExitConfirmation() ) {
+      String exitMessage = branding.getExitConfirmationText();
+      if( exitMessage != null && exitMessage != "" ) {
+        exitMessage = escapeString( exitMessage );
+        result = "app.setExitConfirmation( \"" + exitMessage + "\" );";
+      }
     }
     return result;
   }

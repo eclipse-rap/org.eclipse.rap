@@ -164,37 +164,37 @@ public abstract class AbstractBranding {
   public String getBody() {
     return null;
   }
-
+  
   /**
-   * Indicates whether an exit confirmation dialog should be shown.
+   * Indicates whether an exit confirmation should be shown.
    * <p>
-   * The exit confirmation dialog is shown whenever the user tries to close the
-   * browser window or tab or to navigate to another URL. From within this
-   * dialog, the user can cancel the operation.
+   * The exit confirmation is shown whenever the user tries to close the
+   * browser window or tab or to navigate to another URL. Usually, browsers
+   * pop up a dialog that allows the user to cancel the operation.
    * </p>
    * </p>
    * Note that this is a <em>hint</em>. Currently, only Internet Explorer and
    * browsers of the Mozilla family respect this setting.
    * </p>
    * 
-   * @return <code>true</code> if an exit confirmation dialog should be shown
-   * @see #getExitMessage()
+   * @return <code>true</code> if an exit confirmation should be shown
+   * @see #getExitConfirmationText()
    */
   // keep Javadoc in sync with IExitConfirmation
-  public boolean showExitDialog() {
-    return getExitMessage() != null;
+  public boolean showExitConfirmation() {
+    return getExitConfirmationText() != null;
   }
   
   /**
-   * Returns the message to display in the exit confirmation dialog. Note that
-   * <code>showExitDialog()</code> must return <code>true</code> to enable this
-   * message.
+   * Returns the message to display in the exit confirmation. Note that
+   * <code>showExitConfirmation()</code> must return <code>true</code> to enable
+   * this message.
    * 
-   * @return the message to be displayed in the exit confirmation dialog
-   * @see #showExitDialog()
+   * @return the message to be displayed in the exit confirmation
+   * @see #showExitConfirmation()
    */
   // keep Javadoc in sync with IExitConfirmation
-  public String getExitMessage() {
+  public String getExitConfirmationText() {
     return null;
   }
 

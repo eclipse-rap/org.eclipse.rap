@@ -148,20 +148,20 @@ public final class Branding extends AbstractBranding {
     return body;
   }
 
-  public boolean showExitDialog() {
+  public boolean showExitConfirmation() {
     boolean result;
     if( exitConfirmation != null ) {
-      result = exitConfirmation.showExitDialog();
+      result = exitConfirmation.showExitConfirmation();
     } else {
       result = exitMessage != null;
     }
     return result;
   }
 
-  public String getExitMessage() {
+  public String getExitConfirmationText() {
     String result;
     if( exitConfirmation != null ) {
-      result  = exitConfirmation.getExitMessage();
+      result  = exitConfirmation.getExitConfirmationText();
     } else {
       result = exitMessage;
     }
