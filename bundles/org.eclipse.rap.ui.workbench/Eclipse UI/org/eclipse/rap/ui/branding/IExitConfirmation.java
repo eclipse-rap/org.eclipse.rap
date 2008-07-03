@@ -20,6 +20,7 @@ package org.eclipse.rap.ui.branding;
  * Note that this is feature is currently only supported by Internet Explorer
  * and browsers of the Mozilla family.
  * </p>
+ * @since 1.1
  */
 public interface IExitConfirmation {
 
