@@ -1865,6 +1865,7 @@ public class SWT {
     if( key == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return RWTMessages.getMessage( key, "org.eclipse.swt.internal.SWTMessages" );
+    return RWTMessages.getMessage( key,
+                                   "org.eclipse.swt.internal.SWTMessages" );
   }
 }

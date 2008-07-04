@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal;
 
 import java.util.MissingResourceException;
@@ -30,7 +29,7 @@ public final class RWTMessages {
     return getMessage( key, BUNDLE_NAME );
   }
   
-  public static String getMessage( final String key, String bundleName ) {
+  public static String getMessage( final String key, final String bundleName ) {
     String result = key;
     ResourceBundle bundle = null;
     try {
@@ -54,8 +53,8 @@ public final class RWTMessages {
       result = ResourceBundle.getBundle( baseName, RWT.getLocale(), loader );
     } catch( final RuntimeException re ) {
       // TODO [fappel]: improve this
-      String msg =   "Warning: could not retrieve resource bundle "
-        + "- loading system default";
+      String msg = "Warning: could not retrieve resource bundle "
+                 + "- loading system default";
       System.out.println( msg );
       result = ResourceBundle.getBundle( baseName );
     }
