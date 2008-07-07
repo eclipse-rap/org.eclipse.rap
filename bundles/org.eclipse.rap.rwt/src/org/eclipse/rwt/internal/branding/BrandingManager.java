@@ -107,7 +107,7 @@ public final class BrandingManager {
   }
 
   public static AbstractBranding get( final String servletName,
-                               final String entryPoint )
+                                      final String entryPoint )
   {
     ParamCheck.notNull( servletName, "servletName" );
     AbstractBranding result = null;
