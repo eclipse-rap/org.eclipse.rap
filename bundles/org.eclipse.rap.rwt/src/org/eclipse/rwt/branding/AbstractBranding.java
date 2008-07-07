@@ -40,7 +40,7 @@ import java.io.IOException;
  * <pre>
  * ...
  *   &lt;context-param&gt;
- *     &lt;param-name&gt;org.eclipse.swt.brandings&lt;/param-name&gt;
+ *     &lt;param-name&gt;org.eclipse.rwt.brandings&lt;/param-name&gt;
  *     &lt;param-value&gt;org.demo.MyBranding1,org.demo.MyBraning2&lt;/param-value&gt;
  *   &lt;/context-param&gt;
  * ...
