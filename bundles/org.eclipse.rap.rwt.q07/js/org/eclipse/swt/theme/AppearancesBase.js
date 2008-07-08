@@ -1409,7 +1409,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       if( states.disabled ) {
         result.textColor = tv.getColor( "widget.graytext" );
-        result.textColor = tv.getColor( "undiefined" );
+        result.textColor = "undefined";
       } else if( states.selected ) {
         result.textColor = tv.getColor( "list.selection.foreground" );
         result.backgroundColor = tv.getColor( "list.selection.background" );
