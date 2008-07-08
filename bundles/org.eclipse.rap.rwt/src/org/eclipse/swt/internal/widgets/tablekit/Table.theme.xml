@@ -30,7 +30,7 @@
   <element name="TableColumn"
       description="Column header of Table controls">
 
-    <property name="background"
+    <property name="background-color"
         states="hover"/>
 
   </element>
