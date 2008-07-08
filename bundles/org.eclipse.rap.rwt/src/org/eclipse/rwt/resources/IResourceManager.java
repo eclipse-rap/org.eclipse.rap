@@ -14,7 +14,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 
-// TODO javadoc - revise this regarding RAP / W4T
 /**
  * <p>The resource manager is responsible for registering resources
  * like images, css files etc. which are available on the applications 
@@ -22,9 +21,7 @@ import java.util.Enumeration;
  * and delivered if requested. Usually resources are stored in libraries 
  * in the WEB-INF/lib directory of a web-application</p>
  * 
- * <p>This allows to package user-defined components with all needed
- * resources into their own jars, and distribute them independently
- * from the RAP core library.</p>
+ * <p>This interface is not intended to be implemented by clients.</p>
  * 
  * @since 1.0
  */ 
@@ -37,9 +34,9 @@ public interface IResourceManager {
    *    <li><code>NONE</code> - no further action is taken.</li>
    *    <li><code>VERSION</code> - the resource to be registered will be versioned.</li>
    *    <li><code>COMPRESS</code> - the resource to be registered will be 
-   *        compressed, assuming it contains JavaScript code.</li>
+   *      compressed, assuming it contains JavaScript code.</li>
    *    <li><code>VERSION_AND_COMPRESS</code> - the resource to be registered will
-   *        be versioned and compressed.</li>
+   *      be versioned and compressed.</li>
    * </ul>
    * 
    * @since 1.0
@@ -60,14 +57,14 @@ public interface IResourceManager {
     
     /**
      * <code>COMPRESS</code> - the resource to be registered will be 
-     *        compressed, assuming it contains JavaScript code.
+     * compressed, assuming it contains JavaScript code.
      */
     public static final RegisterOptions COMPRESS
       = new RegisterOptions( "compress" );
     
     /**
      * <code>VERSION_AND_COMPRESS</code> - the resource to be registered will
-     *        be versioned and compressed.
+     * be versioned and compressed.
      */
     public static final RegisterOptions VERSION_AND_COMPRESS
       = new RegisterOptions( "version_and_compress" );  
