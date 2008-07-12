@@ -305,8 +305,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       	if( updateVertScrollBar ) {
 	        this._vertScrollBar.setValue( value * this._itemHeight );
       	}
+      	var delta = value - this._topIndex;
         this._topIndex = value;
-        this._updateRows();
+        this._scrollRowsVertical( delta );
         this._topIndexChanged = true;
         this._topIndexChanging = false;
       }
@@ -370,7 +371,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( oldFocusIndex !== -1 ) {
           this.updateItem( oldFocusIndex, false );
         }
-        // update actual focused item
+        // update new focused item
         if( this._focusIndex !== -1 ) {
           this.updateItem( this._focusIndex, false );
         }
@@ -597,8 +598,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             && gotoIndex >= 0 
             && gotoIndex < this._itemCount )
         {
-	      	var oldFocusIndex = this._focusIndex;
-          this.setFocusIndex( gotoIndex );
+          var oldFocusIndex = this._focusIndex;
           this._setSingleSelection( gotoIndex );
           // TODO [rh] _setSingleSelection implicitly makes item visible when 
           //      navigating down for one item
@@ -615,7 +615,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               // Move topIndex the same distance as the selection was moved
               topIndex = this._topIndex - oldFocusIndex + gotoIndex;
             }
-            // Fix for bug #233964: 
+            // Fix for bug #233964:
             // Ensure that the topIndex does not exceed the range of items
             // this would cause a VIRTUAL table to redraw the wrong items as
             // it relies on the topIndex to determine currently visible items 
@@ -626,6 +626,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             }
             this._internalSetTopIndex( topIndex, true );
           }
+          this.setFocusIndex( gotoIndex );
           this._keyboardSelecionChanged = true;
         }
       }
@@ -733,10 +734,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( update ) {
         var changed = false;
         var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
-        var row = null;
-        if( rowIndex !== -1 ) {
-          row = this._rows[ rowIndex ];
-        }
+        var row = rowIndex === -1 ? null : this._rows[ rowIndex ];
         if(    row !== null 
             && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
         {
@@ -883,6 +881,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._updateRows();
       } else {
         this._updateRowBounds();
+        this._updateRowTop();
       }
     },
     
@@ -931,6 +930,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           }
           // Re-calculate the position and size for each row
           this._updateRowBounds();
+          this._updateRowTop();
           result = true;
         }
       }
@@ -949,17 +949,31 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
     },
     
-    _updateRowBounds : function() {
+    _updateRowTop : function() {
+      var checkBoxOffset
+        = this._itemHeight 
+        / 2 
+        - org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT 
+        / 2;
       var top = 0;
+      for( var i = 0; i < this._rows.length; i++ ) {
+        if( this._checkBoxes !== null ) {
+          this._checkBoxes[ i ].setTop( top + checkBoxOffset );
+        }
+        this._rows[ i ].setTop( top );
+        top += this._itemHeight;
+      }
+    },
+    
+    _updateRowBounds : function() {
       var left = 0 - this._horzScrollBar.getValue();
       // TODO [rh] make themeable
-      var checkImageWidht = 0;
+      var checkImageWidth = 0;
       var checkImageHeight = 0;
       var checkBoxWidth = 0;
       if( this._checkBoxes !== null ) {
         // TODO [rh] move to theme, needs to be in sync with TableItem#CHECK_WIDTH
         checkBoxWidth = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
-        checkImageWidht = org.eclipse.swt.widgets.Table.CHECK_IMAGE_WIDTH;
         checkImageHeight = org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT;
       }
       var width = this.getColumnsWidth() - checkBoxWidth;
@@ -970,41 +984,71 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._checkBoxes !== null ) {
           var checkBox = this._checkBoxes[ i ];
           checkBox.setLeft( left );
-          checkBox.setTop( top + this._itemHeight / 2 - checkImageWidht / 2 );
           checkBox.setWidth( checkBoxWidth );
           checkBox.setHeight( checkImageHeight );
         }
         var row = this._rows[ i ];
-        row.setTop( top );
         row.setLeft( left + checkBoxWidth );
         row.setWidth( width );
         row.setHeight( this._itemHeight );
-        top += this._itemHeight;
       }
     },
-
+    
+    _scrollRowsVertical : function( delta ) {
+      if( Math.abs( delta ) > this._rows.length ) {
+        this._updateRows();
+      } else {
+        // reorder array
+        var newRows = new Array();
+        var newCheckBoxes = this._checkBoxes !== null ? new Array() : null; 
+        var length = this._rows.length;
+        for( var i = 0; i < length; i++ ) {
+          var sourceIndex = ( length + i + delta )  % length;
+      	  newRows.push( this._rows[ sourceIndex ] );
+          if( this._checkBoxes !== null ) {
+            newCheckBoxes.push( this._checkBoxes[ sourceIndex ] );
+          }
+        }
+        this._rows = newRows;
+        this._checkBoxes = newCheckBoxes;
+        // move rows
+        this._updateRowTop();
+        // replace items in stale row
+        for( var i = 0; i < length; i++ ) {
+          var newItemIndex = this._getItemIndexFromRowIndex( i );
+          var currentItemIndex = this._rows[ i ].getItemIndex();
+          if( currentItemIndex !== newItemIndex ) {
+            this._updateRow( i, newItemIndex );
+          }
+        }
+      }
+    },
+    
     _updateRows : function() {
       for( var i = 0; i < this._rows.length; i++ ) {
         this._updateRow( i, this._getItemIndexFromRowIndex( i ) );
       }
     },
-
+    
     _updateRow : function( rowIndex, itemIndex ) {
       var row = this._rows[ rowIndex ];
       var item = this._items[ itemIndex ];
       if( itemIndex === -1 ) {
         row.setHtml( this._emptyItem._getMarkup() );
+        row.setItemIndex( -1 );
       } else {
 	      if( item === undefined || ( item !== null && !item.getCached() ) ) {
 	        this._resolveItem( this._topIndex + rowIndex );
 	        row.setHtml( this._virtualItem._getMarkup() );
+          row.setItemIndex( -1 );
 	      } else {
 	        row.setHtml( item._getMarkup() );
+          row.setItemIndex( itemIndex );
 	      }
       }
       this._updateRowState( rowIndex, itemIndex );
     },
-
+    
     _updateRowState : function( rowIndex, itemIndex ) {
     	var row = this._rows[ rowIndex ];
     	if( itemIndex === -1 ) {
