@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Font;
 //RAP [rh] GC missing
 //import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
+//import org.eclipse.swt.graphics.RGB;
 //import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -872,18 +872,21 @@ public class FormToolkit {
 		boldFontHolder = new BoldFontHolder();
 	}
 
+// RAP [rh] revise detection of border style: can't ask OS here
 	private void initializeBorderStyle() {
-		String osname = System.getProperty("os.name"); //$NON-NLS-1$
-		String osversion = System.getProperty("os.version"); //$NON-NLS-1$
-		if (osname.startsWith("Windows") && "5.1".compareTo(osversion) <= 0) { //$NON-NLS-1$ //$NON-NLS-2$
-			// Skinned widgets used on newer Windows (e.g. XP (5.1), Vista
-			// (6.0))
-			// Check for Windows Classic. If not used, set the style to BORDER
-			RGB rgb = colors.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-			if (rgb.red != 212 || rgb.green != 208 || rgb.blue != 200)
-				borderStyle = SWT.BORDER;
-		} else if (osname.startsWith("Mac")) //$NON-NLS-1$
-			borderStyle = SWT.BORDER;
+//		String osname = System.getProperty("os.name"); //$NON-NLS-1$
+//		String osversion = System.getProperty("os.version"); //$NON-NLS-1$
+//		if (osname.startsWith("Windows") && "5.1".compareTo(osversion) <= 0) { //$NON-NLS-1$ //$NON-NLS-2$
+//			// Skinned widgets used on newer Windows (e.g. XP (5.1), Vista
+//			// (6.0))
+//			// Check for Windows Classic. If not used, set the style to BORDER
+//			RGB rgb = colors.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+//			if (rgb.red != 212 || rgb.green != 208 || rgb.blue != 200)
+//				borderStyle = SWT.BORDER;
+//		} else if (osname.startsWith("Mac")) //$NON-NLS-1$
+//			borderStyle = SWT.BORDER;
+
+		borderStyle = SWT.BORDER;
 	}
 
 	/**
