@@ -1746,6 +1746,97 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         opacity : 0.2
       };
     }
+  },
+  
+  "scale" : {
+    style : function( states ) {
+      return {
+        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+      }
+    }
+  },
+  
+  "scale-line" : {
+  	include : "image",
+  	
+  	style : function( states ) {
+  		var result = {};  		
+  		if( states.horizontal ){
+  			result.left = org.eclipse.swt.widgets.Scale.PADDING;
+  			result.top = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
+  			result.source = "widget/scale/h_line.gif";
+  		} else {
+  			result.left = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
+        result.top = org.eclipse.swt.widgets.Scale.PADDING;
+  			result.source = "widget/scale/v_line.gif";
+  		}
+  		return result;
+  	}
+  },
+  
+  "scale-thumb" : {
+    include : "image",
+    
+    style : function( states ) {
+      var result = {};      
+      if( states.horizontal ){
+      	result.left = org.eclipse.swt.widgets.Scale.PADDING;
+        result.top = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
+        result.source = "widget/scale/h_thumb.gif";
+      } else {
+        result.left = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
+        result.top = org.eclipse.swt.widgets.Scale.PADDING;
+        result.source = "widget/scale/v_thumb.gif";
+      }
+      return result;
+    }
+  },
+  
+  "scale-min-marker" : {
+    include : "image",
+    
+    style : function( states ) {
+      var result = {};      
+      if( states.horizontal ){
+        result.left =   org.eclipse.swt.widgets.Scale.PADDING
+                      + org.eclipse.swt.widgets.Scale.HALF_THUMB;
+        result.source = "widget/scale/h_marker_big.gif";
+      } else {
+        result.top =   org.eclipse.swt.widgets.Scale.PADDING
+                     + org.eclipse.swt.widgets.Scale.HALF_THUMB;;
+        result.source = "widget/scale/v_marker_big.gif";
+      }
+      return result;
+    }
+  },
+  
+  "scale-max-marker" : {
+    include : "image",
+    
+    style : function( states ) {
+      var result = {};      
+      if( states.horizontal ){        
+        result.source = "widget/scale/h_marker_big.gif";
+      } else {
+        result.source = "widget/scale/v_marker_big.gif";
+      }
+      return result;
+    }
+  },
+  
+  "scale-middle-marker" : {
+    include : "image",
+    
+    style : function( states ) {
+      var result = {};      
+      if( states.horizontal ){
+        result.source = "widget/scale/h_marker_small.gif";
+      } else {
+        result.source = "widget/scale/v_marker_small.gif";
+      }
+      
+      return result;
+    }
   }
 }
 

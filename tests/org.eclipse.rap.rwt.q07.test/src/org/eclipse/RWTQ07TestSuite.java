@@ -33,6 +33,7 @@ import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA_Test;
 import org.eclipse.swt.internal.widgets.menukit.MenuLCA_Test;
 import org.eclipse.swt.internal.widgets.sashkit.SashLCA_Test;
+import org.eclipse.swt.internal.widgets.scalekit.ScaleLCA_Test;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA_Test;
 import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerLCA_Test;
 import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderLCA_Test;
@@ -109,6 +110,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( TabFolderLCA_Test.class );
     suite.addTestSuite( ScrolledCompositeLCA_Test.class );
     suite.addTestSuite( BrowserLCA_Test.class );
+    suite.addTestSuite( ScaleLCA_Test.class );
 
     return suite;
   }

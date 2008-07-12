@@ -146,6 +146,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ExternalBrowser_Test.class );
     suite.addTestSuite( ProgressBar_Test.class );
     suite.addTestSuite( BusyIndicator_Test.class );
+    suite.addTestSuite( Scale_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

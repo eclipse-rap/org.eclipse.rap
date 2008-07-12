@@ -117,6 +117,8 @@ final class QooxdooResourcesUtil {
     = "qx/constant/Layout.js";
   private static final String QX_CONSTANT_STYLE_JS
     = "qx/constant/Style.js";
+  private static final String SCALE_JS
+    = "org/eclipse/swt/widgets/Scale.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -184,6 +186,7 @@ final class QooxdooResourcesUtil {
       register( PROGRESS_BAR_JS );
       register( FONT_SIZE_CALCULATION_JS );
       register( CLABEL_UTIL_JS );
+      register( SCALE_JS );
 
       // register contributions
       registerContributions();

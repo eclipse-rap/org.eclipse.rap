@@ -126,6 +126,14 @@ public final class ThemeManager {
     "tree/plus.gif",
     "tree/start_minus.gif",
     "tree/start_plus.gif",
+    "scale/h_line.gif",
+    "scale/v_line.gif",
+    "scale/h_thumb.gif",
+    "scale/v_thumb.gif",
+    "scale/h_marker_big.gif",
+    "scale/v_marker_big.gif",
+    "scale/h_marker_small.gif",
+    "scale/v_marker_small.gif",
   };
 
   /** Where to load the default non-themeable images from */
