@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Junit Plug-in
 Bundle-SymbolicName: org.eclipse.rap.junit
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.1.qualifier
 Require-Bundle: org.junit;visibility:=reexport,
  org.eclipse.rap.rwt
 Export-Package: org.eclipse.rap.junit
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
