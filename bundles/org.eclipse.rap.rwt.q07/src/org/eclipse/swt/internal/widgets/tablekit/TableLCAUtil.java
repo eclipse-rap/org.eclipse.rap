@@ -21,15 +21,14 @@ import org.eclipse.swt.widgets.*;
 
 public final class TableLCAUtil {
 
-  // Constants used by item metrics
-  private static final Integer ZERO = new Integer( 0 );
+  // Constants used to preserve values
+  public static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_ITEM_METRICS = "itemMetrics";
+  static final String PROP_FOCUS_INDEX = "focusIndex";
 
   // Constants used by alignment
-  public static final String PROP_ALIGNMENT = "alignment";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
 
-  static final String PROP_FOCUS_INDEX = "focusIndex";
 
   ////////////////////////////
   // Column and Item alignment
@@ -79,10 +78,10 @@ public final class TableLCAUtil {
       for( int i = 0; i < itemMetrics.length; i++ ) {
         Object[] args = new Object[] { 
           new Integer( i ), 
-          itemMetrics[ i ].imageLeft, 
-          itemMetrics[ i ].imageWidth,
-          itemMetrics[ i ].textLeft,
-          itemMetrics[ i ].textWidth
+          new Integer( itemMetrics[ i ].imageLeft ), 
+          new Integer( itemMetrics[ i ].imageWidth ),
+          new Integer( itemMetrics[ i ].textLeft ),
+          new Integer( itemMetrics[ i ].textWidth )
         };
         writer.set( "itemMetrics", args );
       }
@@ -121,21 +120,22 @@ public final class TableLCAUtil {
     }
     TableItem measureItem = getMeasureItem( table );
     if( measureItem != null ) {
-      int checkWidth = getTableAdapter( table ).getCheckWidth();
+      ITableAdapter tableAdapter = getTableAdapter( table );
+      int checkWidth = tableAdapter.getCheckWidth();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
         Rectangle textBounds = measureItem.getTextBounds( i );
-        int imageWidth = imageBounds.width; 
+        int imageWidth = tableAdapter.getItemImageWidth( i );
         int imageLeft = imageBounds.x - checkWidth;
         if( imageLeft + imageWidth > bounds.x + bounds.width ) {
           imageWidth = imageLeft - bounds.x + bounds.width;
         }
         int textLeft = textBounds.x - checkWidth;
-        result[ i ].imageLeft = new Integer( imageLeft );
-        result[ i ].imageWidth = new Integer( imageWidth );
-        result[ i ].textLeft = new Integer( textLeft );
-        result[ i ].textWidth = new Integer( textBounds.width );
+        result[ i ].imageLeft = imageLeft;
+        result[ i ].imageWidth = imageWidth;
+        result[ i ].textLeft = textLeft;
+        result[ i ].textWidth = textBounds.width;
       }
     }
     return result;
@@ -186,10 +186,10 @@ public final class TableLCAUtil {
   // Inner classes
   
   static final class ItemMetrics {
-    Integer imageLeft = ZERO;
-    Integer imageWidth = ZERO;
-    Integer textLeft = ZERO;
-    Integer textWidth = ZERO;
+    int imageLeft;
+    int imageWidth;
+    int textLeft;
+    int textWidth;
     
     public boolean equals( final Object obj ) {
       boolean result;
@@ -197,10 +197,10 @@ public final class TableLCAUtil {
         result = true;
       } else  if( obj instanceof ItemMetrics ) {
         ItemMetrics other = ( ItemMetrics )obj;
-        result =  other.imageLeft.equals( imageLeft ) 
-               && other.imageWidth.equals( imageWidth )
-               && other.textLeft.equals( textLeft )
-               && other.textWidth.equals( textWidth );
+        result =  other.imageLeft == imageLeft 
+               && other.imageWidth == imageWidth
+               && other.textLeft == textLeft
+               && other.textWidth == textWidth;
       } else {
         result = false;
       }

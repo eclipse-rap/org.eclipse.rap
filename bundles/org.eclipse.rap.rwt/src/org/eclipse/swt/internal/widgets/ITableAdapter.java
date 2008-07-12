@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.TableItem;
 public interface ITableAdapter {
 
   int getCheckWidth();
+  int getItemImageWidth( int columnIndex );
 
   int getFocusIndex();
   void setFocusIndex( int focusIndex );
@@ -25,7 +26,7 @@ public interface ITableAdapter {
   
   int getColumnLeft( TableColumn column );
   int getDefaultColumnWidth();
-  
+
   boolean isItemVisible( TableItem item );
   boolean isItemVirtual( int index );
   TableItem[] getCachedItems();

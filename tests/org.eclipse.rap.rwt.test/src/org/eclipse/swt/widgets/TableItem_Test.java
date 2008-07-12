@@ -114,6 +114,40 @@ public class TableItem_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
   }
 
+  public void testTextBounds() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 50 );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    column2.setWidth( 50 );
+    item.setText( 0, "col1" );
+    item.setText( 1, "col2" );
+    
+    Rectangle textBounds1 = item.getTextBounds( 0 );
+    Rectangle textBounds2 = item.getTextBounds( 1 );
+    assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
+  }
+  
+  public void testTextBoundsWithImageAndColumns() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.setWidth( 200 );
+    
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    item.setImage( 0, image );
+    assertTrue( item.getTextBounds( 0 ).x > image.getBounds().width );
+    item.setImage( 0, null );
+    assertTrue( item.getTextBounds( 0 ).x < image.getBounds().width );
+  }
+  
   public void testImageBoundsWithoutColumns() {
     // Test setup
     Display display = new Display();
@@ -145,7 +179,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 100, bounds.width );
   }
 
-  public void testImageBoundsWidthColumns() {
+  public void testImageBoundsWithColumns() {
     // Test setup
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -177,6 +211,13 @@ public class TableItem_Test extends TestCase {
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
     assertEquals( 100, bounds.width );
+    
+    // ImageBounds for item without an image
+    column.setWidth( 20 );
+    item.setImage( 0, null );
+    bounds = item.getImageBounds( 0 );
+    assertEquals( 50, bounds.height );
+    assertEquals( 0, bounds.width );
   }
 
   public void testBoundsWithCheckedTable() {

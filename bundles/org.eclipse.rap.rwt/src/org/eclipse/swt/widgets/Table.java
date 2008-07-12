@@ -114,6 +114,14 @@ public class Table extends Composite {
       return Table.this.getCheckWidth();
     }
 
+    public int getItemImageWidth( final int columnIndex ) {
+      int result = 0;
+      if( Table.this.hasColumnImages( columnIndex ) ) {
+        result = Table.this.getItemImageSize().x;
+      }
+      return result;
+    }
+    
     public int getFocusIndex() {
       return Table.this.focusIndex;
     }
@@ -186,6 +194,7 @@ public class Table extends Composite {
   private int itemCount;
   private TableItem[] items;
   private final ItemHolder columnHolder;
+  private int[] columnImageCount;
   private int[] columnOrder;
   private int[] selection;
   private boolean linesVisible;
@@ -1945,6 +1954,19 @@ public class Table extends Composite {
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }
+    if( columnImageCount == null ) {
+      columnImageCount = new int[] { 0 };
+    } else {
+      int length = columnImageCount.length;
+      int[] newColumnImageCount = new int[ length + 1 ];
+      System.arraycopy( columnImageCount, 0, newColumnImageCount, 0, index );
+      System.arraycopy( columnImageCount,
+                        index,
+                        newColumnImageCount,
+                        index + 1,
+                        length - index );
+      columnImageCount = newColumnImageCount;
+    }
   }
 
   final void destroyColumn( final TableColumn column ) {
@@ -1976,6 +1998,16 @@ public class Table extends Composite {
       }
     }
     columnOrder = newColumnOrder;
+    // Remove from columnImageCount
+    count = 0;
+    int[] newColumnImageCount = new int[ columnImageCount.length - 1 ];
+    for( int i = 0; i < columnImageCount.length; i++ ) {
+      if( i != index ) {
+        newColumnImageCount[ count ] = columnImageCount[ i ];
+        count++;
+      }
+    }
+    columnImageCount = newColumnImageCount;
   }
 
   ////////////////////////////
@@ -2018,6 +2050,12 @@ public class Table extends Composite {
   final void destroyItem( final TableItem item,  final int index ) {
     removeFromSelection( index );
     adjustSelectionIdices( index );
+    if( item != null ) {
+      int columnCount = Math.max( 1, columnHolder.size() );
+      for( int i = 0; i < columnCount; i++ ) {
+        updateColumnImageCount( i, item.getImageInternal( i ), null );
+      }
+    }
     itemCount--;
     if( item != null ) {
       System.arraycopy( items, index + 1, items, index, itemCount - index );
@@ -2153,6 +2191,31 @@ public class Table extends Composite {
   ////////////////////////////////////
   // Helping methods - item image size
 
+  final void updateColumnImageCount( final int columnIndex, 
+                                     final Image oldImage, 
+                                     final Image newImage ) 
+  {
+    int delta = 0;
+    if( oldImage == null && newImage != null ) {
+      delta = +1;
+    } else if( oldImage != null && newImage == null ) {
+      delta = -1;
+    }
+    if( delta != 0 ) {
+      if( columnImageCount == null ) {
+        int columnCount = Math.max( 1, columnHolder.size() );
+        columnImageCount = new int[ columnCount ];
+      }
+      columnImageCount[ columnIndex ] += delta;
+    }
+  }
+  
+  final boolean hasColumnImages( final int columnIndex ) {
+    return columnImageCount == null 
+      ? false 
+      : columnImageCount[ columnIndex ] > 0;
+  }
+  
   final void updateItemImageSize( final Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
@@ -2163,7 +2226,7 @@ public class Table extends Composite {
   final Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
-
+  
   ////////////////////////////
   // Helping methods - various
 

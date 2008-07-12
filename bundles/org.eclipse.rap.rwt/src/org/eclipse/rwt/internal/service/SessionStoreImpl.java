@@ -15,7 +15,6 @@ import java.util.*;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.util.ParamCheck;

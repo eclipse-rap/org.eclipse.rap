@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import junit.framework.TestCase;
@@ -25,6 +24,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -59,19 +59,19 @@ public class TableLCA_Test extends TestCase {
     int defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
     assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
     Object[] itemMetrics
-     = ( Object[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
-    Integer imageleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
-    assertEquals( imageleft1,
+      = ( Object[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
+    int imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
+    assertEquals( imageLeft1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageLeft );
-    Integer imagewidth1
-     = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
-    assertEquals( imagewidth1,
+    int imageWidth1
+      = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
+    assertEquals( imageWidth1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageWidth );
-    Integer textleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
+    int textleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
     assertEquals( textleft1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textLeft );
-    Integer textwidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
-    assertEquals( textwidth1,
+    int textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
+    assertEquals( textWidth1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textWidth );
     RWTFixture.clearPreserved();
     TableColumn tc1 = new TableColumn( table, SWT.CENTER );
@@ -113,18 +113,18 @@ public class TableLCA_Test extends TestCase {
     defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
     assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
     itemMetrics
-    = ( Object[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
-    imageleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
-    assertEquals( imageleft1,
+      = ( Object[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
+    imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
+    assertEquals( imageLeft1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageLeft );
-    imagewidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
-    assertEquals( imagewidth1,
+    imageWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
+    assertEquals( imageWidth1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageWidth );
     textleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
     assertEquals( textleft1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textLeft );
-    textwidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
-    assertEquals( textwidth1,
+    textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
+    assertEquals( textWidth1,
                   ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textWidth );
     RWTFixture.clearPreserved();
     //control: enabled
@@ -590,6 +590,45 @@ public class TableLCA_Test extends TestCase {
       eventCount++;
     }
     assertEquals( 1, eventCount );
+  }
+
+  public void testGetItemMetrics() {
+    Display display = new Display();
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Shell shell = new Shell( display );
+    shell.setBounds( 0, 0, 800, 600 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.NONE );
+    table.setHeaderVisible( true );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.setText( "column1" );
+    column.setWidth( 200 );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    item1.setText( "item1" );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    item2.setText( "item2" );
+    TableItem item3 = new TableItem( table, SWT.NONE );
+    item3.setText( "item3" );
+    
+    item2.setImage( image );
+    ItemMetrics[] itemMetrics = TableLCAUtil.getItemMetrics( table );
+    assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
+    
+    item1.setImage( image );
+    itemMetrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 0, itemMetrics[ 0 ].imageLeft );
+    assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
+    
+    item1.setImage( image );
+    RWTFixture.preserveWidgets();
+    item1.setImage( ( Image )null );
+    assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
+    
+    RWTFixture.preserveWidgets();
+    item1.setImage( image );
+    table.setSelection( item1 );
+    assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
+    
   }
   
   private static int countResolvedItems( final Table table ) {

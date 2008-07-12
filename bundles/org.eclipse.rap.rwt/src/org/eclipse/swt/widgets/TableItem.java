@@ -241,6 +241,7 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
+      parent.updateColumnImageCount( index, data[ index ].image, image );
       data[ index ].image = image;
       parent.updateItemImageSize( image );
       markCached();
@@ -292,6 +293,10 @@ public class TableItem extends Item {
   public Image getImage( final int index ) {
     checkWidget();
     parent.checkData( this, parent.indexOf( this ) );
+    return getImageInternal( index );
+  }
+
+  Image getImageInternal( final int index ) {
     Image result = null;
     if(    data != null 
         && index >= 0 
@@ -826,19 +831,27 @@ public class TableItem extends Item {
     int width = 0;
     int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
-      Rectangle imageBounds = getImageBounds( 0 );
-      left = imageBounds.x + imageBounds.width + getImageGap( 0 );
+      int imageWidth = 0;
+      if( parent.hasColumnImages( 0 ) ) {
+        imageWidth = parent.getItemImageSize().x + getImageGap( 0 );
+      }
+      left = getCheckWidth( 0 ) + imageWidth;
       top = getTop( itemIndex );
       Font font = parent.getFont();
       width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
       height = parent.getItemHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
-        Rectangle imageBounds = getImageBounds( index );
-        int gap = getImageGap( index );
-        left = imageBounds.x + imageBounds.width + gap;
+        int gap = 0;
+        int imageWidth = 0;
+        if( parent.hasColumnImages( index ) ) {
+          imageWidth = parent.getItemImageSize().x;
+          gap = getImageGap( index );
+        }
+        int columnLeft = parent.getColumn( index ).getLeft();
+        left = columnLeft + getCheckWidth( index ) + imageWidth + gap;
         top = getTop( itemIndex );
-        width = getColumnWidth( index ) - ( gap + imageBounds.width );
+        width = getColumnWidth( index ) - ( gap + imageWidth );
         if( width < 0 ) {
           width = 0;
         }
@@ -866,7 +879,6 @@ public class TableItem extends Item {
   }
   
   final int getCheckWidth( final int index ) {
-//    return index == 0 ? parent.getCheckWidth() : 0;
     int result = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
       result = parent.getCheckWidth();
@@ -890,12 +902,10 @@ public class TableItem extends Item {
   
   private int getImageGap( final int index ) {
     int result = 0;
-    Image image = getImage( index );
-    if( image != null ) {
+    if( parent.hasColumnImages( index ) ) {
       result = IMAGE_TEXT_GAP;
     }
     return result;
-    
   }
 
   ///////////////////////////////////////

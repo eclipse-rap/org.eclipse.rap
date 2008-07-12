@@ -1411,6 +1411,47 @@ public class Table_Test extends TestCase {
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
   }
   
+  public void testHasColumnImages() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item0 = new TableItem( table, SWT.NONE );
+
+    // Test without columns
+    assertFalse( table.hasColumnImages( 0 ) );
+    item0.setImage( ( Image )null );
+    assertFalse( table.hasColumnImages( 0 ) );
+    item0.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    assertTrue( table.hasColumnImages( 0 ) );
+    item0.setImage( ( Image )null );
+    assertFalse( table.hasColumnImages( 0 ) );
+    item0.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item0.dispose();
+    assertFalse( table.hasColumnImages( 0 ) );
+    item0 = new TableItem( table, SWT.NONE );
+    item0.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    item1.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    assertTrue( table.hasColumnImages( 0 ) );
+    item1.setImage( ( Image )null );
+    assertTrue( table.hasColumnImages( 0 ) );
+    
+    // Dispose column that 'holds' images 
+    table.removeAll();
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    item0 = new TableItem( table, SWT.NONE );
+    item0.setImage( 1, Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    assertFalse( table.hasColumnImages( 0 ) );
+    assertTrue( table.hasColumnImages( 1 ) );
+    column0.dispose();
+    assertTrue( table.hasColumnImages( 0 ) );
+    item0.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    assertTrue( table.hasColumnImages( 0 ) );
+    item0.setImage( 0, null );
+    assertFalse( table.hasColumnImages( 0 ) );
+  }
+  
   public void testGetItem() {
     Display display = new Display();
     Shell shell = new Shell( display );
