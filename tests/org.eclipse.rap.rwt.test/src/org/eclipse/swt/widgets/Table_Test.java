@@ -382,6 +382,15 @@ public class Table_Test extends TestCase {
     table.setSelection( new TableItem[] { item0 } );
     assertEquals( 0, tableAdapter.getFocusIndex() );
 
+    // calling setSelection with an out-of-range value clears the selection but
+    // does not affect the focusIndex
+    table.setSelection( 0 );
+    table.setSelection( -2 );
+    assertEquals( 0, tableAdapter.getFocusIndex() );
+    table.setSelection( 0 );
+    table.setSelection( table.getItemCount() + 10 );
+    assertEquals( 0, tableAdapter.getFocusIndex() );
+    
     // Resetting the selection does not affect the focusIndex
     table.setSelection( item0 );
     table.deselectAll();
@@ -800,6 +809,36 @@ public class Table_Test extends TestCase {
     table.select( new int[]{ 777 } );
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( true, table.isSelected( 2 ) );
+  }
+  
+  public void testSelectionReveals() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.BORDER | SWT.MULTI );
+    table.setSize( 200, 200 );
+    for( int i = 0; i < 128; i++ ) {
+      TableItem item = new TableItem( table, SWT.NONE );
+      item.setText( "Item " + i );
+    }
+    
+    // test case precondition: table offers space for max. 30 visible items
+    assertTrue( table.getVisibleItemCount() < 30 );
+
+    // calling setSelection makes the selected item visible
+    table.setSelection( 95 );
+    ITableAdapter tableAdapter 
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
+    
+    // calling select does *not* make the selected item visible
+    table.select( 0 );
+    assertFalse( tableAdapter.isItemVisible( table.getItem( 0 ) ) );
+    assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
+    
+    // selecting a range will make the lower end of the range visible
+    table.setSelection( 0, 95 );
+    assertTrue( tableAdapter.isItemVisible( table.getItem( 0 ) ) );
+    assertFalse( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
   }
 
   public void testGetSelectionIndex() {

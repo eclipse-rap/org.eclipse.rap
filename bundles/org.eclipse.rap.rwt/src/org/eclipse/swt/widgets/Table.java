@@ -1034,6 +1034,7 @@ public class Table extends Composite {
     if( index < itemCount ) {
       setFocusIndex( index );
     }
+    showSelection();
   }
 
   /**
@@ -1089,6 +1090,7 @@ public class Table extends Composite {
     {
       setFocusIndex( Math.max( 0, start ) );
     }
+    showSelection();
   }
 
   /**
@@ -1154,6 +1156,7 @@ public class Table extends Composite {
     if( length != 0 && ( ( style & SWT.SINGLE ) == 0 || length <= 1 ) ) {
       setFocusIndex( indices[ 0 ] );
     }
+    showSelection();
   }
 
   /**
@@ -2239,7 +2242,7 @@ public class Table extends Composite {
     return result;
   }
 
-  private int getVisibleItemCount() {
+  final int getVisibleItemCount() {
     //  TODO [rh] replace this once getClientArea is working
     int clientHeight = getBounds().height
                      - getHeaderHeight()
@@ -2295,7 +2298,7 @@ public class Table extends Composite {
     boolean result = false;
     int visibleItemCount = getVisibleItemCount();
     if( visibleItemCount > 0 ) {
-      result = index - topIndex <= visibleItemCount;
+      result = index >= topIndex && index < topIndex + visibleItemCount;
     }
     return result;
   }
