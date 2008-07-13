@@ -420,6 +420,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._setSingleSelection( itemIndex );
         }
         this.setFocusIndex( itemIndex );
+        this._makeItemFullyVisible( itemIndex );        
         this._updateSelectionParam();
         this.createDispatchDataEvent( "itemselected", itemIndex );
       }
@@ -436,7 +437,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           if( this._isItemSelected( itemIndex ) ) {
             this._deselectItem( itemIndex, true );
           } else {
-            this._selectItem( itemIndex, true );
+            this._selectItem( itemIndex );
           }
         }
         if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
@@ -456,7 +457,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             var end = Math.max( selectionStart, itemIndex );
             for( var i = start; i <= end; i++ ) {
               if( !this._isItemSelected( i ) ) {
-                this._selectItem( i, true );
+                this._selectItem( i );
               }
             }
           }
@@ -479,7 +480,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _setSingleSelection : function( itemIndex ) {
       this._clearSelection();
-      this._selectItem( itemIndex, true );
+      this._selectItem( itemIndex );
     },
     
     _resumeClicks : function() {
@@ -600,15 +601,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         {
           var oldFocusIndex = this._focusIndex;
           this._setSingleSelection( gotoIndex );
-          // TODO [rh] _setSingleSelection implicitly makes item visible when 
-          //      navigating down for one item
           // Make the just selected item visible
-          if( !this._isItemVisible( gotoIndex ) ) {
+          // TODO [rh] similar code as in _makeItemFullyVisible(), unite
+          if( !this._isItemFullyVisible( gotoIndex ) ) {
             var topIndex;
             // If last item was selected, try to set topIndex such that as 
             // much items as possible are shown  
             if( gotoIndex === this._itemCount - 1 ) {
-              // not exactly sure why but +1 tales care that the selected item 
+              // not exactly sure why but +1 takes care that the selected item 
               // is fully visible
               topIndex = gotoIndex - this._getFullyVisibleRowCount() + 1;
             } else {
@@ -728,23 +728,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
-    _selectItem : function( itemIndex, update ) {
+    _selectItem : function( itemIndex ) {
       this._selected.push( itemIndex );
-      // Make item fully visible
-      if( update ) {
-        var changed = false;
-        var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
-        var row = rowIndex === -1 ? null : this._rows[ rowIndex ];
-        if(    row !== null 
-            && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
-        {
-          this._internalSetTopIndex( this._topIndex + 1, true );
-          changed = true;
-        }
-        if( !changed ) {
-          this.updateItem( itemIndex, true );
-        }
-      }
+      this.updateItem( itemIndex, false );
     },
 
     _deselectItem : function( itemIndex, update ) {
@@ -772,7 +758,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _isItemVisible : function( itemIndex ) {
       return    itemIndex >= this._topIndex 
-             && itemIndex <= this._topIndex + this._rows.length;
+             && itemIndex < this._topIndex + this._rows.length;
+    },
+    
+    _isItemFullyVisible : function( itemIndex ) {
+      return    itemIndex >= this._topIndex 
+             && itemIndex < this._topIndex + this._getFullyVisibleRowCount();
+    },
+    
+    _makeItemFullyVisible : function( itemIndex ) {
+      var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
+      var row = rowIndex === -1 ? null : this._rows[ rowIndex ];
+      if(    row !== null 
+          && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
+      {
+        this._internalSetTopIndex( this._topIndex + 1, true );
+      }
     },
 
     updateItem : function( itemIndex, contentChanged ) {
