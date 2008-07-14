@@ -67,6 +67,9 @@ qx.Class.define( "org.eclipse.swt.Application", {
     
     main : function( evt ) {
       this.base( arguments );
+      // Reduce scroll-event delay to 80ms (default is 250ms)
+      // All scroll events that arrive in shorter time will be merged
+      qx.ui.basic.ScrollBar.EVENT_DELAY = 125;
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
       qx.io.Alias.getInstance().add( "static", "./resource/static" );

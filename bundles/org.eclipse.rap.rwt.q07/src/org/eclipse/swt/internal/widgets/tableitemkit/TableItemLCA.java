@@ -50,7 +50,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
         adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
         adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
-      }      
+      }
       adapter.preserve( PROP_TEXTS, getTexts( item ) );
       adapter.preserve( PROP_IMAGES, getImages( item ) );
       adapter.preserve( PROP_INDEX, new Integer( index ) );
@@ -272,8 +272,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   //      call jsTable.setFocusedItem( null ) in TableLCA
   private static void writeFocused( final TableItem item ) throws IOException
   {
-    if(    TableLCAUtil.hasFocusIndexChanged( item.getParent() ) 
-        && isFocused( item ) ) 
+    if(    TableLCAUtil.hasFocusIndexChanged( item.getParent() )
+        && isFocused( item ) )
     {
       JSWriter writer = JSWriter.getWriterFor( item );
       int index = getTableAdapter( item ).getFocusIndex();
