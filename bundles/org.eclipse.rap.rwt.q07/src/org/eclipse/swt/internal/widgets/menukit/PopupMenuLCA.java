@@ -20,15 +20,11 @@ import org.eclipse.swt.widgets.Menu;
 
 final class PopupMenuLCA extends MenuDelegateLCA {
 
-  private static final String PROP_ENABLED = "enabled";
-
   private static final String SHOW_MENU 
     = "org.eclipse.swt.MenuUtil.showMenu";
   
   void preserveValues( final Menu menu ) {
-    // TODO [rh] extract method and move to MenuLCAUtil
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( PROP_ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
     MenuLCAUtil.preserveWidth( menu );
   }

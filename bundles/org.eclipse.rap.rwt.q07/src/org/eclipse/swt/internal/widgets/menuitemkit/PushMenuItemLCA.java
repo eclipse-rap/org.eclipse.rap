@@ -34,8 +34,7 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
     boolean hasListener = SelectionEvent.hasListener( menuItem );
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( Props.ENABLED,
-                      Boolean.valueOf( menuItem.getEnabled() ) );
+    MenuItemLCAUtil.preserveEnabled( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {

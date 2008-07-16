@@ -38,8 +38,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
                       Boolean.valueOf( hasListener ) );
     adapter.preserve( PROP_SELECTION, 
                       Boolean.valueOf( menuItem.getSelection() ) );
-    adapter.preserve( Props.ENABLED,
-                      Boolean.valueOf( menuItem.getEnabled() ) );
+    MenuItemLCAUtil.preserveEnabled( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {

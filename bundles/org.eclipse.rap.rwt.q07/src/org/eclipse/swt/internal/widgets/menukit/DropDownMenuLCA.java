@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
@@ -25,9 +25,7 @@ import org.eclipse.swt.widgets.*;
 final class DropDownMenuLCA extends MenuDelegateLCA {
 
   void preserveValues( final Menu menu ) {
-    // TODO [rh] extract method and move to MenuLCAUtil
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
     MenuLCAUtil.preserveWidth( menu );
   }

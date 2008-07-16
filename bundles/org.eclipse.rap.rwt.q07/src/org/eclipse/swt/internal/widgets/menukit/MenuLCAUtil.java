@@ -18,7 +18,6 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -31,6 +30,7 @@ final class MenuLCAUtil {
   private static final int ITEM_SPACING = 2;
   private static final int ITEM_IMAGE = 16;
 
+  static final String PROP_ENABLED = "enabled";
   static final String PROP_WIDTH = "width";
   static final String PROP_MENU_LISTENER = "menuListener";
 
@@ -38,20 +38,25 @@ final class MenuLCAUtil {
     = "org.eclipse.swt.MenuUtil.setMenuListener";
   private static final String UNHIDE_MENU
     = "org.eclipse.swt.MenuUtil.unhideMenu";
-  
+
+  public static void preserveEnabled( final Menu menu ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
+    adapter.preserve( PROP_ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+  }
+
+  public static void writeEnabled( final Menu menu ) throws IOException {
+    Boolean newValue = Boolean.valueOf( menu.getEnabled() );
+    Boolean defValue = Boolean.TRUE;
+    JSWriter writer = JSWriter.getWriterFor( menu );
+    writer.set( PROP_ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
+  }
+
   public static void preserveMenuListener( final Menu menu ) {
     Boolean hasListener = Boolean.valueOf( MenuEvent.hasListener( menu ) );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_MENU_LISTENER, hasListener );
   }
-  
-  public static void writeEnabled( final Menu menu ) throws IOException {
-    Boolean newValue = Boolean.valueOf( menu.isEnabled() );
-    Boolean defValue = Boolean.TRUE;
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
-  }
-  
+
   public static void writeMenuListener( final Menu menu ) throws IOException {
     String prop = PROP_MENU_LISTENER;
     Boolean newValue = Boolean.valueOf( MenuEvent.hasListener( menu ) );

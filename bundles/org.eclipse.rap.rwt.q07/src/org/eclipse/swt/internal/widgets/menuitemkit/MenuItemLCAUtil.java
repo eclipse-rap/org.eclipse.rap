@@ -14,13 +14,15 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
 
 final class MenuItemLCAUtil {
-  
+
+  static final String PROP_ENABLED = "enabled";
+
   static void newItem( final MenuItem menuItem, 
                        final String jsClass, 
                        final boolean isQxAtom )
@@ -37,12 +39,18 @@ final class MenuItemLCAUtil {
                  "addAt", 
                  new Object[]{ menuItem, new Integer( index ) } );
   }
-  
+
+  static void preserveEnabled( final MenuItem menuItem ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
+    adapter.preserve( Props.ENABLED,
+                      Boolean.valueOf( menuItem.getEnabled() ) );
+  }
+
   static void writeEnabled( final MenuItem menuItem ) throws IOException {
-    Boolean newValue = Boolean.valueOf( menuItem.isEnabled() );
+    Boolean newValue = Boolean.valueOf( menuItem.getEnabled() );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     Boolean defValue = Boolean.TRUE;
-    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
+    writer.set( PROP_ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
   static void writeImageAndText( final MenuItem menuItem ) throws IOException {

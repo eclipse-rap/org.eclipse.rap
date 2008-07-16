@@ -32,7 +32,6 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
                           "org.eclipse.swt.MenuUtil.radioMenuItemSelected",
                           JSListenerType.STATE_AND_ACTION );
 
-
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
@@ -41,8 +40,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
                       Boolean.valueOf( hasListener ) );
     adapter.preserve( PROP_SELECTION,
                       Boolean.valueOf( menuItem.getSelection() ) );
-    adapter.preserve( Props.ENABLED,
-                      Boolean.valueOf( menuItem.getEnabled() ) );
+    MenuItemLCAUtil.preserveEnabled( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {

@@ -16,8 +16,8 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Decorations;
+import org.eclipse.swt.widgets.Menu;
 
 
 final class MenuBarLCA extends MenuDelegateLCA {
@@ -32,8 +32,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     Decorations parent = getParent( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_SHELL, parent );
-    // TODO [rh] extract method and move to MenuLCAUtil
-    adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
   }
   

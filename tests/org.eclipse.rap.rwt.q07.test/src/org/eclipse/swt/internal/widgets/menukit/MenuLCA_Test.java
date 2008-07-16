@@ -22,13 +22,22 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class MenuLCA_Test extends TestCase {
+
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+    Fixture.fakeResponseWriter();
+    Fixture.fakeBrowser( new Ie6( true, true ) );
+  }
+
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
+  }
 
   public void testDropDownPreserveValues() {
     Display display = new Display();
@@ -65,7 +74,9 @@ public class MenuLCA_Test extends TestCase {
      = ( Boolean )adapter.getPreserved( MenuLCAUtil.PROP_MENU_LISTENER );
     assertEquals( Boolean.TRUE, hasMenuListener );
     RWTFixture.clearPreserved();
-    testPreserveValues( display, menu );
+    testPreserveMenuListener( menu );
+    testPreserveWidth( menu );
+    testPreserveEnabled( menu );
     display.dispose();
   }
 
@@ -75,7 +86,9 @@ public class MenuLCA_Test extends TestCase {
     shell.setText( "shell" );
     Menu menu = new Menu( shell, SWT.POP_UP );
     RWTFixture.markInitialized( display );
-    testPreserveValues( display, menu );
+    testPreserveMenuListener( menu );
+    testPreserveWidth( menu );
+    testPreserveEnabled( menu );
     display.dispose();
   }
 
@@ -168,42 +181,35 @@ public class MenuLCA_Test extends TestCase {
     lifeCycle.removePhaseListener( preserveListener );
   }
 
-  private void testPreserveValues( final Display display, final Menu menu ) {
-    // menu: menu_listener
-    RWTFixture.preserveWidgets();
+  private void testPreserveMenuListener( final Menu menu ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Boolean hasMenuListener = ( Boolean )adapter.getPreserved( MenuLCAUtil.PROP_MENU_LISTENER );
-    assertEquals( Boolean.FALSE, hasMenuListener );
-    Object width = adapter.getPreserved( MenuLCAUtil.PROP_WIDTH );
-    assertEquals( new Integer( MenuLCAUtil.computeWidth( menu ) ), width );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.FALSE,
+                  adapter.getPreserved( MenuLCAUtil.PROP_MENU_LISTENER ) );
     RWTFixture.clearPreserved();
-    menu.addMenuListener( new MenuListener() {
+    menu.addMenuListener( new MenuAdapter() {} );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( MenuLCAUtil.PROP_MENU_LISTENER ) );
+    RWTFixture.clearPreserved();
+  }
+  
+  private void testPreserveWidth( final Menu menu ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
+    RWTFixture.preserveWidgets();
+    assertEquals( new Integer( MenuLCAUtil.computeWidth( menu ) ),
+                  adapter.getPreserved( MenuLCAUtil.PROP_WIDTH ) );
+    RWTFixture.clearPreserved();
+  }
 
-      public void menuHidden( final MenuEvent e ) {
-      }
-
-      public void menuShown( final MenuEvent e ) {
-      }
-    } );
+  private void testPreserveEnabled( final Menu menu ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
+    RWTFixture.clearPreserved();
     menu.setEnabled( false );
     RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( menu );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    hasMenuListener = ( Boolean )adapter.getPreserved( MenuLCAUtil.PROP_MENU_LISTENER );
-    assertEquals( Boolean.TRUE, hasMenuListener );
-    width = adapter.getPreserved( MenuLCAUtil.PROP_WIDTH );
-    assertEquals( new Integer( MenuLCAUtil.computeWidth( menu ) ), width );
     RWTFixture.clearPreserved();
-  }
-
-  protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
-  }
-
-  protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
   }
 }
