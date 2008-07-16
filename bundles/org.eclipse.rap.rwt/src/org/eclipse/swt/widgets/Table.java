@@ -135,8 +135,17 @@ public class Table extends Composite {
     }
 
     public void checkData( final int index ) {
-      if( index >= 0 && index < Table.this.itemCount ) {
-        Table.this.checkData( Table.this._getItem( index ), index );
+      if( ( Table.this.style & SWT.VIRTUAL ) != 0  ) {
+        ProcessActionRunner.add( new Runnable() {
+          public void run() {
+            if( index >= 0 && index < Table.this.itemCount ) {
+              TableItem item = Table.this._getItem( index );
+              if( !item.isDisposed() ) {
+                Table.this.checkData( item, index );
+              }
+            }
+          }
+        } );
       }
     }
 
@@ -2173,24 +2182,21 @@ public class Table extends Composite {
     }
   }
 
-  final void checkData( final TableItem item, final int index ) {
-    if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          if( index >= 0 && index < itemCount ) {
-            item.cached = true;
-            SetDataEvent event = new SetDataEvent( Table.this, item, index );
-            event.processEvent();
-            // widget could be disposed at this point
-            if( isDisposed() || item.isDisposed() ) {
-              SWT.error( SWT.ERROR_WIDGET_DISPOSED );
-            }
-          }
-        }
-      } );
+  final boolean checkData( final TableItem item, final int index ) {
+    boolean result = true;
+    boolean virtual = ( style & SWT.VIRTUAL ) != 0;
+    if( virtual && !item.cached && index >= 0 && index < itemCount ) {
+      item.cached = true;
+      SetDataEvent event = new SetDataEvent( Table.this, item, index );
+      event.processEvent();
+      // widget could be disposed at this point
+      if( isDisposed() || item.isDisposed() ) {
+        result = false;
+      }
     }
+    return result;
   }
-
+  
   ////////////////////////////////////
   // Helping methods - item image size
 

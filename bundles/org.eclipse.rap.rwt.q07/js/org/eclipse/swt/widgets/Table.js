@@ -1033,11 +1033,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _updateRow : function( rowIndex, itemIndex ) {
       var row = this._rows[ rowIndex ];
-      var item = this._items[ itemIndex ];
-      if( itemIndex === -1 ) {
-        row.setHtml( this._emptyItem._getMarkup() );
-        row.setItemIndex( -1 );
-      } else {
+      if( itemIndex >= 0 && itemIndex < this._itemCount ) {
+        var item = this._items[ itemIndex ];
 	      if( item === undefined || ( item !== null && !item.getCached() ) ) {
 	        this._resolveItem( this._topIndex + rowIndex );
 	        row.setHtml( this._virtualItem._getMarkup() );
@@ -1046,10 +1043,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 	        row.setHtml( item._getMarkup() );
           row.setItemIndex( itemIndex );
 	      }
+      } else {
+        row.setHtml( this._emptyItem._getMarkup() );
+        row.setItemIndex( -1 );
       }
       this._updateRowState( rowIndex, itemIndex );
     },
-    
+
     _updateRowState : function( rowIndex, itemIndex ) {
     	var row = this._rows[ rowIndex ];
     	if( itemIndex === -1 ) {

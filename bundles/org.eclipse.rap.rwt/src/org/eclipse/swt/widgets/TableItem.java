@@ -202,7 +202,9 @@ public class TableItem extends Item {
    */
   public String getText( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     String result = "";
     if(    data != null 
         && index >= 0 
@@ -292,7 +294,9 @@ public class TableItem extends Item {
    */
   public Image getImage( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     return getImageInternal( index );
   }
 
@@ -347,7 +351,9 @@ public class TableItem extends Item {
    */
   public Color getBackground() {
     checkWidget ();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Color result;
     if( background == null ) {
       result = parent.getBackground();
@@ -397,7 +403,9 @@ public class TableItem extends Item {
    */
   public Color getBackground( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Color result = getBackground();
     if(    data != null 
         && index >= 0 
@@ -449,7 +457,9 @@ public class TableItem extends Item {
    */
   public Color getForeground() {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Color result;
     if( foreground == null ) {
       result = parent.getForeground();
@@ -500,7 +510,9 @@ public class TableItem extends Item {
    */
   public Color getForeground( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Color result = getForeground();
     if(    data != null 
         && index >= 0 
@@ -549,7 +561,9 @@ public class TableItem extends Item {
    */
   public Font getFont () {
     checkWidget ();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Font result;
     if( font == null ) {
       result = parent.getFont();
@@ -601,7 +615,9 @@ public class TableItem extends Item {
    */
   public Font getFont( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Font result = getFont();
     if(    data != null 
         && index >= 0 
@@ -649,7 +665,9 @@ public class TableItem extends Item {
    */
   public boolean getChecked() {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     boolean result = false;
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       result = checked;
@@ -689,7 +707,9 @@ public class TableItem extends Item {
    */
   public boolean getGrayed() {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     boolean result = false;
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       result = grayed;
@@ -729,7 +749,9 @@ public class TableItem extends Item {
    */
   public Rectangle getBounds( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Rectangle result;
     int columnCount = parent.getColumnCount();
     if( columnCount > 0 && ( index < 0 || index >= columnCount ) ) {
@@ -768,7 +790,9 @@ public class TableItem extends Item {
    */
   public Rectangle getImageBounds( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     int left = 0;
     int top = 0; 
     int width = 0;
@@ -802,7 +826,9 @@ public class TableItem extends Item {
    */
   public int getImageIndent () {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, parent.indexOf( this ) ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     // The only method to manipulate the image indent (setImageIndent) is 
     // deprecated and this not implemented, therefore we can safely return 0
     return 0;
@@ -825,7 +851,9 @@ public class TableItem extends Item {
   public Rectangle getTextBounds( final int index ) {
     checkWidget();
     int itemIndex = parent.indexOf( this );
-    parent.checkData( this, itemIndex );
+    if( !parent.checkData( this, itemIndex ) ) {
+      error (SWT.ERROR_WIDGET_DISPOSED);
+    }
     int left = 0;
     int top = 0; 
     int width = 0;

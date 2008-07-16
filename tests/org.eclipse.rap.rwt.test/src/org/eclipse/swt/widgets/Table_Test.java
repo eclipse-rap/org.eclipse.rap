@@ -15,8 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -290,6 +289,28 @@ public class Table_Test extends TestCase {
     assertEquals( 2, table.getSelectionIndices().length );
     assertTrue( find( table.indexOf( item0 ), table.getSelectionIndices() ) );
     assertTrue( find( table.indexOf( item2 ), table.getSelectionIndices() ) );
+  }
+  
+  public void testDisposeInSetData() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 100 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        event.item.dispose();
+      }
+    } );
+    try {
+      // if dispose() is called while processing a SetData event
+      // and the event was caused by a call to one of the getXXX methods
+      // of TableItem an SWT.ERROR_WIDGET_DISPOSED is thrown
+      table.getItem( 40 ).getTextBounds( 0 );
+      fail( "disposing while in SetData must not be allowd" );
+    } catch( SWTException e ) {
+      assertEquals( SWT.ERROR_WIDGET_DISPOSED, e.code );
+    }
   }
   
   private static boolean find( final int element, final int[] array ) {
