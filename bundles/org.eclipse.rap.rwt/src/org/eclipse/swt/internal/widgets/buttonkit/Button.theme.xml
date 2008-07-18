@@ -94,7 +94,7 @@
   <color name="button.CHECK.background"
       description="Background color for buttons with style CHECK and RADIO"
       transparentAllowed="true"
-      default="247, 247, 251"
+      default="248, 248, 255"
       css-property="background-color"
       css-selectors="[CHECK] [RADIO]"
       />
