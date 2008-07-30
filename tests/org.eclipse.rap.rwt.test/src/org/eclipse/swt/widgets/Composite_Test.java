@@ -13,12 +13,14 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.*;
 
 public class Composite_Test extends TestCase {
 
@@ -90,5 +92,20 @@ public class Composite_Test extends TestCase {
     shell.setBackgroundMode( SWT.INHERIT_FORCE );
     assertEquals( SWT.INHERIT_FORCE, shell.getBackgroundMode() );
     assertTrue( adapter.getBackgroundTransparency() );
+  }
+
+  public void testComputeSize() throws Exception {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Composite composite = new Composite( shell, SWT.BORDER );
+    assertEquals( 2, composite.getBorderWidth() );
+    composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    new Label( composite, SWT.NONE ).setImage( image );
+    new Label( composite, SWT.NONE ).setImage( image );
+    new Label( composite, SWT.NONE ).setImage( image );
+    Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    assertEquals( 304, preferredSize.x ); // 3 * 100 + border
+    assertEquals( 54, preferredSize.y ); // 50 + border
   }
 }

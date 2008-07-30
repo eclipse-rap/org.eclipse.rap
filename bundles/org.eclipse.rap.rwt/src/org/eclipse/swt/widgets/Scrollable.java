@@ -123,7 +123,10 @@ public abstract class Scrollable extends Control {
                                 final int height )
   {
     checkWidget();
-    // TODO: [fappel] reasonable implementation;
-    return new Rectangle( x, y, width, height );
+    int borderWidth = getBorderWidth();
+    return new Rectangle( x - borderWidth,
+                          y - borderWidth,
+                          width + borderWidth * 2,
+                          height + borderWidth * 2 );
   }
 }
