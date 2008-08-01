@@ -11,9 +11,11 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
 
@@ -155,6 +157,30 @@ public class Group extends Composite {
                               y - trimmings.y,
                               width + trimmings.width + 2 * border,
                               height + trimmings.height + 2* border );
+  }
+  
+  public Point computeSize( final int wHint, 
+                            final int hHint,
+                            final boolean changed )
+  {
+    checkWidget ();
+    Point size = super.computeSize (wHint, hHint, changed);
+    
+    /* TODO [fappel]: Improve this q&d solution:
+     *  
+     * If the group has text, and the text is wider than the
+     * client area, pad the width so the text is not clipped.
+     */
+    int length = text.length();
+    if( length != 0 ) {
+      Point textSize = Graphics.stringExtent( getFont(), text );
+      GroupThemeAdapter adapter = getGroupThemeAdapter();
+      Rectangle trimmings = adapter.getTrimmingSize( this );
+      int border = getBorderWidth();
+      int sizeB = textSize.x + 4 * trimmings.width + 2 * border;
+      size.x = Math.max( size.x, sizeB );
+    }
+    return size;
   }
   
   //////////////////
