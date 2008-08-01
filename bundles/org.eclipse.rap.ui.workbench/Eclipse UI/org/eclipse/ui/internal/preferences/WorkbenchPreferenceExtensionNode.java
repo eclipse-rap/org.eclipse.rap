@@ -137,6 +137,10 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
 //            image.dispose();
             image = null;
         }
+        if( getPage() != null ) {
+          getPage().dispose();
+          removePage();
+        }
         super.disposeResources();
 	}
 
@@ -241,6 +245,11 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
     // RAP [fappel]: override to allow multiple sessions 
     public IPreferencePage getPage() {
       return ( IPreferencePage )RWT.getSessionStore().getAttribute( ID_PAGE  + getId() );
+    }
+    
+    // RAP [fappel]: allow to remove page from session store after disposal
+    private void removePage() {
+      RWT.getSessionStore().removeAttribute( ID_PAGE  + getId() );
     }
 
 }

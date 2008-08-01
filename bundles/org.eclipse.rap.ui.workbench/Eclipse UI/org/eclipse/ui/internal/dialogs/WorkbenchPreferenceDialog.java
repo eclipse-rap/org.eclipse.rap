@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -33,8 +34,18 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 * dialog should just fail (or return the original instance).
 	 * 
 	 */
-	private static WorkbenchPreferenceDialog instance = null;
-	
+// RAP [fappel]: we need one instance per session 
+//	private static WorkbenchPreferenceDialog instance = null;
+  public static class WorkbenchPreferenceDialogProvider
+    extends SessionSingletonBase
+  {
+    WorkbenchPreferenceDialog dialog;
+  
+    public static WorkbenchPreferenceDialogProvider getInstance() {
+      return ( WorkbenchPreferenceDialogProvider )getInstance( WorkbenchPreferenceDialogProvider.class );
+    }
+  }
+
 	/**
 	 * The bounds of this dialog will be persisted in the dialog settings.
 	 * This is defined at the most concrete level of the hierarchy so that
@@ -65,7 +76,9 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	public static final WorkbenchPreferenceDialog createDialogOn(Shell shell, final String preferencePageId) {
 		final WorkbenchPreferenceDialog dialog;
 
-		if (instance == null) {
+// RAP [fappel]
+//		if (instance == null) {
+        if (getInstance().dialog == null) {
 			/*
 			 * There is no existing preference dialog, so open a new one with
 			 * the given selected page.
@@ -101,7 +114,9 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 			 * There is an existing preference dialog, so let's just select the
 			 * given preference page.
 			 */
-			dialog = instance;
+// RAP [fappel]
+//			dialog = instance;
+			dialog = getInstance().dialog;
 			if (preferencePageId != null) {
 				dialog.setCurrentPageId(preferencePageId);
 			}
@@ -123,9 +138,9 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 */
 	public WorkbenchPreferenceDialog(Shell parentShell, PreferenceManager manager) {
 		super(parentShell, manager);
-		Assert.isTrue((instance == null),
+		Assert.isTrue((getInstance().dialog == null),
 				"There cannot be two preference dialogs at once in the workbench."); //$NON-NLS-1$
-		instance = this;
+		getInstance().dialog = this;
 		
 	}
 
@@ -134,7 +149,7 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 * @see org.eclipse.jface.window.Window#close()
 	 */
 	public boolean close() {
-		instance = null;
+		getInstance().dialog = null;
 		return super.close();
 	}
 
@@ -184,4 +199,9 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	protected int getDialogBoundsStrategy() {
 		return DIALOG_PERSISTLOCATION;
 	}
+	
+// RAP [fappel]: we need one instance per session
+    private static WorkbenchPreferenceDialogProvider getInstance() {
+	  return WorkbenchPreferenceDialogProvider.getInstance();
+    }
 }
