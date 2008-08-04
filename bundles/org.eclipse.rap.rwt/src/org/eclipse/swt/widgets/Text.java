@@ -571,11 +571,6 @@ public class Text extends Scrollable {
     if( ( style & SWT.H_SCROLL ) != 0 ) {
       result.width++;
     }
-    int border = getBorderWidth();
-    result.x -= border;
-    result.y -= border;
-    result.width += 2 * border;
-    result.height += 2 * border;
     return result;
   }
 
