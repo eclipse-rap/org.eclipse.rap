@@ -208,7 +208,8 @@
 		</copy>
 
 		<!-- zip 3.4 target together -->
-		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.4-${buildId}.zip">
+		<!--zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.4-${buildId}.zip"-->
+		<zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
 			<fileset dir="${targetLocation}">
 			</fileset>
 		</zip>
