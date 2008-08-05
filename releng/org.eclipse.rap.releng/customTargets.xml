@@ -151,31 +151,16 @@
 
 	<target name="assembleTarget">
 		<property name="targetLocation" value="${buildDirectory}/${buildLabel}/target" />
-		<property name="targetLocation33" value="${buildDirectory}/${buildLabel}/target33" />
 		<property name="rap-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap-${buildId}.zip" />
 		<property name="rap-sdk-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap.sdk-${buildId}.zip" />
 
 		<unzip src="${rap-feature}" dest="${targetLocation}" />
 		<unzip src="${rap-sdk-feature}" dest="${targetLocation}" />
 
-		<copy file="${targetLocation}/eclipse/plugins/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" tofile="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
-		<delete>
-			<fileset dir="${targetLocation}/eclipse/plugins">
-				<include name="org.eclipse.rap.w4t_*" />
-			</fileset>
-		</delete>
-
-		<!-- duplicate 3.4 target for 3.3 -->
-		<copydir dest="${targetLocation33}" src="${targetLocation}">
-		</copydir>
-
-		<!--
-		<delete file="${rap-feature}"></delete>
-		<delete file="${rap-sdk-feature}"></delete>
-		-->
-
 		<!-- 3.4 base -->
 		<fileset dir="${baseLocation}/plugins" id="34base">
+			<include name="com.ibm.icu_*" />
+			<include name="com.ibm.icu.source_*" />
 			<include name="org.apache.commons.logging_*" />
 			<include name="org.apache.commons.logging.source_*" />
 			<include name="org.eclipse.core.commands_*" />
@@ -188,8 +173,12 @@
 			<include name="org.eclipse.core.jobs.source_*" />
 			<include name="org.eclipse.core.runtime_*" />
 			<include name="org.eclipse.core.runtime.source_*" />
-      <include name="org.eclipse.equinox.app_*" />
-      <include name="org.eclipse.equinox.app.source_*" />
+			<include name="org.eclipse.core.databinding_*" />
+			<include name="org.eclipse.core.databinding.source_*" />
+			<include name="org.eclipse.core.databinding.beans_*" />
+			<include name="org.eclipse.core.databinding.beans.source_*" />
+			<include name="org.eclipse.equinox.app_*" />
+			<include name="org.eclipse.equinox.app.source_*" />
 			<include name="org.eclipse.equinox.common_*" />
 			<include name="org.eclipse.equinox.common.source_*" />
 			<include name="org.eclipse.equinox.http.jetty_*" />
@@ -212,47 +201,10 @@
 			<include name="org.junit.source_3*/" />
 			<include name="org.eclipse.jdt.junit.runtime*" />
 		</fileset>
-		
-		<!-- 3.3 base -->
-		<fileset dir="${baseLocation_33}/plugins" id="33base">
-			<include name="org.eclipse.core.commands_*" />
-			<include name="org.eclipse.core.contenttype_*" />
-			<include name="org.eclipse.core.expressions_*" />
-			<include name="org.eclipse.core.jobs_*" />
-			<include name="org.eclipse.core.runtime_*" />
-			<include name="org.eclipse.equinox.app_*" />
-			<include name="org.eclipse.equinox.common_*" />
-			<include name="org.eclipse.equinox.preferences_*" />
-			<include name="org.eclipse.equinox.registry_*" />
-			<include name="org.eclipse.osgi.services_*" />
-			<include name="org.eclipse.osgi_*" />
-			<include name="org.junit_3*" />
-			<include name="org.junit.source_3*/" />
-			<include name="org.eclipse.jdt.junit.runtime*" />
-			<!-- include sources -->
-			<include name="org.eclipse.rcp.source_*/" />
-			<include name="javax.servlet.source_*/" />
-			<include name="org.apache.commons.logging.source_*/" />
-			<include name="org.mortbay.jetty.source_*/" />
-			<!-- exclude unneeded sources -->
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.runtime.compatibility.auth_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding.beans_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.jface.databinding_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.help_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.jface_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.ui.workbench_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.ui_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.update.configurator_*" />
-		</fileset>
 
 		<!-- copy all the needed plugins + source -->
 		<copy todir="${targetLocation}/eclipse/plugins">
 			<fileset refid="34base" />
-		</copy>
-
-		<copy todir="${targetLocation33}/eclipse/plugins">
-			<fileset refid="33base" />
 		</copy>
 
 		<!-- zip 3.4 target together -->
@@ -261,11 +213,6 @@
 			</fileset>
 		</zip>
 
-		<!-- zip 3.3 target together -->
-		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.3-${buildId}.zip">
-			<fileset dir="${targetLocation33}">
-			</fileset>
-		</zip>
 	</target>
 
 	<!-- ===================================================================== -->
@@ -278,19 +225,16 @@
 		<mkdir dir="${reports.tests}" />
 		<path id="cp">
 			<pathelement location="${build.tests}" />
-			<!-- work in progress
-			<pathelement location="${src.tests}/src/servicehandler.xml" />
-			<pathelement location="${src.tests}/src/resources/w4t_fixture.xml" />
-			<pathelement location="${src.tests}/src/resources/w4t_partial.xml" />
-			-->
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt/lib/org.w3c.css.sac_1.3.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200803061910.jar" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200806031604.jar" />
 			<pathelement path="${java.class.path}" />
-			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v200711021030/junit.jar" />
+			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v20080602-1318/junit.jar" />
 		</path>
 		<!-- run rwt tests -->
 		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="once">
@@ -301,36 +245,6 @@
 			<batchtest fork="no" todir="${reports.tests}">
 				<fileset dir="${build.tests}">
 					<include name="**/*_Test.class" />
-				</fileset>
-
-			</batchtest>
-		</junit>
-		<path id="cp2">
-			<pathelement location="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/js.jar" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200803061910.jar" />
-			<pathelement path="${java.class.path}" />
-			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v200711021030/junit.jar" />
-			<pathelement path="${baseLocation}/plugins/org.eclipse.rap.w4t/WEB-INF/lib/commons-fileupload-1.0.jar" />
-		</path>
-		<!-- run w4t tests -->
-		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="once">
-			<classpath refid="cp2" />
-
-			<formatter type="xml" />
-
-			<batchtest fork="no" todir="${reports.tests}">
-				<fileset dir="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot">
-					<include name="**/*_Test*.class" />
-
-					<exclude name="**/AllTests_Suite.class" />
-					<exclude name="**/PerformanceAndMemoryTest.class" />
-					<exclude name="**/*Renderer*.class" />
-					<exclude name="**/*$*.class" />
 				</fileset>
 
 			</batchtest>
