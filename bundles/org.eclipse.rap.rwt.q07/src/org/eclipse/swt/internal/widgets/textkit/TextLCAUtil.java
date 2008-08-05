@@ -161,14 +161,10 @@ final class TextLCAUtil {
     writer.reset( JS_PROP_MAX_LENGTH );
   }
 
-  // TODO [rst] Possible workaround for weird pooling problems with wrap
-  //            property. See qx bug 300. This method might be replaced with a
-  //            simple JSWriter#set call when this bug is fixed.
   static void writeWrap( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean value = Boolean.valueOf( ( text.getStyle() & SWT.WRAP ) != 0 );
-    writer.callStatic( "org.eclipse.swt.TextUtil.setWrap",
-                       new Object[] { text, value } );
+    writer.set( "wrap", value );
   }
 
   static void writeSelection( final Text text ) throws IOException {

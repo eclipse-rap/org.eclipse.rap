@@ -45,8 +45,6 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
     MultiTextLCA.writeNoSpellCheck( text );
-//    TODO [rst] Disabled writing of wrap state since it only works in Opera and
-//               also interferes with object pooling in IE.
     TextLCAUtil.writeWrap( text );
     TextLCAUtil.writeHijack( text );
     TextLCAUtil.writeAlignment( text );
