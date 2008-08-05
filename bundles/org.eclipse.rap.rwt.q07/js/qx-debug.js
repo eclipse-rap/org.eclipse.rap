@@ -17291,9 +17291,6 @@ _applyValue:function(value,
 old){this._fromValue=true;
 if(!this._fromInput){if(this._field.getValue()==value){this._field.setValue(null);
 }this._field.setValue(value);
-}if(!this._fromSelected){var vSelItem=this._list.findStringExact(value);
-if(vSelItem!=null&&!vSelItem.getEnabled()){vSelItem=null;
-}this.setSelected(vSelItem);
 }delete this._fromValue;
 },
 _applyEditable:function(value,
@@ -17329,7 +17326,8 @@ if(vSelItem){vSelItem.scrollIntoView();
 }},
 _oninput:function(e){this._fromInput=true;
 this.setValue(this._field.getComputedValue());
-if(this.getPopup().isSeeable()&&this.getSelected()){this.getSelected().scrollIntoView();
+var vSelected=this.getSelected();
+if(vSelected&&vSelected.getLabel()!=this.getValue()){this.resetSelected();
 }delete this._fromInput;
 },
 _onbeforedisappear:function(e){this._testClosePopup();
@@ -17384,13 +17382,15 @@ switch(e.getKeyIdentifier()){case "Enter":if(vVisible){this.setSelected(this._ma
 this._closePopup();
 this.setFocused(true);
 }else{this._openPopup();
-}return;
+}e.stopPropagation();
+return;
 case "Escape":if(vVisible){vManager.setLeadItem(this._oldSelected);
 vManager.setAnchorItem(this._oldSelected);
 vManager.setSelectedItem(this._oldSelected);
 this._field.setValue(this._oldSelected?this._oldSelected.getLabel():"");
 this._closePopup();
 this.setFocused(true);
+e.stopPropagation();
 }return;
 case "Down":if(e.isAltPressed()){this._togglePopup();
 return;
@@ -17417,16 +17417,10 @@ do{vNext=vTemp;
 return;
 }break;
 }if(!this.isEditable()||vVisible){this._list._onkeypress(e);
-var vSelected=this._manager.getSelectedItem();
-if(!vVisible){this.setSelected(vSelected);
-}else if(vSelected){this._field.setValue(vSelected.getLabel());
-}}},
+}},
 _onkeyinput:function(e){var vVisible=this._popup.isSeeable();
 if(!this.isEditable()||vVisible){this._list._onkeyinput(e);
-var vSelected=this._manager.getSelectedItem();
-if(!vVisible){this.setSelected(vSelected);
-}else if(vSelected){this._field.setValue(vSelected.getLabel());
-}}},
+}},
 _visualizeBlur:function(){this.getField()._visualizeBlur();
 this.removeState("focused");
 },
