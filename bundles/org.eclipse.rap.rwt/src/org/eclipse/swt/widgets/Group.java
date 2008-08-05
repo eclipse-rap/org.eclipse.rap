@@ -153,21 +153,20 @@ public class Group extends Composite {
     GroupThemeAdapter adapter = getGroupThemeAdapter();
     Rectangle trimmings = adapter.getTrimmingSize( this );
     int border = getBorderWidth();
-    return super.computeTrim( x - trimmings.x,
-                              y - trimmings.y,
+    return super.computeTrim( x - trimmings.x - border,
+                              y - trimmings.y - border,
                               width + trimmings.width + 2 * border,
-                              height + trimmings.height + 2* border );
+                              height + trimmings.height + 2 * border );
   }
-  
+
   public Point computeSize( final int wHint, 
                             final int hHint,
                             final boolean changed )
   {
-    checkWidget ();
-    Point size = super.computeSize (wHint, hHint, changed);
-    
+    checkWidget();
+    Point size = super.computeSize( wHint, hHint, changed );
     /* TODO [fappel]: Improve this q&d solution:
-     *  
+     * 
      * If the group has text, and the text is wider than the
      * client area, pad the width so the text is not clipped.
      */
@@ -182,7 +181,7 @@ public class Group extends Composite {
     }
     return size;
   }
-  
+
   //////////////////
   // Helping methods
 
