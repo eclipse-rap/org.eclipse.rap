@@ -16700,8 +16700,8 @@ vStart);
 vRange.select();
 },
 "default":function(vStart){this._visualPropertyCheck();
-if(this.isSeeable()){this._inputElement.selectionStart=vStart;
-}}}),
+this._inputElement.selectionStart=vStart;
+}}),
 getSelectionStart:qx.core.Variant.select("qx.client",
 {"mshtml":function(){this._visualPropertyCheck();
 var vSelectionRange=this.__getSelectionRange();
@@ -16714,7 +16714,7 @@ len);
 return len-vRange.text.length;
 },
 "default":function(){this._visualPropertyCheck();
-return this.isSeeable()?this._inputElement.selectionStart:0;
+return this._inputElement.selectionStart;
 }}),
 setSelectionLength:qx.core.Variant.select("qx.client",
 {"mshtml":function(vLength){this._visualPropertyCheck();
@@ -16727,7 +16727,7 @@ vSelectionRange.select();
 },
 "default":function(vLength){this._visualPropertyCheck();
 var el=this._inputElement;
-if(qx.util.Validation.isValidString(el.value)&&this.isSeeable()){el.selectionEnd=el.selectionStart+vLength;
+if(qx.util.Validation.isValidString(el.value)&&this.getVisibility()){el.selectionEnd=el.selectionStart+vLength;
 }}}),
 getSelectionLength:qx.core.Variant.select("qx.client",
 {"mshtml":function(){this._visualPropertyCheck();
@@ -16737,7 +16737,7 @@ if(!this._inputElement.contains(vSelectionRange.parentElement())){return 0;
 },
 "default":function(){this._visualPropertyCheck();
 var el=this._inputElement;
-return this.isSeeable()?(el.selectionEnd-el.selectionStart):0;
+return el.selectionEnd-el.selectionStart;
 }}),
 setSelectionText:qx.core.Variant.select("qx.client",
 {"mshtml":function(vText){this._visualPropertyCheck();
@@ -16750,8 +16750,7 @@ this.setSelectionStart(vStart);
 this.setSelectionLength(vText.length);
 },
 "default":function(vText){this._visualPropertyCheck();
-if(!this.isSeeable()){return;
-}var el=this._inputElement;
+var el=this._inputElement;
 var vOldText=el.value;
 var vStart=el.selectionStart;
 var vOldTextBefore=vOldText.substr(0,
@@ -16786,10 +16785,10 @@ this.setSelectionLength(vEnd-vStart);
 },
 "default":function(vStart,
 vEnd){this._visualPropertyCheck();
-if(this.isSeeable()){var el=this._inputElement;
+var el=this._inputElement;
 el.selectionStart=vStart;
 el.selectionEnd=vEnd;
-}}})},
+}})},
 destruct:function(){if(this._inputElement){if(qx.core.Variant.isSet("qx.client",
 "mshtml")){this._inputElement.onpropertychange=null;
 }else{this._inputElement.removeEventListener("input",
