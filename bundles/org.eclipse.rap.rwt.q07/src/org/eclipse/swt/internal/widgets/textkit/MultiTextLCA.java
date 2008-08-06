@@ -55,7 +55,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     ControlLCAUtil.writeChanges( text );
     writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
     TextLCAUtil.writeReadOnly( text );
-//    TextLCAUtil.writeSelection( text );
+    TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeVerifyAndModifyListener( text );
   }

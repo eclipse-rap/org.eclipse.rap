@@ -192,24 +192,26 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     // Note: be aware that this function is also called from ComboUtil
     updateSelection : function( text, enclosingWidget ) {
-      // TODO [rh] executing the code below for a TextArea leads to Illegal 
-      //      Argument
-      if( text.classname != "qx.ui.form.TextArea" ) {
-        var widget = enclosingWidget != null ? enclosingWidget : text;
-        var start = text.getSelectionStart();
-        var length = text.getSelectionLength();
-        if(    text.getUserData( "selectionStart" ) != start 
-            || text.getUserData( "selectionLength" ) != length )
-        {
-          text.setUserData( "selectionStart", start );
-          org.eclipse.swt.TextUtil._setPropertyParam( widget,
-                                                      "selectionStart",
-                                                      start );
-          text.setUserData( "selectionLength", length );
-          org.eclipse.swt.TextUtil._setPropertyParam( widget,
-                                                      "selectionCount",
-                                                      length );
-        }
+      var widget = enclosingWidget != null ? enclosingWidget : text;
+      var start = text.getSelectionStart();
+      var length = text.getSelectionLength();
+      // TODO [rst] Workaround for qx bug 521. Might be redundant as the
+      // bug is fixed.
+      // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
+      if( typeof length == "undefined" ) {
+        length = 0;
+      }
+      if(    text.getUserData( "selectionStart" ) != start 
+          || text.getUserData( "selectionLength" ) != length )
+      {
+        text.setUserData( "selectionStart", start );
+        org.eclipse.swt.TextUtil._setPropertyParam( widget,
+                                                    "selectionStart",
+                                                    start );
+        text.setUserData( "selectionLength", length );
+        org.eclipse.swt.TextUtil._setPropertyParam( widget,
+                                                    "selectionCount",
+                                                    length );
       }
     },
 
@@ -247,7 +249,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.setUserData( "selectionLength", length );
       text.setSelectionLength( length );
     },
-    
+
     ////////////////////////////
     // SelectionListener support
     

@@ -86,7 +86,7 @@ final class TextLCAUtil {
           public void run() {
             ITextAdapter textAdapter = getTextAdapter( text );
             textAdapter.setText( txt, selection );
-            // Reset preserved value in case the values weren't set as-is as 
+            // Reset preserved value in case the values weren't set as-is as
             // this means that a VerifyListener manipulated or rejected the value
             IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
             if( !txt.equals( text.getText() ) ) {
@@ -106,9 +106,6 @@ final class TextLCAUtil {
 
   private static Point readSelection( final Text text ) {
     Point result = text.getSelection();
-    // TODO [rh] selection handling broken on client-side multi-line text widget 
-    //      see http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
-    if( ( text.getStyle() & SWT.MULTI ) == 0 ) {
       String value = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
       if( value != null ) {
         result.x = Integer.parseInt( value );
@@ -117,7 +114,6 @@ final class TextLCAUtil {
       if( value != null ) {
         result.y = result.x + Integer.parseInt( value );
       }
-    }
     return result;
   }
 
