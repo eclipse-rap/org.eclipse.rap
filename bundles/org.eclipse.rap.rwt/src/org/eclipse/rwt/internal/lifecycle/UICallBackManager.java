@@ -15,10 +15,11 @@ import java.util.*;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 
-public class UICallBackManager
+public final class UICallBackManager
   extends SessionSingletonBase
   implements SessionStoreListener
 {
@@ -150,29 +151,25 @@ public class UICallBackManager
     }
   }
 
-  void processRunnablesInUIThread() {
-    Runnable toExecute = null;
-    boolean finished = false;
-    while( !finished ) {
-      synchronized( runnables ) {
-        finished = runnables.isEmpty();
-        if( !finished ) {
-          toExecute = ( Runnable )runnables.remove( 0 );
-        }
-      }
-      if( toExecute != null ) {
-        try {
-          toExecute.run();
-        } catch( final RuntimeException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        } finally {
-          toExecute = null;
-        }
+  boolean processNextRunnableInUIThread() {
+    Runnable runnable = null;
+    boolean hasRunnable = false;
+    synchronized( runnables ) {
+      hasRunnable = !runnables.isEmpty();
+      if( hasRunnable ) {
+        runnable = ( Runnable )runnables.remove( 0 );
       }
     }
+    if( runnable != null ) {
+      try {
+        runnable.run();
+      } catch( Throwable t ) {
+        SWT.error( SWT.ERROR_FAILED_EXEC, t );
+      }
+    }
+    return hasRunnable;
   }
-
+  
   boolean blockCallBackRequest() {
     boolean result = false;
     synchronized( runnables ) {

@@ -239,7 +239,11 @@ public class RWTLifeCycle extends LifeCycle {
       result = ProcessActionRunner.executeNext();
       if( !result ) {
         result = TypedEvent.executeNext();
-      }      
+      }
+      if( !result ) {
+        UICallBackManager callBackManager = UICallBackManager.getInstance();
+        result = callBackManager.processNextRunnableInUIThread();
+      }
     }
     return result;
   }
@@ -394,7 +398,14 @@ public class RWTLifeCycle extends LifeCycle {
       }
     }
     if( current == PhaseId.PROCESS_ACTION ) {
-      UICallBackManager.getInstance().processRunnablesInUIThread();
+      // TODO [rh] consider remmoving processNextRunnableInUIThread() here
+      //      as it si called in Display#readAndDispatch()
+      //      One side-effect would be, that asyncExec-runnables that are added
+      //      in an after-PROCESS_ACTION-listener would not be processed in the 
+      //      same request
+      while( UICallBackManager.getInstance().processNextRunnableInUIThread() ) {
+        // do nothing - while loop is only there to process all runnables
+      }
       doRedrawFake();
     }
   }

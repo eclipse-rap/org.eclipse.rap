@@ -19,7 +19,7 @@ import org.eclipse.rwt.Fixture.TestServletOutputStream;
 import org.eclipse.rwt.internal.lifecycle.UICallBackManager.SyncRunnable;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -147,6 +147,28 @@ public class UICallBackManager_Test extends TestCase {
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
+  }
+  
+  public void testExceptionInAsyncExec() {
+    final RuntimeException exception
+      = new RuntimeException( "bad things happen" );
+    Display display = new Display();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        throw exception;
+      }
+    };
+    UICallBackManager.getInstance().addAsync( runnable, display );
+    try {
+      UICallBackManager.getInstance().processNextRunnableInUIThread();
+      String msg 
+        = "Exception that occurs in an asynExec runnable must be wrapped "
+        + "in an SWTException";
+      fail( msg );
+    } catch( SWTException e ) {
+      assertEquals( SWT.ERROR_FAILED_EXEC, e.code );
+      assertSame( exception, e.throwable );
+    }
   }
 
   private Thread simulateUiCallBackThread( 

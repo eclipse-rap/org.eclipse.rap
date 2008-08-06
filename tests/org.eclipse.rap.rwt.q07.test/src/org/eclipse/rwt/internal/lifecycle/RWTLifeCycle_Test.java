@@ -12,8 +12,10 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.*;
+import java.util.ArrayList;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
@@ -509,7 +511,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( "eventExecuted", log.toString() );
   }
 
-  public void testNesedReadAndDispatch() {
+  public void testNestedReadAndDispatch() {
     RWTFixture.fakePhase( PhaseId.READ_DATA );
     final Display display = new Display();
     Shell widget = new Shell( display ) {
@@ -531,6 +533,23 @@ public class RWTLifeCycle_Test extends TestCase {
     display.readAndDispatch();
     // This test ensures that nested calls of readAndDsipatch don't cause
     // an endless loop or a stack overflow - therefore no assert is needed
+  }
+  
+  public void testReadAndDispatchWithAsyncExec() {
+    final java.util.List log = new ArrayList();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        log.add( this );
+      }
+    };
+    Display display = new Display();
+    display.asyncExec( runnable );
+
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    boolean result = display.readAndDispatch();
+    assertTrue( result );
+    assertSame( runnable, log.get( 0 ) );
+    assertFalse( display.readAndDispatch() );
   }
 
   public void testBeginUIThread() throws InterruptedException, IOException {

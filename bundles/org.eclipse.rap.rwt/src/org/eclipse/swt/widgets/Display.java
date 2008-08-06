@@ -652,22 +652,18 @@ public class Display extends Device implements Adaptable {
   }
 
 
-// TODO [rh] solve JavaDoc/implementation mismatch: doc says that (a)syncExec
-//      runnables are also executed - implementation doesn't
   /**
    * Reads an event from the <!-- operating system's --> event queue,
    * dispatches it appropriately, and returns <code>true</code>
    * if there is potentially more work to do, or <code>false</code>
    * if the caller can sleep until another event is placed on
    * the event queue.
-   * <!--
    * <p>
    * In addition to checking the system event queue, this method also
    * checks if any inter-thread messages (created by <code>syncExec()</code>
    * or <code>asyncExec()</code>) are waiting to be processed, and if
    * so handles them before returning.
    * </p>
-   * -->
    *
    * @return <code>false</code> if the caller can sleep upon return from this method
    *
