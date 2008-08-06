@@ -226,28 +226,26 @@
 		<mkdir dir="${reports.tests}" />
 		<path id="cp">
 			<pathelement location="${build.tests}" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
+			<fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
+				<include name="**/*.jar"/>
+			</fileset>
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt/lib/org.w3c.css.sac_1.3.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200806031604.jar" />
-			<pathelement path="${java.class.path}" />
 			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v20080602-1318/junit.jar" />
 		</path>
 		<!-- run rwt tests -->
-		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="once">
+		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="perTest">
 			<classpath refid="cp" />
-
 			<formatter type="xml" />
 
-			<batchtest fork="no" todir="${reports.tests}">
+			<batchtest fork="yes" todir="${reports.tests}">
 				<fileset dir="${build.tests}">
 					<include name="**/*_Test.class" />
 				</fileset>
-
 			</batchtest>
 		</junit>
 
