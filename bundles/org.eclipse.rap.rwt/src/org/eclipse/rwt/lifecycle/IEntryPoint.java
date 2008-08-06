@@ -12,20 +12,20 @@ package org.eclipse.rwt.lifecycle;
 
 
 /**
- * An implementation of {@link IEntryPoint} represents the main
- * entry point for a RAP application. It can be compared with the
- * main() method in SWT applications.
- * 
+ * An implementation of {@link IEntryPoint} represents the main entry point for
+ * a RAP application. It can be compared with the main() method in SWT
+ * applications.
+ *
  * @since 1.0
  */
 public interface IEntryPoint {
-  
+
   /**
-   * This method is called to initiate the application. Normally
-   * the display and the corresponding shells are created here.
-   * 
-   * @return the display to use
+   * This method is called to initiate the application. Normally the display and
+   * the corresponding shells are created here.
+   *
+   * @return exit status. This value is not interpreted yet but reserved for
+   *         future use.
    */
-  // TODO [rh] adjust JavaDoc
   int createUI();
 }
