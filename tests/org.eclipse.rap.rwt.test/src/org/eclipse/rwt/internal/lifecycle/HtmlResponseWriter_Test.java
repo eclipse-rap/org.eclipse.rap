@@ -310,18 +310,18 @@ public class HtmlResponseWriter_Test extends TestCase {
     // script & style tags must not be encoded
     writer = new HtmlResponseWriter();
     writer.startElement( "style", null );
-    writer.writeText( "הצü?", null );
+    writer.writeText( "\u00e4\u00f6\u00fc?", null );
     writer.endElement( "style" );
-    assertEquals( "<style>הצü?</style>", getContent( writer ) );
+    assertEquals( "<style>\u00e4\u00f6\u00fc?</style>", getContent( writer ) );
     writer = new HtmlResponseWriter();
     writer.startElement( "script", null );
-    writer.writeText( "הצü?", null );
+    writer.writeText( "\u00e4\u00f6\u00fc?", null );
     writer.endElement( "script" );
-    assertEquals( "<script>הצü?</script>", getContent( writer ) );
+    assertEquals( "<script>\u00e4\u00f6\u00fc?</script>", getContent( writer ) );
     // all other elements must be encoded 
     writer = new HtmlResponseWriter();
     writer.startElement( "whaetever", null );
-    writer.writeText( "הצü?", null );
+    writer.writeText( "\u00e4\u00f6\u00fc?", null );
     writer.endElement( "whaetever" );
     assertEquals( "<whaetever>&auml;&ouml;&uuml;?</whaetever>", 
                   getContent( writer ) );
