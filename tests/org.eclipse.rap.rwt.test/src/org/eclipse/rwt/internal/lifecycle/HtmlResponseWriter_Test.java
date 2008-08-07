@@ -321,9 +321,9 @@ public class HtmlResponseWriter_Test extends TestCase {
     // all other elements must be encoded 
     writer = new HtmlResponseWriter();
     writer.startElement( "whaetever", null );
-    writer.writeText( "\u00e4\u00f6\u00fc?", null );
+    writer.writeText( "הצü?", null );
     writer.endElement( "whaetever" );
-    assertEquals( "<whaetever>הצü?</whaetever>", 
+    assertEquals( "<whaetever>&auml;&ouml;&uuml;?</whaetever>", 
                   getContent( writer ) );
   }
   
