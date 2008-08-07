@@ -56,15 +56,14 @@ public class ServiceHandler_Test extends TestCase {
   }
   
   public void testCustomServiceHandler() throws Exception {
+    initResponseOutputStream();
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, HANDLER_ID );
     ServiceManager.getHandler().service();
     assertEquals( SERVICE_DONE, log );
   }
   
   public void testProgramaticallyRegsiteredHandler() throws Exception {
-    HttpServletResponse response = ContextProvider.getResponse();
-    TestResponse testResponse = ( TestResponse )response;
-    testResponse.setOutputStream( new TestServletOutputStream() );
+    initResponseOutputStream();
     // Register
     RWT.getServiceManager().registerServiceHandler( PROGRAMATIC_HANDLER_ID, 
                                                     new CustomHandler() );
@@ -98,5 +97,11 @@ public class ServiceHandler_Test extends TestCase {
     ServiceManager.getHandler().service();
     assertEquals( "", log );
     LifeCycleServiceHandler.configurer = bufferedConfigurer; 
+  }
+
+  private void initResponseOutputStream() {
+    HttpServletResponse response = ContextProvider.getResponse();
+    TestResponse testResponse = ( TestResponse )response;
+    testResponse.setOutputStream( new TestServletOutputStream() );
   }
 }
