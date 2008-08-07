@@ -16454,6 +16454,8 @@ this.addEventListener("focus",
 this._onfocus);
 this.addEventListener("input",
 this._oninput);
+this.addEventListener("keydown",
+this._onkeydown);
 },
 statics:{createRegExpValidator:function(vRegExp){return function(s){return vRegExp.test(s);
 };
@@ -16674,6 +16676,8 @@ _oninput:function(){if(!this.isLiveUpdate()){return;
 }var vValue=this.getComputedValue().toString();
 this.setValue(vValue);
 },
+_onkeydown:function(e){if(e.getKeyIdentifier()=="Backspace"&&this.getReadOnly()){e.preventDefault();
+}},
 __getRange:qx.core.Variant.select("qx.client",
 {"mshtml":function(){this._visualPropertyCheck();
 return this._inputElement.createTextRange();
