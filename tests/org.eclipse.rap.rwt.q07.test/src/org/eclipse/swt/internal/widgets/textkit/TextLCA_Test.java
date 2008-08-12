@@ -90,7 +90,7 @@ public class TextLCA_Test extends TestCase {
     // read changed selection
     Fixture.fakeRequestParam( textId + ".text", "abc" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionCount", "1" );
+    Fixture.fakeRequestParam( textId + ".selectionLength", "1" );
     WidgetUtil.getLCA( text ).readData( text );
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
@@ -187,7 +187,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionCount", "0" );
+    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
@@ -209,7 +209,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionCount", "0" );
+    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
@@ -231,7 +231,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionCount", "0" );
+    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
@@ -268,7 +268,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionCount", "0" );
+    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 2, log.size() );

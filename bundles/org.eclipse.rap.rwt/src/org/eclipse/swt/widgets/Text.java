@@ -90,7 +90,8 @@ public class Text extends Scrollable {
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     textAdapter = new ITextAdapter() {
-      public void setText( String text, Point selection ) {
+
+      public void setText( final String text, final Point selection ) {
         Text.this.setText( text, selection );
       }
     };
@@ -731,7 +732,7 @@ public class Text extends Scrollable {
 
   ////////////////////////////////////////////
   // Text modification and verify event helper
-  
+
   private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
@@ -754,10 +755,13 @@ public class Text extends Scrollable {
   }
 
   private void setText( final String text, final Point selection ) {
+    // TODO [rst] Shouldn't the last parameter be the length of the current text?
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
       this.text = verifiedText;
-      setSelection( selection.x, selection.y );
+      if( selection != null ) {
+        setSelection( selection.x, selection.y );
+      }
       ModifyEvent modifyEvent = new ModifyEvent( this );
       modifyEvent.processEvent();
     }

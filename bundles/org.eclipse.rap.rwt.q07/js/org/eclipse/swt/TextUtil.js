@@ -198,10 +198,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       // TODO [rst] Workaround for qx bug 521. Might be redundant as the
       // bug is fixed.
       // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
-      if( typeof length == "undefined" ) {
-        length = 0;
-      }
-      if(    text.getUserData( "selectionStart" ) != start 
+      //if( typeof length == "undefined" ) {
+      //  length = 0;
+      //}
+      if(    text.getUserData( "selectionStart" ) != start
           || text.getUserData( "selectionLength" ) != length )
       {
         text.setUserData( "selectionStart", start );
@@ -210,7 +210,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                                                     start );
         text.setUserData( "selectionLength", length );
         org.eclipse.swt.TextUtil._setPropertyParam( widget,
-                                                    "selectionCount",
+                                                    "selectionLength",
                                                     length );
       }
     },

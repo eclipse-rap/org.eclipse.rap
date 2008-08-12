@@ -83,6 +83,7 @@ final class TextLCAUtil {
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
+
           public void run() {
             ITextAdapter textAdapter = getTextAdapter( text );
             textAdapter.setText( txt, selection );
@@ -92,28 +93,37 @@ final class TextLCAUtil {
             if( !txt.equals( text.getText() ) ) {
               adapter.preserve( PROP_TEXT, null );
             }
-            if( !selection.equals( text.getSelection() ) ) {
+            if( !text.getSelection().equals( selection ) ) {
               adapter.preserve( PROP_SELECTION, null );
             }
           }
         } );
       } else {
         text.setText( txt );
-        text.setSelection( selection );
+        if( selection != null ) {
+          text.setSelection( selection );
+        }
       }
+    } else if( selection != null ) {
+      // [rst] Apply selection even if text has not changed
+      // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=195171
+      text.setSelection( selection );
     }
   }
 
   private static Point readSelection( final Text text ) {
-    Point result = text.getSelection();
-      String value = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
-      if( value != null ) {
-        result.x = Integer.parseInt( value );
+    Point result = null;
+    String selStart = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
+    String selLength = WidgetLCAUtil.readPropertyValue( text, "selectionLength" );
+    if( selStart != null || selLength != null ) {
+      result = new Point( 0, 0 );
+      if( selStart != null ) {
+        result.x = Integer.parseInt( selStart );
       }
-      value = WidgetLCAUtil.readPropertyValue( text, "selectionCount" );
-      if( value != null ) {
-        result.y = result.x + Integer.parseInt( value );
+      if( selLength != null ) {
+        result.y = result.x + Integer.parseInt( selLength );
       }
+    }
     return result;
   }
 
