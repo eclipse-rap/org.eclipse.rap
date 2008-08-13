@@ -128,11 +128,7 @@ public TreeEditor (Tree tree) {
 
 Rectangle computeBounds () {
 	if (item == null || column == -1 || item.isDisposed()) return new Rectangle(0, 0, 0, 0);
-// TODO [fappel]: TreeItem#getBounds(int) is not implemented yet, but
-//                but CellEditors are also not supported - so there should
-//                be no harm done by simply faking the bounds like we do...
-//	Rectangle cell = item.getBounds(column);
-	Rectangle cell = new Rectangle( 0, 0, 0, 0 );
+	Rectangle cell = item.getBounds(column);
 	Rectangle rect = item.getImageBounds(column);
 	cell.x = rect.x + rect.width;
 	cell.width -= rect.width;
