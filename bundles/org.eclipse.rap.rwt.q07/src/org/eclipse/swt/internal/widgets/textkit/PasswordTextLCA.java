@@ -41,7 +41,6 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.PasswordField" );
     WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
-    TextLCAUtil.writeHijack( text );
   }
 
   void renderChanges( final Text text ) throws IOException {

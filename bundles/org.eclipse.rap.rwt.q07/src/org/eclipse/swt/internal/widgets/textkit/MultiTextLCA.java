@@ -46,7 +46,6 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     ControlLCAUtil.writeStyleFlags( text );
     MultiTextLCA.writeNoSpellCheck( text );
     TextLCAUtil.writeWrap( text );
-    TextLCAUtil.writeHijack( text );
     TextLCAUtil.writeAlignment( text );
   }
 

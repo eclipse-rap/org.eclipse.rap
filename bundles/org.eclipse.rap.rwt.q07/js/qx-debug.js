@@ -16670,8 +16670,8 @@ _onfocus:function(){this._textOnFocus=this.getComputedValue();
 },
 _onblur:function(){var vValue=this.getComputedValue().toString();
 if(this._textOnFocus!=vValue){this.setValue(vValue);
-}this.setSelectionLength(0);
-},
+}if(this.getParent()!=null){this.setSelectionLength(0);
+}},
 _oninput:function(){if(!this.isLiveUpdate()){return;
 }var vValue=this.getComputedValue().toString();
 this.setValue(vValue);

@@ -12,25 +12,7 @@
 qx.Class.define( "org.eclipse.swt.TextUtil", {
 
   statics : {
-    
-    // TODO [rh] workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
-    //      the fix is to exchange the _onblur implementation of qx.ui.forms.Text
-    //      with our own one, that checks parent != null before calling
-    //      setSelectionLength
-    hijack : function( text ) {
-      text.removeEventListener( "blur", text._onblur );
-      text._onblur = function() {
-        var vValue = this.getComputedValue().toString();
-        if( this._textOnFocus != vValue ) {
-          this.setValue( vValue );
-        }
-        if( this.getParent() != null ) {
-          this.setSelectionLength( 0 );
-        }
-      };
-      text.addEventListener( "blur", text._onblur );
-    },
-    
+
     ///////////////////////////////////////////////////////////////
     // Functions for ModifyEvents and maintenance of the text/value
     

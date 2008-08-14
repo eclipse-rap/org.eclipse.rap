@@ -41,7 +41,6 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.TextField" );
     WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
-    TextLCAUtil.writeHijack( text );
     TextLCAUtil.writeAlignment( text );
   }
 
