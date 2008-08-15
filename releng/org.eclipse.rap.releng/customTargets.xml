@@ -208,7 +208,6 @@
 		</copy>
 
 		<!-- zip 3.4 target together -->
-		<!--zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.4-${buildId}.zip"-->
 		<zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
 			<fileset dir="${targetLocation}">
 			</fileset>
@@ -239,6 +238,7 @@
 		</path>
 		<!-- run rwt tests -->
 		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="perTest">
+			<jvmarg value="-Dfile.encoding=ISO-8859-1" />
 			<classpath refid="cp" />
 			<formatter type="xml" />
 
