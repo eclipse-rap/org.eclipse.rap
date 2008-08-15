@@ -237,7 +237,7 @@ public class TreeLCA_Test extends TestCase {
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new SelectionAdapter() {
-
+      
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "itemSelected" );
         assertEquals( tree, event.getSource() );
@@ -256,6 +256,68 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( "itemSelected", log.toString() );
+  }
+
+  public void testDefaultSelectionEvent() {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    final Tree tree = new Tree( shell, SWT.NONE );
+    final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    tree.addSelectionListener( new SelectionAdapter() {
+      
+      public void widgetDefaultSelected( SelectionEvent event ) {
+        log.append( "itemSelected" );
+        assertEquals( tree, event.getSource() );
+        assertEquals( treeItem, event.item );
+        assertEquals( true, event.doit );
+        // ensure same behaviour as SWT: bounds are undefined in tree selection
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+      }
+    } );
+    String treeId = WidgetUtil.getId( tree );
+    String treeItemId = WidgetUtil.getId( treeItem );
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( "itemSelected", log.toString() );
+  }
+
+  public void testDefaultSelectionEventUntyped() {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    final Tree tree = new Tree( shell, SWT.NONE );
+    final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    tree.addListener( SWT.DefaultSelection, new Listener() {
+
+      public void handleEvent( Event event ) {
+        log.append( "itemSelected" );
+        assertEquals( treeItem, event.item );
+        assertEquals( true, event.doit );
+        // ensure same behaviour as SWT: bounds are undefined in tree selection
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+      }
+      
+    } );
+    String treeId = WidgetUtil.getId( tree );
+    String treeItemId = WidgetUtil.getId( treeItem );
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "itemSelected", log.toString() );
   }

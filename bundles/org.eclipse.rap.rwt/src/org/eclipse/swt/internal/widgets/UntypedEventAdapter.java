@@ -64,6 +64,7 @@ public final class UntypedEventAdapter
     event.y = evt.y;
     event.height = evt.height;
     event.width = evt.width;
+    event.item = evt.item;
     dispatchEvent( SWT.DefaultSelection, event );
   }
 
