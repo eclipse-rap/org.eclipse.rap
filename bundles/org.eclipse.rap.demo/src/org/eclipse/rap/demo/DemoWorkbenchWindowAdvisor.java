@@ -36,7 +36,7 @@ public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     configurer.setInitialSize( new Point( 800, 600 ) );
     configurer.setShowCoolBar( true );
     configurer.setShowPerspectiveBar( true );
-    configurer.setTitle( "Workbench Demo" );
+    configurer.setTitle( "RAP Workbench Demo" );
     configurer.setShellStyle( SWT.TITLE | SWT.MAX | SWT.RESIZE );
     configurer.setShowProgressIndicator( true );
   }
