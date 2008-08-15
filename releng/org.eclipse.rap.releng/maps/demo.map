@@ -15,5 +15,7 @@ plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tec
 plugin@org.eclipse.rap.demo.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo.databinding
 
 # servlet bridge
+feature@org.eclipse.rap.releng.warbuild.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.releng.warbuild/servletbridge-feature
+
 plugin@org.eclipse.equinox.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge
 plugin@org.eclipse.equinox.http.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.http.servletbridge
