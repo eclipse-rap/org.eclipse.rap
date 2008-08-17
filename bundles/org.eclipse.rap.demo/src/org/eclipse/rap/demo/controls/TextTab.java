@@ -12,8 +12,6 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeEvent;
-import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -21,31 +19,39 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+
 public class TextTab extends ExampleTab {
 
-  private Text simpleText;
-  private Text modifyText;
+  private Text text;
+  private Label textLabel;
+  private Label selectionLabel;
   private Button btnSelectionListener;
   private Button btnBlockingVerifyListener;
-  private Button btnNumbersOnlyVerifyListener; 
+  private Button btnNumbersOnlyVerifyListener;
+  private Button btnModifyListener;
+  private Button btnEditable;
   private final SelectionListener selectionListener;
   private final VerifyListener blockingVerifyListener;
   private final VerifyListener numberOnlyVerifyListener;
+  private final ModifyListener modifyListener;
 
   public TextTab( final CTabFolder topFolder ) {
     super( topFolder, "Text" );
     selectionListener = new SelectionAdapter() {
+
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String msg = "You pressed the Enter key.";
         MessageDialog.openInformation( getShell(), "Information", msg );
       }
     };
     blockingVerifyListener = new VerifyListener() {
+
       public void verifyText( final VerifyEvent event ) {
         event.doit = false;
       }
     };
     numberOnlyVerifyListener = new VerifyListener() {
+
       public void verifyText( final VerifyEvent event ) {
         StringBuffer allowedText = new StringBuffer();
         for( int i = 0; i < event.text.length(); i++ ) {
@@ -55,6 +61,13 @@ public class TextTab extends ExampleTab {
           }
         }
         event.text = allowedText.toString();
+      }
+    };
+    modifyListener = new ModifyListener() {
+
+      public void modifyText( final ModifyEvent event ) {
+        Text text = ( Text )event.widget;
+        textLabel.setText( text.getText() );
       }
     };
   }
@@ -71,173 +84,160 @@ public class TextTab extends ExampleTab {
     createStyleButton( "RIGHT", SWT.RIGHT );
     createVisibilityButton();
     createEnablementButton();
-    final Button btnEditable = createPropertyButton( "Editable" );
-    btnEditable.setSelection( true );
-    btnEditable.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        boolean editable = btnEditable.getSelection();
-        simpleText.setEditable( editable );
-        modifyText.setEditable( editable );
-      }
-    } );
-    btnSelectionListener 
-      = createPropertyButton( "SelectionListener", SWT.CHECK );
-    btnSelectionListener.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        updateSelectionListener();
-      }
-    } );
-    btnBlockingVerifyListener 
-      = createPropertyButton( "Blocking VerifyListener", SWT.CHECK );
-    btnBlockingVerifyListener.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        updateBlockingVerifyListener();
-      }
-    } );
-    btnNumbersOnlyVerifyListener 
-      = createPropertyButton( "Numbers Only VerifyListener", SWT.CHECK );
-    btnNumbersOnlyVerifyListener.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        updateNumbersOnlyVerifyListener();
-      }
-    } );
+    createEditableButton();
+    createSelectionListenerButton();
+    createBlockingVerifyListenerButton();
+    createNumbersOnlyVerifyListenerButton();
+    createModifyListenerButton();
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
     createLimitText( parent );
     createSelectionChooser( parent );
-    createSelectionQuery( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new FillLayout( SWT.VERTICAL ) );
-    simpleText = createText( parent, getStyle() );
+    parent.setLayout( new GridLayout() );
+    Composite textComposite = new Composite( parent, SWT.NONE );
+    textComposite.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    textComposite.setLayout( new GridLayout( 1, false ) );
+    text = new Text( textComposite, getStyle() );
+    text.setText( "Lorem ipsum dolor sit amet" );
+    text.setSelection( 0, 5 );
+    // button bar
+    Composite buttonBar = new Composite( parent, SWT.NONE );
+    buttonBar.setLayoutData( new GridData( SWT.FILL, SWT.DEFAULT, true, false ) );
+    buttonBar.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    final Button btnGetText = new Button( buttonBar, SWT.PUSH );
+    btnGetText.setText( "getText" );
+    btnGetText.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        textLabel.setText( text.getText() );
+      }
+    } );
+    final Button btnGetSelection = new Button( buttonBar, SWT.PUSH );
+    btnGetSelection.setText( "getSelection" );
+    btnGetSelection.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        Point selection = text.getSelection();
+        selectionLabel.setText( selection.x + ", " + selection.y );
+      }
+    } );
+    final Button btnFixedSize = new Button( buttonBar, SWT.PUSH );
+    btnFixedSize.setText( "200 x 100" );
+    btnFixedSize.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        text.setLayoutData( new GridData( 200, 100 ) );
+        text.getParent().layout();
+      }
+    } );
+    // output form
+    Composite outputForm = new Composite( parent, SWT.NONE );
+    outputForm.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    outputForm.setLayout( new GridLayout( 2, false ) );
+    new Label( outputForm, SWT.NONE ).setText( "Text:" );
+    textLabel = new Label( outputForm, SWT.BORDER );
+    textLabel.setText( "\n\n\n\n\n" );
+    textLabel.setLayoutData( new GridData( SWT.FILL, SWT.DEFAULT, true, false ) );
+    new Label( outputForm, SWT.NONE ).setText( "Selection:" );
+    selectionLabel = new Label( outputForm, SWT.BORDER );
+    selectionLabel.setLayoutData( new GridData( SWT.FILL, SWT.DEFAULT, true, false ) );
     updateSelectionListener();
     updateBlockingVerifyListener();
     updateNumbersOnlyVerifyListener();
-    registerControl( simpleText );
-    modifyText = createModifyText( parent, getStyle() );
-    registerControl( modifyText );
+    updateModifyListener();
+    updateEditable();
+    registerControl( text );
+    createDefaultButton( parent );
   }
 
-  private Text createText( final Composite parent, final int style ) {
-    Group grpContainer = new Group( parent, SWT.NONE );
-    grpContainer.setText( "Simple Text" );
-    grpContainer.setLayout( new GridLayout( 3, false ) );
-    GridData gridData;
-    final Button btnChangeIsDefault = new Button( grpContainer, SWT.CHECK );
-    String buttonText = "Make the 'Change' button the default button";
-    btnChangeIsDefault.setText( buttonText );
-    gridData = new GridData( SWT.FILL, SWT.NONE, true, false );
-    gridData.horizontalSpan = 3;
-    btnChangeIsDefault.setLayoutData( gridData );
-    Label lblEnterText = new Label( grpContainer, SWT.NONE );
-    lblEnterText.setText( "Enter some text, please" );
-    final Text result = new Text( grpContainer, style );
-    result.setText( "used for preferred size" );
-    Point preferred = getPreferredSize( result );
-    result.setLayoutData( new GridData( preferred.x, preferred.y ) );
-    result.setText(   "Lorem ipsum dolor sit amet, consectetur adipisici "
-                    + "elit, sed do eiusmod tempor incididunt ut labore et "
-                    + "dolore magna aliqua.\n"
-                    + "Ut enim ad minim veniam, quis nostrud exercitation "
-                    + "ullamco laboris nisi ut aliquip ex ea commodo "
-                    + "consequat.\n"
-                    + "Duis aute irure dolor in reprehenderit in voluptate "
-                    + "velit esse cillum dolore eu fugiat nulla pariatur." );
-    result.setSelection( 0, 12 );
-    final Button btnChange = new Button( grpContainer, SWT.PUSH );
-    final Label lblTextContent = new Label( grpContainer, SWT.WRAP );
-    gridData = new GridData( SWT.FILL, SWT.FILL, true, true );
-    gridData.horizontalSpan = 3;
-    lblTextContent.setLayoutData( gridData );
-    lblTextContent.setText( "You entered: " + result.getText() );
-    btnChange.setText( "Change" );
-    btnChangeIsDefault.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        Shell shell = btnChangeIsDefault.getShell();
-        if( btnChangeIsDefault.getSelection() ) {
-          DefaultButtonManager.getInstance().change( shell, btnChange );
+  private void createDefaultButton( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new RowLayout( SWT.HORIZONTAL) );
+    final Button defaultButton = new Button( composite, SWT.PUSH );
+    defaultButton.setText( "Default" );
+    defaultButton.addSelectionListener( new SelectionAdapter() {
+      
+      public void widgetSelected( SelectionEvent e ) {
+        String message = "Default button triggered";
+        MessageDialog.openInformation( parent.getShell(), "Info", message  );
+      }
+    });
+    final Button setDefaultButton = new Button( composite, SWT.CHECK );
+    setDefaultButton.setText( "set as defaultButton" );
+    setDefaultButton.addSelectionListener( new SelectionAdapter() {
+      
+      public void widgetSelected( SelectionEvent e ) {
+        if( setDefaultButton.getSelection() ) {
+          parent.getShell().setDefaultButton( defaultButton );
         } else {
-          DefaultButtonManager.getInstance().change( shell, null );
+          parent.getShell().setDefaultButton( null );
         }
       }
-    } );
-    btnChange.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        lblTextContent.setText( "You entered: " + result.getText() );        
-      }
-    } );
-    DefaultButtonManager.getInstance().addChangeListener( new ChangeListener() {
-      public void defaultButtonChanged( final ChangeEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        boolean selection = shell.getDefaultButton() == btnChange;
-        btnChangeIsDefault.setSelection( selection );
-      }
-    } );
-    return result;
+    });
   }
 
-  private Text createModifyText( final Composite parent, final int style ) {
-    Group grpContainer = new Group( parent, SWT.NONE );
-    grpContainer.setText( "Text width ModifyListener" );
-    grpContainer.setLayout( new GridLayout( 3, false ) );
-    GridData gridData;
-    final Button btnChangeIsDefault = new Button( grpContainer, SWT.CHECK );
-    String buttonText = "Make the 'Change' button the default button";
-    btnChangeIsDefault.setText( buttonText );
-    gridData = new GridData( SWT.FILL, SWT.NONE, true, false );
-    gridData.horizontalSpan = 3;
-    btnChangeIsDefault.setLayoutData( gridData );
-    Label lblEnterText = new Label( grpContainer, SWT.NONE );
-    lblEnterText.setText( "Enter some text, please" );
-    final Text result = new Text( grpContainer, style );
-    Point preferred = getPreferredSize( result );
-    result.setLayoutData( new GridData( preferred.x, preferred.y ) );
-    final Button btnChange = new Button( grpContainer, SWT.PUSH );
-    final Label lblTextContent = new Label( grpContainer, SWT.WRAP );
-    gridData = new GridData( SWT.FILL, SWT.FILL, true, true );
-    gridData.horizontalSpan = 3;
-    lblTextContent.setLayoutData( gridData );
-    lblTextContent.setText( "You entered: " );
-    btnChange.setText( "Change" );
-    btnChangeIsDefault.addSelectionListener( new SelectionAdapter() {
+  private void createModifyListenerButton() {
+    btnModifyListener = createPropertyButton( "ModifyListener" );
+    btnModifyListener.addSelectionListener( new SelectionAdapter() {
+
       public void widgetSelected( final SelectionEvent event ) {
-        Shell shell = btnChangeIsDefault.getShell();
-        if( btnChangeIsDefault.getSelection() ) {
-          DefaultButtonManager.getInstance().change( shell, btnChange );
-        } else {
-          DefaultButtonManager.getInstance().change( shell, null );
-        }
+        updateModifyListener();
       }
     } );
-    result.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
-        String msg = "ModifyEvent -> You entered: ";
-        lblTextContent.setText( msg + result.getText() );        
-      }
-    } );
-    btnChange.addSelectionListener( new SelectionAdapter() {
+  }
+
+  private void createNumbersOnlyVerifyListenerButton() {
+    btnNumbersOnlyVerifyListener
+      = createPropertyButton( "VerifyListener (numbers only)" );
+    btnNumbersOnlyVerifyListener.addSelectionListener( new SelectionAdapter() {
+
       public void widgetSelected( final SelectionEvent event ) {
-        String msg = "Change button -> You entered: ";
-        lblTextContent.setText( msg + result.getText() );        
+        updateNumbersOnlyVerifyListener();
       }
     } );
-    DefaultButtonManager.getInstance().addChangeListener( new ChangeListener() {
-      public void defaultButtonChanged( final ChangeEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        boolean selection = shell.getDefaultButton() == btnChange;
-        btnChangeIsDefault.setSelection( selection );
+  }
+
+  private void createBlockingVerifyListenerButton() {
+    btnBlockingVerifyListener
+      = createPropertyButton( "VerifyListener (reject all)" );
+    btnBlockingVerifyListener.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        updateBlockingVerifyListener();
       }
     } );
-    return result;
+  }
+
+  private void createSelectionListenerButton() {
+    btnSelectionListener = createPropertyButton( "SelectionListener" );
+    btnSelectionListener.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        updateSelectionListener();
+      }
+    } );
+  }
+
+  private void createEditableButton() {
+    btnEditable = createPropertyButton( "Editable" );
+    btnEditable.setSelection( true );
+    btnEditable.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        updateEditable();
+      }
+    } );
   }
 
   private void createSelectionChooser( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 5, false ) );
     Label lblSelectionFrom = new Label( composite, SWT.NONE );
-    lblSelectionFrom.setText( "Selection from" );
+    lblSelectionFrom.setText( "selection from" );
     final Text txtSelectionFrom = new Text( composite, SWT.BORDER );
     Util.textSizeAdjustment( lblSelectionFrom, txtSelectionFrom );
     Label lblSelectionTo = new Label( composite, SWT.NONE );
@@ -245,22 +245,16 @@ public class TextTab extends ExampleTab {
     final Text txtSelectionTo = new Text( composite, SWT.BORDER );
     Util.textSizeAdjustment( lblSelectionTo, txtSelectionTo );
     Button btnChange = new Button( composite, SWT.PUSH );
-    btnChange.setText( "Change" );
+    btnChange.setText( "set" );
     btnChange.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int from = parseInt( txtSelectionFrom.getText() );
         int to = parseInt( txtSelectionTo.getText() );
         if( to >= 0 && from <= to  ) {
-          // TODO [rh] remove this as soon as selection for MULTI text works
-          if( ( simpleText.getStyle() & SWT.MULTI ) != 0 ) {
-            noSelectionForMultiTextInfo();
-          } else {
-            simpleText.setSelection( from, to );
-            modifyText.setSelection( from, to );
-          }
+          text.setSelection( from, to );
         } else {
-          String msg 
-            = "Invalid Selection: " 
+          String msg
+            = "Invalid Selection: "
             + txtSelectionFrom.getText()
             + " - "
             + txtSelectionTo.getText();
@@ -270,56 +264,37 @@ public class TextTab extends ExampleTab {
     } );
   }
 
-  private void createSelectionQuery( final Composite parent ) {
-    Button btnGetSelection = new Button( parent, SWT.PUSH );
-    btnGetSelection.setText( "Get Selection" );
-    btnGetSelection.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        // TODO [rh] remove this as soon as selection for MULTI text works
-        if( ( simpleText.getStyle() & SWT.MULTI ) != 0 ) {
-          noSelectionForMultiTextInfo();
-        } else {
-          Point simpleTextSelection = simpleText.getSelection();
-          Point modifyTextSelection = modifyText.getSelection();
-          String msg 
-            = "Selection in 'Simple Text' ranges from " 
-            + simpleTextSelection.x 
-            + " to " 
-            + simpleTextSelection.y
-            + "\nSelection in 'Text with ModifyListener' ranges from "
-            + modifyTextSelection.x
-            + " to "
-            + modifyTextSelection.y;
-          MessageDialog.openInformation( getShell(), "Information", msg );
-        }
-      }
-    } );
-  }
-
   private void createLimitText( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( new GridLayout( 3, false ) );
+    composite.setLayout( new GridLayout( 4, false ) );
     Label label = new Label( composite, SWT.NONE );
-    label.setText( "TextLimit" );
-    final Text text = new Text( composite, SWT.BORDER );
-    Util.textSizeAdjustment( label, text );
-    Button button = new Button( composite, SWT.PUSH );
-    button.setText( "Change" );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        int currentLimit = simpleText.getTextLimit();
-        int limit = currentLimit;
+    label.setText( "textLimit" );
+    final Text limitText = new Text( composite, SWT.BORDER );
+    limitText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    Button setButton = new Button( composite, SWT.PUSH );
+    setButton.setText( "set" );
+    Button resetButton = new Button( composite, SWT.PUSH );
+    resetButton.setText( "reset" );
+    Listener changeListener = new Listener() {
+
+      public void handleEvent( Event event ) {
         try {
-          limit = Integer.parseInt( text.getText() );
-        } catch( NumberFormatException e ) {
-          // ignore
+          text.setTextLimit( Integer.parseInt( limitText.getText() ) );
+          limitText.setText( String.valueOf( text.getTextLimit() ) );
+          limitText.setBackground( null );
+        } catch( Exception e ) {
+          limitText.setBackground( BG_COLOR_BROWN );
         }
-        if( limit == 0 ) {
-          limit = currentLimit;
-        }
-        modifyText.setTextLimit( limit );
-        simpleText.setTextLimit( limit );
-        text.setText( String.valueOf( limit ) );
+      }
+    };
+    limitText.addListener( SWT.DefaultSelection, changeListener );
+    setButton.addListener( SWT.Selection, changeListener  );
+    resetButton.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( SelectionEvent e ) {
+        text.setTextLimit( Text.LIMIT );
+        limitText.setText( "" );
+        limitText.setBackground( null );
       }
     } );
   }
@@ -334,19 +309,12 @@ public class TextTab extends ExampleTab {
     return result;
   }
 
-  private void noSelectionForMultiTextInfo() {
-    String msg 
-      = "Sorry, changing the selection is not yet implemented for " 
-      + "Text with style MULTI.";
-    MessageDialog.openInformation( getShell(), "Information", msg );
-  }
-
   private void updateSelectionListener() {
     if( btnSelectionListener != null ) {
       if( btnSelectionListener.getSelection() ) {
-        simpleText.addSelectionListener( selectionListener );
+        text.addSelectionListener( selectionListener );
       } else {
-        simpleText.removeSelectionListener( selectionListener );
+        text.removeSelectionListener( selectionListener );
       }
     }
   }
@@ -354,9 +322,9 @@ public class TextTab extends ExampleTab {
   private void updateBlockingVerifyListener() {
     if( btnBlockingVerifyListener != null ) {
       if( btnBlockingVerifyListener.getSelection() ) {
-        simpleText.addVerifyListener( blockingVerifyListener );
+        text.addVerifyListener( blockingVerifyListener );
       } else {
-        simpleText.removeVerifyListener( blockingVerifyListener );
+        text.removeVerifyListener( blockingVerifyListener );
       }
     }
   }
@@ -364,20 +332,26 @@ public class TextTab extends ExampleTab {
   private void updateNumbersOnlyVerifyListener() {
     if( btnNumbersOnlyVerifyListener != null ) {
       if( btnNumbersOnlyVerifyListener.getSelection() ) {
-        simpleText.addVerifyListener( numberOnlyVerifyListener );
+        text.addVerifyListener( numberOnlyVerifyListener );
       } else {
-        simpleText.removeVerifyListener( numberOnlyVerifyListener );
+        text.removeVerifyListener( numberOnlyVerifyListener );
       }
     }
   }
 
-  private static Point getPreferredSize( final Text text ) {
-    Point result;
-    result = text.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    result = new Point( result.y * 4, result.y );
-    if( ( text.getStyle() & SWT.SINGLE ) == 0 ) {
-      result = new Point( result.x * 2, result.y * 4 );
+  private void updateModifyListener() {
+    if( btnModifyListener != null ) {
+      if( btnModifyListener.getSelection() ) {
+        text.addModifyListener( modifyListener );
+      } else {
+        text.removeModifyListener( modifyListener );
+      }
     }
-    return result;
+  }
+
+  private void updateEditable() {
+    if( btnEditable != null ) {
+      text.setEditable( btnEditable.getSelection() );
+    }
   }
 }

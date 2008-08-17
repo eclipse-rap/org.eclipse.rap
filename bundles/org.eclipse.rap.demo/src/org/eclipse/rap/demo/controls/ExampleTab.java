@@ -407,10 +407,10 @@ abstract class ExampleTab {
       for( int i = 0; i < ctrls.length; i++ ) {
         if( ctrls[ i ] instanceof Button ) {
           Button button = ( Button )ctrls[ i ];
-          if (button.getSelection()) {
+          if( button.getSelection() ) {
             Object data = button.getData( "style" );
-            if( data != null && data instanceof Integer ) {
-              int style = (( Integer )data).intValue();
+            if( data instanceof Integer ) {
+              int style = ( ( Integer )data ).intValue();
               result |= style;
             }
           }
