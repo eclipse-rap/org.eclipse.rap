@@ -17,12 +17,12 @@ import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
-  static final String TYPE_POOL_ID
-    = PasswordTextLCA.class.getName();
+  static final String TYPE_POOL_ID = PasswordTextLCA.class.getName();
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
+    TextLCAUtil.preserveVerifyAndModifyListener( text );
     TextLCAUtil.preserveSelectionListener( text );
   }
 
@@ -39,6 +39,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.PasswordField" );
+    TextLCAUtil.writeInitialize( text );
     WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
   }
@@ -63,7 +64,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   }
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    TextLCAUtil.resetModifyListener();
+    TextLCAUtil.resetVerifyAndModifyListener();
     TextLCAUtil.resetSelectionListener();
     TextLCAUtil.resetSelection();
     TextLCAUtil.resetTextLimit();

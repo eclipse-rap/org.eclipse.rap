@@ -17,12 +17,12 @@ import org.eclipse.swt.widgets.Text;
 
 final class SingleTextLCA extends AbstractTextDelegateLCA {
 
-  static final String TYPE_POOL_ID
-    = SingleTextLCA.class.getName();
+  static final String TYPE_POOL_ID = SingleTextLCA.class.getName();
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
+    TextLCAUtil.preserveVerifyAndModifyListener( text );
     TextLCAUtil.preserveSelectionListener( text );
   }
 
@@ -39,6 +39,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextField" );
+    TextLCAUtil.writeInitialize( text );
     WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeAlignment( text );
@@ -65,7 +66,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
     TextLCAUtil.resetSelection();
-    TextLCAUtil.resetModifyListener();
+    TextLCAUtil.resetVerifyAndModifyListener();
     TextLCAUtil.resetSelectionListener();
     TextLCAUtil.resetTextLimit();
     TextLCAUtil.resetReadOnly();

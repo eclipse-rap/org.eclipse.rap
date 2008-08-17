@@ -12,7 +12,6 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -28,34 +27,16 @@ final class TextLCAUtil {
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
   static final String PROP_READONLY = "readonly";
-  static final String PROP_VERIFY_MODIFY_LISTENER
-    = "verifyModifyListener";
+  static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
 
-  private static final Integer DEFAULT_TEXT_LIMIT
-    = new Integer( Text.LIMIT );
-  private static final Point DEFAULT_SELECTION
-    = new Point( 0, 0 );
+  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
+  private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
 
   private static final String JS_PROP_MAX_LENGTH = "maxLength";
   private static final String JS_PROP_READ_ONLY = "readOnly";
   private static final String JS_PROP_VALUE = "value";
   private static final String JS_PROP_TEXT_ALIGN = "textAlign";
-  private static final String JS_LISTENER_ON_MOUSE_UP
-    = "org.eclipse.swt.TextUtil.onMouseUp";
-  private static final String JS_EVENT_MOUSE_UP = "mouseup";
-  private static final JSListenerInfo JS_MODIFY_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP,
-                          "org.eclipse.swt.TextUtil.modifyText",
-                          JSListenerType.STATE_AND_ACTION );
-  private static final JSListenerInfo JS_BLUR_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_BLUR,
-                          "org.eclipse.swt.TextUtil.modifyTextOnBlur",
-                          JSListenerType.ACTION );
-  private final static JSListenerInfo JS_SELECTION_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_KEYDOWN,
-                          "org.eclipse.swt.TextUtil.widgetDefaultSelected",
-                          JSListenerType.ACTION );
 
   private TextLCAUtil() {
     // prevent instantiation
@@ -67,11 +48,6 @@ final class TextLCAUtil {
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_READONLY, Boolean.valueOf( ! text.getEditable() ) );
-    boolean hasVerifyListener = VerifyEvent.hasListener( text );
-    boolean hasModifyListener = ModifyEvent.hasListener( text );
-    boolean hasListener = hasVerifyListener || hasModifyListener;
-    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
-                      Boolean.valueOf( hasListener ) );
   }
 
   static void readTextAndSelection( final Text text ) {
@@ -127,6 +103,26 @@ final class TextLCAUtil {
     return result;
   }
 
+  static void writeInitialize( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.callStatic( "org.eclipse.swt.TextUtil.initialize",
+                       new Object[] { text } );
+  }
+
+  static void writeText( final Text text ) throws IOException {
+    String newValue = text.getText();
+    JSWriter writer = JSWriter.getWriterFor( text );
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
+      String value = WidgetLCAUtil.replaceNewLines( newValue, " " );
+      writer.set( JS_PROP_VALUE, value );
+    }
+  }
+
+  static void resetText() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_VALUE );
+  }
+
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean newValue = Boolean.valueOf( !text.getEditable() );
@@ -165,17 +161,13 @@ final class TextLCAUtil {
   }
 
   static void writeSelection( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    if( !adapter.isInitialized() ) {
-      writer.addListener( JS_EVENT_MOUSE_UP, JS_LISTENER_ON_MOUSE_UP );
-    }
     Point newValue = text.getSelection();
     Point defValue = DEFAULT_SELECTION;
     // TODO [rh] could be optimized: when text was changed and selection is 0,0
     //      there is no need to write JavaScript since the client resets the
     //      selection as well when the new text is set.
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
       Integer start = new Integer( newValue.x );
       Integer count = new Integer( text.getSelectionCount() );
       writer.callStatic( "org.eclipse.swt.TextUtil.setSelection",
@@ -183,11 +175,8 @@ final class TextLCAUtil {
     }
   }
 
-  static void resetSelection() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( JS_EVENT_MOUSE_UP, JS_LISTENER_ON_MOUSE_UP );
-    writer.removeListener( "appear",
-                           "org.eclipse.swt.TextUtil._onAppearSetSelection" );
+  static void resetSelection() {
+    // POOLING Implement if pooling is reactivated
   }
 
   static void writeAlignment( final Text text ) throws IOException {
@@ -201,43 +190,6 @@ final class TextLCAUtil {
     }
   }
 
-  static void writeVerifyAndModifyListener( final Text text )
-    throws IOException
-  {
-    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      boolean hasVerifyListener = VerifyEvent.hasListener( text );
-      boolean hasModifyListener = ModifyEvent.hasListener( text );
-      boolean hasListener = hasModifyListener || hasVerifyListener;
-      writer.updateListener( JS_MODIFY_LISTENER_INFO,
-                             PROP_VERIFY_MODIFY_LISTENER,
-                             hasListener );
-      writer.updateListener( JS_BLUR_LISTENER_INFO,
-                             PROP_VERIFY_MODIFY_LISTENER,
-                             hasListener );
-    }
-  }
-
-  static void resetModifyListener() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( JS_MODIFY_LISTENER_INFO.getEventType(),
-                           JS_MODIFY_LISTENER_INFO.getJSListener() );
-  }
-
-  static void writeText( final Text text ) throws IOException {
-    String newValue = text.getText();
-    JSWriter writer = JSWriter.getWriterFor( text );
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
-      String value = WidgetLCAUtil.replaceNewLines( newValue, " " );
-      writer.set( JS_PROP_VALUE, value );
-    }
-  }
-
-  static void resetText() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_VALUE );
-  }
-
   static void preserveSelectionListener( final Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_SELECTION_LISTENER,
@@ -245,24 +197,56 @@ final class TextLCAUtil {
   }
 
   static void writeSelectionListener( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    writer.updateListener( JS_SELECTION_LISTENER_INFO,
-                           PROP_SELECTION_LISTENER,
-                           hasSelectionListener( text ) );
+    Boolean newValue = Boolean.valueOf( hasSelectionListener( text ) );
+    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.callStatic( "org.eclipse.swt.TextUtil.setHasSelectionListener",
+                         new Object[] { text, newValue } );
+    }
   }
 
-  static void resetSelectionListener() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( JS_SELECTION_LISTENER_INFO.getEventType(),
-                           JS_SELECTION_LISTENER_INFO.getJSListener() );
+  static void resetSelectionListener() {
+    // POOLING Implement if pooling is reactivated
+  }
+
+  static void preserveVerifyAndModifyListener( final Text text ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
+                      Boolean.valueOf( hasVerifyOrModifyListener( text ) ) );
+  }
+
+  static void writeVerifyAndModifyListener( final Text text )
+    throws IOException
+  {
+    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
+      Boolean newValue = Boolean.valueOf( hasVerifyOrModifyListener( text ) );
+      if( WidgetLCAUtil.hasChanged( text, PROP_VERIFY_MODIFY_LISTENER, newValue ) )
+      {
+        JSWriter writer = JSWriter.getWriterFor( text );
+        writer.callStatic( "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener",
+                           new Object[] { text, newValue } );
+      }
+    }
+  }
+
+  static void resetVerifyAndModifyListener() {
+    // POOLING Implement if pooling is reactivated
   }
 
   private static boolean hasSelectionListener( final Text text ) {
     // Emulate SWT (on Windows) where a default button takes precedence over
     // a SelectionListener on a text field when both are on the same shell.
     Button defButton = text.getShell().getDefaultButton();
+    // TODO [rst] On GTK, the SelectionListener is also off when the default
+    //      button is invisible or disabled. Check with Windows and repair.
     boolean hasDefaultButton = defButton != null && defButton.isVisible();
     return !hasDefaultButton && SelectionEvent.hasListener( text );
+  }
+
+  private static boolean hasVerifyOrModifyListener( final Text text ) {
+    boolean hasVerifyListener = VerifyEvent.hasListener( text );
+    boolean hasModifyListener = ModifyEvent.hasListener( text );
+    return hasModifyListener || hasVerifyListener;
   }
 
   private static ITextAdapter getTextAdapter( final Text text ) {

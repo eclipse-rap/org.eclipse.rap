@@ -18,16 +18,14 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
 
-// TODO [rh] bring selection for multi-line text to work. Currently there
-//      occur JavaScript errors. (see readSelection, writeSelection)
 final class MultiTextLCA extends AbstractTextDelegateLCA {
 
-  static final String TYPE_POOL_ID
-    = MultiTextLCA.class.getName();
+  static final String TYPE_POOL_ID = MultiTextLCA.class.getName();
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
+    TextLCAUtil.preserveVerifyAndModifyListener( text );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -42,9 +40,10 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextArea" );
+    TextLCAUtil.writeInitialize( text );
     WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
-    MultiTextLCA.writeNoSpellCheck( text );
+    writeNoSpellCheck( text );
     TextLCAUtil.writeWrap( text );
     TextLCAUtil.writeAlignment( text );
   }
@@ -69,7 +68,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
   }
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    TextLCAUtil.resetModifyListener();
+    TextLCAUtil.resetVerifyAndModifyListener();
     TextLCAUtil.resetTextLimit();
     TextLCAUtil.resetReadOnly();
     TextLCAUtil.resetText();
@@ -80,6 +79,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
   //////////////////
   // Helping methods
 
+  // TODO [rst] Should be done on client side; also needed for Safari
   private static void writeNoSpellCheck( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     if( ContextProvider.getBrowser() instanceof Mozilla ) {

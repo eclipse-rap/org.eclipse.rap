@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
           org.eclipse.swt.TextUtil._setModified( combo, true );
         }
       }
-      org.eclipse.swt.TextUtil.updateSelection( combo.getField(), combo );
+      org.eclipse.swt.TextUtil._updateSelection( combo.getField(), combo );
     },
     
     /**
@@ -63,11 +63,11 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         var id = widgetManager.findIdByWidget( combo );
         req.addEvent( "org.eclipse.swt.events.modifyText", id );
         // register listener that is notified when a request is sent
-        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedModifyText, 
+        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, 
                               combo, 
                               500 );
       }
-      org.eclipse.swt.TextUtil.updateSelection( combo.getField(), combo );
+      org.eclipse.swt.TextUtil._updateSelection( combo.getField(), combo );
     },
     
     /**

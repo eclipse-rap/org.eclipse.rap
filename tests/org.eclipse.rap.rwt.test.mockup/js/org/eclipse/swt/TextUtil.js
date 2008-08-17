@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         var id = widgetManager.findIdByWidget(text);
         req.addEvent( "org.eclipse.swt.events.modifyText", id );
         // register listener that is notified when a request is sent
-        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedModifyText, 
+        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, 
                               text, 
                               500 );
       }
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
     },
 
-    _delayedModifyText : function( evt ) {
+    _delayedSend : function( evt ) {
       // NOTE: this references the text widget (see qx.client.Timer.once above)
       if( org.eclipse.swt.TextUtil._isModified( this ) ) {
         var req = org.eclipse.swt.Request.getInstance();

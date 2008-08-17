@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         var id = widgetManager.findIdByWidget( combo );
         req.addEvent( "org.eclipse.swt.events.modifyText", id );
         // register listener that is notified when a request is sent
-        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedModifyText, 
+        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, 
                               combo, 
                               500 );
       }
