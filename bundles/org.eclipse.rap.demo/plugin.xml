@@ -210,7 +210,7 @@
      <branding
            body="body.html"
            defaultEntrypointId="org.eclipse.rap.demo.entrypoint1"
-           exitConfirmation="Do you really want to leave the party?"
+           exitConfirmationClass="org.eclipse.rap.demo.DemoExitConfirmation"
            favicon="icons/favicon2.ico"
            id="org.eclipse.rap.demo.branding1"
            servletName="tea"
