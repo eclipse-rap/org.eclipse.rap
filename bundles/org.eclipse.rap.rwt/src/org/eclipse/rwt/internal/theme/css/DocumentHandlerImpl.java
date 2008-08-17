@@ -84,7 +84,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
     throws CSSException
   {
     log( "namespaceDeclaration " + prefix + ", " + uri );
-    reader.addProblem( new CSSException( "unsupported declaration '"
+    reader.addProblem( new CSSException( "unsupported namespace declaration '"
                                          + prefix
                                          + ":"
                                          + uri

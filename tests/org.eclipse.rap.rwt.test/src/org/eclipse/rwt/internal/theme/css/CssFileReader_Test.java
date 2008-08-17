@@ -21,7 +21,7 @@ import org.w3c.css.sac.CSSException;
 public class CssFileReader_Test extends TestCase {
 
   private static final String PACKAGE = "org/eclipse/rwt/internal/theme/css/";
-  
+
   private static final String TEST_SYNTAX_CSS = "TestSyntax.css";
 
   private static final String TEST_SELECTORS_CSS = "TestSelectors.css";
@@ -35,7 +35,7 @@ public class CssFileReader_Test extends TestCase {
   private static final int ONE_OF_ATTRIBUTE_RULE = 6;
   private static final int COMBINED_ATTRIBUTE_RULE = 7;
   private static final int SELECTOR_LIST_RULE = 8;
-  
+
   public void testParseSac() throws Exception {
     ClassLoader classLoader = CssFileReader_Test.class.getClassLoader();
     InputStream inStream = classLoader.getResourceAsStream( PACKAGE
@@ -190,6 +190,12 @@ public class CssFileReader_Test extends TestCase {
     assertTrue( matchingRule.matches( list ) );
   }
 
+  public void testNamespaces() {
+//    Doesn't work with Batik parser
+//    StyleRule[] rules = getStyleSheet( "TestNamespaces.css" ).getStyleRules();
+//    assertEquals( 3, rules.length );
+  }
+
   private StyleSheet getStyleSheet( final String fileName )
     throws CSSException, IOException
   {
@@ -198,13 +204,13 @@ public class CssFileReader_Test extends TestCase {
     InputStream inStream = classLoader.getResourceAsStream( PACKAGE + fileName );
     try {
       CssFileReader reader = new CssFileReader();
-      result = reader.parse( inStream, TEST_SELECTORS_CSS );
+      result = reader.parse( inStream, fileName );
     } finally {
       inStream.close();
     }
     return result;
   }
-  
+
   private boolean containsProblem( final Object[] array, final String part ) {
     boolean result = false;
     for( int i = 0; i < array.length && !result; i++ ) {
