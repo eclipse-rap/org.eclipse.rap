@@ -221,9 +221,14 @@ public final class WidgetUtil {
     if( length > 0 ) {
       result = Character.isJavaIdentifierStart( variant.charAt( 0 ) );
       for( int i = 1; i < length && result; i++ ) {
-        result &= Character.isJavaIdentifierPart( variant.charAt( i ) );
+        result &= Character.isJavaIdentifierPart( variant.charAt( i ) )
+               || isDash( variant.charAt( i ) );
       }
     }
     return result;
+  }
+  
+  private static boolean isDash( char ch ) {
+    return ch == '-';
   }
 }
