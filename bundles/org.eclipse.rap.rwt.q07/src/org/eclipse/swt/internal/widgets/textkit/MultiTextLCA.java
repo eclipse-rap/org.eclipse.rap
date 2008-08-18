@@ -26,6 +26,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
     TextLCAUtil.preserveVerifyAndModifyListener( text );
+    WidgetLCAUtil.preserveCustomVariant( text );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -40,8 +41,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextArea" );
-    TextLCAUtil.writeInitialize( text );
-    WidgetLCAUtil.writeCustomVariant( text );
+    TextLCAUtil.writeInitialize( text );    
     ControlLCAUtil.writeStyleFlags( text );
     writeNoSpellCheck( text );
     TextLCAUtil.writeWrap( text );
@@ -56,6 +56,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeVerifyAndModifyListener( text );
+    WidgetLCAUtil.writeCustomVariant( text );
   }
 
   void renderDispose( final Text text ) throws IOException {

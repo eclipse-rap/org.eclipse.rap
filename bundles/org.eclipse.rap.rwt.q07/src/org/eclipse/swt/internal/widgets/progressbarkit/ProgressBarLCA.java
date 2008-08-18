@@ -31,6 +31,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
     adapter.preserve( PROP_SELECTION,
                       new Integer( progressBar.getSelection() ) );
+    WidgetLCAUtil.preserveCustomVariant( progressBar );
   }
 
   public void readData( final Widget widget ) {
@@ -40,8 +41,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
     JSWriter writer = JSWriter.getWriterFor( progressBar );
-    writer.newWidget( "org.eclipse.swt.widgets.ProgressBar" );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( "org.eclipse.swt.widgets.ProgressBar" );    
     ControlLCAUtil.writeStyleFlags( progressBar );
     writer.set( "flag", progressBar.getStyle() );
   }
@@ -53,6 +53,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     writeSetInt( pBar, PROP_MINIMUM, "minimum", pBar.getMinimum(), 0 );
     writeSetInt( pBar, PROP_MAXIMUM, "maximum", pBar.getMaximum(), 100 );
     writeSetInt( pBar, PROP_SELECTION, "selection", pBar.getSelection(), 0 );
+    WidgetLCAUtil.writeCustomVariant( pBar );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

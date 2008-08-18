@@ -38,8 +38,9 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
                         JSConst.JS_WIDGET_SELECTED,
                         JSListenerType.ACTION );
 
-  void preserveValues( final Button button ) {
+  void preserveValues( final Button button ) {    
     ButtonLCAUtil.preserveValues( button );
+    WidgetLCAUtil.preserveCustomVariant( button );
   }
 
   void readData( final Button button ) {
@@ -52,8 +53,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
-    ControlLCAUtil.writeStyleFlags( button );
-    WidgetLCAUtil.writeCustomVariant( button );
+    ControlLCAUtil.writeStyleFlags( button );    
     if( ( button.getStyle() & SWT.TOGGLE ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_TOGGLE );
       writer.addListener( JSConst.QX_EVENT_EXECUTE,
@@ -79,6 +79,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.writeAlignment( button );
     ButtonLCAUtil.writeImage( button );
     ButtonLCAUtil.writeDefault( button );
+    WidgetLCAUtil.writeCustomVariant( button );
   }
 
   void renderDispose( final Button button ) throws IOException {

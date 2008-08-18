@@ -29,6 +29,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     boolean hasListener = SelectionEvent.hasListener( toolBar );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
+    WidgetLCAUtil.preserveCustomVariant( toolBar );
   }
 
   public void readData( final  Widget widget ) {
@@ -42,14 +43,14 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     if( ( toolBar.getStyle() & SWT.VERTICAL ) != 0 ){
       writer.set( JSConst.QX_FIELD_ORIENTATION, 
                   JSConst.QX_CONST_VERTICAL_ORIENTATION );
-    }
-    WidgetLCAUtil.writeCustomVariant( widget );
+    }    
     ControlLCAUtil.writeStyleFlags( toolBar );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
     ToolBar toolBar = ( ToolBar )widget;
     ControlLCAUtil.writeChanges( toolBar );
+    WidgetLCAUtil.writeCustomVariant( toolBar );
   }
 
   public void renderDispose( final  Widget widget ) throws IOException {

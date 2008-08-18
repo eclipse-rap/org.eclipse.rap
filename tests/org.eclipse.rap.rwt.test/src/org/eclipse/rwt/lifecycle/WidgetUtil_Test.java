@@ -62,15 +62,7 @@ public class WidgetUtil_Test extends TestCase {
       fail( "IAE expected" );
     } catch( RuntimeException e ) {
       // expected
-    }
-    String withMinus = "Foo-Bar";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withMinus );
-    try {
-      WidgetUtil.getVariant( shell );
-      fail( "IAE expected" );
-    } catch( RuntimeException e ) {
-      // expected
-    }
+    }    
     String withColon = "Foo:Bar";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withColon );
     try {

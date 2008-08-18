@@ -53,6 +53,7 @@ public class ScaleLCA extends AbstractWidgetLCA {
                       new Integer( scale.getPageIncrement() ) );
     adapter.preserve( PROP_INCREMENT,
                       new Integer( scale.getIncrement() ) );
+    WidgetLCAUtil.preserveCustomVariant( scale );
   }
 
   public void readData( final Widget widget ) {
@@ -76,8 +77,7 @@ public class ScaleLCA extends AbstractWidgetLCA {
     Object[] args = new Object[]{
       style
     };
-    writer.newWidget( "org.eclipse.swt.widgets.Scale", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( "org.eclipse.swt.widgets.Scale", args );    
     ControlLCAUtil.writeStyleFlags( scale );
   }
 
@@ -91,6 +91,7 @@ public class ScaleLCA extends AbstractWidgetLCA {
     writeSelection( scale );
     writeIncrement( scale );
     writeListener( scale );
+    WidgetLCAUtil.writeCustomVariant( scale );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

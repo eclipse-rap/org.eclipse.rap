@@ -51,6 +51,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, link.getText() );
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
     adapter.preserve( PROP_SEL_LISTENER, newValue );
+    WidgetLCAUtil.preserveCustomVariant( link );
   }
 
   public void readData( final Widget widget ) {
@@ -72,8 +73,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     Link link = ( Link )widget;
     JSWriter writer = JSWriter.getWriterFor( link );
     writer.newWidget( QX_TYPE );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );    
     Object[] args = new Object[] { widget };
     writer.callStatic( JS_FUNC_INIT, args );
     ControlLCAUtil.writeStyleFlags( link );
@@ -84,6 +84,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( link );
     writeSelectionListener( link );
     writeText( link );
+    WidgetLCAUtil.writeCustomVariant( link );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

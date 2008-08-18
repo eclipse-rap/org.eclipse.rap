@@ -27,6 +27,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
     MenuLCAUtil.preserveWidth( menu );
+    WidgetLCAUtil.preserveCustomVariant( menu );
   }
   
   void readData( final Menu menu ) {
@@ -36,8 +37,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     writer.newWidget( "qx.ui.menu.Menu" );
-    writer.call( "addToDocument", null );
-    WidgetLCAUtil.writeCustomVariant( menu );
+    writer.call( "addToDocument", null );    
   }
 
   void renderChanges( final Menu menu ) throws IOException {
@@ -46,6 +46,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
     MenuLCAUtil.writeWidth( menu );
+    WidgetLCAUtil.writeCustomVariant( menu );
   }
 
   private static void writeShow( final Menu menu ) throws IOException {

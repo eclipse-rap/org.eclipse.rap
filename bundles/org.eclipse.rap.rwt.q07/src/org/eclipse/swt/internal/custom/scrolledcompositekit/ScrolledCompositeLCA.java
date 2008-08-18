@@ -53,6 +53,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                       getBarSelection( composite.getHorizontalBar() ) );
     adapter.preserve( PROP_V_BAR_SELECTION,
                       getBarSelection( composite.getVerticalBar() ) );
+    WidgetLCAUtil.preserveCustomVariant( composite );
   }
 
   public void readData( final Widget widget ) {
@@ -72,8 +73,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
     JSWriter writer = JSWriter.getWriterFor( scrolledComposite );
-    writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( QX_TYPE );    
     ControlLCAUtil.writeStyleFlags( scrolledComposite );
   }
 
@@ -84,6 +84,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     writeScrollBars( composite );
     // TODO [rh] initial positioning of the client-side scroll bar does not work
     writeBarSelection( composite );
+    WidgetLCAUtil.writeCustomVariant( composite );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

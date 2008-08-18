@@ -38,6 +38,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
   void readData( final ToolItem toolItem ) {
@@ -73,8 +74,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
       toolItem.getSelection() ? "true" : null,
       neighbour
     };
-    writer.callStatic( CREATE_RADIO, args );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    writer.callStatic( CREATE_RADIO, args );    
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
@@ -97,5 +97,6 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
                            JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 }

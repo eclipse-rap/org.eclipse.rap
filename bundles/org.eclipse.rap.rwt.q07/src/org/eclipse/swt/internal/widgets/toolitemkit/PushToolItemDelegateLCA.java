@@ -34,6 +34,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
   void readData( final ToolItem toolItem ) {
@@ -47,8 +48,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
       toolItem.getParent(),
       Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
     };
-    writer.callStatic( CREATE_PUSH, args );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    writer.callStatic( CREATE_PUSH, args );    
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
@@ -68,5 +68,6 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 }

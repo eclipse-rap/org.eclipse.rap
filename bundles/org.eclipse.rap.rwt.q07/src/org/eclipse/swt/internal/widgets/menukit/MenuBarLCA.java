@@ -34,6 +34,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     adapter.preserve( PROP_SHELL, parent );
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
+    WidgetLCAUtil.preserveCustomVariant( menu );
   }
   
   void readData( final Menu menu ) {
@@ -42,8 +43,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
 
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.newWidget( "qx.ui.menubar.MenuBar" );
-    WidgetLCAUtil.writeCustomVariant( menu );
+    writer.newWidget( "qx.ui.menubar.MenuBar" );    
   }
 
   void renderChanges( final Menu menu ) throws IOException {
@@ -55,6 +55,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     //      Check out other platforms.
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
+    WidgetLCAUtil.writeCustomVariant( menu );
   }
   
   //////////////////////////////////////////////////

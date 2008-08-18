@@ -40,6 +40,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
     adapter.preserve( PROP_URL, browser.getUrl() );
     adapter.preserve( PROP_TEXT, getText( browser ) );
+    WidgetLCAUtil.preserveCustomVariant( browser );
   }
 
   public void readData( final Widget widget ) {
@@ -56,8 +57,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     Browser browser = ( Browser )widget;
     JSWriter writer = JSWriter.getWriterFor( browser );
     writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( browser );
-    WidgetLCAUtil.writeCustomVariant( browser );
+    ControlLCAUtil.writeStyleFlags( browser );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -67,6 +67,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( browser );
     writeUrl( browser );
     writeExecute( browser );
+    WidgetLCAUtil.writeCustomVariant( browser );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

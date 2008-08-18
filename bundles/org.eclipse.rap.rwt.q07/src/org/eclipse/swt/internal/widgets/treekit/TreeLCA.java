@@ -54,6 +54,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
     adapter.preserve( PROP_COLUMN_ORDER, 
                       columnOrder );
+    WidgetLCAUtil.preserveCustomVariant( tree );
   }
   
   public void readData( final Widget widget ) {
@@ -80,8 +81,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
     writer.newWidget( "org.eclipse.swt.widgets.Tree", 
                       new Object[] { style.toString() } );
-    ControlLCAUtil.writeStyleFlags( tree );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    ControlLCAUtil.writeStyleFlags( tree );    
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -92,6 +92,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeColumnOrder( tree );
+    WidgetLCAUtil.writeCustomVariant( tree );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

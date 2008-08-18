@@ -37,6 +37,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
     adapter.preserve( Props.CONTROL, coolItem.getControl() );
     adapter.preserve( Props.BOUNDS, coolItem.getBounds() );
+    WidgetLCAUtil.preserveCustomVariant( coolItem );
   }
 
   public void readData( final Widget widget ) {
@@ -60,8 +61,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object[] args = new Object[] { jsOrientation( coolItem ) };
     writer.newWidget( "org.eclipse.swt.widgets.CoolItem", args );
-    writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );    
     writer.set( "minWidth", 0 );
     writer.set( "minHeight", 0 );
   }
@@ -79,6 +79,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       control.setLocation( location );
     }
     writeLocked( coolItem );
+    WidgetLCAUtil.writeCustomVariant( coolItem );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

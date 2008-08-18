@@ -28,6 +28,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
     MenuLCAUtil.preserveWidth( menu );
+    WidgetLCAUtil.preserveCustomVariant( menu );
   }
   
   void readData( final Menu menu ) {
@@ -40,8 +41,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     //      assign a Menu to more than one MenuItem
     //      [rst] It's allowed in SWT but not in qooxdoo - we have a problem here
     writer.newWidget( "qx.ui.menu.Menu" );
-    writer.call( "addToDocument", null );
-    WidgetLCAUtil.writeCustomVariant( menu );
+    writer.call( "addToDocument", null );    
     MenuItem[] menuItems = DropDownMenuLCA.findReferringMenuItems( menu );
     for( int i = 0; i < menuItems.length; i++ ) {
       writer.call( menuItems[ i ], "setMenu", new Object[] { menu } );
@@ -53,6 +53,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
     MenuLCAUtil.writeWidth( menu );
+    WidgetLCAUtil.writeCustomVariant( menu );
   }
 
   /**

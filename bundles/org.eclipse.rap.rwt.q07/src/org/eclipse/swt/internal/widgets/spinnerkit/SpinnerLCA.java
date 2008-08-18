@@ -45,6 +45,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                       new Integer( spinner.getPageIncrement() ) );
     adapter.preserve( PROP_MODIFY_LISTENER,
                       Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
+    WidgetLCAUtil.preserveCustomVariant( spinner );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -63,8 +64,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     JSWriter writer = JSWriter.getWriterFor( spinner );
-    writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( QX_TYPE );    
     ControlLCAUtil.writeStyleFlags( spinner );
     writeReadOnly( spinner );
     writeWrap( spinner );
@@ -75,6 +75,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( spinner );
     writeValues( spinner );
     writeModifyListener( spinner );
+    WidgetLCAUtil.writeCustomVariant( spinner );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

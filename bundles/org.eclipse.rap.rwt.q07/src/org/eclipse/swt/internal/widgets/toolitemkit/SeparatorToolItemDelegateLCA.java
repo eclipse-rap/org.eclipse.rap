@@ -34,6 +34,7 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
     ToolItemLCAUtil.preserveValues( toolItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
     adapter.preserve( PROP_CONTROL, toolItem.getControl() );
+    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
   
   void readData( final ToolItem toolItem ) {
@@ -47,14 +48,14 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
       toolItem.getParent(),
       Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT  ) != 0 )
     };
-    writer.callStatic( CREATE_SEPARATOR, args );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    writer.callStatic( CREATE_SEPARATOR, args );    
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     writeControl( toolItem );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 
   private void writeControl( final ToolItem toolItem ) throws IOException {

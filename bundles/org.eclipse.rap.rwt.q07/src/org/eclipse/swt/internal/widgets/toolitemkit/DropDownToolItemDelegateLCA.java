@@ -42,6 +42,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
   void readData( final ToolItem toolItem ) {
@@ -68,8 +69,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
       toolItem.getParent(),
       Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
     };
-    writer.callStatic( CREATE_DROP_DOWN, args );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    writer.callStatic( CREATE_DROP_DOWN, args );    
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
@@ -89,6 +89,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 
   //////////////////

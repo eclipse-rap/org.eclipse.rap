@@ -26,6 +26,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( group );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( group );
     adapter.preserve( PROP_TEXT, group.getText() );
+    WidgetLCAUtil.preserveCustomVariant( group );
   }
 
   public void readData( final Widget widget ) {
@@ -35,8 +36,7 @@ public class GroupLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Group group = ( Group )widget;
     JSWriter writer = JSWriter.getWriterFor( group );
-    writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( QX_TYPE );    
     ControlLCAUtil.writeStyleFlags( group );
   }
 
@@ -49,6 +49,7 @@ public class GroupLCA extends AbstractWidgetLCA {
       text = WidgetLCAUtil.escapeText( text, true );
       writer.set( "legend", text );
     }
+    WidgetLCAUtil.writeCustomVariant( group );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

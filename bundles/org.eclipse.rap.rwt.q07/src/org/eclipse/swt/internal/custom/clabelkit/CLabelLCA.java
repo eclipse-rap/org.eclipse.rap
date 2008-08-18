@@ -37,6 +37,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, label.getText() );
     adapter.preserve( PROP_IMAGE, label.getImage() );
     adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
+    WidgetLCAUtil.preserveCustomVariant( label );
   }
 
   public void readData( final Widget widget ) {
@@ -53,8 +54,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
     } else if( ( widget.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_OUT" } );
     }
-    ControlLCAUtil.writeStyleFlags( label );
-    WidgetLCAUtil.writeCustomVariant( label );
+    ControlLCAUtil.writeStyleFlags( label );    
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
   }
@@ -65,6 +65,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
     writeText( label );
     writeImage( label );
     writeAlignment( label );
+    WidgetLCAUtil.writeCustomVariant( label );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

@@ -24,6 +24,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.preserveValues( text );
     TextLCAUtil.preserveVerifyAndModifyListener( text );
     TextLCAUtil.preserveSelectionListener( text );
+    WidgetLCAUtil.preserveCustomVariant( text );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -39,8 +40,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextField" );
-    TextLCAUtil.writeInitialize( text );
-    WidgetLCAUtil.writeCustomVariant( text );
+    TextLCAUtil.writeInitialize( text );    
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeAlignment( text );
   }
@@ -53,6 +53,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeVerifyAndModifyListener( text );
     TextLCAUtil.writeSelectionListener( text );
+    WidgetLCAUtil.writeCustomVariant( text );
   }
 
   void renderDispose( final Text text ) throws IOException {

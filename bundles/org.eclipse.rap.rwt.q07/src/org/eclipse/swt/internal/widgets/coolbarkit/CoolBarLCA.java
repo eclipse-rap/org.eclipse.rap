@@ -25,6 +25,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( coolBar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolBar );
     adapter.preserve( Props.LOCKED, Boolean.valueOf( coolBar.getLocked() ) );
+    WidgetLCAUtil.preserveCustomVariant( coolBar );
   }
 
   public void readData( final Widget widget ) {
@@ -39,13 +40,13 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     // TODO [rh] use constant from qx.constant.Style.js
     writer.set( "overflow", "hidden" );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "coolbar" );
-    ControlLCAUtil.writeStyleFlags( coolBar );
-    WidgetLCAUtil.writeCustomVariant( coolBar );
+    ControlLCAUtil.writeStyleFlags( coolBar );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.writeChanges( coolBar );
+    WidgetLCAUtil.writeCustomVariant( coolBar );
 }
 
   public void renderDispose( final Widget widget ) throws IOException {

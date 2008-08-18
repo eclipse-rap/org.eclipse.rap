@@ -39,6 +39,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
     adapter.preserve( PROP_SELECTION, 
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
+    WidgetLCAUtil.preserveCustomVariant( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -50,8 +51,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.CheckBox", true );
-    WidgetLCAUtil.writeCustomVariant( menuItem );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.CheckBox", true );    
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
@@ -67,6 +67,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
                 Boolean.valueOf( menuItem.getSelection() ), 
                 Boolean.FALSE );
     MenuItemLCAUtil.writeEnabled( menuItem );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
   
   void renderDispose( final MenuItem menuItem ) throws IOException {

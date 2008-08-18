@@ -25,6 +25,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
+    WidgetLCAUtil.preserveCustomVariant( widget );
   }
 
   public void readData( final Widget widget ) {
@@ -37,13 +38,13 @@ public class CompositeLCA extends AbstractWidgetLCA {
     writer.newWidget( QX_TYPE );
     writer.set( "overflow", "hidden" );
     writer.set( "hideFocus", true );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "composite" );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "composite" );    
     ControlLCAUtil.writeStyleFlags( composite );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     ControlLCAUtil.writeChanges( ( Control )widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

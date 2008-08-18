@@ -56,6 +56,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( column.getMoveable() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
+    WidgetLCAUtil.preserveCustomVariant( column );
   }
 
   public void readData( final Widget widget ) {
@@ -95,8 +96,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     TableColumn column = ( TableColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -111,6 +111,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writeMoveable( column );
     writeAlignment( column );
     writeSelectionListener( column );
+    WidgetLCAUtil.writeCustomVariant( column );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

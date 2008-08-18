@@ -33,6 +33,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   void preserveValues( final Label label ) {
     ControlLCAUtil.preserveValues( label );
+    WidgetLCAUtil.preserveCustomVariant( label );
   }
 
   void readData( final Label label ) {
@@ -41,14 +42,14 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
-    writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomVariant( label );
+    writer.newWidget( QX_TYPE );    
     ControlLCAUtil.writeStyleFlags( label );
     writeStyle( label );
   }
 
   void renderChanges( final Label label ) throws IOException {
     ControlLCAUtil.writeChanges( label );
+    WidgetLCAUtil.writeCustomVariant( label );
   }
 
   void renderDispose( final Label label ) throws IOException {

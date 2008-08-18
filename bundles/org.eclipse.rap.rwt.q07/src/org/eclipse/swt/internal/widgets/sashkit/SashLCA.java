@@ -32,6 +32,7 @@ public final class SashLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       SelectionEvent.getListeners( widget ) );
+    WidgetLCAUtil.preserveCustomVariant( widget );
   }
 
   public void readData( final Widget widget ) {
@@ -48,14 +49,14 @@ public final class SashLCA extends AbstractWidgetLCA {
       = ( sash.getStyle() & SWT.HORIZONTAL ) != 0
       ? JSConst.QX_CONST_HORIZONTAL_ORIENTATION
       : JSConst.QX_CONST_VERTICAL_ORIENTATION;
-    writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );    
     ControlLCAUtil.writeStyleFlags( sash );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
     ControlLCAUtil.writeChanges( sash );
+    WidgetLCAUtil.writeCustomVariant( sash );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

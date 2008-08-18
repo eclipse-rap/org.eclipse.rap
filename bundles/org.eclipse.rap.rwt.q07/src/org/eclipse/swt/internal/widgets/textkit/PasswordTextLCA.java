@@ -24,6 +24,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.preserveValues( text );
     TextLCAUtil.preserveVerifyAndModifyListener( text );
     TextLCAUtil.preserveSelectionListener( text );
+    WidgetLCAUtil.preserveCustomVariant( text );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -39,8 +40,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.PasswordField" );
-    TextLCAUtil.writeInitialize( text );
-    WidgetLCAUtil.writeCustomVariant( text );
+    TextLCAUtil.writeInitialize( text );    
     ControlLCAUtil.writeStyleFlags( text );
   }
 
@@ -52,6 +52,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeVerifyAndModifyListener( text );
     TextLCAUtil.writeSelectionListener( text );
+    WidgetLCAUtil.writeCustomVariant( text );
   }
 
   void renderDispose( final Text text ) throws IOException {

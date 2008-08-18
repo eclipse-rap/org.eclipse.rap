@@ -105,6 +105,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_CHEVRON_RECT, tabFolderAdapter.getChevronRect() );
     adapter.preserve( PROP_BORDER_VISIBLE,
                       Boolean.valueOf( tabFolder.getBorderVisible() ) );
+    WidgetLCAUtil.preserveCustomVariant( tabFolder );
   }
 
   public void readData( final Widget widget ) {
@@ -170,8 +171,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );    
     CTabFolder tabFolder = ( CTabFolder )widget;
     ControlLCAUtil.writeStyleFlags( tabFolder );
     String[] args = new String[] {
@@ -196,6 +196,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writeChevron( tabFolder );
     writeColors( tabFolder );
     writeBorderVisible( tabFolder );
+    WidgetLCAUtil.writeCustomVariant( tabFolder );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

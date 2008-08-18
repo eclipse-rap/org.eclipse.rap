@@ -41,6 +41,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     adapter.preserve( PROP_SELECTION,
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
+    WidgetLCAUtil.preserveCustomVariant( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -65,8 +66,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     } else {
       writer.callStatic( "org.eclipse.swt.MenuUtil.assignRadioManager",
                          new Object[] { firstSiblingItem, menuItem } );
-    }
-    WidgetLCAUtil.writeCustomVariant( menuItem );
+    }    
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
@@ -82,6 +82,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
                 Boolean.valueOf( menuItem.getSelection() ),
                 Boolean.FALSE );
     MenuItemLCAUtil.writeEnabled( menuItem );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
 
   void renderDispose( final MenuItem menuItem ) throws IOException {

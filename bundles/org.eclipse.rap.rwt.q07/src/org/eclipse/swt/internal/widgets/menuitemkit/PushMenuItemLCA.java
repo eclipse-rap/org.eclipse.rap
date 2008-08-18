@@ -35,6 +35,7 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( hasListener ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
+    WidgetLCAUtil.preserveCustomVariant( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -42,8 +43,7 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Button", true );
-    WidgetLCAUtil.writeCustomVariant( menuItem );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Button", true );    
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
@@ -53,6 +53,7 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( menuItem ) );
     MenuItemLCAUtil.writeEnabled( menuItem );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
 
   void renderDispose( final MenuItem menuItem ) throws IOException {

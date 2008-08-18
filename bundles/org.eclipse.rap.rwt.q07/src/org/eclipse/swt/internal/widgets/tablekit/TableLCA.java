@@ -77,6 +77,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_DEFAULT_COLUMN_WIDTH, 
                       new Integer( getDefaultColumnWidth( table ) ) );
     TableLCAUtil.preserveFocusIndex( table );
+    WidgetLCAUtil.preserveCustomVariant( table );
   }
 
   public void readData( final Widget widget ) {
@@ -100,8 +101,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       style += "|multi";
     }
     Object[] args = new Object[] { WidgetUtil.getId( table ), style };
-    writer.newWidget( "org.eclipse.swt.widgets.Table", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( "org.eclipse.swt.widgets.Table", args );    
     ControlLCAUtil.writeStyleFlags( table );
     writer.set( "borderWidth", table.getBorderWidth() );
   }
@@ -119,6 +119,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
     assignItemJSParent( table );
+    WidgetLCAUtil.writeCustomVariant( table );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

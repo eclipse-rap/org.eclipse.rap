@@ -23,6 +23,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
+    WidgetLCAUtil.preserveCustomVariant( widget );
   }
 
   public void readData( final Widget widget ) {
@@ -36,8 +37,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     writer.set( "hideFocus", true );
     if( ( tabFolder.getStyle() & SWT.BOTTOM ) != 0 ) {
       writer.set( "placeBarOnTop", false );
-    }
-    WidgetLCAUtil.writeCustomVariant( widget );
+    }    
     ControlLCAUtil.writeStyleFlags( tabFolder );
     writer.addListener( "keypress",
                         "org.eclipse.swt.TabUtil.onTabFolderKeyPress" );
@@ -47,6 +47,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     ControlLCAUtil.writeChanges( ( Control )widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

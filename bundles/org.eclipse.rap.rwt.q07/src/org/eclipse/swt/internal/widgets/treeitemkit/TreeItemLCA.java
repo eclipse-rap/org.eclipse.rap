@@ -72,7 +72,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       adapter.preserve( PROP_GRAYED, Boolean.valueOf( treeItem.getGrayed() ) );
     }
     adapter.preserve( PROP_MATERIALIZED,
-                      Boolean.valueOf( treeAdapter.isCached( treeItem )) );
+                      Boolean.valueOf( treeAdapter.isCached( treeItem ) ) );
+    WidgetLCAUtil.preserveCustomVariant( treeItem );
   }
 
   public void readData( final Widget widget ) {
@@ -105,8 +106,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       parent,
       treeItem.getParent()
     };
-    writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -130,6 +130,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       writeShowItem( treeItem );
     }
     writeMaterialized( treeItem );
+    WidgetLCAUtil.writeCustomVariant( treeItem );
   }
 
   private void writeMaterialized( TreeItem treeItem ) throws IOException {

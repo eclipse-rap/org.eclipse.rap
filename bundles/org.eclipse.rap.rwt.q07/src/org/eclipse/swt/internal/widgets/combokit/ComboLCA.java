@@ -86,6 +86,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     boolean hasListener = hasVerifyListener || hasModifyListener;
     adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
                       Boolean.valueOf( hasListener ) );
+    WidgetLCAUtil.preserveCustomVariant( combo );
   }
 
   public void readData( final Widget widget ) {
@@ -103,8 +104,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( QX_TYPE );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -124,6 +124,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( widget );
       writer.call( JS_FUNC_APPLY_CONTEXT_MENU, new Object[ 0 ] );
     }
+    WidgetLCAUtil.writeCustomVariant( combo );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

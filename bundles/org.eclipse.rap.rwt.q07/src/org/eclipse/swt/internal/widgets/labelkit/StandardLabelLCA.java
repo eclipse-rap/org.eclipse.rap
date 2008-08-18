@@ -44,6 +44,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     adapter.preserve( PROP_TEXT, label.getText() );
     adapter.preserve( PROP_IMAGE, label.getImage() );
     adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
+    WidgetLCAUtil.preserveCustomVariant( label );
   }
 
   void readData( final Label label ) {
@@ -58,8 +59,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args );
     Object[] argsWrap = { label, wrap };
-    writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );
-    WidgetLCAUtil.writeCustomVariant( label );
+    writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );    
   }
 
   void renderChanges( final Label label ) throws IOException {
@@ -67,6 +67,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     writeText( label );
     writeImage( label );
     writeAlignment( label );
+    WidgetLCAUtil.writeCustomVariant( label );
   }
 
   void renderDispose( final Label label ) throws IOException {

@@ -53,6 +53,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_TRANSPARENCY = "backgroundTrans";
   private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_VARIANT = "variant";
 
   private static final String JS_PROP_SPACE = "space";
   private static final String JS_PROP_CONTEXT_MENU = "contextMenu";
@@ -168,6 +169,19 @@ public final class WidgetLCAUtil {
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
+  }
+  
+  /**
+   * Preserves the value of the custom variant of the specified
+   * widget.
+   *
+   * @param widget the widget whose custom variant to preserve   
+   * @see #writeCustomVariant(Widget)
+   */
+  public static void preserveCustomVariant( final Widget widget ) {
+    String variant = WidgetUtil.getVariant( widget );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_VARIANT, variant );
   }
 
   ////////////////////////////////////////////////////
@@ -752,14 +766,30 @@ public final class WidgetLCAUtil {
     return CommonPatterns.replaceNewLines( input, replacement );
   }
 
+  /**
+   * Determines whether the custom variant of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * JavaScript code to the response that updates the client-side variant.
+   *
+   * @param widget the widget whose custom variant to write
+   * @throws IOException
+   */
   public static void writeCustomVariant( final Widget widget )
     throws IOException
   {
-    String variant = WidgetUtil.getVariant( widget );
-    if( variant != null ) {
-      Object[] args = new Object[] { "variant_" + variant };
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    String oldValue = ( String )adapter.getPreserved( PROP_VARIANT );
+    String newValue = WidgetUtil.getVariant( widget );    
+    if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.call( JSConst.QX_FUNC_ADD_STATE, args );
+      Object[] args = new Object[] { "variant_" + oldValue };
+      if( oldValue != null ) {
+        writer.call( JSConst.QX_FUNC_REMOVE_STATE, args );
+      }
+      if( newValue != null ) {
+        args = new Object[] { "variant_" + newValue };
+        writer.call( JSConst.QX_FUNC_ADD_STATE, args );
+      }
     }
   }
 

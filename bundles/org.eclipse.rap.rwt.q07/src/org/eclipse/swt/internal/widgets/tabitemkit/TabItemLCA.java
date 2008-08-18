@@ -34,6 +34,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
+    WidgetLCAUtil.preserveCustomVariant( item );
   }
   
   public void readData( final Widget widget ) {
@@ -61,8 +62,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
       WidgetUtil.getId( parent ),
       new Integer( parent.indexOf( tabItem ) )
     };
-    writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );    
     writer.addListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
   }
 
@@ -71,6 +71,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     setJSParent( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
     writeSelection( tabItem );
+    WidgetLCAUtil.writeCustomVariant( tabItem );
   }
   
   public void renderDispose( final Widget widget ) throws IOException {

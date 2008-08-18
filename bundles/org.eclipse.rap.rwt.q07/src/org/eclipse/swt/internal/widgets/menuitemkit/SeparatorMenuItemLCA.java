@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.MenuItem;
 final class SeparatorMenuItemLCA extends MenuItemDelegateLCA {
 
   void preserveValues( final MenuItem menuItem ) {
-    // do nothing
+    WidgetLCAUtil.preserveCustomVariant( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -29,12 +29,11 @@ final class SeparatorMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Separator", false );
-    WidgetLCAUtil.writeCustomVariant( menuItem );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Separator", false );    
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
-    // do nothing
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
   
   void renderDispose( final MenuItem menuItem ) throws IOException {

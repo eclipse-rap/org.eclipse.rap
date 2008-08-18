@@ -55,6 +55,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
+    WidgetLCAUtil.preserveCustomVariant( column );
   }
 
   public void readData( final Widget widget ) {
@@ -94,8 +95,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     TreeColumn column = ( TreeColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TreeColumn", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( "org.eclipse.swt.widgets.TreeColumn", args );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -110,6 +110,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     writeMoveable( column );
     writeAlignment( column );
     writeSelectionListener( column );
+    WidgetLCAUtil.writeCustomVariant( column );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

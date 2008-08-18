@@ -45,6 +45,7 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ITEMS, list.getItems() );
     adapter.preserve( PROP_FOCUS_INDEX, new Integer( list.getFocusIndex() ) );
     preserveSelection( list );
+    WidgetLCAUtil.preserveCustomVariant( list );
   }
 
   public void readData( final Widget widget ) {
@@ -60,8 +61,7 @@ public class ListLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( list );
     writer.newWidget( QX_TYPE );
     Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
-    writer.call( "init", new Object[] { multiSelection } );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.call( "init", new Object[] { multiSelection } );    
     ControlLCAUtil.writeStyleFlags( list );
     writeOverflow( list );
   }
@@ -75,6 +75,7 @@ public class ListLCA extends AbstractWidgetLCA {
     writeSelection( list );
     writeFocusIndex( list );
     updateSelectionListeners( list );
+    WidgetLCAUtil.writeCustomVariant( list );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

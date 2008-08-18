@@ -56,6 +56,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_FIRST_ITEM,
                       Boolean.valueOf( item == item.getParent().getItem( 0 ) ) );
     preserveFont( item );
+    WidgetLCAUtil.preserveCustomVariant( item );
   }
 
   public void readData( final Widget widget ) {
@@ -82,8 +83,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
       Boolean.valueOf( showClose( item ) )
     };
     writer.newWidget( "org.eclipse.swt.custom.CTabItem", args );
-    writer.call( parent, "add", new Object[] { item } );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.call( parent, "add", new Object[] { item } );    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -97,6 +97,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writeUnselectedCloseVisible( item );
     writeSelection( item );
     writeFirstItem( item );
+    WidgetLCAUtil.writeCustomVariant( item );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

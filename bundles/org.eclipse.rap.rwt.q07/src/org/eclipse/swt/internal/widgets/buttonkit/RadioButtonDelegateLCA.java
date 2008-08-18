@@ -40,6 +40,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void preserveValues( final Button button ) {
     ButtonLCAUtil.preserveValues( button );
+    WidgetLCAUtil.preserveCustomVariant( button );
   }
 
   void readData( final Button button ) {
@@ -55,7 +56,6 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     Object[] args = new Object[] { button };
     writer.callStatic( REGISTER_RADIO_BUTTON, args );
     ControlLCAUtil.writeStyleFlags( button );
-    WidgetLCAUtil.writeCustomVariant( button );
   }
 
   // TODO [rh] qooxdoo radioButton cannot display images, should we ignore
@@ -73,6 +73,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.writeSelection( button );
     ButtonLCAUtil.writeText( button );
     ButtonLCAUtil.writeAlignment( button );
+    WidgetLCAUtil.writeCustomVariant( button );
   }
 
   void renderDispose( final Button button ) throws IOException {

@@ -53,6 +53,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MODE, getMode( shell ) );
     adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
+    WidgetLCAUtil.preserveCustomVariant( shell );
   }
 
   public void readData( final Widget widget ) {
@@ -69,8 +70,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
-    writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    writer.newWidget( QX_TYPE );    
     ControlLCAUtil.writeStyleFlags( shell );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
@@ -113,6 +113,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeActiveShell( shell );
     writeMode( shell );
     writeCloseListener( shell );
+    WidgetLCAUtil.writeCustomVariant( shell );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

@@ -40,6 +40,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
     adapter.preserve( "selection",
                       Boolean.valueOf( toolItem.getSelection() ) );
+    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
   void readData( final ToolItem toolItem ) {
@@ -56,8 +57,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent()
     };
-    writer.callStatic( CREATE_CHECK, args );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    writer.callStatic( CREATE_CHECK, args );    
     writer.set( "checked", toolItem.getSelection() );
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
@@ -81,6 +81,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     writeSelection( toolItem, toolItem.getSelection() );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 
   void writeSelection( final ToolItem toolItem, final boolean selection )

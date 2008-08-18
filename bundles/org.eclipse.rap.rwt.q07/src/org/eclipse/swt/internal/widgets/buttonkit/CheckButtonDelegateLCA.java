@@ -35,6 +35,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
   void preserveValues( final Button button ) {
     ButtonLCAUtil.preserveValues( button );
+    WidgetLCAUtil.preserveCustomVariant( button );
   }
 
   void readData( final Button button ) {
@@ -50,7 +51,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
-    WidgetLCAUtil.writeCustomVariant( button );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore
@@ -67,6 +67,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.writeSelection( button );
     ButtonLCAUtil.writeText( button );
     ButtonLCAUtil.writeAlignment( button );
+    WidgetLCAUtil.writeCustomVariant( button );
   }
 
   void renderDispose( final Button button ) throws IOException {
