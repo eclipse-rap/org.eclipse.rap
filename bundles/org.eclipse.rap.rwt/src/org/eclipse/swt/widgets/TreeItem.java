@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
@@ -34,7 +35,8 @@ import org.eclipse.swt.internal.widgets.*;
 public class TreeItem extends Item {
 
   private static final int IMAGE_TEXT_GAP = 2;
-  private static final int INDENT_WIDTH = 16;
+  private static final int INDENT_WIDTH = 19;
+  private static final int ITEM_HEIGHT = 16;
 
   private final TreeItem parentItem;
   private final Tree parent;
@@ -405,11 +407,10 @@ public class TreeItem extends Item {
       }
       // no support for bigger text/images due to qx bug
       // int height = Math.max( textWidth.y, imageBounds.height ) + 2;
-      int height = 16;
 
       int left = 0;
       if( columnIndex == 0 ) {
-        left = imageBounds.x + ( depth + 1 * INDENT_WIDTH );
+        left = imageBounds.x;
       } else {
         TreeColumn[] cols = parent.getColumns();
         for( int i = 0; i < columnIndex; i++ ) {
@@ -418,10 +419,18 @@ public class TreeItem extends Item {
         }
       }
       int top = 0;
-      top = flatIndex * height - parent.scrollTop;
-      result = new Rectangle( left, top, width, height );
+      top = getItemTop();
+      result = new Rectangle( left, top, width, getItemHeight() );
     }
     return result;
+  }
+
+  private int getItemHeight() {
+    return ITEM_HEIGHT;
+  }
+
+  private int getItemTop() {
+    return flatIndex * ITEM_HEIGHT - parent.scrollTop;
   }
 
   private int getImageGap( final int index ) {
@@ -1007,8 +1016,7 @@ public class TreeItem extends Item {
   /**
    * Returns a rectangle describing the size and location
    * relative to its parent of an image at a column in the
-   * table.  An empty rectangle is returned if index exceeds
-   * the index of the table's last column.
+   * tree.
    *
    * @param index the index that specifies the column
    * @return the receiver's bounding image rectangle
@@ -1018,13 +1026,23 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Rectangle getImageBounds( final int index ) {
+  public Rectangle getImageBounds( final int columnIndex ) {
     checkWidget();
 //    parent.checkData( this, parent.indexOf( this ) );
-    Rectangle result;
-    Image image = getImage( index );
-    if( image != null ) {
-      result = image.getBounds();
+    Rectangle result = null;
+    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
+    if( ( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
+      Image image = getImage( index );
+      if( image != null ) {
+        result = image.getBounds();
+      } else {
+        result = new Rectangle( 0, 0, 0, 0 );
+      }
+      result.x = ( ( depth + 1 ) * INDENT_WIDTH );
+      // SWT behavior on windows gives the correct y value
+      // On Gtk the y value is always the same (eg. 1)
+      // we emulate the default windows behavior here
+      result.y = getItemTop();
     } else {
       result = new Rectangle( 0, 0, 0, 0 );
     }

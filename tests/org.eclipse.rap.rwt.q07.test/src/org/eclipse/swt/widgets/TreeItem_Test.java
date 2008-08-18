@@ -675,6 +675,34 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 200, rootItem.getBounds(2).x );
 
   }
+  
+  // TODO [bm]: hardcoded values - possible due to qooxdoo limitations
+  public void testBoundsSubItemBug219374() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    
+    TreeItem root = new TreeItem( tree, SWT.NONE );
+    TreeItem root2 = new TreeItem( tree, SWT.NONE );
+    TreeItem sub1 = new TreeItem( root, SWT.NONE );
+    TreeItem sub2 = new TreeItem( root2, SWT.NONE );
+
+    root2.setExpanded( true );
+    
+    // height is always 16
+    assertEquals( 0, root.getBounds().y );
+    assertEquals( 0, sub1.getBounds().y ); // not expanded
+    assertEquals( 16, root2.getBounds().y );
+    assertEquals( 32, sub2.getBounds().y );
+    
+    // indent for each level needs 19
+    assertEquals( 19, root.getBounds().x );
+    assertEquals( 0, sub1.getBounds().x ); // not expanded
+    assertEquals( 19, root2.getBounds().x );
+    assertEquals( 38, sub2.getBounds().x );
+    
+    
+  }
 
   public void testTreeItemAdapter() throws Exception {
     Display display = new Display();
@@ -705,6 +733,67 @@ public class TreeItem_Test extends TestCase {
     assertNull( adapter.getCellFonts()[ 0 ] );
   }
 
+  public void testGetImageBoundsInvalidIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getImageBounds( 1 ) );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getImageBounds( -1 ) );
+  }
+
+  public void testGetImageBoundsColumns() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    
+    item.setText( new String[]{
+      "foo", "bar", "baz"
+    } );
+    
+    Rectangle col0Bounds = item.getImageBounds( 0 );
+    Rectangle col1Bounds = item.getImageBounds( 1 );
+    Rectangle col2Bounds = item.getImageBounds( 2 );
+    
+    assertEquals( 0, col0Bounds.height );
+    assertEquals( 0, col0Bounds.width );
+    assertEquals( 0, col1Bounds.height );
+    assertEquals( 0, col1Bounds.width );
+    assertEquals( 0, col2Bounds.height );
+    assertEquals( 0, col2Bounds.width );
+    
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    item.setImage( 0, image );
+    item.setImage( 1, image );
+    item.setImage( 2, image );
+    
+    Rectangle imageBounds = image.getBounds();
+    assertTrue( col0Bounds.x > 0 );
+    assertTrue( col1Bounds.x > 0 );
+    assertTrue( col2Bounds.x > 0 );
+    
+    col0Bounds = item.getImageBounds( 0 );
+    col1Bounds = item.getImageBounds( 1 );
+    col2Bounds = item.getImageBounds( 2 );
+    
+    assertEquals( imageBounds.height, col0Bounds.height );
+    assertEquals( imageBounds.width, col0Bounds.width );
+    assertEquals( imageBounds.height, col1Bounds.height );
+    assertEquals( imageBounds.width, col1Bounds.width );
+    assertEquals( imageBounds.height, col2Bounds.height );
+    assertEquals( imageBounds.width, col2Bounds.width );
+    
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    item2.setImage( 0, image );
+    assertTrue( col0Bounds.y < item2.getImageBounds( 0 ).y );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

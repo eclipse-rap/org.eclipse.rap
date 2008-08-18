@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -1502,26 +1503,35 @@ public class Tree extends Composite {
     WidgetTreeVisitor.accept( tree, visitor );
   }
 
-  // TODO: performance impact - replace this with logic to only partly
+  // TODO [bm]: performance impact - replace this with logic to only partly
   // update the flat indices when there are changes in the visibility hierarchy
   // like new items, removed items, expand/
   /* package */ void updateFlatIndices() {
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-
-      int flatIndex = 0;
-
-      public boolean doVisit( Widget widget ) {
-        boolean result = true;
-        if( widget instanceof TreeItem ) { // ignore tree
-          TreeItem item = ( TreeItem )widget;
-          item.flatIndex = flatIndex;
-          flatIndex++;
-        }
-        return result;
-      }
-    };
-    WidgetTreeVisitor.accept( this, visitor );
+    int flatIndex = 0;
+    
+    TreeItem[] uItems = this.getItems();
+    for( int i = 0; i < uItems.length; i++ ) {
+      TreeItem treeItem = uItems[ i ];
+      treeItem.flatIndex = flatIndex;
+      flatIndex++;
+      flatIndex = updateFlatIndicesSub( treeItem, flatIndex );
+    }
   }
+  
+  /* package */int updateFlatIndicesSub( TreeItem item, int flatIndex ) {
+    int newFlatIndex = flatIndex;
+    if( item.getExpanded() ) {
+      TreeItem[] subItems = item.getItems();
+      for( int i = 0; i < subItems.length; i++ ) {
+        TreeItem subItem = subItems[ i ];
+        subItem.flatIndex = newFlatIndex;
+        newFlatIndex++;
+        newFlatIndex = updateFlatIndicesSub( subItem, newFlatIndex );
+      }
+    }
+    return newFlatIndex;
+  }
+  
   final void checkData( final TreeItem item, final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       if( currentItem == null ) {
