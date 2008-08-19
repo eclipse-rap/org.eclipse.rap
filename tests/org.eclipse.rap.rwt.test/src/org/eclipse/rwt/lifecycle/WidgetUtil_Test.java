@@ -55,6 +55,9 @@ public class WidgetUtil_Test extends TestCase {
     String valid = "Foo_Bar_23_42";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, valid );
     assertEquals( valid, WidgetUtil.getVariant( shell ) );
+    String withDash = "Foo-Bar-23-42";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withDash );
+    assertEquals( withDash, WidgetUtil.getVariant( shell ) );
     String withSpaces = "Foo Bar 23 42 ";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withSpaces );
     try {
@@ -62,7 +65,7 @@ public class WidgetUtil_Test extends TestCase {
       fail( "IAE expected" );
     } catch( RuntimeException e ) {
       // expected
-    }    
+    }
     String withColon = "Foo:Bar";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withColon );
     try {
