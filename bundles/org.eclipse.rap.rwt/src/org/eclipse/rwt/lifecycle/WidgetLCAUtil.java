@@ -170,12 +170,12 @@ public final class WidgetLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
   }
-  
+
   /**
    * Preserves the value of the custom variant of the specified
    * widget.
    *
-   * @param widget the widget whose custom variant to preserve   
+   * @param widget the widget whose custom variant to preserve
    * @see #writeCustomVariant(Widget)
    */
   public static void preserveCustomVariant( final Widget widget ) {
@@ -779,7 +779,7 @@ public final class WidgetLCAUtil {
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     String oldValue = ( String )adapter.getPreserved( PROP_VARIANT );
-    String newValue = WidgetUtil.getVariant( widget );    
+    String newValue = WidgetUtil.getVariant( widget );
     if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       Object[] args = new Object[] { "variant_" + oldValue };

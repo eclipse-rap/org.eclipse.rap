@@ -227,7 +227,7 @@ public final class WidgetUtil {
     }
     return result;
   }
-  
+
   private static boolean isDash( final char ch ) {
     return ch == '-';
   }
