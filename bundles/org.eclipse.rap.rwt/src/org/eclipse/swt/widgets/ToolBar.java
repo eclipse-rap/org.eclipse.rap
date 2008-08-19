@@ -221,25 +221,14 @@ public class ToolBar extends Composite {
       height = hHint;
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
-    int border = getBorderWidth();
-    width = trim.width + border * 2;
-    height = trim.height + border * 2;
+    width = trim.width;
+    height = trim.height;
     return new Point( width, height );
   }
   
   public int getBorderWidth() {
     return ( style & SWT.BORDER ) != 0 ? 1 : 0;
   }
-  
-//  public Rectangle computeTrim( final int x,
-//                                final int y,
-//                                final int width,
-//                                final int height )
-//  {
-//    checkWidget();
-//    Rectangle trim = super.computeTrim( x, y, width, height );
-//    return trim;
-//  }
   
   /**
    * Returns the number of rows in the receiver. When
