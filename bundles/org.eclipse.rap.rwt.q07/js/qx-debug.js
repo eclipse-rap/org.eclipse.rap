@@ -14234,7 +14234,9 @@ if(vElement&&vElement.firstChild){vElement.firstChild.src=this.BASE_URI+this.get
 }}},
 _onmousedown:function(e){if(e._treeProcessed){return;
 }var vOriginalTarget=e.getOriginalTarget();
-switch(vOriginalTarget){case this._indentObject:if(this._indentObject.getElement().firstChild==e.getDomTarget()){this.toggle();
+switch(vOriginalTarget){case this._indentObject:if(this._indentObject.getElement().firstChild==e.getDomTarget()){this.getTree().getManager().handleMouseDown(this,
+e);
+this.toggle();
 }break;
 case this._containerObject:break;
 case this:if(this._containerObject){break;
