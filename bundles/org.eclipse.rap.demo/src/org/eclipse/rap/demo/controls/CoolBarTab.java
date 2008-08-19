@@ -22,18 +22,12 @@ import org.eclipse.swt.widgets.*;
 public class CoolBarTab extends ExampleTab {
 
   private final Image image1;
-  private final Image image2;
-  private final Image image3;
-  private final Image image4;
   private CoolBar coolBar;
 
   public CoolBarTab( final CTabFolder topFolder ) {
     super( topFolder, "CoolBar" );
     ClassLoader loader = getClass().getClassLoader();
     image1 = Graphics.getImage( "resources/newfile_wiz.gif", loader );
-    image2 = Graphics.getImage( "resources/newfolder_wiz.gif", loader );
-    image3 = Graphics.getImage( "resources/newprj_wiz.gif", loader );
-    image4 = Graphics.getImage( "resources/search_src.gif", loader );
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -45,27 +39,25 @@ public class CoolBarTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createLockedButton( parent );
+    createBgColorButton();
+    createBgImageButton();
   }
 
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
     coolBar = new CoolBar( parent, style );
 
-    // Create toolBar1 to be displayed in the first CoolItem
-    final CoolItem coolItem1 = new CoolItem( coolBar, style );
-    final ToolBar toolBar1 = createToolBar( coolBar, SWT.NONE );
-    coolItem1.setControl( toolBar1 );
+    createItem( coolBar, 1 );
+    createItem( coolBar, 2 );
+    createItem( coolBar, 3 );
+    coolBar.setLocation( 5, 5 );
+    coolBar.setSize( coolBar.computeSize( parent.getSize().x - 10, SWT.DEFAULT ) );
 
-    // Create toolBar2 to be displayed in the second CoolItem
-    final CoolItem coolItem2 = new CoolItem( coolBar, style );
-    ToolBar toolBar2 = createToolBar( coolBar, SWT.NONE );
-    coolItem2.setControl( toolBar2 );
-
-    // Register CoolBar
     registerControl( coolBar );
+
     final ControlAdapter controlListener = new ControlAdapter() {
       public void controlResized( final ControlEvent e ) {
-        computeSize( toolBar1, coolItem1, coolItem2 );
+        coolBar.setSize( coolBar.computeSize( parent.getSize().x - 10, SWT.DEFAULT ) );
       }
     };
     parent.addControlListener( controlListener );
@@ -74,19 +66,19 @@ public class CoolBarTab extends ExampleTab {
         parent.removeControlListener( controlListener );
       }
     } );
-    computeSize( toolBar1, coolItem1, coolItem2 );
   }
 
-  private void computeSize( final ToolBar toolBar1,
-                            final CoolItem coolItem1,
-                            final CoolItem coolItem2 )
-  {
-    Point size = toolBar1.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+  private CoolItem createItem( final CoolBar coolBar, int id ) {
+    ToolBar toolBar = createToolBar( coolBar, id );
+    toolBar.pack();
+    Point size = toolBar.getSize();
     // TODO [fappel]: check whether size adjustment is really needed or a bug .
     size = new Point( size.x + ( int )( size.x * 0.1 ), size.y );
-    coolItem1.setSize( size );
-    coolItem2.setSize( size );
-    coolBar.setSize( coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    CoolItem item = new CoolItem( coolBar, SWT.NONE );
+    item.setControl( toolBar );
+    Point preferred = item.computeSize( size.x, size.y );
+    item.setPreferredSize( preferred );
+    return item;
   }
 
   private ToolBar createToolBar( final Composite parent, final int id ) {
@@ -97,14 +89,11 @@ public class CoolBarTab extends ExampleTab {
     item1.setImage( image1 );
     ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
     item2.setText( "open" );
-    item2.setImage( image2 );
     ToolItem item3 = new ToolItem( toolBar, SWT.PUSH );
     item3.setText( "save as" );
-    item3.setImage( image3 );
     new ToolItem( toolBar, SWT.SEPARATOR );
     ToolItem item4 = new ToolItem( toolBar, SWT.PUSH );
     item4.setText( "print" );
-    item4.setImage( image4 );
     return toolBar;
   }
 

@@ -39,8 +39,8 @@ public class ToolBarTab extends ExampleTab {
     createStyleButton( "FLAT", SWT.FLAT );
     createVisibilityButton();
     createEnablementButton();
-// TODO [rst] Uncomment when setting background works on toolbar
-//    createBgColorButton();
+    createBgColorButton();
+    createBgImageButton();
     createFontChooser();
   }
 
