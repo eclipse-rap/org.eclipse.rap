@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 //      event.debug( "_____ onMouseUp ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
-        org.eclipse.swt.TextUtil._updateSelection( text );
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
 
@@ -113,7 +113,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 //      event.debug( "_____ onKeyDown ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
-        org.eclipse.swt.TextUtil._updateSelection( text );
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
         if(    event.getKeyIdentifier() == "Enter"
             && !event.isShiftPressed()
             && !event.isAltPressed()
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 //      event.debug( "_____ onKeyPress ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
-        org.eclipse.swt.TextUtil._updateSelection( text );
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
 
@@ -139,7 +139,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 //      event.debug( "_____ onKeyUp ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
-        org.eclipse.swt.TextUtil._updateSelection( text );
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
 
@@ -148,7 +148,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleModification( text );
-        org.eclipse.swt.TextUtil._updateSelection( text );
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
 
@@ -292,7 +292,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      * Checks for a selection change and updates the request parameter if
      * necessary.
      */
-    _updateSelection : function( text, enclosingWidget ) {
+    _handleSelectionChange : function( text, enclosingWidget ) {
       var widget = enclosingWidget != null ? enclosingWidget : text;
       var start = text.getSelectionStart();
       var length = text.getSelectionLength();

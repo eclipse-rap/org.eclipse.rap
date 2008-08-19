@@ -36,8 +36,7 @@ public final class WidgetUtil {
    * @see Widget#setData(String,Object)
    * @since 1.1
    */
-  public static final String CUSTOM_VARIANT
-    = "org.eclipse.rwt.themeVariant";
+  public static final String CUSTOM_VARIANT = "org.eclipse.rwt.themeVariant";
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -65,7 +64,7 @@ public final class WidgetUtil {
    * </pre></p>
    *
    * @see Widget#setData(String,Object)
-   * @see #getId()
+   * @see #getId(Widget)
    *
    * @since 1.1
    */

@@ -82,12 +82,12 @@ public abstract class Scrollable extends Control {
    */
   public Rectangle getClientArea() {
     checkWidget();
-    Rectangle current = getBounds();
-    // TODO [rst] better implementation
+    Rectangle bounds = getBounds();
+    int borderWidth = getBorderWidth();
     return new Rectangle( 0,
                           0,
-                          current.width - getBorderWidth() * 2,
-                          current.height - getBorderWidth() * 2 );
+                          bounds.width - borderWidth * 2,
+                          bounds.height - borderWidth * 2 );
   }
 
   /**
