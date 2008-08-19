@@ -19,6 +19,14 @@
   rwt-selectionmarker-color: #56a0ea;
 }
 
+.special-red {
+  color: red;
+}
+
+.special-blue {
+  color: blue;
+}
+
 List, Tree, Table, Text, Spinner, Combo {
   color: rgb( 39, 64, 139 );
   background-color: #fff1a1;
@@ -131,8 +139,13 @@ Shell[BORDER] {
   border: 3px #1695d4;
 }
 
-Shell.special {
+Shell.special-red {
   border: 3px solid red;
+  padding: 10px;
+}
+
+Shell.special-blue {
+  border: 3px solid blue;
   padding: 10px;
 }
 
