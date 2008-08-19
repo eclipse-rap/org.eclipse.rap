@@ -235,7 +235,7 @@ public class TextTab extends ExampleTab {
 
   private void createSelectionChooser( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( new GridLayout( 5, false ) );
+    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
     Label lblSelectionFrom = new Label( composite, SWT.NONE );
     lblSelectionFrom.setText( "selection from" );
     final Text txtSelectionFrom = new Text( composite, SWT.BORDER );
@@ -260,6 +260,14 @@ public class TextTab extends ExampleTab {
             + txtSelectionTo.getText();
           MessageDialog.openError( getShell(), "Error", msg );
         }
+      }
+    } );
+    Button selectAllButton = new Button( composite, SWT.PUSH );
+    selectAllButton.setText( "select all" );
+    selectAllButton.addSelectionListener( new SelectionAdapter() {
+       
+      public void widgetSelected( SelectionEvent e ) {
+        text.selectAll();
       }
     } );
   }
