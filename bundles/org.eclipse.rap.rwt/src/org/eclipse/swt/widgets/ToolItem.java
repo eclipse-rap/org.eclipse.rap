@@ -38,7 +38,13 @@ public class ToolItem extends Item {
 
   private static final int DEFAULT_WIDTH = 24;
   private static final int DEFAULT_HEIGHT = 22;
-  private static final int DROP_DOWN_ARROW_WIDTH = 13;
+  // TODO [rst] Read these values from ThemeAdapter as soon as ToolItem is
+  //            themeable
+  private static final int DROP_DOWN_ARROW_WIDTH = 15;
+  private static final int SEPARATOR_WIDTH = 8;
+  private static final int SPACING = 4;
+  private static final int PADDING_WIDTH = 6;
+  private static final int BORDER_WIDTH = 2;
 
   private final ToolBar parent;
   private boolean selected;
@@ -408,22 +414,23 @@ public class ToolItem extends Item {
     if( ( style & SWT.SEPARATOR ) != 0 ) {
       result = width;
     } else {
-      // TODO [rh] must be kept in sync with DefaultAppearanceTheme.js
-      result = 7; // approx left + right padding as defined in appearance theme 
-      if( getImage() != null ) {
-        result += getImage().getBounds().width;
+      result = 0;
+      boolean hasImage = image != null;
+      boolean hasText = !"".equals( text );
+      if( hasImage ) {
+        result += image.getBounds().width;
       }
-      String text = getText();
-      if( !"".equals( text ) ) {
+      if( hasText ) {
         Font font = parent.getFont();
-        // TODO [fappel]: need some more space for the Workbench perspective
-        //                switcher. Check this after a proper font size
-        //                calculation is in place
-        result += 11 + TextSizeDetermination.stringExtent( font, getText() ).x;
+        result += TextSizeDetermination.stringExtent( font, text ).x;
+      }
+      if( hasText && hasImage ) {
+        result += SPACING;
       }
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
         result += DROP_DOWN_ARROW_WIDTH;
       }
+      result += PADDING_WIDTH + BORDER_WIDTH;
     }
     return result;
   }
@@ -594,7 +601,7 @@ public class ToolItem extends Item {
 
   private void computeInitialWidth() {
     if( ( style & SWT.SEPARATOR ) != 0 ) {
-      width = 8;
+      width = SEPARATOR_WIDTH;
     } else {
       width = DEFAULT_WIDTH;
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
