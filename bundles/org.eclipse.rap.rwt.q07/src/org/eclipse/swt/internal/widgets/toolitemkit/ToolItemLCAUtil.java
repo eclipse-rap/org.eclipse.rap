@@ -38,6 +38,7 @@ final class ToolItemLCAUtil {
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
+    adapter.preserve( Props.BOUNDS, toolItem.getBounds() );
   }
 
   static void processSelection( final ToolItem toolItem ) {
@@ -77,5 +78,14 @@ final class ToolItemLCAUtil {
     IToolItemAdapter tia = ( IToolItemAdapter )itemadapter;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( tia.getVisible() ) );
+  }
+
+  public static void writeBounds( final ToolItem toolItem ) throws IOException {
+    Rectangle bounds = toolItem.getBounds();
+    // [rst] Chevron-button is created as a separate widget on the client side
+    if( ( toolItem.getStyle() & SWT.DROP_DOWN ) != 0 ) {
+      bounds.width -= 15; // ToolItem#DROP_DOWN_ARROW_WIDTH
+    }
+    WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
   }
 }

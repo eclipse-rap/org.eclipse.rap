@@ -142,7 +142,8 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItemLCA itemLCA = new ToolItemLCA();
     item.setText( "benny" );
     itemLCA.renderChanges( item );
-    assertTrue( Fixture.getAllMarkup().endsWith( "setLabel( \"benny\" );" ) );
+    String expected = "setLabel( \"benny\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     item.setSelection( true );

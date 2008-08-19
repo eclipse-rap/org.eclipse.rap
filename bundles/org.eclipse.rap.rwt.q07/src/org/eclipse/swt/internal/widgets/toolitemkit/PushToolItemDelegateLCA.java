@@ -68,6 +68,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
+    ToolItemLCAUtil.writeBounds( toolItem );
     WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 }

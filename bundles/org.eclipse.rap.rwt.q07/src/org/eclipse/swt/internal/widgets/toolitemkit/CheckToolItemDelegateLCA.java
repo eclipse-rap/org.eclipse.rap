@@ -80,6 +80,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
+    ToolItemLCAUtil.writeBounds( toolItem );
     writeSelection( toolItem, toolItem.getSelection() );
     WidgetLCAUtil.writeCustomVariant( toolItem );
   }
