@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         this._tree.addState( state );
       }
     },
-    
+
     removeState : function( state ) {
       this.base( arguments, state );
       if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
