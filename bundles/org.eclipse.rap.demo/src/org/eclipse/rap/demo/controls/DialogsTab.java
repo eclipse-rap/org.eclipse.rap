@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -22,7 +23,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-class DialogsTab extends ExampleTab {
+
+public class DialogsTab extends ExampleTab {
 
   private Label inputDlgResLabel;
   private Label loginDlgResLabel;
@@ -169,19 +171,19 @@ class DialogsTab extends ExampleTab {
     final InputDialog dlg;
     dlg = new InputDialog( getShell(), title, mesg, def, val );
     int returnCode = dlg.open();
+    String resultText = "Result: " + getReturnCodeText( returnCode );
     if( returnCode == InputDialog.OK ) {
-      inputDlgResLabel.setText( "Input Result: " + dlg.getValue() );
-    } else {
-      inputDlgResLabel.setText( "No Result" );
+      resultText += ", value: " + dlg.getValue();
     }
+    inputDlgResLabel.setText( resultText  );
     inputDlgResLabel.pack();
   }
 
   private void showMessageDialogInfo() {
     String title = "Information";
-    String mesg = "Beer and pizza go well together.";
+    String mesg = "RAP rocks!";
     MessageDialog.openInformation( getShell(), title, mesg );
-    messageDlgResLabel.setText( "Info closed." );
+    messageDlgResLabel.setText( "Result: none" );
     messageDlgResLabel.pack();
   }
 
@@ -189,28 +191,25 @@ class DialogsTab extends ExampleTab {
     String title = "Error";
     String mesg = "An everyday error occured.\n " + "Nothing to get worried.";
     MessageDialog.openError( getShell(), title, mesg );
-    messageDlgResLabel.setText( "Error closed." );
+    messageDlgResLabel.setText( "Result: none" );
     messageDlgResLabel.pack();
   }
 
   private void showMessageDialogQuestion() {
     String title = "Question";
-    String mesg = "Do you think you're smart?\n\n"
-                  + "Your answer will not be recorded or evaluated "
-                  + "nor does this question have any purpose apart from "
-                  + "filling the empty space in this dialog window.";
-    boolean result
-      = MessageDialog.openQuestion( getShell(), title, mesg );
-    messageDlgResLabel.setText( "Question closed (" + result + ")" );
+    String mesg = "Do you like the RAP technology?\n\n"
+                  + "Note that you can also press <Return> here. "
+                  + "The correct answer is automatically selected.";
+    boolean result = MessageDialog.openQuestion( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Result: " + result );
     messageDlgResLabel.pack();
   }
 
   private void showMessageDialogConfirm() {
     String title = "Confirmation";
     String mesg = "Nothing will be done. Ok?";
-    boolean result
-      = MessageDialog.openConfirm( getShell(), title, mesg );
-    messageDlgResLabel.setText( "Confirm closed (" + result + ")" );
+    boolean result = MessageDialog.openConfirm( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Result: " + result );
     messageDlgResLabel.pack();
   }
 
@@ -218,7 +217,7 @@ class DialogsTab extends ExampleTab {
     String title = "Warning";
     String mesg = "You have been warned.";
     MessageDialog.openWarning( getShell(), title, mesg );
-    messageDlgResLabel.setText( "Warning closed." );
+    messageDlgResLabel.setText( "Result: none" );
     messageDlgResLabel.pack();
   }
 
@@ -235,27 +234,35 @@ class DialogsTab extends ExampleTab {
                                  reason,
                                  exception );
     int returnCode = ErrorDialog.openError( getShell(), title, mesg, status );
-    errorDlgResLabel.setText( "Error Dialog closed (" + returnCode + ")" );
+    errorDlgResLabel.setText( "Result: " + getReturnCodeText( returnCode ) );
     errorDlgResLabel.pack();
   }
 
   private void showLoginDialog() {
     String message = "Please sign in with your username and password:";
-    final LoginDialog loginDialog = new LoginDialog( getShell(),
-                                                     "Login",
-                                                     message,
-                                                     "john" );
+    final LoginDialog loginDialog
+      = new LoginDialog( getShell(), "Login", message, "john" );
     int returnCode = loginDialog.open();
-    String username = loginDialog.getUsername();
-    String password = loginDialog.getPassword();
-    String pwd = password == null ? "n/a" : password.length() + " chars.";
-    loginDlgResLabel.setText(   "Login Dialog User: "
-                               + username
-                               + ", Password: "
-                               + pwd
-                               + " ("
-                               + returnCode
-                               + ")" );
+    String resultText = "Result: " + getReturnCodeText( returnCode );
+    if( returnCode == Dialog.OK ) {
+      String username = loginDialog.getUsername();
+      String password = loginDialog.getPassword();
+      String pwInfo = password == null ? "n/a" : password.length() + " chars";
+      resultText += ", user: " + username + ", password: " + pwInfo;
+    }
+    loginDlgResLabel.setText( resultText );
     loginDlgResLabel.pack();
+  }
+
+  private String getReturnCodeText( final int code ) {
+    String result;
+    if( code == Dialog.OK ) {
+      result = "OK";
+    } else if( code == Dialog.CANCEL ) {
+        result = "CANCEL";
+    } else {
+      result = String.valueOf( code );
+    }
+    return result ;
   }
 }

@@ -43,6 +43,7 @@ public class LoginDialog extends Dialog {
   }
   
   protected void createButtonsForButtonBar( final Composite parent ) {
+    createButton( parent, IDialogConstants.CANCEL_ID, "Cancel", false );
     createButton( parent, LOGIN_ID, "Login", true );
   }
   
