@@ -749,9 +749,12 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
-    new TreeColumn( tree, SWT.NONE );
-    new TreeColumn( tree, SWT.NONE );
-    new TreeColumn( tree, SWT.NONE );
+    TreeColumn c1 = new TreeColumn( tree, SWT.NONE );
+    c1.setWidth( 100 );
+    TreeColumn c2 = new TreeColumn( tree, SWT.NONE );
+    c2.setWidth( 100 );
+    TreeColumn c3 = new TreeColumn( tree, SWT.NONE );
+    c3.setWidth( 100 );
     
     item.setText( new String[]{
       "foo", "bar", "baz"
@@ -761,6 +764,7 @@ public class TreeItem_Test extends TestCase {
     Rectangle col1Bounds = item.getImageBounds( 1 );
     Rectangle col2Bounds = item.getImageBounds( 2 );
     
+    // without images, width and height should be 0
     assertEquals( 0, col0Bounds.height );
     assertEquals( 0, col0Bounds.width );
     assertEquals( 0, col1Bounds.height );
@@ -768,15 +772,17 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, col2Bounds.height );
     assertEquals( 0, col2Bounds.width );
     
+    // but x and y have to be set correctly
+    assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
+    assertEquals( 100, col1Bounds.x );
+    assertEquals( 200, col2Bounds.x );
+
     Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
     item.setImage( 2, image );
     
     Rectangle imageBounds = image.getBounds();
-    assertTrue( col0Bounds.x > 0 );
-    assertTrue( col1Bounds.x > 0 );
-    assertTrue( col2Bounds.x > 0 );
     
     col0Bounds = item.getImageBounds( 0 );
     col1Bounds = item.getImageBounds( 1 );
@@ -788,6 +794,8 @@ public class TreeItem_Test extends TestCase {
     assertEquals( imageBounds.width, col1Bounds.width );
     assertEquals( imageBounds.height, col2Bounds.height );
     assertEquals( imageBounds.width, col2Bounds.width );
+    assertTrue( col1Bounds.x > col0Bounds.x );
+    assertTrue( col2Bounds.x > col1Bounds.x );
     
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
     item2.setImage( 0, image );

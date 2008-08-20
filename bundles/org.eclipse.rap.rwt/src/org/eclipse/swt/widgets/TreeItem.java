@@ -412,15 +412,21 @@ public class TreeItem extends Item {
       if( columnIndex == 0 ) {
         left = imageBounds.x;
       } else {
-        TreeColumn[] cols = parent.getColumns();
-        for( int i = 0; i < columnIndex; i++ ) {
-          TreeColumn col = cols[ i ];
-          left += col.getWidth();
-        }
+        left = getItemLeft( columnIndex );
       }
       int top = 0;
       top = getItemTop();
       result = new Rectangle( left, top, width, getItemHeight() );
+    }
+    return result;
+  }
+
+  private int getItemLeft( int columnIndex ) {
+    int result = 0;
+    TreeColumn[] cols = parent.getColumns();
+    for( int i = 0; i < columnIndex; i++ ) {
+      TreeColumn col = cols[ i ];
+      result += col.getWidth();
     }
     return result;
   }
@@ -1038,7 +1044,12 @@ public class TreeItem extends Item {
       } else {
         result = new Rectangle( 0, 0, 0, 0 );
       }
-      result.x = ( ( depth + 1 ) * INDENT_WIDTH );
+      int indent = ( depth + 1 ) * INDENT_WIDTH;
+      if( columnIndex > 0 ) {
+        result.x += getItemLeft( columnIndex );
+      } else {
+        result.x = indent;
+      }
       // SWT behavior on windows gives the correct y value
       // On Gtk the y value is always the same (eg. 1)
       // we emulate the default windows behavior here
