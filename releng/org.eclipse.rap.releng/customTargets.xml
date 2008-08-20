@@ -220,11 +220,13 @@
 	<!-- ===================================================================== -->
 	<target name="test">
 		<property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
-		<property name="build.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
+		<property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
+		<property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
 		<property name="reports.tests" value="${buildDirectory}/tests" />
 		<mkdir dir="${reports.tests}" />
 		<path id="cp">
-			<pathelement location="${build.tests}" />
+			<pathelement location="${host.tests}" />
+			<pathelement location="${fragment.tests}" />
 			<fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
 				<include name="**/*.jar"/>
 			</fileset>
@@ -232,7 +234,6 @@
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
 			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v20080602-1318/junit.jar" />
 		</path>
@@ -243,7 +244,10 @@
 			<formatter type="xml" />
 
 			<batchtest fork="yes" todir="${reports.tests}">
-				<fileset dir="${build.tests}">
+				<fileset dir="${host.tests}">
+					<include name="**/*_Test.class" />
+				</fileset>
+				<fileset dir="${fragment.tests}">
 					<include name="**/*_Test.class" />
 				</fileset>
 			</batchtest>
@@ -287,7 +291,7 @@
 	</target>
 
 	<target name="tidyup">
-		<delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" />
+		<!-- delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" / -->
 	</target>
 
 	<!-- ===================================================================== -->
