@@ -29,7 +29,7 @@ public final class UIPlugin extends AbstractUIPlugin {
     /**
      * Creates an instance of the UIPlugin.
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public UIPlugin() {
         super();
@@ -92,5 +92,7 @@ public final class UIPlugin extends AbstractUIPlugin {
                 UIPlugin.this.savePluginPreferences();
             }
         });
+        
+        ResourceTranslatorHelper.registerAlgorithm();
     }
 }
