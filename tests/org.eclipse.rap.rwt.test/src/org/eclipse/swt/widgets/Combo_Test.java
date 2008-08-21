@@ -11,20 +11,19 @@
 
 package org.eclipse.swt.widgets;
 
-import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 
 /*
  * Note:
  * As long as Combo uses a ListModel to maintain its items and selection,
  * most of the add/remove/getItem.../selection test cases can be omitted.
- * They are covered in List_Test
+ * They are covered in List_Test 
  */
 public class Combo_Test extends TestCase {
 
@@ -47,7 +46,7 @@ public class Combo_Test extends TestCase {
     combo.deselect( 0 );
     assertEquals( 1, combo.getSelectionIndex() );
   }
-
+  
   public void testGetText() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -87,42 +86,32 @@ public class Combo_Test extends TestCase {
     }
     combo.removeAll();
     int number = 5;
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       combo.add( "fred" + i );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       assertEquals( i, combo.indexOf( "fred" + i ) );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       combo.add( "fred" + i );
-    }
     combo.removeAll();
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       assertEquals( -1, combo.indexOf( "fred" + i ) );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       combo.add( "fred" + i );
-    }
     combo.remove( "fred3" );
-    for( int i = 0; i < 3; i++ ) {
+    for( int i = 0; i < 3; i++ )
       assertEquals( i, combo.indexOf( "fred" + i ) );
-    }
     assertEquals( -1, combo.indexOf( "fred3" ) );
-    for( int i = 4; i < number; i++ ) {
+    for( int i = 4; i < number; i++ )
       assertEquals( i - 1, combo.indexOf( "fred" + i ) );
-    }
     combo.removeAll();
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       combo.add( "fred" + i );
-    }
     combo.remove( 2 );
-    for( int i = 0; i < 2; i++ ) {
+    for( int i = 0; i < 2; i++ )
       assertEquals( i, combo.indexOf( "fred" + i ) );
-    }
     assertEquals( -1, combo.indexOf( "fred2" ) );
-    for( int i = 3; i < number; i++ ) {
+    for( int i = 3; i < number; i++ )
       assertEquals( i - 1, combo.indexOf( "fred" + i ) );
-    }
   }
 
   public void testIndexOfI() {
@@ -138,27 +127,20 @@ public class Combo_Test extends TestCase {
     assertEquals( -1, combo.indexOf( "string0", -1 ) );
     combo.removeAll();
     int number = 5;
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       combo.add( "fred" + i );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       assertTrue( ":a:" + i, combo.indexOf( "fred" + i, 0 ) == i );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       assertTrue( ":b:" + i, combo.indexOf( "fred" + i, i + 1 ) == -1 );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       combo.add( "fred" + i );
-    }
-    for( int i = 0; i < 3; i++ ) {
+    for( int i = 0; i < 3; i++ )
       assertTrue( ":a:" + i, combo.indexOf( "fred" + i, 0 ) == i );
-    }
-    for( int i = 3; i < number; i++ ) {
+    for( int i = 3; i < number; i++ )
       assertTrue( ":b:" + i, combo.indexOf( "fred" + i, 3 ) == i );
-    }
-    for( int i = 0; i < number; i++ ) {
+    for( int i = 0; i < number; i++ )
       assertTrue( ":b:" + i, combo.indexOf( "fred" + i, i ) == i );
-    }
   }
 
   public void testSetText() {
@@ -192,7 +174,7 @@ public class Combo_Test extends TestCase {
       assertTrue( ":c:" + i, combo.getText().equals( cases[ i ] ) );
     }
   }
-
+	
   public void testSelection() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -295,7 +277,7 @@ public class Combo_Test extends TestCase {
     combo.removeAll();
     assertEquals( 0, combo.getItems().length );
   }
-
+  
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -308,16 +290,16 @@ public class Combo_Test extends TestCase {
   protected boolean listenerCalled;
   public void testAddModifyListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-
+    
     boolean exceptionThrown = false;
-
+    
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-
+    
     ModifyListener listener = new ModifyListener() {
 
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
     };
@@ -345,13 +327,13 @@ public class Combo_Test extends TestCase {
     }
     assertTrue( "Expected exception not thrown", exceptionThrown );
   }
-
+  
   public void testVisibleItemCount() {
 	  Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
-    combo.add( "2" );
+    combo.add( "2" );  
     combo.add( "3" );
     int visibleItemCount = combo.getVisibleItemCount();
     combo.setVisibleItemCount( -2 );
@@ -361,114 +343,7 @@ public class Combo_Test extends TestCase {
     combo.setVisibleItemCount( 3 );
     assertEquals( 3, combo.getVisibleItemCount() );
   }
-
-  public void testVerifyEvent() {
-    VerifyListener verifyListener;
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    final Combo combo = new Combo( shell, SWT.NONE );
-    combo.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
-        log.add( event );
-      }
-    } );
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
-        log.add( event );
-      }
-    } );
-
-    // VerifyEvent is also sent when setting text to the already set value
-    log.clear();
-    combo.setText( "" );
-    assertEquals( 2, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-
-    // Test verifyListener that prevents (doit=false) change
-    combo.setText( "" );
-    log.clear();
-    verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
-        event.doit = false;
-      }
-    };
-    combo.addVerifyListener( verifyListener );
-    combo.setText( "other" );
-    assertEquals( 1, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    assertEquals( "", combo.getText() );
-    combo.removeVerifyListener( verifyListener );
-
-    // Test verifyListener that manipulates text
-    combo.setText( "" );
-    log.clear();
-    verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
-        event.text = "manipulated";
-      }
-    };
-    combo.addVerifyListener( verifyListener );
-    combo.setText( "other" );
-    assertEquals( 2, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-    assertEquals( "manipulated", combo.getText() );
-    combo.removeVerifyListener( verifyListener );
-
-    // Ensure that:
-    // VerifyEvent#start denotes start of modified text range
-    // VerifyEvent#end denotes end of modified text range
-    // VerifyEvent#text denotes text to replace the range (start, end) with
-    String oldText = "old text";
-    combo.setText( oldText );
-    log.clear();
-    String newText = "old changed text";
-    combo.setText( newText );
-    assertEquals( 2, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    VerifyEvent verifyEvent = ( VerifyEvent )log.get( 0 );
-    assertEquals( 4, verifyEvent.start );
-    assertEquals( 4, verifyEvent.end );
-    assertEquals( "changed ", verifyEvent.text );
-    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-
-    combo.setText( oldText );
-    log.clear();
-    newText = "old t1234t";
-    combo.setText( newText );
-    assertEquals( 2, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    verifyEvent = ( VerifyEvent )log.get( 0 );
-    assertEquals( 5, verifyEvent.start );
-    assertEquals( 7, verifyEvent.end );
-    assertEquals( "1234", verifyEvent.text );
-
-    combo.setText( oldText );
-    log.clear();
-    newText = "old";
-    combo.setText( newText );
-    assertEquals( 2, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    verifyEvent = ( VerifyEvent )log.get( 0 );
-    assertEquals( 3, verifyEvent.start );
-    assertEquals( 8, verifyEvent.end );
-    assertEquals( "", verifyEvent.text );
-
-    combo.setText( oldText );
-    log.clear();
-    newText = "";
-    combo.setText( newText );
-    assertEquals( 2, log.size() );
-    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
-    verifyEvent = ( VerifyEvent )log.get( 0 );
-    assertEquals( 0, verifyEvent.start );
-    assertEquals( 8, verifyEvent.end );
-    assertEquals( "", verifyEvent.text );
-  }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
