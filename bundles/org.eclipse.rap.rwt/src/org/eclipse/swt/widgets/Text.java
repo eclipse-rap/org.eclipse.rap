@@ -135,8 +135,7 @@ public class Text extends Scrollable {
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    TextDiff diff = calcTextDiff( this.text, text );
-    String verifiedText = verifyText( diff.text, diff.start, diff.end );
+    String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
       this.text = verifiedText;
       selection.x = 0;
@@ -750,32 +749,32 @@ public class Text extends Scrollable {
     int equalCharsFromStart = 0;
     int equalCharsFromEnd = 0;
 
-    for( int i = 0; i < oldStr.length(); i++ ) {
+    boolean leave = false;
+    for( int i = 0; i < oldStr.length() && !leave; i++ ) {
       char oldChar = oldStr.charAt( i );
-      if( newStr.length() - i > 0) {
+      leave = !( newStr.length() - i > 0 );
+      if( !leave ) {
         char newChar = newStr.charAt( i );
-        if( oldChar != newChar ) {
-          break;
-        }
-      } else {
-        break;
+        leave = ( oldChar != newChar );
       }
-      equalCharsFromStart++;
+      if( !leave ) {
+        equalCharsFromStart++;
+      }
     }
     oldStr = oldStr.substring( equalCharsFromStart );
     newStr = newStr.substring( equalCharsFromStart );
 
-    for( int i = 1; i <= oldStr.length(); i++ ) {
+    leave = false;
+    for( int i = 1; i <= oldStr.length() && !leave; i++ ) {
       char oldChar = oldStr.charAt( oldStr.length() - i );
-      if( newStr.length() - i >= 0 ) {
+      leave = !( newStr.length() - i >= 0 );
+      if( !leave ) {
         char newChar = newStr.charAt( newStr.length() - i );
-        if( oldChar != newChar ) {
-          break;
-        }
-      } else {
-        break;
+        leave = ( oldChar != newChar );
       }
-      equalCharsFromEnd++;
+      if( !leave ) {
+        equalCharsFromEnd++;
+      }
     }
     oldStr = oldStr.substring( 0, oldStr.length() - equalCharsFromEnd );
     newStr = newStr.substring( 0, newStr.length() - equalCharsFromEnd );
@@ -802,7 +801,7 @@ public class Text extends Scrollable {
     String result;
     if( event.doit && !isDisposed() ) {
       String before = this.text.substring( 0, start );
-      String after =  this.text.substring( end );
+      String after = this.text.substring( end );
       result = before + event.text + after;
     } else {
       return null;

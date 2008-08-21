@@ -20,6 +20,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 
 
 public class Text_Test extends TestCase {
@@ -188,11 +189,12 @@ public class Text_Test extends TestCase {
     // VerifyEvent#start denotes start of modified text range
     // VerifyEvent#end denotes end of modified text range
     // VerifyEvent#text denotes text to replace the range (start, end) with
+    ITextAdapter adapter = ( ITextAdapter )text.getAdapter( ITextAdapter.class );
     String oldText = "old text";
     text.setText( oldText );
     log.clear();
     String newText = "old changed text";
-    text.setText( newText );
+    adapter.setText( newText, new Point( 0, 0 ) );
     assertEquals( 2, log.size() );
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     VerifyEvent verifyEvent = ( VerifyEvent )log.get( 0 );
@@ -204,7 +206,7 @@ public class Text_Test extends TestCase {
     text.setText( oldText );
     log.clear();
     newText = "old t1234t";
-    text.setText( newText );
+    adapter.setText( newText, new Point( 0, 0 ) );
     assertEquals( 2, log.size() );
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     verifyEvent = ( VerifyEvent )log.get( 0 );
@@ -215,7 +217,7 @@ public class Text_Test extends TestCase {
     text.setText( oldText );
     log.clear();
     newText = "old";
-    text.setText( newText );
+    adapter.setText( newText, new Point( 0, 0 ) );
     assertEquals( 2, log.size() );
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     verifyEvent = ( VerifyEvent )log.get( 0 );
@@ -226,13 +228,24 @@ public class Text_Test extends TestCase {
     text.setText( oldText );
     log.clear();
     newText = "";
-    text.setText( newText );
+    adapter.setText( newText, new Point( 0, 0 ) );
     assertEquals( 2, log.size() );
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     verifyEvent = ( VerifyEvent )log.get( 0 );
     assertEquals( 0, verifyEvent.start );
     assertEquals( 8, verifyEvent.end );
     assertEquals( "", verifyEvent.text );
+
+    text.setText( oldText );
+    log.clear();
+    newText = "new text";
+    text.setText( newText );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    verifyEvent = ( VerifyEvent )log.get( 0 );
+    assertEquals( 0, verifyEvent.start );
+    assertEquals( oldText.length(), verifyEvent.end );
+    assertEquals( newText, verifyEvent.text );
 
     // Ensure that VerifyEvent gets fired when setEditable was set to false
     text.setText( "" );
