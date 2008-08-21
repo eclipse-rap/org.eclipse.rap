@@ -135,7 +135,8 @@ public class Text extends Scrollable {
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    String verifiedText = verifyText( text, 0, this.text.length() );
+    TextDiff diff = calcTextDiff( this.text, text );
+    String verifiedText = verifyText( diff.text, diff.start, diff.end );
     if( verifiedText != null ) {
       this.text = verifiedText;
       selection.x = 0;
@@ -733,6 +734,59 @@ public class Text extends Scrollable {
   ////////////////////////////////////////////
   // Text modification and verify event helper
 
+  private class TextDiff {
+    public int start = 0;
+    public int end = 0;
+    public String text = "";
+  }
+
+  private TextDiff calcTextDiff( final String oldText,
+                                 final String newText ) {
+    TextDiff result = new TextDiff();
+
+    String oldStr = oldText;
+    String newStr = newText;
+
+    int equalCharsFromStart = 0;
+    int equalCharsFromEnd = 0;
+
+    for( int i = 0; i < oldStr.length(); i++ ) {
+      char oldChar = oldStr.charAt( i );
+      if( newStr.length() - i > 0) {
+        char newChar = newStr.charAt( i );
+        if( oldChar != newChar ) {
+          break;
+        }
+      } else {
+        break;
+      }
+      equalCharsFromStart++;
+    }
+    oldStr = oldStr.substring( equalCharsFromStart );
+    newStr = newStr.substring( equalCharsFromStart );
+
+    for( int i = 1; i <= oldStr.length(); i++ ) {
+      char oldChar = oldStr.charAt( oldStr.length() - i );
+      if( newStr.length() - i >= 0 ) {
+        char newChar = newStr.charAt( newStr.length() - i );
+        if( oldChar != newChar ) {
+          break;
+        }
+      } else {
+        break;
+      }
+      equalCharsFromEnd++;
+    }
+    oldStr = oldStr.substring( 0, oldStr.length() - equalCharsFromEnd );
+    newStr = newStr.substring( 0, newStr.length() - equalCharsFromEnd );
+
+    result.start = equalCharsFromStart;
+    result.end = oldText.length() - equalCharsFromEnd;
+    result.text = newStr;
+
+    return result;
+  }
+
   private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
@@ -747,7 +801,9 @@ public class Text extends Scrollable {
      */
     String result;
     if( event.doit && !isDisposed() ) {
-      result = event.text;
+      String before = this.text.substring( 0, start );
+      String after =  this.text.substring( end );
+      result = before + event.text + after;
     } else {
       return null;
     }
@@ -755,8 +811,8 @@ public class Text extends Scrollable {
   }
 
   private void setText( final String text, final Point selection ) {
-    // TODO [rst] Shouldn't the last parameter be the length of the current text?
-    String verifiedText = verifyText( text, 0, this.text.length() );
+    TextDiff diff = calcTextDiff( this.text, text );
+    String verifiedText = verifyText( diff.text, diff.start, diff.end );
     if( verifiedText != null ) {
       this.text = verifiedText;
       if( selection != null ) {
