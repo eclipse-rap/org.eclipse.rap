@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -521,13 +522,16 @@ public class Combo extends Composite {
    */
   public int indexOf( final String string, final int start ) {
     checkWidget();
-    if( string == null )
+    if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
-    if( !( 0 <= start && start < model.getItemCount() ) )
+    }
+    if( !( 0 <= start && start < model.getItemCount() ) ) {
       return -1;
+    }
     for( int i = start; i < model.getItemCount(); i++ ) {
-      if( string.equals( model.getItem( i ) ) )
+      if( string.equals( model.getItem( i ) ) ) {
         return i;
+      }
     }
     return -1;
   }
@@ -591,7 +595,8 @@ public class Combo extends Composite {
       }
       select( index );
     }
-    String verifiedText = verifyText( string, 0, text.length() );
+    TextDiff diff = calcTextDiff( text, string );
+    String verifiedText = verifyText( diff.text, diff.start, diff.end );
     if( verifiedText != null ) {
       text = verifiedText;
       ModifyEvent modifyEvent = new ModifyEvent( this );
@@ -721,7 +726,9 @@ public class Combo extends Composite {
    */
   public void addModifyListener( final ModifyListener listener ) {
     checkWidget();
-    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
+    if (listener == null) {
+      error (SWT.ERROR_NULL_ARGUMENT);
+    }
     ModifyEvent.addListener( this, listener );
   }
 
@@ -744,7 +751,9 @@ public class Combo extends Composite {
    */
   public void removeModifyListener( final ModifyListener listener ) {
     checkWidget();
-    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
+    if (listener == null) {
+      error (SWT.ERROR_NULL_ARGUMENT);
+    }
     ModifyEvent.removeListener( this, listener );
   }
 
@@ -804,6 +813,59 @@ public class Combo extends Composite {
   //////////////////
   // Helping methods
 
+  private class TextDiff {
+    public int start = 0;
+    public int end = 0;
+    public String text = "";
+  }
+
+  private TextDiff calcTextDiff( final String oldText,
+                                 final String newText ) {
+    TextDiff result = new TextDiff();
+
+    String oldStr = oldText;
+    String newStr = newText;
+
+    int equalCharsFromStart = 0;
+    int equalCharsFromEnd = 0;
+
+    for( int i = 0; i < oldStr.length(); i++ ) {
+      char oldChar = oldStr.charAt( i );
+      if( newStr.length() - i > 0) {
+        char newChar = newStr.charAt( i );
+        if( oldChar != newChar ) {
+          break;
+        }
+      } else {
+        break;
+      }
+      equalCharsFromStart++;
+    }
+    oldStr = oldStr.substring( equalCharsFromStart );
+    newStr = newStr.substring( equalCharsFromStart );
+
+    for( int i = 1; i <= oldStr.length(); i++ ) {
+      char oldChar = oldStr.charAt( oldStr.length() - i );
+      if( newStr.length() - i >= 0 ) {
+        char newChar = newStr.charAt( newStr.length() - i );
+        if( oldChar != newChar ) {
+          break;
+        }
+      } else {
+        break;
+      }
+      equalCharsFromEnd++;
+    }
+    oldStr = oldStr.substring( 0, oldStr.length() - equalCharsFromEnd );
+    newStr = newStr.substring( 0, newStr.length() - equalCharsFromEnd );
+
+    result.start = equalCharsFromStart;
+    result.end = oldText.length() - equalCharsFromEnd;
+    result.text = newStr;
+
+    return result;
+  }
+
   private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
@@ -818,7 +880,9 @@ public class Combo extends Composite {
      */
     String result;
     if( event.doit && !isDisposed() ) {
-      result = event.text;
+      String before = this.text.substring( 0, start );
+      String after =  this.text.substring( end );
+      result = before + event.text + after;
     } else {
       return null;
     }
