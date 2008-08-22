@@ -159,6 +159,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       }
     },
 
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
+      {
+        this._tree.removeState( state );
+      }
+    },
+
     _onTreeScroll : function( e ) {
       var target = e.target;
       if( e.target == null ) {
