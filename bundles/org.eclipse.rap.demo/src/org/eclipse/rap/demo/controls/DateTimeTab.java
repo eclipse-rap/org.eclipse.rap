@@ -74,19 +74,19 @@ class DateTimeTab extends ExampleTab {
       dateTime1.addSelectionListener( new SelectionListener() {
 
         public void widgetSelected( final SelectionEvent event ) {
-          String message = "DateTime WidgetSelected!";
-          MessageDialog.openInformation( dateTime1.getShell(),
-                                         "Information",
-                                         message );
-          //log( message );
+          String message = "DateTime WidgetSelected! Selected date: "
+            + dateTime1.getDay()
+            + "/" + ( dateTime1.getMonth() + 1 )
+            + "/" + dateTime1.getYear()
+            + " " + dateTime1.getHours()
+            + ":" + dateTime1.getMinutes()
+            + ":" + dateTime1.getSeconds();
+          log( message );
         }
 
         public void widgetDefaultSelected( final SelectionEvent event ) {
           String message = "DateTime WidgetDefaultSelected!";
-          MessageDialog.openInformation( dateTime1.getShell(),
-                                         "Information",
-                                         message );
-          //log( message );
+          log( message );
         }
       } );
     }

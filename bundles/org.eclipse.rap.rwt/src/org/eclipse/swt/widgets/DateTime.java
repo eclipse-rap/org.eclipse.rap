@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 import java.text.*;
 import java.util.*;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -174,7 +175,7 @@ public class DateTime extends Composite {
     super( parent, checkStyle( style ) );
     dateTimeAdapter = new DateTimeAdapter();
     rightNow = Calendar.getInstance();
-    DateFormatSymbols symbols = new DateFormatSymbols();
+    DateFormatSymbols symbols = new DateFormatSymbols( RWT.getLocale() );
     MONTH_NAMES = symbols.getMonths();
     WEEKDAY_NAMES = symbols.getWeekdays();
     DATE_SEPARATOR = getDateSeparator();
@@ -544,6 +545,8 @@ public class DateTime extends Composite {
     Font font = getFont();
     int width = 0, height = 0;
     if( ( style & SWT.CALENDAR ) != 0 ) {
+      width = 168;
+      height = 140;
     } else if( ( style & SWT.DATE ) != 0 ) {
       Point prefSize = new Point( 0, 0 );
       if( DATE_PATTERN.equals( "MDY" ) ) {
