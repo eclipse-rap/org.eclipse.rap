@@ -48,39 +48,41 @@ public class DateTimeLCA_Test extends TestCase {
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
     // Test preserved sub widgets bounds
-    IDateTimeAdapter dateTimeAdapter = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
+    IDateTimeAdapter dtAdapter
+      = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
     RWTFixture.preserveWidgets();
-    Rectangle bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.WEEKDAY_TEXTFIELD
-                                                          + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.WEEKDAY_TEXTFIELD ),
+    String propName = IDateTimeAdapter.WEEKDAY_TEXTFIELD + "_BOUNDS";
+    Rectangle bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.WEEKDAY_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.DAY_TEXTFIELD
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.DAY_TEXTFIELD ),
+    propName = IDateTimeAdapter.DAY_TEXTFIELD + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DAY_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.MONTH_TEXTFIELD
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.MONTH_TEXTFIELD ),
+    propName = IDateTimeAdapter.MONTH_TEXTFIELD + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MONTH_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.YEAR_TEXTFIELD
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.YEAR_TEXTFIELD ),
+    propName = IDateTimeAdapter.YEAR_TEXTFIELD + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.YEAR_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.WEEKDAY_MONTH_SEPARATOR
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.WEEKDAY_MONTH_SEPARATOR ),
+    propName = IDateTimeAdapter.WEEKDAY_MONTH_SEPARATOR + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.WEEKDAY_MONTH_SEPARATOR ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.MONTH_DAY_SEPARATOR
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.MONTH_DAY_SEPARATOR ),
+    propName = IDateTimeAdapter.MONTH_DAY_SEPARATOR + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MONTH_DAY_SEPARATOR ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.DAY_YEAR_SEPARATOR
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.DAY_YEAR_SEPARATOR ),
+    propName = IDateTimeAdapter.DAY_YEAR_SEPARATOR + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DAY_YEAR_SEPARATOR ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.SPINNER
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.SPINNER ), bounds );
+    propName = IDateTimeAdapter.SPINNER + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SPINNER ),
+                  bounds );
     RWTFixture.clearPreserved();
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
@@ -98,41 +100,44 @@ public class DateTimeLCA_Test extends TestCase {
     // Test preserved hours, minutes, seconds
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    Integer hours = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_HOURS );
+    Integer hours
+      = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_HOURS );
     assertEquals( 1, hours.intValue() );
-    Integer minutes = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_MINUTES );
+    Integer minutes
+      = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_MINUTES );
     assertEquals( 2, minutes.intValue() );
-    Integer seconds = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_SECONDS );
+    Integer seconds
+      = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_SECONDS );
     assertEquals( 3, seconds.intValue() );
     RWTFixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
     // Test preserved sub widgets bounds
-    IDateTimeAdapter dateTimeAdapter = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
+    IDateTimeAdapter dtAdapter = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
     RWTFixture.preserveWidgets();
-    Rectangle bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.HOURS_TEXTFIELD
-                                                          + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.HOURS_TEXTFIELD ),
+    String propName = IDateTimeAdapter.HOURS_TEXTFIELD + "_BOUNDS";
+    Rectangle bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.HOURS_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.MINUTES_TEXTFIELD
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.MINUTES_TEXTFIELD ),
+    propName = IDateTimeAdapter.MINUTES_TEXTFIELD + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MINUTES_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.SECONDS_TEXTFIELD
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.SECONDS_TEXTFIELD ),
+    propName = IDateTimeAdapter.SECONDS_TEXTFIELD + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SECONDS_TEXTFIELD ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.HOURS_MINUTES_SEPARATOR
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.HOURS_MINUTES_SEPARATOR ),
+    propName = IDateTimeAdapter.HOURS_MINUTES_SEPARATOR + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.HOURS_MINUTES_SEPARATOR ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.MINUTES_SECONDS_SEPARATOR
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.MINUTES_SECONDS_SEPARATOR ),
+    propName = IDateTimeAdapter.MINUTES_SECONDS_SEPARATOR + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MINUTES_SECONDS_SEPARATOR ),
                   bounds );
-    bounds = ( Rectangle )adapter.getPreserved( IDateTimeAdapter.SPINNER
-                                                + "_BOUNDS" );
-    assertEquals( dateTimeAdapter.getBounds( IDateTimeAdapter.SPINNER ), bounds );
+    propName = IDateTimeAdapter.SPINNER + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SPINNER ), bounds );
     RWTFixture.clearPreserved();
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
@@ -202,7 +207,8 @@ public class DateTimeLCA_Test extends TestCase {
   private void testPreserveSelectionListener( final DateTime dateTime ) {
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners
+      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {

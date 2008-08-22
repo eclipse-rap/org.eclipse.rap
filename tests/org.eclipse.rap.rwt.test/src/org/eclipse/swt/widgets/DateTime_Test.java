@@ -133,28 +133,28 @@ public class DateTime_Test extends TestCase {
     assertTrue( ( dateTime.getStyle() & SWT.CALENDAR ) != 0 );
     // Test combination of SWT.MEDIUM | SWT.SHORT | SWT.LONG
     dateTime = new DateTime( shell, SWT.DATE
-                                    | SWT.MEDIUM
-                                    | SWT.SHORT
-                                    | SWT.LONG );
+                                  | SWT.MEDIUM
+                                  | SWT.SHORT
+                                  | SWT.LONG );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.MEDIUM ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) == 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
     dateTime = new DateTime( shell, SWT.DATE
-                             | SWT.MEDIUM
-                             | SWT.SHORT );
+                                  | SWT.MEDIUM
+                                  | SWT.SHORT );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.MEDIUM ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) == 0 );
     dateTime = new DateTime( shell, SWT.DATE
-                             | SWT.MEDIUM
-                             | SWT.LONG );
+                                  | SWT.MEDIUM
+                                  | SWT.LONG );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.MEDIUM ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
     dateTime = new DateTime( shell, SWT.TIME
-                             | SWT.SHORT
-                             | SWT.LONG );
+                                  | SWT.SHORT
+                                  | SWT.LONG );
     assertTrue( ( dateTime.getStyle() & SWT.TIME ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
