@@ -51,8 +51,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/ButtonUtil.js";
   private static final String COMBO_UTIL_JS
     = "org/eclipse/swt/ComboUtil.js";
-  private static final String TOOL_ITEM_JS =
-    "org/eclipse/swt/ToolItemUtil.js";
+  private static final String TOOL_ITEM_JS
+    = "org/eclipse/swt/ToolItemUtil.js";
   private static final String MENU_UTIL_JS
     = "org/eclipse/swt/MenuUtil.js";
   private static final String LINK_UTIL_JS
@@ -90,7 +90,7 @@ final class QooxdooResourcesUtil {
   private static final String COMBO_JS
     = "org/eclipse/swt/widgets/Combo.js";
   private static final String GROUP_JS
-  = "org/eclipse/swt/widgets/Group.js";
+    = "org/eclipse/swt/widgets/Group.js";
   private static final String TEXT_UTIL_JS
     = "org/eclipse/swt/TextUtil.js";
   private static final String SPINNER_JS
@@ -119,6 +119,12 @@ final class QooxdooResourcesUtil {
     = "qx/constant/Style.js";
   private static final String SCALE_JS
     = "org/eclipse/swt/widgets/Scale.js";
+  private static final String DATE_TIME_DATE_JS
+    = "org/eclipse/swt/widgets/DateTimeDate.js";
+  private static final String DATE_TIME_TIME_JS
+    = "org/eclipse/swt/widgets/DateTimeTime.js";
+  private static final String DATE_TIME_CALENDAR_JS
+    = "org/eclipse/swt/widgets/DateTimeCalendar.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -187,6 +193,9 @@ final class QooxdooResourcesUtil {
       register( FONT_SIZE_CALCULATION_JS );
       register( CLABEL_UTIL_JS );
       register( SCALE_JS );
+      register( DATE_TIME_DATE_JS );
+      register( DATE_TIME_TIME_JS );
+      register( DATE_TIME_CALENDAR_JS );
 
       // register contributions
       registerContributions();

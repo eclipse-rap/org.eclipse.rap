@@ -1748,6 +1748,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
   
+  // ------------------------------------------------------------------------
+  // Scale
+  
   "scale" : {
     style : function( states ) {
       return {
@@ -1836,6 +1839,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
       
       return result;
+    }
+  },
+  
+  // ------------------------------------------------------------------------
+  // DateTime
+  
+  "datetime-date" : {
+    style : function( states ) {
+      return {
+        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+      }
     }
   }
 }

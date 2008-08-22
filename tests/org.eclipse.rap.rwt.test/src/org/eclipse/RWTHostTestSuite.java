@@ -46,7 +46,7 @@ public class RWTHostTestSuite {
 
   public static Test suite() {
     TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt" );
-    
+
 // TODO [fappel]: Note that the following commented tests belong semantically
 //                to the RWT host tests, but there is still some refactoring
 //                necessary to achieve this, so they've been moved temporarily
@@ -147,6 +147,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ProgressBar_Test.class );
     suite.addTestSuite( BusyIndicator_Test.class );
     suite.addTestSuite( Scale_Test.class );
+    suite.addTestSuite( DateTime_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

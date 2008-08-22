@@ -45,49 +45,49 @@ public class SWT {
 
   /**
    * The mouse down event type (value is 3).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addMouseListener
    * @see org.eclipse.swt.events.MouseListener#mouseDown
    * @see org.eclipse.swt.events.MouseEvent
-   * 
+   *
    * @since 1.1
    */
   public static final int MouseDown = 3;
-  
+
   /**
    * The mouse up event type (value is 4).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addMouseListener
    * @see org.eclipse.swt.events.MouseListener#mouseUp
    * @see org.eclipse.swt.events.MouseEvent
-   * 
+   *
    * @since 1.1
    */
   public static final int MouseUp = 4;
-  
+
   /**
    * The mouse double click event type (value is 8).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addMouseListener
    * @see org.eclipse.swt.events.MouseListener#mouseDoubleClick
    * @see org.eclipse.swt.events.MouseEvent
-   * 
+   *
    * @since 1.1
    */
-  public static final int MouseDoubleClick = 8; 
-  
+  public static final int MouseDoubleClick = 8;
+
   /**
    * The move event type (value is 10).
    *
@@ -618,7 +618,7 @@ public class SWT {
 
   /**
    * Style constant for arrow button behavior (value is 1&lt;&lt;2).
-   * <!-- 
+   * <!--
    * <p><b>Used By:</b><ul>
    * <li><code>Button</code></li>
    * </ul></p>
@@ -1564,6 +1564,82 @@ public class SWT {
   public static final int TRANSPARENCY_PIXEL = 1 << 2;
 
   /**
+   * Style constant for date display (value is 1&lt;&lt;5).
+   * <p><b>Used By:</b><ul>
+   * <li><code>DateTime</code></li>
+   * </ul></p>
+   *
+   * @since 1.1.1
+   */
+  public static final int DATE = 1 << 5;
+
+  /**
+   * Style constant for time display (value is 1&lt;&lt;7).
+   * <p><b>Used By:</b><ul>
+   * <li><code>DateTime</code></li>
+   * </ul></p>
+   *
+   * @since 1.1.1
+   */
+  public static final int TIME = 1 << 7;
+
+  /**
+   * Style constant for calendar display (value is 1&lt;&lt;10).
+   * <p><b>Used By:</b><ul>
+   * <li><code>DateTime</code></li>
+   * </ul></p>
+   *
+   * @since 1.1.1
+   */
+  public static final int CALENDAR = 1 << 10;
+
+  /**
+   * Style constant for short date/time format (value is 1&lt;&lt;15).
+   * <p>
+   * A short date displays the month and year.
+   * A short time displays hours and minutes.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>DateTime</code></li>
+   * </ul></p>
+   *
+   * @since 1.1.1
+   */
+  public static final int SHORT = 1 << 15;
+
+  /**
+   * Style constant for medium date/time format (value is 1&lt;&lt;16).
+   * <p>
+   * A medium date displays the day, month and year.
+   * A medium time displays hours, minutes, and seconds.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>DateTime</code></li>
+   * </ul></p>
+   *
+   * @since 1.1.1
+   */
+  public static final int MEDIUM = 1 << 16;
+
+  /**
+   * Style constant for long date/time format (value is 1&lt;&lt;28).
+   * <p>
+   * A long date displays the day, month and year.
+   * A long time displays hours, minutes, and seconds.
+   * The day and month names may be displayed.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>DateTime</code></li>
+   * </ul></p>
+   *
+   * @since 1.1.1
+   */
+  public static final int LONG = 1 << 28;
+
+  /**
    * Throws an appropriate exception based on the passed in error code.
    *
    * @param code the SWT error code
@@ -1843,14 +1919,14 @@ public class SWT {
    * Examples: "win32", "motif", "gtk", "photon", "carbon", "rap"
    *
    * @return the SWT platform name
-   * 
+   *
    * @since 1.1
    */
    // TODO [bm]: Improve to support different fragments
   public static String getPlatform () {
   	return "rap"; //$NON-NLS-1$
   }
-  
+
   /**
    * Returns the NLS'ed message for the given argument.
    *

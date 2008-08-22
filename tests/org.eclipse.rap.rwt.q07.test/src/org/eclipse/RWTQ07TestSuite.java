@@ -25,6 +25,7 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
+import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFocus_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
@@ -54,8 +55,8 @@ public class RWTQ07TestSuite {
 
   public static Test suite() {
     TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt.q07" );
-    
-    // TODO [fappel]: Note that the following tests belong semantically to the 
+
+    // TODO [fappel]: Note that the following tests belong semantically to the
     //                RWT core tests, but there is still some refactoring
     //                necessary to achieve this, so they've been moved
     //                temporarily to the q07 fragment tests..
@@ -70,7 +71,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( UntypedEvents_Test.class );
     suite.addTestSuite( Tree_Test.class );
     suite.addTestSuite( TreeItem_Test.class );
-    
+
     // TODO [fappel]: Check also which parts of the following tests belong
     //                to the host bundle testsuite
     // == LifeCycle ==
@@ -82,8 +83,8 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( UITestUtil_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
-    
-    // == LCA == 
+
+    // == LCA ==
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( DisplayLCAFocus_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );
@@ -111,6 +112,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ScrolledCompositeLCA_Test.class );
     suite.addTestSuite( BrowserLCA_Test.class );
     suite.addTestSuite( ScaleLCA_Test.class );
+    suite.addTestSuite( DateTimeLCA_Test.class );
 
     return suite;
   }

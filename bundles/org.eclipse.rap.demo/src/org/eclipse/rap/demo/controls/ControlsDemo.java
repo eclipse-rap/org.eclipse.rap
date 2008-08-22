@@ -59,6 +59,7 @@ public class ControlsDemo implements IEntryPoint {
       new ComboTab( topFolder ),
       new CompositeTab( topFolder ),
       new CoolBarTab( topFolder ),
+      new DateTimeTab( topFolder ),
       new DialogsTab( topFolder ),
       new GroupTab( topFolder ),
       new LabelTab( topFolder ),
