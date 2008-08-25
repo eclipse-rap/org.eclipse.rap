@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -614,7 +614,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );        
-        req.addParameter( id + ".date", this._removeLeadingZero( this._dayTextField.getValue() ) );
+        req.addParameter( id + ".day", this._removeLeadingZero( this._dayTextField.getValue() ) );
         req.addParameter( id + ".month", this._monthInt - 1 );
         req.addParameter( id + ".year", this._lastValidYear );
         if( this._hasSelectionListener ) {
