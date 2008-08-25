@@ -35,10 +35,14 @@ public class Layout_Test extends TestCase {
     RWTFixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
+    // [if] Due to bug 239259: [Shell] Initial size too small
+    // Shell has a default (initial) size of 768 x 536
+    // 768 x 536 is the default size of Windows SWT Shell
+    Rectangle defaultShellBounds = new Rectangle( 0, 0, 768, 536 );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     Rectangle empty = new Rectangle( 0, 0, 0, 0 );
-    assertEquals( empty, shell.getBounds() );
+    assertEquals( defaultShellBounds, shell.getBounds() );
     assertEquals( empty, composite.getBounds() );
     assertEquals( empty, control.getBounds() );
     Rectangle shellBounds = new Rectangle( 40, 50, 60, 70 );

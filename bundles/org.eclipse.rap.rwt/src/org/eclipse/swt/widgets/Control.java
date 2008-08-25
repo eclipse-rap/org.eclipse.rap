@@ -35,7 +35,7 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
  * within the SWT implementation.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public abstract class Control extends Widget {
@@ -86,7 +86,7 @@ public abstract class Control extends Widget {
 
   private final IControlAdapter controlAdapter;
   final Composite parent;
-  private Rectangle bounds = EMPTY_RECTANGLE;
+  Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
   private String toolTipText;
   private Menu menu;
@@ -185,7 +185,7 @@ public abstract class Control extends Widget {
 
   //////////////
   // Visibility
-  
+
   /**
    * Marks the receiver as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise.
@@ -250,7 +250,7 @@ public abstract class Control extends Widget {
 
   //////////////
   // Enablement
-  
+
   /**
    * Enables the receiver if the argument is <code>true</code>,
    * and disables it otherwise. A disabled control is typically
@@ -324,7 +324,7 @@ public abstract class Control extends Widget {
 
   /////////
   // Colors
-  
+
   /**
    * Sets the receiver's background color to the color specified
    * by the argument, or to the default system color for the control
@@ -497,8 +497,9 @@ public abstract class Control extends Widget {
   // verbatim copy of SWT 3.4.0 GTK
   private void checkBackground() {
     Shell shell = getShell();
-    if( this == shell )
+    if( this == shell ) {
       return;
+    }
     state &= ~PARENT_BACKGROUND;
     Composite composite = parent;
     do {
@@ -516,8 +517,9 @@ public abstract class Control extends Widget {
         state |= PARENT_BACKGROUND;
         return;
       }
-      if( composite == shell )
+      if( composite == shell ) {
         break;
+      }
       composite = composite.parent;
     } while( true );
   }
@@ -543,7 +545,7 @@ public abstract class Control extends Widget {
 
   /////////
   // Fonts
-  
+
   /**
    * Sets the font that the receiver will use to paint textual information
    * to the font specified by the argument, or to the default font for that
@@ -586,7 +588,7 @@ public abstract class Control extends Widget {
 
   //////////////////
   // Focus handling
-  
+
   /**
    * Causes the receiver to have the <em>keyboard focus</em>,
    * such that all keyboard events will be delivered to it.  Focus
@@ -665,7 +667,7 @@ public abstract class Control extends Widget {
 
   ///////////////////////////////////////////////////////////////////////
   // Methods to manipulate, transform and query the controls' dimensions
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent (or its display if its parent is null),
@@ -1104,7 +1106,7 @@ public abstract class Control extends Widget {
 
   ///////////////////////////
   // Layout related methods
-  
+
   /**
    * Returns layout data which is associated with the receiver.
    *
@@ -1145,7 +1147,7 @@ public abstract class Control extends Widget {
 
   /////////////////////
   // ToolTip operations
-  
+
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -1180,7 +1182,7 @@ public abstract class Control extends Widget {
 
   ///////////////////
   // Menu operations
-  
+
   /**
    * Sets the receiver's pop up menu to the argument.
    * All controls may optionally have a pop up
@@ -1248,7 +1250,7 @@ public abstract class Control extends Widget {
 
   ///////////
   // Z-Order
-  
+
   /**
    * Moves the receiver above the specified control in the
    * drawing order. If the argument is null, then the receiver
@@ -1331,7 +1333,7 @@ public abstract class Control extends Widget {
 
   //////////////////////////////////
   // Methods to add/remove listener
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is moved or resized, by sending
@@ -1375,7 +1377,7 @@ public abstract class Control extends Widget {
   public void removeControlListener( final ControlListener listener ) {
     ControlEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when mouse buttons are pressed and released, by sending
@@ -1394,7 +1396,7 @@ public abstract class Control extends Widget {
    *
    * @see MouseListener
    * @see #removeMouseListener
-   * 
+   *
    * @since 1.1
    */
   public void addMouseListener( final MouseListener listener ) {
@@ -1417,13 +1419,13 @@ public abstract class Control extends Widget {
    *
    * @see MouseListener
    * @see #addMouseListener
-   * 
+   *
    * @since 1.1
    */
   public void removeMouseListener( final MouseListener listener ) {
     MouseEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control gains or loses focus, by sending
@@ -1472,7 +1474,7 @@ public abstract class Control extends Widget {
   // drawing (Note that we can't really force a redraw. This is just a
   // fake to for event notifications that come on OS systems
   // with redraws)
-  
+
   /**
    * If the argument is <code>false</code>, causes subsequent drawing
    * operations in the receiver to be ignored. No drawing of any kind
@@ -1498,7 +1500,7 @@ public abstract class Control extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setRedraw( boolean redraw ) {
+  public void setRedraw( final boolean redraw ) {
     checkWidget();
     RWTLifeCycle.fakeRedraw( this, redraw );
   }
@@ -1525,7 +1527,7 @@ public abstract class Control extends Widget {
 
   /////////////
   // Disposal
-  
+
   void releaseParent() {
     if( getParent() != null ) {
       getParent().removeControl( this );
@@ -1559,14 +1561,15 @@ public abstract class Control extends Widget {
 
   /////////////
   // Tab order
-  
+
   boolean isTabGroup() {
     boolean result = false;
     Control[] tabList = parent._getTabList();
     if( tabList != null ) {
       for( int i = 0; i < tabList.length; i++ ) {
-        if( tabList[ i ] == this )
+        if( tabList[ i ] == this ) {
           result = true;
+        }
       }
     }
     return result;
@@ -1574,7 +1577,7 @@ public abstract class Control extends Widget {
 
   //////////////////////////////////////////////////////
   // Helping methods that throw move- and resize-events
-  
+
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
       new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
@@ -1589,7 +1592,7 @@ public abstract class Control extends Widget {
 
   /////////////////////////////////////////////////////
   // Helping method to set the focus control on display
-  
+
   private void setFocusControl( final Control control ) {
     // focus
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
@@ -1619,7 +1622,7 @@ public abstract class Control extends Widget {
 
   ///////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
-  
+
   private void addMenuDisposeListener() {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
@@ -1643,8 +1646,8 @@ public abstract class Control extends Widget {
     return getControlThemeAdapter( this.getClass() );
   }
 
-  private IControlThemeAdapter getControlThemeAdapter( 
-    final Class controlClass ) 
+  private IControlThemeAdapter getControlThemeAdapter(
+    final Class controlClass )
   {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( IControlThemeAdapter )themeMgr.getThemeAdapter( controlClass );

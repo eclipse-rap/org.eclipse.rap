@@ -35,10 +35,11 @@ public class ControlLCAUtil_Test extends TestCase {
     // Ensure that bounds for an uninitialized widget are rendered
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
+    Composite composite = new Composite( shell , SWT.NONE );
     RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeBounds( shell );
+    ControlLCAUtil.writeBounds( composite );
     // TODO [fappel]: check whether minWidth and minHeight is still needed -
     //                causes problems on FF with caching
     //String expected
@@ -47,15 +48,15 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // Ensure that unchanged bound do not lead to markup
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( composite );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    ControlLCAUtil.writeBounds( shell );
+    ControlLCAUtil.writeBounds( composite );
     assertEquals( "", Fixture.getAllMarkup() );
     // Ensure that bounds-changes on an already initialized widgets are rendered
     Fixture.fakeResponseWriter();
-    shell.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    ControlLCAUtil.writeBounds( shell );
+    composite.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    ControlLCAUtil.writeBounds( composite );
     expected = "w.setSpace( 1, 3, 2, 4 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
   }
@@ -159,7 +160,7 @@ public class ControlLCAUtil_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
     assertTrue( markup.indexOf( "removeActivateListenerWidget" ) != -1 );
-    
+
     // When the shell is disposed of, no removeActivateListener must be rendered
     // Important when disposing of a shell with ShellListener#shellClosed
     labelLCA.preserveValues( label );
