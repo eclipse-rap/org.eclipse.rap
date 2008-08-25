@@ -144,6 +144,31 @@ public class DateTimeLCA_Test extends TestCase {
     display.dispose();
   }
 
+  public void testDateTimeCalendarPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+    dateTime.setDay( 1 );
+    dateTime.setMonth( 1 );
+    dateTime.setYear( 2008 );
+    RWTFixture.markInitialized( display );
+    // Test preserved day, month, year
+    RWTFixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
+    Integer day = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_DAY );
+    assertEquals( 1, day.intValue() );
+    Integer month = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_MONTH );
+    assertEquals( 1, month.intValue() );
+    Integer year = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_YEAR );
+    assertEquals( 2008, year.intValue() );
+    RWTFixture.clearPreserved();
+    // Test preserved control properties
+    testPreserveControlProperties( dateTime );
+    // Test preserved selection listeners
+    testPreserveSelectionListener( dateTime );
+    display.dispose();
+  }
+
   public void testSelectionEvent() {
     // Date
     Display display = new Display();

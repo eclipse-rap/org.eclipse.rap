@@ -14,7 +14,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
   construct : function( style ) {
     this.base( arguments );    
-    this.setAppearance( "datetime-date" );
+    this.setAppearance( "datetime-time" );
     
     // Get styles
     this._short = qx.lang.String.contains( style, "short" );

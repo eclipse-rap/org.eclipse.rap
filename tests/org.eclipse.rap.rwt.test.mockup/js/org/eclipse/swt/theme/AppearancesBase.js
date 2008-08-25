@@ -1851,7 +1851,103 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
       }
     }
+  },
+  
+  "datetime-time" : {
+    style : function( states ) {
+      return {
+        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+      }
+    }
+  },
+  
+  "datetime-calendar" : {
+    style : function( states ) {
+      return {
+        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+      }
+    }
+  },
+  
+  // ------------------------------------------------------------------------
+  // Calendar
+  
+  "calendar-navBar" : {
+    style : function(states) {      
+      return {
+        backgroundColor : "#0A246A",
+        padding : [ 4, 4, 4, 4 ]
+      };
+    }
+  },
+      
+  "calendar-toolbar-button" : {
+    style : function(states) {
+      var result =
+      {
+        spacing : 4,
+        width : "auto",
+        verticalChildrenAlign : "middle"
+      };
+
+      if (states.pressed || states.checked || states.abandoned) {
+        result.padding = [ 2, 0, 0, 2 ];
+      } else {
+        result.padding = 2;
+      }
+
+      return result;
+    }
+  },
+
+  "calendar-monthyear" : {
+    style : function(states) {
+      var boldFont = qx.ui.core.Font.fromString( "11 bold Tahoma, 'Lucida Sans Unicode', sans-serif" );
+      
+      return {
+        font          : boldFont,
+        textAlign     : "center",
+        textColor     : "white",
+        verticalAlign : "middle"
+      };
+    }
+  },
+
+  "calendar-datepane" : {
+    style : function(states) {
+      return {
+        backgroundColor : "white"
+      };
+    }
+  },
+
+  "calendar-weekday" : {
+    style : function(states) {
+      var border = qx.ui.core.Border.fromConfig({
+        bottom : [ 1, "solid", "gray" ]
+      });
+      
+      return {
+        border          : border,        
+        textAlign       : "center",
+        textColor       : "#0A246A",
+        backgroundColor : "white"
+      };
+    }
+  },
+
+  "calendar-day" : {
+    style : function(states) {
+      var border = new qx.ui.core.Border( 1, "solid", "red" );
+      
+      return {
+        textAlign       : "center",
+        verticalAlign   : "middle",
+        border          : states.today ? border : "undefined",
+        textColor       : states.selected ? "white" : states.otherMonth ? "#808080" : "undefined",
+        backgroundColor : states.selected ? "#0A246A" : "undefined"
+      };
+    }
   }
 }
-
 } );
