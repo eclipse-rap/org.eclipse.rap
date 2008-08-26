@@ -497,9 +497,8 @@ public abstract class Control extends Widget {
   // verbatim copy of SWT 3.4.0 GTK
   private void checkBackground() {
     Shell shell = getShell();
-    if( this == shell ) {
+    if( this == shell )
       return;
-    }
     state &= ~PARENT_BACKGROUND;
     Composite composite = parent;
     do {
@@ -517,9 +516,8 @@ public abstract class Control extends Widget {
         state |= PARENT_BACKGROUND;
         return;
       }
-      if( composite == shell ) {
+      if( composite == shell )
         break;
-      }
       composite = composite.parent;
     } while( true );
   }
