@@ -126,9 +126,7 @@ public class Shell extends Decorations {
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
 
-  // [if] Due to bug 239259: [Shell] Initial size too small
-  // Shell has a default (initial) size of 60% from the client window
-  private static final double INITIAL_SIZE_PERCENT = 0.6;
+  private static final int INITIAL_SIZE_PERCENT = 60;
 
   private Control lastActive;
   private IShellAdapter shellAdapter;
@@ -454,10 +452,9 @@ public class Shell extends Decorations {
   }
 
   private void setInitialSize() {
-    int width = ( int )( display.getBounds().width * INITIAL_SIZE_PERCENT );
-    int height = ( int )( display.getBounds().height * INITIAL_SIZE_PERCENT );
-    Rectangle initialBounds = new Rectangle( 0, 0, width, height );
-    bounds = initialBounds;
+    int width = display.getBounds().width * INITIAL_SIZE_PERCENT / 100;
+    int height = display.getBounds().height * INITIAL_SIZE_PERCENT / 100;
+    bounds = new Rectangle( 0, 0, width, height );
   }
 
   private Rectangle getMenuBounds() {

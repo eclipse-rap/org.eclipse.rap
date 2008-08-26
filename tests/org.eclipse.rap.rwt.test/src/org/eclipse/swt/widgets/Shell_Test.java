@@ -139,15 +139,8 @@ public class Shell_Test extends TestCase {
   public void testInitialSize() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    // [if] Due to bug 239259: [Shell] Initial size too small
-    // Shell has a default (initial) size of 60% from the client window
-    int defaultShellWidth = ( int )( display.getBounds().width * 0.6 );
-    int defaultShellHeight = ( int )( display.getBounds().height * 0.6 );
-    Rectangle defaultShellBounds = new Rectangle( 0,
-                                                  0,
-                                                  defaultShellWidth,
-                                                  defaultShellHeight );
-    assertEquals( defaultShellBounds, shell.getBounds() );
+    Rectangle empty = new Rectangle( 0, 0, 0, 0 );
+    assertFalse( empty.equals( shell.getBounds() ) );
   }
 
   public void testAlpha() {

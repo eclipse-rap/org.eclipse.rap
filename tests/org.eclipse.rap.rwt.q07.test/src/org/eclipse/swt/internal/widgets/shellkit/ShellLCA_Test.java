@@ -345,16 +345,8 @@ public class ShellLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeBounds( shell );
-    // [if] Due to bug 239259: [Shell] Initial size too small
-    // Shell has a default (initial) size of 60% from the client window
-    int defaultShellWidth = ( int )( display.getBounds().width * 0.6 );
-    int defaultShellHeight = ( int )( display.getBounds().height * 0.6 );
-    String expected = "w.setSpace( 0, "
-                    + defaultShellWidth
-                    + ", 0, "
-                    + defaultShellHeight
-                    + " );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String notExpected = "w.setSpace( 0, 0, 0, 0 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
   }
 
   protected void setUp() throws Exception {
