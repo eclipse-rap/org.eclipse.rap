@@ -36,9 +36,13 @@ public class Layout_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     // [if] Due to bug 239259: [Shell] Initial size too small
-    // Shell has a default (initial) size of 768 x 536
-    // 768 x 536 is the default size of Windows SWT Shell
-    Rectangle defaultShellBounds = new Rectangle( 0, 0, 768, 536 );
+    // Shell has a default (initial) size of 60% from the client window
+    int defaultShellWidth = ( int )( display.getBounds().width * 0.6 );
+    int defaultShellHeight = ( int )( display.getBounds().height * 0.6 );
+    Rectangle defaultShellBounds = new Rectangle( 0,
+                                                  0,
+                                                  defaultShellWidth,
+                                                  defaultShellHeight );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     Rectangle empty = new Rectangle( 0, 0, 0, 0 );
