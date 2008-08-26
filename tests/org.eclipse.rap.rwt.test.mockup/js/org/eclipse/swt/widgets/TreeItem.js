@@ -172,6 +172,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     _checkEventTarget : function( evt ) {
       var result = false;
       var target = evt.getOriginalTarget();
+      // TODO [rh] 'target &&' is either unnecessary or the if statement yields
+      //      a wrong result 
       if( target && target == this._iconObject || target == this._labelObject ) {
         result = true;
       }

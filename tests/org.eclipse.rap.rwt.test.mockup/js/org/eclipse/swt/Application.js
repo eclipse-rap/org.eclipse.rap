@@ -51,12 +51,25 @@ qx.Class.define( "org.eclipse.swt.Application", {
   },
 
   members : {
-    setExitConfirmation : function( msg ) {
-    	this._exitConfirmation = msg;
+    /**
+     * An exit confirmation dialog will be displayed if the given message is not
+     * null. If the message is empty, the dialog will be displayed but without a
+     * message.
+     */
+    setExitConfirmation : function( message ) {
+      // IE shows exit dialog also on empty string
+      if( message == "" ) {
+        this._exitConfirmation = " ";
+      } else {
+        this._exitConfirmation = message;
+      }
     },
     
     main : function( evt ) {
       this.base( arguments );
+      // Reduce scroll-event delay to 80ms (default is 250ms)
+      // All scroll events that arrive in shorter time will be merged
+      qx.ui.basic.ScrollBar.EVENT_DELAY = 125;
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
       qx.io.Alias.getInstance().add( "static", "./resource/static" );

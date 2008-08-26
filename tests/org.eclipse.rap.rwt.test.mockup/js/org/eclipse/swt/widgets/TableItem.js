@@ -74,7 +74,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     TEXT_ALIGN : "text-align:",
     FONT : "font:",
     BACKGROUND : "background-color:",
-    FOREGROUND : "color:"
+    FOREGROUND : "color:",
+    
+    STRING_BUILDER : new Array()
   },
   
   members : {
@@ -105,7 +107,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     setSelection : function( value ) {
       // TODO [rh] improve this: don't access internal structures of Table
-      var index = this._parent._items.indexOf( this );
+      var index = this._getIndex();
       if( value ) {
         this._parent._selectItem( index, false );
         // reset selection start index when selection changes server-side
@@ -137,9 +139,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     update : function() {
       this._cached = true;
-      // TODO [rh] improve this: don't access internal structures of Table
-      var index = this._parent._items.indexOf( this );
-      this._parent.updateItem( index, true );
+      this._parent.updateItem( this._getIndex(), true );
     },
     
     clear : function() {
@@ -157,7 +157,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
      * Called by Table when updating visible rows to obtain HTML markup that 
      * represents the item.
      */
-     // TODO [rh] use StringBuilder to concatenate markup
     _getMarkup : function() {
       var parent = this._parent;
       var markup = new Array();
@@ -190,7 +189,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             + ";";
         }
         // Foreground and background color
-        if( parent.getEnabled() && !parent._isItemSelected( this ) ) {
+        if( parent.getEnabled() && !parent._isItemSelected( this._getIndex() ) )
+        {
           if( this._foregrounds && this._foregrounds[ i ] ) {
             foreground
               = org.eclipse.swt.widgets.TableItem.FOREGROUND 
@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
               = org.eclipse.swt.widgets.TableItem.BACKGROUND 
               + this._backgrounds[ i ] 
               + ";";
-          }
+          } 
         }
         // Draw image
         if( this._images && this._images[ i ] ) {
@@ -230,29 +230,31 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     _getImageMarkup : function( image, left, width, background ) {
       var result = "";
       if( image != null ) {
+        var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
+        buffer.length = 0;
         // TODO [rh] replace div/img markup with only a div with a bg-image
-        result 
-          = org.eclipse.swt.widgets.TableItem.IMG_START
-          + org.eclipse.swt.widgets.TableItem.IMG_STYLE_OPEN
-          + org.eclipse.swt.widgets.TableItem.TOP 
-            + "0" 
-            + org.eclipse.swt.widgets.TableItem.PX 
-          + org.eclipse.swt.widgets.TableItem.LEFT 
-            + left 
-            + org.eclipse.swt.widgets.TableItem.PX 
-          + org.eclipse.swt.widgets.TableItem.WIDTH 
-            + width
-            + org.eclipse.swt.widgets.TableItem.PX 
-          + org.eclipse.swt.widgets.TableItem.HEIGHT 
-            + this._parent.getItemHeight()
-            + org.eclipse.swt.widgets.TableItem.PX
-          + background  
-          + org.eclipse.swt.widgets.TableItem.IMG_STYLE_CLOSE
-          + org.eclipse.swt.widgets.TableItem.IMG_CLOSE
-          + org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN
-          + image 
-          + org.eclipse.swt.widgets.TableItem.IMG_SRC_CLOSE
-          + org.eclipse.swt.widgets.TableItem.IMG_END;
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_START );
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_STYLE_OPEN );
+          buffer.push( org.eclipse.swt.widgets.TableItem.TOP );
+          buffer.push( "0" ); 
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.LEFT );
+          buffer.push( left );
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH );
+          buffer.push( width );
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT );
+          buffer.push( this._parent.getItemHeight() );
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( background );
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_STYLE_CLOSE );
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_CLOSE );
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN );
+        buffer.push( image );
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_CLOSE );
+        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_END );
+        result = buffer.join( "" );
       }
       return result;
     },
@@ -266,33 +268,40 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           = this._parent.getLinesVisible() 
           ? org.eclipse.swt.widgets.TableItem.LINE_BORDER 
           : "";
-        result
-          = org.eclipse.swt.widgets.TableItem.TEXT_OPEN
-          + org.eclipse.swt.widgets.TableItem.TEXT_STYLE_OPEN
-          + org.eclipse.swt.widgets.TableItem.TOP 
-            + "0" 
-            + org.eclipse.swt.widgets.TableItem.PX 
-          + org.eclipse.swt.widgets.TableItem.LEFT 
-            + left 
-            + org.eclipse.swt.widgets.TableItem.PX 
-          + org.eclipse.swt.widgets.TableItem.WIDTH 
-            + width
-            + org.eclipse.swt.widgets.TableItem.PX 
-          + org.eclipse.swt.widgets.TableItem.HEIGHT 
-            + this._parent.getItemHeight()
-            + org.eclipse.swt.widgets.TableItem.PX
-          + font  
-          + foreground
-          + background
-          + border
-          + org.eclipse.swt.widgets.TableItem.TEXT_ALIGN 
-            + align
-          + org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE
-          + org.eclipse.swt.widgets.TableItem.TEXT_CLOSE
-          + text 
-          + org.eclipse.swt.widgets.TableItem.TEXT_END;
+        var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
+        buffer.length = 0;
+        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_OPEN );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_OPEN );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TOP ); 
+          buffer.push( "0" );
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( org.eclipse.swt.widgets.TableItem.LEFT ); 
+          buffer.push( left ); 
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH ); 
+          buffer.push( width );
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT ); 
+          buffer.push( this._parent.getItemHeight() );
+          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( font );  
+        buffer.push( foreground );
+        buffer.push( background );
+        buffer.push( border );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_ALIGN ); 
+          buffer.push( align );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_CLOSE );
+        buffer.push( text );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_END );
+        result = buffer.join( "" );
       }
       return result;
+    },
+    
+    _getIndex : function() {
+      // TODO [rh] improve this: don't access internal structures of Table
+      return this._parent._items.indexOf( this );
     }
 
   }

@@ -36,6 +36,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
+    this._timeoutPage = "";
   },
   
   destruct : function() {
@@ -130,6 +131,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
         //      reliable)
         qx.client.Timer.once( this._sendImmediate, this, 60 );
       }
+    },
+
+    setTimeoutPage : function( content ) {
+      this._timeoutPage = content;
     },
 
     _sendImmediate : function() {
@@ -260,13 +265,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
         //   is currently used
         // - as clicking the link issues a regular request, we can be sure that 
         //   the stale application will be cleaned up properly by the browser
-        var content 
-          = "<html><head><title>Session timed out</title></head>"
-          + "<body><p>The server session timed out.</p>"
-          + "<p>Please click <a href=\""
-          + window.location
-          + "\">here</a> to restart the session.</p>"
-          + "</body></html>";
+        var hrefAttr = "href=\"" + window.location + "\"";
+        var content = this._timeoutPage.replace( /{HREF_URL}/, hrefAttr );
         this._writeErrorPage( content );
       } else {
         try {
