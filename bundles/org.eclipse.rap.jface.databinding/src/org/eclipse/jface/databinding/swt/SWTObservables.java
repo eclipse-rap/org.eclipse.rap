@@ -27,28 +27,28 @@ import org.eclipse.swt.widgets.*;
 
 /**
  * A factory for creating observables for SWT widgets
- * 
+ *
  * @since 1.1
- * 
+ *
  */
 // RAP [fappel]: use SessionSingletonBase to keep realms session specific
 public class SWTObservables extends SessionSingletonBase {
 
     // RAP [fappel]: use Singleton to keep realms session specific
 	private java.util.List realms = new ArrayList();
-	
+
 	private static SWTObservables getInstance() {
 	  return ( SWTObservables )getInstance( SWTObservables.class );
 	}
-	
+
 	private SWTObservables() {
 	  // prevent instance creation
 	}
-	
+
 
 	/**
 	 * Returns the realm representing the UI thread for the given display.
-	 * 
+	 *
 	 * @param display
 	 * @return the realm representing the UI thread for the given display
 	 */
@@ -75,7 +75,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * about pending changes, the returned observable value will fire a stale
 	 * event when the wrapped observable value fires a change event, but this
 	 * change is being delayed.
-	 * 
+	 *
 	 * @param delay
 	 * @param observable
 	 * @return an observable which delays notification of value change events
@@ -125,7 +125,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <li>org.eclipse.swt.widgets.List</li>
 	 * <li>org.eclipse.swt.widgets.Scale</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable value
 	 * @throws IllegalArgumentException
@@ -146,10 +146,9 @@ public class SWTObservables extends SessionSingletonBase {
 //					SWTProperties.SELECTION);
 		} else if (control instanceof List) {
 			return new ListObservableValue((List) control);
-// RAP [fappel]: Scale not supported
-//		} else if (control instanceof Scale) {
-//			return new ScaleObservableValue((Scale) control,
-//					SWTProperties.SELECTION);
+		} else if (control instanceof Scale) {
+			return new ScaleObservableValue((Scale) control,
+					SWTProperties.SELECTION);
 		}
 
 		throw new IllegalArgumentException(
@@ -163,7 +162,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <li>org.eclipse.swt.widgets.Spinner</li>
 	 * <li>org.eclipse.swt.widgets.Scale</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable value
 	 * @throws IllegalArgumentException
@@ -173,9 +172,8 @@ public class SWTObservables extends SessionSingletonBase {
 		if (control instanceof Spinner) {
 			return new SpinnerObservableValue((Spinner) control,
 					SWTProperties.MIN);
-// RAP [fappel]: Scale not supported
-//		} else if (control instanceof Scale) {
-//			return new ScaleObservableValue((Scale) control, SWTProperties.MIN);
+		} else if (control instanceof Scale) {
+			return new ScaleObservableValue((Scale) control, SWTProperties.MIN);
 		}
 
 		throw new IllegalArgumentException(
@@ -189,7 +187,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <li>org.eclipse.swt.widgets.Spinner</li>
 	 * <li>org.eclipse.swt.widgets.Scale</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable value
 	 * @throws IllegalArgumentException
@@ -199,9 +197,8 @@ public class SWTObservables extends SessionSingletonBase {
 		if (control instanceof Spinner) {
 			return new SpinnerObservableValue((Spinner) control,
 					SWTProperties.MAX);
-// RAP [fappel]: Scale not supported
-//		} else if (control instanceof Scale) {
-//			return new ScaleObservableValue((Scale) control, SWTProperties.MAX);
+		} else if (control instanceof Scale) {
+			return new ScaleObservableValue((Scale) control, SWTProperties.MAX);
 		}
 
 		throw new IllegalArgumentException(
@@ -214,7 +211,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <ul>
 	 * <li>org.eclipse.swt.widgets.Text</li>
 	 * </ul>
-	 * 
+	 *
 	 * <li>org.eclipse.swt.widgets.Label</li>
 	 * @param control
 	 * @param event event type to register for change events
@@ -242,7 +239,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <li>org.eclipse.swt.custom.CCombo</li>
 	 * <li>org.eclipse.swt.widgets.Shell</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable value
 	 * @throws IllegalArgumentException
@@ -277,7 +274,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <li>org.eclipse.swt.custom.CCombo</li>
 	 * <li>org.eclipse.swt.widgets.List</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable list
 	 * @throws IllegalArgumentException
@@ -306,7 +303,7 @@ public class SWTObservables extends SessionSingletonBase {
 	 * <li>org.eclipse.swt.custom.CCombo</li>
 	 * <li>org.eclipse.swt.widgets.List</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable value
 	 * @throws IllegalArgumentException
@@ -354,14 +351,14 @@ public class SWTObservables extends SessionSingletonBase {
 	public static ISWTObservableValue observeFont(Control control) {
 		return new ControlObservableValue(control, SWTProperties.FONT);
 	}
-	
+
 	/**
 	 * Returns an observable observing the editable attribute of
 	 * the provided <code>control</code>. The supported types are:
 	 * <ul>
 	 * <li>org.eclipse.swt.widgets.Text</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param control
 	 * @return observable value
 	 * @throws IllegalArgumentException
@@ -371,7 +368,7 @@ public class SWTObservables extends SessionSingletonBase {
 		if (control instanceof Text) {
 			return new TextEditableObservableValue((Text) control);
 		}
-		
+
 		throw new IllegalArgumentException(
 				"Widget [" + control.getClass().getName() + "] is not supported."); //$NON-NLS-1$//$NON-NLS-2$
 	}
@@ -403,7 +400,7 @@ public class SWTObservables extends SessionSingletonBase {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Object#hashCode()
 		 */
 		public int hashCode() {
@@ -412,7 +409,7 @@ public class SWTObservables extends SessionSingletonBase {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		public boolean equals(Object obj) {
