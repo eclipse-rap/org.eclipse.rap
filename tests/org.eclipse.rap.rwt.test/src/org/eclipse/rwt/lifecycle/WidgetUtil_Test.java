@@ -69,7 +69,7 @@ public class WidgetUtil_Test extends TestCase {
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );
-    } catch( RuntimeException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     String withColon = "Foo:Bar";
@@ -77,7 +77,7 @@ public class WidgetUtil_Test extends TestCase {
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );
-    } catch( RuntimeException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     String withLeadingNumber = "1-Foo-Bar";
@@ -85,7 +85,7 @@ public class WidgetUtil_Test extends TestCase {
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );
-    } catch( RuntimeException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
