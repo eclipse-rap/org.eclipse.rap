@@ -216,18 +216,30 @@ public final class WidgetUtil {
 
   private static boolean validateVariantString( final String variant ) {
     boolean result = false;
-    int length = variant.length();
+    String name = variant;
+    if( name.startsWith( "-" ) ) {
+      name = name.substring( 1 );
+    }
+    int length = name.length();
     if( length > 0 ) {
-      result = Character.isJavaIdentifierStart( variant.charAt( 0 ) );
+      result = isValidStart( name.charAt( 0 ) );
       for( int i = 1; i < length && result; i++ ) {
-        result &= Character.isJavaIdentifierPart( variant.charAt( i ) )
-               || isDash( variant.charAt( i ) );
+        result &= isValidPart( name.charAt( i ) );
       }
     }
     return result;
   }
 
-  private static boolean isDash( final char ch ) {
-    return ch == '-';
+  private static boolean isValidStart( final char ch ) {
+    return ch == '_'
+      || ( ch >= 'a' && ch <= 'z' )
+      || ( ch >= 'A' && ch <= 'Z' )
+      || ( ch >= 128 && ch <= 255 );
+  }
+
+  private static boolean isValidPart( final char ch ) {
+    return isValidStart( ch )
+      || ( ch >= '0' && ch <= '9' )
+      || ch == '-';
   }
 }
