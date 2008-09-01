@@ -43,7 +43,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     setFont : function( value ) {
       this._textfield.setFont( value );
     },
-    
+
+    _applyCursor : function( value, old ) {
+      this.base( arguments, value, old );
+      if( value ) {
+        this._upbutton.setCursor( value );
+        this._downbutton.setCursor( value );
+        this._textfield.setCursor( value );
+      } else {
+        this._upbutton.resetCursor();
+        this._downbutton.resetCursor();
+        this._textfield.resetCursor();
+      }
+    },
+
     setTabIndex : function( value ) {
       this._textfield.setTabIndex( value );
     },
