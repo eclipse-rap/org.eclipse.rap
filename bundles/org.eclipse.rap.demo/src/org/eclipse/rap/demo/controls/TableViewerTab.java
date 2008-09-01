@@ -253,14 +253,7 @@ public class TableViewerTab extends ExampleTab {
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
       public void selectionChanged( final SelectionChangedEvent event ) {
-        TableItem item = ( ( Table )viewer.getControl() ).getItem( 0 );
-        String addText = ", " + item;
-        if( item != null ) {
-          addText = ", " + item.getText();
-        } else {
-          addText = "";
-        }
-        lblSelection.setText( "Selection: " + event.getSelection() + addText  );
+        lblSelection.setText( "Selection: " + event.getSelection() );
         lblSelection.getParent().layout( new Control[] { lblSelection } );
       }
     } );
