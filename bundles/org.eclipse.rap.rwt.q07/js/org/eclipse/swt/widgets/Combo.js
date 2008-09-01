@@ -143,21 +143,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this.getField().setCursor( this._userCursor );
       }  
     },  
-    
-    setCursor : function( value ) {
+
+    _applyCursor : function( value, old ) {
+      this.base( arguments, value, old );
       this._userCursor = value;
-      this.getField().setCursor( value );
-      this.getButton().setCursor( value );
-      this.getList().setCursor( value );
-    },
-    
-    resetCursor : function() {
-      this._userCursor = null;
-      this.getField().resetCursor();
-      this.getButton().resetCursor();
-      this.getList().resetCursor();
+      if( value ) {
+        this.getField().setCursor( value );
+        this.getButton().setCursor( value );
+        this.getList().setCursor( value );
+      } else {
+        this.getField().resetCursor();
+        this.getButton().resetCursor();
+        this.getList().resetCursor();
+      }
     }
-
   }
-
 } );
