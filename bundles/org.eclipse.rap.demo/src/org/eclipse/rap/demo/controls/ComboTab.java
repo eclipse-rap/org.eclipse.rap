@@ -60,6 +60,7 @@ public class ComboTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createCursorCombo();
     createPropertyCheckbox( "Create Empty Combo", PROP_EMPTY );
     createPropertyCheckbox( "Preselect First Item", PROP_PRESELECT_ITEM );
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );

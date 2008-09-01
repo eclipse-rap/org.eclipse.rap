@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
@@ -57,6 +58,27 @@ abstract class ExampleTab {
   public static final Color FG_COLOR_RED = Graphics.getColor( 194, 0, 23 );
   public static final Color FG_COLOR_BLUE = Graphics.getColor( 28, 96, 141 );
   public static final Color FG_COLOR_ORANGE = Graphics.getColor( 249, 158, 0 );
+
+  private static final String[] SWT_CURSORS = {
+    "null",
+    "CURSOR_ARROW",
+    "CURSOR_WAIT",
+    "CURSOR_CROSS",
+    "CURSOR_HELP",
+    "CURSOR_SIZEALL",
+    "CURSOR_SIZENS",
+    "CURSOR_SIZEWE",
+    "CURSOR_SIZEN",
+    "CURSOR_SIZES",
+    "CURSOR_SIZEE",
+    "CURSOR_SIZEW",
+    "CURSOR_SIZENE",
+    "CURSOR_SIZESE",
+    "CURSOR_SIZESW",
+    "CURSOR_SIZENW",
+    "CURSOR_IBEAM",
+    "CURSOR_HAND"
+  };
 
   public static Image BG_PATTERN_IMAGE
     = Graphics.getImage( "resources/pattern.png",
@@ -376,6 +398,33 @@ abstract class ExampleTab {
   }
 
   /**
+   * Creates a combo that controls whether a cursor is set on the
+   * registered controls.
+   *
+   * @return the created combo
+   */
+  protected Combo createCursorCombo() {
+    Composite group = new Composite( styleComp, SWT.NONE );
+    group.setLayout( new GridLayout( 2, false ) );
+    new Label( group, SWT.NONE ).setText( "Cursor:" );
+    final Combo combo = new Combo( group, SWT.READ_ONLY );
+    combo.setItems( SWT_CURSORS );
+    combo.select( 0 );
+    combo.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent e ) {
+        String selection = null;
+        int index = combo.getSelectionIndex();
+        if( index > 0 ) {
+          selection = combo.getItem( index );
+        }
+        updateCursor( selection );
+      }
+    } );
+    return combo;
+  }
+
+  /**
    * Adds a control to the list of registered controls. Registered controls can
    * be hidden and disabled by the checkbuttons in the property area. This
    * method is to be called within <code>createExampleControls</code>.
@@ -470,6 +519,24 @@ abstract class ExampleTab {
     if( controls.size() > 0 ) {
       Composite parent = ( ( Control )controls.get( 0 ) ).getParent();
       parent.layout( true, true );
+    }
+  }
+
+  private void updateCursor( final String selection ) {
+    Cursor cursor = null;
+    Class swtClass = SWT.class;
+    if( selection != null ) {
+      try {
+        Field field = swtClass.getField( selection );
+        int cursorStyle = field.getInt( swtClass );
+        cursor = Graphics.getCursor( cursorStyle );
+      } catch( Exception e ) {
+      }
+    }
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setCursor( cursor );
     }
   }
 

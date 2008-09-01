@@ -60,6 +60,7 @@ public class LabelTab extends ExampleTab {
     createBgColorButton();
     createBgImageButton();
     createFontChooser();
+    createCursorCombo();
     createChangeTextControl( parent );
     createChangeToolTipControl( parent );
   }

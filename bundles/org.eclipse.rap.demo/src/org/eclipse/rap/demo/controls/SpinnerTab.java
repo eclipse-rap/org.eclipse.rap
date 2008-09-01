@@ -37,6 +37,7 @@ public class SpinnerTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createCursorCombo();
   }
 
   protected void createExampleControls( final Composite parent ) {

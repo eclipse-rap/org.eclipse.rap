@@ -92,6 +92,7 @@ public class TextTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createCursorCombo();
     createLimitText( parent );
     createSelectionChooser( parent );
   }
@@ -160,7 +161,7 @@ public class TextTab extends ExampleTab {
     final Button defaultButton = new Button( composite, SWT.PUSH );
     defaultButton.setText( "Default" );
     defaultButton.addSelectionListener( new SelectionAdapter() {
-      
+
       public void widgetSelected( SelectionEvent e ) {
         String message = "Default button triggered";
         MessageDialog.openInformation( parent.getShell(), "Info", message  );
@@ -169,7 +170,7 @@ public class TextTab extends ExampleTab {
     final Button setDefaultButton = new Button( composite, SWT.CHECK );
     setDefaultButton.setText( "set as defaultButton" );
     setDefaultButton.addSelectionListener( new SelectionAdapter() {
-      
+
       public void widgetSelected( SelectionEvent e ) {
         if( setDefaultButton.getSelection() ) {
           parent.getShell().setDefaultButton( defaultButton );
@@ -265,7 +266,7 @@ public class TextTab extends ExampleTab {
     Button selectAllButton = new Button( composite, SWT.PUSH );
     selectAllButton.setText( "select all" );
     selectAllButton.addSelectionListener( new SelectionAdapter() {
-       
+
       public void widgetSelected( SelectionEvent e ) {
         text.selectAll();
       }

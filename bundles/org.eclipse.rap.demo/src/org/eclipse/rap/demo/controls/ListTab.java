@@ -76,6 +76,7 @@ public class ListTab extends ExampleTab {
     createBgColorButton();
     createBgImageButton();
     createFontChooser();
+    createCursorCombo();
     createSelectionButton();
   }
 

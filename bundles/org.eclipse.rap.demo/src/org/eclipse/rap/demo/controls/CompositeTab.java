@@ -35,6 +35,7 @@ public final class CompositeTab extends ExampleTab {
     createBgColorButton();
     createBgImageButton();
     createBackgroundModeControls( parent );
+    createCursorCombo();
     Button cbAddMouseListener = new Button( parent, SWT.CHECK );
     cbAddMouseListener.setText( "Attach MouseListener" );
     cbAddMouseListener.addSelectionListener( new SelectionAdapter() {

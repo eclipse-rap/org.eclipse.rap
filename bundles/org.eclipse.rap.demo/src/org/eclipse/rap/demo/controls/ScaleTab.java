@@ -19,28 +19,29 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
-public class ScaleTab extends ExampleTab {  
+public class ScaleTab extends ExampleTab {
 
   private static final String PROP_CONTEXT_MENU = "contextMenu";
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
-  
-  Scale scale;  
+
+  Scale scale;
   Spinner minimumSpinner, maximumSpinner, selectionSpinner,
           incrementSpinner, pageIncrementSpinner;
-  
+
   public ScaleTab( final CTabFolder folder ) {
     super( folder, "Scale" );
     setDefaultStyle( SWT.HORIZONTAL );
   }
 
-  protected void createStyleControls( final Composite parent ) {   
+  protected void createStyleControls( final Composite parent ) {
     createStyleButton( parent, "HORIZONTAL", SWT.HORIZONTAL, SWT.RADIO, true );
-    createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false ); 
+    createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false );
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
-    createEnablementButton();      
+    createEnablementButton();
     createBgColorButton();
-    createBgImageButton(); 
+    createBgImageButton();
+    createCursorCombo();
     minimumSpinner = createSpinnerControl( parent, "Minimum",
                                            0, 100000, 0 );
     minimumSpinner.addModifyListener( new ModifyListener() {
@@ -142,7 +143,7 @@ public class ScaleTab extends ExampleTab {
     }
     registerControl( scale );
   }
-  
+
   protected Button createStyleButton( final Composite parent,
                                       final String name,
                                       final int style,
@@ -161,7 +162,7 @@ public class ScaleTab extends ExampleTab {
     button.setSelection( checked );
     return button;
   }
-  
+
   private Spinner createSpinnerControl( final Composite parent,
                                         final String labelText,
                                         final int minimum,
@@ -174,7 +175,7 @@ public class ScaleTab extends ExampleTab {
     final Spinner spinner = new Spinner( composite, SWT.BORDER );
     spinner.setSelection( selection );
     spinner.setMinimum( minimum );
-    spinner.setMaximum( maximum );    
+    spinner.setMaximum( maximum );
     return spinner;
   }
 }
