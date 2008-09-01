@@ -86,20 +86,16 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         }
       }
     },
-    
+
     registerResetHandler : function( typePoolId, resetHandler ) {
       this._createWidgetPool( typePoolId, resetHandler );
     },
-    
-  	newWidget : function( widgetId, parentId, isControl, typePoolId, type ) {
-  	  this.newWidget( widgetId, parentId, isControl, typePoolId, type, null );
-  	},
   	
-  	newWidget : function( widgetId, 
-  	                      parentId, 
-  	                      isControl, 
-  	                      typePoolId, 
-  	                      type, 
+  	newWidget : function( widgetId,
+  	                      parentId,
+  	                      isControl,
+  	                      typePoolId,
+  	                      type,
   	                      paramList )
   	{
       // Note [fappel]: Do not remove the 'wm' declaration. This is needed
