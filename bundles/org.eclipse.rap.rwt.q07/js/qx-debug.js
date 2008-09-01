@@ -13304,8 +13304,6 @@ allowStretchY:{refine:true,
 init:false},
 selectable:{refine:true,
 init:false},
-cursor:{refine:true,
-init:"default"},
 text:{apply:"_applyText",
 init:"",
 dispose:true,
@@ -13481,7 +13479,6 @@ _labelObject:null,
 _iconObject:null,
 _createLabel:function(){var l=this._labelObject=new qx.ui.basic.Label(this.getLabel());
 l.setAnonymous(true);
-l.setCursor("default");
 this.addAt(l,
 this._iconObject?1:0);
 },

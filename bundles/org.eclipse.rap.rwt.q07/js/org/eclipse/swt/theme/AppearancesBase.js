@@ -142,6 +142,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.backgroundColor = tv.getColor( "label.background" );
         result.textColor = tv.getColor( "label.foreground" );
       }
+      result.cursor = "default";
       return result;
     }
   },
@@ -764,6 +765,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
+        cursor : "default",
         overflow : "hidden",
         textColor : tv.getColor( "list.foreground" ),
         backgroundColor : tv.getColor( "list.background" ),
@@ -777,7 +779,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor                  : "default",
         height                  : "auto",
         horizontalChildrenAlign : "left",
         verticalChildrenAlign   : "middle",
