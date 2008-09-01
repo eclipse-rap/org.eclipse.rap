@@ -23,7 +23,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * As RAP needs to handle with multiple clients simultaneously there are no
  * constructors for these objects to share them between different sessions
  * in order to have a much smaller memory footprint.
- * 
+ *
  * @since 1.0
  */
 public final class Graphics {
@@ -31,10 +31,10 @@ public final class Graphics {
   /**
    * Returns an instance of {@link Color} given an
    * <code>RGB</code> describing the desired red, green and blue values.
-   * 
+   *
    * @param rgb the RGB values of the desired color
    * @return the color
-   * 
+   *
    * @see RGB
    * @see Device#getSystemColor
    */
@@ -46,7 +46,7 @@ public final class Graphics {
    * Returns a {@link Color} given the
    * desired red, green and blue values expressed as ints in the range
    * 0 to 255 (where 0 is black and 255 is full brightness).
-   * 
+   *
    * @param red the amount of red in the color
    * @param green the amount of green in the color
    * @param blue the amount of blue in the color
@@ -60,7 +60,7 @@ public final class Graphics {
   /**
    * Returns a new font given a font data
    * which describes the desired font's appearance.
-   * 
+   *
    * @param data the {@link FontData} to use
    * @return the font
    */
@@ -71,7 +71,7 @@ public final class Graphics {
   /**
    * Returns a {@link Font} object given a font name, the height of the desired
    * font in points, and a font style.
-   * 
+   *
    * @param name the name of the font (must not be null)
    * @param height the font height in points
    * @param style a bit or combination of <code>NORMAL</code>,
@@ -88,9 +88,9 @@ public final class Graphics {
   /**
    * Returns an instance of {@link Image} based on the specified
    * image path. The image has to be on the applications class-path.
-   * 
+   *
    * @param path the path to the image
-   * 
+   *
    * @return the image
    */
   public static Image getImage( final String path ) {
@@ -101,10 +101,10 @@ public final class Graphics {
    * Returns an instance of {@link Image} based on the specified
    * image path. The image has to be on the applications class-path.
    * Uses the specified classloader to load the image.
-   * 
+   *
    * @param path the path to the image
    * @param imageLoader the classloader to use
-   * 
+   *
    * @return the image
    */
   public static Image getImage( final String path,
@@ -113,14 +113,14 @@ public final class Graphics {
     return ResourceFactory.findImage( path, imageLoader );
   }
 
-  
+
   /**
    * Returns an instance of {@link Image} based on the specified
    * image path. The image will be read from the provided InputStream.
-   * 
+   *
    * @param path the path to the image
    * @param inputStream the input stream for the image
-   * 
+   *
    * @return the image
    */
   public static Image getImage( final String path,
@@ -128,10 +128,38 @@ public final class Graphics {
   {
     return ResourceFactory.findImage( path, inputStream );
   }
-  
+
+  /**
+   * Returns an instance of {@link Cursor} based on a style constant describing
+   * the desired cursor appearance.
+   * 
+   * @param style the style of the cursor to create
+   * @return the cursor
+   * @see SWT#CURSOR_ARROW
+   * @see SWT#CURSOR_WAIT
+   * @see SWT#CURSOR_CROSS
+   * @see SWT#CURSOR_HELP
+   * @see SWT#CURSOR_SIZEALL
+   * @see SWT#CURSOR_SIZENS
+   * @see SWT#CURSOR_SIZEWE
+   * @see SWT#CURSOR_SIZEN
+   * @see SWT#CURSOR_SIZES
+   * @see SWT#CURSOR_SIZEE
+   * @see SWT#CURSOR_SIZEW
+   * @see SWT#CURSOR_SIZENE
+   * @see SWT#CURSOR_SIZESE
+   * @see SWT#CURSOR_SIZESW
+   * @see SWT#CURSOR_SIZENW
+   * @see SWT#CURSOR_IBEAM
+   * @see SWT#CURSOR_HAND
+   */
+  public static Cursor getCursor( final int style ) {
+    return ResourceFactory.getCursor( style );
+  }
+
   //////////////////////////
   // Text-Size-Determination
-  
+
   /**
    * Returns the extent of the given string. Tab expansion and carriage return
    * processing are performed.
@@ -139,7 +167,7 @@ public final class Graphics {
    * The <em>extent</em> of a string is the width and height of the
    * rectangular area it would cover if drawn in a particular font.
    * </p>
-   * 
+   *
    * @param font the font for which the result is valid
    * @param string the string to measure
    * @param wrapWidth the maximum width of the text. The text will be wrapped to
@@ -159,7 +187,7 @@ public final class Graphics {
     }
     return TextSizeDetermination.textExtent( font, string, wrapWidth );
   }
-  
+
   /**
    * Returns the extent of the given string. No tab expansion or carriage return
    * processing will be performed.
@@ -167,7 +195,7 @@ public final class Graphics {
    * The <em>extent</em> of a string is the width and height of the
    * rectangular area it would cover if drawn in a particular font.
    * </p>
-   * 
+   *
    * @param font the font for which the result is valid
    * @param string the string to measure
    * @return a point containing the extent of the string
@@ -182,10 +210,10 @@ public final class Graphics {
     }
     return TextSizeDetermination.stringExtent( font, string );
   }
-  
+
   /**
    * Returns the height of the specified font, measured in pixels.
-   * 
+   *
    * @param font the font for which the result is valid
    * @return the height of the font
    */
@@ -195,11 +223,11 @@ public final class Graphics {
     }
     return TextSizeDetermination.getCharHeight( font );
   }
-  
+
   /**
    * Returns the average character width of the specified font, measured in
    * pixels.
-   * 
+   *
    * @param font the font for which the result is valid
    * @return the average character width of the font
    */

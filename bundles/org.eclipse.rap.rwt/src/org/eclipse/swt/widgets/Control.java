@@ -96,6 +96,7 @@ public abstract class Control extends Widget {
   private Image backgroundImage = null;
   private boolean backgroundTransparency;
   private Font font;
+  private Cursor cursor;
 
   Control( final Composite parent ) {
     // prevent instantiation from outside this package; only called by Shell
@@ -582,6 +583,56 @@ public abstract class Control extends Widget {
       result = adapter.getFont( this );
     }
     return result;
+  }
+
+  /////////
+  // Cursors
+
+  /**
+   * Sets the receiver's cursor to the cursor specified by the
+   * argument, or to the default cursor for that kind of control
+   * if the argument is null.
+   * <p>
+   * When the mouse pointer passes over a control its appearance
+   * is changed to match the control's cursor.
+   * </p>
+   *
+   * @param cursor the new cursor (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.2
+   */
+  public void setCursor( final Cursor cursor ) {
+    checkWidget();
+    this.cursor = cursor;
+  }
+
+  /**
+   * Returns the receiver's cursor, or null if it has not been set.
+   * <p>
+   * When the mouse pointer passes over a control its appearance
+   * is changed to match the control's cursor.
+   * </p>
+   *
+   * @return the receiver's cursor or <code>null</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.2
+   */
+  public Cursor getCursor() {
+    checkWidget();
+    return cursor;
   }
 
   //////////////////

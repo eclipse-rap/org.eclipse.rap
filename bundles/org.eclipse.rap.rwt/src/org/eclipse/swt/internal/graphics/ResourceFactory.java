@@ -30,6 +30,7 @@ public final class ResourceFactory {
   private final static Map colors = new HashMap();
   private static final Map fonts = new HashMap();
   private static final Map images = new HashMap();
+  private static final Map cursors = new HashMap();
   private static final ImageDataCache imageDataCache = new ImageDataCache();
 
   /////////
@@ -218,6 +219,22 @@ public final class ResourceFactory {
     return result;
   }
 
+  ////////
+  // Cursors
+
+  public static Cursor getCursor( final int style ) {
+    Cursor result;
+    Integer key = new Integer( style );
+    synchronized( Cursor.class ) {
+      result = ( Cursor )cursors.get( key );
+      if( result == null ) {
+        result = createCursorInstance( style );
+        cursors.put( key, result );
+      }
+    }
+    return result;
+  }
+
   ///////////////
   // Test helpers
 
@@ -225,6 +242,7 @@ public final class ResourceFactory {
     colors.clear();
     fonts.clear();
     images.clear();
+    cursors.clear();
   }
 
   static int colorsCount() {
@@ -237,6 +255,10 @@ public final class ResourceFactory {
 
   static int imagesCount() {
     return images.size();
+  }
+
+  static int cursorsCount() {
+    return cursors.size();
   }
 
 
@@ -447,11 +469,27 @@ public final class ResourceFactory {
       Class[] paramList = new Class[] { int.class, int.class };
       Constructor constr = fontClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
-      result = ( Image )constr.newInstance( new Object[]{
+      result = ( Image )constr.newInstance( new Object[] {
         new Integer( width ), new Integer( height )
       } );
     } catch( final Exception e ) {
       throw new RuntimeException( "Failed to instantiate Image", e );
+    }
+    return result;
+  }
+
+  private static Cursor createCursorInstance( final int style ) {
+    Cursor result = null;
+    try {
+      Class cursorClass = Cursor.class;
+      Class[] paramList = new Class[] { int.class };
+      Constructor constr = cursorClass.getDeclaredConstructor( paramList );
+      constr.setAccessible( true );
+      result = ( Cursor )constr.newInstance( new Object[] {
+        new Integer( style )
+      } );
+    } catch( final Exception e ) {
+      throw new RuntimeException( "Failed to instantiate Cursor", e );
     }
     return result;
   }

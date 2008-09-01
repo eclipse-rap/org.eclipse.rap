@@ -12,6 +12,7 @@
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,7 +52,7 @@ public class ControlLCAUtil {
     = new JSListenerInfo( "focusout",
                           "org.eclipse.swt.EventUtil.focusLost",
                           JSListenerType.ACTION );
-  
+
   private static final JSListenerInfo MOUSE_DOWN_LISTENER_INFO
     = new JSListenerInfo( "mousedown",
                           "org.eclipse.swt.EventUtil.mouseDown",
@@ -65,6 +66,8 @@ public class ControlLCAUtil {
     = "addActivateListenerWidget";
   private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
     = "removeActivateListenerWidget";
+
+  private static final String PROP_CURSOR = "cursor";
 
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
@@ -124,6 +127,7 @@ public class ControlLCAUtil {
                                       controlAdapter.getBackgroundTransparency() );
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
+    adapter.preserve( PROP_CURSOR, control.getCursor() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( PROP_ACTIVATE_LISTENER,
@@ -310,6 +314,7 @@ public class ControlLCAUtil {
     writeBackground( control );
     writeBackgroundImage( control );
     writeFont( control );
+    writeCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
     writeFocusListener( control );
@@ -634,6 +639,41 @@ public class ControlLCAUtil {
     WidgetLCAUtil.resetFont();
   }
 
+  /**
+   * Determines whether the property <code>cursor</code> of the given control
+   * has changed during the processing of the current request and if so, writes
+   * JavaScript code to the response that updates the client-side cursor property.
+   *
+   * @param control the control whose font property to write
+   * @throws IOException
+   * @since 1.2
+   */
+  public static void writeCursor( final Control control ) throws IOException {
+    Cursor newValue = control.getCursor();
+    if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
+      String qxCursor = getQxCursor( newValue );
+      JSWriter writer = JSWriter.getWriterFor( control );
+      if( qxCursor == null ) {
+        writer.reset( JSConst.QX_FIELD_CURSOR );
+      } else {
+        writer.set( JSConst.QX_FIELD_CURSOR, qxCursor );
+      }
+    }
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>cursor</code> of a control. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   */
+  public static void resetCursor() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_CURSOR );
+  }
+
   public static void writeActivateListener( final Control control )
     throws IOException
   {
@@ -697,9 +737,9 @@ public class ControlLCAUtil {
     writer.removeListener( FOCUS_LOST_LISTENER_INFO.getEventType(),
                            FOCUS_LOST_LISTENER_INFO.getJSListener() );
   }
-  
-  private static void writeMouseListener( final Control control ) 
-    throws IOException 
+
+  private static void writeMouseListener( final Control control )
+    throws IOException
   {
     boolean hasListener = MouseEvent.hasListener( control );
     JSWriter writer = JSWriter.getWriterFor( control );
@@ -863,17 +903,17 @@ public class ControlLCAUtil {
                                true,
                                SWT.NONE );
   }
-  
+
   public static void processMouseEvents( final Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
       event.button
         = readIntParam( control, JSConst.EVENT_MOUSE_DOWN_BUTTON );
       Point point = readXYParams( control,
-                                  JSConst.EVENT_MOUSE_DOWN_X, 
+                                  JSConst.EVENT_MOUSE_DOWN_X,
                                   JSConst.EVENT_MOUSE_DOWN_Y );
-      event.x = point.x; 
-      event.y = point.y; 
+      event.x = point.x;
+      event.y = point.y;
       event.processEvent();
     }
     String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
@@ -882,39 +922,109 @@ public class ControlLCAUtil {
         = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
       event.button
         = readIntParam( control, JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
-      Point point = readXYParams( control, 
-                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_X, 
+      Point point = readXYParams( control,
+                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
                                   JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
-      event.x = point.x; 
-      event.y = point.y; 
+      event.x = point.x;
+      event.y = point.y;
       event.processEvent();
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
       event.button = readIntParam( control, JSConst.EVENT_MOUSE_UP_BUTTON );
       Point point = readXYParams( control,
-                                  JSConst.EVENT_MOUSE_UP_X, 
+                                  JSConst.EVENT_MOUSE_UP_X,
                                   JSConst.EVENT_MOUSE_UP_Y );
-      event.x = point.x; 
-      event.y = point.y; 
+      event.x = point.x;
+      event.y = point.y;
       event.processEvent();
     }
   }
 
-  private static int readIntParam( final Control control, 
-                                   final String paramName ) 
+  private static int readIntParam( final Control control,
+                                   final String paramName )
   {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( paramName );
     return Integer.parseInt( value );
   }
 
-  private static Point readXYParams( final Control control, 
+  private static Point readXYParams( final Control control,
                                      final String paramNameX,
-                                     final String paramNameY ) 
+                                     final String paramNameY )
   {
     int x = readIntParam( control, paramNameX );
     int y = readIntParam( control, paramNameY );
     return control.getDisplay().map( null, control, x, y );
+  }
+
+  private static String getQxCursor( final Cursor newValue ) {
+    String result = null;
+    if( newValue != null ) {
+      // TODO [rst] Find a better way of obtaining the Cursor value
+      int value = 0;
+      try {
+        Class cursorClass = Cursor.class;
+        Field field = cursorClass.getDeclaredField( "value" );
+        field.setAccessible( true );
+        value = field.getInt( newValue );
+      } catch( Exception e ) {
+        throw new RuntimeException();
+      }
+      switch( value ) {
+        case SWT.CURSOR_ARROW:
+          result = "default";
+        break;
+        case SWT.CURSOR_WAIT:
+          result = "wait";
+        break;
+        case SWT.CURSOR_CROSS:
+          result = "crosshair";
+        break;
+        case SWT.CURSOR_HELP:
+          result = "help";
+        break;
+        case SWT.CURSOR_SIZEALL:
+          result = "move";
+        break;
+        case SWT.CURSOR_SIZENS:
+          result = "row-resize";
+        break;
+        case SWT.CURSOR_SIZEWE:
+          result = "col-resize";
+        break;
+        case SWT.CURSOR_SIZEN:
+          result = "n-resize";
+        break;
+        case SWT.CURSOR_SIZES:
+          result = "s-resize";
+        break;
+        case SWT.CURSOR_SIZEE:
+          result = "e-resize";
+        break;
+        case SWT.CURSOR_SIZEW:
+          result = "w-resize";
+        break;
+        case SWT.CURSOR_SIZENE:
+          result = "ne-resize";
+        break;
+        case SWT.CURSOR_SIZESE:
+          result = "se-resize";
+        break;
+        case SWT.CURSOR_SIZESW:
+          result = "sw-resize";
+        break;
+        case SWT.CURSOR_SIZENW:
+          result = "nw-resize";
+        break;
+        case SWT.CURSOR_IBEAM:
+          result = "text";
+        break;
+        case SWT.CURSOR_HAND:
+          result = "pointer";
+        break;
+      }
+    }
+    return result;
   }
 }

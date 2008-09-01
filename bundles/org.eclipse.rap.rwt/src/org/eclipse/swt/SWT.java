@@ -971,6 +971,144 @@ public class SWT {
    */
   public static final int ITALIC = 1 << 1;
 
+  // Cursor style constants
+
+  /**
+   * System arrow cursor  (value is 0).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_ARROW = 0;
+
+  /**
+   * System wait cursor  (value is 1).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_WAIT = 1;
+
+  /**
+   * System cross hair cursor  (value is 2).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_CROSS = 2;
+
+  /**
+   * System help cursor  (value is 4).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_HELP = 4;
+
+  /**
+   * System resize all directions cursor (value is 5).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZEALL = 5;
+
+  /**
+   * System resize north-south cursor  (value is 7).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZENS = 7;
+
+  /**
+   * System resize west-east cursor  (value is 9).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZEWE = 9;
+
+  /**
+   * System resize north cursor  (value is 10).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZEN = 10;
+
+  /**
+   * System resize south cursor  (value is 11).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZES = 11;
+
+  /**
+   * System resize east cursor  (value is 12).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZEE = 12;
+
+  /**
+   * System resize west cursor  (value is 13).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZEW = 13;
+
+  /**
+   * System resize north-east cursor (value is 14).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZENE = 14;
+
+  /**
+   * System resize south-east cursor (value is 15).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZESE = 15;
+
+  /**
+   * System resize south-west cursor (value is 16).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZESW = 16;
+
+  /**
+   * System resize north-west cursor (value is 17).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_SIZENW = 17;
+
+  /**
+   * System i-beam cursor (value is 19).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_IBEAM = 19;
+
+  /**
+   * System hand cursor (value is 21).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.2
+   */
+  public static final int CURSOR_HAND = 21;
+
   // Predefined images
 
   /**

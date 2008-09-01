@@ -16,12 +16,14 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -222,6 +224,29 @@ public class ControlLCAUtil_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     ControlLCAUtil.preserveValues( control );
     assertEquals( new Integer( 1 ), adapter.getPreserved( Props.Z_INDEX ) );
+  }
+
+  public void testWriteCursor() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Control control = new Button( shell, SWT.PUSH );
+    AbstractWidgetLCA controlLCA = WidgetUtil.getLCA( control );
+    Cursor cursor = Graphics.getCursor( SWT.CURSOR_HAND );
+    RWTFixture.markInitialized( control );
+    RWTFixture.preserveWidgets();
+    control.setCursor( cursor );
+    ControlLCAUtil.writeCursor( control );
+    String expected = "w.setCursor( \"pointer\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    Fixture.fakeResponseWriter();
+    controlLCA.preserveValues( control );
+    ControlLCAUtil.writeCursor( control );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    control.setCursor( null );
+    ControlLCAUtil.writeCursor( control );
+    assertTrue( Fixture.getAllMarkup().indexOf( "w.resetCursor();" ) != -1 );
   }
 
   protected void setUp() throws Exception {
