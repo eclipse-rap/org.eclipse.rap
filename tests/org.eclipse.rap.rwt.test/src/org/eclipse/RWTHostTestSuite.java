@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse;
 
 import junit.framework.Test;
@@ -39,8 +38,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
-
-
 
 public class RWTHostTestSuite {
 
@@ -156,6 +153,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( RGB_Test.class );
     suite.addTestSuite( Font_Test.class );
     suite.addTestSuite( FontData_Test.class );
+    suite.addTestSuite( Cursor_Test.class );
     suite.addTestSuite( Graphics_Test.class );
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeDetermination_Test.class );
