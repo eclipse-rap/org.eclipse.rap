@@ -641,16 +641,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.resetFont();
   }
 
-  /**
-   * Determines whether the property <code>cursor</code> of the given control
-   * has changed during the processing of the current request and if so, writes
-   * JavaScript code to the response that updates the client-side cursor property.
-   *
-   * @param control the control whose font property to write
-   * @throws IOException
-   * @since 1.2
-   */
-  public static void writeCursor( final Control control ) throws IOException {
+  static void writeCursor( final Control control ) throws IOException {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
       String qxCursor = getQxCursor( newValue );
@@ -663,15 +654,7 @@ public class ControlLCAUtil {
     }
   }
 
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>cursor</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetCursor() throws IOException {
+  static void resetCursor() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JSConst.QX_FIELD_CURSOR );
   }
