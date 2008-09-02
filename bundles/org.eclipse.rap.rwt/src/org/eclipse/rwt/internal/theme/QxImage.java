@@ -78,7 +78,7 @@ public final class QxImage implements QxType {
   }
 
   public int hashCode() {
-    return path.hashCode();
+    return none ? -1 : path.hashCode();
   }
 
   public String toString() {

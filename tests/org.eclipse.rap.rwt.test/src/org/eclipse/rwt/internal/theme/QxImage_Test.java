@@ -69,4 +69,11 @@ public class QxImage_Test extends TestCase {
     assertEquals( "none", QxImage.NONE.toDefaultString() );
     assertEquals( "", QxImage.valueOf( "foo", dummyLoader ).toDefaultString() );
   }
+
+  public void testHashCode() throws Exception {
+    assertEquals( -1, QxImage.NONE.hashCode() );
+    QxImage qxImage1 = QxImage.valueOf( "None", dummyLoader );
+    QxImage qxImage2 = QxImage.valueOf( "None", dummyLoader );
+    assertEquals( qxImage1.hashCode(), qxImage2.hashCode() );
+  }
 }
