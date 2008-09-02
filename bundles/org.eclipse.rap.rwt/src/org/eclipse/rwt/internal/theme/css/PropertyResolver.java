@@ -17,8 +17,10 @@ import org.eclipse.rwt.internal.theme.*;
 
 import org.w3c.css.sac.LexicalUnit;
 
-
-public class PropertyResolver {
+/**
+ * Utility class to read values from LexicalUnits.
+ */
+public final class PropertyResolver {
 
   private static final String BOLD = "bold";
 

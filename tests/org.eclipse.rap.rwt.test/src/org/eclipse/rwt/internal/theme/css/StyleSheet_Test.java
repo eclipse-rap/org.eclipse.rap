@@ -11,21 +11,21 @@
 
 package org.eclipse.rwt.internal.theme.css;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.internal.theme.QxColor;
+import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.w3c.css.sac.CSSException;
 
 
-public class CssFileReader_Test extends TestCase {
-
-  private static final String PACKAGE = "resources/theme/";
-
-  private static final String TEST_SYNTAX_CSS = "TestSyntax.css";
+public class StyleSheet_Test extends TestCase {
 
   private static final String TEST_SELECTORS_CSS = "TestSelectors.css";
+  private static final String TEST_EXAMPLE_CSS = "TestExample.css";
 
   private static final int ALL_RULE = 0;
   private static final int ELEMENT_RULE = 1;
@@ -37,27 +37,6 @@ public class CssFileReader_Test extends TestCase {
   private static final int COMBINED_ATTRIBUTE_RULE = 7;
   private static final int SELECTOR_LIST_RULE = 8;
 
-  public void testParseSac() throws Exception {
-    ClassLoader classLoader = CssFileReader_Test.class.getClassLoader();
-    InputStream inStream = classLoader.getResourceAsStream( PACKAGE
-                                                            + TEST_SYNTAX_CSS );
-    assertNotNull( inStream );
-    CssFileReader reader = new CssFileReader();
-    ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-    System.setErr( new PrintStream( stderr ) );
-    StyleSheet styleSheet = reader.parse( inStream, TEST_SYNTAX_CSS );
-    assertTrue( stderr.size() > 0 );
-    StyleRule[] rules = styleSheet.getStyleRules();
-    CSSException[] problems = reader.getProblems();
-    assertNotNull( rules );
-    assertTrue( rules.length > 0 );
-    assertNotNull( problems );
-    assertTrue( problems.length > 0 );
-    assertTrue( containsProblem( problems, "import rules not supported" ) );
-    assertTrue( containsProblem( problems, "page rules not supported" ) );
-    inStream.close();
-  }
-
   public void testCascadeMatchAll() throws Exception {
     StyleSheet styleSheet = getStyleSheet( TEST_SELECTORS_CSS );
     StyleRule[] styleRules = styleSheet.getStyleRules();
@@ -66,8 +45,10 @@ public class CssFileReader_Test extends TestCase {
     SelectorWrapper[] rules = styleSheet.getMatchingStyleRules( text );
     assertNotNull( rules );
     assertEquals( 2, rules.length );
-    assertEquals( styleRules[ ALL_RULE ].getProperties(), rules[ 0 ].propertyMap );
-    assertEquals( styleRules[ ATTRIBUTE_VALUE_RULE ].getProperties(), rules[ 1 ].propertyMap );
+    assertEquals( styleRules[ ALL_RULE ].getProperties(),
+                  rules[ 0 ].propertyMap );
+    assertEquals( styleRules[ ATTRIBUTE_VALUE_RULE ].getProperties(),
+                  rules[ 1 ].propertyMap );
   }
 
   public void testMatchAll() throws Exception {
@@ -191,32 +172,52 @@ public class CssFileReader_Test extends TestCase {
     assertTrue( matchingRule.matches( list ) );
   }
 
-  public void testNamespaces() {
-//    Doesn't work with Batik parser
-//    StyleRule[] rules = getStyleSheet( "TestNamespaces.css" ).getStyleRules();
-//    assertEquals( 3, rules.length );
+  public void testGetValue() throws Exception {
+    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    StylableElement button = new StylableElement( "Button" );
+    button.setAttribute( "PUSH" );
+    button.setAttribute( "BORDER" );
+    QxType bgColor = styleSheet.getValue( "background-color", button, null );
+    assertNotNull( bgColor );
+    assertEquals( QxColor.valueOf( "#9dd0ea" ), bgColor );
+    QxType color = styleSheet.getValue( "color", button, null );
+    assertNotNull( color );
+    assertEquals( QxColor.valueOf( "#705e42" ), color );
+    button.setClass( "special" );
+    QxType specialColor = styleSheet.getValue( "color", button, null );
+    assertNotNull( specialColor );
+    assertEquals( QxColor.valueOf( "red" ), specialColor );
+    QxType specialBgCol = styleSheet.getValue( "background-color", button, null );
+    assertNotNull( specialBgCol );
+    assertEquals( QxColor.TRANSPARENT, specialBgCol );
+  }
+
+  public void testVariants() throws Exception {
+    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    String[] variants = styleSheet.getVariants( "Button" );
+    assertNotNull( variants );
+    assertTrue( variants.length > 0 );
+  }
+
+  public void testGetMatchingStyleRules() throws Exception {
+    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    SelectorWrapper[] styleRules = styleSheet.getMatchingStyleRules( "Button" );
+    assertNotNull( styleRules );
+    assertEquals( 13, styleRules.length );
   }
 
   private StyleSheet getStyleSheet( final String fileName )
     throws CSSException, IOException
   {
     StyleSheet result;
-    ClassLoader classLoader = CssFileReader_Test.class.getClassLoader();
-    InputStream inStream = classLoader.getResourceAsStream( PACKAGE + fileName );
+    ClassLoader classLoader = StyleSheet_Test.class.getClassLoader();
+    InputStream inStream = classLoader.getResourceAsStream( "resources/theme/" + fileName );
     try {
       CssFileReader reader = new CssFileReader();
-      result = reader.parse( inStream, fileName );
+      result = reader.parse( inStream, TEST_SELECTORS_CSS );
     } finally {
       inStream.close();
     }
     return result;
-  }
-
-  private boolean containsProblem( final Object[] array, final String part ) {
-    boolean result = false;
-    for( int i = 0; i < array.length && !result; i++ ) {
-      result |= array[ i ].toString().indexOf( part ) != -1;
-    }
-    return result ;
   }
 }
