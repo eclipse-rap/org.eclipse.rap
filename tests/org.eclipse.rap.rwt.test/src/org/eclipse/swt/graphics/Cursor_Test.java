@@ -28,6 +28,12 @@ public class Cursor_Test extends TestCase {
     assertFalse( arrow.equals( cross ) );
   }
 
+  public void testSame() {
+    Cursor arrow1 = Graphics.getCursor( SWT.CURSOR_ARROW );
+    Cursor arrow2 = Graphics.getCursor( SWT.CURSOR_ARROW );
+    assertSame( arrow1, arrow2 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
