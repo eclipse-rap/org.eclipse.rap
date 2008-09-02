@@ -44,6 +44,10 @@ public class NullElementSelector implements ElementSelector, SelectorExt {
     return 0;
   }
 
+  public String[] getConstraints() {
+    throw new UnsupportedOperationException();
+  }
+
   public String toString() {
     return "null selector";
   }

@@ -56,6 +56,10 @@ public class PseudoClassConditionImpl
     return null;
   }
 
+  public String[] getConstraints() {
+    return new String[] { ":" + value };
+  }
+
   public String toString() {
     return ":" + value;
   }

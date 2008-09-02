@@ -71,6 +71,13 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt
     return null;
   }
 
+  public String[] getConstraints() {
+    if( value != null || localName == null ) {
+      throw new UnsupportedOperationException();
+    }
+    return new String[] { "|" + localName };
+  }
+
   public String toString() {
     String result;
     if( value != null ) {

@@ -17,4 +17,10 @@ public interface SelectorExt extends ElementMatcher, Specific {
   abstract String getElementName();
 
   abstract String[] getClasses();
+
+  /**
+   * Returns a list of string representations of the constraints of the
+   * selector.
+   */
+  abstract String[] getConstraints();
 }

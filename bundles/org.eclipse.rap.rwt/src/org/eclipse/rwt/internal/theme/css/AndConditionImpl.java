@@ -68,6 +68,15 @@ public class AndConditionImpl
     return result;
   }
 
+  public String[] getConstraints() {
+    String[] cond1 = ( ( ConditionExt )first ).getConstraints();
+    String[] cond2 = ( ( ConditionExt )second ).getConstraints();
+    String[] result = new String[ cond1.length + cond2.length ];
+    System.arraycopy( cond1, 0, result, 0, cond1.length );
+    System.arraycopy( cond2, 0, result, cond1.length, cond2.length );
+    return result;
+  }
+
   public String toString() {
     return first.toString() + second.toString();
   }

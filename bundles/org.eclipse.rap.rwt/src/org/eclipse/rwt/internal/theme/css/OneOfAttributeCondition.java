@@ -73,6 +73,10 @@ public class OneOfAttributeCondition implements AttributeCondition, ConditionExt
     return null;
   }
 
+  public String[] getConstraints() {
+    throw new UnsupportedOperationException();
+  }
+
   public String toString() {
     return "[" + getLocalName() + "~=\"" + getValue() + "\"]";
   }

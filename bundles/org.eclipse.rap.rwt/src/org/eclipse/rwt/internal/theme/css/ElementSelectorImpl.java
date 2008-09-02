@@ -16,6 +16,7 @@ import org.w3c.css.sac.ElementSelector;
 
 public class ElementSelectorImpl implements ElementSelector, SelectorExt {
 
+  private static final String[] EMPTY_STRING_ARRAY = new String[ 0 ];
   private final String tagName;
 
   public ElementSelectorImpl( final String tagName ) {
@@ -52,6 +53,10 @@ public class ElementSelectorImpl implements ElementSelector, SelectorExt {
 
   public String[] getClasses() {
     return null;
+  }
+
+  public String[] getConstraints() {
+    return EMPTY_STRING_ARRAY;
   }
 
   public String toString() {

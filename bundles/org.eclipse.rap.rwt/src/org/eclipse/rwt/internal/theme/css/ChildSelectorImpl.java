@@ -55,6 +55,10 @@ public class ChildSelectorImpl implements DescendantSelector, SelectorExt {
            + ( ( Specific )child ).getSpecificity();
   }
 
+  public String[] getConstraints() {
+    throw new UnsupportedOperationException();
+  }
+
   public String toString() {
     return parent.toString() + " > " + child.toString();
   }

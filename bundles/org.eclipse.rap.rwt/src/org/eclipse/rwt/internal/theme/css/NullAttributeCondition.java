@@ -40,13 +40,17 @@ public class NullAttributeCondition implements AttributeCondition, ConditionExt
   public boolean matches( final Element element ) {
     return false;
   }
+  
+  public int getSpecificity() {
+    return 0;
+  }
 
   public String[] getClasses() {
     return null;
   }
-
-  public int getSpecificity() {
-    return 0;
+  
+  public String[] getConstraints() {
+    throw new UnsupportedOperationException();
   }
 
   public String toString() {

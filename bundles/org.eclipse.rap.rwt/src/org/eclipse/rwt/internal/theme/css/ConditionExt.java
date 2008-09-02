@@ -15,4 +15,9 @@ package org.eclipse.rwt.internal.theme.css;
 public interface ConditionExt extends ElementMatcher, Specific {
 
   abstract String[] getClasses();
+
+  /**
+   * Returns a list of string representations for the constraints that apply. 
+   */
+  abstract String[] getConstraints();
 }

@@ -62,6 +62,10 @@ public class ConditionalSelectorImpl
     return ( ( ConditionExt )condition ).getClasses();
   }
 
+  public String[] getConstraints() {
+    return ( ( ConditionExt )condition ).getConstraints();
+  }
+
   public String toString() {
     return selector.toString() + condition.toString();
   }

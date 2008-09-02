@@ -54,6 +54,10 @@ public class ClassConditionImpl implements AttributeCondition, ConditionExt {
     return new String[] { value };
   }
 
+  public String[] getConstraints() {
+    return new String[] { "." + value };
+  }
+
   public String toString() {
     return "." + value;
   }
