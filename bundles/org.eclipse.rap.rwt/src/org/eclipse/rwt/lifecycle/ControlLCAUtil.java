@@ -97,6 +97,7 @@ public class ControlLCAUtil {
    * <li>background</li>
    * <li>background image</li>
    * <li>font</li>
+   * <li>cursor</li>
    * <li>whether ControlListeners are registered</li>
    * <li>whether ActivateListeners are registered</li>
    * <li>whether MouseListeners are registered</li>
@@ -292,6 +293,7 @@ public class ControlLCAUtil {
    * <li>background</li>
    * <li>background image</li>
    * <li>font</li>
+   * <li>cursor</li>
    * <!--li>whether ControlListeners are registered</li-->
    * <li>whether ActivateListeners are registered</li>
    * <li>whether MouseListeners are registered</li>
