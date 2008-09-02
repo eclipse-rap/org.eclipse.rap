@@ -11,8 +11,7 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.rwt.internal.theme.css.CssFileReader_Test;
-import org.eclipse.rwt.internal.theme.css.PropertyResolver_Test;
+import org.eclipse.rwt.internal.theme.css.*;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -23,20 +22,23 @@ public class AllThemeTests {
   public static Test suite() {
     TestSuite suite = new TestSuite( "Test for org.eclipse.rwt.internal.theme" );
     //$JUnit-BEGIN$
-    suite.addTestSuite( QxBorder_Test.class );
+    // theme
     suite.addTestSuite( QxBoolean_Test.class );
-    suite.addTestSuite( ThemeManager_Test.class );
-    suite.addTestSuite( QxTheme_Test.class );
-    suite.addTestSuite( ThemeUtil_Test.class );
+    suite.addTestSuite( QxBorder_Test.class );
     suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxColor_Test.class );
-    suite.addTestSuite( Theme_Test.class );
-    suite.addTestSuite( QxImage_Test.class );
     suite.addTestSuite( QxDimension_Test.class );
-    suite.addTestSuite( ThemeDefinitionReader_Test.class );
     suite.addTestSuite( QxFont_Test.class );
+    suite.addTestSuite( QxImage_Test.class );
+    suite.addTestSuite( QxTheme_Test.class );
+    suite.addTestSuite( Theme_Test.class );
+    suite.addTestSuite( ThemeDefinitionReader_Test.class );
+    suite.addTestSuite( ThemeManager_Test.class );
+    suite.addTestSuite( ThemeUtil_Test.class );
+    // theme.css
     suite.addTestSuite( CssFileReader_Test.class );
     suite.addTestSuite( PropertyResolver_Test.class );
+    suite.addTestSuite( StyleSheet_Test.class );
     //$JUnit-END$
     return suite;
   }
