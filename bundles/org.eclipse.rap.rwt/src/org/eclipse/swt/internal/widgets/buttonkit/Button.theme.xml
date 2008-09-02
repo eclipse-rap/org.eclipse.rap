@@ -28,33 +28,72 @@
     -->
 
   <element name="Button"
-      description="Push-buttons, Toggle-buttons, Radio-buttons and Checkboxes">
+      description="SWT Button. Can be set up as a push-button, toggle-button, radio-button or check-box.">
 
     <property name="color"
         styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
         states="hover pressed"
+	    description="Button text color"
         />
 
     <property name="background-color"
         styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
         states="hover pressed"
+        description="Background color"
         />
 
     <property name="border"
         styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
         states="pressed"
+        description="Button border"
         />
 
-    <property name="padding"/>
+    <property name="padding"
+        description="Space between border and text / image"
+        />
 
-    <property name="spacing"/>
+    <property name="spacing"
+        description="Space between text and image"
+        />
 
     <property name="font"
         styles="PUSH TOGGLE CHECK RADIO"
         />
 
+	<style name="PUSH"
+        description="Style constant for push button behavior."
+		/>
+
+	<style name="TOGGLE"
+        description="Style constant for toggle button behavior."
+		/>
+
+	<style name="CHECK"
+        description="Style constant for check box behavior."
+		/>
+
+	<style name="RADIO"
+        description="Style constant for radio button behavior."
+		/>
+
+	<style name="FLAT"
+        description="Style constant for flat appearance."
+		/>
+
+	<style name="BORDER"
+        description="Style constant for bordered behavior."
+		/>
+
+	<state name="hover"
+        description="On mouse over"
+		/>
+
+	<state name="pressed"
+        description="Set when button is pressed"
+		/>
+
   </element>
-  
+
   <!-- C O M P A T I B I L I T Y
 
     The following section is needed to maintain the deprecated property-based

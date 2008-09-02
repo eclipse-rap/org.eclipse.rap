@@ -24,7 +24,10 @@ public class ThemeDefinitionReader_Test extends TestCase {
   private static final String WIDGET_THEME_FILE
     = "org/eclipse/swt/internal/widgets/widgetkit/Widget.theme.xml";
 
-  public void testRead() throws Exception {
+  private static final String BUTTON_THEME_FILE
+    = "org/eclipse/swt/internal/widgets/buttonkit/Button.theme.xml";
+
+  public void testReadOld() throws Exception {
     ClassLoader loader = Widget.class.getClassLoader();
     InputStream is = loader.getResourceAsStream( WIDGET_THEME_FILE );
     ThemeDefinitionReader reader = new ThemeDefinitionReader( is, "test", null );
@@ -41,5 +44,33 @@ public class ThemeDefinitionReader_Test extends TestCase {
     Set keys = result.keySet();
     assertTrue( keys.size() > 0 );
     assertTrue( result.get( "widget.background" ) instanceof QxColor );
+  }
+
+  public void testReadCss() throws Exception {
+    ClassLoader loader = Widget.class.getClassLoader();
+    InputStream is = loader.getResourceAsStream( BUTTON_THEME_FILE );
+    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, "test" );
+    try {
+      reader.read();
+    } finally {
+      is.close();
+    }
+    IThemeCssElement[] elements = reader.getThemeCssElements();
+    assertNotNull( elements );
+    assertTrue( elements.length > 0 );
+    assertEquals( "Button", elements[ 0 ].getName() );
+    assertNotNull( elements[ 0 ].getDescription() );
+    IThemeCssProperty[] properties = elements[ 0 ].getProperties();
+    assertNotNull( properties );
+    assertTrue( properties.length > 0 );
+    IThemeCssAttribute[] styles = elements[ 0 ].getStyles();
+    assertNotNull( styles );
+    assertTrue( styles.length > 0 );
+    IThemeCssAttribute[] states = elements[ 0 ].getStates();
+    assertNotNull( states );
+    assertTrue( states.length > 0 );
+    assertTrue( properties.length > 0 );
+    assertEquals( "color", properties[ 0 ].getName() );
+    assertNotNull( properties[ 0 ].getDescription() );
   }
 }

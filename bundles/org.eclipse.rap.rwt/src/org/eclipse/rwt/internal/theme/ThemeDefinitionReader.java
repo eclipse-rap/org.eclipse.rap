@@ -14,6 +14,8 @@ package org.eclipse.rwt.internal.theme;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.xml.parsers.*;
 
@@ -31,7 +33,15 @@ public class ThemeDefinitionReader {
     public abstract void readThemeProperty( ThemeProperty def );
   }
 
-  private static final String NODE_ROOT = "theme";
+  private static final String ELEM_ROOT = "theme";
+
+  private static final String ELEM_ELEMENT = "element";
+
+  private static final String ELEM_PROPERTY = "property";
+
+  private static final String ELEM_STYLE = "style";
+
+  private static final String ELEM_STATE = "state";
 
   private static final String ATTR_NAME = "name";
 
@@ -79,21 +89,50 @@ public class ThemeDefinitionReader {
 
   private final String fileName;
 
+  private final Collection cssElements;
+
   /**
    * An instance of this class reads theme definitions from an XML resource.
    *
    * @param inputStream input stream from a theme definition XML
+   * @param fileName the file name to refer to in (error) messages
+   */
+  public ThemeDefinitionReader( final InputStream inputStream,
+                                final String fileName )
+  {
+    this( inputStream, fileName, null );
+  }
+
+  /**
+   * An instance of this class reads theme definitions from an XML resource.
+   *
+   * @param inputStream input stream from a theme definition XML
+   * @param fileName the file name to refer to in (error) messages
+   * @param loader the resource loader to use for images
+   * @deprecated only needed for obsolete property system
    */
   public ThemeDefinitionReader( final InputStream inputStream,
                                 final String fileName,
                                 final ResourceLoader loader )
   {
-    this.fileName = fileName;
     if( inputStream == null ) {
       throw new NullPointerException( "null argument" );
     }
     this.inputStream = inputStream;
+    this.fileName = fileName;
     this.loader = loader;
+    this.cssElements = new ArrayList();
+  }
+
+  /**
+   * Reads a theme definition from the specified stream. The stream is kept open
+   * after reading.
+   *
+   * @throws IOException if a I/O error occurs
+   * @throws SAXException if a parse error occurs
+   */
+  public void read() throws SAXException, IOException {
+    read( null );
   }
 
   /**
@@ -104,26 +143,86 @@ public class ThemeDefinitionReader {
    *            handles parsing events
    * @throws IOException if a I/O error occurs
    * @throws SAXException if a parse error occurs
+   * @deprecated only needed for obsolete property system
    */
   public void read( final ThemeDefHandler callback )
     throws SAXException, IOException
   {
     Document document;
     document = parseThemeDefinition( inputStream );
-    Node root = document.getElementsByTagName( NODE_ROOT ).item( 0 );
+    Node root = document.getElementsByTagName( ELEM_ROOT ).item( 0 );
     NodeList childNodes = root.getChildNodes();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
       Node node = childNodes.item( i );
       if( node.getNodeType() == Node.ELEMENT_NODE ) {
-        ThemeProperty property = readElement( node );
-        if( property != null ) {
-          callback.readThemeProperty( property );
+        if( ELEM_ELEMENT.equals( node.getNodeName() ) ) {
+          readElement( node );
+        } else if( callback != null ) {
+          ThemeProperty property = readElementOld( node );
+          if( property != null ) {
+            callback.readThemeProperty( property );
+          }
         }
       }
     }
   }
 
-  private ThemeProperty readElement( final Node node ) {
+  /**
+   * Returns the CSS element names defined in the definition.
+   */
+  public IThemeCssElement[] getThemeCssElements() {
+    IThemeCssElement[] result = new IThemeCssElement[ cssElements.size() ];
+    cssElements.toArray( result );
+    return result;
+  }
+
+  private void readElement( final Node node ) {
+    String name = getAttributeValue( node, ATTR_NAME );
+    ThemeCssElement themeWidget = new ThemeCssElement( name );
+    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    themeWidget.setDescription( description );
+    NodeList childNodes = node.getChildNodes();
+    for( int i = 0; i < childNodes.getLength(); i++ ) {
+      Node childNode = childNodes.item( i );
+      if( childNode.getNodeType() == Node.ELEMENT_NODE ) {
+        if( ELEM_ELEMENT.equals( childNode.getNodeName() ) ) {
+          readElementOld( childNode );
+        } else if( ELEM_PROPERTY.equals( childNode.getNodeName() ) ) {
+          themeWidget.addProperty( readProperty( childNode ) );
+        } else if( ELEM_STYLE.equals( childNode.getNodeName() ) ) {
+          themeWidget.addStyle( readStateOrStyle( childNode ) );
+        } else if( ELEM_STATE.equals( childNode.getNodeName() ) ) {
+          themeWidget.addState( readStateOrStyle( childNode ) );
+        }
+      }
+    }
+    cssElements.add( themeWidget );
+  }
+
+  private IThemeCssProperty readProperty( final Node node ) {
+    String name = getAttributeValue( node, ATTR_NAME );
+    ThemeCssProperty result = new ThemeCssProperty( name );
+    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    if( description != null ) {
+      result.setDescription( description );
+    }
+    return result;
+  }
+
+  private IThemeCssAttribute readStateOrStyle( final Node node ) {
+    String name = getAttributeValue( node, ATTR_NAME );
+    ThemeCssAttribute result = new ThemeCssAttribute( name );
+    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    if( description != null ) {
+      result.setDescription( description );
+    }
+    return result;
+  }
+
+  /**
+   * @deprecated only needed for obsolete property system
+   */
+  private ThemeProperty readElementOld( final Node node ) {
     String type = node.getNodeName();
     String name = getAttributeValue( node, ATTR_NAME );
     String description = getAttributeValue( node, ATTR_DESCRIPTION );
@@ -177,19 +276,6 @@ public class ThemeDefinitionReader {
     return result;
   }
 
-  private static String getAttributeValue( final Node node, final String name )
-  {
-    String result = null;
-    NamedNodeMap attributes = node.getAttributes();
-    if( attributes != null ) {
-      Node namedItem = attributes.getNamedItem( name );
-      if( namedItem != null ) {
-        result = namedItem.getNodeValue();
-      }
-    }
-    return result;
-  }
-
   private Document parseThemeDefinition( final InputStream is )
     throws SAXException, IOException
   {
@@ -230,6 +316,19 @@ public class ThemeDefinitionReader {
     return builder.parse( is );
   }
 
+  private static String getAttributeValue( final Node node, final String name )
+  {
+    String result = null;
+    NamedNodeMap attributes = node.getAttributes();
+    if( attributes != null ) {
+      Node namedItem = attributes.getNamedItem( name );
+      if( namedItem != null ) {
+        result = namedItem.getNodeValue();
+      }
+    }
+    return result;
+  }
+
   // TODO: Logging instead of sysout
   private class ThemeDefinitionErrorHandler implements ErrorHandler {
     public void error( final SAXParseException spe ) throws SAXException {
@@ -238,25 +337,21 @@ public class ThemeDefinitionReader {
                           + ":" );
       System.err.println( spe.getMessage() );
     }
-    
-    public void fatalError( final SAXParseException spe )
-    throws SAXException
-    {
+
+    public void fatalError( final SAXParseException spe ) throws SAXException {
       System.err.println( "Fatal error parsing theme definition "
                           + getPosition( spe )
                           + ":" );
       System.err.println( spe.getMessage() );
     }
-    
-    public void warning( final SAXParseException spe )
-    throws SAXException
-    {
+
+    public void warning( final SAXParseException spe ) throws SAXException {
       System.err.println( "Warning parsing theme definition "
                           + getPosition( spe )
                           + ":" );
       System.err.println( spe.getMessage() );
     }
-    
+
     private String getPosition( final SAXParseException spe ) {
       return "in file '"
       + fileName
