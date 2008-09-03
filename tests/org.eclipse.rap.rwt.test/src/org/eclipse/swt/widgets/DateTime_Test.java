@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -28,24 +28,6 @@ public class DateTime_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
-  }
-
-  public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Calendar rightNow = Calendar.getInstance();
-    long rightNowTime = rightNow.getTimeInMillis();
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    Calendar dateTimeCalendar = Calendar.getInstance();
-    dateTimeCalendar.set( dateTime.getYear(),
-                          dateTime.getMonth(),
-                          dateTime.getDay(),
-                          dateTime.getHours(),
-                          dateTime.getMinutes(),
-                          dateTime.getSeconds() );
-    long dateTimeTime = dateTimeCalendar.getTimeInMillis();
-    assertTrue( rightNowTime <= dateTimeTime );
-    assertTrue( dateTimeTime <= rightNowTime + 2000 );
   }
 
   public void testInvalidValues() {
@@ -176,7 +158,8 @@ public class DateTime_Test extends TestCase {
     assertTrue( dateTime.isDisposed() );
   }
 
-  public void testComputeSize() {
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     // The component computeSize depends on day/months names
