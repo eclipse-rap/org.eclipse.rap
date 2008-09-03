@@ -23,10 +23,9 @@
 
 	<!-- ===================================================================== -->
 	<!-- Check out map files from correct repository -->
-	<!-- Replace values for mapsCheckoutTag as desired. -->
+	<!-- Configure mapsCheckoutTag in build.properties or system property -->
 	<!-- ===================================================================== -->
 	<target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
-		<property name="mapsCheckoutTag" value="HEAD" />
 		<cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
 	</target>
 
@@ -291,7 +290,7 @@
 	</target>
 
 	<target name="tidyup">
-		<!-- delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" / -->
+    <delete dir="${buildDirectory}" defaultexcludes="false" includeEmptyDirs="true" />
 	</target>
 
 	<!-- ===================================================================== -->
