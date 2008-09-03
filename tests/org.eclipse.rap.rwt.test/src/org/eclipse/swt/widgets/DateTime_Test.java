@@ -11,11 +11,14 @@
 package org.eclipse.swt.widgets;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 
 public class DateTime_Test extends TestCase {
 
@@ -31,13 +34,18 @@ public class DateTime_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Calendar rightNow = Calendar.getInstance();
+    long rightNowTime = rightNow.getTimeInMillis();
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    assertEquals( rightNow.get( Calendar.DATE ), dateTime.getDay() );
-    assertEquals( rightNow.get( Calendar.MONTH ), dateTime.getMonth() );
-    assertEquals( rightNow.get( Calendar.YEAR ), dateTime.getYear() );
-    assertEquals( rightNow.get( Calendar.HOUR_OF_DAY ), dateTime.getHours() );
-    assertEquals( rightNow.get( Calendar.MINUTE ), dateTime.getMinutes() );
-    assertEquals( rightNow.get( Calendar.SECOND ), dateTime.getSeconds() );
+    Calendar dateTimeCalendar = Calendar.getInstance();
+    dateTimeCalendar.set( dateTime.getYear(),
+                          dateTime.getMonth(),
+                          dateTime.getDay(),
+                          dateTime.getHours(),
+                          dateTime.getMinutes(),
+                          dateTime.getSeconds() );
+    long dateTimeTime = dateTimeCalendar.getTimeInMillis();
+    assertTrue( rightNowTime <= dateTimeTime );
+    assertTrue( dateTimeTime <= rightNowTime + 2000 );
   }
 
   public void testInvalidValues() {
@@ -166,5 +174,48 @@ public class DateTime_Test extends TestCase {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     dateTime.dispose();
     assertTrue( dateTime.isDisposed() );
+  }
+
+  public void testComputeSize() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    // The component computeSize depends on day/months names
+    // which are locale dependent
+    RWT.setLocale( Locale.US );
+
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT );
+    Point expected = new Point( 105, 19 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.BORDER );
+    expected = new Point( 109, 23 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    expected = new Point( 88, 19 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.DATE | SWT.LONG );
+    expected = new Point( 183, 19 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.TIME | SWT.SHORT );
+    expected = new Point( 56, 19 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
+    expected = new Point( 78, 19 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.TIME | SWT.LONG );
+    expected = new Point( 78, 19 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    dateTime = new DateTime( shell, SWT.CALENDAR );
+    expected = new Point( 168, 140 );
+    assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 100, 100 );
+    assertEquals( expected, dateTime.computeSize( 100, 100 ) );
   }
 }
