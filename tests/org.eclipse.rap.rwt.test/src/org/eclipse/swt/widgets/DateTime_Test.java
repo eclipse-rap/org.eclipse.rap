@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.Calendar;
-
 import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
@@ -25,19 +23,6 @@ public class DateTime_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
-  }
-
-  public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Calendar rightNow = Calendar.getInstance();
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    assertEquals( rightNow.get( Calendar.DATE ), dateTime.getDay() );
-    assertEquals( rightNow.get( Calendar.MONTH ), dateTime.getMonth() );
-    assertEquals( rightNow.get( Calendar.YEAR ), dateTime.getYear() );
-    assertEquals( rightNow.get( Calendar.HOUR_OF_DAY ), dateTime.getHours() );
-    assertEquals( rightNow.get( Calendar.MINUTE ), dateTime.getMinutes() );
-    assertEquals( rightNow.get( Calendar.SECOND ), dateTime.getSeconds() );
   }
 
   public void testInvalidValues() {
