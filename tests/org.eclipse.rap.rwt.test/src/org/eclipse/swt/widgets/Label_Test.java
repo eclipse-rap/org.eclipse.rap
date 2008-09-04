@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -64,7 +65,7 @@ public class Label_Test extends TestCase {
     assertTrue( ( label.getStyle() & SWT.SHADOW_OUT ) != 0 );
     assertFalse( ( label.getStyle() & SWT.SHADOW_IN ) != 0 );
   }
-  
+
   public void testAlignment() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -131,7 +132,7 @@ public class Label_Test extends TestCase {
     assertEquals( extentPlain.y, extentNoWrap.y );
     Point extentWrap = labelWrap.computeSize( 100, SWT.DEFAULT );
     assertTrue( extentWrap.y > extentNoWrap.y );
-    // ensure that label with empty text has zero width but has a height 
+    // ensure that label with empty text has zero width but has a height
     labelNoWrap.setText( "" );
     extentNoWrap = labelNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     assertEquals( 0, extentNoWrap.x );
@@ -141,7 +142,40 @@ public class Label_Test extends TestCase {
     assertEquals( 0, extentWrap.x );
     assertTrue( extentWrap.y > 0 );
   }
-  
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+    Point expected = new Point( 0, 11 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    label.setText( "label text" );
+    expected = new Point( 53, 16 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    label.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 100, 50 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    label = new Label( shell, SWT.BORDER );
+    label.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 102, 52 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    label = new Label( shell, SWT.SEPARATOR | SWT.HORIZONTAL );
+    expected = new Point( Widget.DEFAULT_WIDTH, 2 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    label = new Label( shell, SWT.SEPARATOR | SWT.VERTICAL );
+    expected = new Point( 2, Widget.DEFAULT_HEIGHT );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 100, 100 );
+    assertEquals( expected, label.computeSize( 100, 100 ) );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

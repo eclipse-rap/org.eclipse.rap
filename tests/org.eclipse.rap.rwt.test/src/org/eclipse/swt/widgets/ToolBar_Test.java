@@ -14,8 +14,10 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 
 public class ToolBar_Test extends TestCase {
 
@@ -190,5 +192,23 @@ public class ToolBar_Test extends TestCase {
     separator.setControl( tempControl );
     tempControl.dispose();
     assertEquals( null, separator.getControl() );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
+    Point expected = new Point( 64, 64 );
+    assertEquals( expected, toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    new ToolItem( toolbar, SWT.NONE );
+    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
+    separator.setControl( new Text( toolbar, SWT.NONE ) );
+    expected = new Point( 16, 22 );
+    assertEquals( expected, toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 100, 100 );
+    assertEquals( expected, toolbar.computeSize( 100, 100 ) );
   }
 }

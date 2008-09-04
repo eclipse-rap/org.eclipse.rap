@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Point;
 
 
 public class List_Test extends TestCase {
@@ -71,30 +72,30 @@ public class List_Test extends TestCase {
     list.removeAll();
     assertEquals( 0, list.getItemCount() );
   }
-  
+
   public void testAdd() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
-    
+
     // add item at end of list
     list.add( "test" );
     assertEquals( "test", list.getItem( 0 ) );
-    
+
     // add duplicate items
     list.add( "test" );
     String[] expected = new String[] { "test", "test" };
     assertTrue( Arrays.equals( expected, list.getItems() ) );
-    
+
     // ensure handling of invalid arguments
-    int sizeBefore = list.getItemCount(); 
+    int sizeBefore = list.getItemCount();
     try {
       list.add( null );
       fail( "add( null ) not allowed." );
     } catch( IllegalArgumentException e ) {
       assertEquals( sizeBefore, list.getItemCount() );
     }
-    
+
     // insert item at invalid position
     list.removeAll();
     list.add( "item1" );
@@ -110,7 +111,7 @@ public class List_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    
+
     // insert item2 between item1 and item3
     list.removeAll();
     list.add( "item1" );
@@ -118,13 +119,13 @@ public class List_Test extends TestCase {
     list.add( "item2", 1 );
     expected = new String[]{ "item1", "item2", "item3" };
     assertTrue( Arrays.equals( expected, list.getItems() ) );
-    
+
     // insert item in empty list
     list.removeAll();
     list.add( "xyz", 0 );
     assertEquals( "xyz", list.getItem( 0 ) );
   }
-  
+
   public void testRemove() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -139,7 +140,7 @@ public class List_Test extends TestCase {
     list.remove( 0 );
     assertEquals( 1, list.getItemCount() );
     assertEquals( "item2", list.getItem( 0 ) );
-    
+
     // Test remove with illegal arguments
     list.removeAll();
     try {
@@ -148,7 +149,7 @@ public class List_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    
+
     // Test remove range
     list.removeAll();
     list.add( "item0" );
@@ -158,7 +159,7 @@ public class List_Test extends TestCase {
     list.remove( 0, 2 );
     assertEquals( 1, list.getItemCount() );
     assertEquals( "item3", list.getItem( 0 ) );
-    
+
     // Test remove range where start > end
     list.removeAll();
     list.add( "item0" );
@@ -167,7 +168,7 @@ public class List_Test extends TestCase {
     list.add( "item3" );
     list.remove( 1, 0 );
     assertEquals( 4, list.getItemCount() );
-    
+
     // Test remove(int[])
     list.removeAll();
     list.add( "item0" );
@@ -178,7 +179,7 @@ public class List_Test extends TestCase {
     assertEquals( 2, list.getItemCount() );
     assertEquals( "item1", list.getItem( 0 ) );
     assertEquals( "item3", list.getItem( 1 ) );
-    
+
     // Test remove(int[]) with an invalid index
     list.removeAll();
     list.add( "item0" );
@@ -194,7 +195,7 @@ public class List_Test extends TestCase {
     list.add( "item0" );
     list.remove( new int[ 0 ] );
     assertEquals( 1, list.getItemCount() );
-    
+
     // Test remove(int[]) with null-argument
     list.removeAll();
     list.add( "item0" );
@@ -204,13 +205,13 @@ public class List_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       assertEquals( 1, list.getItemCount() );
     }
-    
+
     // Test remove(string)
     list.removeAll();
     list.add( "item0" );
     list.remove( "item0" );
     assertEquals( 0, list.getItemCount() );
-    
+
     // Test remove(string) with null-argument
     list.removeAll();
     list.add( "item0" );
@@ -231,24 +232,24 @@ public class List_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    
+
     // Test removeAll
     list.add( "at least one item" );
     list.removeAll();
     assertEquals( 0, list.getItemCount() );
   }
-  
+
   public void testSelectionForSingle() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
-    
+
     // Test initials state of selection
     assertEquals( -1, list.getSelectionIndex() );
     assertEquals( 0, list.getSelectionCount() );
     assertEquals( 0, list.getSelection().length );
-    
+
     // Test selecting single item
     list.add( "test1" );
     list.setSelection( 0 );
@@ -256,14 +257,14 @@ public class List_Test extends TestCase {
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
     assertEquals( 1, list.getSelection().length );
     assertEquals( "test1", list.getSelection()[ 0 ] );
-    
+
     // Test selecting single item with setSelection(int[])
     list.removeAll();
     list.add( "test1" );
     list.setSelection( new int[] { 0 } );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
-    
+
     // Test selecting multiple items: selection will be reset (list is SINGLE)
     list.removeAll();
     list.add( "item0" );
@@ -273,7 +274,7 @@ public class List_Test extends TestCase {
     list.setSelection( new int[] { 0, 2 } );
     assertEquals( 0, list.getSelectionCount() );
     assertEquals( 0, list.getSelection().length );
-    
+
     // Test setSelection(int[]) with invaid arguments
     list.removeAll();
     list.add( "test" );
@@ -295,7 +296,7 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( new int[]{ 0, 1 } );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Ensure that adding an item does not change selection
     list.removeAll();
     list.add( "test1" );
@@ -313,21 +314,21 @@ public class List_Test extends TestCase {
     list.add( "test1.5", 1 );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
-    
+
     // removing selected item must remove the selection also
     list.removeAll();
     list.add( "test" );
     list.setSelection( 0 );
     list.remove( 0 );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Using setItems(String[]) must reset selection
     list.removeAll();
     list.add( "test" );
     list.setSelection( 0 );
     list.setItems( new String[] { "a", "b" } );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Test setSelection(int,int)
     list.removeAll();
     list.add( "test1" );
@@ -351,7 +352,7 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( -1, 2 );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Test setSelection(String[])
     list.removeAll();
     list.add( "test1" );
@@ -381,7 +382,7 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( new String[] { "not here" } );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Test setSelection(String[]) with invalid arguments
     try {
       list.setSelection( ( String[] )null );
@@ -389,7 +390,7 @@ public class List_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       // expected
     }
-    
+
     // Select last item and remove it
     list.removeAll();
     list.add( "item0" );
@@ -407,7 +408,7 @@ public class List_Test extends TestCase {
     list.setSelection( 1 );
     list.setSelection( 12345 );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // selectAll must be ignored for single-select Lists
     list.removeAll();
     list.add( "item0" );
@@ -417,7 +418,7 @@ public class List_Test extends TestCase {
     list.selectAll();
     assertEquals( 1, list.getSelectionIndex() );
     assertEquals( 1, list.getSelectionCount() );
-    
+
     // select must replace a current selection if called with valid argument
     list.removeAll();
     list.add( "item0" );
@@ -429,7 +430,7 @@ public class List_Test extends TestCase {
     assertEquals( 1, list.getSelectionIndex() );
     list.select( list.getItemCount() + 10 );
     assertEquals( 1, list.getSelectionIndex() );
-    
+
     // test select( int[] )
     list.removeAll();
     list.add( "item0" );
@@ -439,7 +440,7 @@ public class List_Test extends TestCase {
     list.select( new int[] { 0 } );
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     // calling again must not change anything
-    list.select( new int[] { 0 } ); 
+    list.select( new int[] { 0 } );
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     // duplicate entries in argumenet are ignored
     list.select( new int[] { 0, 0, 0 } );
@@ -478,7 +479,7 @@ public class List_Test extends TestCase {
     list.select( 1, 1 );
     assertEquals( 1, list.getSelectionCount() );
     assertEquals( 1, list.getSelectionIndices()[ 0 ] );
-    
+
     // Test setSelection with selection listener
     list.removeAll();
     list.add( "item0" );
@@ -486,7 +487,7 @@ public class List_Test extends TestCase {
     list.add( "item2" );
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        String msg 
+        String msg
           = "SelectionEvent must not be fired when selecting programmatically";
         fail( msg );
       }
@@ -495,31 +496,31 @@ public class List_Test extends TestCase {
     list.setSelection( 1 );
     list.removeSelectionListener( listener );
   }
-  
+
   public void testSelectionForMulti() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.MULTI );
-    
+
     // Test initials state of selection
     assertEquals( -1, list.getSelectionIndex() );
     assertEquals( 0, list.getSelectionCount() );
     assertEquals( 0, list.getSelection().length );
-    
+
     // Test selecting single item
     list.add( "test1" );
     list.setSelection( 0 );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
     assertEquals( "test1", list.getSelection()[ 0 ] );
-    
+
     // Test selecting single item with setSelection(int[])
     list.removeAll();
     list.add( "test1" );
     list.setSelection( new int[] { 0 } );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
-    
+
     // Test selecting multiple items
     list.removeAll();
     list.add( "item0" );
@@ -532,7 +533,7 @@ public class List_Test extends TestCase {
     assertTrue( Arrays.equals( selection, list.getSelectionIndices() ) );
     assertEquals( "item0", list.getSelection()[ 0 ] );
     assertEquals( "item2", list.getSelection()[ 1 ] );
-    
+
     // Test setSelection(int[]) with (partially) invaid arguments
     list.removeAll();
     list.add( "test" );
@@ -556,7 +557,7 @@ public class List_Test extends TestCase {
     list.setSelection( new int[]{ 1, 8 } );
     assertEquals( 1, list.getSelectionIndex() );
     assertEquals( "test2", list.getSelection()[ 0 ] );
-    
+
     // Ensure that adding an item does not change selection
     list.removeAll();
     list.add( "test1" );
@@ -574,21 +575,21 @@ public class List_Test extends TestCase {
     list.add( "test1.5", 1 );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
-    
+
     // removing selected item must remove the selection also
     list.removeAll();
     list.add( "test" );
     list.setSelection( 0 );
     list.remove( 0 );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Using setItems(String[]) must reset selection
     list.removeAll();
     list.add( "test" );
     list.setSelection( 0 );
     list.setItems( new String[] { "a", "b" } );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Test setSelection(int,int)
     list.removeAll();
     list.add( "test1" );
@@ -600,7 +601,7 @@ public class List_Test extends TestCase {
     list.setSelection( 0, 1 );
     assertEquals( 0, list.getSelectionIndex() );
     assertEquals( 2, list.getSelectionCount() );
-    assertTrue( Arrays.equals( new int[] { 0, 1 }, 
+    assertTrue( Arrays.equals( new int[] { 0, 1 },
                                list.getSelectionIndices() ) );
     // Test setSelection(int,int) with invalid ranges: must not select anything
     list.setSelection( 0 );
@@ -616,7 +617,7 @@ public class List_Test extends TestCase {
     list.setSelection( -1, 2 );
     assertEquals( 3, list.getSelectionCount() );
     assertEquals( 3, list.getSelectionCount() );
-    
+
     // Test setSelection(String[])
     list.removeAll();
     list.add( "test1" );
@@ -626,12 +627,12 @@ public class List_Test extends TestCase {
     list.setSelection( new String[] { "test1" } );
     assertEquals( 0, list.getSelectionIndex() );
 
-    // Test setSelection(String[]) 
+    // Test setSelection(String[])
     list.setSelection( 0 );
     list.setSelection( new String[] { "test1", "test2" } );
     assertEquals( 0, list.getSelectionIndex() );
     assertEquals( 2, list.getSelectionCount() );
-    assertTrue( Arrays.equals( new int[] { 0, 1 }, 
+    assertTrue( Arrays.equals( new int[] { 0, 1 },
                                list.getSelectionIndices() ) );
     list.setSelection( 0 );
     list.setSelection( new String[] { null, "test2" } );
@@ -641,7 +642,7 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( new String[ 0 ] );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Test setSelection(String[]) with one non-existing String: deselect all
     list.setSelection( 0 );
     list.setSelection( new String[] { null } );
@@ -649,7 +650,7 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( new String[] { "not here" } );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Test setSelection(String[]) with invalid arguments
     try {
       list.setSelection( ( String[] )null );
@@ -694,7 +695,7 @@ public class List_Test extends TestCase {
     list.select( list.getItemCount() + 10 );
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     assertEquals( 1, list.getSelectionIndices()[ 1 ] );
-    
+
     // test select( int[] )
     list.removeAll();
     list.add( "item0" );
@@ -704,7 +705,7 @@ public class List_Test extends TestCase {
     list.select( new int[] { 0 } );
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     // calling again must not change anything
-    list.select( new int[] { 0 } ); 
+    list.select( new int[] { 0 } );
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     // duplicate entries in argumenet are ignored
     list.select( new int[] { 0, 0, 0 } );
@@ -757,18 +758,18 @@ public class List_Test extends TestCase {
     assertEquals( 1, list.getSelectionIndices()[ 1 ] );
     assertEquals( 2, list.getSelectionIndices()[ 2 ] );
   }
-  
+
   public void testSetItem() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
-    
+
     // Test setItem
     list.add( "itemX" );
     list.add( "item1" );
     list.setItem( 0, "item0" );
     assertEquals( "item0", list.getItem( 0 ) );
-    
+
     // Test setItem with invalid index
     list.removeAll();
     try {
@@ -777,7 +778,7 @@ public class List_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    
+
     // Test setItem with null argument
     list.removeAll();
     list.add( "abc" );
@@ -788,12 +789,12 @@ public class List_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testSetItems() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
-    
+
     // Test setItems on empty list
     String[] itemsToSet = new String[] { "a", "b", "c" };
     list.setItems( itemsToSet );
@@ -803,7 +804,7 @@ public class List_Test extends TestCase {
     String[] otherItemsToSet = new String[] { "a", "b", "c", "d" };
     list.setItems( otherItemsToSet );
     assertTrue( Arrays.equals( otherItemsToSet, list.getItems() ) );
-    
+
     // Test setItems with null-argument
     list.removeAll();
     list.add( "a" );
@@ -824,7 +825,7 @@ public class List_Test extends TestCase {
       assertEquals( 1, list.getItemCount() );
     }
   }
-  
+
   public void testGetItem() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -833,7 +834,7 @@ public class List_Test extends TestCase {
     // Test getItem for existing item
     list.add( "item0" );
     assertEquals( "item0", list.getItem( 0 ) );
-    
+
     // Test getItem for non-existing item
     try {
       list.getItem( -2 );
@@ -848,7 +849,7 @@ public class List_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testGetItems() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -857,7 +858,7 @@ public class List_Test extends TestCase {
     list.add( "item1" );
     assertTrue( Arrays.equals( new String[] { "item1" }, list.getItems() ) );
   }
-  
+
   public void testStyle() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -873,27 +874,27 @@ public class List_Test extends TestCase {
     List list4 = new List( shell, SWT.SINGLE | SWT.MULTI );
     assertTrue( ( list4.getStyle() & SWT.SINGLE ) != 0 );
   }
-  
+
   public void testFocusIndexForSingle() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
-    
+
     // Initial focusIndex must be -1
     assertEquals( -1, list.getFocusIndex() );
-    
+
     // focusIndex must be 0 after adding the first item
     list.removeAll();
     list.add( "item0" );
     assertEquals( 0, list.getFocusIndex() );
-    
+
     // focusIndex must be -1 after removeing last item
     list.removeAll();
     list.add( "item0" );
     list.remove( 0 );
     assertEquals( -1, list.getFocusIndex() );
-    
+
     // Test that focusIndex goes with the selection, if any
     list.removeAll();
     list.add( "item0" );
@@ -913,7 +914,7 @@ public class List_Test extends TestCase {
     list.add( "item2" );
     list.setSelection( 1, 1 );
     assertEquals( 1, list.getFocusIndex() );
-    
+
     // Removing the last but not only item (when selected and focused)
     list.removeAll();
     list.add( "item0" );
@@ -923,7 +924,7 @@ public class List_Test extends TestCase {
     list.remove( 2 );
     assertEquals( 1, list.getFocusIndex() );
     assertEquals( -1, list.getSelectionIndex() );
-    
+
     // Don't move focusIndex when selecting a non-existing item
     list.removeAll();
     list.add( "item0" );
@@ -938,26 +939,26 @@ public class List_Test extends TestCase {
     list.deselectAll();
     assertEquals( -1, list.getFocusIndex() );
   }
-  
+
   public void testFocusIndexForMulti() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.MULTI );
-    
+
     // Initial focusIndex must be -1
     assertEquals( -1, list.getFocusIndex() );
-    
+
     // focusIndex must be 0 after adding the first item
     list.removeAll();
     list.add( "item0" );
     assertEquals( 0, list.getFocusIndex() );
-    
+
     // focusIndex must be -1 after removeing last item
     list.removeAll();
     list.add( "item0" );
     list.remove( 0 );
     assertEquals( -1, list.getFocusIndex() );
-    
+
     // Test that focusIndex goes with the selection, if any
     list.removeAll();
     list.add( "item0" );
@@ -972,7 +973,7 @@ public class List_Test extends TestCase {
     list.setSelection( -1 );
     list.setSelection( 1, 2 );
     assertEquals( 1, list.getFocusIndex() );
-    
+
     // Setting a selection range must set the focusIndex to the selection start
     list.removeAll();
     list.add( "item0" );
@@ -986,7 +987,7 @@ public class List_Test extends TestCase {
     list.deselectAll();
     assertEquals( -1, list.getFocusIndex() );
   }
-  
+
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -994,6 +995,45 @@ public class List_Test extends TestCase {
     list.add( "test" );
     list.dispose();
     assertTrue( list.isDisposed() );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    List list = new List( shell, SWT.NONE );
+    Point expected = new Point( 64, 64 );
+    assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    list.add( "test 1" );
+    list.add( "test 22" );
+    list.add( "test 333" );
+    expected = new Point( 52, 51 );
+    assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    list = new List( shell, SWT.V_SCROLL );
+    list.add( "test 1" );
+    list.add( "test 22" );
+    list.add( "test 333" );
+    expected = new Point( 68, 51 );
+    assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    list = new List( shell, SWT.H_SCROLL );
+    list.add( "test 1" );
+    list.add( "test 22" );
+    list.add( "test 333" );
+    expected = new Point( 52, 67 );
+    assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    list = new List( shell, SWT.BORDER );
+    list.add( "test 1" );
+    list.add( "test 22" );
+    list.add( "test 333" );
+    expected = new Point( 56, 55 );
+    assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 104, 104 );
+    assertEquals( expected, list.computeSize( 100, 100 ) );
   }
 
   protected void setUp() throws Exception {

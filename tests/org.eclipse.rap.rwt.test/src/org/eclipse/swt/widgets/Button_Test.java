@@ -14,8 +14,10 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 
 public class Button_Test extends TestCase {
 
@@ -38,25 +40,25 @@ public class Button_Test extends TestCase {
     arrowButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     assertEquals( null, arrowButton.getImage() );
   }
-  
+
   public void testText() {
   	Display display = new Display();
   	Composite shell = new Shell( display, SWT.NONE );
-  
+
   	Button button = new Button( shell, SWT.NONE );
   	button.setText( "Click me!" );
   	assertSame( "Click me!", button.getText() );
-  	
+
   	Button arrowButton = new Button( shell, SWT.ARROW );
   	arrowButton.setText( "Click me!" );
   	assertTrue( arrowButton.getText().length() == 0 );
   }
-  
+
   public void testAlignment() {
   	Display display = new Display();
   	Composite shell = new Shell( display, SWT.NONE );
-  
-  	Button button = new Button( shell, SWT.NONE ); 
+
+  	Button button = new Button( shell, SWT.NONE );
   	button.setAlignment( SWT.LEFT );
   	assertEquals( SWT.LEFT, button.getAlignment() );
   	button.setAlignment( SWT.RIGHT );
@@ -65,26 +67,26 @@ public class Button_Test extends TestCase {
   	assertEquals( SWT.CENTER, button.getAlignment() );
   	button.setAlignment( SWT.UP );
   	assertEquals( SWT.CENTER, button.getAlignment() );
-  	
+
   	button = new Button( shell, SWT.NONE | SWT.LEFT );
   	assertEquals( SWT.LEFT, button.getAlignment() );
   	button = new Button( shell, SWT.NONE | SWT.RIGHT );
   	assertEquals( SWT.RIGHT, button.getAlignment() );
   	button = new Button( shell, SWT.NONE | SWT.CENTER );
   	assertEquals( SWT.CENTER, button.getAlignment() );
-  	
+
   	Button arrowButton = new Button( shell, SWT.ARROW );
   	arrowButton.setAlignment( SWT.LEFT );
   	assertEquals( SWT.LEFT, arrowButton.getAlignment() );
   	arrowButton.setAlignment( SWT.RIGHT );
-  	assertEquals( SWT.RIGHT, arrowButton.getAlignment() );	
+  	assertEquals( SWT.RIGHT, arrowButton.getAlignment() );
   	arrowButton.setAlignment( SWT.UP );
   	assertEquals( SWT.UP, arrowButton.getAlignment() );
-  	arrowButton.setAlignment( SWT.DOWN );	
+  	arrowButton.setAlignment( SWT.DOWN );
   	assertEquals( SWT.DOWN, arrowButton.getAlignment() );
   	arrowButton.setAlignment( SWT.FLAT );
   	assertEquals( SWT.UP, arrowButton.getAlignment() );
-  	
+
   	arrowButton = new Button( shell, SWT.ARROW | SWT.LEFT );
   	assertEquals( SWT.LEFT, arrowButton.getAlignment() );
   	arrowButton = new Button( shell, SWT.ARROW | SWT.RIGHT );
@@ -96,36 +98,114 @@ public class Button_Test extends TestCase {
   	arrowButton = new Button( shell, SWT.ARROW | SWT.CENTER );
   	assertEquals( SWT.UP, arrowButton.getAlignment() );
   }
-  
+
   public void testSelection() {
   	Display display = new Display();
   	Composite shell = new Shell( display, SWT.NONE );
-  
-  	Button button = new Button( shell, SWT.NONE ); 
+
+  	Button button = new Button( shell, SWT.NONE );
     assertFalse( button.getSelection() );
   	button.setSelection( true );
   	assertFalse( button.getSelection() );
-  		
+
   	Button button1 = new Button( shell, SWT.CHECK );
   	assertFalse( button1.getSelection() );
   	button1.setSelection( true );
   	assertTrue( button1.getSelection() );
   	button1.setSelection( false );
   	assertFalse( button1.getSelection() );
-  	
+
   	Button button2 = new Button( shell, SWT.RADIO );
   	assertFalse( button2.getSelection() );
   	button2.setSelection( true );
   	assertTrue( button2.getSelection() );
   	button2.setSelection( false );
   	assertFalse( button2.getSelection() );
-  	
+
   	Button button3 = new Button( shell, SWT.TOGGLE );
     assertFalse( button3.getSelection() );
   	button3.setSelection( true );
   	assertTrue( button3.getSelection() );
   	button3.setSelection( false );
   	assertFalse( button3.getSelection() );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+
+    Button button = new Button( shell, SWT.PUSH );
+    Point expected = new Point( 14, 12 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setText( "Click me!" );
+    expected = new Point( 62, 25 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 170, 62 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setText( "" );
+    expected = new Point( 114, 62 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.PUSH | SWT.BORDER );
+    expected = new Point( 16, 14 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setText( "Click me!" );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 172, 64 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.TOGGLE );
+    button.setText( "Click me!" );
+    expected = new Point( 62, 25 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 170, 62 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.TOGGLE | SWT.BORDER );
+    expected = new Point( 16, 14 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setText( "Click me!" );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 172, 64 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.CHECK );
+    button.setText( "Click me!" );
+    expected = new Point( 75, 22 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 191, 56 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.CHECK | SWT.BORDER );
+    expected = new Point( 29, 24 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setText( "Click me!" );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 193, 58 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.RADIO );
+    button.setText( "Click me!" );
+    expected = new Point( 75, 22 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 191, 56 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    button = new Button( shell, SWT.RADIO | SWT.BORDER );
+    expected = new Point( 29, 24 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setText( "Click me!" );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 193, 58 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 104, 104 );
+    assertEquals( expected, button.computeSize( 100, 100 ) );
   }
 
   protected void setUp() throws Exception {

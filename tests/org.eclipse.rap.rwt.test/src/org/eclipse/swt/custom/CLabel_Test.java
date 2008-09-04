@@ -14,9 +14,11 @@ package org.eclipse.swt.custom;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -67,6 +69,21 @@ public class CLabel_Test extends TestCase {
     assertEquals( null, label.getText() );
     label.setText( "bar" );
     assertEquals( label.getText(), "bar" );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.SHELL_TRIM );
+    CLabel label = new CLabel( shell, SWT.RIGHT );
+    Point expected = new Point( 6, 17 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    label.setText( "bar" );
+    expected = new Point( 22, 19 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    label.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    expected = new Point( 127, 56 );
+    assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   protected void setUp() throws Exception {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,6 +20,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 
 
 public class Text_Test extends TestCase {
@@ -41,7 +42,7 @@ public class Text_Test extends TestCase {
     assertEquals( 0, text.getSelectionCount() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
   }
-  
+
   public void testTextLimit() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -61,24 +62,24 @@ public class Text_Test extends TestCase {
       // as expected
     }
   }
-  
+
   public void testSelection() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
-    
+
     // test select all
     text.setText( "abc" );
     text.selectAll();
     assertEquals( new Point( 0, 3 ), text.getSelection() );
     assertEquals( "abc", text.getSelectionText() );
-    
+
     // test clearSelection
     text.setText( "abc" );
     text.clearSelection();
     assertEquals( new Point( 0, 0 ), text.getSelection() );
     assertEquals( "", text.getSelectionText() );
-    
+
     // test setSelection
     text.setText( "abc" );
     text.setSelection( 1 );
@@ -94,7 +95,7 @@ public class Text_Test extends TestCase {
     assertEquals( saveSelection, text.getSelection() );
     assertEquals( 0, text.getSelectionCount() );
     assertEquals( "", text.getSelectionText() );
-    
+
     // test selection when changing text
     text.setText( "abcefg" );
     text.setSelection( 1, 2 );
@@ -106,7 +107,7 @@ public class Text_Test extends TestCase {
     text.setText( text.getText() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
   }
-  
+
   public void testModifyEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
@@ -127,7 +128,7 @@ public class Text_Test extends TestCase {
     text.setText( "abc" );
     assertEquals( "modifyEvent|", log.toString() );
   }
-  
+
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -145,15 +146,15 @@ public class Text_Test extends TestCase {
         log.add( event );
       }
     } );
-    
+
     // VerifyEvent is also sent when setting text to the already set value
     log.clear();
     text.setText( "" );
     assertEquals( 2, log.size() );
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-    
-    // Test verifyListener that prevents (doit=false) change 
+
+    // Test verifyListener that prevents (doit=false) change
     text.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
@@ -168,7 +169,7 @@ public class Text_Test extends TestCase {
     assertEquals( "", text.getText() );
     text.removeVerifyListener( verifyListener );
 
-    // Test verifyListener that manipulates text 
+    // Test verifyListener that manipulates text
     text.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
@@ -183,8 +184,8 @@ public class Text_Test extends TestCase {
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
     assertEquals( "manipulated", text.getText() );
     text.removeVerifyListener( verifyListener );
-    
-    // Ensure that VerifyEvent#start and #end denote the positions of the old 
+
+    // Ensure that VerifyEvent#start and #end denote the positions of the old
     // text and #text denotes the text to be set
     String oldText = "old";
     text.setText( oldText );
@@ -198,7 +199,7 @@ public class Text_Test extends TestCase {
     assertEquals( oldText.length(), verifyEvent.end );
     assertEquals( newText, verifyEvent.text );
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-    
+
     // Ensure that VerifyEvent gets fired when setEditable was set to false
     text.setText( "" );
     text.setEditable( false );
@@ -209,12 +210,12 @@ public class Text_Test extends TestCase {
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
     text.setEditable( true );
   }
-  
+
   // TODO [bm] extend testcase with newline chars and getLineCount
   public void testInsert() {
     Display display = new Display();
     Shell shell = new Shell( display );
-    
+
     // Test insert on multi-line Text
     Text text = new Text( shell, SWT.MULTI );
     text.setBounds( 0, 0, 500, 500 );
@@ -236,7 +237,7 @@ public class Text_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       assertEquals( "oldText", text.getText() );
     }
-    
+
     // Test insert on single-line Text
     text = new Text( shell, SWT.SINGLE );
     assertEquals( "", text.getText() );
@@ -257,7 +258,7 @@ public class Text_Test extends TestCase {
       assertEquals( "oldText", text.getText() );
     }
 	}
-  
+
   // TODO [bm] extend testcase with newline chars for SWT.MULTI
   public void testAppend() {
 		Display display = new Display();
@@ -291,7 +292,7 @@ public class Text_Test extends TestCase {
 		assertEquals("01234567", text.getText());
 
 	}
-  
+
   public void testInsertWithModifyListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
@@ -304,12 +305,12 @@ public class Text_Test extends TestCase {
         log.add( event );
       }
     } );
-    
+
     // Test that event is fired when correctly using insert
     log.clear();
     text.insert( "abc" );
     assertEquals( 1, log.size() );
-    
+
     // Test that event is *not* fired when passing illegal argument to insert
     log.clear();
     text = new Text( shell, SWT.SINGLE );
@@ -319,5 +320,57 @@ public class Text_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
     }
     assertEquals( 0, log.size() );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
+    Point expected = new Point( 64, 17 );
+    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    text.setText( "This is a long long text!" );
+    expected = new Point( 138, 19 );
+    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    text = new Text( shell, SWT.MULTI );
+    text.setText( "This is a long long text!\nThis is the second row." );
+    expected = new Point( 138, 34 );
+    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    text = new Text( shell, SWT.MULTI | SWT.WRAP );
+    text.setText( "This is a long long text!\nThis is the second row." );
+    expected = new Point( 50, 116 );
+    assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
+
+    text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
+    text.setText( "This is a long long text!\nThis is the second row." );
+    expected = new Point( 54, 120 );
+    assertEquals( 2, text.getBorderWidth() );
+    assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
+
+    expected = new Point( 104, 106 );
+    assertEquals( expected, text.computeSize( 100, 100 ) );
+  }
+
+  public void testComputeTrim() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.SINGLE );
+    Rectangle expected = new Rectangle( 0, 0, 0, 0 );
+    assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
+    expected = new Rectangle( 10, 10, 100, 100 );
+    assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
+
+    text = new Text( shell, SWT.H_SCROLL );
+    expected = new Rectangle( 0, 0, 1, 0 );
+    assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
+    expected = new Rectangle( 10, 10, 101, 100 );
+    assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
+
+    text = new Text( shell, SWT.BORDER );
+    expected = new Rectangle( -2, -2, 5, 4 );
+    assertEquals( expected, text.computeTrim( 0, 0, 1, 0 ) );
   }
 }

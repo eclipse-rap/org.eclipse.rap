@@ -13,8 +13,10 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 
 public class ProgressBar_Test extends TestCase {
 
@@ -25,14 +27,14 @@ public class ProgressBar_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
-  
+
   public void testRangeOperations() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     assertEquals( 0, progressBar.getMinimum() );
     assertEquals( 100, progressBar.getMaximum() );
-    
+
     progressBar.setMinimum( 10 );
     assertEquals( 10, progressBar.getMinimum() );
     progressBar.setMinimum( -1 );
@@ -41,7 +43,7 @@ public class ProgressBar_Test extends TestCase {
     assertEquals( 10, progressBar.getMinimum() );
     progressBar.setMinimum( 101 );
     assertEquals( 10, progressBar.getMinimum() );
-    
+
     progressBar.setMaximum( 20 );
     assertEquals( 20, progressBar.getMaximum() );
     progressBar.setMaximum( progressBar.getMinimum() - 1 );
@@ -49,7 +51,7 @@ public class ProgressBar_Test extends TestCase {
     progressBar.setMaximum( progressBar.getMinimum() );
     assertEquals( 20, progressBar.getMaximum() );
   }
-  
+
   public void testSelection() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -58,14 +60,35 @@ public class ProgressBar_Test extends TestCase {
 
     progressBar.setMinimum( 10 );
     assertEquals( 10, progressBar.getSelection() );
-    
+
     progressBar.setSelection( 20 );
     progressBar.setMaximum( 15 );
     assertEquals( 15, progressBar.getSelection() );
-    
+
     progressBar.setSelection( 20 );
     assertEquals( 15, progressBar.getSelection() );
     progressBar.setSelection( 0 );
     assertEquals( 10, progressBar.getSelection() );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ProgressBar bar = new ProgressBar( shell, SWT.HORIZONTAL );
+    Point expected = new Point( 160, 16 );
+    assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    bar = new ProgressBar( shell, SWT.VERTICAL );
+    expected = new Point( 16, 160 );
+    assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    bar = new ProgressBar( shell, SWT.BORDER );
+    expected = new Point( 160, 16 );
+    assertEquals( 0, bar.getBorderWidth() );
+    assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 100, 100 );
+    assertEquals( expected, bar.computeSize( 100, 100 ) );
   }
 }

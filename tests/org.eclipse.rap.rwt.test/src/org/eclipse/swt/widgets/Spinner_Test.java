@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,12 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 
 
 public class Spinner_Test extends TestCase {
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
@@ -49,30 +51,30 @@ public class Spinner_Test extends TestCase {
     spinner = new Spinner( shell, SWT.READ_ONLY );
     assertTrue( ( spinner.getStyle() & SWT.READ_ONLY ) != 0 );
   }
-  
+
   public void testMinMax() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     // it is allowed to set min and max to the same value
     spinner.setMinimum( 1 );
     spinner.setMaximum( 1 );
     assertEquals( spinner.getMinimum(), spinner.getMaximum() );
     assertEquals( 1, spinner.getSelection() );
 
-    // ignore when min is set to a value greater than max  
+    // ignore when min is set to a value greater than max
     spinner.setMinimum( 1 );
     spinner.setMaximum( 100 );
     spinner.setMinimum( 2000 );
     assertEquals( 1, spinner.getMinimum() );
-    
+
     // ignore when max is set to a value less than min
     spinner.setMinimum( 1 );
     spinner.setMaximum( 100 );
     spinner.setMaximum( -200 );
     assertEquals( 100, spinner.getMaximum() );
-    
+
     // ignore negative min or max values (behave like SWT)
     spinner.setMinimum( 1 );
     spinner.setMaximum( 100 );
@@ -83,12 +85,12 @@ public class Spinner_Test extends TestCase {
     spinner.setMaximum( -1 );
     assertEquals( 100, spinner.getMaximum() );
   }
-  
+
   public void testIncrementAndPageIncrement() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     // ignore illegal values
     spinner.setIncrement( 0 );
     assertEquals( 1, spinner.getIncrement() );
@@ -99,7 +101,7 @@ public class Spinner_Test extends TestCase {
     spinner.setIncrement( -1 );
     assertEquals( 10, spinner.getPageIncrement() );
   }
-  
+
   public void testModifyEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
@@ -119,11 +121,43 @@ public class Spinner_Test extends TestCase {
     log.setLength( 0 );
     spinner.setSelection( spinner.getSelection() );
     assertEquals( "modifyEvent", log.toString() );
-    // setValues which indirectly changes the selection also causes a 
+    // setValues which indirectly changes the selection also causes a
     // modifyEvent
     log.setLength( 0 );
     spinner.setValues( 1, 0, 100, 0, 1, 10 );
     assertEquals( "modifyEvent", log.toString() );
-    
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    Point expected = new Point( 54, 17 );
+    assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    spinner.setMaximum( 1000000 );
+    expected = new Point( 75, 17 );
+    assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    spinner = new Spinner( shell, SWT.BORDER );
+    expected = new Point( 58, 21 );
+    assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 120, 104 );
+    assertEquals( expected, spinner.computeSize( 100, 100 ) );
+  }
+
+  public void testComputeTrim() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    Rectangle expected = new Rectangle( 0, 0, 116, 100 );
+    assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
+
+    spinner = new Spinner( shell, SWT.BORDER );
+    expected = new Rectangle( -2, -2, 120, 104 );
+    assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
 }

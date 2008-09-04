@@ -20,8 +20,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -429,6 +428,61 @@ public class CTabFolder_Test extends TestCase {
     // Clean up
     item1.dispose();
     item2.dispose();
+  }
+
+  public void testComputeTrim() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Rectangle expected = new Rectangle( -2, -18, 4, 20 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    expected = new Rectangle( -2, -21, 4, 23 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    folder.setMinimized( true );
+    expected = new Rectangle( -2, -21, 4, 21 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    folder = new CTabFolder( shell, SWT.FLAT );
+    expected = new Rectangle( 0, -16, 0, 16 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    folder = new CTabFolder( shell, SWT.BORDER );
+    expected = new Rectangle( -3, -18, 6, 21 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+  }
+
+  public void testClientArea() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    folder.setSize( 100, 100 );
+
+    Rectangle expected = new Rectangle( 2, 21, 96, 77 );
+    assertEquals( expected, folder.getClientArea() );
+
+    folder.setMinimized( true );
+    expected = new Rectangle( 2, 21, 0, 0 );
+    assertEquals( expected, folder.getClientArea() );
+
+    folder = new CTabFolder( shell, SWT.FLAT );
+    folder.setSize( 100, 100 );
+    expected = new Rectangle( 0, 16, 100, 84 );
+    assertEquals( expected, folder.getClientArea() );
+
+    folder = new CTabFolder( shell, SWT.BORDER );
+    folder.setSize( 100, 100 );
+    expected = new Rectangle( 3, 18, 94, 79 );
+    assertEquals( expected, folder.getClientArea() );
   }
 
   protected void setUp() throws Exception {

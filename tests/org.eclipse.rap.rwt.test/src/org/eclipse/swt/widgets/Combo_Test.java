@@ -18,12 +18,13 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
 
 /*
  * Note:
  * As long as Combo uses a ListModel to maintain its items and selection,
  * most of the add/remove/getItem.../selection test cases can be omitted.
- * They are covered in List_Test 
+ * They are covered in List_Test
  */
 public class Combo_Test extends TestCase {
 
@@ -46,7 +47,7 @@ public class Combo_Test extends TestCase {
     combo.deselect( 0 );
     assertEquals( 1, combo.getSelectionIndex() );
   }
-  
+
   public void testGetText() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -174,7 +175,7 @@ public class Combo_Test extends TestCase {
       assertTrue( ":c:" + i, combo.getText().equals( cases[ i ] ) );
     }
   }
-	
+
   public void testSelection() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -277,7 +278,7 @@ public class Combo_Test extends TestCase {
     combo.removeAll();
     assertEquals( 0, combo.getItems().length );
   }
-  
+
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -290,13 +291,13 @@ public class Combo_Test extends TestCase {
   protected boolean listenerCalled;
   public void testAddModifyListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-    
+
     boolean exceptionThrown = false;
-    
+
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-    
+
     ModifyListener listener = new ModifyListener() {
 
       public void modifyText( ModifyEvent event ) {
@@ -327,13 +328,13 @@ public class Combo_Test extends TestCase {
     }
     assertTrue( "Expected exception not thrown", exceptionThrown );
   }
-  
+
   public void testVisibleItemCount() {
 	  Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
-    combo.add( "2" );  
+    combo.add( "2" );
     combo.add( "3" );
     int visibleItemCount = combo.getVisibleItemCount();
     combo.setVisibleItemCount( -2 );
@@ -343,7 +344,26 @@ public class Combo_Test extends TestCase {
     combo.setVisibleItemCount( 3 );
     assertEquals( 3, combo.getVisibleItemCount() );
   }
-  
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    Point expected = new Point( 68, 19 );
+    assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    combo = new Combo( shell, SWT.NONE );
+    combo.add( "1" );
+    combo.add( "22" );
+    combo.add( "333" );
+    expected = new Point( 50, 19 );
+    assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 104, 104 );
+    assertEquals( expected, combo.computeSize( 100, 100 ) );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
