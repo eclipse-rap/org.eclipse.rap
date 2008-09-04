@@ -291,7 +291,7 @@
 	</target>
 
 	<target name="tidyup">
-		<!-- delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" / -->
+		<delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" />
 	</target>
 
 	<!-- ===================================================================== -->
