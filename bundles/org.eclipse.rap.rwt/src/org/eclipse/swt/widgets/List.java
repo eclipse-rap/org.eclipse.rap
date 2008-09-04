@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,11 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 
-/** 
+/**
  * Instances of this class represent a selectable user interface
  * object that displays a list of strings and issues notification
  * when a string is selected.  A list may be single or multi select.
@@ -38,16 +39,19 @@ import org.eclipse.swt.internal.widgets.IListAdapter;
  * <li>showSelection</li>
  * <li>deselect methods</li>
  * </ul>
- * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or 
- * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior 
- * (items are drawn outside list bounds). Setting none or both scroll style 
+ * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or
+ * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior
+ * (items are drawn outside list bounds). Setting none or both scroll style
  * flags works as expected. We will work on a solution for this.</p>
  */
 public class List extends Scrollable {
 
-  // This value must be kept in sync with appearance of list items
-  private static final int VERTICAL_ITEM_MARGIN = 4;
-  
+  // This values must be kept in sync with appearance of list items
+  private static final int VERTICAL_ITEM_MARGIN = 3;
+  private static final int HORIZONTAL_ITEM_MARGIN = 5;
+
+  private static final int SCROLL_SIZE = 16;
+
   private final ListModel model;
   private int focusIndex = -1;
   private IListAdapter listAdapter;
@@ -58,7 +62,7 @@ public class List extends Scrollable {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -85,10 +89,10 @@ public class List extends Scrollable {
     super( parent, checkStyle( style ) );
     model = new ListModel( ( style & SWT.SINGLE ) != 0 );
   }
-  
+
   /////////////////////
   // Adaptable override
-  
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IListAdapter.class ) {
@@ -105,7 +109,7 @@ public class List extends Scrollable {
     }
     return result;
   }
-  
+
   ///////////////////////////////
   // Methods to get/set selection
 
@@ -116,7 +120,7 @@ public class List extends Scrollable {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its selection, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    * @return an array representing the selection
    *
@@ -125,7 +129,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public String [] getSelection() {
+  public String[] getSelection() {
     checkWidget();
     int[] selectionIndices = model.getSelectionIndices();
     String[] result = new String[ selectionIndices.length ];
@@ -134,7 +138,7 @@ public class List extends Scrollable {
     }
     return result;
   }
-  
+
   /**
    * Returns the zero-relative index of the item which is currently
    * selected in the receiver, or -1 if no item is selected.
@@ -158,7 +162,7 @@ public class List extends Scrollable {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its selection, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    * @return the array of indices of the selected items
    *
@@ -171,7 +175,7 @@ public class List extends Scrollable {
     checkWidget();
     return model.getSelectionIndices();
   }
-  
+
   /**
    * Returns the number of selected items contained in the receiver.
    *
@@ -188,7 +192,7 @@ public class List extends Scrollable {
   }
 
   /**
-   * Selects the item at the given zero-relative index in the receiver. 
+   * Selects the item at the given zero-relative index in the receiver.
    * If the item at the index was already selected, it remains selected.
    * The current selection is first cleared, then the new item is selected.
    * Indices that are out of range are ignored.
@@ -235,7 +239,7 @@ public class List extends Scrollable {
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
   }
-  
+
   /**
    * Selects the items in the range specified by the given zero-relative
    * indices in the receiver. The range of indices is inclusive.
@@ -262,7 +266,7 @@ public class List extends Scrollable {
     model.setSelection( start, end );
     updateFocusIndexAfterSelectionChange();
   }
-  
+
   /**
    * Sets the receiver's selection to be the given array of items.
    * The current selection is cleared before the new items are selected.
@@ -290,9 +294,9 @@ public class List extends Scrollable {
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
   }
-  
+
   /**
-   * Selects the item at the given zero-relative index in the receiver's 
+   * Selects the item at the given zero-relative index in the receiver's
    * list.  If the item at the index was already selected, it remains
    * selected. Indices that are out of range are ignored.
    *
@@ -313,7 +317,7 @@ public class List extends Scrollable {
       model.addSelection( index );
     }
   }
-  
+
   /**
    * Selects the items at the given zero-relative indices in the receiver.
    * The current selection is not cleared before the new items are selected.
@@ -333,7 +337,7 @@ public class List extends Scrollable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see List#setSelection(int[])
    */
   public void select( final int[] indices ) {
@@ -349,7 +353,7 @@ public class List extends Scrollable {
         model.addSelection( index );
         i++;
       }
-    } 
+    }
   }
 
   /**
@@ -371,14 +375,14 @@ public class List extends Scrollable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see List#setSelection(int,int)
    */
   public void select( final int start, final int end ) {
     checkWidget();
     if(    end >= 0
         && start <= end
-        && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) 
+        && ( ( style & SWT.SINGLE ) == 0 || start == end ) )
     {
       int count = model.getItemCount();
       if( count != 0 && start < count ) {
@@ -392,7 +396,7 @@ public class List extends Scrollable {
           }
         }
       }
-    } 
+    }
   }
 
   /**
@@ -424,7 +428,7 @@ public class List extends Scrollable {
     model.deselectAll();
     updateFocusIndexAfterSelectionChange();
   }
-  
+
   /**
    * Returns <code>true</code> if the item is selected,
    * and <code>false</code> otherwise.  Indices out of
@@ -473,7 +477,7 @@ public class List extends Scrollable {
 
   ////////////////////////////////
   // Methods to maintain the items
-  
+
   /**
    * Adds the argument to the end of the receiver's list.
    *
@@ -546,7 +550,7 @@ public class List extends Scrollable {
 
   /**
    * Removes the items from the receiver which are
-   * between the given zero-relative start and end 
+   * between the given zero-relative start and end
    * indices (inclusive).
    *
    * @param start the start of the range
@@ -565,7 +569,7 @@ public class List extends Scrollable {
     model.remove( start, end );
     updateFocusIndexAfterItemChange();
   }
-  
+
   /**
    * Removes the items from the receiver at the given
    * zero-relative indices.
@@ -589,7 +593,7 @@ public class List extends Scrollable {
 
   /**
    * Searches the receiver's list starting at the first item
-   * until an item is found that is equal to the argument, 
+   * until an item is found that is equal to the argument,
    * and removes that item from the list.
    *
    * @param string the item to remove
@@ -702,11 +706,11 @@ public class List extends Scrollable {
 
   /**
    * Returns a (possibly empty) array of <code>String</code>s which
-   * are the items in the receiver. 
+   * are the items in the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver's list
@@ -720,7 +724,7 @@ public class List extends Scrollable {
     checkWidget();
     return model.getItems();
   }
-  
+
   /**
    * Gets the index of an item.
    * <p>
@@ -746,7 +750,7 @@ public class List extends Scrollable {
   }
 
   /**
-   * Searches the receiver's list starting at the given, 
+   * Searches the receiver's list starting at the given,
    * zero-relative index until an item is found that is equal
    * to the argument, and returns the index of that item. If
    * no item is found or the starting index is out of range,
@@ -849,21 +853,60 @@ public class List extends Scrollable {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
   boolean isTabGroup() {
     return true;
   }
 
+  /////////////////////////////////////////
+  // Widget dimensions
+
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed ) {
+    checkWidget ();
+    int width = 0, height = 0;
+    String[] items = getItems();
+    int itemWidth = 0;
+    for( int i = 0; i < items.length; i++ ) {
+      itemWidth = getItemWidth( items[ i ] );
+      width = Math.max( width, itemWidth );
+    }
+    height = getItemHeight() * items.length;
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if( wHint != SWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != SWT.DEFAULT ) {
+      height = hHint;
+    }
+    int border = getBorderWidth();
+    width += border * 2;
+    height += border * 2;
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      width += SCROLL_SIZE;
+    }
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      height += SCROLL_SIZE;
+    }
+    return new Point( width, height );
+  }
+
   /////////////////////////////////
-  // Helping methods for focusIndex 
-  
+  // Helping methods for focusIndex
+
   private void setFocusIndex( final int focusIndex ) {
     int count = model.getItemCount();
     if( focusIndex == -1 || ( focusIndex >= 0 && focusIndex < count ) ) {
       this.focusIndex = focusIndex;
     }
   }
-  
+
   private void updateFocusIndexAfterSelectionChange() {
     focusIndex = -1;
     if( model.getItemCount() > 0 ) {
@@ -882,11 +925,16 @@ public class List extends Scrollable {
       focusIndex = model.getItemCount() - 1;
     }
   }
-  
+
   //////////////////
-  // Helping methods 
-  
+  // Helping methods
+
   private static int checkStyle( final int style ) {
     return checkBits( style, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
+  }
+
+  private int getItemWidth( final String item ) {
+    int margin = HORIZONTAL_ITEM_MARGIN * 2;
+    return TextSizeDetermination.stringExtent( getFont(), item ).x + margin;
   }
 }
