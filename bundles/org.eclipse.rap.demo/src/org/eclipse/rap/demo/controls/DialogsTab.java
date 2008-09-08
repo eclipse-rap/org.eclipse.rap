@@ -17,8 +17,7 @@ import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -30,12 +29,25 @@ public class DialogsTab extends ExampleTab {
   private Label loginDlgResLabel;
   private Label messageDlgResLabel;
   private Label errorDlgResLabel;
+  private Label messageBoxDlgResLabel;
+
+  private Button okButton, cancelButton;
+  private Button yesButton, noButton;
+  private Button retryButton;
+  private Button abortButton, ignoreButton;
+  private Button iconErrorButton, iconInformationButton, iconQuestionButton;
+  private Button iconWarningButton, iconWorkingButton, noIconButton;
+
+  private Button showMessageBoxDlgButton;
 
   public DialogsTab( final CTabFolder topFolder ) {
     super( topFolder, "Dialogs" );
   }
 
   protected void createStyleControls( final Composite parent ) {
+    parent.setLayout( new GridLayout( 1, true ) );
+
+    createMessageBoxStyleControls( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -44,7 +56,7 @@ public class DialogsTab extends ExampleTab {
     group1.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group1.setText( "JFace Dialogs" );
     group1.setLayout( new GridLayout( 3, true ) );
-    
+
     // JFace input dialog
     Button showInputDlgButton = new Button( group1, SWT.PUSH );
     showInputDlgButton.setText( "Input Dialog" );
@@ -55,13 +67,13 @@ public class DialogsTab extends ExampleTab {
     } );
     showInputDlgButton.setLayoutData( createGridDataFillBoth() );
     insertSpaceLabels( group1, 2 );
-    
+
     inputDlgResLabel = new Label( group1, SWT.WRAP );
     inputDlgResLabel.setText( "Result:" );
     GridData gdInputDlgResLabel = new GridData();
     gdInputDlgResLabel.horizontalSpan = 3;
     inputDlgResLabel.setLayoutData( gdInputDlgResLabel );
-    
+
     Button showMessageInfoDlgButton = new Button( group1, SWT.PUSH );
     showMessageInfoDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageInfoDlgButton.setText( "Info Message" );
@@ -70,7 +82,7 @@ public class DialogsTab extends ExampleTab {
         showMessageDialogInfo();
       }
     } );
-    
+
     Button showMessageWarningDlgButton = new Button( group1, SWT.PUSH );
     showMessageWarningDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageWarningDlgButton.setText( "Warning Dialog" );
@@ -87,7 +99,7 @@ public class DialogsTab extends ExampleTab {
         showMessageDialogError();
       }
     } );
-    
+
     Button showMessageQuestionDlgButton = new Button( group1, SWT.PUSH );
     showMessageQuestionDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageQuestionDlgButton.setText( "Question Dialog" );
@@ -96,7 +108,7 @@ public class DialogsTab extends ExampleTab {
         showMessageDialogQuestion();
       }
     } );
-    
+
     Button showMessageConfirmDlgButton = new Button( group1, SWT.PUSH );
     showMessageConfirmDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageConfirmDlgButton.setText( "Confirm Message" );
@@ -106,11 +118,11 @@ public class DialogsTab extends ExampleTab {
       }
     } );
     insertSpaceLabels( group1, 1 );
-    
+
     messageDlgResLabel = new Label( group1, SWT.WRAP );
     messageDlgResLabel.setText( "Result:" );
     insertSpaceLabels( group1, 2 );
-    
+
     Button showErrorDlgButton = new Button( group1, SWT.PUSH );
     showErrorDlgButton.setLayoutData( createGridDataFillBoth() );
     showErrorDlgButton.setText( "Error Dialog" );
@@ -124,8 +136,8 @@ public class DialogsTab extends ExampleTab {
     errorDlgResLabel = new Label( group1, SWT.WRAP );
     errorDlgResLabel.setText( "Result:" );
     insertSpaceLabels( group1, 2 );
-    
-    
+
+
     Group group2 = new Group( parent, SWT.NONE );
     group2.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group2.setText( "Custom Dialogs" );
@@ -140,9 +152,28 @@ public class DialogsTab extends ExampleTab {
     } );
     showLoginDlgButton.setLayoutData( createGridDataFillBoth() );
     insertSpaceLabels( group2, 2 );
-    
+
     loginDlgResLabel = new Label( group2, SWT.WRAP );
     loginDlgResLabel.setText( "Result:" );
+
+    Group group3 = new Group( parent, SWT.NONE );
+    group3.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    group3.setText( "SWT Dialogs" );
+    group3.setLayout( new GridLayout( 3, true ) );
+
+    showMessageBoxDlgButton = new Button( group3, SWT.PUSH );
+    showMessageBoxDlgButton.setText( "MessageBox Dialog" );
+    showMessageBoxDlgButton.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        showMessageBoxDialog();
+      }
+    } );
+    showMessageBoxDlgButton.setLayoutData( createGridDataFillBoth() );
+    insertSpaceLabels( group3, 2 );
+
+    messageBoxDlgResLabel = new Label( group3, SWT.WRAP );
+    messageBoxDlgResLabel.setText( "Result:" );
   }
 
   private GridData createGridDataFillBoth() {
@@ -157,7 +188,7 @@ public class DialogsTab extends ExampleTab {
 
   private void showInputDialog() {
     final IInputValidator val = new IInputValidator() {
-      public String isValid( String newText ) {
+      public String isValid( final String newText ) {
         String result = null;
         if( newText.length() < 5 ) {
           result = "Input text too short!";
@@ -264,5 +295,126 @@ public class DialogsTab extends ExampleTab {
       result = String.valueOf( code );
     }
     return result ;
+  }
+
+  private void showMessageBoxDialog() {
+    int style = getStyle();
+    if( okButton.getEnabled() && okButton.getSelection() ) {
+      style |= SWT.OK;
+    }
+    if( cancelButton.getEnabled() && cancelButton.getSelection() ) {
+      style |= SWT.CANCEL;
+    }
+    if( yesButton.getEnabled() && yesButton.getSelection() ) {
+      style |= SWT.YES;
+    }
+    if( noButton.getEnabled() && noButton.getSelection() ) {
+      style |= SWT.NO;
+    }
+    if( retryButton.getEnabled() && retryButton.getSelection() ) {
+      style |= SWT.RETRY;
+    }
+    if( abortButton.getEnabled() && abortButton.getSelection() ) {
+      style |= SWT.ABORT;
+    }
+    if( ignoreButton.getEnabled() && ignoreButton.getSelection() ) {
+      style |= SWT.IGNORE;
+    }
+    if( iconErrorButton.getEnabled() && iconErrorButton.getSelection() ) {
+      style |= SWT.ICON_ERROR;
+    }
+    if( iconInformationButton.getEnabled()
+        && iconInformationButton.getSelection() ) {
+      style |= SWT.ICON_INFORMATION;
+    }
+    if( iconQuestionButton.getEnabled() && iconQuestionButton.getSelection() ) {
+      style |= SWT.ICON_QUESTION;
+    }
+    if( iconWarningButton.getEnabled() && iconWarningButton.getSelection() ) {
+      style |= SWT.ICON_WARNING;
+    }
+    if( iconWorkingButton.getEnabled() && iconWorkingButton.getSelection() ) {
+      style |= SWT.ICON_WORKING;
+    }
+
+    String title = "MessageBox Title";
+    String mesg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
+    MessageBox mb = new MessageBox( getShell(), style );
+    mb.setText( title );
+    mb.setMessage( mesg );
+    int result = mb.open();
+    String strResult = "";
+    switch( result ) {
+      case SWT.OK:
+        strResult = "SWT.OK";
+      break;
+      case SWT.YES:
+        strResult = "SWT.YES";
+      break;
+      case SWT.NO:
+        strResult = "SWT.NO";
+      break;
+      case SWT.CANCEL:
+        strResult = "SWT.CANCEL";
+      break;
+      case SWT.ABORT:
+        strResult = "SWT.ABORT";
+      break;
+      case SWT.RETRY:
+        strResult = "SWT.RETRY";
+      break;
+      case SWT.IGNORE:
+        strResult = "SWT.IGNORE";
+      break;
+      default:
+        strResult = "" + result;
+      break;
+    }
+    messageBoxDlgResLabel.setText( "Result: " + strResult );
+    messageBoxDlgResLabel.pack();
+  }
+
+  private void createMessageBoxStyleControls( final Composite parent ) {
+    Group buttonStyleGroup = new Group( parent, SWT.NONE );
+    buttonStyleGroup.setLayout( new GridLayout() );
+    buttonStyleGroup.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL
+                                                  | GridData.VERTICAL_ALIGN_FILL ) );
+    buttonStyleGroup.setText( "SWT MessageBox Styles" );
+
+    okButton = new Button( buttonStyleGroup, SWT.CHECK );
+    okButton.setText( "SWT.OK" );
+    cancelButton = new Button( buttonStyleGroup, SWT.CHECK );
+    cancelButton.setText( "SWT.CANCEL" );
+    yesButton = new Button( buttonStyleGroup, SWT.CHECK );
+    yesButton.setText( "SWT.YES" );
+    noButton = new Button( buttonStyleGroup, SWT.CHECK );
+    noButton.setText( "SWT.NO" );
+    retryButton = new Button( buttonStyleGroup, SWT.CHECK );
+    retryButton.setText( "SWT.RETRY" );
+    abortButton = new Button( buttonStyleGroup, SWT.CHECK );
+    abortButton.setText( "SWT.ABORT" );
+    ignoreButton = new Button( buttonStyleGroup, SWT.CHECK );
+    ignoreButton.setText( "SWT.IGNORE" );
+
+    Group iconStyleGroup = new Group( parent, SWT.NONE );
+    iconStyleGroup.setLayout( new GridLayout() );
+    iconStyleGroup.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL
+                                                | GridData.VERTICAL_ALIGN_FILL ) );
+    iconStyleGroup.setText( "SWT MessageBox Icon Styles" );
+
+    iconErrorButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconErrorButton.setText( "SWT.ICON_ERROR" );
+    iconInformationButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconInformationButton.setText( "SWT.ICON_INFORMATION" );
+    iconQuestionButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconQuestionButton.setText( "SWT.ICON_QUESTION" );
+    iconWarningButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconWarningButton.setText( "SWT.ICON_WARNING" );
+    iconWorkingButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconWorkingButton.setText( "SWT.ICON_WORKING" );
+    noIconButton = new Button( iconStyleGroup, SWT.RADIO );
+    noIconButton.setText( "No Icon" );
+
+    noIconButton.setSelection( true );
   }
 }

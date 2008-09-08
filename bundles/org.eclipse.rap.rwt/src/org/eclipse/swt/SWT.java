@@ -1142,6 +1142,68 @@ public class SWT {
   public static final int ICON_WORKING = 1 << 4;
 
   /**
+   * The <code>MessageBox</code> style constant for an OK button;
+   * valid combinations are OK, OK|CANCEL
+   * (value is 1&lt;&lt;5).
+   * @since 1.2
+   */
+  public static final int OK = 1 << 5;
+
+  /**
+   * The <code>MessageBox</code> style constant for YES button;
+   * valid combinations are YES|NO, YES|NO|CANCEL
+   * (value is 1&lt;&lt;6).
+   * @since 1.2
+   */
+  public static final int YES = 1 << 6;
+
+  /**
+   * The <code>MessageBox</code> style constant for NO button;
+   * valid combinations are YES|NO, YES|NO|CANCEL
+   * (value is 1&lt;&lt;7).
+   * @since 1.2
+   */
+  public static final int NO = 1 << 7;
+
+  /**
+   * The <code>MessageBox</code> style constant for a CANCEL button;
+   * valid combinations are OK|CANCEL, YES|NO|CANCEL, RETRY|CANCEL
+   * (value is 1&lt;&lt;8).  This style constant is also used with
+   * <code>Text</code> in combination with SEARCH.
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>MessageBox</code></li>
+   * <li><code>Text</code></li>
+   * </ul></p>
+   * @since 1.2
+   */
+  public static final int CANCEL = 1 << 8;
+
+  /**
+   * The <code>MessageBox</code> style constant for an ABORT button;
+   * the only valid combination is ABORT|RETRY|IGNORE
+   * (value is 1&lt;&lt;9).
+   * @since 1.2
+   */
+  public static final int ABORT = 1 << 9;
+
+  /**
+   * The <code>MessageBox</code> style constant for a RETRY button;
+   *  valid combinations are ABORT|RETRY|IGNORE, RETRY|CANCEL
+   * (value is 1&lt;&lt;10).
+   * @since 1.2
+   */
+  public static final int RETRY = 1 << 10;
+
+  /**
+   * The <code>MessageBox</code> style constant for an IGNORE button;
+   * the only valid combination is ABORT|RETRY|IGNORE
+   * (value is 1&lt;&lt;11).
+   * @since 1.2
+   */
+  public static final int IGNORE = 1 << 11;
+
+  /**
    * The <code>Composite</code> constant to indicate that
    * an attribute (such as background) is not inherited
    * by the children (value is 0).
