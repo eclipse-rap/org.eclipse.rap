@@ -145,6 +145,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( BusyIndicator_Test.class );
     suite.addTestSuite( Scale_Test.class );
     suite.addTestSuite( DateTime_Test.class );
+    suite.addTestSuite( MessageBox_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );
