@@ -251,8 +251,8 @@ public class MessageBox extends Dialog {
   }
 
   private Button createButton( final Composite parent,
-                             final String btnText,
-                             final int resCode )
+                               final String btnText,
+                               final int resCode )
   {
     // Increment the number of columns in the button bar
     ( ( GridLayout ) parent.getLayout() ).numColumns++;
