@@ -50,8 +50,8 @@ public class MessageBox extends Dialog {
   private static final int MAX_WIDTH = 640;
 
   private Shell shell;
-	private String message = "";
-	private int result;
+	private String message;
+	private int returnCode;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -96,30 +96,7 @@ public class MessageBox extends Dialog {
   public MessageBox( final Shell parent, final int style ) {
   	super( parent, checkStyle ( style ) );
   	checkSubclass();
-  }
-
-  static int checkStyle( final int style ) {
-    int chkStyle = 0;
-  	int mask = ( SWT.YES | SWT.NO
-  	           | SWT.OK | SWT.CANCEL
-  	           | SWT.ABORT | SWT.RETRY | SWT.IGNORE );
-  	int bits = style & mask;
-  	if(    bits == SWT.OK
-  	    || bits == ( SWT.OK | SWT.CANCEL ) )
-  	{
-  	  chkStyle = style;
-  	} else if(    bits == ( SWT.YES | SWT.NO )
-  	           || bits == ( SWT.YES | SWT.NO | SWT.CANCEL ) )
-  	{
-  	  chkStyle = style;
-  	} else if(    bits == ( SWT.RETRY | SWT.CANCEL )
-  	           || bits == ( SWT.ABORT | SWT.RETRY | SWT.IGNORE ) )
-  	{
-  	  chkStyle = style;
-  	} else {
-  	  chkStyle = ( style & ~mask ) | SWT.OK;
-  	}
-  	return chkStyle;
+  	message = "";
   }
 
   /**
@@ -190,14 +167,13 @@ public class MessageBox extends Dialog {
       }
     }
 
-    return result;
+    return returnCode;
   }
 
   private void createControls( final Composite parent ) {
     Display display = parent.getDisplay();
     Image icon = null;
     parent.setLayout( new GridLayout( 2, false ) );
-
     // Icon
     int systemImageID = -1;
     if( ( style & SWT.ICON_ERROR ) != 0 ) {
@@ -215,10 +191,8 @@ public class MessageBox extends Dialog {
       icon = display.getSystemImage( systemImageID );
       createIcon( parent, icon );
     }
-
     // Text
     createText( parent, icon );
-
     // Buttons
     Composite buttonComp = new Composite( parent, SWT.NONE );
     buttonComp.setLayout( new GridLayout( 0, true ) );
@@ -251,27 +225,27 @@ public class MessageBox extends Dialog {
   }
 
   private Button createButton( final Composite parent,
-                               final String btnText,
-                               final int resCode )
+                               final String text,
+                               final int returnCode )
   {
     // Increment the number of columns in the button bar
     ( ( GridLayout ) parent.getLayout() ).numColumns++;
-    Button btn = new Button( parent, SWT.PUSH );
+    Button result = new Button( parent, SWT.PUSH );
     // Set button layout data
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
     int widthHint = convertHorizontalDLUsToPixels( BUTTON_WIDTH );
-    Point minSize = btn.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
+    Point minSize = result.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
     data.widthHint = Math.max( widthHint, minSize.x );
-    btn.setLayoutData( data );
+    result.setLayoutData( data );
     // Set text
-    btn.setText( btnText );
-    btn.addSelectionListener( new SelectionAdapter() {
+    result.setText( text );
+    result.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        result = resCode;
+        MessageBox.this.returnCode = returnCode;
         shell.close();
       }
     } );
-    return btn;
+    return result;
   }
 
   private void createIcon( final Composite parent, final Image icon ) {
@@ -286,7 +260,7 @@ public class MessageBox extends Dialog {
 
   private void createText( final Composite parent, final Image icon ) {
     Label textLabel = new Label( parent, SWT.WRAP );
-    String text = getMessage();
+    String message = getMessage();
     Font font = textLabel.getFont();
     // Set label layout data
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
@@ -294,7 +268,7 @@ public class MessageBox extends Dialog {
     int maxTextWidth = MAX_WIDTH - iconWidth - 20;
     // Determine the max line length
     int maxLineWidth = 0;
-    StringTokenizer st = new StringTokenizer( text, "\n" );
+    StringTokenizer st = new StringTokenizer( message, "\n" );
     while( st.hasMoreTokens() ) {
       String line = st.nextToken();
       int lineWidth = TextSizeDetermination.stringExtent( font, line ).x;
@@ -305,13 +279,42 @@ public class MessageBox extends Dialog {
       data.widthHint = maxTextWidth;
     }
     textLabel.setLayoutData( data );
-    textLabel.setText( text );
+    textLabel.setText( message );
   }
 
   private int convertHorizontalDLUsToPixels( final int dlus ) {
     Font dialogFont = shell.getFont();
     float charWidth = Graphics.getAvgCharWidth( dialogFont );
     float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
-    return ( int)( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
+    return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
+  }
+
+  private static int checkStyle( final int style ) {
+    int chkStyle = 0;
+    int mask 
+      = SWT.YES 
+      | SWT.NO 
+      | SWT.OK 
+      | SWT.CANCEL 
+      | SWT.ABORT 
+      | SWT.RETRY 
+      | SWT.IGNORE;
+    int bits = style & mask;
+    if(    bits == SWT.OK
+        || bits == ( SWT.OK | SWT.CANCEL ) )
+    {
+      chkStyle = style;
+    } else if(    bits == ( SWT.YES | SWT.NO )
+               || bits == ( SWT.YES | SWT.NO | SWT.CANCEL ) )
+    {
+      chkStyle = style;
+    } else if(    bits == ( SWT.RETRY | SWT.CANCEL )
+               || bits == ( SWT.ABORT | SWT.RETRY | SWT.IGNORE ) )
+    {
+      chkStyle = style;
+    } else {
+      chkStyle = ( style & ~mask ) | SWT.OK;
+    }
+    return chkStyle;
   }
 }

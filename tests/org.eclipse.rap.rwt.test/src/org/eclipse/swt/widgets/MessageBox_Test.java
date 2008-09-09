@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -28,7 +27,7 @@ public class MessageBox_Test extends TestCase {
 
   public void testMessage() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     String mesg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
     MessageBox mb = new MessageBox( shell, SWT.NONE );
     mb.setMessage( mesg );
@@ -37,7 +36,7 @@ public class MessageBox_Test extends TestCase {
 
   public void testText() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     String title = "MessageBox Title";
     MessageBox mb = new MessageBox( shell, SWT.NONE );
     mb.setText( title );
@@ -46,7 +45,7 @@ public class MessageBox_Test extends TestCase {
 
   public void testStyle() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     // Test SWT.NONE
     MessageBox mb = new MessageBox( shell, SWT.NONE );
     assertTrue( ( mb.getStyle() & SWT.OK ) != 0 );
