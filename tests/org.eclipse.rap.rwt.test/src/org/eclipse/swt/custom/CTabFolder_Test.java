@@ -22,7 +22,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -483,6 +483,39 @@ public class CTabFolder_Test extends TestCase {
     folder.setSize( 100, 100 );
     expected = new Rectangle( 3, 18, 94, 79 );
     assertEquals( expected, folder.getClientArea() );
+  }
+
+  public void testComputeSize() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    assertEquals( new Point( 0, 0 ), folder.getSize() );
+    Point expected = new Point( 7, 84 );
+    assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    CTabItem item1 = new CTabItem( folder, SWT.NONE );
+    CTabItem item2 = new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    expected = new Point( 31, 87 );
+    assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    Button content1 = new Button( folder, SWT.PUSH );
+    content1.setText( "Content for tab 1" );
+    item1.setControl( content1 );
+    expected = new Point( 108, 48 );
+    assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    Label content2 = new Label( folder, SWT.NONE );
+    content2.setText( "Content for tab 2 which is wider." );
+    item2.setControl( content2 );
+    expected = new Point( 178, 48 );
+    assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    Rectangle trimExpected = new Rectangle( -2, -21, 4, 23 );
+    assertEquals( trimExpected, folder.computeTrim( 0, 0, 0, 0 ) );
+    expected = new Point( 304, 323 );
+    assertEquals( expected, folder.computeSize( 300, 300 ) );
   }
 
   protected void setUp() throws Exception {
