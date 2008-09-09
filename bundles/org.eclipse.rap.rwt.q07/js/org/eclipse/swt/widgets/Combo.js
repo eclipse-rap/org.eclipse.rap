@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // workaround for missing property propagation in qx ComboBox
     _rwt_onChangeTextColor : function( evt ) {
       var combo = evt.getTarget();
-      var value = evt.getData();
+      var value = evt.getValue();
       combo._field.setTextColor( value );
       combo._list.setTextColor( value );
     },
@@ -68,13 +68,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // workaround for missing property propagation in qx ComboBox
     _rwt_onChangeBackgoundColor : function( evt ) {
       var combo = evt.getTarget();
-      var value = evt.getData();
+      var value = evt.getValue();
       combo._field.setBackgroundColor( value );
       combo._list.setBackgroundColor( value );
     },
 
     _rwt_onChangeValue : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getData() != null ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getValue() != null ) {
         var combo = evt.getTarget();
         var value = combo.getValue();
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
