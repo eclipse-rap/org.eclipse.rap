@@ -292,6 +292,7 @@
 
 	<target name="tidyup">
 		<delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" />
+		<echo>Deleting all working resources</echo>
 	</target>
 
 	<!-- ===================================================================== -->
