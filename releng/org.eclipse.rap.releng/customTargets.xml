@@ -235,7 +235,9 @@
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
-			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v20080602-1318/junit.jar" />
+			<fileset dir="${baseLocation}/plugins">
+			    <include name="org.junit_3*/junit.jar"/>
+			</fileset>
 		</path>
 		<!-- run rwt tests -->
 		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="perTest">
