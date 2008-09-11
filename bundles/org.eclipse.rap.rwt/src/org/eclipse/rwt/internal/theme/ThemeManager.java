@@ -136,6 +136,10 @@ public final class ThemeManager {
     "scale/v_marker_small.gif",
     "calendar/lastMonth.gif",
     "calendar/nextMonth.gif",
+    "expanditem/chevron_up.gif",
+    "expanditem/chevron_up_over.gif",
+    "expanditem/chevron_down.gif",
+    "expanditem/chevron_down_over.gif",
   };
 
   /** Where to load the default non-themeable images from */

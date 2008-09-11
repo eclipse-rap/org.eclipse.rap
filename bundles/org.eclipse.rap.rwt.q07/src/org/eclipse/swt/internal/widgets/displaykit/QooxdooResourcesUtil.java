@@ -127,6 +127,10 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/DateTimeCalendar.js";
   private static final String CALENDAR_JS
     = "org/eclipse/swt/widgets/Calendar.js";
+  private static final String EXPAND_BAR_JS
+    = "org/eclipse/swt/widgets/ExpandBar.js";
+  private static final String EXPAND_ITEM_JS
+    = "org/eclipse/swt/widgets/ExpandItem.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -199,6 +203,8 @@ final class QooxdooResourcesUtil {
       register( DATE_TIME_TIME_JS );
       register( DATE_TIME_CALENDAR_JS );
       register( CALENDAR_JS );
+      register( EXPAND_BAR_JS );
+      register( EXPAND_ITEM_JS );
 
       // register contributions
       registerContributions();

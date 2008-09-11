@@ -28,6 +28,8 @@ import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFocus_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
+import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarLCA_Test;
+import org.eclipse.swt.internal.widgets.expanditemkit.ExpandItemLCA_Test;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.swt.internal.widgets.linkkit.LinkLCA_Test;
 import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
@@ -113,6 +115,8 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( BrowserLCA_Test.class );
     suite.addTestSuite( ScaleLCA_Test.class );
     suite.addTestSuite( DateTimeLCA_Test.class );
+    suite.addTestSuite( ExpandBarLCA_Test.class );
+    suite.addTestSuite( ExpandItemLCA_Test.class );
 
     return suite;
   }

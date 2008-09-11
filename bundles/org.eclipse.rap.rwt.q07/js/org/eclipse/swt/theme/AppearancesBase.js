@@ -1765,7 +1765,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   	
   	style : function( states ) {
   		var result = {};  		
-  		if( states.horizontal ){
+  		if( states.horizontal ) {
   			result.left = org.eclipse.swt.widgets.Scale.PADDING;
   			result.top = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
   			result.source = "widget/scale/h_line.gif";
@@ -1783,7 +1783,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     
     style : function( states ) {
       var result = {};      
-      if( states.horizontal ){
+      if( states.horizontal ) {
       	result.left = org.eclipse.swt.widgets.Scale.PADDING;
         result.top = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
         result.source = "widget/scale/h_thumb.gif";
@@ -1801,7 +1801,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     
     style : function( states ) {
       var result = {};      
-      if( states.horizontal ){
+      if( states.horizontal ) {
         result.left =   org.eclipse.swt.widgets.Scale.PADDING
                       + org.eclipse.swt.widgets.Scale.HALF_THUMB;
         result.source = "widget/scale/h_marker_big.gif";
@@ -1819,7 +1819,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     
     style : function( states ) {
       var result = {};      
-      if( states.horizontal ){        
+      if( states.horizontal ) {        
         result.source = "widget/scale/h_marker_big.gif";
       } else {
         result.source = "widget/scale/v_marker_big.gif";
@@ -1833,7 +1833,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     
     style : function( states ) {
       var result = {};      
-      if( states.horizontal ){
+      if( states.horizontal ) {
         result.source = "widget/scale/h_marker_small.gif";
       } else {
         result.source = "widget/scale/v_marker_small.gif";
@@ -1948,6 +1948,75 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor       : states.selected ? "white" : states.otherMonth ? "#808080" : "undefined",
         backgroundColor : states.selected ? "#0A246A" : "undefined"
       };
+    }
+  },
+  
+  // ------------------------------------------------------------------------
+  // ExpandBar
+  
+  "expand-bar" : {
+    style : function( states ) {
+      return {
+        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+      }
+    }
+  },
+  
+  "expand-item" : {
+    style : function( states ) {
+      return {
+        overflow : "hidden"
+      }
+    }
+  },
+  
+  "expand-item-chevron-button" : {
+    include : "image",
+    
+    style : function( states ) {
+      var result = {};    
+      
+      if( states.enabled ) {
+        result.cursor = "pointer";
+      } else {
+        result.cursor = "default";
+      }
+      result.width = 16;
+      result.height = 16;
+      result.right = 4;
+      if( states.expanded ) {
+        result.source = states.over
+                      ? "widget/expanditem/chevron_up_over.gif"
+                      : "widget/expanditem/chevron_up.gif";
+      } else {
+        result.source = states.over
+                      ? "widget/expanditem/chevron_down_over.gif"
+                      : "widget/expanditem/chevron_down.gif";
+      }
+      
+      return result;
+    }
+  },
+  
+  "expand-item-header" : {
+    style : function( states ) {
+      var result = {};
+             
+      result.top = 0;
+      result.left = 0;
+      result.width = "100%";
+      result.horizontalChildrenAlign =  "left";
+      result.verticalChildrenAlign = "middle";      
+      result.paddingLeft = 4; 
+      result.paddingRight = 24;         
+      result.backgroundColor = "#d4d0c8";
+      if( states.enabled ) {
+        result.cursor = "pointer";
+      } else {
+        result.cursor = "default";
+      }
+            
+      return result;
     }
   }
 }
