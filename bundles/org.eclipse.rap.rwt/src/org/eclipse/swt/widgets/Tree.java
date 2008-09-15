@@ -78,7 +78,12 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 public class Tree extends Composite {
 
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
-  private static final int CHECK_HEIGHT = 13; // keep in sync with appearance
+
+  //This values must be kept in sync with appearance of list items
+  private static final int CHECK_HEIGHT = 13;
+  private static final int VERTICAL_ITEM_MARGIN = 3;
+
+  private static final int SCROLL_SIZE = 16;
 
   /* package*/ final ItemHolder itemHolder;
   /* package*/ final ItemHolder columnHolder;
@@ -831,7 +836,8 @@ public class Tree extends Composite {
   // TODO: [bm] improve and offer as API in next release
   private int getItemHeight() {
     checkWidget();
-    int result = TextSizeDetermination.getCharHeight( getFont() ) + 4;
+    int result = TextSizeDetermination.getCharHeight( getFont() )
+      + VERTICAL_ITEM_MARGIN;
     if( ( style & SWT.CHECK ) != 0 ) {
       result = Math.max( CHECK_HEIGHT, result );
     }
@@ -1471,8 +1477,77 @@ public class Tree extends Composite {
     }
   }
 
+  ////////////////////
+  // Widget dimensions
+
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
+  {
+    checkWidget ();
+    int width = 0, height = 0;
+
+    if( getColumnCount() > 0 ) {
+      for( int i = 0; i < getColumnCount(); i++ ) {
+        // TODO: [if] TreeColumn#pack() does not respect
+        // inner items width if expanded
+        width += getColumn( i ).getWidth();
+      }
+    } else {
+      for( int i = 0; i < getItemCount(); i++ ) {
+        TreeItem item = getItem( i );
+        if( item.isCached() ) {
+          int itemWidth = item.getPreferredWidth( 0, false );
+          width = Math.max( width, itemWidth );
+          if( item.getExpanded() ) {
+            // TODO: [if] Recursively get the max inner item width
+          }
+        }
+      }
+    }
+    height += getHeaderHeight();
+    height += getItemCount() * getItemHeight();
+    for( int i = 0; i < getItemCount(); i++ ) {
+      TreeItem item = getItem( i );
+      if( item.getExpanded() ) {
+        height += item.getInnerHeight();
+      }
+    }
+
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if( wHint != SWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != SWT.DEFAULT ) {
+      height = hHint;
+    }
+    int border = getBorderWidth ();
+    width += border * 2;
+    height += border * 2;
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      width += SCROLL_SIZE;
+    }
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      height += SCROLL_SIZE;
+    }
+    return new Point (width, height);
+  }
+
   //////////////////
   // Helping methods
+
+  final int getCheckWidth() {
+    int result = 0;
+    if( ( style & SWT.CHECK ) != 0 ) {
+      result = CHECK_HEIGHT + 4;
+    }
+    return result;
+  }
 
   static void checkAllData( final Tree tree ) {
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
@@ -1508,7 +1583,7 @@ public class Tree extends Composite {
   // like new items, removed items, expand/
   /* package */ void updateFlatIndices() {
     int flatIndex = 0;
-    
+
     TreeItem[] uItems = this.getItems();
     for( int i = 0; i < uItems.length; i++ ) {
       TreeItem treeItem = uItems[ i ];
@@ -1517,7 +1592,7 @@ public class Tree extends Composite {
       flatIndex = updateFlatIndicesSub( treeItem, flatIndex );
     }
   }
-  
+
   /* package */int updateFlatIndicesSub( TreeItem item, int flatIndex ) {
     int newFlatIndex = flatIndex;
     if( item.getExpanded() ) {
@@ -1531,7 +1606,7 @@ public class Tree extends Composite {
     }
     return newFlatIndex;
   }
-  
+
   final void checkData( final TreeItem item, final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       if( currentItem == null ) {

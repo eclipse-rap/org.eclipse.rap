@@ -10,11 +10,11 @@
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
- 
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
- 
+
 /**
  * Instances of this class represent a column in a tree widget.
  * <p><dl>
@@ -28,7 +28,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public class TreeColumn extends Item {
@@ -38,9 +38,10 @@ public class TreeColumn extends Item {
 	boolean moveable, resizable = true;
 	int sort = SWT.NONE;
 	String toolTipText;
-	
+
 	static final int SORT_INDICATOR_WIDTH = 10;
 	static final int MARGIN_IMAGE = 3;
+	static final int PADDING = 2;
 
 /**
  * Constructs a new instance of this class given its parent
@@ -50,7 +51,7 @@ public class TreeColumn extends Item {
  * <p>
  * The style value is either one of the style constants defined in
  * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together 
+ * class, or must be built by <em>bitwise OR</em>'ing together
  * (that is, using the <code>int</code> "|" operator) two or more
  * of those <code>SWT</code> style constants. The class description
  * lists the style constants that are applicable to the class.
@@ -85,7 +86,7 @@ public TreeColumn (Tree parent, int style) {
  * <p>
  * The style value is either one of the style constants defined in
  * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together 
+ * class, or must be built by <em>bitwise OR</em>'ing together
  * (that is, using the <code>int</code> "|" operator) two or more
  * of those <code>SWT</code> style constants. The class description
  * lists the style constants that are applicable to the class.
@@ -181,7 +182,7 @@ static int checkStyle (int style) {
 //	if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
 //}
 //void computeDisplayText (GC gc) {
-//	int availableWidth = width - 2 * parent.getHeaderPadding (); 
+//	int availableWidth = width - 2 * parent.getHeaderPadding ();
 //	if (image != null) {
 //		availableWidth -= image.getBounds ().width;
 //		availableWidth -= Tree.MARGIN_IMAGE;
@@ -196,7 +197,7 @@ static int checkStyle (int style) {
 //		displayText = text;
 //		return;
 //	}
-//	
+//
 //	/* Ellipsis will be needed, so subtract their width from the available text width */
 //	int ellipsisWidth = gc.stringExtent (Tree.ELLIPSIS).x;
 //	availableWidth -= ellipsisWidth;
@@ -204,7 +205,7 @@ static int checkStyle (int style) {
 //		displayText = Tree.ELLIPSIS;
 //		return;
 //	}
-//	
+//
 //	/* Make initial guess. */
 //	int index = Math.min (availableWidth / gc.getFontMetrics ().getAverageCharWidth (), text.length ());
 //	textWidth = gc.textExtent (text.substring (0, index), SWT.DRAW_MNEMONIC).x;
@@ -229,7 +230,7 @@ static int checkStyle (int style) {
 //		displayText = text + Tree.ELLIPSIS;
 //		return;
 //	}
-//	
+//
 //	/* Initial guess is too low, so increase until overrun is found. */
 //	while (textWidth < availableWidth) {
 //		index++;
@@ -251,7 +252,7 @@ void dispose (boolean notifyParent) {
  * text or image in the receiver. The value will be one of
  * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>.
  *
- * @return the alignment 
+ * @return the alignment
  *
  * @exception SWTException <ul>
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -283,12 +284,13 @@ int getContentWidth () {
 			contentWidth += MARGIN_IMAGE;
 		}
 	}
+	contentWidth += 2 * PADDING;
 	return contentWidth;
 }
 /**
  * Gets the moveable attribute. A column that is
- * not moveable cannot be reordered by the user 
- * by dragging the header but may be reordered 
+ * not moveable cannot be reordered by the user
+ * by dragging the header but may be reordered
  * by the programmer.
  *
  * @return the moveable attribute
@@ -297,12 +299,12 @@ int getContentWidth () {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @see Tree#getColumnOrder()
  * @see Tree#setColumnOrder(int[])
  * @see TreeColumn#setMoveable(boolean)
  * @see SWT#Move
- * 
+ *
  * @since 1.0
  */
 public boolean getMoveable () {
@@ -311,7 +313,7 @@ public boolean getMoveable () {
 }
 
 int getOrderIndex () {
-	TreeColumn[] orderedColumns = parent.getOrderedColumns(); 
+	TreeColumn[] orderedColumns = parent.getOrderedColumns();
 	if (orderedColumns == null) return getIndex ();
 	for (int i = 0; i < orderedColumns.length; i++) {
 		if (orderedColumns [i] == this) return i;
@@ -343,7 +345,7 @@ int getIndex () {
 int getPreferredWidth () {
 	if (!parent.getHeaderVisible ()) return 0;
 	int result = getContentWidth ();
-	return result + 2;
+	return result;
 }
 /**
  * Gets the resizable attribute. A column that is
@@ -371,7 +373,7 @@ public boolean getResizable () {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @since 1.0
  */
 public String getToolTipText () {
@@ -403,15 +405,15 @@ public int getWidth () {
 //}
 //void paint (GC gc) {
 //	int padding = parent.getHeaderPadding ();
-//	
+//
 //	int x = getX ();
 //	int startX = x + padding;
 //	if (getOrderIndex () != 0 && (style & SWT.LEFT) == 0) {
 //		int contentWidth = getContentWidth (gc, true);
 //		if ((style & SWT.RIGHT) != 0) {
-//			startX = Math.max (startX, x + width - padding - contentWidth);	
+//			startX = Math.max (startX, x + width - padding - contentWidth);
 //		} else {	/* SWT.CENTER */
-//			startX = Math.max (startX, x + (width - contentWidth) / 2);	
+//			startX = Math.max (startX, x + (width - contentWidth) / 2);
 //		}
 //	}
 //	int headerHeight = parent.getHeaderHeight ();
@@ -422,7 +424,7 @@ public int getWidth () {
 //		padding,
 //		width - 2 * padding,
 //		headerHeight - 2 * padding);
-//	
+//
 //	if (image != null) {
 //		Rectangle imageBounds = image.getBounds ();
 //		int drawHeight = Math.min (imageBounds.height, headerHeight - 2 * padding);
@@ -431,9 +433,9 @@ public int getWidth () {
 //			0, 0,
 //			imageBounds.width, imageBounds.height,
 //			startX, (headerHeight - drawHeight) / 2,
-//			imageBounds.width, drawHeight); 
+//			imageBounds.width, drawHeight);
 //		startX += imageBounds.width;
-//		startX += Tree.MARGIN_IMAGE; 
+//		startX += Tree.MARGIN_IMAGE;
 //	}
 //	if (displayText.length () > 0) {
 //		gc.setForeground (display.getSystemColor (SWT.COLOR_BLACK));
@@ -468,8 +470,8 @@ public void pack () {
     if( image != null ) {
       newWidth += image.getBounds().width + MARGIN_IMAGE;
     }
-    if( parent.getSortColumn() == this 
-        && parent.getSortDirection() != SWT.NONE ) 
+    if( parent.getSortColumn() == this
+        && parent.getSortDirection() != SWT.NONE )
     {
       newWidth += SORT_INDICATOR_WIDTH + MARGIN_IMAGE;
     }
@@ -481,7 +483,7 @@ public void pack () {
 			newWidth = Math.max (newWidth, width);
 		}
 	}
-    // Mimic Windows behaviour that has a minimal width 
+    // Mimic Windows behaviour that has a minimal width
     if( newWidth < 12 ) {
       newWidth = 12;
     }
@@ -536,7 +538,7 @@ public void removeSelectionListener (SelectionListener listener) {
  * The argument should be one of <code>LEFT</code>, <code>RIGHT</code>
  * or <code>CENTER</code>.
  *
- * @param alignment the new alignment 
+ * @param alignment the new alignment
  *
  * @exception SWTException <ul>
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -556,8 +558,8 @@ public void setAlignment (int alignment) {
 /**
  * Sets the moveable attribute.  A column that is
  * moveable can be reordered by the user by dragging
- * the header. A column that is not moveable cannot be 
- * dragged by the user but may be reordered 
+ * the header. A column that is not moveable cannot be
+ * dragged by the user but may be reordered
  * by the programmer.
  *
  * @param moveable the moveable attribute
@@ -566,12 +568,12 @@ public void setAlignment (int alignment) {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @see Tree#setColumnOrder(int[])
  * @see Tree#getColumnOrder()
  * @see TreeColumn#getMoveable()
  * @see SWT#Move
- * 
+ *
  * @since 1.0
  */
 public void setMoveable (boolean moveable) {
@@ -600,7 +602,7 @@ void setSortDirection (int value) {
 //	boolean widthChange = value == SWT.NONE || sort == SWT.NONE;
 	sort = value;
 //	if (widthChange) {
-//		/* 
+//		/*
 //		 * adding/removing the sort arrow decreases/increases the width that is
 //		 * available for the column's header text, so recompute the display text
 //		 */
@@ -630,7 +632,7 @@ public void setText (String value) {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @since 1.0
  */
 public void setToolTipText (String string) {
@@ -650,12 +652,12 @@ public void setToolTipText (String string) {
  * </ul>
  */
 public void setWidth (int value) {
-  // TODO: [bm] add support for ellipsis 
+  // TODO: [bm] add support for ellipsis
 	checkWidget ();
 	if (value < 0) return;
 	if (width == value) return;							/* same value */
 	this.width = value;
-	
+
 	int eventId = ControlEvent.CONTROL_RESIZED;
     ControlEvent event = new ControlEvent( this, eventId );
     event.processEvent();

@@ -1086,6 +1086,7 @@ public class TreeItem extends Item {
           width += 3; //Tree.MARGIN_IMAGE;
       }
     }
+    width += getCheckWidth( columnIndex );
     return width;
   }
 
@@ -1460,15 +1461,31 @@ public class TreeItem extends Item {
     // do nothing
   }
 
+  //////////////////
+  // helping methods
+
   /* package */ int getInnerHeight() {
     int innerHeight = 0;
     for( int i = 0; i < itemHolder.size(); i++ ) {
       TreeItem item = ( TreeItem )itemHolder.getItem( i );
-      if(item.getExpanded()) {
+      if( item.getExpanded() ) {
         innerHeight = item.getInnerHeight();
       }
     }
-    innerHeight += getItemCount()*16;
+    innerHeight += getItemCount() * 16;
     return innerHeight;
+  }
+
+  final int getCheckWidth( final int index ) {
+    int result = 0;
+    if( index == 0 && parent.getColumnCount() == 0 ) {
+      result = parent.getCheckWidth();
+    } else {
+      int[] columnOrder = parent.getColumnOrder();
+      if( columnOrder[ 0 ] == index ) {
+        result = parent.getCheckWidth();
+      }
+    }
+    return result;
   }
 }
