@@ -279,7 +279,7 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelectionIndices()[ 0 ] );
     assertEquals( 2, table.getItemCount() );
     assertEquals( 1, table.getSelectionCount() );
-    
+
     table.removeAll();
     item0 = new TableItem( table, SWT.NONE );
     item1 = new TableItem( table, SWT.NONE );
@@ -290,7 +290,7 @@ public class Table_Test extends TestCase {
     assertTrue( find( table.indexOf( item0 ), table.getSelectionIndices() ) );
     assertTrue( find( table.indexOf( item2 ), table.getSelectionIndices() ) );
   }
-  
+
   public void testDisposeInSetData() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -312,7 +312,7 @@ public class Table_Test extends TestCase {
       assertEquals( SWT.ERROR_WIDGET_DISPOSED, e.code );
     }
   }
-  
+
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
@@ -335,7 +335,7 @@ public class Table_Test extends TestCase {
     shell.open();
     table.setItemCount( 4 );
     table.setSelection( 0, table.getItemCount() - 1 );
-    // Name items to ease debugging    
+    // Name items to ease debugging
     for( int i = 0; i < table.getItemCount(); i++ ) {
       table.getItem( i ).setText( "Item " + i );
     }
@@ -350,7 +350,7 @@ public class Table_Test extends TestCase {
     }
     assertEquals( table.getItemCount(), selectionIndices.length );
   }
-  
+
   public void testReduceSetItemCountWithSelectionVirtual() {
     // Create a table that is populated with setItemCount with all selected
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -380,7 +380,7 @@ public class Table_Test extends TestCase {
     }
     assertEquals( table.getItemCount(), selectionIndices.length );
   }
-  
+
   public void testFocusIndex() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -411,7 +411,7 @@ public class Table_Test extends TestCase {
     table.setSelection( 0 );
     table.setSelection( table.getItemCount() + 10 );
     assertEquals( 0, tableAdapter.getFocusIndex() );
-    
+
     // Resetting the selection does not affect the focusIndex
     table.setSelection( item0 );
     table.deselectAll();
@@ -434,7 +434,7 @@ public class Table_Test extends TestCase {
     table.select( table.indexOf( item2 ) );
     item1.dispose();
     assertEquals( table.indexOf( item2 ), tableAdapter.getFocusIndex() );
-    
+
     // Insert an item before the focused one an verify that focus moves on
     table.removeAll();
     new TableItem( table, SWT.NONE );
@@ -538,7 +538,7 @@ public class Table_Test extends TestCase {
     table.remove( 1 );
     assertFalse( eventFired[ 0 ] );
   }
-  
+
   public void testRemoveArray() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -831,7 +831,7 @@ public class Table_Test extends TestCase {
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( true, table.isSelected( 2 ) );
   }
-  
+
   public void testSelectionReveals() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -841,21 +841,21 @@ public class Table_Test extends TestCase {
       TableItem item = new TableItem( table, SWT.NONE );
       item.setText( "Item " + i );
     }
-    
+
     // test case precondition: table offers space for max. 30 visible items
     assertTrue( table.getVisibleItemCount() < 30 );
 
     // calling setSelection makes the selected item visible
     table.setSelection( 95 );
-    ITableAdapter tableAdapter 
+    ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
-    
+
     // calling select does *not* make the selected item visible
     table.select( 0 );
     assertFalse( tableAdapter.isItemVisible( table.getItem( 0 ) ) );
     assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
-    
+
     // selecting a range will make the lower end of the range visible
     table.setSelection( 0, 95 );
     assertTrue( tableAdapter.isItemVisible( table.getItem( 0 ) ) );
@@ -955,7 +955,7 @@ public class Table_Test extends TestCase {
     table.deselectAll();
     assertEquals( -1, table.getSelectionIndex() );
   }
-  
+
   public void testIsSelectedNonVirtual() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -984,7 +984,7 @@ public class Table_Test extends TestCase {
     new TableColumn( table, SWT.NONE );
     table.setItemCount( 1000 );
     shell.open();
-    
+
     // initial state: no selection, isSelected returns alway false
     assertFalse( table.isSelected( 0 ) );
     assertFalse( table.isSelected( 1 ) );
@@ -995,13 +995,13 @@ public class Table_Test extends TestCase {
     table.setSelection( 0 );
     assertTrue( table.isSelected( 0 ) );
     // ensure that calling isSelected does not resolve a virtual item
-    ITableAdapter tableAdapter 
+    ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     boolean selected = table.isSelected( 900 );
     assertFalse( selected );
     assertTrue( tableAdapter.isItemVirtual( 900 ) );
   }
-  
+
   public void testClearNonVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1009,7 +1009,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    ITableAdapter tableAdapter 
+    ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
 
     table.setSelection( item );
@@ -1024,7 +1024,7 @@ public class Table_Test extends TestCase {
     assertEquals( false, item.getGrayed() );
     assertFalse( tableAdapter.isItemVirtual( table.indexOf( item ) ) );
     assertSame( item, table.getSelection()[ 0 ] );
-    
+
     // Test clear with illegal arguments
     try {
       table.clear( 2 );
@@ -1044,16 +1044,16 @@ public class Table_Test extends TestCase {
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
-    ITableAdapter tableAdapter 
+    ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
-    
+
     table.getItem( 0 ).getText();
     table.select( 0 );
     table.clear( 0 );
     assertTrue( tableAdapter.isItemVirtual( 0 ) );
     assertEquals( 0, table.getSelectionIndex() );
   }
-  
+
   public void testClearRange() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1384,7 +1384,7 @@ public class Table_Test extends TestCase {
     items = ItemHolder.getItems( table );
     assertEquals( 1, items.length );
   }
-  
+
   public void testClearAllAndSetItemCountWithSelection() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1398,16 +1398,16 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < table.getItemCount(); i++ ) {
       table.getItem( i ).getText();
     }
-    
+
     table.setSelection( 0 );
     TableItem selectedItem = table.getSelection()[ 0 ];
     table.clearAll();
     table.setItemCount( table.getItemCount() - 1 );
-    
+
     assertEquals( 0, table.getSelectionIndex() );
     assertEquals( selectedItem, table.getSelection()[ 0 ] );
   }
-  
+
   public void testSetItemCountWithSetDataListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1425,7 +1425,7 @@ public class Table_Test extends TestCase {
     table.setItemCount( 200 );
     assertEquals( 200, table.getItemCount() );
   }
-  
+
   public void testResizeWithVirtualItems() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1470,7 +1470,7 @@ public class Table_Test extends TestCase {
     column.setWidth( 20 ); // image width is 50
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
   }
-  
+
   public void testHasColumnImages() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1495,8 +1495,8 @@ public class Table_Test extends TestCase {
     assertTrue( table.hasColumnImages( 0 ) );
     item1.setImage( ( Image )null );
     assertTrue( table.hasColumnImages( 0 ) );
-    
-    // Dispose column that 'holds' images 
+
+    // Dispose column that 'holds' images
     table.removeAll();
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -1511,7 +1511,7 @@ public class Table_Test extends TestCase {
     item0.setImage( 0, null );
     assertFalse( table.hasColumnImages( 0 ) );
   }
-  
+
   public void testGetItem() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1549,8 +1549,8 @@ public class Table_Test extends TestCase {
    * Ensures that checkData calls with an invalid index are silently ignored.
    * This may happen, when the itemCount is reduced during a SetData event.
    * Queued SetData events may then have stale (out-of-bounds) indices.
-   * See 235368: [table] [table] ArrayIndexOutOfBoundsException in virtual 
-   *     TableViewer 
+   * See 235368: [table] [table] ArrayIndexOutOfBoundsException in virtual
+   *     TableViewer
    *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
    */
   public void testCheckDataWithInvalidIndex() {
@@ -1562,10 +1562,123 @@ public class Table_Test extends TestCase {
     ITableAdapter adapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.checkData( 99 );
-    // No assert - the purpose of this test is to ensure that no 
-    // ArrayIndexOutOfBoundsException is thrown 
+    // No assert - the purpose of this test is to ensure that no
+    // ArrayIndexOutOfBoundsException is thrown
   }
-  
+
+  public void testComputeSizeNonVirtual() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+
+    // Test non virtual table
+    Table table = new Table( shell, SWT.NONE );
+    Point expected = new Point( 28, 80 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE ).setText( "Item " + i );
+    }
+    new TableItem( table, SWT.NONE ).setText( "Long long item 100" );
+    expected = new Point( 113, 181 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE ).setText( "Item " + i );
+    }
+    new TableItem( table, SWT.NONE ).setText( "Long long item 10" );
+    expected = new Point( 112, 185 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    table.setHeaderVisible( true );
+    assertEquals( 15, table.getHeaderHeight() );
+    expected = new Point( 112, 200 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    TableColumn col1 = new TableColumn( table, SWT.NONE );
+    col1.setText( "Col 1" );
+    TableColumn col2 = new TableColumn( table, SWT.NONE );
+    col2.setText( "Column 2" );
+    TableColumn col3 = new TableColumn( table, SWT.NONE );
+    col3.setText( "Wider Column" );
+    expected = new Point( 84, 200 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    col1.pack();
+    col2.pack();
+    col3.pack();
+    expected = new Point( 225, 200 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    col1.setWidth( 10 );
+    col2.setWidth( 10 );
+    assertEquals( 67, col3.getWidth() );
+    expected = new Point( 107, 200 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    table = new Table( shell, SWT.CHECK );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE ).setText( "Item " + i );
+    }
+    new TableItem( table, SWT.NONE ).setText( "Long long item 10" );
+    expected = new Point( 129, 181 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 316, 316 );
+    assertEquals( expected, table.computeSize( 300, 300 ) );
+  }
+
+  public void testComputeSizeVirtual() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+
+    Table table = new Table( shell, SWT.BORDER | SWT.VIRTUAL );
+    table.setItemCount( 10 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        TableItem item = ( TableItem )event.item;
+        int tableIndex = item.getParent().indexOf( item );
+        item.setText( "Item " + tableIndex );
+      }
+    } );
+    // 12 + srollbar (16) + 2 * border (2)
+    assertEquals( 150, table.getItemCount() * table.getItemHeight() );
+    Point expected = new Point( 32, 170 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    table.setHeaderVisible( true );
+    assertEquals( 15, table.getHeaderHeight() );
+    expected = new Point( 32, 185 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    TableColumn col1 = new TableColumn( table, SWT.NONE );
+    col1.setText( "Col 1" );
+    TableColumn col2 = new TableColumn( table, SWT.NONE );
+    col2.setText( "Column 2" );
+    TableColumn col3 = new TableColumn( table, SWT.NONE );
+    col3.setText( "Wider Column" );
+    expected = new Point( 84, 185 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    // first table item is auto resolved
+    col1.pack();
+    col2.pack();
+    col3.pack();
+    expected = new Point( 167, 185 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    col1.setWidth( 10 );
+    col2.setWidth( 10 );
+    assertEquals( 67, col3.getWidth() );
+    expected = new Point( 107, 185 );
+    assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    expected = new Point( 320, 320 );
+    assertEquals( expected, table.computeSize( 300, 300 ) );
+  }
+
   private static void clearColumns( final Table table ) {
     while( table.getColumnCount() > 0 ) {
       table.getColumn( 0 ).dispose();

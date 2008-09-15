@@ -121,7 +121,7 @@ public class Table extends Composite {
       }
       return result;
     }
-    
+
     public int getFocusIndex() {
       return Table.this.focusIndex;
     }
@@ -194,6 +194,7 @@ public class Table extends Composite {
 
   private static final int GRID_WIDTH = 1;
   private static final int CHECK_HEIGHT = 13;
+  private static final int SCROLL_SIZE = 16;
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
@@ -1943,7 +1944,70 @@ public class Table extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
+  ////////////////////
+  // Widget dimensions
+
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
+  {
+    checkWidget ();
+    int width = 0, height = 0;
+
+    if( getColumnCount() > 0 ) {
+      for( int i = 0; i < getColumnCount(); i++ ) {
+        width += getColumn( i ).getWidth();
+      }
+    } else {
+      width = getItemsPreferredWidth( 0 );
+    }
+    height += getHeaderHeight();
+    height += getItemCount() * getItemHeight();
+
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if( wHint != SWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != SWT.DEFAULT ) {
+      height = hHint;
+    }
+    int border = getBorderWidth ();
+    width += border * 2;
+    height += border * 2;
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      width += SCROLL_SIZE;
+    }
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      height += SCROLL_SIZE;
+    }
+    return new Point (width, height);
+  }
+
+  final int getItemsPreferredWidth( final int columnIndex ) {
+    int width = 0;
+    // dont't access virtual items, they would get resolved unintentionally
+    TableItem[] items = getCachedItems();
+    for( int i = 0; i < items.length; i++ ) {
+      int itemWidth
+        = items[ i ].getCheckWidth( columnIndex )
+        + items[ i ].getPackWidth( columnIndex );
+      if( itemWidth > width ) {
+        width = itemWidth;
+      }
+    }
+    // Mimic Windows behaviour that has a minimal width
+    if( width < 12 ) {
+      width = 12;
+    }
+    return width;
+  }
+
   /////////////////////////////
   // Create and destroy columns
 
@@ -2196,13 +2260,13 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   ////////////////////////////////////
   // Helping methods - item image size
 
-  final void updateColumnImageCount( final int columnIndex, 
-                                     final Image oldImage, 
-                                     final Image newImage ) 
+  final void updateColumnImageCount( final int columnIndex,
+                                     final Image oldImage,
+                                     final Image newImage )
   {
     int delta = 0;
     if( oldImage == null && newImage != null ) {
@@ -2218,13 +2282,13 @@ public class Table extends Composite {
       columnImageCount[ columnIndex ] += delta;
     }
   }
-  
+
   final boolean hasColumnImages( final int columnIndex ) {
-    return columnImageCount == null 
-      ? false 
+    return columnImageCount == null
+      ? false
       : columnImageCount[ columnIndex ] > 0;
   }
-  
+
   final void updateItemImageSize( final Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
@@ -2235,7 +2299,7 @@ public class Table extends Composite {
   final Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
-  
+
   ////////////////////////////
   // Helping methods - various
 

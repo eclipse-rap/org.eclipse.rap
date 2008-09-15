@@ -168,6 +168,7 @@ public class TableColumn_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
+    table.setHeaderVisible( true );
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( resizeListener );
 
@@ -237,7 +238,7 @@ public class TableColumn_Test extends TestCase {
     column.pack();
     assertEquals( 1, log.size() ); // ensure that pack() did something
 
-    // Ensure that pack does not resolve virtual items
+    // Ensure that pack resolves only first virtual item
     log.clear();
     table = new Table( shell, SWT.VIRTUAL );
     column = new TableColumn( table, SWT.NONE );
@@ -245,7 +246,7 @@ public class TableColumn_Test extends TestCase {
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, setDataListener );
     column.pack();
-    assertEquals( 0, log.size() );
+    assertEquals( 1, log.size() );
   }
 
   public void testResizeEvent() {

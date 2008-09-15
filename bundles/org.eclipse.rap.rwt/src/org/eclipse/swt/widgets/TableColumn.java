@@ -37,7 +37,8 @@ public class TableColumn extends Item {
   //      be moved to theme adapter or similar
   private static final int SORT_INDICATOR_WIDTH = 10;
   private static final int SPACING = 2;
-  
+  private static final int PADDING = 2;
+
   private final Table parent;
   private int width;
   private String toolTipText;
@@ -52,7 +53,7 @@ public class TableColumn extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -88,7 +89,7 @@ public class TableColumn extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -120,7 +121,7 @@ public class TableColumn extends Item {
     this.parent = parent;
     this.parent.createColumn( this, index );
   }
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>Table</code>.
    *
@@ -150,7 +151,7 @@ public class TableColumn extends Item {
     checkWidget();
     return width;
   }
-  
+
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -188,7 +189,7 @@ public class TableColumn extends Item {
    * The argument should be one of <code>LEFT</code>, <code>RIGHT</code>
    * or <code>CENTER</code>.
    *
-   * @param alignment the new alignment 
+   * @param alignment the new alignment
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -202,13 +203,13 @@ public class TableColumn extends Item {
       style |= alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER );
     }
   }
-  
+
   /**
    * Returns a value which describes the position of the
    * text or image in the receiver. The value will be one of
    * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>.
    *
-   * @return the alignment 
+   * @return the alignment
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -247,7 +248,7 @@ public class TableColumn extends Item {
     }
   }
 
-  
+
   /**
    * Causes the receiver to be resized to its preferred size.
    * For a composite, this involves computing the preferred size
@@ -260,44 +261,17 @@ public class TableColumn extends Item {
    */
   public void pack() {
     checkWidget();
-    // Compute width from the column itself
-    Font font = parent.getFont();
-    int width = TextSizeDetermination.stringExtent( font, getText() ).x;
-    Image image = getImage();
-    if( image != null ) {
-      width += image.getBounds().width + SPACING;
-    }
-    if(    parent.getSortColumn() == this 
-        && parent.getSortDirection() != SWT.NONE ) 
-    {
-      width += SORT_INDICATOR_WIDTH + SPACING;
-    }
-    // Extend computed width if there are wider items
-    int columnIndex = parent.indexOf( this );
-    // dont't access virtual items, they would get resolved unintentionally
-    TableItem[] items = parent.getCachedItems();
-    for( int i = 0; i < items.length; i++ ) {
-      int itemWidth 
-        = items[ i ].getCheckWidth( columnIndex ) 
-        + items[ i ].getPackWidth( columnIndex );
-      if( itemWidth > width ) {
-        width = itemWidth;
-      }
-    }
-    // Mimic Windows behaviour that has a minimal width 
-    if( width < 12 ) {
-      width = 12;
-    }
+    int width = getPreferredWidth();
     if( width != getWidth() ) {
       setWidth( width );
     }
   }
-  
+
   /**
    * Sets the moveable attribute.  A column that is
    * moveable can be reordered by the user by dragging
-   * the header. A column that is not moveable cannot be 
-   * dragged by the user but may be reordered 
+   * the header. A column that is not moveable cannot be
+   * dragged by the user but may be reordered
    * by the programmer.
    *
    * @param moveable the moveable attribute
@@ -306,7 +280,7 @@ public class TableColumn extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#setColumnOrder(int[])
    * @see Table#getColumnOrder()
    * @see TableColumn#getMoveable()
@@ -319,8 +293,8 @@ public class TableColumn extends Item {
 
   /**
    * Gets the moveable attribute. A column that is
-   * not moveable cannot be reordered by the user 
-   * by dragging the header but may be reordered 
+   * not moveable cannot be reordered by the user
+   * by dragging the header but may be reordered
    * by the programmer.
    *
    * @return the moveable attribute
@@ -329,7 +303,7 @@ public class TableColumn extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#getColumnOrder()
    * @see Table#setColumnOrder(int[])
    * @see TableColumn#setMoveable(boolean)
@@ -343,8 +317,8 @@ public class TableColumn extends Item {
   /**
    * Sets the resizable attribute.  A column that is
    * resizable can be resized by the user dragging the
-   * edge of the header.  A column that is not resizable 
-   * cannot be dragged by the user but may be resized 
+   * edge of the header.  A column that is not resizable
+   * cannot be dragged by the user but may be resized
    * by the programmer.
    *
    * @param resizable the resize attribute
@@ -358,7 +332,7 @@ public class TableColumn extends Item {
     checkWidget();
     this.resizable = resizable;
   }
-  
+
   /**
    * Gets the resizable attribute. A column that is
    * not resizable cannot be dragged by the user but
@@ -378,7 +352,7 @@ public class TableColumn extends Item {
 
   ///////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is moved or resized, by sending
@@ -422,7 +396,7 @@ public class TableColumn extends Item {
   public void removeControlListener( final ControlListener listener ) {
     ControlEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is selected, by sending
@@ -472,6 +446,37 @@ public class TableColumn extends Item {
     SelectionEvent.removeListener( this, listener );
   }
 
+  ////////////////////
+  // Widget dimensions
+
+  final int getPreferredWidth () {
+    // Compute width from the column itself
+    int width = 0;
+    if( parent.getHeaderVisible() ) {
+      Font font = parent.getFont();
+      width = TextSizeDetermination.stringExtent( font, getText() ).x;
+      Image image = getImage();
+      if( image != null ) {
+        width += image.getBounds().width + SPACING;
+      }
+      if(    parent.getSortColumn() == this
+          && parent.getSortDirection() != SWT.NONE )
+      {
+        width += SORT_INDICATOR_WIDTH + SPACING;
+      }
+      width += 2 * PADDING;
+    }
+    // Mimic Windows behaviour that forces first item to resolve
+    if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {
+      parent.checkData( parent.getItem( 0 ), 0 );
+    }
+    // Extend computed width if there are wider items
+    int columnIndex = parent.indexOf( this );
+    int itemsPreferredWidth = parent.getItemsPreferredWidth( columnIndex );
+    width = Math.max( width, itemsPreferredWidth );
+    return width;
+  }
+
   ////////////////////////////
   // Widget and Item overrides
 
@@ -484,14 +489,14 @@ public class TableColumn extends Item {
 
   void releaseWidget() {
   }
-  
+
   String getNameText() {
     return getText();
   }
 
   //////////////
   // Left offset
-  
+
   final int getLeft() {
     int result = 0;
     TableColumn[] columns = parent.getColumns();
