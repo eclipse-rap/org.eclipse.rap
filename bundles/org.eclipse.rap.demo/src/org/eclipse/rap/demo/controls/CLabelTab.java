@@ -46,6 +46,7 @@ public class CLabelTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
+    createCursorCombo();
     createFgColorButton();
     createBgColorButton();
     createBgImageButton();

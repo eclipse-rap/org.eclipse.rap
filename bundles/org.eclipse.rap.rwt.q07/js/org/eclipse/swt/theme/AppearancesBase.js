@@ -164,6 +164,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                       ? "label.BORDER.border"
                                       : "label.border" );
       }
+      result.cursor = "default";
       return result;
     }
   },
