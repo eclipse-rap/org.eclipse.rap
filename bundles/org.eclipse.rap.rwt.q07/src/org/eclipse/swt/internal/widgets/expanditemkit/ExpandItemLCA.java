@@ -32,6 +32,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   public static final String PROP_IMAGE = Props.IMAGE;
   public static final String PROP_BOUNDS = Props.BOUNDS;
   public static final String PROP_EXPANDED = "expanded";
+  public static final String PROP_ENABLED = "enabled";
   public static final String PROP_HEADER_HEIGHT = "headerHeight";
   public static final Integer DEFAULT_HEADER_HEIGHT = new Integer( 24 );
 
@@ -42,6 +43,8 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_IMAGE, expandItem.getImage() );
     adapter.preserve( PROP_EXPANDED,
                       Boolean.valueOf( expandItem.getExpanded() ) );
+    adapter.preserve( PROP_ENABLED,
+                      Boolean.valueOf( expandItem.getParent().isEnabled() ) );
     adapter.preserve( PROP_HEADER_HEIGHT,
                       new Integer( expandItem.getHeaderHeight() ) );
     IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( expandItem.getParent() );
@@ -109,7 +112,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
 
   ////////////////
   // Event helper
-  
+
   private static ExpandEvent createExpandEvent( final ExpandItem expandItem ) {
     ExpandEvent event = new ExpandEvent( expandItem.getParent(),
                                          expandItem,
@@ -136,7 +139,6 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
       text = WidgetLCAUtil.escapeText( text, false );
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( PROP_TEXT, text );
-      writer.set( PROP_HEADER_HEIGHT, item.getHeaderHeight() );
     }
   }
 
@@ -151,7 +153,6 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
       }
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( PROP_IMAGE, imagePath );
-      writer.set( PROP_HEADER_HEIGHT, item.getHeaderHeight() );
     }
   }
 
@@ -169,23 +170,37 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeEnabled( final ExpandItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    if( item.getParent().isEnabled() ) {
-      writer.call( "addState", new Object[]{ "enabled" } );
-    } else {
-      writer.call( "removeState", new Object[]{ "enabled" } );
+    Boolean newValue = Boolean.valueOf( item.getParent().isEnabled() );
+    if( WidgetLCAUtil.hasChanged( item,
+                                  PROP_ENABLED,
+                                  newValue,
+                                  Boolean.TRUE ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      if( newValue.booleanValue() ) {
+        writer.call( "addState", new Object[] {
+          "enabled"
+        } );
+      } else {
+        writer.call( "removeState", new Object[] {
+          "enabled"
+        } );
+      }
     }
   }
 
   private static void writeHeaderHeight( final ExpandItem item )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Integer headerHeight = new Integer( item.getHeaderHeight() );
-    writer.set( PROP_HEADER_HEIGHT,
-                "headerHeight",
-                headerHeight,
-                DEFAULT_HEADER_HEIGHT );
+    Integer newValue = new Integer( item.getHeaderHeight() );
+    if( WidgetLCAUtil.hasChanged( item,
+                                  PROP_HEADER_HEIGHT,
+                                  newValue,
+                                  DEFAULT_HEADER_HEIGHT ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( PROP_HEADER_HEIGHT, newValue );
+    }
   }
 
   private static IExpandBarAdapter getExpandBarAdapter( final ExpandBar bar ) {
