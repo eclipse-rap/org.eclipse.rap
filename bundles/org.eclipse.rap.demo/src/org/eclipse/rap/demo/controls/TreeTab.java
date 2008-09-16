@@ -116,20 +116,22 @@ public class TreeTab extends ExampleTab {
     tree.setMenu( treeMenu );
     tree.addTreeListener( new TreeListener() {
       public void treeCollapsed( final TreeEvent event ) {
-        lblTreeEvent.setText( "Collapsed: "  + event.item.getText() );
+        Item item = ( Item )event.item;
+        lblTreeEvent.setText( "Collapsed: "  + item.getText() );
       }
       public void treeExpanded( final TreeEvent event ) {
-        lblTreeEvent.setText( "Expanded: "  + event.item.getText() );
+        Item item = ( Item )event.item;
+        lblTreeEvent.setText( "Expanded: "  + item.getText() );
       }
     } );
     tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         String msg = "Selected: ";
+        TreeItem item = ( TreeItem )event.item;
         if( ( getStyle() & SWT.CHECK ) != 0 ) {
-          TreeItem item = ( TreeItem )event.item;
           msg += ( item.getChecked() ? "[x] " : "[ ] " );
         }
-        msg += event.item.getText();
+        msg += item.getText();
         switch( event.detail ) {
           case SWT.NONE:
             msg += ", detail: SWT.NONE";
@@ -143,7 +145,8 @@ public class TreeTab extends ExampleTab {
 
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String title = "Double Click";
-        String message = "Double click on " + event.item.getText() + " received";
+        Item item = ( Item )event.item;
+        String message = "Double click on " + item.getText() + " received";
         MessageDialog.openInformation( getShell(), title, message );
       }
     } );

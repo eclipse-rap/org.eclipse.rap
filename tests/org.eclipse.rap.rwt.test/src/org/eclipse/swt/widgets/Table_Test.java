@@ -362,7 +362,8 @@ public class Table_Test extends TestCase {
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
-        event.item.setText( "Item " + event.index );
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index );
       }
     } );
     shell.layout();

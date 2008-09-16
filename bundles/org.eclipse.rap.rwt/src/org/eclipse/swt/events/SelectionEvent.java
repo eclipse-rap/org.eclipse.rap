@@ -81,7 +81,7 @@ public class SelectionEvent extends TypedEvent {
   /**
    * The item that was selected.
    */
-  public Item item;
+  public Widget item;
 
   /**
    * Extra detail information about the selection, depending on the widget.
@@ -134,7 +134,7 @@ public class SelectionEvent extends TypedEvent {
    * </p>
    */
   public SelectionEvent( final Widget widget,
-                         final Item item,
+                         final Widget item,
                          final int id )
   {
     this( widget, item, id, new Rectangle( 0, 0, 0, 0 ), null, true, SWT.NONE );
@@ -149,7 +149,7 @@ public class SelectionEvent extends TypedEvent {
    * </p>
    */
   public SelectionEvent( final Widget widget,
-                         final Item item,
+                         final Widget item,
                          final int id,
                          final Rectangle bounds,
                          final String text,

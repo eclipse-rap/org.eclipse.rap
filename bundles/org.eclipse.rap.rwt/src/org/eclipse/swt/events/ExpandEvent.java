@@ -53,7 +53,7 @@ public class ExpandEvent extends SelectionEvent {
    * code.
    * </p>
    */
-  public ExpandEvent( final Widget widget, final Item item, final int id ) {
+  public ExpandEvent( final Widget widget, final Widget item, final int id ) {
     super( widget, item, id );
   }
 

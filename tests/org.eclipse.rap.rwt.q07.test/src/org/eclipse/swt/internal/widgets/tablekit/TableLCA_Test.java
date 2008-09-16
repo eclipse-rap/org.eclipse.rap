@@ -526,7 +526,8 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
-        event.item.setText( "Item " + event.index ); 
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index ); 
       }
     };
     table.addListener( SWT.SetData, listener );

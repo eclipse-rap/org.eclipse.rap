@@ -52,7 +52,7 @@ public class Event {
   /**
    * the item that the event occurred in (can be null)
    */
-  public Item item;
+  public Widget item;
   /**
    * the index of the item where the event occurred
    */

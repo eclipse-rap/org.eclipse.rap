@@ -56,7 +56,7 @@ public final class TreeEvent extends SelectionEvent {
    * </p>
    */
   public TreeEvent( final Widget widget,
-                    final Item item,
+                    final Widget item,
                     final int id )
   {
     super( widget, item, id );

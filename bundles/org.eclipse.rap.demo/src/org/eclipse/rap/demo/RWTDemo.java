@@ -210,7 +210,8 @@ public class RWTDemo implements IEntryPoint {
     treeData.bottom = new FormAttachment( 100, -2 );
     tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        txtGroupNameTab1.setText( "treeItem selected: " + event.item.getText() );
+        Item item = ( Item )event.item;
+        txtGroupNameTab1.setText( "treeItem selected: " + item.getText() );
       }
     } );
 //    TreeItem item1 = new TreeItem( tree, SWT.NONE );
