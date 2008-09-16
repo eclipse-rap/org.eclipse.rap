@@ -52,20 +52,18 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     final ExpandItem expandItem = ( ExpandItem )widget;
     if( WidgetLCAUtil.wasEventSent( expandItem, EVENT_ITEM_EXPANDED ) ) {
       ProcessActionRunner.add( new Runnable() {
-
         public void run() {
           expandItem.setExpanded( true );
-          ExpandEvent event = ExpandItemLCA.expand( expandItem );
+          ExpandEvent event = createExpandEvent( expandItem );
           event.processEvent();
         }
       } );
     }
     if( WidgetLCAUtil.wasEventSent( expandItem, EVENT_ITEM_COLLAPSED ) ) {
       ProcessActionRunner.add( new Runnable() {
-
         public void run() {
           expandItem.setExpanded( false );
-          ExpandEvent event = ExpandItemLCA.collapse( expandItem );
+          ExpandEvent event = createCollapseEvent( expandItem );
           event.processEvent();
         }
       } );
@@ -76,13 +74,9 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     ExpandItem expandItem = ( ExpandItem )widget;
     ExpandBar parent = expandItem.getParent();
     JSWriter writer = JSWriter.getWriterFor( expandItem );
-    Object[] args = new Object[]{
-      parent
-    };
+    Object[] args = new Object[]{ parent };
     writer.newWidget( "org.eclipse.swt.widgets.ExpandItem", args );
-    writer.call( parent, "add", new Object[]{
-      expandItem
-    } );
+    writer.call( parent, "add", new Object[]{ expandItem } );
     WidgetLCAUtil.writeCustomVariant( widget );
   }
 
@@ -115,7 +109,8 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
 
   ////////////////
   // Event helper
-  private static ExpandEvent expand( final ExpandItem expandItem ) {
+  
+  private static ExpandEvent createExpandEvent( final ExpandItem expandItem ) {
     ExpandEvent event = new ExpandEvent( expandItem.getParent(),
                                          expandItem,
                                          ExpandEvent.EXPANDED );
@@ -123,7 +118,8 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     return event;
   }
 
-  private static ExpandEvent collapse( final ExpandItem expandItem ) {
+  private static ExpandEvent createCollapseEvent( final ExpandItem expandItem )
+  {
     ExpandEvent event = new ExpandEvent( expandItem.getParent(),
                                          expandItem,
                                          ExpandEvent.COLLAPSED );
@@ -175,13 +171,9 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   private static void writeEnabled( final ExpandItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     if( item.getParent().isEnabled() ) {
-      writer.call( "addState", new Object[]{
-        "enabled"
-      } );
+      writer.call( "addState", new Object[]{ "enabled" } );
     } else {
-      writer.call( "removeState", new Object[]{
-        "enabled"
-      } );
+      writer.call( "removeState", new Object[]{ "enabled" } );
     }
   }
 
