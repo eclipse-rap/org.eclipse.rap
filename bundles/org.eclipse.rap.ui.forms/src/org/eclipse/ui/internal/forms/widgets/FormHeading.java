@@ -195,7 +195,7 @@ public class FormHeading extends Canvas {
 			 * titleRegion.computeSize(flexWidth, SWT.DEFAULT); if (flexWidth !=
 			 * SWT.DEFAULT && tsize.x < flexWidth) flexWidth += flexWidth -
 			 * tsize.x;
-			 * 
+			 *
 			 * if (hasMessageRegion()) {
 			 * messageCache.setControl(messageRegion.getMessageControl()); msize =
 			 * messageCache.computeSize(flexWidth, SWT.DEFAULT); int maxWidth =
@@ -384,7 +384,7 @@ public class FormHeading extends Canvas {
 				Control c = getMessageControl();
 				if (c == null)
 					return 0;
-				// RAP [rh] Changes due to different API for text size determination 
+				// RAP [rh] Changes due to different API for text size determination
 //				GC gc = new GC(c.getDisplay());
 //				gc.setFont(c.getFont());
 //				fontHeight = gc.getFontMetrics().getHeight();
@@ -400,7 +400,7 @@ public class FormHeading extends Canvas {
 				if (c == null)
 					return 0;
 // RAP [rh] Changed text size determination; inaccurate as baseline-height is
-//		 faked by font-height 
+//		 faked by font-height
 //				GC gc = new GC(c.getDisplay());
 //				gc.setFont(c.getFont());
 //				FontMetrics fm = gc.getFontMetrics();
@@ -574,14 +574,14 @@ public class FormHeading extends Canvas {
 
 	/**
 	 * Creates the form content control as a child of the provided parent.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent widget
 	 */
 	public FormHeading(Composite parent, int style) {
 		super(parent, style);
 		setBackgroundMode(SWT.INHERIT_DEFAULT);
-// RAP [rh] Paint events missing		
+// RAP [rh] Paint events missing
 //		addListener(SWT.Paint, new Listener() {
 //			public void handleEvent(Event e) {
 //				onPaint(e.gc);
@@ -640,7 +640,7 @@ public class FormHeading extends Canvas {
 
 	/**
 	 * Returns the title text that will be rendered at the top of the form.
-	 * 
+	 *
 	 * @return the title text
 	 */
 	public String getText() {
@@ -649,7 +649,7 @@ public class FormHeading extends Canvas {
 
 	/**
 	 * Returns the title image that will be rendered to the left of the title.
-	 * 
+	 *
 	 * @return the title image
 	 */
 	public Image getImage() {
@@ -686,7 +686,7 @@ public class FormHeading extends Canvas {
 	/**
 	 * Sets the text to be rendered at the top of the form above the body as a
 	 * title.
-	 * 
+	 *
 	 * @param text
 	 *            the title text
 	 */
@@ -701,7 +701,7 @@ public class FormHeading extends Canvas {
 
 	/**
 	 * Sets the image to be rendered to the left of the title.
-	 * 
+	 *
 	 * @param image
 	 *            the title image or <code>null</code> to show no image.
 	 */
@@ -769,7 +769,7 @@ public class FormHeading extends Canvas {
 	/**
 	 * Returns the tool bar manager that is used to manage tool items in the
 	 * form's title area.
-	 * 
+	 *
 	 * @return form tool bar manager
 	 */
 	public IToolBarManager getToolBarManager() {
@@ -778,8 +778,7 @@ public class FormHeading extends Canvas {
 			ToolBar toolbar = toolBarManager.createControl(this);
 			toolbar.setBackground(getBackground());
 			toolbar.setForeground(getForeground());
-// RAP [rh] Cursor API missing
-//			toolbar.setCursor(FormsResources.getHandCursor());
+			toolbar.setCursor(FormsResources.getHandCursor());
 			addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent e) {
 					if (toolBarManager != null) {
@@ -795,7 +794,7 @@ public class FormHeading extends Canvas {
 	/**
 	 * Returns the menu manager that is used to manage tool items in the form's
 	 * title area.
-	 * 
+	 *
 	 * @return form drop-down menu manager
 	 */
 	public IMenuManager getMenuManager() {
@@ -955,7 +954,7 @@ public class FormHeading extends Canvas {
 
 	/**
 	 * Tests if the form is in the 'busy' state.
-	 * 
+	 *
 	 * @return <code>true</code> if busy, <code>false</code> otherwise.
 	 */
 
@@ -966,7 +965,7 @@ public class FormHeading extends Canvas {
 	/**
 	 * Sets the form's busy state. Busy form will display 'busy' animation in
 	 * the area of the title image.
-	 * 
+	 *
 	 * @param busy
 	 *            the form's busy state
 	 */

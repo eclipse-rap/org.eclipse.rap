@@ -42,7 +42,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.internal.forms.widgets.FormUtil;
-//import org.eclipse.ui.internal.forms.widgets.FormsResources;
+import org.eclipse.ui.internal.forms.widgets.FormsResources;
 
 /**
  * This composite is capable of expanding or collapsing a single client that is
@@ -58,13 +58,13 @@ import org.eclipse.ui.internal.forms.widgets.FormUtil;
  * If several expandable composites are created in the same parent, up/down
  * arrow keys can be used to traverse between them. Expandable text accepts
  * mnemonics and mnemonic activation will toggle the expansion state.
- * 
+ *
  * <p>
  * While expandable composite recognize that different styles can be used to
  * render the title bar, and even defines the constants for these styles (<code>TITLE_BAR</code>
  * and <code>SHORT_TITLE_BAR</code> the actual painting is done in the
  * subclasses.
- * 
+ *
  * @see Section
  * @since 1.0
  */
@@ -266,7 +266,7 @@ public class ExpandableComposite extends Canvas {
 					if (twidth < size.x + IGAP + tcsize.x) {
 						twidth -= IGAP;
 						if (textLabel instanceof Label)
-// RAP [rh] Changes due to differences in text size determination						  
+// RAP [rh] Changes due to differences in text size determination
 //							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));
   						size = FormUtil.computeWrapSize(textLabel.getFont(), ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));
 						else
@@ -289,7 +289,7 @@ public class ExpandableComposite extends Canvas {
 				}
 			}
 			if (toggle != null) {
-// RAP [rh] Chnages due to different text size calcuation			  
+// RAP [rh] Chnages due to different text size calcuation
 //				GC gc = new GC(ExpandableComposite.this);
 //				gc.setFont(getFont());
 //				FontMetrics fm = gc.getFontMetrics();
@@ -498,7 +498,7 @@ public class ExpandableComposite extends Canvas {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.ui.forms.parts.ILayoutExtension#computeMinimumWidth(org.eclipse.swt.widgets.Composite,
 		 *      boolean)
 		 */
@@ -509,7 +509,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Creates an expandable composite using a TWISTIE toggle.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 * @param style
@@ -521,7 +521,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Creates the expandable composite in the provided parent.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent
 	 * @param style
@@ -606,8 +606,7 @@ public class ExpandableComposite extends Canvas {
 		} else if ((expansionStyle & NO_TITLE) == 0) {
 			final Label label = new Label(this, SWT.WRAP);
 			if (!isFixedStyle()) {
-// RAP [rh] missing cursor API
-//				label.setCursor(FormsResources.getHandCursor());
+				label.setCursor(FormsResources.getHandCursor());
 				Listener listener = new Listener() {
 					public void handleEvent(Event e) {
 						switch (e.type) {
@@ -616,10 +615,9 @@ public class ExpandableComposite extends Canvas {
 								toggle.setFocus();
 							break;
 						case SWT.MouseUp:
-// RAP [rh] missing cursor API
-//							label.setCursor(FormsResources.getBusyCursor());
+							label.setCursor(FormsResources.getBusyCursor());
 							programmaticToggleState();
-//							label.setCursor(FormsResources.getHandCursor());
+							label.setCursor(FormsResources.getHandCursor());
 							break;
 // RAP [rh] missing event types
 //						case SWT.MouseEnter:
@@ -685,7 +683,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Overrides 'super' to pass the menu to the text label.
-	 * 
+	 *
 	 * @param menu
 	 *            the menu from the parent to attach to this control.
 	 */
@@ -729,7 +727,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Sets the color of the toggle control.
-	 * 
+	 *
 	 * @param c
 	 *            the color object
 	 */
@@ -741,7 +739,7 @@ public class ExpandableComposite extends Canvas {
 	/**
 	 * Sets the active color of the toggle control (when the mouse enters the
 	 * toggle area).
-	 * 
+	 *
 	 * @param c
 	 *            the active color object
 	 */
@@ -763,7 +761,7 @@ public class ExpandableComposite extends Canvas {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)
 	 */
 
@@ -778,7 +776,7 @@ public class ExpandableComposite extends Canvas {
 	/**
 	 * Sets the client of this expandable composite. The client must not be
 	 * <samp>null </samp> and must be a direct child of this container.
-	 * 
+	 *
 	 * @param client
 	 *            the client that will be expanded or collapsed
 	 */
@@ -789,7 +787,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Returns the current expandable client.
-	 * 
+	 *
 	 * @return the client control
 	 */
 	public Control getClient() {
@@ -800,7 +798,7 @@ public class ExpandableComposite extends Canvas {
 	 * Sets the title of the expandable composite. The title will act as a
 	 * hyperlink and activating it will toggle the client between expanded and
 	 * collapsed state.
-	 * 
+	 *
 	 * @param title
 	 *            the new title string
 	 * @see #getText()
@@ -814,7 +812,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Returns the title string.
-	 * 
+	 *
 	 * @return the title string
 	 * @see #setText(String)
 	 */
@@ -829,7 +827,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Tests the expanded state of the composite.
-	 * 
+	 *
 	 * @return <samp>true </samp> if expanded, <samp>false </samp> if collapsed.
 	 */
 	public boolean isExpanded() {
@@ -838,7 +836,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Returns the bitwise-ORed style bits for the expansion control.
-	 * 
+	 *
 	 * @return the bitwise-ORed style bits for the expansion control
 	 */
 	public int getExpansionStyle() {
@@ -847,7 +845,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Programmatically changes expanded state.
-	 * 
+	 *
 	 * @param expanded
 	 *            the new expanded state
 	 */
@@ -859,7 +857,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Performs the expansion state change for the expandable control.
-	 * 
+	 *
 	 * @param expanded
 	 *            the expansion state
 	 */
@@ -876,7 +874,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Adds the listener that will be notified when the expansion state changes.
-	 * 
+	 *
 	 * @param listener
 	 *            the listener to add
 	 */
@@ -886,7 +884,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Removes the expansion listener.
-	 * 
+	 *
 	 * @param listener
 	 *            the listner to remove
 	 */
@@ -894,12 +892,12 @@ public class ExpandableComposite extends Canvas {
 		listeners.remove(listener);
 	}
 
-// RAP [rh] Paint events missing	
+// RAP [rh] Paint events missing
 //	/**
 //	 * If TITLE_BAR or SHORT_TITLE_BAR style is used, title bar decoration will
 //	 * be painted behind the text in this method. The default implementation
 //	 * does nothing - subclasses are responsible for rendering the title area.
-//	 * 
+//	 *
 //	 * @param e
 //	 *            the paint event
 //	 */
@@ -909,7 +907,7 @@ public class ExpandableComposite extends Canvas {
 	/**
 	 * Returns description control that will be placed under the title if
 	 * present.
-	 * 
+	 *
 	 * @return the description control or <samp>null </samp> if not used.
 	 */
 	protected Control getDescriptionControl() {
@@ -919,7 +917,7 @@ public class ExpandableComposite extends Canvas {
 	/**
 	 * Returns the separator control that will be placed between the title and
 	 * the description if present.
-	 * 
+	 *
 	 * @return the separator control or <samp>null </samp> if not used.
 	 */
 	protected Control getSeparatorControl() {
@@ -928,7 +926,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Computes the size of the expandable composite.
-	 * 
+	 *
 	 * @see org.eclipse.swt.widgets.Composite#computeSize
 	 */
 	public Point computeSize(int wHint, int hHint, boolean changed) {
@@ -950,7 +948,7 @@ public class ExpandableComposite extends Canvas {
 	 * separator and description (if present) as well as the client, but will be
 	 * in the permanent expanded state and the toggle affordance will not be
 	 * shown.
-	 * 
+	 *
 	 * @return <samp>true </samp> if the control is fixed in the expanded state,
 	 *         <samp>false </samp> if it can be collapsed.
 	 */
@@ -961,7 +959,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Returns the text client control.
-	 * 
+	 *
 	 * @return Returns the text client control if specified, or
 	 *         <code>null</code> if not.
 	 */
@@ -975,7 +973,7 @@ public class ExpandableComposite extends Canvas {
 	 * be used to place small image hyperlinks. If more than one control is
 	 * needed, use Composite to hold them. Care should be taken that the height
 	 * of the control is comparable to the height of the text.
-	 * 
+	 *
 	 * @param textClient
 	 *            the textClient to set or <code>null</code> if not needed any
 	 *            more.
@@ -994,7 +992,7 @@ public class ExpandableComposite extends Canvas {
 	 * <code>descriptionVerticalSpacing</code> (if you have description) or
 	 * <code>clientVerticalSpacing</code> to correct the alignment of the
 	 * expandable without the text client.
-	 * 
+	 *
 	 * @return the difference in height between the text and the text client or
 	 *         0 if no corrective action is needed.
 	 */
@@ -1008,7 +1006,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Tests if this expandable composite renders a title bar around the text.
-	 * 
+	 *
 	 * @return <code>true</code> for <code>TITLE_BAR</code> or
 	 *         <code>SHORT_TITLE_BAR</code> styles, <code>false</code>
 	 *         otherwise.
@@ -1020,7 +1018,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Sets the color of the title bar foreground when TITLE_BAR style is used.
-	 * 
+	 *
 	 * @param color
 	 *            the title bar foreground
 	 */
@@ -1031,7 +1029,7 @@ public class ExpandableComposite extends Canvas {
 
 	/**
 	 * Returns the title bar foreground when TITLE_BAR style is used.
-	 * 
+	 *
 	 * @return the title bar foreground
 	 */
 	public Color getTitleBarForeground() {
@@ -1064,7 +1062,7 @@ public class ExpandableComposite extends Canvas {
 		}
 	}
 
-// RAP [rh] Obsolete, as there are no mouse events	
+// RAP [rh] Obsolete, as there are no mouse events
 //	private void verticalMove(boolean down) {
 //		Composite parent = getParent();
 //		Control[] children = parent.getChildren();
@@ -1097,7 +1095,7 @@ public class ExpandableComposite extends Canvas {
 			toggle.setExpanded(!toggle.isExpanded());
 		toggleState();
 	}
-	
+
 // RAP [rh] Obsolete, since called from disabled PaintEvent code
 //	private void paintTitleFocus(GC gc) {
 //		Point size = textLabel.getSize();

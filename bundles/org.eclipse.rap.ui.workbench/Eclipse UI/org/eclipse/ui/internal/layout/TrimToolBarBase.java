@@ -13,6 +13,7 @@ package org.eclipse.ui.internal.layout;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -30,6 +31,7 @@ import org.eclipse.ui.internal.RadioMenu;
 import org.eclipse.ui.internal.TrimFrame;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchWindow;
+import org.eclipse.swt.graphics.Cursor;
 
 /**
  * This control provides common UI functionality for trim elements
@@ -48,7 +50,7 @@ import org.eclipse.ui.internal.WorkbenchWindow;
  * <p>
  * Context Menu:
  * <ol>
- * <li>A "Dock on" menu item is provided to allow changing the side, depending on the values returned by 
+ * <li>A "Dock on" menu item is provided to allow changing the side, depending on the values returned by
  * <code>IWindowTrim.getValidSides</code></li>
  * <li>A "Close" menu item is provided to allow the User to close (hide) the trim element,
  * based on the value returned by <code>IWindowTrim.isCloseable</code>
@@ -68,7 +70,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	private TrimFrame frame = null;
 	private CoolBar cb = null;
 	private CoolItem ci = null;
-    
+
 	// Context Menu
 	private MenuManager dockMenuManager;
 	private ContributionItem dockContributionItem = null;
@@ -78,7 +80,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     private IntModel radioVal = new IntModel(0);
 //	private Menu showMenu;
 //	private MenuItem showCascade;
-	
+
 	/*
 	 * Listeners...
 	 */
@@ -104,9 +106,9 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //            }
 //        }
 //    };
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
-    
+
     // RAP [bm]: DnD
 //    /**
 //     * This listener starts a drag operation when
@@ -124,7 +126,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 
     /**
      * Create a new trim UI handle for a particular IWindowTrim item
-     * 
+     *
      * @param layout the TrimLayout we're being used in
      * @param trim the IWindowTrim we're acting on behalf of
      * @param curSide  the SWT side that the trim is currently on
@@ -138,7 +140,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     /**
 	 * @param loc
 	 */
-    // RAP [bm]: 
+    // RAP [bm]:
 //	private void showToolBarPopup(Point loc) {
 //		Point tbLoc = tbMgr.getControl().toControl(loc);
 //		contextToolItem = tbMgr.getControl().getItem(tbLoc);
@@ -155,11 +157,11 @@ public abstract class TrimToolBarBase implements IWindowTrim {
      * new ToolBarManager whenever we need to and this gives the
      * derived class a chance to define the ICI's and context
      * menu...
-     * 
+     *
      * @param mgr The manager to initialize
      */
     public abstract void initToolBarManager(ToolBarManager mgr);
-    
+
     /**
      * Hook any necessary listeners to the new ToolBar instance.
      * <p>
@@ -169,7 +171,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
      * @param mgr The ToolBarManager whose control is to be hooked
      */
     public abstract void hookControl(ToolBarManager mgr);
-    
+
 	/**
 	 * Set up the trim with its cursor, drag listener, context menu and menu listener.
 	 * This method can also be used to 'recycle' a trim handle as long as the new handle
@@ -178,65 +180,65 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	private void createControl(int curSide) {
 		// out with the old
 		dispose();
-		
+
     	this.radioVal.set(curSide);
-    	
+
     	// remember the orientation to use
     	orientation = (curSide == SWT.LEFT || curSide == SWT.RIGHT) ? SWT.VERTICAL  : SWT.HORIZONTAL;
 
     	frame = new TrimFrame(wbw.getShell());
-		
+
 		// Create the necessary parts...
 		cb = new CoolBar(frame.getComposite(), orientation | SWT.FLAT);
 		ci = new CoolItem(cb, SWT.FLAT);
 
 		// Create (and 'fill') the toolbar
 		tbMgr = new ToolBarManager(orientation | SWT.FLAT);
-		
+
 		// Have the subclass define any manager content
 		initToolBarManager(tbMgr);
-		
+
 		// Create the new ToolBar
 		ToolBar tb = tbMgr.createControl(cb);
 		ci.setControl(tb);
-		
+
 		// Have the subclass hook any listeners
 		hookControl(tbMgr);
-		
+
 		// set up the frame's layout
 		update(true);
-		
+
     	// Set the cursor affordance
-		// RAP [bm]: Cursor
-//    	Cursor dragCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
-//    	cb.setCursor(dragCursor);
-//    	
-//    	// Now, we have to explicity set the arrow for the TB
-//    	Cursor tbCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
-//    	tb.setCursor(tbCursor);
-    	// RAPEND: [bm] 
+		//Cursor dragCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
+		Cursor dragCursor = Graphics.getCursor( SWT.CURSOR_SIZEALL );
+		cb.setCursor(dragCursor);
+
+    	// Now, we have to explicity set the arrow for the TB
+    	//Cursor tbCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
+		Cursor tbCursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+		tb.setCursor(tbCursor);
 
     	//cb.setBackground(cb.getDisplay().getSystemColor(SWT.COLOR_RED));
-    	
+
         // Set up the dragging behaviour
 		// RAP [bm]: DnD
 //        PresentationUtil.addDragListener(cb, dragListener);
-    	
+
     	// Create the docking context menu
     	dockMenuManager = new MenuManager();
     	dockContributionItem = getDockingContribution();
         dockMenuManager.add(dockContributionItem);
 
-        // RAP [bm]: 
+        // RAP [bm]:
 //        tb.addListener(SWT.MenuDetect, tbListener);
 //        cb.addListener(SWT.MenuDetect, cbListener);
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
 
         //tbMgr.getControl().setBackground(cb.getDisplay().getSystemColor(SWT.COLOR_GREEN));
         //tbMgr.getControl().pack(true);
         cb.pack(true);
         cb.setVisible(true);
-        
+
         tbMgr.getControl().setVisible(true);
         cb.setVisible(true);
         frame.getComposite().setVisible(true);
@@ -249,11 +251,11 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     private void handleShowOnChange() {
     	if (getControl() == null)
     		return;
-    	
+
     	layout.removeTrim(this);
     	dock(radioVal.get());
     	layout.addTrim(radioVal.get(), this, null);
-    	
+
     	// perform an optimized layout to show the trim in its new location
     	LayoutUtil.resize(getControl());
 	}
@@ -264,7 +266,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	 */
 	public void update(boolean changed) {
 		tbMgr.update(changed);
-		
+
 		// Force a resize
 		tbMgr.getControl().pack();
 	    Point size = tbMgr.getControl().getSize();
@@ -277,13 +279,13 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //		cb.update();
 		LayoutUtil.resize(getControl());
 	}
-	
+
 	/**
 	 * Construct (if necessary) a context menu contribution item and return it. This
 	 * is explicitly <code>public</code> so that trim elements can retrieve the item
 	 * and add it into their own context menus if desired.
-	 * 
-	 * @return The contribution item for the handle's context menu. 
+	 *
+	 * @return The contribution item for the handle's context menu.
 	 */
 	private ContributionItem getDockingContribution() {
     	if (dockContributionItem == null) {
@@ -291,12 +293,12 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     			public void fill(Menu menu, int index) {
     				// populate from superclass
     				super.fill(menu, index);
-    				
+
     				// Add a 'Close' menu entry if the trim supports the operation
     				if (isCloseable()) {
 	    				MenuItem closeItem = new MenuItem(menu, SWT.PUSH, index++);
 	    				closeItem.setText(WorkbenchMessages.get().TrimCommon_Close);
-	    				
+
 	    				closeItem.addSelectionListener(new SelectionListener() {
 							public void widgetSelected(SelectionEvent e) {
 								handleCloseTrim();
@@ -308,12 +310,12 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 
 	    				new MenuItem(menu, SWT.SEPARATOR, index++);
     				}
-    				
+
     				// Test Hook: add a menu entry that brings up a dialog to allow
     				// testing with various GUI prefs.
 //    				MenuItem closeItem = new MenuItem(menu, SWT.PUSH, index++);
 //    				closeItem.setText("Change Preferences"); //$NON-NLS-1$
-//    				
+//
 //    				closeItem.addSelectionListener(new SelectionListener() {
 //						public void widgetSelected(SelectionEvent e) {
 //							handleChangePreferences();
@@ -324,20 +326,20 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //    				});
 //
 //    				new MenuItem(menu, SWT.SEPARATOR, index++);
-    				
+
     				// Create a cascading menu to allow the user to dock the trim
     				dockCascade = new MenuItem(menu, SWT.CASCADE, index++);
     				{
-    					dockCascade.setText(WorkbenchMessages.get().TrimCommon_DockOn); 
-    					
+    					dockCascade.setText(WorkbenchMessages.get().TrimCommon_DockOn);
+
     					sidesMenu = new Menu(dockCascade);
     					radioButtons = new RadioMenu(sidesMenu, radioVal);
-    					
+
 						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Top, new Integer(SWT.TOP));
 						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Bottom, new Integer(SWT.BOTTOM));
 						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Left, new Integer(SWT.LEFT));
 						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Right, new Integer(SWT.RIGHT));
-    					
+
     					dockCascade.setMenu(sidesMenu);
     				}
 
@@ -349,14 +351,14 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 							}
     					}
     		    	});
-    				
+
     				// Provide Show / Hide trim capabilities
 //    				showCascade = new MenuItem(menu, SWT.CASCADE, index++);
 //    				{
-//    					showCascade.setText(WorkbenchMessages.TrimCommon_ShowTrim); 
-//    					
+//    					showCascade.setText(WorkbenchMessages.TrimCommon_ShowTrim);
+//
 //    					showMenu = new Menu(dockCascade);
-//    					
+//
 //    					// Construct a 'hide/show' cascade from -all- the existing trim...
 //    					List trimItems = layout.getAllTrim();
 //    					Iterator d = trimItems.iterator();
@@ -366,10 +368,10 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //							item.setText(trimItem.getDisplayName());
 //							item.setSelection(trimItem.getControl().getVisible());
 //							item.setData(trimItem);
-//							
+//
 //							// TODO: Make this work...wire it off for now
 //							item.setEnabled(false);
-//							
+//
 //							item.addSelectionListener(new SelectionListener() {
 //
 //								public void widgetSelected(SelectionEvent e) {
@@ -379,10 +381,10 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //
 //								public void widgetDefaultSelected(SelectionEvent e) {
 //								}
-//								
+//
 //							});
 //						}
-//    					
+//
 //    					showCascade.setMenu(showMenu);
 //    				}
     			}
@@ -397,7 +399,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	public int getCurrentSide() {
 		return radioVal.get();
 	}
-	
+
 	/**
 	 * Test Hook: Bring up a dialog that allows the user to
 	 * modify the trimdragging GUI preferences.
@@ -406,7 +408,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //		TrimDragPreferenceDialog dlg = new TrimDragPreferenceDialog(getShell());
 //		dlg.open();
 //	}
-   
+
 	/**
 	 * Handle the event generated when the "Close" item is
 	 * selected on the context menu. This removes the associated
@@ -416,33 +418,33 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	private void handleCloseTrim() {
 		handleClose();
 	}
-	
+
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
     public void dispose() {
     	if (getControl() == null || getControl().isDisposed())
     		return;
-    	
+
         if (radioButtons != null) {
             radioButtons.dispose();
         }
 
         // tidy up...
-        // RAP [bm]: 
+        // RAP [bm]:
 //        getControl().removeListener(SWT.MenuDetect, cbListener);
-        
+
         tbMgr.dispose();
         tbMgr = null;
-        
+
         getControl().dispose();
         frame = null;
     }
 
-    // RAP [bm]: 
+    // RAP [bm]:
 //    /**
 //     * Begins dragging the trim
-//     * 
+//     *
 //     * @param position initial mouse position
 //     */
 //    private void startDraggingTrim(Point position) {
@@ -472,7 +474,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	public Control getControl() {
 		if (frame == null)
 			return null;
-		
+
 		return frame.getComposite();
 	}
 
@@ -529,5 +531,5 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	 */
 	public boolean isResizeable() {
 		return false;
-	}	    
+	}
 }

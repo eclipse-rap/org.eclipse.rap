@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+//import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -46,14 +47,14 @@ import org.eclipse.ui.internal.registry.EditorRegistry;
  * This class is used to allow the user to select a dialog from the set of
  * internal and external editors.
  * @since 1.1
- * 
+ *
  */
 
 public final class EditorSelectionDialog extends Dialog {
 	private EditorDescriptor selectedEditor;
 
-// RAP [rh] external editors not supported: therefore externalButton, 
-//     internalButton and browseExternalEditorsButton are unnecessary 
+// RAP [rh] external editors not supported: therefore externalButton,
+//     internalButton and browseExternalEditorsButton are unnecessary
 //	private Button externalButton;
 
 	private Table editorTable;
@@ -98,7 +99,7 @@ public final class EditorSelectionDialog extends Dialog {
 
 	/**
 	 * Create an instance of this class.
-	 * 
+	 *
 	 * @param parentShell
 	 *            the parent shell
 	 */
@@ -121,7 +122,7 @@ public final class EditorSelectionDialog extends Dialog {
 	 */
 	public boolean close() {
 		if (internalEditorImages != null) {
-// RAP [rh] Image#dispose() missing		  
+// RAP [rh] Image#dispose() missing
 //			for (int i = 0; i < internalEditorImages.length; i++) {
 //				internalEditorImages[i].dispose();
 //			}
@@ -143,7 +144,7 @@ public final class EditorSelectionDialog extends Dialog {
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(WorkbenchMessages.get().EditorSelection_title);
-// RAP [rh] IWorkbench#getHelpSystem not implemented		
+// RAP [rh] IWorkbench#getHelpSystem not implemented
 //		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
 //				IWorkbenchHelpContextIds.EDITOR_SELECTION_DIALOG);
 	}
@@ -151,9 +152,9 @@ public final class EditorSelectionDialog extends Dialog {
 	/**
 	 * Creates and returns the contents of the upper part of the dialog (above
 	 * the button bar).
-	 * 
+	 *
 	 * Subclasses should overide.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite to contain the dialog area
 	 * @return the dialog area control
@@ -191,7 +192,7 @@ public final class EditorSelectionDialog extends Dialog {
 
 		editorTable = new Table(contents, SWT.SINGLE | SWT.BORDER);
 		editorTable.addListener(SWT.Selection, listener);
-// RAP [rh] Mouse events don't work reliably with Table     
+// RAP [rh] Mouse events don't work reliably with Table
 //		editorTable.addListener(SWT.MouseDoubleClick, listener);
 		editorTable.addListener(SWT.DefaultSelection, listener);
 		data = new GridData();
@@ -228,7 +229,7 @@ public final class EditorSelectionDialog extends Dialog {
 
 	protected void fillEditorTable() {
 		editorTable.removeAll();
-// RAP [rh] Control#update() missing		
+// RAP [rh] Control#update() missing
 //		editorTable.update();
 		editorTable.redraw();
 		IEditorDescriptor[] editors;
@@ -286,8 +287,8 @@ public final class EditorSelectionDialog extends Dialog {
 //					shell = topShell;
 //				}
 //			}
-// RAP [rh] missing Cursor API			
-//			Cursor busy = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
+//			//Cursor busy = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
+//	        Cursor busy = Graphics.getCursor( SWT.CURSOR_WAIT );
 //			shell.setCursor(busy);
 //			// Get the external editors available
 //			EditorRegistry reg = (EditorRegistry) WorkbenchPlugin.getDefault()
@@ -296,9 +297,8 @@ public final class EditorSelectionDialog extends Dialog {
 //			externalEditors = filterEditors(externalEditors);
 //			externalEditorImages = getImages(externalEditors);
 //			// Clean up
-// RAP [rh] missing Cursor API			
 //			shell.setCursor(null);
-//			busy.dispose();
+//			//busy.dispose();
 //		}
 //		return externalEditors;
 //	}
@@ -306,7 +306,7 @@ public final class EditorSelectionDialog extends Dialog {
 	/**
 	 * Returns an array of editors which have been filtered according to the
 	 * array of editors in the editorsToFilter instance variable.
-	 * 
+	 *
 	 * @param editors
 	 *            an array of editors to filter
 	 * @return a filtered array of editors
@@ -364,14 +364,14 @@ public final class EditorSelectionDialog extends Dialog {
 
 	/**
 	 * Return the editor the user selected
-	 * 
+	 *
 	 * @return the selected editor
 	 */
 	public IEditorDescriptor getSelectedEditor() {
 		return selectedEditor;
 	}
 
-// RAP [rh] external editors not supported	
+// RAP [rh] external editors not supported
 //	protected void promptForExternalEditor() {
 //		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN
 //				| SWT.PRIMARY_MODAL);
@@ -423,7 +423,7 @@ public final class EditorSelectionDialog extends Dialog {
 	 * held last time this wizard was used to completion
 	 */
 	protected void restoreWidgetValues() {
-// RAP [rh] external editors not supported	  
+// RAP [rh] external editors not supported
 //		IDialogSettings settings = getDialogSettings();
 //		boolean wasExternal = settings.getBoolean(STORE_ID_INTERNAL_EXTERNAL);
 //		internalButton.setSelection(!wasExternal);
@@ -435,7 +435,7 @@ public final class EditorSelectionDialog extends Dialog {
 	 * they will persist into the next invocation of this wizard page
 	 */
 	protected void saveWidgetValues() {
-// RAP [rh] external editors not supported	  
+// RAP [rh] external editors not supported
 //		IDialogSettings settings = getDialogSettings();
 //		// record whether use was viewing internal or external editors
 //		settings
@@ -444,7 +444,7 @@ public final class EditorSelectionDialog extends Dialog {
 
 	/**
 	 * Set the message displayed by this message dialog
-	 * 
+	 *
 	 * @param aMessage
 	 *            the message
 	 */
@@ -454,7 +454,7 @@ public final class EditorSelectionDialog extends Dialog {
 
 	/**
 	 * Set the editors which will not appear in the dialog.
-	 * 
+	 *
 	 * @param editors
 	 *            an array of editors
 	 */
@@ -466,7 +466,7 @@ public final class EditorSelectionDialog extends Dialog {
 	 * Update enabled state.
 	 */
 	protected void updateEnableState() {
-// RAP [rh] external editors not supported	  
+// RAP [rh] external editors not supported
 //		boolean enableExternal = externalButton.getSelection();
 //		browseExternalEditorsButton.setEnabled(enableExternal);
 		updateOkButton();
@@ -503,16 +503,16 @@ public final class EditorSelectionDialog extends Dialog {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
 		public void handleEvent(Event event) {
-// RAP [rh] Mouse events don't work reliably with Table		  
+// RAP [rh] Mouse events don't work reliably with Table
 //			if (event.type == SWT.MouseDoubleClick) {
 //				handleDoubleClickEvent();
 //				return;
 //			}
-// RAP [rh] external editors not supported				
+// RAP [rh] external editors not supported
 //			if (event.widget == externalButton) {
 //				fillEditorTable();
 //			} else if (event.widget == browseExternalEditorsButton) {

@@ -17,8 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.IShellProvider;
-//import org.eclipse.swt.SWT;
-//import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.internal.InternalSaveable;
@@ -38,21 +39,20 @@ import org.eclipse.ui.progress.IJobRunnable;
  * Workbench parts that work in terms of saveables should implement
  * {@link ISaveablesSource}.
  * </p>
- * 
+ *
  * @see ISaveablesSource
  * @since 1.0
  */
 public abstract class Saveable extends InternalSaveable implements IAdaptable {
-  
-// RAP [rh] Cursor API missing
-//	private Cursor waitCursor;
-//	private Cursor originalCursor;
+
+	private Cursor waitCursor;
+	private Cursor originalCursor;
 
 	/**
 	 * Attempts to show this saveable in the given page and returns
 	 * <code>true</code> on success. The default implementation does nothing
 	 * and returns <code>false</code>.
-	 * 
+	 *
 	 * @param page
 	 *            the workbench page in which to show this saveable
 	 * @return <code>true</code> if this saveable is now visible to the user
@@ -66,7 +66,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 
 	/**
 	 * Returns the name of this saveable for display purposes.
-	 * 
+	 *
 	 * @return the model's name; never <code>null</code>.
 	 */
 	public abstract String getName();
@@ -76,14 +76,14 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * differentiate between two inputs with the same name. For instance,
 	 * MyClass.java in folder X and MyClass.java in folder Y. The format of the
 	 * text varies between input types.
-	 * 
+	 *
 	 * @return the tool tip text; never <code>null</code>
 	 */
 	public abstract String getToolTipText();
 
 	/**
 	 * Returns the image descriptor for this saveable.
-	 * 
+	 *
 	 * @return the image descriptor for this model; may be <code>null</code>
 	 *         if there is no image
 	 */
@@ -100,7 +100,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * This method is long-running; progress and cancellation are provided by
 	 * the given progress monitor.
 	 * </p>
-	 * 
+	 *
 	 * @param monitor
 	 *            the progress monitor
 	 * @throws CoreException
@@ -116,7 +116,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * <b>Note:</b> this method is called frequently, for example by actions to
 	 * determine their enabled status.
 	 * </p>
-	 * 
+	 *
 	 * @return <code>true</code> if the contents have been modified and need
 	 *         saving, and <code>false</code> if they have not changed since
 	 *         the last save
@@ -130,7 +130,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * will save the other. If two saveables are equal, their names, tooltips,
 	 * and images should be the same because only one of them will be shown when
 	 * prompting the user to save.
-	 * 
+	 *
 	 * @param object
 	 * @return true if this Saveable is equal to the given object
 	 */
@@ -149,13 +149,13 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * implementations. It is suggested that the defining plug-in's ID be used
 	 * as part of the returned hashCode, as in the following example:
 	 * </p>
-	 * 
+	 *
 	 * <pre>
 	 *     int PRIME = 31;
 	 *     int hash = ...; // compute the &quot;normal&quot; hash code, e.g. based on some identifier unique within the defining plug-in
 	 *     return hash * PRIME + MY_PLUGIN_ID.hashCode();
 	 * </pre>
-	 * 
+	 *
 	 * @return a hash code
 	 */
 	public abstract int hashCode();
@@ -195,7 +195,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * The default implementation of this method calls
 	 * {@link #doSave(IProgressMonitor)} and returns <code>null</code>.
 	 * </p>
-	 * 
+	 *
 	 * @param monitor
 	 *            a progress monitor used for reporting progress and
 	 *            cancellation
@@ -230,7 +230,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * The default implementation calls setEnabled(false) on the given parts'
 	 * composites.
 	 * </p>
-	 * 
+	 *
 	 * @param parts
 	 *            the workbench parts containing this saveable
 	 * @param closing
@@ -246,12 +246,12 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 			Control[] paneChildren = paneComposite.getChildren();
 			Composite toDisable = ((Composite) paneChildren[0]);
 			toDisable.setEnabled(false);
-// RAP [rh] Cursor API missing			
-//			if (waitCursor == null) {
-//				waitCursor = new Cursor(workbenchPart.getSite().getWorkbenchWindow().getShell().getDisplay(), SWT.CURSOR_WAIT);
-//			}
-//			originalCursor = paneComposite.getCursor();
-//			paneComposite.setCursor(waitCursor);
+			if (waitCursor == null) {
+				//waitCursor = new Cursor(workbenchPart.getSite().getWorkbenchWindow().getShell().getDisplay(), SWT.CURSOR_WAIT);
+			    waitCursor = Graphics.getCursor( SWT.CURSOR_WAIT );
+			}
+			originalCursor = paneComposite.getCursor();
+			paneComposite.setCursor(waitCursor);
 		}
 	}
 
@@ -263,7 +263,7 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * The default implementation calls setEnabled(true) on the given parts'
 	 * composites.
 	 * </p>
-	 * 
+	 *
 	 * @param parts
 	 *            the workbench parts containing this saveable
 	 */
@@ -274,12 +274,12 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 					.getSite()).getPane().getControl();
 			Control[] paneChildren = paneComposite.getChildren();
 			Composite toEnable = ((Composite) paneChildren[0]);
-// RAP [rh] Cursor API missing			
-//			paneComposite.setCursor(originalCursor);
-//			if (waitCursor!=null && !waitCursor.isDisposed()) {
-//				waitCursor.dispose();
-//				waitCursor = null;
-//			}
+			paneComposite.setCursor(originalCursor);
+			//if (waitCursor!=null && !waitCursor.isDisposed()) {
+			if (waitCursor!=null) {
+				//waitCursor.dispose();
+				waitCursor = null;
+			}
 			toEnable.setEnabled(true);
 		}
 	}

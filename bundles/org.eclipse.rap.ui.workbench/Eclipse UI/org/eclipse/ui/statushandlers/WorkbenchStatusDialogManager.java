@@ -51,6 +51,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -83,6 +84,7 @@ import org.eclipse.ui.internal.progress.ProgressMessages;
 import org.eclipse.ui.internal.statushandlers.DefaultDetailsArea;
 import org.eclipse.ui.internal.statushandlers.StackTraceSupportArea;
 import org.eclipse.ui.progress.IProgressConstants;
+import org.eclipse.swt.graphics.Cursor;
 
 import com.ibm.icu.text.DateFormat;
 
@@ -99,27 +101,27 @@ import com.ibm.icu.text.DateFormat;
  * {@link WorkbenchStatusDialogManager#enableDefaultSupportArea(boolean)} is
  * invoked.
  * </p>
- * 
+ *
  * <p>
  * The default details area can be replaced using
  * {@link WorkbenchStatusDialogManager#setDetailsAreaProvider(AbstractStatusAreaProvider)}
  * </p>
- * 
+ *
  * <p>
  * The default support area can be replaced using
  * {@link WorkbenchStatusDialogManager#setSupportAreaProvider(AbstractStatusAreaProvider)}
  * or {@link Policy#setErrorSupportProvider(ErrorSupportProvider)}.
  * </p>
- * 
+ *
  * <p>
  * The manager can switch from a non-modal dialog to a modal dialog. See
  * {@link #addStatusAdapter(StatusAdapter, boolean)}
  * </p>
- * 
+ *
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed by clients.
  * </p>
- * 
+ *
  * @see Policy#setErrorSupportProvider(ErrorSupportProvider)
  * @see ErrorSupportProvider
  * @see AbstractStatusAreaProvider
@@ -129,8 +131,8 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * This class is responsible for managing details area.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private final class DetailsAreaManager {
 		private AbstractStatusAreaProvider provider = null;
@@ -148,7 +150,7 @@ public class WorkbenchStatusDialogManager {
 		/**
 		 * This method is responsible for creating details area on the specified
 		 * Composite and displaying specified StatusAdapter
-		 * 
+		 *
 		 * @param parent
 		 *            A composite on which should be the details area created.
 		 * @param statusAdapter
@@ -162,7 +164,7 @@ public class WorkbenchStatusDialogManager {
 
 		/**
 		 * Returns current detail area provider.
-		 * 
+		 *
 		 * @return current detail area provider.
 		 */
 		private AbstractStatusAreaProvider getProvider() {
@@ -176,7 +178,7 @@ public class WorkbenchStatusDialogManager {
 		/**
 		 * This method allows to check if the details area is open (physically
 		 * constructed).
-		 * 
+		 *
 		 * @return true if the area is open, false otherwise
 		 */
 		public boolean isOpen() {
@@ -189,7 +191,7 @@ public class WorkbenchStatusDialogManager {
 		/**
 		 * This method sets the details area provider. If null is set, the
 		 * default area provider (status tree) will be used.
-		 * 
+		 *
 		 * @param provider
 		 *            A provider that will create contents for details area.
 		 */
@@ -202,7 +204,7 @@ public class WorkbenchStatusDialogManager {
 	 * Parent window actually does not use its Shell to build dialog on. The
 	 * window passes the shell to the InternalDialog, and it can do switching
 	 * modality and recreate the window silently.
-	 * 
+	 *
 	 */
 	private class InternalDialog extends TrayDialog {
 
@@ -211,7 +213,7 @@ public class WorkbenchStatusDialogManager {
 		/**
 		 * Instantiates the internal dialog on the given shell. Created dialog
 		 * uses statusDialog methods to create its contents.
-		 * 
+		 *
 		 * @param parentShell -
 		 *            a parent shell for the dialog
 		 * @param statusDialog -
@@ -267,7 +269,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#convertHorizontalDLUsToPixels(int)
 		 */
 		public int convertHorizontalDLUsToPixels(int dlus) {
@@ -276,7 +278,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#convertVerticalDLUsToPixels(int)
 		 */
 		public int convertVerticalDLUsToPixels(int dlus) {
@@ -285,7 +287,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#convertWidthInCharsToPixels(int)
 		 */
 		public int convertWidthInCharsToPixels(int chars) {
@@ -294,7 +296,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#createButton(org.eclipse.swt.widgets.Composite,
 		 *      int, java.lang.String, boolean)
 		 */
@@ -309,7 +311,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 		 */
 		protected Control createDialogArea(Composite parent) {
@@ -322,7 +324,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#initializeBounds()
 		 */
 		protected void initializeBounds() {
@@ -332,9 +334,9 @@ public class WorkbenchStatusDialogManager {
 
 		/**
 		 * This function checks if the dialog is modal.
-		 * 
+		 *
 		 * @return true if the dialog is modal, false otherwise
-		 * 
+		 *
 		 */
 		public boolean isModal() {
 			return ((getShellStyle() & SWT.APPLICATION_MODAL) == SWT.APPLICATION_MODAL);
@@ -342,7 +344,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
 		 */
 		protected boolean isResizable() {
@@ -351,7 +353,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.window.Window#open()
 		 */
 		public int open() {
@@ -375,13 +377,13 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * This class is responsible for disposing dialog elements when the dialog
 	 * is closed.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private final class StatusDialogDisposeListener implements DisposeListener {
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
 		 */
 		public void widgetDisposed(org.eclipse.swt.events.DisposeEvent e) {
@@ -396,15 +398,15 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * This class is responsible for displaying the support area on the right
 	 * side of the status dialog.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private class SupportTray extends DialogTray implements
 			ISelectionChangedListener {
 
 		private IContributionItem closeAction;
 		private Image normal;
-		// RAP [bm]: 
+		// RAP [bm]:
 //		private Image hover;
 
 		private Composite supportArea;
@@ -443,7 +445,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.DialogTray#createContents(org.eclipse.swt.widgets.Composite)
 		 */
 		protected Control createContents(Composite parent) {
@@ -519,10 +521,10 @@ public class WorkbenchStatusDialogManager {
 //			Color border = display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 //			Color background = display
 //					.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-//			// RAP [bm]: 
+//			// RAP [bm]:
 ////			Color backgroundHot = new Color(display, new RGB(252, 160, 160));
 //			Color backgroundHot = Graphics.getColor(new RGB(252, 160, 160));
-//			// RAPEND: [bm] 
+//			// RAPEND: [bm]
 //			Color transparent = display.getSystemColor(SWT.COLOR_MAGENTA);
 //
 //			PaletteData palette = new PaletteData(new RGB[] {
@@ -555,7 +557,7 @@ public class WorkbenchStatusDialogManager {
 
 		/**
 		 * Create the area for extra error support information.
-		 * 
+		 *
 		 * @param parent
 		 *            A composite on which should be the support area created.
 		 * @param statusAdapter
@@ -605,7 +607,7 @@ public class WorkbenchStatusDialogManager {
 
 		/**
 		 * This method manages the enablement of the default support area.
-		 * 
+		 *
 		 * @param enable
 		 *            true enables, false disables.
 		 */
@@ -630,10 +632,10 @@ public class WorkbenchStatusDialogManager {
 
 		/**
 		 * Checks if the support dialog has any support areas.
-		 * 
+		 *
 		 * @return true if support dialog has any support areas to display,
 		 *         false otherwise
-		 * 
+		 *
 		 */
 		private boolean providesSupport() {
 			if (Policy.getErrorSupportProvider() != null) {
@@ -647,7 +649,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -674,7 +676,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Returns whether the given StatusAdapter object should be displayed.
-	 * 
+	 *
 	 * @param statusAdapter
 	 *            a status object
 	 * @param mask
@@ -751,7 +753,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
 		 */
 		public void addListener(ILabelProviderListener listener) {
@@ -760,7 +762,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 		 */
 		public void dispose() {
@@ -776,7 +778,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
 		 *      int)
 		 */
@@ -793,7 +795,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
 		 *      int)
 		 */
@@ -863,7 +865,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
 		 *      java.lang.String)
 		 */
@@ -873,7 +875,7 @@ public class WorkbenchStatusDialogManager {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
 		 */
 		public void removeListener(ILabelProviderListener listener) {
@@ -901,7 +903,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * The current clipboard. To be disposed when closing the dialog.
 	 */
-	// RAP [bm]: 
+	// RAP [bm]:
 //	private Clipboard clipboard;
 
 	/**
@@ -976,7 +978,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Creates workbench status dialog.
-	 * 
+	 *
 	 * @param parentShell
 	 *            the parent shell for the dialog. It may be null.
 	 * @param displayMask
@@ -996,7 +998,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Creates workbench status dialog.
-	 * 
+	 *
 	 * @param parentShell
 	 *            the parent shell for the dialog. It may be null.
 	 * @param dialogTitle
@@ -1025,7 +1027,7 @@ public class WorkbenchStatusDialogManager {
 	 * All not shown status adapters will be displayed as soon as the dialog
 	 * shows up.
 	 * </p>
-	 * 
+	 *
 	 * @param modal
 	 *            <code>true</code> if the dialog should be modal,
 	 *            <code>false</code> otherwise
@@ -1111,7 +1113,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Closes the dialog tray (it is support area at the right side of the
 	 * dialog)
-	 * 
+	 *
 	 * @throws IllegalStateException
 	 */
 	private void closeTray() throws IllegalStateException {
@@ -1189,7 +1191,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Create the details button if it should be included.
-	 * 
+	 *
 	 * @param parent
 	 *            A parent composite on which all components should be placed.
 	 */
@@ -1214,7 +1216,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Create an area which allows the user to view the status if only one is
 	 * created or to select one of reported statuses when there are many.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite on which all components should be placed.
 	 */
@@ -1231,9 +1233,9 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * This method creates additional display area for {@link StatusAdapter}
 	 * when only one is available.
-	 * 
+	 *
 	 * It creates one label on a composite currently for secondary message.
-	 * 
+	 *
 	 * @param parent
 	 *            A parent composite on which all components should be placed.
 	 * @return composite the composite on which are all components for
@@ -1257,7 +1259,7 @@ public class WorkbenchStatusDialogManager {
 		singleStatusLabel.setText(statusListLabelProvider.getColumnText(
 				statusAdapter, 0));
 
-		singleStatusLabel.addMouseListener(new MouseListener() {	
+		singleStatusLabel.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}
 
@@ -1280,7 +1282,7 @@ public class WorkbenchStatusDialogManager {
 	 * <code>GridLayout</code> and the number of columns in this layout is
 	 * incremented. Subclasses may override.
 	 * </p>
-	 * 
+	 *
 	 * @param parent
 	 *            A parent composite on which all components should be placed.
 	 * @return the report control
@@ -1297,15 +1299,14 @@ public class WorkbenchStatusDialogManager {
 		ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.NO_FOCUS);
 		((GridLayout) parent.getLayout()).numColumns++;
 		toolBar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-		// RAP [bm]: Cursor
-//		final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-//		toolBar.setCursor(cursor);
-//		toolBar.addDisposeListener(new DisposeListener() {
-//			public void widgetDisposed(DisposeEvent e) {
-//				cursor.dispose();
-//			}
-//		});
-		// RAPEND: [bm] 
+		//final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
+		final Cursor cursor = Graphics.getCursor( SWT.CURSOR_HAND );
+		toolBar.setCursor(cursor);
+		//toolBar.addDisposeListener(new DisposeListener() {
+		//	public void widgetDisposed(DisposeEvent e) {
+		//		cursor.dispose();
+		//	}
+		//});
 
 		launchTrayButton = new ToolItem(toolBar, SWT.NONE);
 		launchTrayButton.setImage(WorkbenchImages
@@ -1323,7 +1324,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Creates title area.
-	 * 
+	 *
 	 * @param parent
 	 *            A composite on which the title area should be created.
 	 */
@@ -1360,7 +1361,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Enables the default support area that shows stack trace of the exception
 	 * contained in the selected status.
-	 * 
+	 *
 	 * @param enable
 	 *            true enables, false disables default support
 	 */
@@ -1372,7 +1373,7 @@ public class WorkbenchStatusDialogManager {
 	 * This method executes parameter using {@link Display#asyncExec(Runnable)}
 	 * if testing mode is disabled. Otherwise parameter run method is called in
 	 * current thread.
-	 * 
+	 *
 	 * @param runnable
 	 *            A {@link Runnable} to be run
 	 */
@@ -1384,7 +1385,7 @@ public class WorkbenchStatusDialogManager {
 	 * This method executes parameter using {@link Display#syncExec(Runnable)}
 	 * if testing mode is disabled. Otherwise parameter run method is called in
 	 * current thread.
-	 * 
+	 *
 	 * @param runnable
 	 *            A {@link Runnable} to be run
 	 */
@@ -1396,7 +1397,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * This method creates display area for {@link StatusAdapter}s when more is
 	 * available.
-	 * 
+	 *
 	 * @param parent
 	 *            A parent composite on which all components should be placed.
 	 */
@@ -1433,7 +1434,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Return the <code>Image</code> to be used when displaying an error.
-	 * 
+	 *
 	 * @return image the error image
 	 */
 	private Image getErrorImage() {
@@ -1442,7 +1443,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Returns {@link IAction} associated with selected StatusAdapter.
-	 * 
+	 *
 	 * @return {@link IAction} that is set as {@link StatusAdapter} property
 	 *         with Job.class key.
 	 */
@@ -1463,7 +1464,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Gets {@link Image} associated with current {@link StatusAdapter}
 	 * severity.
-	 * 
+	 *
 	 * @return {@link Image} associated with current {@link StatusAdapter}
 	 *         severity.
 	 */
@@ -1485,7 +1486,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Return the <code>Image</code> to be used when displaying information.
-	 * 
+	 *
 	 * @return image the information image
 	 */
 	private Image getInfoImage() {
@@ -1494,25 +1495,25 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * This method computes the dialog main message.
-	 * 
+	 *
 	 * If there is only one reported status adapter, main message should be:
 	 * <ul>
 	 * <li>information about job that reported an error.</li>
 	 * <li>primary message, if the statusAdapter was not reported by job</li>
 	 * </ul>
-	 * 
+	 *
 	 * If there is more reported statusAdapters, main message should be:
 	 * <ul>
 	 * <li>primary message for job reported statusAdapters</li>
 	 * <li>secondary message for statuses not reported by jobs</li>
 	 * </ul>
-	 * 
+	 *
 	 * If nothing can be found, some general information should be displayed.
-	 * 
+	 *
 	 * @param statusAdapter
 	 *            A status adapter which is used as the base for computation.
 	 * @return main message of the dialog.
-	 * 
+	 *
 	 * @see WorkbenchStatusDialogManager#getPrimaryMessage(StatusAdapter)
 	 * @see WorkbenchStatusDialogManager#getSecondaryMessage(StatusAdapter)
 	 * @see WorkbenchStatusDialogManager#setStatusListLabelProvider(ITableLabelProvider)
@@ -1548,7 +1549,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Return the parent shell.
-	 * 
+	 *
 	 * @return the parent shell of the dialog.
 	 */
 	private Shell getParentShell() {
@@ -1570,11 +1571,11 @@ public class WorkbenchStatusDialogManager {
 	 * <li>exception class</li>
 	 * <li>general message informing about error (no details at all)</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param statusAdapter
 	 *            an status adapter to retrieve primary message from
 	 * @return String containing primary message
-	 * 
+	 *
 	 * @see WorkbenchStatusDialogManager#getMainMessage(StatusAdapter)
 	 * @see WorkbenchStatusDialogManager#getSecondaryMessage(StatusAdapter)
 	 */
@@ -1623,11 +1624,11 @@ public class WorkbenchStatusDialogManager {
 	 * </ul>
 	 * Secondary message should not be the same as primary one. If no secondary
 	 * message can be extracted, details should be pointed.
-	 * 
+	 *
 	 * @param statusAdapter
 	 *            an status adapter to retrieve secondary message from
 	 * @return String containing secondary message
-	 * 
+	 *
 	 * @see WorkbenchStatusDialogManager#getMainMessage(StatusAdapter)
 	 * @see WorkbenchStatusDialogManager#getPrimaryMessage(StatusAdapter)
 	 */
@@ -1671,7 +1672,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Get the single selection. Return null if the selection is not just one
 	 * element.
-	 * 
+	 *
 	 * @return StatusAdapter or <code>null</code>.
 	 */
 	private StatusAdapter getSingleSelection() {
@@ -1688,7 +1689,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Gets a collection of status adapters that were passed to the dialog.
-	 * 
+	 *
 	 * @return collection of {@link StatusAdapter} objects
 	 */
 	public Collection getStatusAdapters() {
@@ -1697,7 +1698,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Get an <code>Image</code> from the provide SWT image constant.
-	 * 
+	 *
 	 * @param imageID
 	 *            the SWT image constant
 	 * @return image the image
@@ -1727,7 +1728,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Return a viewer sorter for looking at the jobs.
-	 * 
+	 *
 	 * @return ViewerSorter
 	 */
 	private ViewerComparator getViewerComparator() {
@@ -1756,7 +1757,7 @@ public class WorkbenchStatusDialogManager {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
 			 *      java.lang.Object, java.lang.Object)
 			 */
@@ -1778,7 +1779,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Return the <code>Image</code> to be used when displaying a warning.
-	 * 
+	 *
 	 * @return image the warning image
 	 */
 	private Image getWarningImage() {
@@ -1805,7 +1806,7 @@ public class WorkbenchStatusDialogManager {
 		IContentProvider provider = new IStructuredContentProvider() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 			 */
 			public void dispose() {
@@ -1814,7 +1815,7 @@ public class WorkbenchStatusDialogManager {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 			 */
 			public Object[] getElements(Object inputElement) {
@@ -1823,7 +1824,7 @@ public class WorkbenchStatusDialogManager {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
 			 *      java.lang.Object, java.lang.Object)
 			 */
@@ -1883,7 +1884,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Opens status dialog with particular statusAdapter selected.
-	 * 
+	 *
 	 * @param modal
 	 *            decides if window is modal or not.
 	 * @param statusAdapter
@@ -1975,7 +1976,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Sets the details area provider. If null is set, the default area provider
 	 * will be used.
-	 * 
+	 *
 	 * @param provider
 	 *            A details area provider to be set.
 	 */
@@ -1985,7 +1986,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Sets current status adapter.
-	 * 
+	 *
 	 * @param statusAdapter
 	 *            The statusAdapter to set.
 	 */
@@ -1999,7 +2000,7 @@ public class WorkbenchStatusDialogManager {
 	 * Sets new label provider for the status list. This label provider is used
 	 * also to display the second message on the dialog if only one status is
 	 * available.
-	 * 
+	 *
 	 * @param labelProvider
 	 *            a label provider to be used when displaying status adapters.
 	 *            It must not be null.
@@ -2013,14 +2014,14 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Sets the support provider.
-	 * 
+	 *
 	 * The policy for choosing support provider is:
 	 * <ol>
 	 * <li>use the support provider set by this method, if set</li>
 	 * <li>use the support provider set in JFace Policy, if set</li>
 	 * <li>use the default support area, if enabled</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param provider
 	 *            Support provider to be set.
 	 */
@@ -2032,7 +2033,7 @@ public class WorkbenchStatusDialogManager {
 	 * Decides if dialog should be modal. Dialog will be modal if any of the
 	 * statuses contained by StatusAdapters had been reported with
 	 * {@link StatusManager#BLOCK} flag.
-	 * 
+	 *
 	 * @return true if any StatusHandler should be displayed in modal window
 	 */
 	private boolean shouldBeModal() {
@@ -2052,7 +2053,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Checks if the user should be prompted immediately about
 	 * {@link StatusAdapter}
-	 * 
+	 *
 	 * @param statusAdapter
 	 *            to be checked.
 	 * @return true if the statusAdapter should be prompted, false otherwise.
@@ -2099,7 +2100,7 @@ public class WorkbenchStatusDialogManager {
 	/**
 	 * Toggles the unfolding of the details area. This is triggered by the user
 	 * pressing the details button.
-	 * 
+	 *
 	 */
 	private boolean toggleDetailsArea() {
 		boolean opened = false;
@@ -2137,11 +2138,11 @@ public class WorkbenchStatusDialogManager {
 			if (hasValidGotoAction) {
 				hideButton(gotoButton,false);
 				gotoButton.setText(gotoAction.getText());
-				
+
 				((GridData) gotoButton.getLayoutData()).widthHint = gotoButton
 						.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 			}
-			else	
+			else
 				hideButton(gotoButton,true);
 		}
 		// and tray enablement button
@@ -2152,7 +2153,7 @@ public class WorkbenchStatusDialogManager {
 
 	/**
 	 * Hide the button if hide is <code>true</code>.
-	 * 
+	 *
 	 * @param button
 	 * @param hide
 	 */

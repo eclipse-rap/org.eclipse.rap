@@ -19,6 +19,7 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.graphics.Cursor;
 
 /**
  * A modal dialog that displays progress during a long running operation.
@@ -39,10 +41,10 @@ import org.eclipse.swt.widgets.Shell;
  * </p>
  * <p>
  * Typical usage is:
- * 
+ *
  * <pre>
- *  
- *   
+ *
+ *
  *    try {
  *       IRunnableWithProgress op = ...;
  *       new ProgressMonitorDialog(activeShell).run(true, true, op);
@@ -51,10 +53,10 @@ import org.eclipse.swt.widgets.Shell;
  *    } catch (InterruptedException e) {
  *       // handle cancelation
  *    }
- *    
- *   
+ *
+ *
  * </pre>
- * 
+ *
  * </p>
  * <p>
  * Note that the ProgressMonitorDialog is not intended to be used with multiple
@@ -130,17 +132,15 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 */
 	private int nestingDepth;
 
-	// RAP [bm]: 
-//	/**
-//	 * The cursor used in the cancel button;
-//	 */
-//	protected Cursor arrowCursor;
-//
-//	/**
-//	 * The cursor used in the shell;
-//	 */
-//	private Cursor waitCursor;
-	// RAPEND: [bm] 
+	/**
+	 * The cursor used in the cancel button;
+	 */
+	protected Cursor arrowCursor;
+
+	/**
+	 * The cursor used in the shell;
+	 */
+	private Cursor waitCursor;
 
 	/**
 	 * Flag indicating whether to open or merely create the dialog before run.
@@ -233,11 +233,11 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 				fSubTask = name;
 			}
 			subTaskLabel.setText(shortenText(fSubTask, subTaskLabel));
-			// RAP [bm]: 
+			// RAP [bm]:
 //			if (!forked) {
 //				subTaskLabel.update();
 //			}
-			// RAPEND: [bm] 
+			// RAPEND: [bm]
 
 		}
 
@@ -253,7 +253,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
 		 */
 		public void clearBlocked() {
@@ -265,7 +265,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
 		 */
 		public void setBlocked(IStatus reason) {
@@ -280,31 +280,31 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Clear blocked state from the receiver.
 	 */
 	protected void updateForClearBlocked() {
-		// RAP [bm]: 
+		// RAP [bm]:
 //		progressIndicator.showNormal();
 		setMessage(task, true);
 		imageLabel.setImage(getImage());
-		
+
 	}
 
 	/**
 	 * Set blocked state from the receiver.
-	 * 
+	 *
 	 * @param reason
 	 *            IStatus that gives the details
 	 */
 	protected void updateForSetBlocked(IStatus reason) {
-		// RAP [bm]: 
+		// RAP [bm]:
 //		progressIndicator.showPaused();
 		setMessage(reason.getMessage(), true);
 		imageLabel.setImage(getImage());
-		
+
 	}
 
 	/**
 	 * Creates a progress monitor dialog under the given shell. The dialog has a
 	 * standard title and no image. <code>open</code> is non-blocking.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent shell, or <code>null</code> to create a top-level
 	 *            shell
@@ -324,7 +324,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Enables the cancel button (asynchronously).
-	 * 
+	 *
 	 * @param b
 	 *            The state to set the button to.
 	 */
@@ -340,7 +340,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * The cancel button has been pressed.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	protected void cancelPressed() {
@@ -370,27 +370,25 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Clear the cursors in the dialog.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	protected void clearCursors() {
-		// RAP [bm]: 
-//		if (cancel != null && !cancel.isDisposed()) {
-//			cancel.setCursor(null);
-//		}
-//		Shell shell = getShell();
-//		if (shell != null && !shell.isDisposed()) {
-//			shell.setCursor(null);
-//		}
+		if (cancel != null && !cancel.isDisposed()) {
+			cancel.setCursor(null);
+		}
+		Shell shell = getShell();
+		if (shell != null && !shell.isDisposed()) {
+			shell.setCursor(null);
+		}
 //		if (arrowCursor != null) {
 //			arrowCursor.dispose();
 //		}
 //		if (waitCursor != null) {
 //			waitCursor.dispose();
 //		}
-//		arrowCursor = null;
-//		waitCursor = null;
-		// RAPEND: [bm] 
+		arrowCursor = null;
+		waitCursor = null;
 
 	}
 
@@ -400,12 +398,11 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
 		shell.setText(JFaceResources.getString("ProgressMonitorDialog.title")); //$NON-NLS-1$
-		// RAP [bm]: 
-//		if (waitCursor == null) {
-//			waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
-//		}
-//		shell.setCursor(waitCursor);
-		// RAPEND: [bm] 
+		if (waitCursor == null) {
+		  //waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
+		  waitCursor = Graphics.getCursor( SWT.CURSOR_WAIT );
+		}
+		shell.setCursor(waitCursor);
 		// Add a listener to set the message properly when the dialog becomes
 		// visible
 		shell.addListener(SWT.Show, new Listener() {
@@ -431,7 +428,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Creates the cancel button.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 * @since 1.0
@@ -439,12 +436,11 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	protected void createCancelButton(Composite parent) {
 		cancel = createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.get().CANCEL_LABEL, true);
-		// RAP [bm]: 
-//		if (arrowCursor == null) {
-//			arrowCursor = new Cursor(cancel.getDisplay(), SWT.CURSOR_ARROW);
-//		}
-//		cancel.setCursor(arrowCursor);
-		// RAPEND: [bm] 
+		if (arrowCursor == null) {
+		  //arrowCursor = new Cursor(cancel.getDisplay(), SWT.CURSOR_ARROW);
+		  arrowCursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+		}
+		cancel.setCursor(arrowCursor);
 
 		setOperationCancelButtonEnabled(enableCancelButton);
 	}
@@ -477,7 +473,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.window.Window#getInitialSize()
 	 */
 	protected Point getInitialSize() {
@@ -491,7 +487,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	/**
 	 * Returns the progress monitor to use for operations run in this progress
 	 * dialog.
-	 * 
+	 *
 	 * @return the progress monitor
 	 */
 	public IProgressMonitor getProgressMonitor() {
@@ -528,7 +524,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	/**
 	 * Returns whether the dialog should be opened before the operation is run.
 	 * Defaults to <code>true</code>
-	 * 
+	 *
 	 * @return <code>true</code> to open the dialog before run,
 	 *         <code>false</code> to only create the dialog, but not open it
 	 * @since 1.0
@@ -541,7 +537,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Sets whether the dialog should be opened before the operation is run.
 	 * NOTE: Setting this to false and not forking a process may starve any
 	 * asyncExec that tries to open the dialog later.
-	 * 
+	 *
 	 * @param openOnRun
 	 *            <code>true</code> to open the dialog before run,
 	 *            <code>false</code> to only create the dialog, but not open
@@ -554,7 +550,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Returns the nesting depth of running operations.
-	 * 
+	 *
 	 * @return the nesting depth of running operations
 	 * @since 1.0
 	 */
@@ -564,7 +560,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Increments the nesting depth of running operations.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	protected void incrementNestingDepth() {
@@ -573,9 +569,9 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Decrements the nesting depth of running operations.
-	 * 
+	 *
 	 * @since 1.0
-	 * 
+	 *
 	 */
 	protected void decrementNestingDepth() {
 		nestingDepth--;
@@ -585,7 +581,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Called just before the operation is run. Default behaviour is to open or
 	 * create the dialog, based on the setting of <code>getOpenOnRun</code>,
 	 * and increment the nesting depth.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	protected void aboutToRun() {
@@ -600,7 +596,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	/**
 	 * Called just after the operation is run. Default behaviour is to decrement
 	 * the nesting depth, and close the dialog.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	protected void finishedRun() {
@@ -610,7 +606,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Sets whether the progress dialog is cancelable or not.
-	 * 
+	 *
 	 * @param cancelable
 	 *            <code>true</code> if the end user can cancel this progress
 	 *            dialog, and <code>false</code> if it cannot be canceled
@@ -625,7 +621,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Helper to enable/disable Cancel button for this dialog.
-	 * 
+	 *
 	 * @param b
 	 *            <code>true</code> to enable the cancel button, and
 	 *            <code>false</code> to disable it
@@ -638,7 +634,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.dialogs.IconAndMessageDialog#getImage()
 	 */
 	protected Image getImage() {
@@ -647,7 +643,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Set the message in the message label.
-	 * 
+	 *
 	 * @param messageString
 	 *            The string for the new message.
 	 * @param force
@@ -669,17 +665,17 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Update the message label. Required if the monitor is forked.
 	 */
 	private void update() {
-		// RAP [bm]: 
+		// RAP [bm]:
 //		if (messageLabel == null || messageLabel.isDisposed()) {
 //			return;
 //		}
 //		messageLabel.update();
-		// RAPEND: [bm] 
+		// RAPEND: [bm]
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.window.Window#open()
 	 */
 	public int open() {

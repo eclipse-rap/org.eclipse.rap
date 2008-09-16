@@ -43,7 +43,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/**
 	 * Create a new instance of the receiver with progress reported on the job.
-	 * 
+	 *
 	 * @param parentShell
 	 *            The shell this is parented from.
 	 */
@@ -63,7 +63,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.dialogs.ProgressMonitorDialog#cancelPressed()
 	 */
 	protected void cancelPressed() {
@@ -73,7 +73,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.dialogs.ProgressMonitorDialog#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
 	protected void configureShell(Shell shell) {
@@ -84,7 +84,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
 	protected void createButtonsForButtonBar(Composite parent) {
@@ -96,7 +96,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 		runInWorkspace.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 			 */
 			public void widgetSelected(SelectionEvent e) {
@@ -107,31 +107,29 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				ProgressManagerUtil.animateDown(shellPosition);
 			}
 		});
-// RAP [fappel]: Cursor not supported
-//		runInWorkspace.setCursor(arrowCursor);
+		runInWorkspace.setCursor(arrowCursor);
 
 		cancel = createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.get().CANCEL_LABEL, false);
-// RAP [fappel]: Cursor not supported
-//		cancel.setCursor(arrowCursor);
+		cancel.setCursor(arrowCursor);
 
 		createDetailsButton(parent);
 	}
 
 	/**
 	 * Returns a listener that will close the dialog when the job completes.
-	 * 
+	 *
 	 * @return IJobChangeListener
 	 */
 	private IJobChangeListener createCloseListener() {
       // RAP: Obtain localized message here as within the JobChangeAdapter#done
       //      method there is no session context available
-      final String closeJobDialogMsg 
+      final String closeJobDialogMsg
         = ProgressMessages.get().ProgressMonitorFocusJobDialog_CLoseDialogJob;
 	  return new JobChangeAdapter() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.jobs.IJobChangeListener#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 			 */
 			public void done(IJobChangeEvent event) {
@@ -149,12 +147,12 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
                   display = Display.getCurrent();
                 } else {
                   display = getShell().getDisplay();
-                  
+
                 }
                 if (!ProgressUtil.isWorkbenchRunning( display ) ) {
                     return;
                 }
-                
+
 				// nothing to do if the dialog is already closed
 				if (getShell() == null) {
 					return;
@@ -165,7 +163,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
     				final WorkbenchJob closeJob = new WorkbenchJob(closeJobDialogMsg) {
     					/*
     					 * (non-Javadoc)
-    					 * 
+    					 *
     					 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
     					 */
     					public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -187,14 +185,14 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/**
 	 * Return the ProgressMonitorWithBlocking for the receiver.
-	 * 
+	 *
 	 * @return IProgressMonitorWithBlocking
 	 */
 	private IProgressMonitorWithBlocking getBlockingProgressMonitor() {
 		return new IProgressMonitorWithBlocking() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String,
 			 *      int)
 			 */
@@ -204,7 +202,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -215,14 +213,14 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
 			 */
 			public void clearBlocked() {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -234,14 +232,14 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#done()
 			 */
 			public void done() {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -252,7 +250,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
 			 */
 			public void internalWorked(double work) {
@@ -260,7 +258,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -271,7 +269,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
 			 */
 			public boolean isCanceled() {
@@ -280,7 +278,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/**
 			 * Run the runnable as an asyncExec if we are already open.
-			 * 
+			 *
 			 * @param runnable
 			 */
 			private void runAsync(final Runnable runnable) {
@@ -307,7 +305,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				display.asyncExec(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -326,7 +324,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
 			 */
 			public void setBlocked(IStatus reason) {
@@ -334,7 +332,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -346,7 +344,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
 			 */
 			public void setCanceled(boolean value) {
@@ -355,7 +353,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
 			 */
 			public void setTaskName(String name) {
@@ -363,7 +361,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -374,7 +372,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#subTask(java.lang.String)
 			 */
 			public void subTask(String name) {
@@ -382,7 +380,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				runAsync(new Runnable() {
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see java.lang.Runnable#run()
 					 */
 					public void run() {
@@ -393,7 +391,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.core.runtime.IProgressMonitor#worked(int)
 			 */
 			public void worked(int work) {
@@ -404,7 +402,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.window.Window#open()
 	 */
 	public int open() {
@@ -423,7 +421,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
           // RAP [fappel]: Ensure that job changed listener is removed in case
 		  //               of session timeout before the job ends. Note that
 		  //               this is still under investigation
-          final ISessionStore session = RWT.getSessionStore();          
+          final ISessionStore session = RWT.getSessionStore();
           final JobChangeAdapter doneListener[] = new JobChangeAdapter[ 1 ];
           final HttpSessionBindingListener invalidateHandler
             = new HttpSessionBindingListener()
@@ -457,7 +455,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/**
 	 * Opens this dialog for the duration that the given job is running.
-	 * 
+	 *
 	 * @param jobToWatch
 	 * @param originatingShell
 	 *            The shell this request was created from. Do not block on this
@@ -492,7 +490,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 				ProgressMessages.get().ProgressMonitorFocusJobDialog_UserDialogJob) {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
 			 */
 			public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -535,7 +533,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	protected Control createDialogArea(Composite parent) {
@@ -549,7 +547,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog#createExtendedDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	protected void createExtendedDialogArea(Composite parent) {
@@ -569,7 +567,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 		showUserDialogButton.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 			 */
 			public void widgetSelected(SelectionEvent e) {
@@ -582,7 +580,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog#close()
 	 */
 	public boolean close() {

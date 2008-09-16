@@ -24,14 +24,14 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
-//import org.eclipse.ui.internal.forms.widgets.FormsResources;
+import org.eclipse.ui.internal.forms.widgets.FormsResources;
 
 /**
  * This is the base class for custom hyperlink widget. It is responsible for
  * processing mouse and keyboard events, and converting them into unified
  * hyperlink events. Subclasses are responsible for rendering the hyperlink in
  * the client area.
- * 
+ *
  * @since 1.0
  */
 public abstract class AbstractHyperlink extends Canvas {
@@ -59,7 +59,7 @@ public abstract class AbstractHyperlink extends Canvas {
 
 	/**
 	 * Creates a new hyperlink in the provided parent.
-	 * 
+	 *
 	 * @param parent
 	 *            the control parent
 	 * @param style
@@ -137,16 +137,15 @@ public abstract class AbstractHyperlink extends Canvas {
 //		addListener(SWT.MouseMove, listener);
 		addListener(SWT.FocusIn, listener);
 		addListener(SWT.FocusOut, listener);
-// RAP [rh] add defaultSelectionListener, sent by ToggleHyperlink.js to get 
-//     notified about clicks on toggle image 		
+// RAP [rh] add defaultSelectionListener, sent by ToggleHyperlink.js to get
+//     notified about clicks on toggle image
 		addListener(SWT.DefaultSelection, listener);
-// RAP [rh] missing cursor API
-//		setCursor(FormsResources.getHandCursor());
+		setCursor(FormsResources.getHandCursor());
 	}
 
 	/**
 	 * Adds the event listener to this hyperlink.
-	 * 
+	 *
 	 * @param listener
 	 *            the event listener to add
 	 */
@@ -158,7 +157,7 @@ public abstract class AbstractHyperlink extends Canvas {
 
 	/**
 	 * Removes the event listener from this hyperlink.
-	 * 
+	 *
 	 * @param listener
 	 *            the event listener to remove
 	 */
@@ -172,7 +171,7 @@ public abstract class AbstractHyperlink extends Canvas {
 	 * Returns the selection state of the control. When focus is gained, the
 	 * state will be <samp>true </samp>; it will switch to <samp>false </samp>
 	 * when the control looses focus.
-	 * 
+	 *
 	 * @return <code>true</code> if the widget has focus, <code>false</code>
 	 *         otherwise.
 	 */
@@ -204,7 +203,7 @@ public abstract class AbstractHyperlink extends Canvas {
 	 */
 	protected void handleExit(Event e) {
 		// disarm the link; won't activate on mouseup
-// RAP [rh] Unused code: was used by MouseUp/MouseDown listener code    
+// RAP [rh] Unused code: was used by MouseUp/MouseDown listener code
 //		armed = false;
 		redraw();
 		if (listeners == null)
@@ -225,15 +224,14 @@ public abstract class AbstractHyperlink extends Canvas {
 	 */
 	protected void handleActivate(Event e) {
 		// disarm link, back to normal state
-// RAP [rh] Unused code: was used by MouseUp/MouseDown listener code	  
+// RAP [rh] Unused code: was used by MouseUp/MouseDown listener code
 //		armed = false;
 // RAP [rh] missing accessibility support
 //		getAccessible().setFocus(ACC.CHILDID_SELF);
 		if (listeners == null)
 			return;
 		int size = listeners.size();
-		// RAP [rh] missing cursor API 
-//		setCursor(FormsResources.getBusyCursor());
+		setCursor(FormsResources.getBusyCursor());
 		HyperlinkEvent he = new HyperlinkEvent(this, getHref(), getText(),
 				e.stateMask);
 		Object[] listenerList = listeners.getListeners();
@@ -241,16 +239,15 @@ public abstract class AbstractHyperlink extends Canvas {
 			IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
 			listener.linkActivated(he);
 		}
-// RAP [rh] missing cursor API
-//		if (!isDisposed())
-//			setCursor(FormsResources.getHandCursor());
+		if (!isDisposed())
+			setCursor(FormsResources.getHandCursor());
 	}
 
 	/**
 	 * Sets the object associated with this hyperlink. Concrete implementation
 	 * of this class can use if to store text, URLs or model objects that need
 	 * to be processed on hyperlink events.
-	 * 
+	 *
 	 * @param href
 	 *            the hyperlink object reference
 	 */
@@ -260,7 +257,7 @@ public abstract class AbstractHyperlink extends Canvas {
 
 	/**
 	 * Returns the object associated with this hyperlink.
-	 * 
+	 *
 	 * @see #setHref
 	 * @return the hyperlink object reference
 	 */
@@ -271,7 +268,7 @@ public abstract class AbstractHyperlink extends Canvas {
 	/**
 	 * Returns the textual representation of this hyperlink suitable for showing
 	 * in tool tips or on the status line.
-	 * 
+	 *
 	 * @return the hyperlink text
 	 */
 	public String getText() {
@@ -281,7 +278,7 @@ public abstract class AbstractHyperlink extends Canvas {
 // RAP [rh] missing paint events
 //	/**
 //	 * Paints the hyperlink as a reaction to the provided paint event.
-//	 * 
+//	 *
 //	 * @param gc
 //	 *            graphic context
 //	 */
@@ -290,7 +287,7 @@ public abstract class AbstractHyperlink extends Canvas {
 // RAP [rh] missing paint events
 //	/**
 //	 * Paints the control as a reaction to the provided paint event.
-//	 * 
+//	 *
 //	 * @param e
 //	 *            the paint event
 //	 */
@@ -334,7 +331,7 @@ public abstract class AbstractHyperlink extends Canvas {
 //		handleActivate(e);
 //	}
 
-// RAP [rh] Unused code: was used by MouseMove listener  	
+// RAP [rh] Unused code: was used by MouseMove listener
 //	private void handleMouseMove(Event e) {
 //		// disarm link if we move out of bounds
 //		if (armed) {
@@ -342,7 +339,7 @@ public abstract class AbstractHyperlink extends Canvas {
 //			armed = (e.x >= 0 && e.y >= 0 && e.x < size.x && e.y < size.y);
 //		}
 //	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)

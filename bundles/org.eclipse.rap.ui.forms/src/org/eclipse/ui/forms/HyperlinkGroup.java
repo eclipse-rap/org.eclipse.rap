@@ -27,7 +27,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * active colors and updates underline state depending on the underline
  * preference. Hyperlink labels are added to the group after creation and are
  * automatically removed from the group when they are disposed.
- * 
+ *
  * @since 1.0
  */
 
@@ -47,7 +47,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 // RAP [rh] Obsolete, as mouse events are missing
 //		private Color previousBackground;
 //		private Color previousForeground;
-		
+
 		public void handleEvent(Event e) {
 			switch (e.type) {
 // RAP [rh] Mouse events missing
@@ -76,7 +76,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 //				link.setForeground(getActiveForeground());
 //			if (getHyperlinkUnderlineMode() == UNDERLINE_HOVER)
 //				link.setUnderlined(true);
-//			link.setCursor(getHyperlinkCursor());			
+//			link.setCursor(getHyperlinkCursor());
 //		}
 //		private void onMouseExit(Event e) {
 //			Hyperlink link = (Hyperlink) e.widget;
@@ -102,8 +102,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 			linkExited((Hyperlink) e.widget);
 		}
 		private void linkExited(Hyperlink link) {
-// RAP [rh] Cursor missing
-//			link.setCursor(null);
+			link.setCursor(null);
 			if (lastEntered == link)
 				lastEntered = null;
 		}
@@ -122,7 +121,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 	 * Returns the link that has been active the last, or <code>null</code>
 	 * if no link has been active yet or the last active link has been
 	 * disposed.
-	 * 
+	 *
 	 * @return the last active link or <code>null</code>
 	 */
 	public Hyperlink getLastActivated() {
@@ -132,7 +131,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 	 * Adds a hyperlink to the group to be jointly managed. Hyperlink will be
 	 * managed until it is disposed. Settings like colors, cursors and modes
 	 * will affect all managed hyperlinks.
-	 * 
+	 *
 	 * @param link
 	 */
 
@@ -147,24 +146,24 @@ public final class HyperlinkGroup extends HyperlinkSettings {
     // RAP [rh] Provides information to handle hover effect on the client-side
     updateActiveColors();
 	}
-	
+
 	/**
 	 * Sets the new active hyperlink background for all the links.
-	 * 
+	 *
 	 * @param newActiveBackground
 	 *            the new active background
 	 */
 	public void setActiveBackground(Color newActiveBackground) {
 		super.setActiveBackground(newActiveBackground);
-// RAP [rh] Obsolete, as mouse events are missing		
+// RAP [rh] Obsolete, as mouse events are missing
 //		isActiveBackgroundSet = true;
     // RAP [rh] Provides information to handle hover effect on the client-side
     updateActiveColors();
 	}
-	
+
 	/**
 	 * Sets the new active hyperlink foreground for all the links.
-	 * 
+	 *
 	 * @param newActiveForeground
 	 *            the new active foreground
 	 */
@@ -175,7 +174,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
     // RAP [rh] Provides information to handle hover effect on the client-side
     updateActiveColors();
 	}
-	
+
   // RAP [rh] Update information to handle hover effect on the client-side
   private void updateActiveColors() {
     if( links != null ) {
@@ -198,7 +197,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 	/**
 	 * Sets the group background and also sets the background of all the
 	 * currently managed links.
-	 * 
+	 *
 	 * @param bg
 	 *            the new background
 	 */
@@ -215,7 +214,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 	/**
 	 * Sets the group foreground and also sets the background of all the
 	 * currently managed links.
-	 * 
+	 *
 	 * @param fg
 	 *            the new foreground
 	 */
@@ -231,7 +230,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 	}
 	/**
 	 * Sets the hyperlink underline mode.
-	 * 
+	 *
 	 * @param mode
 	 *            the new hyperlink underline mode
 	 * @see HyperlinkSettings
@@ -250,7 +249,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 		link.addListener(SWT.MouseDown, listener);
 		link.addHyperlinkListener(listener);
 		link.addListener(SWT.Dispose, listener);
-// RAP [rh] Mouse events missing 
+// RAP [rh] Mouse events missing
 //		link.addListener(SWT.MouseEnter, listener);
 //		link.addListener(SWT.MouseExit, listener);
 		links.add(link);

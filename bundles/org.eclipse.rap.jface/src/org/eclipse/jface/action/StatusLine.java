@@ -17,13 +17,14 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Util;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-//import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -76,8 +77,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	/** the start time of the task */
 	protected long fStartTime;
 
-	// RAP [bm]: 
-//	private Cursor fStopButtonCursor;
+	private Cursor fStopButtonCursor;
 
 	/** the message text */
 	protected String fMessageText;
@@ -230,7 +230,7 @@ import org.eclipse.swt.widgets.ToolItem;
 				 * Workaround for Linux Motif: Even if the progress bar and
 				 * cancel button are not set to be visible ad of width 0, they
 				 * still draw over the first pixel of the editor contributions.
-				 * 
+				 *
 				 * The fix here is to draw the progress bar and cancel button
 				 * off screen if they are not visible.
 				 */
@@ -249,7 +249,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 	/**
 	 * Create a new StatusLine as a child of the given parent.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent for this Composite
 	 * @param style
@@ -301,7 +301,7 @@ import org.eclipse.swt.widgets.ToolItem;
 //				}
 //			}
 //		});
-		// RAPEND: [bm] 
+		// RAPEND: [bm]
 
 		// We create a composite to create the progress bar in
 		// so that it can be centered. See bug #32331
@@ -316,13 +316,13 @@ import org.eclipse.swt.widgets.ToolItem;
 		fProgressBar.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL));
 
-		// RAP [bm]: 
-//		fStopButtonCursor = new Cursor(getDisplay(), SWT.CURSOR_ARROW);
+		//fStopButtonCursor = new Cursor(getDisplay(), SWT.CURSOR_ARROW);
+		fStopButtonCursor = Graphics.getCursor( SWT.CURSOR_ARROW );
 	}
 
 	/**
 	 * Notifies that the main task is beginning.
-	 * 
+	 *
 	 * @param name
 	 *            the name (or description) of the main task
 	 * @param totalWork
@@ -348,10 +348,10 @@ import org.eclipse.swt.widgets.ToolItem;
 			return;
 		}
 
-		// RAP [bm]: 
+		// RAP [bm]:
 //		fProgressBar.getDisplay().timerExec(DELAY_PROGRESS, timer);
 		fProgressBar.getDisplay().syncExec(timer);
-		// RAPEND: [bm] 
+		// RAPEND: [bm]
 
 		if (!animated) {
 			fProgressBar.beginTask(totalWork);
@@ -384,7 +384,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 	/**
 	 * Returns the status line's progress monitor
-	 * 
+	 *
 	 * @return {@link IProgressMonitor} the progress monitor
 	 */
 	public IProgressMonitor getProgressMonitor() {
@@ -395,7 +395,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	 * @private
 	 */
 	protected void handleDispose() {
-		// RAP [bm]: 
+		// RAP [bm]:
 //		if (fStopButtonCursor != null) {
 //			fStopButtonCursor.dispose();
 //			fStopButtonCursor = null;
@@ -408,7 +408,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 	/**
 	 * Hides the Cancel button and ProgressIndicator.
-	 * 
+	 *
 	 */
 	protected void hideProgress() {
 
@@ -477,7 +477,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	 * running operation. If the ProgressIndication is currently visible calling
 	 * this method may have a direct effect on the layout because it will make a
 	 * cancel button visible.
-	 * 
+	 *
 	 * @param enabled
 	 *            <code>true</true> if cancel should be enabled
 	 */
@@ -495,7 +495,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	/**
 	 * Sets the error message text to be displayed on the status line. The image
 	 * on the status line is cleared.
-	 * 
+	 *
 	 * @param message
 	 *            the error message, or <code>null</code> for no error message
 	 */
@@ -505,7 +505,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 	/**
 	 * Sets an image and error message text to be displayed on the status line.
-	 * 
+	 *
 	 * @param image
 	 *            the image to use, or <code>null</code> for no image
 	 * @param message
@@ -531,7 +531,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	/**
 	 * Sets the message text to be displayed on the status line. The image on
 	 * the status line is cleared.
-	 * 
+	 *
 	 * @param message
 	 *            the error message, or <code>null</code> for no error message
 	 */
@@ -541,7 +541,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 	/**
 	 * Sets an image and a message text to be displayed on the status line.
-	 * 
+	 *
 	 * @param image
 	 *            the image to use, or <code>null</code> for no image
 	 * @param message
@@ -565,21 +565,20 @@ import org.eclipse.swt.widgets.ToolItem;
 
 	/**
 	 * Makes the Cancel button visible.
-	 * 
+	 *
 	 */
 	protected void showButton() {
 		if (fToolBar != null && !fToolBar.isDisposed()) {
 			fToolBar.setVisible(true);
 			fToolBar.setEnabled(true);
-			// RAP [bm]: 
-//			fToolBar.setCursor(fStopButtonCursor);
+			fToolBar.setCursor(fStopButtonCursor);
 			fCancelButtonIsVisible = true;
 		}
 	}
 
 	/**
 	 * Shows the Cancel button and ProgressIndicator.
-	 * 
+	 *
 	 */
 	protected void showProgress() {
 		if (!fProgressIsVisible && !isDisposed()) {
@@ -612,7 +611,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	/**
 	 * Notifies that a subtask of the main task is beginning. Subtasks are
 	 * optional; the main task might not have subtasks.
-	 * 
+	 *
 	 * @param name
 	 *            the name (or description) of the subtask
 	 * @see IProgressMonitor#subTask(String)
