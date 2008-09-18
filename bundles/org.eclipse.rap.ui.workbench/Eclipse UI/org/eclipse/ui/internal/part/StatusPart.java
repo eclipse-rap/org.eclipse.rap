@@ -141,9 +141,8 @@ public class StatusPart {
         
         if (showingDetails) {
             detailsButton.setText(IDialogConstants.get().HIDE_DETAILS_LABEL);
-// RAP [rh] SWT#LEFT_TO_RIGHT missing            
             Text detailsText = new Text(detailsArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-                    | SWT.MULTI | SWT.READ_ONLY /*| SWT.LEFT_TO_RIGHT */ );
+                    | SWT.MULTI | SWT.READ_ONLY | SWT.LEFT_TO_RIGHT);
             detailsText.setText(getDetails(reason));
             detailsText.setBackground(detailsText.getDisplay().getSystemColor(
                     SWT.COLOR_LIST_BACKGROUND));

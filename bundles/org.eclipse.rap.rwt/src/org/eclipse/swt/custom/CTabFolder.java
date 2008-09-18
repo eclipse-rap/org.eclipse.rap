@@ -1909,7 +1909,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
       | SWT.TOP
       | SWT.BOTTOM
       | SWT.FLAT
-//      | SWT.LEFT_TO_RIGHT
+      | SWT.LEFT_TO_RIGHT
 //      | SWT.RIGHT_TO_LEFT
       | SWT.SINGLE
       | SWT.MULTI;

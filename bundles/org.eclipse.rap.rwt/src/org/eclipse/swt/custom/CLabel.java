@@ -126,7 +126,7 @@ public class CLabel extends Canvas {
     int result = style;
     if ( (style & SWT.BORDER) != 0 )
       result |= SWT.SHADOW_IN;
-    int mask = SWT.SHADOW_IN | SWT.SHADOW_OUT | SWT.SHADOW_NONE;
+    int mask = SWT.SHADOW_IN | SWT.SHADOW_OUT | SWT.SHADOW_NONE | SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT*/;
     result = style & mask;
     return result |= SWT.NO_FOCUS;
   }

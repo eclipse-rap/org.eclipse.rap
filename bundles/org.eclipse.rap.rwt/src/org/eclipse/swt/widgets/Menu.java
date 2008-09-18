@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
@@ -23,13 +22,13 @@ import org.eclipse.swt.internal.widgets.*;
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>BAR, DROP_DOWN, POP_UP, NO_RADIO_GROUP</dd>
- * <dd>LEFT_TO_RIGHT, RIGHT_TO_LEFT</dd>
+ * <dd>LEFT_TO_RIGHT <!--, RIGHT_TO_LEFT --></dd>
  * <dt><b>Events:</b></dt>
  * <dd>Help, Hide, Show </dd>
  * </dl>
  * <p>
  * Note: Only one of BAR, DROP_DOWN and POP_UP may be specified.
- * Only one of LEFT_TO_RIGHT or RIGHT_TO_LEFT may be specified.
+ * <!-- Only one of LEFT_TO_RIGHT or RIGHT_TO_LEFT may be specified. -->
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>

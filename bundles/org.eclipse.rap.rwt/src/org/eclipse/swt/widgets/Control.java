@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * <dl>
  * <dt><b>Styles:</b>
  * <dd>BORDER</dd>
+ * <dd>LEFT_TO_RIGHT <!--, RIGHT_TO_LEFT --></dd>
  * <dt><b>Events:</b>
  * <dd>FocusIn, FocusOut, Help, KeyDown, KeyUp, MouseDoubleClick, MouseDown, MouseEnter,
  *     MouseExit, MouseHover, MouseUp, MouseMove, Move, Paint, Resize, Traverse,
@@ -93,7 +94,7 @@ public abstract class Control extends Widget {
   private DisposeListener menuDisposeListener;
   private Color foreground;
   private Color background;
-  private Image backgroundImage = null;
+  private Image backgroundImage;
   private boolean backgroundTransparency;
   private Font font;
   private Cursor cursor;
@@ -138,7 +139,12 @@ public abstract class Control extends Widget {
     this.parent = parent;
     ControlHolder.addControl( parent, this );
     controlAdapter = new ControlAdapter();
+    createWidget();
+  }
+
+  void createWidget () {
     initState();
+    checkOrientation( parent );
     checkBackground();
     updateBackground();
   }
@@ -498,8 +504,9 @@ public abstract class Control extends Widget {
   // verbatim copy of SWT 3.4.0 GTK
   private void checkBackground() {
     Shell shell = getShell();
-    if( this == shell )
+    if( this == shell ) {
       return;
+    }
     state &= ~PARENT_BACKGROUND;
     Composite composite = parent;
     do {
@@ -517,8 +524,9 @@ public abstract class Control extends Widget {
         state |= PARENT_BACKGROUND;
         return;
       }
-      if( composite == shell )
+      if( composite == shell ) {
         break;
+      }
       composite = composite.parent;
     } while( true );
   }

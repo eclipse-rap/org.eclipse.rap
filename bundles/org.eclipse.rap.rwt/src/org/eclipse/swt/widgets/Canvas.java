@@ -10,9 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-
-
-
 /**
  * This class serves as a base class for custom widgets.
  * It does not yet provides any drawing capabilities.

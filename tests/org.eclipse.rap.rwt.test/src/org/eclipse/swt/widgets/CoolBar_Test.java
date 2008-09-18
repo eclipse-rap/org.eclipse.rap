@@ -13,7 +13,6 @@ package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -25,12 +24,12 @@ import org.eclipse.swt.graphics.Point;
 
 
 public class CoolBar_Test extends TestCase {
-
+  
   public void testHierarchy() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
-
+    
     assertTrue( Composite.class.isAssignableFrom( bar.getClass() ) );
     assertSame( shell, bar.getParent() );
     assertSame( display, bar.getDisplay() );
@@ -53,47 +52,47 @@ public class CoolBar_Test extends TestCase {
     assertSame( item, bar.getItems()[ 0 ] );
     assertSame( item, bar.getItem( 0 ) );
     assertEquals( 0, bar.indexOf( item ) );
-
+    
     CoolBar anotherBar = new CoolBar( shell, SWT.NONE );
     CoolItem anotherItem = new CoolItem( anotherBar, SWT.NONE );
     assertEquals( -1, bar.indexOf( anotherItem ) );
   }
-
+  
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL, bar.getStyle() );
-
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    
     bar = new CoolBar( shell, SWT.NO_FOCUS );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
 
     bar = new CoolBar( shell, SWT.H_SCROLL );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
 
     bar = new CoolBar( shell, SWT.FLAT );
-    assertEquals( SWT.NO_FOCUS | SWT.FLAT | SWT.HORIZONTAL, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.FLAT | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
 
     bar = new CoolBar( shell, SWT.VERTICAL );
-    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
 
     bar = new CoolBar( shell, SWT.VERTICAL | SWT.FLAT );
-    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.FLAT, bar.getStyle() );
-
+    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    
     bar = new CoolBar( shell, SWT.HORIZONTAL );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
 
     bar = new CoolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.FLAT, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, bar.getStyle() );
   }
-
+  
   public void testIndexOf() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     CoolItem item = new CoolItem( bar, SWT.NONE );
     assertEquals( 0, bar.indexOf( item ) );
-
+    
     item.dispose();
     try {
       bar.indexOf( item );
@@ -108,7 +107,7 @@ public class CoolBar_Test extends TestCase {
       // expected
     }
   }
-
+  
   public void testDispose() {
     final java.util.List log = new ArrayList();
     DisposeListener disposeListener = new DisposeListener() {
@@ -124,46 +123,46 @@ public class CoolBar_Test extends TestCase {
     item1.addDisposeListener( disposeListener );
     CoolItem item2 = new CoolItem( bar, SWT.NONE );
     item2.addDisposeListener( disposeListener );
-
+    
     item1.dispose();
     assertEquals( true, item1.isDisposed() );
     assertEquals( 1, bar.getItemCount() );
-
+    
     bar.dispose();
     assertEquals( true, bar.isDisposed() );
     assertEquals( true, item2.isDisposed() );
-
+    
     assertSame( item1, log.get( 0 ) );
     assertSame( item2, log.get( 1 ) );
     assertSame( bar, log.get( 2 ) );
   }
-
+  
   public void testLocked() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
-
+    
     assertEquals( false, bar.getLocked() );
     bar.setLocked( true );
     assertEquals( true, bar.getLocked() );
   }
-
+  
   public void testItemOrder() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     new CoolItem( bar, SWT.NONE );
     new CoolItem( bar, SWT.NONE );
-
+    
     // Test initial itemOrder -> matches the order in which the items are added
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
-
+    
     // Test setItemOrder with legal arguments
     bar.setItemOrder( new int[] { 1, 0 } );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
-
+    
     // Test setItemOrder with illegal arguments
     int[] expectedItemOrder = bar.getItemOrder();
     try {
@@ -189,8 +188,8 @@ public class CoolBar_Test extends TestCase {
     }
     try {
       bar.setItemOrder( new int[] { 1 } );
-      String msg
-        = "setItemOrder must not allow argument whose length doesn't match "
+      String msg 
+        = "setItemOrder must not allow argument whose length doesn't match " 
         + "the number of items";
       fail( msg );
     } catch( IllegalArgumentException e ) {
@@ -198,7 +197,7 @@ public class CoolBar_Test extends TestCase {
       assertEquals( expectedItemOrder, bar.getItemOrder() );
     }
   }
-
+  
   public void testComputeSize() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -246,7 +245,7 @@ public class CoolBar_Test extends TestCase {
       assertEquals( expected[ i ], actual[ i ] );
     }
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );

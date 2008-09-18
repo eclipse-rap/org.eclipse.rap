@@ -106,7 +106,7 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
-    assertEquals( SWT.TOP | SWT.MULTI, folder1.getStyle() );
+    assertEquals( SWT.TOP | SWT.MULTI | SWT.LEFT_TO_RIGHT, folder1.getStyle() );
     assertEquals( SWT.TOP, folder1.getTabPosition() );
     assertEquals( false, folder1.getSingle() );
 

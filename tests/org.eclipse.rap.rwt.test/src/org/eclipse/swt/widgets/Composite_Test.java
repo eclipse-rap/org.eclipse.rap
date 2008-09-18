@@ -33,6 +33,15 @@ public class Composite_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
+  public void testStyle() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Composite composite = new Composite( shell, SWT.NONE );
+    assertTrue( ( composite.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+    composite = new Composite( shell, SWT.NONE );
+    assertTrue( ( composite.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+  }
+
   public void testTabList() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );

@@ -23,13 +23,13 @@ import org.eclipse.swt.SWT;
  * 
  * <hr />
  * <strong>RAP Specific Note:</strong> Implementing this interface is useless 
- * as RWT does not have bidi-support yet. Therefore the constants 
- * SWT.LEFT_TO_RIGHT and SWT.RIGHT_TO_LEFT aren't availble either. 
+ * as RWT does not have bidi-support yet. Therefore the constant 
+ * SWT.RIGHT_TO_LEFT isn't availble either. 
  * 
  * <!-- 
  * @see org.eclipse.swt.SWT#RIGHT_TO_LEFT
- * @see org.eclipse.swt.SWT#LEFT_TO_RIGHT 
  * -->
+ * @see org.eclipse.swt.SWT#LEFT_TO_RIGHT 
  * @see org.eclipse.swt.SWT#NONE
  * @see Window#getDefaultOrientation()
  * @since 1.0
@@ -39,12 +39,12 @@ public interface IWorkbenchPartOrientation {
 	 * Return the orientation of this part.
 	 * 
 	 * <!-- @return int SWT#RIGHT_TO_LEFT or SWT#LEFT_TO_RIGHT -->
-	 * @return int SWT.NONE
+	 * @return int SWT#NONE
 	 * @see Window#getDefaultOrientation()
 	 * <!--
 	 * @see SWT#RIGHT_TO_LEFT
-	 * @see SWT#LEFT_TO_RIGHT
 	 * -->
+	 * @see SWT#LEFT_TO_RIGHT
 	 * @see Window#getDefaultOrientation()
 	 */
 	public int getOrientation();

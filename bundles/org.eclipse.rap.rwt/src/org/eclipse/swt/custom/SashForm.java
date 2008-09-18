@@ -90,7 +90,7 @@ public class SashForm extends Composite {
   }
 
    static int checkStyle( int style ) {
-    int mask = SWT.BORDER /* | SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT */;
+    int mask = SWT.BORDER | SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT */;
     return style & mask;
   }
    

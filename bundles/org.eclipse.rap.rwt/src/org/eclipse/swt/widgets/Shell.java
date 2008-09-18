@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
@@ -152,6 +151,7 @@ public class Shell extends Decorations {
     this.style = checkStyle( style );
     state |= HIDDEN;
     this.display.addShell( this );
+    createWidget();
     setInitialSize();
   }
 
@@ -261,7 +261,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#SYSTEM_MODAL-->
    */
   public Shell( final Display display, final int style ) {
-    this ( display, null, style, 0 );
+    this( display, null, style, 0 );
   }
 
   /**

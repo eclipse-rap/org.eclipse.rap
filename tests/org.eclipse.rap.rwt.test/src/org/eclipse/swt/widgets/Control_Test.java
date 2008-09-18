@@ -32,6 +32,15 @@ public class Control_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
+  
+  public void testStyle() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Control control = new Button( shell, SWT.NONE );
+    assertTrue( ( control.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+    control = new Button( shell, SWT.BORDER );
+    assertTrue( ( control.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+  }
 
   public void testBounds() {
     Display display = new Display();
@@ -605,6 +614,35 @@ public class Control_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
     }
   }
+  
+  /**
+   * each Control has to inherit the orientation from its parent (or sets the
+   * orientation to SWT.LEFT_TO_RIGHT
+   */
+  public void testOrientation() {
+    // TODO: uncomment, when SWT:RIGHT_TO_LEFT is supported
+    
+    Display display = new Display();
+    Shell shellDefault = new Shell( display, SWT.NONE );
+    Composite childDefault = new Composite( shellDefault, SWT.NONE );
+    assertTrue( "default orientation: SWT.LEFT_TO_RIGHT",
+                ( shellDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
+    // assertTrue("default orientation: SWT.LEFT_TO_RIGHT", (shellDefault.getStyle() & SWT.RIGHT_TO_LEFT) ==0);
+
+    assertTrue( "default orientation inherited: SWT.LEFT_TO_RIGHT",
+                ( childDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
+    // assertTrue("default orientation inherited: SWT.LEFT_TO_RIGHT", (childDefault.getStyle() & SWT.RIGHT_TO_LEFT) ==0);
+
+    
+    // Shell shellRIGHT_TO_LEFT = new Shell(display, SWT.RIGHT_TO_LEFT);
+    // Composite childRIGHT_TO_LEFT=new Composite(shellRIGHT_TO_LEFT, SWT.NONE);
+    //  
+    // assertTrue("orientation: SWT.RIGHT_TO_LEFT",(shellRIGHT_TO_LEFT.getStyle() & SWT.LEFT_TO_RIGHT) ==0);
+    // assertTrue("orientation: SWT.RIGHT_TO_LEFT",(shellRIGHT_TO_LEFT.getStyle() & SWT.RIGHT_TO_LEFT) !=0);
+    // assertTrue("orientation inherited: SWT.RIGHT_TO_LEFT", (childRIGHT_TO_LEFT.getStyle() & SWT.LEFT_TO_RIGHT) ==0);
+    // assertTrue("orientation inherited: SWT.RIGHT_TO_LEFT", (childRIGHT_TO_LEFT.getStyle() & SWT.RIGHT_TO_LEFT) !=0);
+  }
+  
 
   public void testCursor() {
     Display display = new Display();

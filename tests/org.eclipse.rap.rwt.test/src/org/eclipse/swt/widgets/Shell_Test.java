@@ -92,13 +92,13 @@ public class Shell_Test extends TestCase {
     assertSame( display, shell.getDisplay() );
 
     shell = new Shell( ( Display )null );
-    assertEquals( SWT.SHELL_TRIM, shell.getStyle() );
+    assertEquals( SWT.SHELL_TRIM | SWT.LEFT_TO_RIGHT, shell.getStyle() );
 
     shell = new Shell( display, SWT.NO_TRIM | SWT.CLOSE );
     assertTrue( ( shell.getStyle() & SWT.CLOSE ) == 0 );
 
     shell = new Shell( ( Shell )null );
-    assertEquals( SWT.DIALOG_TRIM, shell.getStyle() );
+    assertEquals( SWT.DIALOG_TRIM | SWT.LEFT_TO_RIGHT, shell.getStyle() );
 
     shell = new Shell( display, SWT.MIN );
     assertTrue( ( shell.getStyle() & SWT.CLOSE ) != 0 );
@@ -133,7 +133,7 @@ public class Shell_Test extends TestCase {
     assertEquals( false, shell.isVisible() );
     // The Shell(Display) constructor must use style SHELL_TRIM
     Shell trimShell = new Shell( display );
-    assertEquals( SWT.SHELL_TRIM, trimShell.getStyle() );
+    assertEquals( SWT.SHELL_TRIM | SWT.LEFT_TO_RIGHT, trimShell.getStyle() );
   }
 
   public void testInitialSize() {
