@@ -483,6 +483,27 @@ public class Table_Test extends TestCase {
     assertTrue( item1.isDisposed() );
   }
 
+  public void testRemoveAllVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    new TableColumn( table, SWT.NONE );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index );
+      }
+    } );
+    shell.layout();
+    shell.open();
+    table.setItemCount( 10 );
+    table.removeAll();
+    assertEquals( 0, table.getItemCount() );
+  }
+  
   public void testRemoveRange() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -508,6 +529,27 @@ public class Table_Test extends TestCase {
     assertEquals( table.getItemCount(), 3 );
   }
 
+  public void testRemoveRangeVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    new TableColumn( table, SWT.NONE );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index );
+      }
+    } );
+    shell.layout();
+    shell.open();
+    table.setItemCount( 10 );
+    table.remove( 0, 9 );
+    assertEquals( 0, table.getItemCount() );
+  }
+  
   public void testRemove() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -521,6 +563,48 @@ public class Table_Test extends TestCase {
     assertEquals( table.getItemCount(), 4 );
   }
 
+  public void testRemoveVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    new TableColumn( table, SWT.NONE );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index );
+      }
+    } );
+    shell.layout();
+    shell.open();
+    table.setItemCount( 10 );
+    table.remove( 0 );
+    assertEquals( 9, table.getItemCount() );
+  }
+  
+  public void testRemoveArrayVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    new TableColumn( table, SWT.NONE );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index );
+      }
+    } );
+    shell.layout();
+    shell.open();
+    table.setItemCount( 10 );
+    table.remove( new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } );
+    assertEquals( 0, table.getItemCount() );
+  }
+  
   public void testRemoveWithSelectionListener() {
     // ensure that no selection event is fired if a selected item is removed
     final boolean eventFired[] = { false };

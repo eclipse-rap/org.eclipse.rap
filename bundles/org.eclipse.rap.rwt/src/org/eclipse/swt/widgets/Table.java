@@ -717,9 +717,7 @@ public class Table extends Composite {
   public void removeAll() {
     checkWidget();
     while( itemCount > 0 ) {
-      if( items[ 0 ] != null && !items[ 0 ].isDisposed() ) {
-        items[ 0 ].dispose();
-      }
+      removeItem( items[ 0 ] ); 
     }
   }
 
@@ -759,9 +757,7 @@ public class Table extends Composite {
         }
       }
       for( int i = 0; i < itemsToRemove.length; i++ ) {
-        if( itemsToRemove[ i ] != null ) {
-          itemsToRemove[ i ].dispose();
-        }
+        removeItem( itemsToRemove[ i ] );
       }
     }
   }
@@ -789,10 +785,7 @@ public class Table extends Composite {
     if( !( 0 <= index && index < itemCount ) ) {
       SWT.error( SWT.ERROR_ITEM_NOT_REMOVED );
     }
-    TableItem item = items[ index ];
-    if( item != null && !item.isDisposed() ) {
-      item.dispose();
-    }
+    removeItem( items[ index ] );
   }
 
   /**
@@ -834,10 +827,7 @@ public class Table extends Composite {
         itemsToRemove[ i ] = items[ sortedIndices[ i ] ];
       }
       for( int i = 0; i < itemsToRemove.length; i++ ) {
-        TableItem item = itemsToRemove[ i ];
-        if( item != null && !item.isDisposed() ) {
-          item.dispose();
-        }
+        removeItem( itemsToRemove[ i ] );
       }
       if( itemCount == 0 ) {
         setTableEmpty();
@@ -2323,6 +2313,14 @@ public class Table extends Composite {
   private void setFocusIndex( final int focusIndex ) {
     if( focusIndex >= 0 ) {
       this.focusIndex = focusIndex;
+    }
+  }
+
+  private void removeItem( final TableItem item ) {
+    if( item != null && !item.isDisposed() ) {
+      item.dispose();
+    } else {
+      itemCount--;
     }
   }
 
