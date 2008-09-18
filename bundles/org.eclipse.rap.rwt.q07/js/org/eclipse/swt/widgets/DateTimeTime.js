@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     // Hours
     this._hoursTextField = new qx.ui.form.TextField;
     this._hoursTextField.set({ 
-    	maxLength: 2, 
+      maxLength: 2, 
       textAlign: "center",
       selectable: false,
       readOnly: true,
@@ -225,8 +225,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     },
     
     _setFocusedTextField :  function( textField ) {
-    	var tmpValue;
-    	this._focusedTextField.setBackgroundColor( this._backgroundColor );
+      var tmpValue;
+      this._focusedTextField.setBackgroundColor( this._backgroundColor );
       this._focusedTextField.setTextColor( this._foregroundColor );
       // Set focused text field to null
       this._focusedTextField = null;
@@ -257,13 +257,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     
     _onSpinnerChange : function( evt ) {          
       if( this._focusedTextField != null ) {
-      	var oldValue = this._focusedTextField.getValue();
-      	var newValue = this._addLeadingZero( this._spinner.getValue() );
-      	this._focusedTextField.setValue( newValue );        
+        var oldValue = this._focusedTextField.getValue();
+        var newValue = this._addLeadingZero( this._spinner.getValue() );
+        this._focusedTextField.setValue( newValue );        
         if( oldValue != newValue && this._readyToSendChanges ) {
-        	this._readyToSendChanges = false;
-	        // Send changes
-	        qx.client.Timer.once( this._sendChanges, this, 500 );
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
         }
       }
     },
@@ -281,9 +281,9 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
       if( org.eclipse.swt.widgets.DateTimeTime._isNoModifierPressed( evt ) ) {
-      	switch( keyIdentifier ) {
-      		case "Left":
-      		  if( this._focusedTextField === this._hoursTextField ) {
+        switch( keyIdentifier ) {
+          case "Left":
+            if( this._focusedTextField === this._hoursTextField ) {
               if( this._short ) {
                 this._setFocusedTextField( this._minutesTextField );
               } else {
@@ -294,37 +294,37 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             } else if( this._focusedTextField === this._secondsTextField ) {
               this._setFocusedTextField( this._minutesTextField );
             }
-      		  break;
-      		case "Right":
-      		  if( this._focusedTextField === this._hoursTextField ) {
+            break;
+          case "Right":
+            if( this._focusedTextField === this._hoursTextField ) {
               this._setFocusedTextField( this._minutesTextField );
             } else if( this._focusedTextField === this._minutesTextField ) {
-            	if( this._short ) {
-            	  this._setFocusedTextField( this._hoursTextField );
-            	} else {
-            		this._setFocusedTextField( this._secondsTextField );
-            	}
+              if( this._short ) {
+                this._setFocusedTextField( this._hoursTextField );
+              } else {
+                this._setFocusedTextField( this._secondsTextField );
+              }
             } else if( this._focusedTextField === this._secondsTextField ) {
-            	this._setFocusedTextField( this._hoursTextField );
+              this._setFocusedTextField( this._hoursTextField );
             }
-      		  break; 
-      		case "Up":
-      		  var value = this._spinner.getValue();
-      		  if( value == this._spinner.getMax() ) {
-      		  	this._spinner.setValue( this._spinner.getMin() );
-      		  } else {
-      		  	this._spinner.setValue( value + 1 );
-      		  }
-      		  break;
-      		case "Down":
-      		  var value = this._spinner.getValue();
+            break; 
+          case "Up":
+            var value = this._spinner.getValue();
+            if( value == this._spinner.getMax() ) {
+              this._spinner.setValue( this._spinner.getMin() );
+            } else {
+              this._spinner.setValue( value + 1 );
+            }
+            break;
+          case "Down":
+            var value = this._spinner.getValue();
             if( value == this._spinner.getMin() ) {
               this._spinner.setValue( this._spinner.getMax() );
             } else {
               this._spinner.setValue( value - 1 );
             }
             break;     
-      	}
+        }
       }
     },  
     
@@ -333,54 +333,54 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
       var value = this._focusedTextField.getComputedValue();      
       value = this._removeLeadingZero( value );
       if( org.eclipse.swt.widgets.DateTimeTime._isNoModifierPressed( evt ) ) {
-	      switch( keypress ) {
-	      	case "Tab":
-	      	  this._focusedTextField.setBackgroundColor( this._backgroundColor );
-	          this._focusedTextField.setTextColor( this._foregroundColor );
-	      	  break;
-	      	case "0": case "1": case "2": case "3": case "4":
-	      	case "5": case "6": case "7": case "8": case "9":
-	      	  this._focusedTextField.setFocused( true );		      
-			      var maxChars = this._focusedTextField.getMaxLength();
-			      var newValue = keypress;
-			      if( value.length < maxChars ) {
-			      	newValue = value + keypress;
-			      }	
-			      var intValue = parseInt( newValue );
-			      if( intValue >= this._spinner.getMin() &&
-			          intValue <= this._spinner.getMax() ) {
-			        this._spinner.setValue( intValue );      
-			      } else {
-			        newValue = keypress;
-			        intValue = parseInt( newValue );
-			        if( intValue >= this._spinner.getMin() &&
-			            intValue <= this._spinner.getMax() ) {
-			          this._spinner.setValue( intValue );
-			        }
-			      }
-	      	  break;
-	      	case "Home":
-	          var newValue = this._spinner.getMin();
-	          this._spinner.setValue( newValue );	          
-	          break;
-	        case "End":
-	          var newValue = this._spinner.getMax();
-	          this._spinner.setValue( newValue );	          
-	          break;
-	      } 
+        switch( keypress ) {
+          case "Tab":
+            this._focusedTextField.setBackgroundColor( this._backgroundColor );
+            this._focusedTextField.setTextColor( this._foregroundColor );
+            break;
+          case "0": case "1": case "2": case "3": case "4":
+          case "5": case "6": case "7": case "8": case "9":
+            this._focusedTextField.setFocused( true );          
+            var maxChars = this._focusedTextField.getMaxLength();
+            var newValue = keypress;
+            if( value.length < maxChars ) {
+              newValue = value + keypress;
+            } 
+            var intValue = parseInt( newValue );
+            if( intValue >= this._spinner.getMin() &&
+                intValue <= this._spinner.getMax() ) {
+              this._spinner.setValue( intValue );      
+            } else {
+              newValue = keypress;
+              intValue = parseInt( newValue );
+              if( intValue >= this._spinner.getMin() &&
+                  intValue <= this._spinner.getMax() ) {
+                this._spinner.setValue( intValue );
+              }
+            }
+            break;
+          case "Home":
+            var newValue = this._spinner.getMin();
+            this._spinner.setValue( newValue );           
+            break;
+          case "End":
+            var newValue = this._spinner.getMax();
+            this._spinner.setValue( newValue );           
+            break;
+        } 
       }
     },
     
     _addLeadingZero : function( value ) {
-    	return value < 10 ? "0" + value : value;
+      return value < 10 ? "0" + value : value;
     },
     
     _removeLeadingZero : function( value ) {
-    	var result = value;
-    	if( value.length == 2 ) {
-    		var firstChar = value.substring( 0, 1 );
-    	  if( firstChar == "0" ) result = value.substring( 1 );
-    	}
+      var result = value;
+      if( value.length == 2 ) {
+        var firstChar = value.substring( 0, 1 );
+        if( firstChar == "0" ) result = value.substring( 1 );
+      }
       return result;
     },
     
@@ -404,7 +404,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     },
     
     setHours : function( value ) { 
-    	this._hoursTextField.setValue( this._addLeadingZero( value ) );      
+      this._hoursTextField.setValue( this._addLeadingZero( value ) );      
       if( this._focusedTextField === this._hoursTextField ) {
         this._spinner.setValue( value );
       }

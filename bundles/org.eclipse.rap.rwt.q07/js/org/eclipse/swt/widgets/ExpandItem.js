@@ -66,16 +66,16 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
   },
 
   statics : {
-  	STATE_ENABLED : "enabled",
+    STATE_ENABLED : "enabled",
     STATE_EXPANDED : "expanded",
     STATE_OVER : "over"
   },
 
   members : { 
-  	addState : function( state ) {
+    addState : function( state ) {
       this.base( arguments, state );
       if( state == org.eclipse.swt.widgets.ExpandItem.STATE_ENABLED ) {
-      	this._header.getLabelObject().setCursor( "pointer" );
+        this._header.getLabelObject().setCursor( "pointer" );
       }
     },
 
@@ -85,13 +85,13 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
         this._header.getLabelObject().setCursor( "default" );
       }
     },
-     	
-  	setExpanded : function( expanded ) {
+      
+    setExpanded : function( expanded ) {
       this._expanded = expanded;
       if( expanded ) { 
-      	this._chevron.addState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );       
+        this._chevron.addState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );       
       } else { 
-      	this._chevron.removeState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );       
+        this._chevron.removeState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );       
       }
     }, 
     
@@ -112,12 +112,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     },
     
     _onClick : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {      	
-      	var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {        
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );        
         if( this._expanded ) {
-        	req.addEvent( "org.eclipse.swt.events.expandItemCollapsed", id );
+          req.addEvent( "org.eclipse.swt.events.expandItemCollapsed", id );
         } else {
           req.addEvent( "org.eclipse.swt.events.expandItemExpanded", id );
         }
@@ -125,7 +125,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
       }
     },
     
-    _onContextMenu : function( evt ) {    	
+    _onContextMenu : function( evt ) {      
       var menu = this._expandBar.getContextMenu();      
       if( menu != null ) {
         menu.setLocation( evt.getPageX(), evt.getPageY() );
@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     },
     
     _onHandleMouseOver : function( evt ) {
-     	this._chevron.addState( org.eclipse.swt.widgets.ExpandItem.STATE_OVER );
+      this._chevron.addState( org.eclipse.swt.widgets.ExpandItem.STATE_OVER );
     },
     
     _onHandleMouseOut : function( evt ) {

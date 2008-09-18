@@ -301,11 +301,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _internalSetTopIndex : function( value, updateVertScrollBar ) {
       if( this._topIndex !== value ) {
-      	this._topIndexChanging = true;
-      	if( updateVertScrollBar ) {
-	        this._vertScrollBar.setValue( value * this._itemHeight );
-      	}
-      	var delta = value - this._topIndex;
+        this._topIndexChanging = true;
+        if( updateVertScrollBar ) {
+          this._vertScrollBar.setValue( value * this._itemHeight );
+        }
+        var delta = value - this._topIndex;
         this._topIndex = value;
         this._scrollRowsVertical( delta );
         this._topIndexChanged = true;
@@ -379,7 +379,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     getFocusIndex : function() {
-    	return this._focusIndex;
+      return this._focusIndex;
     },
     
     setItemCount : function( value ) {
@@ -520,7 +520,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           // If changed item is currently not visible, omit update
           var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
           if( rowIndex !== -1 ) {
-	          this._updateRow( rowIndex, itemIndex );
+            this._updateRow( rowIndex, itemIndex );
           }
           this._updateCheckParam( item );
           this.createDispatchDataEvent( "itemchecked", itemIndex );
@@ -622,7 +622,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             if( topIndex < 0 ) {
               topIndex = 0;
             } else if( topIndex > this._itemCount ) {
-            	topIndex = this._itemCount;
+              topIndex = this._itemCount;
             }
             this._internalSetTopIndex( topIndex, true );
           }
@@ -679,22 +679,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Scroll bar listeners
     
     _onVertScrollBarChangeValue : function() {
-    	// Prevent _internalSetTopIndex() from being called when we are currently
-    	// changing the topIndex. _internalSetTopIndex() calls
-    	// _vertScrollBar.setValue() which fires this event handler
-    	if( !this._topIndexChanging ) {
-	      // Calculate new topIndex
-	      var newTopIndex = 0;
-	      if( this._itemHeight !== 0 ) {
-	        var scrollTop 
-	          = this._clientArea.isCreated()
-	          ? this._vertScrollBar.getValue()
-	          : 0;
-	        newTopIndex = Math.floor( scrollTop / this._itemHeight );
-	      }
-	      // set new topIndex -> rows are updateded if necessary
-	      this._internalSetTopIndex( newTopIndex, false );
-    	}
+      // Prevent _internalSetTopIndex() from being called when we are currently
+      // changing the topIndex. _internalSetTopIndex() calls
+      // _vertScrollBar.setValue() which fires this event handler
+      if( !this._topIndexChanging ) {
+        // Calculate new topIndex
+        var newTopIndex = 0;
+        if( this._itemHeight !== 0 ) {
+          var scrollTop 
+            = this._clientArea.isCreated()
+            ? this._vertScrollBar.getValue()
+            : 0;
+          newTopIndex = Math.floor( scrollTop / this._itemHeight );
+        }
+        // set new topIndex -> rows are updateded if necessary
+        this._internalSetTopIndex( newTopIndex, false );
+      }
     },
 
     _onHorzScrollBarChangeValue : function() {
@@ -798,11 +798,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _getItemIndexFromRowIndex : function( rowIndex ) {
-    	var result = this._topIndex + rowIndex;
-    	if( result < 0 || result > this._itemCount - 1 ) {
-    		result = -1;
-    	}
-    	return result
+      var result = this._topIndex + rowIndex;
+      if( result < 0 || result > this._itemCount - 1 ) {
+        result = -1;
+      }
+      return result
     },
 
     /////////////////////////
@@ -1005,7 +1005,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var length = this._rows.length;
         for( var i = 0; i < length; i++ ) {
           var sourceIndex = ( length + i + delta )  % length;
-      	  newRows.push( this._rows[ sourceIndex ] );
+          newRows.push( this._rows[ sourceIndex ] );
           if( this._checkBoxes !== null ) {
             newCheckBoxes.push( this._checkBoxes[ sourceIndex ] );
           }
@@ -1035,14 +1035,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var row = this._rows[ rowIndex ];
       if( itemIndex >= 0 && itemIndex < this._itemCount ) {
         var item = this._items[ itemIndex ];
-	      if( item === undefined || ( item !== null && !item.getCached() ) ) {
-	        this._resolveItem( this._topIndex + rowIndex );
-	        row.setHtml( this._virtualItem._getMarkup() );
+        if( item === undefined || ( item !== null && !item.getCached() ) ) {
+          this._resolveItem( this._topIndex + rowIndex );
+          row.setHtml( this._virtualItem._getMarkup() );
           row.setItemIndex( -1 );
-	      } else {
-	        row.setHtml( item._getMarkup() );
+        } else {
+          row.setHtml( item._getMarkup() );
           row.setItemIndex( itemIndex );
-	      }
+        }
       } else {
         row.setHtml( this._emptyItem._getMarkup() );
         row.setItemIndex( -1 );
@@ -1051,44 +1051,44 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRowState : function( rowIndex, itemIndex ) {
-    	var row = this._rows[ rowIndex ];
-    	if( itemIndex === -1 ) {
+      var row = this._rows[ rowIndex ];
+      if( itemIndex === -1 ) {
         row.removeState( "selected" );
         row.removeState( "itemFocused" );
         if( this._checkBoxes !== null ) {
-        	this._checkBoxes[ rowIndex ].setVisibility( false );
+          this._checkBoxes[ rowIndex ].setVisibility( false );
         }
-    	} else {
-	      if( this._isItemSelected( itemIndex ) ) {
-	        row.addState( "selected" );
-	      } else {
-	        row.removeState( "selected" );
-	      }
-	      if( this._focusIndex === itemIndex ) {
-	        row.addState( "itemFocused" );
-	      } else {
-	        row.removeState( "itemFocused" );
-	      }
+      } else {
+        if( this._isItemSelected( itemIndex ) ) {
+          row.addState( "selected" );
+        } else {
+          row.removeState( "selected" );
+        }
+        if( this._focusIndex === itemIndex ) {
+          row.addState( "itemFocused" );
+        } else {
+          row.removeState( "itemFocused" );
+        }
         if( this._checkBoxes !== null ) {
-        	var item = this._items[ itemIndex ];
-        	var checkBox = this._checkBoxes[ rowIndex ];
-		      if( item !== null && item !== undefined ) {
-		        if( item.getChecked() ) {
-		          checkBox.addState( "checked" );
-		        } else {
-		          checkBox.removeState( "checked" );
-		        }
-		        if( item.getGrayed() ) {
-		          checkBox.addState( "grayed" );
-		        } else {
-		          checkBox.removeState( "grayed" );
-		        }
-		        checkBox.setVisibility( true );
+          var item = this._items[ itemIndex ];
+          var checkBox = this._checkBoxes[ rowIndex ];
+          if( item !== null && item !== undefined ) {
+            if( item.getChecked() ) {
+              checkBox.addState( "checked" );
+            } else {
+              checkBox.removeState( "checked" );
+            }
+            if( item.getGrayed() ) {
+              checkBox.addState( "grayed" );
+            } else {
+              checkBox.removeState( "grayed" );
+            }
+            checkBox.setVisibility( true );
           } else {
-		        checkBox.setVisibility( false );
+            checkBox.setVisibility( false );
           }
         }
-    	}
+      }
     },
     
     _resolveItem : function( itemIndex ) {
