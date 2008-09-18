@@ -690,7 +690,7 @@ public class SWT {
    * <li><code>GC</code></li> 
    * </ul></p>
    * 
-   * @since 2.1.2
+   * @since 1.2
    */
   public static final int LEFT_TO_RIGHT = 1 << 25; 
   
