@@ -1762,21 +1762,21 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
   
   "scale-line" : {
-  	include : "image",
-  	
-  	style : function( states ) {
-  		var result = {};  		
-  		if( states.horizontal ) {
-  			result.left = org.eclipse.swt.widgets.Scale.PADDING;
-  			result.top = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
-  			result.source = "widget/scale/h_line.gif";
-  		} else {
-  			result.left = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
+    include : "image",
+    
+    style : function( states ) {
+      var result = {};      
+      if( states.horizontal ) {
+        result.left = org.eclipse.swt.widgets.Scale.PADDING;
+        result.top = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
+        result.source = "widget/scale/h_line.gif";
+      } else {
+        result.left = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
         result.top = org.eclipse.swt.widgets.Scale.PADDING;
-  			result.source = "widget/scale/v_line.gif";
-  		}
-  		return result;
-  	}
+        result.source = "widget/scale/v_line.gif";
+      }
+      return result;
+    }
   },
   
   "scale-thumb" : {
@@ -1785,7 +1785,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};      
       if( states.horizontal ) {
-      	result.left = org.eclipse.swt.widgets.Scale.PADDING;
+        result.left = org.eclipse.swt.widgets.Scale.PADDING;
         result.top = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
         result.source = "widget/scale/h_thumb.gif";
       } else {
