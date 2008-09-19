@@ -37,9 +37,9 @@ public class Composite_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
-    assertTrue( ( composite.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+    assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
     composite = new Composite( shell, SWT.NONE );
-    assertTrue( ( composite.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+    assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
   }
 
   public void testTabList() {

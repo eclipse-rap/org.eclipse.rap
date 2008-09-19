@@ -37,9 +37,9 @@ public class Control_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.NONE );
-    assertTrue( ( control.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+    assertTrue( ( control.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
     control = new Button( shell, SWT.BORDER );
-    assertTrue( ( control.getStyle() | SWT.LEFT_TO_RIGHT ) != 0 );
+    assertTrue( ( control.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
   }
 
   public void testBounds() {
