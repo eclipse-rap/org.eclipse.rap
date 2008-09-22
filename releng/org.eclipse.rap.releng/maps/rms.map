@@ -19,6 +19,8 @@ plugin@org.eclipse.rap.rwt.custom=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsro
 
 plugin@org.eclipse.rap.pde.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/org.eclipse.rap.pde.runtime
 
+fragment@org.eclipse.rap.equinox.registry=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.equinox.registry
+
 # i18n
 fragment@org.eclipse.core.databinding.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.core.databinding.nl1
 fragment@org.eclipse.rap.jface.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.jface.nl1
