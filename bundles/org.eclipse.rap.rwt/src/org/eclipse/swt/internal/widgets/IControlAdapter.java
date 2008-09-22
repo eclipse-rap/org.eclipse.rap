@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.graphics.*;
@@ -16,19 +15,15 @@ import org.eclipse.swt.graphics.*;
 
 public interface IControlAdapter {
 
-  public abstract int getZIndex();
+  int getZIndex();
 
-  public abstract int getTabIndex();
+  int getTabIndex();
+  void setTabIndex( int index );
 
-  public abstract Font getUserFont();
+  Font getUserFont();
+  Color getUserForeground();
+  Color getUserBackground();
+  Image getUserBackgroundImage();
 
-  public abstract Color getUserForeground();
-
-  public abstract Color getUserBackground();
-
-  public abstract Image getUserBackgroundImage();
-
-  public abstract boolean getBackgroundTransparency();
-
-  public abstract void setTabIndex( int index );
+  boolean getBackgroundTransparency();
 }
