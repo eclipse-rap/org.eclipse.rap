@@ -11,10 +11,10 @@
 
 package org.eclipse.rap.demo.presentation;
 
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.*;
-import org.eclipse.ui.internal.IWorkbenchConstants;
 import org.eclipse.ui.internal.util.PrefUtil;
 
 
@@ -22,6 +22,10 @@ public class DemoPreferencePage
   extends FieldEditorPreferencePage
   implements IWorkbenchPreferencePage
 {
+  private static final String PRESENTATION_FACTORY_ID
+    = IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID;
+  private static final String ID_PRESENTATION_FACTORIES
+    = "presentationFactories";
   private static final String LABEL_PRESENTATION = "Presentation";
 
   public DemoPreferencePage() {
@@ -33,17 +37,26 @@ public class DemoPreferencePage
   }
 
   protected void createFieldEditors() {
-    String presentationFactoryId
-      = IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID;
-    String[][] namesAndIds = new String[][] {
-      { "Default Presentation", IWorkbenchConstants.DEFAULT_PRESENTATION_ID },
-      { "Demo Presentation", "org.eclipse.rap.demo.presentation" }
-    };
-    ComboFieldEditor comboEditor
-      = new ComboFieldEditor( presentationFactoryId,
-                              LABEL_PRESENTATION,
-                              namesAndIds,
-                              getFieldEditorParent() );
-    addField( comboEditor );
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    String nameSpace = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE;
+    IExtensionPoint extensionPoint
+      = registry.getExtensionPoint( nameSpace, ID_PRESENTATION_FACTORIES );
+
+    if( extensionPoint != null ) {
+      IConfigurationElement[] elements
+        = extensionPoint.getConfigurationElements();
+      String[][] namesAndIds = new String[ elements.length ][ 2 ];
+      for( int i = 0; i < elements.length; i++ ) {
+        IConfigurationElement element = elements[ i ];
+        namesAndIds[ i ][ 0 ] = element.getAttribute( "name" );
+        namesAndIds[ i ][ 1 ] = element.getAttribute( "id" );
+      }
+      ComboFieldEditor comboEditor
+        = new ComboFieldEditor( PRESENTATION_FACTORY_ID,
+                                LABEL_PRESENTATION,
+                                namesAndIds,
+                                getFieldEditorParent() );
+      addField( comboEditor );
+    }
   }
 }
