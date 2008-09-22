@@ -215,7 +215,7 @@ public final class RWT {
   }
   
   /**
-   * Returns the {@link IServiceStateInfo} that is mapped
+   * Returns the {@link IServiceStore} that is mapped
    * to the currently processed request.
    * 
    * @return {@link IServiceStore}
