@@ -762,6 +762,9 @@ public class Fixture {
       return 0;
     }
     
+    /**
+     * @deprecated
+     */
     public HttpSessionContext getSessionContext() {
       return null;
     }
