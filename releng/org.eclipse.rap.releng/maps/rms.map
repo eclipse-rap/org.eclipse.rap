@@ -22,7 +22,7 @@ plugin@org.eclipse.rap.pde.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsr
 # i18n
 fragment@org.eclipse.core.databinding.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.core.databinding.nl1
 fragment@org.eclipse.rap.jface.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.jface.nl1
-fragment@org.eclipse.rap.pde.runtime.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.pde.runtime.nl1
+fragment@org.eclipse.rap.pde.runtime.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.pde.runtime.nl1
 fragment@org.eclipse.rap.rwt.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rwt.nl1
 fragment@org.eclipse.ui.forms.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.ui.forms.nl1
 fragment@org.eclipse.ui.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.ui.nl1
