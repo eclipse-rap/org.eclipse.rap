@@ -17,6 +17,8 @@ plugin@org.eclipse.rap.rms.data=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot
 plugin@org.eclipse.rap.rms.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rms.ui
 plugin@org.eclipse.rap.rwt.custom=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rwt.custom
 
+plugin@org.eclipse.rap.pde.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/org.eclipse.rap.pde.runtime
+
 # i18n
 fragment@org.eclipse.core.databinding.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.core.databinding.nl1
 fragment@org.eclipse.rap.jface.nl1=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.jface.nl1
