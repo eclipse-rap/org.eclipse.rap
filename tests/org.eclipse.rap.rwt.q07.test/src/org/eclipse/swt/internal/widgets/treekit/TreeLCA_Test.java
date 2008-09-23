@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.treekit;
 
 import junit.framework.TestCase;
@@ -16,7 +15,8 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Ie6;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -37,11 +37,10 @@ public class TreeLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     RWTFixture.markInitialized( display );
-    //Selection_Listener
+    // Selection_Listener
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
-    Boolean hasListeners
-     = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
@@ -52,29 +51,27 @@ public class TreeLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
-    //Tree_Listeners
+    // Tree_Listeners
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    hasListeners
-     = ( Boolean )adapter.getPreserved( TreeLCA.PROP_TREE_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( TreeLCA.PROP_TREE_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     TreeListener treeListener = new TreeListener() {
 
-      public void treeCollapsed( TreeEvent e ) {
+      public void treeCollapsed( final TreeEvent e ) {
       }
 
-      public void treeExpanded( TreeEvent e ) {
+      public void treeExpanded( final TreeEvent e ) {
       }
     };
     tree.addTreeListener( treeListener );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    hasListeners
-     = ( Boolean )adapter.getPreserved( TreeLCA.PROP_TREE_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( TreeLCA.PROP_TREE_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
-    //HeaderHight,HeaderVisible
+    // HeaderHight,HeaderVisible
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     Object headerheight = adapter.getPreserved( TreeLCA.PROP_HEADER_HEIGHT );
@@ -90,7 +87,7 @@ public class TreeLCA_Test extends TestCase {
     headervisible = adapter.getPreserved( TreeLCA.PROP_HEADER_VISIBLE );
     assertEquals( Boolean.TRUE, headervisible );
     RWTFixture.clearPreserved();
-    //column_order
+    // column_order
     TreeColumn child1 = new TreeColumn( tree, SWT.NONE, 0 );
     child1.setText( "child1" );
     TreeColumn child2 = new TreeColumn( tree, SWT.NONE, 1 );
@@ -98,12 +95,11 @@ public class TreeLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     int[] columnOrder1 = tree.getColumnOrder();
-    Integer[] columnOrder2
-     = ( Integer[] )adapter.getPreserved( TreeLCA.PROP_COLUMN_ORDER );
+    Integer[] columnOrder2 = ( Integer[] )adapter.getPreserved( TreeLCA.PROP_COLUMN_ORDER );
     assertEquals( new Integer( columnOrder1[ 0 ] ), columnOrder2[ 0 ] );
     assertEquals( new Integer( columnOrder1[ 1 ] ), columnOrder2[ 1 ] );
     RWTFixture.clearPreserved();
-    //control: enabled
+    // control: enabled
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
@@ -113,7 +109,7 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     RWTFixture.clearPreserved();
-    //visible
+    // visible
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
@@ -123,7 +119,7 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     RWTFixture.clearPreserved();
-    //menu
+    // menu
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
@@ -136,14 +132,14 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     RWTFixture.clearPreserved();
-    //bound
+    // bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     tree.setBounds( rectangle );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     RWTFixture.clearPreserved();
-    //control_listeners
+    // control_listeners
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -162,12 +158,12 @@ public class TreeLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
-    //z-index
+    // z-index
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     RWTFixture.clearPreserved();
-    //foreground background font
+    // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     tree.setBackground( background );
     Color foreground = Graphics.getColor( 211, 178, 211 );
@@ -180,12 +176,12 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     RWTFixture.clearPreserved();
-    //tab_index
+    // tab_index
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     RWTFixture.clearPreserved();
-    //tooltiptext
+    // tooltiptext
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( null, tree.getToolTipText() );
@@ -195,7 +191,7 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( "some text", tree.getToolTipText() );
     RWTFixture.clearPreserved();
-    //activate_listeners   Focus_listeners
+    // activate_listeners Focus_listeners
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -237,7 +233,7 @@ public class TreeLCA_Test extends TestCase {
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new SelectionAdapter() {
-      
+
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "itemSelected" );
         assertEquals( tree, event.getSource() );
@@ -255,8 +251,9 @@ public class TreeLCA_Test extends TestCase {
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item",
+                              treeItemId );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( "itemSelected", log.toString() );
   }
 
@@ -268,8 +265,8 @@ public class TreeLCA_Test extends TestCase {
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new SelectionAdapter() {
-      
-      public void widgetDefaultSelected( SelectionEvent event ) {
+
+      public void widgetDefaultSelected( final SelectionEvent event ) {
         log.append( "itemSelected" );
         assertEquals( tree, event.getSource() );
         assertEquals( treeItem, event.item );
@@ -286,8 +283,9 @@ public class TreeLCA_Test extends TestCase {
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item",
+                              treeItemId );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( "itemSelected", log.toString() );
   }
 
@@ -300,7 +298,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addListener( SWT.DefaultSelection, new Listener() {
 
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         log.append( "itemSelected" );
         assertEquals( treeItem, event.item );
         assertEquals( true, event.doit );
@@ -310,18 +308,18 @@ public class TreeLCA_Test extends TestCase {
         assertEquals( 0, event.width );
         assertEquals( 0, event.height );
       }
-      
     } );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item",
+                              treeItemId );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( "itemSelected", log.toString() );
   }
-  
+
   public void testInvalidScrollValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -329,11 +327,9 @@ public class TreeLCA_Test extends TestCase {
     String treeId = WidgetUtil.getId( tree );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "undefined" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
-    RWTFixture.executeLifeCycleFromServerThread( );
-    
+    RWTFixture.executeLifeCycleFromServerThread();
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     assertEquals( 80, adapter.getScrollTop() );
     assertEquals( 0, adapter.getScrollLeft() );

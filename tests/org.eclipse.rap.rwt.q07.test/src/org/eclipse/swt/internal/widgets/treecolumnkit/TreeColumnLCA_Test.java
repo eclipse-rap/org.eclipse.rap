@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import junit.framework.TestCase;
@@ -42,7 +41,7 @@ public class TreeColumnLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.CENTER );
     RWTFixture.markInitialized( display );
-    //text
+    // text
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
@@ -52,7 +51,7 @@ public class TreeColumnLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
     RWTFixture.clearPreserved();
-    //image
+    // image
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
@@ -63,7 +62,7 @@ public class TreeColumnLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( column );
     assertSame( image, adapter.getPreserved( Props.IMAGE ) );
     RWTFixture.clearPreserved();
-    //tooltiptext
+    // tooltiptext
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( null, column.getToolTipText() );
@@ -73,12 +72,11 @@ public class TreeColumnLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( "some text", column.getToolTipText() );
     RWTFixture.clearPreserved();
-    //alignment
+    // alignment
     column.setAlignment( SWT.LEFT );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
-    Integer alignment
-     = ( Integer )adapter.getPreserved( TreeColumnLCA.PROP_ALIGNMENT );
+    Integer alignment = ( Integer )adapter.getPreserved( TreeColumnLCA.PROP_ALIGNMENT );
     assertEquals( SWT.LEFT, alignment.intValue() );
     RWTFixture.clearPreserved();
     column.setAlignment( SWT.RIGHT );
@@ -93,7 +91,7 @@ public class TreeColumnLCA_Test extends TestCase {
     alignment = ( Integer )adapter.getPreserved( TreeColumnLCA.PROP_ALIGNMENT );
     assertEquals( SWT.CENTER, alignment.intValue() );
     RWTFixture.clearPreserved();
-    //zindex,left,sortimage,resizable,moveable,selection_listeners,width
+    // zindex,left,sortimage,resizable,moveable,selection_listeners,width
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     Object zindex = adapter.getPreserved( TreeColumnLCA.PROP_Z_INDEX );
@@ -160,14 +158,14 @@ public class TreeColumnLCA_Test extends TestCase {
     //
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    RWTFixture.executeLifeCycleFromServerThread();
     // Simulate request that changes column width
     int newWidth = column.getWidth() + 2;
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.controlResized", columnId );
     Fixture.fakeRequestParam( columnId + ".width", String.valueOf( newWidth ) );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( "controlResized", log.toString() );
     assertEquals( newWidth, column.getWidth() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
