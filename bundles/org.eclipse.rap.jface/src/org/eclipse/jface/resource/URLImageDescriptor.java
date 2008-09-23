@@ -118,6 +118,17 @@ class URLImageDescriptor extends ImageDescriptor {
     if( pos != -1 ) {
       path = path.substring( pos + schema.length() );
     }
-    return Graphics.getImage( path, getStream() );
+    Image image;
+    InputStream stream = getStream();
+    try {
+      image = Graphics.getImage( path, stream );
+    } finally {
+      try {
+        stream.close();
+      } catch( IOException e ) {
+        // do nothing
+      }
+    }
+    return image;
   }
 }
