@@ -24,8 +24,9 @@ class ExpandBarTab extends ExampleTab {
 
   private static final String PROP_CONTEXT_MENU = "contextMenu";
   private static final String PROP_EXPAND_LISTENER = "expandListener";
-  ExpandBar expandBar1;
-  Spinner spinner;
+  
+  private ExpandBar expandBar;
+  private Spinner spinner;
 
   ExpandBarTab( final CTabFolder topFolder ) {
     super( topFolder, "ExpandBar" );
@@ -51,93 +52,90 @@ class ExpandBarTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     ClassLoader classLoader = getClass().getClassLoader();
-    int style = getStyle();
-    expandBar1 = new ExpandBar( parent, style );
+    expandBar = new ExpandBar( parent, getStyle() );
     if( hasCreateProperty( PROP_CONTEXT_MENU ) ) {
-      Menu expandBarMenu = new Menu( expandBar1 );
+      Menu expandBarMenu = new Menu( expandBar );
       MenuItem expandBarMenuItem = new MenuItem( expandBarMenu, SWT.PUSH );
       expandBarMenuItem.addSelectionListener( new SelectionAdapter() {
-
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the expand bar";
-          MessageDialog.openInformation( expandBar1.getShell(),
+          MessageDialog.openInformation( expandBar.getShell(),
                                          "Information",
                                          message );
         }
       } );
       expandBarMenuItem.setText( "Expand Bar context menu item" );
-      expandBar1.setMenu( expandBarMenu );
+      expandBar.setMenu( expandBarMenu );
     }
     if( hasCreateProperty( PROP_EXPAND_LISTENER ) ) {
-      expandBar1.addExpandListener( new ExpandListener() {
-
-        public void itemCollapsed( ExpandEvent e ) {
+      expandBar.addExpandListener( new ExpandListener() {
+        public void itemCollapsed( final ExpandEvent e ) {
           int index = 0;
-          int itemCount = expandBar1.getItemCount();
+          int itemCount = expandBar.getItemCount();
           for( int i = 0; i < itemCount; i++ ) {
-            if( expandBar1.getItem( i ) == e.item ) {
+            if( expandBar.getItem( i ) == e.item ) {
               index = i;
             }
           }
           String message = "Expand item " + index + " collapsed!";
-          MessageDialog.openInformation( expandBar1.getShell(),
+          MessageDialog.openInformation( expandBar.getShell(),
                                          "Information",
                                          message );
         }
 
-        public void itemExpanded( ExpandEvent e ) {
+        public void itemExpanded( final ExpandEvent e ) {
           int index = 0;
-          int itemCount = expandBar1.getItemCount();
+          int itemCount = expandBar.getItemCount();
           for( int i = 0; i < itemCount; i++ ) {
-            if( expandBar1.getItem( i ) == e.item ) {
+            if( expandBar.getItem( i ) == e.item ) {
               index = i;
             }
           }
           String message = "Expand item " + index + " expanded!";
-          MessageDialog.openInformation( expandBar1.getShell(),
+          MessageDialog.openInformation( expandBar.getShell(),
                                          "Information",
                                          message );
         }
       } );
     }
-    Display display = expandBar1.getDisplay();
-    Composite composite = new Composite( expandBar1, SWT.NONE );
+    Display display = expandBar.getDisplay();
+    Composite composite = new Composite( expandBar, SWT.NONE );
     composite.setLayout( new GridLayout() );
     new Button( composite, SWT.PUSH ).setText( "SWT.PUSH" );
     new Button( composite, SWT.RADIO ).setText( "SWT.RADIO" );
     new Button( composite, SWT.CHECK ).setText( "SWT.CHECK" );
     new Button( composite, SWT.TOGGLE ).setText( "SWT.TOGGLE" );
-    ExpandItem item = new ExpandItem( expandBar1, SWT.NONE, 0 );
+    ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
     item.setText( "What is your favorite button?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
     item.setImage( Graphics.getImage( "resources/newfolder_wiz.gif",
                                       classLoader ) );
-    composite = new Composite( expandBar1, SWT.NONE );
+    composite = new Composite( expandBar, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
-    Image img = display.getSystemImage( SWT.ICON_ERROR );
-    new Label( composite, SWT.NONE ).setImage( img );
+    Image image = display.getSystemImage( SWT.ICON_ERROR );
+    new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setText( "SWT.ICON_ERROR" );
-    img = display.getSystemImage( SWT.ICON_INFORMATION );
-    new Label( composite, SWT.NONE ).setImage( img );
+    image = display.getSystemImage( SWT.ICON_INFORMATION );
+    new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setText( "SWT.ICON_INFORMATION" );
-    img = display.getSystemImage( SWT.ICON_WARNING );
-    new Label( composite, SWT.NONE ).setImage( img );
+    image = display.getSystemImage( SWT.ICON_WARNING );
+    new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setText( "SWT.ICON_WARNING" );
-    img = display.getSystemImage( SWT.ICON_QUESTION );
-    new Label( composite, SWT.NONE ).setImage( img );
+    image = display.getSystemImage( SWT.ICON_QUESTION );
+    new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setText( "SWT.ICON_QUESTION" );
-    item = new ExpandItem( expandBar1, SWT.NONE, 1 );
+    item = new ExpandItem( expandBar, SWT.NONE, 1 );
     item.setText( "What is your favorite icon?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    img = Graphics.getImage( "resources/newprj_wiz.gif", classLoader );
-    item.setImage( img );
+    item.setImage( Graphics.getImage( "resources/newprj_wiz.gif", 
+                                      classLoader ) );
     item.setExpanded( true );
-    expandBar1.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    registerControl( expandBar1 );
+    expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    registerControl( expandBar );
     if( spinner != null ) {
-      expandBar1.setSpacing( spinner.getSelection() );
+      expandBar.setSpacing( spinner.getSelection() );
     }
   }
 
@@ -152,9 +150,9 @@ class ExpandBarTab extends ExampleTab {
     spinner.setMaximum( 20 );
     spinner.addModifyListener( new ModifyListener() {
 
-      public void modifyText( ModifyEvent event ) {
+      public void modifyText( final ModifyEvent event ) {
         int spacing = spinner.getSelection();
-        expandBar1.setSpacing( spacing );
+        expandBar.setSpacing( spacing );
       }
     } );
     return spinner;
@@ -167,7 +165,7 @@ class ExpandBarTab extends ExampleTab {
 
       public void widgetSelected( final SelectionEvent event ) {
         ClassLoader classLoader = getClass().getClassLoader();
-        ExpandItem item = new ExpandItem( expandBar1, SWT.NONE, 0 );
+        ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
         item.setText( "ExpandItem text" );
         item.setImage( Graphics.getImage( "resources/newfile_wiz.gif",
                                           classLoader ) );
@@ -183,7 +181,7 @@ class ExpandBarTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
-        ExpandItem item = expandBar1.getItem( 0 );
+        ExpandItem item = expandBar.getItem( 0 );
         item.dispose();
       }
     } );
