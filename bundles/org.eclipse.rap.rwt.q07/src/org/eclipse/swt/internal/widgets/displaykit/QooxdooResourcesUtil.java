@@ -149,62 +149,64 @@ final class QooxdooResourcesUtil {
       manager.register( "resource/static/image/blank.gif" );
       manager.register( "resource/static/image/dotted_white.gif" );
       String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-      if( DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant ) ) {
-        register( QX_DEBUG_JS );
+      boolean isDebug = DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
+      if( isDebug ) {
+        register( QX_DEBUG_JS, false );
       } else {
-        register( QX_JS );
+        register( QX_JS, false );
       }
+      boolean compress = !isDebug;
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here to keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants
-      register( QX_CONSTANT_CORE_JS );
-      register( QX_CONSTANT_LAYOUT_JS );
-      register( QX_CONSTANT_STYLE_JS );
+      register( QX_CONSTANT_CORE_JS, compress );
+      register( QX_CONSTANT_LAYOUT_JS, compress );
+      register( QX_CONSTANT_STYLE_JS, compress );
 
-      register( APPLICATION_JS );
-      register( REQUEST_JS );
-      register( WIDGET_MANAGER_JS );
-      register( EVENT_UTIL_JS );
-      register( WIDGET_UTIL_JS );
-      register( SASH_JS );
-      register( TAB_UTIL_JS );
-      register( COMBO_UTIL_JS );
-      register( BUTTON_UTIL_JS );
-      register( TOOL_ITEM_JS );
-      register( MENU_UTIL_JS );
-      register( CTAB_ITEM_JS );
-      register( CTAB_FOLDER_JS );
-      register( COOL_ITEM_JS );
-      register( LIST_JS );
-      register( SHELL_JS );
-      register( TREE_JS );
-      register( TREE_ITEM_JS );
-      register( TREE_ITEM_UTIL_JS );
-      register( TREE_COLUMN_JS );
-      register( SCROLLED_COMPOSITE_JS );
-      register( SEPARATOR_JS );
-      register( LABEL_UTIL_JS );
-      register( COMBO_JS );
-      register( GROUP_JS );
-      register( TEXT_UTIL_JS );
-      register( SPINNER_JS );
-      register( TABLE_JS );
-      register( TABLE_COLUMN_JS );
-      register( TABLE_ITEM_JS );
-      register( TABLE_ROW_JS );
-      register( LINK_UTIL_JS );
-      register( EXTERNALBROWSER_JS );
-      register( BROWSER_JS );
-      register( PROGRESS_BAR_JS );
-      register( FONT_SIZE_CALCULATION_JS );
-      register( CLABEL_UTIL_JS );
-      register( SCALE_JS );
-      register( DATE_TIME_DATE_JS );
-      register( DATE_TIME_TIME_JS );
-      register( DATE_TIME_CALENDAR_JS );
-      register( CALENDAR_JS );
-      register( EXPAND_BAR_JS );
-      register( EXPAND_ITEM_JS );
+      register( APPLICATION_JS, compress );
+      register( REQUEST_JS, compress );
+      register( WIDGET_MANAGER_JS, compress );
+      register( EVENT_UTIL_JS, compress );
+      register( WIDGET_UTIL_JS, compress );
+      register( SASH_JS, compress );
+      register( TAB_UTIL_JS, compress );
+      register( COMBO_UTIL_JS, compress );
+      register( BUTTON_UTIL_JS, compress );
+      register( TOOL_ITEM_JS, compress );
+      register( MENU_UTIL_JS, compress );
+      register( CTAB_ITEM_JS, compress );
+      register( CTAB_FOLDER_JS, compress );
+      register( COOL_ITEM_JS, compress );
+      register( LIST_JS, compress );
+      register( SHELL_JS, compress );
+      register( TREE_JS, compress );
+      register( TREE_ITEM_JS, compress );
+      register( TREE_ITEM_UTIL_JS, compress );
+      register( TREE_COLUMN_JS, compress );
+      register( SCROLLED_COMPOSITE_JS, compress );
+      register( SEPARATOR_JS, compress );
+      register( LABEL_UTIL_JS, compress );
+      register( COMBO_JS, compress );
+      register( GROUP_JS, compress );
+      register( TEXT_UTIL_JS, compress );
+      register( SPINNER_JS, compress );
+      register( TABLE_JS, compress );
+      register( TABLE_COLUMN_JS, compress );
+      register( TABLE_ITEM_JS, compress );
+      register( TABLE_ROW_JS, compress );
+      register( LINK_UTIL_JS, compress );
+      register( EXTERNALBROWSER_JS, compress );
+      register( BROWSER_JS, compress );
+      register( PROGRESS_BAR_JS, compress );
+      register( FONT_SIZE_CALCULATION_JS, compress );
+      register( CLABEL_UTIL_JS, compress );
+      register( SCALE_JS, compress );
+      register( DATE_TIME_DATE_JS, compress );
+      register( DATE_TIME_TIME_JS, compress );
+      register( DATE_TIME_CALENDAR_JS, compress );
+      register( CALENDAR_JS, compress );
+      register( EXPAND_BAR_JS, compress );
+      register( EXPAND_ITEM_JS, compress );
 
       // register contributions
       registerContributions();
@@ -243,13 +245,15 @@ final class QooxdooResourcesUtil {
     }
   }
 
-  private static void register( final String libraryName ) {
+  private static void register( final String libraryName,
+                                final boolean compress )
+  {
     IResourceManager manager = ResourceManager.getInstance();
-    // TODO [rh] system property clientLibraryVariant could be used here to
-    //      specify either RegisterOptions.VERSION or VERSION_AND_COMPRESS
-    manager.register( libraryName,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      RegisterOptions.VERSION );
+    RegisterOptions option = RegisterOptions.VERSION;
+    if( compress ) {
+      option = RegisterOptions.VERSION_AND_COMPRESS;
+    }
+    manager.register( libraryName, HTML.CHARSET_NAME_ISO_8859_1, option );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
     responseWriter.useJSLibrary( libraryName );

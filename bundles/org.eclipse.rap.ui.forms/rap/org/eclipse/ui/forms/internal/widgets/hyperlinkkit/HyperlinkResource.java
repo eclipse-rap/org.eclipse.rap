@@ -31,7 +31,7 @@ public final class HyperlinkResource implements IResource {
   }
 
   public RegisterOptions getOptions() {
-    return RegisterOptions.VERSION;
+    return RegisterOptions.VERSION_AND_COMPRESS;
   }
 
   public boolean isExternal() {

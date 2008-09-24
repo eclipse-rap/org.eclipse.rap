@@ -74,6 +74,11 @@ public final class ThemeManager {
   private static final boolean DEBUG
     = "true".equals( System.getProperty( ThemeManager.class.getName() + ".log" ) );
 
+  private static final String CLIENT_LIBRARY_VARIANT
+    = "org.eclipse.rwt.clientLibraryVariant";
+
+  private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
+
   /**
    * This array contains all widget images needed by RAP that are not themeable.
    * These images are registered by the ThemeManager once for every theme.
@@ -408,14 +413,16 @@ public final class ThemeManager {
   public void registerResources() {
     checkInitialized();
     log( "ThemeManager registers resources" );
-    registerJsLibrary( "org/eclipse/swt/theme/AppearancesBase.js" );
-    registerJsLibrary( "org/eclipse/swt/theme/BordersBase.js" );
-    registerJsLibrary( "org/eclipse/swt/theme/ThemeStore.js" );
-    registerJsLibrary( "org/eclipse/swt/theme/ThemeValues.js" );
+    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
+    boolean compress = !DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
+    registerJsLibrary( "org/eclipse/swt/theme/AppearancesBase.js", compress );
+    registerJsLibrary( "org/eclipse/swt/theme/BordersBase.js", compress );
+    registerJsLibrary( "org/eclipse/swt/theme/ThemeStore.js", compress );
+    registerJsLibrary( "org/eclipse/swt/theme/ThemeValues.js", compress );
     Iterator iterator = themes.keySet().iterator();
     while( iterator.hasNext() ) {
       String id = ( String )iterator.next();
-      registerThemeFiles( id );
+      registerThemeFiles( id, compress );
     }
   }
 
@@ -680,8 +687,11 @@ public final class ThemeManager {
    * theme.
    *
    * @param themeId the theme id
+   * @param compress to compress or not the js code
    */
-  private void registerThemeFiles( final String themeId ) {
+  private void registerThemeFiles( final String themeId,
+                                   final boolean compress )
+  {
     synchronized( registeredThemeFiles ) {
       if( !registeredThemeFiles.contains( themeId ) ) {
         ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
@@ -701,7 +711,9 @@ public final class ThemeManager {
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
-        registerJsLibrary( themeCode, jsId.replace( '.', '/' ) + ".js" );
+        registerJsLibrary( themeCode,
+                           jsId.replace( '.', '/' ) + ".js",
+                           compress );
         registeredThemeFiles.add( themeId );
       }
     }
@@ -790,16 +802,23 @@ public final class ThemeManager {
     }
   }
 
-  private static void registerJsLibrary( final String name ) {
-    ResourceManager.getInstance().register( name,
-                                            CHARSET,
-                                            RegisterOptions.VERSION );
+  private static void registerJsLibrary( final String name,
+                                         final boolean compress )
+  {
+    IResourceManager manager = ResourceManager.getInstance();
+    RegisterOptions option = RegisterOptions.VERSION;
+    if( compress ) {
+      option = RegisterOptions.VERSION_AND_COMPRESS;
+    }
+    manager.register( name, CHARSET, option );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
     responseWriter.useJSLibrary( name );
   }
 
-  private static void registerJsLibrary( final String code, final String name )
+  private static void registerJsLibrary( final String code,
+                                         final String name,
+                                         final boolean compress )
   {
     ByteArrayInputStream resourceInputStream;
     byte[] buffer;
@@ -810,10 +829,15 @@ public final class ThemeManager {
     }
     resourceInputStream = new ByteArrayInputStream( buffer );
     try {
-      ResourceManager.getInstance().register( name,
-                                              resourceInputStream,
-                                              CHARSET,
-                                              RegisterOptions.VERSION );
+      IResourceManager manager = ResourceManager.getInstance();
+      RegisterOptions option = RegisterOptions.VERSION;
+      if( compress ) {
+        option = RegisterOptions.VERSION_AND_COMPRESS;
+      }
+      manager.register( name,
+                        resourceInputStream,
+                        CHARSET,
+                        option );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
       responseWriter.useJSLibrary( name );

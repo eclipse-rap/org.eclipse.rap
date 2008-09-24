@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,25 +17,27 @@ import java.net.URLConnection;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 
-
-/**
- * <p>Utility class used by <code>org.eclipse.rap.engine.util.ResourceManager</code> 
- * to read (including optional compression) and write resources.</p>
- */
 public final class ResourceUtil {
-  
+
   private static final String ONE_LINE_COMMENT = "//";
   private static final String MULTI_LINE_COMMENT_START = "/*";
   private static final String MULTI_LINE_COMMENT_END = "*/";
-  
+
   private static final String NEWLINE_MAC = "\r";
   private static final String NEWLINE_UNIX = "\n";
   private static final String NEWLINE_WIN = "\r\n";
+
+  private static final char SINGLE_QUOTE = '\'';
+  private static final char DOUBLE_QUOTE = '"';
+  private static final char NO_QUOTE = '-';
+  private static final char BACKSLASH = '\\';
+  private static final char LINE_FEED = '\r';
+  private static final char CARRIAGE_RETURN = '\n';
+
   private static ByteArrayOutputStream jsConcatenationBuffer = null;
 
-
-  static int[] read( final String name, 
-                     final String charset, 
+  static int[] read( final String name,
+                     final String charset,
                      final boolean compress )
     throws IOException
   {
@@ -47,9 +49,9 @@ public final class ResourceUtil {
     }
     return result;
   }
-  
-  static int[] read( final InputStream is, 
-                     final String charset, 
+
+  static int[] read( final InputStream is,
+                     final String charset,
                      final boolean compress )
     throws IOException
   {
@@ -61,7 +63,7 @@ public final class ResourceUtil {
     }
     return result;
   }
-  
+
   static void write( final File toWrite, final int[] content )
     throws IOException
   {
@@ -71,7 +73,7 @@ public final class ResourceUtil {
       try {
         for( int i = 0; i < content.length; i++ ) {
           out.write( content[ i ] );
-          if(    jsConcatenationBuffer != null 
+          if(    jsConcatenationBuffer != null
               && toWrite.getName().endsWith( "js" ) )
           {
             jsConcatenationBuffer.write( content[ i ] );
@@ -87,11 +89,11 @@ public final class ResourceUtil {
       fos.close();
     }
   }
-  
+
   public static void startJsConcatenation() {
     jsConcatenationBuffer = new ByteArrayOutputStream();
   }
- 
+
   static String getJsConcatenationContentAsString() {
     String result = "";
     try {
@@ -104,9 +106,9 @@ public final class ResourceUtil {
     return result;
   }
 
-  private static int[] readText( final String name, 
-                                 final String charset, 
-                                 final boolean compress ) 
+  private static int[] readText( final String name,
+                                 final String charset,
+                                 final boolean compress )
     throws IOException
   {
     // read resource
@@ -120,11 +122,6 @@ public final class ResourceUtil {
     return result;
   }
 
-  /** <p>Reads the resource from the given <code>is</code> which must be encoded 
-   * with the given <code>charset</code> and optionally compresses it.</p> 
-   * <p>Compression only makes sense for JavaScript content.</p>
-   * <p>The resulting <code>int[]</code>  represents  the content which is 
-   * <strong>always</strong> <code>UTF-8</code>-encoded.</p> */
   static int[] readText( final InputStream is,
                          final String charset,
                          final boolean compress )
@@ -134,7 +131,7 @@ public final class ResourceUtil {
     InputStreamReader reader = new InputStreamReader( is, charset );
     BufferedReader br = new BufferedReader( reader );
     try {
-      int character = br.read();    
+      int character = br.read();
       while( character != -1 ) {
         buffer.append( ( char )character );
         character = br.read();
@@ -150,7 +147,7 @@ public final class ResourceUtil {
     byte[] bytes;
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try {
-      OutputStreamWriter osw 
+      OutputStreamWriter osw
         = new OutputStreamWriter( baos, HTML.CHARSET_NAME_UTF_8 );
       try {
         osw.write( buffer.toString() );
@@ -169,8 +166,8 @@ public final class ResourceUtil {
     }
     return result;
   }
-  
-  private static int[] readBinary( final String name ) 
+
+  private static int[] readBinary( final String name )
     throws IOException
   {
     int[] result;
@@ -197,11 +194,9 @@ public final class ResourceUtil {
     }
     return result;
   }
-  
-  /** <p>implementation since InputStream.available somehow did not work 
-   *  properly...</p> */
-  private static int getAvailableCount( final BufferedInputStream bis ) 
-    throws IOException 
+
+  private static int getAvailableCount( final BufferedInputStream bis )
+    throws IOException
   {
     int result = 0;
     int streamElement = 0;
@@ -214,9 +209,9 @@ public final class ResourceUtil {
     bis.reset();
     return result;
   }
-  
-  private static InputStream openStream( final String name ) 
-    throws IOException 
+
+  private static InputStream openStream( final String name )
+    throws IOException
   {
     ClassLoader loader = ResourceManagerImpl.class.getClassLoader();
     URL resource = loader.getResource( name );
@@ -232,25 +227,137 @@ public final class ResourceUtil {
     InputStream result = con.getInputStream();
     return result;
   }
-  
+
   static void compress( final StringBuffer javaScript ) {
     removeOneLineComments( javaScript );
     removeMultiLineComments( javaScript );
     removeMultipleBlanks( javaScript );
+
+    // Remove blanks from arithmetic/logic operations
+    replace( javaScript, " = ", "=" );
+    replace( javaScript, " == ", "==" );
+    replace( javaScript, " === ", "===" );
+    replace( javaScript, " + ", "+" );
+    replace( javaScript, " - ", "-" );
+    replace( javaScript, " * ", "*" );
+    replace( javaScript, " / ", "/" );
+    replace( javaScript, " > ", ">" );
+    replace( javaScript, " < ", "<" );
+    replace( javaScript, " <= ", "<=" );
+    replace( javaScript, " >= ", ">=" );
+    replace( javaScript, " != ", "!=" );
+    replace( javaScript, " : ", ":" );
+    replace( javaScript, " && ", "&&" );
+    replace( javaScript, " || ", "||" );
+    replace( javaScript, " ? ", "?" );
+
+    // Always remove leading single blanks after removing blanks from
+    // arithmetic/logic operations
+    removeLeadingBlanks( javaScript );
+    // Always remove multiple new lines after removing leading blanks
+    removeMultipleNewLines( javaScript, NEWLINE_WIN );
+    removeMultipleNewLines( javaScript, NEWLINE_UNIX );
+    removeMultipleNewLines( javaScript, NEWLINE_MAC );
+
+    // Remove blanks from brackets and some punctuation
+    replace( javaScript, "( ", "(" );
+    replace( javaScript, " )", ")" );
+    replace( javaScript, "} ", "}" );
+    replace( javaScript, " {", "{" );
+    replace( javaScript, " }", "}" );
+    replace( javaScript, "{ ", "{" );
+    replace( javaScript, "[ ", "[" );
+    replace( javaScript, " ]", "]" );
+    replace( javaScript, ", ", "," );
+    replace( javaScript, "; ", ";" );
+
+    // Remove some new lines
+    replace( javaScript, NEWLINE_WIN + "}", "}" );
+    replace( javaScript, NEWLINE_UNIX + "}", "}" );
+    replace( javaScript, NEWLINE_MAC + "}", "}" );
+
+    replace( javaScript, NEWLINE_WIN + "{", "{" );
+    replace( javaScript, NEWLINE_UNIX + "{", "{" );
+    replace( javaScript, NEWLINE_MAC + "{", "{" );
+
+    replace( javaScript, "}" + NEWLINE_WIN, "}" );
+    replace( javaScript, "}" + NEWLINE_UNIX, "}" );
+    replace( javaScript, "}" + NEWLINE_MAC, "}" );
+
+    replace( javaScript, "{" + NEWLINE_WIN, "{" );
+    replace( javaScript, "{" + NEWLINE_UNIX, "{" );
+    replace( javaScript, "{" + NEWLINE_MAC, "{" );
+
+    replace( javaScript, NEWLINE_WIN + "&&", "&&" );
+    replace( javaScript, NEWLINE_UNIX + "&&", "&&" );
+    replace( javaScript, NEWLINE_MAC + "&&", "&&" );
+
+    replace( javaScript, NEWLINE_WIN + "||", "||" );
+    replace( javaScript, NEWLINE_UNIX + "||", "||" );
+    replace( javaScript, NEWLINE_MAC + "||", "||" );
+
+    replace( javaScript, NEWLINE_WIN + "=", "=" );
+    replace( javaScript, NEWLINE_UNIX + "=", "=" );
+    replace( javaScript, NEWLINE_MAC + "=", "=" );
+
+    replace( javaScript, NEWLINE_WIN + "+", "+" );
+    replace( javaScript, NEWLINE_UNIX + "+", "+" );
+    replace( javaScript, NEWLINE_MAC + "+", "+" );
+
+    replace( javaScript, NEWLINE_WIN + "-", "-" );
+    replace( javaScript, NEWLINE_UNIX + "-", "-" );
+    replace( javaScript, NEWLINE_MAC + "-", "-" );
+
+    replace( javaScript, NEWLINE_WIN + ":", ":" );
+    replace( javaScript, NEWLINE_UNIX + ":", ":" );
+    replace( javaScript, NEWLINE_MAC + ":", ":" );
+
+    replace( javaScript, NEWLINE_WIN + "?", "?" );
+    replace( javaScript, NEWLINE_UNIX + "?", "?" );
+    replace( javaScript, NEWLINE_MAC + "?", "?" );
+
+    replace( javaScript, "," + NEWLINE_WIN, "," );
+    replace( javaScript, "," + NEWLINE_UNIX, "," );
+    replace( javaScript, "," + NEWLINE_MAC, "," );
+
+    replace( javaScript, ";" + NEWLINE_WIN, ";" );
+    replace( javaScript, ";" + NEWLINE_UNIX, ";" );
+    replace( javaScript, ";" + NEWLINE_MAC, ";" );
+
+    replace( javaScript, ":" + NEWLINE_WIN, ":" );
+    replace( javaScript, ":" + NEWLINE_UNIX, ":" );
+    replace( javaScript, ":" + NEWLINE_MAC, ":" );
   }
 
-  /** removes everything after the first occurrence of "//" until the one of the 
-   * line. */
-  private static void removeOneLineComments( final StringBuffer javaScript ) {
+  static void replace( final StringBuffer javaScript,
+                       final String strToFind,
+                       final String strToReplace )
+  {
+    int index = javaScript.indexOf( strToFind, 0 );
+    while( index != -1 ) {
+      if( !isInsideString( javaScript, index ) ) {
+        javaScript.replace( index, index + strToFind.length(), strToReplace );
+      } else {
+        index += strToFind.length();
+      }
+      index = javaScript.indexOf( strToFind, index + strToReplace.length() );
+    }
+  }
+
+  static void removeOneLineComments( final StringBuffer javaScript ) {
     // strip one-line comments
     int commentStart = javaScript.indexOf( ONE_LINE_COMMENT, 0 );
     while( commentStart != -1 ) {
       int lineEnd = nextNewLine( javaScript, commentStart );
-      javaScript.delete( commentStart, lineEnd );
+      if( !isInsideString( javaScript, commentStart ) ) {
+        javaScript.delete( commentStart, lineEnd );
+      } else {
+        commentStart += 2;
+      }
       commentStart = javaScript.indexOf( ONE_LINE_COMMENT, commentStart );
     }
   }
-  
+
   static int nextNewLine( final StringBuffer buffer, final int currentPos ) {
     int result = buffer.indexOf( NEWLINE_WIN, currentPos );
     if( result == -1 ) {
@@ -265,29 +372,139 @@ public final class ResourceUtil {
     return result;
   }
 
-  /** cuts off all blocks between starting comment marks ( "/*" ) and ending,
-   * comment marks (as in the end of this comment) from the passed String. */
-  private static void removeMultiLineComments( final StringBuffer javaScript ) {
+  static void removeMultiLineComments( final StringBuffer javaScript ) {
     int index = javaScript.indexOf( MULTI_LINE_COMMENT_START );
     while( index != -1 ) {
       int end = javaScript.indexOf( MULTI_LINE_COMMENT_END );
       if( end != -1 ) {
-        javaScript.delete( index, end + MULTI_LINE_COMMENT_END.length() );
+        if( !isInsideString( javaScript, index ) ) {
+          javaScript.delete( index, end + MULTI_LINE_COMMENT_END.length() );
+        } else {
+          index += 2;
+        }
       }
       index = javaScript.indexOf( MULTI_LINE_COMMENT_START, index );
     }
   }
-  
-   /** replaces all occurences of multiple blanks with only one blank in
-    * the passed String. */
-  private static void removeMultipleBlanks( final StringBuffer javaScript ) {
+
+  static void removeMultipleBlanks( final StringBuffer javaScript ) {
     int index = javaScript.indexOf( "  " );
     while( index != -1 ) {
-      javaScript.delete( index, index + 1 );
+      if( !isInsideString( javaScript, index ) ) {
+        javaScript.delete( index, index + 1 );
+      } else {
+        index += 1;
+      }
       index = javaScript.indexOf( "  ", index );
     }
   }
-  
+
+  static void removeLeadingBlanks( final StringBuffer javaScript ) {
+    int index = javaScript.indexOf( " " );
+    while( index != -1 ) {
+      char prev = '-';
+      if( index > 0 ) {
+        prev = javaScript.charAt( index - 1 );
+      }
+      if( prev == LINE_FEED || prev == CARRIAGE_RETURN || index == 0 ) {
+        javaScript.delete( index, index + 1 );
+      } else {
+        index += 1;
+      }
+      index = javaScript.indexOf( " ", index );
+    }
+  }
+
+  static void removeMultipleNewLines( final StringBuffer javaScript,
+                                      final String newline ) {
+    String doubleNewLine = newline + newline;
+    int index = javaScript.indexOf( doubleNewLine );
+    while( index != -1 ) {
+      javaScript.delete( index, index + newline.length() );
+      index = javaScript.indexOf( doubleNewLine, index );
+    }
+  }
+
+  static boolean isInsideString( final StringBuffer javaScript,
+                                 final int position )
+  {
+    String line = getLineAtPosition( javaScript, position );
+    int pos = getPositionInLine( javaScript, position );
+    char quoteChar = NO_QUOTE;
+    char prevChar = NO_QUOTE;
+    for( int i = 0; i < pos; i++ ) {
+      char ch = line.charAt( i );
+      if( ch == DOUBLE_QUOTE && quoteChar == NO_QUOTE ) {
+        quoteChar = DOUBLE_QUOTE;
+      } else if(    ch == DOUBLE_QUOTE
+                 && quoteChar == DOUBLE_QUOTE
+                 && prevChar != BACKSLASH )
+      {
+        quoteChar = NO_QUOTE;
+      } else if( ch == SINGLE_QUOTE && quoteChar == NO_QUOTE ) {
+        quoteChar = SINGLE_QUOTE;
+      } else if(    ch == SINGLE_QUOTE
+                 && quoteChar == SINGLE_QUOTE
+                 && prevChar != BACKSLASH )
+      {
+        quoteChar = NO_QUOTE;
+      }
+      prevChar = ch;
+    }
+
+    return quoteChar != NO_QUOTE;
+  }
+
+  static String getLineAtPosition( final StringBuffer javaScript,
+                                   final int position )
+  {
+    String line = "";
+    if( position >= 0 && position < javaScript.length() ) {
+      int start = position;
+      int end = position;
+      char ch = javaScript.charAt( start );
+      while( ch != LINE_FEED && ch != CARRIAGE_RETURN && start > 0 ) {
+        start--;
+        ch = javaScript.charAt( start );
+      }
+      ch = javaScript.charAt( end );
+      while(    ch != LINE_FEED
+             && ch != CARRIAGE_RETURN
+             && end < javaScript.length() )
+      {
+        ch = javaScript.charAt( end );
+        end++;
+      }
+      line = javaScript.substring( start, end );
+      if( line.startsWith( NEWLINE_MAC ) || line.startsWith( NEWLINE_UNIX ) ) {
+        line = line.substring( 1 );
+      }
+      if( line.endsWith( NEWLINE_MAC ) || line.endsWith( NEWLINE_UNIX ) ) {
+        line = line.substring( 0, line.length() - 1 );
+      }
+    }
+    return line;
+  }
+
+  static int getPositionInLine( final StringBuffer javaScript,
+                                final int position )
+  {
+    int pos = 0;
+    if( position >= 0 && position < javaScript.length() ) {
+      int start = position;
+      char ch = javaScript.charAt( start );
+      while( ch != LINE_FEED && ch != CARRIAGE_RETURN && start > 0 ) {
+        start--;
+        pos++;
+        ch = javaScript.charAt( start );
+      }
+      if( ch == LINE_FEED || ch == CARRIAGE_RETURN ) {
+        pos--;
+      }
+    }
+    return pos;
+  }
+
   private ResourceUtil() {
     // prevent instantiation
   }
