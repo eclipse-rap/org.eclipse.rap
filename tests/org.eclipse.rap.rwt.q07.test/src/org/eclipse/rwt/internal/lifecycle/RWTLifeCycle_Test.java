@@ -633,7 +633,7 @@ public class RWTLifeCycle_Test extends TestCase {
     UIThread thread = new UIThread( lifeCycle.uiRunnable );
     thread.setServiceContext( ContextProvider.getContext() );
     thread.start();
-    thread.switchThread();
+    thread.join();
 
     String expected = "before"
                     + PhaseId.PREPARE_UI_ROOT
