@@ -20,7 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -208,6 +208,63 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "b", fontNames[ 2 ] );
   }
 
+  public void testFontBold() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeFont( label, label.getFont() );
+    assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
+
+    Font oldFont = label.getFont();
+    FontData fontData = oldFont.getFontData()[0];
+    Font newFont = Graphics.getFont( fontData.getName(),
+                                     fontData.getHeight(),
+                                     SWT.BOLD );
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.writeFont( label, newFont );
+    assertTrue( Fixture.getAllMarkup().endsWith( ", true, false );" ) );
+  }
+
+  public void testFontItalic() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeFont( label, label.getFont() );
+    assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
+
+    Font oldFont = label.getFont();
+    FontData fontData = oldFont.getFontData()[0];
+    Font newFont = Graphics.getFont( fontData.getName(),
+                                     fontData.getHeight(),
+                                     SWT.ITALIC );
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.writeFont( label, newFont );
+    assertTrue( Fixture.getAllMarkup().endsWith( ", false, true );" ) );
+  }
+
+  public void testFontSize() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+
+    Font oldFont = label.getFont();
+    FontData fontData = oldFont.getFontData()[0];
+    Font newFont = Graphics.getFont( fontData.getName(), 42,
+                                     SWT.NORMAL );
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.writeFont( label, newFont );
+    assertTrue( Fixture.getAllMarkup().endsWith( ", 42, false, false );" ) );
+  }
+ 
   public void testWriteImage() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
