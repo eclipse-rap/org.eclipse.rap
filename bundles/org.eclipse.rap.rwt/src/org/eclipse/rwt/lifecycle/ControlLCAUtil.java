@@ -831,7 +831,6 @@ public class ControlLCAUtil {
     return result;
   }
 
-  // TODO [rst] Refactor: should this method be part of Control?
   private static boolean takesFocus( final Control control ) {
     boolean result = true;
     result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
