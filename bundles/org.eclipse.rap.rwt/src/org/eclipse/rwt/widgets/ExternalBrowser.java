@@ -72,7 +72,7 @@ public final class ExternalBrowser {
 
   /**
    * Style parameter (value 1&lt;&lt;1) indicating that the address combo and
-   * 'Go' button will created for the browser. 
+   * 'Go' button will be created for the browser. 
    * <p>Note: This style parameter is a hint and might be ignored by some 
    * browsers.</p>
    */
