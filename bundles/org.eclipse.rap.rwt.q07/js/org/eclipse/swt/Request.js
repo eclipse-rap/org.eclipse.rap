@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( text == "" || text == null ) {
           content 
             = "<html><head><title>Error Page</title></head><body>"
-            + "<p>Request failed:</p><pre>"
+            + "<p>Request failed.</p><pre>"
             + "HTTP Status Code: "
             + String( evt.getStatusCode() )
             + "</pre></body></html>";
@@ -337,7 +337,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
                    || statusCode === 12030 
                    || statusCode === 12031 );
       } else if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        result = ( statusCode === -1 );
+        // Firefox 3 reports other statusCode than oder versions (bug #249814)
+        // Check if Gecko > 1.9 is running (used in FF 3)
+        // Gecko/app integration overview: http://developer.mozilla.org/en/Gecko
+        if( qx.core.Client.getMajor() * 10 + qx.core.Client.getMinor() >= 19 ) {
+          result = ( statusCode === 0 );
+        } else {
+          result = ( statusCode === -1 );
+        }
       } else if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
         result = ( statusCode === 0 );
       } else if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
