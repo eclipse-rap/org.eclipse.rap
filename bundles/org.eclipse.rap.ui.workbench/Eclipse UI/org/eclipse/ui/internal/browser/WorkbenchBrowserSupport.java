@@ -149,10 +149,15 @@ public class WorkbenchBrowserSupport extends AbstractWorkbenchBrowserSupport {
 			 * @see java.lang.Runnable#run()
 			 */
 			public void run() {
-                IConfigurationElement[] elements = Platform
-                        .getExtensionRegistry().getConfigurationElementsFor(
-                                PlatformUI.PLUGIN_ID,
-                                IWorkbenchRegistryConstants.PL_BROWSER_SUPPORT);
+// RAP [rh]: ep namespace differs from bundle id (bug #249708)
+//                IConfigurationElement[] elements = Platform
+//                        .getExtensionRegistry().getConfigurationElementsFor(
+//                                PlatformUI.PLUGIN_ID,
+//                                IWorkbenchRegistryConstants.PL_BROWSER_SUPPORT);
+        IConfigurationElement[] elements = Platform
+                    .getExtensionRegistry().getConfigurationElementsFor(
+                                  PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+                                  IWorkbenchRegistryConstants.PL_BROWSER_SUPPORT);
 				IConfigurationElement elementToUse = null;
                 
                 if (desiredBrowserSupportId != null) {
@@ -183,8 +188,11 @@ public class WorkbenchBrowserSupport extends AbstractWorkbenchBrowserSupport {
             }
 
             private IExtensionPoint getExtensionPoint() {
+// RAP [rh]: ep namespace differs from bundle id (bug #249708)
+//                return Platform.getExtensionRegistry()
+//						.getExtensionPoint(PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_BROWSER_SUPPORT);
                 return Platform.getExtensionRegistry()
-						.getExtensionPoint(PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_BROWSER_SUPPORT);
+                .getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_BROWSER_SUPPORT);
             }
 
 			private IConfigurationElement getElementToUse(
