@@ -65,6 +65,7 @@
       description="Background color for tool bar"
       default="248, 248, 255"
       css-property="background-color"
+      transparentAllowed="true"
       />
 
   <color name="toolbar.hover.foreground"
