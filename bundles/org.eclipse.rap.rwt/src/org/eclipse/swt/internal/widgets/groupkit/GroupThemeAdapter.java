@@ -28,16 +28,35 @@ public final class GroupThemeAdapter extends ControlThemeAdapter {
     return ThemeAdapterUtil.getColor( control, "group.background" );
   }
 
+  /**
+   * Returns the size of the trimming of the given group control not including
+   * the control's border size.
+   */
   public Rectangle getTrimmingSize( final Control control ) {
-    Rectangle margin = ThemeAdapterUtil.getBoxDimensions( control, "group.margin" );
-    Rectangle padding = ThemeAdapterUtil.getBoxDimensions( control, "group.padding" );
-    int frameWidth = ThemeAdapterUtil.getBorderWidth( control, "group.frame.border" );
+    Rectangle margin
+      = ThemeAdapterUtil.getBoxDimensions( control, "group.margin" );
+    Rectangle padding
+      = ThemeAdapterUtil.getBoxDimensions( control, "group.padding" );
+    int frameWidth
+      = ThemeAdapterUtil.getBorderWidth( control, "group.frame.border" );
     int left = margin.x + padding.x + frameWidth;
     int top = margin.y + padding.y + frameWidth;
     Font font = control.getFont();
     top = Math.max( top, TextSizeDetermination.getCharHeight( font ) );
     int width = margin.width + padding.width + frameWidth * 2;
     int height = margin.height + padding.height + frameWidth * 2;
+    return new Rectangle( left, top, width, height );
+  }
+
+  public Rectangle getHeaderTrimmingSize( final Control control ) {
+    Rectangle margin
+      = ThemeAdapterUtil.getBoxDimensions( control, "group.label.margin" );
+    Rectangle padding
+      = ThemeAdapterUtil.getBoxDimensions( control, "group.label.padding" );
+    int left = margin.x + padding.x;
+    int top = margin.y + padding.y;
+    int width = margin.width + padding.width;
+    int height = margin.height + padding.height;
     return new Rectangle( left, top, width, height );
   }
 }

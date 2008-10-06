@@ -97,7 +97,7 @@
       />
 
   <!-- L a b e l -->
-  
+
   <boxdim name="group.label.margin"
       description="Margin for group box labels (defines offset of the group label)"
       default="1px 10px"

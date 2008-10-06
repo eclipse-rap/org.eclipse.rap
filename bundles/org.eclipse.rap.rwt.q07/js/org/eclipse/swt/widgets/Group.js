@@ -23,18 +23,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
   members : {
     rap_init : function() {
       // Make sure that the 'labelObject' is created
-      var labelObject = this.getLegendObject().getLabelObject(); 
+      var labelObject = this.getLegendObject().getLabelObject();
       if ( labelObject == null ) {
         this.setLegend( "(empty)" );
         this.setLegend( "" );
       }
-      labelObject = this.getLegendObject().getLabelObject(); 
+      labelObject = this.getLegendObject().getLabelObject();
       labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
       this.addEventListener( "changeBackgroundColor",
                              this._onChangeBackgroundColor,
                              this );
     },
-    
+
     rap_reset : function() {
       this.removeEventListener( "changeBackgroundColor",
                              this._onChangeBackgroundColor,

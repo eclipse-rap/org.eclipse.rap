@@ -58,7 +58,7 @@ public class Group_Test extends TestCase {
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     group.setText( "This is a very long group title." );
-    expected = new Point( 193, 62 );
+    expected = new Point( 196, 62 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     group = new Group( shell, SWT.BORDER );
