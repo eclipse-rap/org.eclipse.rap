@@ -210,7 +210,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
   public void testFontBold() throws IOException {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -219,7 +219,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
 
     Font oldFont = label.getFont();
-    FontData fontData = oldFont.getFontData()[0];
+    FontData fontData = oldFont.getFontData()[ 0 ];
     Font newFont = Graphics.getFont( fontData.getName(),
                                      fontData.getHeight(),
                                      SWT.BOLD );
@@ -230,7 +230,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
   public void testFontItalic() throws IOException {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -239,7 +239,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
 
     Font oldFont = label.getFont();
-    FontData fontData = oldFont.getFontData()[0];
+    FontData fontData = oldFont.getFontData()[ 0 ];
     Font newFont = Graphics.getFont( fontData.getName(),
                                      fontData.getHeight(),
                                      SWT.ITALIC );
@@ -250,16 +250,13 @@ public class WidgetLCAUtil_Test extends TestCase {
 
   public void testFontSize() throws IOException {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
-
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( display );
-
     Font oldFont = label.getFont();
-    FontData fontData = oldFont.getFontData()[0];
-    Font newFont = Graphics.getFont( fontData.getName(), 42,
-                                     SWT.NORMAL );
+    FontData fontData = oldFont.getFontData()[ 0 ];
+    Font newFont = Graphics.getFont( fontData.getName(), 42, SWT.NORMAL );
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeFont( label, newFont );
     assertTrue( Fixture.getAllMarkup().endsWith( ", 42, false, false );" ) );
