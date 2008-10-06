@@ -354,13 +354,13 @@ public class Button extends Control {
       height = 10;
     }
     ButtonThemeAdapter themeAdapter = getThemeAdapter();
-    int spacing = themeAdapter.getSpacing( this );
     if( hasText && hasImage ) {
+      int spacing = themeAdapter.getSpacing( this );
       width += spacing;
     }
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       Point checkSize = themeAdapter.getCheckSize();
-      width += checkSize.x + spacing;
+      width += checkSize.x + themeAdapter.getCheckSpacing();
       height = Math.max( height, checkSize.y );
     }
     Rectangle padding = themeAdapter.getPadding( this );

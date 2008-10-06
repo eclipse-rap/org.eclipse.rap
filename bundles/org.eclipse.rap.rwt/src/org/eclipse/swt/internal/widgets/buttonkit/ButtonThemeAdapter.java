@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Control;
 public final class ButtonThemeAdapter implements IControlThemeAdapter {
 
   private static final Point CHECK_SIZE = new Point( 13, 13 );
+  private static final int CHECK_SPACING = 4;
 
   public Color getForeground( final Control control ) {
     int style = control.getStyle();
@@ -100,17 +101,14 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
   }
 
   public int getSpacing( final Button button ) {
-    int result;
-    if( ( button.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      // TODO [rst] Spacing for CHECK/RADIO buttons hardcoded in appearance
-      result = 4;
-    } else {
-      result = ThemeAdapterUtil.getDimension( button, "button.spacing" );
-    }
-    return result;
+    return ThemeAdapterUtil.getDimension( button, "button.spacing" );
   }
 
   public Point getCheckSize() {
     return CHECK_SIZE;
+  }
+
+  public int getCheckSpacing() {
+    return CHECK_SPACING;
   }
 }
