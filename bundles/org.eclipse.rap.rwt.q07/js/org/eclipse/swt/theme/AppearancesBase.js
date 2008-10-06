@@ -208,12 +208,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         font : tv.getFont( "widget.font" ),
         cursor : "default",
-        width : "auto",
-        height : "auto",
-        horizontalChildrenAlign : "center",
-        verticalChildrenAlign : "middle",
+        verticalChildrenAlign : "top",
         spacing : 4,
-        padding : [ 2, 3 ]
+        padding : tv.getBoxDimensions( "button.padding" )
       };
       result.backgroundColor = tv.getColor( "button.CHECK.background" );
       if( states.disabled ) {
@@ -270,17 +267,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
 
       // border
-      if( states.rwt_FLAT ) {
-        if( states.pressed || states.checked ) {
-          result.border = tv.getBorder( "button.FLAT.pressed.border" );
-        } else {
-          result.border = tv.getBorder( "button.FLAT.border" );
-        }
-      } else if( states.rwt_BORDER ) {
+      if( states.rwt_BORDER ) {
         if( states.pressed || states.checked ) {
           result.border = tv.getBorder( "button.BORDER.pressed.border" );
         } else {
           result.border = tv.getBorder( "button.BORDER.border" );
+        }
+      } else if( states.rwt_FLAT ) {
+        if( states.pressed || states.checked ) {
+          result.border = tv.getBorder( "button.FLAT.pressed.border" );
+        } else {
+          result.border = tv.getBorder( "button.FLAT.border" );
         }
       } else {
         if( states.pressed || states.checked ) {

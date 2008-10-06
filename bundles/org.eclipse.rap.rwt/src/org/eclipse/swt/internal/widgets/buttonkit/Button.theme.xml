@@ -163,42 +163,42 @@
       />
 
   <border name="button.border"
-      description="Border for buttons without BORDER and FLAT style"
+      description="Border for (PUSH and TOGGLE) buttons without BORDER and FLAT style"
       default="1 outset"
       css-property="border"
       css-selectors="[PUSH] [TOGGLE]"
       />
 
   <border name="button.pressed.border"
-      description="Border for pressed buttons without BORDER and FLAT style"
+      description="Border for pressed (PUSH and TOGGLE) buttons without BORDER and FLAT style"
       default="1 inset"
       css-property="border"
       css-selectors="[PUSH]:pressed [TOGGLE]:pressed"
       />
 
   <border name="button.FLAT.border"
-      description="Border for buttons with FLAT style"
+      description="Border for (PUSH and TOGGLE) buttons with FLAT style"
       default="1 solid black"
       css-property="border"
       css-selectors="[PUSH][FLAT] [TOGGLE][FLAT]"
       />
 
   <border name="button.FLAT.pressed.border"
-      description="Border for pressed buttons with FLAT style"
+      description="Border for pressed (PUSH and TOGGLE) buttons with FLAT style"
       default="1 solid black"
       css-property="border"
       css-selectors="[PUSH][FLAT]:pressed [TOGGLE][FLAT]:pressed"
       />
 
   <border name="button.BORDER.border"
-      description="Border for buttons with BORDER style"
+      description="Border for (PUSH and TOGGLE) buttons with BORDER style"
       default="2 outset"
       css-property="border"
       css-selectors="[PUSH][BORDER] [TOGGLE][BORDER]"
       />
 
   <border name="button.BORDER.pressed.border"
-      description="Border for pressed buttons with BORDER style"
+      description="Border for pressed (PUSH and TOGGLE) buttons with BORDER style"
       default="2 inset"
       css-property="border"
       css-selectors="[PUSH][BORDER]:pressed [TOGGLE][BORDER]:pressed"
@@ -206,7 +206,7 @@
 
   <boxdim name="button.padding"
       description="Padding for buttons"
-      default="2"
+      default="4 5"
       css-property="padding"
       />
 

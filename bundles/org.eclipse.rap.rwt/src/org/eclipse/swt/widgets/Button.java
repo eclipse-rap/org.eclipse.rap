@@ -11,11 +11,13 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
 
 /**
  * Instances of this class represent a selectable user interface object that
@@ -42,12 +44,6 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  */
 // TODO [rst] Remove comments from javadoc when fully implemented
 public class Button extends Control {
-
-  private static final int MARGIN = 4;
-  // Width of checkboxes and radiobuttons
-  private static final int CHECK_WIDTH = 13;
-  // Height of checkboxes and radiobuttons
-  private static final int CHECK_HEIGHT = 13;
 
   private String text = "";
   private boolean selected;
@@ -334,53 +330,49 @@ public class Button extends Control {
                             final boolean changed )
   {
     checkWidget();
-    int width = 0, height = 0, border = getBorderWidth();
-    // TODO [rst] Cleanup this part
-//    if ((style & SWT.ARROW) != 0) {
-//      if ((style & (SWT.UP | SWT.DOWN)) != 0) {
-//        width += OS.GetSystemMetrics (OS.SM_CXVSCROLL);
-//        height += OS.GetSystemMetrics (OS.SM_CYVSCROLL);
-//      } else {
-//        width += OS.GetSystemMetrics (OS.SM_CXHSCROLL);
-//        height += OS.GetSystemMetrics (OS.SM_CYHSCROLL);
-//      }
-//      if (wHint != SWT.DEFAULT) width = wHint;
-//      if (hHint != SWT.DEFAULT) height = hHint;
-//      width += border * 2; height += border * 2;
-//      return new Point (width, height);
-//    }
-    int extra = 0;
-    boolean hasImage = image != null;
+    int width = 0;
+    int height = 0;
+    // TODO [rst] Image is currently ignored for CHECK and RADIO buttons,
+    //            remove when this restriction disappers
+    boolean imageIgnored = ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0;
+    boolean hasImage = image != null && !imageIgnored;
     boolean hasText = text.length() > 0;
     if( hasImage ) {
       Rectangle imageBounds = image.getBounds ();
       width = imageBounds.width;
       height = imageBounds.height;
-      extra = MARGIN * 2;
-      if( hasText ) {
-        width += MARGIN * 2;
-      }
     }
     if( hasText ) {
       Point extent = TextSizeDetermination.stringExtent( getFont(), text );
-      height = Math.max( height, extent.y );
       width += extent.x;
+      height = Math.max( height, extent.y );
+    }
+    if( width == 0 ) {
+      width = 1;
+    }
+    if( height == 0 ) {
+      height = 10;
+    }
+    ButtonThemeAdapter themeAdapter = getThemeAdapter();
+    int spacing = themeAdapter.getSpacing( this );
+    if( hasText && hasImage ) {
+      width += spacing;
     }
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      width += CHECK_WIDTH + 12 + extra;
-      height = Math.max( height, CHECK_HEIGHT + 3 );
-      height += 4;
+      Point checkSize = themeAdapter.getCheckSize();
+      width += checkSize.x + spacing;
+      height = Math.max( height, checkSize.y );
     }
-    if( ( style & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
-      width += 12;
-      height += 10;
-    }
+    Rectangle padding = themeAdapter.getPadding( this );
+    width += padding.width;
+    height += padding.height;
     if( wHint != SWT.DEFAULT ) {
       width = wHint;
     }
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
+    int border = getBorderWidth();
     width += border * 2;
     height += border * 2;
     return new Point( width, height );
@@ -480,5 +472,10 @@ public class Button extends Control {
       result = checkBits( result, SWT.UP, SWT.DOWN, SWT.LEFT, SWT.RIGHT, 0, 0 );
     }
     return result;
+  }
+
+  private static ButtonThemeAdapter getThemeAdapter() {
+    ThemeManager themeManager = ThemeManager.getInstance();
+    return ( ButtonThemeAdapter )themeManager.getThemeAdapter( Button.class );
   }
 }

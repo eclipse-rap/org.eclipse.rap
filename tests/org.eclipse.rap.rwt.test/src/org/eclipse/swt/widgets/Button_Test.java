@@ -17,7 +17,9 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 public class Button_Test extends TestCase {
 
@@ -130,80 +132,93 @@ public class Button_Test extends TestCase {
   	assertFalse( button3.getSelection() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
 
+    // Text and image to use
+    String text = "Click me!";
+    Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
+    assertEquals( new Point( 48, 13 ), extent );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+
+    // PUSH button
     Button button = new Button( shell, SWT.PUSH );
-    Point expected = new Point( 14, 12 );
+    Point expected = new Point( 15, 22 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setText( "Click me!" );
+    button.setText( text );
     expected = new Point( 62, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 170, 62 );
+    button.setImage( image );
+    expected = new Point( 164, 62 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( "" );
     expected = new Point( 114, 62 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // PUSH button with BORDER
     button = new Button( shell, SWT.PUSH | SWT.BORDER );
-    expected = new Point( 16, 14 );
+    expected = new Point( 17, 24 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setText( "Click me!" );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 172, 64 );
+    button.setText( text );
+    button.setImage( image );
+    expected = new Point( 166, 64 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // TOGGLE button
     button = new Button( shell, SWT.TOGGLE );
-    button.setText( "Click me!" );
+    button.setText( text );
     expected = new Point( 62, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 170, 62 );
+    button.setImage( image );
+    expected = new Point( 164, 62 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // TOGGLE button with border
     button = new Button( shell, SWT.TOGGLE | SWT.BORDER );
-    expected = new Point( 16, 14 );
+    expected = new Point( 17, 24 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setText( "Click me!" );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 172, 64 );
+    button.setText( text );
+    button.setImage( image );
+    expected = new Point( 166, 64 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // CHECK button
     button = new Button( shell, SWT.CHECK );
-    button.setText( "Click me!" );
-    expected = new Point( 75, 22 );
+    button.setText( text );
+    expected = new Point( 75, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 191, 56 );
+    button.setImage( image );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // CHECK button with border
     button = new Button( shell, SWT.CHECK | SWT.BORDER );
-    expected = new Point( 29, 24 );
+    expected = new Point( 32, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setText( "Click me!" );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 193, 58 );
+    button.setText( text );
+    button.setImage( image );
+    expected = new Point( 79, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // RADIO button
     button = new Button( shell, SWT.RADIO );
-    button.setText( "Click me!" );
-    expected = new Point( 75, 22 );
+    button.setText( text );
+    expected = new Point( 75, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 191, 56 );
+    button.setImage( image );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // RADIO button with border
     button = new Button( shell, SWT.RADIO | SWT.BORDER );
-    expected = new Point( 29, 24 );
+    expected = new Point( 32, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    button.setText( "Click me!" );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
-    expected = new Point( 193, 58 );
+    button.setText( text );
+    button.setImage( image );
+    expected = new Point( 79, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    // fixed size
     expected = new Point( 104, 104 );
     assertEquals( expected, button.computeSize( 100, 100 ) );
   }

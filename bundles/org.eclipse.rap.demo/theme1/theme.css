@@ -34,7 +34,7 @@ Tooltip {
 
 Button {
   color: #705e42;
-  padding: 12px 6px;
+  padding: 3px 6px 3px 4px;
   font: bold 12px Arial, Helvetica, sans-serif;
 }
 
