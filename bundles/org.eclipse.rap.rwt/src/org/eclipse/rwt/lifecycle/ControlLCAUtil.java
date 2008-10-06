@@ -892,7 +892,7 @@ public class ControlLCAUtil {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
       event.button
-        = readIntParam( control, JSConst.EVENT_MOUSE_DOWN_BUTTON );
+        = readIntParam( JSConst.EVENT_MOUSE_DOWN_BUTTON );
       Point point = readXYParams( control,
                                   JSConst.EVENT_MOUSE_DOWN_X,
                                   JSConst.EVENT_MOUSE_DOWN_Y );
@@ -905,7 +905,7 @@ public class ControlLCAUtil {
       MouseEvent event
         = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
       event.button
-        = readIntParam( control, JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
+        = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
       Point point = readXYParams( control,
                                   JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
                                   JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
@@ -915,7 +915,7 @@ public class ControlLCAUtil {
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
-      event.button = readIntParam( control, JSConst.EVENT_MOUSE_UP_BUTTON );
+      event.button = readIntParam( JSConst.EVENT_MOUSE_UP_BUTTON );
       Point point = readXYParams( control,
                                   JSConst.EVENT_MOUSE_UP_X,
                                   JSConst.EVENT_MOUSE_UP_Y );
@@ -925,9 +925,7 @@ public class ControlLCAUtil {
     }
   }
 
-  private static int readIntParam( final Control control,
-                                   final String paramName )
-  {
+  private static int readIntParam( final String paramName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( paramName );
     return Integer.parseInt( value );
@@ -937,8 +935,8 @@ public class ControlLCAUtil {
                                      final String paramNameX,
                                      final String paramNameY )
   {
-    int x = readIntParam( control, paramNameX );
-    int y = readIntParam( control, paramNameY );
+    int x = readIntParam( paramNameX );
+    int y = readIntParam( paramNameY );
     return control.getDisplay().map( null, control, x, y );
   }
 
