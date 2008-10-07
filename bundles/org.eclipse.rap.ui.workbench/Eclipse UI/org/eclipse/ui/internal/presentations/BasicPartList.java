@@ -121,7 +121,9 @@ public class BasicPartList extends AbstractTableInformationControl {
 //					fontData[i].setStyle(fontData[i].getStyle() | SWT.BOLD);
 //				}
 //                boldFont = new Font(control.getDisplay(), fontData);
-                boldFont = Graphics.getFont(fontData[0]);
+                FontData data = fontData[0];
+				boldFont = Graphics.getFont(data.getName(), data.getHeight(),
+											data.getStyle() | SWT.BOLD );
                 // RAPEND: [bm] 
             }
             return boldFont;

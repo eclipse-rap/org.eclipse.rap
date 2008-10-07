@@ -154,27 +154,28 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * @param style a bitwise combination of SWT.NORMAL, SWT.ITALIC and SWT.BOLD
      * @return a new FontDescriptor with the given style
      * 
-     * @since 1.0
+     * @since 1.1
      */
-	// RAP [bm]: 
-//    public final FontDescriptor setStyle(int style) {
-//    	FontData[] data = getFontData();
-//    	
-//    	for (int i = 0; i < data.length; i++) {
-//			FontData next = data[i];
-//			
+    public final FontDescriptor setStyle(int style) {
+    	FontData[] data = getFontData();
+    	
+    	for (int i = 0; i < data.length; i++) {
+    		FontData next = data[i];
+    		// RAP [bm]: replace with new immutable font data
 //			next.setStyle(style);
-//		}
-//
-//    	// Optimization: avoid holding onto extra instances by returning the reciever if
-//    	// if it is exactly the same as the result
-//    	FontDescriptor result = new ArrayFontDescriptor(data);
-//    	if (result.equals(this)) {
-//    		return this;
-//    	}
-//    	
-//    	return result;
-//    }
+			data[i]= new FontData(next.getName(), next.getHeight(), style);
+			// ENDRAP
+		}
+
+    	// Optimization: avoid holding onto extra instances by returning the reciever if
+    	// if it is exactly the same as the result
+    	FontDescriptor result = new ArrayFontDescriptor(data);
+    	if (result.equals(this)) {
+    		return this;
+    	}
+    	
+    	return result;
+    }
     
     /**
      * <p>Returns a FontDescriptor that is equivalent to the reciever, but
@@ -184,27 +185,30 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * 
      * @param style a bitwise combination of SWT.NORMAL, SWT.ITALIC and SWT.BOLD
      * @return a new FontDescriptor with the given additional style bits
-     * @since 1.0
+     * @since 1.1
      */
-    // RAP [bm]: 
-//    public final FontDescriptor withStyle(int style) {
-//    	FontData[] data = getFontData();
-//    	
-//    	for (int i = 0; i < data.length; i++) {
-//			FontData next = data[i];
-//			
-//			next.setStyle(next.getStyle() | style);
-//		}
-//    	
-//    	// Optimization: avoid allocating extra instances by returning the reciever if
-//    	// if it is exactly the same as the result
-//    	FontDescriptor result = new ArrayFontDescriptor(data);
-//    	if (result.equals(this)) {
-//    		return this;
-//    	}
-//    	
-//    	return result;    	
-//    }
+    public final FontDescriptor withStyle(int style) {
+    	FontData[] data = getFontData();
+    	
+    	for (int i = 0; i < data.length; i++) {
+			FontData next = data[i];
+	    	// RAP [bm]: replace with new immutable font data
+//			next.setStyle(style);
+			data[i] = new FontData(next.getName(),
+									  next.getHeight(),
+									  next.getStyle() | style);
+			// ENDRAP
+		}
+    	
+    	// Optimization: avoid allocating extra instances by returning the reciever if
+    	// if it is exactly the same as the result
+    	FontDescriptor result = new ArrayFontDescriptor(data);
+    	if (result.equals(this)) {
+    		return this;
+    	}
+    	
+    	return result;    	
+    }
     
     /**
      * <p>Returns a new FontDescriptor that is equivalent to the reciever, but
@@ -214,27 +218,29 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * 
      * @param height a height, in points
      * @return a new FontDescriptor with the height, in points
-     * @since 1.0
+     * @since 1.1
      */
-    // RAP [bm]: 
-//    public final FontDescriptor setHeight(int height) {
-//    	FontData[] data = getFontData();
-//    	
-//    	for (int i = 0; i < data.length; i++) {
-//			FontData next = data[i];
-//			
+    public final FontDescriptor setHeight(int height) {
+    	FontData[] data = getFontData();
+    	
+    	for (int i = 0; i < data.length; i++) {
+			FontData next = data[i];
+			
+	    	// RAP [bm]: replace with new immutable font data
 //			next.setHeight(height);
-//		}
-//    	
-//    	// Optimization: avoid holding onto extra instances by returning the reciever if
-//    	// if it is exactly the same as the result
-//    	FontDescriptor result = new ArrayFontDescriptor(data);
-//    	if (result.equals(this)) {
-//    		return this;
-//    	}
-//    	
-//    	return result;    	
-//    }
+			data[i] = new FontData(next.getName(), height, next.getStyle());
+			// ENDRAP
+		}
+    	
+    	// Optimization: avoid holding onto extra instances by returning the reciever if
+    	// if it is exactly the same as the result
+    	FontDescriptor result = new ArrayFontDescriptor(data);
+    	if (result.equals(this)) {
+    		return this;
+    	}
+    	
+    	return result;    	
+    }
 
     /**
      * <p>Returns a FontDescriptor that is equivalent to the reciever, but whose height
@@ -246,23 +252,27 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * fonts. 
      * @return a FontDescriptor whose height differs from the reciever by the given number
      * of points. 
-     * @since 1.0
+     * @since 1.1
      */
-    // RAP [bm]: 
-//    public final FontDescriptor increaseHeight(int heightDelta) {
-//    	if (heightDelta == 0) {
-//    		return this;
-//    	}
-//    	FontData[] data = getFontData();
-//    	
-//    	for (int i = 0; i < data.length; i++) {
-//			FontData next = data[i];
-//			
+    public final FontDescriptor increaseHeight(int heightDelta) {
+    	if (heightDelta == 0) {
+    		return this;
+    	}
+    	FontData[] data = getFontData();
+    	
+    	for (int i = 0; i < data.length; i++) {
+			FontData next = data[i];
+			
+	    	// RAP [bm]: replace with new immutable font datas
 //			next.setHeight(next.getHeight() + heightDelta);
-//		}
-//    	
-//    	return new ArrayFontDescriptor(data);    	
-//    }
+			data[i] = new FontData(next.getName(),
+								   next.getHeight() + heightDelta,
+								   next.getStyle());
+			// ENDRAP
+		}
+    	
+    	return new ArrayFontDescriptor(data);    	
+    }
     
     /**
      * Creates the Font described by this descriptor. 

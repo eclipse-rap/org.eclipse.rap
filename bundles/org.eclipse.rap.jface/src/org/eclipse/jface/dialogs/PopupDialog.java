@@ -20,6 +20,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -28,6 +29,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -326,13 +329,13 @@ public class PopupDialog extends Window {
 	 * Font to be used for the info area text. Computed based on the dialog's
 	 * font.
 	 */
-//	private Font infoFont;
+	private Font infoFont;
 
 	/**
 	 * Font to be used for the title area text. Computed based on the dialog's
 	 * font.
 	 */
-//	private Font titleFont;
+	private Font titleFont;
 
 	/**
 	 * Flags indicating whether we are listening for shell deactivate events,
@@ -827,15 +830,20 @@ public class PopupDialog extends Window {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true,
 				false).span(showDialogMenu ? 1 : 2, 1).applyTo(titleLabel);
 
-		// RAP [bm]: 
-//		Font font = titleLabel.getFont();
-//		FontData[] fontDatas = font.getFontData();
-//		for (int i = 0; i < fontDatas.length; i++) {
+		Font font = titleLabel.getFont();
+		FontData[] fontDatas = font.getFontData();
+		for (int i = 0; i < fontDatas.length; i++) {
+			// RAP: [bm] replaced with immutable FontData
 //			fontDatas[i].setStyle(SWT.BOLD);
-//		}
+			FontData data = fontDatas[i];
+			fontDatas[i] = new FontData(data.getName(), data.getHeight(), SWT.BOLD);
+			// ENDRAP
+		}
+		// RAP: [bm] resource ctor
 //		titleFont = new Font(titleLabel.getDisplay(), fontDatas);
-//		titleLabel.setFont(titleFont);
-		// RAPEND: [bm] 
+		titleFont = Graphics.getFont(fontDatas[0]);
+		// ENDRAP
+		titleLabel.setFont(titleFont);
 
 
 		if (titleText != null) {
@@ -866,15 +874,22 @@ public class PopupDialog extends Window {
 		// Status label
 		infoLabel = new Label(parent, SWT.RIGHT);
 		infoLabel.setText(infoText);
-		// RAP [bm]: 
-//		Font font = infoLabel.getFont();
-//		FontData[] fontDatas = font.getFontData();
-//		for (int i = 0; i < fontDatas.length; i++) {
+		Font font = infoLabel.getFont();
+		FontData[] fontDatas = font.getFontData();
+		for (int i = 0; i < fontDatas.length; i++) {
+			// RAP [bm]: replaced with immutable ones
 //			fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
-//		}
+			FontData data = fontDatas[i];
+			fontDatas[i] = new FontData(data.getName(),
+										data.getHeight() * 9 / 10,
+										data.getStyle());
+			// RAPEND: [bm] 
+		}
+		// RAP [bm]: font ctor
 //		infoFont = new Font(infoLabel.getDisplay(), fontDatas);
-//		infoLabel.setFont(infoFont);
-		// RAPEND: [bm] 
+		infoFont = Graphics.getFont(fontDatas[0]);
+		// RAPEND: [bm]
+		infoLabel.setFont(infoFont);
 
 		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL,
 				SWT.BEGINNING).applyTo(infoLabel);
