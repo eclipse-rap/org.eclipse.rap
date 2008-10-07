@@ -55,12 +55,8 @@ import javax.servlet.ServletException;
  * url.append( "?" );
  * url.append( IServiceHandler.REQUEST_PARAM ); 
  * url.append( "=myServiceHandler" );
- * String encodedURL = ContextProvider.getResponse().encodeURL( url.toString() );
+ * String encodedURL = RWT.getResponse().encodeURL( url.toString() );
  * </pre>
- * <!--
- * This URL could for example be passed to the HRef property of a 
- * <code>WebAnchor</code> and by this be delivered to the client.
- * -->
  * </li>
  * </p>
  * 
@@ -80,7 +76,6 @@ public interface IServiceHandler {
    * 
    * @throws IOException
    * @throws ServletException
-   * 
    */
   void service() throws IOException, ServletException; 
 
