@@ -174,14 +174,14 @@ public void handleEvent (Event e) {
 //			e.doit = event.doit;
 //			break;
 //		}
-//		case SWT.MouseDown: {
-//			((MouseListener) eventListener).mouseDown(new MouseEvent(e));
-//			break;
-//		}
-//		case SWT.MouseDoubleClick: {
-//			((MouseListener) eventListener).mouseDoubleClick(new MouseEvent(e));
-//			break;
-//		}
+		case SWT.MouseDown: {
+			((MouseListener) eventListener).mouseDown(new MouseEvent(e));
+			break;
+		}
+		case SWT.MouseDoubleClick: {
+			((MouseListener) eventListener).mouseDoubleClick(new MouseEvent(e));
+			break;
+		}
 //		case SWT.MouseEnter: {
 //			((MouseTrackListener) eventListener).mouseEnter (new MouseEvent (e));
 //			break;
@@ -202,10 +202,10 @@ public void handleEvent (Event e) {
 //			((MouseWheelListener) eventListener).mouseScrolled(new MouseEvent(e));
 //			return;
 //		}
-//		case SWT.MouseUp: {
-//			((MouseListener) eventListener).mouseUp(new MouseEvent(e));
-//			break;
-//		}
+		case SWT.MouseUp: {
+			((MouseListener) eventListener).mouseUp(new MouseEvent(e));
+			break;
+		}
 		case SWT.Move: {
 			((ControlListener) eventListener).controlMoved(new ControlEvent(e));
 			break;
