@@ -18,9 +18,6 @@
 
     <!-- validation and retrievment of startup conditions -->
     <script type="text/javascript">
-      var org_eclipse_rap_width = 1024;
-      var org_eclipse_rap_height = 768;
-
       function discoverAjax() {
         var result;
         if( window.ActiveXObject ) {
@@ -42,13 +39,18 @@
       }
   
       function discoverSize() {
+        var result = {
+          width: 1024,
+          height: 768
+        };
         if( document.layers || ( document.getElementById && !document.all ) ) {
-          org_eclipse_rap_width = window.innerWidth;
-          org_eclipse_rap_height = window.innerHeight;
+          result.width = window.innerWidth;
+          result.height = window.innerHeight;
         } else if( document.all ) {
-          org_eclipse_rap_width = document.body.clientWidth;
-          org_eclipse_rap_height = document.body.clientHeight;
-        }  
+          result.width = document.body.clientWidth;
+          result.height = document.body.clientHeight;
+        }
+        return result;
       }
       
       function appendInitParameters() {
@@ -57,12 +59,12 @@
         req.addParameter( "w4t_scriptEnabled", "true" );
         req.addParameter( "w4t_ajaxEnabled", "true" );
         req.addParameter( "startup", "${startup}" );
-        req.addParameter( "w4t_width", org_eclipse_rap_width );
-        req.addParameter( "w4t_height", org_eclipse_rap_height );
+        var size = discoverSize();
+        req.addParameter( "w4t_width", size.width );
+        req.addParameter( "w4t_height", size.height );
       }
 
       if( discoverAjax() ) {
-        discoverSize();
         // append application init parameters
         appendInitParameters();
         // rap runtime application
