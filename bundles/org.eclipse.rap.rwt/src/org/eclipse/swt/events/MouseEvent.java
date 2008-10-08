@@ -13,7 +13,8 @@ package org.eclipse.swt.events;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -76,6 +77,19 @@ public final class MouseEvent extends TypedEvent {
 //  public int count;
 
   /**
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
+   *
+   * @param event the untyped event containing the information
+   */
+  public MouseEvent( final Event event ) {
+    this( event.widget, event.type );
+    this.x = event.x;
+    this.y = event.y;
+    this.button = event.button;
+  }
+  
+  /**
    * Constructs a new instance of this class. 
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
@@ -83,7 +97,7 @@ public final class MouseEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public MouseEvent( final Control source, final int id ) {
+  public MouseEvent( final Widget source, final int id ) {
     super( source, id );
   }
   
