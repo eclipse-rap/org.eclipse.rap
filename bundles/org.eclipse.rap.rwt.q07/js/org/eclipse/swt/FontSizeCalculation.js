@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     MEASUREMENT_LABEL : new qx.ui.basic.Label(),
     
     probe : function( probeList ) {
-      for( i = 0; i < probeList.length; i++ ) {
+      for( var i = 0; i < probeList.length; i++ ) {
         var item = probeList[ i ];
         var size = org.eclipse.swt.FontSizeCalculation._doMeasurement( item );
         var param = size[ 0 ] + "," + size[ 1 ];
@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     },
     
     measureStrings : function( stringList ) {      
-      for( i = 0; i < stringList.length; i++ ) {
+      for( var i = 0; i < stringList.length; i++ ) {
         var item = stringList[ i ];
         var size = org.eclipse.swt.FontSizeCalculation._doMeasurement( item );
         var param = size[ 0 ] + "," + size[ 1 ];
