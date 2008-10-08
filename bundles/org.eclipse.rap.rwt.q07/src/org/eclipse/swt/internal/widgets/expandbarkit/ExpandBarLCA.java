@@ -37,7 +37,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    final ExpandBar expandBar = ( ExpandBar )widget;
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
