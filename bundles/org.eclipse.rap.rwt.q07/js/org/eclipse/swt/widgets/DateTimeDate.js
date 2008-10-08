@@ -239,7 +239,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
 
   members : {    
     _rwt_onChangeFont : function( evt ) {
-      var value = evt.getData();
+      var value = evt.getValue();
       this._weekdayTextField.setFont( value );
       this._dayTextField.setFont( value );
       this._monthTextField.setFont( value );
@@ -247,7 +247,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     },
     
     _rwt_onChangeTextColor : function( evt ) {
-      var value = evt.getData();
+      var value = evt.getValue();
       this._foregroundColor = value;
       this._weekdayTextField.setTextColor( value );
       this._dayTextField.setTextColor( value );
@@ -259,7 +259,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     },
     
     _rwt_onChangeBackgoundColor : function( evt ) {
-      var value = evt.getData();
+      var value = evt.getValue();
       this._backgroundColor = value;
       this._weekdayTextField.setBackgroundColor( value );
       this._dayTextField.setBackgroundColor( value );

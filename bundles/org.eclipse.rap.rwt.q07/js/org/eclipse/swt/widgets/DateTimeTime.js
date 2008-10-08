@@ -183,14 +183,14 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
   members : { 
     _rwt_onChangeFont : function( evt ) {
-      var value = evt.getData();
+      var value = evt.getValue();
       this._hoursTextField.setFont( value );
       this._minutesTextField.setFont( value );
       this._secondsTextField.setFont( value );
     },
     
     _rwt_onChangeTextColor : function( evt ) {
-      var value = evt.getData();
+      var value = evt.getValue();
       this._foregroundColor = value;
       this._hoursTextField.setTextColor( value );
       this._minutesTextField.setTextColor( value );
@@ -200,7 +200,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     },
     
     _rwt_onChangeBackgoundColor : function( evt ) {
-      var value = evt.getData();
+      var value = evt.getValue();
       this._backgroundColor = value;
       this._hoursTextField.setBackgroundColor( value );
       this._minutesTextField.setBackgroundColor( value );
