@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
   	__extractVariant: function( states ) {
-  	  result = null;
+  	  var result = null;
   	  if( states != null ) {
         for( var state in states ) {
           if( state.substr( 0, 8 ) == "variant_" ) {
