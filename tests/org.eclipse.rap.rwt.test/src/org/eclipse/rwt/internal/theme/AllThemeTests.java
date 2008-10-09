@@ -35,6 +35,9 @@ public class AllThemeTests {
     suite.addTestSuite( ThemeDefinitionReader_Test.class );
     suite.addTestSuite( ThemeManager_Test.class );
     suite.addTestSuite( ThemeUtil_Test.class );
+    suite.addTestSuite( JsonArray_Test.class );
+    suite.addTestSuite( JsonObject_Test.class );
+    suite.addTestSuite( JsonUtil_Test.class );
     // theme.css
     suite.addTestSuite( CssFileReader_Test.class );
     suite.addTestSuite( PropertyResolver_Test.class );

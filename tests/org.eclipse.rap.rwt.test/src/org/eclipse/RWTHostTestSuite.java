@@ -177,6 +177,9 @@ public class RWTHostTestSuite {
     suite.addTestSuite( QxImage_Test.class );
     suite.addTestSuite( CssFileReader_Test.class );
     suite.addTestSuite( PropertyResolver_Test.class );
+    suite.addTestSuite( JsonArray_Test.class );
+    suite.addTestSuite( JsonObject_Test.class );
+    suite.addTestSuite( JsonUtil_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );
