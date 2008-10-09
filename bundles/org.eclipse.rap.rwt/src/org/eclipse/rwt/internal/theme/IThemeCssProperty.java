@@ -19,5 +19,7 @@ public interface IThemeCssProperty {
 
   public abstract String getName();
 
+  public abstract String getType();
+
   public abstract String getDescription();
 }

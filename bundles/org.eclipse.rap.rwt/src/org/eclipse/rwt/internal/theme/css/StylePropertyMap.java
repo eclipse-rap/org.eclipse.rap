@@ -146,4 +146,19 @@ public class StylePropertyMap implements IStylePropertyMap {
   private LexicalUnit getPropertyValue( final String key ) {
     return ( LexicalUnit )properties.get( key );
   }
+
+  public boolean equals( Object obj ) {
+    boolean result = false;
+    if( obj == this ) {
+      result = true;
+    } else if( obj.getClass() == this.getClass() ) {
+      StylePropertyMap other = ( StylePropertyMap )obj;
+      result = properties.equals( other.properties );
+    }
+    return result;
+  }
+
+  public int hashCode() {
+    return properties.hashCode();
+  }
 }

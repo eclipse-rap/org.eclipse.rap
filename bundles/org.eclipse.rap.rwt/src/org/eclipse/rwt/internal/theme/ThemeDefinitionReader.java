@@ -45,6 +45,8 @@ public class ThemeDefinitionReader {
 
   private static final String ATTR_NAME = "name";
 
+  private static final String ATTR_TYPE = "type";
+
   private static final String ATTR_DESCRIPTION = "description";
 
   private static final String ATTR_DEFAULT = "default";
@@ -201,7 +203,25 @@ public class ThemeDefinitionReader {
 
   private IThemeCssProperty readProperty( final Node node ) {
     String name = getAttributeValue( node, ATTR_NAME );
-    ThemeCssProperty result = new ThemeCssProperty( name );
+    String type = getAttributeValue( node, ATTR_TYPE );
+    if( type == null ) {
+      if( "padding".equals( name ) || "margin".equals( name ) ) {
+        type = TYPE_BOXDIMENSION;
+      } else if( "color".equals( name ) || "background-color".equals( name ) ) {
+        type = TYPE_COLOR;
+      } else if( "font".equals( name ) ) {
+        type = TYPE_FONT;
+      } else if( "border".equals( name ) ) {
+        type = TYPE_BORDER;
+      } else if( "spacing".equals( name ) ) {
+        type = TYPE_DIMENSION;
+      } else if( "background-image".equals( name ) ) {
+        type = TYPE_IMAGE;
+      } else {
+        throw new IllegalArgumentException( "type unknown for property " + name );
+      }
+    }
+    ThemeCssProperty result = new ThemeCssProperty( name, type );
     String description = getAttributeValue( node, ATTR_DESCRIPTION );
     if( description != null ) {
       result.setDescription( description );

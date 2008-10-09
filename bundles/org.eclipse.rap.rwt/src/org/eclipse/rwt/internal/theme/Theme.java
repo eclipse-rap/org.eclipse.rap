@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
 
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
+
 /**
  * An instance of this class represents all the information provided by an RWT
  * theme, i.e. values from the theme properties file, derived values from the
@@ -28,6 +30,28 @@ public final class Theme {
   private final Map values;
 
   private final Map defaultValues;
+
+  // --- CSS ---
+  private StyleSheet styleSheet;
+
+  private ResourceLoader loader;
+
+  StyleSheet getStyleSheet() {
+    return styleSheet;
+  }
+
+  void setStyleSheet( StyleSheet styleSheet ) {
+    this.styleSheet = styleSheet;
+  }
+
+  void setLoader( ResourceLoader loader ) {
+    this.loader = loader;
+  }
+
+  ResourceLoader getLoader() {
+    return loader;
+  }
+  // --- CSS ---
 
   /**
    * Creates a new theme which has no default theme. In RWT theming, only the

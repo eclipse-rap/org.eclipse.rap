@@ -31,33 +31,33 @@
       description="SWT Button. Can be set up as a push-button, toggle-button, radio-button or check-box.">
 
     <property name="color"
-        styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
-        states="hover pressed"
+        type="color"
 	    description="Button text color"
         />
 
     <property name="background-color"
-        styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
-        states="hover pressed"
+        type="color"
         description="Background color"
         />
 
     <property name="border"
-        styles="PUSH TOGGLE CHECK RADIO FLAT BORDER"
-        states="pressed"
+        type="border"
         description="Button border"
         />
 
     <property name="padding"
+        type="box"
         description="Space between border and text / image"
         />
 
     <property name="spacing"
+        type="dimension"
         description="Space between text and image"
         />
 
     <property name="font"
-        styles="PUSH TOGGLE CHECK RADIO"
+        type="font"
+        description="Button font"
         />
 
 	<style name="PUSH"

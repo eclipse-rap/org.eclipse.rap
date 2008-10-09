@@ -53,7 +53,9 @@
   <element name="Table-Checkbox"
       description="Checkboxes in Table controls">
 
-    <property name="width"/>
+    <property
+        name="width"
+        type="dimension"/>
 
   </element>
 

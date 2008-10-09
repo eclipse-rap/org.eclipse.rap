@@ -45,9 +45,9 @@ public class StyleSheet_Test extends TestCase {
     SelectorWrapper[] rules = styleSheet.getMatchingStyleRules( text );
     assertNotNull( rules );
     assertEquals( 2, rules.length );
-    assertEquals( styleRules[ ALL_RULE ].getProperties(),
-                  rules[ 0 ].propertyMap );
     assertEquals( styleRules[ ATTRIBUTE_VALUE_RULE ].getProperties(),
+                  rules[ 0 ].propertyMap );
+    assertEquals( styleRules[ ALL_RULE ].getProperties(),
                   rules[ 1 ].propertyMap );
   }
 
@@ -204,6 +204,19 @@ public class StyleSheet_Test extends TestCase {
     SelectorWrapper[] styleRules = styleSheet.getMatchingStyleRules( "Button" );
     assertNotNull( styleRules );
     assertEquals( 13, styleRules.length );
+    // ensure decreasing specificity
+    int lastSpecificity = Specific.ID_SPEC * 1000;
+    for( int i = 0; i < styleRules.length; i++ ) {
+      int specificity = styleRules[ i ].selectorExt.getSpecificity();
+      assertTrue( specificity <= lastSpecificity );
+      lastSpecificity = specificity;
+    }
+  }
+
+  public void testNamespaces() {
+//    Doesn't work with Batik parser
+//    StyleRule[] rules = getStyleSheet( "TestNamespaces.css" ).getStyleRules();
+//    assertEquals( 3, rules.length );
   }
 
   private StyleSheet getStyleSheet( final String fileName )

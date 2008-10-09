@@ -11,13 +11,11 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.rwt.internal.theme.css.*;
-import org.w3c.css.sac.CSSException;
+import org.eclipse.rwt.internal.theme.css.StylableElement;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 /**
@@ -25,18 +23,13 @@ import org.w3c.css.sac.CSSException;
  */
 public final class ThemeCssAdapter {
 
-  public static Theme loadThemeFromCssFile( final String name,
-                                            final Theme defaultTheme,
-                                            final InputStream inputStream,
-                                            final ResourceLoader loader,
-                                            final String uri,
-                                            final ThemeProperty[] properties )
-    throws CSSException, IOException
+  public static Theme loadThemeFromStyleSheet( final String name,
+                                               final Theme defaultTheme,
+                                               final ResourceLoader loader,
+                                               final StyleSheet styleSheet,
+                                               final ThemeProperty[] properties )
   {
-    Theme result = new Theme( name, defaultTheme );
-    CssFileReader reader = new CssFileReader();
-    StyleSheet styleSheet = reader.parse( inputStream, uri );
-
+    Theme result = new Theme( name != null ? name : "", defaultTheme );
     for( int i = 0; i < properties.length; i++ ) {
       ThemeProperty property = properties[ i ];
       if( property.cssElements.length > 0 && property.cssProperty != null ) {
@@ -52,20 +45,16 @@ public final class ThemeCssAdapter {
         }
         StylableElement element = createDummyElement( property, null );
         QxType value
-          = styleSheet.getValue( property.cssProperty, element, loader );
+        = styleSheet.getValue( property.cssProperty, element, loader );
         if( value != null ) {
-//          System.out.println( property.name + " := " + value );
           result.setValue( property.name, value );
-//        } else {
-//          System.out.println( property.name + " not found" );
         }
         for( int j = 0; j < variants.length; j++ ) {
           String variant = variants[ j ];
           StylableElement vElement = createDummyElement( property, variant );
           QxType vValue
-            = styleSheet.getValue( property.cssProperty, vElement, loader );
+          = styleSheet.getValue( property.cssProperty, vElement, loader );
           if( vValue != null && !vValue.equals( value ) ) {
-//            System.out.println( variant + "/" + property.name + " := " + vValue );
             result.setValue( property.name, variant, vValue );
           }
         }

@@ -51,6 +51,7 @@
         states="inactive"/>
 
     <property name="background-gradient-color"
+        type="color"
         description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT"
         states="inactive"/>
 
@@ -61,7 +62,9 @@
 
     <property name="padding"/>
 
-    <property name="height"/>
+    <property
+        name="height"
+        type="dimension"/>
 
   </element>
 

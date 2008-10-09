@@ -20,13 +20,13 @@ public interface Specific {
    * Factor for b variable in specificity algorithm, see <a
    * href="http://www.w3.org/TR/CSS21/cascade.html#specificity">http://www.w3.org/TR/CSS21/cascade.html#specificity</a>.
    */
-  public static int ID_SPEC = 16 << 1;
+  public static int ID_SPEC = 1 << 16;
 
   /**
    * Factor for c variable in specificity algorithm, see <a
    * href="http://www.w3.org/TR/CSS21/cascade.html#specificity">http://www.w3.org/TR/CSS21/cascade.html#specificity</a>.
    */
-  public static int ATTR_SPEC = 8 << 1;
+  public static int ATTR_SPEC = 1 << 8;
 
   /**
    * Factor for d variable in specificity algorithm, see <a

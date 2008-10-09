@@ -27,7 +27,8 @@
 
     -->
 
-  <element name="*"
+  <!-- TODO [rst] Does a "*" element makes sense? -->
+  <!--element name="*"
       description="All elements">
 
     <property name="color"
@@ -55,7 +56,7 @@
     <property name="rwt-selectionmarker-color"
         description="Color used to mark selected items like TreeColumns and TabViews"/>
 
-  </element>
+  </element-->
 
   <element name="ToolTip"
       description="Tooltips">

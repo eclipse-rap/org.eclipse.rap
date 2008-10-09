@@ -20,11 +20,12 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
+import org.eclipse.rwt.internal.theme.css.*;
+import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
 import org.w3c.css.sac.CSSException;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -201,6 +202,8 @@ public final class ThemeManager {
 
   private int themeCount;
 
+  private CssElementHolder registeredCssElements;
+
 // TODO [rst] Evaluate timestamp approach to separate different versions of resources
 //  private String timestamp;
 
@@ -213,6 +216,7 @@ public final class ThemeManager {
     themes = new HashMap();
     adapters = new HashMap();
     registeredThemeFiles = new HashSet();
+    registeredCssElements = new CssElementHolder();
 //    timestamp = createTimeStamp();
   }
 
@@ -277,6 +281,7 @@ public final class ThemeManager {
       themeProperties.clear();
       themes.clear();
       adapters.clear();
+      registeredCssElements.clear();
       predefinedTheme = null;
       initialized = false;
       log( "ThemeManager reset" );
@@ -316,7 +321,7 @@ public final class ThemeManager {
    * @param id an id that identifies the theme in the Java code. Note that this
    *            id is not valid on the client-side. To get the id that is used
    *            on the client, see method <code>getJsThemeId</code>
-   * @param name a name that describes the theme. Currently not used
+   * @param name a name that describes the theme. Currently not used.
    * @param fileName the filename of the theme file
    * @param loader a ResourceLoader instance that is able to load resources
    *            needed by this theme
@@ -347,24 +352,19 @@ public final class ThemeManager {
                                           + fileName );
     }
     try {
-      // TODO [rst] cleanup
       Theme theme;
       if( fileName.toLowerCase().endsWith( ".css" ) ) {
         try {
-          ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
-          Iterator iterator = themeProperties.keySet().iterator();
-          for( int i = 0; i < propArray.length; i++ ) {
-            if( iterator.hasNext() ) {
-              Object key = iterator.next();
-              propArray[ i ] = ( ThemeProperty )themeProperties.get( key );
-            }
-          }
-          theme = ThemeCssAdapter.loadThemeFromCssFile( name != null ? name : "",
-                                                        predefinedTheme,
-                                                        inputStream,
-                                                        loader,
-                                                        fileName,
-                                                        propArray );
+          ThemeProperty[] props = getThemeProperties();
+          CssFileReader reader = new CssFileReader();
+          StyleSheet styleSheet = reader.parse( inputStream, fileName );
+          theme = ThemeCssAdapter.loadThemeFromStyleSheet( name,
+                                                           predefinedTheme,
+                                                           loader,
+                                                           styleSheet,
+                                                           props );
+          theme.setLoader( loader );
+          theme.setStyleSheet( styleSheet );
         } catch( CSSException e ) {
           throw new ThemeManagerException( "Failed parsing CSS file", e );
         }
@@ -421,8 +421,8 @@ public final class ThemeManager {
     registerJsLibrary( "org/eclipse/swt/theme/ThemeValues.js", compress );
     Iterator iterator = themes.keySet().iterator();
     while( iterator.hasNext() ) {
-      String id = ( String )iterator.next();
-      registerThemeFiles( id, compress );
+      String themeId = ( String )iterator.next();
+      registerThemeFiles( themeId, compress );
     }
   }
 
@@ -612,9 +612,20 @@ public final class ThemeManager {
             themeProperties.put( prop.name, prop );
           }
         } );
-      } catch( final SAXException e ) {
+        // --- CSS
+        IThemeCssElement[] elements = reader.getThemeCssElements();
+        for( int i = 0; i < elements.length; i++ ) {
+          try {
+            registeredCssElements.addElement( elements[ i ] );
+          } catch( IllegalArgumentException e ) {
+            String message = "Error while processing " + fileName;
+            throw new ThemeManagerException( message , e );
+          }
+        }
+        // ---
+      } catch( final Exception e ) {
         String message = "Failed to parse theme definition file " + fileName;
-        throw new RuntimeException( message, e );
+        throw new ThemeManagerException( message, e );
       } finally {
         inStream.close();
       }
@@ -707,6 +718,8 @@ public final class ThemeManager {
         sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
         sb.append( createMetaTheme( wrapper.theme, jsId ) );
         sb.append( createThemeStore( wrapper.theme, jsId ) );
+//        sb.append( createCssThemeCode( wrapper.theme, jsId ) );
+        log( createCssThemeCode( wrapper.theme, jsId ) );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
@@ -990,6 +1003,72 @@ public final class ThemeManager {
     }
     sb.append( "delete ts;\n" );
     return sb.toString();
+  }
+
+  private String createCssThemeCode( final Theme theme, final String jsId ) {
+    StyleSheet styleSheet = theme.getStyleSheet();
+    IThemeCssElement[] elements = registeredCssElements.getAllElements();
+    JsonObject mainObject = new JsonObject();
+    for( int i = 0; i < elements.length; i++ ) {
+      IThemeCssElement element = elements[ i ];
+      String elementName = element.getName();
+      JsonObject elementObj = new JsonObject();
+      IThemeCssProperty[] properties = element.getProperties();
+      for( int j = 0; j < properties.length; j++ ) {
+        IThemeCssProperty property = properties[ j ];
+        JsonArray valuesArray = new JsonArray();
+        if( styleSheet != null ) {
+          SelectorWrapper[] rules
+            = styleSheet.getMatchingStyleRules( elementName );
+          for( int k = 0; k < rules.length; k++ ) {
+            SelectorWrapper selector = rules[ k ];
+            QxType value = selector.propertyMap.getValue( property.getName(),
+                                                          theme.getLoader() );
+            if( value != null ) {
+              JsonArray array = new JsonArray();
+              String[] constraints = selector.selectorExt.getConstraints();
+              array.append( join( constraints, "," ) );
+              array.append( value.toDefaultString() );
+              valuesArray.append( array );
+            }
+          }
+        }
+        elementObj.append( property.getName(), valuesArray );
+      }
+      mainObject.append( elementName, elementObj );
+    }
+    StringBuffer sb = new StringBuffer();
+    sb.append( "/* === EXPERIMENTAL ===\n" );
+    sb.append( mainObject.toString() );
+    sb.append( "\n * === EXPERIMENTAL ===*/\n" );
+    return sb.toString();
+  }
+
+  private static String join( final String[] array, final String glue ) {
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < array.length; i++ ) {
+      String element = array[ i ];
+      if( i != 0 ) {
+        buffer.append( glue );
+      }
+      buffer.append( element );
+    }
+    return buffer.toString();
+  }
+
+  /**
+   * Returns theme properties as array.
+   */
+  private ThemeProperty[] getThemeProperties() {
+    ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
+    Iterator iterator = themeProperties.keySet().iterator();
+    for( int i = 0; i < propArray.length; i++ ) {
+      if( iterator.hasNext() ) {
+        Object key = iterator.next();
+        propArray[ i ] = ( ThemeProperty )themeProperties.get( key );
+      }
+    }
+    return propArray;
   }
 
   /**

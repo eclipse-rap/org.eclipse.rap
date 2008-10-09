@@ -27,13 +27,14 @@
 
     -->
 
-  <element name="*"
+  <!-- TODO [rst] Does a "*" element makes sense? -->
+  <!--element name="*"
       description="All elements">
 
     <property name="border"
         styles="BORDER"/>
 
-  </element>
+  </element-->
 
   <!-- C O M P A T I B I L I T Y
 

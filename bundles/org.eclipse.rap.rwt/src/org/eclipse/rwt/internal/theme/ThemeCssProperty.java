@@ -17,14 +17,23 @@ package org.eclipse.rwt.internal.theme;
 public class ThemeCssProperty implements IThemeCssProperty {
 
   private final String name;
+  private final String type;
   private String description;
 
-  public ThemeCssProperty( final String name ) {
+  public ThemeCssProperty( final String name, final String type ) {
+    if( name == null || type == null ) {
+      throw new NullPointerException( "null argument" );
+    }
     this.name = name;
+    this.type = type;
   }
 
   public String getName() {
     return name;
+  }
+
+  public String getType() {
+    return type;
   }
 
   public String getDescription() {

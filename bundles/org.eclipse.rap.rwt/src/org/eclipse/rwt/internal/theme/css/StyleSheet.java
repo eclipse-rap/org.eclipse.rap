@@ -53,7 +53,6 @@ public class StyleSheet {
         buffer.add( selectorWrapper );
       }
     }
-    Collections.sort( buffer, COMPARATOR );
     SelectorWrapper[] result = new SelectorWrapper[ buffer.size() ];
     buffer.toArray( result );
     return result;
@@ -68,7 +67,6 @@ public class StyleSheet {
         buffer.add( ruleWrapper );
       }
     }
-    Collections.sort( buffer, COMPARATOR );
     SelectorWrapper[] result = new SelectorWrapper[ buffer.size() ];
     buffer.toArray( result );
     return result;
@@ -80,7 +78,7 @@ public class StyleSheet {
   {
     QxType result = null;
     SelectorWrapper[] selectorWrappers = getMatchingSelectors( element );
-    for( int i = 0; i < selectorWrappers.length; i++ ) {
+    for( int i = 0; i < selectorWrappers.length && result == null; i++ ) {
       IStylePropertyMap properties = selectorWrappers[ i ].propertyMap;
       QxType value = properties.getValue( cssProperty, loader );
       if( value != null ) {
@@ -127,6 +125,8 @@ public class StyleSheet {
         selectorWrappersList.add( selectorWrapper );
       }
     }
+    Collections.sort( selectorWrappersList, COMPARATOR );
+    Collections.reverse( selectorWrappersList );
     selectorWrappers = new SelectorWrapper[ selectorWrappersList.size() ];
     selectorWrappersList.toArray( selectorWrappers );
   }
