@@ -28,7 +28,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   private static final Class[] ADAPTER_LIST = new Class[] {
     ILifeCycleAdapter.class,
   };
-  
+
   // Holds the single display life cycle adapter. MUST be created lazily
   // because its constructor needs a resource manager to be in place
   private static IDisplayLifeCycleAdapter displayAdapter;
@@ -38,9 +38,9 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
 
   public Object getAdapter( final Object adaptable, final Class adapter ) {
     Object result = null;
-    if( isDisplayLCA( adaptable, adapter ) ) { 
+    if( isDisplayLCA( adaptable, adapter ) ) {
       result = getDisplayLCA();
-    } else if( isWidgetLCA( adaptable, adapter ) ) { 
+    } else if( isWidgetLCA( adaptable, adapter ) ) {
       result = getWidgetLCA( adaptable.getClass() );
     }
     return result;
@@ -49,10 +49,10 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   public Class[] getAdapterList() {
     return ADAPTER_LIST;
   }
-  
+
   ///////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapter for display
-  
+
   private boolean isDisplayLCA( final Object adaptable, final Class adapter ) {
     return adaptable instanceof Display && adapter == ILifeCycleAdapter.class;
   }
@@ -63,22 +63,16 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
     }
     return displayAdapter;
   }
-  
+
   ////////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapters for widgets
-  
+
   private boolean isWidgetLCA( final Object adaptable, final Class adapter ) {
     return adaptable instanceof Widget && adapter == ILifeCycleAdapter.class;
   }
-  
-  private static String getSimpleClassName( final Class clazz ) {
-    String className = clazz.getName();
-    int idx = className.lastIndexOf( '.' );
-    return className.substring( idx + 1 );
-  }
-  
-  private static synchronized ILifeCycleAdapter getWidgetLCA( 
-    final Class clazz ) 
+
+  private static synchronized ILifeCycleAdapter getWidgetLCA(
+                                                             final Class clazz )
   {
     // Note [fappel]: Since this code is performance critical, don't change
     //                anything without checking it against a profiler.
@@ -99,22 +93,23 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
       String text = "Failed to obtain life cycle adapter for class ''{0}\''.";
       Object[] params = new Object[]{ clazz.getName() };
       String msg = MessageFormat.format( text, params );
-      throw new LifeCycleAdapterException( msg );      
+      throw new LifeCycleAdapterException( msg );
     }
     return result;
   }
-  
-  private static IWidgetLifeCycleAdapter loadWidgetLCA( final Class clazz ) 
-  {
+
+  private static IWidgetLifeCycleAdapter loadWidgetLCA( final Class clazz ) {
     IWidgetLifeCycleAdapter result = null;
-    String[] variants = getPackageVariants( clazz.getPackage().getName() );
+    String packageName = clazz.getPackage().getName();
+    String[] variants = LifeCycleAdapterUtil.getPackageVariants( packageName );
     for( int i = 0; result == null && i < variants.length; i++ ) {
       StringBuffer buffer = new StringBuffer();
       buffer.append( variants[ i ] );
       buffer.append( "." );
-      buffer.append( getSimpleClassName( clazz ).toLowerCase() );
+      String simpleClassName = LifeCycleAdapterUtil.getSimpleClassName( clazz );
+      buffer.append( simpleClassName.toLowerCase() );
       buffer.append( "kit." );
-      buffer.append( getSimpleClassName( clazz ) );
+      buffer.append( simpleClassName );
       buffer.append( "LCA" );
       String classToLoad = buffer.toString();
       ClassLoader loader = clazz.getClassLoader();
@@ -123,33 +118,6 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
         result = ( IWidgetLifeCycleAdapter )adapterClass.newInstance();
       } catch( final Throwable thr ) {
         // ignore and try to load next package name variant
-      }
-    }
-    return result;
-  }
-  
-  static String[] getPackageVariants( final String packageName ) {
-    String[] result;
-    if( packageName == null || "".equals( packageName ) ) {
-      result = new String[] { "internal" };
-    } else {
-      String[] segments = packageName.split( "\\." );
-      result = new String[ segments.length + 1 ];
-      for( int i = 0; i < result.length; i++ ) {
-        StringBuffer buffer = new StringBuffer();
-        for( int j = 0; j < segments.length; j++ ) {
-          if( j == i ) {
-            buffer.append( "internal." );
-          }
-          buffer.append( segments[ j ] );
-          if( j < segments.length - 1 ) {
-            buffer.append( "." );
-          }
-        }
-        if( i == segments.length ) {
-          buffer.append( ".internal" );
-        }
-        result[ i ] = buffer.toString();
       }
     }
     return result;

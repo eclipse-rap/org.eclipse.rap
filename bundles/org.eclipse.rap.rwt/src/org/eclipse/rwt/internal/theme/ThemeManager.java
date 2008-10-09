@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -569,9 +570,10 @@ public final class ThemeManager {
   private void processThemeableWidget( final ThemeableWidgetWrapper themeWidget )
   {
     log( "Processing widget: " + themeWidget.widget.getName() );
-    String[] variants
-      = getPackageVariants( themeWidget.widget.getPackage().getName() );
-    String className = getSimpleClassName( themeWidget.widget );
+    String packageName = themeWidget.widget.getPackage().getName();
+    String[] variants = LifeCycleAdapterUtil.getPackageVariants( packageName );
+    String className
+      = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
     boolean found = false;
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
@@ -1085,48 +1087,6 @@ public final class ThemeManager {
     return THEME_RESOURCE_DEST + jsThemeName + "/widgets";
   }
 
-  /**
-   * Inserts the package path segment <code>internal</code> at every possible
-   * position in a given package name.
-   */
-  // TODO [rh] seems to be a copy of LifeCycleAdapterFactory, unite if possible
-  private static String[] getPackageVariants( final String packageName ) {
-    String[] result;
-    if( packageName == null || "".equals( packageName ) ) {
-      result = new String[] { "internal" };
-    } else {
-      String[] segments = packageName.split( "\\." );
-      result = new String[ segments.length + 1 ];
-      for( int i = 0; i < result.length; i++ ) {
-        StringBuffer buffer = new StringBuffer();
-        for( int j = 0; j < segments.length; j++ ) {
-          if( j == i ) {
-            buffer.append( "internal." );
-          }
-          buffer.append( segments[ j ] );
-          if( j < segments.length - 1 ) {
-            buffer.append( "." );
-          }
-        }
-        if( i == segments.length ) {
-          buffer.append( ".internal" );
-        }
-        result[ i ] = buffer.toString();
-      }
-    }
-    return result;
-  }
-
-  /**
-   * For a given full class name, this method returns the class name without
-   * package prefix.
-   */
-  // TODO [rst] Copy of LifeCycleAdapterFactory, move to a utility class?
-  private static String getSimpleClassName( final Class clazz ) {
-    String className = clazz.getName();
-    int idx = className.lastIndexOf( '.' );
-    return className.substring( idx + 1 );
-  }
 
   private void checkId( final String id ) {
     if( id == null ) {

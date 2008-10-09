@@ -92,35 +92,6 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( shell1LCA, otherSessionAdapter );
   }
 
-  public void testLCAClassNameVariants() {
-    String packageName = "org.eclipse.swt.widgets";
-    String[] variants
-      = LifeCycleAdapterFactory.getPackageVariants( packageName );
-    String expected = "internal.org.eclipse.swt.widgets";
-    assertEquals( expected, variants[ 0 ] );
-    expected = "org.internal.eclipse.swt.widgets";
-    assertEquals( expected, variants[ 1 ] );
-    expected = "org.eclipse.internal.swt.widgets";
-    assertEquals( expected, variants[ 2 ] );
-    expected = "org.eclipse.swt.internal.widgets";
-    assertEquals( expected, variants[ 3 ] );
-    expected = "org.eclipse.swt.widgets.internal";
-    assertEquals( expected, variants[ 4 ] );
-    assertEquals( 5, variants.length );
-    // default package
-    packageName = "";
-    variants = LifeCycleAdapterFactory.getPackageVariants( packageName );
-    expected = "internal";
-    assertEquals( expected, variants[ 0 ] );
-    assertEquals( 1, variants.length );
-    // default package as if called by LifeCycleAdapterFactory#loadWidgetLCA
-    packageName = null;
-    variants = LifeCycleAdapterFactory.getPackageVariants( packageName );
-    expected = "internal";
-    assertEquals( expected, variants[ 0 ] );
-    assertEquals( 1, variants.length );
-  }
-
   private void removeDisplay() {
     ISessionStore session = ContextProvider.getSession();
     Enumeration attributeNames = session.getAttributeNames();

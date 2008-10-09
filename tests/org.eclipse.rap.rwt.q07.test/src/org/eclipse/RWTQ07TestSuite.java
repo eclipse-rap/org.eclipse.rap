@@ -78,6 +78,7 @@ public class RWTQ07TestSuite {
     //                to the host bundle testsuite
     // == LifeCycle ==
     suite.addTestSuite( LifeCycleAdapter_Test.class );
+    suite.addTestSuite( LifeCycleAdapterUtil_Test.class );
     suite.addTestSuite( RenderDispose_Test.class );
     suite.addTestSuite( JSWriter_Test.class );
     suite.addTestSuite( WidgetLCAUtil_Test.class );
