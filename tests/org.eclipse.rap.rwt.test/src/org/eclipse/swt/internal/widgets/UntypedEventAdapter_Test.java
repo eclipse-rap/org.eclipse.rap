@@ -103,6 +103,9 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.addListener( SWT.MouseDoubleClick, listener );
     adapter.mouseDoubleClick( new MouseEvent( widget, 0 ) );
     assertEquals( SWT.MouseDoubleClick, eventType );
+    adapter.addListener( SWT.KeyDown, listener );
+    adapter.keyPressed( new KeyEvent( widget, 0 ) );
+    assertEquals( SWT.KeyDown, eventType );
   }
 
   public void testAdditionAndRemovalOfListener() throws Exception {
@@ -198,5 +201,20 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( selEvent.height, eventLog[ 0 ].height );
     assertEquals( selEvent.width, eventLog[ 0 ].width );
     assertEquals( selEvent.detail, eventLog[ 0 ].detail );
+    // Key event
+    adapter = new UntypedEventAdapter();
+    adapter.addListener( SWT.KeyDown, listener );
+    KeyEvent keyEvent = new KeyEvent( shell, KeyEvent.KEY_PRESSED );
+    keyEvent.character = 'x';
+    keyEvent.keyCode = 123;
+    keyEvent.stateMask = 321;
+    keyEvent.data = new Object();
+    keyEvent.doit = false;
+    adapter.keyPressed( keyEvent );
+    assertEquals( keyEvent.character, eventLog[ 0 ].character );
+    assertEquals( keyEvent.keyCode, eventLog[ 0 ].keyCode );
+    assertEquals( keyEvent.stateMask, eventLog[ 0 ].stateMask );
+    assertEquals( keyEvent.data, eventLog[ 0 ].data );
+    assertEquals( keyEvent.doit, eventLog[ 0 ].doit );
   }
 }

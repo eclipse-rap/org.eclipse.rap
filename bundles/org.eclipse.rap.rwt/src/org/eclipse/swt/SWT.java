@@ -44,6 +44,38 @@ public class SWT {
   public static final int None = 0;
 
   /**
+   * The key down event type (value is 1).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * <!-- @see org.eclipse.swt.widgets.Display#addFilter -->
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addKeyListener
+   * <!-- @see org.eclipse.swt.widgets.Tracker#addKeyListener -->
+   * @see org.eclipse.swt.events.KeyListener#keyPressed
+   * @see org.eclipse.swt.events.KeyEvent
+   *
+   * @since 1.2
+   */
+  public static final int KeyDown = 1;
+  
+  /**
+   * The key up event type (value is 2).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addKeyListener
+   * @see org.eclipse.swt.widgets.Tracker#addKeyListener
+   * @see org.eclipse.swt.events.KeyListener#keyReleased
+   * @see org.eclipse.swt.events.KeyEvent
+   * 
+   * @since 1.2
+   */
+  public static final int KeyUp = 2;
+  
+  /**
    * The mouse down event type (value is 3).
    *
    * @see org.eclipse.swt.widgets.Widget#addListener
@@ -473,6 +505,14 @@ public class SWT {
   public static final int FILL = 4;
 
   /**
+   * ASCII character convenience constant for the delete character
+   * (value is the <code>char</code> with value 127).
+   * 
+   * @since 1.2
+   */
+  public static final char DEL = 0x7F;
+ 
+  /**
    * ASCII character convenience constant for the escape character
    * (value is the <code>char</code> with value 27).
    *
@@ -513,6 +553,67 @@ public class SWT {
   public static final char TAB = '\t';
 
   /**
+   * keyboard and/or mouse event mask indicating that the ALT key
+   * was pushed on the keyboard when the event was generated
+   * (value is 1&lt;&lt;16).
+   * 
+   * @since 1.1
+   */
+  public static final int ALT = 1 << 16;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the SHIFT key
+   * was pushed on the keyboard when the event was generated
+   * (value is 1&lt;&lt;17).
+   *    
+   * @since 1.1
+   */
+  public static final int SHIFT = 1 << 17;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the CTRL key
+   * was pushed on the keyboard when the event was generated
+   * (value is 1&lt;&lt;18).
+   * 
+   * @since 1.1
+   */
+  public static final int CTRL = 1 << 18;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the CTRL key
+   * was pushed on the keyboard when the event was generated. This
+   * is a synonym for CTRL (value is 1&lt;&lt;18).
+   * 
+   * @since 1.1
+   */
+  public static final int CONTROL = CTRL;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the COMMAND key
+   * was pushed on the keyboard when the event was generated
+   * (value is 1&lt;&lt;22).
+   * 
+   * @since 1.1
+   */
+  public static final int COMMAND = 1 << 22;
+
+  /**
+   * Keyboard and/or mouse event mask indicating all possible
+   * keyboard modifiers.
+   * 
+   * To allow for the future, this mask  is intended to be used in 
+   * place of code that references  each individual keyboard mask. 
+   *  For example, the following expression will determine whether 
+   * any modifier is pressed and will continue to work as new modifier 
+   * masks are added.
+   * 
+   * <code>(stateMask & SWT.MODIFIER_MASK) != 0</code>.
+   * 
+   * @since 1.2
+   */
+  public static final int MODIFIER_MASK;
+  
+  /**
    * Accelerator constant used to differentiate a key code from a
    * unicode character.
    *
@@ -530,50 +631,415 @@ public class SWT {
    * <code>((SWT.MOD3 | SWT.F2) & SWT.KEYCODE_BIT) != 0</code>.
    *
    * (value is (1&lt;&lt;24))
+   *
+   * @since 1.1
    */
   public static final int KEYCODE_BIT = ( 1 << 24 );
 
   /**
+   * Accelerator constant used to extract the key stroke portion of
+   * an accelerator.
+   * 
+   * The key stroke may be a key code or a unicode
+   * value.  If the key stroke is a key code <code>KEYCODE_BIT</code>
+   * will be set.
+   * 
+   * @since 1.2
+   */ 
+  public static final int KEY_MASK = KEYCODE_BIT + 0xFFFF;
+  
+  /**
+   * Keyboard event constant representing the UP ARROW key
+   * (value is (1&lt;&lt;24)+1).
+   * 
+   * @since 1.2
+   */
+  public static final int ARROW_UP = KEYCODE_BIT + 1;
+
+  /**
+   * Keyboard event constant representing the DOWN ARROW key
+   * (value is (1&lt;&lt;24)+2).
+   * 
+   * @since 1.2
+   */
+  public static final int ARROW_DOWN = KEYCODE_BIT + 2;
+
+  /**
+   * Keyboard event constant representing the LEFT ARROW key
+   * (value is (1&lt;&lt;24)+3).
+   * 
+   * @since 1.2
+   */
+  public static final int ARROW_LEFT = KEYCODE_BIT + 3;
+
+  /**
+   * Keyboard event constant representing the RIGHT ARROW key
+   * (value is (1&lt;&lt;24)+4).
+   * 
+   * @since 1.2
+   */
+  public static final int ARROW_RIGHT = KEYCODE_BIT + 4;
+
+  /**
+   * Keyboard event constant representing the PAGE UP key
+   * (value is (1&lt;&lt;24)+5).
+   * 
+   * @since 1.2
+   */
+  public static final int PAGE_UP = KEYCODE_BIT + 5;
+
+  /**
+   * Keyboard event constant representing the PAGE DOWN key
+   * (value is (1&lt;&lt;24)+6).
+   * 
+   * @since 1.2
+   */
+  public static final int PAGE_DOWN = KEYCODE_BIT + 6;
+
+  /**
+   * Keyboard event constant representing the HOME key
+   * (value is (1&lt;&lt;24)+7).
+   * 
+   * @since 1.2
+   */
+  public static final int HOME = KEYCODE_BIT + 7;
+
+  /**
    * Keyboard event constant representing the END key
    * (value is (1&lt;&lt;24)+8).
+   * 
+   * @since 1.1
    */
   public static final int END = KEYCODE_BIT + 8;
 
   /**
-   * keyboard and/or mouse event mask indicating that the ALT key
-   * was pushed on the keyboard when the event was generated
-   * (value is 1&lt;&lt;16).
+   * Keyboard event constant representing the INSERT key
+   * (value is (1&lt;&lt;24)+9).
+   * 
+   * @since 1.2
    */
-  public static final int ALT = 1 << 16;
+  public static final int INSERT = KEYCODE_BIT + 9;
 
   /**
-   * Keyboard and/or mouse event mask indicating that the SHIFT key
-   * was pushed on the keyboard when the event was generated
-   * (value is 1&lt;&lt;17).
+   * Keyboard event constant representing the F1 key
+   * (value is (1&lt;&lt;24)+10).
+   * 
+   * @since 1.2
    */
-  public static final int SHIFT = 1 << 17;
+  public static final int F1 = KEYCODE_BIT + 10;
+  
+  /**
+   * Keyboard event constant representing the F2 key
+   * (value is (1&lt;&lt;24)+11).
+   * 
+   * @since 1.2
+   */
+  public static final int F2 = KEYCODE_BIT + 11;
+  
+  /**
+   * Keyboard event constant representing the F3 key
+   * (value is (1&lt;&lt;24)+12).
+   * 
+   * @since 1.2
+   */
+  public static final int F3 = KEYCODE_BIT + 12;
+  
+  /**
+   * Keyboard event constant representing the F4 key
+   * (value is (1&lt;&lt;24)+13).
+   * 
+   * @since 1.2
+   */
+  public static final int F4 = KEYCODE_BIT + 13;
+  
+  /**
+   * Keyboard event constant representing the F5 key
+   * (value is (1&lt;&lt;24)+14).
+   * 
+   * @since 1.2
+   */
+  public static final int F5 = KEYCODE_BIT + 14;
+  
+  /**
+   * Keyboard event constant representing the F6 key
+   * (value is (1&lt;&lt;24)+15).
+   * 
+   * @since 1.2
+   */
+  public static final int F6 = KEYCODE_BIT + 15;
+  
+  /**
+   * Keyboard event constant representing the F7 key
+   * (value is (1&lt;&lt;24)+16).
+   * 
+   * @since 1.2
+   */
+  public static final int F7 = KEYCODE_BIT + 16;
+  
+  /**
+   * Keyboard event constant representing the F8 key
+   * (value is (1&lt;&lt;24)+17).
+   * 
+   * @since 1.2
+   */
+  public static final int F8 = KEYCODE_BIT + 17;
+  
+  /**
+   * Keyboard event constant representing the F9 key
+   * (value is (1&lt;&lt;24)+18).
+   * 
+   * @since 1.2
+   */
+  public static final int F9 = KEYCODE_BIT + 18;
+  
+  /**
+   * Keyboard event constant representing the F10 key
+   * (value is (1&lt;&lt;24)+19).
+   * 
+   * @since 1.2
+   */
+  public static final int F10 = KEYCODE_BIT + 19;
+  
+  /**
+   * Keyboard event constant representing the F11 key
+   * (value is (1&lt;&lt;24)+20).
+   * 
+   * @since 1.2
+   */
+  public static final int F11 = KEYCODE_BIT + 20;
+  
+  /**
+   * Keyboard event constant representing the F12 key
+   * (value is (1&lt;&lt;24)+21).
+   * 
+   * @since 1.2
+   */
+  public static final int F12 = KEYCODE_BIT + 21;
+
+// TODO [rh] find out how what client-side the key codes are for F13 - F15  
+//  /**
+//   * Keyboard event constant representing the F13 key
+//   * (value is (1&lt;&lt;24)+22).
+//   * 
+//   * @since 1.2
+//   */
+//  public static final int F13 = KEYCODE_BIT + 22;
+//  
+//  /**
+//   * Keyboard event constant representing the F14 key
+//   * (value is (1&lt;&lt;24)+23).
+//   * 
+//   * @since 1.2
+//   */
+//  public static final int F14 = KEYCODE_BIT + 23;
+//  
+//  /**
+//   * Keyboard event constant representing the F15 key
+//   * (value is (1&lt;&lt;24)+24).
+//   * 
+//   * @since 1.2
+//   */
+//  public static final int F15 = KEYCODE_BIT + 24;
+//  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad multiply key (value is (1&lt;&lt;24)+42).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_MULTIPLY = KEYCODE_BIT + 42;
+  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad add key (value is (1&lt;&lt;24)+43).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_ADD = KEYCODE_BIT + 43;
+  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad subtract key (value is (1&lt;&lt;24)+45).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_SUBTRACT = KEYCODE_BIT + 45;
 
   /**
-   * Keyboard and/or mouse event mask indicating that the CTRL key
-   * was pushed on the keyboard when the event was generated
-   * (value is 1&lt;&lt;18).
+   * Keyboard event constant representing the numeric key
+   * pad decimal key (value is (1&lt;&lt;24)+46).
+   * 
+   * @since 1.2
    */
-  public static final int CTRL = 1 << 18;
+  public static final int KEYPAD_DECIMAL = KEYCODE_BIT + 46;
 
   /**
-   * Keyboard and/or mouse event mask indicating that the CTRL key
-   * was pushed on the keyboard when the event was generated. This
-   * is a synonym for CTRL (value is 1&lt;&lt;18).
+   * Keyboard event constant representing the numeric key
+   * pad divide key (value is (1&lt;&lt;24)+47).
+   * 
+   * @since 1.2
    */
-  public static final int CONTROL = CTRL;
+  public static final int KEYPAD_DIVIDE = KEYCODE_BIT + 47;
 
   /**
-   * Keyboard and/or mouse event mask indicating that the COMMAND key
-   * was pushed on the keyboard when the event was generated
-   * (value is 1&lt;&lt;22).
+   * Keyboard event constant representing the numeric key
+   * pad zero key (value is (1&lt;&lt;24)+48).
+   * 
+   * @since 1.2
    */
-  public static final int COMMAND = 1 << 22;
+  public static final int KEYPAD_0 = KEYCODE_BIT + 48;
 
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad one key (value is (1&lt;&lt;24)+49).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_1 = KEYCODE_BIT + 49;
+
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad two key (value is (1&lt;&lt;24)+50).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_2 = KEYCODE_BIT + 50;
+
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad three key (value is (1&lt;&lt;24)+51).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_3 = KEYCODE_BIT + 51;
+
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad four key (value is (1&lt;&lt;24)+52).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_4 = KEYCODE_BIT + 52;
+  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad five key (value is (1&lt;&lt;24)+53).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_5 = KEYCODE_BIT + 53;
+  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad six key (value is (1&lt;&lt;24)+54).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_6 = KEYCODE_BIT + 54;
+
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad seven key (value is (1&lt;&lt;24)+55).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_7 = KEYCODE_BIT + 55;
+
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad eight key (value is (1&lt;&lt;24)+56).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_8 = KEYCODE_BIT + 56;
+  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad nine key (value is (1&lt;&lt;24)+57).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_9 = KEYCODE_BIT + 57;
+
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad equal key (value is (1&lt;&lt;24)+61).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_EQUAL = KEYCODE_BIT + 61;
+  
+  /**
+   * Keyboard event constant representing the numeric key
+   * pad enter key (value is (1&lt;&lt;24)+80).
+   * 
+   * @since 1.2
+   */
+  public static final int KEYPAD_CR = KEYCODE_BIT + 80;
+  
+  /**
+   * Keyboard event constant representing the help
+   * key (value is (1&lt;&lt;24)+81).
+   * 
+   * NOTE: The HELP key maps to the key labeled "help",
+   * not "F1". If your keyboard does not have a HELP key,
+   * you will never see this key press.  To listen for
+   * help on a control, use SWT.Help.
+   * 
+   * @since 1.2
+   * 
+   * @see SWT#Help
+   */
+  public static final int HELP = KEYCODE_BIT + 81;
+  
+  /**
+   * Keyboard event constant representing the caps
+   * lock key (value is (1&lt;&lt;24)+82).
+   * 
+   * @since 1.2
+   */
+  public static final int CAPS_LOCK = KEYCODE_BIT + 82;
+  
+  /**
+   * Keyboard event constant representing the num
+   * lock key (value is (1&lt;&lt;24)+83).
+   * 
+   * @since 1.2
+   */
+  public static final int NUM_LOCK = KEYCODE_BIT + 83;
+  
+  /**
+   * Keyboard event constant representing the scroll
+   * lock key (value is (1&lt;&lt;24)+84).
+   * 
+   * @since 1.2
+   */
+  public static final int SCROLL_LOCK = KEYCODE_BIT + 84;
+  
+  /**
+   * Keyboard event constant representing the pause
+   * key (value is (1&lt;&lt;24)+85).
+   * 
+   * @since 1.2
+   */
+  public static final int PAUSE = KEYCODE_BIT + 85;
+  
+  /**
+   * Keyboard event constant representing the break
+   * key (value is (1&lt;&lt;24)+86).
+   * 
+   * @since 1.2
+   */
+  public static final int BREAK = KEYCODE_BIT + 86;
+  
+  /**
+   * Keyboard event constant representing the print screen
+   * key (value is (1&lt;&lt;24)+87).
+   * 
+   * @since 1.2
+   */
+  public static final int PRINT_SCREEN = KEYCODE_BIT + 87;
+  
   /**
    * Style constant for line separator behavior (value is 1&lt;&lt;1).
    * <p><b>Used By:</b><ul>
@@ -1859,6 +2325,16 @@ public class SWT {
    */
   public static final int LONG = 1 << 28;
 
+  static {
+    /*
+    * These values represent bit masks that may need to
+    * expand in the future.  Therefore they are not initialized
+    * in the declaration to stop the compiler from inlining.
+    */
+//    BUTTON_MASK = BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4 | BUTTON5;
+    MODIFIER_MASK = ALT | SHIFT | CTRL | COMMAND;
+  }
+  
   /**
    * Throws an appropriate exception based on the passed in error code.
    *

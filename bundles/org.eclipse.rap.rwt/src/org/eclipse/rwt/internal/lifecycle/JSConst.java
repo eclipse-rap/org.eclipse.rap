@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.lifecycle.JSVar;
@@ -58,6 +57,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDown";
   public static final String EVENT_MOUSE_DOUBLE_CLICK
     = "org.eclipse.swt.events.mouseDoubleClick";
+  public static final String EVENT_KEY_DOWN
+    = "org.eclipse.swt.events.keyDown";
 
 
   // Parameter names that specify further event details
@@ -87,10 +88,11 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDoubleClick.x";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_Y
     = "org.eclipse.swt.events.mouseDoubleClick.y";
+  public static final String EVENT_KEY_DOWN_KEY_CODE
+    = "org.eclipse.swt.events.keyDown.keyCode";
 
-  /**
-   * <p>Indicates that a shell was closed on the client side. The parameter
-   * value holds the id of the shell that was closed.</p> */
+  // Indicates that a shell was closed on the client side. The parameter
+  // value holds the id of the shell that was closed.
   public static final String EVENT_SHELL_CLOSED
     = "org.eclipse.swt.widgets.Shell_close";
 

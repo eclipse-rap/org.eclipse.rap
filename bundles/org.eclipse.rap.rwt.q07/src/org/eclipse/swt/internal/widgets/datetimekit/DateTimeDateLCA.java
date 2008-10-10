@@ -19,9 +19,8 @@ import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.DateTime;
 
-public class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
+final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
 
-  static final String TYPE_POOL_ID = DateTimeDateLCA.class.getName();
   // Property names for preserveValues
   static final String PROP_DAY = "day";
   static final String PROP_MONTH = "month";
@@ -57,6 +56,7 @@ public class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
       dateTime.setYear( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
+    ControlLCAUtil.processKeyEvents( dateTime );
   }
 
   void renderInitialization( final DateTime dateTime )
@@ -99,17 +99,9 @@ public class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     writer.dispose();
   }
 
-  void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  String getTypePoolId( final DateTime dateTime ) {
-    return null;
-  }
-
   // ////////////////////////////////////
   // Helping methods to write properties
+
   private void writeDay( final DateTime dateTime ) throws IOException {
     Integer newValue = new Integer( dateTime.getDay() );
     if( WidgetLCAUtil.hasChanged( dateTime, PROP_DAY, newValue ) ) {

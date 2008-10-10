@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ScaleLCA extends AbstractWidgetLCA {
+public final class ScaleLCA extends AbstractWidgetLCA {
 
   // Property names for preserveValues
   static final String PROP_SELECTION = "selection";
@@ -63,6 +63,7 @@ public class ScaleLCA extends AbstractWidgetLCA {
       scale.setSelection( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( scale, null, true );
+    ControlLCAUtil.processKeyEvents( scale );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

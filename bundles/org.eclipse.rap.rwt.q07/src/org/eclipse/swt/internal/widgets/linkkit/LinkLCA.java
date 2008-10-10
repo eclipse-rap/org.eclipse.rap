@@ -55,6 +55,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    Link link = ( Link )widget;
     String eventId = JSConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
       HttpServletRequest request = ContextProvider.getRequest();
@@ -63,10 +64,11 @@ public class LinkLCA extends AbstractWidgetLCA {
       int index = Integer.parseInt( indexStr );
       SelectionEvent event 
         = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
-      event.text = getIdText( ( Link )widget, index );
+      event.text = getIdText( link, index );
       event.processEvent();
     }
-    ControlLCAUtil.processMouseEvents( ( Link )widget );
+    ControlLCAUtil.processMouseEvents( link );
+    ControlLCAUtil.processKeyEvents( link );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

@@ -30,7 +30,8 @@ public final class UntypedEventAdapter
              ModifyListener,
              SetDataListener,
              VerifyListener,
-             MouseListener
+             MouseListener,
+             KeyListener
 {
   private ArrayList listeners = new ArrayList();
 
@@ -170,6 +171,27 @@ public final class UntypedEventAdapter
     dispatchEvent( SWT.MouseDoubleClick, event );
   }
   
+  public void keyPressed( final KeyEvent typedEvent ) {
+    Event event = createEvent( SWT.KeyDown, typedEvent.getSource() );
+    event.character = typedEvent.character;
+    event.keyCode = typedEvent.keyCode;
+    event.stateMask = typedEvent.stateMask;
+    event.doit = typedEvent.doit;
+    event.data = typedEvent.data;
+    dispatchEvent( SWT.KeyDown, event );
+    typedEvent.doit = event.doit;
+  }
+  
+  public void keyReleased( final KeyEvent typedEvent ) {
+    Event event = createEvent( SWT.KeyUp, typedEvent.getSource() );
+    event.character = typedEvent.character;
+    event.keyCode = typedEvent.keyCode;
+    event.stateMask = typedEvent.stateMask;
+    event.doit = typedEvent.doit;
+    event.data = typedEvent.data;
+    dispatchEvent( SWT.KeyUp, event );
+  }
+  
   public void addListener( final Widget widget, 
                            final int eventType,
                            final Listener listener )
@@ -217,6 +239,10 @@ public final class UntypedEventAdapter
       case SWT.MouseUp:
       case SWT.MouseDoubleClick:
         MouseEvent.addListener( widget, this );
+      break;
+      case SWT.KeyDown:
+      case SWT.KeyUp:
+        KeyEvent.addListener( widget, this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";
@@ -273,6 +299,10 @@ public final class UntypedEventAdapter
       case SWT.MouseUp:
       case SWT.MouseDoubleClick:
         MouseEvent.removeListener( widget, this );
+      break;
+      case SWT.KeyDown:
+      case SWT.KeyUp:
+        KeyEvent.removeListener( widget, this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";

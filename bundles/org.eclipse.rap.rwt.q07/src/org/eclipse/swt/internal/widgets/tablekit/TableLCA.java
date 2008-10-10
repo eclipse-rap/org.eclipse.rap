@@ -88,6 +88,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
     ControlLCAUtil.processMouseEvents( table );
+    ControlLCAUtil.processKeyEvents( table );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

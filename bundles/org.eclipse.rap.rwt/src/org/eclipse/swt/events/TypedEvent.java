@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import java.util.ArrayList;
@@ -59,7 +58,8 @@ public class TypedEvent extends Event {
     SelectionEvent.class,
     LocationEvent.class,
     ShellEvent.class,
-    MenuEvent.class
+    MenuEvent.class,
+    KeyEvent.class
   };
   
   /**

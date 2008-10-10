@@ -72,6 +72,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
       this._requestCounter = requestCounter;
     },
 
+    setTimeoutPage : function( content ) {
+      this._timeoutPage = content;
+    },
+
     /**
      * Adds a request parameter to this request with the given name and value
      */
@@ -111,17 +115,17 @@ qx.Class.define( "org.eclipse.swt.Request", {
      * that will be blocked by the server till background activities 
      * require UI updates.
      */
-    enableUICallBack : function( url, service_param, service_id ) {
-      var request = new qx.io.remote.Request( url, 
+    enableUICallBack : function( url, serviceParam, serviceId ) {
+      var request = new qx.io.remote.Request( url,
                                               qx.net.Http.METHOD_GET, 
                                               qx.util.Mime.JAVASCRIPT );
-      request.setParameter( service_param, service_id );
+      request.setParameter( serviceParam, serviceId );
       this._sendStandalone( request );
     },
     
     /**
-     * Sends this request. All parameters that were added since the last 'send()'
-     * will now be sent.
+     * Sends this request asynchronously. All parameters that were added since 
+     * the last 'send()' will now be sent.
      */
     send : function() {
       if( !this._inDelayedSend ) {
@@ -129,15 +133,16 @@ qx.Class.define( "org.eclipse.swt.Request", {
         // Wait and then actually send the request
         // TODO [rh] optimize wait interval (below 60ms seems to not work 
         //      reliable)
-        qx.client.Timer.once( this._sendImmediate, this, 60 );
+        var func = function() { this._sendImmediate( true ) };
+        qx.client.Timer.once( func, this, 60 );
       }
     },
-
-    setTimeoutPage : function( content ) {
-      this._timeoutPage = content;
+    
+    sendSyncronous : function() {
+      this._sendImmediate( false );
     },
 
-    _sendImmediate : function() {
+    _sendImmediate : function( async ) {
       this._dispatchSendEvent();
       // set mandatory parameters; do this after regular params to override them
       // in case of conflict
@@ -152,9 +157,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
           this._parameters[ "requestCounter" ] = this._requestCounter;
           this._requestCounter = -1;
         }
-  
         // create and configure request object
         var request = this._createRequest();
+        request.setAsynchronous( async );
         // copy the _parameters map which was filled during client interaction
         // to the request
         this._inDelayedSend = false;
@@ -165,10 +170,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( this._runningRequestCount === 1 ) {
           qx.client.Timer.once( this._showWaitHint, this, 500 );
         }
-        // queue request to be sent
-        request.send();
         // clear the parameter list
         this._parameters = {};
+        // queue request to be sent (async) or send and block (sync)
+        if( async ) {
+          request.send();
+        } else {
+          this._sendStandalone( request );
+        }
       }
     },
     
@@ -274,7 +283,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
             window.eval( text );
           }
           this._runningRequestCount--;
-          this._hideWaitHint( evt );      
+          this._hideWaitHint();      
         } catch( ex ) {
           this.error( "Could not execute javascript: [" + text + "]", ex );
           var content 
@@ -300,6 +309,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( result ) {
         var request = this._createRequest();
         var failedRequest = this._currentRequest;
+        request.setAsynchronous( failedRequest.getAsynchronous() );
         // Reusing the same request object causes strange behaviour, therefore
         // create a new request and copy the relevant parts from the failed one 
         var failedHeaders = failedRequest.getRequestHeaders();
@@ -365,7 +375,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
     },
     
-    _hideWaitHint : function( evt ) {
+    _hideWaitHint : function() {
       if( this._runningRequestCount === 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( null );

@@ -100,6 +100,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       ControlLCAUtil.processSelection( combo, null, true );
     }
     ControlLCAUtil.processMouseEvents( combo );
+    ControlLCAUtil.processKeyEvents( combo );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

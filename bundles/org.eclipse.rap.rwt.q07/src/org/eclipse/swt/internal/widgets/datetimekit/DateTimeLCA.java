@@ -11,17 +11,20 @@
 package org.eclipse.swt.internal.widgets.datetimekit;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Widget;
 
-public class DateTimeLCA extends AbstractWidgetLCA {
+public final class DateTimeLCA extends AbstractWidgetLCA {
 
-  private static final AbstractDateTimeLCADelegate DATE_LCA = new DateTimeDateLCA();
-  private static final AbstractDateTimeLCADelegate TIME_LCA = new DateTimeTimeLCA();
-  private static final AbstractDateTimeLCADelegate CALENDAR_LCA = new DateTimeCalendarLCA();
+  private static final AbstractDateTimeLCADelegate DATE_LCA
+    = new DateTimeDateLCA();
+  private static final AbstractDateTimeLCADelegate TIME_LCA
+    = new DateTimeTimeLCA();
+  private static final AbstractDateTimeLCADelegate CALENDAR_LCA
+    = new DateTimeCalendarLCA();
 
   public void preserveValues( final Widget widget ) {
     getDelegate( widget ).preserveValues( ( DateTime )widget );
@@ -46,7 +49,6 @@ public class DateTimeLCA extends AbstractWidgetLCA {
   public void createResetHandlerCalls( final String typePoolId )
     throws IOException
   {
-    getDelegate( typePoolId ).createResetHandlerCalls( typePoolId );
   }
 
   public String getTypePoolId( final Widget widget ) {
@@ -55,24 +57,6 @@ public class DateTimeLCA extends AbstractWidgetLCA {
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=199142
     // return getDelegate( widget ).getTypePoolId( ( DateTime )widget );
     return null;
-  }
-
-  private static AbstractDateTimeLCADelegate getDelegate( final String tpId ) {
-    AbstractDateTimeLCADelegate result;
-    if( tpId.startsWith( DateTimeDateLCA.TYPE_POOL_ID ) ) {
-      result = DATE_LCA;
-    } else if( tpId.startsWith( DateTimeTimeLCA.TYPE_POOL_ID ) ) {
-      result = TIME_LCA;
-    } else if( tpId.startsWith( DateTimeCalendarLCA.TYPE_POOL_ID ) ) {
-      result = CALENDAR_LCA;
-    } else {
-      String txt = "The typePoolId ''{0}'' is not supported.";
-      String msg = MessageFormat.format( txt, new Object[]{
-        tpId
-      } );
-      throw new IllegalArgumentException( msg );
-    }
-    return result;
   }
 
   private static AbstractDateTimeLCADelegate getDelegate( final Widget widget )

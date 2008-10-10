@@ -16,8 +16,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
-import org.eclipse.swt.widgets.ExpandBar;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 public final class ExpandBarLCA extends AbstractWidgetLCA {
 
@@ -37,6 +36,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    ControlLCAUtil.processKeyEvents( ( Control )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

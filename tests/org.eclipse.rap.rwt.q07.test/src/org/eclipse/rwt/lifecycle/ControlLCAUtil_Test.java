@@ -8,17 +8,16 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -249,6 +248,123 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( "w.resetCursor();" ) != -1 );
   }
 
+  public void testWritekeyEvents() throws IOException {
+    final java.util.List eventLog = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeKeyListener( shell );
+    assertEquals( "", Fixture.getAllMarkup() );
+    shell.addListener( SWT.KeyDown, new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeKeyListener( shell );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "w.setUserData( \"keyListener\", true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testProcessKeyEvents() {
+    final java.util.List eventLog = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    shell.addListener( SWT.KeyDown, new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    String shellId = WidgetUtil.getId( shell );
+    // Simulate requests that carry information about a key-down event
+    // - incomplete request
+    RWTFixture.fakeNewRequest();
+    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    eventLog.clear();
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    try {
+      ControlLCAUtil.processKeyEvents( shell );
+      fail( "Attempting to process incomplete key-event-request must fail" );
+    } catch( RuntimeException e ) {
+      // expected
+    }
+    assertTrue( eventLog.isEmpty() );
+    // - key-event without meaningful information (e.g. Shift-key only)
+    RWTFixture.fakeNewRequest();
+    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
+    ControlLCAUtil.processKeyEvents( shell );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    Event event = ( Event )eventLog.get( 0 );
+    assertEquals( SWT.KeyDown, event.type );
+    assertEquals( shell, event.widget );
+    assertEquals( 0, event.character );
+    assertEquals( 0, event.keyCode );
+    assertTrue( event.doit );
+  }
+
+  public void testProcessKeyEventsWithDoItFlag() {
+    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    final java.util.List eventLog = new ArrayList();
+    Listener doitTrueListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog.add( event );
+      }
+    };
+    Listener doitFalseListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog.add( event );
+        event.doit = false;
+      }
+    };
+    Listener keyUpListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog.add( event );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    String shellId = WidgetUtil.getId( shell );
+    String displayId = DisplayUtil.getId( display );
+
+    // Simulate KeyEvent request, listener leaves doit untouched (doit==true)
+    shell.addListener( SWT.KeyDown, doitTrueListener );
+    shell.addListener( SWT.KeyUp, keyUpListener );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, eventLog.size() );
+    assertEquals( SWT.KeyDown, ( ( Event )eventLog.get( 0 ) ).type );
+    assertTrue( ( ( Event )eventLog.get( 0 ) ).doit );
+    assertEquals( SWT.KeyUp, ( ( Event )eventLog.get( 1 ) ).type );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) == -1 );
+    shell.removeListener( SWT.KeyDown, doitTrueListener );
+    
+    // Simulate KeyEvent request, listener sets doit = false
+    eventLog.clear();
+    shell.addListener( SWT.KeyDown, doitFalseListener );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 1, eventLog.size() );
+    assertFalse( ( ( Event )eventLog.get( 0 ) ).doit );
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) != -1 );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

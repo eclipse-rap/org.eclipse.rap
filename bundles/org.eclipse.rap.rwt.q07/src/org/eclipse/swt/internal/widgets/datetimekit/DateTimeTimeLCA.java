@@ -19,9 +19,8 @@ import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.DateTime;
 
-public class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
+final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
 
-  static final String TYPE_POOL_ID = DateTimeTimeLCA.class.getName();
   // Property names for preserveValues
   static final String PROP_HOURS = "hours";
   static final String PROP_MINUTES = "minutes";
@@ -57,6 +56,7 @@ public class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
       dateTime.setSeconds( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
+    ControlLCAUtil.processKeyEvents( dateTime );
   }
 
   void renderInitialization( final DateTime dateTime )
@@ -93,16 +93,9 @@ public class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
     writer.dispose();
   }
 
-  void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  String getTypePoolId( final DateTime dateTime ) {
-    return null;
-  }
-  // ////////////////////////////////////
+  ///////////////////////////////////////
   // Helping methods to write properties
+  
   private void writeHours( final DateTime dateTime ) throws IOException {
     Integer newValue = new Integer( dateTime.getHours() );
     if( WidgetLCAUtil.hasChanged( dateTime, PROP_HOURS, newValue ) ) {

@@ -8,17 +8,18 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.datetimekit;
 
-import java.io.IOException;
+qx.Mixin.define( "org.eclipse.rwt.KeyEventHandlerPatch",
+{
+  "members" : {
+    
+    _idealKeyHandler : function( keyCode, charCode, eventType, domEvent ) {
+      var util = org.eclipse.rwt.KeyEventUtil.getInstance();      
+      if( !util.intercept( eventType, keyCode, charCode, domEvent ) ) {
+        this.base( arguments, keyCode, charCode, eventType, domEvent );
+      }
+    }
+    
+  }
+} );
 
-import org.eclipse.swt.widgets.DateTime;
-
-abstract class AbstractDateTimeLCADelegate {
-
-  abstract void preserveValues( DateTime dateTime );
-  abstract void readData( DateTime dateTime );
-  abstract void renderInitialization( DateTime dateTime ) throws IOException;
-  abstract void renderChanges( DateTime dateTime ) throws IOException;
-  abstract void renderDispose( DateTime dateTime ) throws IOException;
-}

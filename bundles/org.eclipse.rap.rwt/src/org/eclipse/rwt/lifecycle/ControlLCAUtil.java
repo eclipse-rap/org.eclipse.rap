@@ -16,8 +16,10 @@ import java.lang.reflect.Field;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
@@ -67,16 +69,23 @@ public class ControlLCAUtil {
   private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
     = "removeActivateListenerWidget";
 
-  private static final String PROP_CURSOR = "cursor";
-
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
   private static final String PROP_FOCUS_LISTENER = "focusListener";
   private static final String PROP_MOUSE_LISTENER = "mouseListener";
+  private static final String PROP_KEY_LISTENER = "keyListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
+  private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
 
+  private static final String USER_DATA_KEY_LISTENER = "keyListener";
+  private static final String ATT_CANCEL_KEY_EVENT
+    = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
+  static final String JSFUNC_CANCEL_EVENT
+    = "org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent";
+
   static final int MAX_STATIC_ZORDER = 300;
+
 
 
   private ControlLCAUtil() {
@@ -139,6 +148,8 @@ public class ControlLCAUtil {
       adapter.preserve( PROP_FOCUS_LISTENER,
                         Boolean.valueOf( FocusEvent.hasListener( control ) ) );
     }
+    adapter.preserve( PROP_KEY_LISTENER,
+                      Boolean.valueOf( KeyEvent.hasListener( control ) ) );
   }
 
   /**
@@ -321,6 +332,8 @@ public class ControlLCAUtil {
     writeActivateListener( control );
     writeFocusListener( control );
     writeMouseListener( control );
+    writeKeyListener( control );
+    writeKeyEventResponse( control );
   }
 
   /**
@@ -736,6 +749,24 @@ public class ControlLCAUtil {
                            hasListener );
   }
 
+  static void writeKeyListener( final Control control )
+    throws IOException
+  {
+    String prop = PROP_KEY_LISTENER;
+    Boolean hasListener = Boolean.valueOf( KeyEvent.hasListener( control ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      if( hasListener.booleanValue() ) {
+        Object[] args = new Object[] { USER_DATA_KEY_LISTENER, hasListener };
+        writer.call( "setUserData", args );
+      } else {
+        Object[] args = new Object[] { USER_DATA_KEY_LISTENER, null };
+        writer.call( "setUserData", args );
+      }
+    }
+  }
+
   //////////
   // Z-Index
 
@@ -750,7 +781,7 @@ public class ControlLCAUtil {
     if( control.getParent() != null ) {
       // TODO [rh] revise: determining the childrenCount by getting all the
       //      children might be bad performance-wise. This was done in order to
-      //      eliminate Composite#getChildrenCount() which no API in SWT
+      //      eliminate Composite#getChildrenCount() which is no API in SWT
       max = Math.max( control.getParent().getChildren().length, max );
     }
     Object adapter = control.getAdapter( IControlAdapter.class );
@@ -818,9 +849,6 @@ public class ControlLCAUtil {
     return nextIndex;
   }
 
-  /**
-   * Determines the tab index to write for a given control.
-   */
   private static int getTabIndex( final Control control ) {
     int result = -1;
     if( takesFocus( control ) ) {
@@ -831,6 +859,7 @@ public class ControlLCAUtil {
     return result;
   }
 
+  // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS
   private static boolean takesFocus( final Control control ) {
     boolean result = true;
     result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
@@ -886,6 +915,141 @@ public class ControlLCAUtil {
                                null,
                                true,
                                SWT.NONE );
+  }
+
+  public static void processKeyEvents( final Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
+      final KeyEvent pressedEvent
+        = new KeyEvent( control, KeyEvent.KEY_PRESSED );
+      final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
+      translateKeyCode( keyCode, pressedEvent );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          pressedEvent.processEvent();
+          if( pressedEvent.doit ) {
+            KeyEvent releasedEvent
+              = new KeyEvent( control, KeyEvent.KEY_RELEASED );
+            translateKeyCode( keyCode, releasedEvent );
+            releasedEvent.processEvent();
+          } else {
+            cancelKeyEvent( pressedEvent );
+          }
+        }
+      } );
+    }
+  }
+
+  private static void translateKeyCode( final int keyCode,
+                                        final KeyEvent event )
+  {
+    switch( keyCode ) {
+      case 20:
+        event.keyCode = SWT.CAPS_LOCK;
+      break;
+      case 38:
+        event.keyCode = SWT.UP;
+      break;
+      case 37:
+        event.keyCode = SWT.LEFT;
+      break;
+      case 39:
+        event.keyCode = SWT.RIGHT;
+      break;
+      case 40:
+        event.keyCode = SWT.DOWN;
+      break;
+      case 33:
+        event.keyCode = SWT.PAGE_UP;
+      break;
+      case 34:
+        event.keyCode = SWT.PAGE_DOWN;
+      break;
+      case 35:
+        event.keyCode = SWT.END;
+      break;
+      case 36:
+        event.keyCode = SWT.HOME;
+      break;
+      case 45:
+        event.keyCode = SWT.INSERT;
+      break;
+      case 46:
+        event.keyCode = SWT.DEL;
+      break;
+      case 112:
+        event.keyCode = SWT.F1;
+      break;
+      case 113:
+        event.keyCode = SWT.F2;
+      break;
+      case 114:
+        event.keyCode = SWT.F3;
+      break;
+      case 115:
+        event.keyCode = SWT.F4;
+      break;
+      case 116:
+        event.keyCode = SWT.F5;
+      break;
+      case 117:
+        event.keyCode = SWT.F6;
+      break;
+      case 118:
+        event.keyCode = SWT.F7;
+      break;
+      case 119:
+        event.keyCode = SWT.F8;
+      break;
+      case 120:
+        event.keyCode = SWT.F9;
+      break;
+      case 121:
+        event.keyCode = SWT.F10;
+      break;
+      case 122:
+        event.keyCode = SWT.F11;
+      break;
+      case 123:
+        event.keyCode = SWT.F12;
+      break;
+      case 144:
+        event.keyCode = SWT.NUM_LOCK;
+      break;
+      case 44:
+        event.keyCode = SWT.PRINT_SCREEN;
+      break;
+      case 145:
+        event.keyCode = SWT.SCROLL_LOCK;
+      break;
+      case 19:
+        event.keyCode = SWT.PAUSE;
+      break;
+      default:
+        event.keyCode = keyCode;
+        event.character = toCharacter( keyCode );
+    }
+  }
+
+  private static void cancelKeyEvent( final KeyEvent event ) {
+    RWT.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, event.widget );
+  }
+
+  private static void writeKeyEventResponse( final Control control )
+    throws IOException
+  {
+    IServiceStore serviceStore = RWT.getServiceStore();
+    if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      writer.callStatic( JSFUNC_CANCEL_EVENT, null );
+    }
+  }
+
+  private static char toCharacter( final int keyCode ) {
+    char result = ( char )0;
+    if( Character.isDefined( ( char )keyCode ) ) {
+      result = ( char )keyCode;
+    }
+    return result;
   }
 
   public static void processMouseEvents( final Control control ) {

@@ -205,6 +205,7 @@ public class LabelLCA_Test extends TestCase {
     LabelLCA lca = new LabelLCA();
     ControlLCAUtil.preserveValues( label );
     RWTFixture.markInitialized( label );
+    RWTFixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     label.setText( "test" );
     lca.renderChanges( label );

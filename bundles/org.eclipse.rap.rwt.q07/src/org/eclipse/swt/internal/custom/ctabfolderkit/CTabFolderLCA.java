@@ -167,6 +167,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     // Mouse events
     ControlLCAUtil.processMouseEvents( tabFolder );
+    // Key events
+    ControlLCAUtil.processKeyEvents( tabFolder );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

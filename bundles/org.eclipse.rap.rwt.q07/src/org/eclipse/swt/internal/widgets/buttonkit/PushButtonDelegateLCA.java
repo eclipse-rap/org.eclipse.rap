@@ -47,6 +47,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.processSelection( button, null, false );
     ButtonLCAUtil.readSelection( button );
     ControlLCAUtil.processMouseEvents( button );
+    ControlLCAUtil.processKeyEvents( button );
   }
 
   void renderInitialization( final Button button ) throws IOException {

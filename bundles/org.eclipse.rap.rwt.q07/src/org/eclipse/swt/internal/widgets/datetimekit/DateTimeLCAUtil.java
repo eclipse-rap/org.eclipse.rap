@@ -30,7 +30,8 @@ final class DateTimeLCAUtil {
   }
 
   static void preserveSubWidgetBounds( final DateTime dateTime,
-                                       final int subWidgetID ) {
+                                       final int subWidgetID )
+  {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
     IDateTimeAdapter dateTimeAdapter = getDateTimeAdapter( dateTime );
     Rectangle subWidgetBounds = dateTimeAdapter.getBounds( subWidgetID );

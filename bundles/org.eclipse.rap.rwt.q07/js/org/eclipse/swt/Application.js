@@ -15,6 +15,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
   construct : function() {
     this.base( arguments );
     this._exitConfirmation = null;
+    qx.Class.patch( qx.event.handler.KeyEventHandler, 
+                    org.eclipse.rwt.KeyEventHandlerPatch ); 
   },
   
   destruct : function() {

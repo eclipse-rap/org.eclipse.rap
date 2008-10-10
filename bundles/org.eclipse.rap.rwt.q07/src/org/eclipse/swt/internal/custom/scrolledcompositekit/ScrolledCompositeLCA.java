@@ -68,6 +68,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       composite.getVerticalBar().setSelection( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processMouseEvents( composite );
+    ControlLCAUtil.processKeyEvents( composite );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

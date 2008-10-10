@@ -23,7 +23,8 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -61,39 +62,39 @@ public class ControlLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();  
+    RWTFixture.clearPreserved();
     //visible
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();    
+    RWTFixture.clearPreserved();
     button.setVisible( false );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();    
+    RWTFixture.clearPreserved();
     //enabled
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();    
+    RWTFixture.clearPreserved();
     button.setEnabled( false );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ));
-    RWTFixture.clearPreserved(); 
-    //control_listeners  
+    RWTFixture.clearPreserved();
+    //control_listeners
     RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );    
+    adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();    
+    RWTFixture.clearPreserved();
     button.addControlListener( new ControlAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();    
+    RWTFixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     button.setBackground( background );
@@ -106,46 +107,46 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();     
-    //tab_index  
+    RWTFixture.clearPreserved();
+    //tab_index
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved(); 
+    RWTFixture.clearPreserved();
     //tooltiptext
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( null, button.getToolTipText() );
-    RWTFixture.clearPreserved();      
-    button.setToolTipText( "some text" );   
+    RWTFixture.clearPreserved();
+    button.setToolTipText( "some text" );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( "some text", button.getToolTipText() );
-    RWTFixture.clearPreserved();     
-    //activate_listeners   Focus_listeners 
+    RWTFixture.clearPreserved();
+    //activate_listeners   Focus_listeners
     RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );    
+    adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved(); 
+    RWTFixture.clearPreserved();
     button.addFocusListener( new FocusAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();    
+    RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );    
+    adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();   
-    ActivateEvent.addListener( button, new ActivateAdapter() { } );    
+    RWTFixture.clearPreserved();
+    ActivateEvent.addListener( button, new ActivateAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
-    display.dispose();   
+    display.dispose();
   }
 
   public void testWriteVisibility() throws IOException {
@@ -238,12 +239,12 @@ public class ControlLCA_Test extends TestCase {
           result = new AbstractWidgetLCA() {
             public void preserveValues( final Widget widget ) {
             }
-            public void renderChanges( final Widget widget ) 
-              throws IOException 
+            public void renderChanges( final Widget widget )
+              throws IOException
             {
             }
-            public void renderDispose( final Widget widget ) 
-              throws IOException 
+            public void renderDispose( final Widget widget )
+              throws IOException
             {
             }
             public void renderInitialization( final Widget widget )
@@ -265,7 +266,7 @@ public class ControlLCA_Test extends TestCase {
     RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( shell );
     RWTFixture.markInitialized( control );
-    // redraw & dispose: must revoke redraw 
+    // redraw & dispose: must revoke redraw
     control.redraw();
     control.dispose();
     // run life cycle that (in this case) won't call doRedrawFake

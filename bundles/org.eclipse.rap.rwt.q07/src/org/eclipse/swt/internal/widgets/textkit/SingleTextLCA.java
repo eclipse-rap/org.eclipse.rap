@@ -35,6 +35,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.readTextAndSelection( text );
     ControlLCAUtil.processSelection( text, null, false );
     ControlLCAUtil.processMouseEvents( text );
+    ControlLCAUtil.processKeyEvents( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {

@@ -150,7 +150,7 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( 1, events.size() );
 
     // Second request - simulates click on the button that should not be 

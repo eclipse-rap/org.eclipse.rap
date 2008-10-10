@@ -31,6 +31,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Control coolBar = ( Control )widget;
     ControlLCAUtil.processMouseEvents( coolBar );
+    ControlLCAUtil.processKeyEvents( coolBar );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

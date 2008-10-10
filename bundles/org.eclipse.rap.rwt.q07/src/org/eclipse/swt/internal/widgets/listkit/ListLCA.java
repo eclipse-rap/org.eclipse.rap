@@ -54,6 +54,7 @@ public class ListLCA extends AbstractWidgetLCA {
     readFocusIndex( list );
     ControlLCAUtil.processSelection( list, null, true );
     ControlLCAUtil.processMouseEvents( list );
+    ControlLCAUtil.processKeyEvents( list );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

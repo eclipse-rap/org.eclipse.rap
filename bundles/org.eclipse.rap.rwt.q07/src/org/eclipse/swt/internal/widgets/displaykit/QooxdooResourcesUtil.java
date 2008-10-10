@@ -37,6 +37,8 @@ final class QooxdooResourcesUtil {
   private static final String QX_DEBUG_JS
     = "qx-debug.js";
 
+  private static final String KEY_EVENT_HANDLER_PATCH
+    = "org/eclipse/rwt/KeyEventHandlerPatch.js";
   private static final String APPLICATION_JS
     = "org/eclipse/swt/Application.js";
   private static final String REQUEST_JS
@@ -45,6 +47,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/WidgetManager.js";
   private static final String EVENT_UTIL_JS
     = "org/eclipse/swt/EventUtil.js";
+  private static final String KEY_EVENT_UTIL_JS
+    = "org/eclipse/rwt/KeyEventUtil.js";
   private static final String TAB_UTIL_JS
     = "org/eclipse/swt/TabUtil.js";
   private static final String BUTTON_UTIL_JS
@@ -163,10 +167,12 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_LAYOUT_JS, compress );
       register( QX_CONSTANT_STYLE_JS, compress );
 
+      register( KEY_EVENT_HANDLER_PATCH, compress );
       register( APPLICATION_JS, compress );
       register( REQUEST_JS, compress );
       register( WIDGET_MANAGER_JS, compress );
       register( EVENT_UTIL_JS, compress );
+      register( KEY_EVENT_UTIL_JS, compress );
       register( WIDGET_UTIL_JS, compress );
       register( SASH_JS, compress );
       register( TAB_UTIL_JS, compress );
