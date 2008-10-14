@@ -21,7 +21,8 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
-import org.eclipse.rwt.internal.theme.css.*;
+import org.eclipse.rwt.internal.theme.css.CssElementHolder;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -75,6 +76,10 @@ public final class ThemeManager {
 
   private static final boolean DEBUG
     = "true".equals( System.getProperty( ThemeManager.class.getName() + ".log" ) );
+
+  /** Experimental CSS mode (temporary) */
+  private static final boolean CSS_MODE
+    = "true".equals( System.getProperty( ThemeManager.class.getName() + ".css" ) );
 
   private static final String CLIENT_LIBRARY_VARIANT
     = "org.eclipse.rwt.clientLibraryVariant";
@@ -189,7 +194,7 @@ public final class ThemeManager {
 
   private Theme predefinedTheme;
 
-  private final Set customWidgets;
+  private final Set themeableWidgets;
 
   private final Set customAppearances;
 
@@ -211,7 +216,7 @@ public final class ThemeManager {
   private ThemeManager() {
     // prevent instantiation from outside
     initialized = false;
-    customWidgets = new HashSet();
+    themeableWidgets = new HashSet();
     customAppearances = new HashSet();
     themeProperties = new LinkedHashMap();
     themes = new HashMap();
@@ -245,12 +250,9 @@ public final class ThemeManager {
   public void initialize() {
     log( "Start ThemeManager initialization" );
     if( !initialized ) {
-      // initialize static and custom themeable widgets
-      for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
-        processThemeableWidget( new ThemeableWidgetWrapper( THEMEABLE_WIDGETS[ i ],
-                                                            STANDARD_RESOURCE_LOADER ) );
-      }
-      Iterator widgetIter = customWidgets.iterator();
+      addDefaultThemableWidgets();
+      // initialize themeable widgets
+      Iterator widgetIter = themeableWidgets.iterator();
       while( widgetIter.hasNext() ) {
         processThemeableWidget( ( ThemeableWidgetWrapper )widgetIter.next() );
       }
@@ -277,7 +279,7 @@ public final class ThemeManager {
    */
   public void reset() {
     if( initialized ) {
-      customWidgets.clear();
+      themeableWidgets.clear();
       customAppearances.clear();
       themeProperties.clear();
       themes.clear();
@@ -312,7 +314,7 @@ public final class ThemeManager {
     }
     ThemeableWidgetWrapper wrapper
       = new ThemeableWidgetWrapper( widget, loader );
-    customWidgets.add( wrapper );
+    themeableWidgets.add( wrapper );
   }
 
   /**
@@ -357,15 +359,12 @@ public final class ThemeManager {
       if( fileName.toLowerCase().endsWith( ".css" ) ) {
         try {
           ThemeProperty[] props = getThemeProperties();
-          CssFileReader reader = new CssFileReader();
-          StyleSheet styleSheet = reader.parse( inputStream, fileName );
-          theme = ThemeCssAdapter.loadThemeFromStyleSheet( name,
-                                                           predefinedTheme,
-                                                           loader,
-                                                           styleSheet,
-                                                           props );
-          theme.setLoader( loader );
-          theme.setStyleSheet( styleSheet );
+          theme = Theme.loadFromCssFile( name != null ? name : "",
+                                         predefinedTheme,
+                                         inputStream,
+                                         loader,
+                                         fileName,
+                                         props );
         } catch( CSSException e ) {
           throw new ThemeManagerException( "Failed parsing CSS file", e );
         }
@@ -562,6 +561,12 @@ public final class ThemeManager {
     }
   }
 
+  private void addDefaultThemableWidgets() {
+    for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
+      addThemeableWidget( THEMEABLE_WIDGETS[ i ], STANDARD_RESOURCE_LOADER );
+    }
+  }
+
   /**
    * Loads and processes all theme-relevant resources for a given widget.
    *
@@ -614,17 +619,10 @@ public final class ThemeManager {
             themeProperties.put( prop.name, prop );
           }
         } );
-        // --- CSS
         IThemeCssElement[] elements = reader.getThemeCssElements();
         for( int i = 0; i < elements.length; i++ ) {
-          try {
-            registeredCssElements.addElement( elements[ i ] );
-          } catch( IllegalArgumentException e ) {
-            String message = "Error while processing " + fileName;
-            throw new ThemeManagerException( message , e );
-          }
+          registeredCssElements.addElement( elements[ i ] );
         }
-        // ---
       } catch( final Exception e ) {
         String message = "Failed to parse theme definition file " + fileName;
         throw new ThemeManagerException( message, e );
@@ -659,11 +657,6 @@ public final class ThemeManager {
 
   /**
    * Tries to load the theme adapter for a class from a given package.
-   * @param themeWidget TODO
-   *
-   * @return the theme adapter or <code>null</code> if not found.
-   * @throws IllegalAccessException
-   * @throws InstantiationException
    */
   private boolean loadThemeAdapter( final ThemeableWidgetWrapper themeWidget,
                                     final String pkgName,
@@ -720,15 +713,15 @@ public final class ThemeManager {
         sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
         sb.append( createMetaTheme( wrapper.theme, jsId ) );
         sb.append( createThemeStore( wrapper.theme, jsId ) );
-//        sb.append( createCssThemeCode( wrapper.theme, jsId ) );
-        log( createCssThemeCode( wrapper.theme, jsId ) );
+        if( CSS_MODE ) {
+          sb.append( createThemeStoreCss( wrapper.theme, jsId ) );
+        }
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
-        registerJsLibrary( themeCode,
-                           jsId.replace( '.', '/' ) + ".js",
-                           compress );
+        String name = jsId.replace( '.', '/' ) + ".js";
+        registerJsLibrary( name, themeCode, compress );
         registeredThemeFiles.add( themeId );
       }
     }
@@ -799,7 +792,7 @@ public final class ThemeManager {
             String widgetDestPath = getWidgetDestPath( jsId  );
             ThemeProperty prop
               = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-            String targetPath = prop.targetPath != null ? prop.targetPath : key;
+            String targetPath = prop != null && prop.targetPath != null ? prop.targetPath : key;
             String registerPath = widgetDestPath + "/" + targetPath ;
             IResourceManager resMgr = ResourceManager.getInstance();
             resMgr.register( registerPath, inputStream );
@@ -820,49 +813,33 @@ public final class ThemeManager {
   private static void registerJsLibrary( final String name,
                                          final boolean compress )
   {
+    registerJsLibrary( name, null, compress );
+  }
+
+  private static void registerJsLibrary( final String name,
+                                         final String code,
+                                         final boolean compress )
+  {
     IResourceManager manager = ResourceManager.getInstance();
     RegisterOptions option = RegisterOptions.VERSION;
     if( compress ) {
       option = RegisterOptions.VERSION_AND_COMPRESS;
     }
-    manager.register( name, CHARSET, option );
+    if( code != null ) {
+      byte[] buffer;
+      try {
+        buffer = code.getBytes( CHARSET );
+      } catch( final UnsupportedEncodingException e ) {
+        throw new RuntimeException( e );
+      }
+      ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
+      manager.register( name, inputStream, CHARSET, option );
+    } else {
+      manager.register( name, CHARSET, option );
+    }
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
     responseWriter.useJSLibrary( name );
-  }
-
-  private static void registerJsLibrary( final String code,
-                                         final String name,
-                                         final boolean compress )
-  {
-    ByteArrayInputStream resourceInputStream;
-    byte[] buffer;
-    try {
-      buffer = code.getBytes( CHARSET );
-    } catch( final UnsupportedEncodingException e ) {
-      throw new RuntimeException( e );
-    }
-    resourceInputStream = new ByteArrayInputStream( buffer );
-    try {
-      IResourceManager manager = ResourceManager.getInstance();
-      RegisterOptions option = RegisterOptions.VERSION;
-      if( compress ) {
-        option = RegisterOptions.VERSION_AND_COMPRESS;
-      }
-      manager.register( name,
-                        resourceInputStream,
-                        CHARSET,
-                        option );
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
-      responseWriter.useJSLibrary( name );
-    } finally {
-      try {
-        resourceInputStream.close();
-      } catch( final IOException e ) {
-        throw new RuntimeException( e );
-      }
-    }
   }
 
   private static String createColorTheme( final Theme theme, final String id ) {
@@ -980,15 +957,16 @@ public final class ThemeManager {
         } else {
           ThemeProperty prop
             = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-          String targetPath = prop.targetPath != null ? prop.targetPath : key;
-          jsValue = "\"" + targetPath + "\"";
+          String targetPath
+            = prop != null && prop.targetPath != null ? prop.targetPath : key;
+          jsValue = JsonUtil.quoteString( targetPath );
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
         if( color.transparent ) {
           ThemeProperty prop
             = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-          if( !prop.transparentAllowed ) {
+          if( prop != null && !prop.transparentAllowed ) {
             // TODO [rst] Move this check to Theme class
             String message = "Transparency not allowed for key " + key;
             throw new IllegalArgumentException( message );
@@ -1007,7 +985,7 @@ public final class ThemeManager {
     return sb.toString();
   }
 
-  private String createCssThemeCode( final Theme theme, final String jsId ) {
+  private String createThemeStoreCss( final Theme theme, final String jsId ) {
     StyleSheet styleSheet = theme.getStyleSheet();
     IThemeCssElement[] elements = registeredCssElements.getAllElements();
     JsonObject mainObject = new JsonObject();
@@ -1019,6 +997,7 @@ public final class ThemeManager {
       for( int j = 0; j < properties.length; j++ ) {
         IThemeCssProperty property = properties[ j ];
         JsonArray valuesArray = new JsonArray();
+        // TODO [rst] remove if when default theme has a style sheet
         if( styleSheet != null ) {
           SelectorWrapper[] rules
             = styleSheet.getMatchingStyleRules( elementName );
@@ -1029,8 +1008,12 @@ public final class ThemeManager {
             if( value != null ) {
               JsonArray array = new JsonArray();
               String[] constraints = selector.selectorExt.getConstraints();
-              array.append( join( constraints, "," ) );
-              array.append( value.toDefaultString() );
+              JsonArray constraitsArray = new JsonArray();
+              for( int l = 0; l < constraints.length; l++ ) {
+                constraitsArray.append( constraints[ l ] );
+              }
+              array.append( constraitsArray );
+              array.append( Theme.getDummyPropertyName( value ) );
               valuesArray.append( array );
             }
           }
@@ -1040,22 +1023,14 @@ public final class ThemeManager {
       mainObject.append( elementName, elementObj );
     }
     StringBuffer sb = new StringBuffer();
-    sb.append( "/* === EXPERIMENTAL ===\n" );
+    sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
+    sb.append( "ts.setThemeCssValues( " );
+    sb.append( JsonUtil.quoteString( jsId ) );
+    sb.append( ", " );
     sb.append( mainObject.toString() );
-    sb.append( "\n * === EXPERIMENTAL ===*/\n" );
+    sb.append( " );\n" );
+    sb.append( "delete ts;\n" );
     return sb.toString();
-  }
-
-  private static String join( final String[] array, final String glue ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < array.length; i++ ) {
-      String element = array[ i ];
-      if( i != 0 ) {
-        buffer.append( glue );
-      }
-      buffer.append( element );
-    }
-    return buffer.toString();
   }
 
   /**

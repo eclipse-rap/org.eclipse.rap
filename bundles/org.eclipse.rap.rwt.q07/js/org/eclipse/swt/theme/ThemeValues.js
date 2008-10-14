@@ -31,14 +31,25 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     } else {
       this._variant = this.__extractVariant( states );
     }
+    this._states = states;
     this._store = org.eclipse.swt.theme.ThemeStore.getInstance();
   },
 
   members : {
 
+    getCssBorder : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getBorder( tkey );
+    },
+
     getBorder : function( key ) {
       var theme = qx.theme.manager.Border.getInstance().getBorderTheme();
       return this.__selectVariant( key, theme.borders );
+    },
+
+    getCssColor : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getColor( tkey );
     },
 
     getColor : function( key ) {
@@ -51,9 +62,19 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return result;
     },
 
+    getCssFont : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getFont( tkey );
+    },
+
     getFont : function( key ) {
       var theme = qx.theme.manager.Font.getInstance().getFontTheme();
       return this.__selectVariant( key, theme.fonts );
+    },
+
+    getCssDimension : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getDimension( tkey );
     },
 
     getDimension : function( key ) {
@@ -62,16 +83,31 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return values.dimensions[ vkey ];
     },
 
+    getCssBoxDimensions : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getBoxDimensions[ tkey ];
+    },
+
     getBoxDimensions : function( key ) {
       var values = this._store.getThemeValues();
       var vkey = this.__selectVariant( key, values.boxdims );
       return values.boxdims[ vkey ];
     },
 
+    getCssBoolean : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getBoolean( tkey );
+    },
+
     getBoolean : function( key ) {
       var values = this._store.getThemeValues();
       var vkey = this.__selectVariant( key, values.booleans );
       return values.booleans[ vkey ];
+    },
+
+    getCssImage : function( element, key ) {
+      var tkey = this._store.getCssValue( element, this._states, key );
+      return this.getImage( tkey );
     },
 
     getImage : function( key ) {

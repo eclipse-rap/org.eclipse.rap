@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.internal.theme.css.*;
+import org.w3c.css.sac.CSSException;
 
 /**
  * An instance of this class represents all the information provided by an RWT
@@ -32,6 +35,8 @@ public final class Theme {
   private final Map defaultValues;
 
   // --- CSS ---
+  private final Map cssValues;
+
   private StyleSheet styleSheet;
 
   private ResourceLoader loader;
@@ -79,6 +84,7 @@ public final class Theme {
     this.name = name;
     this.defaultValues = defaultTheme != null ? defaultTheme.values : null;
     values = new HashMap();
+    cssValues = new HashMap();
   }
 
   /**
@@ -139,13 +145,79 @@ public final class Theme {
         } else if( defValue instanceof QxImage ) {
           newValue = QxImage.valueOf( value, loader );
         } else {
-          // TODO [rst] How to handle programming errors?
           throw new RuntimeException( "unknown type" );
         }
         newTheme.setValue( keyName, keyVariant, newValue );
       }
     }
     return newTheme;
+  }
+
+  public static Theme loadFromCssFile( final String name,
+                                       final Theme defaultTheme,
+                                       final InputStream inputStream,
+                                       final ResourceLoader loader,
+                                       final String uri,
+                                       final ThemeProperty[] properties )
+    throws CSSException, IOException
+  {
+    Theme result = new Theme( name, defaultTheme );
+    CssFileReader reader = new CssFileReader();
+    StyleSheet styleSheet = reader.parse( inputStream, uri );
+    result.styleSheet = styleSheet;
+    result.loader = loader;
+
+    // == New CSS support
+    // For each value in the style sheet, create a dummy property that will be
+    // registered with the qx themes.
+    StyleRule[] styleRules = styleSheet.getStyleRules();
+    for( int i = 0; i < styleRules.length; i++ ) {
+      StyleRule styleRule = styleRules[ i ];
+      IStylePropertyMap propertyMap = styleRule.getProperties();
+      String[] propertyNames = propertyMap.getProperties();
+      for( int j = 0; j < propertyNames.length; j++ ) {
+        String propertyName = propertyNames[ j ];
+        QxType value = propertyMap.getValue( propertyName, loader );
+        String hash = getDummyPropertyName( value );
+        result.cssValues.put( hash, value );
+      }
+    }
+
+    // == Old property system support ==
+    // For each property, extract the value from the style sheet
+    for( int i = 0; i < properties.length; i++ ) {
+      ThemeProperty property = properties[ i ];
+      if( property.cssElements.length > 0 && property.cssProperty != null ) {
+        String[] variants = new String[ 0 ];
+        for( int j = 0; j < property.cssElements.length; j++ ) {
+          String[] newVar = styleSheet.getVariants( property.cssElements[ 0 ] );
+          if( newVar.length > 0 ) {
+            String[] oldVar = variants;
+            variants = new String[ variants.length + newVar.length ];
+            System.arraycopy( oldVar, 0, variants, 0, oldVar.length );
+            System.arraycopy( newVar, 0, variants, oldVar.length, newVar.length );
+          }
+        }
+        StylableElement element = createDummyElement( property, null );
+        QxType value
+          = styleSheet.getValue( property.cssProperty, element, loader );
+        if( value != null ) {
+          result.setValue( property.name, value );
+        }
+        for( int j = 0; j < variants.length; j++ ) {
+          String variant = variants[ j ];
+          StylableElement vElement = createDummyElement( property, variant );
+          QxType vValue
+            = styleSheet.getValue( property.cssProperty, vElement, loader );
+          if( vValue != null && !vValue.equals( value ) ) {
+            result.setValue( property.name, variant, vValue );
+          }
+        }
+      } else {
+        System.err.println( "Property without CSS support: " + property.name );
+      }
+    }
+    return result;
   }
 
   public String getName() {
@@ -203,6 +275,7 @@ public final class Theme {
     if( defaultValues != null ) {
       keySet.addAll( defaultValues.keySet() );
     }
+    keySet.addAll( cssValues.keySet() );
     return ( String[] )keySet.toArray( new String[ keySet.size() ] );
   }
 
@@ -272,6 +345,8 @@ public final class Theme {
       result = ( QxType )values.get( key );
     } else if( defaultValues != null && defaultValues.containsKey( key ) ) {
       result = ( QxType )defaultValues.get( key );
+    } else if( cssValues.containsKey( key ) ) {
+      result = ( QxType )cssValues.get( key );
     } else {
       String pattern = "Undefined key: ''{0}'' in theme ''{1}''";
       Object[] arguments = new Object[] { key, name };
@@ -342,6 +417,10 @@ public final class Theme {
     return result;
   }
 
+  public static String getDummyPropertyName( final QxType value ) {
+    return "_" + value.getClass().hashCode() + "-" + value.hashCode();
+  }
+
   private void checkType( final String key, final QxType value, final Class type )
   {
     if( !value.getClass().isAssignableFrom( type ) ) {
@@ -359,5 +438,32 @@ public final class Theme {
     if( name.length() == 0 ) {
       throw new IllegalArgumentException( "empty argument" );
     }
+  }
+
+  private static StylableElement createDummyElement( final ThemeProperty property,
+                                                     final String variant )
+  {
+    StylableElement result = new StylableElement( property.cssElements[ 0 ] );
+    if( property.cssSelectors.length > 0 ) {
+      String selector = property.cssSelectors[ 0 ];
+      Pattern pattern = Pattern.compile( "\\[([A-Z]+)\\]|:([a-z]+)|.+" );
+      Matcher matcher = pattern.matcher( selector );
+      while( matcher.find() ) {
+        String style = matcher.group( 1 );
+        String state = matcher.group( 2 );
+        if( style != null ) {
+          result.setAttribute( style );
+        } else if( state != null ) {
+          result.setPseudoClass( state );
+        } else {
+          System.err.println( "Garbage found in css-selectors attribute: "
+                              + matcher.group() );
+        }
+      }
+    }
+    if( variant != null ) {
+      result.setClass( variant );
+    }
+    return result;
   }
 }

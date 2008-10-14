@@ -107,6 +107,8 @@ public class ThemeManager_Test extends TestCase {
     }
   }
 
+  // == PROPERTY FILES ==
+
   public void testRegisterThemeFile() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -187,6 +189,24 @@ public class ThemeManager_Test extends TestCase {
       // expected
       assertTrue( e.getMessage().indexOf( "not found for theme" ) != -1 );
     }
+  }
+
+  // == CSS FILES ==
+
+  public void testRegisterCssThemeFile() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    String themeId = "TestExample";
+    String themeName = "Test Example Theme";
+    String themeFile = "resources/theme/TestExample.css";
+    loadThemeFile( manager, themeId, themeName, themeFile );
+    String[] themeIds = manager.getRegisteredThemeIds();
+    assertNotNull( themeIds );
+    assertEquals( 2, themeIds.length );
+    Theme theme = manager.getTheme( themeId );
+    assertNotNull( theme );
+    assertEquals( themeName, theme.getName() );
+    assertNotNull( theme.getStyleSheet() );
   }
 
   protected void setUp() throws Exception {

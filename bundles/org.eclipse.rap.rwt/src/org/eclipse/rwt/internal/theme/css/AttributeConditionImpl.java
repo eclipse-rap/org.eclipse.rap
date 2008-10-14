@@ -75,7 +75,7 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt
     if( value != null || localName == null ) {
       throw new UnsupportedOperationException();
     }
-    return new String[] { "|" + localName };
+    return new String[] { "[" + localName };
   }
 
   public String toString() {
