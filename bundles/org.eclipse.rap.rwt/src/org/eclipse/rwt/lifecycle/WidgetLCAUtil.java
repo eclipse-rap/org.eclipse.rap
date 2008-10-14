@@ -798,6 +798,27 @@ public final class WidgetLCAUtil {
     }
   }
 
+  /**
+   * Checks whether a certain style flag is set on the specified widget and if
+   * so, writes code to set the according state on the client-side widget.
+   * 
+   * @param widget the widget whose style to write
+   * @param style the SWT style flag in question
+   * @param styleName the uppercase name of the style
+   * @throws IOException
+   * @since 1.2
+   */
+  public static void writeStyleFlag( final Widget widget,
+                                     final int style,
+                                     final String styleName ) throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    if( ( widget.getStyle() & style ) != 0 ) {
+      writer.call( JSConst.QX_FUNC_ADD_STATE,
+                   new Object[] { "rwt_" + styleName } );
+    }
+  }
+
   private static String readPropertyValue( final String widgetId,
                                            final String propertyName )
   {

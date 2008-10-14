@@ -30,8 +30,6 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     = "org.eclipse.swt.ButtonUtil.onToggleExecute";
   private static final Object[] PARAM_NULL = new Object[] { null };
   private static final Object[] PARAM_CHECKED = new Object[] { "checked" };
-  private static final Object[] PARAM_TOGGLE
-    = new Object[] { JSConst.JS_STYLE_FLAG_TOGGLE };
 
   private final static JSListenerInfo JS_LISTENER_INFO =
     new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
@@ -54,9 +52,10 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
-    ControlLCAUtil.writeStyleFlags( button );    
+    ControlLCAUtil.writeStyleFlags( button );
+    WidgetLCAUtil.writeStyleFlag( button, SWT.PUSH, "PUSH" );
+    WidgetLCAUtil.writeStyleFlag( button, SWT.TOGGLE, "TOGGLE" );
     if( ( button.getStyle() & SWT.TOGGLE ) != 0 ) {
-      writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_TOGGLE );
       writer.addListener( JSConst.QX_EVENT_EXECUTE,
                           JS_FUNC_BUTTON_UTIL_ON_TOGGLE_EXECUTE );
     }
@@ -116,7 +115,8 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     writer.removeListener( JSConst.QX_EVENT_EXECUTE,
                            JS_FUNC_BUTTON_UTIL_ON_TOGGLE_EXECUTE );
     writer.call( JSConst.QX_FUNC_REMOVE_STATE, PARAM_CHECKED );
-    writer.call( JSConst.QX_FUNC_REMOVE_STATE, PARAM_TOGGLE );
+//    WidgetLCAUtil.resetStyleFlag( widget, SWT.PUSH, "PUSH" );
+//    WidgetLCAUtil.resetStyleFlag( widget, SWT.TOGGLE, "TOGGLE" );
     // reseting the default button in case of dispose is done by the JSWriter
 //    ButtonLCAUtil.resetImage();
     ButtonLCAUtil.resetAlignment();

@@ -605,22 +605,17 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes SWT style flags that must be handled on the client side (e.g.
-   * <code>SWT.BORDER</code>). Flags are transmitted as qooxdoo <q>states</q>
-   * that will be respected by the appearance that renders the widget.
-   *
+   * Checks the given control for common SWT style flags (e.g.
+   * <code>SWT.BORDER</code>) and if present, writes code to pass the according
+   * states to the client.
+   * 
    * @param control
    * @throws IOException
    */
   public static void writeStyleFlags( final Control control ) throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
-      writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_STYLE_BORDER );
-    }
-    if( ( control.getStyle() & SWT.FLAT ) != 0 ) {
-      writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_STYLE_FLAT );
-    }
+    WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
+    WidgetLCAUtil.writeStyleFlag( control, SWT.FLAT, "FLAT" );
   }
 
   /**

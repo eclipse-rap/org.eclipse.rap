@@ -361,6 +361,22 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  public void testWriteStyleFlag() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Control control = new Label( shell, SWT.NONE );
+    Control borderControl = new Label( shell, SWT.BORDER );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.writeStyleFlag( borderControl, SWT.BORDER, "BORDER" );
+    String expected = "w.addState( \"rwt_BORDER\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
