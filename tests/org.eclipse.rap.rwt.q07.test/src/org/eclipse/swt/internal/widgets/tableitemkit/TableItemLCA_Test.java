@@ -343,7 +343,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( red, backgrounds[ 0 ] );
   }
 
-  
+
   public void testCheckAndGrayedAccess() throws IOException {
     final String[] lcaMethod = { "" };
     Display display = new Display();
@@ -351,12 +351,12 @@ public class TableItemLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE ) {
       public boolean getChecked() {
-        fail(   lcaMethod[ 0 ] 
+        fail(   lcaMethod[ 0 ]
               + ": Must not call getChecked() from LCA when no CHECK style" );
         return false;
       }
       public boolean getGrayed() {
-        fail(   lcaMethod[ 0 ] 
+        fail(   lcaMethod[ 0 ]
                + ": Must not call getGrayed() from LCA when no CHECK style" );
         return false;
       }
@@ -373,5 +373,22 @@ public class TableItemLCA_Test extends TestCase {
     lca.renderChanges( item );
     lcaMethod[ 0 ] = "renderDispose";
     lca.renderDispose( item );
+  }
+
+  public void testEscape() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.fakeResponseWriter();
+    TableItemLCA tableItemLCA = new TableItemLCA();
+    RWTFixture.markInitialized( item );
+    tableItemLCA.preserveValues( item );
+    item.setText( "char test: &<>.,'\"&lt;" );
+    tableItemLCA.renderChanges( item );
+    String expected
+      = "w.setTexts( [ \"char test: &#038;&#060;&#062;.,'&#034;&#038;lt;\" ] )";
+    String result = Fixture.getAllMarkup();
+    assertTrue( result.indexOf( expected ) != -1 );
   }
 }

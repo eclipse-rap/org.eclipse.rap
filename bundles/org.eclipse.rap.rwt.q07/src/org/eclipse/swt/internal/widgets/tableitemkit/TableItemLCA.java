@@ -288,7 +288,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static String encodeHTML( final String text ) {
-    String result = text.replaceAll( "\"", "&#034;" );
+    String result = text.replaceAll( "&", "&#038;" );
+    result = result.replaceAll( "\"", "&#034;" );
     result = result.replaceAll( ">", "&#062;" );
     result = result.replaceAll( "<", "&#060;" );
     return result;

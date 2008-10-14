@@ -25,42 +25,42 @@ import org.eclipse.swt.widgets.*;
 
 public class TableViewerTab extends ExampleTab {
 
-  
+
   private static final int ADD_ITEMS = 300;
 
   private static final String FIRST_NAME = "firstName";
   private static final String LAST_NAME = "lastName";
   private static final String AGE = "age";
-  
+
   private static final class Person {
     String firstName;
     String lastName;
     int age;
-    
-    public Person( final String firstName, 
-                   final String lastName, 
-                   final int age ) 
+
+    public Person( final String firstName,
+                   final String lastName,
+                   final int age )
     {
       this.firstName = firstName;
       this.lastName = lastName;
       this.age = age;
     }
-    
+
     public String toString() {
       return firstName + " " + lastName + " " + age;
     }
   }
-  
-  private static final class PersonContentProvider 
+
+  private static final class PersonContentProvider
     implements IStructuredContentProvider
   {
     Object[] elements;
     public Object[] getElements( final Object inputElement ) {
       return elements;
     }
-    public void inputChanged( final Viewer viewer, 
-                              final Object oldInput, 
-                              final Object newInput ) 
+    public void inputChanged( final Viewer viewer,
+                              final Object oldInput,
+                              final Object newInput )
     {
       if( newInput == null ) {
         elements = new Object[ 0 ];
@@ -73,15 +73,15 @@ public class TableViewerTab extends ExampleTab {
       // do nothing
     }
   }
-  
-  private static final class LazyPersonContentProvider 
+
+  private static final class LazyPersonContentProvider
     implements ILazyContentProvider
   {
     private TableViewer tableViewer;
     private List elements;
-    public void inputChanged( final Viewer viewer, 
-                              final Object oldInput, 
-                              final Object newInput ) 
+    public void inputChanged( final Viewer viewer,
+                              final Object oldInput,
+                              final Object newInput )
     {
       tableViewer = ( TableViewer )viewer;
       elements = ( List )newInput;
@@ -93,9 +93,9 @@ public class TableViewerTab extends ExampleTab {
       // do nothing
     }
   }
-  
-  private static final class PersonLabelProvider 
-    extends LabelProvider 
+
+  private static final class PersonLabelProvider
+    extends LabelProvider
     implements ITableLabelProvider
   {
     public Image getColumnImage( final Object element, final int columnIndex ) {
@@ -121,10 +121,10 @@ public class TableViewerTab extends ExampleTab {
       return result;
     }
   }
-  
-  private static final class PersonComparator 
-    extends ViewerComparator 
-    implements Comparator 
+
+  private static final class PersonComparator
+    extends ViewerComparator
+    implements Comparator
   {
     private final boolean ascending;
     private final String property;
@@ -132,13 +132,13 @@ public class TableViewerTab extends ExampleTab {
       this.property = property;
       this.ascending = ascending;
     }
-    public int compare( final Viewer viewer, 
-                        final Object object1, 
-                        final Object object2 ) 
+    public int compare( final Viewer viewer,
+                        final Object object1,
+                        final Object object2 )
     {
       return compare( object1, object2 );
     }
-    public boolean isSorterProperty( final Object elem, final String property ) 
+    public boolean isSorterProperty( final Object elem, final String property )
     {
       return true;
     }
@@ -159,14 +159,14 @@ public class TableViewerTab extends ExampleTab {
       return result;
     }
   }
-  
+
   private static final class PersonFilter extends ViewerFilter {
     private String text;
     public void setText( final String string ) {
       this.text = string;
     }
-    public boolean select( final Viewer viewer, 
-                           final Object parentElement, 
+    public boolean select( final Viewer viewer,
+                           final Object parentElement,
                            final Object element )
     {
       boolean result = true;
@@ -194,7 +194,7 @@ public class TableViewerTab extends ExampleTab {
 
   private void initPersons() {
     persons.clear();
-    persons.add( new Person( "Rögn\"íy&", "Hövl&lt;, the char tester", 1 ) );
+    persons.add( new Person( "Rögn\"íy&", "Hövl&lt;_'><', the char tester", 1 ) );
     persons.add( new Person( "Paul", "Panther", 1 ) );
     persons.add( new Person( "Karl", "Marx", 2 ) );
     persons.add( new Person( "Sofia", "Loren", 3 ) );
@@ -232,7 +232,7 @@ public class TableViewerTab extends ExampleTab {
       public void modifyText( final ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
-        viewer.refresh(); 
+        viewer.refresh();
       }
     } );
     if( viewer != null && !viewer.getControl().isDisposed() ) {
@@ -302,7 +302,7 @@ public class TableViewerTab extends ExampleTab {
       FIRST_NAME, LAST_NAME, AGE
     };
   }
-  
+
   private void addPerson() {
     int maxAge = 0;
     for( int i = 0; i < persons.size(); i++ ) {
@@ -329,7 +329,7 @@ public class TableViewerTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createSelectYoungestPersonButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select youngest Person" );
@@ -355,7 +355,7 @@ public class TableViewerTab extends ExampleTab {
     button.setText( "Remove selected rows" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        IStructuredSelection selection 
+        IStructuredSelection selection
           = ( IStructuredSelection )getViewer().getSelection();
         Iterator iter = selection.iterator();
         while( iter.hasNext() ) {
@@ -370,7 +370,7 @@ public class TableViewerTab extends ExampleTab {
       }
     } );
   }
-  
+
   private static int updateSortDirection( final TableColumn column ) {
     Table table = column.getParent();
     if( column == table.getSortColumn() ) {
@@ -385,10 +385,10 @@ public class TableViewerTab extends ExampleTab {
     }
     return table.getSortDirection();
   }
-  
-  private static void sort( final TableViewer viewer, 
-                            final String property, 
-                            final boolean ascending ) 
+
+  private static void sort( final TableViewer viewer,
+                            final String property,
+                            final boolean ascending )
   {
     if( ( viewer.getControl().getStyle() & SWT.VIRTUAL ) != 0 ) {
       List input = ( List )viewer.getInput();
