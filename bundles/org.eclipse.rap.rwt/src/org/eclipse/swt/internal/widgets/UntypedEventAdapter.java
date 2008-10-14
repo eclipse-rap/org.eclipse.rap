@@ -31,7 +31,8 @@ public final class UntypedEventAdapter
              SetDataListener,
              VerifyListener,
              MouseListener,
-             KeyListener
+             KeyListener,
+             TraverseListener
 {
   private ArrayList listeners = new ArrayList();
 
@@ -192,6 +193,18 @@ public final class UntypedEventAdapter
     dispatchEvent( SWT.KeyUp, event );
   }
   
+  public void keyTraversed( final TraverseEvent typedEvent ) {
+    Event event = createEvent( SWT.Traverse, typedEvent.getSource() );
+    event.character = typedEvent.character;
+    event.keyCode = typedEvent.keyCode;
+    event.stateMask = typedEvent.stateMask;
+    event.doit = typedEvent.doit;
+    event.data = typedEvent.data;
+    event.detail = typedEvent.detail;
+    dispatchEvent( SWT.Traverse, event );
+    typedEvent.doit = event.doit;
+  }
+  
   public void addListener( final Widget widget, 
                            final int eventType,
                            final Listener listener )
@@ -243,6 +256,9 @@ public final class UntypedEventAdapter
       case SWT.KeyDown:
       case SWT.KeyUp:
         KeyEvent.addListener( widget, this );
+      break;
+      case SWT.Traverse:
+        TraverseEvent.addListener( widget, ( TraverseListener )this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";
@@ -303,6 +319,9 @@ public final class UntypedEventAdapter
       case SWT.KeyDown:
       case SWT.KeyUp:
         KeyEvent.removeListener( widget, this );
+      break;
+      case SWT.Traverse:
+        TraverseEvent.removeListener( widget, ( TraverseListener )this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";

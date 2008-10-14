@@ -90,6 +90,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDoubleClick.y";
   public static final String EVENT_KEY_DOWN_KEY_CODE
     = "org.eclipse.swt.events.keyDown.keyCode";
+  public static final String EVENT_KEY_DOWN_MODIFIER
+    = "org.eclipse.swt.events.keyDown.modifier";
 
   // Indicates that a shell was closed on the client side. The parameter
   // value holds the id of the shell that was closed.

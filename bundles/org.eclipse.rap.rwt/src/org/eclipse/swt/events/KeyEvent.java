@@ -161,8 +161,4 @@ public class KeyEvent extends TypedEvent {
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
-  public static Object[] getListeners( final Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

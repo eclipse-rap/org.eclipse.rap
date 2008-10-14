@@ -74,11 +74,13 @@ public class ControlLCAUtil {
   private static final String PROP_FOCUS_LISTENER = "focusListener";
   private static final String PROP_MOUSE_LISTENER = "mouseListener";
   private static final String PROP_KEY_LISTENER = "keyListener";
+  private static final String PROP_TRAVERSE_LISTENER = "traverseListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
+  private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
   private static final String ATT_CANCEL_KEY_EVENT
     = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
   static final String JSFUNC_CANCEL_EVENT
@@ -111,6 +113,8 @@ public class ControlLCAUtil {
    * <li>whether ActivateListeners are registered</li>
    * <li>whether MouseListeners are registered</li>
    * <li>whether FocusListeners are registered</li>
+   * <li>whether KeyListeners are registered</li>
+   * <li>whether TraverseListeners are registered</li>
    * </ul>
    *
    * @param control the control whose parameters to preserve
@@ -150,6 +154,8 @@ public class ControlLCAUtil {
     }
     adapter.preserve( PROP_KEY_LISTENER,
                       Boolean.valueOf( KeyEvent.hasListener( control ) ) );
+    adapter.preserve( PROP_TRAVERSE_LISTENER,
+                      Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
   }
 
   /**
@@ -309,6 +315,8 @@ public class ControlLCAUtil {
    * <li>whether ActivateListeners are registered</li>
    * <li>whether MouseListeners are registered</li>
    * <li>whether FocusListeners are registered</li>
+   * <li>whether KeyListeners are registered</li>
+   * <li>whether TraverseListeners are registered</li>
    * </ul>
    *
    * @param control the control whose properties to set
@@ -333,6 +341,7 @@ public class ControlLCAUtil {
     writeFocusListener( control );
     writeMouseListener( control );
     writeKeyListener( control );
+    writeTraverseListener( control );
     writeKeyEventResponse( control );
   }
 
@@ -767,6 +776,28 @@ public class ControlLCAUtil {
     }
   }
 
+  static void writeTraverseListener( final Control control )
+    throws IOException
+  {
+    String prop = PROP_TRAVERSE_LISTENER;
+    Boolean hasListener
+      = Boolean.valueOf( TraverseEvent.hasListener( control ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      if( hasListener.booleanValue() ) {
+        Object[] args = new Object[] {
+          USER_DATA_TRAVERSE_LISTENER,
+          hasListener
+        };
+        writer.call( "setUserData", args );
+      } else {
+        Object[] args = new Object[] { USER_DATA_TRAVERSE_LISTENER, null };
+        writer.call( "setUserData", args );
+      }
+    }
+  }
+
   //////////
   // Z-Index
 
@@ -919,17 +950,28 @@ public class ControlLCAUtil {
 
   public static void processKeyEvents( final Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
-      final KeyEvent pressedEvent
-        = new KeyEvent( control, KeyEvent.KEY_PRESSED );
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
-      translateKeyCode( keyCode, pressedEvent );
+      String modifier = readStringParam( JSConst.EVENT_KEY_DOWN_MODIFIER );
+      final int stateMask = translateModifier( modifier );
+      final int traverseKey = getTraverseKey( keyCode, stateMask );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
+          if( traverseKey != SWT.TRAVERSE_NONE ) {
+            TraverseEvent traverseEvent = new TraverseEvent( control );
+            initializeKeyEvent( traverseEvent, keyCode, stateMask );
+            traverseEvent.detail = traverseKey;
+            traverseEvent.processEvent();
+            if( !traverseEvent.doit ) {
+              cancelKeyEvent( traverseEvent );
+            }
+          }
+          KeyEvent pressedEvent = new KeyEvent( control, KeyEvent.KEY_PRESSED );
+          initializeKeyEvent( pressedEvent, keyCode, stateMask );
           pressedEvent.processEvent();
           if( pressedEvent.doit ) {
             KeyEvent releasedEvent
               = new KeyEvent( control, KeyEvent.KEY_RELEASED );
-            translateKeyCode( keyCode, releasedEvent );
+            initializeKeyEvent( releasedEvent, keyCode, stateMask );
             releasedEvent.processEvent();
           } else {
             cancelKeyEvent( pressedEvent );
@@ -939,95 +981,148 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void translateKeyCode( final int keyCode,
-                                        final KeyEvent event )
+  static int getTraverseKey( final int keyCode, final int stateMask ) {
+    int result = SWT.TRAVERSE_NONE;
+    switch( keyCode ) {
+      case 27:
+        result = SWT.TRAVERSE_ESCAPE;
+      break;
+      case 13:
+        result = SWT.TRAVERSE_RETURN;
+      break;
+      case 9:
+        if( ( stateMask & SWT.MODIFIER_MASK ) == 0 ) {
+          result = SWT.TRAVERSE_TAB_NEXT;
+        } else if( stateMask == SWT.SHIFT ) {
+          result = SWT.TRAVERSE_TAB_PREVIOUS;
+        }
+      break;
+    }
+    return result;
+  }
+
+  private static void initializeKeyEvent( final KeyEvent event, 
+                                          final int keyCode, 
+                                          final int stateMask )
   {
+    event.keyCode = translateKeyCode( keyCode );
+    if( ( event.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
+      event.character = translateCharacter( keyCode );
+    }
+    event.stateMask = stateMask;
+  }
+
+  private static int translateKeyCode( final int keyCode ) {
+    int result;
     switch( keyCode ) {
       case 20:
-        event.keyCode = SWT.CAPS_LOCK;
+        result = SWT.CAPS_LOCK;
       break;
       case 38:
-        event.keyCode = SWT.UP;
+        result = SWT.UP;
       break;
       case 37:
-        event.keyCode = SWT.LEFT;
+        result = SWT.LEFT;
       break;
       case 39:
-        event.keyCode = SWT.RIGHT;
+        result = SWT.RIGHT;
       break;
       case 40:
-        event.keyCode = SWT.DOWN;
+        result = SWT.DOWN;
       break;
       case 33:
-        event.keyCode = SWT.PAGE_UP;
+        result = SWT.PAGE_UP;
       break;
       case 34:
-        event.keyCode = SWT.PAGE_DOWN;
+        result = SWT.PAGE_DOWN;
       break;
       case 35:
-        event.keyCode = SWT.END;
+        result = SWT.END;
       break;
       case 36:
-        event.keyCode = SWT.HOME;
+        result = SWT.HOME;
       break;
       case 45:
-        event.keyCode = SWT.INSERT;
+        result = SWT.INSERT;
       break;
       case 46:
-        event.keyCode = SWT.DEL;
+        result = SWT.DEL;
       break;
       case 112:
-        event.keyCode = SWT.F1;
+        result = SWT.F1;
       break;
       case 113:
-        event.keyCode = SWT.F2;
+        result = SWT.F2;
       break;
       case 114:
-        event.keyCode = SWT.F3;
+        result = SWT.F3;
       break;
       case 115:
-        event.keyCode = SWT.F4;
+        result = SWT.F4;
       break;
       case 116:
-        event.keyCode = SWT.F5;
+        result = SWT.F5;
       break;
       case 117:
-        event.keyCode = SWT.F6;
+        result = SWT.F6;
       break;
       case 118:
-        event.keyCode = SWT.F7;
+        result = SWT.F7;
       break;
       case 119:
-        event.keyCode = SWT.F8;
+        result = SWT.F8;
       break;
       case 120:
-        event.keyCode = SWT.F9;
+        result = SWT.F9;
       break;
       case 121:
-        event.keyCode = SWT.F10;
+        result = SWT.F10;
       break;
       case 122:
-        event.keyCode = SWT.F11;
+        result = SWT.F11;
       break;
       case 123:
-        event.keyCode = SWT.F12;
+        result = SWT.F12;
       break;
       case 144:
-        event.keyCode = SWT.NUM_LOCK;
+        result = SWT.NUM_LOCK;
       break;
       case 44:
-        event.keyCode = SWT.PRINT_SCREEN;
+        result = SWT.PRINT_SCREEN;
       break;
       case 145:
-        event.keyCode = SWT.SCROLL_LOCK;
+        result = SWT.SCROLL_LOCK;
       break;
       case 19:
-        event.keyCode = SWT.PAUSE;
+        result = SWT.PAUSE;
       break;
       default:
-        event.keyCode = keyCode;
-        event.character = toCharacter( keyCode );
+        result = keyCode;
     }
+    return result;
+  }
+
+  private static char translateCharacter( final int keyCode ) {
+    char result = ( char )0;
+    if( Character.isDefined( ( char )keyCode ) ) {
+      result = ( char )keyCode;
+    }
+    return result;
+  }
+
+  static int translateModifier( final String value ) {
+    String[] modifiers = value.split( "," );
+    int result = 0;
+    for( int i = 0; i < modifiers.length; i++ ) {
+      if( "ctrl".equals( modifiers[ i ] ) ) {
+        result  |= SWT.CTRL;
+      } else if( "alt".equals( modifiers[ i ] ) ) {
+        result |= SWT.ALT;
+      } else if ( "shift".equals(  modifiers[ i ] ) ) {
+        result |= SWT.SHIFT;
+      }
+    }
+    return result;
   }
 
   private static void cancelKeyEvent( final KeyEvent event ) {
@@ -1042,14 +1137,6 @@ public class ControlLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.callStatic( JSFUNC_CANCEL_EVENT, null );
     }
-  }
-
-  private static char toCharacter( final int keyCode ) {
-    char result = ( char )0;
-    if( Character.isDefined( ( char )keyCode ) ) {
-      result = ( char )keyCode;
-    }
-    return result;
   }
 
   public static void processMouseEvents( final Control control ) {
@@ -1089,9 +1176,14 @@ public class ControlLCAUtil {
     }
   }
 
-  private static int readIntParam( final String paramName ) {
+  private static String readStringParam( final String paramName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( paramName );
+    return value;
+  }
+
+  private static int readIntParam( final String paramName ) {
+    String value = readStringParam( paramName );
     return Integer.parseInt( value );
   }
 

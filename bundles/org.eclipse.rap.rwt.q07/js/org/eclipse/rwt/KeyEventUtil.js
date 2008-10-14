@@ -28,21 +28,20 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
       var relevantEvent = this._isRelevantEvent( eventType, keyCode );
       if( !org_eclipse_rap_rwt_EventUtil_suspend && relevantEvent ) {
         var control = this._getTargetControl();
-        var hasKeyListener = false;
-        if( control !== null && this._hasKeyListener( control ) ) {
-          hasKeyListener = true;
-        }
+        var hasKeyListener = this._hasKeyListener( control );
+        var hasTraverseListener = this._hasTraverseListener( control );
         if( eventType === "keydown" ) {
           this._lastKeyCode = keyCode;
         }
-        if( hasKeyListener ) {
+this.debug( "traverse key code: " + keyCode + " -> " + this._isTraverseKey( keyCode ) );        
+        if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
           if( this._keyEventRequestRunning ) {
             this._bufferedEvents.push( domEvent );
             this._cancelDomEvent( domEvent );
           } else {
             var key = charCode == 0 ? keyCode : charCode;
             this._pendingEvent = domEvent;
-            this._sendKeyDown( control, key );
+            this._sendKeyDown( control, key, domEvent );
             result = this._isDomEventCanceled();
             this._checkBufferedEvents();
           }
@@ -98,7 +97,22 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
     },
         
     _hasKeyListener : function( widget ) {
-      return widget.getUserData( "keyListener" ) === true;
+      return widget !== null && widget.getUserData( "keyListener" ) === true;
+    },
+    
+    _hasTraverseListener : function( widget ) {
+      return widget !== null && widget.getUserData( "traverseListener" ) === true;
+    },
+    
+    _isTraverseKey : function( keyCode ) {
+      var result = false;
+      if(    keyCode === 27 
+          || keyCode === 13 
+          || keyCode === 9 )
+      {
+        result = true;
+      }
+      return result;
     },
     
     _cancelDomEvent : function( domEvent ) {
@@ -112,12 +126,22 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
       }
     },
     
-    _sendKeyDown : function( widget, keyCode ) {
+    _sendKeyDown : function( widget, keyCode, domEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       req.addEvent( "org.eclipse.swt.events.keyDown", id );
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
-      req.addParameter( "org.eclipse.swt.events.keyDown.character", "9" );
+      var modifier = "";
+      if( domEvent.shiftKey ) {
+        modifier += "shift,";
+      }
+      if( domEvent.ctrlKey ) {
+        modifier += "ctrl,";
+      }
+      if( domEvent.altKey ) {
+        modifier += "alt,";
+      }
+      req.addParameter( "org.eclipse.swt.events.keyDown.modifier", modifier );
       this._keyEventRequestRunning = true;
       req.sendSyncronous();
       this._keyEventRequestRunning = false;
@@ -138,7 +162,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
 //                                 oldEvent.altKey,
 //                                 oldEvent.shiftKey,
 //                                 oldEvent.metaKey,
-//                                 this._lastKeyEvent,
+//                                 this._lastKeyCode,
 //                                 oldEvent.charCode );
 //          oldEvent.target.dispatchEvent( newEvent );
 //          newEvent = document.createEvent( "KeyboardEvent" );
@@ -162,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
 //                                 oldEvent.altKey,
 //                                 oldEvent.shiftKey,
 //                                 oldEvent.metaKey,
-//                                 this._lastKeyEvent,
+//                                 this._lastKeyCode,
 //                                 oldEvent.charCode );
 //          oldEvent.target.dispatchEvent( newEvent );
         }
