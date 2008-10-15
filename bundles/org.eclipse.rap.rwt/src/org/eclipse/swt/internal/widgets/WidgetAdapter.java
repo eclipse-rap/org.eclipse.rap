@@ -81,11 +81,11 @@ public final class WidgetAdapter implements IWidgetAdapter {
     renderRunnable = null;
   }
 
-  public String getVariant() {
+  public String getCachedVariant() {
     return variant;
   }
 
-  public void setVariant( final String variant ) {
+  public void setCachedVariant( final String variant ) {
     this.variant = variant;
   }
 }

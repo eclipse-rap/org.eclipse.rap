@@ -150,9 +150,9 @@ public final class WidgetUtil {
     Object data = widget.getData( WidgetUtil.CUSTOM_VARIANT );
     if( data instanceof String ) {
       result = ( String )data;
-      if( !result.equals( widgetAdapter.getVariant() ) ) {
+      if( !result.equals( widgetAdapter.getCachedVariant() ) ) {
         if( validateVariantString( result ) ) {
-          widgetAdapter.setVariant( result );
+          widgetAdapter.setCachedVariant( result );
         } else {
           String pattern = "Illegal character in widget variant ''{0}''";
           Object[] arguments = new Object[] { result };
