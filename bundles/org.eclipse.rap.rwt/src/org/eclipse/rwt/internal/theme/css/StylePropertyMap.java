@@ -19,7 +19,14 @@ import org.w3c.css.sac.LexicalUnit;
 
 public class StylePropertyMap implements IStylePropertyMap {
 
-  private final Map properties = new HashMap();
+  private final Map properties;
+
+  private final ResourceLoader loader;
+
+  public StylePropertyMap( final ResourceLoader loader ) {
+    this.loader = loader;
+    properties = new HashMap();
+  }
 
   public void setProperty( final String key, final LexicalUnit value ) {
     if( key == null || value == null ) {
@@ -35,14 +42,14 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result;
   }
 
-  public QxType getValue( final String property, final ResourceLoader loader ) {
+  public QxType getValue( final String property ) {
     QxType result = null;
     if( "color".equals( property ) ) {
       result = getColor( "color" );
     } else if( "background-color".equals( property ) ) {
       result = getColor( "background-color" );
     } else if( "background-image".equals( property ) ) {
-      result = getBackgroundImage( "background-image", loader );
+      result = getBackgroundImage( "background-image" );
     } else if( "border".equals( property ) ) {
       result = getBorder( "border" );
     } else if( "padding".equals( property ) ) {
@@ -115,8 +122,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result;
   }
 
-  public QxImage getBackgroundImage( final String propertyName,
-                                     final ResourceLoader loader )
+  public QxImage getBackgroundImage( final String propertyName )
   {
     QxImage result = null;
     LexicalUnit lexicalUnit = getPropertyValue( propertyName );
@@ -132,7 +138,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     String[] properties = getProperties();
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];
-      QxType value = getValue( property, null );
+      QxType value = getValue( property );
       result.append( "  " );
       result.append( property );
       result.append( ": " );

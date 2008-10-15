@@ -177,17 +177,17 @@ public class StyleSheet_Test extends TestCase {
     StylableElement button = new StylableElement( "Button" );
     button.setAttribute( "PUSH" );
     button.setAttribute( "BORDER" );
-    QxType bgColor = styleSheet.getValue( "background-color", button, null );
+    QxType bgColor = styleSheet.getValue( "background-color", button );
     assertNotNull( bgColor );
     assertEquals( QxColor.valueOf( "#9dd0ea" ), bgColor );
-    QxType color = styleSheet.getValue( "color", button, null );
+    QxType color = styleSheet.getValue( "color", button );
     assertNotNull( color );
     assertEquals( QxColor.valueOf( "#705e42" ), color );
     button.setClass( "special" );
-    QxType specialColor = styleSheet.getValue( "color", button, null );
+    QxType specialColor = styleSheet.getValue( "color", button );
     assertNotNull( specialColor );
     assertEquals( QxColor.valueOf( "red" ), specialColor );
-    QxType specialBgCol = styleSheet.getValue( "background-color", button, null );
+    QxType specialBgCol = styleSheet.getValue( "background-color", button );
     assertNotNull( specialBgCol );
     assertEquals( QxColor.TRANSPARENT, specialBgCol );
   }
@@ -224,10 +224,11 @@ public class StyleSheet_Test extends TestCase {
   {
     StyleSheet result;
     ClassLoader classLoader = StyleSheet_Test.class.getClassLoader();
-    InputStream inStream = classLoader.getResourceAsStream( "resources/theme/" + fileName );
+    InputStream inStream = classLoader.getResourceAsStream( "resources/theme/"
+                                                            + fileName );
     try {
       CssFileReader reader = new CssFileReader();
-      result = reader.parse( inStream, TEST_SELECTORS_CSS );
+      result = reader.parse( inStream, TEST_SELECTORS_CSS, null );
     } finally {
       inStream.close();
     }

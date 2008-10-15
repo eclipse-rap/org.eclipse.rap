@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.theme.css;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.w3c.css.sac.*;
 
 
@@ -22,10 +23,14 @@ public class DocumentHandlerImpl implements DocumentHandler {
   private String uri;
   private final List rules;
   private final CssFileReader reader;
+  private final ResourceLoader loader;
   private StylePropertyMap currentStyleProperties = null;
 
-  public DocumentHandlerImpl( final CssFileReader reader ) {
+  public DocumentHandlerImpl( final CssFileReader reader,
+                              final ResourceLoader loader )
+  {
     this.reader = reader;
+    this.loader = loader;
     this.rules = new ArrayList();
   }
 
@@ -40,7 +45,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
 
   public void startSelector( final SelectorList patterns ) throws CSSException {
     log( "startSelector " + toString( patterns ) );
-    currentStyleProperties = new StylePropertyMap();
+    currentStyleProperties = new StylePropertyMap( loader );
   }
 
   public void endSelector( final SelectorList patterns ) throws CSSException {

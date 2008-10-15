@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.rwt.internal.theme.css.*;
-import org.w3c.css.sac.CSSException;
+
 
 /**
  * An instance of this class represents all the information provided by an RWT
@@ -39,22 +39,12 @@ public final class Theme {
 
   private StyleSheet styleSheet;
 
-  private ResourceLoader loader;
-
   StyleSheet getStyleSheet() {
     return styleSheet;
   }
 
-  void setStyleSheet( StyleSheet styleSheet ) {
+  void setStyleSheet( final StyleSheet styleSheet ) {
     this.styleSheet = styleSheet;
-  }
-
-  void setLoader( ResourceLoader loader ) {
-    this.loader = loader;
-  }
-
-  ResourceLoader getLoader() {
-    return loader;
   }
   // --- CSS ---
 
@@ -64,7 +54,7 @@ public final class Theme {
    *
    * @param name the name of the theme, must not be <code>null</code>
    */
-  public Theme( final String name ) {
+  Theme( final String name ) {
     this( name, null );
   }
 
@@ -76,7 +66,7 @@ public final class Theme {
    * @param name the name of the theme, must not be <code>null</code>
    * @param defaultTheme the default theme
    */
-  public Theme( final String name, final Theme defaultTheme ) {
+  Theme( final String name, final Theme defaultTheme ) {
     checkName( name );
     if( name == null ) {
       throw new NullPointerException( "name is null" );
@@ -153,19 +143,13 @@ public final class Theme {
     return newTheme;
   }
 
-  public static Theme loadFromCssFile( final String name,
-                                       final Theme defaultTheme,
-                                       final InputStream inputStream,
-                                       final ResourceLoader loader,
-                                       final String uri,
-                                       final ThemeProperty[] properties )
-    throws CSSException, IOException
+  public static Theme loadFromStyleSheet( final String name,
+                                          final Theme defaultTheme,
+                                          final StyleSheet styleSheet,
+                                          final ThemeProperty[] properties )
   {
     Theme result = new Theme( name, defaultTheme );
-    CssFileReader reader = new CssFileReader();
-    StyleSheet styleSheet = reader.parse( inputStream, uri );
     result.styleSheet = styleSheet;
-    result.loader = loader;
 
     // == New CSS support
     // For each value in the style sheet, create a dummy property that will be
@@ -177,7 +161,7 @@ public final class Theme {
       String[] propertyNames = propertyMap.getProperties();
       for( int j = 0; j < propertyNames.length; j++ ) {
         String propertyName = propertyNames[ j ];
-        QxType value = propertyMap.getValue( propertyName, loader );
+        QxType value = propertyMap.getValue( propertyName );
         // TODO [rst] Quick fix for NPE, revise
         if( value != null ) {
           String hash = getDummyPropertyName( value );
@@ -202,16 +186,14 @@ public final class Theme {
           }
         }
         StylableElement element = createDummyElement( property, null );
-        QxType value
-          = styleSheet.getValue( property.cssProperty, element, loader );
+        QxType value = styleSheet.getValue( property.cssProperty, element );
         if( value != null ) {
           result.setValue( property.name, value );
         }
         for( int j = 0; j < variants.length; j++ ) {
           String variant = variants[ j ];
           StylableElement vElement = createDummyElement( property, variant );
-          QxType vValue
-            = styleSheet.getValue( property.cssProperty, vElement, loader );
+          QxType vValue = styleSheet.getValue( property.cssProperty, vElement );
           if( vValue != null && !vValue.equals( value ) ) {
             result.setValue( property.name, variant, vValue );
           }

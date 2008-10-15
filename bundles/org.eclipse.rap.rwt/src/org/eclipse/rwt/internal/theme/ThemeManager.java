@@ -21,8 +21,7 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
-import org.eclipse.rwt.internal.theme.css.CssElementHolder;
-import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.internal.theme.css.*;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -52,6 +51,7 @@ public final class ThemeManager {
   private static final class ThemeableWidgetWrapper {
     final Class widget;
     final ResourceLoader loader;
+    
     ThemeableWidgetWrapper( final Class widget, final ResourceLoader loader ) {
       this.widget = widget;
       this.loader = loader;
@@ -167,9 +167,10 @@ public final class ThemeManager {
   private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
+    org.eclipse.swt.widgets.Widget.class,
+    org.eclipse.swt.widgets.Control.class,
     org.eclipse.swt.widgets.Button.class,
     org.eclipse.swt.widgets.Combo.class,
-    org.eclipse.swt.widgets.Control.class,
     org.eclipse.swt.widgets.CoolBar.class,
     org.eclipse.swt.custom.CTabFolder.class,
     org.eclipse.swt.widgets.Group.class,
@@ -184,8 +185,7 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.Table.class,
     org.eclipse.swt.widgets.Text.class,
     org.eclipse.swt.widgets.ToolBar.class,
-    org.eclipse.swt.widgets.Tree.class,
-    org.eclipse.swt.widgets.Widget.class
+    org.eclipse.swt.widgets.Tree.class
   };
 
   private static ThemeManager instance;
@@ -205,7 +205,7 @@ public final class ThemeManager {
   private final Map adapters;
 
   private final Set registeredThemeFiles;
-
+  
   private int themeCount;
 
   private CssElementHolder registeredCssElements;
@@ -359,12 +359,12 @@ public final class ThemeManager {
       if( fileName.toLowerCase().endsWith( ".css" ) ) {
         try {
           ThemeProperty[] props = getThemeProperties();
-          theme = Theme.loadFromCssFile( name != null ? name : "",
-                                         predefinedTheme,
-                                         inputStream,
-                                         loader,
-                                         fileName,
-                                         props );
+          CssFileReader reader = new CssFileReader();
+          StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
+          theme = Theme.loadFromStyleSheet( name != null ? name : "",
+                                            predefinedTheme,
+                                            styleSheet,
+                                            props );
         } catch( CSSException e ) {
           throw new ThemeManagerException( "Failed parsing CSS file", e );
         }
@@ -1003,8 +1003,7 @@ public final class ThemeManager {
             = styleSheet.getMatchingStyleRules( elementName );
           for( int k = 0; k < rules.length; k++ ) {
             SelectorWrapper selector = rules[ k ];
-            QxType value = selector.propertyMap.getValue( property.getName(),
-                                                          theme.getLoader() );
+            QxType value = selector.propertyMap.getValue( property.getName() );
             if( value != null ) {
               JsonArray array = new JsonArray();
               String[] constraints = selector.selectorExt.getConstraints();

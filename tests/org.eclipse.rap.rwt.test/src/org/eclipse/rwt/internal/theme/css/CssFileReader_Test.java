@@ -32,7 +32,7 @@ public class CssFileReader_Test extends TestCase {
     CssFileReader reader = new CssFileReader();
     ByteArrayOutputStream stderr = new ByteArrayOutputStream();
     System.setErr( new PrintStream( stderr ) );
-    StyleSheet styleSheet = reader.parse( inStream, TEST_SYNTAX_CSS );
+    StyleSheet styleSheet = reader.parse( inStream, TEST_SYNTAX_CSS, null );
     assertTrue( stderr.size() > 0 );
     StyleRule[] rules = styleSheet.getStyleRules();
     CSSException[] problems = reader.getProblems();

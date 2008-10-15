@@ -73,14 +73,13 @@ public class StyleSheet {
   }
 
   public QxType getValue( final String cssProperty,
-                          final StylableElement element,
-                          final ResourceLoader loader )
+                          final StylableElement element )
   {
     QxType result = null;
     SelectorWrapper[] selectorWrappers = getMatchingSelectors( element );
     for( int i = 0; i < selectorWrappers.length && result == null; i++ ) {
       IStylePropertyMap properties = selectorWrappers[ i ].propertyMap;
-      QxType value = properties.getValue( cssProperty, loader );
+      QxType value = properties.getValue( cssProperty );
       if( value != null ) {
         result = value;
       }

@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.w3c.css.sac.*;
 
 
@@ -37,7 +38,9 @@ public class CssFileReader {
     problems = new ArrayList();
   }
 
-  public StyleSheet parse( final InputStream inputStream, final String uri )
+  public StyleSheet parse( final InputStream inputStream,
+                           final String uri,
+                           final ResourceLoader loader )
     throws CSSException, IOException
   {
     InputSource source = new InputSource();
@@ -46,7 +49,8 @@ public class CssFileReader {
     source.setURI( uri );
     parser.setConditionFactory( new ConditionFactoryImpl( this ) );
     parser.setSelectorFactory( new SelectorFactoryImpl( this ) );
-    DocumentHandlerImpl documentHandler = new DocumentHandlerImpl( this );
+    DocumentHandlerImpl documentHandler
+      = new DocumentHandlerImpl( this, loader );
     parser.setDocumentHandler( documentHandler );
     parser.setErrorHandler( new ErrorHandlerImpl( this ) );
     parser.parseStyleSheet( source );
