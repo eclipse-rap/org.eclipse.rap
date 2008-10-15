@@ -132,6 +132,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._table._showResizeLine( position );
         this._resizeStartX = evt.getPageX();
         this.setCapture( true );
+        evt.stopPropagation();
+        evt.preventDefault();
       } else if( this._moveable ){
         this._inMove = true;
         this.setCapture( true );
@@ -140,6 +142,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._table._unhookColumnMove( this );
         this._offsetX = evt.getPageX() - this.getLeft();
         this._initialLeft = this.getLeft();
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     },
 
@@ -152,6 +156,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._sendResized( newWidth );
         this._inResize = false;
         this._wasResizeOrMoveEvent = true;
+        evt.stopPropagation();
+        evt.preventDefault();
       } else if( this._inMove ) {
         this._inMove = false;
         this.setCapture( false );
@@ -167,6 +173,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         } else {
           this.setLeft( this._initialLeft );
         }
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     },
 
@@ -188,12 +196,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
           this.getTopLevelWidget().setGlobalCursor( null );
         }
       }
+      evt.stopPropagation();
+      evt.preventDefault();
     },
 
     _onMouseOut : function( evt ) {
       this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
       if( !this._inResize ) {
         this.getTopLevelWidget().setGlobalCursor( null );
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     },
 
