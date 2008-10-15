@@ -552,22 +552,25 @@ public class RWTLifeCycle_Test extends TestCase {
     assertFalse( display.readAndDispatch() );
   }
 
-  public void testBeginUIThread() throws InterruptedException, IOException {
+  public void testBeginUIThread() throws Throwable {
     ServiceContext originContext = ContextProvider.getContext();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final boolean[] continueLoop = { true };
     final ServiceContext[] uiContext = new ServiceContext[ 1 ];
+    final Throwable[] error = { null };
     Runnable runnable = new Runnable() {
       public void run() {
         while( continueLoop[ 0 ] ) {
           IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
+          synchronized( uiThread.getLock() ) {
+          }
           uiThread.updateServiceContext();
           uiContext[ 0 ] = ContextProvider.getContext();
           log.append( "executedInUIThread" );
           try {
             uiThread.switchThread();
           } catch( InterruptedException e ) {
-            e.printStackTrace();
+            error[ 0 ] = e;
           }
         }
       }
@@ -575,6 +578,9 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle.uiRunnable = runnable;
     // simulates first request
     lifeCycle.executeUIThread();
+    if( error[ 0 ] != null ) {
+      throw error[ 0 ];
+    }
     assertSame( originContext, uiContext[ 0 ] );
     assertEquals( "executedInUIThread", log.toString() );
     assertTrue( getUIThread().isAlive() );
@@ -585,6 +591,9 @@ public class RWTLifeCycle_Test extends TestCase {
     ContextProvider.releaseContextHolder();
     ContextProvider.setContext( secondContext );
     lifeCycle.executeUIThread();
+    if( error[ 0 ] != null ) {
+      throw error[ 0 ];
+    }
     assertSame( secondContext, uiContext[ 0 ] );
     assertEquals( "executedInUIThread", log.toString() );
     assertTrue( getUIThread().isAlive() );
@@ -592,6 +601,9 @@ public class RWTLifeCycle_Test extends TestCase {
     UIThread endingUIThread = getUIThread();
     continueLoop[ 0 ] = false;
     lifeCycle.executeUIThread();
+    if( error[ 0 ] != null ) {
+      throw error[ 0 ];
+    }
     assertFalse( endingUIThread.isAlive() );
     assertNull( getUIThread() );
     // clean up
@@ -644,7 +656,7 @@ public class RWTLifeCycle_Test extends TestCase {
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
-  public void testSleep() throws Exception {
+  public void testSleep() throws Throwable {
     final RWTLifeCycle lifeCycle 
       = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final ServiceContext[] uiContext = { null };
@@ -659,10 +671,15 @@ public class RWTLifeCycle_Test extends TestCase {
         }
       }
     } );
+    final Throwable[] error = { null };
+    final UIThread[] uiThread = { null };
     Runnable runnable = new Runnable() {
       public void run() {
         try {
-          IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
+          synchronized( uiThread[ 0 ].getLock() ) {
+          }
+          IUIThreadHolder uiThread
+            = ( IUIThreadHolder )Thread.currentThread();
           uiThread.updateServiceContext();
           lifeCycle.continueLifeCycle();
           log.setLength( 0 );
@@ -672,18 +689,23 @@ public class RWTLifeCycle_Test extends TestCase {
           lifeCycle.sleep();
           log.append( "readAndDispatch" );
         } catch( Throwable e ) {
-          e.printStackTrace();
+          error[ 0 ] = e;
         }
       }
     };
-    UIThread uiThread = new UIThread( runnable );
+    uiThread[ 0 ] = new UIThread( runnable );
     ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( RWTLifeCycle.UI_THREAD, uiThread );
+    session.setAttribute( RWTLifeCycle.UI_THREAD, uiThread[ 0 ] );
 
-    uiThread.setServiceContext( ContextProvider.getContext() );
-    uiThread.start();
-    uiThread.switchThread();
-
+    uiThread[ 0 ].setServiceContext( ContextProvider.getContext() );
+    synchronized( uiThread[ 0 ].getLock() ) {
+      uiThread[ 0 ].start();
+      uiThread[ 0 ].switchThread();
+    }
+    
+    if( error[ 0 ] != null ) {
+      throw error[ 0 ];
+    }
     String expected = "after" + PhaseId.PREPARE_UI_ROOT;
     assertEquals( expected, log.toString() );
 
@@ -710,9 +732,12 @@ public class RWTLifeCycle_Test extends TestCase {
         }
       }
     } );
-    uiThread.setServiceContext( expectedContext );
-    uiThread.switchThread();
+    uiThread[ 0 ].setServiceContext( expectedContext );
+    uiThread[ 0 ].switchThread();
 
+    if( error[ 0 ] != null ) {
+      throw error[ 0 ];
+    }
     expected = "before"
              + PhaseId.PREPARE_UI_ROOT
              + "prepare"
@@ -737,12 +762,15 @@ public class RWTLifeCycle_Test extends TestCase {
         }
       }
     } );
-    uiThread.switchThread();
+    uiThread[ 0 ].switchThread();
+    if( error[ 0 ] != null ) {
+      throw error[ 0 ];
+    }
     expected = "before"
              + PhaseId.PROCESS_ACTION
              + "readAndDispatch";
     assertEquals( expected, log.toString() );
-    assertFalse( uiThread.isAlive() );
+    assertFalse( uiThread[ 0 ].isAlive() );
   }
 
   public void testGetSetPhaseOrder() {
