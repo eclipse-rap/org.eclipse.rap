@@ -178,8 +178,11 @@ public final class Theme {
       for( int j = 0; j < propertyNames.length; j++ ) {
         String propertyName = propertyNames[ j ];
         QxType value = propertyMap.getValue( propertyName, loader );
-        String hash = getDummyPropertyName( value );
-        result.cssValues.put( hash, value );
+        // TODO [rst] Quick fix for NPE, revise
+        if( value != null ) {
+          String hash = getDummyPropertyName( value );
+          result.cssValues.put( hash, value );
+        }
       }
     }
 
