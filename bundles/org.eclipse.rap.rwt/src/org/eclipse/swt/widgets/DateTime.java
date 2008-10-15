@@ -541,6 +541,14 @@ public class DateTime extends Composite {
     return new Point( width, height );
   }
 
+  public void setBounds( final Rectangle bounds ) {
+    super.setBounds( bounds );
+    // [if] Recalculate the sub widgets bounds
+    // important for using it in FillLayout where the
+    // DateTime#computeSize() is not call.
+    computeSubWidgetsBounds();
+  }
+
   private Point computeSubWidgetsBounds() {
     Font font = getFont();
     int width = 0, height = 0;
