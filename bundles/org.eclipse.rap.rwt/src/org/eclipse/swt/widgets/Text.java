@@ -265,6 +265,21 @@ public class Text extends Scrollable {
     checkWidget ();
     return textLimit;
   }
+  
+  /**
+   * Returns the number of characters.
+   *
+   * @return number of characters in the widget
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getCharCount() {
+    checkWidget();
+    return text.length();
+  }
 
   ///////////////////////////////////////////
   // Selection start, count and selected text
