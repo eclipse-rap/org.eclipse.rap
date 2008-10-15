@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.layout.FillLayout;
 
 
 public class Control_Test extends TestCase {
@@ -557,6 +558,34 @@ public class Control_Test extends TestCase {
     assertSame( shell, display.getFocusControl() );
     shell.dispose();
     assertSame( null, display.getFocusControl() );
+  }
+  
+  public void testHideFocusedControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setLayout( new FillLayout() );
+    Composite composite = new Composite( shell, SWT.NONE );
+    Control control = new Button( composite, SWT.PUSH );
+    shell.setSize( 100, 100 );
+    shell.open();
+    
+    // Hide control -> its parent (composite) must take focus
+    control.setFocus();
+    assertTrue( control.isFocusControl() );
+    control.setVisible( false );
+    assertFalse( control.isFocusControl() );
+    assertTrue( composite.isFocusControl() );
+    assertSame( composite, display.getFocusControl() );
+    
+    // Indirectly hide control -> shell must take focus  
+    control.setVisible( true );
+    control.setFocus();
+    composite.setVisible( false );
+    assertFalse( control.isVisible() );
+    assertFalse( control.isFocusControl() );
+    assertFalse( composite.isFocusControl() );
+    assertTrue( shell.isFocusControl() );
+    assertSame( shell, display.getFocusControl() );
   }
 
   public void testFocusEventsForForceFocus() {

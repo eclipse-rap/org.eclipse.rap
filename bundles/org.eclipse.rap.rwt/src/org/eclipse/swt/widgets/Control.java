@@ -211,7 +211,16 @@ public abstract class Control extends Widget {
    */
   public void setVisible( final boolean visible ) {
     checkWidget();
+    Control control = null;
+    boolean fixFocus = false;
+    if( !visible ) {
+      control = display.getFocusControl();
+      fixFocus = isFocusAncestor( control );
+    }
     state = visible ? state & ~HIDDEN : state | HIDDEN;
+    if( fixFocus ) {
+      fixFocus( control );
+    }
   }
 
   /**
@@ -1766,8 +1775,8 @@ public abstract class Control extends Widget {
     }
   }
 
-  /////////////////////////////////////////////////////
-  // Helping method to set the focus control on display
+  ////////////////////////
+  // Focus helping methods
 
   private void setFocusControl( final Control control ) {
     // focus
@@ -1794,6 +1803,31 @@ public abstract class Control extends Widget {
       control = control.parent;
     }
     return result;
+  }
+
+  // Copied from SWT/win32 as is
+  boolean isFocusAncestor (Control control) {
+    while (control != null && control != this && !(control instanceof Shell)) {
+      control = control.parent;
+    }
+    return control == this;
+  }
+
+  // Copied from SWT/win32 as is
+  void fixFocus (Control focusControl) {
+    Shell shell = getShell ();
+    Control control = this;
+    while (control != shell && (control = control.parent) != null) {
+      if (control.setFixedFocus ()) return;
+    }
+    shell.setSavedFocus (focusControl);
+//    OS.SetFocus (0);
+  }
+
+  // Copied from SWT/win32 as is
+  boolean setFixedFocus () {
+    if ((style & SWT.NO_FOCUS) != 0) return false;
+    return forceFocus ();
   }
 
   ///////////////////////////////////////////////////////

@@ -378,7 +378,7 @@ public class TableItemLCA_Test extends TestCase {
   public void testEscape() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display );
-    final Table table = new Table( shell, SWT.NONE );
+    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.fakeResponseWriter();
     TableItemLCA tableItemLCA = new TableItemLCA();

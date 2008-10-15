@@ -107,8 +107,8 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  * @see #asyncExec
  * @see #wake
  *
- * <!--@see #readAndDispatch-->
- * <!--@see #sleep-->
+ * @see #readAndDispatch
+ * @see #sleep
  * <!--@see Device#dispose-->
  *
  * @since 1.0
