@@ -129,6 +129,9 @@ public class Display extends Device implements Adaptable {
   private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
   private static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
   private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
+  
+  // Keep in sync with client-side (EventUtil.js)
+  private static final int DOUBLE_CLICK_TIME = 500;
 
   /**
    * Returns the display which the currently running thread is
@@ -874,6 +877,25 @@ public class Display extends Device implements Adaptable {
       break;
     }
     return result;
+  }
+  
+  /**
+   * Returns the longest duration, in milliseconds, between
+   * two mouse button clicks that will be considered a
+   * <em>double click</em> <!-- by the underlying operating system -->.
+   *
+   * @return the double click time
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.2
+   */
+  public int getDoubleClickTime() {
+    checkDevice ();
+    return DOUBLE_CLICK_TIME;
   }
 
   //////////
