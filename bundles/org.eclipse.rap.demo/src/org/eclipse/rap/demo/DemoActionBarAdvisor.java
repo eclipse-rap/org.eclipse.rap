@@ -12,14 +12,18 @@
 package org.eclipse.rap.demo;
 
 import java.net.URL;
+import java.util.Dictionary;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.rap.demo.editor.FooEditorInput;
 import org.eclipse.rap.demo.wizard.SurveyWizard;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.*;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
@@ -28,7 +32,9 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.*;
 
 public class DemoActionBarAdvisor extends ActionBarAdvisor {
 
@@ -101,11 +107,14 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     register( newEditorAction );
     
     aboutAction = new Action() {
-
       public void run() {
-        MessageDialog.openInformation( window.getShell(),
-                                       "RAP Demo",
-                                       "About action clicked" );
+        Shell shell = window.getShell();
+        Bundle bundle = Platform.getBundle( "org.eclipse.rap.demo" );
+        Dictionary headers = bundle.getHeaders();
+        Object version = headers.get( Constants.BUNDLE_VERSION );
+        MessageDialog.openInformation( shell,
+                                       "RAP Workbench Demo",
+                                       "Running on RAP version " + version );
       }
     };
     aboutAction.setText( "About" );
