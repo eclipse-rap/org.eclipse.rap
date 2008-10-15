@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class MenuEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int MENU_SHOWN = SWT.Show;
   public static final int MENU_HIDDEN = SWT.Hide;
   private static final Class LISTENER = MenuListener.class;

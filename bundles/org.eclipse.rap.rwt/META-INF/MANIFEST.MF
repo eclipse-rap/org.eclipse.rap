@@ -31,7 +31,11 @@ Export-Package: org.apache.batik.css.parser;x-internal:=true,
    org.eclipse.rap.w4t.test,
    org.eclipse.rap.rwt.test,
    org.eclipse.rap.ui.workbench",
- org.eclipse.rwt.internal.events;x-friends:="org.eclipse.rap.w4t,org.eclipse.rap.w4t.test,org.eclipse.rap.rwt.test",
+ org.eclipse.rwt.internal.events;
+  x-friends:="org.eclipse.rap.rwt.test,
+   org.eclipse.rap.w4t,
+   org.eclipse.rap.w4t.test,
+   org.eclipse.rap.jface",
  org.eclipse.rwt.internal.lifecycle;
   x-friends:="org.eclipse.rap.w4t,
    org.eclipse.rap.w4t.test,

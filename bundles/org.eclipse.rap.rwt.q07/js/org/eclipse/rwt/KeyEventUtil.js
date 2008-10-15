@@ -33,7 +33,6 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
         if( eventType === "keydown" ) {
           this._lastKeyCode = keyCode;
         }
-this.debug( "traverse key code: " + keyCode + " -> " + this._isTraverseKey( keyCode ) );        
         if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
           if( this._keyEventRequestRunning ) {
             this._bufferedEvents.push( domEvent );
@@ -42,7 +41,7 @@ this.debug( "traverse key code: " + keyCode + " -> " + this._isTraverseKey( keyC
             var key = charCode == 0 ? keyCode : charCode;
             this._pendingEvent = domEvent;
             this._sendKeyDown( control, key, domEvent );
-            result = this._isDomEventCanceled();
+            result = this._isDomEventCanceled( domEvent );
             this._checkBufferedEvents();
           }
         } 
@@ -70,6 +69,7 @@ this.debug( "traverse key code: " + keyCode + " -> " + this._isTraverseKey( keyC
         var keyEventHandler = qx.event.handler.KeyEventHandler.getInstance();
         var nonPrintable
           =  keyEventHandler._isNonPrintableKeyCode( keyCode ) 
+          || keyCode == 27 // escape
           || keyCode == 8  // backspace
           || keyCode == 9; // tab
         if( nonPrintable ) {

@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.*;
  */
 public class ExpandEvent extends SelectionEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int EXPANDED = SWT.Expand;
   public static final int COLLAPSED = SWT.Collapse;
   private static final Class LISTENER = ExpandListener.class;

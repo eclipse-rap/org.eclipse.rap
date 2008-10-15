@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.*;
  */
 public final class TreeEvent extends SelectionEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int TREE_EXPANDED = SWT.Expand;
   public static final int TREE_COLLAPSED = SWT.Collapse;
   

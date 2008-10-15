@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Event;
  */
 public final class ModifyEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int MODIFY_TEXT = SWT.Modify;
   
   private static final Class LISTENER = ModifyListener.class;

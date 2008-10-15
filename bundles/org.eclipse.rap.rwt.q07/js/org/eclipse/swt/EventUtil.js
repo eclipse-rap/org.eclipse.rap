@@ -222,6 +222,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseDown.button", button );
       req.addParameter( "org.eclipse.swt.events.mouseDown.x", evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseDown.y", evt.getPageY() );
+      req.addParameter( "org.eclipse.swt.events.mouseDown.time", this._eventTimestamp() );
     },
 
     _mouseUpParams : function( widget, evt ) {
@@ -232,6 +233,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseUp.button", button );
       req.addParameter( "org.eclipse.swt.events.mouseUp.x", evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseUp.y", evt.getPageY() );
+      req.addParameter( "org.eclipse.swt.events.mouseUp.time", this._eventTimestamp() );
     },
     
     _mouseDoubleClickParams : function( widget, evt ) {
@@ -244,6 +246,13 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
                         evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.y",
                         evt.getPageY() );
+      req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.time", 
+                        this._eventTimestamp() );
+    },
+    
+    _eventTimestamp : function() {
+      var app = qx.core.Init.getInstance().getApplication();
+      return new Date().getTime() - app.getStartupTime();
     },
     
     /**

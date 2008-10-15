@@ -76,18 +76,24 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseUp.x";
   public static final String EVENT_MOUSE_UP_Y
     = "org.eclipse.swt.events.mouseUp.y";
+  public static final String EVENT_MOUSE_UP_TIME
+    = "org.eclipse.swt.events.mouseUp.time";
   public static final String EVENT_MOUSE_DOWN_BUTTON
     = "org.eclipse.swt.events.mouseDown.button";
   public static final String EVENT_MOUSE_DOWN_X
     = "org.eclipse.swt.events.mouseDown.x";
   public static final String EVENT_MOUSE_DOWN_Y
     = "org.eclipse.swt.events.mouseDown.y";
+  public static final String EVENT_MOUSE_DOWN_TIME
+    = "org.eclipse.swt.events.mouseDown.time";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_BUTTON
     = "org.eclipse.swt.events.mouseDoubleClick.button";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_X
     = "org.eclipse.swt.events.mouseDoubleClick.x";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_Y
     = "org.eclipse.swt.events.mouseDoubleClick.y";
+  public static final String EVENT_MOUSE_DOUBLE_CLICK_TIME
+    = "org.eclipse.swt.events.mouseDoubleClick.time";
   public static final String EVENT_KEY_DOWN_KEY_CODE
     = "org.eclipse.swt.events.keyDown.keyCode";
   public static final String EVENT_KEY_DOWN_MODIFIER

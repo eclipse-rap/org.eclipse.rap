@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public final class ActivateEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int ACTIVATED = SWT.Activate;
   public static final int DEACTIVATED = SWT.Deactivate;
   

@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Event;
  */
 public final class FocusEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int FOCUS_GAINED = SWT.FocusIn;
   public static final int FOCUS_LOST = SWT.FocusOut;
   

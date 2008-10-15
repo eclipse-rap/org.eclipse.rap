@@ -29,6 +29,8 @@ import org.eclipse.swt.SWT;
  */
 public final class DisposeEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int WIDGET_DISPOSED = SWT.Dispose;
 
   private static final Class LISTENER = DisposeListener.class;

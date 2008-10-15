@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Event;
  */
 public final class ControlEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int CONTROL_MOVED = SWT.Move;
   public static final int CONTROL_RESIZED = SWT.Resize;
   

@@ -1144,6 +1144,7 @@ public class ControlLCAUtil {
                                   JSConst.EVENT_MOUSE_DOWN_Y );
       event.x = point.x;
       event.y = point.y;
+      event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
       event.processEvent();
     }
     String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
@@ -1157,6 +1158,7 @@ public class ControlLCAUtil {
                                   JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
       event.x = point.x;
       event.y = point.y;
+      event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
       event.processEvent();
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
@@ -1167,6 +1169,7 @@ public class ControlLCAUtil {
                                   JSConst.EVENT_MOUSE_UP_Y );
       event.x = point.x;
       event.y = point.y;
+      event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
       event.processEvent();
     }
   }

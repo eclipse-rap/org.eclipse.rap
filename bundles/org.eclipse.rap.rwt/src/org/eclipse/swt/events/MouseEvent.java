@@ -42,11 +42,22 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class MouseEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+  
   public static final int MOUSE_DOWN = SWT.MouseDown;
   public static final int MOUSE_UP = SWT.MouseUp;
   public static final int MOUSE_DOUBLE_CLICK = SWT.MouseDoubleClick;
   
   private static final Class LISTENER = MouseListener.class;
+
+  /**
+   * the time that the event occurred.
+   * 
+   * NOTE: This field is an unsigned integer and should
+   * be AND'ed with 0xFFFFFFFFL so that it can be treated
+   * as a signed long.
+   */ 
+  public int time;
 
   /**
    * the button that was pressed or released; 1 for the

@@ -10,15 +10,19 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
+import java.util.EventObject;
+
 import org.eclipse.rwt.Adaptable;
 
-public abstract class Event {
+public abstract class Event extends EventObject {
+  
+  private static final long serialVersionUID = 1L;
   
   private final Object source;
   private final int id;
-
   
   public Event( final Object source, final int id ) {
+    super( source );
     this.source = source;
     this.id = id;
   }
@@ -27,10 +31,6 @@ public abstract class Event {
     return id;
   }
   
-  public Object getSource() {
-    return source;
-  }
-
   protected static IEventAdapter getEventAdapter( final Adaptable adaptable ) {
     return ( IEventAdapter )adaptable.getAdapter( IEventAdapter.class );
   }

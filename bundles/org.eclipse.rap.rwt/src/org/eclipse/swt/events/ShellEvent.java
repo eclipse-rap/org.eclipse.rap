@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Event;
  */
 public final class ShellEvent extends TypedEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int SHELL_CLOSED = SWT.Close;
   public static final int SHELL_ACTIVATED = SWT.Activate;
   public static final int SHELL_DEACTIVATED = SWT.Deactivate;

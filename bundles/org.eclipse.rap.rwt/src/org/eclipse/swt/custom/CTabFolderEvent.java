@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class CTabFolderEvent extends TypedEvent {
   
+  private static final long serialVersionUID = 1L;
+
   // TODO [fappel]: Think about a better solution!
   //                Do not use SWT.None (0) as event handler identifier 
   //                -> causes problems with the filter implementation

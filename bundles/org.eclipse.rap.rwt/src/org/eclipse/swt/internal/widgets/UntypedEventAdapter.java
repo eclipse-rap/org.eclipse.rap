@@ -153,6 +153,7 @@ public final class UntypedEventAdapter
     event.button = evt.button;
     event.x = evt.x;
     event.y = evt.y;
+    event.time = evt.time;
     dispatchEvent( SWT.MouseDown, event );
   }
   
@@ -161,6 +162,7 @@ public final class UntypedEventAdapter
     event.button = evt.button;
     event.x = evt.x;
     event.y = evt.y;
+    event.time = evt.time;
     dispatchEvent( SWT.MouseUp, event );
   }
   
@@ -169,6 +171,7 @@ public final class UntypedEventAdapter
     event.button = evt.button;
     event.x = evt.x;
     event.y = evt.y;
+    event.time = evt.time;
     dispatchEvent( SWT.MouseDoubleClick, event );
   }
   
