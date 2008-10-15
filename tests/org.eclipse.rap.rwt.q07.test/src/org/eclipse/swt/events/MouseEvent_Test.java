@@ -272,23 +272,28 @@ public class MouseEvent_Test extends TestCase {
                               String.valueOf( x ) );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y,
                               String.valueOf( y ) );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME, "0" );
   }
 
   private static void fakeMouseUpRequest( final String shellId, 
                                           final int x, 
-                                          final int y ) {
+                                          final int y )
+  {
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_BUTTON, "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_X, String.valueOf( x ) );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_Y, String.valueOf( y ) );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_TIME, "0" );
   }
 
   private static void fakeMouseDownRequest( final String shellId, 
                                             final int x, 
-                                            final int y ) {
+                                            final int y )
+  {
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_BUTTON, "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_X, String.valueOf( x ) );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_Y, String.valueOf( y ) );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_TIME, "0" );
   }
 }
