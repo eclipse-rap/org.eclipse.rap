@@ -835,8 +835,8 @@ public class Shell extends Decorations {
   /**
    * Sets the receiver's alpha value.
    * <p>
-   * This operation requires the operating system's advanced
-   * widgets subsystem which may not be available on some
+   * This operation <!-- requires the operating system's advanced
+   * widgets subsystem which --> may not be available on some
    * platforms.
    * </p>
    * @param alpha the alpha value

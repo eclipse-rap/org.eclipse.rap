@@ -65,6 +65,8 @@ import org.eclipse.swt.widgets.*;
  * 		}
  * 	});
  * </pre></code>
+ * 
+ * @since 1.0
  */
 public class TreeEditor extends ControlEditor {
 
@@ -210,7 +212,6 @@ public class TreeEditor extends ControlEditor {
    * 
    * @return the zero based index of the column of the cell being tracked by
    *         this editor
-   * @since 1.0
    */
   public int getColumn() {
     return column;
@@ -245,7 +246,6 @@ public class TreeEditor extends ControlEditor {
    * 
    * @param column the zero based index of the column of the cell being tracked
    *          by this editor
-   * @since 1.0
    */
   public void setColumn( int column ) {
     int columnCount = tree.getColumnCount();
@@ -288,7 +288,6 @@ public class TreeEditor extends ControlEditor {
    *          editor
    * @param column the zero based index of the column of the cell being tracked
    *          by this editor
-   * @since 1.0
    */
   public void setEditor( Control editor, TreeItem item, int column ) {
     setItem( item );

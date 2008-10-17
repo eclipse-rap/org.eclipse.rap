@@ -55,6 +55,8 @@ import org.eclipse.swt.widgets.*;
  * editor.minimumHeight = size.y;
  * editor.setEditor (button);
  * </pre></code>
+ * 
+ * @since 1.0
  */
 public class ControlEditor {
 
@@ -204,8 +206,6 @@ public class ControlEditor {
   /**
    * Lays out the control within the underlying composite. This method should be
    * called after changing one or more fields to force the Editor to resize.
-   * 
-   * @since 1.0
    */
   public void layout() {
     if( editor == null || editor.isDisposed() )
