@@ -11,7 +11,7 @@
 
 package org.eclipse.rwt.internal.service;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.ServletException;
@@ -114,8 +114,8 @@ public class WrappedRequest_Test extends TestCase {
           }
         };
       }
-      public InputStream getTemplateOfStartupPage() throws IOException {
-        return new ByteArrayInputStream( "Startup Page".getBytes() );
+      public TemplateHolder getTemplateOfStartupPage() throws IOException {
+        return new TemplateHolder( "Startup Page" );
       }
       public boolean isStartupPageModifiedSince() {
         return true;

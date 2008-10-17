@@ -24,12 +24,12 @@ public final class BrandingUtil {
   private static final String ATTR_BRANDING_ID 
     = BrandingUtil.class.getName() + "#brandingId";
 
-  public static void replacePlaceholder( final StringBuffer buffer, 
-                                         final String placeHolder, 
+  public static void replacePlaceholder( final TemplateHolder template, 
+                                         final TemplateHolder.Variable variable, 
                                          final String replacement ) 
   {
     String safeReplacement = replacement == null ? "" : replacement;
-    BrowserSurvey.replacePlaceholder( buffer, placeHolder, safeReplacement );
+    template.replace( variable, safeReplacement );
   }
 
   public static String headerMarkup( final AbstractBranding branding ) {

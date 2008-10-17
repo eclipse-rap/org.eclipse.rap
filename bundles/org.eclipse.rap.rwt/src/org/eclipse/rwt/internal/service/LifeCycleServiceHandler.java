@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.browser.Browser;
 import org.eclipse.rwt.internal.browser.BrowserLoader;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -64,16 +65,32 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   public static ILifeCycleServiceHandlerConfigurer configurer 
     = new ILifeCycleServiceHandlerConfigurer()
   {
-    public InputStream getTemplateOfStartupPage() throws IOException {
+    public TemplateHolder getTemplateOfStartupPage() throws IOException {
       String resourceName = BrowserSurvey.getResourceName();
       IResourceManager manager = ResourceManagerImpl.getInstance();
-      InputStream result = manager.getResourceAsStream( resourceName );
-      if ( result == null ) {
+      InputStream stream = manager.getResourceAsStream( resourceName );
+      if ( stream == null ) {
         String text =   "Failed to load Browser Survey HTML Page. "
                       + "Resource {0} could not be found.";
         Object[] param = new Object[]{ resourceName };
         String msg = MessageFormat.format( text, param );
         throw new IOException( msg );
+      }
+      InputStreamReader isr 
+        = new InputStreamReader( stream, HTML.CHARSET_NAME_ISO_8859_1 );
+      BufferedReader reader = new BufferedReader( isr );
+      TemplateHolder result;
+      try {
+        String line = reader.readLine();
+        StringBuffer buffer = new StringBuffer();
+        while( line != null ) {
+          buffer.append( line );
+          buffer.append( "\n" );
+          line = reader.readLine();
+        }
+        result = new TemplateHolder( buffer.toString() );
+      } finally {
+        reader.close();
       }
       return result;
     }
@@ -86,7 +103,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   };
 
   public interface ILifeCycleServiceHandlerConfigurer {
-    InputStream getTemplateOfStartupPage() throws IOException;
+    TemplateHolder getTemplateOfStartupPage() throws IOException;
     boolean isStartupPageModifiedSince();
     LifeCycleServiceHandlerSync getSynchronizationHandler();
   }

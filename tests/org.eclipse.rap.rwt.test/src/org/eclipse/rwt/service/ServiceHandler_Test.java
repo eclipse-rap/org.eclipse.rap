@@ -11,7 +11,7 @@
 
 package org.eclipse.rwt.service;
 
-import java.io.*;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -84,8 +84,8 @@ public class ServiceHandler_Test extends TestCase {
           }
         };
       }
-      public InputStream getTemplateOfStartupPage() throws IOException {
-        return new ByteArrayInputStream( "Startup Page".getBytes() );
+      public TemplateHolder getTemplateOfStartupPage() throws IOException {
+        return new TemplateHolder( "Startup Page" );
       }
       public boolean isStartupPageModifiedSince() {
         return true;

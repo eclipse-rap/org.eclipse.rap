@@ -13,7 +13,8 @@ package org.eclipse.rwt.internal.service;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,26 +47,24 @@ public final class LifeCycleServiceHandlerConfigurer
 
   private static final LifeCycleServiceHandlerSync syncHandler
     = new RWTLifeCycleServiceHandlerSync();
-  private static String content;
+  private static TemplateHolder template;
   private static final List registeredBrandings = new ArrayList();
   
   ////////////////////////////////////////////////////
   // ILifeCycleServiceHandlerConfigurer implementation 
   
-  public InputStream getTemplateOfStartupPage() throws IOException {
+  public TemplateHolder getTemplateOfStartupPage() throws IOException {
     readContent();
-    StringBuffer buffer = new StringBuffer( content );
+    template.reset();
     setDummyBrowser();
     try {
-      String libs = getLibraries();
-      BrowserSurvey.replacePlaceholder( buffer, "${libraries}", libs );
-      String appScript = getAppScript();
-      BrowserSurvey.replacePlaceholder( buffer, "${appScript}", appScript );
-      applyBranding( buffer );
+      template.replace( TemplateHolder.VAR_LIBRARIES, getLibraries() );
+      template.replace( TemplateHolder.VAR_APPSCRIPT, getAppScript() );
+      applyBranding();
     } finally {
       removeDummyBrowser();
     }
-    return new ByteArrayInputStream( buffer.toString().getBytes() );
+    return template;
   }
 
   public synchronized boolean isStartupPageModifiedSince() {
@@ -109,7 +108,7 @@ public final class LifeCycleServiceHandlerConfigurer
   // Helping methods to load startup page 
   
   private static void readContent() throws IOException {
-    if( content == null ) {
+    if( template == null ) {
       InputStream stream = loadTemplateFile();
       InputStreamReader isr 
         = new InputStreamReader( stream, HTML.CHARSET_NAME_ISO_8859_1 );
@@ -122,7 +121,7 @@ public final class LifeCycleServiceHandlerConfigurer
           buffer.append( "\n" );
           line = reader.readLine();
         }
-        content = buffer.toString();
+        template = new TemplateHolder( buffer.toString() );
       } finally {
         reader.close();
       }
@@ -217,9 +216,7 @@ public final class LifeCycleServiceHandlerConfigurer
   //////////////////////////
   // Branding helper methods
 
-  private static void applyBranding( final StringBuffer content ) 
-    throws IOException 
-  {
+  private static void applyBranding() throws IOException {
     AbstractBranding branding = BrandingUtil.findBranding();
     registerBrandingResources( branding );
     HttpServletRequest request = ContextProvider.getRequest();
@@ -234,13 +231,23 @@ public final class LifeCycleServiceHandlerConfigurer
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
     }
-    BrandingUtil.replacePlaceholder( content, "${body}", branding.getBody() );
-    BrandingUtil.replacePlaceholder( content, "${title}", branding.getTitle() );
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_BODY,
+                                     branding.getBody() );
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_TITLE,
+                                     branding.getTitle() );
     String headers = BrandingUtil.headerMarkup( branding );
-    BrandingUtil.replacePlaceholder( content, "${headers}", headers );
-    BrandingUtil.replacePlaceholder( content, "${startup}", entryPoint );
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_HEADERS,
+                                     headers );
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_STARTUP,
+                                     entryPoint );
     String script = BrandingUtil.exitMessageScript( branding );
-    BrandingUtil.replacePlaceholder( content, "${exitConfirmation}", script );
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_EXIT_CONFIRMATION,
+                                     script );
   }
 
   private static void registerBrandingResources( final AbstractBranding branding )

@@ -68,7 +68,8 @@ public final class ServiceManager {
             String name = attributes.getNamedItem( "class" ).getNodeValue();
             String param = "requestparameter";
             String id = attributes.getNamedItem( param ).getNodeValue();
-            Class clazz = ServiceManager.class.getClassLoader().loadClass( name );
+            Class clazz
+              = ServiceManager.class.getClassLoader().loadClass( name );
             Object handlerInstance = clazz.newInstance();
             registerServiceHandler( id, ( IServiceHandler )handlerInstance );
           }

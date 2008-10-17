@@ -11,7 +11,6 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
 
 import javax.servlet.ServletException;
@@ -86,15 +85,20 @@ public final class BrowserSurvey {
   
   private static void renderScript() throws IOException {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
-    StringBuffer buffer = new StringBuffer();
-    load( buffer );
+    TemplateHolder template
+      = LifeCycleServiceHandler.configurer.getTemplateOfStartupPage();
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
-    replacePlaceholder( buffer, "${servlet}", getSerlvetName() );
-    replacePlaceholder( buffer, "${fallbackUrl}", createURL() );
-    replacePlaceholder( buffer, "${adminOrStartup}", adminOrStartup() );
-    replacePlaceholder( buffer, "${entrypoint}", getEntryPoint() );
-    getResponseWriter().append( buffer.toString() );
+    template.replace( TemplateHolder.VAR_SERVLET, getSerlvetName() );
+    template.replace( TemplateHolder.VAR_FALLBACK_URL, createURL() );
+    template.replace( TemplateHolder.VAR_ADMIN_OR_STARTUP, adminOrStartup() );
+    template.replace( TemplateHolder.VAR_ENTRY_POINT, getEntryPoint() );
+    String[] tokens = template.getTokens();
+    for( int i = 0; i < tokens.length; i++ ) {
+      if( tokens[ i ] != null ) {
+        getResponseWriter().append( tokens[ i ] );
+      }
+    }
   }
 
   private static void renderAjax() {
@@ -112,25 +116,6 @@ public final class BrowserSurvey {
     code.append( "', '_self' );");
     writer.append( HTMLUtil.createJavaScriptInline( code.toString() ) );
     writer.append( HTML.END_AJAX_RESPONSE );
-  }
-
-  // helping methods
-  //////////////////
-  
-  // TODO [rh] replace this by ResourceUtil#read - encoding is misssing here
-  static void load( final StringBuffer buffer ) throws IOException {
-    InputStream inputStream 
-      = LifeCycleServiceHandler.configurer.getTemplateOfStartupPage();
-    try {
-      byte[] bytes = new byte[ 512 ];
-      int bytesRead = inputStream.read( bytes );
-      while( bytesRead != -1 ) {
-        buffer.append( new String( bytes, 0, bytesRead ) );
-        bytesRead = inputStream.read( bytes );
-      }
-    } finally {
-      inputStream.close();
-    }
   }
 
   static String getResourceName() {

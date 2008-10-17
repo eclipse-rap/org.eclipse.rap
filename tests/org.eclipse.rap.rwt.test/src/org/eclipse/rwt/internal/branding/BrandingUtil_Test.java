@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
+import org.eclipse.rwt.internal.service.TemplateHolder;
 import org.eclipse.swt.RWTFixture;
 
 
@@ -49,14 +50,28 @@ public class BrandingUtil_Test extends TestCase {
   }
   
   public void testReplacePlaceholder() {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( "placeholder" );
-    BrandingUtil.replacePlaceholder( buffer, "placeholder", "replacement" );
-    assertEquals( "replacement", buffer.toString() );
-    buffer.setLength( 0 );
-    buffer.append( "null" );
-    BrandingUtil.replacePlaceholder( buffer, "null", null );
-    assertEquals( "", buffer.toString() );
+    String templateString = TemplateHolder.VAR_ENTRY_POINT.toString();
+    TemplateHolder template = new TemplateHolder( templateString );
+    
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_ENTRY_POINT,
+                                     "replacement" );
+    assertEquals( "replacement", getTemplateContent( template ).toString() );
+    
+    template.reset();
+    BrandingUtil.replacePlaceholder( template,
+                                     TemplateHolder.VAR_ENTRY_POINT,
+                                     null );    
+    assertEquals( "", getTemplateContent( template ).toString() );
+  }
+
+  private StringBuffer getTemplateContent( final TemplateHolder template ) {
+    String[] tokens = template.getTokens();
+    StringBuffer result = new StringBuffer();
+    for( int i = 0; i < tokens.length; i++ ) {
+      result.append( tokens[ i ] );
+    }
+    return result;
   }
   
   public void testHeaderMarkup() {

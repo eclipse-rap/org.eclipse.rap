@@ -14,6 +14,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.BrowserSurvey_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.browser.browserkit.BrowserLCA_Test;
@@ -86,6 +87,9 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( UITestUtil_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
+    
+    // == Service ==
+    suite.addTestSuite( BrowserSurvey_Test.class );
 
     // == LCA ==
     suite.addTestSuite( DisplayLCA_Test.class );

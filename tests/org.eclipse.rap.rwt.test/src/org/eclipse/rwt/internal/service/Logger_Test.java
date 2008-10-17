@@ -11,7 +11,8 @@
 
 package org.eclipse.rwt.internal.service;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
@@ -74,8 +75,8 @@ public class Logger_Test extends TestCase {
           }
         };
       }
-      public InputStream getTemplateOfStartupPage() throws IOException {
-        return new ByteArrayInputStream( RESPONSE.getBytes() );
+      public TemplateHolder getTemplateOfStartupPage() throws IOException {
+        return new TemplateHolder( RESPONSE );
       }
       public boolean isStartupPageModifiedSince() {
         return true;
