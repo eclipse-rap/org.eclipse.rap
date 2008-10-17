@@ -112,6 +112,11 @@ public class TableItem_Test extends TestCase {
     // bounds for out-of-range item
     bounds = item.getBounds( table.getColumnCount() + 100 );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    
+    // bounds for table with visible headers
+    table.setHeaderVisible( true );
+    bounds = item.getBounds();
+    assertTrue( bounds.y >= table.getHeaderHeight() );
   }
 
   public void testTextBounds() {
