@@ -652,14 +652,12 @@ public class Table extends Composite {
   public TableItem getItem( final Point point ) {
     checkWidget();
     TableItem result = null;
-    Rectangle clientArea = getClientArea();
-    if(    point.x >= 0
-        && point.y >= 0
-        && point.x <= clientArea.width
-        && point.y <= clientArea.height )
-    {
+    int headerHeight = getHeaderHeight();
+    Rectangle itemArea = getClientArea();
+    itemArea.y += headerHeight;
+    if( itemArea.contains( point ) ) {
       int itemHeight = getItemHeight();
-      int index = ( point.y / itemHeight ) - 1;
+      int index = ( ( point.y - headerHeight ) / itemHeight ) - 1;
       if( point.y == 0 || point.y % itemHeight != 0 ) {
         index++;
       }

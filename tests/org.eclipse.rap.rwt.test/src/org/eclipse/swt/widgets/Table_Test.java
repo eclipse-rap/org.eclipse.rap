@@ -1628,6 +1628,12 @@ public class Table_Test extends TestCase {
     item = table.getItem( new Point( 0, table.getItemHeight() ) );
     assertNotNull( item );
     assertEquals( 0, table.indexOf( item ) );
+    // test with headers
+    table.setHeaderVisible( true );
+    item = table.getItem( new Point( 0, 0 ) );
+    assertNull( item );
+    item = table.getItem( new Point( 2, table.getHeaderHeight() + 3 ) );
+    assertEquals( 0, item.getParent().indexOf( item ) );
   }
 
   /*
