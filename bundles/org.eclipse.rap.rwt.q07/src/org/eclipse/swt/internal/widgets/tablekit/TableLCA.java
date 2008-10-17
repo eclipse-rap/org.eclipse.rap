@@ -21,7 +21,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -119,7 +118,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeLinesVisible( table );
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
-    assignItemJSParent( table );
     WidgetLCAUtil.writeCustomVariant( table );
   }
 
@@ -307,20 +305,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods 
   
-  private static void assignItemJSParent( final Table table ) {
-    // Make the JavaScript client area the parent of all children of table 
-    StringBuffer parentId = new StringBuffer();
-    parentId.append( WidgetUtil.getId( table ) );
-    parentId.append( "_clientArea"  );
-    String itemJSParent = parentId.toString();
-    Control[] children = table.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      Control child = children[ i ];
-      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( child );
-      adapter.setJSParent( itemJSParent );
-    }
-  }
-
   static int getDefaultColumnWidth( final Table table ) {
     int result = 0;
     if( table.getColumnCount() == 0 ) {

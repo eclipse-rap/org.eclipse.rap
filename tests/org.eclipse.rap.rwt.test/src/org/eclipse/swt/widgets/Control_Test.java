@@ -586,6 +586,16 @@ public class Control_Test extends TestCase {
     assertFalse( composite.isFocusControl() );
     assertTrue( shell.isFocusControl() );
     assertSame( shell, display.getFocusControl() );
+
+    // Indirectly hide control and leave no visible parent 
+    // no control must have focus  
+    control.setVisible( true );
+    control.setFocus();
+    shell.setVisible( false );
+    assertFalse( shell.isVisible() );
+    assertFalse( shell.isFocusControl() );
+    assertFalse( composite.isFocusControl() );
+    assertNull( display.getFocusControl() );
   }
 
   public void testFocusEventsForForceFocus() {

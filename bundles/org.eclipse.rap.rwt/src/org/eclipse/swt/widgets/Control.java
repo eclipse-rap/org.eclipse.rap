@@ -14,6 +14,7 @@ import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -1822,6 +1823,10 @@ public abstract class Control extends Widget {
     }
     shell.setSavedFocus (focusControl);
 //    OS.SetFocus (0);
+    // Replacement for OS.setFocus( 0 )
+    IDisplayAdapter adapter
+      = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    adapter.setFocusControl( null );
   }
 
   // Copied from SWT/win32 as is
