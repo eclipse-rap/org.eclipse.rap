@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class UICallBackManager_Test extends TestCase {
   
-  private static final int SLEEP_TIME = 100;
+  private static final int SLEEP_TIME = 200;
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final String RUN_SYNC_EXEC = "run sync exec|";
   private static String log = "";
