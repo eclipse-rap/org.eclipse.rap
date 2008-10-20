@@ -521,6 +521,22 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( traverseKey, SWT.TRAVERSE_NONE );
   }
   
+  public void testTranslateKeyCode() {
+    int keyCode;
+    keyCode = ControlLCAUtil.translateKeyCode( 40 );
+    assertEquals( SWT.ARROW_DOWN, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 37 );
+    assertEquals( SWT.ARROW_LEFT, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 38 );
+    assertEquals( SWT.ARROW_UP, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 39 );
+    assertEquals( SWT.ARROW_RIGHT, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 20 );
+    assertEquals( SWT.CAPS_LOCK, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 36 );
+    assertEquals( SWT.HOME, keyCode );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

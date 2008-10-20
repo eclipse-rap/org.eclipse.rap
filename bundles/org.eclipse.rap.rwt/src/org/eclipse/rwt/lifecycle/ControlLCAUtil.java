@@ -1007,23 +1007,23 @@ public class ControlLCAUtil {
     event.stateMask = stateMask;
   }
 
-  private static int translateKeyCode( final int keyCode ) {
+  static int translateKeyCode( final int keyCode ) {
     int result;
     switch( keyCode ) {
       case 20:
         result = SWT.CAPS_LOCK;
       break;
       case 38:
-        result = SWT.UP;
+        result = SWT.ARROW_UP;
       break;
       case 37:
-        result = SWT.LEFT;
+        result = SWT.ARROW_LEFT;
       break;
       case 39:
-        result = SWT.RIGHT;
+        result = SWT.ARROW_RIGHT;
       break;
       case 40:
-        result = SWT.DOWN;
+        result = SWT.ARROW_DOWN;
       break;
       case 33:
         result = SWT.PAGE_UP;
