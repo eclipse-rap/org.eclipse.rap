@@ -55,8 +55,10 @@ Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
   border: 1px blue;
 }
 
-Button.special {
-  color: red;
+Button:hover,
+Button[PUSH]:hover, Button[PUSH][BORDER]:hover,
+Button[TOGGLE]:hover, Button[TOGGLE][BORDER]:hover {
+  background-color: white;
 }
 
 /* CTabFolder */
