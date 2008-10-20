@@ -51,18 +51,8 @@ public class OneOfAttributeCondition implements AttributeCondition, ConditionExt
   }
 
   public boolean matches( final Element element ) {
-    boolean result = false;
-    if( localName != null && value != null ) {
-      String attr = element.getAttribute( localName );
-      // TODO improve this
-      if( attr != null ) {
-        String[] parts = attr.split( "\\s+" );
-        for( int i = 0; i < parts.length && !result; i++ ) {
-          result |= parts[ i ].equals( value );
-        }
-      }
-    }
-    return result;
+    // currently not supported by RAP
+    return false;
   }
 
   public int getSpecificity() {

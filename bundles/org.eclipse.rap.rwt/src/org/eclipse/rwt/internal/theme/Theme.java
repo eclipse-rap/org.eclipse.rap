@@ -15,11 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.rwt.internal.theme.css.*;
-
 
 /**
  * An instance of this class represents all the information provided by an RWT
@@ -34,19 +31,9 @@ public final class Theme {
 
   private final Map defaultValues;
 
-  // --- CSS ---
   private final Map cssValues;
 
   private StyleSheet styleSheet;
-
-  StyleSheet getStyleSheet() {
-    return styleSheet;
-  }
-
-  void setStyleSheet( final StyleSheet styleSheet ) {
-    this.styleSheet = styleSheet;
-  }
-  // --- CSS ---
 
   /**
    * Creates a new theme which has no default theme. In RWT theming, only the
@@ -145,33 +132,15 @@ public final class Theme {
 
   public static Theme loadFromStyleSheet( final String name,
                                           final Theme defaultTheme,
-                                          final StyleSheet styleSheet,
-                                          final ThemeProperty[] properties )
+                                          final StyleSheet styleSheet )
   {
     Theme result = new Theme( name, defaultTheme );
     result.styleSheet = styleSheet;
+    result.createDummyProperties();
+    return result;
+  }
 
-    // == New CSS support
-    // For each value in the style sheet, create a dummy property that will be
-    // registered with the qx themes.
-    StyleRule[] styleRules = styleSheet.getStyleRules();
-    for( int i = 0; i < styleRules.length; i++ ) {
-      StyleRule styleRule = styleRules[ i ];
-      IStylePropertyMap propertyMap = styleRule.getProperties();
-      String[] propertyNames = propertyMap.getProperties();
-      for( int j = 0; j < propertyNames.length; j++ ) {
-        String propertyName = propertyNames[ j ];
-        QxType value = propertyMap.getValue( propertyName );
-        // TODO [rst] Quick fix for NPE, revise
-        if( value != null ) {
-          String hash = getDummyPropertyName( value );
-          result.cssValues.put( hash, value );
-        }
-      }
-    }
-
-    // == Old property system support ==
-    // For each property, extract the value from the style sheet
+  void fillOldPropertiesFromStyleSheet( final ThemeProperty[] properties ) {
     for( int i = 0; i < properties.length; i++ ) {
       ThemeProperty property = properties[ i ];
       if( property.cssElements.length > 0 && property.cssProperty != null ) {
@@ -185,24 +154,29 @@ public final class Theme {
             System.arraycopy( newVar, 0, variants, oldVar.length, newVar.length );
           }
         }
-        StylableElement element = createDummyElement( property, null );
+        StylableElement element
+          = PropertySupport.createDummyElement( property, null );
         QxType value = styleSheet.getValue( property.cssProperty, element );
         if( value != null ) {
-          result.setValue( property.name, value );
+          setValue( property.name, value );
         }
         for( int j = 0; j < variants.length; j++ ) {
           String variant = variants[ j ];
-          StylableElement vElement = createDummyElement( property, variant );
+          StylableElement vElement
+            = PropertySupport.createDummyElement( property, variant );
           QxType vValue = styleSheet.getValue( property.cssProperty, vElement );
           if( vValue != null && !vValue.equals( value ) ) {
-            result.setValue( property.name, variant, vValue );
+            setValue( property.name, variant, vValue );
           }
         }
       } else {
         System.err.println( "Property without CSS support: " + property.name );
       }
     }
-    return result;
+  }
+
+  public StyleSheet getStyleSheet() {
+    return styleSheet;
   }
 
   public String getName() {
@@ -402,6 +376,11 @@ public final class Theme {
     return result;
   }
 
+  public void createStyleSheetFromProperties( final ThemeProperty[] props ) {
+    styleSheet = PropertySupport.createStyleSheetFromProperties( props, this );
+    createDummyProperties();
+  }
+
   public static String getDummyPropertyName( final QxType value ) {
     return "_" + value.getClass().hashCode() + "-" + value.hashCode();
   }
@@ -425,30 +404,24 @@ public final class Theme {
     }
   }
 
-  private static StylableElement createDummyElement( final ThemeProperty property,
-                                                     final String variant )
-  {
-    StylableElement result = new StylableElement( property.cssElements[ 0 ] );
-    if( property.cssSelectors.length > 0 ) {
-      String selector = property.cssSelectors[ 0 ];
-      Pattern pattern = Pattern.compile( "\\[([A-Z]+)\\]|:([a-z]+)|.+" );
-      Matcher matcher = pattern.matcher( selector );
-      while( matcher.find() ) {
-        String style = matcher.group( 1 );
-        String state = matcher.group( 2 );
-        if( style != null ) {
-          result.setAttribute( style );
-        } else if( state != null ) {
-          result.setPseudoClass( state );
-        } else {
-          System.err.println( "Garbage found in css-selectors attribute: "
-                              + matcher.group() );
+  private void createDummyProperties() {
+    // For each value in the style sheet, create a dummy property that will be
+    // registered with the qx themes. These dummy props are needed to fill the
+    // qx color/border/etc. themes.
+    StyleRule[] styleRules = styleSheet.getStyleRules();
+    for( int i = 0; i < styleRules.length; i++ ) {
+      StyleRule styleRule = styleRules[ i ];
+      IStylePropertyMap propertyMap = styleRule.getProperties();
+      String[] propertyNames = propertyMap.getProperties();
+      for( int j = 0; j < propertyNames.length; j++ ) {
+        String propertyName = propertyNames[ j ];
+        QxType value = propertyMap.getValue( propertyName );
+        // TODO [rst] Quick fix for NPE, revise
+        if( value != null ) {
+          String hash = getDummyPropertyName( value );
+          cssValues.put( hash, value );
         }
       }
     }
-    if( variant != null ) {
-      result.setClass( variant );
-    }
-    return result;
   }
 }

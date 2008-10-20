@@ -53,11 +53,10 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt
   public boolean matches( final Element element ) {
     boolean result = false;
     if( localName != null ) {
-      String attr = element.getAttribute( localName );
       if( value != null ) {
-        result = value.equals( attr );
-      } else if(attr != null ) {
-        result = !attr.equals( "" );
+        result = element.hasAttributeValue( localName, value );
+      } else {
+        result = element.hasAttribute( localName );
       }
     }
     return result;

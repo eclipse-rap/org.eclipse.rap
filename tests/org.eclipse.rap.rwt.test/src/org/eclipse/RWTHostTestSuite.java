@@ -181,6 +181,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( JsonObject_Test.class );
     suite.addTestSuite( JsonUtil_Test.class );
     suite.addTestSuite( StyleSheet_Test.class );
+    suite.addTestSuite( PropertySupport_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );

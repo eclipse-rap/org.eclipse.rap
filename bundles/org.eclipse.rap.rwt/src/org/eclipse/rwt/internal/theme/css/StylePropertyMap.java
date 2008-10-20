@@ -49,7 +49,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     } else if( "background-color".equals( property ) ) {
       result = getColor( "background-color" );
     } else if( "background-image".equals( property ) ) {
-      result = getBackgroundImage( "background-image" );
+      result = getImage( "background-image" );
     } else if( "border".equals( property ) ) {
       result = getBorder( "border" );
     } else if( "padding".equals( property ) ) {
@@ -73,6 +73,29 @@ public class StylePropertyMap implements IStylePropertyMap {
     } else {
       // TODO [rst] Logging instead of sysout
       System.err.println( "WARNING: unsupported css property: " + property );
+    }
+    return result;
+  }
+
+  public QxType getValue( final String propertyName, final Class type ) {
+    QxType result = null;
+    if( QxBorder.class == type ) {
+      result = getBorder( propertyName );
+//    } else if( QxBoolean.class == type ) {
+//      result = getBoolean( propertyName );
+    } else if( QxBoxDimensions.class == type ) {
+      result = getBoxDimensions( propertyName );
+    } else if( QxColor.class == type ) {
+      result = getColor( propertyName );
+    } else if( QxDimension.class == type ) {
+      result = getDimension( propertyName );
+    } else if( QxFont.class == type ) {
+      result = getFont( propertyName );
+    } else if( QxImage.class == type ) {
+      result = getImage( propertyName );
+    } else {
+      // TODO [rst] Logging instead of sysout
+      System.err.println( "WARNING: unsupported type: " + type.getName() );
     }
     return result;
   }
@@ -122,8 +145,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result;
   }
 
-  public QxImage getBackgroundImage( final String propertyName )
-  {
+  public QxImage getImage( final String propertyName ) {
     QxImage result = null;
     LexicalUnit lexicalUnit = getPropertyValue( propertyName );
     if( lexicalUnit != null ) {

@@ -14,15 +14,15 @@ package org.eclipse.rwt.internal.theme.css;
 
 public interface Element {
 
-  abstract boolean hasName( String name );
+  boolean hasName( String name );
 
-  abstract boolean hasClass( String name );
+  boolean hasClass( String name );
 
-  abstract boolean hasPseudoClass( String name );
+  boolean hasPseudoClass( String name );
 
-  abstract boolean hasAttribute( String name );
+  boolean hasAttribute( String name );
 
-  abstract String getAttribute( String name );
+  boolean hasAttributeValue( String name, String value );
 
-  abstract Element getParent();
+  Element getParent();
 }

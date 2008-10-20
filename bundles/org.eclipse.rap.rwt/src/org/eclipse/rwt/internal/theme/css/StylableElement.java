@@ -56,8 +56,9 @@ public class StylableElement implements Element {
     return value != null && value.length() > 0;
   }
 
-  public String getAttribute( final String name ) {
-    return ( String )attributes.get( name );
+  public boolean hasAttributeValue( final String name, final String value ) {
+    String actualValue = ( String )attributes.get( name );
+    return actualValue != null && actualValue.equals( value );
   }
 
   public void setClass( final String className ) {

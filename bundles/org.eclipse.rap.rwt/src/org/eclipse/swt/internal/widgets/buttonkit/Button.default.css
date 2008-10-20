@@ -1,0 +1,37 @@
+
+/* Button default theme */
+
+Button {
+  color: black;
+  padding: 4px 5px;
+  spacing: 2px;
+}
+
+Button[PUSH], Button[TOGGLE] {
+  background-color: rgb( 247, 247, 251 );
+  border: 1px outset;
+}
+
+Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
+  border: 1px black;
+}
+
+Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
+  border: 2px outset;
+}
+
+Button[PUSH]:hover, Button[TOGGLE]:hover {
+  background-color: rgb( 251, 251, 254 );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
+  border: 1px inset;
+}
+
+Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
+  background-color: rgb( 225, 225, 230 );
+}
+
+Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
+  border: 2px inset;
+}

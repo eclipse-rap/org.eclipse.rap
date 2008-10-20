@@ -19,18 +19,20 @@ import org.eclipse.rwt.internal.theme.*;
 public interface IStylePropertyMap {
 
   String[] getProperties();
-  
-  QxType getValue( final String property );
 
-  QxFont getFont( final String propertyName );
+  QxType getValue( String propertyName );
 
-  QxBorder getBorder( final String propertyName );
+  QxType getValue( String propertyName, Class expectedType );
 
-  QxBoxDimensions getBoxDimensions( final String propertyName );
+  QxFont getFont( String propertyName );
 
-  QxDimension getDimension( final String propertyName );
+  QxBorder getBorder( String propertyName );
 
-  QxColor getColor( final String propertyName );
+  QxBoxDimensions getBoxDimensions( String propertyName );
 
-  QxImage getBackgroundImage( final String propertyName );
+  QxDimension getDimension( String propertyName );
+
+  QxColor getColor( String propertyName );
+
+  QxImage getImage( String propertyName );
 }

@@ -27,31 +27,6 @@ public class Theme_Test extends TestCase {
     }
   };
 
-  public void testConstructor() throws Exception {
-    try {
-      new Theme( null );
-      fail( "Null argument should throw NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      new Theme( null, null );
-      fail( "Null argument should throw NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      new Theme( "" );
-      fail( "Empty name should throw IllegalArgumentException" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    Theme defTheme = new Theme( "Default Theme" );
-    assertNotNull( defTheme );
-    Theme anotherTheme = new Theme( "Another Theme", defTheme );
-    assertNotNull( anotherTheme );
-  }
-
   public void testGetSetValues() throws Exception {
     Theme defTheme = new Theme( "Default Theme" );
     QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );

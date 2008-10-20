@@ -119,7 +119,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     _translateState : function( state ) {
       var result = state;
       var map = {
-        "hover" : "over"
+        "hover" : "over",
+        "selected" : "checked"
       };
       if( state in map ) {
         result = map[ state ];

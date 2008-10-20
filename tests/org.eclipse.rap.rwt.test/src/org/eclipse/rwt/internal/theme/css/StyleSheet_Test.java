@@ -16,8 +16,8 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.theme.QxColor;
-import org.eclipse.rwt.internal.theme.QxType;
+import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.w3c.css.sac.CSSException;
 
@@ -37,19 +37,7 @@ public class StyleSheet_Test extends TestCase {
   private static final int COMBINED_ATTRIBUTE_RULE = 7;
   private static final int SELECTOR_LIST_RULE = 8;
 
-  public void testCascadeMatchAll() throws Exception {
-    StyleSheet styleSheet = getStyleSheet( TEST_SELECTORS_CSS );
-    StyleRule[] styleRules = styleSheet.getStyleRules();
-    StylableElement text = new StylableElement( "Text" );
-    text.setAttribute( "style", "SIMPLE" );
-    SelectorWrapper[] rules = styleSheet.getMatchingStyleRules( text );
-    assertNotNull( rules );
-    assertEquals( 2, rules.length );
-    assertEquals( styleRules[ ATTRIBUTE_VALUE_RULE ].getProperties(),
-                  rules[ 0 ].propertyMap );
-    assertEquals( styleRules[ ALL_RULE ].getProperties(),
-                  rules[ 1 ].propertyMap );
-  }
+  // == Test that style rules match the correct elements ==
 
   public void testMatchAll() throws Exception {
     StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
@@ -133,9 +121,11 @@ public class StyleSheet_Test extends TestCase {
     text.setAttribute( "BORDER", "x" );
     assertFalse( matchingRule.matches( text ) );
     text.setAttribute( "style", "BORDER" );
-    assertTrue( matchingRule.matches( text ) );
+    // false as one-of attributes are currently not supported
+    assertFalse( matchingRule.matches( text ) );
     text.setAttribute( "style", "SIMPLE BORDER" );
-    assertTrue( matchingRule.matches( text ) );
+    // false as one-of attributes are currently not supported
+    assertFalse( matchingRule.matches( text ) );
   }
 
   public void testCombinedAttributes() throws Exception {
@@ -143,13 +133,9 @@ public class StyleSheet_Test extends TestCase {
     ElementMatcher matchingRule = rules[ COMBINED_ATTRIBUTE_RULE ];
     StylableElement text = new StylableElement( "Text" );
     text.setClass( "special" );
-    text.setAttribute( "style", "SIMPLE" );
+    text.setAttribute( "SIMPLE" );
     assertFalse( matchingRule.matches( text ) );
-    text.setAttribute( "style", "BORDER" );
-    assertFalse( matchingRule.matches( text ) );
-    text.setAttribute( "style", "SIMPLE BORDER" );
-    assertTrue( matchingRule.matches( text ) );
-    text.setAttribute( "style", "BORDER SIMPLE" );
+    text.setAttribute( "BORDER" );
     assertTrue( matchingRule.matches( text ) );
     text.resetClass( "special" );
     assertFalse( matchingRule.matches( text ) );
@@ -163,14 +149,16 @@ public class StyleSheet_Test extends TestCase {
     StylableElement label = new StylableElement( "Label" );
     assertTrue( matchingRule.matches( label ) );
     StylableElement button = new StylableElement( "Button" );
-    assertFalse( matchingRule.matches( button ) );
     button.setClass( "special" );
     assertTrue( matchingRule.matches( button ) );
     StylableElement list = new StylableElement( "List" );
-    assertFalse( matchingRule.matches( list ) );
     list.setPseudoClass( "selected" );
     assertTrue( matchingRule.matches( list ) );
+    StylableElement table = new StylableElement( "Table" );
+    assertFalse( matchingRule.matches( table ) );
   }
+
+  // == Test other StyleSheet methods ==
 
   public void testGetValue() throws Exception {
     StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
@@ -192,7 +180,7 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( QxColor.TRANSPARENT, specialBgCol );
   }
 
-  public void testVariants() throws Exception {
+  public void testGetVariants() throws Exception {
     StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
     String[] variants = styleSheet.getVariants( "Button" );
     assertNotNull( variants );
@@ -211,6 +199,14 @@ public class StyleSheet_Test extends TestCase {
       assertTrue( specificity <= lastSpecificity );
       lastSpecificity = specificity;
     }
+  }
+
+  public void testGetConditionalValues() throws Exception {
+    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    ConditionalValue[] values
+      = styleSheet.getValues( "Button", "border", QxBorder.class );
+    assertNotNull( values );
+    assertEquals( 5, values.length );
   }
 
   public void testNamespaces() {

@@ -54,9 +54,7 @@ public class CssFileReader {
     parser.setDocumentHandler( documentHandler );
     parser.setErrorHandler( new ErrorHandlerImpl( this ) );
     parser.parseStyleSheet( source );
-    StyleRule[] styleRules = documentHandler.getStyleRules();
-    StyleSheet result = new StyleSheet( styleRules );
-    return result;
+    return documentHandler.getStyleSheet();
   }
 
   public CSSException[] getProblems() {

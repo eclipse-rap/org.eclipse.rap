@@ -11,19 +11,17 @@
 
 package org.eclipse.rwt.internal.theme.css;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.rwt.internal.theme.ResourceLoader;
+import org.eclipse.rwt.internal.theme.StyleSheetBuilder;
 import org.w3c.css.sac.*;
 
 
 public class DocumentHandlerImpl implements DocumentHandler {
 
   private String uri;
-  private final List rules;
   private final CssFileReader reader;
   private final ResourceLoader loader;
+  private final StyleSheetBuilder styleSheetBuilder;
   private StylePropertyMap currentStyleProperties = null;
 
   public DocumentHandlerImpl( final CssFileReader reader,
@@ -31,7 +29,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
   {
     this.reader = reader;
     this.loader = loader;
-    this.rules = new ArrayList();
+    styleSheetBuilder = new StyleSheetBuilder();
   }
 
   public void startDocument( final InputSource source ) throws CSSException {
@@ -50,7 +48,8 @@ public class DocumentHandlerImpl implements DocumentHandler {
 
   public void endSelector( final SelectorList patterns ) throws CSSException {
     log( "endSelector " + toString( patterns ) );
-    rules.add( new StyleRule( patterns, currentStyleProperties ) );
+    StyleRule styleRule = new StyleRule( patterns, currentStyleProperties );
+    styleSheetBuilder.addStyleRule( styleRule );
     currentStyleProperties = null;
   }
 
@@ -134,10 +133,8 @@ public class DocumentHandlerImpl implements DocumentHandler {
     log( "end FontFace" );
   }
 
-  public StyleRule[] getStyleRules() {
-    StyleRule[] result = new StyleRule[ rules.size() ];
-    rules.toArray( result );
-    return result;
+  public StyleSheet getStyleSheet() {
+    return styleSheetBuilder.getStyleSheet();
   }
 
   private void log( final String message ) {

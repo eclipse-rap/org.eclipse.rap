@@ -13,8 +13,7 @@ package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
 
-import org.eclipse.rwt.internal.theme.QxType;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
+import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
@@ -58,16 +57,26 @@ public class StyleSheet {
     return result;
   }
 
-  public SelectorWrapper[] getMatchingStyleRules( final StylableElement element )
+  public ConditionalValue[] getValues( final String elementName,
+                                       final String propertyName,
+                                       final Class expectedType )
   {
     List buffer = new ArrayList();
     for( int i = 0; i < selectorWrappers.length; i++ ) {
-      SelectorWrapper ruleWrapper = selectorWrappers[ i ];
-      if( ruleWrapper.selectorExt.matches( element ) ) {
-        buffer.add( ruleWrapper );
+      SelectorWrapper selectorWrapper = selectorWrappers[ i ];
+      String selectorElement = selectorWrapper.selectorExt.getElementName();
+      if( selectorElement == null || selectorElement.equals( elementName ) ) {
+        QxType value = selectorWrapper.propertyMap.getValue( propertyName,
+                                                             expectedType );
+        if( value != null ) {
+          ConditionalValue condValue = new ConditionalValue();
+          condValue.constraints = selectorWrapper.selectorExt.getConstraints();
+          condValue.value = value;
+          buffer.add( condValue );
+        }
       }
     }
-    SelectorWrapper[] result = new SelectorWrapper[ buffer.size() ];
+    ConditionalValue[] result = new ConditionalValue[ buffer.size() ];
     buffer.toArray( result );
     return result;
   }
@@ -144,25 +153,9 @@ public class StyleSheet {
     return result;
   }
 
-  static class SelectorWrapperComparator implements Comparator {
-
-    public int compare( final Object object1, final Object object2 ) {
-      int result = 0;
-      SelectorWrapper selectorWrapper1 = ( SelectorWrapper )object1;
-      SelectorWrapper selectorWrapper2 = ( SelectorWrapper )object2;
-      int specificity1 = selectorWrapper1.selectorExt.getSpecificity();
-      int specificity2 = selectorWrapper2.selectorExt.getSpecificity();
-      if( specificity1 > specificity2 ) {
-        result = 1;
-      } else if( specificity1 < specificity2 ) {
-        result = -1;
-      } else if( selectorWrapper1.position > selectorWrapper2.position ) {
-        result = 1;
-      } else if( selectorWrapper1.position < selectorWrapper2.position ) {
-        result = -1;
-      }
-      return result;
-    }
+  public static class ConditionalValue {
+    public String[] constraints;
+    public QxType value;
   }
 
   public static class SelectorWrapper {
@@ -183,6 +176,27 @@ public class StyleSheet {
       this.selectorExt = ( SelectorExt )selector;
       this.position = position;
       this.propertyMap = propertyMap;
+    }
+  }
+
+  private static class SelectorWrapperComparator implements Comparator {
+    
+    public int compare( final Object object1, final Object object2 ) {
+      int result = 0;
+      SelectorWrapper selectorWrapper1 = ( SelectorWrapper )object1;
+      SelectorWrapper selectorWrapper2 = ( SelectorWrapper )object2;
+      int specificity1 = selectorWrapper1.selectorExt.getSpecificity();
+      int specificity2 = selectorWrapper2.selectorExt.getSpecificity();
+      if( specificity1 > specificity2 ) {
+        result = 1;
+      } else if( specificity1 < specificity2 ) {
+        result = -1;
+      } else if( selectorWrapper1.position > selectorWrapper2.position ) {
+        result = 1;
+      } else if( selectorWrapper1.position < selectorWrapper2.position ) {
+        result = -1;
+      }
+      return result;
     }
   }
 }

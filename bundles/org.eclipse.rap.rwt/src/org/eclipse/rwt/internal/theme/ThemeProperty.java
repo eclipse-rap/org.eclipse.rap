@@ -14,11 +14,9 @@ package org.eclipse.rwt.internal.theme;
 
 /**
  * Holds all data read from a single property of a theme definition
- * (*.theme.xml) file.
+ * (*.theme.xml) file. Part of the old property-based theming.
  */
-// TODO [rst] Make immutable?
-// TODO [rst] implements equals and hashcode
-public class ThemeProperty {
+public final class ThemeProperty {
 
   private static final String[] EMPTY = new String[ 0 ];
 

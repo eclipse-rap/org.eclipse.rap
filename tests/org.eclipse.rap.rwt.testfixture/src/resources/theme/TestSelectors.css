@@ -50,7 +50,7 @@ Text[style~=BORDER] {
 
 /* Combined attributes rule */
 
-Text[style~=SIMPLE][style~=BORDER].special {
+Text[SIMPLE][BORDER].special {
   background: gold;
 }
 

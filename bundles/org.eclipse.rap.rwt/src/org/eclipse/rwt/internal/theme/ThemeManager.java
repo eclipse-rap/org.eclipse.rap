@@ -205,7 +205,9 @@ public final class ThemeManager {
   private final Map adapters;
 
   private final Set registeredThemeFiles;
-  
+
+  private StyleSheetBuilder defaultStyleSheetBuilder;
+
   private int themeCount;
 
   private CssElementHolder registeredCssElements;
@@ -223,6 +225,7 @@ public final class ThemeManager {
     adapters = new HashMap();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
+    defaultStyleSheetBuilder = new StyleSheetBuilder();
 //    timestamp = createTimeStamp();
   }
 
@@ -257,13 +260,20 @@ public final class ThemeManager {
         processThemeableWidget( ( ThemeableWidgetWrapper )widgetIter.next() );
       }
       // initialize predefined theme
-      predefinedTheme = new Theme( PREDEFINED_THEME_NAME );
-      Iterator iterator = themeProperties.keySet().iterator();
-      while( iterator.hasNext() ) {
-        String key = ( String )iterator.next();
-        ThemeProperty def = ( ThemeProperty )themeProperties.get( key );
-        predefinedTheme.setValue( key, def.defValue );
+      StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
+      ThemeProperty[] props = getThemeProperties();
+      predefinedTheme = Theme.loadFromStyleSheet( PREDEFINED_THEME_NAME,
+                                                  null,
+                                                  defaultStyleSheet );
+      predefinedTheme.fillOldPropertiesFromStyleSheet( props );
+      for( int i = 0; i < props.length; i++ ) {
+        ThemeProperty def = props[ i ];
+        // set key only if not already defined by default CSS
+        if( !predefinedTheme.hasKey( def.name ) ) {
+          predefinedTheme.setValue( def.name, def.defValue );
+        }
       }
+      
       themes.put( PREDEFINED_THEME_ID,
                   new ThemeWrapper( predefinedTheme, themeCount++ ) );
       initialized = true;
@@ -285,6 +295,7 @@ public final class ThemeManager {
       themes.clear();
       adapters.clear();
       registeredCssElements.clear();
+      defaultStyleSheetBuilder = new StyleSheetBuilder();
       predefinedTheme = null;
       initialized = false;
       log( "ThemeManager reset" );
@@ -356,15 +367,15 @@ public final class ThemeManager {
     }
     try {
       Theme theme;
+      ThemeProperty[] props = getThemeProperties();
       if( fileName.toLowerCase().endsWith( ".css" ) ) {
         try {
-          ThemeProperty[] props = getThemeProperties();
           CssFileReader reader = new CssFileReader();
           StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
           theme = Theme.loadFromStyleSheet( name != null ? name : "",
                                             predefinedTheme,
-                                            styleSheet,
-                                            props );
+                                            styleSheet );
+          theme.fillOldPropertiesFromStyleSheet( props );
         } catch( CSSException e ) {
           throw new ThemeManagerException( "Failed parsing CSS file", e );
         }
@@ -373,6 +384,7 @@ public final class ThemeManager {
                                     predefinedTheme,
                                     inputStream,
                                     loader );
+        theme.createStyleSheetFromProperties( props );
       }
       themes.put( id, new ThemeWrapper( theme, themeCount++ ) );
     } finally {
@@ -514,19 +526,18 @@ public final class ThemeManager {
     StringBuffer sb = new StringBuffer();
     sb.append( "# Generated RAP theme file template\n" );
     sb.append( "#\n" );
-    Iterator iterator = manager.themeProperties.keySet().iterator();
-    while( iterator.hasNext() ) {
+    ThemeProperty[] properties = manager.getThemeProperties();
+    for( int i = 0; i < properties.length; i++ ) {
+      ThemeProperty prop = properties[ i ];
       sb.append( "\n" );
-      String key = ( String )iterator.next();
-      ThemeProperty def = ( ThemeProperty )manager.themeProperties.get( key );
-      if( def.description == null ) {
-        throw new NullPointerException( "Description missing for " + key );
+      if( prop.description == null ) {
+        throw new NullPointerException( "Description missing for " + prop.name );
       }
-      String value = def.defValue.toDefaultString();
-      String note = def.transparentAllowed ? " (transparent allowed)" : "";
-      sb.append( "# " + def.description.replaceAll( "\\n\\s*", "\n# " ) + "\n" );
+      String value = prop.defValue.toDefaultString();
+      String note = prop.transparentAllowed ? " (transparent allowed)" : "";
+      sb.append( "# " + prop.description.replaceAll( "\\n\\s*", "\n# " ) + "\n" );
       sb.append( "# default: " + value + note + "\n" );
-      sb.append( "#" + def.name + ": " + value  + "\n" );
+      sb.append( "#" + prop.name + ": " + value  + "\n" );
     }
     System.out.println( sb.toString() );
   }
@@ -588,6 +599,7 @@ public final class ThemeManager {
         found |= loadThemeDef( themeWidget, pkgName, className );
         found |= loadAppearanceJs( themeWidget, pkgName, className );
         found |= loadThemeAdapter( themeWidget, pkgName, className );
+        found |= loadDefaultCss( themeWidget, pkgName, className );
       }
     } catch( final IOException e ) {
       String message = "Failed to initialize themeable widget "
@@ -684,6 +696,33 @@ public final class ThemeManager {
       String message = "Failed to instantiate theme adapter class "
                        + adapterClassName;
       throw new ThemeManagerException( message, e );
+    }
+    return result;
+  }
+
+  /**
+   * Tries to load the theme adapter for a class from a given package.
+   */
+  private boolean loadDefaultCss( final ThemeableWidgetWrapper themeWidget,
+                                  final String pkgName,
+                                  final String className ) throws IOException
+  {
+    boolean result = false;
+    String resPkgName = pkgName.replace( '.', '/' );
+    String fileName = resPkgName + "/" + className + ".default.css";
+    ResourceLoader resLoader = themeWidget.loader;
+    InputStream inStream = resLoader.getResourceAsStream( fileName );
+    if( inStream != null ) {
+      log( "Found default css file: " +  fileName );
+      try {
+        CssFileReader reader = new CssFileReader();
+        StyleSheet styleSheet = reader.parse( inStream, fileName, resLoader );
+        // TODO [rst] Check for illegal element names in selector list
+        defaultStyleSheetBuilder.addStyleSheet( styleSheet );
+        result = true;
+      } finally {
+        inStream.close();
+      }
     }
     return result;
   }
@@ -792,7 +831,8 @@ public final class ThemeManager {
             String widgetDestPath = getWidgetDestPath( jsId  );
             ThemeProperty prop
               = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-            String targetPath = prop != null && prop.targetPath != null ? prop.targetPath : key;
+            String targetPath
+              = prop != null && prop.targetPath != null ? prop.targetPath : key;
             String registerPath = widgetDestPath + "/" + targetPath ;
             IResourceManager resMgr = ResourceManager.getInstance();
             resMgr.register( registerPath, inputStream );
@@ -1007,11 +1047,11 @@ public final class ThemeManager {
             if( value != null ) {
               JsonArray array = new JsonArray();
               String[] constraints = selector.selectorExt.getConstraints();
-              JsonArray constraitsArray = new JsonArray();
+              JsonArray constraintsArray = new JsonArray();
               for( int l = 0; l < constraints.length; l++ ) {
-                constraitsArray.append( constraints[ l ] );
+                constraintsArray.append( constraints[ l ] );
               }
-              array.append( constraitsArray );
+              array.append( constraintsArray );
               array.append( Theme.getDummyPropertyName( value ) );
               valuesArray.append( array );
             }
@@ -1035,7 +1075,7 @@ public final class ThemeManager {
   /**
    * Returns theme properties as array.
    */
-  private ThemeProperty[] getThemeProperties() {
+  ThemeProperty[] getThemeProperties() {
     ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
     Iterator iterator = themeProperties.keySet().iterator();
     for( int i = 0; i < propArray.length; i++ ) {
