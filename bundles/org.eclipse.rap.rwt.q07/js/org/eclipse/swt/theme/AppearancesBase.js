@@ -247,45 +247,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getFont( "button.font" );
 
       // foreground color
-      if( states.disabled ) {
-        result.textColor = tv.getColor( "widget.graytext" );
-      } else if( states.rwt_FLAT && ( states.pressed || states.checked ) ) {
-        result.textColor = tv.getColor( "button.FLAT.pressed.foreground" );
-      } else if( states.over ) {
-        result.textColor = tv.getColor( "button.hover.foreground" );
-      } else {
-        result.textColor = tv.getColor( "button.foreground" );
-      }
+      result.textColor = tv.getCssColor( "Button", "color" );
 
       // background color
-      if( states.rwt_FLAT && ( states.pressed || states.checked ) ) {
-        result.backgroundColor = tv.getColor( "button.FLAT.pressed.background" );
-      } else if( states.over ) {
-        result.backgroundColor = tv.getColor( "button.hover.background" );
-      } else {
-        result.backgroundColor = tv.getColor( "button.background" );
-      }
+      result.backgroundColor = tv.getCssColor( "Button", "background-color" );
 
       // border
-      if( states.rwt_BORDER ) {
-        if( states.pressed || states.checked ) {
-          result.border = tv.getBorder( "button.BORDER.pressed.border" );
-        } else {
-          result.border = tv.getBorder( "button.BORDER.border" );
-        }
-      } else if( states.rwt_FLAT ) {
-        if( states.pressed || states.checked ) {
-          result.border = tv.getBorder( "button.FLAT.pressed.border" );
-        } else {
-          result.border = tv.getBorder( "button.FLAT.border" );
-        }
-      } else {
-        if( states.pressed || states.checked ) {
-          result.border = tv.getBorder( "button.pressed.border" );
-        } else {
-          result.border = tv.getBorder( "button.border" );
-        }
-      }
+      result.border = tv.getCssBorder( "Button", "border" );
 
       // padding
       if( !states.rwt_FLAT && ( states.pressed || states.checked ) ) {
@@ -294,7 +262,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.padding = [ 3, 4, 3, 4 ];
       }
 
-      result.spacing = tv.getDimension( "button.spacing" );
+      result.spacing = tv.getCssDimension( "Button", "spacing" );
+//      result.spacing = tv.getDimension( "button.spacing" );
       return result;
     }
   },
