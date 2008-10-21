@@ -84,8 +84,7 @@ public class PropertySupport {
       return ( QxType )properties.get( propertyName );
     }
 
-    public QxType getValue( final String propertyName, final Class expectedType )
-    {
+    public QxType getValue( final String propertyName, final String type ) {
       return ( QxType )properties.get( propertyName );
     }
   }

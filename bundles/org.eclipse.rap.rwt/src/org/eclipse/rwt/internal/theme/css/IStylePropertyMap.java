@@ -20,9 +20,12 @@ public interface IStylePropertyMap {
 
   String[] getProperties();
 
+  /**
+   * @deprecated remove when property-based theming has been dropped
+   */
   QxType getValue( String propertyName );
-
-  QxType getValue( String propertyName, Class expectedType );
+  
+  QxType getValue( String propertyName, String type );
 
   QxFont getFont( String propertyName );
 

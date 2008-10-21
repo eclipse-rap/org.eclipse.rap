@@ -59,7 +59,7 @@ public class StyleSheet {
 
   public ConditionalValue[] getValues( final String elementName,
                                        final String propertyName,
-                                       final Class expectedType )
+                                       final String expectedType )
   {
     List buffer = new ArrayList();
     for( int i = 0; i < selectorWrappers.length; i++ ) {

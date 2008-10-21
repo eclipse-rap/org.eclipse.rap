@@ -203,8 +203,9 @@ public class StyleSheet_Test extends TestCase {
 
   public void testGetConditionalValues() throws Exception {
     StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
-    ConditionalValue[] values
-      = styleSheet.getValues( "Button", "border", QxBorder.class );
+    ConditionalValue[] values = styleSheet.getValues( "Button",
+                                                      "border",
+                                                      ThemeDefinitionReader.TYPE_BORDER );
     assertNotNull( values );
     assertEquals( 5, values.length );
   }

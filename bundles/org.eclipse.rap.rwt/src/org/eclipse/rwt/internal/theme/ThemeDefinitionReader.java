@@ -63,19 +63,19 @@ public class ThemeDefinitionReader {
 
   private static final String ATTR_CSS_SELECTORS = "css-selectors";
 
-  private static final String TYPE_BOOLEAN = "boolean";
+  public static final String TYPE_BOOLEAN = "boolean";
 
-  private static final String TYPE_BORDER = "border";
+  public static final String TYPE_BORDER = "border";
 
-  private static final String TYPE_DIMENSION = "dimension";
+  public static final String TYPE_DIMENSION = "dimension";
 
-  private static final String TYPE_BOXDIMENSION = "boxdim";
+  public static final String TYPE_BOXDIMENSION = "boxdim";
 
-  private static final String TYPE_COLOR = "color";
+  public static final String TYPE_COLOR = "color";
 
-  private static final String TYPE_FONT = "font";
+  public static final String TYPE_FONT = "font";
 
-  private static final String TYPE_IMAGE = "image";
+  public static final String TYPE_IMAGE = "image";
 
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
 
@@ -213,7 +213,10 @@ public class ThemeDefinitionReader {
         type = TYPE_FONT;
       } else if( "border".equals( name ) ) {
         type = TYPE_BORDER;
-      } else if( "spacing".equals( name ) ) {
+      } else if( "spacing".equals( name )
+                 || "width".equals( name )
+                 || "height".equals( name ) )
+      {
         type = TYPE_DIMENSION;
       } else if( "background-image".equals( name ) ) {
         type = TYPE_IMAGE;

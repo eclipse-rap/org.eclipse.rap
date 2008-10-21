@@ -42,6 +42,29 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result;
   }
 
+  public QxType getValue( final String propertyName, final String type ) {
+    QxType result = null;
+    if( ThemeDefinitionReader.TYPE_BORDER.equals( type ) ) {
+      result = getBorder( propertyName );
+    } else if( ThemeDefinitionReader.TYPE_BOOLEAN.equals( type ) ) {
+      throw new IllegalArgumentException( "Boolean type not yet supported" );
+//      result = getBoolean( propertyName );
+    } else if( ThemeDefinitionReader.TYPE_BOXDIMENSION.equals( type ) ) {
+      result = getBoxDimensions( propertyName );
+    } else if( ThemeDefinitionReader.TYPE_COLOR.equals( type ) ) {
+      result = getColor( propertyName );
+    } else if( ThemeDefinitionReader.TYPE_DIMENSION.equals( type ) ) {
+      result = getDimension( propertyName );
+    } else if( ThemeDefinitionReader.TYPE_FONT.equals( type ) ) {
+      result = getFont( propertyName );
+    } else if( ThemeDefinitionReader.TYPE_IMAGE.equals( type ) ) {
+      result = getImage( propertyName );
+    } else {
+      throw new IllegalArgumentException( "Illegal type: " + type );
+    }
+    return result;
+  }
+
   public QxType getValue( final String property ) {
     QxType result = null;
     if( "color".equals( property ) ) {
@@ -72,30 +95,7 @@ public class StylePropertyMap implements IStylePropertyMap {
       result = getColor( "background-color" );
     } else {
       // TODO [rst] Logging instead of sysout
-      System.err.println( "WARNING: unsupported css property: " + property );
-    }
-    return result;
-  }
-
-  public QxType getValue( final String propertyName, final Class type ) {
-    QxType result = null;
-    if( QxBorder.class == type ) {
-      result = getBorder( propertyName );
-//    } else if( QxBoolean.class == type ) {
-//      result = getBoolean( propertyName );
-    } else if( QxBoxDimensions.class == type ) {
-      result = getBoxDimensions( propertyName );
-    } else if( QxColor.class == type ) {
-      result = getColor( propertyName );
-    } else if( QxDimension.class == type ) {
-      result = getDimension( propertyName );
-    } else if( QxFont.class == type ) {
-      result = getFont( propertyName );
-    } else if( QxImage.class == type ) {
-      result = getImage( propertyName );
-    } else {
-      // TODO [rst] Logging instead of sysout
-      System.err.println( "WARNING: unsupported type: " + type.getName() );
+      System.err.println( "WARNING: unknown type for css property: " + property );
     }
     return result;
   }
