@@ -48,16 +48,6 @@ public final class ThemeManager {
     }
   }
 
-  private static final class ThemeableWidgetWrapper {
-    final Class widget;
-    final ResourceLoader loader;
-    
-    ThemeableWidgetWrapper( final Class widget, final ResourceLoader loader ) {
-      this.widget = widget;
-      this.loader = loader;
-    }
-  }
-
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
@@ -190,12 +180,6 @@ public final class ThemeManager {
 
   private static ThemeManager instance;
 
-  private boolean initialized;
-
-  private Theme predefinedTheme;
-
-  private final Set themeableWidgets;
-
   private final Set customAppearances;
 
   private final Map themeProperties;
@@ -205,6 +189,12 @@ public final class ThemeManager {
   private final Map adapters;
 
   private final Set registeredThemeFiles;
+
+  private boolean initialized;
+
+  private Theme predefinedTheme;
+
+  private ThemeableWidgetHolder themeableWidgets;
 
   private StyleSheetBuilder defaultStyleSheetBuilder;
 
@@ -218,7 +208,7 @@ public final class ThemeManager {
   private ThemeManager() {
     // prevent instantiation from outside
     initialized = false;
-    themeableWidgets = new HashSet();
+    themeableWidgets = new ThemeableWidgetHolder();
     customAppearances = new HashSet();
     themeProperties = new LinkedHashMap();
     themes = new HashMap();
@@ -255,9 +245,9 @@ public final class ThemeManager {
     if( !initialized ) {
       addDefaultThemableWidgets();
       // initialize themeable widgets
-      Iterator widgetIter = themeableWidgets.iterator();
-      while( widgetIter.hasNext() ) {
-        processThemeableWidget( ( ThemeableWidgetWrapper )widgetIter.next() );
+      ThemeableWidget[] widgets = themeableWidgets.getAll();
+      for( int i = 0; i < widgets.length; i++ ) {
+        processThemeableWidget( widgets[ i ] );
       }
       // initialize predefined theme
       StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
@@ -289,7 +279,7 @@ public final class ThemeManager {
    */
   public void reset() {
     if( initialized ) {
-      themeableWidgets.clear();
+      themeableWidgets = new ThemeableWidgetHolder();
       customAppearances.clear();
       themeProperties.clear();
       themes.clear();
@@ -323,9 +313,7 @@ public final class ThemeManager {
                        + widget.getName();
       throw new IllegalArgumentException( message );
     }
-    ThemeableWidgetWrapper wrapper
-      = new ThemeableWidgetWrapper( widget, loader );
-    themeableWidgets.add( wrapper );
+    themeableWidgets.add( new ThemeableWidget( widget, loader ) );
   }
 
   /**
@@ -516,6 +504,34 @@ public final class ThemeManager {
   }
 
   /**
+   * Returns the generated theme id to use on the client side which differs from
+   * the theme id that is given in the extension.
+   *
+   * @param id the theme id as specified in the theme extension
+   * @return a generated id for use on the client
+   * @throws IllegalStateException if not initialized
+   */
+  public String getJsThemeId( final String id ) {
+    checkInitialized();
+    String result;
+    if( PREDEFINED_THEME_ID.equals( id ) ) {
+      result = PREDEFINED_THEME_ID;
+    } else {
+      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
+      if( wrapper == null ) {
+        String mesg = "No theme registered with id " + id;
+        throw new IllegalArgumentException( mesg );
+      }
+      result = THEME_PREFIX + "Custom_" + wrapper.count;
+    }
+    return result;
+  }
+
+  ThemeableWidget getThemeableWidget( final Widget widget ) {
+    return themeableWidgets.get( widget );
+  }
+
+  /**
    * Writes a theme template file to the standard output.
    *
    * @param args ignored
@@ -542,30 +558,6 @@ public final class ThemeManager {
     System.out.println( sb.toString() );
   }
 
-  /**
-   * Returns the generated theme id to use on the client side which differs from
-   * the theme id that is given in the extension.
-   *
-   * @param id the theme id as specified in the theme extension
-   * @return a generated id for use on the client
-   * @throws IllegalStateException if not initialized
-   */
-  public String getJsThemeId( final String id ) {
-    checkInitialized();
-    String result;
-    if( PREDEFINED_THEME_ID.equals( id ) ) {
-      result = PREDEFINED_THEME_ID;
-    } else {
-      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
-      if( wrapper == null ) {
-        String mesg = "No theme registered with id " + id;
-        throw new IllegalArgumentException( mesg );
-      }
-      result = THEME_PREFIX + "Custom_" + wrapper.count;
-    }
-    return result;
-  }
-
   private void checkInitialized() {
     if( !initialized ) {
       throw new IllegalStateException( "ThemeManager not initialized" );
@@ -583,7 +575,7 @@ public final class ThemeManager {
    *
    * @param themeWidget the widget to process
    */
-  private void processThemeableWidget( final ThemeableWidgetWrapper themeWidget )
+  private void processThemeableWidget( final ThemeableWidget themeWidget )
   {
     log( "Processing widget: " + themeWidget.widget.getName() );
     String packageName = themeWidget.widget.getPackage().getName();
@@ -608,7 +600,7 @@ public final class ThemeManager {
     }
   }
 
-  private boolean loadThemeDef( final ThemeableWidgetWrapper themeWidget,
+  private boolean loadThemeDef( final ThemeableWidget themeWidget,
                                 final String pkgName,
                                 final String className ) throws IOException
   {
@@ -632,6 +624,7 @@ public final class ThemeManager {
           }
         } );
         IThemeCssElement[] elements = reader.getThemeCssElements();
+        themeWidget.elements = elements;
         for( int i = 0; i < elements.length; i++ ) {
           registeredCssElements.addElement( elements[ i ] );
         }
@@ -645,7 +638,7 @@ public final class ThemeManager {
     return result;
   }
 
-  private boolean loadAppearanceJs( final ThemeableWidgetWrapper themeWidget,
+  private boolean loadAppearanceJs( final ThemeableWidget themeWidget,
                                     final String pkgName,
                                     final String className )
     throws IOException
@@ -670,7 +663,7 @@ public final class ThemeManager {
   /**
    * Tries to load the theme adapter for a class from a given package.
    */
-  private boolean loadThemeAdapter( final ThemeableWidgetWrapper themeWidget,
+  private boolean loadThemeAdapter( final ThemeableWidget themeWidget,
                                     final String pkgName,
                                     final String className )
   {
@@ -703,7 +696,7 @@ public final class ThemeManager {
   /**
    * Tries to load the theme adapter for a class from a given package.
    */
-  private boolean loadDefaultCss( final ThemeableWidgetWrapper themeWidget,
+  private boolean loadDefaultCss( final ThemeableWidget themeWidget,
                                   final String pkgName,
                                   final String className ) throws IOException
   {
