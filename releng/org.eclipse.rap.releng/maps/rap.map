@@ -10,7 +10,7 @@
 ###############################################################################
 
 # rap core
-feature@org.eclipse.rap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/org.eclipse.rap.feature,org.eclipse.rap
+feature@org.eclipse.rap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.feature,org.eclipse.rap
 
 plugin@org.eclipse.rap.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt
 plugin@org.eclipse.rap.jface=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.jface
