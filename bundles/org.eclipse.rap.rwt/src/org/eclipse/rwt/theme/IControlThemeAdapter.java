@@ -28,7 +28,7 @@ public interface IControlThemeAdapter extends IThemeAdapter {
    * @param control the control whose border width is requested
    * @return the border width in px
    */
-  public int getBorderWidth ( Control control );
+  int getBorderWidth ( Control control );
 
   /**
    * Returns the default foreground color that the specified control will use to
@@ -38,8 +38,7 @@ public interface IControlThemeAdapter extends IThemeAdapter {
    * 
    * @return the foreground color
    */
-  public Color getForeground( Control control );
-
+  Color getForeground( Control control );
 
   /**
    * Returns the default background color that the specified control will use if
@@ -49,7 +48,7 @@ public interface IControlThemeAdapter extends IThemeAdapter {
    * @param control the control whose background color is requested
    * @return the background color
    */
-  public Color getBackground( Control control );
+  Color getBackground( Control control );
 
   /**
    * Returns the default font that the specified control will use to paint
@@ -59,5 +58,5 @@ public interface IControlThemeAdapter extends IThemeAdapter {
    * @param control the control whose font is requested
    * @return the font
    */
-  public Font getFont( Control control );
+  Font getFont( Control control );
 }
