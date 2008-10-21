@@ -12,8 +12,6 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.*;
 
-import org.eclipse.swt.widgets.Widget;
-
 
 public class ThemeableWidgetHolder {
 
@@ -27,7 +25,7 @@ public class ThemeableWidgetHolder {
     themeableWidgets.put( widget.widget, widget );
   }
 
-  public ThemeableWidget get( final Widget widget ) {
+  public ThemeableWidget get( final Class widget ) {
     return ( ThemeableWidget )themeableWidgets.get( widget );
   }
 

@@ -527,8 +527,24 @@ public final class ThemeManager {
     return result;
   }
 
-  ThemeableWidget getThemeableWidget( final Widget widget ) {
+  ThemeableWidget getThemeableWidget( final Class widget ) {
     return themeableWidgets.get( widget );
+  }
+
+  private void createFlatCssStructure() {
+    ThemeableWidget[] widgets = themeableWidgets.getAll();
+    for( int i = 0; i < widgets.length; i++ ) {
+      ThemeableWidget themeableWidget = widgets[ i ];
+      IThemeCssElement[] elements = themeableWidget.elements;
+      for( int j = 0; j < elements.length; j++ ) {
+        IThemeCssElement themeCssElement = elements[ j ];
+        createFlatStructure( themeCssElement );
+      }
+    }
+  }
+
+  private void createFlatStructure( IThemeCssElement themeCssElement ) {
+    
   }
 
   /**
