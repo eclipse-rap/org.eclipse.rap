@@ -10,57 +10,43 @@
 ###############################################################################
 
 # rap core
-feature@org.eclipse.rap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.feature,org.eclipse.rap
+feature@org.eclipse.rap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/org.eclipse.rap.feature,org.eclipse.rap
 
-plugin@org.eclipse.rap.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt
-plugin@org.eclipse.rap.jface=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.jface
-plugin@org.eclipse.rap.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui
-plugin@org.eclipse.rap.ui.views=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui.views
-plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui.workbench
+plugin@org.eclipse.rap.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt
+plugin@org.eclipse.rap.jface=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.jface
+plugin@org.eclipse.rap.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui
+plugin@org.eclipse.rap.ui.views=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.views
+plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.workbench
 
 # rwt flavors
-fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.q07
+fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.rwt.q07
 
 # sdk
-feature@org.eclipse.rap.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.sdk-feature,org.eclipse.rap.sdk
-plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.help
-
-# servlet stuff
-#  plugin@javax.servlet=v2_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/javax.servlet,javax.servlet
-#  plugin@org.apache.commons.logging=v1_0_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.apache.commons.logging
-
-# equinox http stuff
-#  plugin@org.eclipse.equinox.http.registry=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.registry
-#  plugin@org.eclipse.equinox.http.servlet=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
+feature@org.eclipse.rap.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.sdk-feature,org.eclipse.rap.sdk
+plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/org.eclipse.rap.ui.help
 
 # databinding
-#plugin@org.eclipse.rap.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding
-#plugin@org.eclipse.rap.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding.beans
-plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.jface.databinding
+plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.jface.databinding
 
 # forms
-plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/runtime/org.eclipse.rap.ui.forms
-
-# jetty
-#  plugin@org.eclipse.equinox.http.jetty=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
-#  plugin@org.mortbay.jetty=v5_1_11,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty
+plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.forms
 
 # tests
-feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.test-feature,org.eclipse.rap.test
-feature@org.eclipse.rap.pretest=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.pretest-feature,org.eclipse.rap.test
-plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.test
-fragment@org.eclipse.rap.rwt.testfixture=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.testfixture
-fragment@org.eclipse.rap.rwt.test.mockup=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.test.mockup
+feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.test-feature,org.eclipse.rap.test
+feature@org.eclipse.rap.pretest=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.pretest-feature,org.eclipse.rap.test
+plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.test
+fragment@org.eclipse.rap.rwt.testfixture=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.testfixture
+fragment@org.eclipse.rap.rwt.test.mockup=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.test.mockup
 # tests for qx07 flavor
-fragment@org.eclipse.rap.rwt.q07.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.q07.test
+fragment@org.eclipse.rap.rwt.q07.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.q07.test
 
 # tooling
-feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.tooling-feature,org.eclipse.rap.tooling
-plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.help
-plugin@org.eclipse.rap.ui.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.templates
-plugin@org.eclipse.rap.ui.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.launch
-plugin@org.eclipse.rap.ui.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.intro
+feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.tooling-feature,org.eclipse.rap.tooling
+plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.help
+plugin@org.eclipse.rap.ui.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.templates
+plugin@org.eclipse.rap.ui.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch
+plugin@org.eclipse.rap.ui.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.intro
 
 # rap junit
-plugin@org.eclipse.rap.junit=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.junit
-plugin@org.eclipse.rap.junit.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.junit.runtime
+plugin@org.eclipse.rap.junit=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit
+plugin@org.eclipse.rap.junit.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit.runtime
