@@ -199,4 +199,23 @@ public class StyleSheet {
       return result;
     }
   }
+
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    StyleRule[] styleRules = getStyleRules();
+    for( int i = 0; i < styleRules.length; i++ ) {
+      StyleRule styleRule = styleRules[ i ];
+      SelectorList selectors = styleRule.getSelectors();
+      int length = selectors.getLength();
+      for( int j = 0; j < length; j++ ) {
+        Selector selector = selectors.item( j );
+        buffer.append( selector );
+        buffer.append( "\n" );
+      }
+      IStylePropertyMap properties = styleRule.getProperties();
+      buffer.append( properties );
+      buffer.append( "\n" );
+    }
+    return buffer.toString();
+  }
 }
