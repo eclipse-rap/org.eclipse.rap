@@ -209,6 +209,17 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( theme.getStyleSheet() );
   }
 
+  public void testGetThemeableWidget() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
+    assertNotNull( themeableWidget );
+    assertNotNull( themeableWidget.loader );
+    assertEquals( Button.class, themeableWidget.widget );
+    assertNotNull( themeableWidget.elements );
+    assertTrue( themeableWidget.elements.length > 0 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakeNewRequest();
