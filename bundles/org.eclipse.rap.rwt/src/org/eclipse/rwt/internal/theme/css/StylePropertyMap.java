@@ -49,7 +49,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     } else if( ThemeDefinitionReader.TYPE_BOOLEAN.equals( type ) ) {
       throw new IllegalArgumentException( "Boolean type not yet supported" );
 //      result = getBoolean( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_BOXDIMENSION.equals( type ) ) {
+    } else if( ThemeDefinitionReader.TYPE_BOXDIMENSIONS.equals( type ) ) {
       result = getBoxDimensions( propertyName );
     } else if( ThemeDefinitionReader.TYPE_COLOR.equals( type ) ) {
       result = getColor( propertyName );

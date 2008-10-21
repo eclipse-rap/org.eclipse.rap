@@ -69,7 +69,7 @@ public class ThemeDefinitionReader {
 
   public static final String TYPE_DIMENSION = "dimension";
 
-  public static final String TYPE_BOXDIMENSION = "boxdim";
+  public static final String TYPE_BOXDIMENSIONS = "boxdim";
 
   public static final String TYPE_COLOR = "color";
 
@@ -206,7 +206,7 @@ public class ThemeDefinitionReader {
     String type = getAttributeValue( node, ATTR_TYPE );
     if( type == null ) {
       if( "padding".equals( name ) || "margin".equals( name ) ) {
-        type = TYPE_BOXDIMENSION;
+        type = TYPE_BOXDIMENSIONS;
       } else if( "color".equals( name ) || "background-color".equals( name ) ) {
         type = TYPE_COLOR;
       } else if( "font".equals( name ) ) {
@@ -274,7 +274,7 @@ public class ThemeDefinitionReader {
         value = QxBoolean.valueOf( defaultStr );
       } else if( TYPE_BORDER.equals( type ) ) {
         value = QxBorder.valueOf( defaultStr );
-      } else if( TYPE_BOXDIMENSION.equals( type ) ) {
+      } else if( TYPE_BOXDIMENSIONS.equals( type ) ) {
         value = QxBoxDimensions.valueOf( defaultStr );
       } else if( TYPE_DIMENSION.equals( type ) ) {
         value = QxDimension.valueOf( defaultStr );

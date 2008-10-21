@@ -8,15 +8,21 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Widget;
 
+public final class ThemeAdapterUtil {
 
-public class ThemeAdapterUtil {
+  private ThemeAdapterUtil() {
+    // prevent instantiation
+  }
+
+  // == DEPRECATED ==
 
   public static Color getColor( final Widget widget, final String key ) {
     Theme theme = ThemeUtil.getTheme();
@@ -54,5 +60,82 @@ public class ThemeAdapterUtil {
     String variant = WidgetUtil.getVariant( widget );
     QxBoxDimensions boxdim = theme.getBoxDimensions( key, variant );
     return QxBoxDimensions.createRectangle( boxdim );
+  }
+
+  // == NEW IMPLEMENTATION ==
+
+  public static Color getColor( final String cssElement,
+                                final String cssProperty,
+                                final WidgetMatcher matcher,
+                                final Widget widget )
+  {
+    ConditionalValue[] values = getCssValues( cssElement,
+                                              cssProperty,
+                                              ThemeDefinitionReader.TYPE_COLOR );
+    QxColor color = ( QxColor )matcher.select( values, widget );
+    return QxColor.createColor( color );
+  }
+
+  public static Font getFont( final String cssElement,
+                              final String cssProperty,
+                              final WidgetMatcher matcher,
+                              final Widget widget )
+  {
+    ConditionalValue[] values = getCssValues( cssElement,
+                                              cssProperty,
+                                              ThemeDefinitionReader.TYPE_FONT );
+    QxFont font = ( QxFont )matcher.select( values, widget );
+    return QxFont.createFont( font );
+  }
+
+  public static int getBorderWidth( final String cssElement,
+                                    final String cssProperty,
+                                    final WidgetMatcher matcher,
+                                    final Widget widget )
+  {
+    ConditionalValue[] values = getCssValues( cssElement,
+                                              cssProperty,
+                                              ThemeDefinitionReader.TYPE_BORDER );
+    QxBorder border = ( QxBorder )matcher.select( values, widget );
+    return border.width;
+  }
+
+  public static int getDimension( final String cssElement,
+                                  final String cssProperty,
+                                  final WidgetMatcher matcher,
+                                  final Widget widget )
+  {
+    ConditionalValue[] values
+      = getCssValues( cssElement,
+                      cssProperty,
+                      ThemeDefinitionReader.TYPE_DIMENSION );
+    QxDimension dim = ( QxDimension )matcher.select( values, widget );
+    return dim.value;
+  }
+
+  public static Rectangle getBoxDimensions( final String cssElement,
+                                            final String cssProperty,
+                                            final WidgetMatcher matcher,
+                                            final Widget widget )
+  {
+    ConditionalValue[] values
+      = getCssValues( cssElement,
+                      cssProperty,
+                      ThemeDefinitionReader.TYPE_BOXDIMENSIONS );
+    QxBoxDimensions boxdim = ( QxBoxDimensions )matcher.select( values, widget );
+    return QxBoxDimensions.createRectangle( boxdim );
+  }
+
+  private static ConditionalValue[] getCssValues( final String cssElement,
+                                                  final String cssProperty,
+                                                  final String expectedType )
+  {
+    // TODO [rst] Implement cache
+    Theme theme = ThemeUtil.getTheme();
+    StyleSheet styleSheet = theme.getStyleSheet();
+    ConditionalValue[] values = styleSheet.getValues( cssElement,
+                                                      cssProperty,
+                                                      expectedType );
+    return values;
   }
 }
