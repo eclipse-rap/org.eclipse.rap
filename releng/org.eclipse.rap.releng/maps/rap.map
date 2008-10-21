@@ -19,7 +19,7 @@ plugin@org.eclipse.rap.ui.views=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot
 plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.workbench
 
 # rwt flavors
-fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.rwt.q07
+fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt.q07
 
 # sdk
 feature@org.eclipse.rap.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.sdk-feature,org.eclipse.rap.sdk
