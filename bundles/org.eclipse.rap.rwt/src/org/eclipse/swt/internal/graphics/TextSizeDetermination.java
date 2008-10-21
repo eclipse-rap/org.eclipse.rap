@@ -80,11 +80,6 @@ public class TextSizeDetermination {
     int estimationMode = estMode;
     if( wrapWidth <= 0 ) {
       result = doMeasurement( font, string, wrapWidth, estimationMode );
-      // TODO [rst] Still returns wrong result for texts that contain only
-      //            whitespace ( and possibly more that one line )
-      if( result.y == 0 ) {
-        result.y = getCharHeight( font );
-      }
     } else {
       Point testSize = doMeasurement( font, string, wrapWidth, estimationMode );
       if( testSize.x <= wrapWidth ) {
@@ -133,6 +128,11 @@ public class TextSizeDetermination {
         }
       }
       addCalculationItem( font, toMeasure, wrapWidth );
+    }
+    // TODO [rst] Still returns wrong result for texts that contain only
+    //            whitespace ( and possibly more that one line )
+    if( result.y == 0 ) {
+      result.y = getCharHeight( font );
     }
     return result;
   }
