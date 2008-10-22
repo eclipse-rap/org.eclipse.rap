@@ -67,10 +67,6 @@ public final class ThemeManager {
   private static final boolean DEBUG
     = "true".equals( System.getProperty( ThemeManager.class.getName() + ".log" ) );
 
-  /** Experimental CSS mode (temporary) */
-  private static final boolean CSS_MODE
-    = "true".equals( System.getProperty( ThemeManager.class.getName() + ".css" ) );
-
   private static final String CLIENT_LIBRARY_VARIANT
     = "org.eclipse.rwt.clientLibraryVariant";
 
@@ -761,9 +757,7 @@ public final class ThemeManager {
         sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
         sb.append( createMetaTheme( wrapper.theme, jsId ) );
         sb.append( createThemeStore( wrapper.theme, jsId ) );
-        if( CSS_MODE ) {
-          sb.append( createThemeStoreCss( wrapper.theme, jsId ) );
-        }
+        sb.append( createThemeStoreCss( wrapper.theme, jsId ) );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
