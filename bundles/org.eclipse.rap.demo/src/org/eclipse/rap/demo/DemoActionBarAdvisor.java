@@ -109,7 +109,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     aboutAction = new Action() {
       public void run() {
         Shell shell = window.getShell();
-        Bundle bundle = Platform.getBundle( "org.eclipse.rap.demo" );
+        Bundle bundle = Platform.getBundle( PlatformUI.PLUGIN_ID );
         Dictionary headers = bundle.getHeaders();
         Object version = headers.get( Constants.BUNDLE_VERSION );
         MessageDialog.openInformation( shell,
@@ -122,7 +122,6 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     aboutAction.setImageDescriptor( helpActionImage );
     register( aboutAction );
     rapWebSiteAction = new Action() {
-
       public void run() {
         IWorkbenchBrowserSupport browserSupport;
         browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
@@ -146,7 +145,6 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     IContributionItem showViewMenu = ContributionItemFactory.VIEWS_SHORTLIST.create( window );
     showViewMenuMgr.add( showViewMenu );
     wizardAction = new Action() {
-
       public void run() {
         SurveyWizard wizard = new SurveyWizard();
         WizardDialog dlg = new WizardDialog( window.getShell(), wizard );
@@ -158,7 +156,6 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     wizardAction.setImageDescriptor( wizardActionImage );
     register( wizardAction );
     browserAction = new Action() {
-
       public void run() {
         browserIndex++;
         try {
