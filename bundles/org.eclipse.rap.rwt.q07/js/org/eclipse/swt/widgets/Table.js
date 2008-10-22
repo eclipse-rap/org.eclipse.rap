@@ -30,6 +30,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Denotes the row that received the last click-event to swallow unwanted 
     // click-events while double-clicking
     this._suspendClicksOnRow = null;
+    // Should the selected item be hightlighted?
+    this._hideSelection = false;
     // Draw grid lines?
     this._linesVisible = false;
     this._borderWidth = 0;
@@ -268,6 +270,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     getItemHeight : function() {
       return this._itemHeight;  
+    },
+    
+    setHideSelection : function( value ) {
+      this._hideSelection = value;
     },
     
     setItemMetrics : function( columnIndex, imageLeft, imageWidth, textLeft, textWidth ) {
@@ -1059,10 +1065,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._checkBoxes[ rowIndex ].setVisibility( false );
         }
       } else {
-        if( this._isItemSelected( itemIndex ) ) {
-          row.addState( "selected" );
-        } else {
-          row.removeState( "selected" );
+        if( !this._hideSelection ) {
+          if( this._isItemSelected( itemIndex ) ) {
+            row.addState( "selected" );
+          } else {
+            row.removeState( "selected" );
+          }
         }
         if( this._focusIndex === itemIndex ) {
           row.addState( "itemFocused" );

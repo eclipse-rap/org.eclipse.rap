@@ -191,6 +191,15 @@ public class Table extends Composite {
       Table.this.checkData();
     }
   }
+  
+  /**
+   * <strong>IMPORTANT:</strong> This field is <em>not</em> part of the SWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by SWT. It should never be accessed from 
+   * application code.
+   */
+  public static final String HIDE_SELECTION
+    = Table.class.getName() + "#hideSelection";
 
   private static final int GRID_WIDTH = 1;
   private static final int CHECK_HEIGHT = 13;

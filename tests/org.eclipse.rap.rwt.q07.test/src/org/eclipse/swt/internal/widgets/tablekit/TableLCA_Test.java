@@ -52,27 +52,24 @@ public class TableLCA_Test extends TestCase {
     Object focusIndex = adapter.getPreserved( TableLCAUtil.PROP_FOCUS_INDEX );
     assertEquals( new Integer( -1 ), focusIndex );
     Boolean hasListeners
-     = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Object defaultColumnwidth
-     = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
+      = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
     int defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
     assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
-    Object[] itemMetrics
-      = ( Object[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
+    ItemMetrics[] itemMetrics
+      = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
     int imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
-    assertEquals( imageLeft1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageLeft );
-    int imageWidth1
-      = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
-    assertEquals( imageWidth1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageWidth );
-    int textleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
-    assertEquals( textleft1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textLeft );
+    assertEquals( imageLeft1, itemMetrics[ 0 ].imageLeft );
+    int imageWidth = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
+    assertEquals( imageWidth, itemMetrics[ 0 ].imageWidth );
+    int textLeft = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
+    assertEquals( textLeft, itemMetrics[ 0 ].textLeft );
     int textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
-    assertEquals( textWidth1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textWidth );
+    assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
+    assertEquals( Boolean.FALSE, 
+                  adapter.getPreserved( TableLCA.PROP_HIDE_SELECTION ) );
     RWTFixture.clearPreserved();
     TableColumn tc1 = new TableColumn( table, SWT.CENTER );
     tc1.setText( "column1" );
@@ -109,23 +106,19 @@ public class TableLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     defaultColumnwidth
-     = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
+      = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
     defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
     assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
     itemMetrics
-      = ( Object[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
+      = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
     imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
-    assertEquals( imageLeft1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageLeft );
-    imageWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
-    assertEquals( imageWidth1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).imageWidth );
-    textleft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
-    assertEquals( textleft1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textLeft );
+    assertEquals( imageLeft1, itemMetrics[ 0 ].imageLeft );
+    imageWidth = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
+    assertEquals( imageWidth, itemMetrics[ 0 ].imageWidth );
+    textLeft = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textLeft;
+    assertEquals( textLeft, itemMetrics[ 0 ].textLeft );
     textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
-    assertEquals( textWidth1,
-                  ( ( TableLCAUtil.ItemMetrics )itemMetrics[ 0 ] ).textWidth );
+    assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
     RWTFixture.clearPreserved();
     //control: enabled
     RWTFixture.preserveWidgets();
@@ -173,14 +166,7 @@ public class TableLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
-    table.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    table.addControlListener( new ControlAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -225,14 +211,7 @@ public class TableLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
-    table.addFocusListener( new FocusListener() {
-
-      public void focusGained( final FocusEvent event ) {
-      }
-
-      public void focusLost( final FocusEvent event ) {
-      }
-    } );
+    table.addFocusListener( new FocusAdapter() { } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -629,7 +608,17 @@ public class TableLCA_Test extends TestCase {
     item1.setImage( image );
     table.setSelection( item1 );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
-    
+  }
+  
+  public void testHideSelection() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
+    table.setData( Table.HIDE_SELECTION, Boolean.TRUE );
+    assertEquals( Boolean.TRUE, TableLCA.hideSelection( table ) );
+    table.setData( Table.HIDE_SELECTION, "true" );
+    assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
   }
   
   private static int countResolvedItems( final Table table ) {
