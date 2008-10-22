@@ -28,7 +28,7 @@
     -->
 
   <element name="Button"
-      description="SWT Button. Can be set up as a push-button, toggle-button, radio-button or check-box.">
+      description="SWT Buttons represent a selectable user interface object that issues notification when pressed and released. Using style flags it can be set up as as a Push-button, Toggle-button, Radio-button or Check-box.">
 
     <property name="color"
         type="color"
@@ -37,7 +37,7 @@
 
     <property name="background-color"
         type="color"
-        description="Background color"
+        description="Button background color"
         />
 
     <property name="border"
@@ -46,8 +46,7 @@
         />
 
     <property name="padding"
-        type="box"
-        description="Space between border and text / image"
+        description="Button padding description."
         />
 
     <property name="spacing"
@@ -57,7 +56,7 @@
 
     <property name="font"
         type="font"
-        description="Button font"
+        description="Font for button text"
         />
 
 	<style name="PUSH"
@@ -85,11 +84,11 @@
 		/>
 
 	<state name="hover"
-        description="On mouse over"
+        description="Mouse over state"
 		/>
 
 	<state name="pressed"
-        description="Set when button is pressed"
+        description="State for button pressed"
 		/>
 
   </element>
@@ -139,11 +138,11 @@
       />
 
   <color name="button.hover.background"
-      description="Hover color for buttons"
+      description="Background color for PUSH and TOGGLE buttons on mouse over"
       transparentAllowed="true"
       default="251, 251, 254"
       css-property="background-color"
-      css-selectors=":hover"
+      css-selectors="[PUSH]:hover [TOGGLE]:hover"
       />
 
   <color name="button.FLAT.pressed.background"
