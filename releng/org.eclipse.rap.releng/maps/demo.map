@@ -10,16 +10,16 @@
 ###############################################################################
 
 # demo
-feature@org.eclipse.rap.demo.feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo.feature
-plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo
-plugin@org.eclipse.rap.demo.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo.databinding
+feature@org.eclipse.rap.demo.feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.demo.feature
+plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.demo
+plugin@org.eclipse.rap.demo.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.demo.databinding
 
 # mail demo
-plugin@org.eclipse.rap.maildemo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/org.eclipse.rap.maildemo
-plugin@org.eclipse.rap.maildemo.ext=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/sandbox/org.eclipse.rap.maildemo.ext
+plugin@org.eclipse.rap.maildemo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rap.maildemo
+plugin@org.eclipse.rap.maildemo.ext=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rap.maildemo.ext
 
 # servlet bridge
-feature@org.eclipse.rap.releng.warbuild.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.releng.warbuild/servletbridge-feature
+feature@org.eclipse.rap.releng.warbuild.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng.warbuild/servletbridge-feature
 
 plugin@org.eclipse.equinox.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge
 plugin@org.eclipse.equinox.http.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.http.servletbridge
