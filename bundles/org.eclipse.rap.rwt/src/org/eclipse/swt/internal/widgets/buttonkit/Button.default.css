@@ -1,4 +1,3 @@
-
 /* Button default theme */
 
 Button {
@@ -10,6 +9,7 @@ Button {
 Button[PUSH], Button[TOGGLE] {
   background-color: rgb( 247, 247, 251 );
   border: 1px outset;
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
 }
 
 Button[PUSH][FLAT], Button[TOGGLE][FLAT] {

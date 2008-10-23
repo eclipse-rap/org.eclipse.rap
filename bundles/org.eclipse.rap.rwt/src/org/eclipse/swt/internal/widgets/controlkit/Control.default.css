@@ -1,0 +1,9 @@
+/* Default theme for all controls */
+
+* {
+  border: none;
+}
+
+*[BORDER] {
+  border: 2px inset;
+}
