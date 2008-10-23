@@ -517,9 +517,11 @@ public abstract class Widget implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    untypedAdapter.removeListener( this, eventType, listener );
-    if( untypedAdapter.isEmpty() ) {
-      untypedAdapter = null;
+    if( untypedAdapter != null ) {
+      untypedAdapter.removeListener( this, eventType, listener );
+      if( untypedAdapter.isEmpty() ) {
+        untypedAdapter = null;
+      }
     }
   }
 

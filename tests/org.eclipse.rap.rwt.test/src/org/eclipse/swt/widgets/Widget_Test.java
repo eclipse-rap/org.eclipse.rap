@@ -163,4 +163,15 @@ public class Widget_Test extends TestCase {
       throw failure[ 0 ];
     }
   }
+  
+  public void testRemoveListener() {
+    // Ensure that removing a listener that was never added is ignored
+    // silently see https://bugs.eclipse.org/251816
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    widget.removeListener( SWT.Activate, new Listener() {
+      public void handleEvent( final Event event ) {
+      }
+    } );
+  }
 }
