@@ -183,6 +183,32 @@ public class TableItem extends Item {
     }
   }
 
+  /**
+   * Sets the text for multiple columns in the table. 
+   * 
+   * @param strings the array of new strings
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setText( final String[] strings ) {
+    checkWidget();
+    if( strings == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( int i = 0; i < strings.length; i++ ) {
+      String string = strings[ i ];
+      if( string != null ) {
+        setText( i, string );
+      }
+    }
+  }
+  
   public String getText() {
     checkWidget();
     return getText( 0 );
