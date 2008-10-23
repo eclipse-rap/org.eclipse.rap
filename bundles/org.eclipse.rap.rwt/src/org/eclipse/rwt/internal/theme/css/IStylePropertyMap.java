@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.QxType;
 
 
 /**
@@ -20,22 +20,5 @@ public interface IStylePropertyMap {
 
   String[] getProperties();
 
-  /**
-   * @deprecated remove when property-based theming has been dropped
-   */
   QxType getValue( String propertyName );
-  
-  QxType getValue( String propertyName, String type );
-
-  QxFont getFont( String propertyName );
-
-  QxBorder getBorder( String propertyName );
-
-  QxBoxDimensions getBoxDimensions( String propertyName );
-
-  QxDimension getDimension( String propertyName );
-
-  QxColor getColor( String propertyName );
-
-  QxImage getImage( String propertyName );
 }

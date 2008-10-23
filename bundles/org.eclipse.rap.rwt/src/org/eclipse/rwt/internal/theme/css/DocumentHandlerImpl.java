@@ -8,11 +8,9 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
-import org.eclipse.rwt.internal.theme.ResourceLoader;
-import org.eclipse.rwt.internal.theme.StyleSheetBuilder;
+import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.*;
 
 
@@ -41,14 +39,15 @@ public class DocumentHandlerImpl implements DocumentHandler {
     log( "___ endDocument ___" );
   }
 
-  public void startSelector( final SelectorList patterns ) throws CSSException {
-    log( "startSelector " + toString( patterns ) );
-    currentStyleProperties = new StylePropertyMap( loader );
+  public void startSelector( final SelectorList selectors ) throws CSSException
+  {
+    log( "startSelector " + toString( selectors ) );
+    currentStyleProperties = new StylePropertyMap();
   }
 
-  public void endSelector( final SelectorList patterns ) throws CSSException {
-    log( "endSelector " + toString( patterns ) );
-    StyleRule styleRule = new StyleRule( patterns, currentStyleProperties );
+  public void endSelector( final SelectorList selectors ) throws CSSException {
+    log( "endSelector " + toString( selectors ) );
+    StyleRule styleRule = new StyleRule( selectors, currentStyleProperties );
     styleSheetBuilder.addStyleRule( styleRule );
     currentStyleProperties = null;
   }
@@ -56,18 +55,28 @@ public class DocumentHandlerImpl implements DocumentHandler {
   public void property( final String name,
                         final LexicalUnit value,
                         final boolean important ) throws CSSException
-  {
+                        {
     log( "  property "
          + name
          + " := "
-         + toString( value )
-         + ( important
-                      ? ", important"
-                      : "" ) );
-    if( currentStyleProperties != null ) {
-      currentStyleProperties.setProperty( name, value );
+         + PropertyResolver.toString( value )
+         + ( important? " !" : "" ) );
+    if( important ) {
+      reader.addProblem( new CSSException( "Important rules not supported"
+                                           + " - ignored" ) );
     }
-  }
+    if( currentStyleProperties != null ) {
+      try {
+        QxType resolved = PropertyResolver.resolveProperty( name, value, loader );
+        currentStyleProperties.setProperty( name, resolved );
+      } catch( IllegalArgumentException e ) {
+        reader.addProblem( new CSSException( "Failed to read property "
+                                             + name
+                                             + ": "
+                                             + e.getMessage() ) );
+      }
+    }
+                        }
 
   // -- ignored --
   public void comment( final String text ) throws CSSException {
@@ -78,14 +87,14 @@ public class DocumentHandlerImpl implements DocumentHandler {
   public void importStyle( final String uri,
                            final SACMediaList media,
                            final String defaultNamespaceURI )
-    throws CSSException
+  throws CSSException
   {
     log( "importStyle " + uri + ", " + media + ", " + defaultNamespaceURI );
     reader.addProblem( new CSSException( "import rules not supported - ignored" ) );
   }
 
   public void namespaceDeclaration( final String prefix, final String uri )
-    throws CSSException
+  throws CSSException
   {
     log( "namespaceDeclaration " + prefix + ", " + uri );
     reader.addProblem( new CSSException( "unsupported namespace declaration '"
@@ -103,14 +112,14 @@ public class DocumentHandlerImpl implements DocumentHandler {
   }
 
   public void startPage( final String name, final String pseudo_page )
-    throws CSSException
+  throws CSSException
   {
     log( "startPage " + name + ", " + pseudo_page );
     reader.addProblem( new CSSException( "page rules not supported - ignored" ) );
   }
 
   public void endPage( final String name, final String pseudo_page )
-    throws CSSException
+  throws CSSException
   {
     log( "endPage " + name + ", " + pseudo_page );
   }
@@ -126,7 +135,8 @@ public class DocumentHandlerImpl implements DocumentHandler {
 
   public void startFontFace() throws CSSException {
     log( "startFontFace" );
-    reader.addProblem( new CSSException( "font face rules not supported - ignored" ) );
+    reader.addProblem( new CSSException( "font face rules not supported"
+                                         + " - ignored" ) );
   }
 
   public void endFontFace() throws CSSException {
@@ -138,7 +148,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
   }
 
   private void log( final String message ) {
-//    System.out.println( message );
+    //    System.out.println( message );
   }
 
   private static String toString( final SelectorList patterns ) {
@@ -151,62 +161,6 @@ public class DocumentHandlerImpl implements DocumentHandler {
       buffer.append( selector.toString() );
     }
     buffer.append( " ]" );
-    return buffer.toString();
-  }
-
-  private static String toString( final LexicalUnit value ) {
-    StringBuffer buffer = new StringBuffer();
-    short type = value.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_ATTR ) {
-      buffer.append( "ATTR " + value.getStringValue() );
-    } else if( type == LexicalUnit.SAC_CENTIMETER
-               || type == LexicalUnit.SAC_DEGREE
-               || type == LexicalUnit.SAC_EM
-               || type == LexicalUnit.SAC_EX
-               || type == LexicalUnit.SAC_GRADIAN
-               || type == LexicalUnit.SAC_HERTZ
-               || type == LexicalUnit.SAC_INCH
-               || type == LexicalUnit.SAC_KILOHERTZ
-               || type == LexicalUnit.SAC_MILLIMETER
-               || type == LexicalUnit.SAC_MILLISECOND
-               || type == LexicalUnit.SAC_PERCENTAGE
-               || type == LexicalUnit.SAC_PICA
-               || type == LexicalUnit.SAC_POINT
-               || type == LexicalUnit.SAC_PIXEL
-               || type == LexicalUnit.SAC_RADIAN
-               || type == LexicalUnit.SAC_SECOND
-               || type == LexicalUnit.SAC_DIMENSION )
-    {
-      buffer.append( "DIM "
-                     + value.getFloatValue()
-                     + value.getDimensionUnitText() );
-    } else if( type == LexicalUnit.SAC_RGBCOLOR ) {
-      LexicalUnit parameters = value.getParameters();
-      buffer.append( "RGBCOLOR " + toString( parameters ) );
-    } else if( type == LexicalUnit.SAC_STRING_VALUE ) {
-      buffer.append( "STRING " + value.getStringValue() );
-    } else if( type == LexicalUnit.SAC_IDENT ) {
-      buffer.append( "IDENT " + value.getStringValue() );
-    } else if( type == LexicalUnit.SAC_PIXEL ) {
-      buffer.append( "PIXEL " + value.getFloatValue() );
-    } else if( type == LexicalUnit.SAC_INTEGER ) {
-      buffer.append( "INT " + value.getIntegerValue() );
-    } else if( type == LexicalUnit.SAC_OPERATOR_COMMA ) {
-      buffer.append( "COMMA" );
-    } else if( type == LexicalUnit.SAC_ATTR ) {
-      buffer.append( "ATTR " + value.getStringValue() );
-    } else if( type == LexicalUnit.SAC_FUNCTION ) {
-      buffer.append( "UNKNOWN FUNCTION " + value.getFunctionName() );
-    } else if( type == LexicalUnit.SAC_DIMENSION ) {
-      buffer.append( "UNKNOWN DIMENSION " + value );
-    } else {
-      buffer.append( "unsupported unit " + value.getLexicalUnitType() );
-    }
-    LexicalUnit next = value.getNextLexicalUnit();
-    if( next != null ) {
-      buffer.append( ", " );
-      buffer.append( toString( next ) );
-    }
     return buffer.toString();
   }
 }

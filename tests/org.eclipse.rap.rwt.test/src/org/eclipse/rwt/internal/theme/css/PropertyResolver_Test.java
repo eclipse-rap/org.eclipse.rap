@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import java.io.*;
@@ -261,6 +260,36 @@ public class PropertyResolver_Test extends TestCase {
     QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ),
                                                          dummyResourceLoader );
     assertNull( res4 );
+  }
+
+  public void testGetType() throws Exception {
+    assertEquals( "color", PropertyResolver.getType( "color" ) );
+    assertEquals( "color", PropertyResolver.getType( "background-color" ) );
+    assertEquals( "border", PropertyResolver.getType( "border" ) );
+    assertEquals( "font", PropertyResolver.getType( "font" ) );
+    assertEquals( "boxdim", PropertyResolver.getType( "padding" ) );
+    assertEquals( "boxdim", PropertyResolver.getType( "margin" ) );
+    assertEquals( "image", PropertyResolver.getType( "background-image" ) );
+    assertNull( PropertyResolver.getType( "unknown" ) );
+  }
+
+  public void testResolveProperty() throws Exception {
+    LexicalUnit unit = parseProperty( "white" );
+    QxType value = PropertyResolver.resolveProperty( "color", unit, null );
+    assertEquals( QxColor.WHITE, value );
+    try {
+      PropertyResolver.resolveProperty( "xy", unit, null );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      assertTrue( e.getMessage().indexOf( "property xy" ) != -1 );
+    }
+    try {
+      LexicalUnit unit2 = parseProperty( "darkslategray" );
+      PropertyResolver.resolveProperty( "color", unit2 , null );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      assertTrue( e.getMessage().indexOf( "value darkslategray" ) != -1 );
+    }
   }
 
   private static LexicalUnit parseProperty( final String input )

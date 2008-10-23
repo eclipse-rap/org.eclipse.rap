@@ -8,27 +8,22 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
 
-import org.eclipse.rwt.internal.theme.*;
-import org.w3c.css.sac.LexicalUnit;
+import org.eclipse.rwt.internal.theme.QxType;
 
 
 public class StylePropertyMap implements IStylePropertyMap {
 
   private final Map properties;
 
-  private final ResourceLoader loader;
-
-  public StylePropertyMap( final ResourceLoader loader ) {
-    this.loader = loader;
+  public StylePropertyMap() {
     properties = new HashMap();
   }
 
-  public void setProperty( final String key, final LexicalUnit value ) {
+  public void setProperty( final String key, final QxType value ) {
     if( key == null || value == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -42,116 +37,8 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result;
   }
 
-  public QxType getValue( final String propertyName, final String type ) {
-    QxType result = null;
-    if( ThemeDefinitionReader.TYPE_BORDER.equals( type ) ) {
-      result = getBorder( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_BOOLEAN.equals( type ) ) {
-      throw new IllegalArgumentException( "Boolean type not yet supported" );
-//      result = getBoolean( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_BOXDIMENSIONS.equals( type ) ) {
-      result = getBoxDimensions( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_COLOR.equals( type ) ) {
-      result = getColor( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_DIMENSION.equals( type ) ) {
-      result = getDimension( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_FONT.equals( type ) ) {
-      result = getFont( propertyName );
-    } else if( ThemeDefinitionReader.TYPE_IMAGE.equals( type ) ) {
-      result = getImage( propertyName );
-    } else {
-      throw new IllegalArgumentException( "Illegal type: " + type );
-    }
-    return result;
-  }
-
-  public QxType getValue( final String property ) {
-    QxType result = null;
-    if( "color".equals( property ) ) {
-      result = getColor( "color" );
-    } else if( "background-color".equals( property ) ) {
-      result = getColor( "background-color" );
-    } else if( "background-image".equals( property ) ) {
-      result = getImage( "background-image" );
-    } else if( "border".equals( property ) ) {
-      result = getBorder( "border" );
-    } else if( "padding".equals( property ) ) {
-      result = getBoxDimensions( "padding" );
-    } else if( "margin".equals( property ) ) {
-      result = getBoxDimensions( "margin" );
-    } else if( "spacing".equals( property ) ) {
-      result = getDimension( "spacing" );
-    } else if( "height".equals( property ) ) {
-      result = getDimension( "height" );
-    } else if( "width".equals( property ) ) {
-      result = getDimension( "width" );
-    } else if( "font".equals( property ) ) {
-      result = getFont( "font" );
-    } else if( property.startsWith( "rwt" )
-               && property.endsWith( "color" ) )
-    {
-      result = getColor( property );
-    } else if( "background-gradient-color".equals( property ) ) {
-      result = getColor( "background-color" );
-    } else {
-      // TODO [rst] Logging instead of sysout
-      System.err.println( "WARNING: unknown type for css property: " + property );
-    }
-    return result;
-  }
-
-  public QxFont getFont( final String propertyName ) {
-    QxFont result = null;
-    LexicalUnit lexicalUnit = getPropertyValue( propertyName );
-    if( lexicalUnit != null ) {
-      result = PropertyResolver.readFont( lexicalUnit );
-    }
-    return result;
-  }
-
-  public QxBorder getBorder( final String propertyName ) {
-    QxBorder result = null;
-    LexicalUnit lexicalUnit = getPropertyValue( propertyName );
-    if( lexicalUnit != null ) {
-      result = PropertyResolver.readBorder( lexicalUnit );
-    }
-    return result;
-  }
-
-  public QxBoxDimensions getBoxDimensions( final String propertyName ) {
-    QxBoxDimensions result = null;
-    LexicalUnit lexicalUnit = getPropertyValue( propertyName );
-    if( lexicalUnit != null ) {
-      result = PropertyResolver.readBoxDimensions( lexicalUnit );
-    }
-    return result;
-  }
-
-  public QxDimension getDimension( final String propertyName ) {
-    QxDimension result = null;
-    LexicalUnit lexicalUnit = getPropertyValue( propertyName );
-    if( lexicalUnit != null ) {
-      result = PropertyResolver.readDimension( lexicalUnit );
-    }
-    return result;
-  }
-
-  public QxColor getColor( final String propertyName ) {
-    QxColor result = null;
-    LexicalUnit lexicalUnit = getPropertyValue( propertyName );
-    if( lexicalUnit != null ) {
-      result = PropertyResolver.readColor( lexicalUnit );
-    }
-    return result;
-  }
-
-  public QxImage getImage( final String propertyName ) {
-    QxImage result = null;
-    LexicalUnit lexicalUnit = getPropertyValue( propertyName );
-    if( lexicalUnit != null ) {
-      result = PropertyResolver.readBackgroundImage( lexicalUnit, loader );
-    }
-    return result;
+  public QxType getValue( final String propertyName ) {
+    return ( QxType )properties.get( propertyName );
   }
 
   public String toString() {
@@ -164,18 +51,14 @@ public class StylePropertyMap implements IStylePropertyMap {
       result.append( "  " );
       result.append( property );
       result.append( ": " );
-      result.append( value.toDefaultString() );
+      result.append( value );
       result.append( ";\n" );
     }
     result.append( "}" );
     return result.toString();
   }
 
-  private LexicalUnit getPropertyValue( final String key ) {
-    return ( LexicalUnit )properties.get( key );
-  }
-
-  public boolean equals( Object obj ) {
+  public boolean equals( final Object obj ) {
     boolean result = false;
     if( obj == this ) {
       result = true;

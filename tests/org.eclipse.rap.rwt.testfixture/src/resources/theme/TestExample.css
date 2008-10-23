@@ -22,6 +22,7 @@
 * {
   color: rgb( 112, 94, 66 );
   background-color: rgb( 255, 255, 255 );
+  font: bold 12px Arial, Helvetica, sans-serif;
 }
 
 /* Wildcard type name with style flag */
@@ -46,12 +47,12 @@ Button, Label, Composite {
 Button {
   color: #705e42;
   padding: 12px 6px;
-  font: bold 12px Arial, Helvetica, sans-serif;
 }
 
 Button[PUSH], Button[TOGGLE] {
   background-color: #9dd0ea;
   border: 1px #1695d4;
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
 }
 
 Button[PUSH][BORDER], Button[TOGGLE][BORDER] {

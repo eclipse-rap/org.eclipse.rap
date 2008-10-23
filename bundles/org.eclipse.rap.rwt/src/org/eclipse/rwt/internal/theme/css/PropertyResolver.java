@@ -8,14 +8,13 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
 
 import org.eclipse.rwt.internal.theme.*;
-
 import org.w3c.css.sac.LexicalUnit;
+
 
 /**
  * Utility class to read values from LexicalUnits.
@@ -27,25 +26,29 @@ public final class PropertyResolver {
   private static final String ITALIC = "italic";
 
   private static final String NORMAL = "normal";
-
+  // No border; the computed border width is zero.
   private static final String NONE = "none";
-
+  // Same as 'none', except in terms of border conflict resolution for table
+  // elements.
   private static final String HIDDEN = "hidden";
-
+  // The border is a series of dots.
   private static final String DOTTED = "dotted";
-
+  // The border is a series of short line segments.
   private static final String DASHED = "dashed";
-
+  // The border is a single line segment.
   private static final String SOLID = "solid";
-
+  // The border is two solid lines. The sum of the two lines and the space
+  // between them equals the value of 'border-width'.
   private static final String DOUBLE = "double";
-
+  // The border looks as though it were carved into the canvas.
   private static final String GROOVE = "groove";
-
+  // The opposite of 'groove': the border looks as though it were coming out of
+  // the canvas.
   private static final String RIDGE = "ridge";
-
+  // The border makes the box look as though it were embedded in the canvas.
   private static final String INSET = "inset";
-
+  // The opposite of 'inset': the border makes the box look as though it were
+  // coming out of the canvas.
   private static final String OUTSET = "outset";
 
   /** A thin border. */
@@ -64,13 +67,13 @@ public final class PropertyResolver {
   private static final List BORDER_STYLES = new ArrayList();
 
   /** Width value for "thin" identifier. */
-  public static final int THIN_VALUE = 1;
+  static final int THIN_VALUE = 1;
 
   /** Width value for "medium" identifier. */
-  public static final int MEDIUM_VALUE = 3;
+  static final int MEDIUM_VALUE = 3;
 
   /** Width value for "thick" identifier. */
-  public static final int THICK_VALUE = 5;
+  static final int THICK_VALUE = 5;
 
   static {
     // register 16 standard HTML colors
@@ -91,19 +94,78 @@ public final class PropertyResolver {
     NAMED_COLORS.put( "teal", new int[] { 0, 128, 128 } );
     NAMED_COLORS.put( "aqua", new int[] { 0, 255, 255 } );
     // register border styles
-    BORDER_STYLES.add( NONE ); // No border; the computed border width is zero.
-    BORDER_STYLES.add( HIDDEN ); // Same as 'none', except in terms of border conflict resolution for table elements.
-    BORDER_STYLES.add( DOTTED ); // The border is a series of dots.
-    BORDER_STYLES.add( DASHED ); // The border is a series of short line segments.
-    BORDER_STYLES.add( SOLID ); // The border is a single line segment.
-    BORDER_STYLES.add( DOUBLE ); // The border is two solid lines. The sum of the two lines and the space between them equals the value of 'border-width'.
-    BORDER_STYLES.add( GROOVE ); // The border looks as though it were carved into the canvas.
-    BORDER_STYLES.add( RIDGE ); // The opposite of 'groove': the border looks as though it were coming out of the canvas.
-    BORDER_STYLES.add( INSET ); // The border makes the box look as though it were embedded in the canvas.
-    BORDER_STYLES.add( OUTSET ); // The opposite of 'inset': the border makes the box look as though it were coming out of the canvas.
+    BORDER_STYLES.add( NONE );
+    BORDER_STYLES.add( HIDDEN );
+    BORDER_STYLES.add( DOTTED );
+    BORDER_STYLES.add( DASHED );
+    BORDER_STYLES.add( SOLID );
+    BORDER_STYLES.add( DOUBLE );
+    BORDER_STYLES.add( GROOVE );
+    BORDER_STYLES.add( RIDGE );
+    BORDER_STYLES.add( INSET );
+    BORDER_STYLES.add( OUTSET );
   }
 
-  public static QxColor readColor( final LexicalUnit input ) {
+  public static QxType resolveProperty( final String name,
+                                        final LexicalUnit unit,
+                                        final ResourceLoader loader )
+  {
+    QxType result;
+    String type = getType( name );
+    if( type == null ) {
+      throw new IllegalArgumentException( "Unknown property " + name );
+    }
+    if( ThemeDefinitionReader.TYPE_BOOLEAN.equals( type ) ) {
+      throw new IllegalArgumentException( "Currently not supported" );
+    } else if( ThemeDefinitionReader.TYPE_BORDER.equals( type ) ) {
+      result = readBorder( unit );
+    } else if( ThemeDefinitionReader.TYPE_BOXDIMENSIONS.equals( type ) ) {
+      result = readBoxDimensions( unit );
+    } else if( ThemeDefinitionReader.TYPE_COLOR.equals( type ) ) {
+      result = readColor( unit );
+    } else if( ThemeDefinitionReader.TYPE_DIMENSION.equals( type ) ) {
+      result = readDimension( unit );
+    } else if( ThemeDefinitionReader.TYPE_FONT.equals( type ) ) {
+      result = readFont( unit );
+    } else if( ThemeDefinitionReader.TYPE_IMAGE.equals( type ) ) {
+      result = readBackgroundImage( unit, loader );
+    } else {
+      throw new RuntimeException( "Illegal type " + type );
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse value "
+                                          + toString( unit ) );
+    }
+    return result;
+  }
+
+  public static String getType( final String property ) {
+    // TODO [rst] respect properties declared in theme.xml files
+    String result = null;
+    if( "padding".equals( property ) || "margin".equals( property ) ) {
+      result = ThemeDefinitionReader.TYPE_BOXDIMENSIONS;
+    } else if( "color".equals( property )
+        || "background-color".equals( property )
+        || ( property.startsWith( "rwt-" )
+            && property.endsWith( "-color" ) ) )
+    {
+      result = ThemeDefinitionReader.TYPE_COLOR;
+    } else if( "font".equals( property ) ) {
+      result = ThemeDefinitionReader.TYPE_FONT;
+    } else if( "border".equals( property ) ) {
+      result = ThemeDefinitionReader.TYPE_BORDER;
+    } else if( "spacing".equals( property )
+        || "width".equals( property )
+        || "height".equals( property ) )
+    {
+      result = ThemeDefinitionReader.TYPE_DIMENSION;
+    } else if( "background-image".equals( property ) ) {
+      result = ThemeDefinitionReader.TYPE_IMAGE;
+    }
+    return result;
+  }
+
+  static QxColor readColor( final LexicalUnit input ) {
     QxColor result = null;
     short type = input.getLexicalUnitType();
     if( type == LexicalUnit.SAC_RGBCOLOR ) {
@@ -141,7 +203,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static QxDimension readDimension( final LexicalUnit unit ) {
+  static QxDimension readDimension( final LexicalUnit unit ) {
     QxDimension result = null;
     Integer length = readSingleLengthUnit( unit );
     if( length != null ) {
@@ -150,7 +212,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static QxBoxDimensions readBoxDimensions( final LexicalUnit unit ) {
+  static QxBoxDimensions readBoxDimensions( final LexicalUnit unit ) {
     QxBoxDimensions result = null;
     Integer value1 = readSingleLengthUnit( unit );
     if( value1 != null ) {
@@ -182,7 +244,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static String readBorderStyle( final LexicalUnit unit ) {
+  static String readBorderStyle( final LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -194,7 +256,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static int readBorderWidth( final LexicalUnit unit ) {
+  static int readBorderWidth( final LexicalUnit unit ) {
     int result = -1;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -215,7 +277,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static QxBorder readBorder( final LexicalUnit unit ) {
+  static QxBorder readBorder( final LexicalUnit unit ) {
     QxBorder result = null;
     QxColor color = null;
     String style = null;
@@ -241,13 +303,13 @@ public final class PropertyResolver {
     if( consumed ) {
       // TODO [rst] create should take a QxColor
       result = QxBorder.create( width == -1 ? 0 : width,
-                                style,
-                                color != null ? color.toDefaultString() : null );
+                                            style,
+                                            color != null ? color.toDefaultString() : null );
     }
     return result;
   }
 
-  public static String readFontStyle( final LexicalUnit unit ) {
+  static String readFontStyle( final LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -261,7 +323,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static String readFontWeight( final LexicalUnit unit ) {
+  static String readFontWeight( final LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -275,7 +337,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static int readFontSize( final LexicalUnit unit ) {
+  static int readFontSize( final LexicalUnit unit ) {
     int result = -1;
     Integer length = readSingleLengthUnit( unit );
     if( length != null ) {
@@ -287,7 +349,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static String[] readFontFamily( final LexicalUnit unit ) {
+  static String[] readFontFamily( final LexicalUnit unit ) {
     List list = new ArrayList();
     LexicalUnit nextUnit = unit;
     boolean ok = true;
@@ -326,7 +388,7 @@ public final class PropertyResolver {
   // double quote (") character followed by optional whitespace followed by ')'.
   // The two quote characters must be the same.
 
-  public static QxFont readFont( final LexicalUnit unit ) {
+  static QxFont readFont( final LexicalUnit unit ) {
     QxFont result = null;
     String[] family = null;
     String style = null;
@@ -366,7 +428,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static String readUrl( final LexicalUnit unit ) {
+  static String readUrl( final LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_URI ) {
@@ -375,8 +437,8 @@ public final class PropertyResolver {
     return result;
   }
 
-  public static QxImage readBackgroundImage( final LexicalUnit unit,
-                                             final ResourceLoader loader ) {
+  static QxImage readBackgroundImage( final LexicalUnit unit,
+                                      final ResourceLoader loader ) {
     QxImage result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_URI ) {
@@ -418,5 +480,61 @@ public final class PropertyResolver {
       result = 100f;
     }
     return result;
+  }
+
+  static String toString( final LexicalUnit value ) {
+    StringBuffer buffer = new StringBuffer();
+    short type = value.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_ATTR ) {
+      buffer.append( "ATTR " + value.getStringValue() );
+    } else if( type == LexicalUnit.SAC_CENTIMETER
+        || type == LexicalUnit.SAC_DEGREE
+        || type == LexicalUnit.SAC_EM
+        || type == LexicalUnit.SAC_EX
+        || type == LexicalUnit.SAC_GRADIAN
+        || type == LexicalUnit.SAC_HERTZ
+        || type == LexicalUnit.SAC_INCH
+        || type == LexicalUnit.SAC_KILOHERTZ
+        || type == LexicalUnit.SAC_MILLIMETER
+        || type == LexicalUnit.SAC_MILLISECOND
+        || type == LexicalUnit.SAC_PERCENTAGE
+        || type == LexicalUnit.SAC_PICA
+        || type == LexicalUnit.SAC_POINT
+        || type == LexicalUnit.SAC_PIXEL
+        || type == LexicalUnit.SAC_RADIAN
+        || type == LexicalUnit.SAC_SECOND
+        || type == LexicalUnit.SAC_DIMENSION )
+    {
+      buffer.append( "DIM "
+                     + value.getFloatValue()
+                     + value.getDimensionUnitText() );
+    } else if( type == LexicalUnit.SAC_RGBCOLOR ) {
+      LexicalUnit parameters = value.getParameters();
+      buffer.append( "rgb(" + toString( parameters ) + ")" );
+    } else if( type == LexicalUnit.SAC_STRING_VALUE ) {
+      buffer.append( "\"" + value.getStringValue() + "\"" );
+    } else if( type == LexicalUnit.SAC_IDENT ) {
+      buffer.append( value.getStringValue() );
+    } else if( type == LexicalUnit.SAC_PIXEL ) {
+      buffer.append( value.getFloatValue() + "px" );
+    } else if( type == LexicalUnit.SAC_INTEGER ) {
+      buffer.append( value.getIntegerValue() );
+    } else if( type == LexicalUnit.SAC_OPERATOR_COMMA ) {
+      buffer.append( "," );
+    } else if( type == LexicalUnit.SAC_ATTR ) {
+      buffer.append( "ATTR " + value.getStringValue() );
+    } else if( type == LexicalUnit.SAC_FUNCTION ) {
+      buffer.append( "UNKNOWN FUNCTION " + value.getFunctionName() );
+    } else if( type == LexicalUnit.SAC_DIMENSION ) {
+      buffer.append( "UNKNOWN DIMENSION " + value );
+    } else {
+      buffer.append( "unsupported unit " + value.getLexicalUnitType() );
+    }
+    LexicalUnit next = value.getNextLexicalUnit();
+    if( next != null ) {
+      buffer.append( " " );
+      buffer.append( toString( next ) );
+    }
+    return buffer.toString();
   }
 }

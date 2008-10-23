@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
@@ -66,8 +65,7 @@ public class StyleSheet {
       SelectorWrapper selectorWrapper = selectorWrappers[ i ];
       String selectorElement = selectorWrapper.selectorExt.getElementName();
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
-        QxType value = selectorWrapper.propertyMap.getValue( propertyName,
-                                                             expectedType );
+        QxType value = selectorWrapper.propertyMap.getValue( propertyName );
         if( value != null ) {
           ConditionalValue condValue = new ConditionalValue();
           condValue.constraints = selectorWrapper.selectorExt.getConstraints();
@@ -165,7 +163,7 @@ public class StyleSheet {
     public final SelectorExt selectorExt;
 
     public final IStylePropertyMap propertyMap;
-    
+
     public final int position;
 
     public SelectorWrapper( final Selector selector,
@@ -180,7 +178,7 @@ public class StyleSheet {
   }
 
   private static class SelectorWrapperComparator implements Comparator {
-    
+
     public int compare( final Object object1, final Object object2 ) {
       int result = 0;
       SelectorWrapper selectorWrapper1 = ( SelectorWrapper )object1;
