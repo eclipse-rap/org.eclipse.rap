@@ -19,6 +19,10 @@
   rwt-selectionmarker-color: #56a0ea;
 }
 
+:disabled {
+  color: gray;
+}
+
 List, Tree, Table, Text, Spinner, Combo {
   color: rgb( 39, 64, 139 );
   background-color: #fff1a1;
