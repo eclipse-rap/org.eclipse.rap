@@ -170,17 +170,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       if( parent.hasCheckBoxes() ) {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
-      var font = "";
-      var foreground = "";
-      var background = "";
-      var parentForeground = "";
-      if( !qx.util.ColorUtil.isThemedColor( parent.getTextColor() ) ) {
-        parentForeground
-          = org.eclipse.swt.widgets.TableItem.FOREGROUND 
-          + parent.getTextColor()
-          + ";";
-      }
       for( var i = 0; i < columnCount; i++ ) {
+        var font = "";
+        var foreground = "";
+        var background = "";
         // Font
         if( this._fonts && this._fonts[ i ] ) {
           font
@@ -196,8 +189,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
               = org.eclipse.swt.widgets.TableItem.FOREGROUND 
               + this._foregrounds[ i ] 
               + ";";
-          } else {
-            foreground = parentForeground;
+          } else if( !qx.util.ColorUtil.isThemedColor( parent.getTextColor() ) ) {
+            foreground
+              = org.eclipse.swt.widgets.TableItem.FOREGROUND 
+              + parent.getTextColor()
+              + ";";
           }
           if( this._backgrounds && this._backgrounds[ i ] ) {
             background 
