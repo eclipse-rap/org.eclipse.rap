@@ -41,54 +41,6 @@ public class PropertySupport {
     }
   }
 
-  private static final class SimplePropertyMap implements IStylePropertyMap {
-
-    private final Map properties = new HashMap();
-
-    public void add( final String key, final QxType value ) {
-      properties.put( key, value );
-    }
-
-    public QxBorder getBorder( final String propertyName ) {
-      return ( QxBorder )properties.get( propertyName );
-    }
-
-    public QxBoxDimensions getBoxDimensions( final String propertyName ) {
-      return ( QxBoxDimensions )properties.get( propertyName );
-    }
-
-    public QxColor getColor( final String propertyName ) {
-      return ( QxColor )properties.get( propertyName );
-    }
-
-    public QxDimension getDimension( final String propertyName ) {
-      return ( QxDimension )properties.get( propertyName );
-    }
-
-    public QxFont getFont( final String propertyName ) {
-      return ( QxFont )properties.get( propertyName );
-    }
-
-    public QxImage getImage( final String propertyName ) {
-      return ( QxImage )properties.get( propertyName );
-    }
-
-    public String[] getProperties() {
-      Set keySet = properties.keySet();
-      String[] result = new String[ keySet.size() ];
-      keySet.toArray( result );
-      return result;
-    }
-
-    public QxType getValue( final String propertyName ) {
-      return ( QxType )properties.get( propertyName );
-    }
-
-    public QxType getValue( final String propertyName, final String type ) {
-      return ( QxType )properties.get( propertyName );
-    }
-  }
-
   private static final Pattern CSS_CONDITION_ATTR_PATTERN
     = Pattern.compile( "\\[([A-Z]+)\\]|:([a-z]+)|.+" );
 
@@ -127,6 +79,18 @@ public class PropertySupport {
       result.setClass( variant );
     }
     return result;
+  }
+
+  static StyleSheet createDefaultStyleSheet( final ThemeableWidget themeWidget )
+  {
+    StyleSheetBuilder builder = new StyleSheetBuilder();
+    for( int i = 0; i < themeWidget.properties.length; i++ ) {
+      ThemeProperty prop = themeWidget.properties[ i ];
+      StyleRule styleRule
+        = createStyleRule( prop, null, prop.defValue );
+      builder.addStyleRule( styleRule );
+    }
+    return builder.getStyleSheet();
   }
 
   static StyleSheet createStyleSheetFromProperties( final ThemeProperty[] properties,
@@ -175,8 +139,8 @@ public class PropertySupport {
                                             final QxType value )
   {
     SimpleSelectorList selectors = new SimpleSelectorList();
-    SimplePropertyMap propertyMap = new SimplePropertyMap();
-    propertyMap.add( property.cssProperty, value );
+    StylePropertyMap propertyMap = new StylePropertyMap();
+    propertyMap.setProperty( property.cssProperty, value );
     for( int j = 0; j < property.cssElements.length; j++ ) {
       String element = property.cssElements[ j ];
       if( property.cssSelectors != null && property.cssSelectors.length > 0 )

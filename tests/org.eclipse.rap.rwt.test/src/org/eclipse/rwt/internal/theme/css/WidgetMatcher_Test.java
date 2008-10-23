@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
-import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -37,15 +36,15 @@ public class WidgetMatcher_Test extends TestCase {
     } );
 
     // Get set of conditional results
-    ConditionalValue value1 = new ConditionalValue();
-    value1.constraints = new String[] { "[BORDER", "[PUSH", ":enabled" };
-    value1.value = QxBorder.create( 2, "solid", "red" );
-    ConditionalValue value2 = new ConditionalValue();
-    value2.constraints = new String[] { "[BORDER", "[PUSH" };
-    value2.value = QxBorder.create( 2, "dotted", "blue" );
-    ConditionalValue value3 = new ConditionalValue();
-    value3.constraints = new String[] { ".special" };
-    value3.value = QxBorder.create( 1, "solid", "green" );
+    ConditionalValue value1 = new ConditionalValue(
+      new String[] { "[BORDER", "[PUSH", ":enabled" },
+      QxBorder.create( 2, "solid", "red" ) );
+    ConditionalValue value2 = new ConditionalValue(
+      new String[] { "[BORDER", "[PUSH" },
+      QxBorder.create( 2, "dotted", "blue" ) );
+    ConditionalValue value3 = new ConditionalValue(
+      new String[] { ".special" },
+      QxBorder.create( 1, "solid", "green" ) );
     ConditionalValue[] values
       = new ConditionalValue[] { value1, value2, value3 };
 

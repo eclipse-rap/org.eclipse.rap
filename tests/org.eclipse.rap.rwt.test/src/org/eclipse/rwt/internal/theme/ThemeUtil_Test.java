@@ -18,13 +18,16 @@ import org.eclipse.swt.RWTFixture;
 
 public class ThemeUtil_Test extends TestCase {
 
+  private static final ResourceLoader LOADER
+    = ThemeTestUtil.createResourceLoader( ThemeUtil_Test.class );
+
   public void testSetCurrentThemeId() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     String validThemeId = "test.valid.theme";
     String themeName = "Valid Test Theme";
     String themeFile = "resources/theme/theme-valid.properties";
-    ThemeManager_Test.loadThemeFile( manager, validThemeId, themeName, themeFile );
+    manager.registerTheme( validThemeId, themeName, themeFile, LOADER );
     ThemeUtil.setCurrentThemeId( validThemeId );
     assertEquals( validThemeId, ThemeUtil.getCurrentThemeId() );
     try {

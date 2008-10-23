@@ -11,8 +11,7 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -25,6 +24,9 @@ import org.eclipse.swt.widgets.*;
 
 
 public class ThemeManager_Test extends TestCase {
+
+  private static final ResourceLoader LOADER
+    = ThemeTestUtil.createResourceLoader( ThemeManager_Test.class );
 
   public void testThemeAdapters() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
@@ -115,7 +117,7 @@ public class ThemeManager_Test extends TestCase {
     String themeId = "test.valid.theme";
     String themeName = "Valid Test Theme";
     String themeFile = "resources/theme/theme-valid.properties";
-    loadThemeFile( manager, themeId, themeName, themeFile );
+    manager.registerTheme( themeId, themeName, themeFile, LOADER );
     String[] themeIds = manager.getRegisteredThemeIds();
     assertNotNull( themeIds );
     assertEquals( 2, themeIds.length );
@@ -134,7 +136,7 @@ public class ThemeManager_Test extends TestCase {
     String themeId = "test.empty.theme";
     String themeName = "Empty Test Theme";
     String themeFile = "resources/theme/theme-empty.properties";
-    loadThemeFile( manager, themeId, themeName, themeFile );
+    manager.registerTheme( themeId, themeName, themeFile, LOADER );
     String[] themeIds = manager.getRegisteredThemeIds();
     assertNotNull( themeIds );
     assertEquals( 2, themeIds.length );
@@ -155,7 +157,7 @@ public class ThemeManager_Test extends TestCase {
     manager.initialize();
     String themeFile = "resources/theme/theme-undefined.properties";
     try {
-      loadThemeFile( manager, "test.theme", "Test", themeFile );
+      manager.registerTheme( "test.theme", "Test", themeFile, LOADER );
       fail( "IAE expected for undefined key" );
     } catch( final IllegalArgumentException e ) {
       // expected
@@ -169,7 +171,7 @@ public class ThemeManager_Test extends TestCase {
     manager.initialize();
     String themeFile = "resources/theme/theme-invalid.properties";
     try {
-      loadThemeFile( manager, "test.theme", "Test", themeFile );
+      manager.registerTheme( "test.theme", "Test", themeFile, LOADER );
       fail( "IAE expected for invalid key" );
     } catch( final IllegalArgumentException e ) {
       // expected
@@ -181,7 +183,7 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     String themeFile = "resources/theme/theme-missing-image.properties";
-    loadThemeFile( manager, "test.theme", "Test", themeFile );
+    manager.registerTheme( "test.theme", "Test", themeFile, LOADER );
     try {
       manager.registerResources();
       fail( "IAE expected for undefined key" );
@@ -199,7 +201,7 @@ public class ThemeManager_Test extends TestCase {
     String themeId = "TestExample";
     String themeName = "Test Example Theme";
     String themeFile = "resources/theme/TestExample.css";
-    loadThemeFile( manager, themeId, themeName, themeFile );
+    manager.registerTheme( themeId, themeName, themeFile, LOADER );
     String[] themeIds = manager.getRegisteredThemeIds();
     assertNotNull( themeIds );
     assertEquals( 2, themeIds.length );
@@ -220,6 +222,33 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( themeableWidget.elements.length > 0 );
   }
 
+  public void testDefaultTheme() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    Theme theme = manager.getTheme( manager.getDefaultThemeId() );
+    String[] keys = theme.getKeysWithVariants();
+    Arrays.sort( keys );
+    for( int i = 0; i < keys.length; i++ ) {
+      String key = keys[ i ];
+//      System.out.println( key + ": " + theme.getValue( key ) );
+    }
+  }
+
+  public void testValuesMap() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    Theme defTheme = manager.getTheme( manager.getDefaultThemeId() );
+    ThemeCssValuesMap valuesMap = defTheme.getValuesMap();
+    assertNotNull( valuesMap );
+    
+    String themeId = "custom";
+    String themeFile = "resources/theme/TestExample.css";
+    manager.registerTheme( themeId, "Custom Theme", themeFile, LOADER );
+    Theme customTheme = manager.getTheme( themeId );
+    ThemeCssValuesMap customValuesMap = customTheme.getValuesMap();
+    assertNotNull( customValuesMap );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakeNewRequest();
@@ -228,21 +257,5 @@ public class ThemeManager_Test extends TestCase {
   protected void tearDown() throws Exception {
     ThemeManager.getInstance().reset();
     RWTFixture.tearDown();
-  }
-
-  static void loadThemeFile( final ThemeManager manager,
-                             final String themeId,
-                             final String themeName,
-                             final String themeFile ) throws IOException
-  {
-    final ClassLoader classLoader = ThemeManager_Test.class.getClassLoader();
-    ResourceLoader resLoader = new ResourceLoader() {
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        return classLoader.getResourceAsStream( resourceName );
-      }
-    };
-    manager.registerTheme( themeId, themeName, themeFile, resLoader );
   }
 }

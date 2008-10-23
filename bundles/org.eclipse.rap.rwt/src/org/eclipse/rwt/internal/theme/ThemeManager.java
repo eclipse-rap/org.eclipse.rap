@@ -20,7 +20,6 @@ import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
 import org.eclipse.rwt.internal.theme.css.*;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -253,13 +252,14 @@ public final class ThemeManager {
                                                   defaultStyleSheet );
       predefinedTheme.fillOldPropertiesFromStyleSheet( props );
       for( int i = 0; i < props.length; i++ ) {
-        ThemeProperty def = props[ i ];
+        ThemeProperty prop = props[ i ];
         // set key only if not already defined by default CSS
-        if( !predefinedTheme.hasKey( def.name ) ) {
-          predefinedTheme.setValue( def.name, def.defValue );
+        if( !predefinedTheme.hasKey( prop.name ) ) {
+          log( "WARNING: missing value for property in CSS: " + prop.name );
+          predefinedTheme.setValue( prop.name, prop.defValue );
         }
       }
-      
+      predefinedTheme.setValuesMap( createCssValuesMap( predefinedTheme ) );
       themes.put( PREDEFINED_THEME_ID,
                   new ThemeWrapper( predefinedTheme, themeCount++ ) );
       initialized = true;
@@ -370,6 +370,7 @@ public final class ThemeManager {
                                     loader );
         theme.createStyleSheetFromProperties( props );
       }
+      theme.setValuesMap( createCssValuesMap( theme ) );
       themes.put( id, new ThemeWrapper( theme, themeCount++ ) );
     } finally {
       inputStream.close();
@@ -527,20 +528,24 @@ public final class ThemeManager {
     return themeableWidgets.get( widget );
   }
 
-  private void createFlatCssStructure() {
+  private ThemeCssValuesMap createCssValuesMap( final Theme theme ) {
+    ThemeCssValuesMap map = new ThemeCssValuesMap();
     ThemeableWidget[] widgets = themeableWidgets.getAll();
+    StyleSheet styleSheet = theme.getStyleSheet();
     for( int i = 0; i < widgets.length; i++ ) {
       ThemeableWidget themeableWidget = widgets[ i ];
       IThemeCssElement[] elements = themeableWidget.elements;
-      for( int j = 0; j < elements.length; j++ ) {
-        IThemeCssElement themeCssElement = elements[ j ];
-        createFlatStructure( themeCssElement );
+      if( themeableWidget.elements != null ) {
+        for( int j = 0; j < elements.length; j++ ) {
+          IThemeCssElement themeCssElement = elements[ j ];
+          map.init( themeCssElement, styleSheet );
+        }
+      } else {
+        log( "WARNING: Missing theme.xml file for themeable widget: "
+             + themeableWidget.widget.getName() );
       }
     }
-  }
-
-  private void createFlatStructure( IThemeCssElement themeCssElement ) {
-    
+    return map;
   }
 
   /**
@@ -605,6 +610,17 @@ public final class ThemeManager {
         found |= loadThemeAdapter( themeWidget, pkgName, className );
         found |= loadDefaultCss( themeWidget, pkgName, className );
       }
+      if( themeWidget.properties != null
+          && themeWidget.defaultStyleSheet == null )
+      {
+        log( "creating default style sheet for " + themeWidget.widget.getName() );
+        themeWidget.defaultStyleSheet
+          = PropertySupport.createDefaultStyleSheet( themeWidget );
+        log( themeWidget.defaultStyleSheet.toString() );
+      }
+      if( themeWidget.defaultStyleSheet != null ) {
+        defaultStyleSheetBuilder.addStyleSheet( themeWidget.defaultStyleSheet );
+      }
     } catch( final IOException e ) {
       String message = "Failed to initialize themeable widget "
                        + themeWidget.widget.getName();
@@ -626,19 +642,19 @@ public final class ThemeManager {
       try {
         ThemeDefinitionReader reader
           = new ThemeDefinitionReader( inStream, fileName, themeWidget.loader );
-        reader.read( new ThemeDefHandler() {
-          public void readThemeProperty( final ThemeProperty prop ) {
-            if( themeProperties.containsKey( prop.name ) ) {
-              throw new IllegalArgumentException( "key defined twice: "
-                                                  + prop.name );
-            }
-            themeProperties.put( prop.name, prop );
+        reader.read();
+        themeWidget.properties = reader.getThemeProperties();
+        for( int i = 0; i < themeWidget.properties.length; i++ ) {
+          ThemeProperty prop = themeWidget.properties[ i ];
+          if( themeProperties.containsKey( prop.name ) ) {
+            throw new IllegalArgumentException( "key defined twice: "
+                                                + prop.name );
           }
-        } );
-        IThemeCssElement[] elements = reader.getThemeCssElements();
-        themeWidget.elements = elements;
-        for( int i = 0; i < elements.length; i++ ) {
-          registeredCssElements.addElement( elements[ i ] );
+          themeProperties.put( prop.name, prop );
+        }
+        themeWidget.elements = reader.getThemeCssElements();
+        for( int i = 0; i < themeWidget.elements.length; i++ ) {
+          registeredCssElements.addElement( themeWidget.elements[ i ] );
         }
       } catch( final Exception e ) {
         String message = "Failed to parse theme definition file " + fileName;
@@ -721,9 +737,9 @@ public final class ThemeManager {
       log( "Found default css file: " +  fileName );
       try {
         CssFileReader reader = new CssFileReader();
-        StyleSheet styleSheet = reader.parse( inStream, fileName, resLoader );
         // TODO [rst] Check for illegal element names in selector list
-        defaultStyleSheetBuilder.addStyleSheet( styleSheet );
+        themeWidget.defaultStyleSheet
+          = reader.parse( inStream, fileName, resLoader );
         result = true;
       } finally {
         inStream.close();
@@ -1029,7 +1045,7 @@ public final class ThemeManager {
   }
 
   private String createThemeStoreCss( final Theme theme, final String jsId ) {
-    StyleSheet styleSheet = theme.getStyleSheet();
+    ThemeCssValuesMap valuesMap = theme.getValuesMap();
     IThemeCssElement[] elements = registeredCssElements.getAllElements();
     JsonObject mainObject = new JsonObject();
     for( int i = 0; i < elements.length; i++ ) {
@@ -1040,25 +1056,18 @@ public final class ThemeManager {
       for( int j = 0; j < properties.length; j++ ) {
         IThemeCssProperty property = properties[ j ];
         JsonArray valuesArray = new JsonArray();
-        // TODO [rst] remove if when default theme has a style sheet
-        if( styleSheet != null ) {
-          SelectorWrapper[] rules
-            = styleSheet.getMatchingStyleRules( elementName );
-          for( int k = 0; k < rules.length; k++ ) {
-            SelectorWrapper selector = rules[ k ];
-            QxType value = selector.propertyMap.getValue( property.getName() );
-            if( value != null ) {
-              JsonArray array = new JsonArray();
-              String[] constraints = selector.selectorExt.getConstraints();
-              JsonArray constraintsArray = new JsonArray();
-              for( int l = 0; l < constraints.length; l++ ) {
-                constraintsArray.append( constraints[ l ] );
-              }
-              array.append( constraintsArray );
-              array.append( Theme.getDummyPropertyName( value ) );
-              valuesArray.append( array );
-            }
+        String propertyName = property.getName();
+        ConditionalValue[] values = valuesMap.getValues( elementName, propertyName );
+        for( int k = 0; k < values.length; k++ ) {
+          ConditionalValue conditionalValue = values[ k ];
+          JsonArray constraintsArray = new JsonArray();
+          for( int l = 0; l < conditionalValue.constraints.length; l++ ) {
+            constraintsArray.append( conditionalValue.constraints[ l ] );
           }
+          JsonArray array = new JsonArray();
+          array.append( constraintsArray );
+          array.append( Theme.getDummyPropertyName( conditionalValue.value ) );
+          valuesArray.append( array );
         }
         elementObj.append( property.getName(), valuesArray );
       }
@@ -1073,7 +1082,7 @@ public final class ThemeManager {
     sb.append( " );\n" );
     sb.append( "delete ts;\n" );
     return sb.toString();
-  }
+  }  
 
   /**
    * Returns theme properties as array.

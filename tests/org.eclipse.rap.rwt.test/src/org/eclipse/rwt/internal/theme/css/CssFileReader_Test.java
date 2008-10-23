@@ -14,7 +14,6 @@ import java.io.*;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
 import org.w3c.css.sac.CSSException;
 
 
@@ -68,7 +67,7 @@ public class CssFileReader_Test extends TestCase {
       StyleRule[] rules = styleSheet.getStyleRules();
       assertNotNull( rules );
       assertTrue( rules.length > 0 );
-      ConditionalValue[] values = styleSheet.getValues( "Button", "font", "font" );
+      ConditionalValue[] values = styleSheet.getValues( "Button", "font" );
       assertNotNull( values );
       assertEquals( 1, values.length );
       assertNotNull( values[ 0 ].value );

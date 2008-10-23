@@ -93,6 +93,8 @@ public class ThemeDefinitionReader {
 
   private final Collection cssElements;
 
+  private final Collection themeProperties;
+
   /**
    * An instance of this class reads theme definitions from an XML resource.
    *
@@ -124,6 +126,7 @@ public class ThemeDefinitionReader {
     this.fileName = fileName;
     this.loader = loader;
     this.cssElements = new ArrayList();
+    this.themeProperties = new ArrayList();
   }
 
   /**
@@ -134,22 +137,6 @@ public class ThemeDefinitionReader {
    * @throws SAXException if a parse error occurs
    */
   public void read() throws SAXException, IOException {
-    read( null );
-  }
-
-  /**
-   * Reads a theme definition from the specified stream. The stream is kept open
-   * after reading.
-   *
-   * @param callback an implementation of the ThemeDefHandler interface that
-   *            handles parsing events
-   * @throws IOException if a I/O error occurs
-   * @throws SAXException if a parse error occurs
-   * @deprecated only needed for obsolete property system
-   */
-  public void read( final ThemeDefHandler callback )
-    throws SAXException, IOException
-  {
     Document document;
     document = parseThemeDefinition( inputStream );
     Node root = document.getElementsByTagName( ELEM_ROOT ).item( 0 );
@@ -159,18 +146,15 @@ public class ThemeDefinitionReader {
       if( node.getNodeType() == Node.ELEMENT_NODE ) {
         if( ELEM_ELEMENT.equals( node.getNodeName() ) ) {
           readElement( node );
-        } else if( callback != null ) {
-          ThemeProperty property = readElementOld( node );
-          if( property != null ) {
-            callback.readThemeProperty( property );
-          }
+        } else if( loader != null ) {
+          readOldProperty( node );
         }
       }
     }
   }
 
   /**
-   * Returns the CSS element names defined in the definition.
+   * Returns the CSS element names in the definition.
    */
   public IThemeCssElement[] getThemeCssElements() {
     IThemeCssElement[] result = new IThemeCssElement[ cssElements.size() ];
@@ -178,27 +162,36 @@ public class ThemeDefinitionReader {
     return result;
   }
 
+  /**
+   * Returns the (old) theme properties in the definition.
+   */
+  public ThemeProperty[] getThemeProperties() {
+    ThemeProperty[] result = new ThemeProperty[ themeProperties.size() ];
+    themeProperties.toArray( result );
+    return result;
+  }
+
   private void readElement( final Node node ) {
     String name = getAttributeValue( node, ATTR_NAME );
-    ThemeCssElement themeWidget = new ThemeCssElement( name );
+    ThemeCssElement themeElement = new ThemeCssElement( name );
+    cssElements.add( themeElement );
     String description = getAttributeValue( node, ATTR_DESCRIPTION );
-    themeWidget.setDescription( description );
+    themeElement.setDescription( description );
     NodeList childNodes = node.getChildNodes();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
       Node childNode = childNodes.item( i );
       if( childNode.getNodeType() == Node.ELEMENT_NODE ) {
         if( ELEM_ELEMENT.equals( childNode.getNodeName() ) ) {
-          readElementOld( childNode );
+          readElement( childNode );
         } else if( ELEM_PROPERTY.equals( childNode.getNodeName() ) ) {
-          themeWidget.addProperty( readProperty( childNode ) );
+          themeElement.addProperty( readProperty( childNode ) );
         } else if( ELEM_STYLE.equals( childNode.getNodeName() ) ) {
-          themeWidget.addStyle( readStateOrStyle( childNode ) );
+          themeElement.addStyle( readStateOrStyle( childNode ) );
         } else if( ELEM_STATE.equals( childNode.getNodeName() ) ) {
-          themeWidget.addState( readStateOrStyle( childNode ) );
+          themeElement.addState( readStateOrStyle( childNode ) );
         }
       }
     }
-    cssElements.add( themeWidget );
   }
 
   private IThemeCssProperty readProperty( final Node node ) {
@@ -245,7 +238,7 @@ public class ThemeDefinitionReader {
   /**
    * @deprecated only needed for obsolete property system
    */
-  private ThemeProperty readElementOld( final Node node ) {
+  private void readOldProperty( final Node node ) {
     String type = node.getNodeName();
     String name = getAttributeValue( node, ATTR_NAME );
     String description = getAttributeValue( node, ATTR_DESCRIPTION );
@@ -296,7 +289,7 @@ public class ThemeDefinitionReader {
         }
       }
     }
-    return result;
+    themeProperties.add( result );
   }
 
   private Document parseThemeDefinition( final InputStream is )

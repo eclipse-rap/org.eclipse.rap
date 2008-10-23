@@ -76,7 +76,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
                                              + e.getMessage() ) );
       }
     }
-                        }
+  }
 
   // -- ignored --
   public void comment( final String text ) throws CSSException {

@@ -57,8 +57,7 @@ public class StyleSheet {
   }
 
   public ConditionalValue[] getValues( final String elementName,
-                                       final String propertyName,
-                                       final String expectedType )
+                                       final String propertyName )
   {
     List buffer = new ArrayList();
     for( int i = 0; i < selectorWrappers.length; i++ ) {
@@ -67,9 +66,8 @@ public class StyleSheet {
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
         QxType value = selectorWrapper.propertyMap.getValue( propertyName );
         if( value != null ) {
-          ConditionalValue condValue = new ConditionalValue();
-          condValue.constraints = selectorWrapper.selectorExt.getConstraints();
-          condValue.value = value;
+          String[] constraints = selectorWrapper.selectorExt.getConstraints();
+          ConditionalValue condValue = new ConditionalValue( constraints, value );
           buffer.add( condValue );
         }
       }
@@ -117,6 +115,25 @@ public class StyleSheet {
     return result;
   }
 
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    StyleRule[] styleRules = getStyleRules();
+    for( int i = 0; i < styleRules.length; i++ ) {
+      StyleRule styleRule = styleRules[ i ];
+      SelectorList selectors = styleRule.getSelectors();
+      int length = selectors.getLength();
+      for( int j = 0; j < length; j++ ) {
+        Selector selector = selectors.item( j );
+        buffer.append( selector );
+        buffer.append( "\n" );
+      }
+      IStylePropertyMap properties = styleRule.getProperties();
+      buffer.append( properties );
+      buffer.append( "\n" );
+    }
+    return buffer.toString();
+  }
+
   private void createSelectorWrappers() {
     ArrayList selectorWrappersList = new ArrayList();
     for( int i_rule = 0; i_rule < styleRules.length; i_rule++ ) {
@@ -149,11 +166,6 @@ public class StyleSheet {
     SelectorWrapper[] result = new SelectorWrapper[ resultList.size() ];
     resultList.toArray( result );
     return result;
-  }
-
-  public static class ConditionalValue {
-    public String[] constraints;
-    public QxType value;
   }
 
   public static class SelectorWrapper {
@@ -196,24 +208,5 @@ public class StyleSheet {
       }
       return result;
     }
-  }
-
-  public String toString() {
-    StringBuffer buffer = new StringBuffer();
-    StyleRule[] styleRules = getStyleRules();
-    for( int i = 0; i < styleRules.length; i++ ) {
-      StyleRule styleRule = styleRules[ i ];
-      SelectorList selectors = styleRule.getSelectors();
-      int length = selectors.getLength();
-      for( int j = 0; j < length; j++ ) {
-        Selector selector = selectors.item( j );
-        buffer.append( selector );
-        buffer.append( "\n" );
-      }
-      IStylePropertyMap properties = styleRule.getProperties();
-      buffer.append( properties );
-      buffer.append( "\n" );
-    }
-    return buffer.toString();
   }
 }

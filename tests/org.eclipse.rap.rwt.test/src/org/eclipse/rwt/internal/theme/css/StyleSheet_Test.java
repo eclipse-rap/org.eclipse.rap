@@ -11,15 +11,10 @@
 
 package org.eclipse.rwt.internal.theme.css;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
-import org.w3c.css.sac.CSSException;
 
 
 public class StyleSheet_Test extends TestCase {
@@ -40,7 +35,7 @@ public class StyleSheet_Test extends TestCase {
   // == Test that style rules match the correct elements ==
 
   public void testMatchAll() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ ALL_RULE ];
     StylableElement label = new StylableElement( "Label" );
     assertTrue( matchingRule.matches( label ) );
@@ -51,7 +46,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testMatchElement() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ ELEMENT_RULE ];
     StylableElement label = new StylableElement( "Label" );
     assertTrue( matchingRule.matches( label ) );
@@ -60,7 +55,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testMatchClass() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ CLASS_RULE ];
     StylableElement button = new StylableElement( "Button" );
     assertFalse( matchingRule.matches( button ) );
@@ -73,7 +68,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testMatchPseudoClass() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ PSEUDO_CLASS_RULE ];
     StylableElement list = new StylableElement( "List" );
     assertFalse( matchingRule.matches( list ) );
@@ -86,7 +81,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testMatchAttribute() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ ATTRIBUTE_RULE ];
     StylableElement text = new StylableElement( "Text" );
     assertFalse( matchingRule.matches( text ) );
@@ -97,7 +92,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testMatchAttributeValue() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ ATTRIBUTE_VALUE_RULE ];
     StylableElement text = new StylableElement( "Text" );
     assertFalse( matchingRule.matches( text ) );
@@ -110,7 +105,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testMatchOneOfAttribute() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ ONE_OF_ATTRIBUTE_RULE ];
     StylableElement text = new StylableElement( "Text" );
     assertFalse( matchingRule.matches( text ) );
@@ -129,7 +124,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testCombinedAttributes() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ COMBINED_ATTRIBUTE_RULE ];
     StylableElement text = new StylableElement( "Text" );
     text.setClass( "special" );
@@ -142,7 +137,7 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testSelectorList() throws Exception {
-    StyleRule[] rules = getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
+    StyleRule[] rules = ThemeTestUtil.getStyleSheet( TEST_SELECTORS_CSS ).getStyleRules();
     ElementMatcher matchingRule = rules[ SELECTOR_LIST_RULE ];
     StylableElement tree = new StylableElement( "Tree" );
     assertFalse( matchingRule.matches( tree ) );
@@ -161,7 +156,7 @@ public class StyleSheet_Test extends TestCase {
   // == Test other StyleSheet methods ==
 
   public void testGetValue() throws Exception {
-    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     StylableElement button = new StylableElement( "Button" );
     button.setAttribute( "PUSH" );
     button.setAttribute( "BORDER" );
@@ -181,14 +176,14 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testGetVariants() throws Exception {
-    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     String[] variants = styleSheet.getVariants( "Button" );
     assertNotNull( variants );
     assertTrue( variants.length > 0 );
   }
 
   public void testGetMatchingStyleRules() throws Exception {
-    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     SelectorWrapper[] styleRules = styleSheet.getMatchingStyleRules( "Button" );
     assertNotNull( styleRules );
     assertEquals( 13, styleRules.length );
@@ -202,10 +197,9 @@ public class StyleSheet_Test extends TestCase {
   }
 
   public void testGetConditionalValues() throws Exception {
-    StyleSheet styleSheet = getStyleSheet( TEST_EXAMPLE_CSS );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     ConditionalValue[] values = styleSheet.getValues( "Button",
-                                                      "border",
-                                                      ThemeDefinitionReader.TYPE_BORDER );
+                                                      "border" );
     assertNotNull( values );
     assertEquals( 5, values.length );
   }
@@ -214,21 +208,5 @@ public class StyleSheet_Test extends TestCase {
 //    Doesn't work with Batik parser
 //    StyleRule[] rules = getStyleSheet( "TestNamespaces.css" ).getStyleRules();
 //    assertEquals( 3, rules.length );
-  }
-
-  private StyleSheet getStyleSheet( final String fileName )
-    throws CSSException, IOException
-  {
-    StyleSheet result;
-    ClassLoader classLoader = StyleSheet_Test.class.getClassLoader();
-    InputStream inStream = classLoader.getResourceAsStream( "resources/theme/"
-                                                            + fileName );
-    try {
-      CssFileReader reader = new CssFileReader();
-      result = reader.parse( inStream, TEST_SELECTORS_CSS, null );
-    } finally {
-      inStream.close();
-    }
-    return result;
   }
 }

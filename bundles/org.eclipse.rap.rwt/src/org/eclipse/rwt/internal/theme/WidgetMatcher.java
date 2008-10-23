@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.theme;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
+import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;

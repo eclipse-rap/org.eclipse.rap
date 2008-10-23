@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rwt.internal.theme.css.StyleSheet.ConditionalValue;
+import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Widget;
@@ -69,9 +68,7 @@ public final class ThemeAdapterUtil {
                                 final WidgetMatcher matcher,
                                 final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement,
-                                              cssProperty,
-                                              ThemeDefinitionReader.TYPE_COLOR );
+    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
     QxColor color = ( QxColor )matcher.select( values, widget );
     return QxColor.createColor( color );
   }
@@ -81,9 +78,7 @@ public final class ThemeAdapterUtil {
                               final WidgetMatcher matcher,
                               final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement,
-                                              cssProperty,
-                                              ThemeDefinitionReader.TYPE_FONT );
+    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
     QxFont font = ( QxFont )matcher.select( values, widget );
     return QxFont.createFont( font );
   }
@@ -93,9 +88,7 @@ public final class ThemeAdapterUtil {
                                     final WidgetMatcher matcher,
                                     final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement,
-                                              cssProperty,
-                                              ThemeDefinitionReader.TYPE_BORDER );
+    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
     QxBorder border = ( QxBorder )matcher.select( values, widget );
     return border.width;
   }
@@ -105,10 +98,7 @@ public final class ThemeAdapterUtil {
                                   final WidgetMatcher matcher,
                                   final Widget widget )
   {
-    ConditionalValue[] values
-      = getCssValues( cssElement,
-                      cssProperty,
-                      ThemeDefinitionReader.TYPE_DIMENSION );
+    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
     QxDimension dim = ( QxDimension )matcher.select( values, widget );
     return dim.value;
   }
@@ -118,24 +108,17 @@ public final class ThemeAdapterUtil {
                                             final WidgetMatcher matcher,
                                             final Widget widget )
   {
-    ConditionalValue[] values
-      = getCssValues( cssElement,
-                      cssProperty,
-                      ThemeDefinitionReader.TYPE_BOXDIMENSIONS );
+    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
     QxBoxDimensions boxdim = ( QxBoxDimensions )matcher.select( values, widget );
     return QxBoxDimensions.createRectangle( boxdim );
   }
 
   private static ConditionalValue[] getCssValues( final String cssElement,
-                                                  final String cssProperty,
-                                                  final String expectedType )
+                                                  final String cssProperty )
   {
-    // TODO [rst] Implement cache
     Theme theme = ThemeUtil.getTheme();
-    StyleSheet styleSheet = theme.getStyleSheet();
-    ConditionalValue[] values = styleSheet.getValues( cssElement,
-                                                      cssProperty,
-                                                      expectedType );
+    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
     return values;
   }
 }

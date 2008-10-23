@@ -10,11 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
+
 final class ThemeableWidget {
 
   final Class widget;
   final ResourceLoader loader;
   IThemeCssElement[] elements;
+  ThemeProperty[] properties;
+  StyleSheet defaultStyleSheet;
 
   ThemeableWidget( final Class widget, final ResourceLoader loader ) {
     this.widget = widget;

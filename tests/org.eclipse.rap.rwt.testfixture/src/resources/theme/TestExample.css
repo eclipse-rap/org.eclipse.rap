@@ -45,14 +45,14 @@ Button, Label, Composite {
 /* Button */
 
 Button {
-  color: #705e42;
+  color: #705e42; /* 112, 94, 66 */
   padding: 12px 6px;
 }
 
 Button[PUSH], Button[TOGGLE] {
   background-color: #9dd0ea;
   border: 1px #1695d4;
-  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  font: 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode';
 }
 
 Button[PUSH][BORDER], Button[TOGGLE][BORDER] {

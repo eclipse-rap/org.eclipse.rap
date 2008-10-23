@@ -11,12 +11,12 @@
 
 package org.eclipse.rwt.internal.theme;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
 import org.eclipse.swt.widgets.Widget;
 
 public class ThemeDefinitionReader_Test extends TestCase {
@@ -26,24 +26,37 @@ public class ThemeDefinitionReader_Test extends TestCase {
 
   private static final String BUTTON_THEME_FILE
     = "org/eclipse/swt/internal/widgets/buttonkit/Button.theme.xml";
+  
+  private static final String SHELL_THEME_FILE
+  = "org/eclipse/swt/internal/widgets/shellkit/Shell.theme.xml";
 
   public void testReadOld() throws Exception {
-    ClassLoader loader = Widget.class.getClassLoader();
-    InputStream is = loader.getResourceAsStream( WIDGET_THEME_FILE );
-    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, "test", null );
-    final Map result = new HashMap();
+    final ClassLoader classLoader = Widget.class.getClassLoader();
+    InputStream is = classLoader.getResourceAsStream( WIDGET_THEME_FILE );
+    ResourceLoader loader = new ResourceLoader() {
+
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        return classLoader.getResourceAsStream( WIDGET_THEME_FILE );
+      }
+    };
+    ThemeDefinitionReader reader
+      = new ThemeDefinitionReader( is, "test", loader );
     try {
-      reader.read( new ThemeDefHandler() {
-        public void readThemeProperty( final ThemeProperty def ) {
-          result.put( def.name, def.defValue );
-        }
-      } );
+      reader.read();
     } finally {
       is.close();
     }
-    Set keys = result.keySet();
+    ThemeProperty[] properties = reader.getThemeProperties();
+    Map propertyMap = new HashMap();
+    for( int i = 0; i < properties.length; i++ ) {
+      ThemeProperty prop = properties[ i ];
+      propertyMap.put( prop.name, prop.defValue );
+    }
+    Set keys = propertyMap.keySet();
     assertTrue( keys.size() > 0 );
-    assertTrue( result.get( "widget.background" ) instanceof QxColor );
+    assertTrue( propertyMap.get( "widget.background" ) instanceof QxColor );
   }
 
   public void testReadCss() throws Exception {
@@ -72,5 +85,21 @@ public class ThemeDefinitionReader_Test extends TestCase {
     assertTrue( properties.length > 0 );
     assertEquals( "color", properties[ 0 ].getName() );
     assertNotNull( properties[ 0 ].getDescription() );
+  }
+
+  public void testNestedElements() throws Exception {
+    ClassLoader loader = Widget.class.getClassLoader();
+    InputStream is = loader.getResourceAsStream( SHELL_THEME_FILE );
+    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, "test" );
+    try {
+      reader.read();
+    } finally {
+      is.close();
+    }
+    IThemeCssElement[] elements = reader.getThemeCssElements();
+    assertNotNull( elements );
+    assertTrue( elements.length > 1 );
+    assertEquals( "Shell", elements[ 0 ].getName() );
+    assertEquals( "Shell-Titlebar", elements[ 1 ].getName() );
   }
 }

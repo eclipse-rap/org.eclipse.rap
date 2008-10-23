@@ -18,7 +18,7 @@ public class ThemeableWidgetHolder {
   private final Map themeableWidgets;
 
   public ThemeableWidgetHolder() {
-    themeableWidgets = new HashMap();
+    themeableWidgets = new LinkedHashMap();
   }
 
   public void add( final ThemeableWidget widget ) {

@@ -33,6 +33,8 @@ public final class Theme {
 
   private final Map cssValues;
 
+  private ThemeCssValuesMap valuesMap;
+
   private StyleSheet styleSheet;
 
   /**
@@ -181,6 +183,14 @@ public final class Theme {
 
   public String getName() {
     return name;
+  }
+
+  public ThemeCssValuesMap getValuesMap() {
+    return valuesMap;
+  }
+
+  public void setValuesMap( ThemeCssValuesMap valuesMap ) {
+    this.valuesMap = valuesMap;
   }
 
   /**
