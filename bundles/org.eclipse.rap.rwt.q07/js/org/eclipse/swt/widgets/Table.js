@@ -736,7 +736,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _selectItem : function( itemIndex ) {
       this._selected.push( itemIndex );
-      this.updateItem( itemIndex, false );
+      // call updateItem with contentChanged-flag == true to override eventually 
+      // set background colors, see https://bugs.eclipse.org/bugs/237134
+      this.updateItem( itemIndex, true );
     },
 
     _deselectItem : function( itemIndex, update ) {
