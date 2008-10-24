@@ -201,7 +201,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
               + ";";
           }
         }
-this.debug( this._texts[ i ] + " -> " + background );        
         // Draw image
         if( this._images && this._images[ i ] ) {
           left = parent.getItemImageLeft( i );
