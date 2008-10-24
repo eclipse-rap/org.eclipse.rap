@@ -445,7 +445,7 @@ public class TableItem_Test extends TestCase {
     item.setBackground( 0, null );
     assertEquals( rowBackground, item.getBackground( 0 ) );
 
-    // Resetting item font returns the tables' font
+    // Resetting item background returns the tables' background
     item.setBackground( null );
     assertEquals( table.getBackground(), item.getBackground() );
   }
@@ -478,7 +478,7 @@ public class TableItem_Test extends TestCase {
     item.setForeground( 0, null );
     assertEquals( rowForeground, item.getForeground( 0 ) );
 
-    // Resetting item font returns the tables' font
+    // Resetting item foreground returns the tables' foreground
     item.setForeground( null );
     assertEquals( table.getForeground(), item.getForeground() );
   }

@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
@@ -177,9 +178,11 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      data[ index ].text = text;
-      markCached();
-      parent.redraw();
+      if( !text.equals( data[ index ].text ) ) {
+        data[ index ].text = text;
+        markCached();
+        parent.redraw();
+      }
     }
   }
 
@@ -269,11 +272,13 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      parent.updateColumnImageCount( index, data[ index ].image, image );
-      data[ index ].image = image;
-      parent.updateItemImageSize( image );
-      markCached();
-      parent.redraw();
+      if( !equals( data[ index].image, image ) ) {
+        parent.updateColumnImageCount( index, data[ index ].image, image );
+        data[ index ].image = image;
+        parent.updateItemImageSize( image );
+        markCached();
+        parent.redraw();
+      }
     }
   }
 
@@ -358,7 +363,7 @@ public class TableItem extends Item {
    */
   public void setBackground( final Color color ) {
     checkWidget();
-    if( background != color ) {
+    if( !equals( background, color ) ) {
       background = color;
       markCached();
       parent.redraw();
@@ -410,9 +415,12 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      data[ index ].background = color;
-      markCached();
-      parent.redraw();
+      if( !equals( data[index].background, color ) ) {
+System.out.println( "setBackground: " + index + " " + color );        
+        data[ index ].background = color;
+        markCached();
+        parent.redraw();
+      }
     }
   }
 
@@ -464,7 +472,7 @@ public class TableItem extends Item {
    */
   public void setForeground( final Color color ) {
     checkWidget();
-    if( foreground != color ) {
+    if( !equals( foreground, color ) ) {
       foreground = color;
       markCached();
       parent.redraw();
@@ -516,9 +524,11 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      data[ index ].foreground = color;
-      markCached();
-      parent.redraw();
+      if( !equals( data[ index ].foreground, color ) ) {
+        data[ index ].foreground = color;
+        markCached();
+        parent.redraw();
+      }
     }
   }
 
@@ -568,7 +578,7 @@ public class TableItem extends Item {
    */
   public void setFont( final Font font ) {
     checkWidget();
-    if( this.font != font ) {
+    if( !equals( this.font, font ) ) {
       this.font = font;
       markCached();
       parent.redraw();
@@ -621,9 +631,11 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      data[ index ].font = font;
-      markCached();
-      parent.redraw();
+      if( !equals( font, data[ index ].font ) ) {
+        data[ index ].font = font;
+        markCached();
+        parent.redraw();
+      }
     }
   }
 
@@ -1027,6 +1039,18 @@ public class TableItem extends Item {
     if( data[ index ] == null ) {
       data[ index ] = new Data();
     }
+  }
+  
+  private static boolean equals( final Object object1, final Object object2 ) {
+    boolean result;
+    if( object1 == object2 ) {
+      result = true;
+    } else if( object1 == null ) {
+      result = false;
+    } else {
+      result = object1.equals( object2 );
+    }
+    return result;
   }
 
   private static Table checkNull( final Table table ) {
