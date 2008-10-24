@@ -182,8 +182,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             + ";";
         }
         // Foreground and background color
-        if( parent.getEnabled() && !parent._isItemSelected( this._getIndex() ) )
-        {
+        if( this._drawColors() ) {
           if( this._foregrounds && this._foregrounds[ i ] ) {
             foreground
               = org.eclipse.swt.widgets.TableItem.FOREGROUND 
@@ -196,12 +195,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
               + ";";
           }
           if( this._backgrounds && this._backgrounds[ i ] ) {
-            background 
+            background
               = org.eclipse.swt.widgets.TableItem.BACKGROUND 
               + this._backgrounds[ i ] 
               + ";";
-          } 
+          }
         }
+this.debug( this._texts[ i ] + " -> " + background );        
         // Draw image
         if( this._images && this._images[ i ] ) {
           left = parent.getItemImageLeft( i );
@@ -221,6 +221,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         }
       }
       return markup.join( "" );
+    },
+    
+    _drawColors : function() {
+      var enabled = this._parent.getEnabled();
+      var selected = this._parent._isItemSelected( this._getIndex() );
+      return enabled && ( this._parent._hideSelection || !selected );
     },
     
     _getImageMarkup : function( image, left, width, background ) {
