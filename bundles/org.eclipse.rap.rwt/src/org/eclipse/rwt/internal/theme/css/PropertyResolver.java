@@ -146,8 +146,7 @@ public final class PropertyResolver {
       result = ThemeDefinitionReader.TYPE_BOXDIMENSIONS;
     } else if( "color".equals( property )
         || "background-color".equals( property )
-        || ( property.startsWith( "rwt-" )
-            && property.endsWith( "-color" ) ) )
+        || property.endsWith( "-color" ) )
     {
       result = ThemeDefinitionReader.TYPE_COLOR;
     } else if( "font".equals( property ) ) {

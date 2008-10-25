@@ -265,6 +265,10 @@ public class PropertyResolver_Test extends TestCase {
   public void testGetType() throws Exception {
     assertEquals( "color", PropertyResolver.getType( "color" ) );
     assertEquals( "color", PropertyResolver.getType( "background-color" ) );
+    assertEquals( "color",
+                  PropertyResolver.getType( "background-gradient-color" ) );
+    assertEquals( "color",
+                  PropertyResolver.getType( "rwt-selectionmarker-color" ) );
     assertEquals( "border", PropertyResolver.getType( "border" ) );
     assertEquals( "font", PropertyResolver.getType( "font" ) );
     assertEquals( "boxdim", PropertyResolver.getType( "padding" ) );
