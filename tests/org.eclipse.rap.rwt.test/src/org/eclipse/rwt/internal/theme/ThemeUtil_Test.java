@@ -38,6 +38,25 @@ public class ThemeUtil_Test extends TestCase {
     }
   }
 
+  public void testGetTheme() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    Theme defTheme = ThemeUtil.getDefaultTheme();
+    assertNotNull( defTheme );
+    Theme currentTheme = ThemeUtil.getTheme();
+    assertNotNull( currentTheme );
+    assertSame( defTheme, currentTheme );
+    String validThemeId = "test.valid.theme";
+    String themeName = "Valid Test Theme";
+    String themeFile = "resources/theme/theme-valid.properties";
+    manager.registerTheme( validThemeId, themeName, themeFile, LOADER );
+    ThemeUtil.setCurrentThemeId( validThemeId );
+    assertSame( defTheme, ThemeUtil.getDefaultTheme() );
+    Theme customTheme = ThemeUtil.getTheme();
+    assertNotSame( defTheme, customTheme );
+    assertEquals( themeName, customTheme.getName() );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakeNewRequest();
