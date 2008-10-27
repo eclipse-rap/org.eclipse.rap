@@ -32,10 +32,13 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     IThemeAdapter themeAdapter;
+    String elementName;
     // Control
     themeAdapter = themeManager.getThemeAdapter( Control.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof IControlThemeAdapter );
+    elementName = ( ( AbstractThemeAdapter )themeAdapter ).getPrimaryElement();
+    assertEquals( "Control", elementName );
     // List
     themeAdapter = themeManager.getThemeAdapter( List.class );
     assertNotNull( themeAdapter );
@@ -44,10 +47,14 @@ public class ThemeManager_Test extends TestCase {
     themeAdapter = themeManager.getThemeAdapter( Button.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof ButtonThemeAdapter );
+    elementName = ( ( AbstractThemeAdapter )themeAdapter ).getPrimaryElement();
+    assertEquals( "Button", elementName );
     // Shell
     themeAdapter = themeManager.getThemeAdapter( Shell.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof ShellThemeAdapter );
+//    elementName = ( ( AbstractThemeAdapter )themeAdapter ).getMainElement();
+//    assertEquals( "Shell", elementName );
   }
 
   public void testReset() throws Exception {
@@ -240,7 +247,7 @@ public class ThemeManager_Test extends TestCase {
     Theme defTheme = manager.getTheme( manager.getDefaultThemeId() );
     ThemeCssValuesMap valuesMap = defTheme.getValuesMap();
     assertNotNull( valuesMap );
-    
+
     String themeId = "custom";
     String themeFile = "resources/theme/TestExample.css";
     manager.registerTheme( themeId, "Custom Theme", themeFile, LOADER );

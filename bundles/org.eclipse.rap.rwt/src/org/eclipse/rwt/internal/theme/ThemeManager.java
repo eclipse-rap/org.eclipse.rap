@@ -12,6 +12,8 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -21,7 +23,6 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.css.*;
-import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
@@ -263,6 +264,7 @@ public final class ThemeManager {
       themes.put( PREDEFINED_THEME_ID,
                   new ThemeWrapper( predefinedTheme, themeCount++ ) );
       initialized = true;
+      initThemeAdapters();
       logRegisteredThemeAdapters();
     }
   }
@@ -748,6 +750,17 @@ public final class ThemeManager {
     return result;
   }
 
+  private void initThemeAdapters() {
+    ThemeableWidget[] widgets = themeableWidgets.getAll();
+    for( int i = 0; i < widgets.length; i++ ) {
+      ThemeableWidget widget = widgets[ i ];
+      IThemeAdapter adapter = ( IThemeAdapter )adapters.get( widget.widget );
+      if( adapter instanceof AbstractThemeAdapter ) {
+        ( ( AbstractThemeAdapter )adapter ).init( widget );
+      }
+    }
+  }
+
   /**
    * Creates and registers all JavaScript theme files and images for a given
    * theme.
@@ -1082,7 +1095,7 @@ public final class ThemeManager {
     sb.append( " );\n" );
     sb.append( "delete ts;\n" );
     return sb.toString();
-  }  
+  }
 
   /**
    * Returns theme properties as array.

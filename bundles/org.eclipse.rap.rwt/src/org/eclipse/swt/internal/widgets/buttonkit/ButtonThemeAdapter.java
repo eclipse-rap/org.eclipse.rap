@@ -8,87 +8,32 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
+import org.eclipse.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Control;
 
 
-public final class ButtonThemeAdapter implements IControlThemeAdapter {
+public final class ButtonThemeAdapter extends ControlThemeAdapter {
 
   private static final Point CHECK_SIZE = new Point( 13, 13 );
   private static final int CHECK_SPACING = 4;
 
-  public Color getForeground( final Control control ) {
-    int style = control.getStyle();
-    Button button = ( Button )control;
-    String key;
-    if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      key = "button.CHECK.foreground";
-    } else if( ( style & ( SWT.FLAT & SWT.TOGGLE ) ) != 1
-               && button.getSelection() )
-    {
-      key = "button.FLAT.pressed.foreground";
-    } else {
-      key = "button.foreground";
-    }
-    return ThemeAdapterUtil.getColor( control, key );
-  }
-
-  public Color getBackground( final Control control ) {
-    int style = control.getStyle();
-    Button button = ( Button )control;
-    String key;
-    if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      key = "button.CHECK.background";
-    } else if( ( style & ( SWT.FLAT & SWT.TOGGLE ) ) != 1
-               && button.getSelection() )
-    {
-      key = "button.FLAT.pressed.background";
-    } else {
-      key = "button.background";
-    }
-    return ThemeAdapterUtil.getColor( control, key );
-  }
-
-  public Font getFont( final Control control ) {
-    String key;
-    if( ( control.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
-      key = "button.font";
-    } else {
-      key = "widget.font";
-    }
-    return ThemeAdapterUtil.getFont( control, key );
-  }
-
-  public int getBorderWidth( final Control control ) {
-    String key;
-    if( ( control.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
-      if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
-        key = "button.BORDER.border";
-      } else if( ( control.getStyle() & SWT.FLAT ) != 0 ) {
-        key = "button.FLAT.border";
-      } else {
-        key = "button.border";
-      }
-    } else {
-      if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
-        key = "control.BORDER.border";
-      } else {
-        key = "control.border";        
-      }
-    }
-    return ThemeAdapterUtil.getBorderWidth( control, key );
+  protected void configureMatcher( final WidgetMatcher matcher ) {
+    super.configureMatcher( matcher );
+    matcher.addStyle( "FLAT", SWT.FLAT );
+    matcher.addStyle( "PUSH", SWT.PUSH );
+    matcher.addStyle( "TOGGLE", SWT.TOGGLE );
+    matcher.addStyle( "CHECK", SWT.CHECK );
+    matcher.addStyle( "RADIO", SWT.RADIO );
   }
 
   public Rectangle getPadding( final Button button ) {
-    Rectangle result
-      = ThemeAdapterUtil.getBoxDimensions( button, "button.padding" );
+    Rectangle result = getCssBoxDimensions( getPrimaryElement(), "padding", button );
     // TODO [rst] Additional padding for PUSH and TOGGLE buttons, remove when
     //            CSS theming is in place
     if( ( button.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
@@ -101,7 +46,7 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
   }
 
   public int getSpacing( final Button button ) {
-    return ThemeAdapterUtil.getDimension( button, "button.spacing" );
+    return getCssDimension( getPrimaryElement(), "spacing", button );
   }
 
   public Point getCheckSize() {

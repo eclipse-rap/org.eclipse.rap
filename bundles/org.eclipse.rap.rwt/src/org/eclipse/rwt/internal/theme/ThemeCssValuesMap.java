@@ -48,7 +48,12 @@ public class ThemeCssValuesMap {
   public ConditionalValue[] getValues( final String elementName,
                                        final String propertyName )
   {
-    return ( ConditionalValue[] )map.get( getKey( elementName, propertyName ) );
+    ConditionalValue[] result;
+    result = ( ConditionalValue[] )map.get( getKey( elementName, propertyName ) );
+    if( result == null ) {
+      result = ( ConditionalValue[] )map.get( getKey( "*", propertyName ) );
+    }
+    return result;
   }
 
   private ConditionalValue[] filterValues( final ConditionalValue[] values,
