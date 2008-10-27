@@ -30,18 +30,30 @@
   <element name="ProgressBar"
       description="Progress bar controls">
 
-    <property name="background-color"/>
+    <property name="background-color"
+        type="color"
+        description="Background color"
+        />
 
-    <property name="background-image"/>
-
-  </element>
-
-  <element name="ProgressBar-Indicator"
-      description="The movable bar that indicates the progress">
-
-    <property name="background-color"/>
-
-    <property name="background-image"/>
+    <property name="background-image"
+        type="image"
+        description="Background image for progress bars"
+        />
+        
+    <element name="ProgressBar-Indicator"
+        description="The movable bar that indicates the progress">
+  
+      <property name="background-color"
+          type="color"
+          description="Background color"
+          />
+  
+      <property name="background-image"
+          type="image"
+          description="Background image for progress indicatior"
+          />
+  
+    </element>
 
   </element>
 

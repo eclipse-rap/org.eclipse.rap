@@ -31,13 +31,24 @@
       description="Label controls">
 
     <property name="color"
-        states="hover"/>
+        type="color"
+        description="Label text color"/>
 
     <property name="background-color"
-        states="hover"/>
+        type="color"
+        description="Background color"/>
 
     <property name="border"
-        styles="BORDER"/>
+        type="border"
+        description="Label border"/>
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />
+
+    <state name="hover"
+        description="On mouse over"
+        />    
 
   </element>
 

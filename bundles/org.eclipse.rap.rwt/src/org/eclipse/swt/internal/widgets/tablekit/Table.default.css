@@ -1,0 +1,35 @@
+/* Table default theme */
+
+Table {
+  color: black;
+  background-color: white;
+}
+
+TableItem:selected {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
+TableColumn {
+  background-color: rgb( 248, 248, 255 );
+}
+
+TableColumn:hover {
+  background-color: rgb( 248, 248, 255 );
+}
+
+TableColumn-SortIndicator:up {
+  background-image: url( resource/widget/rap/column/up.gif );
+}
+
+TableColumn-SortIndicator:down {
+  background-image: url( resource/widget/rap/column/down.gif );
+}
+
+Table-Gridline {
+  color: rgb( 238, 238, 238 );
+}
+
+Table-Checkbox {
+  width: 21px;
+}

@@ -30,32 +30,52 @@
   <element name="Group"
       description="Controls of type Group">
 
-    <property name="background-color"/>
+    <property name="background-color"
+        type="color"
+        description="Background color for group boxes"
+        />
 
-    <property name="margin"/>
+    <property name="margin"
+        type="boxdim"
+        description="Margin for group boxes (space between frame and parent)"
+        />
 
-    <property name="padding"/>
+    <property name="padding"
+        type="boxdim"
+        description="Padding for group boxes (space between frame and content)"
+        />
+        
+    <element name="Group-Frame"
+        description="The frame around the children of a group box">
 
-  </element>
+      <property name="border"
+          type="border"
+          description="Frame border for group boxes"
+          />
+    
+    </element>
+    
+    <element name="Group-Label"
+        description="The label of a group box">
 
-  <element name="Group-Frame"
-      description="The frame around the children of a group box">
-
-    <property name="border"/>
-
-  </element>
-
-  <element name="Group-Label"
-      description="The label of a group box">
-
-    <property name="padding"/>
-
-    <property name="margin"/>
-
-    <property name="font"/>
-
-  </element>
+      <property name="padding"
+          type="boxdim"
+          description="Padding for group box labels (defines space around group label text)"
+          />
   
+      <property name="margin"
+          type="boxdim"
+          description="Margin for group box labels (defines offset of the group label)"
+          />
+  
+      <property name="font"
+          type="font"
+          description="Font for group box labels"
+          />
+
+    </element> 
+
+  </element>  
 
   <!-- C O M P A T I B I L I T Y
 

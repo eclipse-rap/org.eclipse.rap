@@ -31,72 +31,158 @@
       description="Controls of type Shell (the window in SWT)">
 
     <property name="border"
-        styles="BORDER"/>
+        type="border"
+        description="Border for shells without BORDER and TITLE style"
+        />
 
-    <property name="padding"/>
-
-    <property name="background-color"
-        states="inactive"/>
-
-  </element>
-
-  <element name="Shell-Titlebar"
-      description="The window titlebar">
-
-    <property name="color"
-        states="inactive"/>
+    <property name="padding"
+        type="boxdim"
+        description="Padding around the shell client area"
+        />
 
     <property name="background-color"
-        description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND and SWT.COLOR_TITLE_INACTIVE_BACKGROUND"
-        states="inactive"/>
-
-    <property name="background-gradient-color"
         type="color"
-        description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT"
-        states="inactive"/>
+        description="Background color for Shells"
+        />
+    
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />
+        
+    <style name="TITLE"
+        description="Style constant for titled behavior."
+        />    
+        
+    <state name="inactive"
+        description="On inactive shell"
+        />
+    
+    <element name="Shell-Titlebar"
+        description="The window titlebar">
+  
+      <property name="color"
+          type="color"
+          description="Text color for the title bar of active Shells"
+          />
+  
+      <property name="background-color"
+          type="color"
+          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND and SWT.COLOR_TITLE_INACTIVE_BACKGROUND"
+          />
+  
+      <property name="background-gradient-color"
+          type="color"
+          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT"
+          />
+  
+      <property name="background-image"
+          type="image"
+          description="Background image for title bar of active Shells"
+          />
+  
+      <property name="font"
+          type="font"
+          description="Font for title bar of Shells"
+          />
+  
+      <property name="padding"
+          type="boxdim"
+          description="Padding of the title bar of shells"
+          />
+  
+      <property name="height"
+          type="dimension"
+          description="Height of the title bar of Shells"
+          />
+          
+      <state name="inactive"
+          description="On inactive shell"
+          />    
+  
+    </element>
+    
+    <element name="Shell-MinButton"
+        description="The minimize button of a window">
+  
+      <property name="margin"
+           type="boxdim"
+           description="Margin for the min buttons on shells"
+           />
+  
+      <property name="background-image"
+          type="image"
+          description="Image for minimize button on shells"
+          />
+      
+      <state name="maximized"
+          description="On maximized shell"
+          />
+              
+      <state name="inactive"
+          description="On inactive shell"
+          />
+          
+      <state name="hover"
+          description="On mouse over"
+          />        
+  
+    </element>
+    
+    <element name="Shell-MaxButton"
+        description="The maximize button of a window">
+  
+      <property name="margin"
+          type="boxdim"
+          description="Margin for the max buttons on shells"
+          />
+  
+      <property name="background-image"
+          type="image"
+          description="Image for maximize button on shells"
+          />
+          
+      <state name="maximized"
+          description="On maximized shell"
+          />
+              
+      <state name="inactive"
+          description="On inactive shell"
+          />
+          
+      <state name="hover"
+          description="On mouse over"
+          />       
+  
+    </element>
+    
+    <element name="Shell-CloseButton"
+        description="The close button of a window">
+  
+      <property name="margin"
+          type="boxdim"
+          description="Margin for the close buttons on shells"
+          />
+  
+      <property name="background-image"
+          type="image"
+          description="Image for close button on shells"
+          />
+          
+      <state name="maximized"
+          description="On maximized shell"
+          />
+              
+      <state name="inactive"
+          description="On inactive shell"
+          />
+          
+      <state name="hover"
+          description="On mouse over"
+          />       
+  
+    </element>
 
-    <property name="background-image"
-        states="inactive"/>
-
-    <property name="font"/>
-
-    <property name="padding"/>
-
-    <property
-        name="height"
-        type="dimension"/>
-
-  </element>
-
-  <element name="Shell-MinButton"
-      description="The minimize button of a window">
-
-    <property name="margin"/>
-
-    <property name="background-image"
-        states="maximized inactive hover"/>
-
-  </element>
-
-  <element name="Shell-MaxButton"
-      description="The maximize button of a window">
-
-    <property name="margin"/>
-
-    <property name="background-image"
-        states="maximized inactive hover"/>
-
-  </element>
-
-  <element name="Shell-CloseButton"
-      description="The close button of a window">
-
-    <property name="margin"/>
-
-    <property name="background-image"
-        states="maximized inactive hover"/>
-
-  </element>
+  </element>  
 
   <!-- C O M P A T I B I L I T Y
 

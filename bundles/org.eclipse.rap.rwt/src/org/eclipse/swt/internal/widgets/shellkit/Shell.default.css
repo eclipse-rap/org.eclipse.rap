@@ -1,0 +1,92 @@
+/* Shell default theme */
+
+Shell {
+  border: 1px black;
+  background-color: rgb( 248, 248, 255 );
+}
+
+Shell[BORDER] {
+  border: 2px outset;
+}
+
+Shell[TITLE] {
+  padding: 0px;
+}
+
+Shell-Titlebar {
+  background-color: rgb( 0, 128, 192 );
+  background-gradient-color: rgb( 0, 128, 192 );
+  color: white;
+  font: 11px bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif
+  height: 18px;
+  margin: 0px 0px 1px;
+  padding: 1px 2px;
+  background-image: url( resource/widget/rap/window/caption_active.gif );
+}
+
+Shell-Titlebar:inactive {
+  background-color: rgb( 121, 150, 165 );
+  background-gradient-color: rgb( 121, 150, 165 );
+  color: rgb( 221, 221, 221 );
+  background-image: url( resource/widget/rap/window/caption_inactive.gif );
+}
+
+Shell-MinButton, Shell-MaxButton, Shell-CloseButton {
+  margin: 2px 0px 2px 1px;
+}
+
+Shell-MinButton {
+  background-image: url( resource/widget/rap/window/minimize.png );
+}
+
+Shell-MinButton:hover {
+  background-image: url( resource/widget/rap/window/minimize.over.png );
+}
+
+Shell-MinButton:inactive {
+  background-image: url( resource/widget/rap/window/minimize.inactive.png );
+}
+
+Shell-MinButton:inactive:hover {
+  background-image: url( resource/widget/rap/window/minimize.inactive.over.png );
+}
+
+Shell-MaxButton {
+  background-image: url( resource/widget/rap/window/maximize.png );
+}
+
+Shell-MaxButton:hover {
+  background-image: url( resource/widget/rap/window/maximize.over.png );
+}
+
+Shell-MaxButton:inactive {
+  background-image: url( resource/widget/rap/window/maximize.inactive.png );
+}
+
+Shell-MaxButton:inactive:hover {
+  background-image: url( resource/widget/rap/window/maximize.inactive.over.png );
+}
+
+Shell-MaxButton:maximized {
+  background-image: url( resource/widget/rap/window/restore.png );
+}
+
+Shell-MaxButton:maximized:hover {
+  background-image: url( resource/widget/rap/window/restore.over.png );
+}
+
+Shell-CloseButton {
+  background-image: url( resource/widget/rap/window/close.png );
+}
+
+Shell-CloseButton:hover {
+  background-image: url( resource/widget/rap/window/close.over.png );
+}
+
+Shell-CloseButton:inactive {
+  background-image: url( resource/widget/rap/window/close.inactive.png );
+}
+
+Shell-CloseButton:inactive:hover {
+  background-image: url( resource/widget/rap/window/close.inactive.over.png );
+}

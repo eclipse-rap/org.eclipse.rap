@@ -1,0 +1,27 @@
+/* Tree default theme */
+
+Tree {
+  color: black;
+  background-color: white;
+}
+
+TreeItem:selected {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
+TreeColumn {
+  background-color: rgb( 248, 248, 255 );
+}
+
+TreeColumn:hover {
+  background-color: rgb( 248, 248, 255 );
+}
+
+TreeColumn-SortIndicator:up {
+  background-image: url( resource/widget/rap/column/up.gif );
+}
+
+TreeColumn-SortIndicator:down {
+  background-image: url( resource/widget/rap/column/down.gif );
+}

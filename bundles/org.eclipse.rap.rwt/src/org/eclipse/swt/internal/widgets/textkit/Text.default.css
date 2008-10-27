@@ -1,0 +1,15 @@
+/* Text default theme */
+
+Text {
+  border: none;
+  background-color: white;
+  color: black;
+}
+
+Text[BORDER] {
+  border: 1px inset;
+}
+
+Text[SINGLE] {
+  padding: 2px 3px;
+}

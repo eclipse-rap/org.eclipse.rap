@@ -31,10 +31,26 @@
       description="Single-line and multi-line text widgets">
 
     <property name="border"
-        styles="BORDER"/>
+        type="border"
+        description="Border for text fields. Also used for spinner widget."
+        />
 
     <property name="padding"
-        styles="SINGLE MULTI"/>
+        type="boxdim"
+        description="Padding for single-line text fields. Also used for spinner."
+        />
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />
+        
+    <style name="SINGLE"
+        description="Style constant for single line text field behavior."
+        />
+        
+    <style name="MULTI"
+        description="Style constant for multy line text area behavior."
+        />          
 
   </element>
 

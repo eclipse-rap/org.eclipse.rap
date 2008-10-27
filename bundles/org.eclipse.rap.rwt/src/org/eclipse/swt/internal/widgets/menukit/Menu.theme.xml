@@ -31,24 +31,68 @@
   <element name="Menu"
       description="Menus">
 
-    <property name="color"/>
-
-    <property name="background-color"/>
-
-    <property name="border"/>
-
-    <property name="padding"/>
-
-  </element>
-
-  <element name="MenuItem"
-      description="Menu items">
-
     <property name="color"
-        states="hover"/>
+        type="color"
+        description="Menu text color"
+        />
 
     <property name="background-color"
-        states="hover"/>
+        type="color"
+        description="Background color"
+        />
+
+    <property name="border"
+        type="border"
+        description="Menu border"
+        />
+
+    <property name="padding"
+        type="box"
+        description="Space between border and text / image"
+        />
+    
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />
+        
+    <element name="MenuItem"
+        description="Menu items">
+  
+      <property name="color"
+          type="color"
+          description="Menu item text color"
+          />
+  
+      <property name="background-color"
+          type="color"
+          description="Background color"
+          />
+      
+      <style name="PUSH"
+          description="Style constant for push menu item behavior."
+          />
+  
+      <style name="CHECK"
+          description="Style constant for check box menu item behavior."
+          />
+  
+      <style name="RADIO"
+          description="Style constant for radio button menu item behavior."
+          />
+      
+      <style name="SEPARATOR"
+          description="Style constant for separator menu item behavior."
+          />
+      
+      <style name="CASCADE"
+          description="Style constant for cascade menu item behavior."
+          />
+      
+      <state name="hover"
+          description="On mouse over"
+          />     
+  
+    </element>          
 
   </element>
 

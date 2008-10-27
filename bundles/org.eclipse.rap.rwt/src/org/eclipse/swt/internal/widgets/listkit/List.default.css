@@ -1,0 +1,16 @@
+/* List default theme */
+
+List {
+  background-color: white;
+  color: black;  
+}
+
+List-Item:selected {
+  background-color: rgb( 49, 106, 197 );
+  color: white;
+}
+
+List-Item:selected:inactive {
+  background-color: rgb( 192, 192, 192 );
+  color: white;
+}

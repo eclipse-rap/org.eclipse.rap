@@ -31,7 +31,17 @@
       description="Items of TabFolder controls (don't mix up with CTabFolder)">
 
     <property name="background-color"
-        states="selected hover"/>
+        type="color"
+        description="Background color for TabFolder headers"
+        />
+        
+    <state name="selected"
+        description="On tab item selection"
+        />    
+    
+    <state name="hover"
+        description="On mouse over"
+        />
 
   </element>
 

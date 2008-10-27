@@ -30,22 +30,42 @@
   <element name="List"
       description="List elements">
 
-    <property name="color"/>
-
-    <property name="background-color"/>
-
-  </element>
-
-  <element name="List-Item"
-      description="Item elements of List controls">
-
     <property name="color"
-        states="selected inactive"/>
+        type="color"
+        description="List text color"
+        />
 
     <property name="background-color"
-        states="selected inactive"/>
+        type="color"
+        description="Background color"
+        />
+        
+    <element name="List-Item"
+        description="Item elements of List controls">
+  
+      <property name="color"
+          type="color"
+          description="List item text color"
+          />
+  
+      <property name="background-color"
+          type="color"
+          description="Background color"
+          />
+      
+      <state name="selected"
+          description="On selection"
+          />
+      
+      <state name="inactive"
+          description="On inactive item"
+          />          
+  
+    </element>    
 
   </element>
+
+  
 
   <!-- C O M P A T I B I L I T Y
 

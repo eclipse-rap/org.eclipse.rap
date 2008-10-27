@@ -30,20 +30,34 @@
   <element name="ToolBar"
       description="Tool bar controls">
 
-    <property name="color"/>
-
-    <property name="background-color"/>
-
-  </element>
-
-  <element name="ToolItem"
-      description="Items of ToolBar controls">
-
     <property name="color"
-        states="hover"/>
+        type="color"
+        description="Text color for tool bar"
+        />
 
     <property name="background-color"
-        states="hover"/>
+        type="color"
+        description="Background color for tool bar"
+        />
+        
+    <element name="ToolItem"
+        description="Items of ToolBar controls">
+  
+      <property name="color"
+          type="color"
+          description="Text color for tool bar items"
+          />
+  
+      <property name="background-color"
+          type="color"
+          description="Background color for tool bar items"
+          />
+          
+      <state name="hover"
+          description="Mouse over state"
+          />    
+  
+    </element>    
 
   </element>
 
