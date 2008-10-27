@@ -28,35 +28,42 @@
     -->
 
   <!-- TODO [rst] Does a "*" element makes sense? -->
-  <!--element name="*"
+  <element name="*"
       description="All elements">
 
-    <property name="color"
-        states="disabled"/>
+    <property name="color"/>
 
     <property name="background-color"/>
 
     <property name="font"/>
 
+    <property name="border"/>
+
     <property name="rwt-shadow-color"
+        type="color"
         description="Color used to draw (outer) shadow line in 3d borders"/>
 
     <property name="rwt-highlight-color"
+        type="color"
         description="Color used to draw (outer) highlight line in 3d borders"/>
 
     <property name="rwt-darkshadow-color"
+        type="color"
         description="Color used to draw (inner) shadow line in 3d borders"/>
 
     <property name="rwt-lightshadow-color"
+        type="color"
         description="Color used to draw (inner) highlight line in 3d borders"/>
 
     <property name="rwt-thinborder-color"
+        type="color"
         description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."/>
 
     <property name="rwt-selectionmarker-color"
+        type="color"
         description="Color used to mark selected items like TreeColumns and TabViews"/>
 
-  </element-->
+  </element>
 
   <element name="ToolTip"
       description="Tooltips">
