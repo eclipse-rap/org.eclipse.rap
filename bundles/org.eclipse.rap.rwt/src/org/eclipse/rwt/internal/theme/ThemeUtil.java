@@ -78,6 +78,11 @@ public final class ThemeUtil {
     return ThemeManager.getInstance().getTheme( getCurrentThemeId() );
   }
 
+  public static Theme getDefaultTheme() {
+    ThemeManager themeManager = ThemeManager.getInstance();
+    return themeManager.getTheme( themeManager.getDefaultThemeId() );
+  }
+
   private ThemeUtil() {
     // prevent instantiation
   }

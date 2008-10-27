@@ -64,8 +64,7 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
                                final String cssProperty,
                                final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( "Button", "color" );
-    QxColor color = ( QxColor )matcher.select( values, widget );
+    QxColor color = ( QxColor )getCssValue( cssElement, cssProperty, widget );
     return QxColor.createColor( color );
   }
 
@@ -73,8 +72,7 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
                              final String cssProperty,
                              final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
-    QxFont font = ( QxFont )matcher.select( values, widget );
+    QxFont font = ( QxFont )getCssValue( cssElement, cssProperty, widget );
     return QxFont.createFont( font );
   }
 
@@ -82,8 +80,7 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
                                    final String cssProperty,
                                    final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
-    QxBorder border = ( QxBorder )matcher.select( values, widget );
+    QxBorder border = ( QxBorder )getCssValue( cssElement, cssProperty, widget );
     return border.width;
   }
 
@@ -91,8 +88,8 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
                                  final String cssProperty,
                                  final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
-    QxDimension dim = ( QxDimension )matcher.select( values, widget );
+    QxDimension dim
+      = ( QxDimension )getCssValue( cssElement, cssProperty, widget );
     return dim.value;
   }
 
@@ -100,17 +97,25 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
                                            final String cssProperty,
                                            final Widget widget )
   {
-    ConditionalValue[] values = getCssValues( cssElement, cssProperty );
-    QxBoxDimensions boxdim = ( QxBoxDimensions )matcher.select( values, widget );
+    QxBoxDimensions boxdim
+      = ( QxBoxDimensions )getCssValue( cssElement, cssProperty, widget );
     return QxBoxDimensions.createRectangle( boxdim );
   }
 
-  private static ConditionalValue[] getCssValues( final String cssElement,
-                                                  final String cssProperty )
+  private QxType getCssValue( final String cssElement,
+                              final String cssProperty,
+                              final Widget widget )
   {
     Theme theme = ThemeUtil.getTheme();
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
-    return values;
+    QxType result = matcher.select( values, widget );
+    if( result == null ) {
+      theme = ThemeUtil.getDefaultTheme();
+      valuesMap = theme.getValuesMap();
+      values = valuesMap.getValues( cssElement, cssProperty );
+      result = matcher.select( values, widget );
+    }
+    return result;
   }
 }
