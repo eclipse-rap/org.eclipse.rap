@@ -85,7 +85,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
 
     getCssBoxDimensions : function( element, key ) {
       var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getBoxDimensions[ tkey ];
+      return this.getBoxDimensions( tkey );
     },
 
     getBoxDimensions : function( key ) {
