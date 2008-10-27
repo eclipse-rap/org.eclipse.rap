@@ -416,7 +416,6 @@ public class TableItem extends Item {
     if( index >= 0 && index < count ) {
       ensureData( index, count );
       if( !equals( data[index].background, color ) ) {
-System.out.println( "setBackground: " + index + " " + color );        
         data[ index ].background = color;
         markCached();
         parent.redraw();
