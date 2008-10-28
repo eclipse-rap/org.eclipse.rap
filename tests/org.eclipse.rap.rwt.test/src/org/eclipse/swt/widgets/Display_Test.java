@@ -16,8 +16,10 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -232,6 +234,13 @@ public class Display_Test extends TestCase {
     Display display = new Display();
     Color systemColor = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
     assertNotNull( systemColor );
+    Color systemRed = display.getSystemColor( SWT.COLOR_RED );
+    assertEquals( 255, systemRed.getRed() );
+    assertEquals( 0, systemRed.getGreen() );
+    assertEquals( 0, systemRed.getBlue() );
+    Color red = Graphics.getColor( 255, 0, 0 );
+    assertEquals( red, systemRed );
+    assertSame( red, systemRed );
   }
   
   public void testAddAndRemoveFilter() {

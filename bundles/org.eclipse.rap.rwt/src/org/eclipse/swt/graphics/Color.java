@@ -75,19 +75,6 @@ public class Color extends Resource {
   }
 
   /**
-   * Compares the argument to the receiver, and returns true if they represent
-   * the <em>same</em> object using a class specific comparison.
-   *
-   * @param object the object to compare with this object
-   * @return <code>true</code> if the object is the same as this object and
-   *         <code>false</code> otherwise
-   * @see #hashCode
-   */
-  public boolean equals( final Object object ) {
-    return object == this;
-  }
-
-  /**
    * Returns the amount of blue in the color, from 0 to 255.
    *
    * @return the blue component of the color
@@ -141,6 +128,19 @@ public class Color extends Resource {
    */
   public RGB getRGB() {
     return new RGB( getRed(), getGreen(), getBlue() );
+  }
+
+  /**
+   * Compares the argument to the receiver, and returns true if they represent
+   * the <em>same</em> object using a class specific comparison.
+   *
+   * @param object the object to compare with this object
+   * @return <code>true</code> if the object is the same as this object and
+   *         <code>false</code> otherwise
+   * @see #hashCode
+   */
+  public boolean equals( final Object object ) {
+    return object == this;
   }
 
   /**

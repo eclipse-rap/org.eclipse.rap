@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.*;
 
 public final class ResourceFactory {
 
-  private final static Map colors = new HashMap();
+  private static final Map colors = new HashMap();
   private static final Map fonts = new HashMap();
   private static final Map images = new HashMap();
   private static final Map cursors = new HashMap();
@@ -61,19 +61,21 @@ public final class ResourceFactory {
   }
 
   /**
-   * <strong>Note:</strong> this is not a shortcut for
+   * <strong>Note:</strong> this is <em>not</em> a shortcut for
    * <code>getColor(int, int, int)</code>.
    *
    * @param value the integer value that represents the color internally
    */
-  public static synchronized Color getColor( final int value ) {
+  public static Color getColor( final int value ) {
     Color result;
     Integer key = new Integer( value );
-    if( colors.containsKey( key ) ) {
-      result = ( Color )colors.get( key );
-    } else {
-      result = createColorInstance( value );
-      colors.put( key, result );
+    synchronized( colors ) {
+      if( colors.containsKey( key ) ) {
+        result = ( Color )colors.get( key );
+      } else {
+        result = createColorInstance( value );
+        colors.put( key, result );
+      }
     }
     return result;
   }
