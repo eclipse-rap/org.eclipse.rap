@@ -44,61 +44,61 @@ public abstract class Device {
    */
   public Color getSystemColor( final int id ) {
     checkDevice();
-    // TODO [rh] the way colors are created here requires knowledge of the 
-    //      internal representation of a Color. Avoid this by using 
-    //      ResourceFactory#getColor(int,int,int)
-    int pixel = 0x000000;
+    Color result;
     switch( id ) {
       case SWT.COLOR_WHITE:
-        pixel = 0xFFFFFF;
+        result = ResourceFactory.getColor( 255, 255, 255 );
       break;
       case SWT.COLOR_BLACK:
-        pixel = 0x000000;
+        result = ResourceFactory.getColor( 0, 0, 0 );
       break;
       case SWT.COLOR_RED:
-        pixel = 0x0000FF;
+        result = ResourceFactory.getColor( 255, 0, 0 );
       break;
       case SWT.COLOR_DARK_RED:
-        pixel = 0x000080;
+        result = ResourceFactory.getColor( 128, 0, 0 );
       break;
       case SWT.COLOR_GREEN:
-        pixel = 0x00FF00;
+        result = ResourceFactory.getColor( 0, 255, 0 );
       break;
       case SWT.COLOR_DARK_GREEN:
-        pixel = 0x008000;
+        result = ResourceFactory.getColor( 0, 128, 0 );
       break;
       case SWT.COLOR_YELLOW:
-        pixel = 0x00FFFF;
+        result = ResourceFactory.getColor( 255, 255, 0 );
       break;
       case SWT.COLOR_DARK_YELLOW:
-        pixel = 0x008080;
+        result = ResourceFactory.getColor( 128, 128, 0 );
       break;
       case SWT.COLOR_BLUE:
-        pixel = 0xFF0000;
+        result = ResourceFactory.getColor( 0, 0, 255 );
       break;
       case SWT.COLOR_DARK_BLUE:
-        pixel = 0x800000;
+        result = ResourceFactory.getColor( 0, 0, 128 );
       break;
       case SWT.COLOR_MAGENTA:
-        pixel = 0xFF00FF;
+        result = ResourceFactory.getColor( 255, 0, 255 );
       break;
       case SWT.COLOR_DARK_MAGENTA:
-        pixel = 0x800080;
+        result = ResourceFactory.getColor( 128, 0, 128 );
       break;
       case SWT.COLOR_CYAN:
-        pixel = 0xFFFF00;
+        result = ResourceFactory.getColor( 0, 255, 255 );
       break;
       case SWT.COLOR_DARK_CYAN:
-        pixel = 0x808000;
+        result = ResourceFactory.getColor( 0, 128, 128 );
       break;
       case SWT.COLOR_GRAY:
-        pixel = 0xC0C0C0;
+        result = ResourceFactory.getColor( 192, 192, 192 );
       break;
       case SWT.COLOR_DARK_GRAY:
-        pixel = 0x808080;
+        result = ResourceFactory.getColor( 128, 128, 128 );
+      break;
+      default:
+        result = ResourceFactory.getColor( 0, 0, 0 );
       break;
     }
-    return ResourceFactory.getColor( pixel );
+    return result;
   }
 
   /**

@@ -60,13 +60,7 @@ public final class ResourceFactory {
     return getColor( colorNr );
   }
 
-  /**
-   * <strong>Note:</strong> this is <em>not</em> a shortcut for
-   * <code>getColor(int, int, int)</code>.
-   *
-   * @param value the integer value that represents the color internally
-   */
-  public static Color getColor( final int value ) {
+  private static Color getColor( final int value ) {
     Color result;
     Integer key = new Integer( value );
     synchronized( colors ) {

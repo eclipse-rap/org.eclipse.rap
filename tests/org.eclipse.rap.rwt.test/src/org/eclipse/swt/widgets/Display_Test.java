@@ -235,12 +235,43 @@ public class Display_Test extends TestCase {
     Color systemColor = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
     assertNotNull( systemColor );
     Color systemRed = display.getSystemColor( SWT.COLOR_RED );
-    assertEquals( 255, systemRed.getRed() );
-    assertEquals( 0, systemRed.getGreen() );
-    assertEquals( 0, systemRed.getBlue() );
     Color red = Graphics.getColor( 255, 0, 0 );
     assertEquals( red, systemRed );
     assertSame( red, systemRed );
+    assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
+    Color color;
+    color = display.getSystemColor( SWT.COLOR_BLACK );
+    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_BLUE );
+    assertEquals( new RGB( 0, 0, 255 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_CYAN );
+    assertEquals( new RGB( 0, 255, 255 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_BLUE );
+    assertEquals( new RGB( 0, 0, 128 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_CYAN );
+    assertEquals( new RGB( 0, 128, 128 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_GRAY );
+    assertEquals( new RGB( 128, 128, 128 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_GREEN );
+    assertEquals( new RGB( 0, 128, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_MAGENTA );
+    assertEquals( new RGB( 128, 0, 128 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_RED );
+    assertEquals( new RGB( 128, 0, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_DARK_YELLOW );
+    assertEquals( new RGB( 128, 128, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_GRAY );
+    assertEquals( new RGB( 192, 192, 192 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_GREEN );
+    assertEquals( new RGB( 0, 255, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_MAGENTA );
+    assertEquals( new RGB( 255, 0, 255 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_RED );
+    assertEquals( new RGB( 255, 0, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WHITE );
+    assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_YELLOW );
+    assertEquals( new RGB( 255, 255, 0 ), color.getRGB() );
   }
   
   public void testAddAndRemoveFilter() {
