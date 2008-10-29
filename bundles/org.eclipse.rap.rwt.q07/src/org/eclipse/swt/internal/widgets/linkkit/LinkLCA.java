@@ -56,17 +56,7 @@ public class LinkLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     Link link = ( Link )widget;
-    String eventId = JSConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
-      HttpServletRequest request = ContextProvider.getRequest();
-      String indexStr
-        = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
-      int index = Integer.parseInt( indexStr );
-      SelectionEvent event 
-        = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
-      event.text = getIdText( link, index );
-      event.processEvent();
-    }
+    processSelectionEvent( link );
     ControlLCAUtil.processMouseEvents( link );
     ControlLCAUtil.processKeyEvents( link );
   }
@@ -75,7 +65,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     Link link = ( Link )widget;
     JSWriter writer = JSWriter.getWriterFor( link );
     writer.newWidget( QX_TYPE );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );    
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
     Object[] args = new Object[] { widget };
     writer.callStatic( JS_FUNC_INIT, args );
     ControlLCAUtil.writeStyleFlags( link );
@@ -120,13 +110,6 @@ public class LinkLCA extends AbstractWidgetLCA {
       Object[] args = new Object[]{ link, newValue };
       writer.callStatic( JS_FUNC_SET_SELECTION_LISTENER, args );
     }
-  }
-
-  private String getIdText( final Link link, final int index ) {
-    ILinkAdapter adapter
-      = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
-    String[] ids = adapter.getIds();
-    return ids[ index ];
   }
 
   private void writeText( final Link link ) throws IOException {
@@ -187,5 +170,24 @@ public class LinkLCA extends AbstractWidgetLCA {
       new Integer( index )
     };
     writer.callStatic( JS_FUNC_ADD_LINK, args );
+  }
+
+  private static void processSelectionEvent( final Link link ) {
+    String eventId = JSConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( link, eventId ) ) {
+      HttpServletRequest request = ContextProvider.getRequest();
+      String indexStr
+        = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
+      int index = Integer.parseInt( indexStr );
+      ILinkAdapter adapter
+        = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
+      String[] ids = adapter.getIds();
+      if( index < ids.length ) {
+        SelectionEvent event
+          = new SelectionEvent( link, null, SelectionEvent.WIDGET_SELECTED );
+        event.text = ids[ index ];
+        event.processEvent();
+      }
+    }
   }
 }
