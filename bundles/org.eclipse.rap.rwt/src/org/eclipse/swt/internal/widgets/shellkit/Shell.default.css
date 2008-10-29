@@ -17,7 +17,7 @@ Shell-Titlebar {
   background-color: rgb( 0, 128, 192 );
   background-gradient-color: rgb( 0, 128, 192 );
   color: white;
-  font: 11px bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   height: 18px;
   margin: 0px 0px 1px;
   padding: 1px 2px;
