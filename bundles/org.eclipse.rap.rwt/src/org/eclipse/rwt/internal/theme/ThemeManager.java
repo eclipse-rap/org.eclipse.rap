@@ -1031,7 +1031,7 @@ public final class ThemeManager {
             = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
           String targetPath
             = prop != null && prop.targetPath != null ? prop.targetPath : key;
-          jsValue = JsonUtil.quoteString( targetPath );
+          jsValue = JsonUtil.toJson( targetPath );
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
@@ -1089,7 +1089,7 @@ public final class ThemeManager {
     StringBuffer sb = new StringBuffer();
     sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
     sb.append( "ts.setThemeCssValues( " );
-    sb.append( JsonUtil.quoteString( jsId ) );
+    sb.append( JsonUtil.toJson( jsId ) );
     sb.append( ", " );
     sb.append( mainObject.toString() );
     sb.append( " );\n" );

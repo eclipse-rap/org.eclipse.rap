@@ -16,26 +16,29 @@ import junit.framework.TestCase;
 
 public class JsonUtil_Test extends TestCase {
 
-  public void testQuoteString() throws Exception {
-    try {
-      JsonUtil.quoteString( null );
-      fail( "NPE expected" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
+  public void testStringToJson() throws Exception {
+    assertEquals( "null", JsonUtil.toJson( ( String )null ) );
     // empty string
-    assertEquals( "\"\"", JsonUtil.quoteString( "" ) );
+    assertEquals( "\"\"", JsonUtil.toJson( "" ) );
     // one char
-    assertEquals( "\"a\"", JsonUtil.quoteString( "a" ) );
+    assertEquals( "\"a\"", JsonUtil.toJson( "a" ) );
     // leading and trailing white spaces
-    assertEquals( "\" a b \"", JsonUtil.quoteString( " a b " ) );
+    assertEquals( "\" a b \"", JsonUtil.toJson( " a b " ) );
     // new line
-    assertEquals( "\"a\n\"", JsonUtil.quoteString( "a\n" ) );
+    assertEquals( "\"a\n\"", JsonUtil.toJson( "a\n" ) );
     // escape a\b -> "a\\b"
-    assertEquals( "\"a\\\\b\"", JsonUtil.quoteString( "a\\b" ) );
+    assertEquals( "\"a\\\\b\"", JsonUtil.toJson( "a\\b" ) );
     // escape a"b -> "a\"b"
-    assertEquals( "\"a\\\"b\"", JsonUtil.quoteString( "a\"b" ) );
+    assertEquals( "\"a\\\"b\"", JsonUtil.toJson( "a\"b" ) );
     // escape a\"b\" -> "a\\\"b\\\""
-    assertEquals( "\"a\\\\\\\"b\\\\\\\"\"", JsonUtil.quoteString( "a\\\"b\\\"" ) );
+    assertEquals( "\"a\\\\\\\"b\\\\\\\"\"", JsonUtil.toJson( "a\\\"b\\\"" ) );
+  }
+
+  public void testArrayToJson() throws Exception {
+    assertEquals( "null", JsonUtil.toJson( ( JsonArray )null ) );
+  }
+
+  public void testObjectToJson() throws Exception {
+    assertEquals( "null", JsonUtil.toJson( ( JsonObject )null ) );
   }
 }

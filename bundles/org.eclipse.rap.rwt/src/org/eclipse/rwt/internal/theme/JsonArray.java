@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 
@@ -25,16 +24,20 @@ public class JsonArray {
     buffer.append( "[" );
   }
 
+  public void append( final int value ) {
+    doAppend( String.valueOf( value ) );
+  }
+
   public void append( final String value ) {
-    doAppend( JsonUtil.quoteString( value ) );
+    doAppend( JsonUtil.toJson( value ) );
   }
 
   public void append( final JsonObject object ) {
-    doAppend( object.toString() );
+    doAppend( JsonUtil.toJson( object ) );
   }
 
   public void append( final JsonArray array ) {
-    doAppend( array.toString() );
+    doAppend( JsonUtil.toJson( array ) );
   }
 
   public String toString() {

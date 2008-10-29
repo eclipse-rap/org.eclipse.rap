@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 
@@ -25,24 +24,30 @@ public class JsonObject {
     buffer.append( "{" );
   }
 
+  public void append( final String key, final int value ) {
+    String keyStr = JsonUtil.toJson( key );
+    String valueStr = String.valueOf( value );
+    doAppend( keyStr, valueStr );
+  }
+
   public void append( final String key, final String value ) {
-    String keyStr = JsonUtil.quoteString( key );
-    String valueStr = JsonUtil.quoteString( value );
+    String keyStr = JsonUtil.toJson( key );
+    String valueStr = JsonUtil.toJson( value );
     doAppend( keyStr, valueStr );
   }
 
   public void append( final String key, final JsonObject object ) {
-    String keyStr = JsonUtil.quoteString( key );
-    String valueStr = object.toString();
+    String keyStr = JsonUtil.toJson( key );
+    String valueStr = JsonUtil.toJson( object );
     doAppend( keyStr, valueStr );
   }
 
   public void append( final String key, final JsonArray array ) {
-    String keyStr = JsonUtil.quoteString( key );
-    String valueStr = array.toString();
+    String keyStr = JsonUtil.toJson( key );
+    String valueStr = JsonUtil.toJson( array );
     doAppend( keyStr, valueStr );
   }
-  
+
   public String toString() {
     String tail = count == 0 ? "}" : "\n}";
     return buffer.toString() + tail;
