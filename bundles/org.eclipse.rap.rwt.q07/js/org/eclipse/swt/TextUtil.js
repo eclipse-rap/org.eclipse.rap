@@ -30,6 +30,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                                org.eclipse.swt.TextUtil._onAppearAddListener );
       }
       text.setLiveUpdate( true );
+      text.setSpellCheck( false );
     },
 
     /*

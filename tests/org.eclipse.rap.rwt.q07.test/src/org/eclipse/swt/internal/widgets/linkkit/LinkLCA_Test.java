@@ -213,10 +213,9 @@ public class LinkLCA_Test extends TestCase {
     // Selection event should not fire if index out of bounds (see bug 252354)
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    final Link link = new Link( shell, SWT.NONE );
+    Link link = new Link( shell, SWT.NONE );
     link.setText( "No Link" );
     link.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         fail( "Should not be fired" );
       }

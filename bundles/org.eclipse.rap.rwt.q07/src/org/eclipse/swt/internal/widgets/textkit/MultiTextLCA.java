@@ -12,8 +12,6 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.browser.Mozilla;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
@@ -44,7 +42,6 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.TextArea" );
     TextLCAUtil.writeInitialize( text );    
     ControlLCAUtil.writeStyleFlags( text );
-    writeNoSpellCheck( text );
     TextLCAUtil.writeWrap( text );
     TextLCAUtil.writeAlignment( text );
   }
@@ -76,16 +73,5 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
-  }
-
-  //////////////////
-  // Helping methods
-
-  // TODO [rst] Should be done on client side; also needed for Safari
-  private static void writeNoSpellCheck( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    if( ContextProvider.getBrowser() instanceof Mozilla ) {
-      writer.set( "spellCheck", false );
-    }
   }
 }
