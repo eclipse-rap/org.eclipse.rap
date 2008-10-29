@@ -261,43 +261,37 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
 
     _getTextMarkup : function( text, left, width, align, font, foreground, background ) {
-      var result;
-      if( text == "" ) {
-        result = "";
-      } else {
-        var border 
-          = this._parent.getLinesVisible() 
-          ? org.eclipse.swt.widgets.TableItem.LINE_BORDER 
-          : "";
-        var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
-        buffer.length = 0;
-        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_OPEN );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_OPEN );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TOP ); 
-          buffer.push( "0" );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-        buffer.push( org.eclipse.swt.widgets.TableItem.LEFT ); 
-          buffer.push( left ); 
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
-        buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH ); 
-          buffer.push( width );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-        buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT ); 
-          buffer.push( this._parent.getItemHeight() );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-        buffer.push( font );  
-        buffer.push( foreground );
-        buffer.push( background );
-        buffer.push( border );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_ALIGN ); 
-          buffer.push( align );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_CLOSE );
-        buffer.push( text );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_END );
-        result = buffer.join( "" );
-      }
-      return result;
+      var border 
+        = this._parent.getLinesVisible() 
+        ? org.eclipse.swt.widgets.TableItem.LINE_BORDER 
+        : "";
+      var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
+      buffer.length = 0;
+      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_OPEN );
+      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_OPEN );
+      buffer.push( org.eclipse.swt.widgets.TableItem.TOP ); 
+        buffer.push( "0" );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+      buffer.push( org.eclipse.swt.widgets.TableItem.LEFT ); 
+        buffer.push( left ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+      buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH ); 
+        buffer.push( width );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+      buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT ); 
+        buffer.push( this._parent.getItemHeight() );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+      buffer.push( font );  
+      buffer.push( foreground );
+      buffer.push( background );
+      buffer.push( border );
+      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_ALIGN ); 
+        buffer.push( align );
+      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE );
+      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_CLOSE );
+      buffer.push( text );
+      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_END );
+      return buffer.join( "" );;
     },
     
     _getIndex : function() {

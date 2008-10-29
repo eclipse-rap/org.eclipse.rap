@@ -1067,12 +1067,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._checkBoxes[ rowIndex ].setVisibility( false );
         }
       } else {
-        if( !this._hideSelection ) {
-          if( this._isItemSelected( itemIndex ) ) {
+        if( this._isItemSelected( itemIndex ) ) {
+          if( !this._hideSelection ) {
             row.addState( "selected" );
-          } else {
-            row.removeState( "selected" );
           }
+        } else {
+          row.removeState( "selected" );
         }
         if( this._focusIndex === itemIndex ) {
           row.addState( "itemFocused" );
