@@ -217,6 +217,7 @@ public class PropertyResolver_Test extends TestCase {
   }
 
   public void testFont() throws Exception {
+    // http://www.w3.org/TR/CSS21/fonts.html#font-shorthand
     String input1 = "9px Helvetica";
     QxFont exp1 = QxFont.create( new String[] { "Helvetica" }, 9, false, false );
     QxFont res1 = PropertyResolver.readFont( parseProperty( input1 ) );
@@ -235,12 +236,17 @@ public class PropertyResolver_Test extends TestCase {
     QxFont exp4 = QxFont.create( family4, 8, false, false );
     QxFont res4 = PropertyResolver.readFont( parseProperty( input4 ) );
     assertEquals( exp4, res4 );
+    // missing size
     String invalid1 = "Helvetica";
     assertNull( PropertyResolver.readFont( parseProperty( invalid1 ) ) );
     String invalid2 = "bold Helvetica";
     assertNull( PropertyResolver.readFont( parseProperty( invalid2 ) ) );
-    String invalid3 = "Helvetica 8px";
+    // missing family
+    String invalid3 = "8px";
     assertNull( PropertyResolver.readFont( parseProperty( invalid3 ) ) );
+    // wrong order
+    String invalid4 = "Helvetica 8px";
+    assertNull( PropertyResolver.readFont( parseProperty( invalid4 ) ) );
   }
 
   public void testBackgroundImage() throws Exception {
