@@ -31,6 +31,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
      * Returns the values container for a given theme. If no theme is given, the
      * values container for the current theme is returned. If the requested
      * values container does not exist, it is created.
+     * 
+     * TODO [rst] A theme value of "_" is used for shared CSS values. Later, the
+     * parameter can be dropped, as there will only be one values object.
      */
     getThemeValues : function( theme ) {
       if( theme == null ) {
@@ -42,7 +45,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           boxdims : {},
           booleans : {},
           images : {},
-          trcolors : {}
+          trcolors : {},
+          // === new types ===
+          fonts : {},
+          colors : {},
+          borders : {}
         };
       }
       return this._values[ theme ];
@@ -64,16 +71,67 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         values.images[ key ] = value;
       } else if ( type == "trcolor" ) {
         values.trcolors[ key ] = value;
+      // === new types ===
+      } else if ( type == "font" ) {
+        var font = new qx.ui.core.Font();
+        font.setSize( value.size );
+        font.setFamily( value.family );
+        font.setBold( value.bold );
+        font.setItalic( value.italic );
+        values.fonts[ key ] = font;
+      } else if ( type == "color" ) {
+        values.colors[ key ] = value;
+      } else if ( type == "border" ) {
+        var border = new qx.ui.core.Border( value.width, value.style );
+        if( value.color ) {
+          border.setUserData( "color", value.color );
+        }
+        if( value.innerColor ) {
+          border.setUserData( "innerColor", value.innerColor );
+        }
+        values.borders[ key ] = border;
       } else {
         this.error( "invalid type: " + type );
       }
     },
 
+    resolveBorderColors : function( theme ) {
+      var values = this.getThemeValues( theme );
+      for( var key in values.borders ) {
+        var border = values.borders[ key ];
+        var colorData = border.getUserData( "color" );
+        if( colorData != null ) {
+          var colors = [];
+          for( var i = 0; i < colorData.length; i++ ) {
+            if( colorData[ i ].charAt( 0 ) == "#" ) {
+              colors.push( colorData[ i ] );
+            } else {
+              colors.push( values.colors[ colorData[ i ] ] );
+            }
+          }
+          border.setColor( colors );
+          border.setUserData( "color", null );
+        }
+        var innerColorData = border.getUserData( "innerColor" );
+        if( innerColorData != null ) {
+          var innerColors = [];
+          for( var i = 0; i < innerColorData.length; i++ ) {
+            innerColors.push( values.colors[ colorData[ i ] ] );
+          }
+          border.setInnerColor( innerColors );
+          border.setUserData( "innerColor", null );
+        }
+      }
+    },
+
     // CSS SUPPORT
 
-    setThemeCssValues : function( theme, values ) {
+    setThemeCssValues : function( theme, values, isDefault ) {
       if( this._cssValues[ theme ] === undefined ) {
         this._cssValues[ theme ] = values;
+      }
+      if( isDefault ) {
+        this.defaultTheme = theme;
       }
     },
 
@@ -94,6 +152,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
             found = true;
           }
         }
+      }
+      if( result === undefined && theme != this.defaultTheme ) {
+        result = this.getCssValue( element, states, property, this.defaultTheme );
       }
       return result;
     },

@@ -302,8 +302,8 @@ public final class PropertyResolver {
     if( consumed ) {
       // TODO [rst] create should take a QxColor
       result = QxBorder.create( width == -1 ? 0 : width,
-                                            style,
-                                            color != null ? color.toDefaultString() : null );
+                                style,
+                                color != null ? color.toDefaultString() : null );
     }
     return result;
   }

@@ -25,27 +25,27 @@ public class JsonObject {
   }
 
   public void append( final String key, final int value ) {
-    String keyStr = JsonUtil.toJson( key );
-    String valueStr = String.valueOf( value );
-    doAppend( keyStr, valueStr );
+    doAppend( key, String.valueOf( value ) );
+  }
+
+  public void append( final String key, final boolean value ) {
+    doAppend( key, String.valueOf( value ) );
   }
 
   public void append( final String key, final String value ) {
-    String keyStr = JsonUtil.toJson( key );
-    String valueStr = JsonUtil.toJson( value );
-    doAppend( keyStr, valueStr );
+    doAppend( key, JsonUtil.toJson( value ) );
   }
 
   public void append( final String key, final JsonObject object ) {
-    String keyStr = JsonUtil.toJson( key );
-    String valueStr = JsonUtil.toJson( object );
-    doAppend( keyStr, valueStr );
+    doAppend( key, JsonUtil.toJson( object ) );
   }
 
   public void append( final String key, final JsonArray array ) {
-    String keyStr = JsonUtil.toJson( key );
-    String valueStr = JsonUtil.toJson( array );
-    doAppend( keyStr, valueStr );
+    doAppend( key, JsonUtil.toJson( array ) );
+  }
+
+  public void append( final String key, final JsonValue value ) {
+    doAppend( key, value.toString() );
   }
 
   public String toString() {
@@ -53,9 +53,9 @@ public class JsonObject {
     return buffer.toString() + tail;
   }
 
-  private void doAppend( final String keyStr, final String valueStr ) {
+  private void doAppend( final String key, final String valueStr ) {
     buffer.append( count == 0 ? "\n" : ",\n" );
-    buffer.append( keyStr );
+    buffer.append( JsonUtil.toJson( key ) );
     buffer.append( ": " );
     buffer.append( valueStr );
     count++;

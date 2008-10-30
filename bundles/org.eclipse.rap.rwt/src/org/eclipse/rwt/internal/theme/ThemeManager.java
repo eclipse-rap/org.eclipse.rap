@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -263,6 +261,7 @@ public final class ThemeManager {
       predefinedTheme.setValuesMap( createCssValuesMap( predefinedTheme ) );
       themes.put( PREDEFINED_THEME_ID,
                   new ThemeWrapper( predefinedTheme, themeCount++ ) );
+      predefinedTheme.setDefault( true );
       initialized = true;
       initThemeAdapters();
       logRegisteredThemeAdapters();
@@ -919,10 +918,12 @@ public final class ThemeManager {
     String[] keys = theme.getKeysWithVariants();
     Arrays.sort( keys );
     for( int i = 0; i < keys.length; i++ ) {
-      Object value = theme.getValue( keys[ i ] );
-      if( value instanceof QxColor ) {
-        QxColor color = ( QxColor )value;
-        colorTheme.appendColor( keys[ i ], color );
+      if( !isCssKey( keys[ i ] ) ) {
+        Object value = theme.getValue( keys[ i ] );
+        if( value instanceof QxColor ) {
+          QxColor color = ( QxColor )value;
+          colorTheme.appendColor( keys[ i ], color );
+        }
       }
     }
     return colorTheme.getJsCode();
@@ -938,10 +939,12 @@ public final class ThemeManager {
     String[] keys = theme.getKeysWithVariants();
     Arrays.sort( keys );
     for( int i = 0; i < keys.length; i++ ) {
-      Object value = theme.getValue( keys[ i ] );
-      if( value instanceof QxBorder ) {
-        QxBorder border = ( QxBorder )value;
-        borderTheme.appendBorder( keys[ i ], border );
+      if( !isCssKey( keys[ i ] ) ) {
+        Object value = theme.getValue( keys[ i ] );
+        if( value instanceof QxBorder ) {
+          QxBorder border = ( QxBorder )value;
+          borderTheme.appendBorder( keys[ i ], border );
+        }
       }
     }
     return borderTheme.getJsCode();
@@ -952,10 +955,12 @@ public final class ThemeManager {
     String[] keys = theme.getKeysWithVariants();
     Arrays.sort( keys );
     for( int i = 0; i < keys.length; i++ ) {
-      Object value = theme.getValue( keys[ i ] );
-      if( value instanceof QxFont ) {
-        QxFont font = ( QxFont )value;
-        fontTheme.appendFont( keys[ i ], font );
+      if( !isCssKey( keys[ i ] ) ) {
+        Object value = theme.getValue( keys[ i ] );
+        if( value instanceof QxFont ) {
+          QxFont font = ( QxFont )value;
+          fontTheme.appendFont( keys[ i ], font );
+        }
       }
     }
     return fontTheme.getJsCode();
@@ -998,8 +1003,7 @@ public final class ThemeManager {
     return metaTheme.getJsCode();
   }
 
-  private String createThemeStore( final Theme theme, final String jsId )
-  {
+  private String createThemeStore( final Theme theme, final String jsId ) {
     StringBuffer sb = new StringBuffer();
     String[] keys = theme.getKeysWithVariants();
     Arrays.sort( keys );
@@ -1012,7 +1016,7 @@ public final class ThemeManager {
       if( value instanceof QxDimension ) {
         QxDimension dim = ( QxDimension )value;
         type = "dimension";
-        jsValue  = String.valueOf( dim.value );
+        jsValue = String.valueOf( dim.value );
       } else if( value instanceof QxBoxDimensions ) {
         QxBoxDimensions boxdim = ( QxBoxDimensions )value;
         type = "boxdim";
@@ -1035,7 +1039,14 @@ public final class ThemeManager {
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
-        if( color.transparent ) {
+        if( isCssKey( key ) ) {
+          type = "color";
+          if( color.transparent ) {
+            jsValue = "\"undefined\"";
+          } else {
+            jsValue = "\"" + QxColor.toHtmlString( color.red, color.green, color.blue ) + "\"";
+          }
+        } else if( color.transparent ) {
           ThemeProperty prop
             = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
           if( prop != null && !prop.transparentAllowed ) {
@@ -1046,13 +1057,54 @@ public final class ThemeManager {
           type = "trcolor";
           jsValue = "true";
         }
+      // === new values ===
+      } else if( value instanceof QxFont && isCssKey( key ) ) {
+        QxFont font = ( QxFont )value;
+        JsonObject fontObject = new JsonObject();
+        JsonArray families = new JsonArray();
+        for( int j = 0; j < font.family.length; j++ ) {
+          families.append( font.family[ j ] );
+        }
+        fontObject.append( "family", families );
+        fontObject.append( "size", font.size );
+        fontObject.append( "bold", font.bold );
+        fontObject.append( "italic", font.italic );
+        type = "font";
+        jsValue = fontObject.toString();
+      } else if( value instanceof QxBorder && isCssKey( key ) ) {
+        QxBorder border = ( QxBorder )value;
+        JsonObject borderObject = new JsonObject();
+        borderObject.append( "width", border.width );
+        String style = border.getQxStyle();
+        if( style != null ) {
+          borderObject.append( "style", style );
+        }
+        String colors = border.getQxColors();
+        if( colors != null ) {
+          JsonArray borderColors = QxBorderUtil.getColors( border, theme );
+          if( borderColors != null ) {
+            borderObject.append( "color", borderColors );
+          }
+        }
+        String innerColors = border.getQxInnerColors();
+        if( innerColors != null ) {
+          JsonArray borderInnerColors
+            = QxBorderUtil.getInnerColors( border, theme );
+          if( borderInnerColors != null ) {
+            borderObject.append( "innerColor : ", borderInnerColors );
+          }
+        }
+        type = "border";
+        jsValue = borderObject.toString();
       }
       if( type != null ) {
         String pattern = "ts.setValue( \"{0}\", \"{1}\", {2}, \"{3}\" );\n";
-        Object[] arguments = new Object[] { type, key, jsValue, jsId };
+        String tid = isCssKey( key ) ? "_" : jsId;
+        Object[] arguments = new Object[] { type, key, jsValue, tid };
         sb.append( MessageFormat.format( pattern, arguments ) );
       }
     }
+    sb.append( "ts.resolveBorderColors( \"_\" );\n" );
     sb.append( "delete ts;\n" );
     return sb.toString();
   }
@@ -1092,6 +1144,8 @@ public final class ThemeManager {
     sb.append( JsonUtil.toJson( jsId ) );
     sb.append( ", " );
     sb.append( mainObject.toString() );
+    sb.append( ", " );
+    sb.append( theme.isDefault() );
     sb.append( " );\n" );
     sb.append( "delete ts;\n" );
     return sb.toString();
@@ -1126,6 +1180,10 @@ public final class ThemeManager {
     return THEME_RESOURCE_DEST + jsThemeName + "/widgets";
   }
 
+
+  private static boolean isCssKey( final String key ) {
+    return key.charAt( 0 ) == '_';
+  }
 
   private void checkId( final String id ) {
     if( id == null ) {

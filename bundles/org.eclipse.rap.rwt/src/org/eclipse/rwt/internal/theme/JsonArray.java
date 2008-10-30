@@ -28,6 +28,10 @@ public class JsonArray {
     doAppend( String.valueOf( value ) );
   }
 
+  public void append( final boolean value ) {
+    doAppend( String.valueOf( value ) );
+  }
+
   public void append( final String value ) {
     doAppend( JsonUtil.toJson( value ) );
   }

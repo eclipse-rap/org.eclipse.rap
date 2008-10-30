@@ -37,6 +37,8 @@ public final class Theme {
 
   private StyleSheet styleSheet;
 
+  private boolean isDefault = false;
+
   /**
    * Creates a new theme which has no default theme. In RWT theming, only the
    * predefined theme has no default theme.
@@ -189,7 +191,7 @@ public final class Theme {
     return valuesMap;
   }
 
-  public void setValuesMap( ThemeCssValuesMap valuesMap ) {
+  public void setValuesMap( final ThemeCssValuesMap valuesMap ) {
     this.valuesMap = valuesMap;
   }
 
@@ -355,6 +357,14 @@ public final class Theme {
       }
     }
     values.put( variant == null ? key : variant + "/" + key, value );
+  }
+
+  public boolean isDefault() {
+    return isDefault;
+  }
+
+  public void setDefault( final boolean isDefault ) {
+    this.isDefault = isDefault;
   }
 
   public boolean equals( final Object obj ) {

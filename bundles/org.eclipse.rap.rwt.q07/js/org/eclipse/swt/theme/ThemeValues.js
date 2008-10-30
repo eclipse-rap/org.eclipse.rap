@@ -38,8 +38,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
   members : {
 
     getCssBorder : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getBorder( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      return values.borders[ vkey ];
     },
 
     getBorder : function( key ) {
@@ -48,8 +49,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssColor : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getColor( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      return values.colors[ vkey ];
     },
 
     getColor : function( key ) {
@@ -63,8 +65,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssFont : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getFont( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      return values.fonts[ vkey ];
     },
 
     getFont : function( key ) {
@@ -73,8 +76,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssDimension : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getDimension( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      return values.dimensions[ vkey ];
     },
 
     getDimension : function( key ) {
@@ -84,8 +88,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssBoxDimensions : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getBoxDimensions( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      return values.boxdims[ vkey ];
     },
 
     getBoxDimensions : function( key ) {
@@ -95,8 +100,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssBoolean : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getBoolean( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      return values.booleans[ vkey ];
     },
 
     getBoolean : function( key ) {
