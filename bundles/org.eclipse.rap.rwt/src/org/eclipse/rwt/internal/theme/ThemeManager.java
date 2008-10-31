@@ -205,7 +205,7 @@ public final class ThemeManager {
     themeableWidgets = new ThemeableWidgetHolder();
     customAppearances = new HashSet();
     themeProperties = new LinkedHashMap();
-    themes = new HashMap();
+    themes = new LinkedHashMap();
     adapters = new HashMap();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
