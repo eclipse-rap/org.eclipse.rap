@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
@@ -57,6 +58,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     Object[] args = new Object[] { button };
     writer.callStatic( REGISTER_RADIO_BUTTON, args );
     ControlLCAUtil.writeStyleFlags( button );
+    WidgetLCAUtil.writeStyleFlag( button, SWT.RADIO, "RADIO" );
   }
 
   // TODO [rh] qooxdoo radioButton cannot display images, should we ignore

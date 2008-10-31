@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
@@ -52,6 +53,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
+    WidgetLCAUtil.writeStyleFlag( button, SWT.CHECK, "CHECK" );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore

@@ -206,23 +206,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        font : tv.getFont( "widget.font" ),
         cursor : "default",
         verticalChildrenAlign : "top",
-        spacing : 4,
-        padding : tv.getBoxDimensions( "button.padding" )
+        spacing : 4
       };
-      result.backgroundColor = tv.getColor( "button.CHECK.background" );
-      if( states.disabled ) {
-        result.textColor = tv.getColor( "widget.graytext" );
-      } else {
-        result.textColor = tv.getColor( "button.CHECK.foreground" );
-      }
-      if( states.rwt_BORDER ) {
-        result.border = tv.getBorder( "control.BORDER.border" );
-      } else {
-        result.border = tv.getBorder( "control.border" );
-      }
+      result.textColor = tv.getCssColor( "Button", "color" );
+      result.backgroundColor = tv.getCssColor( "Button", "background-color" );
+      result.border = tv.getCssBorder( "Button", "border" );
+      result.font = tv.getCssFont( "Button", "font" );
+      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       return result;
     }
   },
@@ -244,26 +236,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.font = tv.getFont( "button.font" );
-
-      // foreground color
+      result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
-
-      // background color
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
-
-      // border
       result.border = tv.getCssBorder( "Button", "border" );
-
-      // padding
+      result.spacing = tv.getCssDimension( "Button", "spacing" );
+      // TODO [rst] enable generic padding
+      // result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       if( !states.rwt_FLAT && ( states.pressed || states.checked ) ) {
         result.padding = [ 4, 3, 2, 5 ];
       } else {
         result.padding = [ 3, 4, 3, 4 ];
       }
-
-      result.spacing = tv.getCssDimension( "Button", "spacing" );
-//      result.spacing = tv.getDimension( "button.spacing" );
       return result;
     }
   },
