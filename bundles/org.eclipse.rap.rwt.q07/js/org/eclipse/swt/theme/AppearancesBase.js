@@ -127,21 +127,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "label-wrapper" :
   {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.font = tv.getFont( "widget.font" );
-      if( states.rwt_BORDER ) {
-        result.border = tv.getBorder( "label.BORDER.border" );
-      } else {
-        result.border = tv.getBorder( "label.border" );
-      }
-      if( states.over ) {
-        result.backgroundColor = tv.getColor( "label.hover.background" );
-        result.textColor = tv.getColor( "label.hover.foreground" );
-      } else {
-        result.backgroundColor = tv.getColor( "label.background" );
-        result.textColor = tv.getColor( "label.foreground" );
-      }
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );      
+      
+      result.font = tv.getCssFont( "Label", "font" ); 
+      result.textColor = tv.getCssColor( "Label", "color" );
+      result.backgroundColor = tv.getCssColor( "Label", "background-color" );
+      result.border = tv.getCssBorder( "Label", "border" );
+      
       result.cursor = "default";
       return result;
     }
@@ -236,6 +229,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
