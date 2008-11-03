@@ -402,7 +402,7 @@ public final class Theme {
   }
 
   public static String getDummyPropertyName( final QxType value ) {
-    return "_" + value.getClass().hashCode() + "-" + value.hashCode();
+    return "_" + Integer.toHexString( value.hashCode() );
   }
 
   private void checkType( final String key, final QxType value, final Class type )
