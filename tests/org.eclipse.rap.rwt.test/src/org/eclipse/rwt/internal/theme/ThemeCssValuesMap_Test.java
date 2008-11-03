@@ -56,8 +56,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     // expected:
     // [ .special ] -> red
     // []           -> #705e42
-    //    TODO [rst] Enable as soon as normalization is in place
-//    assertEquals( 2, colorValues.length );
+    assertEquals( 2, colorValues.length );
     // 1
     assertEquals( 1, colorValues[ 0 ].constraints.length );
     assertEquals( ".special", colorValues[ 0 ].constraints[ 0 ] );
@@ -78,8 +77,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     // ([TOGGLE)           -> #9dd0ea
     // ([PUSH)             -> #9dd0ea
     // ()                  -> #c0c0c0
-    //    TODO [rst] Enable as soon as normalization is in place
-//    assertEquals( 6, colorValues.length );
+    assertEquals( 6, backgroundValues.length );
     // 1
     assertEquals( 2, backgroundValues[ 0 ].constraints.length );
     assertEquals( "[TOGGLE", backgroundValues[ 0 ].constraints[ 0 ] );

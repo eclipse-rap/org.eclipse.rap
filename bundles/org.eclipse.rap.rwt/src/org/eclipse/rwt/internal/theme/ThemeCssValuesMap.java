@@ -37,11 +37,8 @@ public class ThemeCssValuesMap {
       String propertyName = property.getName();
       ConditionalValue[] values = styleSheet.getValues( elementName,
                                                         propertyName );
-      // TODO [rst] Enable filtering as soon as theme.xml files contain styles
-      //            and states
-//      ConditionalValue[] filteredValues = filterValues( values, element );
-//      add( elementName, propertyName, filteredValues );
-      add( elementName, propertyName, values );
+      ConditionalValue[] filteredValues = filterValues( values, element );
+      add( elementName, propertyName, filteredValues );
     }
   }
 
@@ -50,6 +47,7 @@ public class ThemeCssValuesMap {
   {
     ConditionalValue[] result;
     result = ( ConditionalValue[] )map.get( getKey( elementName, propertyName ) );
+    // if element name is unknown, resort to * rules
     if( result == null ) {
       result = ( ConditionalValue[] )map.get( getKey( "*", propertyName ) );
     }
@@ -59,38 +57,19 @@ public class ThemeCssValuesMap {
   private ConditionalValue[] filterValues( final ConditionalValue[] values,
                                            final IThemeCssElement element )
   {
-    // TODO [rst] Optimize: filter out conditional values whith doubled constraints
     List resultList = new ArrayList();
+    String[] latestConstraint = null;
     for( int j = 0; j < values.length; j++ ) {
       ConditionalValue value = values[ j ];
-      boolean passed = true;
-      for( int k = 0; k < value.constraints.length && passed; k++ ) {
-        String constraint = value.constraints[ k ];
-        if( constraint.charAt( 0 ) == ':' ) {
-          passed &= contains( element.getStates(), constraint.substring( 1 ) );
-        } else if( constraint.charAt( 0 ) == '[' ) {
-          passed &= contains( element.getStyles(), constraint.substring( 1 ) );
+      if( !Arrays.equals( latestConstraint, value.constraints ) ) {
+        if( matches( element, value.constraints ) ) {
+          resultList.add( value );
+          latestConstraint = value.constraints;
         }
-      }
-      if( passed ) {
-        resultList.add( value );
       }
     }
     ConditionalValue[] result = new ConditionalValue[ resultList.size() ];
     resultList.toArray( result );
-    return result;
-  }
-
-  private boolean contains( final IThemeCssAttribute[] attributes,
-                            final String name )
-  {
-    boolean result = false;
-    for( int i = 0; i < attributes.length && !result; i++ ) {
-      IThemeCssAttribute themeCssAttribute = attributes[ i ];
-      if( name.equals( themeCssAttribute.getName() ) ) {
-        result = true;
-      }
-    }
     return result;
   }
 
@@ -104,5 +83,36 @@ public class ThemeCssValuesMap {
   private String getKey( final String elementName, final String propertyName ) {
     // TODO [rst] Improve
     return elementName + "/" + propertyName;
+  }
+
+  private static boolean matches( final IThemeCssElement element,
+                                  final String[] constraints )
+  {
+    boolean passed = true;
+    // TODO [rst] Revise: no restrictions for * rules
+    if( !"*".equals( element.getName() ) ) {
+      for( int k = 0; k < constraints.length && passed; k++ ) {
+        String constraint = constraints[ k ];
+        if( constraint.charAt( 0 ) == ':' ) {
+          passed &= contains( element.getStates(), constraint.substring( 1 ) );
+        } else if( constraint.charAt( 0 ) == '[' ) {
+          passed &= contains( element.getStyles(), constraint.substring( 1 ) );
+        }
+      }
+    }
+    return passed;
+  }
+
+  private static boolean contains( final IThemeCssAttribute[] attributes,
+                                   final String name )
+  {
+    boolean result = false;
+    for( int i = 0; i < attributes.length && !result; i++ ) {
+      IThemeCssAttribute themeCssAttribute = attributes[ i ];
+      if( name.equals( themeCssAttribute.getName() ) ) {
+        result = true;
+      }
+    }
+    return result;
   }
 }

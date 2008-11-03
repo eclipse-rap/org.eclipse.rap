@@ -91,6 +91,10 @@
         description="State for button pressed"
 		/>
 
+	<state name="selected"
+        description="State for selected TOGGLE, CHECK and RADIO buttons"
+		/>
+
   </element>
 
   <!-- C O M P A T I B I L I T Y
