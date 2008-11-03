@@ -123,10 +123,9 @@ public class TableViewer extends AbstractTableViewer {
 		return table;
 	}
 
-	// RAP [bm]: 
-//	protected ColumnViewerEditor createViewerEditor() {
-//		return new TableViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
-//	}
+	protected ColumnViewerEditor createViewerEditor() {
+		return new TableViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
+	}
 
 	/**
 	 * <p>

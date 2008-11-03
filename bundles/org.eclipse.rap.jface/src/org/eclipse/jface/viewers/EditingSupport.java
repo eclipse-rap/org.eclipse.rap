@@ -34,15 +34,15 @@ public abstract class EditingSupport {
 		this.viewer = viewer;
 	}
 
-	// RAP [bm]: cellEditors
-//	/**
-//	 * The editor to be shown
-//	 *
-//	 * @param element
-//	 *            the model element
-//	 * @return the CellEditor
-//	 */
-//	protected abstract CellEditor getCellEditor(Object element);
+	/**
+	 * The editor to be shown
+	 *
+	 * @param element
+	 *            the model element
+	 * @return the CellEditor
+	 * @since 1.2
+	 */
+	protected abstract CellEditor getCellEditor(Object element);
 
 	/**
 	 * Is the cell editable
@@ -83,34 +83,34 @@ public abstract class EditingSupport {
 		return viewer;
 	}
 
-	// RAP [bm]: cellEditors
-//	/**
-//	 * Initialize the editor. Frameworks like Databinding can hook in here and provide
-//	 * a customized implementation. <p><b>Standard customers should not overwrite this method but {@link #getValue(Object)}</b></p>
-//	 *
-//	 * @param cellEditor
-//	 *            the cell editor
-//	 * @param cell
-//	 *            the cell the editor is working for
-//	 */
-//	protected void initializeCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
-//		Object value = getValue(cell.getElement());
-//		cellEditor.setValue(value);
-//	}
+	/**
+	 * Initialize the editor. Frameworks like Databinding can hook in here and provide
+	 * a customized implementation. <p><b>Standard customers should not overwrite this method but {@link #getValue(Object)}</b></p>
+	 *
+	 * @param cellEditor
+	 *            the cell editor
+	 * @param cell
+	 *            the cell the editor is working for
+	 * @since 1.2
+	 */
+	protected void initializeCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
+		Object value = getValue(cell.getElement());
+		cellEditor.setValue(value);
+	}
 
-	// RAP [bm]: cellEditors
-//	/**
-//	 * Save the value of the cell editor back to the model. Frameworks like Databinding can hook in here and provide
-//	 * a customized implementation. <p><b>Standard customers should not overwrite this method but {@link #setValue(Object, Object)} </b></p>
-//	 * @param cellEditor
-//	 *            the cell-editor
-//	 * @param cell
-//	 * 			  the cell the editor is working for
-//	 */
-//	protected void saveCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
-//		Object value = cellEditor.getValue();
-//		setValue(cell.getElement(), value);
-//	}
+	/**
+	 * Save the value of the cell editor back to the model. Frameworks like Databinding can hook in here and provide
+	 * a customized implementation. <p><b>Standard customers should not overwrite this method but {@link #setValue(Object, Object)} </b></p>
+	 * @param cellEditor
+	 *            the cell-editor
+	 * @param cell
+	 * 			  the cell the editor is working for
+	 * @since 1.2
+	 */
+	protected void saveCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
+		Object value = cellEditor.getValue();
+		setValue(cell.getElement(), value);
+	}
 
 	boolean isLegacySupport() {
 		return false;

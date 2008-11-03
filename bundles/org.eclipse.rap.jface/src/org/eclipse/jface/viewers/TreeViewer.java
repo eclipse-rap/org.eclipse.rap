@@ -286,10 +286,9 @@ public class TreeViewer extends AbstractTreeViewer {
 		}
 	}
 
-	// RAP [bm]: 
-//	protected ColumnViewerEditor createViewerEditor() {
-//		return new TreeViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
-//	}
+	protected ColumnViewerEditor createViewerEditor() {
+		return new TreeViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
+	}
 
 	/*
 	 * (non-Javadoc) Method declared in AbstractTreeViewer.
