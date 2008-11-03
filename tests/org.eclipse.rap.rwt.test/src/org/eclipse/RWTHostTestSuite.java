@@ -179,7 +179,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( PropertyResolver_Test.class );
     suite.addTestSuite( JsonArray_Test.class );
     suite.addTestSuite( JsonObject_Test.class );
-    suite.addTestSuite( JsonUtil_Test.class );
+    suite.addTestSuite( JsonValue_Test.class );
     suite.addTestSuite( StyleSheet_Test.class );
     suite.addTestSuite( PropertySupport_Test.class );
     suite.addTestSuite( WidgetMatcher_Test.class );

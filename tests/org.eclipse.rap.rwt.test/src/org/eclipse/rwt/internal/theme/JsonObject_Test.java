@@ -19,23 +19,29 @@ public class JsonObject_Test extends TestCase {
   public void testAppend() throws Exception {
     JsonObject object = new JsonObject();
     assertEquals( "{}", object.toString() );
-    object.append( "a", "b" );
-    assertEquals( "{\n\"a\": \"b\"\n}", object.toString() );
+    object.append( "a", 23 );
+    assertEquals( "{\n\"a\": 23\n}", object.toString() );
     object.append( "b", "c" );
-    assertEquals( "{\n\"a\": \"b\",\n\"b\": \"c\"\n}", object.toString() );
+    assertEquals( "{\n\"a\": 23,\n\"b\": \"c\"\n}", object.toString() );
+    object.append( "c", true );
+    assertEquals( "{\n\"a\": 23,\n\"b\": \"c\",\n\"c\": true\n}",
+                  object.toString() );
+    object.append( "c", ( String )null );
+    assertEquals( "{\n\"a\": 23,\n\"b\": \"c\",\n\"c\": true,\n\"c\": null\n}",
+                  object.toString() );
   }
 
   public void testAppendArray() throws Exception {
     JsonObject object = new JsonObject();
-    object.append( "a", "b" );
+    object.append( "a", 23 );
     object.append( "b", new JsonArray() );
-    assertEquals( "{\n\"a\": \"b\",\n\"b\": []\n}", object.toString() );
+    assertEquals( "{\n\"a\": 23,\n\"b\": []\n}", object.toString() );
   }
-  
+
   public void testAppendObject() throws Exception {
     JsonObject object = new JsonObject();
-    object.append( "a", "b" );
+    object.append( "a", 23 );
     object.append( "b", new JsonObject() );
-    assertEquals( "{\n\"a\": \"b\",\n\"b\": {}\n}", object.toString() );
+    assertEquals( "{\n\"a\": 23,\n\"b\": {}\n}", object.toString() );
   }
 }

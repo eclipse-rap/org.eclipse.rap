@@ -10,16 +10,57 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.util.regex.Pattern;
 
-public class JsonValue {
+/**
+ * Simple generator for JSON values.
+ */
+public abstract class JsonValue {
 
-  private final String value;
+  private static final Pattern PATTERN_BS = Pattern.compile( "\\\\" );
+  private static final String REPL_BS = "\\\\\\\\";
+  private static final Pattern PATTERN_QUOTE = Pattern.compile( "\"" );
+  private static final String REPL_QUOTE = "\\\\\\\"";
 
-  public JsonValue( final String value ) {
-    this.value = value;
+  public static final JsonValue NULL = new JsonPrimitive( "null" );
+  public static final JsonValue TRUE = new JsonPrimitive( "true" );
+  public static final JsonValue FALSE = new JsonPrimitive( "false" );
+
+  public static JsonValue valueOf( final int value ) {
+    return new JsonPrimitive( String.valueOf( value ) );
   }
 
-  public String toString() {
-    return value;
+  public static JsonValue valueOf( final boolean value ) {
+    return value ? TRUE : FALSE;
+  }
+
+  public static JsonValue valueOf( final String value ) {
+    JsonValue result;
+    if( value == null ) {
+      result = NULL;
+    } else {
+      result = new JsonPrimitive( quoteString( value ) );
+    }
+    return result;
+  }
+
+  public static String quoteString( final String string ) {
+    String replaced = string;
+    replaced = PATTERN_BS.matcher( replaced ).replaceAll( REPL_BS );
+    replaced = PATTERN_QUOTE.matcher( replaced ).replaceAll( REPL_QUOTE );
+    return "\"" + replaced + "\"";
+  }
+
+  private static class JsonPrimitive extends JsonValue {
+
+    private final String value;
+
+    public JsonPrimitive( final String value ) {
+      this.value = value;
+    }
+
+    public String toString() {
+      return value;
+    }
   }
 }

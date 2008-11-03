@@ -12,11 +12,12 @@ package org.eclipse.rwt.internal.theme;
 
 
 /**
- * Simple and incomplete renderer for JSON arrays.
+ * Simple genearator for JSON arrays.
  */
-public class JsonArray {
+public final class JsonArray extends JsonValue {
 
   private final StringBuffer buffer;
+
   private int count = 0;
 
   public JsonArray() {
@@ -25,28 +26,36 @@ public class JsonArray {
   }
 
   public void append( final int value ) {
-    doAppend( String.valueOf( value ) );
+    append( valueOf( value ) );
   }
 
   public void append( final boolean value ) {
-    doAppend( String.valueOf( value ) );
+    append( valueOf( value ) );
   }
 
   public void append( final String value ) {
-    doAppend( JsonUtil.toJson( value ) );
+    append( valueOf( value ) );
   }
 
-  public void append( final JsonObject object ) {
-    doAppend( JsonUtil.toJson( object ) );
-  }
-
-  public void append( final JsonArray array ) {
-    doAppend( JsonUtil.toJson( array ) );
+  public void append( final JsonValue value ) {
+    if( value != null ) {
+      doAppend( value.toString() );
+    } else {
+      doAppend( "null" );
+    }
   }
 
   public String toString() {
     String tail = count == 0 ? "]" : " ]";
     return buffer.toString() + tail;
+  }
+
+  public static JsonArray valueOf( final String[] array ) {
+    JsonArray result = new JsonArray();
+    for( int i = 0; i < array.length; i++ ) {
+      result.append( array[ i ] );
+    }
+    return result;
   }
 
   private void doAppend( final String valueStr ) {

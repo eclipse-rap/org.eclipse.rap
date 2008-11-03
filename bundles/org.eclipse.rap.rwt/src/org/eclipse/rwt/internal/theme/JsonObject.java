@@ -12,9 +12,9 @@ package org.eclipse.rwt.internal.theme;
 
 
 /**
- * Simple and incomplete renderer for JSON objects.
+ * Simple generator for JSON objects.
  */
-public class JsonObject {
+public final class JsonObject extends JsonValue {
 
   private final StringBuffer buffer;
   private int count = 0;
@@ -25,27 +25,23 @@ public class JsonObject {
   }
 
   public void append( final String key, final int value ) {
-    doAppend( key, String.valueOf( value ) );
+    append( key, valueOf( value ) );
   }
 
   public void append( final String key, final boolean value ) {
-    doAppend( key, String.valueOf( value ) );
+    append( key, valueOf( value ) );
   }
 
   public void append( final String key, final String value ) {
-    doAppend( key, JsonUtil.toJson( value ) );
-  }
-
-  public void append( final String key, final JsonObject object ) {
-    doAppend( key, JsonUtil.toJson( object ) );
-  }
-
-  public void append( final String key, final JsonArray array ) {
-    doAppend( key, JsonUtil.toJson( array ) );
+    append( key, valueOf( value ) );
   }
 
   public void append( final String key, final JsonValue value ) {
-    doAppend( key, value.toString() );
+    if( value != null ) {
+      doAppend( key, value.toString() );
+    } else {
+      doAppend( key, "null" );
+    }
   }
 
   public String toString() {
@@ -55,7 +51,7 @@ public class JsonObject {
 
   private void doAppend( final String key, final String valueStr ) {
     buffer.append( count == 0 ? "\n" : ",\n" );
-    buffer.append( JsonUtil.toJson( key ) );
+    buffer.append( quoteString( key ) );
     buffer.append( ": " );
     buffer.append( valueStr );
     count++;

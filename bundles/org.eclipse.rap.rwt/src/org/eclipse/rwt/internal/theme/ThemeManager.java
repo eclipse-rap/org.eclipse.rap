@@ -1012,39 +1012,46 @@ public final class ThemeManager {
       Object value = theme.getValue( keys[ i ] );
       String key = keys[ i ];
       String type = null;
-      String jsValue = null;
+      JsonValue jsValue = null;
       if( value instanceof QxDimension ) {
         QxDimension dim = ( QxDimension )value;
         type = "dimension";
-        jsValue = String.valueOf( dim.value );
+        jsValue = JsonValue.valueOf( dim.value );
       } else if( value instanceof QxBoxDimensions ) {
         QxBoxDimensions boxdim = ( QxBoxDimensions )value;
+        JsonArray boxArray = new JsonArray();
+        boxArray.append( boxdim.top );
+        boxArray.append( boxdim.right );
+        boxArray.append( boxdim.bottom );
+        boxArray.append( boxdim.left );
         type = "boxdim";
-        jsValue = String.valueOf( boxdim.toJsArray() );
+        jsValue = boxArray;
       } else if( value instanceof QxBoolean ) {
         QxBoolean bool = ( QxBoolean )value;
         type = "boolean";
-        jsValue = String.valueOf( bool.value );
+        jsValue = JsonValue.valueOf( bool.value );
       } else if( value instanceof QxImage ) {
         QxImage image = ( QxImage )value;
         type = "image";
         if( image.none ) {
-          jsValue = "null";
+          jsValue = JsonValue.NULL;
         } else {
           ThemeProperty prop
             = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
           String targetPath
             = prop != null && prop.targetPath != null ? prop.targetPath : key;
-          jsValue = JsonUtil.toJson( targetPath );
+          jsValue = JsonValue.valueOf( targetPath );
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
         if( isCssKey( key ) ) {
           type = "color";
           if( color.transparent ) {
-            jsValue = "\"undefined\"";
+            jsValue = JsonValue.valueOf( "undefined" );
           } else {
-            jsValue = "\"" + QxColor.toHtmlString( color.red, color.green, color.blue ) + "\"";
+            jsValue = JsonValue.valueOf( QxColor.toHtmlString( color.red,
+                                                               color.green,
+                                                               color.blue ) );
           }
         } else if( color.transparent ) {
           ThemeProperty prop
@@ -1055,22 +1062,18 @@ public final class ThemeManager {
             throw new IllegalArgumentException( message );
           }
           type = "trcolor";
-          jsValue = "true";
+          jsValue = JsonValue.TRUE;
         }
       // === new values ===
       } else if( value instanceof QxFont && isCssKey( key ) ) {
         QxFont font = ( QxFont )value;
         JsonObject fontObject = new JsonObject();
-        JsonArray families = new JsonArray();
-        for( int j = 0; j < font.family.length; j++ ) {
-          families.append( font.family[ j ] );
-        }
-        fontObject.append( "family", families );
+        fontObject.append( "family", JsonArray.valueOf( font.family ) );
         fontObject.append( "size", font.size );
         fontObject.append( "bold", font.bold );
         fontObject.append( "italic", font.italic );
         type = "font";
-        jsValue = fontObject.toString();
+        jsValue = fontObject;
       } else if( value instanceof QxBorder && isCssKey( key ) ) {
         QxBorder border = ( QxBorder )value;
         JsonObject borderObject = new JsonObject();
@@ -1095,12 +1098,12 @@ public final class ThemeManager {
           }
         }
         type = "border";
-        jsValue = borderObject.toString();
+        jsValue = borderObject;
       }
       if( type != null ) {
         String pattern = "ts.setValue( \"{0}\", \"{1}\", {2}, \"{3}\" );\n";
         String tid = isCssKey( key ) ? "_" : jsId;
-        Object[] arguments = new Object[] { type, key, jsValue, tid };
+        Object[] arguments = new Object[] { type, key, jsValue.toString(), tid };
         sb.append( MessageFormat.format( pattern, arguments ) );
       }
     }
@@ -1125,12 +1128,8 @@ public final class ThemeManager {
         ConditionalValue[] values = valuesMap.getValues( elementName, propertyName );
         for( int k = 0; k < values.length; k++ ) {
           ConditionalValue conditionalValue = values[ k ];
-          JsonArray constraintsArray = new JsonArray();
-          for( int l = 0; l < conditionalValue.constraints.length; l++ ) {
-            constraintsArray.append( conditionalValue.constraints[ l ] );
-          }
           JsonArray array = new JsonArray();
-          array.append( constraintsArray );
+          array.append( JsonArray.valueOf( conditionalValue.constraints ) );
           array.append( Theme.getDummyPropertyName( conditionalValue.value ) );
           valuesArray.append( array );
         }
@@ -1141,7 +1140,7 @@ public final class ThemeManager {
     StringBuffer sb = new StringBuffer();
     sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
     sb.append( "ts.setThemeCssValues( " );
-    sb.append( JsonUtil.toJson( jsId ) );
+    sb.append( JsonValue.quoteString( jsId ) );
     sb.append( ", " );
     sb.append( mainObject.toString() );
     sb.append( ", " );
@@ -1179,7 +1178,6 @@ public final class ThemeManager {
 //    return THEME_RESOURCE_DEST + jsThemeName + "/widgets-" + timestamp;
     return THEME_RESOURCE_DEST + jsThemeName + "/widgets";
   }
-
 
   private static boolean isCssKey( final String key ) {
     return key.charAt( 0 ) == '_';

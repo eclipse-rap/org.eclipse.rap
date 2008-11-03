@@ -21,21 +21,38 @@ public class JsonArray_Test extends TestCase {
     assertEquals( "[]", array.toString() );
     array.append( "a" );
     assertEquals( "[ \"a\" ]", array.toString() );
-    array.append( "b" );
-    assertEquals( "[ \"a\", \"b\" ]", array.toString() );
+    array.append( 23 );
+    assertEquals( "[ \"a\", 23 ]", array.toString() );
+    array.append( false );
+    assertEquals( "[ \"a\", 23, false ]", array.toString() );
+    array.append( ( String )null );
+    assertEquals( "[ \"a\", 23, false, null ]", array.toString() );
   }
 
   public void testAppendArray() throws Exception {
     JsonArray array = new JsonArray();
-    array.append( "a" );
+    array.append( 1 );
     array.append( new JsonArray() );
-    assertEquals( "[ \"a\", [] ]", array.toString() );
+    assertEquals( "[ 1, [] ]", array.toString() );
+    array.append( ( JsonArray )null );
+    assertEquals( "[ 1, [], null ]", array.toString() );
   }
 
   public void testAppendObject() throws Exception {
     JsonArray array = new JsonArray();
-    array.append( "a" );
+    array.append( 1 );
     array.append( new JsonObject() );
-    assertEquals( "[ \"a\", {} ]", array.toString() );
+    assertEquals( "[ 1, {} ]", array.toString() );
+    array.append( ( JsonObject )null );
+    assertEquals( "[ 1, {}, null ]", array.toString() );
+  }
+
+  public void testValueOf() throws Exception {
+    assertEquals( "[]", JsonArray.valueOf( new String[ 0 ] ).toString() );
+    JsonArray expected = new JsonArray();
+    expected.append( "A" );
+    expected.append( "B" );
+    String[] array = new String[] { "A", "B" };
+    assertEquals( expected.toString(), JsonArray.valueOf( array ).toString() );
   }
 }
