@@ -60,22 +60,9 @@ public class PropertyEditingSupport extends EditingSupport {
 		return false;
 	}
 
-// RAP [fappel]: CellEditor not supported
-//	protected CellEditor getCellEditor(Object object) {
-//		IPropertySource propertySource = propertySourceProvider
-//				.getPropertySource(object);
-//		IPropertyDescriptor[] propertyDescriptors = propertySource
-//				.getPropertyDescriptors();
-//		for (int i = 0; i < propertyDescriptors.length; i++) {
-//			IPropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-//			if (propertyID.equals(propertyDescriptor.getId())) {
-//				return propertyDescriptor
-//						.createPropertyEditor((Composite) getViewer()
-//								.getControl());
-//			}
-//		}
-//		return null;
-//	}
+	protected CellEditor getCellEditor(Object object) {
+		return null;
+	}
 
 	protected Object getValue(Object object) {
 		IPropertySource propertySource = propertySourceProvider
