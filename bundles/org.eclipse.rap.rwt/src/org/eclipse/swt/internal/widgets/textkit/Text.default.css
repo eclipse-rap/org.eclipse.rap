@@ -4,6 +4,7 @@ Text {
   border: none;
   background-color: white;
   color: black;
+  padding: 2px 3px;
 }
 
 Text[BORDER] {
@@ -11,5 +12,13 @@ Text[BORDER] {
 }
 
 Text[SINGLE] {
-  padding: 2px 3px;
+  /* padding: 2px 3px; */
+}
+
+Text[MULTI] {
+  /* padding: 0px 0px 0px 3px; */
+}
+
+Text[MULTI][BORDER] {
+  /* padding: 0px 0px 0px 4px; */
 }

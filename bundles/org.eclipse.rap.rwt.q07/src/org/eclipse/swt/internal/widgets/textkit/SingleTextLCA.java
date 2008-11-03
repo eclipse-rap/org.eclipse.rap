@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
 final class SingleTextLCA extends AbstractTextDelegateLCA {
@@ -41,8 +42,9 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextField" );
-    TextLCAUtil.writeInitialize( text );    
+    TextLCAUtil.writeInitialize( text );
     ControlLCAUtil.writeStyleFlags( text );
+    WidgetLCAUtil.writeStyleFlag( text, SWT.SINGLE, "SINGLE" );
     TextLCAUtil.writeAlignment( text );
   }
 

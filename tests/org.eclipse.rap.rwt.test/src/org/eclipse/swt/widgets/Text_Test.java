@@ -345,11 +345,11 @@ public class Text_Test extends TestCase {
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 54, 120 );
-    assertEquals( 2, text.getBorderWidth() );
+    expected = new Point( 52, 118 );
+    assertEquals( 1, text.getBorderWidth() );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
-    expected = new Point( 104, 106 );
+    expected = new Point( 102, 104 );
     assertEquals( expected, text.computeSize( 100, 100 ) );
   }
 
@@ -370,7 +370,8 @@ public class Text_Test extends TestCase {
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.BORDER );
-    expected = new Rectangle( -2, -2, 5, 4 );
+    expected = new Rectangle( -1, -1, 3, 2 );
+    assertEquals( 1, text.getBorderWidth() );
     assertEquals( expected, text.computeTrim( 0, 0, 1, 0 ) );
   }
 }

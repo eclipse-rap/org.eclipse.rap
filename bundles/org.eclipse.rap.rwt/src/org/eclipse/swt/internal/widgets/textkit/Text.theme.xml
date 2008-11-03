@@ -29,6 +29,21 @@
 
   <element name="Text"
       description="Single-line and multi-line text widgets">
+    
+    <property name="color"
+        type="color"
+        description="Text color"
+        />
+
+    <property name="background-color"
+        type="color"
+        description="Background color"
+        />
+        
+    <property name="font"
+        type="font"
+        description="Text font"
+        />    
 
     <property name="border"
         type="border"

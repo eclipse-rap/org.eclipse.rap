@@ -755,14 +755,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "text-field" : {
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getBorder( states.rwt_BORDER ? "text.BORDER.border" : "text.border" ),
-        font : tv.getFont( "widget.font" ),
-        padding : tv.getBoxDimensions( "text.SINGLE.padding" ),
-        textColor : tv.getColor( states.disabled ? "widget.graytext" : "list.foreground" ),
-        backgroundColor : tv.getColor( "list.background" )
-      };
+
+      result.font = tv.getCssFont( "Text", "font" );
+      result.textColor = tv.getCssColor( "Text", "color" );
+      result.backgroundColor = tv.getCssColor( "Text", "background-color" );
+      result.border = tv.getCssBorder( "Text", "border" );
+      result.padding = tv.getCssBoxDimensions( "Text", "padding" );
+      
+      return result;
     }
   },
 

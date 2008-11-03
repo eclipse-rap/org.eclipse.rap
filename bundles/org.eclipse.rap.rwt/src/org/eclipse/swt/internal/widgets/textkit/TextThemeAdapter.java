@@ -8,36 +8,23 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.textkit;
 
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
+import org.eclipse.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.widgets.Text;
 
+public final class TextThemeAdapter extends ControlThemeAdapter {
 
-public final class TextThemeAdapter implements IControlThemeAdapter {
-
-  public int getBorderWidth( final Control control ) {
-    return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;
+  protected void configureMatcher( final WidgetMatcher matcher ) {
+    super.configureMatcher( matcher );
+    matcher.addStyle( "SINGLE", SWT.SINGLE );
+    matcher.addStyle( "MULTI", SWT.MULTI );
   }
 
-  public Color getForeground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "list.foreground" );
-  }
-
-  public Color getBackground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "list.background" );
-  }
-
-  public Font getFont( final Control control ) {
-    return ThemeAdapterUtil.getFont( control, "widget.font" );
-  }
-
-  public Rectangle getPadding( final Control control ) {
-    // padding not needed for MULTI now
-    return ThemeAdapterUtil.getBoxDimensions( control, "text.SINGLE.padding" );
+  public Rectangle getPadding( final Text text ) {
+    return getCssBoxDimensions( getPrimaryElement(), "padding", text );
   }
 }
