@@ -57,7 +57,8 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @return the adjusted bounds
    */
   public Rectangle adjustCoordinates( final Widget widget,
-                                      final Rectangle bounds ) {
+                                      final Rectangle bounds )
+  {
     return bounds;
   }
 
