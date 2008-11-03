@@ -235,10 +235,10 @@ public class ThemeManager_Test extends TestCase {
     Theme theme = manager.getTheme( manager.getDefaultThemeId() );
     String[] keys = theme.getKeysWithVariants();
     Arrays.sort( keys );
-    for( int i = 0; i < keys.length; i++ ) {
-      String key = keys[ i ];
+//    for( int i = 0; i < keys.length; i++ ) {
+//      String key = keys[ i ];
 //      System.out.println( key + ": " + theme.getValue( key ) );
-    }
+//    }
   }
 
   public void testValuesMap() throws Exception {

@@ -9,3 +9,4 @@ Bundle-ClassPath: .,
  lib/resource_manager_test.jar
 Require-Bundle: org.junit
 Bundle-Localization: fragment
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
