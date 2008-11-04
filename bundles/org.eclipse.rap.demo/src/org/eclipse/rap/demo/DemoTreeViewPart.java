@@ -8,15 +8,16 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.*;
@@ -43,12 +44,11 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 //    }
 //  }
   
-  class ViewLabelProvider extends LabelProvider {
-
+  private static final class ViewLabelProvider extends LabelProvider {
     public Image getImage( Object element ) {
-      return PlatformUI.getWorkbench()
-        .getSharedImages()
-        .getImage( ISharedImages.IMG_OBJ_ELEMENT );
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      ISharedImages sharedImages = workbench.getSharedImages();
+      return sharedImages.getImage( ISharedImages.IMG_OBJ_ELEMENT );
     }
   }
   
@@ -60,7 +60,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     private TreeParent parent;
 
     public TreeObject( final String name ) {
-      this.name = name;
+      this( name, null );
     }
 
     public TreeObject( final String name, final String location ) {
@@ -89,13 +89,13 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     }
 
     public Object getEditableValue() {
-      return null;
+      return this;
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
       return new IPropertyDescriptor[] {
-        new PropertyDescriptor( PROP_ID_NAME, "Name" ),
-        new PropertyDescriptor( PROP_ID_LOCATION, "Location" ),
+        new TextPropertyDescriptor( PROP_ID_NAME, "Name" ),
+        new TextPropertyDescriptor( PROP_ID_LOCATION, "Location" ),
       };
     }
 
@@ -133,22 +133,22 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       } else if( PROP_ID_LOCATION.equals( id ) ) {
         location = ( String )value;
       }
+      update( this );
     }
   }
   
   /**
    * Instances of this type are decorated with an error marker
    */
-  class BrokenTreeObject extends TreeObject {
-    
+  private class BrokenTreeObject extends TreeObject {
     public BrokenTreeObject( final String name ) {
       super( name );
     }
   }
 
-  class TreeParent extends TreeObject {
+  private class TreeParent extends TreeObject {
 
-    private final ArrayList children;
+    private final List children;
 
     public TreeParent( final String name ) {
       super( name );
@@ -175,7 +175,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return children.size() > 0;
     }
   }
-  class TreeViewerContentProvider
+  private final class TreeViewerContentProvider
     implements IStructuredContentProvider, ITreeContentProvider
   {
 
@@ -278,10 +278,13 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
   }
 
   public void doubleClick( final DoubleClickEvent event ) {
-    MessageDialog.openInformation( viewer.getTree().getShell(),
-                                   "Treeviewer",
-                                   "You doubleclicked on "
-                                       + event.getSelection().toString() );
+    String msg = "You doubleclicked on " + event.getSelection().toString();
+    Shell shell = viewer.getTree().getShell();
+    MessageDialog.openInformation( shell, "Treeviewer", msg );
+  }
+
+  private void update( final TreeObject treeObject ) {
+    getViewer().update( treeObject, null );
   }
 
   public TreeViewer getViewer() {

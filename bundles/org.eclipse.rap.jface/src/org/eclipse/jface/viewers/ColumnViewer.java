@@ -93,7 +93,8 @@ public abstract class ColumnViewer extends StructuredViewer {
 // XXX RAP [rh] hack o get TreeViewer editor support working
 // This was necessary since the Tree widget deos not fire mouseDown events
 // The instance check is necessary to avoid that an editor is accidentially 
-// activated twice. The CheckboxCellEditor uses its activation to toggle state
+// activated twice on widgets that correctly fire mouseDown events. 
+// For instance, the CheckboxCellEditor uses its activation to toggle state.
 				  if( ColumnViewer.this instanceof TreeViewer ) {
 				    handleMouseDown( e );
 				  }

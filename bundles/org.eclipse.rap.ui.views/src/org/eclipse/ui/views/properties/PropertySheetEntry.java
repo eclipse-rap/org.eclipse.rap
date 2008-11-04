@@ -12,11 +12,18 @@
 
 package org.eclipse.ui.views.properties;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.commands.common.EventManager;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.internal.views.ViewsPlugin;
 
 /**
@@ -66,8 +73,7 @@ public class PropertySheetEntry extends EventManager implements
 
 	private IPropertyDescriptor descriptor;
 
-// RAP [fappel]: CellEditor not supported
-//	private CellEditor editor;
+	private CellEditor editor;
 
 	private String errorText;
 
@@ -77,27 +83,26 @@ public class PropertySheetEntry extends EventManager implements
 	 * Create the CellEditorListener for this entry. It listens for value
 	 * changes in the CellEditor, and cancel and finish requests.
 	 */
-// RAP [fappel]: CellEditor not supported
-//	private ICellEditorListener cellEditorListener = new ICellEditorListener() {
-//		public void editorValueChanged(boolean oldValidState,
-//				boolean newValidState) {
-//			if (!newValidState) {
-//				// currently not valid so show an error message
-//				setErrorText(editor.getErrorMessage());
-//			} else {
-//				// currently valid
-//				setErrorText(null);
-//			}
-//		}
-//
-//		public void cancelEditor() {
-//			setErrorText(null);
-//		}
-//
-//		public void applyEditorValue() {
-//			PropertySheetEntry.this.applyEditorValue();
-//		}
-//	};
+	private ICellEditorListener cellEditorListener = new ICellEditorListener() {
+		public void editorValueChanged(boolean oldValidState,
+				boolean newValidState) {
+			if (!newValidState) {
+				// currently not valid so show an error message
+				setErrorText(editor.getErrorMessage());
+			} else {
+				// currently valid
+				setErrorText(null);
+			}
+		}
+
+		public void cancelEditor() {
+			setErrorText(null);
+		}
+
+		public void applyEditorValue() {
+			PropertySheetEntry.this.applyEditorValue();
+		}
+	};
 
 	/*
 	 * (non-Javadoc) Method declared on IPropertySheetEntry.
@@ -111,36 +116,35 @@ public class PropertySheetEntry extends EventManager implements
 	 * (non-Javadoc) Method declared on IPropertySheetEntry.
 	 */
 	public void applyEditorValue() {
-// RAP [fappel]: CellEditor not supported
-//		if (editor == null) {
-//			return;
-//		}
-//
-//		// Check if editor has a valid value
-//		if (!editor.isValueValid()) {
-//			setErrorText(editor.getErrorMessage());
-//			return;
-//		}
-//
-//		setErrorText(null);
-//
-//		// See if the value changed and if so update
-//		Object newValue = editor.getValue();
-//		boolean changed = false;
-//		if (values.length > 1) {
-//			changed = true;
-//		} else if (editValue == null) {
-//			if (newValue != null) {
-//				changed = true;
-//			}
-//		} else if (!editValue.equals(newValue)) {
-//			changed = true;
-//		}
-//
-//		// Set the editor value
-//		if (changed) {
-//			setValue(newValue);
-//		}
+		if (editor == null) {
+			return;
+		}
+
+		// Check if editor has a valid value
+		if (!editor.isValueValid()) {
+			setErrorText(editor.getErrorMessage());
+			return;
+		}
+
+		setErrorText(null);
+
+		// See if the value changed and if so update
+		Object newValue = editor.getValue();
+		boolean changed = false;
+		if (values.length > 1) {
+			changed = true;
+		} else if (editValue == null) {
+			if (newValue != null) {
+				changed = true;
+			}
+		} else if (!editValue.equals(newValue)) {
+			changed = true;
+		}
+
+		// Set the editor value
+		if (changed) {
+			setValue(newValue);
+		}
 	}
 
 	/**
@@ -266,11 +270,10 @@ public class PropertySheetEntry extends EventManager implements
 	 * (non-Javadoc) Method declared on IPropertySheetEntry.
 	 */
 	public void dispose() {
-// RAP [fappel]: CellEditor not supported
-//		if (editor != null) {
-//			editor.dispose();
-//			editor = null;
-//		}
+		if (editor != null) {
+			editor.dispose();
+			editor = null;
+		}
 		// recursive call to dispose children
 		PropertySheetEntry[] entriesToDispose = childEntries;
 		childEntries = null;
@@ -302,14 +305,13 @@ public class PropertySheetEntry extends EventManager implements
 	 * The error message of this entry has changed. Notify all listeners of the
 	 * change.
 	 */
-// RAP [fappel] CellEditor not supported
-//	private void fireErrorMessageChanged() {
-//		Object[] array = getListeners();
-//		for (int i = 0; i < array.length; i++) {
-//			IPropertySheetEntryListener listener = (IPropertySheetEntryListener) array[i];
-//			listener.errorMessageChanged(this);
-//		}
-//	}
+	private void fireErrorMessageChanged() {
+		Object[] array = getListeners();
+		for (int i = 0; i < array.length; i++) {
+			IPropertySheetEntryListener listener = (IPropertySheetEntryListener) array[i];
+			listener.errorMessageChanged(this);
+		}
+	}
 
 	/**
 	 * The values of this entry have changed. Notify all listeners of the
@@ -368,21 +370,20 @@ public class PropertySheetEntry extends EventManager implements
 	 * 
 	 * @see org.eclipse.ui.views.properties.IPropertySheetEntry#getEditor(org.eclipse.swt.widgets.Composite)
 	 */
-// RAP [fappel]: CellEditor not supported
-//	public CellEditor getEditor(Composite parent) {
-//
-//		if (editor == null) {
-//			editor = descriptor.createPropertyEditor(parent);
-//			if (editor != null) {
-//				editor.addListener(cellEditorListener);
-//			}
-//		}
-//		if (editor != null) {
-//			editor.setValue(editValue);
-//			setErrorText(editor.getErrorMessage());
-//		}
-//		return editor;
-//	}
+	public CellEditor getEditor(Composite parent) {
+
+		if (editor == null) {
+			editor = descriptor.createPropertyEditor(parent);
+			if (editor != null) {
+				editor.addListener(cellEditorListener);
+			}
+		}
+		if (editor != null) {
+			editor.setValue(editValue);
+			setErrorText(editor.getErrorMessage());
+		}
+		return editor;
+	}
 
 	/**
 	 * Returns the edit value for the object at the given index.
@@ -656,11 +657,10 @@ public class PropertySheetEntry extends EventManager implements
 	private void setDescriptor(IPropertyDescriptor newDescriptor) {
 		// if our descriptor is changing, we have to get rid
 		// of our current editor if there is one
-// RAP [fappel]: CellEditor not supported
-//		if (descriptor != newDescriptor && editor != null) {
-//			editor.dispose();
-//			editor = null;
-//		}
+		if (descriptor != newDescriptor && editor != null) {
+			editor.dispose();
+			editor = null;
+		}
 		descriptor = newDescriptor;
 	}
 
@@ -668,12 +668,11 @@ public class PropertySheetEntry extends EventManager implements
 	 * Set the error text. This should be set to null when the current value is
 	 * valid, otherwise it should be set to a error string
 	 */
-// RAP [fappel]: CellEditor not supported
-//	private void setErrorText(String newErrorText) {
-//		errorText = newErrorText;
-//		// inform listeners
-//		fireErrorMessageChanged();
-//	}
+	private void setErrorText(String newErrorText) {
+		errorText = newErrorText;
+		// inform listeners
+		fireErrorMessageChanged();
+	}
 
 	/**
 	 * Sets the parent of the entry to be propertySheetEntry.
@@ -707,19 +706,18 @@ public class PropertySheetEntry extends EventManager implements
 	 * @param newValue
 	 *            the new value
 	 */
-// RAP [fappel]: CellEditor not supported
-//	private void setValue(Object newValue) {
-//		// Set the value
-//		for (int i = 0; i < values.length; i++) {
-//			values[i] = newValue;
-//		}
-//
-//		// Inform our parent
-//		parent.valueChanged(this);
-//
-//		// Refresh the model
-//		refreshFromRoot();
-//	}
+	private void setValue(Object newValue) {
+		// Set the value
+		for (int i = 0; i < values.length; i++) {
+			values[i] = newValue;
+		}
+
+		// Inform our parent
+		parent.valueChanged(this);
+
+		// Refresh the model
+		refreshFromRoot();
+	}
 
 	/**
 	 * The <code>PropertySheetEntry</code> implmentation of this method

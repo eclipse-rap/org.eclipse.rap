@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * Descriptor for a property that has a value which should be edited
@@ -62,16 +66,16 @@ public class ComboBoxPropertyDescriptor extends PropertyDescriptor {
      * <p>
      * The editor is configured with the current validator if there is one.
      * </p>
+     * @since 1.2
      */
-// RAP [fappel]: CellEditor not supported
-//    public CellEditor createPropertyEditor(Composite parent) {
-//        CellEditor editor = new ComboBoxCellEditor(parent, labels,
-//                SWT.READ_ONLY);
-//        if (getValidator() != null) {
-//			editor.setValidator(getValidator());
-//		}
-//        return editor;
-//    }
+    public CellEditor createPropertyEditor(Composite parent) {
+        CellEditor editor = new ComboBoxCellEditor(parent, labels,
+                SWT.READ_ONLY);
+        if (getValidator() != null) {
+			editor.setValidator(getValidator());
+		}
+        return editor;
+    }
 
     /**
      * The <code>ComboBoxPropertyDescriptor</code> implementation of this 

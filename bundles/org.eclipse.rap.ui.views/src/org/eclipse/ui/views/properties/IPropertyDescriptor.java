@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * A descriptor for a property to be presented by a standard property sheet page
@@ -55,9 +57,9 @@ public interface IPropertyDescriptor {
      * @param parent the parent widget for the cell editor
      * @return the cell editor for this property, or <code>null</code> if this
      *  property cannot be edited
+     * @since 1.2
      */
-// RAP [fappel]: CellEditor not supported
-//    public CellEditor createPropertyEditor(Composite parent);
+    public CellEditor createPropertyEditor(Composite parent);
 
     /**
      * Returns the name of the category to which this property belongs. Properties

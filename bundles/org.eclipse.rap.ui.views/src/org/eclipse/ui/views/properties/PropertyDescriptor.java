@@ -11,7 +11,11 @@
 package org.eclipse.ui.views.properties;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * Standard implementation for property descriptors.
@@ -110,11 +114,11 @@ public class PropertyDescriptor implements IPropertyDescriptor {
      * <p>
      * Since no cell editor is returned, the property is read only.
      * </p>
+     * @since 1.2
      */
-// RAP [fappel]: CellEditor not supported
-//    public CellEditor createPropertyEditor(Composite parent) {
-//        return null;
-//    }
+    public CellEditor createPropertyEditor(Composite parent) {
+        return null;
+    }
 
     /**
      * Returns <code>true</code> if this property descriptor is to be always 

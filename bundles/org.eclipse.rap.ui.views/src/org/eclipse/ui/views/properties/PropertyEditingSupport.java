@@ -11,7 +11,12 @@
 
 package org.eclipse.ui.views.properties;
 
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * A concrete subclass of {@link EditingSupport} that implements cell editing
@@ -61,6 +66,18 @@ public class PropertyEditingSupport extends EditingSupport {
 	}
 
 	protected CellEditor getCellEditor(Object object) {
+		IPropertySource propertySource = propertySourceProvider
+				.getPropertySource(object);
+		IPropertyDescriptor[] propertyDescriptors = propertySource
+				.getPropertyDescriptors();
+		for (int i = 0; i < propertyDescriptors.length; i++) {
+			IPropertyDescriptor propertyDescriptor = propertyDescriptors[i];
+			if (propertyID.equals(propertyDescriptor.getId())) {
+				return propertyDescriptor
+						.createPropertyEditor((Composite) getViewer()
+								.getControl());
+			}
+		}
 		return null;
 	}
 

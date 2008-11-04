@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.widgets.Composite;
+
 
 /**
  * Descriptor for a property that has a value which should be edited with a 
@@ -43,13 +47,13 @@ public class TextPropertyDescriptor extends PropertyDescriptor {
      * <p>
      * The editor is configured with the current validator if there is one.
      * </p>
+     * @since 1.2
      */
-// RAP [fappel]: CellEditor not supported
-//    public CellEditor createPropertyEditor(Composite parent) {
-//        CellEditor editor = new TextCellEditor(parent);
-//        if (getValidator() != null) {
-//			editor.setValidator(getValidator());
-//		}
-//        return editor;
-//    }
+    public CellEditor createPropertyEditor(Composite parent) {
+        CellEditor editor = new TextCellEditor(parent);
+        if (getValidator() != null) {
+			editor.setValidator(getValidator());
+		}
+        return editor;
+    }
 }

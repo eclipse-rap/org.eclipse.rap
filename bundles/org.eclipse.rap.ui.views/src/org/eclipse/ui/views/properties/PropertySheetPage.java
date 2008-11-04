@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.internal.views.ViewsPlugin;
 import org.eclipse.ui.internal.views.properties.PropertiesMessages;
+import org.eclipse.ui.part.CellEditorActionHandler;
 import org.eclipse.ui.part.Page;
 
 /**
@@ -76,8 +77,7 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
 
     private ICellEditorActivationListener cellEditorActivationListener;
 
-// RAP [fappel]: CellEditor not supported
-//    private CellEditorActionHandler cellEditorActionHandler;
+    private CellEditorActionHandler cellEditorActionHandler;
 
 // RAP [fappel]: Clipboard not supported
 //    private Clipboard clipboard;
@@ -263,18 +263,17 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
     private ICellEditorActivationListener getCellEditorActivationListener() {
         if (cellEditorActivationListener == null) {
             cellEditorActivationListener = new ICellEditorActivationListener() {
-// RAP [fappel]: CellEditor not supported
-//                public void cellEditorActivated(CellEditor cellEditor) {
-//                    if (cellEditorActionHandler != null) {
-//						cellEditorActionHandler.addCellEditor(cellEditor);
-//					}
-//                }
-//
-//                public void cellEditorDeactivated(CellEditor cellEditor) {
-//                    if (cellEditorActionHandler != null) {
-//						cellEditorActionHandler.removeCellEditor(cellEditor);
-//					}
-//                }
+                public void cellEditorActivated(CellEditor cellEditor) {
+                    if (cellEditorActionHandler != null) {
+						cellEditorActionHandler.addCellEditor(cellEditor);
+					}
+                }
+
+                public void cellEditorDeactivated(CellEditor cellEditor) {
+                    if (cellEditorActionHandler != null) {
+						cellEditorActionHandler.removeCellEditor(cellEditor);
+					}
+                }
             };
         }
         return cellEditorActivationListener;
@@ -302,9 +301,8 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
                 return;
             }
             // see if item is editable
-// RAP [fappel]: CellEditor not supported
-//            boolean editable = viewer.getActiveCellEditor() != null;
-//            defaultsAction.setEnabled(editable);
+            boolean editable = viewer.getActiveCellEditor() != null;
+            defaultsAction.setEnabled(editable);
         }
     }
 
@@ -480,7 +478,7 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
      */
     public void setActionBars(IActionBars actionBars) {
         super.setActionBars(actionBars);
-// RAP [fappel]: CellEditors not supported
+// RAP [rh] Clipboard not supported
 //        cellEditorActionHandler = new CellEditorActionHandler(actionBars);
 //        cellEditorActionHandler.setCopyAction(copyAction);
     }

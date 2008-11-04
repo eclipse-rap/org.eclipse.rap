@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * <code>IPropertySheetEntry</code> describes the model interface for the
@@ -80,9 +82,9 @@ public interface IPropertySheetEntry {
      * @param parent
      *            the parent widget for the editor
      * @return the <code>CellEditor</code> used to edit the property
+     * @since 1.2
      */
-// RAP [fappel]: CellEditor not supported
-//    CellEditor getEditor(Composite parent);
+    CellEditor getEditor(Composite parent);
 
     /**
      * Returns the error text to display if the value is invalid.

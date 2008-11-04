@@ -12,19 +12,45 @@
 
 package org.eclipse.ui.views.properties;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.CellEditor;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.views.properties.PropertiesMessages;
 
 /**
@@ -77,8 +103,7 @@ class PropertySheetViewer extends Viewer {
 
     private IPropertySheetEntryListener entryListener;
 
-// RAP [fappel]: CellEditor not supported
-//    private ICellEditorListener editorListener;
+    private ICellEditorListener editorListener;
 
     // Flag to indicate if categories (if any) should be shown
     private boolean isShowingCategories = true;
@@ -132,53 +157,52 @@ class PropertySheetViewer extends Viewer {
      * @param item
      *            the selected tree item
      */
-// RAP [fappel]: CellEditor not supported
-//    private void activateCellEditor(TreeItem item) {
-//        // ensure the cell editor is visible
-//        tree.showSelection();
-//
-//        // Get the entry for this item
-//        IPropertySheetEntry activeEntry = (IPropertySheetEntry) item.getData();
-//
-//        // Get the cell editor for the entry.
-//        // Note that the editor parent must be the Tree control
-//        cellEditor = activeEntry.getEditor(tree);
-//
-//        if (cellEditor == null) {
-//			// unable to create the editor
-//            return;
-//		}
-//
-//        // activate the cell editor
-//        cellEditor.activate();
-//
-//        // if the cell editor has no control we can stop now
-//        Control control = cellEditor.getControl();
-//        if (control == null) {
-//            cellEditor.deactivate();
-//            cellEditor = null;
-//            return;
-//        }
-//
-//        // add our editor listener
-//        cellEditor.addListener(editorListener);
-//
-//        // set the layout of the tree editor to match the cell editor
-//        CellEditor.LayoutData layout = cellEditor.getLayoutData();
-//        treeEditor.horizontalAlignment = layout.horizontalAlignment;
-//        treeEditor.grabHorizontal = layout.grabHorizontal;
-//        treeEditor.minimumWidth = layout.minimumWidth;
-//        treeEditor.setEditor(control, item, columnToEdit);
-//
-//        // set the error text from the cel editor
-//        setErrorMessage(cellEditor.getErrorMessage());
-//
-//        // give focus to the cell editor
-//        cellEditor.setFocus();
-//
-//        // notify of activation
-//        fireCellEditorActivated(cellEditor);
-//    }
+    private void activateCellEditor(TreeItem item) {
+        // ensure the cell editor is visible
+        tree.showSelection();
+
+        // Get the entry for this item
+        IPropertySheetEntry activeEntry = (IPropertySheetEntry) item.getData();
+
+        // Get the cell editor for the entry.
+        // Note that the editor parent must be the Tree control
+        cellEditor = activeEntry.getEditor(tree);
+
+        if (cellEditor == null) {
+			// unable to create the editor
+            return;
+		}
+
+        // activate the cell editor
+        cellEditor.activate();
+
+        // if the cell editor has no control we can stop now
+        Control control = cellEditor.getControl();
+        if (control == null) {
+            cellEditor.deactivate();
+            cellEditor = null;
+            return;
+        }
+
+        // add our editor listener
+        cellEditor.addListener(editorListener);
+
+        // set the layout of the tree editor to match the cell editor
+        CellEditor.LayoutData layout = cellEditor.getLayoutData();
+        treeEditor.horizontalAlignment = layout.horizontalAlignment;
+        treeEditor.grabHorizontal = layout.grabHorizontal;
+        treeEditor.minimumWidth = layout.minimumWidth;
+        treeEditor.setEditor(control, item, columnToEdit);
+
+        // set the error text from the cel editor
+        setErrorMessage(cellEditor.getErrorMessage());
+
+        // give focus to the cell editor
+        cellEditor.setFocus();
+
+        // notify of activation
+        fireCellEditorActivated(cellEditor);
+    }
 
     /**
      * Adds a cell editor activation listener. Has no effect if an identical
@@ -277,21 +301,20 @@ class PropertySheetViewer extends Viewer {
      * Creates a new cell editor listener.
      */
     private void createEditorListener() {
-// RAP [fappel]: CellEditor not supported
-//        editorListener = new ICellEditorListener() {
-//            public void cancelEditor() {
-//                deactivateCellEditor();
-//            }
-//
-//            public void editorValueChanged(boolean oldValidState,
-//                    boolean newValidState) {
-//                //Do nothing
-//            }
-//
-//            public void applyEditorValue() {
-//                //Do nothing
-//            }
-//        };
+        editorListener = new ICellEditorListener() {
+            public void cancelEditor() {
+                deactivateCellEditor();
+            }
+
+            public void editorValueChanged(boolean oldValidState,
+                    boolean newValidState) {
+                //Do nothing
+            }
+
+            public void applyEditorValue() {
+                //Do nothing
+            }
+        };
     }
 
     /**
@@ -383,11 +406,10 @@ class PropertySheetViewer extends Viewer {
     void deactivateCellEditor() {
         treeEditor.setEditor(null, null, columnToEdit);
         if (cellEditor != null) {
-// RAP [fappel]: CellEditor not supported
-//            cellEditor.deactivate();
-//            fireCellEditorDeactivated(cellEditor);
-//            cellEditor.removeListener(editorListener);
-//            cellEditor = null;
+            cellEditor.deactivate();
+            fireCellEditorDeactivated(cellEditor);
+            cellEditor.removeListener(editorListener);
+            cellEditor = null;
         }
         // clear any error message from the editor
         setErrorMessage(null);
@@ -468,14 +490,13 @@ class PropertySheetViewer extends Viewer {
      * @param activatedCellEditor
      *            the activated cell editor
      */
-// RAP [fappel]: CellEditor not supported
-//    private void fireCellEditorActivated(CellEditor activatedCellEditor) {
-//        Object[] listeners = activationListeners.getListeners();
-//        for (int i = 0; i < listeners.length; ++i) {
-//            ((ICellEditorActivationListener) listeners[i])
-//                    .cellEditorActivated(activatedCellEditor);
-//        }
-//    }
+    private void fireCellEditorActivated(CellEditor activatedCellEditor) {
+        Object[] listeners = activationListeners.getListeners();
+        for (int i = 0; i < listeners.length; ++i) {
+            ((ICellEditorActivationListener) listeners[i])
+                    .cellEditorActivated(activatedCellEditor);
+        }
+    }
 
     /**
      * Notifies all registered cell editor activation listeners of a cell editor
@@ -484,14 +505,13 @@ class PropertySheetViewer extends Viewer {
      * @param activatedCellEditor
      *            the deactivated cell editor
      */
-// RAP [fappel]: CellEditor not supported
-//    private void fireCellEditorDeactivated(CellEditor activatedCellEditor) {
-//        Object[] listeners = activationListeners.getListeners();
-//        for (int i = 0; i < listeners.length; ++i) {
-//            ((ICellEditorActivationListener) listeners[i])
-//                    .cellEditorDeactivated(activatedCellEditor);
-//        }
-//    }
+    private void fireCellEditorDeactivated(CellEditor activatedCellEditor) {
+        Object[] listeners = activationListeners.getListeners();
+        for (int i = 0; i < listeners.length; ++i) {
+            ((ICellEditorActivationListener) listeners[i])
+                    .cellEditorDeactivated(activatedCellEditor);
+        }
+    }
 
     /**
      * Returns the active cell editor of this property sheet viewer or
@@ -712,8 +732,7 @@ class PropertySheetViewer extends Viewer {
                 setMessage(activeEntry.getDescription());
 
                 // activate a cell editor on the selection
-// RAP [fappel]: CellEditor not supported
-//                activateCellEditor(sel[0]);
+                activateCellEditor(sel[0]);
             }
         }
         entrySelectionChanged();
@@ -782,10 +801,9 @@ class PropertySheetViewer extends Viewer {
             public void widgetSelected(SelectionEvent e) {
             	// The viewer only owns the status line when there is
             	// no 'active' cell editor
-// RAP [fappel]: CellEditor not supported
-//            	if (cellEditor == null || !cellEditor.isActivated()) {
-//					updateStatusLine(e.item);
-//				}
+            	if (cellEditor == null || !cellEditor.isActivated()) {
+					updateStatusLine(e.item);
+				}
 			}
 
 			/* (non-Javadoc)
@@ -797,7 +815,9 @@ class PropertySheetViewer extends Viewer {
         });
         // Part2: handle single click activation of cell editor
         tree.addMouseListener(new MouseAdapter() {
-            public void mouseDown(MouseEvent event) {
+// RAP XXX [rh] Tree widget does not send mouseDown events          
+//          public void mouseDown(MouseEvent event) {
+            public void mouseUp(MouseEvent event) {
                 // only activate if there is a cell editor
                 Point pt = new Point(event.x, event.y);
                 TreeItem item = tree.getItem(pt);
