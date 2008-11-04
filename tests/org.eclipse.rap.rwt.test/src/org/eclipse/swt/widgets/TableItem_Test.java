@@ -177,7 +177,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 0, bounds.width );
     assertTrue( bounds.height > 0 );
 
-    // Set an actual image - its size rule the bounds returned
+    // Set an actual image - its size rules the bounds returned
     item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );

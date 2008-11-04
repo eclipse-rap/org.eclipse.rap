@@ -1845,7 +1845,6 @@ public class Table extends Composite {
    *
    * @since 1.0
    */
-  // TODO [rh] preliminary implementation
   public int getHeaderHeight() {
     checkWidget();
     int result = 0;
@@ -1859,6 +1858,7 @@ public class Table extends Composite {
           imageHeight = height;
         }
       }
+      // TODO [rh] obtain 4 from theme (top + bottom margin/padding)
       result = Math.max( textHeight, imageHeight ) + 4;
     }
     return result;

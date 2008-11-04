@@ -861,13 +861,13 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int getImageIndent () {
+  public int getImageIndent() {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    // The only method to manipulate the image indent (setImageIndent) is 
-    // deprecated and this not implemented, therefore we can safely return 0
+    // [rh] The only method to manipulate the image indent (setImageIndent) is 
+    // deprecated and thus not implemented, therefore we can safely return 0
     return 0;
   }
   
@@ -889,7 +889,7 @@ public class TableItem extends Item {
     checkWidget();
     int itemIndex = parent.indexOf( this );
     if( !parent.checkData( this, itemIndex ) ) {
-      error (SWT.ERROR_WIDGET_DISPOSED);
+      error( SWT.ERROR_WIDGET_DISPOSED );
     }
     int left = 0;
     int top = 0; 
@@ -905,23 +905,21 @@ public class TableItem extends Item {
       Font font = parent.getFont();
       width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
       height = parent.getItemHeight();
-    } else {
-      if( itemIndex != -1 && index < parent.getColumnCount() ) {
-        int gap = 0;
-        int imageWidth = 0;
-        if( parent.hasColumnImages( index ) ) {
-          imageWidth = parent.getItemImageSize().x;
-          gap = getImageGap( index );
-        }
-        int columnLeft = parent.getColumn( index ).getLeft();
-        left = columnLeft + getCheckWidth( index ) + imageWidth + gap;
-        top = getTop( itemIndex );
-        width = getColumnWidth( index ) - ( gap + imageWidth );
-        if( width < 0 ) {
-          width = 0;
-        }
-        height = parent.getItemHeight();
-      } 
+    } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
+      int gap = 0;
+      int imageWidth = 0;
+      if( parent.hasColumnImages( index ) ) {
+        imageWidth = parent.getItemImageSize().x;
+        gap = getImageGap( index );
+      }
+      int columnLeft = parent.getColumn( index ).getLeft();
+      left = columnLeft + getCheckWidth( index ) + imageWidth + gap;
+      top = getTop( itemIndex );
+      width = getColumnWidth( index ) - ( gap + imageWidth );
+      if( width < 0 ) {
+        width = 0;
+      }
+      height = parent.getItemHeight();
     }
     return new Rectangle( left, top, width, height );
   }
@@ -936,10 +934,11 @@ public class TableItem extends Item {
   }
   
   final int getPackWidth( final int index ) {
+    String text = getText( index );
     return 
         getImageWidth( index )
       + getImageGap( index )
-      + TextSizeDetermination.stringExtent( parent.getFont(), getText( index ) ).x
+      + TextSizeDetermination.stringExtent( parent.getFont(), text ).x
       + RIGHT_MARGIN;
   }
   
@@ -999,14 +998,8 @@ public class TableItem extends Item {
   /////////////////////////////
   // Widget and Item overrides
 
-  void releaseChildren() {
-  }
-
   void releaseParent() {
     parent.destroyItem( this, parent.indexOf( this ) );
-  }
-
-  void releaseWidget() {
   }
 
   String getNameText() {
@@ -1019,7 +1012,7 @@ public class TableItem extends Item {
   }
 
   //////////////////
-  // helping methods
+  // Helping methods
   
   private void markCached() {
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
