@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,15 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+package org.eclipse.rwt.internal.theme;
 
-package org.eclipse.swt.internal.widgets.labelkit;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.rwt.internal.theme.WidgetMatcher;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 
-public final class LabelThemeAdapter extends ControlThemeAdapter {
+public class CustomWidget extends Canvas {
 
-  protected void configureMatcher( final WidgetMatcher matcher ) {
-    super.configureMatcher( matcher );
+  public CustomWidget( final Composite parent, final int style ) {
+    super( parent, style );
   }
 }

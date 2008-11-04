@@ -25,6 +25,6 @@ public final class TextThemeAdapter extends ControlThemeAdapter {
   }
 
   public Rectangle getPadding( final Text text ) {
-    return getCssBoxDimensions( getPrimaryElement(), "padding", text );
+    return getCssBoxDimensions( "Text", "padding", text );
   }
 }

@@ -11,8 +11,6 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.theme.IControlThemeAdapter;
@@ -28,17 +26,14 @@ public class ThemeManager_Test extends TestCase {
   private static final ResourceLoader LOADER
     = ThemeTestUtil.createResourceLoader( ThemeManager_Test.class );
 
-  public void testThemeAdapters() throws Exception {
+  public void testThemeAdapters() {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     IThemeAdapter themeAdapter;
-    String elementName;
     // Control
     themeAdapter = themeManager.getThemeAdapter( Control.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof IControlThemeAdapter );
-    elementName = ( ( AbstractThemeAdapter )themeAdapter ).getPrimaryElement();
-    assertEquals( "Control", elementName );
     // List
     themeAdapter = themeManager.getThemeAdapter( List.class );
     assertNotNull( themeAdapter );
@@ -47,17 +42,13 @@ public class ThemeManager_Test extends TestCase {
     themeAdapter = themeManager.getThemeAdapter( Button.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof ButtonThemeAdapter );
-    elementName = ( ( AbstractThemeAdapter )themeAdapter ).getPrimaryElement();
-    assertEquals( "Button", elementName );
     // Shell
     themeAdapter = themeManager.getThemeAdapter( Shell.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof ShellThemeAdapter );
-//    elementName = ( ( AbstractThemeAdapter )themeAdapter ).getMainElement();
-//    assertEquals( "Shell", elementName );
   }
 
-  public void testReset() throws Exception {
+  public void testReset() {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     String id = manager.getDefaultThemeId();
@@ -74,7 +65,7 @@ public class ThemeManager_Test extends TestCase {
     }
   }
 
-  public void testRegisterResources() throws Exception {
+  public void testRegisterResources() {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     manager.registerResources();
@@ -83,7 +74,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( themeIds.length > 0 );
   }
 
-  public void testStripTemplate() throws Exception {
+  public void testStripTemplate() {
     String content;
     String template;
     content = "Line 1\r\n// BEGIN TEMPLATE (bla)\r\nLine3\r\n";
@@ -218,7 +209,7 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( theme.getStyleSheet() );
   }
 
-  public void testGetThemeableWidget() throws Exception {
+  public void testGetThemeableWidget() {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
@@ -227,18 +218,6 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( Button.class, themeableWidget.widget );
     assertNotNull( themeableWidget.elements );
     assertTrue( themeableWidget.elements.length > 0 );
-  }
-
-  public void testDefaultTheme() throws Exception {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    Theme theme = manager.getTheme( manager.getDefaultThemeId() );
-    String[] keys = theme.getKeysWithVariants();
-    Arrays.sort( keys );
-//    for( int i = 0; i < keys.length; i++ ) {
-//      String key = keys[ i ];
-//      System.out.println( key + ": " + theme.getValue( key ) );
-//    }
   }
 
   public void testValuesMap() throws Exception {

@@ -263,7 +263,6 @@ public final class ThemeManager {
                   new ThemeWrapper( predefinedTheme, themeCount++ ) );
       predefinedTheme.setDefault( true );
       initialized = true;
-      initThemeAdapters();
       logRegisteredThemeAdapters();
     }
   }
@@ -747,17 +746,6 @@ public final class ThemeManager {
       }
     }
     return result;
-  }
-
-  private void initThemeAdapters() {
-    ThemeableWidget[] widgets = themeableWidgets.getAll();
-    for( int i = 0; i < widgets.length; i++ ) {
-      ThemeableWidget widget = widgets[ i ];
-      IThemeAdapter adapter = ( IThemeAdapter )adapters.get( widget.widget );
-      if( adapter instanceof AbstractThemeAdapter ) {
-        ( ( AbstractThemeAdapter )adapter ).init( widget );
-      }
-    }
   }
 
   /**

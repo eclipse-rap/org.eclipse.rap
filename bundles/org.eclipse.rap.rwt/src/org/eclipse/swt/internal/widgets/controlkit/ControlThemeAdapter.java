@@ -29,18 +29,18 @@ public class ControlThemeAdapter extends AbstractThemeAdapter
   }
 
   public int getBorderWidth( final Control control ) {
-    return getCssBorderWidth( getPrimaryElement(), "border", control );
+    return getCssBorderWidth( getPrimaryElement( control ), "border", control );
   }
 
   public Color getForeground( final Control control ) {
-    return getCssColor( getPrimaryElement(), "color", control );
+    return getCssColor( getPrimaryElement( control ), "color", control );
   }
 
   public Color getBackground( final Control control ) {
-    return getCssColor( getPrimaryElement(), "background-color", control );
+    return getCssColor( getPrimaryElement( control ), "background-color", control );
   }
 
   public Font getFont( final Control control ) {
-    return getCssFont( getPrimaryElement(), "font", control );
+    return getCssFont( getPrimaryElement( control ), "font", control );
   }
 }

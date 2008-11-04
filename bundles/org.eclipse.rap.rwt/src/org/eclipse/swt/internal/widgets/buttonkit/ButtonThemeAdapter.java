@@ -33,7 +33,7 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
   }
 
   public Rectangle getPadding( final Button button ) {
-    Rectangle result = getCssBoxDimensions( getPrimaryElement(), "padding", button );
+    Rectangle result = getCssBoxDimensions( "Button", "padding", button );
     // TODO [rst] Additional padding for PUSH and TOGGLE buttons, remove when
     //            CSS theming is in place
     if( ( button.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
@@ -46,7 +46,7 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
   }
 
   public int getSpacing( final Button button ) {
-    return getCssDimension( getPrimaryElement(), "spacing", button );
+    return getCssDimension( "Button", "spacing", button );
   }
 
   public Point getCheckSize() {

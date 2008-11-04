@@ -21,37 +21,31 @@ import org.eclipse.swt.widgets.Widget;
 public abstract class AbstractThemeAdapter implements IThemeAdapter {
 
   private WidgetMatcher matcher;
-  private ThemeableWidget widget;
-  private String primaryElement;
 
   public AbstractThemeAdapter() {
     matcher = new WidgetMatcher();
-  }
-
-  /**
-   * Called by the framework to initialize the theme adapter. <strong>Note: This
-   * method is not part of the API.</strong>
-   */
-  public void init( final ThemeableWidget widget ) {
-    if( this.widget != null ) {
-      throw new IllegalStateException( "Theme adapter already initialized" );
-    }
-    this.widget = widget;
-    if( widget.elements != null && widget.elements.length > 0 ) {
-      primaryElement = widget.elements[ 0 ].getName();
-    } else {
-      String className = widget.widget.getName();
-      int last = className.lastIndexOf( '.' );
-      primaryElement = className.substring( last + 1 );
-    }
     configureMatcher( matcher );
   }
 
   /**
-   * Returns the name of the main CSS element for this widget.
+   * Returns the name of the main CSS element for a given widget.
    */
-  public String getPrimaryElement() {
-    return primaryElement;
+  public static String getPrimaryElement( final Widget widget ) {
+    String result;
+    Class widgetClass = widget.getClass();
+    ThemeManager manager = ThemeManager.getInstance();
+    ThemeableWidget thWidget = manager.getThemeableWidget( widgetClass );
+    if( thWidget != null
+        && thWidget.elements != null
+        && thWidget.elements.length > 0 )
+    {
+      result = thWidget.elements[ 0 ].getName();
+    } else {
+      String className = widgetClass.getName();
+      int last = className.lastIndexOf( '.' );
+      result = className.substring( last + 1 );
+    }
+    return result;
   }
 
   /**

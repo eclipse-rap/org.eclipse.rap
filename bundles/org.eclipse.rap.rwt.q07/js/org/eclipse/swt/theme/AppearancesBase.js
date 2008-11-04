@@ -757,13 +757,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
       result.border = tv.getCssBorder( "Text", "border" );
       result.padding = tv.getCssBoxDimensions( "Text", "padding" );
-      
       return result;
     }
   },

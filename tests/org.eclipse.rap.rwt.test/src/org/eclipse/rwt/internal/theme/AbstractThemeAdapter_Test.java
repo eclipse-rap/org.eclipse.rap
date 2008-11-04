@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import java.awt.Button;
-
 import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
@@ -25,34 +23,19 @@ public class AbstractThemeAdapter_Test extends TestCase {
   private static final ResourceLoader LOADER
     = ThemeTestUtil.createResourceLoader( AbstractThemeAdapter_Test.class );
 
-  public void testWithElement() throws Exception {
-    AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
-
-      protected void configureMatcher( final WidgetMatcher matcher ) {
-      }
-    };
-    ThemeableWidget widget = new ThemeableWidget( Composite.class, null );
-    IThemeCssElement element = new ThemeCssElement( "MyWidget" );
-    widget.elements = new IThemeCssElement[] { element  };
-    adapter.init( widget );
-    assertEquals( "MyWidget", adapter.getPrimaryElement() );
-  }
-
-  public void testDerivedElementName() throws Exception {
-    AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
-
-      protected void configureMatcher( final WidgetMatcher matcher ) {
-      }
-    };
-    ThemeableWidget widget = new ThemeableWidget( Button.class, null );
-    adapter.init( widget );
-    assertEquals( "Button", adapter.getPrimaryElement() );
+  public void testGetPrimaryElement() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Label label = new Label( shell, SWT.NONE );
+    CustomWidget myWidget = new CustomWidget( shell, SWT.NONE );
+    assertEquals( "Label", AbstractThemeAdapter.getPrimaryElement( label ) );
+    assertEquals( "MyWidget", AbstractThemeAdapter.getPrimaryElement( myWidget ) );
   }
 
   public void testGetCssValues() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );
-    Canvas canvas = new Canvas( shell, SWT.NONE );
+    CustomWidget custom = new CustomWidget( shell, SWT.NONE );
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     // register custom theme
@@ -64,23 +47,22 @@ public class AbstractThemeAdapter_Test extends TestCase {
       }
     };
     // create theme adapter
-    ThemeableWidget widget = new ThemeableWidget( Canvas.class, null );
-    IThemeCssElement element = new ThemeCssElement( "MyWidget" );
+    ThemeableWidget widget = new ThemeableWidget( CustomWidget.class, null );
+    IThemeCssElement element = new ThemeCssElement( "CustomWidget" );
     widget.elements = new IThemeCssElement[] { element };
-    adapter.init( widget );
     // check default values
-    Color defaultColor = adapter.getCssColor( "MyWidget", "color", canvas );
+    Color defaultColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertNotNull( defaultColor );
     int defaultBorderWidth
-      = adapter.getCssBorderWidth( "MyWidget", "border", canvas );
+      = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     // switch theme
     ThemeUtil.setCurrentThemeId( "customId" );
     // color is redefined
-    Color customColor = adapter.getCssColor( "MyWidget", "color", canvas );
+    Color customColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertFalse( defaultColor.equals( customColor ) );
     // borderWidth is not
     int customBorderWidth
-      = adapter.getCssBorderWidth( "MyWidget", "border", canvas );
+      = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     assertTrue( defaultBorderWidth == customBorderWidth );
   }
 
