@@ -979,9 +979,7 @@ public class Tree extends Composite {
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
         Image image = getColumn( i ).getImage();
-        int height = image == null
-                                  ? 0
-                                  : image.getBounds().height;
+        int height = image == null ? 0 : image.getBounds().height;
         if( height > imageHeight ) {
           imageHeight = height;
         }

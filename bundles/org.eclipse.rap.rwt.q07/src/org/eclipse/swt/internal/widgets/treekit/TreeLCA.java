@@ -155,8 +155,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  // //////////////////////////////////////////
+  /////////////////////////////////////////////
   // Helping methods to read client-side state
+  
   private static void readSelection( final Tree tree ) {
     String value = WidgetLCAUtil.readPropertyValue( tree, "selection" );
     if( value != null ) {
@@ -201,8 +202,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  // ///////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
   // Helping methods to write JavaScript for changed properties
+  
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );
