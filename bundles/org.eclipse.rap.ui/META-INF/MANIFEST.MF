@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Plugin.name
 Bundle-SymbolicName: org.eclipse.rap.ui; singleton:=true
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.ui.internal.UIPlugin
 Bundle-ActivationPolicy: lazy
@@ -12,9 +12,9 @@ Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
  javax.servlet.http;version="[2.3.0,2.5.0]"
 Export-Package: org.eclipse.ui.internal;x-friends:="org.eclipse.rap.ui"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.rap.rwt;bundle-version="[1.1.0,2.0.0)";visibility:=reexport,
- org.eclipse.rap.jface;bundle-version="[1.1.0,2.0.0)";visibility:=reexport,
- org.eclipse.rap.ui.workbench;bundle-version="[1.1.0,2.0.0)";visibility:=reexport,
+ org.eclipse.rap.rwt;bundle-version="[1.2.0,2.0.0)";visibility:=reexport,
+ org.eclipse.rap.jface;bundle-version="[1.2.0,2.0.0)";visibility:=reexport,
+ org.eclipse.rap.ui.workbench;bundle-version="[1.2.0,2.0.0)";visibility:=reexport,
  org.eclipse.core.expressions;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.osgi.services
 Bundle-RequiredExecutionEnvironment: CDC-1.0/Foundation-1.0,

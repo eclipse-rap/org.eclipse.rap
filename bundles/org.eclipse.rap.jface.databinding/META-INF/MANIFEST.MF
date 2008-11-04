@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.rap.jface.databinding
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-ClassPath: patch.jar,
  .
 Eclipse-ExtensibleAPI: true
@@ -15,9 +15,9 @@ Export-Package: org.eclipse.jface.databinding.swt,
  org.eclipse.jface.internal.databinding.provisional.viewers;x-internal:=false,
  org.eclipse.jface.internal.databinding.swt;x-internal:=true,
  org.eclipse.jface.internal.databinding.viewers;x-internal:=true
-Require-Bundle: org.eclipse.core.databinding;bundle-version="[1.0.0,2.0.0)",
- org.eclipse.rap.rwt;bundle-version="[1.1.0,4.0.0)",
- org.eclipse.rap.jface;bundle-version="[1.1.0,4.0.0)",
+Require-Bundle: org.eclipse.core.databinding;bundle-version="[1.1.0,2.0.0)",
+ org.eclipse.rap.rwt;bundle-version="[1.2.0,2.0.0)",
+ org.eclipse.rap.jface;bundle-version="[1.2.0,2.0.0)",
  org.eclipse.equinox.common;bundle-version="[3.2.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: CDC-1.0/Foundation-1.0,
  J2SE-1.3
