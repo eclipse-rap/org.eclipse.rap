@@ -375,9 +375,7 @@ public class TreeItem extends Item {
     return getBounds( columnIndex, true );
   }
 
-  /* package */Rectangle getBounds( final int columnIndex,
-                                    final boolean checkData )
-  {
+  Rectangle getBounds( final int columnIndex, final boolean checkData ) {
     checkWidget();
     Rectangle result;
     int columnCount = parent.getColumnCount();
@@ -387,9 +385,8 @@ public class TreeItem extends Item {
       result = new Rectangle( 0, 0, 0, 0 );
     } else {
       Rectangle imageBounds = getImageBounds( columnIndex );
-      Point textWidth = TextSizeDetermination.stringExtent( getFont(),
-                                                            getText( 0,
-                                                                     checkData ) );
+      String text = getText( 0, checkData );
+      Point textWidth = TextSizeDetermination.stringExtent( getFont(), text );
       int width;
       if( columnIndex == 0 && columnCount == 0 ) {
         int gap = getImageGap( columnIndex );
@@ -402,15 +399,13 @@ public class TreeItem extends Item {
       }
       // no support for bigger text/images due to qx bug
       // int height = Math.max( textWidth.y, imageBounds.height ) + 2;
-      int left = 0;
+      int left;
       if( columnIndex == 0 ) {
         left = imageBounds.x;
       } else {
         left = getItemLeft( columnIndex );
       }
-      int top = 0;
-      top = getItemTop();
-      result = new Rectangle( left, top, width, getItemHeight() );
+      result = new Rectangle( left, getItemTop(), width, getItemHeight() );
     }
     return result;
   }
@@ -430,7 +425,8 @@ public class TreeItem extends Item {
   }
 
   private int getItemTop() {
-    return flatIndex * ITEM_HEIGHT - parent.scrollTop;
+    int headerHeight = parent.getHeaderHeight();
+    return headerHeight + flatIndex * ITEM_HEIGHT - parent.scrollTop;
   }
 
   private int getImageGap( final int index ) {

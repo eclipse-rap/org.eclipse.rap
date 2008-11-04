@@ -654,6 +654,16 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 100, rootItem.getBounds( 1 ).x );
     assertEquals( 200, rootItem.getBounds( 2 ).x );
   }
+  
+  public void testGetBoundsWithVisibleHeader() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setHeaderVisible( true );
+    TreeItem item = new TreeItem( tree, 0 );
+    Rectangle bounds = item.getBounds();
+    assertTrue( bounds.y >= tree.getHeaderHeight() );
+  }
 
   // TODO [bm]: hardcoded values - possible due to qooxdoo limitations
   public void testBoundsSubItemBug219374() {

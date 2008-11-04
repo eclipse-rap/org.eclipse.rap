@@ -40,7 +40,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( SelectionEvent.hasListener( tree ) ) );
     adapter.preserve( PROP_TREE_LISTENERS,
                       Boolean.valueOf( TreeEvent.hasListener( tree ) ) );
-    adapter.preserve( PROP_HEADER_HEIGHT, new Integer( tree.getHeaderHeight() ) );
+    adapter.preserve( PROP_HEADER_HEIGHT,
+                      new Integer( tree.getHeaderHeight() ) );
     adapter.preserve( PROP_HEADER_VISIBLE,
                       Boolean.valueOf( tree.getHeaderVisible() ) );
     int[] values = tree.getColumnOrder();
@@ -183,7 +184,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
       treeAdapter.setScrollTop( newScrollTop );
       if( oldScrollTop != newScrollTop ) {
         ProcessActionRunner.add( new Runnable() {
-
           public void run() {
             treeAdapter.checkAllData( tree );
           }

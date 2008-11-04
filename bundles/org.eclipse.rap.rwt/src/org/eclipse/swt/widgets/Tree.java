@@ -89,6 +89,7 @@ public class Tree extends Composite {
   private static final int CHECK_HEIGHT = 13;
   private static final int VERTICAL_ITEM_MARGIN = 3;
   private static final int SCROLL_SIZE = 16;
+
   /* package */final ItemHolder itemHolder;
   /* package */final ItemHolder columnHolder;
   private TreeItem[] selection;
@@ -103,6 +104,7 @@ public class Tree extends Composite {
   private TreeItem currentItem;
   private final ITreeAdapter treeAdapter;
   /* package */int scrollTop, scrollLeft;
+  
   private final class CompositeItemHolder implements IItemHolderAdapter {
 
     public void add( final Item item ) {
@@ -172,28 +174,13 @@ public class Tree extends Composite {
       Tree.checkAllData( tree );
     }
   }
+  
   private static final class ResizeListener extends ControlAdapter {
-
     public void controlResized( final ControlEvent event ) {
       checkAllData( ( Tree )event.widget );
     }
   }
 
-  private boolean isItemVisible( final TreeItem item ) {
-    boolean result = false;
-    final int itemPosition = item.getBounds( 0, false ).y;
-    if( itemPosition >= 0 && itemPosition <= this.getSize().y ) {
-      TreeItem parentItem = item.getParentItem();
-      if( parentItem != null ) {
-        if( parentItem.getExpanded() ) {
-          result = true;
-        }
-      } else {
-        result = true;
-      }
-    }
-    return result;
-  }
   private static final class ExpandListener extends TreeAdapter {
 
     public void treeExpanded( final TreeEvent event ) {
@@ -842,8 +829,8 @@ public class Tree extends Composite {
   // TODO: [bm] improve and offer as API in next release
   private int getItemHeight() {
     checkWidget();
-    int result = TextSizeDetermination.getCharHeight( getFont() )
-                 + VERTICAL_ITEM_MARGIN;
+    int charHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int result = charHeight + VERTICAL_ITEM_MARGIN;
     if( ( style & SWT.CHECK ) != 0 ) {
       result = Math.max( CHECK_HEIGHT, result );
     }
@@ -1329,8 +1316,9 @@ public class Tree extends Composite {
     return result;
   }
 
-  // ////////////////////////////////////
+  ///////////////////////////////////////
   // Listener registration/deregistration
+  
   /**
    * Adds the listener to the collection of listeners who will be notified when
    * the receiver's selection changes, by sending it one of the messages defined
@@ -1427,8 +1415,9 @@ public class Tree extends Composite {
     TreeEvent.removeListener( this, listener );
   }
 
-  // //////////////////////////////
+  /////////////////////////////////
   // Methods to cleanup on dispose
+  
   void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {
@@ -1466,8 +1455,9 @@ public class Tree extends Composite {
     }
   }
 
-  // //////////////////
+  /////////////////////
   // Widget dimensions
+  
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -1524,8 +1514,9 @@ public class Tree extends Composite {
     return new Point( width, height );
   }
 
-  // ////////////////
+  ///////////////////
   // Helping methods
+  
   final int getCheckWidth() {
     int result = 0;
     if( ( style & SWT.CHECK ) != 0 ) {
@@ -1561,6 +1552,22 @@ public class Tree extends Composite {
       }
     };
     WidgetTreeVisitor.accept( tree, visitor );
+  }
+
+  private boolean isItemVisible( final TreeItem item ) {
+    boolean result = false;
+    int itemPosition = item.getBounds( 0, false ).y;
+    if( itemPosition >= 0 && itemPosition <= getSize().y ) {
+      TreeItem parentItem = item.getParentItem();
+      if( parentItem != null ) {
+        if( parentItem.getExpanded() ) {
+          result = true;
+        }
+      } else {
+        result = true;
+      }
+    }
+    return result;
   }
 
   // TODO [bm]: performance impact - replace this with logic to only partly

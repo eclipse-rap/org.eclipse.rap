@@ -167,7 +167,7 @@ final class TextLCAUtil {
     //      there is no need to write JavaScript since the client resets the
     //      selection as well when the new text is set.
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) {
-      // [rh] Workaround for bug 252462: Changing selection on a hidden text 
+      // [rh] Workaround for bug 252462: Changing selection on a hidden text
       // widget causes exception in FF
       if( text.isVisible() ) {
         JSWriter writer = JSWriter.getWriterFor( text );
