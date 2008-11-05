@@ -27,9 +27,10 @@ public class AbstractThemeAdapter_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
-    CustomWidget myWidget = new CustomWidget( shell, SWT.NONE );
+    CustomWidget customWidget = new CustomWidget( shell, SWT.NONE );
     assertEquals( "Label", AbstractThemeAdapter.getPrimaryElement( label ) );
-    assertEquals( "MyWidget", AbstractThemeAdapter.getPrimaryElement( myWidget ) );
+    assertEquals( "CustomWidget",
+                  AbstractThemeAdapter.getPrimaryElement( customWidget ) );
   }
 
   public void testGetCssValues() throws Exception {
