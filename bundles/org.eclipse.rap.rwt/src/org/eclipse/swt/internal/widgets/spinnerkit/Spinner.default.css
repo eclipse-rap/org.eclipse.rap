@@ -1,6 +1,12 @@
 /* Spinner default theme */
 
 Spinner {
+  border: none;
   color: black;
   background-color: white;
+  padding: 2px 3px;
+}
+
+Spinner[BORDER] {
+  border: 1px inset;
 }

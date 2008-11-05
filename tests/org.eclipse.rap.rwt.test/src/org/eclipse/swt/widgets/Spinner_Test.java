@@ -46,7 +46,7 @@ public class Spinner_Test extends TestCase {
 
     spinner = new Spinner( shell, SWT.BORDER );
     assertTrue( ( spinner.getStyle() & SWT.BORDER ) != 0 );
-    assertEquals( 2, spinner.getBorderWidth() );
+    assertEquals( 1, spinner.getBorderWidth() );
 
     spinner = new Spinner( shell, SWT.READ_ONLY );
     assertTrue( ( spinner.getStyle() & SWT.READ_ONLY ) != 0 );
@@ -141,10 +141,10 @@ public class Spinner_Test extends TestCase {
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Point( 58, 21 );
+    expected = new Point( 56, 19 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 120, 104 );
+    expected = new Point( 118, 102 );
     assertEquals( expected, spinner.computeSize( 100, 100 ) );
   }
 
@@ -157,7 +157,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Rectangle( -2, -2, 120, 104 );
+    expected = new Rectangle( -1, -1, 118, 102 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
 }

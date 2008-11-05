@@ -8,35 +8,15 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.widgets.Spinner;
 
+public final class SpinnerThemeAdapter extends ControlThemeAdapter {
 
-public final class SpinnerThemeAdapter implements IControlThemeAdapter {
-
-  public int getBorderWidth( final Control control ) {
-    return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;
-  }
-
-  public Color getForeground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "list.foreground" );
-  }
-
-  public Color getBackground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "list.background" );
-  }
-
-  public Font getFont( final Control control ) {
-    return ThemeAdapterUtil.getFont( control, "widget.font" );
-  }
-
-  public Rectangle getPadding( final Control control ) {
-    return ThemeAdapterUtil.getBoxDimensions( control, "text.SINGLE.padding" );
+  public Rectangle getPadding( final Spinner spinner ) {
+    return getCssBoxDimensions( "Spinner", "padding", spinner );
   }
 }

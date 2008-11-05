@@ -36,7 +36,26 @@
     <property name="background-color"
         type="color"
         description="Spinner background color"
+        />
+     
+     <property name="font"
+        type="font"
+        description="Text font"
         />    
+
+    <property name="border"
+        type="border"
+        description="Border for spinner text fields."
+        />
+
+    <property name="padding"
+        type="boxdim"
+        description="Padding for spinner text fields."
+        />
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />      
 
   </element>
   

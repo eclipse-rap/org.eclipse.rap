@@ -758,7 +758,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Text", "font" );
-      result.textColor = tv.getCssColor( "Text", "color" );
+      //result.textColor = tv.getCssColor( "Text", "color" );
+      result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.foreground" ),
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
       result.border = tv.getCssBorder( "Text", "border" );
       result.padding = tv.getCssBoxDimensions( "Text", "padding" );
@@ -1217,26 +1218,32 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "spinner" :
   {
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        backgroundColor : tv.getColor( "list.background" ),
-        border : tv.getBorder( states.rwt_BORDER ? "text.BORDER.border" : "text.border" )
-      };
+      
+      result.textColor = tv.getCssColor( "Spinner", "color" );
+      result.backgroundColor = tv.getCssColor( "Spinner", "background-color" );
+      result.border = tv.getCssBorder( "Spinner", "border" );
+            
+      return result;
     }
   },
 
   "spinner-text-field" :
   {
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        top : 0,
-        left : 0,
-        right : 0,
-        bottom : 0,
-        padding : tv.getBoxDimensions( "text.SINGLE.padding" ),
-        textColor : states.disabled ? tv.getColor( "widget.graytext" ) : "undefined"
-      };
+      
+      result.padding = tv.getCssBoxDimensions( "Spinner", "padding" );
+      result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
+      
+      result.top = 0;
+      result.left = 0;
+      result.right = 0;
+      result.bottom = 0;
+      
+      return result;
     }
   },
 
@@ -1246,7 +1253,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         width : 16,
-        backgroundColor : tv.getColor( "widget.background" )
+        backgroundColor : tv.getCssColor( "Spinner", "background-color" )
       };
       if( states.rwt_FLAT ) {
         result.border = "undefined";
