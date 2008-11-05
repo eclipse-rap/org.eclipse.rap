@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -17,6 +16,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class SpinnerTab extends ExampleTab {
 
@@ -46,17 +46,15 @@ public class SpinnerTab extends ExampleTab {
     Label label = new Label( parent, SWT.NONE );
     label.setText( "Simple Spinner" );
     spinner = new Spinner( parent, getStyle() );
-    Util.textSizeAdjustment( label, spinner );
     label = new Label( parent, SWT.NONE );
     label.setText( "Spinner with ModifyListener" );
     modifySpinner = new Spinner( parent, getStyle() );
-    Util.textSizeAdjustment( label, modifySpinner );
     label = new Label( parent, SWT.NONE );
     label.setText( "Current value" );
     final Label lblSpinnerValue = new Label( parent, SWT.NONE );
     lblSpinnerValue.setText( String.valueOf( modifySpinner.getSelection() ) );
-    Util.textSizeAdjustment( label, lblSpinnerValue );
     modifySpinner.addModifyListener( new ModifyListener() {
+
       public void modifyText( final ModifyEvent event ) {
         String value = String.valueOf( modifySpinner.getSelection() );
         lblSpinnerValue.setText( value );
@@ -89,6 +87,7 @@ public class SpinnerTab extends ExampleTab {
     btnApplyData.horizontalSpan = 2;
     btnApply.setLayoutData( btnApplyData );
     btnApply.addSelectionListener( new SelectionAdapter() {
+
       public void widgetSelected( final SelectionEvent event ) {
         spinner.setMinimum( Integer.parseInt( txtMin.getText() ) );
         spinner.setMaximum( Integer.parseInt( txtMax.getText() ) );
