@@ -265,7 +265,7 @@ public class Text extends Scrollable {
     checkWidget ();
     return textLimit;
   }
-  
+
   /**
    * Returns the number of characters.
    *
@@ -573,6 +573,9 @@ public class Text extends Scrollable {
       height = hHint;
     }
     // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
+    // TODO [if] Move to fragment. These two pixels are hard-coded in qooxdoo
+    // TextField.js to emulate IE hard-coded margin.
+    // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
     height += 2;
     Rectangle trim = computeTrim( 0, 0, width, height );
     return new Point( trim.width, trim.height );
