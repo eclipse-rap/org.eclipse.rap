@@ -196,7 +196,8 @@ public final class ThemeManager {
 
   private CssElementHolder registeredCssElements;
 
-// TODO [rst] Evaluate timestamp approach to separate different versions of resources
+// TODO [rst] Evaluate timestamp approach to separate different versions of
+//            resources
 //  private String timestamp;
 
   private ThemeManager() {
@@ -1113,7 +1114,8 @@ public final class ThemeManager {
         IThemeCssProperty property = properties[ j ];
         JsonArray valuesArray = new JsonArray();
         String propertyName = property.getName();
-        ConditionalValue[] values = valuesMap.getValues( elementName, propertyName );
+        ConditionalValue[] values
+          = valuesMap.getValues( elementName, propertyName );
         for( int k = 0; k < values.length; k++ ) {
           ConditionalValue conditionalValue = values[ k ];
           JsonArray array = new JsonArray();
