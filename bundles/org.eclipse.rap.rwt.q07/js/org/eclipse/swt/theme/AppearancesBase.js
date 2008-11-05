@@ -1221,6 +1221,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       
+      result.font = tv.getCssFont( "Spinner", "font" ); 
       result.textColor = tv.getCssColor( "Spinner", "color" );
       result.backgroundColor = tv.getCssColor( "Spinner", "background-color" );
       result.border = tv.getCssBorder( "Spinner", "border" );
@@ -1253,7 +1254,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         width : 16,
-        backgroundColor : tv.getCssColor( "Spinner", "background-color" )
+        backgroundColor : tv.getColor( "widget.background" )
       };
       if( states.rwt_FLAT ) {
         result.border = "undefined";
