@@ -162,7 +162,8 @@ public class PropertySupport {
                                           final String conditionStr )
   {
     Selector result;
-    ElementSelectorImpl elementSelector = new ElementSelectorImpl( elementName );
+    String tagName = "NONE".equals( elementName ) ? null : elementName;
+    ElementSelectorImpl elementSelector = new ElementSelectorImpl( tagName );
     Condition condition = null;
     if( conditionStr != null ) {
       Matcher matcher = CSS_CONDITION_ATTR_PATTERN.matcher( conditionStr );
