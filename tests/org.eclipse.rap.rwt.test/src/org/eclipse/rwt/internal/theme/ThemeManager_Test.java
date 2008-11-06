@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
-import org.eclipse.swt.internal.widgets.listkit.ListThemeAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -34,10 +33,6 @@ public class ThemeManager_Test extends TestCase {
     themeAdapter = themeManager.getThemeAdapter( Control.class );
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof IControlThemeAdapter );
-    // List
-    themeAdapter = themeManager.getThemeAdapter( List.class );
-    assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof ListThemeAdapter );
     // Button
     themeAdapter = themeManager.getThemeAdapter( Button.class );
     assertNotNull( themeAdapter );

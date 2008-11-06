@@ -2,7 +2,12 @@
 
 List {
   background-color: white;
-  color: black;  
+  color: black;
+  border: none;  
+}
+
+List[BORDER] {
+  border: 1px inset;
 }
 
 List-Item:selected {

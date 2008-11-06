@@ -707,12 +707,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      
       return {
         cursor : "default",
         overflow : "hidden",
-        textColor : tv.getColor( "list.foreground" ),
-        backgroundColor : tv.getColor( "list.background" ),
-        border : states.rwt_BORDER ? "thinInset" : "undefined"
+        textColor : tv.getCssColor( "List", "color" ),
+        backgroundColor : tv.getCssColor( "List", "background-color" ),
+        border : tv.getCssBorder( "List", "border" )
       };
     }
   },
@@ -721,6 +722,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      
       var result = {
         height                  : "auto",
         horizontalChildrenAlign : "left",
@@ -729,18 +731,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding                 : [ 3, 5 ],
         minWidth                : "auto"
       };
+      
       if( states.selected ) {
-        if( states.parent_unfocused ) {
-          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground" );
-          result.backgroundColor = tv.getColor( "list.selection.unfocused.background" );
-        } else {
-          result.textColor = tv.getColor( states.disabled ? "widget.graytext" : "list.selection.foreground" );
-          result.backgroundColor = tv.getColor( "list.selection.background" );
-        }
+        result.textColor = states.disabled ?
+                           tv.getColor( "widget.graytext" ) :
+                           tv.getCssColor( "List-Item", "color" );
+        result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       } else {
-        result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
+        result.textColor = states.disabled ? 
+                           tv.getColor( "widget.graytext" ) :
+                           "undefined";
         result.backgroundColor = null;
       }
+      
       return result;
     }
   },

@@ -1029,10 +1029,10 @@ public class List_Test extends TestCase {
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 56, 55 );
+    expected = new Point( 54, 53 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 104, 104 );
+    expected = new Point( 102, 102 );
     assertEquals( expected, list.computeSize( 100, 100 ) );
   }
 

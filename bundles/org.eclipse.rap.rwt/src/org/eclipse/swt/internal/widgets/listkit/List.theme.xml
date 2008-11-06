@@ -40,6 +40,15 @@
         description="Background color"
         />
         
+    <property name="border"
+        type="border"
+        description="Border for list."
+        />    
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />      
+        
     <element name="List-Item"
         description="Item elements of List controls">
   
