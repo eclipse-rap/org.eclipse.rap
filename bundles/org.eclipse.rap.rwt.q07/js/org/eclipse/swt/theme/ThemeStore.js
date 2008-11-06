@@ -23,6 +23,17 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
   construct : function() {
     this._values = {};
     this._cssValues = {};
+    this._statesMap = {
+      "*" : {
+        "hover" : "over"
+      },
+      "Button" : {
+        "selected" : "checked"
+      },
+      "List-Item" : {
+        "inactive" : "parent_unfocused"
+      }
+    };
   },
 
   members : {
@@ -147,7 +158,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         var values = this._cssValues[ theme ][ element ][ property ];
         var found = false;
         for( var i = 0; i < values.length && !found; i++ ) {
-          if( this._matches( states, values[ i ][ 0 ] ) ) {
+          if( this._matches( states, element, values[ i ][ 0 ] ) ) {
             result = values[ i ][ 1 ];
             found = true;
           }
@@ -159,7 +170,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       return result;
     },
 
-    _matches : function( states, constraints ) {
+    _matches : function( states, element, constraints ) {
       var result = true;
       for( var i = 0; i < constraints.length && result; i++ ) {
         var cond = constraints[ i ];
@@ -168,7 +179,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           if( c == "." ) {
             result = "variant_" + cond.substr( 1 ) in states;
           } else if( c == ":" ) {
-            result = this._translateState( cond.substr( 1 ) ) in states;
+            var state = this._translateState( cond.substr( 1 ), element );
+            result = state in states;
           } else if( c == "[" ) {
             result = "rwt_" + cond.substr( 1 ) in states;
           }
@@ -177,14 +189,14 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       return result;
     },
 
-    _translateState : function( state ) {
+    _translateState : function( state, element ) {
       var result = state;
-      var map = {
-        "hover" : "over",
-        "selected" : "checked"
-      };
-      if( state in map ) {
-        result = map[ state ];
+      if( state in this._statesMap[ "*" ] ) {
+        result = this._statesMap[ "*" ][ state ];
+      } else if( element in this._statesMap
+                 && state in this._statesMap[ element ] )
+      {
+        result = this._statesMap[ element ][ state ];
       }
       return result;
     }
