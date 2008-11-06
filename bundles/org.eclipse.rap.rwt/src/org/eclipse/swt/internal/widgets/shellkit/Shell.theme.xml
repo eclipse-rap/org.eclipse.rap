@@ -44,19 +44,23 @@
         type="color"
         description="Background color for Shells"
         />
-    
+
     <style name="BORDER"
         description="Style constant for bordered behavior."
         />
-        
+
     <style name="TITLE"
         description="Style constant for titled behavior."
         />    
-        
+
     <state name="inactive"
-        description="On inactive shell"
+        description="State for inactive shells"
         />
-    
+
+    <state name="maximized"
+        description="State for maximized shells"
+        />
+
     <element name="Shell-Titlebar"
         description="The window titlebar">
   

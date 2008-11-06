@@ -186,6 +186,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ThemeCssValuesMap_Test.class );
     suite.addTestSuite( AbstractThemeAdapter_Test.class );
     suite.addTestSuite( ControlThemeAdapter_Test.class );
+    suite.addTestSuite( ShellThemeAdapter_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );

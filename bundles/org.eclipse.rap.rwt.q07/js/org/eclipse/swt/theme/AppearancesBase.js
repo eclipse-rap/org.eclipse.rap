@@ -332,19 +332,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "window" :
-  {
+  "window" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        textColor : tv.getColor( "widget.foreground" ),
-        backgroundColor : tv.getColor( "shell.background" ),
-        border : tv.getBorder( ( states.rwt_TITLE || states.rwt_BORDER ) && !states.maximized
-                               ? "shell.BORDER.border"
-                               : "shell.border" ),
-        minWidth  : states.rwt_TITLE ? 80 : 5,
-        minHeight : states.rwt_TITLE ? 25 : 5
-      };
+      var result = {};
+      // padding is only applied on the server, since client area content is
+      // positioned absolutely
+      result.backgroundColor = tv.getCssColor( "Shell", "background-color" );
+      result.border = tv.getCssBorder( "Shell", "border" );
+      result.minWidth = states.rwt_TITLE ? 80 : 5;
+      result.minHeight = states.rwt_TITLE ? 25 : 5;
+      return result;
     }
   },
 

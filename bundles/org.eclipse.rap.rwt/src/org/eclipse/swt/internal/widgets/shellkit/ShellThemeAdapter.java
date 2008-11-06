@@ -8,4 +8,23 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.shellkit;import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;import org.eclipse.rwt.theme.IControlThemeAdapter;import org.eclipse.swt.SWT;import org.eclipse.swt.graphics.*;import org.eclipse.swt.internal.graphics.TextSizeDetermination;import org.eclipse.swt.widgets.Control;import org.eclipse.swt.widgets.Shell;public final class ShellThemeAdapter implements IControlThemeAdapter {  private static final int MENU_BAR_MIN_HEIGHT = 20;  public int getBorderWidth( final Control control ) {    Shell shell = ( Shell )control;    boolean hasBorder = ( shell.getStyle() & ( SWT.BORDER | SWT.TITLE ) ) != 0                        && !shell.getMaximized();    String key = hasBorder ? "shell.BORDER.border" : "shell.border";    return ThemeAdapterUtil.getBorderWidth( control, key );  }  public Color getForeground( final Control control ) {    return ThemeAdapterUtil.getColor( control, "widget.foreground" );  }  public Color getBackground( final Control control ) {    return ThemeAdapterUtil.getColor( control, "shell.background" );  }  public Font getFont( final Control control ) {    return ThemeAdapterUtil.getFont( control, "widget.font" );  }  public Rectangle getPadding( final Shell shell ) {    Rectangle result;    if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {      result = ThemeAdapterUtil.getBoxDimensions( shell, "shell.padding" );    } else {      result = new Rectangle( 0, 0, 0, 0 );    }    return result;  }  public Rectangle getTitleBarMargin( final Shell shell ) {    Rectangle result;    if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {      result = ThemeAdapterUtil.getBoxDimensions( shell, "shell.title.margin" );    } else {      result = new Rectangle( 0, 0, 0, 0 );    }    return result;  }  public int getTitleBarHeight( final Shell shell ) {    int result = 0;    if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {      result = ThemeAdapterUtil.getDimension( shell, "shell.title.height" );    }    return result;  }  public int getMenuBarHeight( final Shell shell ) {    int result = 0;    if( shell.getMenuBar() != null ) {      Font font = ThemeAdapterUtil.getFont( shell, "widget.font" );      int fontHeight = TextSizeDetermination.getCharHeight( font );      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight );    }    return result;  }}
+package org.eclipse.swt.internal.widgets.shellkit;import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
+import org.eclipse.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.widgets.*;
+public final class ShellThemeAdapter extends ControlThemeAdapter {  private static final int MENU_BAR_MIN_HEIGHT = 20;
+  protected void configureMatcher( final WidgetMatcher matcher ) {
+    super.configureMatcher( matcher );
+    matcher.addStyle( "TITLE", SWT.TITLE );
+    matcher.addState( "maximized", new Constraint() {
+
+      public boolean matches( final Widget widget ) {
+        return ( ( Shell )widget ).getMaximized();
+      }
+    } );
+  }
+  public Rectangle getPadding( final Shell shell ) {    return getCssBoxDimensions( "Shell", "padding", shell );  }  public Rectangle getTitleBarMargin( final Shell shell ) {    Rectangle result;    if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {      result = ThemeAdapterUtil.getBoxDimensions( shell, "shell.title.margin" );    } else {      result = new Rectangle( 0, 0, 0, 0 );    }    return result;  }  public int getTitleBarHeight( final Shell shell ) {    int result = 0;    if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {      result = ThemeAdapterUtil.getDimension( shell, "shell.title.height" );    }    return result;  }  public int getMenuBarHeight( final Shell shell ) {    int result = 0;    if( shell.getMenuBar() != null ) {      Font font = ThemeAdapterUtil.getFont( shell, "widget.font" );      int fontHeight = TextSizeDetermination.getCharHeight( font );      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight );    }    return result;  }}
