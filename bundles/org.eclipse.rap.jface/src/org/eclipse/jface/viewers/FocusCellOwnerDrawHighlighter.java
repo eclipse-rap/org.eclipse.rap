@@ -233,12 +233,6 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //			oldCell.getControl().redraw(x, rect.y - 1, width, rect.height + 1,
 //					true);
 //		}
-
-// SYSOUT	  
-String old = oldCell == null ? "null" : oldCell.getText(); //$NON-NLS-1$
-String newText = newCell == null ? "null" : newCell.getText(); //$NON-NLS-1$
-System.out.println(   "old: " + old + "  new: " + newText ); //$NON-NLS-1$ //$NON-NLS-2$
-    
     if( oldCell != null ) {
       oldCell.setBackground( null );
       oldCell.setForeground( null );
