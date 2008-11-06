@@ -24,12 +24,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
+    this.addEventListener( "changeMode", this._onChangeMode );
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
     org.eclipse.swt.widgets.Shell._preloadIcons();
   },
-  
+
   statics : {
     TOP_LEFT : "topLeft",
     TOP_RIGHT : "topRight",
@@ -41,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       "bottomLeft", 
       "bottomRight"
     ],
-    
+
     preloadDone : false,
 
     _onParentClose : function( evt ) {
@@ -58,7 +59,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         req.addEvent( "org.eclipse.swt.widgets.Shell_close", id );
       }
     },
-    
+
     _preloadIcons : function() {
       if( !org.eclipse.swt.widgets.Shell.preloadDone ) {
         var iconsToLoad = new Array(
@@ -155,6 +156,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.setParentShell( null );
     this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.removeEventListener( "changeActive", this._onChangeActive );
+    this.removeEventListener( "changeMode", this._onChangeMode );
     this.removeEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
@@ -340,6 +342,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         this._restoreButton.removeState( "active" );
         this._closeButton.removeState( "active" );
       }
+    },
+
+    _onChangeMode : function( evt ) {
+      var value = evt.getValue();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( evt.getTarget() );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( id + ".mode", value );
     },
 
     _onKeydown : function( evt ) {

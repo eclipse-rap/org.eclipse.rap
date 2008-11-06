@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import junit.framework.TestCase;
@@ -26,6 +25,7 @@ import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+
 
 public class ShellLCA_Test extends TestCase {
 
@@ -233,6 +233,27 @@ public class ShellLCA_Test extends TestCase {
     assertSame( label, getActiveControl( shell ) );
   }
 
+  public void testReadDataForMode() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.open();
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    String shellId = WidgetUtil.getId( shell );
+    Fixture.fakeRequestParam( shellId + ".mode", "maximized" );
+    RWTFixture.readDataAndProcessAction( shell );
+    assertTrue( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    Fixture.fakeRequestParam( shellId + ".mode", "minimized" );
+    RWTFixture.readDataAndProcessAction( shell );
+    assertFalse( shell.getMaximized() );
+    assertTrue( shell.getMinimized() );
+    Fixture.fakeRequestParam( shellId + ".mode", "null" );
+    RWTFixture.readDataAndProcessAction( shell );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+  }
+
   public void testShellActivate() {
     final StringBuffer activateEventLog = new StringBuffer();
     ActivateListener activateListener = new ActivateListener() {
@@ -250,12 +271,12 @@ public class ShellLCA_Test extends TestCase {
     final StringBuffer shellEventLog = new StringBuffer();
     ShellListener shellListener = new ShellAdapter() {
 
-      public void shellActivated( ShellEvent event ) {
+      public void shellActivated( final ShellEvent event ) {
         Shell shell = ( Shell )event.getSource();
         shellEventLog.append( "activated:" + shell.getData() + "|" );
       }
 
-      public void shellDeactivated( ShellEvent event ) {
+      public void shellDeactivated( final ShellEvent event ) {
         Shell shell = ( Shell )event.getSource();
         shellEventLog.append( "deactivated:" + shell.getData() + "|" );
       }

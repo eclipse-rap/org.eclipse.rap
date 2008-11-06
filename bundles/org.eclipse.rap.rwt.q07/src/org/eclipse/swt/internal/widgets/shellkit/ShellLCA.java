@@ -59,6 +59,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.readBounds( shell );
+    readMode( shell );
     if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
       shell.close();
     }
@@ -71,7 +72,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
-    writer.newWidget( QX_TYPE );    
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( shell );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
@@ -290,6 +291,23 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static boolean showImage( final Shell shell ) {
     return ( shell.getStyle() & ( SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0;
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void readMode( final Shell shell ) {
+    final String value = WidgetLCAUtil.readPropertyValue( shell, "mode" );
+    if( value != null ) {
+      if( "maximized".equals( value ) ) {
+        shell.setMaximized( true );
+      } else if( "minimized".equals( value ) ) {
+        shell.setMinimized( true );
+      } else {
+        shell.setMinimized( false );
+        shell.setMaximized( false );
+      }
+    }
   }
 
   private static void writeMode( final Shell shell ) throws IOException {
