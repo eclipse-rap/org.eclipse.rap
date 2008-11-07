@@ -142,7 +142,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         if( innerColorData != null ) {
           var innerColors = [];
           for( var i = 0; i < innerColorData.length; i++ ) {
-            innerColors.push( values.colors[ colorData[ i ] ] );
+            innerColors.push( values.colors[ innerColorData[ i ] ] );
           }
           border.setInnerColor( innerColors );
           border.setUserData( "innerColor", null );

@@ -1083,7 +1083,7 @@ public final class ThemeManager {
           JsonArray borderInnerColors
             = QxBorderUtil.getInnerColors( border, theme );
           if( borderInnerColors != null ) {
-            borderObject.append( "innerColor : ", borderInnerColors );
+            borderObject.append( "innerColor", borderInnerColors );
           }
         }
         type = "border";
