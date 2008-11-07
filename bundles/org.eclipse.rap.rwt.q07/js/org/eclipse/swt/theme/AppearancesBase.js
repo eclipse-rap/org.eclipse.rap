@@ -1526,7 +1526,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" ),
+        border : tv.getCssBorder( "*", "border" ),
         backgroundColor : "white"
       }
     }
@@ -1603,8 +1603,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : "thinInset",
-        backgroundImage : "widget/progressbar.bgimage",
-        backgroundColor : tv.getColor( "progressbar.background" )
+        backgroundColor : tv.getCssColor( "ProgressBar", "background-color" ),
+        backgroundImage : tv.getCssImage( "ProgressBar", "background-image" )
       }
     }
   },
@@ -1613,8 +1613,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundImage : "widget/progressbar.fgimage",
-        backgroundColor : tv.getColor( "progressbar.foreground" )
+        backgroundColor : tv.getCssColor( "ProgressBar-Indicator",
+                                          "background-color" ),
+        backgroundImage : tv.getCssImage( "ProgressBar-Indicator",
+                                          "background-image" )
       }
     }
   },

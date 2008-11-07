@@ -32,7 +32,7 @@
 
     <property name="background-color"
         type="color"
-        description="Background color"
+        description="Background color for progress bars"
         />
 
     <property name="background-image"
@@ -45,12 +45,12 @@
   
       <property name="background-color"
           type="color"
-          description="Background color"
+          description="Background color for progress indicator"
           />
   
       <property name="background-image"
           type="image"
-          description="Background image for progress indicatior"
+          description="Background image for progress indicator"
           />
   
     </element>
