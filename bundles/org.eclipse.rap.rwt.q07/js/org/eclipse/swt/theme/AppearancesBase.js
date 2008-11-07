@@ -566,12 +566,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         width : "auto",
         height : "auto",
-        textColor : tv.getColor( "menu.foreground" ),
-        backgroundColor : tv.getColor( "menu.background" ),
-        font : tv.getFont( "widget.font" ),
+        textColor : tv.getCssColor( "Menu", "color" ),
+        backgroundColor : tv.getCssColor( "Menu", "background-color" ),
+        font : tv.getCssFont( "Menu", "font" ),
         overflow : "hidden",
-        border : tv.getBorder( "menu.border" ),
-        padding : tv.getBoxDimensions( "menu.padding" )
+        border : tv.getCssBorder( "Menu", "border" ),
+        padding : tv.getCssBoxDimensions( "Menu", "padding" )
       };
     }
   },
@@ -599,15 +599,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : [ 2, 4 ],
         cursor : "default",
         verticalChildrenAlign : "middle",
-        backgroundColor : tv.getColor( states.over ? "menu.hover.background" : "menu.background" )
+        backgroundColor : tv.getCssColor( "MenuItem", "background-color" )
       };
-      if( states.disabled ) {
-        result.textColor = tv.getColor( "widget.graytext" );
-      } else if( states.over ) {
-        result.textColor = tv.getColor( "menu.hover.foreground" );
-      } else {
-        result.textColor = tv.getColor( "menu.foreground" );
-      }
+      result.textColor = states.disabled 
+                         ? tv.getColor( "widget.graytext" )
+                         : tv.getCssColor( "MenuItem", "color" );
       return result;
     }
   },
@@ -686,12 +682,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.disabled ) {
         result.backgroundColor = tv.getColor( "toolbar.background" );
         result.textColor = tv.getColor( "widget.graytext" );
-      } else if( states.over ) {
-        result.backgroundColor = tv.getColor( "menu.hover.background" );
-        result.textColor = tv.getColor( "menu.hover.foreground" );
       } else {
-        result.backgroundColor = tv.getColor( "menu.background" );
-        result.textColor = tv.getColor( "menu.foreground" );
+        result.backgroundColor = tv.getCssColor( "MenuItem", "background-color" );
+        result.textColor = tv.getCssColor( "MenuItem", "color" );
       }
       return result;
     }
@@ -733,14 +726,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       
       if( states.selected ) {
-        result.textColor = states.disabled ?
-                           tv.getColor( "widget.graytext" ) :
-                           tv.getCssColor( "List-Item", "color" );
+        result.textColor = states.disabled
+                           ? tv.getColor( "widget.graytext" )
+                           : tv.getCssColor( "List-Item", "color" );
         result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       } else {
-        result.textColor = states.disabled ? 
-                           tv.getColor( "widget.graytext" ) :
-                           "undefined";
+        result.textColor = states.disabled
+                           ? tv.getColor( "widget.graytext" )
+                           : "undefined";
         result.backgroundColor = null;
       }
       
@@ -1654,9 +1647,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor : states.disabled ? 
-                    tv.getColor( "widget.graytext" ) : 
-                    "undefined"
+        textColor : states.disabled
+                    ? tv.getColor( "widget.graytext" )
+                    : "undefined"
       }
     }
   },
@@ -1666,9 +1659,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         cursor : states.disabled ? "default" : "pointer",
-        textColor: states.disabled ?
-                   tv.getColor( "widget.graytext" ) :
-                   tv.getCssColor( "Link-Hyperlink", "color" )
+        textColor: states.disabled
+                   ? tv.getColor( "widget.graytext" )
+                   : tv.getCssColor( "Link-Hyperlink", "color" )
       }
     }
   },
