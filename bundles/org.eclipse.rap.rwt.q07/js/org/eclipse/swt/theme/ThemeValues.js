@@ -112,8 +112,17 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssImage : function( element, key ) {
-      var tkey = this._store.getCssValue( element, this._states, key );
-      return this.getImage( tkey );
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.images[ vkey ];
+      if( result != null ) {
+        result = "widget/" + result;
+      } else {
+        // TODO [rst] Handle null values - currently, both null and the string
+        // "undefined" lead to a js error for icon property
+        result = "static/image/blank.gif";
+      }
+      return result;
     },
 
     getImage : function( key ) {

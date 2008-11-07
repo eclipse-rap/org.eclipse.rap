@@ -370,6 +370,19 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
   }
 
+  public void testWriteStyleFlags() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.SHELL_TRIM );
+    assertTrue( ( shell.getStyle() & SWT.TITLE ) != 0 );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+    lca.renderInitialization( shell );
+    String expected = "addState( \"rwt_TITLE\" )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

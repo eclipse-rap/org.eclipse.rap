@@ -32,6 +32,21 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       },
       "List-Item" : {
         "inactive" : "parent_unfocused"
+      },
+      "Shell" : {
+        "inactive" : "!active"
+      },
+      "Shell-Titlebar" : {
+        "inactive" : "!active"
+      },
+      "Shell-MinButton" : {
+        "inactive" : "!active"
+      },
+      "Shell-MaxButton" : {
+        "inactive" : "!active"
+      },
+      "Shell-CloseButton" : {
+        "inactive" : "!active"
       }
     };
   },
@@ -175,12 +190,16 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       for( var i = 0; i < constraints.length && result; i++ ) {
         var cond = constraints[ i ];
         if( cond.length > 0 ) {
-          var c = cond.substr( 0, 1 );
+          var c = cond.charAt( 0 );
           if( c == "." ) {
             result = "variant_" + cond.substr( 1 ) in states;
           } else if( c == ":" ) {
             var state = this._translateState( cond.substr( 1 ), element );
-            result = state in states;
+            if( state.charAt( 0 ) == "!" ) {
+              result = ! ( state.substr( 1 ) in states );
+            } else {
+              result = state in states;
+            }
           } else if( c == "[" ) {
             result = "rwt_" + cond.substr( 1 ) in states;
           }

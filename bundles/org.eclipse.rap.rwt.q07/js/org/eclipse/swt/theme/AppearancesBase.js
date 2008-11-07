@@ -346,37 +346,30 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "window-captionbar" :
-  {
+  "window-captionbar" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        margin : tv.getBoxDimensions( "shell.title.margin" ),
-        padding : tv.getBoxDimensions( "shell.title.padding" ),
         verticalChildrenAlign : "middle"
       };
-      if( states.active ) {
-        result.textColor = tv.getColor( "shell.title.foreground" );
-        result.backgroundColor = tv.getColor( "shell.title.background" );
-        result.backgroundImage = tv.getImage( "shell.title.active.bgimage" );
-      } else {
-        result.textColor = tv.getColor( "shell.title.inactive.foreground" );
-        result.backgroundColor = tv.getColor( "shell.title.inactive.background" );
-        result.backgroundImage = tv.getImage( "shell.title.inactive.bgimage" );
-      }
+      result.margin = tv.getCssBoxDimensions( "Shell-Titlebar", "margin" );
+      result.padding = tv.getCssBoxDimensions( "Shell-Titlebar", "padding" );
+      result.textColor = tv.getCssColor( "Shell-Titlebar", "color" );
+      result.backgroundColor
+        = tv.getCssColor( "Shell-Titlebar", "background-color" );
+      result.backgroundImage
+        = tv.getCssImage( "Shell-Titlebar", "background-image" );
       if( states.rwt_TITLE ) {
-        result.minHeight = tv.getDimension( "shell.title.height" );
-        result.maxHeight = tv.getDimension( "shell.title.height" );
+        result.minHeight = tv.getCssDimension( "Shell-Titlebar", "height" );
       } else {
         result.minHeight = 0;
-        result.maxHeight = 0;
       }
+      result.maxHeight = result.minHeight;
       return result;
     }
   },
 
-  "window-resize-frame" :
-  {
+  "window-resize-frame" : {
     style : function( states ) {
       return {
         border : "shadow"
@@ -384,8 +377,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "window-captionbar-icon" :
-  {
+  "window-captionbar-icon" : {
     style : function( states ) {
       return {
         marginRight : 2
@@ -393,116 +385,47 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "window-captionbar-title" :
-  {
+  "window-captionbar-title" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         cursor : "default",
-        font : "shell.title.font",
+        font : tv.getCssFont( "Shell-Titlebar", "font" ),
         marginRight : 2
       };
     }
   },
 
-  "window-captionbar-button" :
-  {
+  "window-captionbar-minimize-button" : {
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        margin : tv.getBoxDimensions( "shell.button.margin" )
-      };
+      result.icon = tv.getCssImage( "Shell-MinButton", "background-image" );
+      result.margin = tv.getCssBoxDimensions( "Shell-MinButton", "margin" );
       return result;
     }
   },
 
-  "window-captionbar-minimize-button" :
-  {
-    include : "window-captionbar-button",
+  "window-captionbar-maximize-button" : {
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      if( states.active ) {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.minbutton.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.minbutton.image" );
-        }
-      } else {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.minbutton.inactive.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.minbutton.inactive.image" );
-        }
-      }
+      result.icon = tv.getCssImage( "Shell-MaxButton", "background-image" );
+      result.margin = tv.getCssBoxDimensions( "Shell-MaxButton", "margin" );
       return result;
     }
   },
 
-  "window-captionbar-maximize-button" :
-  {
-    include : "window-captionbar-button",
-    style : function( states ) {
-      var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      if( states.active ) {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.maxbutton.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.maxbutton.image" );
-        }
-      } else {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.maxbutton.inactive.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.maxbutton.inactive.image" );
-        }
-      }
-      return result;
-    }
+  "window-captionbar-restore-button" : {
+    include : "window-captionbar-maximize-button"
   },
 
-  "window-captionbar-restore-button" :
-  {
-    include : "window-captionbar-button",
+  "window-captionbar-close-button" : {
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      if( states.active ) {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.restorebutton.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.restorebutton.image" );
-        }
-      } else {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.restorebutton.inactive.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.restorebutton.inactive.image" );
-        }
-      }
-      return result;
-    }
-  },
-
-  "window-captionbar-close-button" :
-  {
-    include : "window-captionbar-button",
-    style : function( states ) {
-      var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      if( states.active ) {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.closebutton.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.closebutton.image" );
-        }
-      } else {
-        if( states.over && !states.pressed ) {
-          result.icon = tv.getImage( "shell.closebutton.inactive.over.image" );
-        } else {
-          result.icon = tv.getImage( "shell.closebutton.inactive.image" );
-        }
-      }
+      result.icon = tv.getCssImage( "Shell-CloseButton", "background-image" );
+      result.margin = tv.getCssBoxDimensions( "Shell-CloseButton", "margin" );
       return result;
     }
   },

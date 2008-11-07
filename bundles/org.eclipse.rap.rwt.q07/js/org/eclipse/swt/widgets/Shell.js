@@ -207,13 +207,33 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // TODO [rst] Find a generic solution for state inheritance
     addState : function( state ) {
       this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
+      if( state == "active"
+          || state == "maximized"
+          || state == "minimized"
+          || state.substr( 0, 8 ) == "variant_"
+          || state.substr( 0, 4 ) == "rwt_" )
       {
         this._captionBar.addState( state );
         this._minimizeButton.addState( state );
         this._maximizeButton.addState( state );
         this._restoreButton.addState( state );
         this._closeButton.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state == "active"
+          || state == "maximized"
+          || state == "minimized"
+          || state.substr( 0, 8 ) == "variant_"
+          || state.substr( 0, 4 ) == "rwt_" )
+      {
+        this._captionBar.removeState( state );
+        this._minimizeButton.removeState( state );
+        this._maximizeButton.removeState( state );
+        this._restoreButton.removeState( state );
+        this._closeButton.removeState( state );
       }
     },
 
@@ -323,7 +343,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
       var active = evt.getValue();
       if( active ) {
-
         // workaround: Do not activate Shells that are blocked by a modal Shell
         var modalShell = org.eclipse.swt.widgets.Shell._upperModalShell;
         if( modalShell != null && modalShell.getZIndex() > this.getZIndex() ) {
@@ -331,16 +350,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           modalShell.setActive( true );
         }
         // end of workaround
-
-        this._minimizeButton.addState( "active" );
-        this._maximizeButton.addState( "active" );
-        this._restoreButton.addState( "active" );
-        this._closeButton.addState( "active" );
-      } else {
-        this._minimizeButton.removeState( "active" );
-        this._maximizeButton.removeState( "active" );
-        this._restoreButton.removeState( "active" );
-        this._closeButton.removeState( "active" );
       }
     },
 

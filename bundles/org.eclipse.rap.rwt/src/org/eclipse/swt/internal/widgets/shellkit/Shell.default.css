@@ -14,6 +14,8 @@ Shell:maximized {
   border: none;
 }
 
+/* Shell titlebar */
+
 Shell-Titlebar {
   background-color: rgb( 0, 128, 192 );
   background-gradient-color: rgb( 0, 128, 192 );
@@ -32,9 +34,13 @@ Shell-Titlebar:inactive {
   background-image: url( resource/widget/rap/window/caption_inactive.gif );
 }
 
+/* Shell buttons */
+
 Shell-MinButton, Shell-MaxButton, Shell-CloseButton {
   margin: 2px 0px 2px 1px;
 }
+
+/* Minimize button */
 
 Shell-MinButton {
   background-image: url( resource/widget/rap/window/minimize.png );
@@ -52,6 +58,8 @@ Shell-MinButton:inactive:hover {
   background-image: url( resource/widget/rap/window/minimize.inactive.over.png );
 }
 
+/* Maximize button */
+
 Shell-MaxButton {
   background-image: url( resource/widget/rap/window/maximize.png );
 }
@@ -68,6 +76,8 @@ Shell-MaxButton:inactive:hover {
   background-image: url( resource/widget/rap/window/maximize.inactive.over.png );
 }
 
+/* Restore button */
+
 Shell-MaxButton:maximized {
   background-image: url( resource/widget/rap/window/restore.png );
 }
@@ -75,6 +85,16 @@ Shell-MaxButton:maximized {
 Shell-MaxButton:maximized:hover {
   background-image: url( resource/widget/rap/window/restore.over.png );
 }
+
+Shell-MaxButton:maximized:inactive {
+  background-image: url( resource/widget/rap/window/restore.inactive.png );
+}
+
+Shell-MaxButton:maximized:inactive:hover {
+  background-image: url( resource/widget/rap/window/restore.inactive.over.png );
+}
+
+/* Close button */
 
 Shell-CloseButton {
   background-image: url( resource/widget/rap/window/close.png );
