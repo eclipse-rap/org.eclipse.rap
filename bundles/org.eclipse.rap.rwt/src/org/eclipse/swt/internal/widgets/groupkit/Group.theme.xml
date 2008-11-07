@@ -45,6 +45,15 @@
         description="Padding for group boxes (space between frame and content)"
         />
         
+    <property name="border"
+        type="border"
+        description="Group border"
+        />
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />        
+        
     <element name="Group-Frame"
         description="The frame around the children of a group box">
 
