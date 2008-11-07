@@ -547,7 +547,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function(states)
     {
       return {
-        icon : states.checked ? "widget/menu/checkbox.gif" : "static/image/blank.gif"
+        icon : states.checked 
+               ? "widget/menu/checkbox.gif"
+               : "static/image/blank.gif"
       };
     }
   },
@@ -559,7 +561,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function(states)
     {
       return {
-        icon : states.checked ? "widget/menu/radiobutton.gif" : "static/image/blank.gif"
+        icon : states.checked 
+               ? "widget/menu/radiobutton.gif"
+               : "static/image/blank.gif"
       };
     }
   },
@@ -600,7 +604,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         width : "auto",
         padding : [ 3, 4 ],
         verticalChildrenAlign : "middle",
-        backgroundImage : states.checked && !states.over ? "static/image/dotted_white.gif" : null
+        backgroundImage : states.checked && !states.over 
+                          ? "static/image/dotted_white.gif"
+                          : null
       };
       if( states.disabled ) {
         result.backgroundColor = tv.getColor( "toolbar.background" );

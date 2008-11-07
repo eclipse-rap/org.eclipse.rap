@@ -40,6 +40,11 @@
         type="color"
         description="Background color"
         />
+        
+    <property name="font"
+        type="font"
+        description="Menu font"
+        />       
 
     <property name="border"
         type="border"
@@ -47,12 +52,8 @@
         />
 
     <property name="padding"
-        type="box"
+        type="boxdim"
         description="Space between border and text / image"
-        />
-    
-    <style name="BORDER"
-        description="Style constant for bordered behavior."
         />
         
     <element name="MenuItem"
