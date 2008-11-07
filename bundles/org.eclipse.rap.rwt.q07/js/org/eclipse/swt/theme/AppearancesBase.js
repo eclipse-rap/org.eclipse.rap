@@ -1492,7 +1492,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" );
+      result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
   },
@@ -1501,7 +1501,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" );
+      result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
   },
