@@ -18,6 +18,10 @@ TreeColumn:hover {
   background-color: rgb( 248, 248, 255 );
 }
 
+TreeColumn-SortIndicator {
+  background-image: none;
+}
+
 TreeColumn-SortIndicator:up {
   background-image: url( resource/widget/rap/column/up.gif );
 }

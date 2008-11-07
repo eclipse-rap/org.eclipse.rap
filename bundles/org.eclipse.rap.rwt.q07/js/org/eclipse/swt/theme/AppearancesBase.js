@@ -937,13 +937,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.up ) {
-        result.source = tv.getImage( "tree.column.sort.up" );
-      } else if( states.down ) {
-        result.source = tv.getImage( "tree.column.sort.down" );
-      } else {
-        result.source = "undefined";
-      }
+      result.source = tv.getCssImage( "TreeColumn-SortIndicator",
+                                      "background-image" );
       return result;
     }
   },
@@ -1264,13 +1259,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.up ) {
-        result.source = tv.getImage( "table.column.sort.up" );
-      } else if( states.down ) {
-        result.source = tv.getImage( "table.column.sort.down" );
-      } else {
-        result.source = "undefined";
-      }
+      result.source = tv.getCssImage( "TableColumn-SortIndicator",
+                                      "background-image" );
       return result;
     }
   },

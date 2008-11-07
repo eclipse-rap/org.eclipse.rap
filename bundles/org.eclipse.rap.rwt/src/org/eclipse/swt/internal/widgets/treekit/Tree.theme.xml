@@ -26,35 +26,34 @@
 
     -->
 
-  <element name="TreeColumn"
-      description="Column header of Tree controls">
+  <element name="Tree">
 
-    <property name="background-color"
-        type="color"
-        description="Background color for tree column headers"
-        />
-        
-    <state name="hover"
-        description="Mouse over state"
-        />
-        
-    <element name="TreeColumn-SortIndicator"
-        description="Sort indicators in Tree column headers">
-  
-      <property name="background-image"
-          type="image"
-          description="Indicator image for tree sorting (up/down)"
-          />
-          
-      <state name="up"
-          description="On sorting up"
-          />   
-      
-      <state name="down"
-          description="On sorting down"
-          />    
-  
-    </element>       
+    <element name="TreeColumn"
+        description="Column header of Tree controls">
+
+      <property name="background-color"
+          type="color"
+          description="Background color for tree column headers" />
+
+      <state name="hover"
+          description="Mouse over state" />
+
+      <element name="TreeColumn-SortIndicator"
+          description="Sort indicators in Tree column headers">
+
+        <property name="background-image"
+            type="image"
+            description="Indicator image for tree sorting (up/down)" />
+
+        <state name="up"
+            description="On sorting up" />
+
+        <state name="down"
+            description="On sorting down" />
+
+      </element>
+
+    </element>
 
   </element>
 

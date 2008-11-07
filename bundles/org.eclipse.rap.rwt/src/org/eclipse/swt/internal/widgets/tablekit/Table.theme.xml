@@ -27,57 +27,54 @@
 
     -->
 
-  <element name="TableColumn"
-      description="Column header of Table controls">
+  <element name="Table">
 
-    <property name="background-color"
-        type="color"
-        description="Background color for table column headers"
-        />
-        
-    <state name="hover"
-        description="On mouse over"
-        />
-        
-    <element name="TableColumn-SortIndicator"
-        description="Sort indicators in Table column headers">
-  
-      <property name="background-image"
-          type="image"
-          description="Indicator image for table sorting (up/down)"
-          />
-          
-      <state name="up"
-          description="On sorting up"
-          />   
-      
-      <state name="down"
-          description="On sorting down"
-          /> 
+    <element name="TableColumn"
+        description="Column header of Table controls">
 
-    </element>
-    
-    <element name="Table-GridLine"
-        description="Grid lines in Table controls">
-  
-      <property name="color"
+      <property name="background-color"
           type="color"
-          description="Grid line color when linesVisible is true"
-          />
-  
-    </element>
-    
-    <element name="Table-Checkbox"
-        description="Checkboxes in Table controls">
-  
-      <property name="width"
-          type="dimension"
-          description="Width of check boxes"
-          />
-  
+          description="Background color for table column headers" />
+
+      <state name="hover"
+          description="On mouse over" />
+
+      <element name="TableColumn-SortIndicator"
+          description="Sort indicators in Table column headers">
+
+        <property name="background-image"
+            type="image"
+            description="Indicator image for table sorting (up/down)" />
+
+        <state name="up"
+            description="On sorting up" />
+
+        <state name="down"
+            description="On sorting down" />
+
+      </element>
+
+      <element name="Table-GridLine"
+          description="Grid lines in Table controls">
+
+        <property name="color"
+            type="color"
+            description="Grid line color when linesVisible is true" />
+
+      </element>
+
+      <element name="Table-Checkbox"
+          description="Checkboxes in Table controls">
+
+        <property name="width"
+            type="dimension"
+            description="Width of check boxes" />
+
+      </element>
+
     </element>
 
-  </element>  
+  </element>
 
   <!-- C O M P A T I B I L I T Y
 
