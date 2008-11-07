@@ -263,9 +263,15 @@ public final class ThemeManager {
       themes.put( PREDEFINED_THEME_ID,
                   new ThemeWrapper( predefinedTheme, themeCount++ ) );
       predefinedTheme.setDefault( true );
+      checkPredefinedTheme();
       initialized = true;
       logRegisteredThemeAdapters();
     }
+  }
+
+  private void checkPredefinedTheme() {
+    // TODO
+    ThemeCssValuesMap valuesMap = predefinedTheme.getValuesMap();
   }
 
   /**
