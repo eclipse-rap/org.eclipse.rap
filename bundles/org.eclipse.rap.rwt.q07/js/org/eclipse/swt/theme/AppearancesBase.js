@@ -1468,9 +1468,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = tv.getColor( "widget.background" );
-      result.border = tv.getBorder( states.rwt_BORDER
-                                    ? "control.BORDER.border"
-                                    : "control.border" );
+      result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
   },
@@ -1482,7 +1480,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "shadow" : tv.getBorder( "control.border" )
+        border : states.rwt_BORDER ? "shadow" : tv.getCssBorder( "*", "border" )
       }
     }
   },
