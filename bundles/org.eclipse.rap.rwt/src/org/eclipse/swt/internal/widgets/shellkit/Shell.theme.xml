@@ -89,6 +89,11 @@
           description="Font for title bar of Shells"
           />
 
+      <property name="margin"
+          type="boxdim"
+          description="Margin of the title bar of shells"
+          />
+
       <property name="padding"
           type="boxdim"
           description="Padding of the title bar of shells"
