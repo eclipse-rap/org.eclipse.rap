@@ -40,7 +40,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssBorder : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
-      return values.borders[ vkey ];
+      var result = values.borders[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getBorder : function( key ) {
@@ -51,7 +53,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssColor : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
-      return values.colors[ vkey ];
+      var result = values.colors[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getColor : function( key ) {
@@ -67,7 +71,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssFont : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
-      return values.fonts[ vkey ];
+      var result = values.fonts[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getFont : function( key ) {
@@ -78,7 +84,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssDimension : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
-      return values.dimensions[ vkey ];
+      var result = values.dimensions[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getDimension : function( key ) {
@@ -90,7 +98,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssBoxDimensions : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
-      return values.boxdims[ vkey ];
+      var result = values.boxdims[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getBoxDimensions : function( key ) {
@@ -102,7 +112,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssBoolean : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
-      return values.booleans[ vkey ];
+      var result = values.booleans[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getBoolean : function( key ) {
@@ -115,6 +127,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues( "_" );
       var result = values.images[ vkey ];
+      this.__checkDefined( result, element, key );
       if( result != null ) {
         result = "widget/" + result;
       } else {
@@ -137,6 +150,12 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
         result = "static/image/blank.gif";
       }
       return result;
+    },
+
+    __checkDefined : function( value, element, key ) {
+      if( value === undefined ) {
+        this.error( "undefined value for " + element + "/" + key );
+      }
     },
 
     __selectVariant : function( key, values ) {
