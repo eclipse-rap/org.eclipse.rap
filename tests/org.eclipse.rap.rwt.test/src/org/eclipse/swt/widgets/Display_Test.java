@@ -36,7 +36,7 @@ public class Display_Test extends TestCase {
       return 0;
     }
   }
-  
+
   public void testSingleDisplayPerSession() {
     Device display = new Display();
     assertEquals( Display.getCurrent(), display );
@@ -66,8 +66,8 @@ public class Display_Test extends TestCase {
     thread.start();
     thread.join();
     assertSame( thread, display[ 0 ].getThread() );
-    
-    
+
+
 //    final Display[] display = { new Display() };
 //    final Thread[] thread = new Thread[ 1 ];
 //    final ServiceContext context[] = { ContextProvider.getContext() };
@@ -83,7 +83,7 @@ public class Display_Test extends TestCase {
 //        return PhaseId.PREPARE_UI_ROOT;
 //      }
 //    } );
-//    
+//
 //    Runnable runnable = new Runnable() {
 //      public void run() {
 //        ContextProvider.setContext( context[ 0 ] );
@@ -105,7 +105,7 @@ public class Display_Test extends TestCase {
 //    thread1.start();
 //    thread1.join();
 //    assertSame( thread1, thread[ 0 ] );
-//    
+//
 //    Thread thread2 = new Thread( runnable );
 //    thread2.start();
 //    thread2.join();
@@ -114,7 +114,7 @@ public class Display_Test extends TestCase {
 //    assertNull( display[ 0 ].getThread() );
 //    RWTFixture.setUp();
   }
-  
+
   public void testGetShells() {
     Display display = new Display();
     assertEquals( 0, display.getShells().length );
@@ -124,7 +124,7 @@ public class Display_Test extends TestCase {
     Composite[] shells = display.getShells();
     assertTrue( shell2 == shells[ 0 ] || shell2 == display.getShells()[ 1 ] );
   }
-  
+
   public void testProperties() {
     Display display = new Display();
     assertEquals( 0, display.getShells().length );
@@ -134,24 +134,24 @@ public class Display_Test extends TestCase {
     assertTrue( bounds.x != display.getBounds().x );
   }
 
-  
+
   public void testMap() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Rectangle shellBounds = new Rectangle( 10, 10, 400, 400 );
     shell.setBounds( shellBounds );
-    
+
     Rectangle actual = display.map( shell, shell, 1, 2, 3, 4 );
     Rectangle expected = new Rectangle( 1, 2, 3, 4 );
     assertEquals( expected, actual );
-    
+
     actual = display.map( shell, null, 5, 6, 7, 8 );
     expected = new Rectangle( shellBounds.x + 5,
                               shellBounds.y + 6,
                               7,
                               8 );
     assertEquals( expected, actual );
-    
+
     shell.setLayout( new FillLayout() );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     shell.layout();
@@ -161,7 +161,7 @@ public class Display_Test extends TestCase {
                               8,
                               9 );
     assertEquals( expected, actual );
-    
+
     actual = display.map( null, folder, 1, 2, 3, 4 );
     expected = new Rectangle( 1 - shell.getBounds().x - folder.getBounds().x,
                               2 - shell.getBounds().y - folder.getBounds().y,
@@ -169,7 +169,7 @@ public class Display_Test extends TestCase {
                               4 );
     assertEquals( expected, actual );
   }
-  
+
   public void testMapWithChildShell() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -182,14 +182,14 @@ public class Display_Test extends TestCase {
     expected = new Point( 100, 100 );
     actual = display.map( childShell1, shell, 0, 0 );
     assertEquals( expected, actual );
-    
+
     Shell childShell2 = new Shell( shell, SWT.NONE );
     childShell2.setBounds( 200, 200, 800, 600 );
     expected = new Point( 14, 17 );
     actual = display.map( childShell1, childShell2, 14, 17 );
     assertEquals( expected, actual );
   }
-  
+
   public void testActiveShell() {
     // TODO [rh] This test needs to be reworked when Shell.open() is implemented
     //      since it assumes opened shells.
@@ -204,7 +204,7 @@ public class Display_Test extends TestCase {
     assertSame( shell2, display.getActiveShell() );
     shell2.dispose();
     assertSame( shell1, display.getActiveShell() );
-    
+
     // Test disposing of inactive shell
     Shell inactiveShell = new Shell( display, SWT.NONE );
     Shell activeShell = new Shell( display, SWT.NONE );
@@ -213,7 +213,7 @@ public class Display_Test extends TestCase {
     assertSame( activeShell, display.getActiveShell() );
     inactiveShell.dispose();
     assertSame( activeShell, display.getActiveShell() );
-    
+
     // Test explicitly setting the active shell
     Shell shell3 = new Shell( display, SWT.NONE );
     Shell shell4 = new Shell( display, SWT.NONE );
@@ -223,23 +223,38 @@ public class Display_Test extends TestCase {
     shell3.setActive();
     assertSame( shell3, display.getActiveShell() );
   }
-  
+
   public void testSystemFont() {
     Device display = new Display();
     Font systemFont = display.getSystemFont();
     assertNotNull( systemFont );
   }
-  
+
   public void testSystemColor() {
     Display display = new Display();
-    Color systemColor = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
-    assertNotNull( systemColor );
-    Color systemRed = display.getSystemColor( SWT.COLOR_RED );
-    Color red = Graphics.getColor( 255, 0, 0 );
-    assertEquals( red, systemRed );
-    assertSame( red, systemRed );
-    assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
     Color color;
+    // Theme colors
+    color = display.getSystemColor( SWT.COLOR_WIDGET_NORMAL_SHADOW );
+    assertEquals( new RGB( 167, 166, 170 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WIDGET_DARK_SHADOW );
+    assertEquals( new RGB( 133, 135, 140 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WIDGET_LIGHT_SHADOW );
+    assertEquals( new RGB( 220, 223, 228 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW );
+    assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WIDGET_BORDER );
+    assertEquals( new RGB( 172, 168, 153 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WIDGET_FOREGROUND );
+    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
+    assertEquals( new RGB( 248, 248, 255 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_INFO_BACKGROUND );
+    assertEquals( new RGB( 255, 255, 225 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_INFO_FOREGROUND );
+    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    color = display.getSystemColor( SWT.COLOR_INFO_FOREGROUND );
+    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    // Fix colors
     color = display.getSystemColor( SWT.COLOR_BLACK );
     assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_BLUE );
@@ -272,15 +287,21 @@ public class Display_Test extends TestCase {
     assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_YELLOW );
     assertEquals( new RGB( 255, 255, 0 ), color.getRGB() );
+    // Only one instance per color
+    Color systemRed = display.getSystemColor( SWT.COLOR_RED );
+    Color red = Graphics.getColor( 255, 0, 0 );
+    assertEquals( red, systemRed );
+    assertSame( red, systemRed );
+    assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
   }
-  
+
   public void testAddAndRemoveFilter() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final int CLOSE_CALLBACK = 0;
     final int DISPOSE_CALLBACK = 1;
     final boolean[] callbackReceived = new boolean[]{ false, false };
     Listener listener = new Listener() {
-      public void handleEvent( Event e ) {
+      public void handleEvent( final Event e ) {
         if( e.type == SWT.Close ) {
           callbackReceived[ CLOSE_CALLBACK ] = true;
         } else if( e.type == SWT.Dispose ) {
@@ -288,7 +309,7 @@ public class Display_Test extends TestCase {
         }
       }
     };
-    
+
     // addFilter
     Display display = new Display();
     try {
@@ -302,7 +323,7 @@ public class Display_Test extends TestCase {
     shell.close();
     assertTrue( callbackReceived[ CLOSE_CALLBACK ] );
     assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
-  
+
     // removeFilter
     callbackReceived[ CLOSE_CALLBACK ] = false;
     callbackReceived[ DISPOSE_CALLBACK ] = false;
@@ -317,7 +338,7 @@ public class Display_Test extends TestCase {
     shell.close();
     assertFalse( callbackReceived[ CLOSE_CALLBACK ] );
     assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
-    
+
     // remove filter for an event that was not added before -> do nothing
     display.removeFilter( SWT.FocusIn, listener );
   }
@@ -331,7 +352,7 @@ public class Display_Test extends TestCase {
     assertEquals( "w1", DisplayUtil.getId( Display.getCurrent() ) );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
