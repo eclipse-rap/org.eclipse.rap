@@ -3,11 +3,16 @@
 List {
   background-color: white;
   color: black;
-  border: none;  
+  border: none;
 }
 
 List[BORDER] {
   border: 1px inset;
+}
+
+List-Item {
+  background-color: white;
+  color: black;
 }
 
 List-Item:selected {
