@@ -9,6 +9,7 @@
  * 	   IBM Corporation - initial API and implementation
  * 	   Tom Schindl <tom.schindl@bestsolution.at> - initial API and implementation
  * 												 - fix for bug 183850, 182652, 182800, 215069
+ *     Innoopract - RAP adaption
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
@@ -24,6 +25,14 @@ import org.eclipse.swt.widgets.Table;
  * the control into owner draw mode and highlighting the currently selected
  * cell. To make the use this class you should create the control with the
  * {@link SWT#FULL_SELECTION} bit set
+ * 
+ * <p>
+ * <strong>RAP specific:</strong> despite its name that was taken as-is from
+ * JFace/RCP to ease single-sourcing, this class does not use custom drawing
+ * to highlight the focused cell.
+ * <br />
+ * The focused cell is displayed using the selection colors of the system.
+ * </p>
  * 
  * This class can be subclassed to configure how the coloring of the selected
  * cell.
