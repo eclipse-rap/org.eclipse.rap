@@ -1120,7 +1120,7 @@ public final class ThemeManager {
           ConditionalValue conditionalValue = values[ k ];
           JsonArray array = new JsonArray();
           array.append( JsonArray.valueOf( conditionalValue.constraints ) );
-          array.append( Theme.getDummyPropertyName( conditionalValue.value ) );
+          array.append( Theme.createCssPropertyName( conditionalValue.value ) );
           valuesArray.append( array );
         }
         elementObj.append( property.getName(), valuesArray );

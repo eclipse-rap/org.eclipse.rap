@@ -72,8 +72,8 @@ public class QxBorderUtil {
   {
     QxColor color1 = ( QxColor )theme.getValue( properties[ 0 ] );
     QxColor color2 = ( QxColor )theme.getValue( properties[ 1 ] );
-    String name1 = Theme.getDummyPropertyName( color1 );
-    String name2 = Theme.getDummyPropertyName( color2 );
+    String name1 = Theme.createCssPropertyName( color1 );
+    String name2 = Theme.createCssPropertyName( color2 );
     JsonArray array = new JsonArray();
     array.append( name1 );
     array.append( name2 );

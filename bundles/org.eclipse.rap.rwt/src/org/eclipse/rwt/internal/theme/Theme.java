@@ -401,8 +401,26 @@ public final class Theme {
     createDummyProperties();
   }
 
-  public static String getDummyPropertyName( final QxType value ) {
-    return "_" + Integer.toHexString( value.hashCode() );
+  public static String createCssPropertyName( final QxType value ) {
+    char typePrefix;
+    if( value instanceof QxBoolean ) {
+      typePrefix = 'L';
+    } else if( value instanceof QxBorder ) {
+      typePrefix = 'B';
+    } else if( value instanceof QxBoxDimensions ) {
+      typePrefix = 'X';
+    } else if( value instanceof QxColor ) {
+      typePrefix = 'C';
+    } else if( value instanceof QxDimension ) {
+      typePrefix = 'D';
+    } else if( value instanceof QxFont ) {
+      typePrefix = 'F';
+    } else if( value instanceof QxImage ) {
+      typePrefix = 'I';
+    } else {
+      typePrefix = '_';
+    }
+    return "_" + typePrefix + Integer.toHexString( value.hashCode() );
   }
 
   private void checkType( final String key, final QxType value, final Class type )
@@ -438,7 +456,7 @@ public final class Theme {
         QxType value = propertyMap.getValue( propertyName );
         // TODO [rst] Quick fix for NPE, revise
         if( value != null ) {
-          String hash = getDummyPropertyName( value );
+          String hash = createCssPropertyName( value );
           cssValues.put( hash, value );
         }
       }
