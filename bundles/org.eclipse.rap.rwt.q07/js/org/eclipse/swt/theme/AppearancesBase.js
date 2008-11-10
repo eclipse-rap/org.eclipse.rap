@@ -259,7 +259,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font : tv.getCssFont( "*", "font" ),
         overflow : "hidden",
-        border : tv.getCssBorder( "ToolBar", "border" ),
+        border : tv.getBorder( states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border" ),
         textColor : states.disabled
                     ? tv.getColor( "widget.graytext" )
                     : tv.getCssColor( "ToolBar", "color" ),

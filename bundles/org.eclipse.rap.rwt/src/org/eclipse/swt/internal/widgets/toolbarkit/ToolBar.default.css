@@ -2,12 +2,7 @@
 
 ToolBar {
   color: black;
-  background-color: rgb( 248, 248, 255 );
-  border: none;
-}
-
-ToolBar[BORDER] {  
-  border: 1px outset;
+  background-color: rgb( 248, 248, 255 );  
 }
 
 ToolItem:hover {
