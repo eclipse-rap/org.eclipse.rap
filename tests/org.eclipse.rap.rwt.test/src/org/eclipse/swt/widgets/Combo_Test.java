@@ -350,14 +350,14 @@ public class Combo_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-    Point expected = new Point( 68, 19 );
+    Point expected = new Point( 68, 21 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 50, 19 );
+    expected = new Point( 50, 21 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 104, 104 );

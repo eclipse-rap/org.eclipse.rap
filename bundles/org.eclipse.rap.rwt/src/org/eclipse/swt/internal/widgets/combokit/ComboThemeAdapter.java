@@ -11,31 +11,33 @@
 
 package org.eclipse.swt.internal.widgets.combokit;
 
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 
 
-public final class ComboThemeAdapter implements IControlThemeAdapter {
+public final class ComboThemeAdapter extends ControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
     return 2;
   }
 
-  public Color getForeground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "list.foreground" );
+  public Color getForeground( final Combo combo ) {
+    return getCssColor( "List", "color", combo );
   }
 
-  public Color getBackground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "list.background" );
+  public Color getBackground( final Combo combo ) {
+    return getCssColor( "List", "background-color", combo );
   }
 
-  public Font getFont( final Control control ) {
-    return ThemeAdapterUtil.getFont( control, "widget.font" );
-  }
-
-  public Rectangle getPadding( final Control control ) {
-    return ThemeAdapterUtil.getBoxDimensions( control, "text.SINGLE.padding" );
+  public Rectangle getPadding( final Combo combo ) {
+    Rectangle result = getCssBoxDimensions( "Text", "padding", combo );
+    // TODO [if] Move to fragment. These two pixels are hard-coded in qooxdoo
+    // TextField.js to emulate IE hard-coded margin.
+    result.y += 1;
+    result.height += 2;
+    return result;
   }
 }

@@ -711,7 +711,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : "inset",
-        backgroundColor : tv.getColor( "list.background" )
+        backgroundColor : tv.getCssColor( "List", "background-color" )
       };
     }
   },
@@ -737,8 +737,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         height    : "auto",
         border    : "shadow",
-        textColor : tv.getColor( states.selected ? "list.selection.foreground" : "list.foreground" ),
-        backgroundColor : tv.getColor( states.selected ? "list.selection.background" : "list.background" )
+        textColor : tv.getCssColor( "List", "color" ),
+        backgroundColor : tv.getCssColor( "List", "background-color" )
       };
     }
   },
@@ -749,9 +749,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         font : tv.getFont( "widget.font" ),
-        padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
-        textColor : tv.getColor( states.disabled ? "widget.graytext" : "list.foreground" ),
-        backgroundColor : tv.getColor( "list.background" )
+        padding : tv.getCssBoxDimensions( "Text", "padding" ),
+        textColor : states.disabled
+                    ? tv.getColor( "widget.graytext" )
+                    : tv.getCssColor( "List", "color" ),
+        backgroundColor : tv.getCssColor( "List", "background-color" )
       };
     }
   },
