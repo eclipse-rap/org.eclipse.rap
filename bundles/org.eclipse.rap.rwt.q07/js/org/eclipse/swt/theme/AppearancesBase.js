@@ -955,12 +955,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.textColor = tv.getColor( "widget.foreground" );
-      result.font = tv.getFont( "widget.font" );
+      result.textColor = tv.getCssColor( "*", "color" );
+      result.font = tv.getCssFont( "*", "font" );
       result.spacing = -1;
-      result.border = tv.getBorder( states.rwt_BORDER
-                                    ? "control.BORDER.border"
-                                    : "control.border" );
+      result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
   },
@@ -981,7 +979,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
 //    result.height = "1*";
       result.overflow = "hidden";
-      result.backgroundColor = tv.getColor( "widget.background" );
+      result.backgroundColor = tv.getCssColor( "*", "background-color" );
       result.border = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       result.padding = 10;
       return result;
@@ -1023,8 +1021,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       border_bottom_checked.setWidthTop( 0 );
       border_bottom_checked.setBottom( 3, "solid", "widget.selection-marker" );
 
-      if( states.checked ) {
-        result.backgroundColor = tv.getColor( "tabfolder.checked.background" );
+      if( states.checked ) {        
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
         result.padding = [ 2, 8, 4, 7 ];
         result.border = states.barTop ? border_top_checked : border_bottom_checked;
@@ -1043,7 +1040,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           }
         }
       } else {
-        result.backgroundColor = tv.getColor( states.over ? "tabfolder.hover.background" : "tabfolder.background" ),
         result.zIndex = 0, // TODO [rst] Doesn't this interfere with our z-order?
         result.padding = [ 2, 6, 2, 5 ];
         result.marginRight = 1;
@@ -1070,7 +1066,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           result.marginBottom = 3;
         }
       }
-      result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
+      result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
+      result.textColor = states.disabled 
+                         ? tv.getColor( "widget.graytext" )
+                         : "undefined";
       return result;
     }
   },
