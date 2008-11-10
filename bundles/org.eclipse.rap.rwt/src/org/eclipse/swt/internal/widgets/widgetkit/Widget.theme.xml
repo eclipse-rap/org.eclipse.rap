@@ -27,50 +27,63 @@
 
     -->
 
-  <!-- TODO [rst] Does a "*" element makes sense? -->
-  <element name="*"
-      description="All elements">
-
-    <property name="color"/>
-
-    <property name="background-color"/>
-
-    <property name="font"/>
-
-    <property name="border"/>
+  <element name="System"
+      description="Dummy element used to define certain SWT system colors.">
 
     <property name="rwt-shadow-color"
         type="color"
-        description="Color used to draw (outer) shadow line in 3d borders"/>
+        description="Color used to draw (outer) shadow line in 3d borders. Defines the value of SWT.COLOR_WIDGET_NORMAL_SHADOW."/>
 
     <property name="rwt-highlight-color"
         type="color"
-        description="Color used to draw (outer) highlight line in 3d borders"/>
+        description="Color used to draw (outer) highlight line in 3d borders. Defines the value of SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW."/>
 
     <property name="rwt-darkshadow-color"
         type="color"
-        description="Color used to draw (inner) shadow line in 3d borders"/>
+        description="Color used to draw (inner) shadow line in 3d borders. Defines the value of SWT.COLOR_WIDGET_DARK_SHADOW."/>
 
     <property name="rwt-lightshadow-color"
         type="color"
-        description="Color used to draw (inner) highlight line in 3d borders"/>
+        description="Color used to draw (inner) highlight line in 3d borders. Defines the value of SWT.COLOR_WIDGET_LIGHT_SHADOW."/>
 
     <property name="rwt-thinborder-color"
         type="color"
-        description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."/>
+        description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc. Defines the value of SWT.COLOR_WIDGET_BORDER."/>
 
     <property name="rwt-selectionmarker-color"
         type="color"
-        description="Color used to mark selected items like TreeColumns and TabViews"/>
+        description="Color used to mark selected items like TreeColumns and TabViews."/>
 
   </element>
 
   <element name="ToolTip"
-      description="Tooltips">
+      description="Tooltips on SWT widgets, as set using setTooltipText().">
 
-    <property name="color"/>
+    <property name="color"
+        type="color"
+        description="Text color for tooltips." />
 
-    <property name="background-color"/>
+    <property name="background-color"
+        type="color"
+        description="Background color for tooltips." />
+
+  </element>
+
+  <!-- TODO [rst] Eliminate when property support is gone. -->
+  <element name="*"
+      description="All elements">
+
+    <property name="color"
+        type="color" />
+
+    <property name="background-color"
+        type="color"/>
+
+    <property name="font"
+        type="font"/>
+
+    <property name="border"
+        type="border"/>
 
   </element>
 
