@@ -40,6 +40,15 @@
         description="Background color for tool bar"
         />
         
+    <property name="border"
+        type="border"
+        description="ToolBar border"
+        /> 
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior."
+        />       
+        
     <element name="ToolItem"
         description="Items of ToolBar controls">
   

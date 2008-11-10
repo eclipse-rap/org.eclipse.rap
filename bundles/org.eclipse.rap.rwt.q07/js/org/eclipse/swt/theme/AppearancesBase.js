@@ -257,11 +257,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : tv.getFont( "widget.font" ),
+        font : tv.getCssFont( "*", "font" ),
         overflow : "hidden",
-        border : tv.getBorder( states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border" ),
-        textColor : tv.getColor( states.disabled ? "widget.graytext" : "widget.foreground" ),
-        backgroundColor : tv.getColor( "toolbar.background" )
+        border : tv.getCssBorder( "ToolBar", "border" ),
+        textColor : states.disabled
+                    ? tv.getColor( "widget.graytext" )
+                    : tv.getCssColor( "ToolBar", "color" ),
+        backgroundColor : tv.getCssColor( "ToolBar", "background-color" )
       };
     }
   },
@@ -303,14 +305,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                ? "static/image/dotted_white.gif"
                                : null;
       if( states.disabled ) {
-        result.backgroundColor = tv.getColor( "toolbar.background" );
+        result.backgroundColor = tv.getCssColor( "ToolBar", "background-color" );
         result.textColor = "widget.graytext";
-      } else if( states.over ) {
-        result.backgroundColor = tv.getColor( "toolbar.hover.background" );
-        result.textColor = tv.getColor( "toolbar.hover.foreground" );
       } else {
-        result.backgroundColor = tv.getColor( "toolbar.background" );
-        result.textColor = tv.getColor( "toolbar.foreground" );
+        result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
+        result.textColor = tv.getCssColor( "ToolItem", "color" );
       }
       if( states.pressed || states.checked || states.abandoned ) {
         result.border = "thinInset";
@@ -748,7 +747,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : tv.getFont( "widget.font" ),
+        font : tv.getCssFont( "*", "font" ),
         padding : tv.getCssBoxDimensions( "Text", "padding" ),
         textColor : states.disabled
                     ? tv.getColor( "widget.graytext" )
