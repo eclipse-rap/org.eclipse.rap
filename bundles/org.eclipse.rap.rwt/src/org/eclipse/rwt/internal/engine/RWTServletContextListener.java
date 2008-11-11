@@ -29,7 +29,8 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.service.ISettingStoreFactory;
+import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -79,6 +80,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     registerPhaseListener( evt.getServletContext() );
     registerResources( evt.getServletContext() );
     registerUICallBackServiceHandler();
+    registerJSLibraryServiceHandler();
     LifeCycleServiceHandler.configurer 
       = new LifeCycleServiceHandlerConfigurer();
     ResourceUtil.startJsConcatenation();
@@ -91,6 +93,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     deregisterPhaseListeners( evt.getServletContext() );
     deregisterResources( evt.getServletContext() );
     deregisterUICallBackServiceHandler();
+    deregisterJSLibraryServiceHandler();
     LifeCycleFactory.destroy();
   }
 
@@ -417,5 +420,18 @@ public final class RWTServletContextListener implements ServletContextListener {
         BrandingManager.deregister( brandings[ i ] );
       }
     }
+  }
+  
+  ////////////////////////////////////////////////
+  // Helping methods - JS Library service handler
+  
+  private static void registerJSLibraryServiceHandler() {
+    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
+                                           new JSLibraryServiceHandler() );
+  }
+  
+  private static void deregisterJSLibraryServiceHandler() {
+    String id = JSLibraryServiceHandler.HANDLER_ID;
+    ServiceManager.unregisterServiceHandler( id );
   }
 }

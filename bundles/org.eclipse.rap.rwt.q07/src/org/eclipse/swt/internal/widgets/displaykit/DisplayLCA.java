@@ -19,20 +19,18 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.browser.*;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
@@ -311,26 +309,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         writeScriptTag( out, resources[ i ].getLocation() );
       }
     }
-    
-    JsConcatenator jsConcatenator = getJsConcatenator();
-    Browser browser = BrowserLoader.load();
-    if( browser instanceof Opera ) {
-      // TODO [fappel]: Opera has problems with inlining our concatenated
-      //                javascript (Error-console says error compiling inline
-      //                script...). Detect why.
-      writeScriptTag( out, jsConcatenator.getLocation() );
-    } else {
-      writeScriptBlock( out, jsConcatenator.getContent() );
-    }
+    writeScriptTag( out, JSLibraryServiceHandler.getRequestURL() );
   }
 
-  private static JsConcatenator getJsConcatenator() {
-    IResourceManager manager = ResourceManager.getInstance();
-    Adaptable adaptable = ( Adaptable )manager;
-    Object adapter = adaptable.getAdapter( JsConcatenator.class );
-    return ( JsConcatenator )adapter;
-  }
-  
   public void readData( final Display display ) {
     Rectangle oldBounds = display.getBounds();
     readBounds( display );
@@ -443,17 +424,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
     out.writeAttribute( HTML.SRC, library, null );
     out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
-    out.endElement( HTML.SCRIPT );
-  }
-
-  private static void writeScriptBlock( final HtmlResponseWriter out, 
-                                        final String content ) 
-    throws IOException
-  {
-    out.startElement( HTML.SCRIPT, null );
-    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
-    out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
-    out.write( content );
     out.endElement( HTML.SCRIPT );
   }
 

@@ -167,6 +167,11 @@ public final class HTML {
   public final static String CHARSET_NAME_UTF_8 = "UTF-8";
   public final static String CHARSET_NAME_ISO_8859_1 = "ISO-8859-1";
   
+  public final static String CONTENT_ENCODING = "Content-Encoding";
+  public final static String ENCODING_GZIP = "gzip";
+  public final static String ACCEPT_ENCODING = "Accept-Encoding";
+  public static final String EXPIRES = "Expires";
+  
   private HTML() {
     // prevent instantiation
   }

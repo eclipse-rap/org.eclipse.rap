@@ -85,6 +85,7 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerResources();
     registerLifeCycleServiceHandlerConfigurer();
     registerUICallBackServiceHandler();
+    registerJSLibraryServiceHandler();
   }
 
 
@@ -390,5 +391,10 @@ final class EngineConfigWrapper implements IEngineConfig {
   private static void registerUICallBackServiceHandler() {
     ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
                                            new UICallBackServiceHandler() );
+  }
+
+  private void registerJSLibraryServiceHandler() {
+    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
+                                           new JSLibraryServiceHandler() );
   }
 }

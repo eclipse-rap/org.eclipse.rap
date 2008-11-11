@@ -482,6 +482,7 @@ public class Fixture {
     private ServletOutputStream outStream;
     private String contentType;
     private Map cookies = new HashMap();
+    private Map headers = new HashMap();
 
     public void addCookie( final Cookie arg0 ) {
       cookies.put( arg0.getName(), arg0 );
@@ -529,6 +530,11 @@ public class Fixture {
     }
     
     public void setHeader( final String arg0, final String arg1 ) {
+      headers.put( arg0, arg1 );
+    }
+    
+    public String getHeader( final String name ) {
+      return ( String )headers.get( name );
     }
     
     public void addHeader( final String arg0, final String arg1 ) {
