@@ -103,7 +103,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   public static String getRequestURL() throws IOException {
     initializeOutput();
     Object[] param = new Object[] { 
-      RWT.getRequest().getServletPath(),
+      RWT.getRequest().getServletPath().substring( 1 ),
       IServiceHandler.REQUEST_PARAM,
       HANDLER_ID,
       hashCode

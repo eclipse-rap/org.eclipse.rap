@@ -64,7 +64,7 @@ public class JSLibraryServiceHandler_Test extends TestCase {
   public void testRequestURLCreation() throws IOException {
     String requestURL = JSLibraryServiceHandler.getRequestURL(); 
     String expected
-      =   "/W4TDelegate?custom_service_handler"
+      =   "W4TDelegate?custom_service_handler"
         + "=org.eclipse.rwt.internal.service.JSLibraryServiceHandler"
         + "&hash=H0";
     assertEquals( expected, requestURL );
