@@ -5,16 +5,17 @@ Table {
   background-color: white;
 }
 
+TableItem {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
 TableItem:selected {
   color: white;
   background-color: rgb( 49, 106, 197 );
 }
 
 TableColumn {
-  background-color: rgb( 248, 248, 255 );
-}
-
-TableColumn:hover {
   background-color: rgb( 248, 248, 255 );
 }
 
@@ -35,5 +36,5 @@ Table-Gridline {
 }
 
 Table-Checkbox {
-  width: 21px;
+  width: 121px;
 }

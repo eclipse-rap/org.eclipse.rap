@@ -29,6 +29,14 @@
 
   <element name="Table">
 
+      <property name="color"
+          type="color"
+          description="Text color for tables." />
+
+      <property name="background-color"
+          type="color"
+          description="Background color for tables." />
+
     <element name="TableColumn"
         description="Column header of Table controls">
 
@@ -38,6 +46,9 @@
 
       <state name="hover"
           description="On mouse over" />
+
+      <state name="disabled"
+          description="Reflects Table#setEnabled()" />
 
       <element name="TableColumn-SortIndicator"
           description="Sort indicators in Table column headers">

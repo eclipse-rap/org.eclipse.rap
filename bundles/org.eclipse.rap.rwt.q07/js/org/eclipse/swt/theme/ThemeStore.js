@@ -48,6 +48,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "Shell-CloseButton" : {
         "inactive" : "!active"
       },
+      "TableColumn" : {
+        "hover" : "mouseover"
+      },
       "TabItem" : {
         "selected" : "checked"
       }

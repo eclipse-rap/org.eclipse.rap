@@ -662,7 +662,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.textColor = states.disabled
                            ? tv.getColor( "widget.graytext" )
                            : "undefined";
-        result.backgroundColor = null;
+        result.backgroundColor = "undefined";
       }
       
       return result;
@@ -1215,10 +1215,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : tv.getColor( "list.background" ),
-        textColor : tv.getColor( "list.foreground" ),
-        font : tv.getFont( "widget.font" ),
-        border : tv.getBorder( states.rwt_BORDER ? "control.BORDER.border" : "control.border" )
+        backgroundColor : tv.getCssColor( "Table", "background-color" ),
+        textColor : tv.getCssColor( "Table", "color" ),
+        font : tv.getCssFont( "*", "font" ),
+        border : tv.getCssBorder( "*", "border" )
       };
     }
   },
@@ -1234,11 +1234,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor : tv.getColor( states.disabled ? "widget.graytext" : "widget.foreground" ),
         opacity : states.moving ? 0.6 : 1.0
       };
+      result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
+      // TODO [rst] borders hard coded in BordersBase.js
       if( states.mouseover && !states.disabled ) {
-        result.backgroundColor = tv.getColor( "table.column.hover.background" );
         result.border = tv.getBorder( "table.column.hover.border" );
       } else {
-        result.backgroundColor = tv.getColor( "table.column.background" );
         result.border = tv.getBorder( "table.column.border" );
       }
       return result;
@@ -1272,15 +1272,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         cursor : "default",
         border : states.lines ? "table.row.horizontalLine" : "undefined"
       };
-      if( states.disabled ) {
-        result.textColor = tv.getColor( "widget.graytext" );
-        result.textColor = "undefined";
-      } else if( states.selected ) {
-        result.textColor = tv.getColor( "list.selection.foreground" );
-        result.backgroundColor = tv.getColor( "list.selection.background" );
-      } else {
-        result.textColor = "list.foreground";
-        result.backgroundColor = "list.background";
+      result.textColor = states.disabled
+                         ? tv.getColor( "widget.graytext" )
+                         : "undefined";
+      result.backgroundColor = "undefined";
+      if( !states.disabled && states.selected ) {
+        result.textColor = tv.getCssColor( "TableItem", "color" );
+        result.backgroundColor = tv.getCssColor( "TableItem", "background-color" );
       }
       return result;
     }
