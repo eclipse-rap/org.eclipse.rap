@@ -36,6 +36,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "TreeItem" : {
         "inactive" : "parent_unfocused"
       },
+      "TreeColumn" : {
+        "hover" : "mouseover"
+      },
       "Shell" : {
         "inactive" : "!active"
       },
