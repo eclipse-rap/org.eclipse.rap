@@ -222,12 +222,10 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
 
     _translateState : function( state, element ) {
       var result = state;
-      if( state in this._statesMap[ "*" ] ) {
-        result = this._statesMap[ "*" ][ state ];
-      } else if( element in this._statesMap
-                 && state in this._statesMap[ element ] )
-      {
+      if( element in this._statesMap && state in this._statesMap[ element ] ) {
         result = this._statesMap[ element ][ state ];
+      } else if( state in this._statesMap[ "*" ] ) {
+        result = this._statesMap[ "*" ][ state ];
       }
       return result;
     }
