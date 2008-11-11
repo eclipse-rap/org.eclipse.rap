@@ -812,13 +812,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.textColor = tv.getColor( "widget.graytext" );
         result.backgroundColor = "undefined";
       } else if( states.selected ) {
-        if( states.parent_unfocused ) {
-          result.textColor = tv.getColor( "list.selection.unfocused.foreground" );
-          result.backgroundColor = tv.getColor( "list.selection.unfocused.background" );
-        } else {
-          result.textColor = tv.getColor( "list.selection.foreground" );
-          result.backgroundColor = tv.getColor( "list.selection.background" );
-        }
+        result.textColor = tv.getCssColor( "TreeItem", "color" );
+        result.backgroundColor = tv.getCssColor( "TreeItem", "background-color" );        
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
@@ -847,9 +842,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = states.rwt_BORDER
-                      ? "control.BORDER.border"
-                      : "control.border";
+      result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
   },
@@ -861,8 +854,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.verticalChildrenAlign = "top";
-      result.backgroundColor = tv.getColor( "list.background" );
-      result.textColor = tv.getColor( "list.foreground" );
+      result.backgroundColor = tv.getCssColor( "Tree", "background-color" );
+      result.textColor = tv.getCssColor( "Tree", "color" );
       return result;
     }
   },
@@ -908,11 +901,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.paddingRight = 2;
       result.spacing = 2;
       result.textColor = states.disabled ? tv.getColor( "widget.graytext" ) : "undefined";
+      result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
       if( states.mouseover && !states.disabled ) {
-        result.backgroundColor = tv.getColor( "tree.column.hover.background" );
         result.border = tv.getBorder( "tree.column.hover.border" );
       } else {
-        result.backgroundColor = tv.getColor( "tree.column.background" );
         result.border = tv.getBorder( "tree.column.border" );
       }
       if( states.moving ) {

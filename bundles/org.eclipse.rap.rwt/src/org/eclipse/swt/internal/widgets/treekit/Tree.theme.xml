@@ -27,6 +27,37 @@
     -->
 
   <element name="Tree">
+    
+      <property name="color"
+          type="color"
+          description="Text color for trees." />
+
+      <property name="background-color"
+          type="color"
+          description="Background color for trees." />
+          
+    <element name="TreeItem"
+        description="Item elements of tree controls">
+  
+      <property name="color"
+          type="color"
+          description="Tree item text color"
+          />
+  
+      <property name="background-color"
+          type="color"
+          description="Tree item background color"
+          />
+      
+      <state name="selected"
+          description="When the tree item is selected"
+          />
+      
+      <state name="inactive"
+          description="When the focus is not on the tree"
+          />          
+  
+    </element>       
 
     <element name="TreeColumn"
         description="Column header of Tree controls">

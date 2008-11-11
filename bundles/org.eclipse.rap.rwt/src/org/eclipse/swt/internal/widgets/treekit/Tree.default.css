@@ -5,9 +5,19 @@ Tree {
   background-color: white;
 }
 
+TreeItem {
+  color: black;
+  background-color: white;  
+}
+
 TreeItem:selected {
   color: white;
   background-color: rgb( 49, 106, 197 );
+}
+
+TreeItem:selected:inactive {
+  color: white;
+  background-color: rgb( 192, 192, 192 );  
 }
 
 TreeColumn {
