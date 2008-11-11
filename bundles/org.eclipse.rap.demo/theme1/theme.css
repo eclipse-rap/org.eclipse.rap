@@ -100,7 +100,7 @@ List-Item:selected, TableItem:selected, TreeItem:selected {
   background-color: #56a0ea;
 }
 
-List-Item:selected:inactive {
+List-Item:selected:inactive, TreeItem:selected:inactive {
   background-color: #c0c0c0;
 }
 
