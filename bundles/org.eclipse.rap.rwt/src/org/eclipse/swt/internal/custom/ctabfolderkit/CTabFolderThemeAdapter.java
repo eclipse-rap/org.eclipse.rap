@@ -12,28 +12,28 @@
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
-import org.eclipse.swt.widgets.Control;
 
 
 public class CTabFolderThemeAdapter extends ControlThemeAdapter {
 
-  public Color getBackground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "ctabfolder.background" );
+  public Color getBackground( final CTabFolder folder ) {
+    return getCssColor( "CTabItem", "background-color", folder );
   }
 
-  public Color getForeground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control, "ctabfolder.foreground" );
+  public Color getForeground( final CTabFolder folder ) {
+    return getCssColor( "CTabItem", "color", folder );
   }
 
-  public Color getSelectedBackground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control,
+  public Color getSelectedBackground( final CTabFolder folder ) {
+    return ThemeAdapterUtil.getColor( folder,
                                       "ctabfolder.selection.background" );
   }
 
-  public Color getSelectedForeground( final Control control ) {
-    return ThemeAdapterUtil.getColor( control,
+  public Color getSelectedForeground( final CTabFolder folder ) {
+    return ThemeAdapterUtil.getColor( folder,
                                       "ctabfolder.selection.foreground" );
   }
 }

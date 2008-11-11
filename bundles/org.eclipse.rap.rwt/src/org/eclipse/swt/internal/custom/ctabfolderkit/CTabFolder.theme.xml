@@ -30,10 +30,14 @@
       description="Items of a CTabFolder control">
 
     <property name="color"
-        states="selected"/>
+        description="Foregroung color"/>
 
     <property name="background-color"
-        states="selected"/>
+        description="Background color"/>
+        
+    <state name="selected"
+        description="When the CTabItem is selected"
+        />    
 
   </element>
 

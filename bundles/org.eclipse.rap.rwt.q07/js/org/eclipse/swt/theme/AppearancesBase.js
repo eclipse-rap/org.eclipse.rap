@@ -1338,9 +1338,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.font = tv.getFont( "widget.font" );
-      result.textColor = tv.getColor( "ctabfolder.foreground" );
-      result.backgroundColor = tv.getColor( "ctabfolder.background" );
+      result.font = tv.getCssFont( "*", "font" );
+      result.textColor = tv.getCssColor( "CTabItem", "color" );
+      result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       return result;
     }
   },
@@ -1362,15 +1362,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "ctabfolder-frame" : {
     style: function( states ) {
+      // TODO [if] This is quick fix to get the backgroud color of selected item
+      states.selected = true;
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( !states.rwt_FLAT ) {
-        var color = tv.getColor( "ctabfolder.selection.background" );
+        var color = tv.getCssColor( "CTabItem", "background-color" );
         result.border = new qx.ui.core.Border( 2, "solid", color );
       } else {
         result.border = "undefined";
       }
-      result.backgroundColor = tv.getColor( "widget.background" );
+      result.backgroundColor = tv.getCssColor( "*", "background-color" );
       return result;
     }
   },
@@ -1400,8 +1402,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = new qx.ui.core.Border();
       result.border.setRight( 1, "solid", "#c0c0c0" );
       if( states.selected ) {
-        result.textColor = tv.getColor( "ctabfolder.selection.foreground" );
-        result.backgroundColor = tv.getColor( "ctabfolder.selection.background" );
+        result.textColor = tv.getCssColor( "CTabItem", "color" );
+        result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
         if( states.barTop ) {
           result.border.setTop( 1, "solid", "#c0c0c0" );
         } else {
