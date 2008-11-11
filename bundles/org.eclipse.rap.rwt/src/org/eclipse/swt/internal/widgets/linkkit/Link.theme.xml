@@ -10,50 +10,33 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT Link -->
+<theme css-elements="Link">
 
-<theme
-  css-elements="Link">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
   <element name="Link"
       description="Link control">
-    
+
     <property name="font"
         type="font"
-        description="Font for link text"
-        />
-    
+        description="Font for link text" />
+
     <property name="border"
         type="border"
-        description="Link border"
-        />
-        
+        description="Link border" />
+
     <style name="BORDER"
-        description="Style constant for bordered behavior."
-        />    
+        description="Style constant for bordered behavior." />
 
     <element name="Link-Hyperlink"
         description="Embedded links in a Link control">
-  
+
       <property name="color"
           type="color"
-          description="Text color for hyperlinks in Link widget"
-          />
-  
+          description="Text color for hyperlinks in Link widget" />
+
     </element>
-  
+
   </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -66,7 +49,6 @@
       description="Text color for hyperlinks in Link widget"
       default="0, 0, 127"
       css-elements="Link-Hyperlink"
-      css-property="color"
-      />
+      css-property="color" />
 
 </theme>

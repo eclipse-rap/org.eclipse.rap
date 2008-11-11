@@ -10,71 +10,47 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT Lists (also apply to Tree, Table, Text, etc.) -->
-
-<theme
-    css-elements="List">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
+<theme css-elements="List">
 
   <element name="List"
       description="List elements">
 
     <property name="color"
         type="color"
-        description="List text color"
-        />
+        description="List text color" />
 
     <property name="background-color"
         type="color"
-        description="Background color"
-        />
-        
+        description="Background color" />
+
     <property name="border"
         type="border"
-        description="Border for list."
-        />    
-        
+        description="Border for list." />
+
     <style name="BORDER"
-        description="Style constant for bordered behavior."
-        />      
-        
+        description="Style constant for bordered behavior." />
+
     <element name="List-Item"
         description="Item elements of List controls">
-  
+
       <property name="color"
           type="color"
-          description="List item text color"
-          />
-  
+          description="List item text color" />
+
       <property name="background-color"
           type="color"
-          description="Background color"
-          />
-      
+          description="Background color" />
+
       <state name="selected"
-          description="On selection"
-          />
-      
+          description="On selection" />
+
       <state name="inactive"
-          description="On inactive item"
-          />          
-  
-    </element>    
+          description="On inactive item" />
+
+    </element>
 
   </element>
 
-  
 
   <!-- C O M P A T I B I L I T Y
 
@@ -87,46 +63,40 @@
       description="Background color for List, also applies to Text, Combo, Tree, Table, etc."
       default="255, 255, 255"
       css-elements="List Text Combo Tree Table Spinner"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <color name="list.foreground"
       description="Text color for List, also applies to Text, Combo, Tree, Table, etc."
       default="0, 0, 0"
       css-elements="List Text Combo Tree Table Spinner"
-      css-property="color"
-      />
+      css-property="color" />
 
   <color name="list.selection.background"
       description="Background color selected List items, also applies to Tree and Table"
       default="49, 106, 197"
       css-elements="List-Item TreeItem TableItem"
       css-property="background-color"
-      css-selectors=":selected"
-      />
+      css-selectors=":selected" />
 
   <color name="list.selection.foreground"
       description="Text color for selected List items, also applies to Tree and Table"
       default="255, 255, 255"
       css-elements="List-Item TreeItem TableItem"
       css-property="color"
-      css-selectors=":selected"
-      />
+      css-selectors=":selected" />
 
   <color name="list.selection.unfocused.foreground"
       description="Text color for selected List items on an unfocused List, also applies to Tree"
       default="255, 255, 255"
       css-elements="List-Item"
       css-property="color"
-      css-selectors=":selected:inactive"
-      />
+      css-selectors=":selected:inactive" />
 
   <color name="list.selection.unfocused.background"
       description="Background color for selected List items on an unfocused List, also applies to Tree"
       default="192, 192, 192"
       css-elements="List-Item"
       css-property="background-color"
-      css-selectors=":selected:inactive"
-      />
+      css-selectors=":selected:inactive" />
 
 </theme>

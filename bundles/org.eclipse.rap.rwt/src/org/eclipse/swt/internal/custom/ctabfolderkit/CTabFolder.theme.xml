@@ -10,34 +10,26 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for CTabFolder -->
-
 <theme>
 
-  <!-- C S S   T H E M I N G
+  <element name="CTabFolder"
+      description="CTabFolder Control">
 
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
+    <element name="CTabItem"
+        description="Items of a CTabFolder control">
 
-    -->
+      <property name="color"
+          type="color"
+          description="Foregroung color" />
 
-  <element name="CTabItem"
-      description="Items of a CTabFolder control">
+      <property name="background-color"
+          type="color"
+          description="Background color" />
 
-    <property name="color"
-        description="Foregroung color"/>
+      <state name="selected"
+          description="When the CTabItem is selected" />
 
-    <property name="background-color"
-        description="Background color"/>
-        
-    <state name="selected"
-        description="When the CTabItem is selected"
-        />    
+    </element>
 
   </element>
 
@@ -54,30 +46,26 @@
       transparentAllowed="true"
       default="248, 248, 255"
       css-elements="CTabItem"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <color name="ctabfolder.foreground"
       description="Foreground color for CTabFolders"
       default="black"
       css-elements="CTabItem"
-      css-property="color"
-      />
+      css-property="color" />
 
   <color name="ctabfolder.selection.background"
       description="Background color for selected items in CTabFolders"
       default="217, 227, 243"
       css-elements="CTabItem"
       css-property="background-color"
-      css-selectors=":selected"
-      />
+      css-selectors=":selected" />
 
   <color name="ctabfolder.selection.foreground"
       description="Foreground color for selected items in CTabFolders"
       default="black"
       css-elements="CTabItem"
       css-property="color"
-      css-selectors=":selected"
-      />
+      css-selectors=":selected" />
 
 </theme>

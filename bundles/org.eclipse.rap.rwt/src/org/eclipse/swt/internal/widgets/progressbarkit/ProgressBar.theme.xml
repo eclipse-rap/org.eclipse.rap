@@ -10,52 +10,34 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT Progressbar -->
-
-<theme
-    css-elements="ProgressBar">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
+<theme css-elements="ProgressBar">
 
   <element name="ProgressBar"
       description="Progress bar controls">
 
     <property name="background-color"
         type="color"
-        description="Background color for progress bars"
-        />
+        description="Background color for progress bars" />
 
     <property name="background-image"
         type="image"
-        description="Background image for progress bars"
-        />
-        
+        description="Background image for progress bars" />
+
     <element name="ProgressBar-Indicator"
         description="The movable bar that indicates the progress">
-  
+
       <property name="background-color"
           type="color"
-          description="Background color for progress indicator"
-          />
-  
+          description="Background color for progress indicator" />
+
       <property name="background-image"
           type="image"
-          description="Background image for progress indicator"
-          />
-  
+          description="Background image for progress indicator" />
+
     </element>
 
   </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -68,27 +50,23 @@
   <color name="progressbar.background"
       description="Background color for progress bars"
       default="248, 248, 255"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <color name="progressbar.foreground"
       description="Foreground color for progress bars"
       default="0, 128, 192"
       css-elements="ProgressBar-Indicator"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <image name="progressbar.bgimage"
       description="Background image for progress bars"
       default="none"
-      css-property="background-image"
-      />
+      css-property="background-image" />
 
   <image name="progressbar.fgimage"
       description="Foreground image for progress bars"
       default="none"
       css-elements="ProgressBar-Indicator"
-      css-property="background-image"
-      />
+      css-property="background-image" />
 
 </theme>

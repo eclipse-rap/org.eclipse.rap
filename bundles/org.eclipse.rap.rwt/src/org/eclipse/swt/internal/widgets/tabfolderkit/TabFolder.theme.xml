@@ -10,22 +10,7 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT TabFolder -->
-
 <theme>
-
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
 
   <element name="TabFolder"
       description="SWT TabFolder controls (don't mix up with CTabFolder).">
@@ -38,7 +23,7 @@
           description="Background color for tab folder headers." />
 
       <state name="selected"
-          description="On tab item selection" />    
+          description="On tab item selection" />
 
       <state name="hover"
           description="On mouse over" />
@@ -46,6 +31,7 @@
     </element>
 
   </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -58,23 +44,20 @@
       description="Background color for TabFolder headers"
       default="248, 248, 255"
       css-elements="TabItem"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <color name="tabfolder.checked.background"
       description="Background color for checked TabFolder headers"
       default="248, 248, 255"
       css-elements="TabItem"
       css-property="background-color"
-      css-selectors=":selected"
-      />
+      css-selectors=":selected" />
 
   <color name="tabfolder.hover.background"
       description="Background color for TabFolder headers on mouse over"
       default="248, 248, 255"
       css-elements="TabItem"
       css-property="background-color"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
 </theme>

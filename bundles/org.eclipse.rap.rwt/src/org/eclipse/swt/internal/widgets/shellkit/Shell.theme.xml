@@ -10,104 +10,73 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT Shells -->
-
-<theme
-    css-elements="Shell">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
+<theme css-elements="Shell">
 
   <element name="Shell"
       description="Controls of type Shell (the window in SWT)">
 
     <property name="border"
         type="border"
-        description="Border for shells without BORDER and TITLE style"
-        />
+        description="Border for shells without BORDER and TITLE style" />
 
     <property name="padding"
         type="boxdim"
-        description="Padding around the shell client area"
-        />
+        description="Padding around the shell client area" />
 
     <property name="background-color"
         type="color"
-        description="Background color for Shells"
-        />
+        description="Background color for Shells" />
 
     <style name="BORDER"
-        description="Style constant for bordered behavior."
-        />
+        description="Style constant for bordered behavior." />
 
     <style name="TITLE"
-        description="Style constant for titled behavior."
-        />    
+        description="Style constant for titled behavior." />
 
     <state name="inactive"
-        description="State for inactive shells"
-        />
+        description="State for inactive shells" />
 
     <state name="maximized"
-        description="State for maximized shells"
-        />
+        description="State for maximized shells" />
 
     <element name="Shell-Titlebar"
         description="The window titlebar">
 
       <property name="color"
           type="color"
-          description="Text color for the title bar of active Shells"
-          />
+          description="Text color for the title bar of active Shells" />
 
       <property name="background-color"
           type="color"
-          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND and SWT.COLOR_TITLE_INACTIVE_BACKGROUND"
-          />
+          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND and SWT.COLOR_TITLE_INACTIVE_BACKGROUND" />
 
       <property name="background-gradient-color"
           type="color"
-          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT"
-          />
+          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT" />
 
       <property name="background-image"
           type="image"
-          description="Background image for title bar of active Shells"
-          />
+          description="Background image for title bar of active Shells" />
 
       <property name="font"
           type="font"
-          description="Font for title bar of Shells"
-          />
+          description="Font for title bar of Shells" />
 
       <property name="margin"
           type="boxdim"
-          description="Margin of the title bar of shells"
-          />
+          description="Margin of the title bar of shells" />
 
       <property name="padding"
           type="boxdim"
-          description="Padding of the title bar of shells"
-          />
+          description="Padding of the title bar of shells" />
 
       <property name="height"
           type="dimension"
-          description="Height of the title bar of Shells"
-          />
+          description="Height of the title bar of Shells" />
 
       <state name="inactive"
-          description="State for titlebars of inactive shells"
-          />
-  
+          description="State for titlebars of inactive shells" />
+
     </element>
 
     <element name="Shell-MinButton"
@@ -115,25 +84,20 @@
 
       <property name="margin"
            type="boxdim"
-           description="Margin for the min buttons on shells"
-           />
+           description="Margin for the min buttons on shells" />
 
       <property name="background-image"
           type="image"
-          description="Image for minimize button on shells"
-          />
+          description="Image for minimize button on shells" />
 
       <state name="maximized"
-          description="On maximized shell"
-          />
+          description="On maximized shell" />
 
       <state name="inactive"
-          description="On inactive shell"
-          />
+          description="On inactive shell" />
 
       <state name="hover"
-          description="On mouse over"
-          />        
+          description="On mouse over" />
 
     </element>
 
@@ -142,25 +106,20 @@
 
       <property name="margin"
           type="boxdim"
-          description="Margin for the max buttons on shells"
-          />
+          description="Margin for the max buttons on shells" />
 
       <property name="background-image"
           type="image"
-          description="Image for maximize button on shells"
-          />
+          description="Image for maximize button on shells" />
 
       <state name="maximized"
-          description="On maximized shell"
-          />
+          description="On maximized shell" />
 
       <state name="inactive"
-          description="On inactive shell"
-          />
+          description="On inactive shell" />
 
       <state name="hover"
-          description="On mouse over"
-          />       
+          description="On mouse over" />
 
     </element>
 
@@ -169,29 +128,25 @@
 
       <property name="margin"
           type="boxdim"
-          description="Margin for the close buttons on shells"
-          />
+          description="Margin for the close buttons on shells" />
 
       <property name="background-image"
           type="image"
-          description="Image for close button on shells"
-          />
+          description="Image for close button on shells" />
 
       <state name="maximized"
-          description="On maximized shell"
-          />
+          description="On maximized shell" />
 
       <state name="inactive"
-          description="On inactive shell"
-          />
+          description="On inactive shell" />
 
       <state name="hover"
-          description="On mouse over"
-          />
+          description="On mouse over" />
 
     </element>
 
-  </element>  
+  </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -203,80 +158,69 @@
   <border name="shell.border"
       description="Border for shells without BORDER and TITLE style"
       default="1 black"
-      css-property="border"
-      />
+      css-property="border" />
 
   <border name="shell.BORDER.border"
       description="Border for shells with BORDER or TITLE style"
       default="2 outset"
       css-property="border"
-      css-selectors="[BORDER]"
-      />
+      css-selectors="[BORDER]" />
 
   <color name="shell.background"
       description="Background color for Shells"
       default="248, 248, 255"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <boxdim name="shell.padding"
       description="Padding around the shell client area"
       default="0"
       css-property="padding"
-      css-selectors="[TITLE]"
-      />
+      css-selectors="[TITLE]" />
 
   <color name="shell.title.background"
       description="Background color for the title bar of active Shells"
       default="0, 128, 192"
       css-elements="Shell-Titlebar"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <color name="shell.title.background.gradient"
       description="Second background color for the title bar of active Shells (used for gradient)"
       default="0, 128, 192"
       css-elements="Shell-Titlebar"
-      css-property="background-gradient-color"
-      />
+      css-property="background-gradient-color" />
 
   <color name="shell.title.foreground"
       description="Text color for the title bar of active Shells"
       default="255, 255, 255"
       css-elements="Shell-Titlebar"
-      css-property="color"
-      />
+      css-property="color" />
 
   <color name="shell.title.inactive.background"
       description="Background color for the title bar of inactive Shells"
       default="121, 150, 165"
       css-elements="Shell-Titlebar"
       css-property="background-color"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <color name="shell.title.inactive.background.gradient"
       description="Second background color for the title bar of inactive Shells (used for gradient)"
       default="121, 150, 165"
       css-elements="Shell-Titlebar"
       css-property="background-gradient-color"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <color name="shell.title.inactive.foreground"
       description="Text color for the title bar of inactive Shells"
       default="221, 221, 221"
       css-elements="Shell-Titlebar"
       css-property="color"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <font name="shell.title.font"
       description="Font for title bar of Shells"
       default="11 bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"
       css-elements="Shell-Titlebar"
-      css-property="font"
-      />
+      css-property="font" />
 
   <dimension name="shell.title.height"
       description="Height of the title bar of Shells"
@@ -289,30 +233,26 @@
       description="Margins of the title bar of Shells"
       default="0 0 1"
       css-elements="Shell-Titlebar"
-      css-property="margin"
-      />
-  
+      css-property="margin" />
+
   <boxdim name="shell.title.padding"
       description="Padding of the title bar of shells"
       default="1 2"
       css-elements="Shell-Titlebar"
-      css-property="padding"
-      />
+      css-property="padding" />
 
   <image name="shell.title.active.bgimage"
       description="Background image for title bar of active Shells"
       default="resource/widget/rap/window/caption_active.gif"
       css-elements="Shell-Titlebar"
-      css-property="background-image"
-      />
+      css-property="background-image" />
 
   <image name="shell.title.inactive.bgimage"
       description="Background image for title bar of inactive Shells"
       default="resource/widget/rap/window/caption_inactive.gif"
       css-elements="Shell-Titlebar"
       css-property="background-image"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <boxdim name="shell.button.margin"
       description="Margin for the min/max/close buttons on shells"
@@ -325,125 +265,109 @@
       description="Image for minimize button on shells"
       default="resource/widget/rap/window/minimize.png"
       css-elements="Shell-MinButton"
-      css-property="background-image"
-      />
+      css-property="background-image" />
 
   <image name="shell.minbutton.over.image"
       description="Image for minimize button on shells on mouse over"
       default="resource/widget/rap/window/minimize.over.png"
       css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
   <image name="shell.minbutton.inactive.image"
       description="Image for minimize button on inactive shells"
       default="resource/widget/rap/window/minimize.inactive.png"
       css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <image name="shell.minbutton.inactive.over.image"
       description="Image for minimize button on inactive shells on mouse over"
       default="resource/widget/rap/window/minimize.inactive.over.png"
       css-elements="Shell-MinButton"
       css-property="background-image"
-      css-selectors=":inactive:hover"
-      />
+      css-selectors=":inactive:hover" />
 
   <image name="shell.maxbutton.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.png"
       css-elements="Shell-MaxButton"
-      css-property="background-image"
-      />
+      css-property="background-image" />
 
   <image name="shell.maxbutton.over.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.over.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
   <image name="shell.maxbutton.inactive.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.inactive.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <image name="shell.maxbutton.inactive.over.image"
       description="Image for maximize button of Shells"
       default="resource/widget/rap/window/maximize.inactive.over.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":inactive:hover"
-      />
+      css-selectors=":inactive:hover" />
 
   <image name="shell.restorebutton.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":maximized"
-      />
+      css-selectors=":maximized" />
 
   <image name="shell.restorebutton.over.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.over.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":maximized:hover"
-      />
+      css-selectors=":maximized:hover" />
 
   <image name="shell.restorebutton.inactive.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.inactive.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <image name="shell.restorebutton.inactive.over.image"
       description="Image for restore from maximized button of Shells"
       default="resource/widget/rap/window/restore.inactive.over.png"
       css-elements="Shell-MaxButton"
       css-property="background-image"
-      css-selectors=":inactive:hover"
-      />
+      css-selectors=":inactive:hover" />
 
   <image name="shell.closebutton.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.png"
       css-elements="Shell-CloseButton"
-      css-property="background-image"
-      />
+      css-property="background-image" />
 
   <image name="shell.closebutton.over.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.over.png"
       css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
   <image name="shell.closebutton.inactive.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.inactive.png"
       css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":inactive"
-      />
+      css-selectors=":inactive" />
 
   <image name="shell.closebutton.inactive.over.image"
       description="Image for close button of Shells"
       default="resource/widget/rap/window/close.inactive.over.png"
       css-elements="Shell-CloseButton"
       css-property="background-image"
-      css-selectors=":inactive:hover"
-      />
+      css-selectors=":inactive:hover" />
 
 </theme>

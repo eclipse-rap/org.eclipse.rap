@@ -10,81 +10,58 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT Groups -->
-
-<theme
-    css-elements="Group">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
+<theme css-elements="Group">
 
   <element name="Group"
       description="Controls of type Group">
 
     <property name="background-color"
         type="color"
-        description="Background color for group boxes"
-        />
+        description="Background color for group boxes" />
 
     <property name="margin"
         type="boxdim"
-        description="Margin for group boxes (space between frame and parent)"
-        />
+        description="Margin for group boxes (space between frame and parent)" />
 
     <property name="padding"
         type="boxdim"
-        description="Padding for group boxes (space between frame and content)"
-        />
-        
+        description="Padding for group boxes (space between frame and content)" />
+
     <property name="border"
         type="border"
-        description="Group border"
-        />
-        
+        description="Group border" />
+
     <style name="BORDER"
-        description="Style constant for bordered behavior."
-        />        
-        
+        description="Style constant for bordered behavior." />
+
     <element name="Group-Frame"
         description="The frame around the children of a group box">
 
       <property name="border"
           type="border"
-          description="Frame border for group boxes"
-          />
-    
+          description="Frame border for group boxes" />
+
     </element>
-    
+
     <element name="Group-Label"
         description="The label of a group box">
 
       <property name="padding"
           type="boxdim"
-          description="Padding for group box labels (defines space around group label text)"
-          />
-  
+          description="Padding for group box labels (defines space around group label text)" />
+
       <property name="margin"
           type="boxdim"
-          description="Margin for group box labels (defines offset of the group label)"
-          />
-  
+          description="Margin for group box labels (defines offset of the group label)" />
+
       <property name="font"
           type="font"
-          description="Font for group box labels"
-          />
+          description="Font for group box labels" />
 
-    </element> 
+    </element>
 
-  </element>  
+  </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -100,21 +77,18 @@
       description="Background color for group boxes"
       transparentAllowed="true"
       default="248, 248, 255"
-      css-property="background-color"
-      />
+      css-property="background-color" />
   <!-- defaults to widget background -->
 
   <boxdim name="group.margin"
       description="Margin for group boxes (space between frame and parent)"
       default="8px 0px 0px"
-      css-property="margin"
-      />
+      css-property="margin" />
 
   <boxdim name="group.padding"
       description="Padding for group boxes (space between frame and content)"
       default="8px 2px 2px"
-      css-property="padding"
-      />
+      css-property="padding" />
 
   <!-- F r a m e -->
 
@@ -122,8 +96,7 @@
       description="Frame border for group boxes"
       default="1px solid #aca899"
       css-property="border"
-      css-elements="Group-Frame"
-      />
+      css-elements="Group-Frame" />
 
   <!-- L a b e l -->
 
@@ -131,21 +104,18 @@
       description="Margin for group box labels (defines offset of the group label)"
       default="1px 10px"
       css-property="margin"
-      css-elements="Group-Label"
-      />
+      css-elements="Group-Label" />
 
   <boxdim name="group.label.padding"
       description="Padding for group box labels (defines space around group label text)"
       default="0px 3px 0px 4px"
       css-property="padding"
-      css-elements="Group-Label"
-      />
+      css-elements="Group-Label" />
 
   <font name="group.label.font"
       description="Font for group box labels"
       default="11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"
       css-property="font"
-      css-elements="Group-Label"
-      />
+      css-elements="Group-Label" />
 
 </theme>

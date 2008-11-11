@@ -10,56 +10,37 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT ToolBar -->
-
-<theme
-    css-elements="ToolBar">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
+<theme css-elements="ToolBar">
 
   <element name="ToolBar"
       description="Tool bar controls">
 
     <property name="color"
         type="color"
-        description="Text color for tool bar"
-        />
+        description="Text color for tool bar" />
 
     <property name="background-color"
         type="color"
-        description="Background color for tool bar"
-        />
-        
+        description="Background color for tool bar" />
+
     <element name="ToolItem"
         description="Items of ToolBar controls">
-  
+
       <property name="color"
           type="color"
-          description="Text color for tool bar items"
-          />
-  
+          description="Text color for tool bar items" />
+
       <property name="background-color"
           type="color"
-          description="Background color for tool bar items"
-          />
-          
+          description="Background color for tool bar items" />
+
       <state name="hover"
-          description="Mouse over state"
-          />    
-  
-    </element>    
+          description="Mouse over state" />
+
+    </element>
 
   </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -71,24 +52,21 @@
   <color name="toolbar.foreground"
       description="Text color for tool bar"
       default="0, 0, 0"
-      css-property="color"
-      />
+      css-property="color" />
 
   <!--  == control.background -->
   <color name="toolbar.background"
       description="Background color for tool bar"
       default="248, 248, 255"
       css-property="background-color"
-      transparentAllowed="true"
-      />
+      transparentAllowed="true" />
 
   <color name="toolbar.hover.foreground"
       description="Text color for tool bar items on mouse over"
       default="0, 0, 0"
       css-property="color"
       css-elements="ToolItem"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
   <!-- 49, 106, 197 // == list.focused.background -->
   <color name="toolbar.hover.background"
@@ -96,7 +74,6 @@
       default="255, 255, 255"
       css-property="background-color"
       css-elements="ToolItem"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
 </theme>

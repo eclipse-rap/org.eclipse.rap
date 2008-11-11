@@ -10,52 +10,35 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<!-- Themeable properties for SWT Labels -->
-
-<theme
-    css-elements="Label">
-
-  <!-- C S S   T H E M I N G
-
-    The following section is needed to support the new CSS-based theming.
-    It describes the elements this widget adds to the virtual element
-    tree which the CSS rules relate to.
-    Please note that the syntax is considered preliminary and is still subject
-    to change. Also note that this section is not interpreted as long as RAP
-    uses the old property-based system internally. We publish it here anyway
-    to introduce the new syntax to interested developers soon.
-
-    -->
+<theme css-elements="Label">
 
   <element name="Label"
       description="Label controls">
 
     <property name="color"
         type="color"
-        description="Label text color"/>
+        description="Label text color" />
 
     <property name="background-color"
         type="color"
-        description="Background color"/>
-        
+        description="Background color" />
+
     <property name="font"
         type="font"
-        description="Text font"
-        />  
+        description="Text font" />
 
     <property name="border"
         type="border"
-        description="Label border"/>
-        
+        description="Label border" />
+
     <style name="BORDER"
-        description="Style constant for bordered behavior."
-        />
+        description="Style constant for bordered behavior." />
 
     <state name="hover"
-        description="On mouse over"
-        />    
+        description="On mouse over" />
 
   </element>
+
 
   <!-- C O M P A T I B I L I T Y
 
@@ -67,42 +50,36 @@
   <color name="label.foreground"
       description="Text color for labels"
       default="0, 0, 0"
-      css-property="color"
-      />
+      css-property="color" />
 
   <color name="label.hover.foreground"
       description="Text color for labels on mouse over"
       default="0, 0, 0"
       css-property="color"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
   <color name="label.background"
       description="Background color for labels"
       transparentAllowed="true"
       default="248, 248, 255"
-      css-property="background-color"
-      />
+      css-property="background-color" />
 
   <color name="label.hover.background"
       description="Background color for labels on mouse over"
       transparentAllowed="true"
       default="248, 248, 255"
       css-property="background-color"
-      css-selectors=":hover"
-      />
+      css-selectors=":hover" />
 
   <border name="label.border"
       description="Default border for labels"
       default="none"
-      css-property="border"
-      />
+      css-property="border" />
 
   <border name="label.BORDER.border"
       description="Default border for labels with BORDER style"
       default="1 inset"
       css-property="border"
-      css-selectors="[BORDER]"
-      />
+      css-selectors="[BORDER]" />
 
 </theme>
