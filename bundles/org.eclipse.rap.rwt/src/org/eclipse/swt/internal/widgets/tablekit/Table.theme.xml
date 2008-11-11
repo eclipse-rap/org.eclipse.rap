@@ -37,6 +37,25 @@
           type="color"
           description="Background color for tables." />
 
+    <element name="TableItem"
+        description="Item elements of table controls">
+  
+      <property name="color"
+          type="color"
+          description="Table item text color"
+          />
+  
+      <property name="background-color"
+          type="color"
+          description="Table item background color"
+          />
+      
+      <state name="selected"
+          description="When table item is selected"
+          />  
+  
+    </element>
+    
     <element name="TableColumn"
         description="Column header of Table controls">
 
