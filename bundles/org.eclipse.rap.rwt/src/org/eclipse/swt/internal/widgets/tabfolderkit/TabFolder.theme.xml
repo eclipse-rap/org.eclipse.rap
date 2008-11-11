@@ -27,21 +27,23 @@
 
     -->
 
-  <element name="TabItem"
-      description="Items of TabFolder controls (don't mix up with CTabFolder)">
+  <element name="TabFolder"
+      description="SWT TabFolder controls (don't mix up with CTabFolder).">
 
-    <property name="background-color"
-        type="color"
-        description="Background color for TabFolder headers"
-        />
-        
-    <state name="selected"
-        description="On tab item selection"
-        />    
-    
-    <state name="hover"
-        description="On mouse over"
-        />
+    <element name="TabItem"
+        description="Items of TabFolder controls.">
+
+      <property name="background-color"
+          type="color"
+          description="Background color for tab folder headers." />
+
+      <state name="selected"
+          description="On tab item selection" />    
+
+      <state name="hover"
+          description="On mouse over" />
+
+    </element>
 
   </element>
 
