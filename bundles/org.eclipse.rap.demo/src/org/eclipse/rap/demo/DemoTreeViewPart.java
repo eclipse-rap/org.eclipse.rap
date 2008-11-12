@@ -60,7 +60,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     private TreeParent parent;
 
     public TreeObject( final String name ) {
-      this( name, null );
+      this( name, "" );
     }
 
     public TreeObject( final String name, final String location ) {
