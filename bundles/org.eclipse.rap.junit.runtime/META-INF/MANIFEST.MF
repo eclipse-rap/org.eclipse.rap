@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Runtime Plug-in
 Bundle-SymbolicName: org.eclipse.rap.junit.runtime; singleton:=true
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.ui,
  org.eclipse.jdt.junit.runtime,
