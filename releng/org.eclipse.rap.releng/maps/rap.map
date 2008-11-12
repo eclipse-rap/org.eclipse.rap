@@ -41,7 +41,7 @@ fragment@org.eclipse.rap.rwt.test.mockup=HEAD,:pserver:anonymous@dev.eclipse.org
 fragment@org.eclipse.rap.rwt.q07.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.q07.test
 
 # tooling
-feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.tooling-feature,org.eclipse.rap.tooling
+feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.tooling-feature,org.eclipse.rap.tooling
 plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.help
 plugin@org.eclipse.rap.ui.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.templates
 plugin@org.eclipse.rap.ui.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch
