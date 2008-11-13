@@ -11,9 +11,11 @@
 package org.eclipse.swt.custom;
 
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -148,6 +150,21 @@ Rectangle computeBounds () {
 	} else { // default is CENTER
 		editorRect.y += (cell.height - editorRect.height)/2;
 	}
+  // TODO [rst] Increase editor size since the Text widget cuts off text if it's
+  //            smaller than text height + padding + 2
+  //            See bug 255187: Table cell editor geometry problems
+	//            https://bugs.eclipse.org/bugs/show_bug.cgi?id=255187
+  if( editor instanceof Text ) {
+    Text text = ( Text )editor;
+    ThemeManager themeManager = ThemeManager.getInstance();
+    TextThemeAdapter themeAdapter
+      = ( TextThemeAdapter )themeManager.getThemeAdapter( Text.class );
+    Rectangle padding = themeAdapter.getPadding( text );
+    editorRect.x -= padding.x;
+    editorRect.y -= padding.y - 1;
+    editorRect.width += padding.width;
+    editorRect.height += padding.height - 2;
+  }
 	return editorRect;
 }
 /**
