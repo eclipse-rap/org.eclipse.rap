@@ -42,7 +42,7 @@ public class ThemeDefinitionReader {
   private static final String ELEM_STYLE = "style";
 
   private static final String ELEM_STATE = "state";
-
+  
   private static final String ATTR_NAME = "name";
 
   private static final String ATTR_TYPE = "type";
@@ -175,7 +175,7 @@ public class ThemeDefinitionReader {
     String name = getAttributeValue( node, ATTR_NAME );
     ThemeCssElement themeElement = new ThemeCssElement( name );
     cssElements.add( themeElement );
-    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
     themeElement.setDescription( description );
     NodeList childNodes = node.getChildNodes();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
@@ -218,7 +218,7 @@ public class ThemeDefinitionReader {
       }
     }
     ThemeCssProperty result = new ThemeCssProperty( name, type );
-    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
     if( description != null ) {
       result.setDescription( description );
     }
@@ -228,7 +228,7 @@ public class ThemeDefinitionReader {
   private IThemeCssAttribute readStateOrStyle( final Node node ) {
     String name = getAttributeValue( node, ATTR_NAME );
     ThemeCssAttribute result = new ThemeCssAttribute( name );
-    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
     if( description != null ) {
       result.setDescription( description );
     }
@@ -241,7 +241,7 @@ public class ThemeDefinitionReader {
   private void readOldProperty( final Node node ) {
     String type = node.getNodeName();
     String name = getAttributeValue( node, ATTR_NAME );
-    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
     String inherit = getAttributeValue( node, ATTR_INHERIT );
     String defaultStr = getAttributeValue( node, ATTR_DEFAULT );
     String cssElements = getAttributeValue( node, ATTR_CSS_ELEMENTS );
@@ -330,6 +330,25 @@ public class ThemeDefinitionReader {
 //    } );
     builder.setErrorHandler( new ThemeDefinitionErrorHandler() );
     return builder.parse( is );
+  }
+  
+  private static String getElementOrAttributeValue( final Node node,
+                                                    final String name )
+  {
+    String result = null;
+    NodeList childNodes = node.getChildNodes();
+    int length = childNodes.getLength();
+    for( int i = 0; i < length && result == null; i++ ) {
+      Node child = childNodes.item( i );
+      if( name.equals( child.getNodeName() ) ) {
+        Node text = child.getFirstChild();
+        result = text.toString().trim();
+      }
+    }
+    if( result == null ) {
+      result = getAttributeValue( node, name );
+    }
+    return result;
   }
 
   private static String getAttributeValue( final Node node, final String name )
