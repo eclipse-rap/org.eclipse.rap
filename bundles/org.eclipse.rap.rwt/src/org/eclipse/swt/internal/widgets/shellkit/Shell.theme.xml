@@ -13,135 +13,154 @@
 <theme css-elements="Shell">
 
   <element name="Shell"
-      description="Controls of type Shell (the window in SWT)">
+      description="SWT Shells (the window in SWT).">
 
     <property name="border"
         type="border"
-        description="Border for shells without BORDER and TITLE style" />
+        description="Outer window border." />
 
     <property name="padding"
         type="boxdim"
-        description="Padding around the shell client area" />
+        description="Padding around the shell's client area." />
 
     <property name="background-color"
         type="color"
-        description="Background color for Shells" />
+        description="Background color for shells." />
 
     <style name="BORDER"
-        description="Style constant for bordered behavior." />
+        description="Indicates that the shell should have a border." />
 
     <style name="TITLE"
-        description="Style constant for titled behavior." />
+        description="Indicates that the shell should show it's title bar." />
 
     <state name="inactive"
-        description="State for inactive shells" />
+        description="Applies for all shells except the active shell." />
 
     <state name="maximized"
-        description="State for maximized shells" />
+        description="Applies for shells that are currently maximized." />
 
-    <element name="Shell-Titlebar"
-        description="The window titlebar">
+    <element name="Shell-Titlebar">
+      <description>
+        The window titlebar. Only visible when the TITLE style is set.
+      </description>
 
       <property name="color"
           type="color"
-          description="Text color for the title bar of active Shells" />
+          description="Text color for the title bar." />
 
-      <property name="background-color"
-          type="color"
-          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND and SWT.COLOR_TITLE_INACTIVE_BACKGROUND" />
+      <property name="background-color" type="color">
+        <description>
+          Background color for the title bar.
+          Maps to system colors SWT.COLOR_TITLE_BACKGROUND and
+          SWT.COLOR_TITLE_INACTIVE_BACKGROUND, respectively.
+        </description>
+      </property>
 
-      <property name="background-gradient-color"
-          type="color"
-          description="Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT" />
+      <property name="background-gradient-color" type="color">
+        <description>
+          Second background color for the title bar (currently ignored).
+          Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and
+          SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT, respectively.
+        </description>
+      </property>
 
       <property name="background-image"
           type="image"
-          description="Background image for title bar of active Shells" />
+          description="Background image for the title bar." />
 
       <property name="font"
           type="font"
-          description="Font for title bar of Shells" />
+          description="Font for the title bar." />
 
       <property name="margin"
           type="boxdim"
-          description="Margin of the title bar of shells" />
+          description="Margin for the title bar." />
 
       <property name="padding"
           type="boxdim"
-          description="Padding of the title bar of shells" />
+          description="Padding for the title bar." />
 
       <property name="height"
           type="dimension"
-          description="Height of the title bar of Shells" />
+          description="Height of the title bar." />
 
       <state name="inactive"
-          description="State for titlebars of inactive shells" />
+          description="Applies for all shells except the active shell." />
 
     </element>
 
-    <element name="Shell-MinButton"
-        description="The minimize button of a window">
+    <element name="Shell-MinButton">
+      <description>
+        The minimize button of a window.
+        Only visible when the MIN style flag is set.
+      </description>
 
       <property name="margin"
            type="boxdim"
-           description="Margin for the min buttons on shells" />
+           description="Margin for the minimize button." />
 
       <property name="background-image"
           type="image"
-          description="Image for minimize button on shells" />
+          description="Image for the minimize button." />
 
       <state name="maximized"
-          description="On maximized shell" />
+          description="Applies for shell buttons on maximized shells." />
 
       <state name="inactive"
-          description="On inactive shell" />
+          description="Applies for shell buttons on inactive shells." />
 
       <state name="hover"
-          description="On mouse over" />
+          description="Applies for shell buttons on mouse-over." />
 
     </element>
 
-    <element name="Shell-MaxButton"
-        description="The maximize button of a window">
+    <element name="Shell-MaxButton">
+      <description>
+        The maximize/restore button of a window.
+        Only visible when MAX style flag is set.
+      </description>
 
       <property name="margin"
           type="boxdim"
-          description="Margin for the max buttons on shells" />
+          description="Margin for the shell maximize/restore button." />
 
       <property name="background-image"
           type="image"
-          description="Image for maximize button on shells" />
+          description="Background image for the shell maximize/restore button." />
 
       <state name="maximized"
-          description="On maximized shell" />
+          description="Applies for shell buttons on maximized shells." />
 
       <state name="inactive"
-          description="On inactive shell" />
+          description="Applies for shell buttons on inactive shells." />
 
       <state name="hover"
-          description="On mouse over" />
+          description="Applies for shell buttons on mouse-over." />
 
     </element>
 
-    <element name="Shell-CloseButton"
-        description="The close button of a window">
+    <element name="Shell-CloseButton">
+      <description>
+        The close button of a window.
+        Only visible when CLOSE style flag is set.
+      </description>
 
       <property name="margin"
           type="boxdim"
-          description="Margin for the close buttons on shells" />
+          description="Margin for the shell close button." />
 
       <property name="background-image"
           type="image"
-          description="Image for close button on shells" />
+          description="Background image for the shell close button." />
 
       <state name="maximized"
-          description="On maximized shell" />
+          description="Applies for shell buttons on maximized shells." />
 
       <state name="inactive"
-          description="On inactive shell" />
+          description="Applies for shell buttons on inactive shells." />
 
       <state name="hover"
-          description="On mouse over" />
+          description="Applies for shell buttons on mouse-over." />
 
     </element>
 
