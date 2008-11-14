@@ -33,17 +33,28 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
       this.addEventListener( "changeBackgroundColor",
                              this._onChangeBackgroundColor,
                              this );
+      this.addEventListener( "changeFont",
+                             this._onChangeFont,
+                             this );
     },
 
     rap_reset : function() {
       this.removeEventListener( "changeBackgroundColor",
                              this._onChangeBackgroundColor,
                              this );
+      this.removeEventListener( "changeFont",
+                             this._onChangeFont,
+                             this );
     },
 
     _onChangeBackgroundColor : function( evt ) {
       var newColor = evt.getValue();
       this.getLegendObject().setBackgroundColor( newColor );
+    },
+
+    _onChangeFont : function( evt ) {
+      var newFont = evt.getValue();
+      this.getLegendObject().setFont( newFont );
     }
   }
 });
