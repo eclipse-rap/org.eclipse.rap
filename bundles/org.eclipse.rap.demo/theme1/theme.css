@@ -78,13 +78,17 @@ CTabItem:selected {
 
 /* Group */
 
+Group {
+  color: #56a0ea;
+  font: bold 12px Arial, Helvetica, sans-serif;
+}
+
 Group-Frame {
   border: 1px dashed #56a0ea;
 }
 
 Group-Label {
   padding: 0px 6px;
-  font: bold 12px Arial, Helvetica, sans-serif;
 }
 
 /* Link */
@@ -133,7 +137,7 @@ Shell {
   padding: 3px;
 }
 
-Shell[BORDER] {
+Shell[TITLE], Shell[BORDER] {
   border: 3px #1695d4;
 }
 
