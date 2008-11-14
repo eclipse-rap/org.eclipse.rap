@@ -12,59 +12,61 @@
 
 <theme css-elements="Button">
 
-  <element name="Button"
-      description="SWT Buttons, use style flags to refer to push-button, toggle-button, radio-button or check-boxes separately.">
+  <element name="Button">
+    <description>
+      RWT Buttons, including push-buttons, toggle-buttons, radio-buttons and check-boxes.
+    </description>
 
     <property name="color"
         type="color"
-	    description="Button text color" />
+        description="Text color for buttons." />
 
     <property name="background-color"
         type="color"
-        description="Button background color" />
+        description="Background color for buttons." />
 
     <property name="border"
         type="border"
-        description="Button border" />
+        description="Border for buttons." />
 
     <property name="padding"
-        type="dimension"
-        description="Button padding description." />
+        type="boxdim"
+        description="Padding (inner distance) for buttons." />
 
     <property name="spacing"
         type="dimension"
-        description="Space between text and image" />
+        description="Space between text and image." />
 
     <property name="font"
         type="font"
-        description="Font for button text" />
+        description="Font for button text." />
 
-	<style name="PUSH"
-        description="Style constant for push button behavior." />
+    <style name="PUSH"
+        description="Indicates that the button is a push button." />
 
-	<style name="TOGGLE"
-        description="Style constant for toggle button behavior." />
+    <style name="TOGGLE"
+        description="Indicates that the button is a toggle button." />
 
-	<style name="CHECK"
-        description="Style constant for check box behavior." />
+    <style name="CHECK"
+        description="Indicates that the button is a check box." />
 
-	<style name="RADIO"
-        description="Style constant for radio button behavior." />
+    <style name="RADIO"
+        description="Indicates that the button is a radio button." />
 
-	<style name="FLAT"
-        description="Style constant for flat appearance." />
+    <style name="FLAT"
+        description="Indicates that the button should have a flat appearance." />
 
-	<style name="BORDER"
-        description="Style constant for bordered behavior." />
+    <style name="BORDER"
+        description="Indicates that the button should have a border." />
 
-	<state name="hover"
-        description="Mouse over state" />
+    <state name="hover"
+        description="Applies while the user hovers over a button." />
 
-	<state name="pressed"
-        description="State for button pressed" />
+    <state name="pressed"
+        description="Applies while a button is pressed." />
 
-	<state name="selected"
-        description="State for selected TOGGLE, CHECK and RADIO buttons" />
+    <state name="selected"
+        description="Applies for selected TOGGLE, CHECK and RADIO buttons." />
 
   </element>
 

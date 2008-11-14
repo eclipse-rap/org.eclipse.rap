@@ -12,22 +12,26 @@
 
 <theme>
 
-  <element name="CTabFolder"
-      description="CTabFolder Control">
+  <element name="CTabFolder">
+
+    <description>
+    RWT CTabFolder widgets.
+    This widget is used to arrange views in the Workbench default presentation.
+    </description>
 
     <element name="CTabItem"
-        description="Items of a CTabFolder control">
+        description="Items of a CTabFolder control.">
 
       <property name="color"
           type="color"
-          description="Foregroung color" />
+          description="Text color for the item tabs." />
 
       <property name="background-color"
           type="color"
-          description="Background color" />
+          description="Background color for the item tabs." />
 
       <state name="selected"
-          description="When the CTabItem is selected" />
+          description="Applies to the selected item." />
 
     </element>
 
