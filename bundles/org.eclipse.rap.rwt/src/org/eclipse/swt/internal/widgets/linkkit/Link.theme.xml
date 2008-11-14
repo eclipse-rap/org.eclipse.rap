@@ -13,25 +13,25 @@
 <theme css-elements="Link">
 
   <element name="Link"
-      description="Link control">
+      description="SWT Link widgets.">
 
     <property name="font"
         type="font"
-        description="Font for link text" />
+        description="Font for link texts." />
 
     <property name="border"
         type="border"
-        description="Link border" />
+        description="Border for links." />
 
     <style name="BORDER"
-        description="Style constant for bordered behavior." />
+        description="Indicates that the widget should have a border." />
 
     <element name="Link-Hyperlink"
-        description="Embedded links in a Link control">
+        description="Embedded hyperlinks in a Link widget.">
 
       <property name="color"
           type="color"
-          description="Text color for hyperlinks in Link widget" />
+          description="Text color for hyperlinks in Link widget." />
 
     </element>
 

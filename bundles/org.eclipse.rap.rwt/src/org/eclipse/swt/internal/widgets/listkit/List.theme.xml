@@ -13,39 +13,43 @@
 <theme css-elements="List">
 
   <element name="List"
-      description="List elements">
+      description="SWT Lists.">
+
+    <property name="font"
+        type="font"
+        description="Font for lists." />
 
     <property name="color"
         type="color"
-        description="List text color" />
+        description="Text color lists." />
 
     <property name="background-color"
         type="color"
-        description="Background color" />
+        description="Background color for lists." />
 
     <property name="border"
         type="border"
-        description="Border for list." />
+        description="Border for lists." />
 
     <style name="BORDER"
-        description="Style constant for bordered behavior." />
+        description="Indicates that the list should have a border." />
 
     <element name="List-Item"
-        description="Item elements of List controls">
+        description="Items of list controls.">
 
       <property name="color"
           type="color"
-          description="List item text color" />
+          description="Text color for list items." />
 
       <property name="background-color"
           type="color"
-          description="Background color" />
+          description="Background color for list items." />
 
       <state name="selected"
-          description="On selection" />
+          description="Applies to selected items." />
 
       <state name="inactive"
-          description="On inactive item" />
+          description="Applies to items on unfocused lists." />
 
     </element>
 

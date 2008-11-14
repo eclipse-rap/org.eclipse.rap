@@ -12,37 +12,60 @@
 
 <theme css-elements="NONE">
 
-  <element name="System"
-      description="Dummy element used to define certain SWT system colors.">
+  <element name="System">
 
-    <property name="rwt-shadow-color"
-        type="color"
-        description="Color used to draw (outer) shadow line in 3d borders. Defines the value of SWT.COLOR_WIDGET_NORMAL_SHADOW."/>
+    <description>
+    Dummy element used to define certain SWT system colors.
+    </description>
 
-    <property name="rwt-highlight-color"
-        type="color"
-        description="Color used to draw (outer) highlight line in 3d borders. Defines the value of SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW."/>
+    <property name="rwt-shadow-color" type="color">
+      <description>
+      Color used to draw (outer) shadow line in 3d borders.
+      Defines the value of SWT.COLOR_WIDGET_NORMAL_SHADOW.
+      </description>
+    </property>
 
-    <property name="rwt-darkshadow-color"
-        type="color"
-        description="Color used to draw (inner) shadow line in 3d borders. Defines the value of SWT.COLOR_WIDGET_DARK_SHADOW."/>
+    <property name="rwt-highlight-color" type="color">
+      <description>
+      Color used to draw (outer) highlight line in 3d borders.
+      Defines the value of SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW.
+      </description>
+    </property>
 
-    <property name="rwt-lightshadow-color"
-        type="color"
-        description="Color used to draw (inner) highlight line in 3d borders. Defines the value of SWT.COLOR_WIDGET_LIGHT_SHADOW."/>
+    <property name="rwt-darkshadow-color" type="color">
+      <description>
+      Color used to draw (inner) shadow line in 3d borders.
+      Defines the value of SWT.COLOR_WIDGET_DARK_SHADOW.
+      </description>
+    </property>
 
-    <property name="rwt-thinborder-color"
-        type="color"
-        description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc. Defines the value of SWT.COLOR_WIDGET_BORDER."/>
+    <property name="rwt-lightshadow-color" type="color">
+      <description>
+      Color used to draw (inner) highlight line in 3d borders.
+      Defines the value of SWT.COLOR_WIDGET_LIGHT_SHADOW.
+      </description>
+    </property>
 
-    <property name="rwt-selectionmarker-color"
-        type="color"
-        description="Color used to mark selected items like TreeColumns and TabViews."/>
+    <property name="rwt-thinborder-color" type="color">
+      <description>
+      Color for thin lines as shown by Group, TabFolder headers, Table headers,
+      etc.
+      Defines the value of SWT.COLOR_WIDGET_BORDER.
+      </description>
+    </property>
+
+    <property name="rwt-selectionmarker-color" type="color">
+      <description>
+      Color used to mark selected items like TreeColumns and TabViews.
+      </description>
+    </property>
 
   </element>
 
-  <element name="ToolTip"
-      description="Tooltips on SWT widgets, as set using setTooltipText().">
+  <element name="ToolTip">
+    <description>
+    Tooltips on SWT widgets, as set using setTooltipText().
+    </description>
 
     <property name="color"
         type="color"
@@ -55,20 +78,15 @@
   </element>
 
   <!-- TODO [rst] Eliminate when property support is gone. -->
-  <element name="*"
-      description="All elements">
+  <element name="*" description="All elements">
 
-    <property name="color"
-        type="color" />
+    <property name="color" type="color" />
 
-    <property name="background-color"
-        type="color"/>
+    <property name="background-color" type="color"/>
 
-    <property name="font"
-        type="font"/>
+    <property name="font" type="font"/>
 
-    <property name="border"
-        type="border"/>
+    <property name="border" type="border"/>
 
   </element>
 
@@ -117,31 +135,37 @@
   <color name="widget.shadow"
       description="Color used to draw (outer) shadow line in 3d borders"
       default="167, 166, 170"
+      css-elements="System"
       css-property="rwt-shadow-color" />
 
   <color name="widget.highlight"
       description="Color used to draw (outer) highlight line in 3d borders"
       default="255, 255, 255"
+      css-elements="System"
       css-property="rwt-highlight-color" />
 
   <color name="widget.darkshadow"
       description="Color used to draw (inner) shadow line in 3d borders"
       default="133, 135, 140"
+      css-elements="System"
       css-property="rwt-darkshadow-color" />
 
   <color name="widget.lightshadow"
       description="Color used to draw (inner) highlight line in 3d borders"
       default="220, 223, 228"
+      css-elements="System"
       css-property="rwt-lightshadow-color" />
 
   <color name="widget.thinborder"
       description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."
       default="172, 168, 153"
+      css-elements="System"
       css-property="rwt-thinborder-color" />
 
   <color name="widget.selection-marker"
       description="Color used to mark selected items like TreeColumns and TabViews"
       default="254, 200, 60"
+      css-elements="System"
       css-property="rwt-selectionmarker-color" />
 
 </theme>

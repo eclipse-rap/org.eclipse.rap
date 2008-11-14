@@ -12,30 +12,33 @@
 
 <theme css-elements="Label">
 
-  <element name="Label"
-      description="Label controls">
+  <element name="Label">
+    <description>
+    SWT Labels.
+    Labels are simple widgets that can contain either text or an image.
+    </description>
 
     <property name="color"
         type="color"
-        description="Label text color" />
+        description="Text color for labels." />
 
     <property name="background-color"
         type="color"
-        description="Background color" />
+        description="Background color for labels." />
 
     <property name="font"
         type="font"
-        description="Text font" />
+        description="Text font for labels." />
 
     <property name="border"
         type="border"
-        description="Label border" />
+        description="Border for labels." />
 
     <style name="BORDER"
-        description="Style constant for bordered behavior." />
+        description="Indicates that the widget should have a border." />
 
     <state name="hover"
-        description="On mouse over" />
+        description="Applies to widgets while the cursor hovers over them." />
 
   </element>
 
