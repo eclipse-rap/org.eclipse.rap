@@ -12,51 +12,58 @@
 
 <theme css-elements="Group">
 
-  <element name="Group"
-      description="Controls of type Group">
+  <element name="Group">
+    <description>
+      RWT Group controls.
+      Groups are labeled boxes used to group sets of controls.
+    </description>
 
     <property name="background-color"
         type="color"
-        description="Background color for group boxes" />
+        description="Background color for group boxes." />
 
-    <property name="margin"
-        type="boxdim"
-        description="Margin for group boxes (space between frame and parent)" />
+    <property name="color"
+        type="color"
+        description="Text color for group boxes. Applied to the group box label." />
 
-    <property name="padding"
-        type="boxdim"
-        description="Padding for group boxes (space between frame and content)" />
+    <property name="font"
+        type="font"
+        description="Font for group boxes. Applied to the group box label." />
 
     <property name="border"
         type="border"
-        description="Group border" />
+        description="Border for group boxes." />
 
     <style name="BORDER"
-        description="Style constant for bordered behavior." />
+        description="Indicates that the group box should have a border." />
 
     <element name="Group-Frame"
-        description="The frame around the children of a group box">
+        description="The frame that contains the child controls.">
 
       <property name="border"
           type="border"
-          description="Frame border for group boxes" />
+          description="Border for group box frames." />
+
+      <property name="margin"
+          type="boxdim"
+          description="Margin for group box frames (outer space around the frame)." />
+
+      <property name="padding"
+          type="boxdim"
+          description="Padding for group box frames (inner distance between frame border and content)." />
 
     </element>
 
     <element name="Group-Label"
-        description="The label of a group box">
+        description="The label of a group box.">
 
       <property name="padding"
           type="boxdim"
-          description="Padding for group box labels (defines space around group label text)" />
+          description="Padding for group box labels (space around the label text)." />
 
       <property name="margin"
           type="boxdim"
-          description="Margin for group box labels (defines offset of the group label)" />
-
-      <property name="font"
-          type="font"
-          description="Font for group box labels" />
+          description="Margin for group box labels (offset of the group box label)." />
 
     </element>
 

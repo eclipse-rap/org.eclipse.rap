@@ -20,16 +20,12 @@ import org.eclipse.swt.widgets.Group;
 
 public final class GroupThemeAdapter extends ControlThemeAdapter {
 
-  public Font getFont( final Group group ) {
-    return getCssFont( "Group-Label", "font", group );
-  }
-
   public Rectangle getPadding( final Group group ) {
-    return getCssBoxDimensions( "Group", "padding", group );
+    return getCssBoxDimensions( "Group-Frame", "padding", group );
   }
 
   public Rectangle getMargin( final Group group ) {
-    return getCssBoxDimensions( "Group", "margin", group );
+    return getCssBoxDimensions( "Group-Frame", "margin", group );
   }
 
   /**
