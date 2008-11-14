@@ -32,7 +32,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   */
 
   "cursor-dnd-move" : {
-    style : function(states) {
+    style : function( states ) {
       return {
         source : "widget/cursors/move.gif"
       };
@@ -40,7 +40,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "cursor-dnd-copy" : {
-    style : function(states) {
+    style : function( states ) {
       return {
         source : "widget/cursors/copy.gif"
       };
@@ -48,7 +48,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "cursor-dnd-alias" : {
-    style : function(states) {
+    style : function( states ) {
       return {
         source : "widget/cursors/alias.gif"
       };
@@ -56,15 +56,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "cursor-dnd-nodrop" : {
-    style : function(states) {
+    style : function( states ) {
       return {
         source : "widget/cursors/nodrop.gif"
       };
     }
   },
 
-  "client-document" :
-  {
+  "client-document" : {
     style : function( states ) {
       return {
         font : "widget.font",
@@ -76,8 +75,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "client-document-blocker" :
-  {
+  "client-document-blocker" : {
     style : function( states ) {
       // You could also use: "static/image/dotted_white.gif" for example as backgroundImage here
       // (Visible) background tiles could be dramatically slow down mshtml!
@@ -89,8 +87,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "atom" :
-  {
+  "atom" : {
     style : function( states ) {
       return {
         cursor                        : "default",
@@ -108,8 +105,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   //       Any styles set for this appearance cannot be overridden by themeing
   //       of controls that include a label! This is because the "inheritance"
   //       feature does not overwrite theme property values from themes.
-  "label" :
-  {
+  "label" : {
   },
 
   // Appearance used for qooxdoo "labelObjects" which are part of Atoms etc.
@@ -157,17 +153,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "htmlcontainer" :
-  {
+  "htmlcontainer" : {
     include : "label"
   },
 
-  "popup" :
-  {
+  "popup" : {
   },
 
-  "tool-tip" :
-  {
+  "tool-tip" : {
     include : "popup",
 
     style : function( states ) {
@@ -180,8 +173,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "iframe" :
-  {
+  "iframe" : {
     style : function( states ) {
       return {
         border : "inset"
@@ -189,8 +181,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "check-box" :
-  {
+  "check-box" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
@@ -217,8 +208,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "button" :
-  {
+  "button" : {
     include : "atom",
 
     style : function( states ) {
@@ -247,8 +237,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "toolbar" :
-  {
+  "toolbar" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
@@ -263,8 +252,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "toolbar-separator" :
-  {
+  "toolbar-separator" : {
     style : function( states ) {
       return {
         width : 8
@@ -272,8 +260,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "toolbar-separator-line" :
-  {
+  "toolbar-separator-line" : {
     style : function( states ) {
       return {
         top    : 2,
@@ -285,8 +272,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "toolbar-button" :
-  {
+  "toolbar-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
@@ -424,8 +410,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "window-statusbar" :
-  {
+  "window-statusbar" : {
     style : function( states ) {
       return {
         border : "thinInset",
@@ -434,8 +419,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "window-statusbar-text" :
-  {
+  "window-statusbar-text" : {
     style : function( states ) {
       return {
         padding       : [ 1, 4 ],
@@ -452,8 +436,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   // TODO [rst] necessary?
 
-  "resizer" :
-  {
+  "resizer" : {
     style : function( states ) {
       return {
         border : "outset"
@@ -461,8 +444,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "resizer-frame" :
-  {
+  "resizer-frame" : {
     style : function( states ) {
       return {
         border : "shadow"
@@ -476,8 +458,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "menu" :
-  {
+  "menu" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
@@ -493,8 +474,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-layout" :
-  {
+  "menu-layout" : {
     style : function( states ) {
       return {
         top    : 0,
@@ -505,8 +485,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-button" :
-  {
+  "menu-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
@@ -525,8 +504,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-button-arrow" :
-  {
+  "menu-button-arrow" : {
     style : function( states ) {
       return {
         source : "widget/arrows/next.gif"
@@ -534,11 +512,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-check-box" :
-  {
+  "menu-check-box" : {
     include : "menu-button",
 
-    style : function(states)
+    style : function( states )
     {
       return {
         icon : states.checked
@@ -548,11 +525,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-radio-button" :
-  {
+  "menu-radio-button" : {
     include : "menu-button",
 
-    style : function(states)
+    style : function( states )
     {
       return {
         icon : states.checked
@@ -562,8 +538,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-separator" :
-  {
+  "menu-separator" : {
     style : function( states ) {
       return {
         height       : "auto",
@@ -575,8 +550,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-separator-line" :
-  {
+  "menu-separator-line" : {
     style : function( states ) {
       return {
         right  : 0,
@@ -587,8 +561,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menubar-button" :
-  {
+  "menubar-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
@@ -764,8 +737,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "tree-element" :
-  {
+  "tree-element" : {
     style : function( states ) {
       return {
         height                : 16,
@@ -774,8 +746,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-element-icon" :
-  {
+  "tree-element-icon" : {
     style : function( states ) {
       return {
         width  : 16,
@@ -784,8 +755,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-element-label" :
-  {
+  "tree-element-label" : {
     include : "label",
 
     style : function( states ) {
@@ -808,23 +778,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-folder" :
-  {
+  "tree-folder" : {
     include : "tree-element"
   },
 
-  "tree-folder-icon" :
-  {
+  "tree-folder-icon" : {
     include : "tree-element-icon"
   },
 
-  "tree-folder-label" :
-  {
+  "tree-folder-label" : {
     include : "tree-element-label"
   },
 
-  "tree-container" :
-  {
+  "tree-container" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
@@ -833,8 +799,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree" :
-  {
+  "tree" : {
     include : "tree-folder",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -846,13 +811,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-icon" :
-  {
+  "tree-icon" : {
     include : "tree-folder-icon"
   },
 
-  "tree-label" :
-  {
+  "tree-label" : {
     include : "tree-folder-label"
   },
 
@@ -928,8 +891,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "tab-view" :
-  {
+  "tab-view" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
@@ -941,8 +903,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tab-view-bar" :
-  {
+  "tab-view-bar" : {
     style : function( states ) {
       return {
         height : "auto"
@@ -950,8 +911,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tab-view-pane" :
-  {
+  "tab-view-pane" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
@@ -964,8 +924,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tab-view-page" :
-  {
+  "tab-view-page" : {
 //      style : function( states ) {
 //        return {
 // TODO [rst] disappeared in qx 0.7
@@ -977,8 +936,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 //      }
   },
 
-  "tab-view-button" :
-  {
+  "tab-view-button" : {
     include : "atom",
 
     style : function( states ) {
@@ -1108,8 +1066,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "spinner" :
-  {
+  "spinner" : {
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -1123,8 +1080,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "spinner-text-field" :
-  {
+  "spinner-text-field" : {
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -1141,8 +1097,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "spinner-button" :
-  {
+  "spinner-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
@@ -1160,8 +1115,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "spinner-button-up" :
-  {
+  "spinner-button-up" : {
     include : "spinner-button",
     style : function( states ) {
       return {
@@ -1171,8 +1125,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "spinner-button-down" :
-  {
+  "spinner-button-down" : {
     include : "spinner-button",
     style : function( states ) {
       return {
@@ -1397,8 +1350,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "ctabfolder-button" :
-  {
+  "ctabfolder-button" : {
     include : "image",
     style : function( states ) {
       var result = {};
@@ -1414,8 +1366,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "ctab-close-button" :
-  {
+  "ctab-close-button" : {
     include : "image",
 
     style : function( states ) {
@@ -1731,7 +1682,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   // Calendar
 
   "calendar-navBar" : {
-    style : function(states) {
+    style : function( states ) {
       return {
         backgroundColor : "#0A246A",
         padding : [ 4, 4, 4, 4 ]
@@ -1740,7 +1691,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "calendar-toolbar-button" : {
-    style : function(states) {
+    style : function( states ) {
       var result =
       {
         spacing : 4,
@@ -1759,7 +1710,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "calendar-monthyear" : {
-    style : function(states) {
+    style : function( states ) {
       var boldFont = qx.ui.core.Font.fromString( "11 bold Tahoma, 'Lucida Sans Unicode', sans-serif" );
 
       return {
@@ -1772,7 +1723,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "calendar-datepane" : {
-    style : function(states) {
+    style : function( states ) {
       return {
         backgroundColor : "white"
       };
@@ -1780,7 +1731,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "calendar-weekday" : {
-    style : function(states) {
+    style : function( states ) {
       var border = qx.ui.core.Border.fromConfig({
         bottom : [ 1, "solid", "gray" ]
       });
@@ -1795,7 +1746,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "calendar-day" : {
-    style : function(states) {
+    style : function( states ) {
       var border = new qx.ui.core.Border( 1, "solid", "red" );
 
       return {
