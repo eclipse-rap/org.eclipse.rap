@@ -33,10 +33,19 @@ import org.eclipse.ui.progress.WorkbenchJob;
 // class ProgressViewUpdater implements IJobProgressManagerListener {
 //
 //    private static ProgressViewUpdater singleton;
-public class ProgressViewUpdater
-  extends SessionSingletonBase
-  implements IJobProgressManagerListener
-{
+public class ProgressViewUpdater implements IJobProgressManagerListener {
+  
+  // RAP [fappel]: This class will be instanciated using the 
+  //               SessionSingletonBase#getInstance(class) method to have a
+  //               replacement for the class variable holding the singleton in
+  //               RCP.
+  public final static class ProgressViewUpdaterHolder {
+    private ProgressViewUpdaterHolder() {
+      // prevent from instance creation
+    }
+    // this is the reference to the actual session singleton instance
+    public ProgressViewUpdater singleton;
+  }
 
     private IProgressUpdateCollector[] collectors;
 
@@ -157,18 +166,24 @@ public class ProgressViewUpdater
      * 
      * @return ProgressViewUpdater
      */
-   static ProgressViewUpdater getSingleton() {
+    static ProgressViewUpdater getSingleton() {
 // RAP [fappel]: session aware implementation
 //        if (singleton == null) {
 //			singleton = new ProgressViewUpdater();
 //		}
 //        return singleton;
-       ProgressViewUpdater instance
-         = ( ProgressViewUpdater )getInstance( ProgressViewUpdater.class );
-       if( instance.display == null ) {
-         instance.display = Display.getCurrent();
-       }
-       return instance;
+      ProgressViewUpdaterHolder singletonHolder = getSingletonHolder();
+      if( singletonHolder.singleton == null) {
+        singletonHolder.singleton = new ProgressViewUpdater();
+        singletonHolder.singleton.display = Display.getCurrent();
+      }
+      return singletonHolder.singleton;
+    }
+
+    private static ProgressViewUpdaterHolder getSingletonHolder() {
+      Object instance
+        = SessionSingletonBase.getInstance( ProgressViewUpdaterHolder.class );
+      return ( ProgressViewUpdaterHolder )instance;
     }
 
     /**
@@ -181,7 +196,7 @@ public class ProgressViewUpdater
     static boolean hasSingleton() {
 // RAP [fappel]:
 //        return singleton != null;
-        return getSingleton() != null;
+        return getSingletonHolder().singleton != null;
     }
 
     static void clearSingleton() {
@@ -190,9 +205,11 @@ public class ProgressViewUpdater
 //			ProgressManager.getInstance().removeListener(singleton);
 //		}
 //        singleton = null;
-        if (getSingleton() != null) {
-			ProgressManager.getInstance().removeListener(getSingleton());
-        }
+      if( hasSingleton() ) {
+        ProgressManager.getInstance().removeListener(getSingleton());
+        getSingletonHolder().singleton.display = null;
+      }
+      getSingletonHolder().singleton = null;
     }
 
     /**
