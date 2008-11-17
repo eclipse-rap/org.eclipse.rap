@@ -16,6 +16,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Default;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -143,6 +144,51 @@ public class JSWriter_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
+  
+  public void testNewWidgetWithTypePoolId() throws IOException {
+    Display display = new Display();
+    TestShell shell = new TestShell( display );
+    Widget widget = new Widget( shell, SWT.NONE ) {
+      public Object getAdapter( final Class adapter ) {
+        Object result;
+        if( adapter == ILifeCycleAdapter.class ) {
+          result = new AbstractWidgetLCA() {
+
+            public void preserveValues( Widget widget ) {
+            }
+
+            public void renderChanges( Widget widget ) throws IOException {
+            }
+
+            public void renderDispose( Widget widget ) throws IOException {
+            }
+
+            public void renderInitialization( Widget widget )
+              throws IOException
+            {
+            }
+
+            public void readData( Widget widget ) {
+            }
+            public String getTypePoolId( Widget widget ) {
+              return "myWidgetPoolId";
+            }
+            
+          }; 
+        } else {
+          result = super.getAdapter( adapter );
+        }
+        return result;
+      }
+    };
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.newWidget( "qx.ui.widget" );
+    String expected
+      =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+        + "var w = wm.newWidget( \"w2\", \"\", false, 767544711, "
+        + "'qx.ui.widget' );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
 
   private String getTypePoolIdHash( final Widget widget ) {
     String id = getTypePoolId( widget );
@@ -155,12 +201,14 @@ public class JSWriter_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
-    writer.newWidget( "qx.ui.form.Button", new Object[]{ "abc" } );
+    Object[] arrayParam = new Object[] { Graphics.getColor( 255, 0, 0 ) };
+    Object[] params = new Object[]{ "abc", arrayParam };
+    writer.newWidget( "qx.ui.form.Button", params );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
-        + ", 'qx.ui.form.Button', '\"abc\"' );";
+        + ", 'qx.ui.form.Button', '\"abc\", [\"#ff0000\" ]' );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -596,6 +644,12 @@ public class JSWriter_Test extends TestCase {
     // add listener of a property object of the widget
     writer.removeListener( "prop", "type", "jshandler" );
     expected += "w.getProp().removeEventListener( \"type\", jshandler );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // ensure instance listener hack of [rh]:
+    // JSWriter#removeListener(String,String,String)
+    writer.removeListener( "type", "this.jshandler" );
+    expected += "w.removeEventListener( \"type\", w.jshandler, w );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     display.dispose();
