@@ -300,9 +300,9 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         this._spinner.setMin( 1 );           
         this._spinner.setMax( 12 );
         this._spinner.setValue( this._monthInt );
-      } else if( textField === this._yearTextField ) {
-        this._spinner.setMin( 1752 );                        
-        this._spinner.setMax( 9999 );                            
+      } else if( textField === this._yearTextField ) {                                
+        this._spinner.setMax( 9999 );
+        this._spinner.setMin( 1752 );
         this._spinner.setValue( this._lastValidYear );
       }
       // Set focused text field
