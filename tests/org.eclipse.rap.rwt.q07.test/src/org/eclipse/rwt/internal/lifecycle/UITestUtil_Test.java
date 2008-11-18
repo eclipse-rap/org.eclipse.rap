@@ -11,16 +11,16 @@
 
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.io.*;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 
 
 public class UITestUtil_Test extends TestCase {
@@ -38,10 +38,10 @@ public class UITestUtil_Test extends TestCase {
     assertFalse( UITestUtil.isValidId( "A/8" ) );
   }
   
-  public void testWriteIds() {
+  public void testWriteIds() throws IOException {
     System.setProperty( WidgetUtil.ENABLE_UI_TESTS, "true" );
     Display display = new Display();
-    new Shell( display, SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     String displayId = DisplayUtil.getId( display );
     // Request with not yet initialized widgets
     RWTFixture.fakeNewRequest();
@@ -49,12 +49,26 @@ public class UITestUtil_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) != -1 );
+    
     // Request with already initialized widgets
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     RWTFixture.executeLifeCycleFromServerThread( );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) == -1 );
+    
+    // Request with invalid id
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Label label = new Label( shell, SWT.NONE );
+    label.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( label );
+    try {
+      lca.render( label );
+      fail( "widget id contains illegal characters" );
+    } catch( final IllegalArgumentException iae ) {
+    }
+      
     // clean up
     System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
   }
