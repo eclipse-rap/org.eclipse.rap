@@ -261,6 +261,32 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeFont( label, newFont );
     assertTrue( Fixture.getAllMarkup().endsWith( ", 42, false, false );" ) );
   }
+  
+  public void testFontReset() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.fakeResponseWriter();
+    Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
+    RWTFixture.markInitialized( label );
+    WidgetLCAUtil.preserveFont( label, font );
+    WidgetLCAUtil.writeFont( label, null );
+    String expected = "var w = wm.findWidgetById( \"w2\" );w.resetFont();";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testForegroundReset() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.fakeResponseWriter();
+    Color red = Graphics.getColor( 255, 0, 0 );
+    RWTFixture.markInitialized( label );
+    WidgetLCAUtil.preserveForeground( label, red );
+    WidgetLCAUtil.writeForeground( label, null );
+    String expected = "var w = wm.findWidgetById( \"w2\" );w.resetTextColor();";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
  
   public void testWriteImage() throws IOException {
     Display display = new Display();
@@ -323,6 +349,23 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeCustomVariant( control );
     String expected = "w.addState( \"variant_my_variant\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveCustomVariant( control );
+    control.setData( WidgetUtil.CUSTOM_VARIANT, "new_variant" );
+    WidgetLCAUtil.writeCustomVariant( control );
+    expected
+      =   "w.removeState( \"variant_my_variant\" );w.addState( "
+        + "\"variant_new_variant\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveCustomVariant( control );
+    RWTFixture.markInitialized( control );
+    control.setData( WidgetUtil.CUSTOM_VARIANT, null );
+    WidgetLCAUtil.writeCustomVariant( control );
+    expected = "w.removeState( \"variant_new_variant\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testWriteBackground() throws Exception {
@@ -359,6 +402,97 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackground( control, null, false );
     expected = "w.resetBackgroundColor();";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, red, false );
+    WidgetLCAUtil.writeBackground( control, red, false );
+    assertEquals( "", Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, null );
+    WidgetLCAUtil.writeBackground( control, red );
+    expected = "w.setBackgroundColor( \"#ff0000\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, red );
+    WidgetLCAUtil.writeBackground( control, red );
+    assertEquals( "", Fixture.getAllMarkup() );
+  }
+  
+  public void testResetCalls() throws IOException {
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetBounds();
+    String expected 
+      = "w.resetClipWidth();w.resetClipHeight();w.setSpace( 0, 0, 0, 0 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetMenu();
+    expected 
+      =   "w.resetContextMenu();w.removeEventListener( \"contextmenu\", "
+        + "org.eclipse.swt.MenuUtil.contextMenu );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetToolTip();
+    expected = "wm.setToolTip( w );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetFont();
+    expected = "w.resetFont();";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetForeground();
+    expected 
+      =   "w.resetTextColor();w.removeEventListener( \"appear\", "
+        + "org.eclipse.swt.WidgetManager._onAppearSetForeground );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetBackground();
+    expected = "w.resetBackgroundColor();";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.resetEnabled();
+    expected = "w.setEnabled( true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testWriteMenu() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+
+    // for an un-initialized control: no menu -> no markup
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeMenu( label, label.getMenu() );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    // for an un-initialized control: render menu, if any
+    Fixture.fakeResponseWriter();
+    label.setMenu( new Menu( label ) );
+    WidgetLCAUtil.writeMenu( label, label.getMenu() );
+    String expected 
+      =   "var w = wm.findWidgetById( \"w2\" );w.setContextMenu( "
+        + "wm.findWidgetById( \"w3\" ) );w.addEventListener( "
+        + "\"contextmenu\", org.eclipse.swt.MenuUtil.contextMenu );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    // for an initialized control with change menu: render it
+    RWTFixture.markInitialized( label );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    label.setMenu( null );
+    WidgetLCAUtil.writeMenu( label, label.getMenu() );
+    expected 
+      =   "w.setContextMenu( null );w.removeEventListener( \"contextmenu\", "
+        + "org.eclipse.swt.MenuUtil.contextMenu );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testWriteStyleFlag() throws IOException {

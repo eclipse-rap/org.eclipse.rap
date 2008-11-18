@@ -32,6 +32,9 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlLCAUtil_Test extends TestCase {
 
+  private static final String WIDGET_DEFAULT_SELECTED = "widgetDefaultSelected";
+  private static final String WIDGET_SELECTED = "widgetSelected";
+
   public void testWriteBounds() throws Exception {
     // Ensure that bounds for an uninitialized widget are rendered
     Display display = new Display();
@@ -176,9 +179,12 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testProcessSelection() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    SelectionListener listener = new SelectionAdapter() {
+    SelectionListener listener = new SelectionListener() {
       public void widgetSelected( final SelectionEvent event ) {
-        log.append( "widgetSelected" );
+        log.append( WIDGET_SELECTED );
+      }
+      public void widgetDefaultSelected( SelectionEvent e ) {
+        log.append( WIDGET_DEFAULT_SELECTED );
       }
     };
     Display display = new Display();
@@ -194,21 +200,38 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     ControlLCAUtil.processSelection( button, null, true );
-    assertEquals( "widgetSelected", log.toString() );
+    assertEquals( WIDGET_SELECTED, log.toString() );
 
+    // TODO [fappel]: what is the difference to the previous case?
     // Test that requestParams like '...events.widgetSelected=w3,0' cause the
     // event to be fired
     log.setLength( 0 );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     ControlLCAUtil.processSelection( button, null, true );
-    assertEquals( "widgetSelected", log.toString() );
+    assertEquals( WIDGET_SELECTED, log.toString() );
 
     // Test that if requestParam '...events.widgetSelected' is null, no event
     // gets fired
     log.setLength( 0 );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, null );
+    ControlLCAUtil.processSelection( button, null, true );
+    assertEquals( "", log.toString() );
+
+    // Test that requestParams like '...events.widgetDefaultSelected=w3' cause
+    // the event to be fired
+    log.setLength( 0 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, buttonId );
+    ControlLCAUtil.processSelection( button, null, true );
+    assertEquals( WIDGET_DEFAULT_SELECTED, log.toString() );
+    
+    // Test that if requestParam '...events.widgetSelected' is null, no event
+    // gets fired
+    log.setLength( 0 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
     ControlLCAUtil.processSelection( button, null, true );
     assertEquals( "", log.toString() );
   }
@@ -535,6 +558,29 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.CAPS_LOCK, keyCode );
     keyCode = ControlLCAUtil.translateKeyCode( 36 );
     assertEquals( SWT.HOME, keyCode );
+  }
+  
+  public void testWriteBackgroundImage() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Control control = new Button( shell, SWT.PUSH );
+    
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveBackgroundImage( control );
+    RWTFixture.markInitialized( control );
+    control.setBackgroundImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    ControlLCAUtil.writeBackgroundImage( control );
+    String expected
+      =   "var w = wm.findWidgetById( \"w2\" );w.setBackgroundImage( "
+        + "\"resources/images/image1.gif\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveBackgroundImage( control );
+    control.setBackgroundImage( null );
+    ControlLCAUtil.writeBackgroundImage( control );
+    expected = "w.resetBackgroundImage();";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
   
   protected void setUp() throws Exception {
