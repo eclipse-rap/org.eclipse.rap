@@ -343,9 +343,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
     _isConnectionError : function( statusCode ) {
       var result;
       if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        result = (    statusCode === 12029 
-                   || statusCode === 12030 
-                   || statusCode === 12031 );
+        // for a description of the IE status codes, see
+        // http://support.microsoft.com/kb/193625 
+        result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
+                   || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
+                   || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
+                   || statusCode === 12031 ); // ERROR_INTERNET_CONNECTION_RESET
       } else if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
         // Firefox 3 reports other statusCode than oder versions (bug #249814)
         // Check if Gecko > 1.9 is running (used in FF 3)
