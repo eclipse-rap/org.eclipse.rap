@@ -27,28 +27,18 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     // Flag that indicates that the next request can be sent
     this._readyToSendChanges = true;
     
-    // Add listeners for font, background and foregraund color change
+    // Add listener for font change
     this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
-    this.addEventListener( "changeTextColor", this._rwt_onChangeTextColor, this );
-    this.addEventListener( "changeBackgroundColor", this._rwt_onChangeBackgoundColor, this );
-    
-    // Background color
-    this._backgroundColor = "white";
-    // Foreground color
-    this._foregroundColor = "black";
-    
+            
     // Focused text field
     this._focusedTextField = null;    
     // Hours
     this._hoursTextField = new qx.ui.form.TextField;
+    this._hoursTextField.setAppearance( "datetime-field" );
     this._hoursTextField.set({ 
-      maxLength: 2, 
-      textAlign: "center",
+      maxLength: 2,
       selectable: false,
-      readOnly: true,
-      border: null,
-      backgroundColor: this._backgroundColor,
-      textColor : this._foregroundColor
+      readOnly: true
     });
     this._hoursTextField.setValue( "00" );
     this._hoursTextField.addEventListener( "click",  this._onClick, this ); 
@@ -57,24 +47,17 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     this._hoursTextField.addEventListener( "contextmenu", this._onContextMenu, this );  
     this.add(this._hoursTextField);
     // Separator
-    this._separator3 = new qx.ui.basic.Label(":");        
-    this._separator3.set({
-      paddingTop: 3,
-      backgroundColor: this._backgroundColor,
-      textColor : this._foregroundColor
-    });
+    this._separator3 = new qx.ui.basic.Label(":");
+    this._separator3.setAppearance( "datetime-separator" );
     this._separator3.addEventListener( "contextmenu", this._onContextMenu, this );
     this.add(this._separator3);
     // Minutes
     this._minutesTextField = new qx.ui.form.TextField;
+    this._minutesTextField.setAppearance( "datetime-field" );
     this._minutesTextField.set({ 
       maxLength: 2, 
-      textAlign: "center",
       selectable: false,
-      readOnly: true,
-      border: null,
-      backgroundColor: this._backgroundColor,
-      textColor : this._foregroundColor
+      readOnly: true
     });
     this._minutesTextField.setValue( "00" );
     this._minutesTextField.addEventListener( "click",  this._onClick, this ); 
@@ -83,26 +66,19 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     this._minutesTextField.addEventListener( "contextmenu", this._onContextMenu, this );
     this.add(this._minutesTextField);
     // Separator
-    this._separator4 = new qx.ui.basic.Label(":");        
-    this._separator4.set({
-      paddingTop: 3,
-      backgroundColor: this._backgroundColor,
-      textColor : this._foregroundColor
-    });
+    this._separator4 = new qx.ui.basic.Label(":");
+    this._separator4.setAppearance( "datetime-separator" );
     this._separator4.addEventListener( "contextmenu", this._onContextMenu, this );
     if( this._medium || this._long ) {
       this.add(this._separator4);
     }
     // Seconds
     this._secondsTextField = new qx.ui.form.TextField;
+    this._secondsTextField.setAppearance( "datetime-field" );
     this._secondsTextField.set({ 
       maxLength: 2, 
-      textAlign: "center",
       selectable: false,
-      readOnly: true,
-      border: null,
-      backgroundColor: this._backgroundColor,
-      textColor : this._foregroundColor
+      readOnly: true
     });
     this._secondsTextField.setValue( "00" );
     this._secondsTextField.addEventListener( "click",  this._onClick, this ); 
@@ -117,8 +93,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     this._spinner.set({
       wrap: true,
       border: null,
-      backgroundColor: this._backgroundColor,
-      textColor : this._foregroundColor
+      backgroundColor: null
     });
     this._spinner.setMin( 0 ); 
     this._spinner.setMax( 23 );        
@@ -135,8 +110,6 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
   destruct : function() {
     this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
-    this.removeEventListener( "changeTextColor", this._rwt_onChangeTextColor, this );
-    this.removeEventListener( "changeBackgroundColor", this._rwt_onChangeBackgoundColor, this );
     this._hoursTextField.removeEventListener( "click",  this._onClick, this ); 
     this._hoursTextField.removeEventListener( "keypress", this._onKeyPress, this );
     this._hoursTextField.removeEventListener( "keyup", this._onKeyUp, this );
@@ -189,27 +162,6 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
       this._secondsTextField.setFont( value );
     },
     
-    _rwt_onChangeTextColor : function( evt ) {
-      var value = evt.getValue();
-      this._foregroundColor = value;
-      this._hoursTextField.setTextColor( value );
-      this._minutesTextField.setTextColor( value );
-      this._secondsTextField.setTextColor( value );
-      this._separator3.setTextColor( value );
-      this._separator4.setTextColor( value );     
-    },
-    
-    _rwt_onChangeBackgoundColor : function( evt ) {
-      var value = evt.getValue();
-      this._backgroundColor = value;
-      this._hoursTextField.setBackgroundColor( value );
-      this._minutesTextField.setBackgroundColor( value );
-      this._secondsTextField.setBackgroundColor( value );      
-      this._separator3.setBackgroundColor( value );
-      this._separator4.setBackgroundColor( value );      
-      this._spinner.setBackgroundColor( value );
-    },
-    
     _onContextMenu : function( evt ) {     
       var menu = this.getContextMenu();      
       if( menu != null ) {
@@ -225,9 +177,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     },
     
     _setFocusedTextField :  function( textField ) {
-      var tmpValue;
-      this._focusedTextField.setBackgroundColor( this._backgroundColor );
-      this._focusedTextField.setTextColor( this._foregroundColor );
+      var tmpValue;      
+      this._focusedTextField.removeState( "selected" );    
       // Set focused text field to null
       this._focusedTextField = null;
       if( textField === this._hoursTextField ) {
@@ -249,8 +200,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
       // Set focused text field
       this._focusedTextField = textField;
       // Set highlight on focused text field
-      this._focusedTextField.setBackgroundColor( "#0A246A" );
-      this._focusedTextField.setTextColor( "white" );
+      this._focusedTextField.addState( "selected" );
       // Request focus
       this._focusedTextField.setFocused( true );
     },
@@ -270,8 +220,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     
     _onSpinnerMouseDown : function( evt ) {
       // Set highlight on focused text field
-      this._focusedTextField.setBackgroundColor( "#0A246A" );
-      this._focusedTextField.setTextColor( "white" );
+      this._focusedTextField.addState( "selected" );
     },
     
     _onSpinnerMouseUp : function( evt ) {      
@@ -335,8 +284,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
       if( org.eclipse.swt.widgets.DateTimeTime._isNoModifierPressed( evt ) ) {
         switch( keypress ) {
           case "Tab":
-            this._focusedTextField.setBackgroundColor( this._backgroundColor );
-            this._focusedTextField.setTextColor( this._foregroundColor );
+            this._focusedTextField.removeState( "selected" );
             break;
           case "0": case "1": case "2": case "3": case "4":
           case "5": case "6": case "7": case "8": case "9":

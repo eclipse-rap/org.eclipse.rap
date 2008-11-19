@@ -1553,8 +1553,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "scale" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "*", "border" )
+      return {        
+        border : tv.getCssBorder( "Scale", "border" ),
+        font : tv.getCssFont( "*", "font" ),
+        textColor : tv.getCssColor( "*", "color" ),
+        backgroundColor : tv.getCssColor( "Scale", "background-color" )
       }
     }
   },
@@ -1581,6 +1584,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "image",
 
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       if( states.horizontal ) {
         result.left = org.eclipse.swt.widgets.Scale.PADDING;
@@ -1591,6 +1595,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.top = org.eclipse.swt.widgets.Scale.PADDING;
         result.source = "widget/scale/v_thumb.gif";
       }
+      result.backgroundColor = tv.getCssColor( "Scale-Thumb", "background-color" );
       return result;
     }
   },
@@ -1606,7 +1611,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.source = "widget/scale/h_marker_big.gif";
       } else {
         result.top =   org.eclipse.swt.widgets.Scale.PADDING
-                     + org.eclipse.swt.widgets.Scale.HALF_THUMB;;
+                     + org.eclipse.swt.widgets.Scale.HALF_THUMB;
         result.source = "widget/scale/v_marker_big.gif";
       }
       return result;
@@ -1637,7 +1642,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.source = "widget/scale/v_marker_small.gif";
       }
-
       return result;
     }
   },
@@ -1652,6 +1656,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "*", "border" );
       result.font = tv.getCssFont( "*", "font" );
       result.textColor = tv.getCssColor( "*", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       return result;
     }
   },
@@ -1663,6 +1668,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "*", "border" );
       result.font = tv.getCssFont( "*", "font" );
       result.textColor = tv.getCssColor( "*", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       return result;
     }
   },
@@ -1674,6 +1680,40 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "*", "border" );
       result.font = tv.getCssFont( "*", "font" );
       result.textColor = tv.getCssColor( "*", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      return result;
+    }
+  },
+  
+  "datetime-field" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        textAlign : "center",
+        padding   : [2, 3],
+        border    : null
+      };
+      if( states.disabled ) {
+        result.textColor = tv.getColor( "widget.graytext" );
+        result.backgroundColor = "undefined";
+      } else if( states.selected ) {  
+        result.textColor = tv.getCssColor( "DateTime-Field", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
+      } else {
+        result.textColor = "undefined";
+        result.backgroundColor = "undefined";
+      }
+      return result;
+    }
+  },
+  
+  "datetime-separator" : {
+    include: "label-graytext",
+    
+    style : function( states ) {
+      var result = {
+        paddingTop : 3
+      };      
       return result;
     }
   },
@@ -1683,8 +1723,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "calendar-navBar" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : "#0A246A",
+        backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
         padding : [ 4, 4, 4, 4 ]
       };
     }
@@ -1692,31 +1733,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "calendar-toolbar-button" : {
     style : function( states ) {
-      var result =
-      {
+      var result = {
         spacing : 4,
         width : "auto",
         verticalChildrenAlign : "middle"
       };
-
       if (states.pressed || states.checked || states.abandoned) {
         result.padding = [ 2, 0, 0, 2 ];
       } else {
         result.padding = 2;
       }
-
       return result;
     }
   },
 
   "calendar-monthyear" : {
     style : function( states ) {
-      var boldFont = qx.ui.core.Font.fromString( "11 bold Tahoma, 'Lucida Sans Unicode', sans-serif" );
-
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var boldFont 
+        = qx.ui.core.Font.fromString( "11 bold Tahoma, 'Lucida Sans Unicode', sans-serif" );
       return {
         font          : boldFont,
         textAlign     : "center",
-        textColor     : "white",
+        textColor     : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
         verticalAlign : "middle"
       };
     }
@@ -1725,7 +1764,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "calendar-datepane" : {
     style : function( states ) {
       return {
-        backgroundColor : "white"
+        backgroundColor : "undefined"
       };
     }
   },
@@ -1735,27 +1774,30 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var border = qx.ui.core.Border.fromConfig({
         bottom : [ 1, "solid", "gray" ]
       });
-
       return {
         border          : border,
-        textAlign       : "center",
-        textColor       : "#0A246A",
-        backgroundColor : "white"
+        textAlign       : "center"
       };
     }
   },
 
   "calendar-day" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = new qx.ui.core.Border( 1, "solid", "red" );
-
-      return {
+      var result = {
         textAlign       : "center",
         verticalAlign   : "middle",
-        border          : states.today ? border : "undefined",
-        textColor       : states.selected ? "white" : states.otherMonth ? "#808080" : "undefined",
-        backgroundColor : states.selected ? "#0A246A" : "undefined"
+        border          : states.today ? border : "undefined"
       };
+      if( states.selected || states.otherMonth ) {
+        result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
+      } else {
+        result.textColor = "undefined";
+        result.backgroundColor = "undefined";
+      }      
+      return result;
     }
   },
 
@@ -1767,8 +1809,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
-      result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.font = tv.getCssFont( "ExpandBar", "font" );
+      result.textColor = tv.getCssColor( "ExpandBar", "color" );
       return result;
     }
   },
@@ -1786,7 +1828,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
     style : function( states ) {
       var result = {};
-
       if( states.enabled ) {
         result.cursor = "pointer";
       } else {
@@ -1804,15 +1845,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                       ? "widget/expanditem/chevron_down_over.gif"
                       : "widget/expanditem/chevron_down.gif";
       }
-
       return result;
     }
   },
 
   "expand-item-header" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-
       result.top = 0;
       result.left = 0;
       result.width = "100%";
@@ -1820,13 +1860,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.verticalChildrenAlign = "middle";
       result.paddingLeft = 4;
       result.paddingRight = 24;
-      result.backgroundColor = "#d4d0c8";
+      result.backgroundColor = tv.getCssColor( "ExpandItem-Header", "background-color" );
+      result.textColor = states.disabled
+                         ? tv.getCssColor( "*", "color" )
+                         : "undefined";
       if( states.enabled ) {
         result.cursor = "pointer";
       } else {
         result.cursor = "default";
       }
-
       return result;
     }
   }

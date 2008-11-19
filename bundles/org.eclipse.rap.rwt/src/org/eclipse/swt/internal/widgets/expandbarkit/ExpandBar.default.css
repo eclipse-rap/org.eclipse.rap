@@ -1,0 +1,9 @@
+/* ExpandBar default theme */
+
+ExpandBar {
+  color: black;
+}
+
+ExpandItem-Header {
+  background-color: #D4D0C8;
+}

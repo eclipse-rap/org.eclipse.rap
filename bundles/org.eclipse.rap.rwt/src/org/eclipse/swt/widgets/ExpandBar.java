@@ -206,8 +206,7 @@ public class ExpandBar extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle trim = computeTrim( 0, 0, width, height );
-    return new Point( trim.width, trim.height );
+    return new Point( width, height );
   }
 
   void createItem( final ExpandItem item, final int style, final int index ) {

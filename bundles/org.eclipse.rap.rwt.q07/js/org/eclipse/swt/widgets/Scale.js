@@ -56,6 +56,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._thumb.addEventListener( "mousedown", this._onThumbMouseDown, this );
     this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
     this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
+    // Fix IE Styling issues
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._thumb );
     this.add( this._thumb );    
     // Thumb offset
     this._thumbOffset = 0;
@@ -118,10 +120,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
   statics : {
     STATE_HORIZONTAL : "horizontal",
     PADDING : 8,
-    MAX_MARKER_OFFSET : 12,
-    HALF_THUMB : 5,
+    MAX_MARKER_OFFSET : 12,    
     SCALE_LINE_OFFSET : 9,
     THUMB_OFFSET : 10,
+    HALF_THUMB : 5,
     
     _isNoModifierPressed : function( evt ) {
       return    !evt.isCtrlPressed() 
@@ -281,7 +283,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       }
     },
     
-    _onThumbMouseDown : function( evt ) {     
+    _onThumbMouseDown : function( evt ) {
       var mousePos;
       if( evt.isLeftButtonPressed() ){
         if( this._horizontal ) {        

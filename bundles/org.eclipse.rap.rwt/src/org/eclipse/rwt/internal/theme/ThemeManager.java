@@ -169,7 +169,10 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.Table.class,
     org.eclipse.swt.widgets.Text.class,
     org.eclipse.swt.widgets.ToolBar.class,
-    org.eclipse.swt.widgets.Tree.class
+    org.eclipse.swt.widgets.Tree.class,
+    org.eclipse.swt.widgets.Scale.class,
+    org.eclipse.swt.widgets.DateTime.class,
+    org.eclipse.swt.widgets.ExpandBar.class
   };
 
   private static ThemeManager instance;
