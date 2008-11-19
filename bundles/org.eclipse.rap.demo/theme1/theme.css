@@ -23,7 +23,7 @@
   color: gray;
 }
 
-List, Tree, Table, Text, Spinner, Combo {
+List, Tree, Table, Text, Spinner, Combo, DateTime {
   color: rgb( 39, 64, 139 );
   background-color: #fff1a1;
 }
@@ -74,6 +74,33 @@ CTabItem {
 CTabItem:selected {
   color: white;
   background-color: #c0c0c0;
+}
+
+/* DateTime */
+DateTime-Field:selected, DateTime-Calendar-Day:selected {
+  background-color: #56a0ea;
+  color: white;
+}
+
+DateTime-Calendar-Day:otherMonth {
+  background-color: transparent;
+  color: rgb( 128, 128, 128 );
+}
+
+DateTime-Calendar-Navbar {
+  background-color: #9dd0ea;
+  color: white;
+}
+
+/* ExpandBar */
+
+ExpandBar {
+  color: white;
+  font: bold 12px Arial, Helvetica, sans-serif;
+}
+
+ExpandItem-Header {
+  background-color: #9dd0ea;
 }
 
 /* Group */
@@ -193,6 +220,15 @@ Shell-CloseButton {
 
 Shell-CloseButton:hover {
   background-image: url( "/theme1/icons/close.over.png" );
+}
+
+/* Scale */
+Scale {
+  background-color: rgb( 255, 255, 255 );  
+}
+
+Scale-Thumb {
+  background-color: #9dd0ea;
 }
 
 /* TabFolder */
