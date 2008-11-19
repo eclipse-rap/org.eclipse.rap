@@ -20,6 +20,10 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     this.setMarkLeadingItem( true );
     this.rap_init();
   },
+  
+  destruct : function() {
+    this.rap_reset();
+  },
 
   members : {
     
@@ -153,10 +157,6 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
                     value.getBold(), 
                     value.getItalic() );
       }
-    },
-
-    dispose : function() {
-      this.rap_reset();
     },
 
     _getSelectionIndices : function() {
