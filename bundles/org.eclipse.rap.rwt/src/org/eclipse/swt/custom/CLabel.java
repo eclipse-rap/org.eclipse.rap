@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ * @since 1.0
  */
 public class CLabel extends Canvas {
 

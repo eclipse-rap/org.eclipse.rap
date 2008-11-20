@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -41,6 +40,7 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
  * within the SWT implementation.
  * </p>
+ * @since 1.0
  */
 // TODO [rst] Remove comments from javadoc when fully implemented
 public class Button extends Control {

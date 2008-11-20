@@ -68,6 +68,8 @@ import org.eclipse.swt.internal.widgets.*;
  *  <li>Scroll bars are visible even though not necessary</li>
  *  <li>No keyboard navigation</li>
  * </ul>
+ * 
+ * @since 1.0
  */
 public class Table extends Composite {
 

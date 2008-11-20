@@ -37,7 +37,7 @@ import org.eclipse.swt.events.*;
  *      ControlExample< /a>
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further
  *      information< /a>
- * @since 1.1.1     
+ * @since 1.2  
  */
 public class Scale extends Control {
   

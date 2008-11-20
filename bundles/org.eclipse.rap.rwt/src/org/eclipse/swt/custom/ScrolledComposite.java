@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.*;
  * <dl>
  * <dt><b>Styles:</b><dd>H_SCROLL, V_SCROLL
  * </dl>
+ * @since 1.0
  */
 public class ScrolledComposite extends Composite {
 
@@ -139,7 +140,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_INVALID_ARGUMENT - value of origin is outside of content
    * </ul>
-   * @since 1.0
    */
   public void setOrigin( final Point origin ) {
     setOrigin( origin.x, origin.y );
@@ -161,7 +161,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 1.0
    */
   public void setOrigin( final int left, final int top ) {
     checkWidget();
@@ -198,8 +197,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public Point getOrigin() {
     checkWidget();
@@ -268,8 +265,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public boolean getExpandHorizontal() {
     checkWidget();
@@ -286,8 +281,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public boolean getExpandVertical() {
     checkWidget();
@@ -404,8 +397,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public int getMinWidth() {
     checkWidget();
@@ -437,8 +428,6 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public int getMinHeight() {
     checkWidget();

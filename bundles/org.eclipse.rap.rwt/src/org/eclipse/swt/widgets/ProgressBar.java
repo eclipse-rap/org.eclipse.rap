@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Point;
  * IMPORTANT: This class is intended to be subclassed <em>only</em> within the
  * SWT implementation.
  * </p>
+ * @since 1.0
  */
 public class ProgressBar extends Control {
 

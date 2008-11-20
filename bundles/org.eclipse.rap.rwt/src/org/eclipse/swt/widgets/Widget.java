@@ -54,6 +54,7 @@ import org.eclipse.swt.internal.widgets.WidgetAdapter;
  * </p>
  *
  * @see #checkSubclass
+ * @since 1.0
  */
 public abstract class Widget implements Adaptable {
 

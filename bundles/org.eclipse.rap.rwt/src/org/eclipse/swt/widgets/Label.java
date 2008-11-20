@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
@@ -25,6 +24,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * <code>getImage()</code> will return <code>null</code>, and after calling
  * <code>setImage()</code>, <code>getText</code> will return the empty string.
  * </p>
+ * @since 1.0
  */
 // TODO [rh] check what should happen with style == SEPARATOR and setForeground
 public class Label extends Control {

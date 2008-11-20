@@ -311,8 +311,6 @@ public class Spinner extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setValues( final int selection,
                          final int minimum,

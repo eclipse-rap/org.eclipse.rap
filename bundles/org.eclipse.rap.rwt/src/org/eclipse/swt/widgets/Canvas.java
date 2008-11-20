@@ -30,6 +30,7 @@ package org.eclipse.swt.widgets;
  * </p>
  *
  * @see Composite
+ * @since 1.0
  */
 public class Canvas extends Composite {
 

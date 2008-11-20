@@ -43,6 +43,7 @@ import org.eclipse.swt.internal.widgets.IListAdapter;
  * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior
  * (items are drawn outside list bounds). Setting none or both scroll style
  * flags works as expected. We will work on a solution for this.</p>
+ * @since 1.0
  */
 public class List extends Scrollable {
 

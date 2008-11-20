@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -38,6 +37,7 @@ import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
  * </p>
  * <p>Due to limitations of the JavaScript library, the current WRAP behavior
  * of a MULI line text is always as if WRAP was set.</p>
+ * @since 1.0
  */
 public class Text extends Scrollable {
 

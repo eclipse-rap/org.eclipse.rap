@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.*;
  * <dt><b>Styles:</b>
  * <dd>HORIZONTAL, VERTICAL, SMOOTH
  * </dl>
+ * 
+ * @since 1.0
  */
 public class SashForm extends Composite {
 

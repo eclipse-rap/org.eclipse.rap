@@ -38,6 +38,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ * @since 1.0
  */
 public class ToolBar extends Composite {
   

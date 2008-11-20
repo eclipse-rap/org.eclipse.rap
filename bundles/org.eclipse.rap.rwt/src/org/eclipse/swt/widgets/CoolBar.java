@@ -42,6 +42,7 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ * @since 1.0
  */
 public class CoolBar extends Composite {
 
@@ -1153,8 +1154,6 @@ public class CoolBar extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   *
-   * @since 1.0
    */
   public boolean getLocked() {
     checkWidget();
@@ -1214,8 +1213,6 @@ public class CoolBar extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   *
-   * @since 1.0
    */
   public void setLocked( boolean locked ) {
     checkWidget();

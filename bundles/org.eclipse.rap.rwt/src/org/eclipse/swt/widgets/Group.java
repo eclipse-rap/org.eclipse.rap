@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -41,6 +40,7 @@ import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
  * </p>
  * <hr/>
  * Note: The styles <code>SHADOW_XXX</code> are not yet implemented in RWT.
+ * @since 1.0
  */
 public class Group extends Composite {
 

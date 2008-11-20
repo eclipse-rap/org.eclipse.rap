@@ -81,6 +81,8 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ * 
+ * @since 1.0
  */
 public class Tree extends Composite {
 
@@ -271,7 +273,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setItemCount( final int itemCount ) {
     checkWidget();
@@ -364,7 +365,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public TreeItem getItem( final int index ) {
     checkWidget();
@@ -388,7 +388,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public int indexOf( final TreeItem item ) {
     checkWidget();
@@ -549,7 +548,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setSelection( final TreeItem selection ) {
     checkWidget();
@@ -686,7 +684,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setLinesVisible( final boolean value ) {
     checkWidget();
@@ -711,7 +708,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public boolean getLinesVisible() {
     checkWidget();
@@ -738,7 +734,6 @@ public class Tree extends Composite {
    *              </ul>
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * @since 1.0
    */
   public void clear( final int index, final boolean recursive ) {
     checkWidget();
@@ -852,7 +847,6 @@ public class Tree extends Composite {
    *              </ul>
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * @since 1.0
    */
   public void clearAll( final boolean recursive ) {
     checkWidget();
@@ -884,7 +878,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public int getColumnCount() {
     checkWidget();
@@ -956,7 +949,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public int getHeaderHeight() {
     checkWidget();
@@ -991,7 +983,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setHeaderVisible( final boolean value ) {
     checkWidget();
@@ -1016,7 +1007,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public boolean getHeaderVisible() {
     checkWidget();
@@ -1038,7 +1028,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public int indexOf( final TreeColumn column ) {
     checkWidget();
@@ -1081,7 +1070,6 @@ public class Tree extends Composite {
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * @since 1.0
    */
   public TreeColumn getColumn( final int index ) {
     checkWidget();
@@ -1114,7 +1102,6 @@ public class Tree extends Composite {
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * @since 1.0
    */
   public TreeColumn[] getColumns() {
     checkWidget();
@@ -1141,7 +1128,6 @@ public class Tree extends Composite {
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * @since 1.0
    */
   public void setColumnOrder( final int[] order ) {
     checkWidget();
@@ -1198,7 +1184,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setSortColumn( final TreeColumn column ) {
     checkWidget();
@@ -1227,7 +1212,6 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setSortDirection( final int direction ) {
     checkWidget();
@@ -1253,7 +1237,6 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    * @see #setSortColumn(TreeColumn)
-   * @since 1.0
    */
   public TreeColumn getSortColumn() {
     checkWidget();
@@ -1271,7 +1254,6 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    * @see #setSortDirection(int)
-   * @since 1.0
    */
   public int getSortDirection() {
     checkWidget();
@@ -1302,7 +1284,6 @@ public class Tree extends Composite {
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * @since 1.0
    */
   public int[] getColumnOrder() {
     checkWidget();

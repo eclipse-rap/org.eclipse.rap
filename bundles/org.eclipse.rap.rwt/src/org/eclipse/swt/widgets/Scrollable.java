@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Rectangle;
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
  * within the SWT implementation.
  * </p>
+ * @since 1.0
  */
 public abstract class Scrollable extends Control {
 

@@ -53,6 +53,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * </p>
  *
  * @see List
+ * @since 1.0
  */
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
 //      are added/removed

@@ -59,6 +59,8 @@ import org.eclipse.swt.widgets.*;
  * <li><code>BORDER</code> and <code>FLAT</code> styles are not fully
  * implemented</li>
  * </ul>
+ * 
+ * @since 1.0
  */
 public class CTabFolder extends Composite {
 
@@ -375,8 +377,6 @@ public class CTabFolder extends Composite {
    * </ul>
    *
    * @see CTabFolder#showItem(CTabItem)
-   *
-   * @since 1.0
    */
   public void showSelection () {
     checkWidget();
@@ -402,8 +402,6 @@ public class CTabFolder extends Composite {
    * </ul>
    *
    * @see CTabFolder#showSelection()
-   *
-   * @since 1.0
    */
   public void showItem( final CTabItem item ) {
     checkWidget();
@@ -466,8 +464,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setMRUVisible( final boolean show ) {
     checkWidget();
@@ -513,8 +509,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getMRUVisible() {
     checkWidget();
@@ -535,8 +529,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setMaximizeVisible( final boolean maximizeVisible ) {
     checkWidget();
@@ -556,8 +548,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getMaximizeVisible() {
     checkWidget();
@@ -574,8 +564,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setMinimizeVisible( final boolean minimizeVisible ) {
     checkWidget();
@@ -595,8 +583,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getMinimizeVisible() {
     checkWidget();
@@ -613,8 +599,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setMinimized( final boolean minimized ) {
     checkWidget();
@@ -635,8 +619,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getMinimized() {
     checkWidget();
@@ -652,8 +634,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setMaximized( final boolean maximized ) {
     checkWidget();
@@ -675,8 +655,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getMaximized() {
     checkWidget();
@@ -754,8 +732,6 @@ public class CTabFolder extends Composite {
    * appear in a fully compressed tab.
    *
    * @return number of characters that will appear in a fully compressed tab
-   *
-   * @since 1.0
    */
   public int getMinimumCharacters() {
     checkWidget();
@@ -773,8 +749,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_INVALID_RANGE - if the count is less than zero</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setMinimumCharacters( final int minimumCharacters ) {
     checkWidget();
@@ -805,8 +779,6 @@ public class CTabFolder extends Composite {
    * and <code>false</code> if the CTabFolder displays multiple tabs.
    *
    * @return <code>true</code> if the CTabFolder only displys the selected tab and <code>false</code> if the CTabFolder displays multiple tabs
-   *
-   * @since 1.0
    */
   public boolean getSingle() {
     checkWidget();
@@ -822,8 +794,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setSingle( final boolean single ) {
     checkWidget();
@@ -859,8 +829,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the position value is not either SWT.TOP or SWT.BOTTOM</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setTabPosition( final int position ) {
     checkWidget();
@@ -885,8 +853,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getBorderVisible() {
     checkWidget();
@@ -919,8 +885,6 @@ public class CTabFolder extends Composite {
    * when the user hovers over an unselected tabs.
    *
    * @return <code>true</code> if the close button appears on unselected tabs
-   *
-   * @since 1.0
    */
   public boolean getUnselectedCloseVisible() {
     checkWidget();
@@ -937,8 +901,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setUnselectedCloseVisible( final boolean visible ) {
     checkWidget();
@@ -1000,8 +962,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setSelectionBackground( final Color color ) {
     checkWidget();
@@ -1017,8 +977,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public Color getSelectionBackground() {
     checkWidget();
@@ -1060,8 +1018,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public Color getSelectionForeground() {
     checkWidget();
@@ -1094,8 +1050,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the control is not a child of this CTabFolder</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setTopRight( final Control control ) {
     checkWidget();
@@ -1123,8 +1077,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the control is not a child of this CTabFolder</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setTopRight( final Control control, final int alignment ) {
     checkWidget();
@@ -1153,8 +1105,6 @@ public class CTabFolder extends Composite {
    *      <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
    *      <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    *  </ul>
-   *
-   * @since 1.0
    */
   public Control getTopRight() {
     checkWidget();
@@ -1275,8 +1225,6 @@ public class CTabFolder extends Composite {
    *
    * @see CTabFolder2Listener
    * @see #removeCTabFolder2Listener(CTabFolder2Listener)
-   *
-   * @since 1.0
    */
   public void addCTabFolder2Listener( final CTabFolder2Listener listener ) {
     CTabFolderEvent.addListener( this, listener );
@@ -1297,8 +1245,6 @@ public class CTabFolder extends Composite {
    * </ul>
    *
    * @see #addCTabFolder2Listener(CTabFolder2Listener)
-   *
-   * @since 1.0
    */
   public void removeCTabFolder2Listener( final CTabFolder2Listener listener ) {
     CTabFolderEvent.removeListener( this, listener );
