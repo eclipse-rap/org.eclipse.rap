@@ -308,8 +308,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getColumnCount() {
     checkWidget();
@@ -342,8 +340,6 @@ public class Table extends Composite {
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   *
-   * @since 1.0
    */
   public TableColumn[] getColumns() {
     checkWidget();
@@ -376,8 +372,6 @@ public class Table extends Composite {
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   *
-   * @since 1.0
    */
   public TableColumn getColumn( final int index ) {
     checkWidget();
@@ -400,8 +394,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int indexOf( final TableColumn tableColumn ) {
     checkWidget();
@@ -432,8 +424,6 @@ public class Table extends Composite {
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   *
-   * @since 1.0
    */
   public void setColumnOrder( final int[] order ) {
     checkWidget();
@@ -501,8 +491,6 @@ public class Table extends Composite {
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   *
-   * @since 1.0
    */
   public int[] getColumnOrder() {
     checkWidget();
@@ -528,8 +516,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this
   //      method to ensure that items are drawn when inside the visible bounds
@@ -571,8 +557,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getItemCount() {
     checkWidget();
@@ -594,8 +578,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public TableItem[] getItems() {
     checkWidget();
@@ -624,8 +606,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public TableItem getItem( final int index ) {
     checkWidget();
@@ -694,8 +674,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int indexOf( final TableItem item ) {
     checkWidget();
@@ -718,8 +696,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void removeAll() {
     checkWidget();
@@ -746,8 +722,6 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   *
-   * @since 1.0
    */
   public void remove( final int start, final int end ) {
     checkWidget();
@@ -784,8 +758,6 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   *
-   * @since 1.0
    */
   public void remove( final int index ) {
     checkWidget();
@@ -812,8 +784,6 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   *
-   * @since 1.0
    */
   public void remove( final int[] indices ) {
     checkWidget();
@@ -860,8 +830,6 @@ public class Table extends Composite {
    *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   *
-   * @since 1.0
    */
   public void clear( final int index ) {
     checkWidget();
@@ -894,8 +862,6 @@ public class Table extends Composite {
    *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   *
-   * @since 1.0
    */
   public void clear( final int start, final int end ) {
     checkWidget();
@@ -929,8 +895,6 @@ public class Table extends Composite {
    *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   *
-   * @since 1.0
    */
   public void clearAll() {
     checkWidget();
@@ -961,8 +925,6 @@ public class Table extends Composite {
    *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   *
-   * @since 1.0
    */
   public void clear( final int[] indices ) {
     checkWidget();
@@ -997,8 +959,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getSelectionIndex() {
     checkWidget();
@@ -1031,8 +991,6 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int)
-   *
-   * @since 1.0
    */
   public void setSelection( final int index ) {
     checkWidget();
@@ -1053,8 +1011,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getSelectionCount() {
     checkWidget();
@@ -1082,8 +1038,6 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int,int)
-   *
-   * @since 1.0
    */
   public void setSelection( final int start, final int end ) {
     checkWidget();
@@ -1115,8 +1069,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public TableItem[] getSelection() {
     checkWidget();
@@ -1149,8 +1101,6 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int[])
-   *
-   * @since 1.0
    */
   public void setSelection( final int[] indices ) {
     checkWidget();
@@ -1183,8 +1133,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setSelection( final TableItem item ) {
     checkWidget();
@@ -1217,8 +1165,6 @@ public class Table extends Composite {
    * @see Table#deselectAll()
    * @see Table#select(int[])
    * @see Table#setSelection(int[])
-   *
-   * @since 1.0
    */
   public void setSelection( final TableItem[] items ) {
     checkWidget();
@@ -1247,8 +1193,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int[] getSelectionIndices() {
     checkWidget();
@@ -1272,8 +1216,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean isSelected( final int index ) {
     checkWidget();
@@ -1297,8 +1239,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void select( final int index ) {
     checkWidget();
@@ -1339,8 +1279,6 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#setSelection(int,int)
-   *
-   * @since 1.0
    */
   public void select( final int start, final int end ) {
     checkWidget();
@@ -1384,8 +1322,6 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#setSelection(int[])
-   *
-   * @since 1.0
    */
   public void select( final int[] indices ) {
     checkWidget();
@@ -1410,8 +1346,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   // TODO [rh] revise: a VIRTUAL table would resolve all its items when
   //      selectAll is called. Compare how SWT handles this.
@@ -1433,8 +1367,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void deselect( final int index ) {
     checkWidget();
@@ -1502,8 +1434,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void deselectAll() {
     checkWidget();
@@ -1524,8 +1454,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setTopIndex( final int topIndex ) {
     checkWidget();
@@ -1548,8 +1476,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getTopIndex() {
     checkWidget();
@@ -1573,8 +1499,6 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#showSelection()
-   *
-   * @since 1.0
    */
   public void showItem( final TableItem item ) {
     checkWidget();
@@ -1611,8 +1535,6 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#showItem(TableItem)
-   *
-   * @since 1.0
    */
   public void showSelection() {
     checkWidget();
@@ -1640,8 +1562,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setHeaderVisible( final boolean headerVisible ) {
     checkWidget();
@@ -1664,8 +1584,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getHeaderVisible() {
     checkWidget();
@@ -1688,8 +1606,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public boolean getLinesVisible() {
     checkWidget();
@@ -1711,8 +1627,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setLinesVisible( final boolean linesVisible ) {
     checkWidget();
@@ -1733,8 +1647,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setSortColumn( final TableColumn column ) {
     checkWidget();
@@ -1757,8 +1669,6 @@ public class Table extends Composite {
    * </ul>
    *
    * @see #setSortColumn(TableColumn)
-   *
-   * @since 1.0
    */
   public TableColumn getSortColumn() {
     checkWidget();
@@ -1775,8 +1685,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void setSortDirection( final int direction ) {
     checkWidget();
@@ -1798,8 +1706,6 @@ public class Table extends Composite {
    * </ul>
    *
    * @see #setSortDirection(int)
-   *
-   * @since 1.0
    */
   public int getSortDirection() {
     checkWidget();
@@ -1819,8 +1725,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getItemHeight() {
     checkWidget();
@@ -1842,8 +1746,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getHeaderHeight() {
     checkWidget();
@@ -1873,8 +1775,6 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public int getGridLineWidth () {
     checkWidget();
@@ -1910,8 +1810,6 @@ public class Table extends Composite {
    * @see SelectionListener
    * @see #removeSelectionListener
    * @see SelectionEvent
-   *
-   * @since 1.0
    */
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
@@ -1934,8 +1832,6 @@ public class Table extends Composite {
    *
    * @see SelectionListener
    * @see #addSelectionListener(SelectionListener)
-   *
-   * @since 1.0
    */
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
