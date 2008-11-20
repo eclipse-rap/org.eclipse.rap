@@ -930,7 +930,9 @@ public class TableItem extends Item {
   }
 
   private int getTop( final int itemIndex ) {
-    return parent.getHeaderHeight() + itemIndex * parent.getItemHeight();
+    int relativeItemIndex = itemIndex - parent.getTopIndex();
+    int headerHeight = parent.getHeaderHeight();
+    return headerHeight + relativeItemIndex * parent.getItemHeight();
   }
   
   final int getPackWidth( final int index ) {

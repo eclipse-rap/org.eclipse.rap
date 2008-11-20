@@ -118,7 +118,30 @@ public class TableItem_Test extends TestCase {
     bounds = item.getBounds();
     assertTrue( bounds.y >= table.getHeaderHeight() );
   }
-
+  
+  public void testBoundsWithScroll() {
+    final int tableWidth = 100;
+    final int tableHeight = 100;
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( tableWidth, tableHeight );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( tableWidth / 2 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( tableWidth / 2 + 30 );
+    int itemCount = tableHeight / table.getItemHeight() + 10;
+    for( int i = 0; i < itemCount; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    
+    Rectangle item0Bounds = table.getItem( 0 ).getBounds();
+    // scroll item 0 out of view, now item 1 is on the same position as item 0
+    // was before
+    table.setTopIndex( 1 );
+    assertEquals( item0Bounds, table.getItem( 1 ).getBounds() );
+  }
+  
   public void testTextBounds() {
     // Test setup
     Display display = new Display();
