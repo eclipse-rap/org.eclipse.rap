@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.graphics;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -25,11 +26,16 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.*;
 
 
 public class TextSizeDetermination_Test extends TestCase {
@@ -49,7 +55,7 @@ public class TextSizeDetermination_Test extends TestCase {
     ISessionStore session = ContextProvider.getSession();
     String id = LifeCycle.class.getName();
     session.setAttribute( id, lifeCycle );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    RWTFixture.executeLifeCycleFromServerThread();
 
     // The actual test request
     Fixture.fakeResponseWriter();
@@ -131,12 +137,44 @@ public class TextSizeDetermination_Test extends TestCase {
     assertEquals( singleLine.y, multiLine.y );
   }
 
-  public void testTextExtent() throws Exception {
+  public void testTextExtent() {
     Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     // make sure text extent does expand line breaks
     Point singleLine = TextSizeDetermination.textExtent( font, "First Line", 0 );
     Point multiLine = TextSizeDetermination.textExtent( font, "First Line\nSecond Line", 0 );
     assertTrue( singleLine.y < multiLine.y );
+  }
+  
+  public void testTextExtendEmptyString() {
+    final Font font = Graphics.getFont( "EmptyStringTestFont", 10, SWT.NORMAL );
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+    IProbe probe = new IProbe() {
+      public Font getFont() {
+        return font;
+      }
+      public String getJSProbeParam() {
+        return "";
+      }
+
+      public String getString() {
+        return "test";
+      }
+      
+    };
+    probeStore.createProbeResult( probe, new Point( 100, 10 ) );
+    TextSizeDataBase.store( font, "", 0, new Point( 0, 0 ) );
+    Point singleLine = TextSizeDetermination.textExtent( font, "", 0 );
+    assertEquals( new Point( 0, 10), singleLine );
+  }
+  
+  public void testTextExtendWithWrap() {
+    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+    String txt = "First";
+    Point singleLine = TextSizeDetermination.textExtent( font, txt, 23 );
+    assertEquals( new Point( 24, 10 ), singleLine );
+    // TODO [fappel]: test multilines. Seems to have some problems with wrap
+    //                mechanism in textsize estimation.
+    //                See Bugzilla Entries #256115, #256117
   }
   
   public void testMarkupExtent() throws Exception {
@@ -365,14 +403,113 @@ public class TextSizeDetermination_Test extends TestCase {
       takenKeys.add( key );
     }
   }
+  
+  public void testScrolledCompositeResize() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setLayout( new FillLayout() );
+    int style = SWT.V_SCROLL | SWT.H_SCROLL;
+    final ScrolledComposite sc = new ScrolledComposite( shell, style );
+    Label label = new Label( sc, SWT.NONE );
+    sc.setContent( label );
+    label.setText( "This is a very long text." );
+    label.pack();
+    shell.setSize( 100, 100 );
+    Point expected = new Point( 10, 10 );
+    sc.setOrigin( expected );
+    
+    final Point[] originDuringRecalc = new Point[ 1 ];
+    sc.addControlListener( new ControlAdapter() {
+     public void controlResized( final ControlEvent e ) {
+       originDuringRecalc[ 0 ] = sc.getOrigin();
+    }
+    } );
+    
+    TextSizeDeterminationHandler handler
+      = new TextSizeDeterminationHandler( display );
+    handler.renderDone = true;
+    ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
+    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.PROCESS_ACTION );
+    handler.afterPhase( event );
+    
+    assertEquals( expected, sc.getOrigin() );
+    assertEquals( new Point( 0, 0 ), originDuringRecalc[ 0 ] );
+  }
+  
+  public void testReadProbedFonts() {
+    final Font font = Graphics.getFont( "FontForProbeTest", 10, SWT.BOLD );
+    assertFalse( TextSizeProbeStore.getInstance().containsProbeResult( font ) );
+    
+    IProbe[] probes = new IProbe[] {
+      new IProbe() {
+        public Font getFont() {
+          return font;
+        }
+        public String getJSProbeParam() {
+          return null;
+        }
+        public String getString() {
+          return "Font Probe Test String";
+        }
+      }
+    };
+    Fixture.fakeRequestParam( String.valueOf( font.hashCode() ), "7,9" );
+    TextSizeDeterminationHandler.readProbedFonts( probes );
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+    assertTrue( probeStore.containsProbeResult( font ) );
+    IProbeResult probeResult = probeStore.getProbeResult( font );
+    assertEquals( new Point( 7, 9 ), probeResult.getSize() );
+  }
+  
+  public void testReadMeasuredStrings() {
+    final Font font = Graphics.getFont( "FontForMeasureTest", 10, SWT.BOLD );
+    final String stringToMeasure = "String to measure";
+    final int wrapWidth = 17;
+    
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+    IProbe probe = new IProbe() {
+      public Font getFont() {
+        return font;
+      }
+      public String getJSProbeParam() {
+        return "";
+      }
 
-  protected void setUp() throws Exception {
+      public String getString() {
+        return "test";
+      }
+    };
+    probeStore.createProbeResult( probe, new Point( 100, 10 ) );
+    
+    TextSizeDeterminationHandler handler
+      = new TextSizeDeterminationHandler( new Display() );
+    ICalculationItem item = new ICalculationItem() {
+      public Font getFont() {
+        return font;
+      }
+      public String getString() {
+        return stringToMeasure;
+      }
+      public int getWrapWidth() {
+        return wrapWidth;
+      }
+    };
+    handler.calculationItems = new ICalculationItem[] { item };
+    Fixture.fakeRequestParam( String.valueOf( item.hashCode() ), "7,9" );
+    handler.readMeasuredStrings();
+    Point lookup = TextSizeDataBase.lookup( font, stringToMeasure, wrapWidth );
+    assertEquals( new Point( 7, 9 ), lookup );
+  }
+
+  protected void setUp() {
     RWTFixture.setUp();
     TextSizeDataBase.reset();
     TextSizeProbeStore.reset();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     TextSizeProbeStore.reset();
     TextSizeDataBase.reset();
     RWTFixture.tearDown();

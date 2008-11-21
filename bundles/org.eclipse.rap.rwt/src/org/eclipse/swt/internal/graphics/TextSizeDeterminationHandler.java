@@ -36,10 +36,10 @@ final class TextSizeDeterminationHandler
   private static final String CALCULATION_HANDLER
     = TextSizeDeterminationHandler.class.getName() + ".CalculationHandler";
 
+  ICalculationItem[] calculationItems;
+  boolean renderDone;
   private final Display display;
-  private ICalculationItem[] calculationItems;
   private IProbe[] probes;
-  private boolean renderDone;
 
   static void register() {
     Display display = Display.getCurrent();
@@ -54,7 +54,7 @@ final class TextSizeDeterminationHandler
     }
   }
 
-  private TextSizeDeterminationHandler( final Display display ) {
+  TextSizeDeterminationHandler( final Display display ) {
     this.display = display;
   }
 
@@ -278,7 +278,7 @@ final class TextSizeDeterminationHandler
     return result.toString();
   }
 
-  private void readMeasuredStrings() {
+  void readMeasuredStrings() {
     boolean hasItems = calculationItems != null;
     HttpServletRequest request = ContextProvider.getRequest();
     for( int i = 0; hasItems && i < calculationItems.length; i++ ) {
