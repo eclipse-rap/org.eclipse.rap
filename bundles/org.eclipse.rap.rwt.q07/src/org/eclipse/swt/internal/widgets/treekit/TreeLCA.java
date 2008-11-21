@@ -158,14 +158,21 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   /////////////////////////////////////////////
   // Helping methods to read client-side state
-  
+
   private static void readSelection( final Tree tree ) {
     String value = WidgetLCAUtil.readPropertyValue( tree, "selection" );
     if( value != null ) {
       String[] values = value.split( "," );
       TreeItem[] selectedItems = new TreeItem[ values.length ];
+      boolean validItemFound = false;
       for( int i = 0; i < values.length; i++ ) {
         selectedItems[ i ] = ( TreeItem )WidgetUtil.find( tree, values[ i ] );
+        if( selectedItems[ i ] != null ) {
+          validItemFound = true;
+        }
+      }
+      if( !validItemFound ) {
+        selectedItems = new TreeItem[ 0 ];
       }
       tree.setSelection( selectedItems );
     }
@@ -204,7 +211,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////////////////////////////
   // Helping methods to write JavaScript for changed properties
-  
+
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );
