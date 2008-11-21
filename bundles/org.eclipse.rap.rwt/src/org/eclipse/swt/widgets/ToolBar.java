@@ -41,7 +41,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * @since 1.0
  */
 public class ToolBar extends Composite {
-  
+
   private final ItemHolder itemHolder = new ItemHolder( ToolItem.class );
 
   /**
@@ -50,7 +50,7 @@ public class ToolBar extends Composite {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -93,7 +93,7 @@ public class ToolBar extends Composite {
       this.style |= SWT.HORIZONTAL;
     }
   }
-  
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -106,7 +106,7 @@ public class ToolBar extends Composite {
 
   //////////////////
   // Item management
-  
+
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver. Throws an exception if the index is out of range.
@@ -126,7 +126,7 @@ public class ToolBar extends Composite {
     checkWidget();
     return ( ToolItem )itemHolder.getItem( index );
   }
-  
+
   /**
    * Returns the number of items contained in the receiver.
    *
@@ -144,11 +144,11 @@ public class ToolBar extends Composite {
 
   /**
    * Returns an array of <code>ToolItem</code>s which are the items
-   * in the receiver. 
+   * in the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver
@@ -162,10 +162,10 @@ public class ToolBar extends Composite {
     checkWidget();
     return (org.eclipse.swt.widgets.ToolItem[] )itemHolder.getItems();
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -196,8 +196,8 @@ public class ToolBar extends Composite {
   // Size computations
 
   // TODO [rh] decent size computation for VERTICAL alignment missing
-  public Point computeSize( final int wHint, 
-                            final int hHint, 
+  public Point computeSize( final int wHint,
+                            final int hHint,
                             final boolean changed )
   {
     checkWidget();
@@ -226,11 +226,11 @@ public class ToolBar extends Composite {
     height = trim.height;
     return new Point( width, height );
   }
-  
+
   public int getBorderWidth() {
     return ( style & SWT.BORDER ) != 0 ? 1 : 0;
   }
-  
+
   /**
    * Returns the number of rows in the receiver. When
    * the receiver has the <code>WRAP</code> style, the
@@ -249,7 +249,7 @@ public class ToolBar extends Composite {
     // return 1 as long as we don't support the WRAP style bit
     return 1;
   }
-  
+
   public void setBounds( final Rectangle bounds ) {
     super.setBounds( bounds );
     // check if there is enough space for all items
@@ -263,7 +263,7 @@ public class ToolBar extends Composite {
       item.setVisible( visible );
     }
   }
-  
+
   ////////////////////////
   // Child control removal
 
@@ -278,9 +278,19 @@ public class ToolBar extends Composite {
     }
   }
 
+  ////////////////////
+  // Widget overrides
+
+  final void releaseChildren() {
+    ToolItem[] toolItems = getItems();
+    for( int i = 0; i < toolItems.length; i++ ) {
+      toolItems[ i ].dispose();
+    }
+  }
+
   //////////////////
   // Helping methods
-  
+
   private static int checkStyle( final int style ) {
     /*
     * Even though it is legal to create this widget

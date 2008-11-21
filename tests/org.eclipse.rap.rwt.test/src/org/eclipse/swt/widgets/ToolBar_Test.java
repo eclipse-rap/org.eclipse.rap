@@ -68,6 +68,21 @@ public class ToolBar_Test extends TestCase {
     assertNull( item3.getImage() );
   }
 
+  public void testToolBarDispose() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
+    assertEquals( 0, toolBar.getItemCount() );
+    assertEquals( 0, toolBar.getItems().length );
+    ToolItem item0 = new ToolItem( toolBar, SWT.CHECK );
+    ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
+    assertEquals( 2, toolBar.getItems().length );
+    toolBar.dispose();
+    assertTrue( toolBar.isDisposed() );
+    assertTrue( item0.isDisposed() );
+    assertTrue( item1.isDisposed() );
+  }
+
   public void testIndexOf() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
