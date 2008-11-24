@@ -139,7 +139,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static String createUrlFromHtml( final String html ) {
     StringBuffer result = new StringBuffer();
-    result.append( "browsertext" );
+    result.append( "org.eclipse.swt.browser/text" );
     result.append( String.valueOf( html.hashCode() ) );
     result.append( ".html" );
     return result.toString();
