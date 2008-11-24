@@ -35,6 +35,7 @@
       this._timer.dispose();
     }
     this._timer = null;
+    this._bar.dispose();
   },
 
   statics : {
