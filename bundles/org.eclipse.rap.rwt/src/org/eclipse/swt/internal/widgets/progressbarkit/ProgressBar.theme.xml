@@ -22,6 +22,10 @@
     <property name="background-image"
         type="image"
         description="Background image for progress bars" />
+        
+    <property name="border"
+        type="border"
+        description="Border for progress bars." />    
 
     <element name="ProgressBar-Indicator"
         description="The movable bar that indicates the progress">

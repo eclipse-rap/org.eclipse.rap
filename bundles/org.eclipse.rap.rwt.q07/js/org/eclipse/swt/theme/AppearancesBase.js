@@ -1519,7 +1519,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "thinInset",
+        border : tv.getCssBorder( "ProgressBar", "border" ),
         backgroundColor : tv.getCssColor( "ProgressBar", "background-color" ),
         backgroundImage : tv.getCssImage( "ProgressBar", "background-image" )
       }
