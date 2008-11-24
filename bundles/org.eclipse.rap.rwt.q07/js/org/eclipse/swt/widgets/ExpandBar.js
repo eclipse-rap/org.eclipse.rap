@@ -43,7 +43,9 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandBar", {
       if( show ) {
         this.setOverflow( qx.constant.Style.OVERFLOW_VERTICAL );
       } else {
-        this._zeroScrolling.scrollIntoView();     
+        if( this._zeroScrolling.isCreated() ) {
+          this._zeroScrolling.scrollIntoView();
+        }
         this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
       }  
     }   
