@@ -110,7 +110,7 @@ public class Table extends Composite {
     }
   }
 
-  private final class TableAdapter implements ITableAdapter {
+    private final class TableAdapter implements ITableAdapter {
 
     public int getCheckWidth() {
       return Table.this.getCheckWidth();
@@ -130,6 +130,10 @@ public class Table extends Composite {
 
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
+    }
+    
+    public void setLeftOffset( final int leftOffset ) {
+      Table.this.leftOffset = leftOffset;
     }
 
     public void checkData() {
@@ -221,6 +225,7 @@ public class Table extends Composite {
   private boolean linesVisible;
   private boolean headerVisible;
   private int topIndex;
+  int leftOffset;
   private int focusIndex;
   private TableColumn sortColumn;
   private int sortDirection;

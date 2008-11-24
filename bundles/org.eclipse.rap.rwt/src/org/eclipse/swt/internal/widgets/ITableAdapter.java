@@ -21,6 +21,8 @@ public interface ITableAdapter {
   int getFocusIndex();
   void setFocusIndex( int focusIndex );
   
+  void setLeftOffset( int parseInt );
+
   void checkData();
   void checkData( int index );
   

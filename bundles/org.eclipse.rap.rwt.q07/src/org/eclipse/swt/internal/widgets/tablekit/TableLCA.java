@@ -84,6 +84,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
     readTopIndex( table ); // topIndex MUST be read *before* processSetData
+    readLeftOffset( table );
     readSelection( table );
     readSetData( table );
     readWidgetSelected( table );
@@ -169,6 +170,15 @@ public final class TableLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( table, "topIndex" );
     if( value != null ) {
       table.setTopIndex( Integer.parseInt( value ) );
+    }
+  }
+
+  private void readLeftOffset( final Table table ) {
+    String value = WidgetLCAUtil.readPropertyValue( table, "leftOffset" );
+    if( value != null ) {
+      Object adapter = table.getAdapter( ITableAdapter.class );
+      ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+      tableAdapter.setLeftOffset( Integer.parseInt( value ) );
     }
   }
 

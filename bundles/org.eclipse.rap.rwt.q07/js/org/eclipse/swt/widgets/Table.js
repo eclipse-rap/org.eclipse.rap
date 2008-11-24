@@ -42,6 +42,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._topIndexChanging = false;
     // indicates that topIndex was changed client-side (e.g. by scrolling)
     this._topIndexChanged = false;
+    // indicates that the horizontal scoll bar was changed
+    this._leftOffsetChanged = false;
     // Internally used fields to manage visible rows and scrolling
     this._itemHeight = 0;
     this._rows = new Array();
@@ -92,12 +94,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._clientArea.setHtmlProperty( "id", "client-area" );
     // Create horizontal scrollBar
     this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
+    this._horzScrollBar.setZIndex( 1e8 );
     this._horzScrollBar.setMergeEvents( true );
     this.add( this._horzScrollBar );
     this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
     this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
     // Create vertical scrollBar
     this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
+    this._vertScrollBar.setZIndex( 1e8 );
     this._vertScrollBar.setMergeEvents( true );
     this.add( this._vertScrollBar );
     this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
@@ -706,6 +710,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onHorzScrollBarChangeValue : function() {
       this._columnArea.setLeft( 0 - this._horzScrollBar.getValue() );
       this._updateRowBounds();
+      this._leftOffsetChanged = true;
     },
 
     ///////////////////////
@@ -1181,11 +1186,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _onSendRequest : function( evt ) {
-      if( this._topIndexChanged ) {
+      if( this._topIndexChanged || this._leftOffsetChanged ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( id + ".topIndex", this._topIndex );
+        if( this._topIndexChanged ) {
+          req.addParameter( id + ".topIndex", this._topIndex );
+          this._topIndexChanged = false;
+        }
+        if( this._leftOffsetChanged ) {
+          req.addParameter( id + ".leftOffset", this._horzScrollBar.getValue() );
+          this._leftOffsetChanged = false;
+        }
       }
     }
   }

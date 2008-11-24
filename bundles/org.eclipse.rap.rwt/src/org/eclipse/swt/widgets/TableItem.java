@@ -794,18 +794,19 @@ public class TableItem extends Item {
     if( columnCount > 0 && ( index < 0 || index >= columnCount ) ) {
       result = new Rectangle( 0, 0, 0, 0 );
     } else {
-      Rectangle imageBounds = getImageBounds( index );
       Rectangle textBounds = getTextBounds( index );
-      int left = imageBounds.x;
-      int top = imageBounds.y;
-      int width;
+      int left = getLeft( index );
+      int itemIndex = parent.indexOf( this );
+      int top = getTop( itemIndex );
+      int width = 0;
       if( index == 0 && columnCount == 0 ) {
+        Rectangle imageBounds = getImageBounds( index );
         int gap = getImageGap( index );
         width = 2 + imageBounds.width + gap + textBounds.width + 2;
-      } else {
-        width = parent.getColumn( index ).getWidth(); 
+      } else if( index >= 0 && index < columnCount ) {
+        width = parent.getColumn( index ).getWidth();
       }
-      int height = imageBounds.height;
+      int height = getHeight( index );
       result = new Rectangle( left, top, width, height );
     }
     return result;
@@ -830,27 +831,14 @@ public class TableItem extends Item {
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    int left = 0;
-    int top = 0; 
-    int width = 0;
-    int height = 0;
-    int columnCount = parent.getColumnCount();
-    if( index == 0 && columnCount == 0 ) {
-      int itemIndex = parent.indexOf( this );
-      left = getCheckWidth( index );
-      top = getTop( itemIndex );
-      width = getImageWidth( index );
-      height = parent.getItemHeight();
-    } else if( index >= 0 && index < columnCount ) {
-      int itemIndex = parent.indexOf( this );
-      left = getCheckWidth( index ) + parent.getColumn( index ).getLeft();
-      top = getTop( itemIndex );
-      width = getImageWidth( index );
-      height = parent.getItemHeight();
-    } 
+    int itemIndex = parent.indexOf( this );
+    int left = getLeft( index );
+    int top = getTop( itemIndex );
+    int width = getImageWidth( index );
+    int height = getHeight( index );
     return new Rectangle( left, top, width, height );
   }
-
+  
   /**
    * Gets the image indent.
    *
@@ -894,7 +882,6 @@ public class TableItem extends Item {
     int left = 0;
     int top = 0; 
     int width = 0;
-    int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
       int imageWidth = 0;
       if( parent.hasColumnImages( 0 ) ) {
@@ -904,7 +891,6 @@ public class TableItem extends Item {
       top = getTop( itemIndex );
       Font font = parent.getFont();
       width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
-      height = parent.getItemHeight();
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
       int gap = 0;
       int imageWidth = 0;
@@ -919,8 +905,8 @@ public class TableItem extends Item {
       if( width < 0 ) {
         width = 0;
       }
-      height = parent.getItemHeight();
     }
+    int height = getHeight( index );
     return new Rectangle( left, top, width, height );
   }
 
@@ -929,12 +915,36 @@ public class TableItem extends Item {
     return column.getWidth() - getCheckWidth( index );
   }
 
+  private int getLeft( final int index ) {
+    int result = 0;
+    int columnCount = parent.getColumnCount();
+    if( index == 0 && columnCount == 0 ) {
+      result = getCheckWidth( index ) - parent.leftOffset;
+    } else if( index >= 0 && index < columnCount ) {
+      // TODO [rh] consider applying the leftOffset already in Column#getLeft()
+      int columnLeft = parent.getColumn( index ).getLeft();
+      result = getCheckWidth( index ) + columnLeft - parent.leftOffset;
+    }
+    return result;
+  }
+  
   private int getTop( final int itemIndex ) {
     int relativeItemIndex = itemIndex - parent.getTopIndex();
     int headerHeight = parent.getHeaderHeight();
     return headerHeight + relativeItemIndex * parent.getItemHeight();
   }
   
+  private int getHeight( final int index ) {
+    int result = 0;
+    int columnCount = parent.getColumnCount();
+    boolean singleColumn = index == 0 && columnCount == 0;
+    boolean columnInRange = index >= 0 && index < columnCount;
+    if( singleColumn || columnInRange ) {
+      result = parent.getItemHeight();
+    }
+    return result;
+  }
+
   final int getPackWidth( final int index ) {
     String text = getText( index );
     return 

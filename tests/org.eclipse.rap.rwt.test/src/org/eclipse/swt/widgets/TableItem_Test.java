@@ -83,6 +83,9 @@ public class TableItem_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
+    
+    // bounds for out-of-range item on table without columns
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getBounds( 123 ) );
 
     // without columns
     item.setText( "some text" );
@@ -140,6 +143,14 @@ public class TableItem_Test extends TestCase {
     // was before
     table.setTopIndex( 1 );
     assertEquals( item0Bounds, table.getItem( 1 ).getBounds() );
+    
+    // ensure that horizontal scrolling is detected
+    table.setTopIndex( 0 );
+    Rectangle column0Bounds = table.getItem( 0 ).getBounds( 0 );
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( column0.getWidth() );
+    assertEquals( column0Bounds.x, table.getItem( 0 ).getBounds( 1 ).x );
   }
   
   public void testTextBounds() {
@@ -158,6 +169,20 @@ public class TableItem_Test extends TestCase {
     Rectangle textBounds1 = item.getTextBounds( 0 );
     Rectangle textBounds2 = item.getTextBounds( 1 );
     assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
+  }
+  
+  public void testTextBoundsWidthInvalidIndex() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "abc" );
+    // without columns
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
+    // with column
+    new TableColumn( table, SWT.NONE );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
   }
   
   public void testTextBoundsWithImageAndColumns() {
