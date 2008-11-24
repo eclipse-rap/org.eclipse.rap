@@ -58,6 +58,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this.removeEventListener( "changeHeight", this._updateLayout, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this._disposeObjects( "_frame", "_separator" );
+    this._frameBorder.dispose();
   },
 
   statics : {
