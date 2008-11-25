@@ -182,6 +182,9 @@ public class TextLCA_Test extends TestCase {
       }
     };
     text.addVerifyListener( emptyVerifyListener );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( text );
     log.clear();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -189,7 +192,12 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    RWTFixture.executeLifeCycleFromServerThread();
+    // ensure that an empty verify listener does not lead to sending the
+    // original text and selection values back to the client
+    String markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verify me", text.getText() );

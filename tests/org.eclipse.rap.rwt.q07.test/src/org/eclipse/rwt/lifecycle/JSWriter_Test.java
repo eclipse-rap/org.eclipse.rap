@@ -85,7 +85,7 @@ public class JSWriter_Test extends TestCase {
   }
 
 
-  public void testUniqueWriterPerRequest() throws Exception {
+  public void testUniqueWriterPerRequest() {
     Display display = new Display();
     Composite shell = new TestShell( display );
     JSWriter writer1 = JSWriter.getWriterFor( shell );
@@ -456,6 +456,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "text", "value", shell.text.getText() );
     assertEquals( "w.setValue( \"hello\" );", Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
+    RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     writer.set( "text", "value", shell.text.getText() );
     assertEquals( "", Fixture.getAllMarkup() );

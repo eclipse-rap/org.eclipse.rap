@@ -12,7 +12,6 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -773,7 +772,6 @@ public class Text extends Scrollable {
   }
 
   private void setText( final String text, final Point selection ) {
-    // TODO [rst] Shouldn't the last parameter be the length of the current text?
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
       this.text = verifiedText;
