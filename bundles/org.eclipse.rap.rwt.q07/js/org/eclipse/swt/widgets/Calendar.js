@@ -60,14 +60,17 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     var monthYearLabel = new qx.ui.basic.Label;
     var nextMonthBt = new qx.ui.toolbar.Button(null, "widget/calendar/nextMonth.gif");
 
+    this._lastMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Last month"));
+    this._nextMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next month"));
+    
     lastMonthBt.set({
       show    : 'icon',
-      toolTip : new qx.ui.popup.ToolTip(this.tr("Last month"))
-    });
-
+      toolTip : this._lastMonthBtToolTip
+    });    
+    
     nextMonthBt.set({
       show    : 'icon',
-      toolTip : new qx.ui.popup.ToolTip(this.tr("Next month"))
+      toolTip : this._nextMonthBtToolTip
     });
 
     lastMonthBt.setAppearance("calendar-toolbar-button");
@@ -757,7 +760,8 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
   destruct : function() {
     qx.locale.Manager.getInstance().removeEventListener("changeLocale", this._updateDatePane, this);
-
+    
+    this._disposeObjects("_lastMonthBtToolTip", "_nextMonthBtToolTip");
     this._disposeObjects("_lastMonthBt", "_nextMonthBt", "_monthYearLabel");
 
     this._disposeObjectDeep("_weekdayLabelArr", 1);
