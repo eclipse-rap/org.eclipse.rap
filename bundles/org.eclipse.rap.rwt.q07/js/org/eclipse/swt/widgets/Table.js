@@ -169,6 +169,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       this._clientArea.removeEventListener( "appear", this._onClientAppear, this );
       this._clientArea.dispose();
+      org.eclipse.swt.WidgetManager.getInstance().remove( this._clientArea );
       this._clientArea = null;
     }
     if( this._columnArea ) {
