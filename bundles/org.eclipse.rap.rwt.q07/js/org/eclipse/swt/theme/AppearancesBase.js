@@ -794,6 +794,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      result.font = tv.getCssFont( "*", "font" );
       result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
