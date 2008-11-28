@@ -24,6 +24,10 @@
     <property name="background-color"
         type="color"
         description="Background color for buttons." />
+        
+    <property name="background-image"
+        type="image"
+        description="Background image for buttons." />    
 
     <property name="border"
         type="border"

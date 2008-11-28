@@ -191,6 +191,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Button", "background-image" );
       result.border = tv.getCssBorder( "Button", "border" );
       result.font = tv.getCssFont( "Button", "font" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
@@ -218,6 +219,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Button", "background-image" );
       result.border = tv.getCssBorder( "Button", "border" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       // TODO [rst] enable generic padding

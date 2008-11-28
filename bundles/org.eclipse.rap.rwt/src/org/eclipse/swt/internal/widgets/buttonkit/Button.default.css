@@ -1,6 +1,7 @@
 /* Button default theme */
 
 Button {
+  background-image: none;
   color: black;
   padding: 4px 5px;
   spacing: 2px;
