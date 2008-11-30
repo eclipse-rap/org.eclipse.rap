@@ -9,17 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
+qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
 {
   type : "singleton",
   extend : qx.core.Object,
   
   construct : function() {
     this.base( arguments );
-    this._lastKeyCode = 0;
     this._pendingEvent = null;
-    this._bufferedEvents = new Array();
-    this._keyEventRequestRunning = false;
   },
   
   members : {
@@ -30,20 +27,11 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
         var control = this._getTargetControl();
         var hasKeyListener = this._hasKeyListener( control );
         var hasTraverseListener = this._hasTraverseListener( control );
-        if( eventType === "keydown" ) {
-          this._lastKeyCode = keyCode;
-        }
         if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
-          if( this._keyEventRequestRunning ) {
-            this._bufferedEvents.push( domEvent );
-            this._cancelDomEvent( domEvent );
-          } else {
-            var key = charCode == 0 ? keyCode : charCode;
-            this._pendingEvent = domEvent;
-            this._sendKeyDown( control, key, domEvent );
-            result = this._isDomEventCanceled( domEvent );
-            this._checkBufferedEvents();
-          }
+          var key = charCode == 0 ? keyCode : charCode;
+          this._pendingEvent = domEvent;
+          this._sendKeyDown( control, key, domEvent );
+          result = this._isDomEventCanceled( domEvent );
         } 
       }
       return result;
@@ -51,6 +39,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
     
     cancelEvent : function() {
       this._cancelDomEvent( this._pendingEvent );
+    },
+    
+    allowEvent : function() {
+      // do nothing
     },
     
     _isDomEventCanceled : function( domEvent ) {
@@ -142,55 +134,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
         modifier += "alt,";
       }
       req.addParameter( "org.eclipse.swt.events.keyDown.modifier", modifier );
-      this._keyEventRequestRunning = true;
       req.sendSyncronous();
-      this._keyEventRequestRunning = false;
-    },
-    
-    _checkBufferedEvents : function() {
-// TODO [rh] Firefox does suppress input events during sync XmlHttpRequests
-//      Find a way to re-throw key events         
-      if( this._bufferedEvents.length > 0 ) {
-        if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-//          var oldEvent = this._bufferedEvents.shift();
-//          var newEvent = document.createEvent( "KeyboardEvent" );
-//          newEvent.initKeyEvent( "keydown",
-//                                 oldEvent.bubbles,
-//                                 true, // cancelable
-//                                 oldEvent.view,
-//                                 oldEvent.ctrlKey,
-//                                 oldEvent.altKey,
-//                                 oldEvent.shiftKey,
-//                                 oldEvent.metaKey,
-//                                 this._lastKeyCode,
-//                                 oldEvent.charCode );
-//          oldEvent.target.dispatchEvent( newEvent );
-//          newEvent = document.createEvent( "KeyboardEvent" );
-//          newEvent.initKeyEvent( "keypress",
-//                                 oldEvent.bubbles,
-//                                 true, // cancelable
-//                                 oldEvent.view,
-//                                 oldEvent.ctrlKey,
-//                                 oldEvent.altKey,
-//                                 oldEvent.shiftKey,
-//                                 oldEvent.metaKey,
-//                                 oldEvent.keyCode,
-//                                 oldEvent.charCode );
-//          oldEvent.target.dispatchEvent( newEvent );
-//          newEvent = document.createEvent( "KeyboardEvent" );
-//          newEvent.initKeyEvent( "keyup",
-//                                 oldEvent.bubbles,
-//                                 true, // cancelable
-//                                 oldEvent.view,
-//                                 oldEvent.ctrlKey,
-//                                 oldEvent.altKey,
-//                                 oldEvent.shiftKey,
-//                                 oldEvent.metaKey,
-//                                 this._lastKeyCode,
-//                                 oldEvent.charCode );
-//          oldEvent.target.dispatchEvent( newEvent );
-        }
-      }
     }
     
   }

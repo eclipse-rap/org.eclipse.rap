@@ -83,8 +83,12 @@ public class ControlLCAUtil {
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
   private static final String ATT_CANCEL_KEY_EVENT
     = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
+  private static final String ATT_ALLOW_KEY_EVENT
+    = ControlLCAUtil.class.getName() + "#allowKeyEvent";
   static final String JSFUNC_CANCEL_EVENT
-    = "org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent";
+    = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().cancelEvent";
+  static final String JSFUNC_ALLOW_EVENT
+    = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().allowEvent";
 
   static final int MAX_STATIC_ZORDER = 300;
 
@@ -951,13 +955,14 @@ public class ControlLCAUtil {
       final int traverseKey = getTraverseKey( keyCode, stateMask );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
+          boolean allow = true;
           if( traverseKey != SWT.TRAVERSE_NONE ) {
             TraverseEvent traverseEvent = new TraverseEvent( control );
             initializeKeyEvent( traverseEvent, keyCode, stateMask );
             traverseEvent.detail = traverseKey;
             traverseEvent.processEvent();
             if( !traverseEvent.doit ) {
-              cancelKeyEvent( traverseEvent );
+              allow = false;
             }
           }
           KeyEvent pressedEvent = new KeyEvent( control, KeyEvent.KEY_PRESSED );
@@ -969,7 +974,12 @@ public class ControlLCAUtil {
             initializeKeyEvent( releasedEvent, keyCode, stateMask );
             releasedEvent.processEvent();
           } else {
-            cancelKeyEvent( pressedEvent );
+            allow = false;
+          }
+          if( allow ) {
+            allowKeyEvent( control );
+          } else {
+            cancelKeyEvent( control );
           }
         }
       } );
@@ -1120,15 +1130,22 @@ public class ControlLCAUtil {
     return result;
   }
 
-  private static void cancelKeyEvent( final KeyEvent event ) {
-    RWT.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, event.widget );
+  private static void cancelKeyEvent( final Widget widget) {
+    RWT.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
   }
 
+  private static void allowKeyEvent( final Widget widget ) {
+    RWT.getServiceStore().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
+  }
+  
   private static void writeKeyEventResponse( final Control control )
     throws IOException
   {
     IServiceStore serviceStore = RWT.getServiceStore();
-    if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
+    if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      writer.callStatic( JSFUNC_ALLOW_EVENT, null );
+    } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.callStatic( JSFUNC_CANCEL_EVENT, null );
     }

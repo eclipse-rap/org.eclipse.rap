@@ -44,7 +44,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
   },
   
   events : {
-    "send" : "qx.event.type.DataEvent"
+    "send" : "qx.event.type.DataEvent",
+    "received" : "qx.event.type.DataEvent"
   },
 
   members : {
@@ -278,12 +279,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var content = this._timeoutPage.replace( /{HREF_URL}/, hrefAttr );
         this._writeErrorPage( content );
       } else {
+        var errorOccured = false;
         try {
           if( text && text.length > 0 ) {
             window.eval( text );
           }
           this._runningRequestCount--;
-          this._hideWaitHint();      
+          this._hideWaitHint(); 
         } catch( ex ) {
           this.error( "Could not execute javascript: [" + text + "]", ex );
           var content 
@@ -294,6 +296,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
             + text
             + "</pre></body></html>";
           this._writeErrorPage( content );
+          errorOccured = true;     
+        }
+        if( !errorOccured ) {
+          this._dispatchReceivedEvent();
         }
       }
     },
@@ -388,6 +394,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
     _dispatchSendEvent : function() {
       if( this.hasEventListeners( "send" ) ) {
         var event = new qx.event.type.DataEvent( "send", this );
+        this.dispatchEvent( event, true );
+      }
+    },
+    
+    _dispatchReceivedEvent : function() {
+      if( this.hasEventListeners( "received" ) ) {
+        var event = new qx.event.type.DataEvent( "received", this );
         this.dispatchEvent( event, true );
       }
     },

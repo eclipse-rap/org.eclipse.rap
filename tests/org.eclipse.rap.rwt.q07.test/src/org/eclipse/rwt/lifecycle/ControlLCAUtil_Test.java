@@ -395,6 +395,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.KeyUp, ( ( Event )eventLog.get( 1 ) ).type );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) == -1 );
+    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_ALLOW_EVENT ) != -1 );
     shell.removeListener( SWT.KeyDown, doitTrueListener );
 
     // Simulate KeyEvent request, listener sets doit = false
@@ -411,6 +412,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertFalse( ( ( Event )eventLog.get( 0 ) ).doit );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) != -1 );
+    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_ALLOW_EVENT ) == -1 );
     shell.removeListener( SWT.KeyDown, doitFalseListener );
   }
 

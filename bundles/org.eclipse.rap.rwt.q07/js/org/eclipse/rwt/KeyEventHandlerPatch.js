@@ -14,7 +14,12 @@ qx.Mixin.define( "org.eclipse.rwt.KeyEventHandlerPatch",
   "members" : {
     
     _idealKeyHandler : function( keyCode, charCode, eventType, domEvent ) {
-      var util = org.eclipse.rwt.KeyEventUtil.getInstance();      
+      var util;      
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        util = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      } else {
+        util = org.eclipse.rwt.SyncKeyEventUtil.getInstance();
+      }
       if( !util.intercept( eventType, keyCode, charCode, domEvent ) ) {
         this.base( arguments, keyCode, charCode, eventType, domEvent );
       }
