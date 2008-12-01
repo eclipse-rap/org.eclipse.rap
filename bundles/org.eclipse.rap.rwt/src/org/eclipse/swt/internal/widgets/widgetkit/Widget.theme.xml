@@ -12,7 +12,7 @@
 
 <theme css-elements="NONE">
 
-  <element name="System">
+  <element name="Display">
 
     <description>
     Dummy element used to define certain SWT system colors.
@@ -135,37 +135,37 @@
   <color name="widget.shadow"
       description="Color used to draw (outer) shadow line in 3d borders"
       default="167, 166, 170"
-      css-elements="System"
+      css-elements="Display"
       css-property="rwt-shadow-color" />
 
   <color name="widget.highlight"
       description="Color used to draw (outer) highlight line in 3d borders"
       default="255, 255, 255"
-      css-elements="System"
+      css-elements="Display"
       css-property="rwt-highlight-color" />
 
   <color name="widget.darkshadow"
       description="Color used to draw (inner) shadow line in 3d borders"
       default="133, 135, 140"
-      css-elements="System"
+      css-elements="Display"
       css-property="rwt-darkshadow-color" />
 
   <color name="widget.lightshadow"
       description="Color used to draw (inner) highlight line in 3d borders"
       default="220, 223, 228"
-      css-elements="System"
+      css-elements="Display"
       css-property="rwt-lightshadow-color" />
 
   <color name="widget.thinborder"
       description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."
       default="172, 168, 153"
-      css-elements="System"
+      css-elements="Display"
       css-property="rwt-thinborder-color" />
 
   <color name="widget.selection-marker"
       description="Color used to mark selected items like TreeColumns and TabViews"
       default="254, 200, 60"
-      css-elements="System"
+      css-elements="Display"
       css-property="rwt-selectionmarker-color" />
 
 </theme>

@@ -11,12 +11,17 @@
 
 /* Alternative RAP theme */
 
+/* System colors and images */
+
+Display {
+  rwt-selectionmarker-color: #56a0ea;
+}
+
 /* All Widgets and Controls */
 
 * {
   color: rgb( 112, 94, 66 );
   background-color: rgb( 255, 255, 255 );
-  rwt-selectionmarker-color: #56a0ea;
 }
 
 :disabled {

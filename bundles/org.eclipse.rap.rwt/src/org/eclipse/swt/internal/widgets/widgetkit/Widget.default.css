@@ -15,7 +15,7 @@ Tooltip {
   background-color: rgb( 255, 255, 225 );
 }
 
-System {
+Display {
   rwt-shadow-color: rgb( 167, 166, 170 );
   rwt-highlight-color: rgb( 255, 255, 255 );
   rwt-darkshadow-color: rgb( 133, 135, 140 );
