@@ -1840,27 +1840,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "expand-item-chevron-button" : {
-    include : "image",
-
     style : function( states ) {
-      var result = {};
-      if( states.enabled ) {
-        result.cursor = "pointer";
-      } else {
-        result.cursor = "default";
-      }
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};      
       result.width = 16;
       result.height = 16;
       result.right = 4;
-      if( states.expanded ) {
-        result.source = states.over
-                      ? "widget/expanditem/chevron_up_over.gif"
-                      : "widget/expanditem/chevron_up.gif";
-      } else {
-        result.source = states.over
-                      ? "widget/expanditem/chevron_down_over.gif"
-                      : "widget/expanditem/chevron_down.gif";
-      }
+      result.backgroundImage 
+        = tv.getCssImage( "ExpandItem-Button", "background-image" );
+      result.cursor = states.disabled ? "default" : "pointer";      
       return result;
     }
   },
@@ -1876,15 +1864,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.verticalChildrenAlign = "middle";
       result.paddingLeft = 4;
       result.paddingRight = 24;
-      result.backgroundColor = tv.getCssColor( "ExpandItem-Header", "background-color" );
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : "undefined";
-      if( states.enabled ) {
-        result.cursor = "pointer";
-      } else {
-        result.cursor = "default";
-      }
+      result.backgroundColor 
+        = tv.getCssColor( "ExpandItem-Header", "background-color" );
+      result.cursor = states.disabled ? "default" : "pointer";
       return result;
     }
   }

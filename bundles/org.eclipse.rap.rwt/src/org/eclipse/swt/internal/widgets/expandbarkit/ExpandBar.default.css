@@ -7,3 +7,19 @@ ExpandBar {
 ExpandItem-Header {
   background-color: #D4D0C8;
 }
+
+ExpandItem-Button {
+  background-image: url( resource/widget/rap/expanditem/chevron_down.gif );
+}
+
+ExpandItem-Button:hover {
+  background-image: url( resource/widget/rap/expanditem/chevron_down_over.gif );
+}
+
+ExpandItem-Button:expanded {
+  background-image: url( resource/widget/rap/expanditem/chevron_up.gif );
+}
+
+ExpandItem-Button:expanded:hover {
+  background-image: url( resource/widget/rap/expanditem/chevron_up_over.gif );
+}

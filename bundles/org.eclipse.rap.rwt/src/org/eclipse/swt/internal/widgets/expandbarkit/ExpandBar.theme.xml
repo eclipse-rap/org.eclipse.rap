@@ -43,7 +43,27 @@
         </description>
       </property> 
       
-    </element>  
+    </element>
+    
+    <element name="ExpandItem-Button">
+      <description>
+        The ExpandItem collapse/expand button.
+      </description>
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the ExpandItem collapse/expand button.
+          The size of the image should be 16 x 16 pixels.
+        </description>
+      </property> 
+      
+      <state name="hover"
+        description="Applies while the user hovers over a button." />
+        
+      <state name="expanded"
+        description="Applies while the ExpandItem is expanded." /> 
+        
+    </element>
     
   </element>  
 
