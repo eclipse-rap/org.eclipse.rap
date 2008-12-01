@@ -160,13 +160,11 @@ public class ComboLCA extends AbstractWidgetLCA {
         ProcessActionRunner.add( new Runnable() {
           public void run() {
             combo.setText( value );
-            // Reset preserved value in case the values wasn't set as-is as this
-            // means that a VerifyListener manipulated or rejected the value
-            if( !value.equals( combo.getText() ) ) {
-              IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
-              adapter.preserve( PROP_TEXT, null );
-            }
-          }
+            // since text is set in process action, preserved values have to be
+            // replaced
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+            adapter.preserve( PROP_TEXT, value );
+         }
         } );
       } else {
         combo.setText( value );

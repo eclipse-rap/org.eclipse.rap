@@ -235,6 +235,50 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "widgetSelected", log.toString() );
   }
   
+  public void testReadText() {
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Combo combo = new Combo( shell, SWT.BORDER );
+    shell.open();
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( combo );
+    // test without verify listener
+    RWTFixture.fakeNewRequest();
+    String textId = WidgetUtil.getId( combo );
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( textId + ".text", "some text" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    // ensure that no text and selection values are sent back to the client
+    String markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+    assertEquals( "some text", combo.getText() );
+    // test with verify listener
+    final StringBuffer log = new StringBuffer();
+    combo.addVerifyListener( new VerifyListener() {
+  
+      public void verifyText( VerifyEvent event ) {
+        assertEquals( combo, event.widget );
+        assertEquals( "verify me", event.text );
+        assertEquals( 0, event.start );
+        assertEquals( 9, event.end );
+        log.append( event.text );
+      }
+    } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( textId + ".text", "verify me" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    // ensure that no text and selection values are sent back to the client
+    markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+    assertEquals( "verify me", combo.getText() );
+    assertEquals( "verify me", log.toString() );
+  }
+
   public void testSelectionAfterRemoveAll() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
