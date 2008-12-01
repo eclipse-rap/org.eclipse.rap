@@ -247,7 +247,31 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "", text.getText() );
     text.removeVerifyListener( alteringVerifyListener );
   }
-  
+
+  public void testPreserveText() {
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Text text = new Text( shell, SWT.SINGLE );
+    shell.open();
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( text );
+    RWTFixture.fakeNewRequest();
+    String textId = WidgetUtil.getId( text );
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( textId + ".text", "verify me" );
+    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    // ensure that no text and selection values are sent back to the client
+    String markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
+  }
+
   public void testVerifyAndModifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener

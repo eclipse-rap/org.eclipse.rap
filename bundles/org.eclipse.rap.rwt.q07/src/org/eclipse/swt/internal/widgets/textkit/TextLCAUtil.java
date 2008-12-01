@@ -44,12 +44,8 @@ final class TextLCAUtil {
 
   static void preserveValues( final Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    if( adapter.getPreserved( PROP_TEXT ) == null ) {
-      adapter.preserve( PROP_TEXT, text.getText() );
-    }
-    if( adapter.getPreserved( PROP_SELECTION ) == null ) {
-      adapter.preserve( PROP_SELECTION, text.getSelection() );
-    }
+    adapter.preserve( PROP_TEXT, text.getText() );
+    adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
     adapter.preserve( PROP_READONLY, Boolean.valueOf( ! text.getEditable() ) );
   }
@@ -57,15 +53,6 @@ final class TextLCAUtil {
   static void readTextAndSelection( final Text text ) {
     final Point selection = readSelection( text );
     final String txt = WidgetLCAUtil.readPropertyValue( text, "text" );
-    // preserve received text and selection to maintain c/s synchronicity
-    if( txt != null ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-      adapter.preserve( PROP_TEXT, txt );
-    }
-    if( selection != null ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-      adapter.preserve( PROP_SELECTION, selection );
-    }
     if( txt != null ) {
       if( VerifyEvent.hasListener( text ) ) {
         // setText needs to be executed in a ProcessAction runnable as it may
@@ -76,6 +63,13 @@ final class TextLCAUtil {
           public void run() {
             ITextAdapter textAdapter = getTextAdapter( text );
             textAdapter.setText( txt, selection );
+            // since text is set in process action, preserved values have to be
+            // replaced
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+            adapter.preserve( PROP_TEXT, txt );
+            if( selection != null ) {
+              adapter.preserve( PROP_SELECTION, selection );
+            }
           }
         } );
       } else {
