@@ -1156,6 +1156,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
+ "table-column-area" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        backgroundColor : tv.getCssColor( "TableColumn", "background-color" )
+      };
+      return result;
+    }
+  },
+  
   "table-column" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );

@@ -83,6 +83,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._columnArea.setTop( 0 );
     this._columnArea.setLeft( 0 );
+    this._columnArea.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this._columnArea.setAppearance( "table-column-area" );
     this.add( this._columnArea );
     // Construct client area in which the table items will live
     this._clientArea = new qx.ui.layout.CanvasLayout();
