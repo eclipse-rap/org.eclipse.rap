@@ -1285,7 +1285,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = "undefined";
       result.textColor = "undefined";
       if( states.rwt_BORDER ) {
-        result.border = tv.getBorder( "ctabfolder.border" );
+        var color = tv.getCssColor( "CTabFolder", "border-color" );
+        result.border = new qx.ui.core.Border( 1, "solid", color );
       } else {
         result.border = "undefined";
       }
@@ -1314,11 +1315,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var color = tv.getCssColor( "CTabFolder", "border-color" );
       var border = new qx.ui.core.Border();
       if( states.barTop ) {
-        border.setBottom( 1, "solid", "#c0c0c0" );
+        border.setBottom( 1, "solid", color );
       } else {
-        border.setTop( 1, "solid", "#c0c0c0" );
+        border.setTop( 1, "solid", color );
       }
       result.border = border;
       return result;
@@ -1331,23 +1333,24 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var color = tv.getCssColor( "CTabFolder", "border-color" );
       result.paddingLeft = 4;
       result.border = new qx.ui.core.Border();
-      result.border.setRight( 1, "solid", "#c0c0c0" );
+      result.border.setRight( 1, "solid", color );
       if( states.selected ) {
         result.textColor = tv.getCssColor( "CTabItem", "color" );
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
         if( states.barTop ) {
-          result.border.setTop( 1, "solid", "#c0c0c0" );
+          result.border.setTop( 1, "solid", color );
         } else {
-          result.border.setBottom( 1, "solid", "#c0c0c0" );
+          result.border.setBottom( 1, "solid", color );
         }
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
       }
       if( states.firstItem && states.rwt_BORDER ) {
-        result.border.setLeft( 1, "solid", "#c0c0c0" );
+        result.border.setLeft( 1, "solid", color );
       }
       return result;
     }
