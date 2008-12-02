@@ -129,7 +129,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var result = values.images[ vkey ];
       this.__checkDefined( result, element, key );
       if( result != null ) {
-        result = "widget/" + result;
+        result = "/resource/themes/images/" + result;
       } else {
         // TODO [rst] Handle null values - currently, both null and the string
         // "undefined" lead to a js error for icon property

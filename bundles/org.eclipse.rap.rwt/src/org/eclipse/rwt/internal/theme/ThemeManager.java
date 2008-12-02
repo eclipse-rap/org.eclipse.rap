@@ -137,8 +137,8 @@ public final class ThemeManager {
   /** Where to load the default non-themeable images from */
   private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap";
 
-  /** Destination path for theme resources, contains trailing path separator. */
-  private static final String THEME_RESOURCE_DEST = "resource/themes/";
+  /** Destination path for theme resources */
+  private static final String THEME_RESOURCE_DEST = "resource/themes";
 
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
 
@@ -846,13 +846,17 @@ public final class ThemeManager {
           }
           try {
             String jsId = getJsThemeId( themeId );
-            // TODO [rst] implement proper path join
-            String widgetDestPath = getWidgetDestPath( jsId  );
+            String widgetDestPath;
+            if( isCssKey( key ) ) {
+              widgetDestPath = getImageDestPath();
+            } else {
+              widgetDestPath = getWidgetDestPath( jsId );
+            }
             ThemeProperty prop
               = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
             String targetPath
               = prop != null && prop.targetPath != null ? prop.targetPath : key;
-            String registerPath = widgetDestPath + "/" + targetPath ;
+            String registerPath = widgetDestPath + "/" + targetPath;
             IResourceManager resMgr = ResourceManager.getInstance();
             resMgr.register( registerPath, inputStream );
             String location = resMgr.getLocation( registerPath );
@@ -1164,8 +1168,11 @@ public final class ThemeManager {
     int start = jsThemeId.lastIndexOf( '.' ) + 1;
     int end = jsThemeId.length();
     String jsThemeName = jsThemeId.substring( start, end );
-//    return THEME_RESOURCE_DEST + jsThemeName + "/widgets-" + timestamp;
-    return THEME_RESOURCE_DEST + jsThemeName + "/widgets";
+    return THEME_RESOURCE_DEST + "/" + jsThemeName + "/widgets";
+  }
+
+  private String getImageDestPath() {
+    return THEME_RESOURCE_DEST + "/images";
   }
 
   private static boolean isCssKey( final String key ) {
