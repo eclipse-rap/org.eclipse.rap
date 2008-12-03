@@ -81,6 +81,19 @@
         <property name="width"
             type="dimension"
             description="Width of check boxes" />
+            
+        <property name="background-image" type="image">
+          <description>
+            Background image for the table checkbox.
+            The size of the image should be 13 x 13 pixels.
+          </description>
+        </property>
+            
+        <state name="grayed"
+          description="When table checkbox is grayed" />
+          
+        <state name="checked"
+          description="When table checkbox is checked" />  
 
       </element>
 

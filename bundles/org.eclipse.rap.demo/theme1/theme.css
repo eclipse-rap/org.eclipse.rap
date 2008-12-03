@@ -277,6 +277,22 @@ ToolItem:hover {
 
 /* Table and Tree */
 
+Table-Checkbox {
+  background-image: url( "/theme1/icons/checkbox.white.off.gif" );
+}
+
+Table-Checkbox:grayed {
+  background-image: url( "/theme1/icons/checkbox.gray.off.gif" );
+}
+
+Table-Checkbox:checked {
+  background-image: url( "/theme1/icons/checkbox.white.on.gif" );
+}
+
+Table-Checkbox:checked:grayed {
+  background-image: url( "/theme1/icons/checkbox.gray.on.gif" );
+}
+
 TreeColumn:hover, TableColumn:hover {
   background-color: #9dd0ea;
 }

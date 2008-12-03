@@ -36,5 +36,18 @@ Table-Gridline {
 }
 
 Table-Checkbox {
-  width: 121px;
+  width: 21px;
+  background-image: url( resource/widget/rap/table/check_white_off.gif );
+}
+
+Table-Checkbox:grayed {
+  background-image: url( resource/widget/rap/table/check_gray_off.gif );
+}
+
+Table-Checkbox:checked {
+  background-image: url( resource/widget/rap/table/check_white_on.gif );
+}
+
+Table-Checkbox:checked:grayed {
+  background-image: url( resource/widget/rap/table/check_gray_on.gif );
 }

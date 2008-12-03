@@ -825,20 +825,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "tree-check-box" : {
     include : "image",
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.grayed ) {
-        if( states.checked ) {
-          result.source = "widget/table/check_gray_on.gif";
-        } else {
-          result.source = "widget/table/check_gray_off.gif";
-        }
-      } else {
-        if( states.checked ) {
-          result.source = "widget/table/check_white_on.gif";
-        } else {
-          result.source = "widget/table/check_white_off.gif";
-        }
-      }
+      result.width = 13;
+      result.height = 13;
+      result.clipWidth = 13;
+      result.clipHeight = 13;
+      result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
       result.marginRight = 3;
       return result;
     }
@@ -1228,22 +1221,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "table-check-box" : {
-    include : "image",
+    include: "image",    
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.grayed ) {
-        if( states.checked ) {
-          result.source = "widget/table/check_gray_on.gif";
-        } else {
-          result.source = "widget/table/check_gray_off.gif";
-        }
-      } else {
-        if( states.checked ) {
-          result.source = "widget/table/check_white_on.gif";
-        } else {
-          result.source = "widget/table/check_white_off.gif";
-        }
-      }
+      result.width = 13;
+      result.height = 13;
+      result.clipWidth = 13;
+      result.clipHeight = 13;
+      result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
       return result;
     }
   },
