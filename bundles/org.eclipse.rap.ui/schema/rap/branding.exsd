@@ -116,27 +116,6 @@
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="exitConfirmation" type="string">
-            <annotation>
-               <documentation>
-                  Allows to show a confirmation dialog when the user tries to close the browser tab or window or to navigate away from the application.
-&lt;p&gt;
-If the argument is a non-empty string, a confirmation dialog will be shown that contains this message.
-The attribute exitConfirmation overrides this setting.
-&lt;/p&gt;
-&lt;p&gt;
-This attribute is &lt;b&gt;deprecated&lt;/b&gt;. Use &lt;code&gt;exitConfirmationClass&lt;/code&gt; instead.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;b&gt;NOTE:&lt;/b&gt;
-This will only work in browsers of the Mozilla family and Internet Explorer.
-&lt;/p&gt;
-               </documentation>
-               <appInfo>
-                  <meta.attribute deprecated="true"/>
-               </appInfo>
-            </annotation>
-         </attribute>
          <attribute name="exitConfirmationClass" type="string">
             <annotation>
                <documentation>
@@ -303,7 +282,7 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
     title=&quot;It&amp;apos;s tea-time&quot;
     favicon=&quot;icons/favicon2.ico&quot;
     body=&quot;body.html&quot;
-    exitConfirmation=&quot;Do you really want to leave the party?&quot;&gt;
+    exitConfirmationClass=&quot;org.eclipse.rap.demo.DemoExitConfirmation&quot;
   &lt;/branding&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
