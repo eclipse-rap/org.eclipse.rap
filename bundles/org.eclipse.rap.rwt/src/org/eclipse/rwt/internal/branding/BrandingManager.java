@@ -36,8 +36,8 @@ public final class BrandingManager {
   private static final String[] EMPTY_ENTRY_POINTS = new String[ 0 ];
   private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
 
-  private static final AbstractBranding DEFAULT_BRANDING 
-    = new AbstractBranding() 
+  private static final AbstractBranding DEFAULT_BRANDING
+    = new AbstractBranding()
   {
     public String getBody() {
       return "";

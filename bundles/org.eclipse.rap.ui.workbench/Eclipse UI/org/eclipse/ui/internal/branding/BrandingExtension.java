@@ -32,8 +32,6 @@ public final class BrandingExtension {
     = "id"; //$NON-NLS-1$
   private static final String ATT_DEFAULT_ENTRYPOINT_ID 
     = "defaultEntrypointId"; //$NON-NLS-1$
-  private static final String ATT_EXIT_CONFIRMATION 
-    = "exitConfirmation"; //$NON-NLS-1$
   private static final String ATT_EXIT_CONFIRMATION_CLASS
     = "exitConfirmationClass"; //$NON-NLS-$
   private static final String ATT_THEME_ID 
@@ -90,7 +88,6 @@ public final class BrandingExtension {
     String servletName = element.getAttribute( ATT_SERVLET_NAME );
     String favIcon = element.getAttribute( ATT_FAVICON );
     String themeId = element.getAttribute( ATT_THEME_ID );
-    String exitMessage = element.getAttribute( ATT_EXIT_CONFIRMATION );
     IExitConfirmation exitConfirmation = findExitConfirmationImpl( element );
     Branding branding = new Branding( contributor );
     branding.setId( id );
@@ -99,7 +96,6 @@ public final class BrandingExtension {
     branding.setThemeId( themeId );
     branding.setFavIcon( favIcon );
     branding.setServletName( servletName );
-    branding.setExitMessage( exitMessage );
     branding.setExitConfirmation( exitConfirmation );
     branding.setDefaultEntryPointId( defEntryPointId );
     // loop through all additional headers
@@ -134,7 +130,7 @@ public final class BrandingExtension {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
         if( !IExitConfirmation.class.isAssignableFrom( clazz ) ) {
-          String text = "The argument ''{0}'' must implement {0}.";
+          String text = "The argument ''{0}'' must implement {1}.";
           Object[] args = new Object[] {
             ATT_EXIT_CONFIRMATION_CLASS,
             IExitConfirmation.class.getName()

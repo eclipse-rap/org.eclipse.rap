@@ -35,9 +35,6 @@ public final class Branding extends AbstractBranding {
   private String favIcon;
   private List headers;
   private String body;
-  // TODO [rst] Remove as soon as deprecated parameter "exitConfiramtion" is
-  //            dropped from branding extension point
-  private String exitMessage;
   private IExitConfirmation exitConfirmation;
   private String themeId;
   private String brandingId;
@@ -82,10 +79,6 @@ public final class Branding extends AbstractBranding {
     }
     Header header = new Header( tagName, attributes );
     headers.add( header );
-  }
-
-  public void setExitMessage( final String exitMessage ) {
-    this.exitMessage = exitMessage;
   }
 
   public void setExitConfirmation( final IExitConfirmation exitConfirmation ) {
@@ -149,21 +142,17 @@ public final class Branding extends AbstractBranding {
   }
 
   public boolean showExitConfirmation() {
-    boolean result;
+    boolean result = false;
     if( exitConfirmation != null ) {
       result = exitConfirmation.showExitConfirmation();
-    } else {
-      result = exitMessage != null;
     }
     return result;
   }
 
   public String getExitConfirmationText() {
-    String result;
+    String result = null;
     if( exitConfirmation != null ) {
       result  = exitConfirmation.getExitConfirmationText();
-    } else {
-      result = exitMessage;
     }
     return result;
   }
