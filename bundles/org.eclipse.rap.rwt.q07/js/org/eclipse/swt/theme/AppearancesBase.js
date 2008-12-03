@@ -1746,12 +1746,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-
+  
   "calendar-toolbar-button" : {
     style : function( states ) {
       var result = {
         spacing : 4,
-        width : "auto",
+        width : 16,
+        height : 16,
+        clipWidth : 16,
+        clipHeight : 16,
         verticalChildrenAlign : "middle"
       };
       if (states.pressed || states.checked || states.abandoned) {
@@ -1762,6 +1765,30 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "calendar-toolbar-last-button" : {
+    include: "calendar-toolbar-button",
+    
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {        
+        icon : tv.getCssImage( "DateTime-Calendar-LastButton", 
+                               "background-image" )
+      };
+    }
+  },
+  
+  "calendar-toolbar-next-button" : {
+    include: "calendar-toolbar-button",
+    
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-NextButton", 
+                               "background-image" )
+      };
+    }
+  },  
 
   "calendar-monthyear" : {
     style : function( states ) {
@@ -1772,7 +1799,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font          : boldFont,
         textAlign     : "center",
         textColor     : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
-        verticalAlign : "middle"
+        verticalAlign : "middle",
+        cursor        : "default"
       };
     }
   },

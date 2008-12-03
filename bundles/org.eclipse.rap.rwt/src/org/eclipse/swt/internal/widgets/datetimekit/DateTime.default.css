@@ -18,3 +18,11 @@ DateTime-Calendar-Navbar {
   background-color: rgb( 0, 128, 192 );
   color: white;
 }
+
+DateTime-Calendar-LastButton {
+  background-image: url( resource/widget/rap/calendar/lastMonth.gif );
+}
+
+DateTime-Calendar-NextButton {
+  background-image: url( resource/widget/rap/calendar/nextMonth.gif );
+}

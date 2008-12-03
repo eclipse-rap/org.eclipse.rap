@@ -66,6 +66,30 @@
           description="Background color" />
           
     </element>
+    
+    <element name="DateTime-Calendar-LastButton"
+        description="The calendar last month button">
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the Calendar last month button.
+          The size of the image should be 16 x 16 pixels.
+        </description>
+      </property> 
+          
+    </element>
+    
+    <element name="DateTime-Calendar-NextButton"
+        description="The calendar next month button">
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the Calendar next month button.
+          The size of the image should be 16 x 16 pixels.
+        </description>
+      </property>
+          
+    </element>
 
   </element>
 

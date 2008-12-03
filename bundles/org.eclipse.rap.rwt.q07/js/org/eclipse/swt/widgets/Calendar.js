@@ -56,9 +56,9 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       spacing : 1
     });
 
-    var lastMonthBt = new qx.ui.toolbar.Button(null, "widget/calendar/lastMonth.gif");
+    var lastMonthBt = new qx.ui.toolbar.Button;
     var monthYearLabel = new qx.ui.basic.Label;
-    var nextMonthBt = new qx.ui.toolbar.Button(null, "widget/calendar/nextMonth.gif");
+    var nextMonthBt = new qx.ui.toolbar.Button;
 
     this._lastMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Last month"));
     this._nextMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next month"));
@@ -71,10 +71,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     nextMonthBt.set({
       show    : 'icon',
       toolTip : this._nextMonthBtToolTip
-    });
+    });    
 
-    lastMonthBt.setAppearance("calendar-toolbar-button");
-    nextMonthBt.setAppearance("calendar-toolbar-button");
+    lastMonthBt.setAppearance("calendar-toolbar-last-button");
+    nextMonthBt.setAppearance("calendar-toolbar-next-button");
 
     lastMonthBt.addEventListener("click", this._onNavButtonClicked, this);
     nextMonthBt.addEventListener("click", this._onNavButtonClicked, this);

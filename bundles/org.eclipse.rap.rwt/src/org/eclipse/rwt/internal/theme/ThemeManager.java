@@ -130,8 +130,6 @@ public final class ThemeManager {
     "scale/v_marker_big.gif",
     "scale/h_marker_small.gif",
     "scale/v_marker_small.gif",
-    "calendar/lastMonth.gif",
-    "calendar/nextMonth.gif",
   };
 
   /** Where to load the default non-themeable images from */
