@@ -1121,9 +1121,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "spinner-button-up" : {
     include : "spinner-button",
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        source : "widget/arrows/up_small.gif",
-        padding : [ 0, 3, 1 ]
+        source : tv.getCssImage( "Spinner-UpButton", "background-image" )
       };
     }
   },
@@ -1131,9 +1131,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "spinner-button-down" : {
     include : "spinner-button",
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        source : "widget/arrows/down_small.gif",
-        padding : [ 0, 3, 1 ]
+        source : tv.getCssImage( "Spinner-DownButton", "background-image" )
       };
     }
   },

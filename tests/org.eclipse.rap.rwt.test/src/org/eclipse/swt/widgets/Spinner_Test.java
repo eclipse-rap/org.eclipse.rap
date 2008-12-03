@@ -133,15 +133,15 @@ public class Spinner_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Point expected = new Point( 54, 17 );
+    Point expected = new Point( 54, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setMaximum( 1000000 );
-    expected = new Point( 75, 17 );
+    expected = new Point( 75, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Point( 56, 19 );
+    expected = new Point( 56, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 118, 102 );

@@ -36,6 +36,30 @@
 
     <style name="BORDER"
         description="Style constant for bordered behavior." />
+        
+    <element name="Spinner-UpButton"
+        description="The spinner up button">
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the Spinner up button.
+          The size of the image should be 12 x 5 pixels.
+        </description>
+      </property> 
+          
+    </element>
+    
+    <element name="Spinner-DownButton"
+        description="The spinner down button">
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the Spinner down button.
+          The size of the image should be 12 x 5 pixels.
+        </description>
+      </property> 
+          
+    </element>   
 
   </element>
 

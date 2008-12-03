@@ -236,6 +236,15 @@ Scale-Thumb {
   background-color: #9dd0ea;
 }
 
+/* Spinner */
+Spinner-UpButton {
+  background-image: url( "/theme1/icons/spinner.up.gif" );
+}
+
+Spinner-DownButton {
+  background-image: url( "/theme1/icons/spinner.down.gif" );
+}
+
 /* TabFolder */
 
 TabItem {

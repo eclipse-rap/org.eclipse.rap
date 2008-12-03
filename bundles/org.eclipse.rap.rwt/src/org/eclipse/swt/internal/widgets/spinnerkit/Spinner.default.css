@@ -10,3 +10,11 @@ Spinner {
 Spinner[BORDER] {
   border: 1px inset;
 }
+
+Spinner-UpButton {
+  background-image: url( resource/widget/rap/spinner/up_button.gif );
+}
+
+Spinner-DownButton {
+  background-image: url( resource/widget/rap/spinner/down_button.gif );
+}

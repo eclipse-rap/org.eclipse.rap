@@ -40,7 +40,7 @@ import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
 // TODO SelectionListener: widgetSelected is fired whenever the value changes
 public class Spinner extends Composite {
 
-  private static final int UP_DOWN_MIN_HEIGHT = 16;
+  private static final int UP_DOWN_MIN_HEIGHT = 18;
   private static final int UP_DOWN_WIDTH = 16;
 
   private int digits = 0;
