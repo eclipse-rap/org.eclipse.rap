@@ -97,6 +97,14 @@ DateTime-Calendar-Navbar {
   color: white;
 }
 
+DateTime-Calendar-LastButton {
+  background-image: url( "/theme1/icons/calendar.last.gif" );
+}
+
+DateTime-Calendar-NextButton {
+  background-image: url( "/theme1/icons/calendar.next.gif" );
+}
+
 /* ExpandBar */
 
 ExpandBar {
