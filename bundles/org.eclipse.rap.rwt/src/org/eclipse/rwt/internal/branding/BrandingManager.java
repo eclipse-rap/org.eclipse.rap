@@ -48,9 +48,6 @@ public final class BrandingManager {
     public String getDefaultEntryPoint() {
       return null;
     }
-    public String getExitMessage() {
-      return null;
-    }
     public String getFavIcon() {
       return null;
     }
