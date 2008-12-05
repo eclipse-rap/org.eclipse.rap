@@ -90,7 +90,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 				}
 
 				public void mouseUp( MouseEvent e ) {
-// XXX RAP [rh] hack o get TreeViewer editor support working
+// XXX RAP [rh] hack to get TreeViewer editor support working
 // This was necessary since the Tree widget deos not fire mouseDown events
 // The instance check is necessary to avoid that an editor is accidentially 
 // activated twice on widgets that correctly fire mouseDown events. 
