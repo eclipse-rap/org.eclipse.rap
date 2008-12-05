@@ -725,8 +725,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : "thinOutset",
-        padding : [ 0, 3, 0, 2 ],
-        icon : "widget/arrows/down.gif",
+        width : 14,        
+        icon : tv.getCssImage( "Combo-Button", "background-image" ),
         // TODO [rst] rather use button.bgcolor?
         backgroundColor : tv.getColor( "widget.background" )
       };

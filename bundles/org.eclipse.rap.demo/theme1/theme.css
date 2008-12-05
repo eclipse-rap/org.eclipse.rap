@@ -70,6 +70,12 @@ Button[TOGGLE]:hover, Button[TOGGLE][BORDER]:hover {
   background-color: white;
 }
 
+/* Combo */
+
+Combo-Button {
+  background-image: url( "/theme1/icons/combo.down.gif" );
+}
+
 /* CTabFolder */
 
 CTabItem {
