@@ -212,7 +212,7 @@ final class TextSizeProbeStore extends SessionSingletonBase {
       result.append( probe.getString() );
       result.append( "\", " );
       result.append(
-        TextSizeDeterminationHandler.createFontParam( probe.getFont() ) );
+        TextSizeDeterminationFacade.createFontParam( probe.getFont() ) );
       result.append( " ]" );
     }
     return result.toString();

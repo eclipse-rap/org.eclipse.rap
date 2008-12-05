@@ -14,20 +14,18 @@ import java.io.IOException;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
+
 
 final class TextSizeDeterminationHandler
   implements PhaseListener, HttpSessionBindingListener
@@ -68,7 +66,7 @@ final class TextSizeDeterminationHandler
     if( display == Display.getCurrent() ) {
       try {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
-          readProbedFonts();
+          readProbedFonts( probes );
           readMeasuredStrings();
           Shell[] shells = display.getShells();
           for( int i = 0; i < shells.length; i++ ) {
@@ -109,7 +107,7 @@ final class TextSizeDeterminationHandler
                   if( oldOrigin != null ) {
                     composite.setOrigin( oldOrigin );
                     composite.setData( scOriginKey, null );
-                    
+
                     Control content = composite.getContent();
                     if( content != null ) {
                       Point size = ( Point )content.getData( scContentSizeKey );
@@ -133,8 +131,9 @@ final class TextSizeDeterminationHandler
           }
         }
         if( event.getPhaseId() == PhaseId.RENDER ) {
-          probes = writeFontProbing();
-          calculationItems = writeStringMeasurements();
+          probes = TextSizeDeterminationFacade.writeFontProbing();
+          calculationItems
+            = TextSizeDeterminationFacade.writeStringMeasurements();
           renderDone = true;
         }
       } catch( final IOException e ) {
@@ -154,7 +153,6 @@ final class TextSizeDeterminationHandler
     return PhaseId.ANY;
   }
 
-
   public static void readProbedFonts( final IProbe[] probes ) {
     boolean hasProbes = probes != null;
     HttpServletRequest request = ContextProvider.getRequest();
@@ -168,7 +166,6 @@ final class TextSizeDeterminationHandler
       }
     }
   }
-
 
   ///////////////////////////////////////
   // interface HttpSessionBindingListener
@@ -187,96 +184,6 @@ final class TextSizeDeterminationHandler
 
   //////////////////
   // helping methods
-
-  private ICalculationItem[] writeStringMeasurements()
-    throws IOException
-  {
-    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
-    if( items.length > 0 ) {
-      JSWriter writer = JSWriter.getWriterForResetHandler();
-      StringBuffer param = new StringBuffer();
-      param.append( "[ " );
-      for( int i = 0; i < items.length; i++ ) {
-        param.append( "[ " );
-        ICalculationItem item = items[ i ];
-        param.append( item.hashCode() );
-        param.append( ", " );
-        param.append( "\"" );
-        param.append( CommonPatterns.escapeDoubleQuoted( item.getString() ) );
-        param.append( "\", " );
-        param.append( createFontParam( item.getFont() ) );
-        param.append( ", " );
-        param.append( item.getWrapWidth() );
-        param.append( " ]" );
-        if( i < items.length - 1 ) {
-          param.append( ", " );
-        }
-      }
-      param.append( " ]" );
-      String funcName = "org.eclipse.swt.FontSizeCalculation.measureStrings";
-      writer.callStatic( funcName,
-                         new Object[] { new JSVar( param.toString() ) } );
-    }
-    return items;
-  }
-
-  private IProbe[] writeFontProbing() throws IOException {
-    IProbe[] requests = TextSizeProbeStore.getProbeRequests();
-    if( requests.length > 0 ) {
-      JSWriter writer = JSWriter.getWriterForResetHandler();
-      StringBuffer param = new StringBuffer();
-      param.append( "[ " );
-      for( int i = 0; i < requests.length; i++ ) {
-        IProbe probe = requests[ i ];
-        param.append( probe.getJSProbeParam() );
-        if( i < requests.length - 1 ) {
-          param.append( ", " );
-        }
-      }
-      param.append( " ]" );
-      String funcName = "org.eclipse.swt.FontSizeCalculation.probe";
-      writer.callStatic( funcName,
-                         new Object[] { new JSVar( param.toString() ) } );
-    }
-    return requests;
-  }
-
-  private void readProbedFonts() {
-    readProbedFonts( probes );
-  }
-
-  static String createFontParam( final Font font ) {
-    // TODO [fappel]: For convenience I reused the the WidgetLCAUtil#writeFont
-    //                method. This may have performance problems since a lot
-    //                of buffering and some additional string operations are
-    //                used. So revise this...
-    StringBuffer result = new StringBuffer();
-    Shell shell = new Shell( Display.getCurrent(), SWT.NONE );
-    Label label = new Label( shell, SWT.NONE );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter buffer = stateInfo.getResponseWriter();
-    try {
-      HtmlResponseWriter htmlWriter = new HtmlResponseWriter();
-      stateInfo.setResponseWriter( htmlWriter );
-      WidgetLCAUtil.writeFont( label, font );
-      StringBuffer js = new StringBuffer();
-      for( int j = 0; j < htmlWriter.getBodySize(); j++ ) {
-        js.append( htmlWriter.getBodyToken( j ) );
-      }
-      String fontString = js.toString();
-      String[] split = fontString.split( "\\[" );
-      int offset = split[ 1 ].length() - 3;
-      result.append( "[" );
-      result.append( split[ 1 ].substring( 0, offset ) );
-    } catch( final IOException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      shell.dispose();
-      stateInfo.setResponseWriter( buffer );
-    }
-    return result.toString();
-  }
 
   void readMeasuredStrings() {
     boolean hasItems = calculationItems != null;

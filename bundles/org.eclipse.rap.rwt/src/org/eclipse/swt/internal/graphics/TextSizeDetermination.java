@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
@@ -24,8 +23,8 @@ import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 
 public class TextSizeDetermination {
 
-  private static final String JS_CALCULATOR
-    = TextSizeDetermination.class.getName() + ".hasJSCalculator";
+  private static final String HAS_CALCULATOR
+    = TextSizeDetermination.class.getName() + ".hasCalculator";
   private static final String CALCULATION_ITEMS
     = TextSizeDetermination.class.getName() + ".CalculationItems";
   private static final ICalculationItem[] EMTY_ITEMS
@@ -55,14 +54,14 @@ public class TextSizeDetermination {
     }
     return result;
   }
-  
+
   public static Point textExtent( final Font font,
                                   final String string,
                                   final int wrapWidth )
   {
     return internalExtent( font, string, wrapWidth, TEXT_EXTENT );
   }
-  
+
   public static Point markupExtent( final Font font,
                                     final String string,
                                     final int wrapWidth )
@@ -96,17 +95,19 @@ public class TextSizeDetermination {
     }
     return result;
   }
-  
+
 
   private static Point doMeasurement( final Font font,
                                       final String string,
                                       final int wrapWidth,
                                       final int estimationMode )
   {
-    boolean expandLineDelimitors = estimationMode == TEXT_EXTENT;
+    boolean expandNewLines = estimationMode == TEXT_EXTENT;
     String toMeasure = string;
     if( estimationMode != MARKUP_EXTENT ) {
-      toMeasure = createMeasureString( string, expandLineDelimitors );
+      toMeasure
+        = TextSizeDeterminationFacade.createMeasureString( string,
+                                                           expandNewLines );
     }
     Point result = TextSizeDataBase.lookup( font, toMeasure, wrapWidth );
     if( result == null ) {
@@ -163,29 +164,11 @@ public class TextSizeDetermination {
     return result;
   }
 
-  public static String writeStartupJSProbe() {
-    StringBuffer result = new StringBuffer();
-    IProbe[] probeList = TextSizeProbeStore.getProbeList();
-    if( probeList.length > 0 ) {
-      result.append( "org.eclipse.swt.FontSizeCalculation.probe(" );
-      result.append( "[ " );
-      for( int i = 0; i < probeList.length; i++ ) {
-        IProbe probe = probeList[ i ];
-        result.append( probe.getJSProbeParam() );
-        if( i < probeList.length - 1 ) {
-          result.append( ", " );
-        }
-      }
-      result.append( " ] );" );
-    }
-    return result.toString();
-  }
-
   public static void readStartupProbes() {
     IProbe[] probeList = TextSizeProbeStore.getProbeList();
     TextSizeDeterminationHandler.readProbedFonts( probeList );
   }
-  
+
   public static int getProbeCount() {
     return TextSizeProbeStore.getProbeList().length;
   }
@@ -209,7 +192,7 @@ public class TextSizeDetermination {
     for( int i = 0; mustAdd && i < oldItems.length; i++ ) {
       FontData oldFontData = oldItems[ i ].getFont().getFontData()[ 0 ];
       mustAdd = !(    oldItems[ i ].getString().equals( string )
-                   && oldFontData.equals( font.getFontData()[ 0 ] ) 
+                   && oldFontData.equals( font.getFontData()[ 0 ] )
                    && oldItems[ i ].getWrapWidth() == wrapWidth );
     }
     if( mustAdd ) {
@@ -228,22 +211,12 @@ public class TextSizeDetermination {
       };
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       stateInfo.setAttribute( CALCULATION_ITEMS, newItems );
-      if( stateInfo.getAttribute( JS_CALCULATOR ) == null ) {
-        stateInfo.setAttribute( JS_CALCULATOR, new Object() );
+      // TODO [rst] Unnecessary check? TextSizeDeterminationHandler#register
+      //            ensures that code is executed only once
+      if( stateInfo.getAttribute( HAS_CALCULATOR ) == null ) {
+        stateInfo.setAttribute( HAS_CALCULATOR, new Object() );
         TextSizeDeterminationHandler.register();
       }
     }
-  }
-
-  // TODO [rst] Perform also TAB expansion to match the default of GC#textExtent( String )
-  private static String createMeasureString( final String string,
-                                             final boolean expandLineDelimitors )
-  {
-    // TODO [fappel]: revise this - text escape may cause inaccurate
-    //                calculations
-    String result = WidgetLCAUtil.escapeText( string, true );
-    String newLineReplacement = expandLineDelimitors ? "<br/>" : " ";
-    result = WidgetLCAUtil.replaceNewLines( result, newLineReplacement );
-    return result;
   }
 }

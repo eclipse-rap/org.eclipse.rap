@@ -11,7 +11,7 @@
 package org.eclipse.rwt.internal.theme;
 
 
-public class QxBorderUtil {
+public final class QxBorderUtil {
 
   private static final String[] DARKSHADOW_LIGHTSHADOW
     = new String[] { "widget.darkshadow", "widget.lightshadow" };
@@ -21,6 +21,10 @@ public class QxBorderUtil {
     = new String[] { "widget.shadow", "widget.highlight" };
   private static final String[] HIGHLIGHT_SHADOW
     = new String[] { "widget.highlight", "widget.shadow" };
+
+  private QxBorderUtil() {
+    // prevent instantiation
+  }
 
   public static JsonArray getColors( final QxBorder border,
                                      final Theme theme )

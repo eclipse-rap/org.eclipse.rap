@@ -14,7 +14,9 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
@@ -31,11 +33,19 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
     DisplayLCA.writeLibraries();
   }
 
-  void readBounds( Display display ) {
+  void readBounds( final Display display ) {
     DisplayLCA.readBounds( display );
   }
 
-  void readFocusControl( Display display ) {
+  void readFocusControl( final Display display ) {
     DisplayLCA.readFocusControl( display );
+  }
+
+  void writeTestWidgetIdInternal( final Widget widget, final String id )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    Object[] args = new Object[] { widget, id };
+    writer.call( JSWriter.WIDGET_MANAGER_REF, "setHtmlId", args );
   }
 }

@@ -21,6 +21,7 @@ import org.eclipse.swt.internal.browser.browserkit.BrowserLCA_Test;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
+import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
 import org.eclipse.swt.internal.widgets.WidgetAdapter_Test;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
@@ -87,7 +88,8 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( UITestUtil_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
-    
+    suite.addTestSuite( TextSizeDeterminationHandler_Test.class );
+
     // == Service ==
     suite.addTestSuite( BrowserSurvey_Test.class );
 

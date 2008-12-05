@@ -39,14 +39,21 @@ public abstract class DisplayLCAFacade {
   public static IDisplayLifeCycleAdapter getDisplayLCA() {
     return FACADE_IMPL.getDisplayLCAInternal();
   }
-  
+
+  public static void writeTestWidgetId( final Widget widget, final String id )
+    throws IOException
+  {
+    FACADE_IMPL.writeTestWidgetIdInternal( widget, id );
+  }
+
   abstract void writeAppScriptInternal( String id ) throws IOException;
   abstract void writeLibrariesInternal() throws IOException;
   abstract IDisplayLifeCycleAdapter getDisplayLCAInternal();
+  abstract void writeTestWidgetIdInternal( Widget widget, String id )
+    throws IOException;
   abstract void readBounds( Display display );
   abstract void readFocusControl( Display display );
-  
-  
+
   static void doReadData( final Display display ) {
     Rectangle oldBounds = display.getBounds();
     FACADE_IMPL.readBounds( display );
@@ -63,9 +70,9 @@ public abstract class DisplayLCAFacade {
       Composite shell = shells[ i ];
       WidgetTreeVisitor.accept( shell, visitor );
     }
-    
+
     // TODO: [fappel] since there is no possibility yet to determine whether
-    //                a shell is maximized, we use this hack to adjust 
+    //                a shell is maximized, we use this hack to adjust
     //                the bounds of a maximized shell in case of a document
     //                resize event
     for( int i = 0; i < shells.length; i++ ) {
@@ -74,7 +81,7 @@ public abstract class DisplayLCAFacade {
       }
     }
   }
-  
+
   static void doProcessAction( final Device display ) {
     ProcessActionRunner.execute();
     TypedEvent.processScheduledEvents();

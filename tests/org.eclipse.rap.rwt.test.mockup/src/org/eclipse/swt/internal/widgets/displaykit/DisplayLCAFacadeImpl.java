@@ -20,6 +20,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
@@ -53,5 +54,8 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
   }
 
   void readFocusControl( final Display display ) {
+  }
+
+  void writeTestWidgetIdInternal( final Widget widget, final String id ) {
   }
 }

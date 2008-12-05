@@ -35,18 +35,19 @@ import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.graphics.TextSizeDeterminationFacadeImpl;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
-  
+
   private final static String PATTERN_APP_STARTUP
-    =    "var req = org.eclipse.swt.Request.getInstance();" 
+    =    "var req = org.eclipse.swt.Request.getInstance();"
        + "req.setUrl( \"{0}\", \"{1}\" );"
        + "req.setUIRootId( \"{2}\" );"
-       + "var app = new org.eclipse.swt.Application();" 
+       + "var app = new org.eclipse.swt.Application();"
        + "qx.core.Init.getInstance().setApplication( app );";
   private final static String PATTERN_REQUEST_COUNTER
     =   "var req = org.eclipse.swt.Request.getInstance();"
@@ -56,7 +57,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static final JSVar DISPOSE_HANDLER_START
     = new JSVar( "function( " + JSWriter.WIDGET_REF + " ) {" );
 
-  private static final String CLIENT_LOG_LEVEL 
+  private static final String CLIENT_LOG_LEVEL
     = "org.eclipse.rwt.clientLogLevel";
 
   // Maps Java Level to the closest qooxdoo log level
@@ -88,13 +89,13 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         throw ioProblem;
       }
     }
-    
+
     private static void render( final Widget widget ) throws IOException {
       WidgetUtil.getLCA( widget ).render( widget );
     }
-    
-    private static void runRenderRunnable( final Widget widget ) 
-      throws IOException 
+
+    private static void runRenderRunnable( final Widget widget )
+      throws IOException
     {
       WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
       if( adapter.getRenderRunnable() != null ) {
@@ -105,8 +106,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   static {
-    // Available qooxdoo log level: 
-    //   LEVEL_OFF, LEVEL_ALL, 
+    // Available qooxdoo log level:
+    //   LEVEL_OFF, LEVEL_ALL,
     //   LEVEL_DEBUG, LEVEL_INFO, LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL
     LOG_LEVEL_MAP.put( Level.OFF, "qx.log.Logger.LEVEL_OFF" );
     LOG_LEVEL_MAP.put( Level.ALL, "qx.log.Logger.LEVEL_ALL" );
@@ -117,10 +118,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     LOG_LEVEL_MAP.put( Level.FINER, "qx.log.Logger.LEVEL_DEBUG" );
     LOG_LEVEL_MAP.put( Level.FINEST, "qx.log.Logger.LEVEL_DEBUG" );
   }
-  
+
   ////////////////////////////////////////////////////////
   // interface implementation of IDisplayLifeCycleAdapter
-  
+
   public void preserveValues( final Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
@@ -128,7 +129,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
   }
-  
+
   public void render( final Display display ) throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
@@ -230,7 +231,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                                    : "\"" + exitConfirmation + "\"";
       String code = "qx.core.Init.getInstance().getApplication()"
                     + ".setExitConfirmation( "
-                    + exitConfirmationStr 
+                    + exitConfirmationStr
                     + " );";
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter out = stateInfo.getResponseWriter();
@@ -264,10 +265,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.CONTENT, HTML.CONTENT_TEXT_HTML_UTF_8, null );
     out.startElement( HTML.TITLE, null );
  //    out.writeText( shell.getTitle(), null );
-    out.endElement( HTML.TITLE ); 
-    
+    out.endElement( HTML.TITLE );
+
     writeLibraries();
-    
+
     out.endElement( HTML.HEAD );
     out.startElement( HTML.BODY, null );
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -278,7 +279,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     writeAppScript( id );
     writeErrorPages( display );
     writeExitConfirmation( display );
-    
+
     out.endElement( HTML.SCRIPT );
     out.endElement( HTML.BODY );
     out.endElement( HTML.HTML );
@@ -301,7 +302,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeJSLibraries() throws IOException {
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
-    
+
     IResource[] resources = ResourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ].isExternal() ) {
@@ -327,9 +328,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       Composite shell = shells[ i ];
       WidgetTreeVisitor.accept( shell, visitor );
     }
-    
+
     // TODO: [fappel] since there is no possibility yet to determine whether
-    //                a shell is maximized, we use this hack to adjust 
+    //                a shell is maximized, we use this hack to adjust
     //                the bounds of a maximized shell in case of a document
     //                resize event
     for( int i = 0; i < shells.length; i++ ) {
@@ -338,7 +339,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
   }
-  
+
   public void processAction( final Device display ) {
     ProcessActionRunner.execute();
     TypedEvent.processScheduledEvents();
@@ -355,11 +356,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static String jsAppInitialization( final String displayId ) {
     StringBuffer code = new StringBuffer();
-    
+
     // font size measurment
-    code.append( TextSizeDetermination.writeStartupJSProbe() );
-    
-    // application 
+    code.append( TextSizeDeterminationFacadeImpl.getStartupProbeCode() );
+
+    // application
     HttpServletRequest request = ContextProvider.getRequest();
     String url = request.getServletPath().substring( 1 );
     Object[] param = new Object[] {
@@ -368,30 +369,30 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       displayId
     };
     code.append( MessageFormat.format( PATTERN_APP_STARTUP, param ) );
-    
+
     return code.toString();
   }
-  
+
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();
     // [fappel]: client side disposal order is crucial for the widget
     //           caching mechanism - we need to dispose of children first. This
-    //           is reverse to the server side mechanism (which is analog to 
+    //           is reverse to the server side mechanism (which is analog to
     //           SWT).
     for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
       Widget toDispose = disposedWidgets[ i ];
       AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
-      
+
       Set disposeHandler = getAlreadyRegisteredHandlers();
       String key = lca.getTypePoolId( toDispose );
       if( key != null && !disposeHandler.contains( key ) ) {
         JSWriter writer = JSWriter.getWriterFor( toDispose );
-        Object[] params = new Object[] { 
-          new Integer( key.hashCode() ), 
+        Object[] params = new Object[] {
+          new Integer( key.hashCode() ),
           DISPOSE_HANDLER_START
         };
         writer.startCall( JSWriter.WIDGET_MANAGER_REF,
-                          "registerResetHandler", 
+                          "registerResetHandler",
                           params );
         try {
           lca.createResetHandlerCalls( key );
@@ -400,7 +401,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
           disposeHandler.add( key );
         }
       }
-      
+
       lca.renderDispose( toDispose );
     }
   }
@@ -414,10 +415,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
     return result;
   }
-  
-  private static void writeScriptTag( final HtmlResponseWriter out, 
-                                      final String library ) 
-    throws IOException 
+
+  private static void writeScriptTag( final HtmlResponseWriter out,
+                                      final String library )
+    throws IOException
   {
     out.startElement( HTML.SCRIPT, null );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
@@ -427,7 +428,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeScrollBarStyle() throws IOException {
-    // TODO [rh] the browser does not seem to be detected when this 
+    // TODO [rh] the browser does not seem to be detected when this
     //      code gets executed. Once this is fixed, do only render this when
     //      browser is IE
 	// TODO [bm] this could be part of ralfs themeing or?
@@ -436,7 +437,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
     StringBuffer css = new StringBuffer();
     css.append( "html, body, iframe { " );
-    css.append( "scrollbar-base-color:#c0c0c0;" ); 
+    css.append( "scrollbar-base-color:#c0c0c0;" );
     css.append( "scrollbar-3d-light-color:#f8f8ff;" );
     css.append( "scrollbar-arrow-color:#0080c0;" );
     css.append( "scrollbar-darkshadow-color:#f0f0f8;" );
@@ -444,7 +445,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     css.append( "scrollbar-highlight-color:white;" );
     css.append( "scrollbar-shadow-color:gray;" );
     css.append( "scrollbar-track-color:#f0f0f8;" );
-    css.append( "}" ); 
+    css.append( "}" );
     out.write( css.toString() );
     out.endElement( HTML.STYLE );
   }
@@ -453,31 +454,31 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IDisplayAdapter displayAdapter = getDisplayAdapter( display );
     IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
     Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
-    if(    !widgetAdapter.isInitialized() 
-        || oldValue != display.getFocusControl() 
-        || displayAdapter.isFocusInvalidated() ) 
+    if(    !widgetAdapter.isInitialized()
+        || oldValue != display.getFocusControl()
+        || displayAdapter.isFocusInvalidated() )
     {
       // TODO [rst] Added null check as a NPE occurred in some rare cases
       Control focusControl = display.getFocusControl();
       if( focusControl != null ) {
-        // TODO [rh] use JSWriter to output focus JavaScript 
+        // TODO [rh] use JSWriter to output focus JavaScript
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         HtmlResponseWriter out = stateInfo.getResponseWriter();
         String id = WidgetUtil.getId( display.getFocusControl() );
-        out.write( "org.eclipse.swt.WidgetManager.getInstance()." ); 
-        out.write( "focus( \"" ); 
-        out.write( id ); 
+        out.write( "org.eclipse.swt.WidgetManager.getInstance()." );
+        out.write( "focus( \"" );
+        out.write( id );
         out.write( "\" );" );
       }
     }
   }
-  
+
   // TODO [rh] writing activeControl should be handled by the ShellLCA itself
   //      The reason why this is currently done here is, that the control to
   //      activate might not yet be created client-side, when ShellLCA writes
   //      the statement to set the active control.
-  private static void writeActiveControls( final Display display ) 
-    throws IOException 
+  private static void writeActiveControls( final Display display )
+    throws IOException
   {
     Shell[] shells = display.getShells();
     for( int i = 0; i < shells.length; i++ ) {
@@ -508,7 +509,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   static void readBounds( final Display display ) {
     Rectangle oldBounds = display.getBounds();
-    int width 
+    int width
       = readIntPropertyValue( display, "bounds.width", oldBounds.width );
     int height
       = readIntPropertyValue( display, "bounds.height", oldBounds.height );
@@ -544,8 +545,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static String readPropertyValue( final Display display, 
-                                           final String propertyName ) 
+  private static String readPropertyValue( final Display display,
+                                           final String propertyName )
   {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer key = new StringBuffer();
@@ -555,9 +556,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return request.getParameter( key.toString() );
   }
 
-  private static int readIntPropertyValue( final Display display, 
+  private static int readIntPropertyValue( final Display display,
                                            final String propertyName,
-                                           final int defaultValue ) 
+                                           final int defaultValue )
   {
     String value = readPropertyValue( display, propertyName );
     int result;
