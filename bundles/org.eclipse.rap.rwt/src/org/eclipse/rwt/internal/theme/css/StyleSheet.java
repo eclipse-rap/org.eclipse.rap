@@ -20,7 +20,7 @@ import org.w3c.css.sac.SelectorList;
 /**
  * Instances of this class represent a parsed CSS stylesheet.
  */
-public class StyleSheet {
+public final class StyleSheet {
 
   private static final SelectorWrapperComparator COMPARATOR
     = new SelectorWrapperComparator();
