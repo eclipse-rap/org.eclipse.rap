@@ -176,6 +176,16 @@ ProgressBar-Indicator {
   background-image: url( "/theme1/icons/bar.png" );
 }
 
+/* Sash */
+
+Sash-Handle {
+  background-image: url( "/theme1/icons/sash.h_handle.gif" );
+}
+
+Sash-Handle:vertical {
+  background-image: url( "/theme1/icons/sash.v_handle.gif" );
+}
+
 /* Shell */
 
 Shell {

@@ -16,21 +16,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     this.base( arguments );
     this.setOverflow( null );
     this.setHtmlProperty( "unselectable", "on" );
+    this.addEventListener( "changeWidth", this._onChangeSize, this );
+    this.addEventListener( "changeHeight", this._onChangeSize, this );
     this._slider = new qx.ui.layout.CanvasLayout();
     this._slider.setAppearance( "sash-slider" );
-    this._slider.setVisibility( false );
-    
+    this._slider.setVisibility( false );    
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._slider );
-         
     this.add( this._slider );
+    this._handle = new qx.ui.layout.CanvasLayout();
+    this._handle.setStyleProperty( "backgroundPosition", "center center" );
+    this._handle.setAppearance( "sash-handle" );
+    // Fix IE Styling issues
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._handle );
+    this.add( this._handle );
     this.initOrientation();
     this._bufferZIndex = null;
   },
 
   destruct : function() {
+    this.removeEventListener( "changeWidth", this._onChangeSize, this );
+    this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this._removeStyle( this.getOrientation() );
-    this._disposeObjects( "_slider" );
+    this._disposeObjects( "_slider", "_handler" );
   },
 
   properties : {
@@ -50,6 +58,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
   },
 
   members : {
+    
+    _onChangeSize : function( evt ) {
+      this._handle.setWidth( this.getWidth() );
+      this._handle.setHeight( this.getHeight() );
+    },
 
     _onMouseDownX : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
@@ -160,11 +173,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this.addEventListener( "mousemove", this._onMouseMoveY, this );
         this.addEventListener( "mouseup", this._onMouseUpY, this );
         this.addState( "horizontal" );
+        this._handle.addState( "horizontal" );
       } else if( style == "vertical" ) {
         this.addEventListener( "mousemove", this._onMouseMoveX, this );
         this.addEventListener( "mousedown", this._onMouseDownX, this );
         this.addEventListener( "mouseup", this._onMouseUpX, this );
         this.addState( "vertical" );
+        this._handle.addState( "vertical" );
       }
     },
 
@@ -174,11 +189,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this.removeEventListener( "mousemove", this._onMouseMoveY, this );
         this.removeEventListener( "mouseup", this._onMouseUpY, this );
         this.removeState( "horizontal" );
+        this._handle.removeState( "horizontal" );
       } else if( style == "vertical" ) {
         this.removeEventListener( "mousedown", this._onMouseDownX, this );
         this.removeEventListener( "mousemove", this._onMouseMoveX, this );
         this.removeEventListener( "mouseup", this._onMouseUpX, this );
         this.removeState( "vertical" );
+        this._handle.removeState( "vertical" );
       }
     }
   }

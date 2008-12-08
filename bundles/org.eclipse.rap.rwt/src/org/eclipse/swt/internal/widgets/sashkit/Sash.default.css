@@ -1,0 +1,9 @@
+/* Sash default theme */
+
+Sash-Handle {
+  background-image: url( resource/widget/rap/sash/h_handle.gif );
+}
+
+Sash-Handle:vertical {
+  background-image: url( resource/widget/rap/sash/v_handle.gif );
+}

@@ -1259,6 +1259,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
+  
+  "sash-handle" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.backgroundImage = tv.getCssImage( "Sash-Handle", "background-image" );
+      result.backgroundRepeat = "no-repeat";
+      return result;
+    }
+  },
 
   // ------------------------------------------------------------------------
   // CTabFolder
