@@ -24,6 +24,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._slider );
     this.add( this._slider );
+    this._sliderHandle = new qx.ui.layout.CanvasLayout();
+    this._sliderHandle.setStyleProperty( "backgroundPosition", "center center" );
+    this._sliderHandle.setAppearance( "sash-handle" );
+    this._sliderHandle.setVisibility( false ); 
+    // Fix IE Styling issues
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._sliderHandle );
+    this.add( this._sliderHandle );
     this._handle = new qx.ui.layout.CanvasLayout();
     this._handle.setStyleProperty( "backgroundPosition", "center center" );
     this._handle.setAppearance( "sash-handle" );
@@ -38,7 +45,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this._removeStyle( this.getOrientation() );
-    this._disposeObjects( "_slider", "_handler" );
+    this._disposeObjects( "_slider", "_handler", "_sliderHandle" );
   },
 
   properties : {
@@ -98,9 +105,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
       this._slider.setTop( 0 - this._frameOffset );
       this._slider.setWidth( this.getWidth() );
       this._slider.setHeight( this.getHeight() );
+      this._sliderHandle.setLeft( 0 );
+      this._sliderHandle.setTop( 0 );
+      this._sliderHandle.setWidth( this.getWidth() );
+      this._sliderHandle.setHeight( this.getHeight() );
       this._bufferZIndex = this.getZIndex();
       this.setZIndex( 1e7 );
       this._slider.show();
+      this._sliderHandle.show();
     },
 
     _onMouseUpX : function( evt ) {
@@ -120,6 +132,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
       var leftOffset = this._slider.getLeft() + this._frameOffset;
       var topOffset = this._slider.getTop() + this._frameOffset;
       this._slider.hide();
+      this._sliderHandle.hide();
       this.setCapture( false );
       this.getTopLevelWidget().setGlobalCursor( null );
       if( this._bufferZIndex != null ) {
@@ -141,6 +154,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
       if( this.getCapture() ) {
         var toMove = evt.getPageX() - this._dragOffset;
         this._slider.setLeft( this._normalizeMove( toMove ) );
+        this._sliderHandle.setLeft( this._normalizeMove( toMove ) );
       }
     },
 
@@ -148,6 +162,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
       if( this.getCapture() ) {
         var toMove = evt.getPageY() - this._dragOffset;
         this._slider.setTop( this._normalizeMove( toMove ) );
+        this._sliderHandle.setTop( this._normalizeMove( toMove ) );
       }
     },
 
@@ -174,12 +189,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this.addEventListener( "mouseup", this._onMouseUpY, this );
         this.addState( "horizontal" );
         this._handle.addState( "horizontal" );
+        this._sliderHandle.addState( "horizontal" );
       } else if( style == "vertical" ) {
         this.addEventListener( "mousemove", this._onMouseMoveX, this );
         this.addEventListener( "mousedown", this._onMouseDownX, this );
         this.addEventListener( "mouseup", this._onMouseUpX, this );
         this.addState( "vertical" );
         this._handle.addState( "vertical" );
+        this._sliderHandle.addState( "vertical" );
       }
     },
 
@@ -190,12 +207,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this.removeEventListener( "mouseup", this._onMouseUpY, this );
         this.removeState( "horizontal" );
         this._handle.removeState( "horizontal" );
+        this._sliderHandle.removeState( "horizontal" );
       } else if( style == "vertical" ) {
         this.removeEventListener( "mousedown", this._onMouseDownX, this );
         this.removeEventListener( "mousemove", this._onMouseMoveX, this );
         this.removeEventListener( "mouseup", this._onMouseUpX, this );
         this.removeState( "vertical" );
         this._handle.removeState( "vertical" );
+        this._sliderHandle.removeState( "vertical" );
       }
     }
   }
