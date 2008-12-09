@@ -4,7 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.equinox.registry
 Bundle-Version: 1.2.0.qualifier
 Bundle-Localization: fragment
-Fragment-Host: org.eclipse.equinox.registry;bundle-version="[3.3.0,3.5.0)"
+Fragment-Host: org.eclipse.equinox.registry;bundle-version="[3.3.0,4.0.0)"
 Eclipse-PatchFragment: true
 Bundle-ClassPath: runtime_registry_compatibility.jar
 Import-Package: org.eclipse.osgi.service.localization;version="1.0.0"
