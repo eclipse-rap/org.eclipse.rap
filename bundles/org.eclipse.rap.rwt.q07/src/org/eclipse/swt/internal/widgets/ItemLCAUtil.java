@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.io.IOException;
@@ -42,9 +41,10 @@ public class ItemLCAUtil {
   }
   
   public static void writeImage( final Item item ) throws IOException {
-    // TODO [rh] inline method below and remove from WidgetLCAUtil, we are the
-    //      only consumer
-    WidgetLCAUtil.writeImage( item, item.getImage() );
+    WidgetLCAUtil.writeImage( item, 
+                              Props.IMAGE, 
+                              JSConst.QX_FIELD_ICON, 
+                              item.getImage() );
   }
   
   public static void writeChanges( final Item item ) throws IOException {
