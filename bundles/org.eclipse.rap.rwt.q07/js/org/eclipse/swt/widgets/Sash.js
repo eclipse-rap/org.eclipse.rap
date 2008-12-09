@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this._removeStyle( this.getOrientation() );
-    this._disposeObjects( "_slider", "_handler", "_sliderHandle" );
+    this._disposeObjects( "_slider", "_handle", "_sliderHandle" );
   },
 
   properties : {
