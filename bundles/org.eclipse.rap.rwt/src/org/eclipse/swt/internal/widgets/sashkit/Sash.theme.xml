@@ -24,6 +24,13 @@
           type="image"
           description="Background image for sash handle" />
           
+      <state name="horizontal">
+        <description>
+            Applies while a sash is in horizontal state. This state responds to
+            sash SWT.HORIZONTAL style flag.
+        </description>
+      </state>  
+          
       <state name="vertical">
         <description>
             Applies while a sash is in vertical state. This state responds to

@@ -4,6 +4,10 @@ Sash-Handle {
   background-image: none;
 }
 
+Sash-Handle:horizontal {
+  background-image: none;
+}
+
 Sash-Handle:vertical {
   background-image: none;
 }

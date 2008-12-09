@@ -178,7 +178,7 @@ ProgressBar-Indicator {
 
 /* Sash */
 
-Sash-Handle {
+Sash-Handle:horizontal {
   background-image: url( "/theme1/icons/sash.h_handle.gif" );
 }
 
