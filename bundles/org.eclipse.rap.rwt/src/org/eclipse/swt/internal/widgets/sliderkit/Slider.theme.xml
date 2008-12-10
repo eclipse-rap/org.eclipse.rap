@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!--
+ Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+
+ Contributors:
+     Innoopract Informationssysteme GmbH - initial API and implementation
+ -->
+
+<theme>
+
+  <element name="Slider"
+      description="Slider controls">
+
+    <property name="background-color"
+        type="color"
+        description="Background color for slider" />
+
+    <element name="Slider-Thumb"
+        description="The movable thumb">
+
+      <property name="background-color"
+          type="color"
+          description="Background color for slider thumb" />
+      
+      <property name="border"
+          type="border"
+          description="Thumb border" />
+          
+      <state name="hover"
+          description="On thumb roll over" />
+          
+      <state name="pressed"
+          description="On thumb pressed" />      
+
+    </element>
+    
+    <element name="Slider-MinButton"
+        description="The button for decreasing selection value">
+
+      <property name="background-color"
+          type="color"
+          description="Background color for min button" />
+          
+      <property name="border"
+          type="border"
+          description="Min button border" />
+      
+      <property name="background-image"
+          type="image"
+          description="Icon of the min button - horizontal.
+                       The max size of the image should be 16 x 16 pixels." />
+          
+      <state name="hover"
+          description="On button roll over" />
+          
+      <state name="pressed"
+          description="On button pressed" />
+      
+      <state name="horizontal"
+          description="Corresponds to SWT.HORIZONTAL state of the slider." />
+          
+      <state name="vertical"
+          description="Corresponds to SWT.VERTICAL state of the slider." />    
+
+    </element>
+    
+    <element name="Slider-MaxButton"
+        description="The button for increasing selection value">
+
+      <property name="background-color"
+          type="color"
+          description="Background color for max button" />
+          
+      <property name="border"
+          type="border"
+          description="Max button border" />
+          
+      <property name="background-image"
+          type="image"
+          description="Icon of the max button - horizontal.
+                       The max size of the image should be 16 x 16 pixels." />
+          
+      <state name="hover"
+          description="On button roll over" />
+          
+      <state name="pressed"
+          description="On button pressed" />
+          
+      <state name="horizontal"
+          description="Corresponds to SWT.HORIZONTAL state of the slider." />
+          
+      <state name="vertical"
+          description="Corresponds to SWT.VERTICAL state of the slider." />     
+
+    </element>
+
+  </element>
+
+</theme>

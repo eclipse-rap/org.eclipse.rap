@@ -1,0 +1,46 @@
+/* Slider default theme */
+
+Slider {
+  background-color: #F0F0F8;
+}
+
+Slider-Thumb {
+  background-color: #F8F8FF;
+  border: 1px #808080;
+}
+
+Slider-MinButton {
+  background-color: #F8F8FF;
+  border: 1px #C0C0C0;
+  background-image: none;
+}
+
+Slider-MinButton:pressed {
+  border: 1px #808080;
+}
+
+Slider-MinButton:horizontal {
+  background-image: url( resource/widget/rap/slider/h_btn_min.gif );
+}
+
+Slider-MinButton:vertical {
+  background-image: url( resource/widget/rap/slider/v_btn_min.gif );
+}
+
+Slider-MaxButton {
+  background-color: #F8F8FF;
+  border: 1px #C0C0C0;
+  background-image: none;
+}
+
+Slider-MaxButton:pressed {
+  border: 1px #808080;
+}
+
+Slider-MaxButton:horizontal {
+  background-image: url( resource/widget/rap/slider/h_btn_max.gif );
+}
+
+Slider-MaxButton:vertical {
+  background-image: url( resource/widget/rap/slider/v_btn_max.gif );
+}

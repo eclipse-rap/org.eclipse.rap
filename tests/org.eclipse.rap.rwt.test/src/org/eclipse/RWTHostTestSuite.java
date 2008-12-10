@@ -149,6 +149,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( MessageBox_Test.class );
     suite.addTestSuite( ExpandBar_Test.class );
     suite.addTestSuite( ExpandItem_Test.class );
+    suite.addTestSuite( Slider_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

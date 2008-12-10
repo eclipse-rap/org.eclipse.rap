@@ -1894,6 +1894,83 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.cursor = states.disabled ? "default" : "pointer";
       return result;
     }
+  },
+  
+  // ------------------------------------------------------------------------
+  // Slider
+  
+  "slider" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {        
+        border : tv.getCssBorder( "*", "border" ),
+        font : tv.getCssFont( "*", "font" ),
+        textColor : tv.getCssColor( "*", "color" ),
+        backgroundColor : tv.getCssColor( "Slider", "background-color" )
+      }
+    }
+  },
+
+  "slider-line" : {
+    include : "atom",
+    style : function( states ) {
+      var result = {};
+      result.backgroundColor = "#eeeeee";
+      result.opacity = 0;
+      // Assigning icon for proper visualization in IE
+      result.icon = "static/image/blank.gif";
+      if( states.horizontal ){
+        result.left = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+      } else {
+        result.top = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+      }
+      return result;
+    }
+  },
+  
+  "slider-thumb" : {
+    include : "atom",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.backgroundColor = tv.getCssColor( "Slider-Thumb", "background-color" );
+      result.border = tv.getCssBorder( "Slider-Thumb", "border" );
+      // Assigning icon for proper visualization in IE
+      result.icon = "static/image/blank.gif";
+      return result;
+    }
+  },
+  
+  "slider-min-button" : {
+    include : "button",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.backgroundColor = tv.getCssColor( "Slider-MinButton", "background-color" );
+      result.icon = tv.getCssImage( "Slider-MinButton", "background-image" );
+      if( states.horizontal ){
+        result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+      } else {
+        result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+      }
+      return result;
+    }
+  },
+  
+  "slider-max-button" : {
+    include : "button",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.backgroundColor = tv.getCssColor( "Slider-MaxButton", "background-color" );
+      result.icon = tv.getCssImage( "Slider-MaxButton", "background-image" );
+      if( states.horizontal ){        
+        result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+      } else {
+        result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+      }
+      return result;
+    }
   }
 }
 } );

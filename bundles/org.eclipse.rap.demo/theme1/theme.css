@@ -358,3 +358,52 @@ Shell.special-blue {
 Button[PUSH].special-red, Button[TOGGLE].special-red {
   border: 2px solid red;
 }
+
+/* Slider */
+
+Slider {
+  background-color: #fff1a1;
+}
+
+Slider-Thumb {
+  background-color: #9dd0ea;
+  border: 2px #1695d4;
+}
+
+Slider-Thumb:pressed {
+  background-color: #ffffff;
+}
+
+Slider-MinButton {
+  background-color: #9dd0ea;
+  border: 2px #1695d4;
+}
+
+Slider-MinButton:hover {
+  background-color: #ffffff;
+}
+
+Slider-MinButton:horizontal {
+  background-image: url( "/theme1/icons/slider.h_btn.min.gif" );
+}
+
+Slider-MinButton:vertical {
+  background-image: url( "/theme1/icons/slider.v_btn.min.gif" );
+}
+
+Slider-MaxButton {
+  background-color: #9dd0ea;
+  border: 2px #1695d4;
+}
+
+Slider-MaxButton:hover {
+  background-color: #ffffff;
+}
+
+Slider-MaxButton:horizontal {
+  background-image: url( "/theme1/icons/slider.h_btn.max.gif" );
+}
+
+Slider-MaxButton:vertical {
+  background-image: url( "/theme1/icons/slider.v_btn.max.gif" );
+}

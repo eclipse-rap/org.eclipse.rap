@@ -137,6 +137,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/ExpandBar.js";
   private static final String EXPAND_ITEM_JS
     = "org/eclipse/swt/widgets/ExpandItem.js";
+  private static final String SLIDER_JS
+    = "org/eclipse/swt/widgets/Slider.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -216,6 +218,7 @@ final class QooxdooResourcesUtil {
       register( CALENDAR_JS, compress );
       register( EXPAND_BAR_JS, compress );
       register( EXPAND_ITEM_JS, compress );
+      register( SLIDER_JS, compress );
 
       // register contributions
       registerContributions();
