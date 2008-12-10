@@ -332,7 +332,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       for( var i = 0; i < this._middleMarkers.length; i++ ) {
         var marker = this._middleMarkers[ i ];
         this.remove( marker );
-        marker.dispose();
+//        marker.dispose();
+        marker.destroy();
       }
       
       // Create and add new markets

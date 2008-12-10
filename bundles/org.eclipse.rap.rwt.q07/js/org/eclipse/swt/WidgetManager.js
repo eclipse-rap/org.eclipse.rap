@@ -81,7 +81,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
             typePool.elements.push( widget );
           // dispose of widgets that cannot be pooled
           } else {
-            widget.dispose();
+            // [if] Replace dispose() with destroy()
+          	widget.destroy();
           }
         }
       }

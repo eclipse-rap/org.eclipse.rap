@@ -484,7 +484,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       } else {
         if( this._blocker ) {
           this.remove( this._blocker );
-          this._blocker.dispose();
+//          this._blocker.dispose();
+          this._blocker.destroy();
           this._blocker = null;
         }
       }
