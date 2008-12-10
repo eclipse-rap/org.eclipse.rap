@@ -14,3 +14,15 @@ Menu {
   border: 2px outset;
   padding: 1px;
 }
+
+MenuItem-CheckIcon {
+  background-image: url( resource/widget/rap/menu/checkbox.gif );
+}
+
+MenuItem-RadioIcon {
+  background-image: url( resource/widget/rap/menu/radiobutton.gif );
+}
+
+MenuItem-CascadeIcon {
+  background-image: url( resource/widget/rap/arrows/next.gif );
+}

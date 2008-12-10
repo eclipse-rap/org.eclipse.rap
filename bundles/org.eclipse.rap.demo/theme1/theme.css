@@ -166,6 +166,18 @@ MenuItem:hover {
   background-color: #56a0ea;
 }
 
+MenuItem-CheckIcon {
+  background-image: url( "/theme1/icons/menu.checkbox.gif" );
+}
+
+MenuItem-RadioIcon {
+  background-image: url( "/theme1/icons/menu.radiobutton.gif" );
+}
+
+MenuItem-CascadeIcon {
+  background-image: url( "/theme1/icons/menu.cascade.gif" );
+}
+
 /* ProgressBar */
 
 ProgressBar {

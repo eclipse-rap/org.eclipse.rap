@@ -508,8 +508,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "menu-button-arrow" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        source : "widget/arrows/next.gif"
+        source : tv.getCssImage( "MenuItem-CascadeIcon", "background-image" )
       };
     }
   },
@@ -517,11 +518,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "menu-check-box" : {
     include : "menu-button",
 
-    style : function( states )
-    {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : states.checked
-               ? "widget/menu/checkbox.gif"
+               ? tv.getCssImage( "MenuItem-CheckIcon", "background-image" )
                : "static/image/blank.gif"
       };
     }
@@ -530,11 +531,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "menu-radio-button" : {
     include : "menu-button",
 
-    style : function( states )
-    {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : states.checked
-               ? "widget/menu/radiobutton.gif"
+               ? tv.getCssImage( "MenuItem-RadioIcon", "background-image" )
                : "static/image/blank.gif"
       };
     }

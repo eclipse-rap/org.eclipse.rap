@@ -65,6 +65,51 @@
           description="On mouse over" />
 
     </element>
+    
+    <element name="MenuItem-CheckIcon">
+      <description>
+        Icon of the checkbox.
+        Applies when the MenuItem has a SWT.CHECK style flag.
+      </description>
+      
+      <property name="background-image" type="image">
+        <description>
+          The icon image.
+          The maximum size of the image should be 16 x 16 pixels.
+        </description>
+      </property>        
+        
+    </element>
+    
+    <element name="MenuItem-RadioIcon">
+      <description>
+        Icon of the radio-button.
+        Applies when the MenuItem has a SWT.RADIO style flag.
+      </description>
+      
+      <property name="background-image" type="image">
+        <description>
+          The icon image.
+          The maximum size of the image should be 16 x 16 pixels.
+        </description>
+      </property>
+        
+    </element>
+    
+    <element name="MenuItem-CascadeIcon">
+      <description>
+        The cascade icon.
+        Applies when the MenuItem has a SWT.CASCADE style flag.
+      </description>
+      
+      <property name="background-image" type="image">
+        <description>
+          The icon image.
+          The maximum size of the image should be 16 x 16 pixels.
+        </description>
+      </property>
+        
+    </element>
 
   </element>
 
