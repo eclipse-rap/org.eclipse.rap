@@ -63,6 +63,7 @@ final class UIThread
   }
 
   public Object getLock() {
+    // TODO [rh] use a distinct (final) lock object instead of 'this'
     return this;
   }
 
