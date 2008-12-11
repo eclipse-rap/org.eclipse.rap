@@ -117,18 +117,16 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     
     ///////////////////////
     // Mouse event handling
-    
+
     mouseDown : function( evt ) {
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) ) 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
-        // from now on, redirect mouse event to this widget 
+        // from now on, redirect mouse event to this widget
         this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
-        // Add parameters for double-click event, IE is handled in mouseUp
-        if(    !qx.core.Variant.isSet( "qx.client", "mshtml" )
-            && org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) )
-        {
+        // Add parameters for double-click event
+        if( org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) {
           org.eclipse.swt.EventUtil._clearLastMouseDown();
           org.eclipse.swt.EventUtil._mouseDoubleClickParams( this, evt );    
         } else {
@@ -139,7 +137,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           lastMouseDown.x = evt.getPageX();
           lastMouseDown.y = evt.getPageY();
           lastMouseDown.mouseUpCount = 0;
-          qx.client.Timer.once( org.eclipse.swt.EventUtil._clearLastMouseDown, 
+          qx.client.Timer.once( org.eclipse.swt.EventUtil._clearLastMouseDown,
                                 this,
                                 org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         }
@@ -148,7 +146,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         req.send();
       }
     },
-    
+
     mouseUp : function( evt ) {
       if(    !org_eclipse_rap_rwt_EventUtil_suspend
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) ) 
@@ -156,22 +154,14 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // release mouse event capturing
         this.setCapture( false );
         org.eclipse.swt.EventUtil._capturingWidget = null;
-        // IE specific
-        if(    qx.core.Variant.isSet( "qx.client", "mshtml" )
-            && org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) 
-        {
-          org.eclipse.swt.EventUtil._mouseDownParams( this, evt )
-          org.eclipse.swt.EventUtil._mouseDoubleClickParams( this, evt );
-          org.eclipse.swt.EventUtil._clearLastMouseDown();    
-        }
         // increase number of mouse-up events since last stored mouse down
         org.eclipse.swt.EventUtil._lastMouseDown.mouseUpCount += 1;
         // Add mouse-up request parameter
-        org.eclipse.swt.EventUtil._mouseUpParams( this, evt )
+        org.eclipse.swt.EventUtil._mouseUpParams( this, evt );
         req.send();
       }
     },
-    
+
     /**
      * Determines whether the event is relevant (i.e. should be sent) for the
      * given widget.
@@ -203,7 +193,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       lastMouseDown.x = -1;
       lastMouseDown.y = -1;
     },
-    
+
     _isDoubleClick : function( widget, evt ) {
       // TODO [rh] compare last position with current position and don't
       //      report double-click if deviation is too big
@@ -235,7 +225,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseUp.y", evt.getPageY() );
       req.addParameter( "org.eclipse.swt.events.mouseUp.time", this._eventTimestamp() );
     },
-    
+
     _mouseDoubleClickParams : function( widget, evt ) {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       var req = org.eclipse.swt.Request.getInstance();
@@ -249,12 +239,12 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.time", 
                         this._eventTimestamp() );
     },
-    
+
     _eventTimestamp : function() {
       var app = qx.core.Init.getInstance().getApplication();
       return new Date().getTime() - app.getStartupTime();
     },
-    
+
     /**
      * Returns an integer value that represents the button property from the 
      * given mouse event.
@@ -278,7 +268,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       }
       return result;
     }
-    
+
   }
 } );
 
