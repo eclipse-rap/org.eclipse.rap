@@ -14,10 +14,7 @@
   
   construct : function() {
     this.base( arguments );
-    
-    var borderColor = "#c0c0c0";
-    var border = new qx.ui.core.Border( 1, "solid", borderColor );
-    this.setBorder( border );
+
     this.setOverflow( "hidden" );
     this.setAppearance( "progressbar" );
     
@@ -38,6 +35,7 @@
       this._timer.dispose();
     }
     this._timer = null;
+    this._bar.dispose();
   },
 
   statics : {

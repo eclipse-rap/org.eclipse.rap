@@ -117,7 +117,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     onSelectionChangedAction : function( evt ) {
       // TODO [rst] This listener was also called on focus out, if no item was
       //      selected. This fix should work since combos cannot be deselected.
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getData() != null ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getValue() != null ) {
         org.eclipse.swt.ComboUtil.onSelectionChanged( evt );      
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );

@@ -43,9 +43,10 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
           if( child.hasEventListeners( "keydown" ) ) {
             child.removeEventListener( "keydown",
                                        org.eclipse.swt.LinkUtil._onKeyDown );
-          }
-          
-//          child.dispose();
+          }          
+          // TODO [if] Replace child.dispose() with child.destroy()
+          // when qx 0.7.4 is in place
+          child.dispose();
           child = children[ 0 ];
         }
       }
@@ -121,7 +122,7 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
     },
 
     _onTabIndexChange : function( evt ) {
-      var tabIndex = evt.getData();
+      var tabIndex = evt.getValue();
       if( tabIndex >= 0 ) {
         var target = evt.getCurrentTarget();
         var children = target.getChildren();

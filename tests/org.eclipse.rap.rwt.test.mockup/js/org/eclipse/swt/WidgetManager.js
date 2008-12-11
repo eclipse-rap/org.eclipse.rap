@@ -81,27 +81,24 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
             typePool.elements.push( widget );
           // dispose of widgets that cannot be pooled
           } else {
-            widget.dispose();
+            // [if] Replace dispose() with destroy()
+          	widget.destroy();
           }
         }
       }
     },
-    
+
     registerResetHandler : function( typePoolId, resetHandler ) {
       this._createWidgetPool( typePoolId, resetHandler );
     },
     
-  	newWidget : function( widgetId, parentId, isControl, typePoolId, type ) {
-  	  this.newWidget( widgetId, parentId, isControl, typePoolId, type, null );
-  	},
-  	
-  	newWidget : function( widgetId, 
-  	                      parentId, 
-  	                      isControl, 
-  	                      typePoolId, 
-  	                      type, 
-  	                      paramList )
-  	{
+    newWidget : function( widgetId,
+                          parentId,
+                          isControl,
+                          typePoolId,
+                          type,
+                          paramList )
+    {
       // Note [fappel]: Do not remove the 'wm' declaration. This is needed
       //                for IE if the 'newExpression' has a reference to
       //                the variable defined in the script from the server.
@@ -165,7 +162,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         this.setParent( result, parentId );
       }
       return result;
-  	},
+    },
 
     /**
      * Registeres the given widget under the given id at the WidgetManager.

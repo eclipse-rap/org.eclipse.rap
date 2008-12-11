@@ -33,18 +33,18 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
   },
 
   destruct : function() {
-  	this._calendar.removeEventListener( "changeDate", this._onChangeDate, this );
-  	this.removeEventListener( "contextmenu", this._onContextMenu, this );
+    this._calendar.removeEventListener( "changeDate", this._onChangeDate, this );
+    this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this._disposeObjects( "_calendar" );
   },
 
   members : {
-  	_onChangeDate : function() {
-  		var date = this._calendar.getDate();  		
-  		this._sendChanges( date.getDate(), date.getMonth(), date.getFullYear() );
-  	},
-  	
-  	_onContextMenu : function( evt ) {     
+    _onChangeDate : function() {
+      var date = this._calendar.getDate();      
+      this._sendChanges( date.getDate(), date.getMonth(), date.getFullYear() );
+    },
+    
+    _onContextMenu : function( evt ) {     
       var menu = this.getContextMenu();      
       if( menu != null ) {
         menu.setLocation( evt.getPageX(), evt.getPageY() );
@@ -53,8 +53,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
         evt.stopPropagation();
       }
     },
-  	
-  	_sendChanges : function( date, month, year ) {
+    
+    _sendChanges : function( date, month, year ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {        
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();

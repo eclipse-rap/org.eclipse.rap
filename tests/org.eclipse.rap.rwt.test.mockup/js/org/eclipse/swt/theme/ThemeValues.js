@@ -31,14 +31,31 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     } else {
       this._variant = this.__extractVariant( states );
     }
+    this._states = states;
     this._store = org.eclipse.swt.theme.ThemeStore.getInstance();
   },
 
   members : {
 
+    getCssBorder : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.borders[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
+    },
+
     getBorder : function( key ) {
       var theme = qx.theme.manager.Border.getInstance().getBorderTheme();
       return this.__selectVariant( key, theme.borders );
+    },
+
+    getCssColor : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.colors[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getColor : function( key ) {
@@ -51,9 +68,25 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return result;
     },
 
+    getCssFont : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.fonts[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
+    },
+
     getFont : function( key ) {
       var theme = qx.theme.manager.Font.getInstance().getFontTheme();
       return this.__selectVariant( key, theme.fonts );
+    },
+
+    getCssDimension : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.dimensions[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
     },
 
     getDimension : function( key ) {
@@ -62,16 +95,47 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return values.dimensions[ vkey ];
     },
 
+    getCssBoxDimensions : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.boxdims[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
+    },
+
     getBoxDimensions : function( key ) {
       var values = this._store.getThemeValues();
       var vkey = this.__selectVariant( key, values.boxdims );
       return values.boxdims[ vkey ];
     },
 
+    getCssBoolean : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.booleans[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
+    },
+
     getBoolean : function( key ) {
       var values = this._store.getThemeValues();
       var vkey = this.__selectVariant( key, values.booleans );
       return values.booleans[ vkey ];
+    },
+
+    getCssImage : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues( "_" );
+      var result = values.images[ vkey ];
+      this.__checkDefined( result, element, key );
+      if( result != null ) {
+        result = "resource/themes/images/" + result;
+      } else {
+        // TODO [rst] Handle null values - currently, both null and the string
+        // "undefined" lead to a js error for icon property
+        result = "static/image/blank.gif";
+      }
+      return result;
     },
 
     getImage : function( key ) {
@@ -86,6 +150,12 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
         result = "static/image/blank.gif";
       }
       return result;
+    },
+
+    __checkDefined : function( value, element, key ) {
+      if( value === undefined ) {
+        this.error( "undefined value for " + element + "/" + key );
+      }
     },
 
     __selectVariant : function( key, values ) {
@@ -103,9 +173,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
   	__extractVariant: function( states ) {
-  	  result = null;
+  	  var result = null;
   	  if( states != null ) {
-        for( state in states ) {
+        for( var state in states ) {
           if( state.substr( 0, 8 ) == "variant_" ) {
             result = state.substr( 8 );
       	  }

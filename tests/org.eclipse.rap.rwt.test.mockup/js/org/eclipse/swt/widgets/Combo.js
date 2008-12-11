@@ -17,15 +17,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
   construct : function() {
     this.base( arguments );
-    this.rap_init();
+    this.rap_init();    
   },
 
   members : {
-    rap_init : function() { 
+    rap_init : function() {
+      this._userCursor = null;
       this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
       this.addEventListener( "changeTextColor", this._rwt_onChangeTextColor, this );
       this.addEventListener( "changeBackgroundColor", this._rwt_onChangeBackgoundColor, this );
       this.addEventListener( "changeValue", this._rwt_onChangeValue, this );
+      this.addEventListener( "changeEditable", this._rwt_onChangeEditable, this );
       this._popup.addEventListener( "appear", this._rwt_onPopupAppear, this );
       this._popup.addEventListener( "disappear", this._rwt_onPopupDisappear, this );
     },
@@ -35,6 +37,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this.removeEventListener( "changeTextColor", this._rwt_onChangeTextColor, this );
       this.removeEventListener( "changeBackgroundColor", this._rwt_onChangeBackgoundColor, this );
       this.removeEventListener( "changeValue", this._rwt_onChangeValue, this );
+      this.removeEventListener( "changeEditable", this._rwt_onChangeEditable, this );
       this._popup.removeEventListener( "appear", this._rwt_onPopupAppear, this );
       this._popup.removeEventListener( "disappear", this._rwt_onPopupDisappear, this );
     },
@@ -57,7 +60,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // workaround for missing property propagation in qx ComboBox
     _rwt_onChangeTextColor : function( evt ) {
       var combo = evt.getTarget();
-      var value = evt.getData();
+      var value = evt.getValue();
       combo._field.setTextColor( value );
       combo._list.setTextColor( value );
     },
@@ -65,13 +68,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // workaround for missing property propagation in qx ComboBox
     _rwt_onChangeBackgoundColor : function( evt ) {
       var combo = evt.getTarget();
-      var value = evt.getData();
+      var value = evt.getValue();
       combo._field.setBackgroundColor( value );
       combo._list.setBackgroundColor( value );
     },
 
     _rwt_onChangeValue : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getData() != null ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getValue() != null ) {
         var combo = evt.getTarget();
         var value = combo.getValue();
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -118,7 +121,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _rwt_onPopupAppear : function( evt ) {
       var f = this.getField();
       f.setReadOnly( true );
-      f.setCursor( "default" );
+      if( this._userCursor == null ) {
+        f.setCursor( "default" );
+      }
       f.setSelectable( false );
     },
 
@@ -127,10 +132,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       var editable = this.getEditable();
       var f = this.getField();
       f.setReadOnly( !editable );
-      f.setCursor( editable ? null : "default" );
+      if( this._userCursor == null ) {
+        f.setCursor( editable ? null : "default" );
+      }
       f.setSelectable( editable );
+    },
+    
+    _rwt_onChangeEditable : function( evt ) {
+      if( this._userCursor != null ) {
+        this.getField().setCursor( this._userCursor );
+      }  
+    },  
+
+    _applyCursor : function( value, old ) {
+      this.base( arguments, value, old );
+      this._userCursor = value;
+      if( value ) {
+        this.getField().setCursor( value );
+        this.getButton().setCursor( value );
+        this.getList().setCursor( value );
+      } else {
+        this.getField().resetCursor();
+        this.getButton().resetCursor();
+        this.getList().resetCursor();
+      }
     }
-
   }
-
 } );

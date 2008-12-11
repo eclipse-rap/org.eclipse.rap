@@ -44,7 +44,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
   },
   
   events : {
-    "send" : "qx.event.type.DataEvent"
+    "send" : "qx.event.type.DataEvent",
+    "received" : "qx.event.type.DataEvent"
   },
 
   members : {
@@ -70,6 +71,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     setRequestCounter : function( requestCounter ) {
       this._requestCounter = requestCounter;
+    },
+
+    setTimeoutPage : function( content ) {
+      this._timeoutPage = content;
     },
 
     /**
@@ -111,17 +116,17 @@ qx.Class.define( "org.eclipse.swt.Request", {
      * that will be blocked by the server till background activities 
      * require UI updates.
      */
-    enableUICallBack : function( url, service_param, service_id ) {
-      var request = new qx.io.remote.Request( url, 
+    enableUICallBack : function( url, serviceParam, serviceId ) {
+      var request = new qx.io.remote.Request( url,
                                               qx.net.Http.METHOD_GET, 
                                               qx.util.Mime.JAVASCRIPT );
-      request.setParameter( service_param, service_id );
+      request.setParameter( serviceParam, serviceId );
       this._sendStandalone( request );
     },
     
     /**
-     * Sends this request. All parameters that were added since the last 'send()'
-     * will now be sent.
+     * Sends this request asynchronously. All parameters that were added since 
+     * the last 'send()' will now be sent.
      */
     send : function() {
       if( !this._inDelayedSend ) {
@@ -129,15 +134,16 @@ qx.Class.define( "org.eclipse.swt.Request", {
         // Wait and then actually send the request
         // TODO [rh] optimize wait interval (below 60ms seems to not work 
         //      reliable)
-        qx.client.Timer.once( this._sendImmediate, this, 60 );
+        var func = function() { this._sendImmediate( true ) };
+        qx.client.Timer.once( func, this, 60 );
       }
     },
-
-    setTimeoutPage : function( content ) {
-      this._timeoutPage = content;
+    
+    sendSyncronous : function() {
+      this._sendImmediate( false );
     },
 
-    _sendImmediate : function() {
+    _sendImmediate : function( async ) {
       this._dispatchSendEvent();
       // set mandatory parameters; do this after regular params to override them
       // in case of conflict
@@ -152,9 +158,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
           this._parameters[ "requestCounter" ] = this._requestCounter;
           this._requestCounter = -1;
         }
-  
         // create and configure request object
         var request = this._createRequest();
+        request.setAsynchronous( async );
         // copy the _parameters map which was filled during client interaction
         // to the request
         this._inDelayedSend = false;
@@ -165,10 +171,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( this._runningRequestCount === 1 ) {
           qx.client.Timer.once( this._showWaitHint, this, 500 );
         }
-        // queue request to be sent
-        request.send();
         // clear the parameter list
         this._parameters = {};
+        // queue request to be sent (async) or send and block (sync)
+        if( async ) {
+          request.send();
+        } else {
+          this._sendStandalone( request );
+        }
       }
     },
     
@@ -245,7 +255,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( text == "" || text == null ) {
           content 
             = "<html><head><title>Error Page</title></head><body>"
-            + "<p>Request failed:</p><pre>"
+            + "<p>Request failed.</p><pre>"
             + "HTTP Status Code: "
             + String( evt.getStatusCode() )
             + "</pre></body></html>";
@@ -269,12 +279,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var content = this._timeoutPage.replace( /{HREF_URL}/, hrefAttr );
         this._writeErrorPage( content );
       } else {
+        var errorOccured = false;
         try {
           if( text && text.length > 0 ) {
             window.eval( text );
           }
           this._runningRequestCount--;
-          this._hideWaitHint( evt );      
+          this._hideWaitHint(); 
         } catch( ex ) {
           this.error( "Could not execute javascript: [" + text + "]", ex );
           var content 
@@ -285,6 +296,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
             + text
             + "</pre></body></html>";
           this._writeErrorPage( content );
+          errorOccured = true;     
+        }
+        if( !errorOccured ) {
+          this._dispatchReceivedEvent();
         }
       }
     },
@@ -300,6 +315,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( result ) {
         var request = this._createRequest();
         var failedRequest = this._currentRequest;
+        request.setAsynchronous( failedRequest.getAsynchronous() );
         // Reusing the same request object causes strange behaviour, therefore
         // create a new request and copy the relevant parts from the failed one 
         var failedHeaders = failedRequest.getRequestHeaders();
@@ -333,11 +349,21 @@ qx.Class.define( "org.eclipse.swt.Request", {
     _isConnectionError : function( statusCode ) {
       var result;
       if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        result = (    statusCode === 12029 
-                   || statusCode === 12030 
-                   || statusCode === 12031 );
+        // for a description of the IE status codes, see
+        // http://support.microsoft.com/kb/193625 
+        result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
+                   || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
+                   || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
+                   || statusCode === 12031 ); // ERROR_INTERNET_CONNECTION_RESET
       } else if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        result = ( statusCode === -1 );
+        // Firefox 3 reports other statusCode than oder versions (bug #249814)
+        // Check if Gecko > 1.9 is running (used in FF 3)
+        // Gecko/app integration overview: http://developer.mozilla.org/en/Gecko
+        if( qx.core.Client.getMajor() * 10 + qx.core.Client.getMinor() >= 19 ) {
+          result = ( statusCode === 0 );
+        } else {
+          result = ( statusCode === -1 );
+        }
       } else if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
         result = ( statusCode === 0 );
       } else if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
@@ -358,7 +384,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
     },
     
-    _hideWaitHint : function( evt ) {
+    _hideWaitHint : function() {
       if( this._runningRequestCount === 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( null );
@@ -368,6 +394,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
     _dispatchSendEvent : function() {
       if( this.hasEventListeners( "send" ) ) {
         var event = new qx.event.type.DataEvent( "send", this );
+        this.dispatchEvent( event, true );
+      }
+    },
+    
+    _dispatchReceivedEvent : function() {
+      if( this.hasEventListeners( "received" ) ) {
+        var event = new qx.event.type.DataEvent( "received", this );
         this.dispatchEvent( event, true );
       }
     },

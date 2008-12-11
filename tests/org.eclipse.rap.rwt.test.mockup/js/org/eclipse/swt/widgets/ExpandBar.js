@@ -33,19 +33,21 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandBar", {
 
   members : {
     setBottomSpacingBounds : function( x, y, width, height ) {
-    	this._bottomSpacing.setLeft( x );
-    	this._bottomSpacing.setTop( y );
-    	this._bottomSpacing.setWidth( width );
-    	this._bottomSpacing.setHeight( height );
+      this._bottomSpacing.setLeft( x );
+      this._bottomSpacing.setTop( y );
+      this._bottomSpacing.setWidth( width );
+      this._bottomSpacing.setHeight( height );
     },
     
     showVScrollbar : function( show ) {
-    	if( show ) {
-	      this.setOverflow( qx.constant.Style.OVERFLOW_VERTICAL );
-	    } else {
-	    	this._zeroScrolling.scrollIntoView();   	
-	      this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-	    }  
+      if( show ) {
+        this.setOverflow( qx.constant.Style.OVERFLOW_VERTICAL );
+      } else {
+        if( this._zeroScrolling.isCreated() ) {
+          this._zeroScrolling.scrollIntoView();
+        }
+        this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+      }  
     }   
   }
 } );

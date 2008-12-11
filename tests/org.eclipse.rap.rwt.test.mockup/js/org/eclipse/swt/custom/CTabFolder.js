@@ -58,6 +58,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this.removeEventListener( "changeHeight", this._updateLayout, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this._disposeObjects( "_frame", "_separator" );
+    this._frameBorder.dispose();
   },
 
   statics : {
@@ -82,8 +83,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     addState : function( state ) {
       this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_"
-          || state.substr( 0, 4 ) == "rwt_" )
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
       {
         this._body.addState( state );
         this._frame.addState( state );
@@ -95,8 +95,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     removeState : function( state ) {
       this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_"
-          || state.substr( 0, 4 ) == "rwt_" )
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
       {
         this._body.removeState( state );
         this._frame.removeState( state );
