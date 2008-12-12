@@ -16,6 +16,10 @@ import org.eclipse.swt.widgets.Control;
 
 public class CoolBarThemeAdapter extends ControlThemeAdapter {
 
+  public int getBorderWidth( final Control control ) {
+    return 0;
+  }
+
   public int getHandleWidth( final Control control ) {
     return getCssDimension( "CoolItem-Handle", "width", control );
   }
