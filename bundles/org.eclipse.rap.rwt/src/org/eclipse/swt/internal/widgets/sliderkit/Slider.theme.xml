@@ -38,7 +38,7 @@
 
     </element>
     
-    <element name="Slider-MinButton"
+    <element name="Slider-DownButton"
         description="The button for decreasing selection value">
 
       <property name="background-color"
@@ -47,11 +47,11 @@
           
       <property name="border"
           type="border"
-          description="Min button border" />
+          description="Down button border" />
       
       <property name="background-image"
           type="image"
-          description="Icon of the min button - horizontal.
+          description="Icon of the down button - horizontal.
                        The max size of the image should be 16 x 16 pixels." />
           
       <state name="hover"
@@ -68,20 +68,20 @@
 
     </element>
     
-    <element name="Slider-MaxButton"
+    <element name="Slider-UpButton"
         description="The button for increasing selection value">
 
       <property name="background-color"
           type="color"
-          description="Background color for max button" />
+          description="Background color for up button" />
           
       <property name="border"
           type="border"
-          description="Max button border" />
+          description="Up button border" />
           
       <property name="background-image"
           type="image"
-          description="Icon of the max button - horizontal.
+          description="Icon of the up button - horizontal.
                        The max size of the image should be 16 x 16 pixels." />
           
       <state name="hover"

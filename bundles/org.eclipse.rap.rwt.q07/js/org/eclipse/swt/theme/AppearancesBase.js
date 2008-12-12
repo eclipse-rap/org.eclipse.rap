@@ -1946,8 +1946,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "Slider-MinButton", "background-color" );
-      result.icon = tv.getCssImage( "Slider-MinButton", "background-image" );
+      result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
+      result.icon = tv.getCssImage( "Slider-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "Slider-DownButton", "border" );
       if( states.horizontal ){
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       } else {
@@ -1962,8 +1963,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "Slider-MaxButton", "background-color" );
-      result.icon = tv.getCssImage( "Slider-MaxButton", "background-image" );
+      result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
+      result.icon = tv.getCssImage( "Slider-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "Slider-UpButton", "border" );
       if( states.horizontal ){        
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       } else {

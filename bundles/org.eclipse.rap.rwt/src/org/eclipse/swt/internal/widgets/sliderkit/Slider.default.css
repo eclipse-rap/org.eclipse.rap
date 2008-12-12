@@ -6,41 +6,33 @@ Slider {
 
 Slider-Thumb {
   background-color: #F8F8FF;
-  border: 1px #808080;
+  border: 1px outset;
 }
 
-Slider-MinButton {
+Slider-DownButton {
   background-color: #F8F8FF;
-  border: 1px #C0C0C0;
+  border: 1px outset;
   background-image: none;
 }
 
-Slider-MinButton:pressed {
-  border: 1px #808080;
-}
-
-Slider-MinButton:horizontal {
+Slider-DownButton:horizontal {
   background-image: url( resource/widget/rap/slider/h_btn_min.gif );
 }
 
-Slider-MinButton:vertical {
+Slider-DownButton:vertical {
   background-image: url( resource/widget/rap/slider/v_btn_min.gif );
 }
 
-Slider-MaxButton {
+Slider-UpButton {
   background-color: #F8F8FF;
-  border: 1px #C0C0C0;
+  border: 1px outset;
   background-image: none;
 }
 
-Slider-MaxButton:pressed {
-  border: 1px #808080;
-}
-
-Slider-MaxButton:horizontal {
+Slider-UpButton:horizontal {
   background-image: url( resource/widget/rap/slider/h_btn_max.gif );
 }
 
-Slider-MaxButton:vertical {
+Slider-UpButton:vertical {
   background-image: url( resource/widget/rap/slider/v_btn_max.gif );
 }

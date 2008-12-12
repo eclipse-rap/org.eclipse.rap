@@ -374,36 +374,36 @@ Slider-Thumb:pressed {
   background-color: #ffffff;
 }
 
-Slider-MinButton {
+Slider-DownButton {
   background-color: #9dd0ea;
   border: 2px #1695d4;
 }
 
-Slider-MinButton:hover {
+Slider-DownButton:hover {
   background-color: #ffffff;
 }
 
-Slider-MinButton:horizontal {
+Slider-DownButton:horizontal {
   background-image: url( "/theme1/icons/slider.h_btn.min.gif" );
 }
 
-Slider-MinButton:vertical {
+Slider-DownButton:vertical {
   background-image: url( "/theme1/icons/slider.v_btn.min.gif" );
 }
 
-Slider-MaxButton {
+Slider-UpButton {
   background-color: #9dd0ea;
   border: 2px #1695d4;
 }
 
-Slider-MaxButton:hover {
+Slider-UpButton:hover {
   background-color: #ffffff;
 }
 
-Slider-MaxButton:horizontal {
+Slider-UpButton:horizontal {
   background-image: url( "/theme1/icons/slider.h_btn.max.gif" );
 }
 
-Slider-MaxButton:vertical {
+Slider-UpButton:vertical {
   background-image: url( "/theme1/icons/slider.v_btn.max.gif" );
 }
