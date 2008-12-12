@@ -289,6 +289,8 @@ TabItem {
 
 TabItem:selected {
   background-color: rgb( 255, 255, 255 );
+  border-top-color: rgb( 22,149,212 );
+  border-bottom-color: rgb( 22,149,212 );
 }
 
 /* Text */

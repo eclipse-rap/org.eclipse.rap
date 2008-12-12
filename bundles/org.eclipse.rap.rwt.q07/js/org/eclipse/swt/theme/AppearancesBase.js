@@ -945,14 +945,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
       var border_top_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       border_top_checked.setWidthBottom( 0 );
-      border_top_checked.setTop( 3, "solid", "widget.selection-marker" );
+      var top_color = tv.getCssColor( "TabItem", "border-top-color" );
+      border_top_checked.setTop( 3, "solid", top_color );
 
       var border_bottom_normal = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       border_bottom_normal.setWidthTop( 0 );
 
       var border_bottom_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       border_bottom_checked.setWidthTop( 0 );
-      border_bottom_checked.setBottom( 3, "solid", "widget.selection-marker" );
+      var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
+      border_bottom_checked.setBottom( 3, "solid", bottom_color );
 
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?

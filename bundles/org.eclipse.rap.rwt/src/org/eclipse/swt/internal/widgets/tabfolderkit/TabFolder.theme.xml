@@ -21,6 +21,20 @@
       <property name="background-color"
           type="color"
           description="Background color for tab folder headers." />
+          
+      <property name="border-top-color" type="color">
+          <description>
+            The top border color.
+            This color is used when the TabFolder style flag SWT.TOP is set.
+          </description>  
+      </property>
+          
+      <property name="border-bottom-color" type="color">
+          <description>
+            The bottom border color.
+            This color is used when the TabFolder style flag SWT.BOTTOM is set.
+          </description>  
+      </property>
 
       <state name="selected"
           description="On tab item selection" />
