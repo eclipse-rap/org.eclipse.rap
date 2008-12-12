@@ -1439,9 +1439,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "coolitem-handle" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.width = "100%";
-      result.border = "thinOutset";
+      if( states.vertical ) {
+        result.height = tv.getCssDimension( "CoolItem-Handle", "width" );
+      } else {      
+        result.width = tv.getCssDimension( "CoolItem-Handle", "width" );
+      }
+      result.border = tv.getCssBorder( "CoolItem-Handle", "border" );
       result.margin = [ 1, 2, 1, 0 ];
       result.cursor = "w-resize";
       return result;

@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     this._orientation = orientation;
     // Create handle to drag this CoolItem around
     this._handle = new qx.ui.basic.Terminator();
+    this._handle.addState( orientation );
     this._handle.setAppearance( "coolitem-handle" );
     //this._handle.setHeight( "100%" );
     this._handle.addEventListener( "mousedown", this._onHandleMouseDown, this );
@@ -53,9 +54,9 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
 
     updateHandleBounds : function() {
       if( this._orientation == "vertical" ) {
-        this._handle.setSpace( 0, this.getWidth(), 0, 4 );
+        this._handle.setWidth( this.getWidth() );
       } else {
-        this._handle.setSpace( 0, 4, 0, this.getHeight() );
+        this._handle.setHeight( this.getHeight() );
       }
     },
 
