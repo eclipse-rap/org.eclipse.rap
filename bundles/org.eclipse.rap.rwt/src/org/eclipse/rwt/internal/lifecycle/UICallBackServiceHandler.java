@@ -17,6 +17,7 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -31,77 +32,108 @@ public class UICallBackServiceHandler implements IServiceHandler {
   // keep in sync with function enableUICallBack() in Request.js
   public final static String HANDLER_ID
     = UICallBackServiceHandler.class.getName();
-  
+
   private static final String JS_SEND_CALLBACK_REQUEST
     = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
   private static final String JS_SEND_UI_REQUEST
     = "org.eclipse.swt.Request.getInstance().send();";
 
-  private static final String ACTIVATION_IDS
-    = UICallBackServiceHandler.class.getName() + "ActivationIds";
   private static final String BUFFERED_SEND_CALLBACK_REQUEST
     = UICallBackServiceHandler.class.getName() + "#jsUICallback";
-  
-  
+
+
   ////////////////
   // inner classes
-  
+
+  private static final class IdManager {
+    
+    static IdManager getInstance() {
+      return ( IdManager )SessionSingletonBase.getInstance( IdManager.class );
+    }
+    
+    private final Set ids;
+    
+    IdManager() {
+      ids = new HashSet();
+    }
+    
+    Object getLock() {
+      return ids;
+    }
+
+    void add( final String id ) {
+      ids.add( id );
+    }
+
+    void remove( final String id ) {
+      ids.remove( id );
+    }
+    
+    boolean isEmpty() {
+      return ids.isEmpty();
+    }
+    
+    int size() {
+      return ids.size();
+    }
+  }
+
   private static final class DummyResponse implements HttpServletResponse {
 
-    public void addCookie( Cookie cookie ) {
+    public void addCookie( final Cookie cookie ) {
     }
 
-    public void addDateHeader( String name, long date ) {
+    public void addDateHeader( final String name, final long date ) {
     }
 
-    public void addHeader( String name, String value ) {
+    public void addHeader( final String name, final String value ) {
     }
 
-    public void addIntHeader( String name, int value ) {
+    public void addIntHeader( final String name, final int value ) {
     }
 
-    public boolean containsHeader( String name ) {
+    public boolean containsHeader( final String name ) {
       return false;
     }
 
-    public String encodeRedirectURL( String url ) {
+    public String encodeRedirectURL( final String url ) {
       return null;
     }
 
-    public String encodeRedirectUrl( String url ) {
+    public String encodeRedirectUrl( final String url ) {
       return null;
     }
 
-    public String encodeURL( String url ) {
+    public String encodeURL( final String url ) {
       return null;
     }
 
-    public String encodeUrl( String url ) {
+    public String encodeUrl( final String url ) {
       return null;
     }
 
-    public void sendError( int sc ) throws IOException {
+    public void sendError( final int sc ) throws IOException {
     }
 
-    public void sendError( int sc, String msg ) throws IOException {
+    public void sendError( final int sc, final String msg ) throws IOException {
     }
 
-    public void sendRedirect( String location ) throws IOException {
+    public void sendRedirect( final String location ) throws IOException {
     }
 
-    public void setDateHeader( String name, long date ) {
+    public void setDateHeader( final String name, final long date ) {
     }
 
-    public void setHeader( String name, String value ) {
+    public void setHeader( final String name, final String value ) {
     }
 
-    public void setIntHeader( String name, int value ) {
+    public void setIntHeader( final String name, final int value ) {
     }
 
-    public void setStatus( int sc ) {
+    public void setStatus( final int sc ) {
     }
 
-    public void setStatus( int sc, String sm ) {
+    public void setStatus( final int sc, final String sm ) {
     }
 
     public void flushBuffer() throws IOException {
@@ -141,19 +173,19 @@ public class UICallBackServiceHandler implements IServiceHandler {
     public void resetBuffer() {
     }
 
-    public void setBufferSize( int size ) {
+    public void setBufferSize( final int size ) {
     }
 
-    public void setCharacterEncoding( String charset ) {
+    public void setCharacterEncoding( final String charset ) {
     }
 
-    public void setContentLength( int len ) {
+    public void setContentLength( final int len ) {
     }
 
-    public void setContentType( String type ) {
+    public void setContentType( final String type ) {
     }
 
-    public void setLocale( Locale loc ) {
+    public void setLocale( final Locale loc ) {
     }
   }
 
@@ -161,7 +193,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
     private final HttpSession session;
 
-    private DummyRequest( HttpSession session ) {
+    private DummyRequest( final HttpSession session ) {
       this.session = session;
     }
 
@@ -177,11 +209,11 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return null;
     }
 
-    public long getDateHeader( String name ) {
+    public long getDateHeader( final String name ) {
       return 0;
     }
 
-    public String getHeader( String name ) {
+    public String getHeader( final String name ) {
       return null;
     }
 
@@ -189,11 +221,11 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return null;
     }
 
-    public Enumeration getHeaders( String name ) {
+    public Enumeration getHeaders( final String name ) {
       return null;
     }
 
-    public int getIntHeader( String name ) {
+    public int getIntHeader( final String name ) {
       return 0;
     }
 
@@ -237,7 +269,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return session;
     }
 
-    public HttpSession getSession( boolean create ) {
+    public HttpSession getSession( final boolean create ) {
       return session;
     }
 
@@ -261,11 +293,11 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return false;
     }
 
-    public boolean isUserInRole( String role ) {
+    public boolean isUserInRole( final String role ) {
       return false;
     }
 
-    public Object getAttribute( String name ) {
+    public Object getAttribute( final String name ) {
       return null;
     }
 
@@ -309,7 +341,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return null;
     }
 
-    public String getParameter( String name ) {
+    public String getParameter( final String name ) {
       return null;
     }
 
@@ -321,7 +353,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return null;
     }
 
-    public String[] getParameterValues( String name ) {
+    public String[] getParameterValues( final String name ) {
       return null;
     }
 
@@ -333,7 +365,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return null;
     }
 
-    public String getRealPath( String path ) {
+    public String getRealPath( final String path ) {
       return null;
     }
 
@@ -349,7 +381,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return 0;
     }
 
-    public RequestDispatcher getRequestDispatcher( String path ) {
+    public RequestDispatcher getRequestDispatcher( final String path ) {
       return null;
     }
 
@@ -369,20 +401,20 @@ public class UICallBackServiceHandler implements IServiceHandler {
       return false;
     }
 
-    public void removeAttribute( String name ) {
+    public void removeAttribute( final String name ) {
     }
 
-    public void setAttribute( String name, Object o ) {
+    public void setAttribute( final String name, final Object o ) {
     }
 
-    public void setCharacterEncoding( String env ) 
+    public void setCharacterEncoding( final String env )
       throws UnsupportedEncodingException
     {
     }
   }
 
   public void service() throws IOException, ServletException {
-    if(    !UICallBackManager.getInstance().blockCallBackRequest() 
+    if(    !UICallBackManager.getInstance().blockCallBackRequest()
         && ContextProvider.hasContext() )
     {
       HttpServletResponse response = ContextProvider.getResponse();
@@ -431,12 +463,12 @@ public class UICallBackServiceHandler implements IServiceHandler {
         if( wasMapped ) {
           ContextProvider.setContext( contextBuffer, Thread.currentThread() );
         } else {
-          ContextProvider.setContext( contextBuffer );          
+          ContextProvider.setContext( contextBuffer );
         }
       }
     }
   }
-  
+
   public static ServiceContext getFakeContext( final HttpSession session ) {
     String id = SessionStoreImpl.ID_SESSION_STORE;
     ISessionStore sessionStore = ( ISessionStore )session.getAttribute( id );
@@ -483,15 +515,21 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static boolean isUICallBackActive() {
-    return !getActivationIds().isEmpty();
+    synchronized( IdManager.getInstance().getLock() ) {
+      return !IdManager.getInstance().isEmpty();
+    }
   }
 
   public static void activateUICallBacksFor( final String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    getActivationIds().add( id );
-    if( getActivationIds().size() == 1 ) {
+    int size;
+    synchronized( IdManager.getInstance().getLock() ) {
+      IdManager.getInstance().add( id );
+      size = IdManager.getInstance().size();
+    }
+    if( size == 1 ) {
       registerUICallBackActivator();
     }
   }
@@ -518,7 +556,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
           }
         }
       }
-      
+
       public PhaseId getPhaseId() {
         return PhaseId.RENDER;
       }
@@ -529,23 +567,17 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    getActivationIds().remove( id );
     // release blocked callback handler request
-    if( getActivationIds().isEmpty() ) {
+    boolean empty;
+    synchronized( IdManager.getInstance().getLock() ) {
+      IdManager.getInstance().remove( id );
+      empty = IdManager.getInstance().isEmpty();
+    }
+    if( empty ) {
       final UICallBackManager instance = UICallBackManager.getInstance();
       instance.setActive( false );
       instance.sendUICallBack();
     }
-  }
-  
-  private static Set getActivationIds() {
-    ISessionStore session = ContextProvider.getSession();
-    Set result = ( Set )session.getAttribute( ACTIVATION_IDS );
-    if( result == null ) {
-      result = new HashSet();
-      session.setAttribute( ACTIVATION_IDS, result );
-    }
-    return result;
   }
 
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {
