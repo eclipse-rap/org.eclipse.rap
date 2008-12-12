@@ -8,12 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.*;
 import java.security.Principal;
-import java.text.MessageFormat;
 import java.util.*;
 
 import javax.servlet.*;
@@ -29,16 +27,20 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
+
+  // keep in sync with function enableUICallBack() in Request.js
   public final static String HANDLER_ID
     = UICallBackServiceHandler.class.getName();
   
-  private static final String CALL_BACK_PATTERN
-    =   "org.eclipse.swt.Request.getInstance()." 
-      + "enableUICallBack( \"{0}\",\"{1}\",\"{2}\" );";
+  private static final String JS_SEND_CALLBACK_REQUEST
+    = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
+  private static final String JS_SEND_UI_REQUEST
+    = "org.eclipse.swt.Request.getInstance().send();";
+
   private static final String ACTIVATION_IDS
     = UICallBackServiceHandler.class.getName() + "ActivationIds";
-  
-  private static String jsUICallBack;
+  private static final String BUFFERED_SEND_CALLBACK_REQUEST
+    = UICallBackServiceHandler.class.getName() + "#jsUICallback";
   
   
   ////////////////
@@ -449,19 +451,23 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static String jsUICallBack() {
-    String result = "";
-    StringBuffer code = new StringBuffer();
-    code.append( "org.eclipse.swt.Request.getInstance().send();" );
+    String result;
     if(    isUICallBackActive()
         && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
     {
-      if( jsUICallBack == null ) {
-        code.append( jsEnableUICallBack() );
-        jsUICallBack = code.toString();      
+      ISessionStore session = ContextProvider.getSession();
+      String bufferedCode
+        = ( String )session.getAttribute( BUFFERED_SEND_CALLBACK_REQUEST );
+      if( bufferedCode == null ) {
+        StringBuffer code = new StringBuffer();
+        code.append( JS_SEND_UI_REQUEST );
+        code.append( JS_SEND_CALLBACK_REQUEST );
+        bufferedCode = code.toString();
+        session.setAttribute( BUFFERED_SEND_CALLBACK_REQUEST, bufferedCode );
       }
-      result = jsUICallBack;
+      result = bufferedCode;
     } else {
-      result = code.toString();
+      result = JS_SEND_UI_REQUEST;
     }
     return result;
   }
@@ -471,13 +477,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if(    isUICallBackActive()
         && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
     {
-      String url = ContextProvider.getRequest().getServletPath().substring( 1 );
-      Object[] param = new Object[] { 
-        ContextProvider.getResponse().encodeURL( url ),
-        IServiceHandler.REQUEST_PARAM,
-        HANDLER_ID
-      };
-      result = MessageFormat.format( CALL_BACK_PATTERN, param );
+      result = JS_SEND_CALLBACK_REQUEST;
     }
     return result;
   }
@@ -505,7 +505,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
       }
 
       public void afterPhase( final PhaseEvent event ) {
-        if( id == ContextProvider.getSession().getId() ) {
+        if( id.equals( ContextProvider.getSession().getId() ) ) {
+          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
           UICallBackManager.getInstance().setActive( true );
           IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
           HtmlResponseWriter writer = stateInfo.getResponseWriter();
@@ -514,8 +515,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
           } catch( IOException e ) {
             // TODO [rh] exception handling
             e.printStackTrace();
-          } finally {
-            LifeCycleFactory.getLifeCycle().removePhaseListener( this );
           }
         }
       }

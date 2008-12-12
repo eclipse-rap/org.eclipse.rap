@@ -116,11 +116,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
      * that will be blocked by the server till background activities 
      * require UI updates.
      */
-    enableUICallBack : function( url, serviceParam, serviceId ) {
-      var request = new qx.io.remote.Request( url,
+    enableUICallBack : function() {
+      var request = new qx.io.remote.Request( this._url,
                                               qx.net.Http.METHOD_GET, 
                                               qx.util.Mime.JAVASCRIPT );
-      request.setParameter( serviceParam, serviceId );
+      request.setParameter( 
+        "custom_service_handler", 
+        "org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler" );
       this._sendStandalone( request );
     },
     
