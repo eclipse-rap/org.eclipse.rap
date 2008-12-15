@@ -15,14 +15,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Control;
-
 
 public final class ComboThemeAdapter extends ControlThemeAdapter {
-
-  public int getBorderWidth( final Control control ) {
-    return 2;
-  }
 
   public Color getForeground( final Combo combo ) {
     return getCssColor( "List", "color", combo );

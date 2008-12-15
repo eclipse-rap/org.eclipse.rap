@@ -11,6 +11,17 @@
  -->
 
 <theme css-elements="Combo">
+  
+  <element name="Combo">
+    <description>
+      RWT Combo widget.
+    </description>
+    
+    <property name="border"
+        type="border"
+        description="Border for combos." />
+        
+  </element>
 
   <element name="Combo-Button">
     <description>

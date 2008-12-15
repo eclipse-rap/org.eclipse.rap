@@ -675,7 +675,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "inset",
+        border : tv.getCssBorder( "Combo", "border" ),
         backgroundColor : tv.getCssColor( "Text", "background-color" ),
         textColor : tv.getCssColor( "Text", "color" ),
         font : tv.getCssFont( "Text", "font" )

@@ -1,5 +1,9 @@
 /* Combo default theme */
 
+Combo {
+  border: 2px inset;
+}
+
 Combo-Button {
   background-image: url( resource/widget/rap/combo/down_button.gif );
 }
