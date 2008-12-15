@@ -30,6 +30,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this.addEventListener( "changeEditable", this._rwt_onChangeEditable, this );
       this._popup.addEventListener( "appear", this._rwt_onPopupAppear, this );
       this._popup.addEventListener( "disappear", this._rwt_onPopupDisappear, this );
+      this._button.addEventListener( "mouseover", this._rwt_onButtonMouseOver, this );
+      this._button.addEventListener( "mouseout", this._rwt_onButtonMouseOut, this );
     },
 
     rap_reset : function() {
@@ -40,6 +42,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this.removeEventListener( "changeEditable", this._rwt_onChangeEditable, this );
       this._popup.removeEventListener( "appear", this._rwt_onPopupAppear, this );
       this._popup.removeEventListener( "disappear", this._rwt_onPopupDisappear, this );
+      this._button.removeEventListener( "mouseover", this._rwt_onButtonMouseOver, this );
+      this._button.removeEventListener( "mouseout", this._rwt_onButtonMouseOut, this );
     },
 
     // workaround for missing property propagation in qx ComboBox
@@ -136,8 +140,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         f.setCursor( editable ? null : "default" );
       }
       f.setSelectable( editable );
+      this._button.removeState( "over" );
     },
-    
+
+    _rwt_onButtonMouseOver : function( evt ) {
+      this._button.addState( "over" );
+    },
+
+    _rwt_onButtonMouseOut : function( evt ) {
+      this._button.removeState( "over" );
+    },
+
     _rwt_onChangeEditable : function( evt ) {
       if( this._userCursor != null ) {
         this.getField().setCursor( this._userCursor );

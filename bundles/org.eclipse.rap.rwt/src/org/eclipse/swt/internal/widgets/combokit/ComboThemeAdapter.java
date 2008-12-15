@@ -11,23 +11,15 @@
 
 package org.eclipse.swt.internal.widgets.combokit;
 
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Control;
+
 
 public final class ComboThemeAdapter extends ControlThemeAdapter {
 
-  public Color getForeground( final Combo combo ) {
-    return getCssColor( "List", "color", combo );
-  }
-
-  public Color getBackground( final Combo combo ) {
-    return getCssColor( "List", "background-color", combo );
-  }
-
-  public Rectangle getPadding( final Combo combo ) {
-    Rectangle result = getCssBoxDimensions( "Text", "padding", combo );
+  public Rectangle getPadding( final Control control ) {
+    Rectangle result = getCssBoxDimensions( "Text", "padding", control );
     // TODO [if] Move to fragment. These two pixels are hard-coded in qooxdoo
     // TextField.js to emulate IE hard-coded margin.
     result.y += 1;

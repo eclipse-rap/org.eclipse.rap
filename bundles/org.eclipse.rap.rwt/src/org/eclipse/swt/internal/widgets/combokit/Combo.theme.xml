@@ -11,30 +11,67 @@
  -->
 
 <theme css-elements="Combo">
-  
-  <element name="Combo">
-    <description>
-      RWT Combo widget.
-    </description>
-    
-    <property name="border"
-        type="border"
-        description="Border for combos." />
-        
-  </element>
 
-  <element name="Combo-Button">
+  <element name="Combo">
     <description>
       The drop-down button of RWT Combo.
     </description>
-    
-    <property name="background-image" type="image">
+
+    <property name="color" type="color">
       <description>
-        The icon for the Combo drop-down button.
-        The size of the image should be 12 x 12 pixels.
+        The text color used for the text field and the drop-down list of
+        a Combo.
       </description>
     </property> 
-    
-  </element>  
+
+    <property name="background-color" type="color">
+      <description>
+        The background color used for the text field and the drop-down list of
+        a Combo.
+      </description>
+    </property> 
+
+    <property name="font" type="font">
+      <description>
+        The font used for the text field and the drop-down list of a Combo.
+      </description>
+    </property> 
+
+    <property name="border" type="border">
+      <description>
+        The border that is drawn around a Combo.
+      </description>
+    </property>
+
+    <element name="Combo-Button">
+      <description>
+        The drop-down button of RWT Combo.
+      </description>
+
+      <property name="background-image" type="image">
+        <description>
+          The icon for the Combo drop-down button.
+          The size of the image should be 12 x 12 pixels.
+        </description>
+      </property> 
+
+      <property name="background-color" type="color">
+        <description>
+          The background color of the drop-down button of the Combo.
+        </description>
+      </property> 
+
+      <property name="border" type="border">
+        <description>
+          The border of the drop-down button of the Combo.
+        </description>
+      </property>
+
+      <state name="hover"
+          description="Applies while the user hovers over the combo button." />
+
+    </element>
+
+  </element>
 
 </theme>

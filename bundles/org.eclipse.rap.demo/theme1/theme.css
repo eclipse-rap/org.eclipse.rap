@@ -67,7 +67,7 @@ Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
 Button:hover,
 Button[PUSH]:hover, Button[PUSH][BORDER]:hover,
 Button[TOGGLE]:hover, Button[TOGGLE][BORDER]:hover {
-  background-color: white;
+  background-color: #abe3ff;
 }
 
 /* Combo */
@@ -78,6 +78,12 @@ Combo {
 
 Combo-Button {
   background-image: url( "/theme1/icons/combo.down.gif" );
+  background-color: #9dd0ea;
+  border: none;
+}
+
+Combo-Button:hover {
+  background-color: #abe3ff;
 }
 
 /* CTabFolder */
@@ -211,6 +217,10 @@ Shell {
 
 Shell[TITLE], Shell[BORDER] {
   border: 3px #1695d4;
+}
+
+Shell:maximized {
+  border: none;
 }
 
 Shell-Titlebar {

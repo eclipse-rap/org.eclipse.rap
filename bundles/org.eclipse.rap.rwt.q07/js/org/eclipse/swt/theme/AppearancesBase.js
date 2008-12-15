@@ -676,9 +676,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Combo", "border" ),
-        backgroundColor : tv.getCssColor( "Text", "background-color" ),
-        textColor : tv.getCssColor( "Text", "color" ),
-        font : tv.getCssFont( "Text", "font" )
+        backgroundColor : tv.getCssColor( "Combo", "background-color" ),
+        textColor : tv.getCssColor( "Combo", "color" ),
+        font : tv.getCssFont( "Combo", "font" )
       };
     }
   },
@@ -700,8 +700,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         height    : "auto",
         border    : "shadow",
-        textColor : tv.getCssColor( "List", "color" ),
-        backgroundColor : tv.getCssColor( "List", "background-color" )
+        textColor : tv.getCssColor( "Combo", "color" ),
+        backgroundColor : tv.getCssColor( "Combo", "background-color" )
       };
     }
   },
@@ -714,22 +714,21 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getCssBoxDimensions( "Text", "padding" ),
         textColor : states.disabled
                     ? tv.getColor( "widget.graytext" )
-                    : tv.getCssColor( "List", "color" ),
-        backgroundColor : tv.getCssColor( "List", "background-color" )
+                    : tv.getCssColor( "Combo", "color" ),
+        backgroundColor : tv.getCssColor( "Combo", "background-color" )
       };
     }
   },
 
-  // Used both for ComboBox and ComboBoxEx
   "combo-box-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "thinOutset",
-        width : 14,        
+        border : tv.getCssBorder( "Combo-Button", "border" ),
+        width : 14,
         icon : tv.getCssImage( "Combo-Button", "background-image" ),
         // TODO [rst] rather use button.bgcolor?
-        backgroundColor : tv.getColor( "widget.background" )
+        backgroundColor : tv.getCssColor( "Combo-Button", "background-color" )
       };
     }
   },
