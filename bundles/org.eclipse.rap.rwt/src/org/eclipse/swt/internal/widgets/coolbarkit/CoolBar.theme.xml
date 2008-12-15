@@ -12,21 +12,24 @@
 
 <theme css-elements="CoolBar">
 
-  <element name="CoolItem-Handle">
-    <description>
-      This is the place at the begining of the cool item, which is used for
-      draging the cool item.
-    </description>
+  <element name="CoolBar">
     
-    <property name="border"
-        type="border"
-        description="The border of cool item handle." />
-        
-    <property name="width"
-        type="dimension"
-        description="Width of cool item handle." />    
-    
-  </element>  
+    <element name="CoolItem-Handle">
+      <description>
+        This is the place at the begining of the cool item, which is used for
+        draging the cool item.
+      </description>
+      
+      <property name="border"
+          type="border"
+          description="The border of cool item handle." />
+          
+      <property name="width"
+          type="dimension"
+          description="Width of cool item handle." />    
+      
+    </element>
   
+  </element>  
 
 </theme>
