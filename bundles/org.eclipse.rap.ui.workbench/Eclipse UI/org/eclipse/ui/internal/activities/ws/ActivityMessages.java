@@ -11,7 +11,6 @@
 package org.eclipse.ui.internal.activities.ws;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.ui.internal.WorkbenchMessages;
 
 
 /**
@@ -64,7 +63,7 @@ public class ActivityMessages {
 //		NLS.initializeMessages(BUNDLE_NAME, ActivityMessages.class);
 //	}
     public static ActivityMessages get() {
-      Class clazz = WorkbenchMessages.class;
+      Class clazz = ActivityMessages.class;
       Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
       return ( ActivityMessages )result;
     }
