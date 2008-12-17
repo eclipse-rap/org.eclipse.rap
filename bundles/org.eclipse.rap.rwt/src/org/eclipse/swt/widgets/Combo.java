@@ -42,12 +42,12 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>DROP_DOWN, READ_ONLY, SIMPLE</dd>
+ * <dd>DROP_DOWN, READ_ONLY<!--, SIMPLE --></dd>
  * <dt><b>Events:</b></dt>
  * <dd>DefaultSelection, Modify, Selection</dd>
  * </dl>
  * <p>
- * Note: Only one of the styles DROP_DOWN and SIMPLE may be specified.
+ * <!-- Note: Only one of the styles DROP_DOWN and SIMPLE may be specified. -->
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
