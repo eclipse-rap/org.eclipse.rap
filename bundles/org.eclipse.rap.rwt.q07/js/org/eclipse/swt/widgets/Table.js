@@ -249,6 +249,40 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
   },
   
   members : {
+    
+    setCursor : function( value ) {
+      this._columnArea.setCursor( value );
+      this._clientArea.setCursor( value );      
+      var columns = this._columnArea.getChildren();
+      for( var i = 0; i < columns.length; i++ ) {
+        columns[ i ].setCursor( value );
+      }
+      for( var i = 0; i < this._rows.length; i++ ) {
+        this._rows[ i ].setCursor( value );
+      }
+      if( this._checkBoxes !== null ) {
+        for( var i = 0; i < this._checkBoxes.length; i++ ) {
+          this._checkBoxes[ i ].setCursor( value );
+        }
+      }
+    },
+    
+    resetCursor : function() {
+      this._columnArea.resetCursor();
+      this._clientArea.resetCursor();
+      var columns = this._columnArea.getChildren();
+      for( var i = 0; i < columns.length; i++ ) {
+        columns[ i ].resetCursor();
+      }
+      for( var i = 0; i < this._rows.length; i++ ) {
+        this._rows[ i ].resetCursor();
+      }
+      if( this._checkBoxes !== null ) {
+        for( var i = 0; i < this._checkBoxes.length; i++ ) {
+          this._checkBoxes[ i ].resetCursor();
+        }
+      }
+    },
 
     setHeaderHeight : function( value ) {
       this._columnArea.setHeight( value );

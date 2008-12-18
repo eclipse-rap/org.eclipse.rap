@@ -85,6 +85,7 @@ public class TableTab extends ExampleTab {
     createBackgroundControl();
     createSelectAtPointControl();
     createQueryTopIndex();
+    createCursorCombo();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -479,13 +480,13 @@ public class TableTab extends ExampleTab {
       }
     } );
     final Button cbDelayedUpdate = new Button( composite, SWT.CHECK );
-    GridData gridData 
+    GridData gridData
       = new GridData( SWT.LEFT, SWT.CENTER, true, false, 3, SWT.DEFAULT );
     cbDelayedUpdate.setLayoutData( gridData );
     cbDelayedUpdate.setText( "Update virtual items delayed" );
     cbDelayedUpdate.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        updateVirtualItemsDelayed = cbDelayedUpdate.getSelection(); 
+        updateVirtualItemsDelayed = cbDelayedUpdate.getSelection();
       }
     } );
   }
