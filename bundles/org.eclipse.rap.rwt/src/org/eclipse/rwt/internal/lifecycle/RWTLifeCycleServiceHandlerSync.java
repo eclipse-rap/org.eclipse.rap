@@ -26,7 +26,7 @@ public class RWTLifeCycleServiceHandlerSync
   extends LifeCycleServiceHandlerSync
 {
   private static final String PATTERN_RELOAD
-    = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'"; //$NON-NLS-1$
+    = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'";
 
   public void service() throws ServletException, IOException {
     synchronized( ContextProvider.getSession() ) {

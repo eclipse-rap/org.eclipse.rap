@@ -34,7 +34,6 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.graphics.TextSizeDeterminationFacadeImpl;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
