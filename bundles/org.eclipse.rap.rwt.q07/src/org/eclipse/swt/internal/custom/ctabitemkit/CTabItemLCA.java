@@ -83,7 +83,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
       Boolean.valueOf( showClose( item ) )
     };
     writer.newWidget( "org.eclipse.swt.custom.CTabItem", args );
-    writer.call( parent, "add", new Object[] { item } );    
+    writer.call( parent, "add", new Object[] { item } );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -121,7 +121,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   private static void writeText( final CTabItem item ) throws IOException {
     String text = getShortenedText( item );
     if( WidgetLCAUtil.hasChanged( item, Props.TEXT, text ) ) {
-      text = WidgetLCAUtil.escapeText( text, false );
+      text = WidgetLCAUtil.escapeText( text, true );
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( JSConst.QX_FIELD_LABEL, text );
     }
