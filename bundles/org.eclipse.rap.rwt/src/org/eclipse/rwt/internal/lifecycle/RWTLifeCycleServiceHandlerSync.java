@@ -25,8 +25,9 @@ import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleService
 public class RWTLifeCycleServiceHandlerSync
   extends LifeCycleServiceHandlerSync
 {
+  // TODO [if]: Move this code to a fragment
   private static final String PATTERN_RELOAD
-    = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'";
+    = "qx.core.Init.getInstance().getApplication().reload( ''{0}'' )";
 
   public void service() throws ServletException, IOException {
     synchronized( ContextProvider.getSession() ) {

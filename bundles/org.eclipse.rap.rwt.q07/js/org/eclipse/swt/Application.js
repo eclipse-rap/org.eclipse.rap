@@ -68,6 +68,13 @@ qx.Class.define( "org.eclipse.swt.Application", {
       }
     },
     
+    reload : function( message ) {
+      if( confirm( message ) ) {
+        this.setExitConfirmation( null );
+        window.location.reload( false );
+      }
+    },
+    
     getStartupTime : function() {
       return this._startupTime;
     },
