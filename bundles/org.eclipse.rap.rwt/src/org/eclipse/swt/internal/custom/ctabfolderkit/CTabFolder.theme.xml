@@ -49,19 +49,6 @@
 
     -->
 
-  <color name="ctabfolder.background"
-      description="Background color for CTabFolders"
-      transparentAllowed="true"
-      default="248, 248, 255"
-      css-elements="CTabItem"
-      css-property="background-color" />
-
-  <color name="ctabfolder.foreground"
-      description="Foreground color for CTabFolders"
-      default="black"
-      css-elements="CTabItem"
-      css-property="color" />
-
   <color name="ctabfolder.selection.background"
       description="Background color for selected items in CTabFolders"
       default="217, 227, 243"

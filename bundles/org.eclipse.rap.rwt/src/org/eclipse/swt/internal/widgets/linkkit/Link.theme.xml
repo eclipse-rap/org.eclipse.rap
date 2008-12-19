@@ -37,18 +37,4 @@
 
   </element>
 
-
-  <!-- C O M P A T I B I L I T Y
-
-    The following section is needed to maintain the deprecated property-based
-    theming.
-
-    -->
-
-  <color name="link.foreground"
-      description="Text color for hyperlinks in Link widget"
-      default="0, 0, 127"
-      css-elements="Link-Hyperlink"
-      css-property="color" />
-
 </theme>

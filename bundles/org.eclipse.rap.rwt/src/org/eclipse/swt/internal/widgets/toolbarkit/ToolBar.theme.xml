@@ -49,31 +49,11 @@
 
     -->
 
-  <color name="toolbar.foreground"
-      description="Text color for tool bar"
-      default="0, 0, 0"
-      css-property="color" />
-
   <!--  == control.background -->
   <color name="toolbar.background"
       description="Background color for tool bar"
       default="248, 248, 255"
       css-property="background-color"
       transparentAllowed="true" />
-
-  <color name="toolbar.hover.foreground"
-      description="Text color for tool bar items on mouse over"
-      default="0, 0, 0"
-      css-property="color"
-      css-elements="ToolItem"
-      css-selectors=":hover" />
-
-  <!-- 49, 106, 197 // == list.focused.background -->
-  <color name="toolbar.hover.background"
-      description="Background color for tool bar items on mouse over"
-      default="255, 255, 255"
-      css-property="background-color"
-      css-elements="ToolItem"
-      css-selectors=":hover" />
 
 </theme>

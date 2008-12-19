@@ -12,23 +12,4 @@
 
 <theme css-elements="NONE">
 
-
-  <!-- C O M P A T I B I L I T Y
-
-    The following section is needed to maintain the deprecated property-based
-    theming.
-
-    -->
-
-  <border name="control.border"
-      description="Default border for controls"
-      default="none"
-      css-property="border" />
-
-  <border name="control.BORDER.border"
-      description="Default border for controls with BORDER style"
-      default="2 inset"
-      css-property="border"
-      css-selectors="[BORDER]" />
-
 </theme>

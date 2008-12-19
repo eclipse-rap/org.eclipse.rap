@@ -89,18 +89,4 @@
       css-property="color"
       css-selectors=":selected" />
 
-  <color name="list.selection.unfocused.foreground"
-      description="Text color for selected List items on an unfocused List, also applies to Tree"
-      default="255, 255, 255"
-      css-elements="List-Item"
-      css-property="color"
-      css-selectors=":selected:inactive" />
-
-  <color name="list.selection.unfocused.background"
-      description="Background color for selected List items on an unfocused List, also applies to Tree"
-      default="192, 192, 192"
-      css-elements="List-Item"
-      css-property="background-color"
-      css-selectors=":selected:inactive" />
-
 </theme>

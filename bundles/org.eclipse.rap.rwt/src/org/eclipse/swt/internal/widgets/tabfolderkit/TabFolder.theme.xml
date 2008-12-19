@@ -46,32 +46,4 @@
 
   </element>
 
-
-  <!-- C O M P A T I B I L I T Y
-
-    The following section is needed to maintain the deprecated property-based
-    theming.
-
-    -->
-
-  <color name="tabfolder.background"
-      description="Background color for TabFolder headers"
-      default="248, 248, 255"
-      css-elements="TabItem"
-      css-property="background-color" />
-
-  <color name="tabfolder.checked.background"
-      description="Background color for checked TabFolder headers"
-      default="248, 248, 255"
-      css-elements="TabItem"
-      css-property="background-color"
-      css-selectors=":selected" />
-
-  <color name="tabfolder.hover.background"
-      description="Background color for TabFolder headers on mouse over"
-      default="248, 248, 255"
-      css-elements="TabItem"
-      css-property="background-color"
-      css-selectors=":hover" />
-
 </theme>

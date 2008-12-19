@@ -174,28 +174,6 @@
 
     -->
 
-  <border name="shell.border"
-      description="Border for shells without BORDER and TITLE style"
-      default="1 black"
-      css-property="border" />
-
-  <border name="shell.BORDER.border"
-      description="Border for shells with BORDER or TITLE style"
-      default="2 outset"
-      css-property="border"
-      css-selectors="[BORDER]" />
-
-  <color name="shell.background"
-      description="Background color for Shells"
-      default="248, 248, 255"
-      css-property="background-color" />
-
-  <boxdim name="shell.padding"
-      description="Padding around the shell client area"
-      default="0"
-      css-property="padding"
-      css-selectors="[TITLE]" />
-
   <color name="shell.title.background"
       description="Background color for the title bar of active Shells"
       default="0, 128, 192"
@@ -235,12 +213,6 @@
       css-property="color"
       css-selectors=":inactive" />
 
-  <font name="shell.title.font"
-      description="Font for title bar of Shells"
-      default="11 bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"
-      css-elements="Shell-Titlebar"
-      css-property="font" />
-
   <dimension name="shell.title.height"
       description="Height of the title bar of Shells"
       default="18"
@@ -253,140 +225,5 @@
       default="0 0 1"
       css-elements="Shell-Titlebar"
       css-property="margin" />
-
-  <boxdim name="shell.title.padding"
-      description="Padding of the title bar of shells"
-      default="1 2"
-      css-elements="Shell-Titlebar"
-      css-property="padding" />
-
-  <image name="shell.title.active.bgimage"
-      description="Background image for title bar of active Shells"
-      default="resource/widget/rap/window/caption_active.gif"
-      css-elements="Shell-Titlebar"
-      css-property="background-image" />
-
-  <image name="shell.title.inactive.bgimage"
-      description="Background image for title bar of inactive Shells"
-      default="resource/widget/rap/window/caption_inactive.gif"
-      css-elements="Shell-Titlebar"
-      css-property="background-image"
-      css-selectors=":inactive" />
-
-  <boxdim name="shell.button.margin"
-      description="Margin for the min/max/close buttons on shells"
-      default="2 0 2 1"
-      css-elements="Shell-MinButton Shell-MaxButton Shell-CloseButton"
-      css-property="margin"
-      />
-
-  <image name="shell.minbutton.image"
-      description="Image for minimize button on shells"
-      default="resource/widget/rap/window/minimize.png"
-      css-elements="Shell-MinButton"
-      css-property="background-image" />
-
-  <image name="shell.minbutton.over.image"
-      description="Image for minimize button on shells on mouse over"
-      default="resource/widget/rap/window/minimize.over.png"
-      css-elements="Shell-MinButton"
-      css-property="background-image"
-      css-selectors=":hover" />
-
-  <image name="shell.minbutton.inactive.image"
-      description="Image for minimize button on inactive shells"
-      default="resource/widget/rap/window/minimize.inactive.png"
-      css-elements="Shell-MinButton"
-      css-property="background-image"
-      css-selectors=":inactive" />
-
-  <image name="shell.minbutton.inactive.over.image"
-      description="Image for minimize button on inactive shells on mouse over"
-      default="resource/widget/rap/window/minimize.inactive.over.png"
-      css-elements="Shell-MinButton"
-      css-property="background-image"
-      css-selectors=":inactive:hover" />
-
-  <image name="shell.maxbutton.image"
-      description="Image for maximize button of Shells"
-      default="resource/widget/rap/window/maximize.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image" />
-
-  <image name="shell.maxbutton.over.image"
-      description="Image for maximize button of Shells"
-      default="resource/widget/rap/window/maximize.over.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":hover" />
-
-  <image name="shell.maxbutton.inactive.image"
-      description="Image for maximize button of Shells"
-      default="resource/widget/rap/window/maximize.inactive.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":inactive" />
-
-  <image name="shell.maxbutton.inactive.over.image"
-      description="Image for maximize button of Shells"
-      default="resource/widget/rap/window/maximize.inactive.over.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":inactive:hover" />
-
-  <image name="shell.restorebutton.image"
-      description="Image for restore from maximized button of Shells"
-      default="resource/widget/rap/window/restore.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":maximized" />
-
-  <image name="shell.restorebutton.over.image"
-      description="Image for restore from maximized button of Shells"
-      default="resource/widget/rap/window/restore.over.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":maximized:hover" />
-
-  <image name="shell.restorebutton.inactive.image"
-      description="Image for restore from maximized button of Shells"
-      default="resource/widget/rap/window/restore.inactive.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":inactive" />
-
-  <image name="shell.restorebutton.inactive.over.image"
-      description="Image for restore from maximized button of Shells"
-      default="resource/widget/rap/window/restore.inactive.over.png"
-      css-elements="Shell-MaxButton"
-      css-property="background-image"
-      css-selectors=":inactive:hover" />
-
-  <image name="shell.closebutton.image"
-      description="Image for close button of Shells"
-      default="resource/widget/rap/window/close.png"
-      css-elements="Shell-CloseButton"
-      css-property="background-image" />
-
-  <image name="shell.closebutton.over.image"
-      description="Image for close button of Shells"
-      default="resource/widget/rap/window/close.over.png"
-      css-elements="Shell-CloseButton"
-      css-property="background-image"
-      css-selectors=":hover" />
-
-  <image name="shell.closebutton.inactive.image"
-      description="Image for close button of Shells"
-      default="resource/widget/rap/window/close.inactive.png"
-      css-elements="Shell-CloseButton"
-      css-property="background-image"
-      css-selectors=":inactive" />
-
-  <image name="shell.closebutton.inactive.over.image"
-      description="Image for close button of Shells"
-      default="resource/widget/rap/window/close.inactive.over.png"
-      css-elements="Shell-CloseButton"
-      css-property="background-image"
-      css-selectors=":inactive:hover" />
 
 </theme>

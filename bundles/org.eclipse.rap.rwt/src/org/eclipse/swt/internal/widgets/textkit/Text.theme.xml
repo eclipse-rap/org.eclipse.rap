@@ -46,29 +46,4 @@
 
   </element>
 
-
-  <!-- C O M P A T I B I L I T Y
-
-    The following section is needed to maintain the deprecated property-based
-    theming.
-
-    -->
-
-  <border name="text.border"
-      description="Border for text fields. Also used for spinner widget."
-      default="none"
-      css-property="border" />
-
-  <border name="text.BORDER.border"
-      description="Border for text fields with BORDER style. Also used for spinner."
-      default="1 inset"
-      css-property="border"
-      css-selectors="[BORDER]" />
-
-  <boxdim name="text.SINGLE.padding"
-      description="Padding for single-line text fields. Also used for spinner."
-      default="2 3"
-      css-property="padding"
-      css-selectors="[SINGLE]" />
-
 </theme>

@@ -62,15 +62,4 @@
       css-elements="ProgressBar-Indicator"
       css-property="background-color" />
 
-  <image name="progressbar.bgimage"
-      description="Background image for progress bars"
-      default="none"
-      css-property="background-image" />
-
-  <image name="progressbar.fgimage"
-      description="Foreground image for progress bars"
-      default="none"
-      css-elements="ProgressBar-Indicator"
-      css-property="background-image" />
-
 </theme>
