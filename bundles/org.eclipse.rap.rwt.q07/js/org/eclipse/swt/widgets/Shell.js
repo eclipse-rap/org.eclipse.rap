@@ -28,7 +28,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
-    org.eclipse.swt.widgets.Shell._preloadIcons();
   },
 
   statics : {
@@ -43,8 +42,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       "bottomRight"
     ],
 
-    preloadDone : false,
-
     _onParentClose : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         this.doClose();
@@ -57,32 +54,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var id = widgetManager.findIdByWidget( shell );
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.widgets.Shell_close", id );
-      }
-    },
-
-    _preloadIcons : function() {
-      if( !org.eclipse.swt.widgets.Shell.preloadDone ) {
-        var iconsToLoad = new Array(
-          "widget/shell.minbutton.image",
-          "widget/shell.minbutton.over.image",
-          "widget/shell.minbutton.inactive.image",
-          "widget/shell.minbutton.inactive.over.image",
-          "widget/shell.maxbutton.image",
-          "widget/shell.maxbutton.over.image",
-          "widget/shell.maxbutton.inactive.image",
-          "widget/shell.maxbutton.inactive.over.image",
-          "widget/shell.restorebutton.image",
-          "widget/shell.restorebutton.over.image",
-          "widget/shell.restorebutton.inactive.image",
-          "widget/shell.restorebutton.inactive.over.image",
-          "widget/shell.closebutton.image",
-          "widget/shell.closebutton.over.image",
-          "widget/shell.closebutton.inactive.image",
-          "widget/shell.closebutton.inactive.over.image"
-        ); 
-        var preloader = new qx.io.image.PreloaderSystem( iconsToLoad );
-        preloader.start();
-        org.eclipse.swt.widgets.Shell.preloadDone = true;
       }
     },
 
