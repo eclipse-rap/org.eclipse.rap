@@ -55,15 +55,17 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertNotNull( colorValues );
     // expected:
     // [ .special ] -> red
+    // .special-blue -> blue
     // []           -> #705e42
-    assertEquals( 2, colorValues.length );
+    // TODO [rst] Should be only 3 when ConditionalValues optimizes correctly
+    assertEquals( 4, colorValues.length );
     // 1
     assertEquals( 1, colorValues[ 0 ].constraints.length );
     assertEquals( ".special", colorValues[ 0 ].constraints[ 0 ] );
     assertEquals( QxColor.valueOf( "red" ), colorValues[ 0 ].value );
-    // 2
-    assertEquals( 0, colorValues[ 1 ].constraints.length );
-    assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 1 ].value );
+    // 4
+    assertEquals( 0, colorValues[ 3 ].constraints.length );
+    assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 3 ].value );
   }
 
   public void testBackground() throws Exception {

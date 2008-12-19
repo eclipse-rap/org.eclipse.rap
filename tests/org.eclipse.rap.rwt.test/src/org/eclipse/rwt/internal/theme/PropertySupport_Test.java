@@ -37,7 +37,7 @@ public class PropertySupport_Test extends TestCase {
     };
     manager = ThemeManager.getInstance();
     manager.initialize();
-    String file = "theme-valid.properties";
+    String file = "TestExample.css";
     manager.registerTheme( CUSTOM_THEME_ID, "Custom Theme", file, loader );
   }
 
@@ -45,17 +45,17 @@ public class PropertySupport_Test extends TestCase {
     manager.reset();
   }
 
-  public void testGetVariants() throws Exception {
+  public void testGetVariants() {
     Theme theme = manager.getTheme( CUSTOM_THEME_ID );
     String[] variants = PropertySupport.getVariants( theme );
     assertEquals( 2, variants.length );
     assertTrue( "special".equals( variants[ 0 ] )
                 || "special".equals( variants[ 1 ] ) );
-    assertTrue( "main-shell".equals( variants[ 0 ] )
-                || "main-shell".equals( variants[ 1 ] ) );
+    assertTrue( "special-blue".equals( variants[ 0 ] )
+                || "special-blue".equals( variants[ 1 ] ) );
   }
 
-  public void testCreateStyleSheet() throws Exception {
+  public void testCreateStyleSheet() {
     Theme theme = manager.getTheme( CUSTOM_THEME_ID );
     ThemeProperty[] properties = manager.getThemeProperties();
     StyleSheet styleSheet
@@ -66,6 +66,6 @@ public class PropertySupport_Test extends TestCase {
     String[] buttonVariants = styleSheet.getVariants( "Button" );
     assertTrue( buttonVariants.length > 0 );
     String[] listVariants = styleSheet.getVariants( "List" );
-    assertEquals( 0, listVariants.length );
+    assertEquals( 2, listVariants.length );
   }
 }

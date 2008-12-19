@@ -121,21 +121,6 @@ public class Theme_Test extends TestCase {
     assertTrue( theme.definesKey( "foo.border" ) );
   }
 
-  public void testLoadFromFileInvalidArguments() throws Exception {
-    try {
-      Theme.loadFromFile( null, null, null, null );
-      fail( "Null arguments should throw NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-//    try {
-//      Theme.loadFromFile( "", null, null, null );
-//      fail( "Empty name should throw IllegalArgumentException" );
-//    } catch( IllegalArgumentException e ) {
-//      // expected
-//    }
-  }
-
   public void testVariants() throws Exception {
     Theme defTheme = new Theme( "Default Theme" );
     defTheme.setValue( "test.border", QxBorder.NONE );
@@ -166,21 +151,5 @@ public class Theme_Test extends TestCase {
                   theme.getBorder( "test.border", null ) );
     assertEquals( QxBorder.valueOf( "2px red" ),
                   theme.getBorder( "test.border", "myvariant" ) );
-  }
-
-  public void testLoadFromFile() throws Exception {
-    Theme defTheme = new Theme( "Default Theme" );
-    defTheme.setValue( "test.border", QxBorder.NONE );
-    defTheme.setValue( "test.background", QxColor.BLACK );
-    String themeContent = "test.border = blue\n"
-                          + "mybutton/test.border = red\n"
-                          + "mybutton/test.background\n";
-    InputStream instr = new ByteArrayInputStream( themeContent.getBytes() );
-    Theme theme
-      = Theme.loadFromFile( "Test Theme", defTheme, instr, DUMMY_LOADER );
-    assertTrue( theme.hasKey( "test.border" ) );
-    assertTrue( theme.hasKey( "test.background" ) );
-    assertTrue( theme.definesKey( "test.border" ) );
-    assertFalse( theme.definesKey( "test.background" ) );
   }
 }

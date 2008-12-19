@@ -66,10 +66,14 @@ Button[PUSH]:pressed, Button[TOGGLE]:pressed {
 /* Custom variant */
 
 .special {
-  
+  color: red;
 }
 
 Button.special {
   color: red;
   background-color: transparent;
+}
+
+.special-blue {
+  color: blue;
 }

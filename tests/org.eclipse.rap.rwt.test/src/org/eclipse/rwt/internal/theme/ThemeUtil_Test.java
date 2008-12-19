@@ -26,7 +26,7 @@ public class ThemeUtil_Test extends TestCase {
     manager.initialize();
     String validThemeId = "test.valid.theme";
     String themeName = "Valid Test Theme";
-    String themeFile = "resources/theme/theme-valid.properties";
+    String themeFile = "resources/theme/TestExample.css";
     manager.registerTheme( validThemeId, themeName, themeFile, LOADER );
     ThemeUtil.setCurrentThemeId( validThemeId );
     assertEquals( validThemeId, ThemeUtil.getCurrentThemeId() );
@@ -48,7 +48,7 @@ public class ThemeUtil_Test extends TestCase {
     assertSame( defTheme, currentTheme );
     String validThemeId = "test.valid.theme";
     String themeName = "Valid Test Theme";
-    String themeFile = "resources/theme/theme-valid.properties";
+    String themeFile = "resources/theme/TestExample.css";
     manager.registerTheme( validThemeId, themeName, themeFile, LOADER );
     ThemeUtil.setCurrentThemeId( validThemeId );
     assertSame( defTheme, ThemeUtil.getDefaultTheme() );

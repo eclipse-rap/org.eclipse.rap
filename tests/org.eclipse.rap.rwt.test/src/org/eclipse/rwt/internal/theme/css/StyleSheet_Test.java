@@ -186,7 +186,7 @@ public class StyleSheet_Test extends TestCase {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     SelectorWrapper[] styleRules = styleSheet.getMatchingStyleRules( "Button" );
     assertNotNull( styleRules );
-    assertEquals( 13, styleRules.length );
+    assertEquals( 14, styleRules.length );
     // ensure decreasing specificity
     int lastSpecificity = Specific.ID_SPEC * 1000;
     for( int i = 0; i < styleRules.length; i++ ) {

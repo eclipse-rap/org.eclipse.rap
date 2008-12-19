@@ -83,8 +83,6 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
   }
 
-  // === TESTS FOR REGISTERING THEME FILES ===
-
   public void testRegisterThemeNull() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
@@ -102,91 +100,20 @@ public class ThemeManager_Test extends TestCase {
     }
   }
 
-  // == PROPERTY FILES ==
-
-  public void testRegisterThemeFile() throws Exception {
+  public void testRegisterPropertyFile() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     String themeId = "test.valid.theme";
     String themeName = "Valid Test Theme";
     String themeFile = "resources/theme/theme-valid.properties";
-    manager.registerTheme( themeId, themeName, themeFile, LOADER );
-    String[] themeIds = manager.getRegisteredThemeIds();
-    assertNotNull( themeIds );
-    assertEquals( 2, themeIds.length );
-    Theme theme = manager.getTheme( themeId );
-    assertNotNull( theme );
-    assertEquals( themeName, theme.getName() );
-    String[] keys = theme.getKeys();
-    assertNotNull( keys );
-    assertTrue( theme.definesKey( "button.background" ) );
-    assertTrue( theme.definesKey( "progressbar.bgimage" ) );
-  }
-
-  public void testRegisterThemeFile_EmptyKeys() throws Exception {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    String themeId = "test.empty.theme";
-    String themeName = "Empty Test Theme";
-    String themeFile = "resources/theme/theme-empty.properties";
-    manager.registerTheme( themeId, themeName, themeFile, LOADER );
-    String[] themeIds = manager.getRegisteredThemeIds();
-    assertNotNull( themeIds );
-    assertEquals( 2, themeIds.length );
-    Theme theme = manager.getTheme( themeId );
-    assertNotNull( theme );
-    assertEquals( themeName, theme.getName() );
-    String[] keys = theme.getKeys();
-    assertNotNull( keys );
-    // theme file contains only empty values
-    for( int i = 0; i < keys.length; i++ ) {
-      String key = keys[ i ];
-      assertFalse( theme.definesKey( key ) );
-    }
-  }
-
-  public void testRegisterThemeFile_UndefinedKeys() throws Exception {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    String themeFile = "resources/theme/theme-undefined.properties";
     try {
-      manager.registerTheme( "test.theme", "Test", themeFile, LOADER );
-      fail( "IAE expected for undefined key" );
-    } catch( final IllegalArgumentException e ) {
+      manager.registerTheme( themeId, themeName, themeFile, LOADER );
+    } catch( ThemeManagerException e ) {
       // expected
-      assertTrue( e.getMessage(),
-                  e.getMessage().indexOf( "Invalid key" ) != -1 );
+      String expectedMessage = "Failed parsing CSS file";
+      assertTrue( e.getMessage().indexOf( expectedMessage ) != -1 );
     }
   }
-
-  public void testRegisterThemeFile_InvalidValues() throws Exception {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    String themeFile = "resources/theme/theme-invalid.properties";
-    try {
-      manager.registerTheme( "test.theme", "Test", themeFile, LOADER );
-      fail( "IAE expected for invalid key" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-      assertTrue( e.getMessage().indexOf( "Illegal" ) != -1 );
-    }
-  }
-
-  public void testRegisterThemeFile_MissingImage() throws Exception {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    String themeFile = "resources/theme/theme-missing-image.properties";
-    manager.registerTheme( "test.theme", "Test", themeFile, LOADER );
-    try {
-      manager.registerResources();
-      fail( "IAE expected for undefined key" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-      assertTrue( e.getMessage().indexOf( "not found for theme" ) != -1 );
-    }
-  }
-
-  // == CSS FILES ==
 
   public void testRegisterCssThemeFile() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
