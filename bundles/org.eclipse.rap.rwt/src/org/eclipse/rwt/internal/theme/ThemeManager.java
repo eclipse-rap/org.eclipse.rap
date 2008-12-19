@@ -345,23 +345,15 @@ public final class ThemeManager {
     try {
       Theme theme;
       ThemeProperty[] props = getThemeProperties();
-      if( fileName.toLowerCase().endsWith( ".css" ) ) {
-        try {
-          CssFileReader reader = new CssFileReader();
-          StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
-          theme = Theme.loadFromStyleSheet( name != null ? name : "",
-                                            predefinedTheme,
-                                            styleSheet );
-          theme.fillOldPropertiesFromStyleSheet( props );
-        } catch( CSSException e ) {
-          throw new ThemeManagerException( "Failed parsing CSS file", e );
-        }
-      } else {
-        theme = Theme.loadFromFile( name != null ? name : "",
-                                    predefinedTheme,
-                                    inputStream,
-                                    loader );
-        theme.createStyleSheetFromProperties( props );
+      CssFileReader reader = new CssFileReader();
+      try {
+        StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
+        theme = Theme.loadFromStyleSheet( name != null ? name : "",
+                                          predefinedTheme,
+                                          styleSheet );
+        theme.fillOldPropertiesFromStyleSheet( props );
+      } catch( CSSException e ) {
+        throw new ThemeManagerException( "Failed parsing CSS file", e );
       }
       theme.setValuesMap( createCssValuesMap( theme ) );
       themes.put( id, new ThemeWrapper( theme, themeCount++ ) );

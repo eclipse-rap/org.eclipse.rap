@@ -11,8 +11,6 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -66,72 +64,6 @@ public final class Theme {
     this.defaultValues = defaultTheme != null ? defaultTheme.values : null;
     values = new HashMap();
     cssValues = new HashMap();
-  }
-
-  /**
-   * Loads a theme from a <code>.properties</code> file.
-   *
-   * @param name the name for the theme to create, must not be <code>null</code>
-   * @param inStr the input stream of the theme file to read
-   * @param loader the loader for resources provided by the theme
-   * @return the newly created theme
-   */
-  public static Theme loadFromFile( final String name,
-                                    final Theme defaultTheme,
-                                    final InputStream inStr,
-                                    final ResourceLoader loader )
-    throws IOException
-  {
-    if( inStr == null ) {
-      throw new NullPointerException( "null argument" );
-    }
-    Theme newTheme = new Theme( name, defaultTheme );
-    Properties properties = new Properties();
-    properties.load( inStr );
-    Iterator iterator = properties.keySet().iterator();
-    while( iterator.hasNext() ) {
-      String key = ( ( String )iterator.next() ).trim();
-      String keyName;
-      String keyVariant;
-      int index = key.indexOf( '/' );
-      if( index != -1 ) {
-        keyVariant = key.substring( 0, index );
-        keyName = key.substring( index + 1 );
-      } else {
-        keyName = key;
-        keyVariant = null;
-      }
-      if( !defaultTheme.definesKey( keyName ) ) {
-        String pattern = "Invalid key for themeing: ''{0}'' in ''{1}''";
-        Object[] arguments = new Object[] { keyName, key };
-        String message = MessageFormat.format( pattern, arguments );
-        throw new IllegalArgumentException( message );
-      }
-      QxType defValue = defaultTheme.getValue( keyName, null );
-      String value = ( ( String )properties.get( key ) ) .trim();
-      if( value != null && value.trim().length() > 0 ) {
-        QxType newValue;
-        if( defValue instanceof QxBorder ) {
-          newValue = QxBorder.valueOf( value );
-        } else if( defValue instanceof QxBoolean ) {
-          newValue = QxBoolean.valueOf( value );
-        } else if( defValue instanceof QxBoxDimensions ) {
-          newValue = QxBoxDimensions.valueOf( value );
-        } else if( defValue instanceof QxFont ) {
-          newValue = QxFont.valueOf( value );
-        } else if( defValue instanceof QxColor ) {
-          newValue = QxColor.valueOf( value );
-        } else if( defValue instanceof QxDimension ) {
-          newValue = QxDimension.valueOf( value );
-        } else if( defValue instanceof QxImage ) {
-          newValue = QxImage.valueOf( value, loader );
-        } else {
-          throw new RuntimeException( "unknown type" );
-        }
-        newTheme.setValue( keyName, keyVariant, newValue );
-      }
-    }
-    return newTheme;
   }
 
   public static Theme loadFromStyleSheet( final String name,

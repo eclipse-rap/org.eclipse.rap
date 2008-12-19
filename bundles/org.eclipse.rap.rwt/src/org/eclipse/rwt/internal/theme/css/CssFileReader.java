@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.batik.css.parser.ParseException;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.w3c.css.sac.*;
 
@@ -53,7 +54,12 @@ public class CssFileReader {
       = new DocumentHandlerImpl( this, loader );
     parser.setDocumentHandler( documentHandler );
     parser.setErrorHandler( new ErrorHandlerImpl( this ) );
-    parser.parseStyleSheet( source );
+    // TODO [rst] Batik parser throws ParseException
+    try {
+      parser.parseStyleSheet( source );
+    } catch( ParseException e ) {
+      throw new CSSException( e );
+    }
     return documentHandler.getStyleSheet();
   }
 
