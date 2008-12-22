@@ -730,6 +730,10 @@ public class Fixture {
     public void setServletContextName( final String servletContextName ) {
       this.servletContextName = servletContextName;
     }
+
+    public String getContextPath() {
+      return null;
+    }
     
   }
   
