@@ -195,8 +195,10 @@
 			<include name="org.eclipse.osgi.services.source_*" />
 			<include name="org.eclipse.osgi_*" />
 			<include name="org.eclipse.osgi.source_*" />
-			<include name="org.mortbay.jetty_*" />
-			<include name="org.mortbay.jetty.source_*/" />
+			<include name="org.mortbay.jetty.util_*" />
+			<include name="org.mortbay.jetty.util.source_*/" />
+			<include name="org.mortbay.jetty.server_*" />
+			<include name="org.mortbay.jetty.server.source_*/" />
 			<include name="org.junit_3*" />
 			<include name="org.junit.source_3*/" />
 			<include name="org.eclipse.jdt.junit.runtime*" />
