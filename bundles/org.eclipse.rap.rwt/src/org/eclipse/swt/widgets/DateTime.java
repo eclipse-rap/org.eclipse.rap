@@ -177,7 +177,7 @@ public class DateTime extends Composite {
     rightNow = Calendar.getInstance();
     DateFormatSymbols symbols = new DateFormatSymbols( RWT.getLocale() );
     monthNames = symbols.getMonths();
-    weekdayNames = symbols.getWeekdays();
+    weekdayNames = symbols.getShortWeekdays();
     dateSeparator = getDateSeparator();
     datePattern = getDatePattern( dateSeparator );
     computeSubWidgetsBounds();
