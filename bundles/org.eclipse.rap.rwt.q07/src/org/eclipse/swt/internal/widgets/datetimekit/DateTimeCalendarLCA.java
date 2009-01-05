@@ -75,7 +75,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
     Object[] args = new Object[]{
       style,
       dateTimeAdapter.getMonthNames(),
-      dateTimeAdapter.getWeekdayNames()
+      dateTimeAdapter.getWeekdayShortNames()
     };
     writer.newWidget( "org.eclipse.swt.widgets.DateTimeCalendar", args );
     WidgetLCAUtil.writeCustomVariant( dateTime );
@@ -97,7 +97,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
 
   ///////////////////////////////////////
   // Helping methods to write properties
-  
+
   private void writeDay( final DateTime dateTime ) throws IOException {
     Integer newValue = new Integer( dateTime.getDay() );
     if( WidgetLCAUtil.hasChanged( dateTime, PROP_DAY, newValue ) ) {

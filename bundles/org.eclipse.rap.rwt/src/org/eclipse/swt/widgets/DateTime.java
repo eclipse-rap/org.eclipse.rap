@@ -103,6 +103,10 @@ public class DateTime extends Composite {
       return weekdayNames;
     }
 
+    public String[] getWeekdayShortNames() {
+      return weekdayShortNames;
+    }
+
     public String getDateSeparator() {
       return dateSeparator;
     }
@@ -117,6 +121,7 @@ public class DateTime extends Composite {
 
   private String[] monthNames;
   private String[] weekdayNames;
+  private String[] weekdayShortNames;
   private String dateSeparator;
   private String datePattern;
 
@@ -177,7 +182,8 @@ public class DateTime extends Composite {
     rightNow = Calendar.getInstance();
     DateFormatSymbols symbols = new DateFormatSymbols( RWT.getLocale() );
     monthNames = symbols.getMonths();
-    weekdayNames = symbols.getShortWeekdays();
+    weekdayNames = symbols.getWeekdays();
+    weekdayShortNames = symbols.getShortWeekdays();
     dateSeparator = getDateSeparator();
     datePattern = getDatePattern( dateSeparator );
     computeSubWidgetsBounds();

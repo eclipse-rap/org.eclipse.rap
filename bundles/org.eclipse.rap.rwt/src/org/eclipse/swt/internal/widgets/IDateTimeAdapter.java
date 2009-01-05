@@ -35,6 +35,8 @@ public interface IDateTimeAdapter {
 
   String[] getWeekdayNames();
 
+  String[] getWeekdayShortNames();
+
   String getDateSeparator();
 
   String getDatePattern();
