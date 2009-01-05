@@ -101,7 +101,9 @@ public class LinkLCA extends AbstractWidgetLCA {
     return null;
   }
 
-  private void writeSelectionListener( final Link link ) throws IOException {
+  private static void writeSelectionListener( final Link link )
+    throws IOException
+  {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
     Boolean defValue = Boolean.FALSE;
     String prop = PROP_SEL_LISTENER;
@@ -112,7 +114,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeText( final Link link ) throws IOException {
+  private static void writeText( final Link link ) throws IOException {
     String newValue = link.getText();
     if( WidgetLCAUtil.hasChanged( link, PROP_TEXT, newValue, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( link );
@@ -144,7 +146,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeNormalText( final Link link, final String text )
+  private static void writeNormalText( final Link link, final String text )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( link );
@@ -157,9 +159,10 @@ public class LinkLCA extends AbstractWidgetLCA {
     writer.callStatic( JS_FUNC_ADD_TEXT, args );
   }
 
-  private void writeLinkText( final Link link,
-                              final String text,
-                              final int index ) throws IOException
+  private static void writeLinkText( final Link link,
+                                     final String text,
+                                     final int index )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( link );
     Object[] args = new Object[] {
