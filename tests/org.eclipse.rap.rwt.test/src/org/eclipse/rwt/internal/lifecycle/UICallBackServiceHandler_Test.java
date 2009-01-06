@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,17 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
+
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.Fixture.TestResponse;
+import org.eclipse.rwt.Fixture.TestServletOutputStream;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.swt.RWTFixture;
 
 
@@ -55,5 +61,14 @@ public class UICallBackServiceHandler_Test extends TestCase {
     assertFalse( "".equals( UICallBackServiceHandler.jsEnableUICallBack() ) );
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_2 );
     assertEquals( "", UICallBackServiceHandler.jsEnableUICallBack() );
+  }
+  
+  public void testResponseContentType() throws IOException {
+    Fixture.fakeResponseWriter();
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    response.setOutputStream( new TestServletOutputStream() );
+    UICallBackServiceHandler.writeResponse();
+    assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8, 
+                  response.getHeader( "Content-Type" ) );
   }
 }

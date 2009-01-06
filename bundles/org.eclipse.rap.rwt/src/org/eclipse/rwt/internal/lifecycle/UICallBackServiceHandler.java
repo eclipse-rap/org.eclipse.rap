@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import javax.servlet.http.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
@@ -417,10 +418,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if(    !UICallBackManager.getInstance().blockCallBackRequest()
         && ContextProvider.hasContext() )
     {
-      HttpServletResponse response = ContextProvider.getResponse();
-      PrintWriter writer = response.getWriter();
-      writer.print( jsUICallBack() );
-      writer.flush();
+      writeResponse();
     }
   }
 
@@ -480,44 +478,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
     DummyRequest request = new DummyRequest( store.getHttpSession() );
     DummyResponse response = new DummyResponse();
     return new ServiceContext( request, response, store );
-  }
-
-  private static String jsUICallBack() {
-    String result;
-    if(    isUICallBackActive()
-        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
-    {
-      ISessionStore session = ContextProvider.getSession();
-      String bufferedCode
-        = ( String )session.getAttribute( BUFFERED_SEND_CALLBACK_REQUEST );
-      if( bufferedCode == null ) {
-        StringBuffer code = new StringBuffer();
-        code.append( JS_SEND_UI_REQUEST );
-        code.append( JS_SEND_CALLBACK_REQUEST );
-        bufferedCode = code.toString();
-        session.setAttribute( BUFFERED_SEND_CALLBACK_REQUEST, bufferedCode );
-      }
-      result = bufferedCode;
-    } else {
-      result = JS_SEND_UI_REQUEST;
-    }
-    return result;
-  }
-
-  public static String jsEnableUICallBack() {
-    String result = "";
-    if(    isUICallBackActive()
-        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
-    {
-      result = JS_SEND_CALLBACK_REQUEST;
-    }
-    return result;
-  }
-
-  private static boolean isUICallBackActive() {
-    synchronized( IdManager.getInstance().getLock() ) {
-      return !IdManager.getInstance().isEmpty();
-    }
   }
 
   public static void activateUICallBacksFor( final String id ) {
@@ -582,5 +542,54 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {
     return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+  }
+
+  //////////////////////////
+  // Service helping methods
+  
+  static void writeResponse() throws IOException {
+    HttpServletResponse response = ContextProvider.getResponse();
+    response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
+    PrintWriter writer = response.getWriter();
+    writer.print( jsUICallBack() );
+    writer.flush();
+  }
+
+  private static String jsUICallBack() {
+    String result;
+    if(    isUICallBackActive()
+        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
+    {
+      ISessionStore session = ContextProvider.getSession();
+      String bufferedCode
+        = ( String )session.getAttribute( BUFFERED_SEND_CALLBACK_REQUEST );
+      if( bufferedCode == null ) {
+        StringBuffer code = new StringBuffer();
+        code.append( JS_SEND_UI_REQUEST );
+        code.append( JS_SEND_CALLBACK_REQUEST );
+        bufferedCode = code.toString();
+        session.setAttribute( BUFFERED_SEND_CALLBACK_REQUEST, bufferedCode );
+      }
+      result = bufferedCode;
+    } else {
+      result = JS_SEND_UI_REQUEST;
+    }
+    return result;
+  }
+
+  public static String jsEnableUICallBack() {
+    String result = "";
+    if(    isUICallBackActive()
+        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
+    {
+      result = JS_SEND_CALLBACK_REQUEST;
+    }
+    return result;
+  }
+
+  private static boolean isUICallBackActive() {
+    synchronized( IdManager.getInstance().getLock() ) {
+      return !IdManager.getInstance().isEmpty();
+    }
   }
 }
