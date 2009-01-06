@@ -8,24 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
-
-import java.io.*;
 
 import junit.framework.TestCase;
 
 
 public class Theme_Test extends TestCase {
-
-  private static final ResourceLoader DUMMY_LOADER = new ResourceLoader() {
-
-    public InputStream getResourceAsStream( final String resourceName )
-      throws IOException
-    {
-      return null;
-    }
-  };
 
   public void testGetSetValues() throws Exception {
     Theme defTheme = new Theme( "Default Theme" );
