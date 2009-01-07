@@ -304,7 +304,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
     IResource[] resources = ResourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {
-      if( resources[ i ].isExternal() ) {
+      if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
         writeScriptTag( out, resources[ i ].getLocation() );
       }
     }
