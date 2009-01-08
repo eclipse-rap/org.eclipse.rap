@@ -147,18 +147,6 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       this._changeSelectionNotification = value;
     },
 
-    setFont : function( value ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var items = this.getChildren();
-      for( var i = 0; i < items.length; i++ ) {
-        wm.setFont( items[ i ], 
-                    value.getFamily(), 
-                    value.getSize(), 
-                    value.getBold(), 
-                    value.getItalic() );
-      }
-    },
-
     _getSelectionIndices : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
