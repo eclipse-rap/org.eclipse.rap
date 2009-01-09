@@ -36,6 +36,7 @@ import org.eclipse.ui.ISources;
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
  * 
+ * @since 3.2
  * @see ISourceProvider
  * @see ISources
  * @see Expression
@@ -103,6 +104,7 @@ public abstract class ExpressionAuthority implements ISourceProviderListener {
 				changeVariable(variableName, variableValue);
 			}
 		}
+		sourceChanged(0, currentState);
 	}
 
 	/**

@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.WeakHashMap;
 
+import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -47,19 +47,19 @@ import org.eclipse.ui.activities.IIdentifier;
 import org.eclipse.ui.activities.IMutableActivityManager;
 import org.eclipse.ui.activities.ITriggerPointAdvisor;
 import org.eclipse.ui.activities.IdentifierEvent;
-import org.eclipse.ui.services.IEvaluationReference;
-import org.eclipse.ui.internal.util.Util;
-import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.progress.UIJob;
+import org.eclipse.ui.services.IEvaluationReference;
+import org.eclipse.ui.services.IEvaluationService;
 
 /**
  * An activity registry that may be altered.
  * 
+ * @since 3.0
  */
 public final class MutableActivityManager extends AbstractActivityManager
         implements IMutableActivityManager, Cloneable {
 
-    private Map activitiesById = new WeakHashMap();
+    private Map activitiesById = new HashMap();
 
     private Map activityRequirementBindingsByActivityId = new HashMap();
 
@@ -69,7 +69,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 
     private IActivityRegistry activityRegistry;
 
-    private Map categoriesById = new WeakHashMap();
+    private Map categoriesById = new HashMap();
 
     private Map categoryActivityBindingsByCategoryId = new HashMap();
 
@@ -81,7 +81,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 
     private Set enabledActivityIds = new HashSet();
 
-    private Map identifiersById = new WeakHashMap();
+    private Map identifiersById = new HashMap();
     
     /**
      * Avoid endless circular referencing of re-adding activity to evaluation
@@ -512,6 +512,8 @@ public final class MutableActivityManager extends AbstractActivityManager
      * Regexp support will not be available when running against JCL Foundation (see bug 80053).
      * 
 	 * @return <code>true</code> if regexps are supported, <code>false</code> otherwise.
+	 * 
+	 * @since 3.1
 	 */
 	private boolean isRegexpSupported() {
 		try {
@@ -524,29 +526,67 @@ public final class MutableActivityManager extends AbstractActivityManager
 	}
 
 	public void setEnabledActivityIds(Set enabledActivityIds) {
-        enabledActivityIds = Util.safeCopy(enabledActivityIds, String.class);
+        enabledActivityIds = new HashSet(enabledActivityIds);
         Set requiredActivityIds = new HashSet(enabledActivityIds);
         getRequiredActivityIds(enabledActivityIds, requiredActivityIds);
         enabledActivityIds = requiredActivityIds;
+        Set deltaActivityIds = null;
         boolean activityManagerChanged = false;
         Map activityEventsByActivityId = null;
-        Set deltaActivityIds = null;
+        
         Set previouslyEnabledActivityIds = null;
+        // the sets are different so there may be work to do.
         if (!this.enabledActivityIds.equals(enabledActivityIds)) {
             previouslyEnabledActivityIds = this.enabledActivityIds;
-            this.enabledActivityIds = enabledActivityIds;
             activityManagerChanged = true;
             
-            // compute delta of activity changes
-            deltaActivityIds = new HashSet(previouslyEnabledActivityIds);
-            deltaActivityIds.removeAll(enabledActivityIds);
-            Set temp = new HashSet(enabledActivityIds);
-            temp.removeAll(previouslyEnabledActivityIds);
-            deltaActivityIds.addAll(temp);
+            // break out the additions to the current set
+            Set additions = new HashSet(enabledActivityIds);
+            additions.removeAll(previouslyEnabledActivityIds);
             
+            // and the removals
+            Set removals = new HashSet(previouslyEnabledActivityIds);
+            removals.removeAll(enabledActivityIds);
+            
+            // remove from each set the expression-activities 
+            removeExpressionControlledActivities(additions);
+            removeExpressionControlledActivities(removals);
+            
+            // merge the two sets into one delta - these are the changes that
+			// need to be made after taking expressions into account
+            deltaActivityIds = new HashSet(additions);
+            deltaActivityIds.addAll(removals);
+            
+            if (deltaActivityIds.size() > 0) {
+            	// instead of blowing away the old set with the new we will
+				// instead modify it based on the deltas
+            	// add in all the new activities to the current set
+            	enabledActivityIds.addAll(additions);
+            	// and remove the stale ones
+            	enabledActivityIds.removeAll(removals);
+            	// finally set the internal set of activities
+            	this.enabledActivityIds = enabledActivityIds;
             activityEventsByActivityId = updateActivities(deltaActivityIds);
+			} else {
+				return;
+			}
         }
 
+        updateListeners(activityManagerChanged, activityEventsByActivityId,
+				deltaActivityIds, previouslyEnabledActivityIds);
+        }
+
+	/**
+	 * Updates all the listeners to changes in the state.
+	 * 
+	 * @param activityManagerChanged
+	 * @param activityEventsByActivityId
+	 * @param deltaActivityIds
+	 * @param previouslyEnabledActivityIds
+	 */
+	private void updateListeners(boolean activityManagerChanged,
+			Map activityEventsByActivityId, Set deltaActivityIds,
+			Set previouslyEnabledActivityIds) {
         //don't update identifiers if the enabled activity set has not changed
         if (activityManagerChanged) {
             Map identifierEventsByIdentifierId = updateIdentifiers(identifiersById
@@ -564,6 +604,53 @@ public final class MutableActivityManager extends AbstractActivityManager
                     false, true, null, null, previouslyEnabledActivityIds));
 		}
     }
+
+	private void addExpressionEnabledActivity(String id) {
+		Set previouslyEnabledActivityIds = new HashSet(this.enabledActivityIds);
+		this.enabledActivityIds.add(id);
+
+		updateExpressionEnabledActivities(id, previouslyEnabledActivityIds);
+	}
+	
+	private void removeExpressionEnabledActivity(String id) {
+		Set previouslyEnabledActivityIds = new HashSet(this.enabledActivityIds);
+		this.enabledActivityIds.remove(id);
+
+		updateExpressionEnabledActivities(id, previouslyEnabledActivityIds);
+	}
+
+	/**
+	 * @param id
+	 * @param previouslyEnabledActivityIds
+	 */
+	private void updateExpressionEnabledActivities(String id,
+			Set previouslyEnabledActivityIds) {
+		Set deltaActivityIds = new HashSet();
+		deltaActivityIds.add(id);
+		Map activityEventsByActivityId = updateActivities(deltaActivityIds);
+
+		updateListeners(true, activityEventsByActivityId, deltaActivityIds,
+				previouslyEnabledActivityIds);
+	}
+	
+
+	/**
+	 * Removes from a list of activity changes all those that are based on expressions
+	 * 
+	 * @param delta the set to modify
+	 */
+	private void removeExpressionControlledActivities(Set delta) {
+		
+		for (Iterator i = delta.iterator(); i.hasNext();) {
+			String id = (String) i.next();
+			IActivity activity = (IActivity) activitiesById.get(id);
+			Expression expression = activity.getExpression();
+			
+			if (expression != null) {
+				i.remove();
+			}
+		}
+	}
 
     private Map updateActivities(Collection activityIds) {
         Map activityEventsByActivityId = new TreeMap();
@@ -593,14 +680,13 @@ public final class MutableActivityManager extends AbstractActivityManager
 			Object nv = event.getNewValue();
 			boolean enabledWhen = nv == null ? false : ((Boolean) nv)
 					.booleanValue();
-			if (enabledActivityIds.contains(event.getProperty()) != enabledWhen) {
-				Set set = new HashSet(enabledActivityIds);
+			String id = event.getProperty();
+			IActivity activity = (IActivity)activitiesById.get(id);
+			if (activity.isEnabled() != enabledWhen) {				
 				if (enabledWhen) {
-					set.add(event.getProperty());
-					setEnabledActivityIds(set);
+					addExpressionEnabledActivity(id);					
 				} else {
-					set.remove(event.getProperty());
-					setEnabledActivityIds(set);
+					removeExpressionEnabledActivity(id);
 				}
 			}
 		}
@@ -629,6 +715,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 				.get(activityDefinition);
 		IEvaluationService evaluationService = (IEvaluationService) PlatformUI
 				.getWorkbench().getService(IEvaluationService.class);
+		boolean newRef = false;
 		if (activityDefinition != null && evaluationService!=null) {
 			activity.setExpression(activityDefinition.getEnabledWhen());
 			if (ref == null && activityDefinition.getEnabledWhen()!=null) {
@@ -637,6 +724,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 					ref = evaluationService.addEvaluationListener(
 						activityDefinition.getEnabledWhen(),
 						enabledWhenListener, activityDefinition.getId());
+					newRef = true;
 				} finally {
 					addingEvaluationListener = false;
 				}
@@ -649,6 +737,12 @@ public final class MutableActivityManager extends AbstractActivityManager
 		if (ref != null && evaluationService!=null) {
 			enabledChanged = activity.setEnabled(ref.evaluate(evaluationService
 					.getCurrentState()));
+			if (newRef && activity.isEnabled()) {
+				// make sure this activity is in the enabled set for this
+				// manager - event firing will be handled by the caller to this
+				// method.
+				this.enabledActivityIds.add(activity.getId());				
+			}
 		} else {
 			enabledChanged = activity.setEnabled(enabledActivityIds
 					.contains(activity.getId()));
@@ -811,6 +905,8 @@ public final class MutableActivityManager extends AbstractActivityManager
     
     /**
      * Unhook this manager from its registry.
+     *
+     * @since 3.1
      */
     public void unhookRegistryListeners() {
         activityRegistry.removeActivityRegistryListener(activityRegistryListener);
@@ -829,6 +925,7 @@ public final class MutableActivityManager extends AbstractActivityManager
      * Return the identifier update job.
      * 
      * @return the job
+     * @since 3.1
      */
     private Job getUpdateJob() {
         if (deferredIdentifierJob == null) {

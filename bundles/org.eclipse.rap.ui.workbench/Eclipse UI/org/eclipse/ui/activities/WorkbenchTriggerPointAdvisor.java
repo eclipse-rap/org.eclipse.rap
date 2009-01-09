@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ui.activities;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
@@ -182,7 +186,7 @@ public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
 	 * 
 	 * @return <code>true</code> if this identifier should be enabled,
 	 *         <code>false</code> otherwise
-     * @since 1.1
+	 * @since 3.4
 	 */
 	protected boolean doComputeEnablement(IActivityManager activityManager,
 			IIdentifier identifier, boolean disabledExpressionActivitiesTakePrecedence) {
@@ -193,12 +197,11 @@ public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
 
 		boolean matchesAtLeastOneEnabled = false;
 		boolean matchesDisabledExpressionActivitiesWithPrecedence = false;
-		Set enabledActivityIds = activityManager.getEnabledActivityIds();
 		for (Iterator iterator = activityIds.iterator(); iterator.hasNext();) {
 			String activityId = (String) iterator.next();
 			IActivity activity = activityManager.getActivity(activityId);
 			
-			if (activity.isEnabled() && enabledActivityIds.contains(activityId)) {
+			if (activity.isEnabled()) {
 				if (!disabledExpressionActivitiesTakePrecedence) {
 					return true;
 				}
