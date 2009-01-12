@@ -10,12 +10,12 @@
 ###############################################################################
 
 # demo
-feature@org.eclipse.rap.demo.feature=v11_Maintenance,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo.feature
-plugin@org.eclipse.rap.demo=v11_Maintenance,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo
-plugin@org.eclipse.rap.demo.databinding=v11_Maintenance,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo.databinding
+feature@org.eclipse.rap.demo.feature=v11_Maintenance,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.demo.feature
+plugin@org.eclipse.rap.demo=v11_Maintenance,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.demo
+plugin@org.eclipse.rap.demo.databinding=v11_Maintenance,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.demo.databinding
 
 # servlet bridge
-feature@org.eclipse.rap.releng.warbuild.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.releng.warbuild/servletbridge-feature
+feature@org.eclipse.rap.releng.warbuild.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng.warbuild/servletbridge-feature
 
 plugin@org.eclipse.equinox.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge
 plugin@org.eclipse.equinox.http.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.http.servletbridge
