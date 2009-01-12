@@ -126,8 +126,7 @@ public class Shell extends Decorations {
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
 
-  private static final Rectangle DEFAULT_BOUNDS
-    = new Rectangle( 0, 0, 768, 536 );
+  private static final int INITIAL_SIZE_PERCENT = 60;
 
   private Control lastActive;
   private IShellAdapter shellAdapter;
@@ -153,10 +152,7 @@ public class Shell extends Decorations {
     this.style = checkStyle( style );
     state |= HIDDEN;
     this.display.addShell( this );
-    // [if] Due to bug 239259: [Shell] Initial size too small
-    // Shell has a default (initial) size of 768 x 536
-    // 768 x 536 is the default size of Windows SWT Shell
-    bounds = DEFAULT_BOUNDS;
+    setInitialSize();
   }
 
   /**
@@ -453,6 +449,12 @@ public class Shell extends Decorations {
                                     width + padding.width + border * 2,
                                     height + hTopTrim + padding.height + border * 2 );
     return rect;
+  }
+
+  private void setInitialSize() {
+    int width = display.getBounds().width * INITIAL_SIZE_PERCENT / 100;
+    int height = display.getBounds().height * INITIAL_SIZE_PERCENT / 100;
+    bounds = new Rectangle( 0, 0, width, height );
   }
 
   private Rectangle getMenuBounds() {

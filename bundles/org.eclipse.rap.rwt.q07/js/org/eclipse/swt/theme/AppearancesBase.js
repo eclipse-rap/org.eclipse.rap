@@ -729,8 +729,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "menubar-button" :
   {
     style : function( states ) {
-      var result =
-      {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
         cursor : "default",
         overflow : "hidden",
         spacing : 4,
@@ -740,14 +740,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundImage : states.checked && !states.over ? "static/image/dotted_white.gif" : null
       };
       if( states.disabled ) {
-        result.backgroundColor = "toolbar.background";
-        result.textColor = "widget.graytext";
+        result.backgroundColor = tv.getColor( "toolbar.background" );
+        result.textColor = tv.getColor( "widget.graytext" );
       } else if( states.over ) {
-        result.backgroundColor = "menu.hover.background";
-        result.textColor = "menu.hover.foreground";
+        result.backgroundColor = tv.getColor( "menu.hover.background" );
+        result.textColor = tv.getColor( "menu.hover.foreground" );
       } else {
-        result.backgroundColor = "menu.background";
-        result.textColor = "menu.foreground";
+        result.backgroundColor = tv.getColor( "menu.background" );
+        result.textColor = tv.getColor( "menu.foreground" );
       }
       return result;
     }

@@ -19,6 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
     this.base( arguments );
     this.setAppearance( "table-row" );
     this.setSelectable( false );
+    this._itemIndex = -1;
   },
 
   members : {
@@ -30,7 +31,15 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
         this.removeState( "lines" );
       }
     },
-
+    
+    setItemIndex : function( value ) {
+      this._itemIndex = value;
+    },
+    
+    getItemIndex : function() {
+      return this._itemIndex;
+    },
+    
     // Override default focus behaviour
     _applyStateStyleFocus : qx.core.Variant.select( "qx.client",
     {

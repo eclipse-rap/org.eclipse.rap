@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
           org.eclipse.swt.TextUtil._setModified( combo, true );
         }
       }
-      org.eclipse.swt.TextUtil.updateSelection( combo.getField(), combo );
+      org.eclipse.swt.TextUtil._handleSelectionChange( combo.getField(), combo );
     },
     
     /**
@@ -67,9 +67,9 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                               combo, 
                               500 );
       }
-      org.eclipse.swt.TextUtil.updateSelection( combo.getField(), combo );
+      org.eclipse.swt.TextUtil._handleSelectionChange( combo.getField(), combo );
     },
-    
+
     /**
      * This function gets assigned to the 'blur' event of a text widget if there
      * was a server-side ModifyListener registered.

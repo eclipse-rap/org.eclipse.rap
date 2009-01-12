@@ -58,6 +58,12 @@ public class WidgetUtil_Test extends TestCase {
     String withDash = "Foo-Bar-23-42";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withDash );
     assertEquals( withDash, WidgetUtil.getVariant( shell ) );
+    String withLeadingDash = "-Foo-Bar-23-42";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withLeadingDash );
+    assertEquals( withLeadingDash, WidgetUtil.getVariant( shell ) );
+    String withNonAscii = "Foo-üäöæ-23-42";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withNonAscii );
+    assertEquals( withNonAscii, WidgetUtil.getVariant( shell ) );
     String withSpaces = "Foo Bar 23 42 ";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withSpaces );
     try {
@@ -68,6 +74,14 @@ public class WidgetUtil_Test extends TestCase {
     }
     String withColon = "Foo:Bar";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withColon );
+    try {
+      WidgetUtil.getVariant( shell );
+      fail( "IAE expected" );
+    } catch( RuntimeException e ) {
+      // expected
+    }
+    String withLeadingNumber = "1-Foo-Bar";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withLeadingNumber );
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );

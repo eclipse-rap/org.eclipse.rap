@@ -136,6 +136,13 @@ public class Shell_Test extends TestCase {
     assertEquals( SWT.SHELL_TRIM, trimShell.getStyle() );
   }
 
+  public void testInitialSize() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Point empty = new Point( 0, 0 );
+    assertFalse( empty.equals( shell.getSize() ) );
+  }
+
   public void testAlpha() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

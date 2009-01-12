@@ -338,6 +338,17 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  public void testWriteInitialBounds() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeBounds( shell );
+    String notExpected = "w.setSpace( 0, 0, 0, 0 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

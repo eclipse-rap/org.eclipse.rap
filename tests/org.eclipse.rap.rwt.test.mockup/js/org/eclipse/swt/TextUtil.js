@@ -9,92 +9,179 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
+/**
+ * This class contains static functions for the Text and Combo widget. Note that
+ * the Combo widget also calls the "protected" (_xxx) methods in this class.
+ */
 qx.Class.define( "org.eclipse.swt.TextUtil", {
 
   statics : {
-    
-    // TODO [rh] workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
-    //      the fix is to exchange the _onblur implementation of qx.ui.forms.Text
-    //      with our own one, that checks parent != null before calling
-    //      setSelectionLength
-    hijack : function( text ) {
-      text.removeEventListener( "blur", text._onblur );
-      text._onblur = function() {
-        var vValue = this.getComputedValue().toString();
-        if( this._textOnFocus != vValue ) {
-          this.setValue( vValue );
-        }
-        if( this.getParent() != null ) {
-          this.setSelectionLength( 0 );
-        }
-      };
-      text.addEventListener( "blur", text._onblur );
+
+    // === Public methods ===
+
+    /*
+     * To be called right after widget creation.
+     */
+    initialize : function( text ) {
+      if( text.isCreated() ) {
+        org.eclipse.swt.TextUtil._doAddListener( text );
+      } else {
+        text.addEventListener( "appear",
+                               org.eclipse.swt.TextUtil._onAppearAddListener );
+      }
+      text.setLiveUpdate( true );
     },
-    
-    ///////////////////////////////////////////////////////////////
-    // Functions for ModifyEvents and maintenance of the text/value
-    
-    modifyText : function( evt ) {
-      var text = evt.getTarget();
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend
-          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) )
-      {
-        // if not yet done, register an event listener that adds a request param
-        // with the text widgets' content just before the request is sent
-        if( !org.eclipse.swt.TextUtil._isModified( text ) ) {
+
+    /*
+     * Sets the hasSelectionListerner property on the given text widget.
+     * This property tracks whether the text widget has a selection listener
+     * attached.
+     */
+    setHasSelectionListener : function( text, newValue ) {
+      var oldValue = text.getUserData( "hasSelectionListener" );
+      if( newValue != oldValue ) {
+        text.setUserData( "hasSelectionListener", newValue );
+        org.eclipse.swt.TextUtil._updateSelectionListener( text, newValue );
+      }
+    },
+
+    hasSelectionListener : function( text ) {
+      return text.getUserData( "hasSelectionListener" ) == true;
+    },
+
+    /*
+     * Sets the hasVerifyOrModifyListener property on the given widget.
+     * This property tracks whether the text widget has a verify listener or a
+     * modify listener attached.
+     */
+    setHasVerifyOrModifyListener : function( text, newValue ) {
+      var oldValue = text.getUserData( "hasVerifyOrModifyListener" );
+      if( newValue != oldValue ) {
+        text.setUserData( "hasVerifyOrModifyListener", newValue );
+        org.eclipse.swt.TextUtil._updateVerifyOrModifyListener( text, newValue );
+      }
+    },
+
+    hasVerifyOrModifyListener : function( text ) {
+      return text.getUserData( "hasVerifyOrModifyListener" ) == true;
+    },
+
+    /*
+     * Sets the selected text range of the given text widget.
+     */
+    setSelection : function( text, start, length ) {
+      if( text.isCreated() && !text.getUserData( "pooled" ) ) {
+        org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
+      } else {
+        text.setUserData( "onAppear.selectionStart", start );
+        text.setUserData( "onAppear.selectionLength", length );
+        text.addEventListener( "appear",
+                               org.eclipse.swt.TextUtil._onAppearSetSelection );
+      }
+    },
+
+    // === Private methods ===
+
+    _onAppearAddListener : function( event ) {
+      // TODO [rst] Optimize: add/remove listener on change of
+      //            hasVerifyOrModifyListener property
+      var text = event.getTarget();
+      text.removeEventListener( "appear",
+                                org.eclipse.swt.TextUtil._onAppearAddListener );
+      org.eclipse.swt.TextUtil._doAddListener( text );
+    },
+
+    _doAddListener : function( text ) {
+      text.addEventListener( "mouseup", org.eclipse.swt.TextUtil._onMouseUp );
+      text.addEventListener( "keyup", org.eclipse.swt.TextUtil._onKeyUp );
+      text.addEventListener( "keydown", org.eclipse.swt.TextUtil._onKeyDown );
+      text.addEventListener( "keypress", org.eclipse.swt.TextUtil._onKeyPress );
+      text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
+    },
+
+    // === Event listener ===
+
+    _onMouseUp : function( event ) {
+//      event.debug( "_____ onMouseUp ", event );
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
+      }
+    },
+
+    _onKeyDown : function( event ) {
+//      event.debug( "_____ onKeyDown ", event );
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
+        if(    event.getKeyIdentifier() == "Enter"
+            && !event.isShiftPressed()
+            && !event.isAltPressed()
+            && !event.isCtrlPressed()
+            && !event.isMetaPressed()
+            && org.eclipse.swt.TextUtil.hasSelectionListener( text ) )
+        {
+          event.setPropagationStopped( true );        
+          org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
+        }
+      }
+    },
+
+    _onKeyPress : function( event ) {
+//      event.debug( "_____ onKeyPress ", event );
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
+      }
+    },
+
+    _onKeyUp : function( event ) {
+//      event.debug( "_____ onKeyUp ", event );
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
+      }
+    },
+
+    _onTextChange : function( event ) {
+//      event.debug( "_____ onTextChange ", event );
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._handleModification( text );
+        org.eclipse.swt.TextUtil._handleSelectionChange( text );
+      }
+    },
+
+    // === Request related ===
+
+    _handleModification : function( text ) {
+      // if not yet done, register an event listener that adds a request param
+      // with the text widgets' content just before the request is sent
+      if( !org.eclipse.swt.TextUtil._isModified( text ) ) {
+        org.eclipse.swt.TextUtil._setModified( text, true );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEventListener( "send", org.eclipse.swt.TextUtil._onSend, text );
+        if( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( text ) ) {
+          // add modifyText-event with sender-id to request parameters
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( text );
           var req = org.eclipse.swt.Request.getInstance();
-          req.addEventListener( "send", org.eclipse.swt.TextUtil._onSend, text );
-          org.eclipse.swt.TextUtil._setModified( text, true );
+          req.addEvent( "org.eclipse.swt.events.modifyText", id );
+          // register listener that is notified when a request is sent
+          qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, text, 500 );
         }
       }
-      org.eclipse.swt.TextUtil.updateSelection( text, null );
     },
 
-    /**
-     * This function gets assigned to the 'keyup' event of a text widget if 
-     * there was a server-side ModifyListener registered.
-     */
-    modifyTextAction : function( evt ) {
-      var text = evt.getTarget();
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && !org.eclipse.swt.TextUtil._isModified( text ) 
-          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
-      {
-        var req = org.eclipse.swt.Request.getInstance();
-        // Register 'send'-listener that adds a request param with current text
-        if( !org.eclipse.swt.TextUtil._isModified( text ) ) {
-          req.addEventListener( "send", org.eclipse.swt.TextUtil._onSend, text );
-          org.eclipse.swt.TextUtil._setModified( text, true );
-        }
-        // add modifyText-event with sender-id to request parameters
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget(text);
-        req.addEvent( "org.eclipse.swt.events.modifyText", id );
-        // register listener that is notified when a request is sent
-        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, 
-                              text, 
-                              500 );
-      }
-      org.eclipse.swt.TextUtil.updateSelection( text, null );
+    _updateSelectionListener : function( text, newValue ) {
+//      text.debug( "_____ update selection listener", text, newValue );
     },
 
-    /**
-     * This function gets assigned to the 'blur' event of a text widget if there
-     * was a server-side ModifyListener registered.
-     */
-    modifyTextOnBlur : function( evt ) {
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && org.eclipse.swt.TextUtil._isModified( evt.getTarget() ) ) 
-      {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.modifyText", id );
-        req.send();
-      }
+    _updateVerifyOrModifyListener : function( text, newValue ) {
+//      text.debug( "_____ update ver/mod listener", text, newValue );
     },
 
-    _onSend : function( evt ) {
+    _onSend : function( event ) {
       // NOTE: 'this' references the text widget
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
@@ -110,25 +197,43 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
     },
 
-    _delayedSend : function( evt ) {
-      // NOTE: this references the text widget (see qx.client.Timer.once above)
+    _delayedSend : function( event ) {
+      // NOTE: "this" references the text widget (see qx.client.Timer.once above)
       if( org.eclipse.swt.TextUtil._isModified( this ) ) {
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }
     },
 
+    /*
+     * Sends a widget default selected event to the server.
+     */
+    _sendWidgetDefaultSelected : function( text ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( text );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      req.send();
+    },
+
+    // === Auxiliary ===
+
+    /*
+     * Returns modified property of the given text widget. If true, a request
+     * send listener is already attached.
+     */
     _isModified : function( widget ) {
-      return widget.getUserData("modified") == true;
+      return widget.getUserData( "modified" ) == true;
     },
 
     _setModified : function( widget, modified ) {
-      return widget.setUserData("modified", modified);
+      widget.setUserData( "modified", modified );
     },
 
     /**
      * Determines whether the given keyIdentifier potentially modifies the 
      * content of a text widget.
+     * TODO [rst] Obsolete but still used by ComboUtil
      */
     _isModifyingKey : function( keyIdentifier ) {
       var result = false;
@@ -182,58 +287,38 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     ///////////////////////////////////////////////////////////////////
     // Functions to maintain the selection-start and -length properties
-    
-    onMouseUp : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var text = evt.getTarget();
-        org.eclipse.swt.TextUtil.updateSelection( text, null );
+
+    /*
+     * Checks for a selection change and updates the request parameter if
+     * necessary.
+     */
+    _handleSelectionChange : function( text, enclosingWidget ) {
+      var widget = enclosingWidget != null ? enclosingWidget : text;
+      var start = text.getSelectionStart();
+      var length = text.getSelectionLength();
+      // TODO [rst] Workaround for qx bug 521. Might be redundant as the
+      // bug is marked as (partly) fixed.
+      // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
+      if( typeof length == "undefined" ) {
+        text.debug( "___ qx bug 521 still exists" );
+        length = 0;
+      }
+      if(    text.getUserData( "selectionStart" ) != start
+          || text.getUserData( "selectionLength" ) != length )
+      {
+        text.setUserData( "selectionStart", start );
+        org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
+                                                     "selectionStart",
+                                                     start );
+        text.setUserData( "selectionLength", length );
+        org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
+                                                     "selectionLength",
+                                                     length );
       }
     },
 
-    updateSelection : function( text, enclosingWidget ) {
-      // TODO [rh] executing the code below for a TextArea leads to Illegal 
-      //      Argument
-      if( text.classname != "qx.ui.form.TextArea" ) {
-        var widget = enclosingWidget != null ? enclosingWidget : text;
-        var start = text.getSelectionStart();
-        var length = text.getSelectionLength();
-        if( text.getUserData( "selectionStart" ) != start ) {
-          text.setUserData( "selectionStart", start );
-          org.eclipse.swt.TextUtil._setPropertyParam( widget,
-                                                      "selectionStart",
-                                                      start );
-        }
-        if( text.getUserData( "selectionLength" ) != length ) {
-          text.setUserData( "selectionLength", length );
-          org.eclipse.swt.TextUtil._setPropertyParam( widget,
-                                                      "selectionCount",
-                                                      length );
-        }
-      }
-    },
-
-    // TODO [rst] not text specific, move this function to Request
-    _setPropertyParam : function( widget, name, value ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( widget );
-      var req = org.eclipse.swt.Request.getInstance();
-      req.addParameter( id + "." + name, value );
-    },
-
-    setSelection : function( text, start, length ) {
-      if( text.isCreated() && !text.getUserData( "pooled" ) ) {
-        org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
-      }
-      else {
-        text.setUserData( "onAppear.selectionStart", start );
-        text.setUserData( "onAppear.selectionLength", length );
-        text.addEventListener( "appear", 
-                               org.eclipse.swt.TextUtil._onAppearSetSelection );
-      }
-    },
-
-    _onAppearSetSelection : function( evt ) {
-      var text = evt.getTarget();
+    _onAppearSetSelection : function( event ) {
+      var text = event.getTarget();
       var start = text.getUserData( "onAppear.selectionStart" );
       var length = text.getUserData( "onAppear.selectionLength" );
       org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
@@ -246,53 +331,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.setSelectionStart( start );
       text.setUserData( "selectionLength", length );
       text.setSelectionLength( length );
-    },
-    
-    // TODO [rst] Workaround for pooling problems with wrap property in IE.
-    //            These methods can probably be dropped once qx bug 300 is fixed.
-    setWrap : function( text, wrap ) {
-      if( text.isCreated() && !text.getUserData( "pooled" ) ) {
-        text.setWrap( wrap );
-      } else {
-        text.setUserData( "onAppear.wrap", wrap );
-        text.addEventListener( "appear",
-                               org.eclipse.swt.TextUtil._onAppearSetWrap );
-      }
-    },
-
-    _onAppearSetWrap : function( evt ) {
-      var text = evt.getTarget();
-      var wrap = text.getUserData( "onAppear.wrap" );
-      text.setUserData( "onAppear.wrap", undefined );
-      text.setWrap( wrap );
-      text.removeEventListener( "appear",
-                                org.eclipse.swt.TextUtil._onAppearSetWrap );
-    },
-    
-    ////////////////////////////
-    // SelectionListener support
-    
-    /**
-     * This function is registered server-side if a SelectionListener should
-     * be notified about the widgetDefaultSelection event that occurs when
-     * Enter was pressed.
-     */
-    widgetDefaultSelected : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        if(    evt.getKeyIdentifier() == "Enter" 
-            && !evt.isShiftPressed()
-            && !evt.isAltPressed() 
-            && !evt.isCtrlPressed() 
-            && !evt.isMetaPressed() ) 
-        {
-          evt.setPropagationStopped( true );
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( evt.getTarget() );
-          var req = org.eclipse.swt.Request.getInstance();
-          req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-          req.send();
-        }
-      }
     }
 
   }
