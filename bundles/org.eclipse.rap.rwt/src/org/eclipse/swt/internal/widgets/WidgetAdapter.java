@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,10 @@ package org.eclipse.swt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.swt.widgets.Widget;
 
 public final class WidgetAdapter implements IWidgetAdapter {
 
@@ -87,5 +89,11 @@ public final class WidgetAdapter implements IWidgetAdapter {
 
   public void setCachedVariant( final String variant ) {
     this.variant = variant;
+  }
+
+  public void markDisposed( final Widget widget ) {
+    if( initialized ) {
+      DisposedWidgets.add( widget );
+    }
   }
 }

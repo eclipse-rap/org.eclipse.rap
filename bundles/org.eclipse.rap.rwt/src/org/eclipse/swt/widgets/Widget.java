@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.Adaptable;
@@ -614,10 +613,15 @@ public abstract class Widget implements Adaptable {
       releaseParent();
       releaseWidget();
       adapterManager = null;
-			// FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
+      // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
       //       running.
 //      data = null;
       state |= DISPOSED;
+      // TODO [rh] think about a better solution to propagate widget disposal
+      //      to the LCA
+      IWidgetAdapter adapter
+        = ( IWidgetAdapter )getAdapter( IWidgetAdapter.class );
+      adapter.markDisposed( this );
     }
   }
 

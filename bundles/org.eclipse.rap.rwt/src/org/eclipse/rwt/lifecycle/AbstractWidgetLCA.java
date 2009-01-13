@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,11 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -35,12 +31,6 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
       renderInitialization( widget );
-      widget.addDisposeListener( new DisposeListener() {
-        public void widgetDisposed( final DisposeEvent event ) {
-          DisposedWidgets.add( ( Widget )event.getSource() );
-          widget.removeDisposeListener( this );
-        }
-      } );
     }
     renderChanges( widget );
     UITestUtil.writeId( widget );

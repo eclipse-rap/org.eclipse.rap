@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import junit.framework.TestCase;
@@ -235,10 +234,8 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     button.addControlListener( new ControlListener() {
-
       public void controlMoved( final ControlEvent e ) {
       }
-
       public void controlResized( final ControlEvent e ) {
       }
     } );
@@ -298,14 +295,12 @@ public class ButtonLCA_Test extends TestCase {
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     ActivateEvent.addListener( button, new ActivateAdapter() {
-
       public void activated( final ActivateEvent event ) {
         log.append( "widgetActivated|" );
         button.setEnabled( false );
       }
     } );
     button.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "widgetSelected|" );
       }
@@ -328,7 +323,6 @@ public class ButtonLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         assertEquals( 0, event.x );
         assertEquals( 0, event.y );
@@ -371,6 +365,15 @@ public class ButtonLCA_Test extends TestCase {
     radioLCA.renderChanges( radioButton );
     expected = "\"RADIO E&lt;s&gt;ca'pe&quot; &amp; me\"";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
+  public void testDefaultButton() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button button = new Button( shell, SWT.PUSH );
+    assertFalse( ButtonLCAUtil.isDefaultButton( button ) );
+    shell.setDefaultButton( button );
+    assertTrue( ButtonLCAUtil.isDefaultButton( button ) );
   }
 
   protected void setUp() throws Exception {

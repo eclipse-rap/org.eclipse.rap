@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,18 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.*;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 
 
 
@@ -162,6 +164,25 @@ public class Widget_Test extends TestCase {
     if( failure[ 0 ] != null ) {
       throw failure[ 0 ];
     }
+  }
+
+  public void testDisposeWithException() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    widget.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+    try {
+      widget.dispose();
+      fail( "Wrong test setup: dispose listener must throw exception" );
+    } catch( Exception e ) {
+      // expected
+    }
+    assertFalse( widget.isDisposed() );
+    assertEquals( 0, DisposedWidgets.getAll().length );
   }
   
   public void testRemoveListener() {
