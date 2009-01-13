@@ -201,14 +201,18 @@ public final class ShellLCA extends AbstractWidgetLCA {
       Shell lastActiveShell = shell.getDisplay().getActiveShell();
       setActiveShell( shell );
       ActivateEvent event;
-      event = new ActivateEvent( lastActiveShell, ActivateEvent.DEACTIVATED );
-      event.processEvent();
+      if( lastActiveShell != null ) {
+        event = new ActivateEvent( lastActiveShell, ActivateEvent.DEACTIVATED );
+        event.processEvent();
+      }
       event = new ActivateEvent( shell, ActivateEvent.ACTIVATED );
       event.processEvent();
       ShellEvent shellEvent;
-      shellEvent
-        = new ShellEvent( lastActiveShell, ShellEvent.SHELL_DEACTIVATED );
-      shellEvent.processEvent();
+      if( lastActiveShell != null ) {
+        shellEvent = new ShellEvent( lastActiveShell,
+                                     ShellEvent.SHELL_DEACTIVATED );
+        shellEvent.processEvent();
+      }
       shellEvent = new ShellEvent( shell, ShellEvent.SHELL_ACTIVATED );
       shellEvent.processEvent();
     } else {
