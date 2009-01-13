@@ -1477,14 +1477,12 @@ public class TreeItem extends Item {
       ItemHolder.removeItem( parent, this );
     }
     parent.removeFromSelection( this );
-  }
-
-  final void releaseWidget() {
-    // do nothing
+    super.releaseParent();
   }
 
   // ////////////////
   // helping methods
+
   /* package */int getInnerHeight() {
     int innerHeight = 0;
     for( int i = 0; i < itemHolder.size(); i++ ) {

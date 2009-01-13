@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -23,14 +22,6 @@ public class Item_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
-      void releaseChildren() {
-      }
-
-      void releaseParent() {
-      }
-
-      void releaseWidget() {
-      }
     };
     assertEquals( "", item.getText() );
     item.setText( "x" );
@@ -47,28 +38,12 @@ public class Item_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
-      void releaseChildren() {
-      }
-
-      void releaseParent() {
-      }
-
-      void releaseWidget() {
-      }
     };
     item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item.getImage() );
     item.setImage( null );
     assertEquals( null, item.getImage() );
     Item item2 = new Item( shell, SWT.NONE ) {
-      void releaseChildren() {
-      }
-
-      void releaseParent() {
-      }
-
-      void releaseWidget() {
-      }
     };
     item2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
     assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item2.getImage() );
@@ -78,14 +53,6 @@ public class Item_Test extends TestCase {
     final Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
-      void releaseChildren() {
-      }
-
-      void releaseParent() {
-      }
-
-      void releaseWidget() {
-      }
     };
     item.dispose();
     assertEquals( true, item.isDisposed() );

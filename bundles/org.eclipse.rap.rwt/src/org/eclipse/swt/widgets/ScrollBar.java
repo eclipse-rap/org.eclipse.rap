@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
@@ -516,19 +515,6 @@ public class ScrollBar extends Widget {
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
-  }
-
-  ////////////////////
-  // Widget overrides
-
-  void releaseChildren() {
-  }
-
-  void releaseParent() {
-    // TODO [rh] set references to 'this' scrollBar in parent to null
-  }
-
-  void releaseWidget() {
   }
 
   //////////////////

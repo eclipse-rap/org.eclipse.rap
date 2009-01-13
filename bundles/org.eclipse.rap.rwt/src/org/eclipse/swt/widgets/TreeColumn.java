@@ -595,13 +595,8 @@ public class TreeColumn extends Item {
     // parent.updateColumnWidth (this, value);
   }
 
-  void releaseChildren() {
-  }
-
   void releaseParent() {
+    super.releaseParent();
     parent.destroyColumn( this );
-  }
-
-  void releaseWidget() {
   }
 }

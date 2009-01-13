@@ -821,13 +821,4 @@ public class CoolItem extends Item {
 //    Arrays.sort( result, new CoolItemOrderComparator() );
 //    return result;
 //  }
-
-  void releaseChildren() {
-  }
-
-  void releaseParent() {
-  }
-
-  void releaseWidget() {
-  }
 }

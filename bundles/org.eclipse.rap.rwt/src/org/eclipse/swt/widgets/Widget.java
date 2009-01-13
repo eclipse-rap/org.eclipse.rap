@@ -612,11 +612,6 @@ public abstract class Widget implements Adaptable {
       releaseChildren();
       releaseParent();
       releaseWidget();
-      adapterManager = null;
-      // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
-      //       running.
-//      data = null;
-      state |= DISPOSED;
       // TODO [rh] think about a better solution to propagate widget disposal
       //      to the LCA
       IWidgetAdapter adapter
@@ -649,7 +644,11 @@ public abstract class Widget implements Adaptable {
   }
 
   void releaseWidget() {
-    // do nothing - derived classes may override
+    adapterManager = null;
+    // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
+    //       running.
+//    data = null;
+    state |= DISPOSED;
   }
 
 //  /**

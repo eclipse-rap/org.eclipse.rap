@@ -549,14 +549,12 @@ public class Menu extends Widget {
     for( int i = 0; i < menuItems.length; i++ ) {
       menuItems[ i ].dispose();
     }
-  }
-
-  final void releaseParent() {
-    // do nothing
+    super.releaseChildren();
   }
 
   final void releaseWidget() {
     MenuHolder.removeMenu( parent, this );
+    super.releaseWidget();
   }
 
   String getNameText() {

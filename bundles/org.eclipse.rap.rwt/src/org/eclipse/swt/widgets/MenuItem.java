@@ -405,10 +405,6 @@ public class MenuItem extends Item {
     ItemHolder.removeItem( parent, this );
   }
 
-  final void releaseWidget() {
-    // do nothing
-  }
-
   String getNameText() {
     String result;
     if( ( style & SWT.SEPARATOR ) != 0 ) {
