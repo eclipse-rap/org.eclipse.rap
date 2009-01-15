@@ -325,6 +325,30 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setActive" ) );
   }
 
+  public void testNoDeactivateNullActiveShell() {
+    Display display = new Display();
+    Shell shell1 = new Shell( display );
+    shell1.setVisible( true );
+    Shell shell2 = new Shell( display );
+    shell2.setVisible( true );
+    assertNull( display.getActiveShell() );
+    // creating an event with null source throws exception
+    try {
+      new ActivateEvent( null, ActivateEvent.DEACTIVATED );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // no deactivation event must be created for a null active shell
+    RWTFixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String shell1Id = WidgetUtil.getId( shell1 );
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shell1Id );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertSame( shell1, display.getActiveShell() );
+  }
+
   public void testDisposeSingleShell() {
     Display display = new Display();
     Shell shell = new Shell( display );
