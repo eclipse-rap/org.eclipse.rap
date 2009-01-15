@@ -1,309 +1,246 @@
 <project name="Build specific targets and properties" default="noDefault">
 
-	<!-- ===================================================================== -->
-	<!-- Run a given ${target} on all elements being built -->
-	<!-- Add on <ant> task for each top level element being built. -->
-	<!-- ===================================================================== -->
-	<property name="allElementsFile" value="${builder}/allElements.xml" />
-	<import file="${allElementsFile}" />
-	<target name="allElements">
-		<antcall target="allElementsDelegator" />
-	</target>
+  <!-- ===================================================================== -->
+  <!-- Run a given ${target} on all elements being built -->
+  <!-- Add on <ant> task for each top level element being built. -->
+  <!-- ===================================================================== -->
+  <property name="allElementsFile" value="${builder}/allElements.xml" />
+  <import file="${allElementsFile}" />
+  <target name="allElements">
+    <antcall target="allElementsDelegator" />
+  </target>
 
-	<!-- ===================================================================== -->
-	<!-- ===================================================================== -->
-	<target name="getBaseComponents" depends="checkLocalBase" unless="skipBase">
-		<get src="${eclipseBaseURL}" dest="${buildDirectory}/../temp-base.zip" />
-		<unzip dest="${base}" overwrite="true" src="${buildDirectory}/../temp-base.zip" />
-	</target>
+  <!-- ===================================================================== -->
+  <!-- Check out map files from correct repository -->
+  <!-- Replace values for mapsCheckoutTag as desired. -->
+  <!-- ===================================================================== -->
+  <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
+    <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
+  </target>
 
-	<target name="checkLocalBase">
-		<available file="${base}" property="skipBase" />
-	</target>
+  <target name="checkLocalMaps">
+    <available property="skipMaps" file="${buildDirectory}/maps" />
+  </target>
 
-	<!-- ===================================================================== -->
-	<!-- Check out map files from correct repository -->
-	<!-- Replace values for mapsCheckoutTag as desired. -->
-	<!-- ===================================================================== -->
-	<target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
-		<property name="mapsCheckoutTag" value="HEAD" />
-		<cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
-	</target>
+  <target name="clean" unless="noclean">
+    <antcall target="allElements">
+      <param name="target" value="cleanElement" />
+    </antcall>
+  </target>
 
-	<target name="checkLocalMaps">
-		<available property="skipMaps" file="${buildDirectory}/maps" />
-	</target>
+  <target name="gatherLogs">
+    <mkdir dir="${buildDirectory}/${buildLabel}/compilelogs" />
+    <antcall target="allElements">
+      <param name="target" value="gatherLogs" />
+    </antcall>
+    <unzip dest="${buildDirectory}/${buildLabel}/compilelogs" overwrite="true">
+      <fileset dir="${buildDirectory}/features">
+        <include name="**/*.log.zip" />
+      </fileset>
+    </unzip>
+  </target>
 
-	<target name="tagMapFiles" if="tagMaps">
-		<cvs dest="${buildDirectory}/maps/${mapsRoot}" command="tag ${mapsTagTag}" />
-	</target>
+  <!-- ===================================================================== -->
+  <!-- Steps to do before setup -->
+  <!-- ===================================================================== -->
+  <target name="preSetup">
+    <!-- tidy up before build to clean broken build -->
+    <antcall target="tidyup" />
+  </target>
 
-	<!-- ===================================================================== -->
+  <!-- ===================================================================== -->
+  <!-- Steps to do after generating the build scripts. -->
+  <!-- ===================================================================== -->
+  <target name="postGenerate">
+    <antcall target="clean" />
+  </target>
 
-	<target name="clean" unless="noclean">
-		<antcall target="allElements">
-			<param name="target" value="cleanElement" />
-		</antcall>
-	</target>
+  <!-- ===================================================================== -->
+  <!-- Steps to do after the build is done. -->
+  <!-- ===================================================================== -->
+  <target name="postBuild">
+    <antcall target="gatherLogs" />
+    <antcall target="assembleTarget" />
+    <antcall target="test" />
+    <antcall target="publish" />
+    <antcall target="tidyup" />
+  </target>
 
-	<target name="gatherLogs">
-		<mkdir dir="${buildDirectory}/${buildLabel}/compilelogs" />
-		<antcall target="allElements">
-			<param name="target" value="gatherLogs" />
-		</antcall>
-		<unzip dest="${buildDirectory}/${buildLabel}/compilelogs" overwrite="true">
-			<fileset dir="${buildDirectory}/features">
-				<include name="**/*.log.zip" />
-			</fileset>
-		</unzip>
-	</target>
+  <target name="assembleTarget">
+    <property name="targetLocation" value="${buildDirectory}/${buildLabel}/target" />
+    <property name="rap-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap-${buildId}.zip" />
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do before setup -->
-	<!-- ===================================================================== -->
-	<target name="preSetup">
-		<!-- tidy up before build to clean broken build -->
-		<antcall target="tidyup" />
-	</target>
+    <unzip src="${rap-feature}" dest="${targetLocation}" />
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after setup but before starting the build proper -->
-	<!-- ===================================================================== -->
-	<target name="postSetup">
-		<antcall target="getBaseComponents" />
-	</target>
+    <!-- checks if ICU base is available and fail otherwise -->
+    <pathconvert property="icuBaseAvailable" setonempty="false" pathsep=" ">
+      <path>
+        <fileset dir="${baseLocation}/plugins"
+          includes="com.ibm.icu.base*" />
+      </path>
+    </pathconvert>
+    <fail unless="icuBaseAvailable" message="ICU base is not available in base platform." />
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do before fetching the build elements -->
-	<!-- ===================================================================== -->
-	<target name="preFetch">
-	</target>
+    <fileset dir="${baseLocation}/plugins" id="basePlugins">
+      <include name="com.ibm.icu.base_*" />
+      <include name="com.ibm.icu.base.source_*/" />
+      <include name="org.apache.commons.logging_*" />
+      <include name="org.apache.commons.logging.source_*" />
+      <include name="org.eclipse.core.commands_*" />
+      <include name="org.eclipse.core.commands.source_*" />
+      <include name="org.eclipse.core.contenttype_*" />
+      <include name="org.eclipse.core.contenttype.source_*" />
+      <include name="org.eclipse.core.databinding_*" />
+      <include name="org.eclipse.core.databinding.beans_*" />
+      <include name="org.eclipse.core.databinding.beans.source_*" />
+      <include name="org.eclipse.core.databinding.source_*" />
+      <include name="org.eclipse.core.expressions_*" />
+      <include name="org.eclipse.core.expressions.source_*" />
+      <include name="org.eclipse.core.jobs_*" />
+      <include name="org.eclipse.core.jobs.source_*" />
+      <include name="org.eclipse.core.runtime_*" />
+      <include name="org.eclipse.core.runtime.source_*" />
+      <include name="org.eclipse.equinox.app_*" />
+      <include name="org.eclipse.equinox.app.source_*" />
+      <include name="org.eclipse.equinox.common_*" />
+      <include name="org.eclipse.equinox.common.source_*" />
+      <include name="org.eclipse.equinox.http.jetty_*" />
+      <include name="org.eclipse.equinox.http.jetty.source_*" />
+      <include name="org.eclipse.equinox.http.registry_*" />
+      <include name="org.eclipse.equinox.http.registry.source_*" />
+      <include name="org.eclipse.equinox.http.servlet_*" />
+      <include name="org.eclipse.equinox.http.servlet.source_*" />
+      <include name="org.eclipse.equinox.preferences_*" />
+      <include name="org.eclipse.equinox.preferences.source_*" />
+      <include name="org.eclipse.equinox.registry_*" />
+      <include name="org.eclipse.equinox.registry.source_*" />
+      <include name="org.eclipse.jdt.junit.runtime*" />
+      <include name="org.eclipse.osgi_*" />
+      <include name="org.eclipse.osgi.services_*" />
+      <include name="org.eclipse.osgi.services.source_*" />
+      <include name="org.eclipse.osgi.source_*" />
+      <include name="org.junit_3*" />
+      <include name="org.junit.source_3*/" />
+      <include name="org.mortbay.jetty.server_*" />
+      <include name="org.mortbay.jetty.server.source_*/" />
+      <include name="org.mortbay.jetty.util_*" />
+      <include name="org.mortbay.jetty.util.source_*/" />
+    </fileset>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after fetching the build elements -->
-	<!-- ===================================================================== -->
-	<target name="postFetch">
-	</target>
+    <!-- copy all the needed plugins + source -->
+    <copy todir="${targetLocation}/eclipse/plugins">
+      <fileset refid="basePlugins" />
+    </copy>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do before generating the build scripts. -->
-	<!-- ===================================================================== -->
-	<target name="preGenerate">
-	</target>
+    <!-- zip target -->
+    <zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
+      <fileset dir="${targetLocation}">
+      </fileset>
+    </zip>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after generating the build scripts. -->
-	<!-- ===================================================================== -->
-	<target name="postGenerate">
-		<antcall target="clean" />
-	</target>
+  </target>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do before running the build.xmls for the elements being built. -->
-	<!-- ===================================================================== -->
-	<target name="preProcess">
-	</target>
+  <!-- ===================================================================== -->
+  <!-- Steps to do to test the build results -->
+  <!-- ===================================================================== -->
+  <target name="test">
+    <property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
+    <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
+    <property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
+    <property name="reports.tests" value="${buildDirectory}/tests" />
+    <mkdir dir="${reports.tests}" />
+    <path id="cp">
+      <pathelement location="${host.tests}" />
+      <pathelement location="${fragment.tests}" />
+      <fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
+        <include name="**/*.jar"/>
+      </fileset>
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt/lib/org.w3c.css.sac_1.3.jar" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
+      <fileset dir="${baseLocation}/plugins">
+          <include name="org.junit_3*/junit.jar"/>
+      </fileset>
+    </path>
+    <!-- run rwt tests -->
+    <junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="perTest">
+      <classpath refid="cp" />
+      <formatter type="xml" />
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after running the build.xmls for the elements being built. -->
-	<!-- ===================================================================== -->
-	<target name="postProcess">
-	</target>
+      <batchtest fork="yes" todir="${reports.tests}">
+        <fileset dir="${host.tests}">
+          <include name="**/*_Test.class" />
+        </fileset>
+        <fileset dir="${fragment.tests}">
+          <include name="**/*_Test.class" />
+        </fileset>
+      </batchtest>
+    </junit>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do before running assemble. -->
-	<!-- ===================================================================== -->
-	<target name="preAssemble">
-	</target>
+    <!-- create a report -->
+    <mkdir dir="${buildDirectory}/${buildLabel}/reports" />
+    <mkdir dir="${buildDirectory}/${buildLabel}/reports/html" />
+    <junitreport todir="${buildDirectory}/${buildLabel}/reports">
+      <fileset dir="${reports.tests}">
+        <include name="TEST-*.xml" />
+      </fileset>
+      <report format="frames" todir="${buildDirectory}/${buildLabel}/reports/html" />
+    </junitreport>
+  </target>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after  running assemble. -->
-	<!-- ===================================================================== -->
-	<target name="postAssemble">
-	</target>
+  <!-- ===================================================================== -->
+  <!-- Steps to do to publish the build results -->
+  <!-- ===================================================================== -->
+  <target name="publish">
+    <property name="buildOuputDirectory" value="${outputDirectory}/${buildType}-${buildId}" />
+    <property name="fBuildLocation" value="${buildDirectory}/${buildLabel}/" />
+    <property name="reports.tests" value="${buildDirectory}/tests" />
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do before running package. -->
-	<!-- ===================================================================== -->
-	<target name="prePackage">
-	</target>
+    <mkdir dir="${ouputDirectory}" />
+    <mkdir dir="${buildOuputDirectory}" />
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after  running package. -->
-	<!-- ===================================================================== -->
-	<target name="postPackage">
-	</target>
+    <!-- copy targets -->
+    <copy todir="${buildOuputDirectory}">
+      <fileset dir="${fBuildLocation}">
+        <include name="*runtime*.zip" />
+      </fileset>
+    </copy>
+  	
+    <!-- copy test results -->
+    <copy todir="${buildOuputDirectory}/tests">
+      <fileset dir="${fBuildLocation}/reports/html"></fileset>
+    </copy>
 
-	<!-- ===================================================================== -->
-	<!-- Steps to do after the build is done. -->
-	<!-- ===================================================================== -->
-	<target name="postBuild">
-		<antcall target="gatherLogs" />
+    <!-- copy raw test results -->
+    <copy todir="${buildOuputDirectory}/testsraw">
+      <fileset dir="${reports.tests}"></fileset>
+    </copy>
+  </target>
 
-		<antcall target="assembleTarget" />
+  <target name="tidyup">
+    <delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" />
+    <echo>Deleting all working resources</echo>
+  </target>
 
-		<antcall target="test" />
+  <!-- ===================================================================== -->
+  <!-- Default target                                                        -->
+  <!-- ===================================================================== -->
+  <target name="noDefault">
+    <echo message="You must specify a target when invoking this file" />
+  </target>
 
-		<antcall target="publish" />
-
-		<antcall target="tidyup" />
-	</target>
-
-	<target name="assembleTarget">
-		<property name="targetLocation" value="${buildDirectory}/${buildLabel}/target" />
-		<property name="rap-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap-${buildId}.zip" />
-		<property name="rap-sdk-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap.sdk-${buildId}.zip" />
-
-		<unzip src="${rap-feature}" dest="${targetLocation}" />
-		<unzip src="${rap-sdk-feature}" dest="${targetLocation}" />
-
-		<!-- 3.4 base -->
-		<fileset dir="${baseLocation}/plugins" id="34base">
-			<include name="com.ibm.icu_*" />
-			<include name="com.ibm.icu.source_*" />
-			<include name="org.apache.commons.logging_*" />
-			<include name="org.apache.commons.logging.source_*" />
-			<include name="org.eclipse.core.commands_*" />
-			<include name="org.eclipse.core.commands.source_*" />
-			<include name="org.eclipse.core.contenttype_*" />
-			<include name="org.eclipse.core.contenttype.source_*" />
-			<include name="org.eclipse.core.expressions_*" />
-			<include name="org.eclipse.core.expressions.source_*" />
-			<include name="org.eclipse.core.jobs_*" />
-			<include name="org.eclipse.core.jobs.source_*" />
-			<include name="org.eclipse.core.runtime_*" />
-			<include name="org.eclipse.core.runtime.source_*" />
-			<include name="org.eclipse.core.databinding_*" />
-			<include name="org.eclipse.core.databinding.source_*" />
-			<include name="org.eclipse.core.databinding.beans_*" />
-			<include name="org.eclipse.core.databinding.beans.source_*" />
-			<include name="org.eclipse.equinox.app_*" />
-			<include name="org.eclipse.equinox.app.source_*" />
-			<include name="org.eclipse.equinox.common_*" />
-			<include name="org.eclipse.equinox.common.source_*" />
-			<include name="org.eclipse.equinox.http.jetty_*" />
-			<include name="org.eclipse.equinox.http.jetty.source_*" />
-			<include name="org.eclipse.equinox.http.registry_*" />
-			<include name="org.eclipse.equinox.http.registry.source_*" />
-			<include name="org.eclipse.equinox.http.servlet_*" />
-			<include name="org.eclipse.equinox.http.servlet.source_*" />
-			<include name="org.eclipse.equinox.preferences_*" />
-			<include name="org.eclipse.equinox.preferences.source_*" />
-			<include name="org.eclipse.equinox.registry_*" />
-			<include name="org.eclipse.equinox.registry.source_*" />
-			<include name="org.eclipse.osgi.services_*" />
-			<include name="org.eclipse.osgi.services.source_*" />
-			<include name="org.eclipse.osgi_*" />
-			<include name="org.eclipse.osgi.source_*" />
-			<include name="org.mortbay.jetty.util_*" />
-			<include name="org.mortbay.jetty.util.source_*/" />
-			<include name="org.mortbay.jetty.server_*" />
-			<include name="org.mortbay.jetty.server.source_*/" />
-			<include name="org.junit_3*" />
-			<include name="org.junit.source_3*/" />
-			<include name="org.eclipse.jdt.junit.runtime*" />
-		</fileset>
-
-		<!-- copy all the needed plugins + source -->
-		<copy todir="${targetLocation}/eclipse/plugins">
-			<fileset refid="34base" />
-		</copy>
-
-		<!-- zip 3.4 target together -->
-		<zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
-			<fileset dir="${targetLocation}">
-			</fileset>
-		</zip>
-
-	</target>
-
-	<!-- ===================================================================== -->
-	<!-- Steps to do to test the build results -->
-	<!-- ===================================================================== -->
-	<target name="test">
-		<property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
-		<property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
-		<property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
-		<property name="reports.tests" value="${buildDirectory}/tests" />
-		<mkdir dir="${reports.tests}" />
-		<path id="cp">
-			<pathelement location="${host.tests}" />
-			<pathelement location="${fragment.tests}" />
-			<fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
-				<include name="**/*.jar"/>
-			</fileset>
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt/lib/org.w3c.css.sac_1.3.jar" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
-			<fileset dir="${baseLocation}/plugins">
-			    <include name="org.junit_3*/junit.jar"/>
-			</fileset>
-		</path>
-		<!-- run rwt tests -->
-		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="perTest">
-			<jvmarg value="-Dfile.encoding=ISO-8859-1" />
-			<classpath refid="cp" />
-			<formatter type="xml" />
-
-			<batchtest fork="yes" todir="${reports.tests}">
-				<fileset dir="${host.tests}">
-					<include name="**/*_Test.class" />
-				</fileset>
-				<fileset dir="${fragment.tests}">
-					<include name="**/*_Test.class" />
-				</fileset>
-			</batchtest>
-		</junit>
-
-		<!-- create a report -->
-		<mkdir dir="${buildDirectory}/${buildLabel}/reports" />
-		<mkdir dir="${buildDirectory}/${buildLabel}/reports/html" />
-		<junitreport todir="${buildDirectory}/${buildLabel}/reports">
-			<fileset dir="${reports.tests}">
-				<include name="TEST-*.xml" />
-			</fileset>
-			<report format="frames" todir="${buildDirectory}/${buildLabel}/reports/html" />
-		</junitreport>
-	</target>
-
-	<!-- ===================================================================== -->
-	<!-- Steps to do to publish the build results -->
-	<!-- ===================================================================== -->
-	<target name="publish">
-		<property name="buildOuputDirectory" value="${outputDirectory}/${buildType}-${buildId}" />
-		<property name="fBuildLocation" value="${buildDirectory}/${buildLabel}/" />
-		<property name="reports.tests" value="${buildDirectory}/tests" />
-
-		<mkdir dir="${ouputDirectory}" />
-		<mkdir dir="${buildOuputDirectory}" />
-
-		<!-- copy targets -->
-		<copy todir="${buildOuputDirectory}">
-			<fileset dir="${fBuildLocation}">
-				<include name="rap-${targetVersion}-${buildType}-target-*" />
-			</fileset>
-		</copy>
-		<!-- copy test results -->
-		<copydir dest="${buildOuputDirectory}/tests" src="${fBuildLocation}/reports/html">
-		</copydir>
-
-		<!-- copy raw test results -->
-		<copydir dest="${buildOuputDirectory}/testsraw" src="${reports.tests}">
-		</copydir>
-	</target>
-
-	<target name="tidyup">
-		<delete defaultexcludes="false" includeEmptyDirs="true" dir="${buildDirectory}" />
-		<echo>Deleting all working resources</echo>
-	</target>
-
-	<!-- ===================================================================== -->
-	<!-- Default target                                                        -->
-	<!-- ===================================================================== -->
-	<target name="noDefault">
-		<echo message="You must specify a target when invoking this file" />
-	</target>
-
+	 <!-- not used targets -->
+	<target name="tagMapFiles" if="tagMaps"></target>
+	<target name="postSetup"></target>
+	<target name="preFetch"></target>
+	<target name="postFetch"></target>
+	<target name="preGenerate"></target>
+	<target name="preProcess"></target>
+	<target name="postProcess"></target>
+	<target name="preAssemble"></target>
+	<target name="postAssemble"></target>
+	<target name="prePackage"></target>
+	<target name="postPackage"></target>
 </project>

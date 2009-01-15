@@ -7,7 +7,6 @@
 <booleanAttribute key="automaticValidate" value="false"/>
 <stringAttribute key="bad_container_name" value="\org.eclipse.rap.releng\launc"/>
 <stringAttribute key="bootstrap" value=""/>
-<stringAttribute key="checked" value="[NONE]"/>
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
@@ -17,7 +16,7 @@
 <stringAttribute key="location" value="${workspace_loc}/../runtime-New_configuration"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}&#13;&#10;-buildfile &quot;${eclipse_home}/plugins/org.eclipse.pde.build_3.4.0.v20080604/scripts/build.xml&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dbuilder=&quot;${workspace_loc}/org.eclipse.rap.releng&quot;&#13;&#10;-DbaseLocation=&quot;${eclipse_home}&quot;&#13;&#10;-DoutputDirectory=&quot;${workspace_loc}/org.eclipse.rap.releng/build/target&quot;&#13;&#10;-Dbuild.base=&quot;${workspace_loc}/org.eclipse.rap.releng/build/work&quot;&#13;&#10;-DtargetVersion=&quot;0.8.15&quot;&#13;&#10;-DbuildId=&quot;007&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dbuilder=&quot;${workspace_loc}/org.eclipse.rap.releng&quot;&#10;-DbuildId=&quot;007&quot;&#10;-DbuildDirectory=&quot;${workspace_loc}/org.eclipse.rap.releng/build/work&quot;&#10;-DoutputDirectory=&quot;${workspace_loc}/org.eclipse.rap.releng/build/runtime&quot;&#10;-DbuildType=N&#10;-DmapsCheckoutTag=HEAD&#10;-DfetchTag=HEAD&#13;&#10;-DbaseLocation=&quot;${eclipse_home}&quot;"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.sdk.ide"/>
 <booleanAttribute key="show_selected_only" value="false"/>
