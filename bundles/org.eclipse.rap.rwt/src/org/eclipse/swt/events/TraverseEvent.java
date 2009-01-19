@@ -91,6 +91,8 @@ import org.eclipse.swt.widgets.Event;
  */
 public final class TraverseEvent extends KeyEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public static final int KEY_TRAVERSED = SWT.Traverse;
   
   private static final Class LISTENER = TraverseListener.class;
