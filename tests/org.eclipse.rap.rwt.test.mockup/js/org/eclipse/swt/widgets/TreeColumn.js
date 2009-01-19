@@ -129,6 +129,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         this._tree._showResizeLine( position );
         this._resizeStartX = evt.getPageX();
         this.setCapture( true );
+        evt.stopPropagation();
+        evt.preventDefault();
       } else if( this._moveable ){
         this._inMove = true;
         this.setCapture( true );
@@ -138,6 +140,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         this.addState( "moving" );
         this._offsetX = evt.getPageX() - this.getLeft();
         this._initialLeft = this.getLeft();
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     },
 
@@ -150,6 +154,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         this._sendResized( newWidth );
         this._inResize = false;
         this._wasResizeOrMoveEvent = true;
+        evt.stopPropagation();
+        evt.preventDefault();
       } else if( this._inMove ) {
         this._inMove = false;
         this.setCapture( false );
@@ -165,6 +171,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         } else {
           this.setLeft( this._initialLeft );
         }
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     },
 
@@ -185,12 +193,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
           this.getTopLevelWidget().setGlobalCursor( null );
         }
       }
+      evt.stopPropagation();
+      evt.preventDefault();
     },
 
     _onMouseOut : function( evt ) {
       this.removeState( "mouseover" );
       if( !this._inResize ) {
         this.getTopLevelWidget().setGlobalCursor( null );
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -160,6 +160,39 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           border.setUserData( "innerColor", null );
         }
       }
+    },
+
+    // TODO [rst] Replace with a generic "init" method
+    // Fills qx color theme with some named colors necessary for BordersBase
+    fillColors : function( theme ) {
+      var ct = qx.Theme.getByName( theme + "Colors" );
+      ct.colors[ "widget.darkshadow" ]
+        = this._getColor( "Display", {}, "rwt-darkshadow-color", theme );
+      ct.colors[ "widget.highlight" ]
+        = this._getColor( "Display", {}, "rwt-highlight-color", theme );
+      ct.colors[ "widget.lightshadow" ]
+        = this._getColor( "Display", {}, "rwt-lightshadow-color", theme );
+      ct.colors[ "widget.shadow" ]
+        = this._getColor( "Display", {}, "rwt-shadow-color", theme );
+      ct.colors[ "widget.thinborder" ]
+        = this._getColor( "Display", {}, "rwt-thinborder-color", theme );
+      // TODO [rst] eliminate these properties
+      ct.colors[ "widget.selection-marker" ]
+        = this._getColor( "Display", {}, "rwt-selectionmarker-color", theme );
+      ct.colors[ "widget.background" ]
+        = this._getColor( "*", {}, "background-color", theme );
+      ct.colors[ "widget.foreground" ]
+        = this._getColor( "*", {}, "color", theme );
+      ct.colors[ "widget.info.foreground" ]
+        = this._getColor( "ToolTip", {}, "color", theme );
+      ct.colors[ "widget.graytext" ]
+        = this._getColor( "*", { "disabled" : true }, "color", theme );
+    },
+
+    _getColor : function( element, states, property, theme ) {
+      var vkey = this.getCssValue( element, states, property, theme );
+      var values = this.getThemeValues( "_" );
+      return values.colors[ vkey ];
     },
 
     // CSS SUPPORT

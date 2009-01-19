@@ -296,6 +296,11 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     _handleSelectionChange : function( text, enclosingWidget ) {
       var widget = enclosingWidget != null ? enclosingWidget : text;
       var start = text.getSelectionStart();
+      // TODO [rst] Quick fix for bug 258632
+      //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
+      if( start === undefined ) {
+        start = 0;
+      }
       var length = text.getSelectionLength();
       // TODO [rst] Workaround for qx bug 521. Might be redundant as the
       // bug is marked as (partly) fixed.

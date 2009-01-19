@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,37 +46,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
 
   statics : {
-    // Constants used to produce markup that holds the item image
-    IMG_START : "<div ",
-    IMG_STYLE_OPEN : "style=\"position:absolute;overflow:hidden;",
-    IMG_STYLE_CLOSE : "\"",
-    IMG_CLOSE : ">",
-    IMG_SRC_OPEN : "<img src=\"",
-    IMG_SRC_CLOSE : "\" />",
-    IMG_END : "</div>",
-    
-    // Constants used to produce markup that holds the item text
-    TEXT_OPEN : "<div ",
-    TEXT_STYLE_OPEN : "style=\"position:absolute;overflow:hidden;vertical-align:middle;white-space:nowrap;",
-    TEXT_STYLE_CLOSE : "\"",
-    TEXT_CLOSE : ">",
-    TEXT_END : "</div>",
-    
-    // TODO [rh] make border color themeable
-    LINE_BORDER : "border-right:1px solid #eeeeee;",
 
-    TOP : "top:",
-    LEFT : "left:",
-    WIDTH : "width:",
-    HEIGHT : "height:",
-    PX : "px;",
-    
-    TEXT_ALIGN : "text-align:",
-    FONT : "font:",
-    BACKGROUND : "background-color:",
-    FOREGROUND : "color:",
-    
-    STRING_BUILDER : new Array()
+    // TODO [rh] make border color themeable
+    LINE_BORDER : "1px solid #eeeeee",
+
+    PX : "px"
+
   },
   
   members : {
@@ -152,20 +127,19 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._backgrounds = null;
       this._foregrounds = null;
     },
-    
+
     /**
-     * Called by Table when updating visible rows to obtain HTML markup that 
-     * represents the item.
+     * Called by Table when updating visible rows.
      */
-    _getMarkup : function() {
+    _render : function( element ) {
       var parent = this._parent;
-      var markup = new Array();
+      var pos = 0;
       var left = 0;
       var width = 0;
       var columnCount = parent.getColumnCount();
       if( columnCount == 0 ) {
         columnCount = 1;
-      } 
+      }
       var leftOffset = 0;
       if( parent.hasCheckBoxes() ) {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
@@ -176,36 +150,27 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         var background = "";
         // Font
         if( this._fonts && this._fonts[ i ] ) {
-          font
-            = org.eclipse.swt.widgets.TableItem.FONT 
-            + this._fonts[ i ] 
-            + ";";
+          font = this._fonts[ i ];
         }
         // Foreground and background color
         if( this._drawColors() ) {
           if( this._foregrounds && this._foregrounds[ i ] ) {
-            foreground
-              = org.eclipse.swt.widgets.TableItem.FOREGROUND 
-              + this._foregrounds[ i ] 
-              + ";";
-          } else if( !qx.util.ColorUtil.isThemedColor( parent.getTextColor() ) ) {
-            foreground
-              = org.eclipse.swt.widgets.TableItem.FOREGROUND 
-              + parent.getTextColor()
-              + ";";
+            foreground = this._foregrounds[ i ];
+          } else if( !qx.util.ColorUtil.isThemedColor( parent.getTextColor() ) )
+          {
+            foreground = parent.getTextColor();
           }
           if( this._backgrounds && this._backgrounds[ i ] ) {
-            background
-              = org.eclipse.swt.widgets.TableItem.BACKGROUND 
-              + this._backgrounds[ i ] 
-              + ";";
+            background = this._backgrounds[ i ];
           }
         }
         // Draw image
         if( this._images && this._images[ i ] ) {
           left = parent.getItemImageLeft( i );
           width = parent.getItemImageWidth( i );
-          markup.push( this._getImageMarkup( this._images[ i ], left, width, background ) );
+          var node = this._getChildNode( element, pos );
+          pos++;
+          this._renderImage( node, this._images[ i ], left, width, background );
         }
         // Draw text
         if( this._texts[ i ] !== undefined ) {
@@ -216,88 +181,82 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           if( column ) {
             align = column.getHorizontalChildrenAlign();
           }
-          markup.push( this._getTextMarkup( this._texts[ i ], left, width, align, font, foreground, background ) );
+          var node = this._getChildNode( element, pos );
+          pos++;
+          this._renderText( node, this._texts[ i ], left, width, align, font, foreground, background );
         }
       }
-      return markup.join( "" );
+      this._deleteRemainingChildNodes( element, pos );
     },
-    
+
+    _getChildNode : function( element, pos ) {
+      var result;
+      if( element.childNodes.length > pos ) {
+        result = element.childNodes[ pos ];
+      } else {
+        result = document.createElement( "div" );
+        element.appendChild( result );
+      }
+      return result;
+    },
+
+    _deleteRemainingChildNodes : function( element, start ) {
+      for( var i = start; i < element.childNodes.length; i++ ) {
+        element.removeChild( element.childNodes[ start ] );
+      }
+    },
+
     _drawColors : function() {
       var enabled = this._parent.getEnabled();
       var selected = this._parent._isItemSelected( this._getIndex() );
       return enabled && ( this._parent._hideSelection || !selected );
     },
-    
-    _getImageMarkup : function( image, left, width, background ) {
-      var result = "";
-      if( image != null ) {
-        var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
-        buffer.length = 0;
-        // TODO [rh] replace div/img markup with only a div with a bg-image
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_START );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_STYLE_OPEN );
-          buffer.push( org.eclipse.swt.widgets.TableItem.TOP );
-          buffer.push( "0" ); 
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
-        buffer.push( org.eclipse.swt.widgets.TableItem.LEFT );
-          buffer.push( left );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
-        buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH );
-          buffer.push( width );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
-        buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT );
-          buffer.push( this._parent.getItemHeight() );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-        buffer.push( background );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_STYLE_CLOSE );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_CLOSE );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN );
-        buffer.push( image );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_CLOSE );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_END );
-        result = buffer.join( "" );
-      }
-      return result;
+
+    _renderImage : function( node, image, left, width, background ) {
+      node.innerHTML = "";
+      node.style.position = "absolute";
+      node.style.overflow = "hidden";
+      node.style.top = "0px";
+      node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.height = this._parent.getItemHeight()
+                          + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.backgroundColor = background;
+      node.style.backgroundImage = "url(" + image + ")";
+      node.style.backgroundRepeat = "no-repeat";
+      node.style.backgroundPosition = "center";
+      node.style.borderRight = "";
     },
 
-    _getTextMarkup : function( text, left, width, align, font, foreground, background ) {
-      var border 
-        = this._parent.getLinesVisible() 
-        ? org.eclipse.swt.widgets.TableItem.LINE_BORDER 
-        : "";
-      var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
-      buffer.length = 0;
-      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_OPEN );
-      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_OPEN );
-      buffer.push( org.eclipse.swt.widgets.TableItem.TOP ); 
-        buffer.push( "0" );
-        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-      buffer.push( org.eclipse.swt.widgets.TableItem.LEFT ); 
-        buffer.push( left ); 
-        buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
-      buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH ); 
-        buffer.push( width );
-        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-      buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT ); 
-        buffer.push( this._parent.getItemHeight() );
-        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
-      buffer.push( font );  
-      buffer.push( foreground );
-      buffer.push( background );
-      buffer.push( border );
-      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_ALIGN ); 
-        buffer.push( align );
-      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE );
-      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_CLOSE );
-      buffer.push( text );
-      buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_END );
-      return buffer.join( "" );;
+    _renderText : function( node, text, left, width, align, font, foreground, background )
+    {
+      node.innerHTML = text;
+      node.style.position = "absolute";
+      node.style.overflow = "hidden";
+      node.style.top = "0px";
+      node.style.textAlign = align;
+      node.style.verticalAlign = "middle";
+      node.style.whiteSpace = "nowrap";
+      node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.height = this._parent.getItemHeight()
+                          + org.eclipse.swt.widgets.TableItem.PX;
+      if( font != "" ) {
+        // TODO [rst] problem in IE: font cannot be reset
+        node.style.font = font;
+      }
+      node.style.color = foreground;
+      node.style.backgroundColor = background;
+      node.style.backgroundImage = "none";
+      var border = this._parent.getLinesVisible()
+                   ? org.eclipse.swt.widgets.TableItem.LINE_BORDER
+                   : "";
+      node.style.borderRight = border;
     },
-    
+
     _getIndex : function() {
       // TODO [rh] improve this: don't access internal structures of Table
       return this._parent._items.indexOf( this );
     }
-
   }
 });

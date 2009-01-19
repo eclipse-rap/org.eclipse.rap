@@ -16988,9 +16988,6 @@ return !vValidator||vValidator(this.getValue());
 isComputedValid:function(){var vValidator=this.getValidator();
 return !vValidator||vValidator(this.getComputedValue());
 },
-_visualPropertyCheck:function(){this.base(arguments);
-if(!this.getVisibility()){throw new Error(this.classname+": Element must be visible!");
-}},
 _computePreferredInnerWidth:function(){return 120;
 },
 _computePreferredInnerHeight:function(){return 16;

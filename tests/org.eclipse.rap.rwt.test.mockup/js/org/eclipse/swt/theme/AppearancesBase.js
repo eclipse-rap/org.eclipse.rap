@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,8 +65,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "client-document" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : "widget.font",
+        font : tv.getCssFont( "*", "font" ),
         textColor : "black",
         backgroundColor : "white",
         // TODO [rst] Eliminate absolute references
@@ -164,12 +165,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "popup",
 
     style : function( states ) {
-      return {
-        backgroundColor : "widget.info.background",
-        textColor       : "widget.info.foreground",
-        border          : "info",
-        padding         : [ 1, 3, 2, 3 ]
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = "info";
+      result.padding = [ 1, 3, 2, 3 ];
+      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.textColor = tv.getCssColor( "ToolTip", "color" );
+      return result;
     }
   },
 
@@ -579,7 +581,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                           : null
       };
       if( states.disabled ) {
-        result.backgroundColor = tv.getColor( "toolbar.background" );
+        result.backgroundColor = tv.getCssColor( "ToolBar", "background-color" );
         result.textColor = tv.getColor( "widget.graytext" );
       } else {
         result.backgroundColor = tv.getCssColor( "MenuItem", "background-color" );
@@ -675,10 +677,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "inset",
-        backgroundColor : tv.getCssColor( "Text", "background-color" ),
-        textColor : tv.getCssColor( "Text", "color" ),
-        font : tv.getCssFont( "Text", "font" )
+        border : tv.getCssBorder( "Combo", "border" ),
+        backgroundColor : tv.getCssColor( "Combo", "background-color" ),
+        textColor : tv.getCssColor( "Combo", "color" ),
+        font : tv.getCssFont( "Combo", "font" )
       };
     }
   },
@@ -700,8 +702,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         height    : "auto",
         border    : "shadow",
-        textColor : tv.getCssColor( "List", "color" ),
-        backgroundColor : tv.getCssColor( "List", "background-color" )
+        textColor : tv.getCssColor( "Combo", "color" ),
+        backgroundColor : tv.getCssColor( "Combo", "background-color" )
       };
     }
   },
@@ -714,22 +716,21 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getCssBoxDimensions( "Text", "padding" ),
         textColor : states.disabled
                     ? tv.getColor( "widget.graytext" )
-                    : tv.getCssColor( "List", "color" ),
-        backgroundColor : tv.getCssColor( "List", "background-color" )
+                    : tv.getCssColor( "Combo", "color" ),
+        backgroundColor : tv.getCssColor( "Combo", "background-color" )
       };
     }
   },
 
-  // Used both for ComboBox and ComboBoxEx
   "combo-box-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "thinOutset",
-        width : 14,        
+        border : tv.getCssBorder( "Combo-Button", "border" ),
+        width : 14,
         icon : tv.getCssImage( "Combo-Button", "background-image" ),
         // TODO [rst] rather use button.bgcolor?
-        backgroundColor : tv.getColor( "widget.background" )
+        backgroundColor : tv.getCssColor( "Combo-Button", "background-color" )
       };
     }
   },
@@ -945,14 +946,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
       var border_top_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       border_top_checked.setWidthBottom( 0 );
-      border_top_checked.setTop( 3, "solid", "widget.selection-marker" );
+      var top_color = tv.getCssColor( "TabItem", "border-top-color" );
+      border_top_checked.setTop( 3, "solid", top_color );
 
       var border_bottom_normal = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       border_bottom_normal.setWidthTop( 0 );
 
       var border_bottom_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
       border_bottom_checked.setWidthTop( 0 );
-      border_bottom_checked.setBottom( 3, "solid", "widget.selection-marker" );
+      var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
+      border_bottom_checked.setBottom( 3, "solid", bottom_color );
 
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
@@ -1206,9 +1209,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor : "default",
-        border : states.lines ? "table.row.horizontalLine" : "undefined"
+        cursor : "default"
       };
+//      border : states.lines ? "table.row.horizontalLine" : "undefined"
+      if( states.lines ) {
+        // TODO [rst] Optimize: this function might be called a few times,
+        //            the border can be cached somewhere
+        var border = new qx.ui.core.Border( 0 );
+        border.setColor( tv.getCssColor( "Table-GridLine", "color" ) );
+        border.setWidthTop( 1 );
+        border.setWidthBottom( 1 );
+        result.border = border;
+      }
       result.textColor = states.disabled
                          ? tv.getColor( "widget.graytext" )
                          : "undefined";
@@ -1439,9 +1451,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "coolitem-handle" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.width = "100%";
-      result.border = "thinOutset";
+      if( states.vertical ) {
+        result.height = tv.getCssDimension( "CoolItem-Handle", "width" );
+      } else {      
+        result.width = tv.getCssDimension( "CoolItem-Handle", "width" );
+      }
+      result.border = tv.getCssBorder( "CoolItem-Handle", "border" );
       result.margin = [ 1, 2, 1, 0 ];
       result.cursor = "w-resize";
       return result;
@@ -1531,23 +1548,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "progressbar" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "ProgressBar", "border" ),
-        backgroundColor : tv.getCssColor( "ProgressBar", "background-color" ),
-        backgroundImage : tv.getCssImage( "ProgressBar", "background-image" )
-      }
+      var result = {};
+      result.border = tv.getCssBorder( "ProgressBar", "border" );
+      result.backgroundColor = tv.getCssColor( "ProgressBar",
+                                               "background-color" );
+      result.backgroundImage = tv.getCssImage( "ProgressBar",
+                                               "background-image" );
+      return result;
     }
   },
 
-  "progressbar-bar" : {
+  "progressbar-indicator" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        backgroundColor : tv.getCssColor( "ProgressBar-Indicator",
-                                          "background-color" ),
-        backgroundImage : tv.getCssImage( "ProgressBar-Indicator",
-                                          "background-image" )
-      }
+      var result = {};
+      result.backgroundColor = tv.getCssColor( "ProgressBar-Indicator",
+                                               "background-color" );
+      result.backgroundImage = tv.getCssImage( "ProgressBar-Indicator",
+                                               "background-image" );
+      return result;
     }
   },
 
@@ -1946,8 +1965,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "Slider-MinButton", "background-color" );
-      result.icon = tv.getCssImage( "Slider-MinButton", "background-image" );
+      result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
+      result.icon = tv.getCssImage( "Slider-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "Slider-DownButton", "border" );
       if( states.horizontal ){
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       } else {
@@ -1962,8 +1982,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "Slider-MaxButton", "background-color" );
-      result.icon = tv.getCssImage( "Slider-MaxButton", "background-image" );
+      result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
+      result.icon = tv.getCssImage( "Slider-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "Slider-UpButton", "border" );
       if( states.horizontal ){        
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       } else {

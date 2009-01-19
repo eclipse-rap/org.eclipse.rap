@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,81 +15,69 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
 
   borders : {
 
-    "black" :
-    {
+    "black" : {
       width : 1,
       color : "black"
     },
 
-    "shadow" :
-    {
+    "shadow" : {
       width : 1,
       color : "widget.shadow"
     },
 
-    "lightShadow" :
-    {
+    "lightShadow" : {
       width : 1,
       color : "widget.lightshadow"
     },
 
     // border for tooltips
-    "info" :
-    {
+    "info" : {
       width : 1,
       color : "widget.info.foreground"
     },
 
-    "inset" :
-    {
+    "inset" : {
       width : 2,
       color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ],
       innerColor : [ "widget.darkshadow", "widget.lightshadow", "widget.lightshadow", "widget.darkshadow" ]
     },
 
-    "outset" :
-    {
+    "outset" : {
       width : 2,
       color : [ "widget.lightshadow", "widget.darkshadow", "widget.darkshadow", "widget.lightshadow" ],
       innerColor : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
     },
 
-    "groove" :
-    {
+    "groove" : {
       width : 2,
       color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ],
       innerColor : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
     },
 
-    "ridge" :
-    {
+    "ridge" : {
       width : 2,
       color : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ],
       innerColor : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ]
     },
 
-    "thinInset" :
-    {
+    "thinInset" : {
       width : 1,
       color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ]
     },
 
-    "thinOutset" :
-    {
+    "thinOutset" : {
       width : 1,
       color : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
     },
 
-    "verticalDivider" :
-    {
+    "verticalDivider" : {
       widthTop : 1,
       widthBottom : 1,
       colorTop: "widget.shadow",
       colorBottom : "widget.highlight"
     },
 
-    "horizontalDivider" :
-    {
+    "horizontalDivider" : {
       widthLeft : 1,
       widthRight : 1,
       colorLeft : "widget.highlight",
@@ -118,62 +106,62 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.selection-marker", "widget.thinborder" ]
     },
-    
-    "table.row.horizontalLine" : {
-      widthTop : 1,
-      widthBottom : 1,
-      colorTop : "table.row.line",
-      colorBottom : "table.row.line"
-    },
-    
+
+//    "table.row.horizontalLine" : {
+//      widthTop : 1,
+//      widthBottom : 1,
+//      colorTop : "table.row.line",
+//      colorBottom : "table.row.line"
+//    },
+
     // -- tree --
     "tree.column.border" : {
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.thinborder", "widget.thinborder" ]
     },
-    
+
     "tree.column.hover.border" : {
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.selection-marker", "widget.thinborder" ]
     },
-    
+
     // -- separator --
-    
+
     "separator.shadowin.horizontal.border" : {
       widthTop : 1,
       widthBottom : 1,
       colorTop : "widget.lightshadow",
       colorBottom : "widget.highlight"
     },
-    
+
     "separator.shadowin.vertical.border" : {
       widthLeft : 1,
       widthRight : 1,
       colorLeft : "widget.lightshadow",
       colorRight : "widget.highlight"
     },
-    
+
     "separator.shadowout.horizontal.border" : {
       widthTop : 1,
       widthBottom : 1,
       colorTop : "widget.highlight",
       colorBottom : "widget.shadow"
     },
-    
+
     "separator.shadowout.vertical.border" : {
       widthLeft : 1,
       widthRight : 1,
       colorLeft : "widget.highlight",
       colorRight : "widget.shadow"
     },
-    
+
     // -- ctabfolder --
-    
+
     "ctabfolder.border" : {
       width : 1,
       color : "#c0c0c0"
     },
-    
+
     "ctabfolder.button.border" : {
       width : 1,
       color : "#c0c0c0"

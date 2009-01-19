@@ -497,6 +497,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         helpDate.setDate(firstSundayInMonth + day);
         
         var weekdayName = org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES[ helpDate.getDay() + 1 ];
+        weekdayName = weekdayName.substring( 0, 3 );
         
         dayLabel.setText( weekdayName );
 
