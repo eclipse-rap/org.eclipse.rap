@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -452,27 +452,27 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var row = evt.getTarget();
       var rowIndex = this._rows.indexOf( row );
       var itemIndex = this._topIndex + rowIndex;
-      if(    itemIndex >= 0 
+      if(    itemIndex >= 0
           && itemIndex < this._itemCount
           && this._items[ itemIndex ]
-          && this._suspendClicksOnRow != row ) 
+          && this._suspendClicksOnRow != row )
       {
         this._suspendClicksOnRow = row;
         qx.client.Timer.once( this._resumeClicks, 
                               this,
                               org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         if( this._multiSelect ) {
-          this._onMultiSelectRowClick( evt, itemIndex )
+          this._onMultiSelectRowClick( evt, itemIndex );
         } else {
           this._setSingleSelection( itemIndex );
         }
         this.setFocusIndex( itemIndex );
-        this._makeItemFullyVisible( itemIndex );        
+        this._makeItemFullyVisible( itemIndex );
         this._updateSelectionParam();
         this.createDispatchDataEvent( "itemselected", itemIndex );
       }
     },
-    
+
     _onMultiSelectRowClick : function( evt, itemIndex ) {
       if( evt.isRightButtonPressed() ) {
         if( !this._isItemSelected( itemIndex ) ) {
@@ -524,16 +524,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _setSingleSelection : function( itemIndex ) {
       this._clearSelection();
       this._selectItem( itemIndex );
     },
-    
+
     _resumeClicks : function() {
       this._suspendClicksOnRow = null;
     },
-    
+
     _onRowDblClick : function( evt ) {
       var rowIndex = this._rows.indexOf( evt.getTarget() );
       var itemIndex = this._getItemIndexFromRowIndex( rowIndex );
@@ -541,7 +541,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this.createDispatchDataEvent( "itemdefaultselected", itemIndex );
       }
     },
-    
+
     _onRowContextMenu : function( evt ) {
       if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
           || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) ) 
@@ -1080,24 +1080,36 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._updateRow( i, this._getItemIndexFromRowIndex( i ) );
       }
     },
-    
+
     _updateRow : function( rowIndex, itemIndex ) {
       var row = this._rows[ rowIndex ];
       if( itemIndex >= 0 && itemIndex < this._itemCount ) {
         var item = this._items[ itemIndex ];
         if( item === undefined || ( item !== null && !item.getCached() ) ) {
           this._resolveItem( this._topIndex + rowIndex );
-          row.setHtml( this._virtualItem._getMarkup() );
+          this._renderItem( row, this._virtualItem );
           row.setItemIndex( -1 );
         } else {
-          row.setHtml( item._getMarkup() );
+          this._renderItem( row, item );
           row.setItemIndex( itemIndex );
         }
       } else {
-        row.setHtml( this._emptyItem._getMarkup() );
+        this._renderItem( row, this._emptyItem );
         row.setItemIndex( -1 );
       }
       this._updateRowState( rowIndex, itemIndex );
+    },
+
+    _renderItem : function( row, item ) {
+      if( row.isCreated() ) {
+        item._render( row.getElement() );
+      } else {
+        var f = function() {
+          item._render( row.getElement() );
+          row.removeEventListener( "create", f );
+        }
+        row.addEventListener( "create", f );
+      }
     },
 
     _updateRowState : function( rowIndex, itemIndex ) {
@@ -1142,7 +1154,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _resolveItem : function( itemIndex ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         if( this._unresolvedItems === null ) {
