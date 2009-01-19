@@ -1104,11 +1104,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( row.isCreated() ) {
         item._render( row.getElement() );
       } else {
-        var f = function() {
+        var listener = function() {
           item._render( row.getElement() );
-          row.removeEventListener( "create", f );
-        }
-        row.addEventListener( "create", f );
+          row.removeEventListener( "create", listener );
+        };
+        row.addEventListener( "create", listener );
       }
     },
 
