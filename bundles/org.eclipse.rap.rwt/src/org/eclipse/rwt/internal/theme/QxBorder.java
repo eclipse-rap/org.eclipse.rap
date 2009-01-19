@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,8 +8,8 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
+
 
 public class QxBorder implements QxType {
 
@@ -29,18 +29,6 @@ public class QxBorder implements QxType {
   };
 
   // TODO [rst] Implement properties for left, right, etc.
-
-  private static final String DARKSHADOW_LIGHTSHADOW
-    = getBorderColors( "widget.darkshadow", "widget.lightshadow" );
-
-  private static final String LIGHTSHADOW_DARKSHADOW
-    = getBorderColors( "widget.lightshadow", "widget.darkshadow" );
-
-  private static final String SHADOW_HIGHLIGHT
-    = getBorderColors( "widget.shadow", "widget.highlight" );
-
-  private static final String HIGHLIGHT_SHADOW
-    = getBorderColors( "widget.highlight", "widget.shadow" );
 
   public final int width;
 
@@ -137,57 +125,6 @@ public class QxBorder implements QxType {
     return result;
   }
 
-  /**
-   * Returns the colors to pass to qx for use default widget colors for 3d
-   * borders. When a 3d border style is used and no color has been set, this
-   * method returns an array of the default widget colors for the style.
-   */
-  public String getQxColors() {
-    String result = null;
-    if( color == null && width == 2 ) {
-      if( "outset".equals( style ) ) {
-        result = LIGHTSHADOW_DARKSHADOW;
-      } else if( "inset".equals( style ) ) {
-        result = SHADOW_HIGHLIGHT;
-      } else if( "ridge".equals( style ) ) {
-        result = HIGHLIGHT_SHADOW;
-      } else if( "groove".equals( style ) ) {
-        result = SHADOW_HIGHLIGHT;
-      }
-    } else if( color == null && width == 1 ) {
-      if( "outset".equals( style ) ) {
-        result = HIGHLIGHT_SHADOW;
-      } else if( "inset".equals( style ) ) {
-        result = SHADOW_HIGHLIGHT;
-      }
-    }
-    if( result == null ) {
-      result = color == null ? null : "\"" + color + "\"";
-    }
-    return result;
-  }
-
-  /**
-   * Returns the inner colors to pass to qx for use default widget colors for 3d
-   * borders. When a 3d border style is used and no color has been set, this
-   * method returns an array of the default widget colors for the style.
-   */
-  public String getQxInnerColors() {
-    String result = null;
-    if( color == null && width == 2 ) {
-      if( "outset".equals( style ) ) {
-        result = HIGHLIGHT_SHADOW;
-      } else if( "inset".equals( style ) ) {
-        result = DARKSHADOW_LIGHTSHADOW;
-      } else if( "ridge".equals( style ) ) {
-        result = SHADOW_HIGHLIGHT;
-      } else if( "groove".equals( style ) ) {
-        result = HIGHLIGHT_SHADOW;
-      }
-    }
-    return result;
-  }
-
   public String toDefaultString() {
     StringBuffer result = new StringBuffer();
     if( width == 0 ) {
@@ -240,20 +177,6 @@ public class QxBorder implements QxType {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc.
     //            exist
     return "QxBorder{ " + width + ", " + style + ", " + color + " }";
-  }
-
-  private static String getBorderColors( final String color1, final String color2 ) {
-    StringBuffer result = new StringBuffer();
-    result.append( "[ \"");
-    result.append( color1 );
-    result.append( "\", \"");
-    result.append( color2 );
-    result.append( "\", \"");
-    result.append( color2 );
-    result.append( "\", \"");
-    result.append( color1 );
-    result.append( "\" ]");
-    return result.toString();
   }
 
   private static String parseStyle( final String part ) {

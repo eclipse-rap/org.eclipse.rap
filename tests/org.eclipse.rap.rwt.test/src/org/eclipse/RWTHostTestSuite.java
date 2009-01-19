@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -183,8 +183,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( JsonObject_Test.class );
     suite.addTestSuite( JsonValue_Test.class );
     suite.addTestSuite( StyleSheet_Test.class );
-    suite.addTestSuite( PropertySupport_Test.class );
     suite.addTestSuite( WidgetMatcher_Test.class );
+    suite.addTestSuite( SimpleSelector_Test.class );
     suite.addTestSuite( ThemeCssValuesMap_Test.class );
     suite.addTestSuite( AbstractThemeAdapter_Test.class );
     suite.addTestSuite( ControlThemeAdapter_Test.class );

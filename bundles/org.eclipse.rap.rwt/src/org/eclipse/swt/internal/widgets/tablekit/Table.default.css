@@ -31,7 +31,7 @@ TableColumn-SortIndicator:down {
   background-image: url( resource/widget/rap/column/down.gif );
 }
 
-Table-Gridline {
+Table-GridLine {
   color: rgb( 238, 238, 238 );
 }
 

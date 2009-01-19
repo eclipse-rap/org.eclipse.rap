@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +22,7 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.internal.theme.QxColor;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
@@ -758,77 +757,110 @@ public class Display extends Device implements Adaptable {
   public Color getSystemColor( final int id ) {
     checkDevice();
     Color result = null;
-    String key = null;
+    QxType value = null;
     switch( id ) {
       case SWT.COLOR_WIDGET_DARK_SHADOW:
-        key = "widget.darkshadow";
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-darkshadow-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_WIDGET_NORMAL_SHADOW:
-        key = "widget.shadow";
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-shadow-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_WIDGET_LIGHT_SHADOW:
-        key = "widget.lightshadow";
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-lightshadow-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW:
-        key = "widget.highlight";
-      break;
-      case SWT.COLOR_WIDGET_BACKGROUND:
-        key = "widget.background";
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-highlight-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_WIDGET_BORDER:
-        // TODO [rst] Clarify the meaning of this constant
-        key = "widget.thinborder";
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-thinborder-color",
+                                       SimpleSelector.DEFAULT );
+      break;
+      case SWT.COLOR_WIDGET_BACKGROUND:
+        // TODO [rst] Revise element name
+        value = ThemeUtil.getCssValue( "NONE",
+                                       "background-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_WIDGET_FOREGROUND:
-        key = "widget.foreground";
+        // TODO [rst] Revise element name
+        value = ThemeUtil.getCssValue( "NONE", "color", SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_LIST_FOREGROUND:
-        key = "list.foreground";
+        value = ThemeUtil.getCssValue( "List", "color", SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_LIST_BACKGROUND:
-        key = "list.background";
+        value = ThemeUtil.getCssValue( "List",
+                                       "background-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_LIST_SELECTION:
-        key = "list.selection.background";
+        value = ThemeUtil.getCssValue( "List-Item",
+                                       "background-color",
+                                       SimpleSelector.SELECTED );
       break;
       case SWT.COLOR_LIST_SELECTION_TEXT:
-        key = "list.selection.foreground";
+        value = ThemeUtil.getCssValue( "List-Item",
+                                       "color",
+                                       SimpleSelector.SELECTED );
       break;
       case SWT.COLOR_INFO_FOREGROUND:
-        key = "widget.info.foreground";
+        value = ThemeUtil.getCssValue( "ToolTip",
+                                       "color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_INFO_BACKGROUND:
-        key = "widget.info.background";
+        value = ThemeUtil.getCssValue( "ToolTip",
+                                       "background-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_TITLE_FOREGROUND:
-        key = "shell.title.foreground";
-      break;
-      case SWT.COLOR_TITLE_BACKGROUND:
-        key = "shell.title.background";
-      break;
-      case SWT.COLOR_TITLE_BACKGROUND_GRADIENT:
-        key = "shell.title.background.gradient";
+        value = ThemeUtil.getCssValue( "Shell-Titlebar",
+                                       "color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_TITLE_INACTIVE_FOREGROUND:
-        key = "shell.title.inactive.foreground";
+        value = ThemeUtil.getCssValue( "Shell-Titlebar",
+                                       "color",
+                                       SimpleSelector.INACTIVE );
+      break;
+      case SWT.COLOR_TITLE_BACKGROUND:
+        value = ThemeUtil.getCssValue( "Shell-Titlebar",
+                                       "background-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_TITLE_INACTIVE_BACKGROUND:
-        key = "shell.title.inactive.background";
+        value = ThemeUtil.getCssValue( "Shell-Titlebar",
+                                       "background-color",
+                                       SimpleSelector.INACTIVE );
+      break;
+      case SWT.COLOR_TITLE_BACKGROUND_GRADIENT:
+        value = ThemeUtil.getCssValue( "Shell-Titlebar",
+                                       "background-gradient-color",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT:
-        key = "shell.title.inactive.background.gradient";
+        value = ThemeUtil.getCssValue( "Shell-Titlebar",
+                                       "background-gradient-color",
+                                       SimpleSelector.INACTIVE );
       break;
       default:
         result = super.getSystemColor( id );
     }
-    if( key != null ) {
-      QxColor themeColor = ThemeUtil.getTheme().getColor( key, null );
-      result = QxColor.createColor( themeColor );
-    }
-    if( result == null ) {
-      // Should never happen as the theming must prevent transparency for system
-      // colors
-      throw new IllegalStateException( "Transparent system color" );
+    if( value != null ) {
+      result = QxColor.createColor( ( QxColor )value );
+      if( result == null ) {
+        // TODO [rst] Revise: theming must prevent transparency for system colors
+        throw new IllegalArgumentException( "Transparent system color" );
+      }
     }
     return result;
   }

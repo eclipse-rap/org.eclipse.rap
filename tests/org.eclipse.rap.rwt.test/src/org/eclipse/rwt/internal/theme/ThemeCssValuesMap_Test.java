@@ -104,6 +104,6 @@ public class ThemeCssValuesMap_Test extends TestCase {
     manager.initialize();
     ThemeableWidget buttonWidget = manager.getThemeableWidget( Button.class );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    result.init( buttonWidget.elements[ 0 ], styleSheet );
+    result.initElement( buttonWidget.elements[ 0 ], styleSheet );
   }
 }

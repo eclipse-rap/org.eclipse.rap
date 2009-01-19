@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,8 @@ public class ThemeCssValuesMap {
     map = new HashMap();
   }
 
-  public void init( final IThemeCssElement element, final StyleSheet styleSheet )
+  public void initElement( final IThemeCssElement element,
+                           final StyleSheet styleSheet )
   {
     String elementName = element.getName();
     IThemeCssProperty[] properties = element.getProperties();
@@ -45,11 +46,11 @@ public class ThemeCssValuesMap {
   public ConditionalValue[] getValues( final String elementName,
                                        final String propertyName )
   {
-    ConditionalValue[] result;
-    result = ( ConditionalValue[] )map.get( getKey( elementName, propertyName ) );
+    ConditionalValue[] result
+      = ( ConditionalValue[] )map.get( new Key( elementName, propertyName ) );
     // if element name is unknown, resort to * rules
     if( result == null ) {
-      result = ( ConditionalValue[] )map.get( getKey( "*", propertyName ) );
+      result = ( ConditionalValue[] )map.get( new Key( "*", propertyName ) );
     }
     return result;
   }
@@ -77,12 +78,7 @@ public class ThemeCssValuesMap {
                     final String propertyName,
                     final ConditionalValue[] values )
   {
-    map.put( getKey( elementName, propertyName ), values );
-  }
-
-  private String getKey( final String elementName, final String propertyName ) {
-    // TODO [rst] Improve
-    return elementName + "/" + propertyName;
+    map.put( new Key( elementName, propertyName ), values );
   }
 
   private static boolean matches( final IThemeCssElement element,
@@ -114,5 +110,38 @@ public class ThemeCssValuesMap {
       }
     }
     return result;
+  }
+
+  private static class Key {
+
+    private final String element;
+
+    private final String property;
+
+    private final int hashCode;
+
+    public Key( final String element, final String property ) {
+      this.element = element;
+      this.property = property;
+      hashCode = element.hashCode() ^ property.hashCode();
+    }
+
+    public boolean equals( final Object obj ) {
+      boolean result;
+      if( obj == this ) {
+        result = true;
+      } else if( obj.getClass() == getClass() ) {
+        Key other = ( Key )obj;
+        result = element.equals( other.element )
+                 && property.equals( other.property );
+      } else {
+        result = false;
+      }
+      return result;
+    }
+
+    public int hashCode() {
+      return hashCode;
+    }
   }
 }

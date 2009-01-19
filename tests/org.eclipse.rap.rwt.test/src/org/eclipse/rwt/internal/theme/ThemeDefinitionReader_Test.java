@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,7 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
 
 import junit.framework.TestCase;
 
@@ -21,43 +19,11 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ThemeDefinitionReader_Test extends TestCase {
 
-  private static final String WIDGET_THEME_FILE
-    = "org/eclipse/swt/internal/widgets/widgetkit/Widget.theme.xml";
-
   private static final String BUTTON_THEME_FILE
     = "org/eclipse/swt/internal/widgets/buttonkit/Button.theme.xml";
   
   private static final String SHELL_THEME_FILE
   = "org/eclipse/swt/internal/widgets/shellkit/Shell.theme.xml";
-
-  public void testReadOld() throws Exception {
-    final ClassLoader classLoader = Widget.class.getClassLoader();
-    InputStream is = classLoader.getResourceAsStream( WIDGET_THEME_FILE );
-    ResourceLoader loader = new ResourceLoader() {
-
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        return classLoader.getResourceAsStream( WIDGET_THEME_FILE );
-      }
-    };
-    ThemeDefinitionReader reader
-      = new ThemeDefinitionReader( is, "test", loader );
-    try {
-      reader.read();
-    } finally {
-      is.close();
-    }
-    ThemeProperty[] properties = reader.getThemeProperties();
-    Map propertyMap = new HashMap();
-    for( int i = 0; i < properties.length; i++ ) {
-      ThemeProperty prop = properties[ i ];
-      propertyMap.put( prop.name, prop.defValue );
-    }
-    Set keys = propertyMap.keySet();
-    assertTrue( keys.size() > 0 );
-    assertTrue( propertyMap.get( "widget.background" ) instanceof QxColor );
-  }
 
   public void testReadCss() throws Exception {
     ClassLoader loader = Widget.class.getClassLoader();

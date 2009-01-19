@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,16 +172,16 @@ public class QxTheme {
       code.append( style );
       code.append( "\"" );
     }
-    String colors = border.getQxColors();
-    if( colors != null ) {
-      code.append( ", color : " );
-      code.append( colors );
-    }
-    String innerColor = border.getQxInnerColors();
-    if( innerColor != null ) {
-      code.append( ", innerColor : " );
-      code.append( innerColor );
-    }
+//    String colors = border.getQxColors();
+//    if( colors != null ) {
+//      code.append( ", color : " );
+//      code.append( colors );
+//    }
+//    String innerColor = border.getQxInnerColors();
+//    if( innerColor != null ) {
+//      code.append( ", innerColor : " );
+//      code.append( innerColor );
+//    }
     code.append( " }" );
     afterWriteValue();
   }

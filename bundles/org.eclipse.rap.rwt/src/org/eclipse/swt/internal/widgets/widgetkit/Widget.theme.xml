@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <!--
- Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
      Innoopract Informationssysteme GmbH - initial API and implementation
  -->
 
-<theme css-elements="NONE">
+<theme>
 
   <element name="Display">
 
@@ -89,83 +89,5 @@
     <property name="border" type="border"/>
 
   </element>
-
-
-  <!-- C O M P A T I B I L I T Y
-
-    The following section is needed to maintain the deprecated property-based
-    theming.
-
-    -->
-
-  <color name="widget.foreground"
-      description="Default text color"
-      default="0, 0, 0"
-      css-property="color" />
-
-  <color name="widget.graytext"
-      description="Color for text on disabled widgets"
-      default="167, 166, 170"
-      css-property="color"
-      css-selectors=":disabled" />
-
-  <!-- 235, 233, 237  == shell.background, control.background ? -->
-  <color name="widget.background"
-      description="Default background color for widgets"
-      default="248, 248, 255"
-      css-property="background-color" />
-
-  <font name="widget.font"
-      description="Default font for most widgets"
-      default="11 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"
-      css-property="font" />
-
-  <color name="widget.info.background"
-      description="Background color for tooltips"
-      default="255, 255, 225"
-      css-elements="Tooltip"
-      css-property="background-color" />
-
-  <color name="widget.info.foreground"
-      description="Text color for tooltips"
-      default="0, 0, 0"
-      css-elements="Tooltip"
-      css-property="color" />
-
-  <color name="widget.shadow"
-      description="Color used to draw (outer) shadow line in 3d borders"
-      default="167, 166, 170"
-      css-elements="Display"
-      css-property="rwt-shadow-color" />
-
-  <color name="widget.highlight"
-      description="Color used to draw (outer) highlight line in 3d borders"
-      default="255, 255, 255"
-      css-elements="Display"
-      css-property="rwt-highlight-color" />
-
-  <color name="widget.darkshadow"
-      description="Color used to draw (inner) shadow line in 3d borders"
-      default="133, 135, 140"
-      css-elements="Display"
-      css-property="rwt-darkshadow-color" />
-
-  <color name="widget.lightshadow"
-      description="Color used to draw (inner) highlight line in 3d borders"
-      default="220, 223, 228"
-      css-elements="Display"
-      css-property="rwt-lightshadow-color" />
-
-  <color name="widget.thinborder"
-      description="Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."
-      default="172, 168, 153"
-      css-elements="Display"
-      css-property="rwt-thinborder-color" />
-
-  <color name="widget.selection-marker"
-      description="Color used to mark selected items like TreeColumns and TabViews"
-      default="254, 200, 60"
-      css-elements="Display"
-      css-property="rwt-selectionmarker-color" />
 
 </theme>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 
 public class Theme_Test extends TestCase {
 
-  public void testGetSetValues() throws Exception {
+  public void testGetSetValues() {
     Theme defTheme = new Theme( "Default Theme" );
     QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );
     QxBorder qxBorder2 = QxBorder.valueOf( "2 solid green" );
@@ -54,7 +54,7 @@ public class Theme_Test extends TestCase {
     assertEquals( qxBorder2, theme.getValue( "foo.border" ) );
   }
 
-  public void testGetSetTypedValues() throws Exception {
+  public void testGetSetTypedValues() {
     Theme theme;
     theme = new Theme( "foo" );
     QxBorder qxBorder = QxBorder.valueOf( "1 solid blue" );
@@ -77,7 +77,7 @@ public class Theme_Test extends TestCase {
     }
   }
 
-  public void testGetKeys() throws Exception {
+  public void testGetKeys() {
     QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );
     QxBorder qxBorder2 = QxBorder.valueOf( "2 solid green" );
     QxColor qxColor1 = QxColor.valueOf( "#fffaf0" );
@@ -92,7 +92,7 @@ public class Theme_Test extends TestCase {
     assertEquals( 2, keys.length );
   }
 
-  public void testHasKey() throws Exception {
+  public void testHasKey() {
     Theme defTheme = new Theme( "Default Theme" );
     QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );
     QxBorder qxBorder2 = QxBorder.valueOf( "2 solid green" );
@@ -109,7 +109,7 @@ public class Theme_Test extends TestCase {
     assertTrue( theme.definesKey( "foo.border" ) );
   }
 
-  public void testVariants() throws Exception {
+  public void testVariants() {
     Theme defTheme = new Theme( "Default Theme" );
     defTheme.setValue( "test.border", QxBorder.NONE );
     defTheme.setValue( "test.color", QxColor.BLACK );

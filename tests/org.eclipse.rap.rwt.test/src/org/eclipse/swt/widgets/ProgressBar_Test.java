@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,24 +71,24 @@ public class ProgressBar_Test extends TestCase {
     assertEquals( 10, progressBar.getSelection() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     ProgressBar bar = new ProgressBar( shell, SWT.HORIZONTAL );
-    Point expected = new Point( 160, 16 );
+    Point expected = new Point( 162, 18 );
     assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     bar = new ProgressBar( shell, SWT.VERTICAL );
-    expected = new Point( 16, 160 );
+    expected = new Point( 18, 162 );
     assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     bar = new ProgressBar( shell, SWT.BORDER );
-    expected = new Point( 160, 16 );
-    assertEquals( 0, bar.getBorderWidth() );
+    expected = new Point( 162, 18 );
+    assertEquals( 1, bar.getBorderWidth() );
     assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 100, 100 );
+    expected = new Point( 102, 102 );
     assertEquals( expected, bar.computeSize( 100, 100 ) );
   }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Widget;
 
@@ -54,62 +53,51 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
    */
   protected abstract void configureMatcher( final WidgetMatcher matcher );
 
+  ////////////////////
+  // Delegator methods
+
   protected Color getCssColor( final String cssElement,
                                final String cssProperty,
                                final Widget widget )
   {
-    QxColor color = ( QxColor )getCssValue( cssElement, cssProperty, widget );
-    return QxColor.createColor( color );
+    QxType cssValue
+      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return QxColor.createColor( ( QxColor )cssValue );
   }
 
   protected Font getCssFont( final String cssElement,
                              final String cssProperty,
                              final Widget widget )
   {
-    QxFont font = ( QxFont )getCssValue( cssElement, cssProperty, widget );
-    return QxFont.createFont( font );
+    QxType cssValue
+      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return QxFont.createFont( ( QxFont )cssValue );
   }
 
   protected int getCssBorderWidth( final String cssElement,
                                    final String cssProperty,
                                    final Widget widget )
   {
-    QxBorder border = ( QxBorder )getCssValue( cssElement, cssProperty, widget );
-    return border.width;
+    QxType cssValue
+      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return ( ( QxBorder )cssValue ).width;
   }
 
   protected int getCssDimension( final String cssElement,
                                  final String cssProperty,
                                  final Widget widget )
   {
-    QxDimension dim
-      = ( QxDimension )getCssValue( cssElement, cssProperty, widget );
-    return dim.value;
+    QxType cssValue
+      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return ( ( QxDimension )cssValue ).value;
   }
 
   protected Rectangle getCssBoxDimensions( final String cssElement,
                                            final String cssProperty,
                                            final Widget widget )
   {
-    QxBoxDimensions boxdim
-      = ( QxBoxDimensions )getCssValue( cssElement, cssProperty, widget );
-    return QxBoxDimensions.createRectangle( boxdim );
-  }
-
-  private QxType getCssValue( final String cssElement,
-                              final String cssProperty,
-                              final Widget widget )
-  {
-    Theme theme = ThemeUtil.getTheme();
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
-    ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
-    QxType result = matcher.select( values, widget );
-    if( result == null ) {
-      theme = ThemeUtil.getDefaultTheme();
-      valuesMap = theme.getValuesMap();
-      values = valuesMap.getValues( cssElement, cssProperty );
-      result = matcher.select( values, widget );
-    }
-    return result;
+    QxType cssValue
+      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
 }

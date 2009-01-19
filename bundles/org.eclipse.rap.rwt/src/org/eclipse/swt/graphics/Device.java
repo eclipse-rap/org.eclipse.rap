@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.internal.theme.QxFont;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
@@ -124,10 +123,10 @@ public abstract class Device {
    */
   public Font getSystemFont() {
     checkDevice();
-    QxFont font = ThemeUtil.getTheme().getFont( "widget.font", null );
-    return QxFont.createFont( font );
+    QxType font = ThemeUtil.getCssValue( "*", "font", SimpleSelector.DEFAULT );
+    return QxFont.createFont( ( QxFont )font );
   }
-  
+
 //  /**
 //   * Throws an <code>SWTException</code> if the receiver can not
 //   * be accessed by the caller. This may include both checks on

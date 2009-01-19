@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -523,7 +523,7 @@ public final class ThemeManager {
       if( themeableWidget.elements != null ) {
         for( int j = 0; j < elements.length; j++ ) {
           IThemeCssElement themeCssElement = elements[ j ];
-          map.init( themeCssElement, styleSheet );
+          map.initElement( themeCssElement, styleSheet );
         }
       } else {
         log( "WARNING: Missing theme.xml file for themeable widget: "
@@ -759,6 +759,9 @@ public final class ThemeManager {
         sb.append( createMetaTheme( wrapper.theme, jsId ) );
         sb.append( createThemeStore( wrapper.theme, jsId ) );
         sb.append( createThemeStoreCss( wrapper.theme, jsId ) );
+        sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
+        sb.append( "ts.fillColors( \"" + jsId + "\" );\n" );
+        sb.append( "delete ts;\n" );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
@@ -1059,20 +1062,13 @@ public final class ThemeManager {
         if( style != null ) {
           borderObject.append( "style", style );
         }
-        String colors = border.getQxColors();
+        JsonArray colors = QxBorderUtil.getColors( border, theme );
         if( colors != null ) {
-          JsonArray borderColors = QxBorderUtil.getColors( border, theme );
-          if( borderColors != null ) {
-            borderObject.append( "color", borderColors );
-          }
+          borderObject.append( "color", colors );
         }
-        String innerColors = border.getQxInnerColors();
+        JsonArray innerColors = QxBorderUtil.getInnerColors( border, theme );
         if( innerColors != null ) {
-          JsonArray borderInnerColors
-            = QxBorderUtil.getInnerColors( border, theme );
-          if( borderInnerColors != null ) {
-            borderObject.append( "innerColor", borderInnerColors );
-          }
+          borderObject.append( "innerColor", innerColors );
         }
         type = "border";
         jsValue = borderObject;

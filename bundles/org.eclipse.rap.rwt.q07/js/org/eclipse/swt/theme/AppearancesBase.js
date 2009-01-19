@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,8 +65,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "client-document" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : "widget.font",
+        font : tv.getCssFont( "*", "font" ),
         textColor : "black",
         backgroundColor : "white",
         // TODO [rst] Eliminate absolute references
@@ -164,12 +165,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "popup",
 
     style : function( states ) {
-      return {
-        backgroundColor : "widget.info.background",
-        textColor       : "widget.info.foreground",
-        border          : "info",
-        padding         : [ 1, 3, 2, 3 ]
-      };
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = "info";
+      result.padding = [ 1, 3, 2, 3 ];
+      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.textColor = tv.getCssColor( "ToolTip", "color" );
+      return result;
     }
   },
 
@@ -579,7 +581,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                           : null
       };
       if( states.disabled ) {
-        result.backgroundColor = tv.getColor( "toolbar.background" );
+        result.backgroundColor = tv.getCssColor( "ToolBar", "background-color" );
         result.textColor = tv.getColor( "widget.graytext" );
       } else {
         result.backgroundColor = tv.getCssColor( "MenuItem", "background-color" );
@@ -1207,9 +1209,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor : "default",
-        border : states.lines ? "table.row.horizontalLine" : "undefined"
+        cursor : "default"
       };
+//      border : states.lines ? "table.row.horizontalLine" : "undefined"
+      if( states.lines ) {
+        // TODO [rst] Optimize: this function might be called a few times,
+        //            the border can be cached somewhere
+        var border = new qx.ui.core.Border( 0 );
+        border.setColor( tv.getCssColor( "Table-GridLine", "color" ) );
+        border.setWidthTop( 1 );
+        border.setWidthBottom( 1 );
+        result.border = border;
+      }
       result.textColor = states.disabled
                          ? tv.getColor( "widget.graytext" )
                          : "undefined";
@@ -1537,23 +1548,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "progressbar" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "ProgressBar", "border" ),
-        backgroundColor : tv.getCssColor( "ProgressBar", "background-color" ),
-        backgroundImage : tv.getCssImage( "ProgressBar", "background-image" )
-      }
+      var result = {};
+      result.border = tv.getCssBorder( "ProgressBar", "border" );
+      result.backgroundColor = tv.getCssColor( "ProgressBar",
+                                               "background-color" );
+      result.backgroundImage = tv.getCssImage( "ProgressBar",
+                                               "background-image" );
+      return result;
     }
   },
 
-  "progressbar-bar" : {
+  "progressbar-indicator" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        backgroundColor : tv.getCssColor( "ProgressBar-Indicator",
-                                          "background-color" ),
-        backgroundImage : tv.getCssImage( "ProgressBar-Indicator",
-                                          "background-image" )
-      }
+      var result = {};
+      result.backgroundColor = tv.getCssColor( "ProgressBar-Indicator",
+                                               "background-color" );
+      result.backgroundImage = tv.getCssImage( "ProgressBar-Indicator",
+                                               "background-image" );
+      return result;
     }
   },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
@@ -28,12 +28,16 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapter {
   }
 
   public Color getSelectedBackground( final CTabFolder folder ) {
-    return ThemeAdapterUtil.getColor( folder,
-                                      "ctabfolder.selection.background" );
+    QxType cssValue = ThemeUtil.getCssValue( "CTabItem",
+                                             "background-color",
+                                             SimpleSelector.SELECTED );
+    return QxColor.createColor( ( QxColor )cssValue );
   }
 
   public Color getSelectedForeground( final CTabFolder folder ) {
-    return ThemeAdapterUtil.getColor( folder,
-                                      "ctabfolder.selection.foreground" );
+    QxType cssValue = ThemeUtil.getCssValue( "CTabItem",
+                                             "color",
+                                             SimpleSelector.SELECTED );
+    return QxColor.createColor( ( QxColor )cssValue );
   }
 }
