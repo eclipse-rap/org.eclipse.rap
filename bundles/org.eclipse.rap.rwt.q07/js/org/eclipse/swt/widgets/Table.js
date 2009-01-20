@@ -199,7 +199,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._itemTextLeft = null;
     this._itemTextWidth = null;
   },
-  
+
   events : {
     "itemselected" : "qx.event.type.DataEvent",
     "itemdefaultselected" : "qx.event.type.DataEvent",
@@ -210,46 +210,46 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     CHECK_WIDTH : 21,
     CHECK_IMAGE_WIDTH : 13,
     CHECK_IMAGE_HEIGHT : 13,
-    
+
     ////////////////////////////////////
     // Helper to determine modifier keys
-    
+
     _isShiftOnlyPressed : function( evt ) {
       return    evt.isShiftPressed() 
              && !evt.isCtrlPressed() 
              && !evt.isAltPressed() 
              && !evt.isMetaPressed();      
     },
-    
+
     _isCtrlOnlyPressed : function( evt ) {
       return    evt.isCtrlOrCommandPressed() 
              && !evt.isShiftPressed() 
              && !evt.isAltPressed();
     },
-    
+
     _isCtrlShiftOnlyPressed : function( evt ) {
       return    evt.isCtrlOrCommandPressed() 
              && evt.isShiftPressed() 
              && !evt.isAltPressed();
     },
-    
+
     _isMetaOnlyPressed : function( evt ) {
       return    evt.isAltPressed() 
              && !evt.isShiftPressed() 
              && !evt.isCtrlPressed();
     },
-    
+
     _isNoModifierPressed : function( evt ) {
       return    !evt.isCtrlPressed() 
              && !evt.isShiftPressed() 
              && !evt.isAltPressed() 
              && !evt.isMetaPressed();      
     }
-     
+
   },
-  
+
   members : {
-    
+
     setCursor : function( value ) {
       this._columnArea.setCursor( value );
       this._clientArea.setCursor( value );      
@@ -266,7 +266,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     resetCursor : function() {
       this._columnArea.resetCursor();
       this._clientArea.resetCursor();
@@ -308,30 +308,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._updateRows();
       }
     },
-    
+
     getItemHeight : function() {
       return this._itemHeight;  
     },
-    
+
     setHideSelection : function( value ) {
       this._hideSelection = value;
     },
-    
+
     setItemMetrics : function( columnIndex, imageLeft, imageWidth, textLeft, textWidth ) {
       this._itemImageLeft[ columnIndex ] = imageLeft;
       this._itemImageWidth[ columnIndex ] = imageWidth;
       this._itemTextLeft[ columnIndex ] = textLeft;
       this._itemTextWidth[ columnIndex ] = textWidth;
     },
-    
+
     getItemImageLeft : function( columnIndex ) {
       return this._itemImageLeft[ columnIndex ];
     },
-    
+
     getItemImageWidth : function( columnIndex ) {
       return this._itemImageWidth[ columnIndex ];
     },
-    
+
     getItemTextLeft : function( columnIndex ) {
       return this._itemTextLeft[ columnIndex ];
     },
@@ -447,7 +447,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var itemIndex = this._getItemIndexFromRowIndex( rowIndex );
       this._toggleCheckState( itemIndex );
     },
-    
+
+    // Note: [rst] This function is wired with the mousedown event. Using the
+    //             click event causes problems because click is issued on the
+    //             release of the mouse button and it is not fired at all if the
+    //             mouse has been moved to another element between down and up.
+    //             See https://bugs.eclipse.org/bugs/show_bug.cgi?id=257338
     _onRowClick : function( evt ) {
       var row = evt.getTarget();
       var rowIndex = this._rows.indexOf( row );
@@ -458,7 +463,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           && this._suspendClicksOnRow != row )
       {
         this._suspendClicksOnRow = row;
-        qx.client.Timer.once( this._resumeClicks, 
+        qx.client.Timer.once( this._resumeClicks,
                               this,
                               org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         if( this._multiSelect ) {
@@ -546,8 +551,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
           || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) ) 
       {
-        // TODO [rh] avoid this call if item already selected
-        this._onRowClick( evt );
         var target = evt.getTarget();
         var contextMenu = this.getContextMenu();
         if( contextMenu !== null ) {
@@ -987,19 +990,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       return result;
     },
-    
+
     _hookRowEventListener : function( row ) {
-      row.addEventListener( "click", this._onRowClick, this );
+      row.addEventListener( "mousedown", this._onRowClick, this );
       row.addEventListener( "dblclick", this._onRowDblClick, this );
       row.addEventListener( "contextmenu", this._onRowContextMenu, this );
     },
-    
+
     _unhookRowEventListener : function( row ) {
-      row.removeEventListener( "click", this._onRowClick, this );
+      row.removeEventListener( "mousedown", this._onRowClick, this );
       row.removeEventListener( "dblclick", this._onRowDblClick, this );
       row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
     },
-    
+
     _updateRowTop : function() {
       var checkBoxOffset
         = this._itemHeight 
@@ -1015,7 +1018,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         top += this._itemHeight;
       }
     },
-    
+
     _updateRowBounds : function() {
       var left = 0 - this._horzScrollBar.getValue();
       // TODO [rh] make themeable
@@ -1044,7 +1047,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         row.setHeight( this._itemHeight );
       }
     },
-    
+
     _scrollRowsVertical : function( delta ) {
       if( Math.abs( delta ) > this._rows.length ) {
         this._updateRows();
@@ -1074,7 +1077,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _updateRows : function() {
       for( var i = 0; i < this._rows.length; i++ ) {
         this._updateRow( i, this._getItemIndexFromRowIndex( i ) );
