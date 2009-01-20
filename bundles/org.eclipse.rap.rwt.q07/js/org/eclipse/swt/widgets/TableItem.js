@@ -201,8 +201,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
 
     _deleteRemainingChildNodes : function( element, start ) {
-      for( var i = start; i < element.childNodes.length; i++ ) {
-        element.removeChild( element.childNodes[ start ] );
+      for( var i = element.childNodes.length - 1; i >= start; i-- ) {
+        element.removeChild( element.childNodes[ i ] );
       }
     },
 
