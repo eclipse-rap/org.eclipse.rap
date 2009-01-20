@@ -14,8 +14,9 @@ appearances = {
 
   "hyperlink" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font: "widget.font",
+        font: tv.getCssFont( "*", "font" ),
         cursor : "pointer",
         spacing : 4,
         width : "auto",
