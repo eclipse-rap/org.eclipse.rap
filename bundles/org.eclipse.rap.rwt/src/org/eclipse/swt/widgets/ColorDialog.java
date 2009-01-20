@@ -165,6 +165,7 @@ public class ColorDialog extends Dialog {
    */
   public ColorDialog( final Shell parent, final int style ) {
     super( parent, style );
+    setText( "Color" );
   }
 
   /**
