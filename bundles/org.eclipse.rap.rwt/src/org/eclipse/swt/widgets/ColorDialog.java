@@ -10,6 +10,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -140,7 +141,7 @@ public class ColorDialog extends Dialog {
    */
   public ColorDialog( final Shell parent ) {
     this( parent, SWT.APPLICATION_MODAL );
-    setText( "Color" );
+    setText( RWTMessages.getMessage( "RWT_ColorDialogTitle" ) );
   }
 
   /**
@@ -173,7 +174,7 @@ public class ColorDialog extends Dialog {
    */
   public ColorDialog( final Shell parent, final int style ) {
     super( parent, style );
-    setText( "Color" );
+    setText( RWTMessages.getMessage( "RWT_ColorDialogTitle" ) );
   }
 
   /**
@@ -253,7 +254,7 @@ public class ColorDialog extends Dialog {
 
   private void createColorArea( final Composite parent ) {
     // Current color selection display
-    Composite areaComp = new Composite( parent, 0 );
+    Composite areaComp = new Composite( parent, SWT.NONE );
     GridData compData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
     areaComp.setLayoutData( compData );
     areaComp.setLayout( new GridLayout( 2, true ) );
@@ -263,23 +264,23 @@ public class ColorDialog extends Dialog {
     data.heightHint = COLOR_DISPLAY_BOX_SIZE;
     colorDisplay.setLayoutData( data );
     // Color components spinners
-    Composite spinComp = new Composite( areaComp, 0 );
+    Composite spinComp = new Composite( areaComp, SWT.NONE );
     spinComp.setLayout( new GridLayout( 2, true ) );
-    Label rLabel = new Label( spinComp, 0 );
-    rLabel.setText( "Red:" );
-    redSpin = new Spinner( spinComp, 0 );
+    Label rLabel = new Label( spinComp, SWT.NONE );
+    rLabel.setText( RWTMessages.getMessage( "RWT_ColorDialogLabelRed" ) );
+    redSpin = new Spinner( spinComp, SWT.BORDER );
     redSpin.setMaximum( MAX_RGB_COMPONENT_VALUE );
     redSpin.addModifyListener( new SpinnerListener( redSpin, RED ) );
     //
-    Label gLabel = new Label( spinComp, 0 );
-    gLabel.setText( "Green:" );
-    greenSpin = new Spinner( spinComp, 0 );
+    Label gLabel = new Label( spinComp, SWT.NONE );
+    gLabel.setText( RWTMessages.getMessage( "RWT_ColorDialogLabelGreen" ) );
+    greenSpin = new Spinner( spinComp, SWT.BORDER );
     greenSpin.setMaximum( MAX_RGB_COMPONENT_VALUE );
     greenSpin.addModifyListener( new SpinnerListener( greenSpin, GREEN ) );
     //
-    Label bLabel = new Label( spinComp, 0 );
-    bLabel.setText( "Blue:" );
-    blueSpin = new Spinner( spinComp, 0 );
+    Label bLabel = new Label( spinComp, SWT.NONE );
+    bLabel.setText( RWTMessages.getMessage( "RWT_ColorDialogLabelBlue" ) );
+    blueSpin = new Spinner( spinComp, SWT.BORDER );
     blueSpin.setMaximum( MAX_RGB_COMPONENT_VALUE );
     blueSpin.addModifyListener( new SpinnerListener( blueSpin, BLUE ) );
   }
@@ -289,8 +290,10 @@ public class ColorDialog extends Dialog {
     GridData palData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
     paletteComp.setLayoutData( palData );
     paletteComp.setLayout( new GridLayout( PALETTE_BOXES_IN_ROW, true ) );
-    Label title = new Label( paletteComp, 0 );
-    title.setText( "Basic Colors:" );
+    Label title = new Label( paletteComp, SWT.NONE );
+    String titleText 
+      = RWTMessages.getMessage( "RWT_ColorDialogLabelBasicColors" );
+    title.setText( titleText );
     GridData titleData = new GridData( SWT.LEFT, SWT.CENTER, true, false );
     titleData.horizontalSpan = PALETTE_BOXES_IN_ROW;
     title.setLayoutData( titleData );
