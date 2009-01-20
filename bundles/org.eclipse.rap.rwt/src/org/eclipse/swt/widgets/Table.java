@@ -1516,7 +1516,8 @@ public class Table extends Composite {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     int itemIndex = indexOf( item );
-    int visibleItemCount = getVisibleItemCount();
+    // -1 to avoid including partially visible items
+    int visibleItemCount = getVisibleItemCount() - 1;
     if( itemIndex < topIndex || itemIndex > topIndex + visibleItemCount ) {
       // Show item as top item
       setTopIndex( itemIndex );
@@ -2213,11 +2214,17 @@ public class Table extends Composite {
   }
 
   final int getVisibleItemCount() {
-    //  TODO [rh] replace this once getClientArea is working
     int clientHeight = getBounds().height
                      - getHeaderHeight()
                      - ScrollBar.SCROLL_BAR_HEIGHT;
-    return clientHeight >= 0 ? clientHeight / getItemHeight() : 0;
+    int result = 0;
+    if( clientHeight >= 0 ) {
+      result = clientHeight / getItemHeight();
+      if( clientHeight % getItemHeight() != 0 ) {
+        result++;
+      }
+    }
+    return result;
   }
 
   private void setFocusIndex( final int focusIndex ) {

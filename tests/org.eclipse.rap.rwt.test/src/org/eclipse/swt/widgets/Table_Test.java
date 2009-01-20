@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1657,7 +1657,7 @@ public class Table_Test extends TestCase {
     // ArrayIndexOutOfBoundsException is thrown
   }
 
-  public void testComputeSizeNonVirtual() throws Exception {
+  public void testComputeSizeNonVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1720,7 +1720,7 @@ public class Table_Test extends TestCase {
     assertEquals( expected, table.computeSize( 300, 300 ) );
   }
 
-  public void testComputeSizeVirtual() throws Exception {
+  public void testComputeSizeVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1768,6 +1768,22 @@ public class Table_Test extends TestCase {
 
     expected = new Point( 320, 320 );
     assertEquals( expected, table.computeSize( 300, 300 ) );
+  }
+
+  public void testGetVisibleItemCount() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE ).setText( "Item " + i );
+    }
+    int itemHeight = table.getItemHeight();
+    int scrollBarHeight = ScrollBar.SCROLL_BAR_HEIGHT;
+    table.setSize( 100, 5 * itemHeight + scrollBarHeight );
+    assertEquals( 5, table.getVisibleItemCount() );
+    // check that partially visible item is included in visible item count
+    table.setSize( 100, 5 * itemHeight + scrollBarHeight + itemHeight / 2 );
+    assertEquals( 6, table.getVisibleItemCount() );
   }
 
   private static void clearColumns( final Table table ) {
