@@ -132,6 +132,7 @@ public class ColorDialog extends Dialog {
    */
   public ColorDialog( final Shell parent ) {
     this( parent, SWT.APPLICATION_MODAL );
+    setText( "Color" );
   }
 
   /**
