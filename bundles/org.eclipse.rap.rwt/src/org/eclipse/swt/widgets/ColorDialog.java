@@ -36,6 +36,7 @@ import org.eclipse.swt.layout.GridLayout;
  *      ControlExample, Dialog tab</a>
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further
  *      information</a>
+ * @since 1.2
  */
 public class ColorDialog extends Dialog {
 
@@ -51,6 +52,7 @@ public class ColorDialog extends Dialog {
       setColorFromPalette( rgb );
     }
   }
+  
   private class SpinnerListener implements ModifyListener {
 
     private Spinner spin;
@@ -65,6 +67,7 @@ public class ColorDialog extends Dialog {
       setColorFomSpinner( colorIndex, spin.getSelection() );
     }
   }
+  
   // Layout
   private static final int BUTTON_WIDTH = 60;
   private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
@@ -72,10 +75,12 @@ public class ColorDialog extends Dialog {
   private static final int PALETTE_BOXES_IN_ROW = 14;
   private static final int COLOR_DISPLAY_BOX_SIZE = 76;
   private static final int MAX_RGB_COMPONENT_VALUE = 255;
+  
   // Color components
   private static final int RED = 0;
   private static final int GREEN = 1;
   private static final int BLUE = 2;
+  
   // Palette colors
   private static final RGB[] PALETTE_COLORS = new RGB[]{
     new RGB( 0, 0, 0 ),
@@ -107,10 +112,13 @@ public class ColorDialog extends Dialog {
     new RGB( 84, 109, 142 ),
     new RGB( 181, 165, 213 )
   };
+  
   private Shell shell;
   private RGB rgb;
   private Label colorDisplay;
-  private Spinner redSpin, blueSpin, greenSpin;
+  private Spinner redSpin; 
+  private Spinner blueSpin;
+  private Spinner greenSpin;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -169,16 +177,6 @@ public class ColorDialog extends Dialog {
   }
 
   /**
-   * Returns the currently selected color in the receiver.
-   * 
-   * @return the RGB value for the selected color, may be null
-   * @see PaletteData#getRGBs
-   */
-  public RGB getRGB() {
-    return rgb;
-  }
-
-  /**
    * Makes the receiver visible and brings it to the front of the display.
    * 
    * @return the selected color, or null if the dialog was cancelled, no color
@@ -216,6 +214,16 @@ public class ColorDialog extends Dialog {
   }
 
   /**
+   * Returns the currently selected color in the receiver.
+   * 
+   * @return the RGB value for the selected color, may be null
+   * @see PaletteData#getRGBs
+   */
+  public RGB getRGB() {
+    return rgb;
+  }
+
+  /**
    * Sets the receiver's selected color to be the argument.
    * 
    * @param rgb the new RGB value for the selected color, may be null to let the
@@ -238,17 +246,13 @@ public class ColorDialog extends Dialog {
 
   private void createControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
-    // Color area and RGB Spinners
     createColorArea( parent );
-    // Color palette
     createPalette( parent );
-    // Buttons
     createButtons( parent );
   }
 
   private void createColorArea( final Composite parent ) {
     // Current color selection display
-    //
     Composite areaComp = new Composite( parent, 0 );
     GridData compData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
     areaComp.setLayoutData( compData );
@@ -259,7 +263,6 @@ public class ColorDialog extends Dialog {
     data.heightHint = COLOR_DISPLAY_BOX_SIZE;
     colorDisplay.setLayoutData( data );
     // Color components spinners
-    //
     Composite spinComp = new Composite( areaComp, 0 );
     spinComp.setLayout( new GridLayout( 2, true ) );
     Label rLabel = new Label( spinComp, 0 );
@@ -296,15 +299,15 @@ public class ColorDialog extends Dialog {
     }
   }
 
-  private Label createPaletteColorBox( final Composite parent, final RGB rgbVal )
+  private Label createPaletteColorBox( final Composite parent, final RGB color )
   {
     Label result = new Label( parent, SWT.BORDER | SWT.FLAT );
-    result.setBackground( Graphics.getColor( rgbVal ) );
+    result.setBackground( Graphics.getColor( color ) );
     GridData data = new GridData();
     data.widthHint = PALETTE_BOX_SIZE;
     data.heightHint = PALETTE_BOX_SIZE;
     result.setLayoutData( data );
-    result.addMouseListener( new PaletteListener( rgbVal ) );
+    result.addMouseListener( new PaletteListener( color ) );
     return result;
   }
 
@@ -313,9 +316,10 @@ public class ColorDialog extends Dialog {
     buttonComp.setLayout( new GridLayout( 0, true ) );
     GridData buttonData = new GridData( SWT.RIGHT, SWT.CENTER, true, false );
     buttonComp.setLayoutData( buttonData );
-    createButton( buttonComp, SWT.getMessage( "SWT_OK" ), SWT.OK );
+    Button okButton
+      = createButton( buttonComp, SWT.getMessage( "SWT_OK" ), SWT.OK );
     createButton( buttonComp, SWT.getMessage( "SWT_Cancel" ), SWT.CANCEL );
-    buttonComp.getChildren()[ 0 ].forceFocus();
+    okButton.forceFocus();
   }
 
   private Button createButton( final Composite parent,
@@ -334,7 +338,6 @@ public class ColorDialog extends Dialog {
     // Set text
     result.setText( text );
     result.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         if( returnCode == SWT.CANCEL ) {
           ColorDialog.this.rgb = null;
