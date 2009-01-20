@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,9 @@ import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -39,6 +41,7 @@ public class DialogsTab extends ExampleTab {
   private Button iconWarningButton, iconWorkingButton, noIconButton;
 
   private Button showMessageBoxDlgButton;
+  private Button showColorDlgButton;
 
   public DialogsTab( final CTabFolder topFolder ) {
     super( topFolder, "Dialogs" );
@@ -164,13 +167,21 @@ public class DialogsTab extends ExampleTab {
     showMessageBoxDlgButton = new Button( group3, SWT.PUSH );
     showMessageBoxDlgButton.setText( "MessageBox Dialog" );
     showMessageBoxDlgButton.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         showMessageBoxDialog();
       }
     } );
     showMessageBoxDlgButton.setLayoutData( createGridDataFillBoth() );
-    insertSpaceLabels( group3, 2 );
+    
+    showColorDlgButton = new Button( group3, SWT.PUSH );
+    showColorDlgButton.setText( "ColorDialog" );
+    showColorDlgButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        showColorDialog();
+      }
+    });
+    showColorDlgButton.setLayoutData( createGridDataFillBoth() );
+    insertSpaceLabels( group3, 1 );
 
     messageBoxDlgResLabel = new Label( group3, SWT.WRAP );
     messageBoxDlgResLabel.setText( "Result:" );
@@ -371,6 +382,13 @@ public class DialogsTab extends ExampleTab {
       break;
     }
     messageBoxDlgResLabel.setText( "Result: " + strResult );
+    messageBoxDlgResLabel.pack();
+  }
+  
+  private void showColorDialog() {
+    ColorDialog dialog = new ColorDialog( getShell() );
+    RGB result = dialog.open();
+    messageBoxDlgResLabel.setText( "Result: " + result );
     messageBoxDlgResLabel.pack();
   }
 
