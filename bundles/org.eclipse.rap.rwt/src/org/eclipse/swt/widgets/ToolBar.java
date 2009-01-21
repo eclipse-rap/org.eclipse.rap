@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * </p><p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>FLAT, WRAP, RIGHT, HORIZONTAL, VERTICAL, SHADOW_OUT</dd>
+ * <dd>FLAT, <!-- WRAP, RIGHT, --> HORIZONTAL, VERTICAL, SHADOW_OUT</dd>
  * <dt><b>Events:</b></dt>
  * <dd>(none)</dd>
  * </dl>
