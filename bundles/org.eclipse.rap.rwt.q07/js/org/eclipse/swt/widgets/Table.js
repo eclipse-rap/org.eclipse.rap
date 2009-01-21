@@ -322,6 +322,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._itemImageWidth[ columnIndex ] = imageWidth;
       this._itemTextLeft[ columnIndex ] = textLeft;
       this._itemTextWidth[ columnIndex ] = textWidth;
+    },
+
+    updateRows : function() {
       this._updateRows();
     },
 

@@ -69,25 +69,26 @@ public final class TableLCAUtil {
     return hasItemMetricsChanged( table, itemMetrics );
   }
 
-  public static void writeItemMetrics( final Table table ) 
-    throws IOException 
+  public static void writeItemMetrics( final Table table )
+    throws IOException
   {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     if( hasItemMetricsChanged( table, itemMetrics ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );
       for( int i = 0; i < itemMetrics.length; i++ ) {
-        Object[] args = new Object[] { 
-          new Integer( i ), 
-          new Integer( itemMetrics[ i ].imageLeft ), 
+        Object[] args = new Object[] {
+          new Integer( i ),
+          new Integer( itemMetrics[ i ].imageLeft ),
           new Integer( itemMetrics[ i ].imageWidth ),
           new Integer( itemMetrics[ i ].textLeft ),
           new Integer( itemMetrics[ i ].textWidth )
         };
         writer.set( "itemMetrics", args );
       }
+      writer.call( "updateRows", null );
     }
   }
-  
+
   ////////
   // Focus
   

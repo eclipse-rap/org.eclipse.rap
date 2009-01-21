@@ -149,7 +149,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     needUpdate |= writeSelection( item );
     if( isVisible( item ) ) {
       Table table = item.getParent();
-      needUpdate |= TableLCAUtil.hasItemMetricsChanged( table );
       needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
       needUpdate |= hasIndexChanged( item );
     }
