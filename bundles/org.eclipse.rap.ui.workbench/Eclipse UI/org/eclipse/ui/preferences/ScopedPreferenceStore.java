@@ -161,7 +161,8 @@ public class ScopedPreferenceStore extends EventManager implements
 	    // an own ScopedPreferenceStore for each session
 	    if( scopeContext instanceof SessionScope ) {
 	      ISessionStore sessionStore = RWT.getSessionStore();
-	      String key = KEY_SCOPED_PREF_CORE;
+	      String key
+	        = KEY_SCOPED_PREF_CORE + "/" + nodeQualifier + "/" + defaultQualifier;
 	      result = ( ScopedPreferenceStoreCore )sessionStore.getAttribute( key );
 	      if( result == null ) {
 	        result = new ScopedPreferenceStoreCore( scopeContext, 
