@@ -250,10 +250,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.color = foreground;
       node.style.backgroundColor = background;
       node.style.backgroundImage = "none";
-      var border = this._parent.getLinesVisible()
-                   ? org.eclipse.swt.widgets.TableItem.LINE_BORDER
-                   : "";
-      node.style.borderRight = border;
+      if( this._parent.getLinesVisible() ) {
+        node.style.borderRightWidth = "1px";
+        node.style.borderRightStyle = "solid";
+        node.style.borderRightColor = this._parent.getGridLineColor();
+      } else {
+        node.style.borderRight = "";
+      }
     },
 
     _getIndex : function() {

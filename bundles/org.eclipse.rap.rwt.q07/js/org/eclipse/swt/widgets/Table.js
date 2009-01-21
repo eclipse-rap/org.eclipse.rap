@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /**
- * This class provides the client-side counterpart for 
+ * This class provides the client-side counterpart for
  * org.eclipse.swt.widgets.Table.
  * @event itemselected
  * @event itemdefaultselected
@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //      available
     this.setTabIndex( 1 );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    // Denotes the row that received the last click-event to swallow unwanted 
+    // Denotes the row that received the last click-event to swallow unwanted
     // click-events while double-clicking
     this._suspendClicksOnRow = null;
     // Should the selected item be hightlighted?
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._multiSelect = qx.lang.String.contains( style, "multi" );
     // Conains all itemIndices which are currently selected
     this._selected = new Array();
-    // Most recent item selected by ctrl-click or ctrl+shift-click (only 
+    // Most recent item selected by ctrl-click or ctrl+shift-click (only
     // relevant for multi-selection)
     this._selectionStart = -1;
     // Denotes the index of the focused TableItem or -1 if none is focused
@@ -67,11 +67,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // needs to be drawn since the table bounds are grater than the number of
     // items
     this._emptyItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
-    // An item used to represent a virtual item while it is being resolved, 
+    // An item used to represent a virtual item while it is being resolved,
     // that is a request is sent to the server to obtain the actual values
     this._virtualItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
     this._virtualItem.setTexts ( [ "..." ] );
-    // One resize line shown while resizing a column, provided for all columns  
+    // One resize line shown while resizing a column, provided for all columns
     this._resizeLine = null;
     // left and width values for the item-image and -text part for each column
     this._itemImageLeft = new Array();
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Keyboard navigation
     this._keyboardSelecionChanged = false;
     // TODO [rh] key events in Safari not working properly, see
-    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531 
+    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
     //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
     if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
       this.addEventListener( "keydown", this._onKeyDown, this );
@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     // TODO [rh] key events in Safari not working properly, see
-    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531 
+    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
     //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
     if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
       this.removeEventListener( "keydown", this._onKeyDown, this );
@@ -147,8 +147,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     }
     this._virtualItem.dispose();
     this._emptyItem.dispose();
-    // For performance reasons, when disposing a a Table, the server-side LCA 
-    // does *not* dispose of each TableItem, instead this is done here in one 
+    // For performance reasons, when disposing a a Table, the server-side LCA
+    // does *not* dispose of each TableItem, instead this is done here in one
     // batch without updating the Tables state as it is in disposal anyway
     for( var i = 0; i < this._items.length; i++ ) {
       if( this._items[ i ] ) {
@@ -169,7 +169,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     }
     if( this._clientArea ) {
       this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
-      this._clientArea.removeEventListener( "appear", this._onClientAppear, this );      
+      this._clientArea.removeEventListener( "appear", this._onClientAppear, this );
       org.eclipse.swt.WidgetManager.getInstance().remove( this._clientArea );
       this._clientArea.dispose();
       this._clientArea = null;
@@ -206,6 +206,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     "itemchecked" : "qx.event.type.DataEvent"
   },
 
+  properties : {
+    gridLineColor : {
+      check : "Color",
+      init : null,
+      themeable: true
+    }
+  },
+
   statics : {
     CHECK_WIDTH : 21,
     CHECK_IMAGE_WIDTH : 13,
@@ -215,35 +223,35 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Helper to determine modifier keys
 
     _isShiftOnlyPressed : function( evt ) {
-      return    evt.isShiftPressed() 
-             && !evt.isCtrlPressed() 
-             && !evt.isAltPressed() 
-             && !evt.isMetaPressed();      
+      return    evt.isShiftPressed()
+             && !evt.isCtrlPressed()
+             && !evt.isAltPressed()
+             && !evt.isMetaPressed();
     },
 
     _isCtrlOnlyPressed : function( evt ) {
-      return    evt.isCtrlOrCommandPressed() 
-             && !evt.isShiftPressed() 
+      return    evt.isCtrlOrCommandPressed()
+             && !evt.isShiftPressed()
              && !evt.isAltPressed();
     },
 
     _isCtrlShiftOnlyPressed : function( evt ) {
-      return    evt.isCtrlOrCommandPressed() 
-             && evt.isShiftPressed() 
+      return    evt.isCtrlOrCommandPressed()
+             && evt.isShiftPressed()
              && !evt.isAltPressed();
     },
 
     _isMetaOnlyPressed : function( evt ) {
-      return    evt.isAltPressed() 
-             && !evt.isShiftPressed() 
+      return    evt.isAltPressed()
+             && !evt.isShiftPressed()
              && !evt.isCtrlPressed();
     },
 
     _isNoModifierPressed : function( evt ) {
-      return    !evt.isCtrlPressed() 
-             && !evt.isShiftPressed() 
-             && !evt.isAltPressed() 
-             && !evt.isMetaPressed();      
+      return    !evt.isCtrlPressed()
+             && !evt.isShiftPressed()
+             && !evt.isAltPressed()
+             && !evt.isMetaPressed();
     }
 
   },
@@ -252,7 +260,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     setCursor : function( value ) {
       this._columnArea.setCursor( value );
-      this._clientArea.setCursor( value );      
+      this._clientArea.setCursor( value );
       var columns = this._columnArea.getChildren();
       for( var i = 0; i < columns.length; i++ ) {
         columns[ i ].setCursor( value );
@@ -310,7 +318,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     getItemHeight : function() {
-      return this._itemHeight;  
+      return this._itemHeight;
     },
 
     setHideSelection : function( value ) {
@@ -339,11 +347,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getItemTextLeft : function( columnIndex ) {
       return this._itemTextLeft[ columnIndex ];
     },
-    
+
     getItemTextWidth : function( columnIndex ) {
       return this._itemTextWidth[ columnIndex ];
     },
-    
+
     /** Only called by server-side */
     setTopIndex : function( value ) {
       this._internalSetTopIndex( value, true );
@@ -363,7 +371,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._topIndexChanging = false;
       }
     },
-    
+
     setBorderWidth : function( value ) {
       this._borderWidth = value;
     },
@@ -375,11 +383,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getColumnCount : function() {
       return this._columnArea.getChildrenLength();
     },
-    
+
     getColumns : function() {
-      return this._columnArea.getChildren();  
+      return this._columnArea.getChildren();
     },
-    
+
     getColumnsWidth : function() {
       var result = 0;
       var columns = this._columnArea.getChildren();
@@ -401,7 +409,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     setLinesVisible : function( value ) {
       this._linesVisible = value;
       for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].setLinesVisible( value );        
+        this._rows[ i ].setLinesVisible( value );
       }
       this._updateRows();
     },
@@ -409,11 +417,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getLinesVisible : function() {
       return this._linesVisible;
     },
-    
+
     hasCheckBoxes : function() {
       return this._checkBoxes !== null;
     },
-    
+
     setFocusIndex : function( value ) {
       if( value !== this._focusIndex ) {
         var oldFocusIndex = this._focusIndex;
@@ -428,21 +436,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     getFocusIndex : function() {
       return this._focusIndex;
     },
-    
+
     setItemCount : function( value ) {
       this._itemCount = value;
       this._updateScrollHeight();
       this._updateRows();
     },
-    
+
     _onChangeEnabled : function( evt ) {
       this._updateRows();
     },
-    
+
     ////////////////////////////
     // Listeners for client area
 
@@ -496,17 +504,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             this._selectItem( itemIndex );
           }
         }
-        if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
-            || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
+        if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt )
+            || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) )
         {
-          if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
-              && this._selectionStart !== -1 ) 
+          if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt )
+              && this._selectionStart !== -1 )
           {
             this._clearSelection();
           }
           var selectionStart
-            = this._selectionStart !== - 1 
-            ? this._selectionStart 
+            = this._selectionStart !== - 1
+            ? this._selectionStart
             : this._focusIndex;
           if( selectionStart !== -1 ) {
             var start = Math.min( selectionStart, itemIndex );
@@ -517,15 +525,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               }
             }
           }
-        } 
+        }
         if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
             || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
         {
           this._setSingleSelection( itemIndex );
         }
-        
-        if(    org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) 
-            || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
+
+        if(    org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt )
+            || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) )
         {
           this._selectionStart = itemIndex;
         } else {
@@ -552,8 +560,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _onRowContextMenu : function( evt ) {
-      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
-          || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) ) 
+      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
+          || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
       {
         var target = evt.getTarget();
         var contextMenu = this.getContextMenu();
@@ -564,13 +572,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _toggleCheckState : function( itemIndex ) {
       if( this._checkBoxes != null ) {
         var item = this._items[ itemIndex ];
         if( itemIndex >= 0 && itemIndex < this._itemCount && item ) {
           item.setChecked( !item.getChecked() );
-          // Reflect changed check-state in case there is no server-side listener 
+          // Reflect changed check-state in case there is no server-side listener
           // If changed item is currently not visible, omit update
           var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
           if( rowIndex !== -1 ) {
@@ -581,7 +589,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _updateSelectionParam : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var tableId = widgetManager.findIdByWidget( this );
@@ -595,7 +603,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       req.addParameter( tableId + ".selection", selectedIndices );
     },
-    
+
     _updateCheckParam : function( item ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( item );
@@ -616,17 +624,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._updateRowCount();
       this._updateRows();
     },
-    
+
     ///////////////////////
     // Keyboard navigation
-    
+
     _onKeyDown : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
         case "Space":
           this._toggleCheckState( this._focusIndex );
           break;
         case "Enter":
-          // in sync with SWT: fire defaultSelection when <Return> is pressed, 
+          // in sync with SWT: fire defaultSelection when <Return> is pressed,
           // regardless which modifier-key(s) are held down
           if( this._focusIndex !== -1 ) {
             var itemIndex = this._getItemIndexFromRowIndex( this._focusIndex );
@@ -637,20 +645,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           break;
       }
     },
-    
+
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
-      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
-          && (    keyIdentifier === "Up" 
+      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
+          && (    keyIdentifier === "Up"
                || keyIdentifier === "Down"
                || keyIdentifier === "PageUp"
                || keyIdentifier === "PageDown"
-               || keyIdentifier === "Home" 
-               || keyIdentifier === "End" ) ) 
+               || keyIdentifier === "Home"
+               || keyIdentifier === "End" ) )
       {
         var gotoIndex = this._calcGotoIndex( this._focusIndex, keyIdentifier );
         if(    gotoIndex !== this._focusIndex
-            && gotoIndex >= 0 
+            && gotoIndex >= 0
             && gotoIndex < this._itemCount )
         {
           var oldFocusIndex = this._focusIndex;
@@ -659,10 +667,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           // TODO [rh] similar code as in _makeItemFullyVisible(), unite
           if( !this._isItemFullyVisible( gotoIndex ) ) {
             var topIndex;
-            // If last item was selected, try to set topIndex such that as 
-            // much items as possible are shown  
+            // If last item was selected, try to set topIndex such that as
+            // much items as possible are shown
             if( gotoIndex === this._itemCount - 1 ) {
-              // not exactly sure why but +1 takes care that the selected item 
+              // not exactly sure why but +1 takes care that the selected item
               // is fully visible
               topIndex = gotoIndex - this._getFullyVisibleRowCount() + 1;
             } else {
@@ -672,7 +680,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             // Fix for bug #233964:
             // Ensure that the topIndex does not exceed the range of items
             // this would cause a VIRTUAL table to redraw the wrong items as
-            // it relies on the topIndex to determine currently visible items 
+            // it relies on the topIndex to determine currently visible items
             if( topIndex < 0 ) {
               topIndex = 0;
             } else if( topIndex > this._itemCount ) {
@@ -685,12 +693,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _calcGotoIndex : function( currentIndex, keyIdentifier ) {
       var result = currentIndex;
       switch( keyIdentifier ) {
         case "Home":
-          result = 0; 
+          result = 0;
           break;
         case "End":
           result = this._itemCount - 1;
@@ -704,34 +712,34 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         case "PageUp":
           result = currentIndex - this._getFullyVisibleRowCount();
           if( result < 0 ) {
-            result = 0; 
+            result = 0;
           }
           break;
         case "PageDown":
           result = currentIndex + this._getFullyVisibleRowCount();
           if( result > this._itemCount - 1 ) {
-            result = this._itemCount - 1; 
+            result = this._itemCount - 1;
           }
           break;
       }
       return result;
     },
-    
+
     _getFullyVisibleRowCount : function() {
       return Math.floor( this._clientArea.getHeight() / this._itemHeight );
     },
-    
+
     _onKeyUp : function( evt ) {
       if( this._keyboardSelecionChanged ) {
         this._keyboardSelecionChanged = false;
         this._updateSelectionParam();
         this.createDispatchDataEvent( "itemselected", this._focusIndex );
-      }      
+      }
     },
 
     ////////////////////////
     // Scroll bar listeners
-    
+
     _onVertScrollBarChangeValue : function() {
       // Prevent _internalSetTopIndex() from being called when we are currently
       // changing the topIndex. _internalSetTopIndex() calls
@@ -740,7 +748,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         // Calculate new topIndex
         var newTopIndex = 0;
         if( this._itemHeight !== 0 ) {
-          var scrollTop 
+          var scrollTop
             = this._clientArea.isCreated()
             ? this._vertScrollBar.getValue()
             : 0;
@@ -785,7 +793,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _selectItem : function( itemIndex ) {
       this._selected.push( itemIndex );
-      // call updateItem with contentChanged-flag == true to override eventually 
+      // call updateItem with contentChanged-flag == true to override eventually
       // set background colors, see https://bugs.eclipse.org/bugs/237134
       this.updateItem( itemIndex, true );
     },
@@ -802,32 +810,32 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _isItemSelected : function( itemIndex ) {
       return this._selected.indexOf( itemIndex ) !== -1;
     },
-    
+
     _clearSelection : function() {
       while( this._selected.length > 0 ) {
         this._deselectItem( this._selected[ 0 ], true );
       }
     },
-    
+
     _resetSelectionStart : function() {
       this._selectionStart = -1;
     },
 
     _isItemVisible : function( itemIndex ) {
-      return    itemIndex >= this._topIndex 
+      return    itemIndex >= this._topIndex
              && itemIndex < this._topIndex + this._rows.length;
     },
-    
+
     _isItemFullyVisible : function( itemIndex ) {
-      return    itemIndex >= this._topIndex 
+      return    itemIndex >= this._topIndex
              && itemIndex < this._topIndex + this._getFullyVisibleRowCount();
     },
-    
+
     _makeItemFullyVisible : function( itemIndex ) {
       var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
       var row = rowIndex === -1 ? null : this._rows[ rowIndex ];
-      if(    row !== null 
-          && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
+      if(    row !== null
+          && row.getTop() + row.getHeight() > this._clientArea.getHeight() )
       {
         this._internalSetTopIndex( this._topIndex + 1, true );
       }
@@ -846,8 +854,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _getRowIndexFromItemIndex : function( itemIndex ) {
       var result = -1;
-      if(    itemIndex >= this._topIndex 
-          && itemIndex < this._topIndex + this._rows.length ) 
+      if(    itemIndex >= this._topIndex
+          && itemIndex < this._topIndex + this._rows.length )
       {
         result = itemIndex - this._topIndex;
       }
@@ -864,7 +872,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     /////////////////////////
     // TableColumn management
-    
+
     _addColumn : function( column ) {
       column.setHeight( this._columnArea.getHeight() );
       this._hookColumnMove( column );
@@ -872,11 +880,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._columnArea.add( column );
       this._updateScrollWidth();
     },
-    
+
     _hookColumnMove : function( column ) {
       column.addEventListener( "changeLeft", this._onColumnChangeSize, this );
     },
-    
+
     _unhookColumnMove : function( column ) {
       column.removeEventListener( "changeLeft", this._onColumnChangeSize, this );
     },
@@ -894,10 +902,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     ///////////////////////////////////////////
     // UI Update upon scroll, size changes, etc
-    
+
     _updateScrollHeight : function() {
       var height = this._itemHeight + this._itemCount * this._itemHeight;
-      // Without the check, it may cause an error in FF when unloading doc 
+      // Without the check, it may cause an error in FF when unloading doc
       if( !this._vertScrollBar.getDisposed() ) {
         this._vertScrollBar.setMaximum( height );
       }
@@ -942,14 +950,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._updateRowTop();
       }
     },
-    
+
     _updateRowCount : function() {
       var result = false;
       if( this._clientArea.isCreated() ) {
         var newRowCount = 0;
         // TODO [rh] this._clientArea.getHeight() might be negavive
-        //      This happens when a Table is placed on a unselected CTabItem 
-        //      and then the tab item gets selected and thus the table becomes 
+        //      This happens when a Table is placed on a unselected CTabItem
+        //      and then the tab item gets selected and thus the table becomes
         //      visible
         var clientAreaHeight = this._clientArea.getHeight();
         if( this._itemHeight !== 0 && clientAreaHeight > 0 ) {
@@ -1009,9 +1017,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _updateRowTop : function() {
       var checkBoxOffset
-        = this._itemHeight 
-        / 2 
-        - org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT 
+        = this._itemHeight
+        / 2
+        - org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT
         / 2;
       var top = 0;
       for( var i = 0; i < this._rows.length; i++ ) {
@@ -1058,7 +1066,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       } else {
         // reorder array
         var newRows = new Array();
-        var newCheckBoxes = this._checkBoxes !== null ? new Array() : null; 
+        var newCheckBoxes = this._checkBoxes !== null ? new Array() : null;
         var length = this._rows.length;
         for( var i = 0; i < length; i++ ) {
           var sourceIndex = ( length + i + delta )  % length;
@@ -1167,11 +1175,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._unresolvedItems === null ) {
           this._unresolvedItems = new Array();
           qx.client.Timer.once( this._sendResolveItemsRequest, this, 30 );
-        } 
+        }
         this._unresolvedItems.push( itemIndex );
       }
     },
-    
+
     _sendResolveItemsRequest : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
@@ -1205,7 +1213,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _hideResizeLine : function() {
       this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
-    
+
     ////////////////////////////////////////////////////////////
     // Event handling methods - added and removed by server-side
 
@@ -1236,7 +1244,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
       req.addParameter( "org.eclipse.swt.events.widgetSelected.index",
                         evt.getData() );
-      req.addParameter( "org.eclipse.swt.events.widgetSelected.detail", 
+      req.addParameter( "org.eclipse.swt.events.widgetSelected.detail",
                         "check" );
       req.send();
     },
