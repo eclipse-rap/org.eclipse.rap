@@ -47,7 +47,7 @@ public final class BrandingExtension {
   private static final String ELEM_ADITIONAL_HEADERS 
     = "additionalHeaders"; //$NON-NLS-1$
   private static final String ELEM_ENTRYPOINTS 
-    = "entrypoints"; //$NON-NLS-1$
+    = "associatedEntrypoints"; //$NON-NLS-1$
   private static final String TAG_META 
     = "meta"; //$NON-NLS-1$
   private static final String TAG_LINK 
