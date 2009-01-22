@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ import org.eclipse.swt.internal.widgets.*;
  *  <li>Scroll bars are visible even though not necessary</li>
  *  <li>No keyboard navigation</li>
  * </ul>
- * 
+ *
  * @since 1.0
  */
 public class Table extends Composite {
@@ -110,7 +110,7 @@ public class Table extends Composite {
     }
   }
 
-    private final class TableAdapter implements ITableAdapter {
+  private final class TableAdapter implements ITableAdapter {
 
     public int getCheckWidth() {
       return Table.this.getCheckWidth();
@@ -131,7 +131,7 @@ public class Table extends Composite {
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
-    
+
     public void setLeftOffset( final int leftOffset ) {
       Table.this.leftOffset = leftOffset;
     }
@@ -197,11 +197,11 @@ public class Table extends Composite {
       Table.this.checkData();
     }
   }
-  
+
   /**
    * <strong>IMPORTANT:</strong> This field is <em>not</em> part of the SWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by SWT. It should never be accessed from 
+   * within the packages provided by SWT. It should never be accessed from
    * application code.
    */
   public static final String HIDE_SELECTION
@@ -707,7 +707,7 @@ public class Table extends Composite {
   public void removeAll() {
     checkWidget();
     while( itemCount > 0 ) {
-      removeItem( items[ 0 ] ); 
+      removeItem( items[ 0 ] );
     }
   }
 
@@ -1516,8 +1516,7 @@ public class Table extends Composite {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     int itemIndex = indexOf( item );
-    // -1 to avoid including partially visible items
-    int visibleItemCount = getVisibleItemCount() - 1;
+    int visibleItemCount = getVisibleItemCount( false );
     if( itemIndex < topIndex || itemIndex > topIndex + visibleItemCount ) {
       // Show item as top item
       setTopIndex( itemIndex );
@@ -2213,14 +2212,15 @@ public class Table extends Composite {
     return result;
   }
 
-  final int getVisibleItemCount() {
+  final int getVisibleItemCount( final boolean includePartlyVisible ) {
     int clientHeight = getBounds().height
                      - getHeaderHeight()
                      - ScrollBar.SCROLL_BAR_HEIGHT;
     int result = 0;
     if( clientHeight >= 0 ) {
-      result = clientHeight / getItemHeight();
-      if( clientHeight % getItemHeight() != 0 ) {
+      int itemHeight = getItemHeight();
+      result = clientHeight / itemHeight;
+      if( includePartlyVisible && clientHeight % itemHeight != 0 ) {
         result++;
       }
     }
@@ -2281,7 +2281,7 @@ public class Table extends Composite {
 
   private boolean isItemVisible( final int index ) {
     boolean result = false;
-    int visibleItemCount = getVisibleItemCount();
+    int visibleItemCount = getVisibleItemCount( true );
     if( visibleItemCount > 0 ) {
       result = index >= topIndex && index < topIndex + visibleItemCount;
     }

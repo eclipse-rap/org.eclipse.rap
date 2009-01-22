@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -503,7 +502,7 @@ public class Table_Test extends TestCase {
     table.removeAll();
     assertEquals( 0, table.getItemCount() );
   }
-  
+
   public void testRemoveRange() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -549,7 +548,7 @@ public class Table_Test extends TestCase {
     table.remove( 0, 9 );
     assertEquals( 0, table.getItemCount() );
   }
-  
+
   public void testRemove() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -583,7 +582,7 @@ public class Table_Test extends TestCase {
     table.remove( 0 );
     assertEquals( 9, table.getItemCount() );
   }
-  
+
   public void testRemoveArrayVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -604,7 +603,7 @@ public class Table_Test extends TestCase {
     table.remove( new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } );
     assertEquals( 0, table.getItemCount() );
   }
-  
+
   public void testRemoveWithSelectionListener() {
     // ensure that no selection event is fired if a selected item is removed
     final boolean eventFired[] = { false };
@@ -928,7 +927,7 @@ public class Table_Test extends TestCase {
     }
 
     // test case precondition: table offers space for max. 30 visible items
-    assertTrue( table.getVisibleItemCount() < 30 );
+    assertTrue( table.getVisibleItemCount( false ) < 30 );
 
     // calling setSelection makes the selected item visible
     table.setSelection( 95 );
@@ -1780,10 +1779,12 @@ public class Table_Test extends TestCase {
     int itemHeight = table.getItemHeight();
     int scrollBarHeight = ScrollBar.SCROLL_BAR_HEIGHT;
     table.setSize( 100, 5 * itemHeight + scrollBarHeight );
-    assertEquals( 5, table.getVisibleItemCount() );
+    assertEquals( 5, table.getVisibleItemCount( true ) );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
     // check that partially visible item is included in visible item count
     table.setSize( 100, 5 * itemHeight + scrollBarHeight + itemHeight / 2 );
-    assertEquals( 6, table.getVisibleItemCount() );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
+    assertEquals( 6, table.getVisibleItemCount( true ) );
   }
 
   private static void clearColumns( final Table table ) {
