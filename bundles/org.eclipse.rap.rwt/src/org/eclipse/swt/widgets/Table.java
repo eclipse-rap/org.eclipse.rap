@@ -1517,17 +1517,12 @@ public class Table extends Composite {
     }
     int itemIndex = indexOf( item );
     int visibleItemCount = getVisibleItemCount( false );
-    if( itemIndex < topIndex || itemIndex > topIndex + visibleItemCount ) {
+    if( itemIndex < topIndex ) {
       // Show item as top item
       setTopIndex( itemIndex );
-      // try to show it 2 rows above the bottom/last item
-      int idealTopIndex = itemIndex - visibleItemCount + 2;
-      if( idealTopIndex >= itemCount ) {
-        idealTopIndex = itemCount - 1;
-      }
-      if( idealTopIndex >= 0 ) {
-        setTopIndex( idealTopIndex );
-      }
+    } else if( itemIndex > topIndex + visibleItemCount - 1 ) {
+      // Show item as last item
+      setTopIndex( Math.max( 0, itemIndex - visibleItemCount + 1 ) );
     }
   }
 

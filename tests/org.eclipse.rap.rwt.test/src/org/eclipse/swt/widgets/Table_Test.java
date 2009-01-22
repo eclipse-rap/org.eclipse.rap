@@ -1215,16 +1215,24 @@ public class Table_Test extends TestCase {
     }
     int itemHeight = table.getItem( 0 ).getBounds().height;
     int visibleLines = 100;
-    table.setSize( 100, visibleLines * itemHeight );
+    int scrollBarHeight = ScrollBar.SCROLL_BAR_HEIGHT;
+    table.setSize( 100, visibleLines * itemHeight + scrollBarHeight );
+    assertEquals( visibleLines, table.getVisibleItemCount( false ) );
 
-    table.showItem( table.getItem( 100 ) );
-    assertEquals( 4, table.getTopIndex() );
-
-    table.showItem( table.getItem( 0 ) );
+    table.showItem( table.getItem( 99 ) );
     assertEquals( 0, table.getTopIndex() );
 
+    table.showItem( table.getItem( 100 ) );
+    assertEquals( 1, table.getTopIndex() );
+
+    table.showItem( table.getItem( 199 ) );
+    assertEquals( 100, table.getTopIndex() );
+
     table.showItem( table.getItem( itemCount - 1 ) );
-    assertEquals( 203, table.getTopIndex() );
+    assertEquals( 200, table.getTopIndex() );
+
+    table.showItem( table.getItem( 42 ) );
+    assertEquals( 42, table.getTopIndex() );
 
     table.showItem( table.getItem( 0 ) );
     assertEquals( 0, table.getTopIndex() );
