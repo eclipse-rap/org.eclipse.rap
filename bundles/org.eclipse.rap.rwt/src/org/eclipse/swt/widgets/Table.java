@@ -1520,9 +1520,9 @@ public class Table extends Composite {
     if( itemIndex < topIndex ) {
       // Show item as top item
       setTopIndex( itemIndex );
-    } else if( itemIndex > topIndex + visibleItemCount - 1 ) {
+    } else if( itemIndex >= topIndex + visibleItemCount ) {
       // Show item as last item
-      setTopIndex( Math.max( 0, itemIndex - visibleItemCount + 1 ) );
+      setTopIndex( itemIndex - visibleItemCount + 1 );
     }
   }
 
