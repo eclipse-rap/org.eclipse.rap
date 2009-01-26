@@ -165,7 +165,7 @@
       </fileset>
     </path>
     <!-- run rwt tests -->
-    <junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="perTest">
+    <junit printsummary="yes" haltonfailure="yes" fork="yes" forkmode="perTest">
       <classpath refid="cp" />
       <formatter type="xml" />
 
