@@ -919,6 +919,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         width = this.getColumnsWidth();
       }
       this._horzScrollBar.setMaximum( width );
+      this._columnArea.setWidth( width );
     },
 
     _updateClientAreaSize : function() {
@@ -928,8 +929,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       var clientHeight = this.getHeight() - top - this._horzScrollBar.getHeight() - ( 2 * this._borderWidth );
       var clientWidth = this.getWidth() - this._vertScrollBar.getWidth() - ( 2 * this._borderWidth );
-      //
-      this._columnArea.setWidth( clientWidth );
       // vertical scrollBar
       this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getWidth() - ( 2 * this._borderWidth ) );
       this._vertScrollBar.setTop( top );
