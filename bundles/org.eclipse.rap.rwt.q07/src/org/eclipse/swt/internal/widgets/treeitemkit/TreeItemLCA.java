@@ -285,6 +285,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts ) ) {
       for( int i = 0; i < texts.length; i++ ) {
         texts[ i ] = WidgetLCAUtil.escapeText( texts[ i ], false );
+        texts[ i ] = texts[ i ].replaceAll( " ", "&nbsp;" );
       }
       writer.set( "texts", new Object[]{
         texts

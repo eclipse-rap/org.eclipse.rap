@@ -65,7 +65,7 @@ public class TreeItem extends Item {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a tree control which will be the parent of the new instance
    *          (cannot be null)
    * @param style the style of control to construct
@@ -99,7 +99,7 @@ public class TreeItem extends Item {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a tree control which will be the parent of the new instance
    *          (cannot be null)
    * @param style the style of control to construct
@@ -136,7 +136,7 @@ public class TreeItem extends Item {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parentItem a tree control which will be the parent of the new
    *          instance (cannot be null)
    * @param style the style of control to construct
@@ -172,7 +172,7 @@ public class TreeItem extends Item {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parentItem a tree control which will be the parent of the new
    *          instance (cannot be null)
    * @param style the style of control to construct
@@ -239,7 +239,11 @@ public class TreeItem extends Item {
       }
 
       public Color[] getCellBackgrounds() {
-        return cellBackgrounds;
+        Color[] backgrounds = null;
+        if( cellBackgrounds != null ) {
+          backgrounds = ( Color[] )cellBackgrounds.clone();
+        }
+        return backgrounds;
       }
 
       public Color[] getCellForegrounds() {
@@ -276,7 +280,7 @@ public class TreeItem extends Item {
   // Parent/child relations
   /**
    * Returns the receiver's parent, which must be a <code>Tree</code>.
-   * 
+   *
    * @return the receiver's parent
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -292,7 +296,7 @@ public class TreeItem extends Item {
   /**
    * Returns the receiver's parent item, which must be a <code>TreeItem</code>
    * or null when the receiver is a root.
-   * 
+   *
    * @return the receiver's parent item
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -310,7 +314,7 @@ public class TreeItem extends Item {
   /**
    * Sets the expanded state of the receiver.
    * <p>
-   * 
+   *
    * @param expanded the new expanded state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -329,7 +333,7 @@ public class TreeItem extends Item {
   /**
    * Returns <code>true</code> if the receiver is expanded, and false otherwise.
    * <p>
-   * 
+   *
    * @return the expanded state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -345,7 +349,7 @@ public class TreeItem extends Item {
   /**
    * Returns a rectangle describing the receiver's size and location relative to
    * its parent.
-   * 
+   *
    * @return the receiver's bounding rectangle
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -361,7 +365,7 @@ public class TreeItem extends Item {
   /**
    * Returns a rectangle describing the receiver's size and location relative to
    * its parent at a column in the tree.
-   * 
+   *
    * @param columnIndex the index that specifies the column
    * @return the receiver's bounding column rectangle
    * @exception SWTException <ul>
@@ -440,7 +444,7 @@ public class TreeItem extends Item {
 
   /**
    * Returns the background color at the given column index in the receiver.
-   * 
+   *
    * @param columnIndex the column index
    * @return the background color
    * @exception SWTException <ul>
@@ -466,7 +470,7 @@ public class TreeItem extends Item {
   /**
    * Returns the font that the receiver will use to paint textual information
    * for the specified cell in this item.
-   * 
+   *
    * @param columnIndex the column index
    * @return the receiver's font
    * @exception SWTException <ul>
@@ -496,7 +500,7 @@ public class TreeItem extends Item {
 
   /**
    * Returns the foreground color at the given column index in the receiver.
-   * 
+   *
    * @param columnIndex the column index
    * @return the foreground color
    * @exception SWTException <ul>
@@ -523,7 +527,7 @@ public class TreeItem extends Item {
    * Sets the background color at the given column index in the receiver to the
    * color specified by the argument, or to the default system color for the
    * item if the argument is null.
-   * 
+   *
    * @param columnIndex the column index
    * @param value the new color (or null)
    * @exception IllegalArgumentException <ul>
@@ -564,7 +568,7 @@ public class TreeItem extends Item {
    * Sets the font that the receiver will use to paint textual information for
    * the specified cell in this item to the font specified by the argument, or
    * to the default font for that kind of control if the argument is null.
-   * 
+   *
    * @param columnIndex the column index
    * @param value the new font (or null)
    * @exception IllegalArgumentException <ul>
@@ -608,7 +612,7 @@ public class TreeItem extends Item {
    * Sets the foreground color at the given column index in the receiver to the
    * color specified by the argument, or to the default system color for the
    * item if the argument is null.
-   * 
+   *
    * @param columnIndex the column index
    * @param value the new color (or null)
    * @exception IllegalArgumentException <ul>
@@ -649,7 +653,7 @@ public class TreeItem extends Item {
    * Sets the font that the receiver will use to paint textual information for
    * this item to the font specified by the argument, or to the default font for
    * that kind of control if the argument is null.
-   * 
+   *
    * @param font the new font (or null)
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed
@@ -673,7 +677,7 @@ public class TreeItem extends Item {
   /**
    * Returns the font that the receiver will use to paint textual information
    * for this item.
-   * 
+   *
    * @return the receiver's font
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -706,7 +710,7 @@ public class TreeItem extends Item {
    * Sets the receiver's background color to the color specified by the
    * argument, or to the default system color for the item if the argument is
    * null.
-   * 
+   *
    * @param value the new color (or null)
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed
@@ -735,7 +739,7 @@ public class TreeItem extends Item {
 
   /**
    * Returns the receiver's background color.
-   * 
+   *
    * @return the background color
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -757,7 +761,7 @@ public class TreeItem extends Item {
 
   /**
    * Returns the foreground color that the receiver will use to draw.
-   * 
+   *
    * @return the receiver's foreground color
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -781,7 +785,7 @@ public class TreeItem extends Item {
    * Sets the receiver's foreground color to the color specified by the
    * argument, or to the default system color for the item if the argument is
    * null.
-   * 
+   *
    * @param value the new color (or null)
    * @since 1.0
    * @exception IllegalArgumentException <ul>
@@ -812,7 +816,7 @@ public class TreeItem extends Item {
   /**
    * Sets the checked state of the receiver.
    * <p>
-   * 
+   *
    * @param checked the new checked state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -834,7 +838,7 @@ public class TreeItem extends Item {
    * Returns <code>true</code> if the receiver is checked, and false otherwise.
    * When the parent does not have the <code>CHECK style, return false.
    * <p>
-   * 
+   *
    * @return the checked state
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
@@ -849,7 +853,7 @@ public class TreeItem extends Item {
   /**
    * Sets the grayed state of the checkbox for this item. This state change only
    * applies if the Tree was created with the SWT.CHECK style.
-   * 
+   *
    * @param value the new grayed state of the checkbox
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
@@ -874,7 +878,7 @@ public class TreeItem extends Item {
    * Returns <code>true</code> if the receiver is grayed, and false otherwise.
    * When the parent does not have the <code>CHECK style, return false.
    * <p>
-   * 
+   *
    * @return the grayed state of the checkbox
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
@@ -891,7 +895,7 @@ public class TreeItem extends Item {
   /**
    * Returns the text stored at the given column index in the receiver, or empty
    * string if the text has not been set.
-   * 
+   *
    * @param columnIndex the column index
    * @return the text stored at the given column index in the receiver
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
@@ -908,7 +912,7 @@ public class TreeItem extends Item {
   /**
    * Returns the receiver's text, which will be an empty string if it has never
    * been set.
-   * 
+   *
    * @return the receiver's text
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
@@ -942,7 +946,7 @@ public class TreeItem extends Item {
 
   /**
    * Sets the text for multiple columns in the tree.
-   * 
+   *
    * @param value the array of new strings
    * @exception IllegalArgumentException <ul> <li>ERROR_NULL_ARGUMENT - if the
    *              text is null</li> </ul>
@@ -967,7 +971,7 @@ public class TreeItem extends Item {
 
   /**
    * Sets the receiver's text at a column
-   * 
+   *
    * @param columnIndex the column index
    * @param value the new text
    * @exception IllegalArgumentException <ul> <li>ERROR_NULL_ARGUMENT - if the
@@ -1000,7 +1004,7 @@ public class TreeItem extends Item {
 
   /**
    * Sets the receiver's text.
-   * 
+   *
    * @param text the new text
    * @exception IllegalArgumentException <ul> <li>ERROR_NULL_ARGUMENT - if the
    *              text is null</li> </ul>
@@ -1017,7 +1021,7 @@ public class TreeItem extends Item {
   /**
    * Returns the image stored at the given column index in the receiver, or null
    * if the image has not been set or if the column does not exist.
-   * 
+   *
    * @param columnIndex the column index
    * @return the image stored at the given column index in the receiver
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
@@ -1034,7 +1038,7 @@ public class TreeItem extends Item {
   /**
    * Returns a rectangle describing the size and location relative to its parent
    * of an image at a column in the tree.
-   * 
+   *
    * @param index the index that specifies the column
    * @return the receiver's bounding image rectangle
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
@@ -1143,7 +1147,7 @@ public class TreeItem extends Item {
    * icon and other attributes of the item are set to the default value. If the
    * tree was created with the <code>SWT.VIRTUAL</code> style, these attributes
    * are requested again as needed.
-   * 
+   *
    * @param index the index of the item to clear
    * @param recursive <code>true</code> if all child items of the indexed item
    *          should be cleared recursively, and <code>false</code> otherwise
@@ -1222,7 +1226,7 @@ public class TreeItem extends Item {
 
   /**
    * Sets the receiver's image at a column.
-   * 
+   *
    * @param columnIndex the column index
    * @param value the new image
    * @exception IllegalArgumentException <ul>
@@ -1262,7 +1266,7 @@ public class TreeItem extends Item {
 
   /**
    * Sets the image for multiple columns in the tree.
-   * 
+   *
    * @param value the array of new images
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the array of images is null</li>
@@ -1294,7 +1298,7 @@ public class TreeItem extends Item {
    * of the items are set to their default values. If the tree was created with
    * the <code>SWT.VIRTUAL</code> style, these attributes are requested again as
    * needed.
-   * 
+   *
    * @param recursive <code>true</code> if all child items should be cleared
    *          recursively, and <code>false</code> otherwise
    * @exception SWTException <ul>
@@ -1337,7 +1341,7 @@ public class TreeItem extends Item {
    * Note: This is not the actual structure used by the receiver to maintain its
    * list of items, so modifying the array will not affect the receiver.
    * </p>
-   * 
+   *
    * @return the receiver's items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1353,7 +1357,7 @@ public class TreeItem extends Item {
   /**
    * Returns the item at the given, zero-relative index in the receiver. Throws
    * an exception if the index is out of range.
-   * 
+   *
    * @param index the index of the item to return
    * @return the item at the given index
    * @exception IllegalArgumentException <ul>
@@ -1375,7 +1379,7 @@ public class TreeItem extends Item {
   /**
    * Returns the number of items contained in the receiver that are direct item
    * children of the receiver.
-   * 
+   *
    * @return the number of items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1392,7 +1396,7 @@ public class TreeItem extends Item {
    * Searches the receiver's list starting at the first item (index 0) until an
    * item is found that is equal to the argument, and returns the index of that
    * item. If no item is found, returns -1.
-   * 
+   *
    * @param item the search item
    * @return the index of the item
    * @exception IllegalArgumentException <ul>
@@ -1421,7 +1425,7 @@ public class TreeItem extends Item {
   /**
    * Removes all of the items from the receiver.
    * <p>
-   * 
+   *
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
    *              </li> <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
@@ -1439,7 +1443,7 @@ public class TreeItem extends Item {
 
   /**
    * Sets the number of child items contained in the receiver.
-   * 
+   *
    * @param count the number of items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
