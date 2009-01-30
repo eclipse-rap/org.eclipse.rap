@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,11 @@
  * 												 - fix for bug 183850, 182652, 182800, 215069
  *     Innoopract - RAP adaption
  *******************************************************************************/
-
 package org.eclipse.jface.viewers;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.*;
 
 
 /**
@@ -53,7 +51,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	public FocusCellOwnerDrawHighlighter(ColumnViewer viewer) {
 		super(viewer);
 		this.viewer = viewer;
-//		hookListener(viewer);
+		hookListener(viewer);
     viewer.getControl().setData( Table.HIDE_SELECTION, Boolean.TRUE );
 	}
 
@@ -96,17 +94,19 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 		}
 	}
 
-//	private void removeSelectionInformation(Event event, ViewerCell cell) {
+	private void removeSelectionInformation(Event event, ViewerCell cell) {
 //		GC gc = event.gc;
 //		gc.setBackground(cell.getViewerRow().getBackground(
 //				cell.getColumnIndex()));
+	  cell.setBackground( null );
 //		gc.setForeground(cell.getViewerRow().getForeground(
 //				cell.getColumnIndex()));
+	  cell.setForeground( null );
 //		gc.fillRectangle(cell.getBounds());
 //		event.detail &= ~SWT.SELECTED;
-//	}
+	}
 
-//	private void hookListener(final ColumnViewer viewer) {
+    private void hookListener(final ColumnViewer viewer) {
 //
 //		Listener listener = new Listener() {
 //
@@ -130,11 +130,49 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //					focusCellChanged( focusCell );
 //			}
 //
-//		};
+//      };
 ////		viewer.getControl().addListener(SWT.EraseItem, listener);
 //		viewer.getControl().addListener(SWT.KeyDown, listener);
 //		viewer.getControl().addListener(SWT.MouseDown, listener);
-//	}
+
+      // [rst] We use a JFace SelectionChanged listener to keep track of
+      //       programmatic selection changes and handle MULTI correctly.
+      //       See https://bugs.eclipse.org/bugs/show_bug.cgi?id=261647
+      viewer.addSelectionChangedListener( new ISelectionChangedListener() {
+
+        private Widget[] oldSelection = getSelectedItems();
+
+        public void selectionChanged( SelectionChangedEvent event ) {
+          // erase old selection
+          for( int i = 0; i < oldSelection.length; i++ ) {
+            Widget item = oldSelection[ i ];
+            ViewerRow row = viewer.getViewerRowFromItem( item );
+            ViewerCell cell = row.getCell( 0 );
+            removeSelectionInformation( null, cell );
+          }
+          // colorize new selection
+          Widget[] selection = getSelectedItems();
+          for( int i = 0; i < selection.length; i++ ) {
+            Widget item = selection[ i ];
+            ViewerRow row = viewer.getViewerRowFromItem( item );
+            ViewerCell cell = row.getCell( 0 );
+            markFocusedCell( null, cell );
+          }
+          oldSelection = selection;
+        }
+
+        private Widget[] getSelectedItems() {
+          Control control = viewer.getControl();
+          Widget[] result = null;
+          if( control instanceof Table ) {
+            result = ( ( Table )control ).getSelection();
+          } else if( control instanceof Tree ) {
+            result = ( ( Tree )control ).getSelection();
+          }
+          return result;
+        }
+      });
+    }
 
 	/**
 	 * The color to use when rendering the background of the selected cell when
@@ -218,7 +256,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
     ColumnViewerEditor editor = viewer.getColumnViewerEditor();
     editor.addEditorActivationListener( listener );
   }
-	 
+
 	protected void focusCellChanged(ViewerCell newCell, ViewerCell oldCell) {
 //		super.focusCellChanged(newCell, oldCell);
 //
