@@ -230,6 +230,22 @@ public class Display_Test extends TestCase {
     assertNotNull( systemFont );
   }
 
+  public void testSystemImage() {
+    Display display = new Display();
+    Image errorImage = display.getSystemImage( SWT.ICON_ERROR );
+    assertEquals( new Rectangle( 0, 0, 32, 32 ), errorImage.getBounds() );
+    Image infoImage = display.getSystemImage( SWT.ICON_INFORMATION );
+    assertEquals( new Rectangle( 0, 0, 32, 32 ), infoImage.getBounds() );
+    assertFalse( infoImage.equals( errorImage ) );
+    Image workImage = display.getSystemImage( SWT.ICON_WORKING );
+    assertEquals( new Rectangle( 0, 0, 32, 32 ), workImage.getBounds() );
+    assertTrue( infoImage.equals( workImage ) );
+    Image questionImage = display.getSystemImage( SWT.ICON_QUESTION );
+    assertEquals( new Rectangle( 0, 0, 32, 32 ), questionImage.getBounds() );
+    Image warningImage = display.getSystemImage( SWT.ICON_WARNING );
+    assertEquals( new Rectangle( 0, 0, 32, 32 ), warningImage.getBounds() );
+  }
+
   public void testSystemColor() {
     Display display = new Display();
     Color color;

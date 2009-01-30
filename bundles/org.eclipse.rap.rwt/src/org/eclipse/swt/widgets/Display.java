@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,12 +126,6 @@ public class Display extends Device implements Adaptable {
   /* Package Name */
   static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";
 
-  private static final String ICON_PATH = "resource/widget/rap/dialog";
-  private static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
-  private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
-  private static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
-  private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
-  
   // Keep in sync with client-side (EventUtil.js)
   private static final int DOUBLE_CLICK_TIME = 500;
 
@@ -891,26 +888,46 @@ public class Display extends Device implements Adaptable {
    */
   public Image getSystemImage( final int id ) {
     checkDevice();
-    ClassLoader classLoader = getClass().getClassLoader();
     Image result = null;
+    QxType value = null;
     switch( id ) {
       case SWT.ICON_ERROR:
-        result = Graphics.getImage( Display.ERROR_IMAGE_PATH, classLoader );
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-error-image",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.ICON_WORKING:
       case SWT.ICON_INFORMATION:
-        result = Graphics.getImage( Display.INFO_IMAGE_PATH, classLoader );
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-information-image",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.ICON_QUESTION:
-        result = Graphics.getImage( Display.QUESTION_IMAGE_PATH, classLoader );
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-question-image",
+                                       SimpleSelector.DEFAULT );
       break;
       case SWT.ICON_WARNING:
-        result = Graphics.getImage( Display.WARNING_IMAGE_PATH, classLoader );
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-warning-image",
+                                       SimpleSelector.DEFAULT );
       break;
+    }
+    if( value != null ) {
+      QxImage image = ( QxImage )value;
+      try {
+        InputStream inStream = image.loader.getResourceAsStream( image.path );
+        result = Graphics.getImage( image.path, inStream );
+        inStream.close();
+      } catch( final IOException shouldNotHappen ) {
+        String txt = "Could not read system image from ''{0}''.";
+        String msg = MessageFormat.format( txt, new Object[] { image.path } );
+        throw new RuntimeException( msg, shouldNotHappen );
+      }
     }
     return result;
   }
-  
+
   /**
    * Returns the longest duration, in milliseconds, between
    * two mouse button clicks that will be considered a

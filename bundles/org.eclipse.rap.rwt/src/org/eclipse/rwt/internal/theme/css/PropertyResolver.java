@@ -158,7 +158,9 @@ public final class PropertyResolver {
         || "height".equals( property ) )
     {
       result = ThemeDefinitionReader.TYPE_DIMENSION;
-    } else if( "background-image".equals( property ) ) {
+    } else if( "background-image".equals( property )
+               || property.endsWith( "-image" ) )
+    {
       result = ThemeDefinitionReader.TYPE_IMAGE;
     }
     return result;

@@ -60,6 +60,41 @@
       </description>
     </property>
 
+    <property name="rwt-error-image" type="image">
+      <description>
+      The image used for MessageBoxes with style SWT.ICON_ERROR.
+      Also returned by Display#getSystemImage().
+      </description>
+    </property>
+
+    <property name="rwt-information-image" type="image">
+      <description>
+      The image used for MessageBoxes with style SWT.ICON_INFORMATION.
+      Also returned by Display#getSystemImage().
+      </description>
+    </property>
+
+    <property name="rwt-working-image" type="image">
+      <description>
+      The image used for MessageBoxes with style SWT.ICON_WORKING.
+      Also returned by Display#getSystemImage().
+      </description>
+    </property>
+
+    <property name="rwt-question-image" type="image">
+      <description>
+      The image used for MessageBoxes with style SWT.ICON_QUESTION.
+      Also returned by Display#getSystemImage().
+      </description>
+    </property>
+
+    <property name="rwt-warning-image" type="image">
+      <description>
+      The image used for MessageBoxes with style SWT.ICON_WARNING.
+      Also returned by Display#getSystemImage().
+      </description>
+    </property>
+
   </element>
 
   <element name="ToolTip">

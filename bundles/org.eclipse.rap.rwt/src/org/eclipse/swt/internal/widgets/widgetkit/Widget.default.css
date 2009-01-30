@@ -22,4 +22,10 @@ Display {
   rwt-lightshadow-color: rgb( 220, 223, 228 );
   rwt-thinborder-color: rgb( 172, 168, 153 );
   rwt-selectionmarker-color: rgb( 254, 200, 60 );
+
+  rwt-error-image: url( resource/widget/rap/dialog/error.png );
+  rwt-information-image: url( resource/widget/rap/dialog/information.png );
+  rwt-warning-image: url( resource/widget/rap/dialog/information.png );
+  rwt-question-image: url( resource/widget/rap/dialog/question.png );
+  rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
 }
