@@ -36,3 +36,27 @@ Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:s
 Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
   border: 2px inset;
 }
+
+Button-CheckIcon {
+  background-image: url( resource/widget/rap/button/check-off.png );
+}
+
+Button-CheckIcon:hover {
+  background-image: url( resource/widget/rap/button/check-off-hover.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( resource/widget/rap/button/check-on.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( resource/widget/rap/button/check-on-hover.png );
+}
+
+Button-CheckIcon:selected:grayed {
+  background-image: url( resource/widget/rap/button/check-grayed.png );
+}
+
+Button-CheckIcon:selected:hover:grayed {
+  background-image: url( resource/widget/rap/button/check-grayed-hover.png );
+}

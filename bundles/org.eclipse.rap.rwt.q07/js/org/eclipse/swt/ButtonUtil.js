@@ -14,7 +14,7 @@
 qx.Class.define( "org.eclipse.swt.ButtonUtil", {
 
   statics : {
-    
+
     setLabelMode : function( button ) {
       // Note: called directly after creating the menuItem instance, therefore
       // it is not necessary to check getLabelObject and/or preserve its label
@@ -23,9 +23,9 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
       button.getLabelObject().setAppearance( "label-graytext" );
       button.setLabel( "" );
     },
-    
+
     /**
-     * Registers the given button at the RadioManager of the first sibling 
+     * Registers the given button at the RadioManager of the first sibling
      * radio button. If there is not sibing radio button, a new RadioManager
      * is created.
      */
@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
       var parent = button.getParent();
       var siblings = parent.getChildren();
       for( var i = 0; radioManager == null && i < siblings.length; i++ ) {
-        if(    siblings[ i ] != button 
+        if(    siblings[ i ] != button
             && siblings[ i ].classname == button.classname )
         {
           radioManager = siblings[ i ].getManager();
@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
 
     /**
      * Removes the given button from its RadioManager and disposes of the
-     * RadioManager if there are no more radio buttons that use this 
+     * RadioManager if there are no more radio buttons that use this
      * RadioManager.
      */
     unregisterRadioButton : function( button ) {
@@ -83,25 +83,6 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
           var id = widgetManager.findIdByWidget( radio );
           org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
         }
-      }
-    },
-
-    checkSelected : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var check = evt.getTarget();
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( check );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( id + ".selection", check.getChecked() );
-      }
-    },
-
-    checkSelectedAction : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        org.eclipse.swt.ButtonUtil.checkSelected( evt );
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
       }
     },
 

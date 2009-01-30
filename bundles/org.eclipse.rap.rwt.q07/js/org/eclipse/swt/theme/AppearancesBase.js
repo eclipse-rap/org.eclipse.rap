@@ -183,28 +183,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "check-box" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        cursor : "default",
-        verticalChildrenAlign : "top",
-        spacing : 4
-      };
-      result.textColor = tv.getCssColor( "Button", "color" );
-      result.backgroundColor = tv.getCssColor( "Button", "background-color" );
-      result.backgroundImage = tv.getCssImage( "Button", "background-image" );
-      result.border = tv.getCssBorder( "Button", "border" );
-      result.font = tv.getCssFont( "Button", "font" );
-      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      return result;
-    }
-  },
-
-  "radio-button" : {
-    include : "check-box"
-  },
-
   /*
   ---------------------------------------------------------------------------
     BUTTON
@@ -232,6 +210,53 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.padding = [ 3, 4, 3, 4 ];
       }
       return result;
+    }
+  },
+
+  // ------------------------------------------------------------------------
+  // CheckBox
+
+  "check-box" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        border : tv.getCssBorder( "Button", "border" ),
+        font : tv.getCssFont( "Button", "font" ),
+        textColor : states.disabled
+                    ? tv.getColor( "widget.graytext" )
+                    : tv.getCssColor( "Button", "color" ),
+        backgroundColor : tv.getCssColor( "Button", "background-color" ),
+        backgroundImage : tv.getCssImage( "Button", "background-image" ),
+        padding : tv.getCssBoxDimensions( "Button", "padding" )
+      }
+    }
+  },
+
+  "check-box-icon" : {
+    include: "image",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.width = 13;
+      result.height = 13;
+      result.clipWidth = 13;
+      result.clipHeight = 13;
+      result.source = tv.getCssImage( "Button-CheckIcon", "background-image" );
+      return result;
+    }
+  },
+
+  // ------------------------------------------------------------------------
+  // RadioButton
+
+  "radio-button" : {
+    include : "check-box",
+    style : function( states ) {
+      return {
+        cursor : "default",
+        verticalChildrenAlign : "top",
+        spacing : 4
+      };
     }
   },
 

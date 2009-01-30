@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,6 +139,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/ExpandItem.js";
   private static final String SLIDER_JS
     = "org/eclipse/swt/widgets/Slider.js";
+  private static final String CHECKBOX_JS
+    = "org/eclipse/swt/widgets/CheckBox.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -219,6 +221,7 @@ final class QooxdooResourcesUtil {
       register( EXPAND_BAR_JS, compress );
       register( EXPAND_ITEM_JS, compress );
       register( SLIDER_JS, compress );
+      register( CHECKBOX_JS, compress );
 
       // register contributions
       registerContributions();

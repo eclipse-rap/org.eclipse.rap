@@ -24,10 +24,10 @@
     <property name="background-color"
         type="color"
         description="Background color for buttons." />
-        
+
     <property name="background-image"
         type="image"
-        description="Background image for buttons." />    
+        description="Background image for buttons." />
 
     <property name="border"
         type="border"
@@ -71,6 +71,24 @@
 
     <state name="selected"
         description="Applies for selected TOGGLE, CHECK and RADIO buttons." />
+
+    <element name="Button-CheckIcon"
+        description="The icon to indicate the check and/or grayed state of a Button with style CHECK" >
+
+      <property name="background-image"
+          type="image"
+          description="Icon image of the check box. The size of the image should be 13 x 13 pixels." />
+
+      <state name="selected"
+          description="Applies for checked check boxes." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the check box." />
+
+      <state name="grayed"
+          description="Applies when the check box is grayed." />
+
+    </element>
 
   </element>
 

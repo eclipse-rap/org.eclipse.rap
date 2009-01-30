@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ public class Button extends Control {
 
   private String text = "";
   private boolean selected;
+  private boolean grayed;
   private Image image;
   private boolean isDefault;
 
@@ -206,6 +207,50 @@ public class Button extends Control {
   }
 
   /**
+   * Returns <code>true</code> if the receiver is grayed,
+   * and false otherwise. When the widget does not have
+   * the <code>CHECK</code> style, return false.
+   *
+   * @return the grayed state of the checkbox
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.2
+   */
+  public boolean getGrayed() {
+    checkWidget();
+    boolean result = false;
+    if( ( style & SWT.CHECK ) != 0 ) {
+      result = grayed;
+    }
+    return result;
+  }
+
+  /**
+   * Sets the grayed state of the receiver.  This state change
+   * only applies if the control was created with the SWT.CHECK
+   * style.
+   *
+   * @param grayed the new grayed state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.2
+   */
+  public void setGrayed( final boolean grayed ) {
+    checkWidget();
+    if( ( style & SWT.CHECK ) != 0 ) {
+      this.grayed = grayed;
+    }
+  }
+
+  /**
    * Returns the receiver's image if it has one, or null
    * if it does not.
    *
@@ -235,9 +280,9 @@ public class Button extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * <hr/>
-   * Not implemented for CHECK and RADIO.
+   * Not implemented for RADIO.
    */
-  // TODO [rh] implement handling of images for CHECK and RADIO as SWT does
+  // TODO [rh] implement handling of images for RADIO as SWT does
   public void setImage( final Image image ) {
     checkWidget();
     if( ( style & SWT.ARROW ) == 0 ) {
@@ -332,9 +377,9 @@ public class Button extends Control {
     checkWidget();
     int width = 0;
     int height = 0;
-    // TODO [rst] Image is currently ignored for CHECK and RADIO buttons,
+    // TODO [rst] Image is currently ignored for RADIO buttons,
     //            remove when this restriction disappers
-    boolean imageIgnored = ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0;
+    boolean imageIgnored = ( style & SWT.RADIO ) != 0;
     boolean hasImage = image != null && !imageIgnored;
     boolean hasText = text.length() > 0;
     if( hasImage ) {

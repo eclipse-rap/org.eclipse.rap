@@ -25,6 +25,7 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.sliderkit.SliderLCA;
 import org.eclipse.swt.widgets.*;
 
 public class ButtonLCA_Test extends TestCase {
@@ -71,10 +72,13 @@ public class ButtonLCA_Test extends TestCase {
     RWTFixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
+    button.setGrayed( true );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( CheckButtonDelegateLCA.PROP_GRAYED ) );
     RWTFixture.clearPreserved();
     display.dispose();
   }
@@ -316,7 +320,7 @@ public class ButtonLCA_Test extends TestCase {
     RWTFixture.readDataAndProcessAction( display );
     assertEquals( "widgetActivated|", log.toString() );
   }
-  
+
   public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
@@ -366,7 +370,7 @@ public class ButtonLCA_Test extends TestCase {
     expected = "\"RADIO E&lt;s&gt;ca'pe&quot; &amp; me\"";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
+
   public void testDefaultButton() {
     Display display = new Display();
     Shell shell = new Shell( display );

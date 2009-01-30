@@ -132,6 +132,25 @@ public class Button_Test extends TestCase {
   	assertFalse( button3.getSelection() );
   }
 
+  public void testGrayed() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Button button = new Button( shell, SWT.CHECK );
+    assertFalse( button.getGrayed() );
+    button.setGrayed( true );
+    assertTrue( button.getGrayed() );
+    assertFalse( button.getSelection() );
+    button.setSelection( true );
+    assertTrue( button.getSelection() );
+    assertTrue( button.getGrayed() );
+    button.setGrayed( false );
+    assertFalse( button.getGrayed() );
+    assertTrue( button.getSelection() );
+    button.setSelection( false );
+    assertFalse( button.getSelection() );
+    assertFalse( button.getGrayed() );
+  }
+
   public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -186,10 +205,13 @@ public class Button_Test extends TestCase {
 
     // CHECK button
     button = new Button( shell, SWT.CHECK );
+    expected = new Point( 28, 21 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     expected = new Point( 75, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
+    expected = new Point( 177, 58 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // CHECK button with border
@@ -197,8 +219,10 @@ public class Button_Test extends TestCase {
     expected = new Point( 32, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    button.setImage( image );
     expected = new Point( 79, 25 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( image );
+    expected = new Point( 181, 62 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // RADIO button
