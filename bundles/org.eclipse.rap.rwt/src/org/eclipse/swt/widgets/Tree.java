@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,13 @@ import java.util.List;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+
 
 /**
  * Instances of this class provide a selectable user interface object that
@@ -69,10 +69,10 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  * <p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>SINGLE, MULTI, CHECK, FULL_SELECTION, VIRTUAL</dd>
+ * <dd>SINGLE, MULTI, CHECK<!--, FULL_SELECTION-->, VIRTUAL</dd>
  * <dt><b>Events:</b></dt>
- * <dd>Selection, DefaultSelection, Collapse, Expand, SetData, MeasureItem,
- * EraseItem, PaintItem</dd>
+ * <dd>Selection, DefaultSelection, Collapse, Expand, SetData<!--, MeasureItem,
+ * EraseItem, PaintItem--></dd>
  * </dl>
  * </p>
  * <p>
@@ -81,7 +81,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public class Tree extends Composite {
@@ -106,7 +106,7 @@ public class Tree extends Composite {
   private TreeItem currentItem;
   private final ITreeAdapter treeAdapter;
   /* package */int scrollTop, scrollLeft;
-  
+
   private final class CompositeItemHolder implements IItemHolderAdapter {
 
     public void add( final Item item ) {
@@ -176,7 +176,7 @@ public class Tree extends Composite {
       Tree.checkAllData( tree );
     }
   }
-  
+
   private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
       checkAllData( ( Tree )event.widget );
@@ -210,7 +210,7 @@ public class Tree extends Composite {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a composite control which will be the parent of the new
    *          instance (cannot be null)
    * @param style the style of control to construct
@@ -266,7 +266,7 @@ public class Tree extends Composite {
   // Methods to manage items
   /**
    * Sets the number of root-level items contained in the receiver.
-   * 
+   *
    * @param itemCount the number of items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -317,7 +317,7 @@ public class Tree extends Composite {
    * Returns the number of items contained in the receiver that are direct item
    * children of the receiver. The number that is returned is the number of
    * roots in the tree.
-   * 
+   *
    * @return the number of items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -337,7 +337,7 @@ public class Tree extends Composite {
    * Note: This is not the actual structure used by the receiver to maintain its
    * list of items, so modifying the array will not affect the receiver.
    * </p>
-   * 
+   *
    * @return the items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -353,7 +353,7 @@ public class Tree extends Composite {
   /**
    * Returns the item at the given, zero-relative index in the receiver. Throws
    * an exception if the index is out of range.
-   * 
+   *
    * @param index the index of the item to return
    * @return the item at the given index
    * @exception IllegalArgumentException <ul>
@@ -375,7 +375,7 @@ public class Tree extends Composite {
    * Searches the receiver's list starting at the first item (index 0) until an
    * item is found that is equal to the argument, and returns the index of that
    * item. If no item is found, returns -1.
-   * 
+   *
    * @param item the search item
    * @return the index of the item
    * @exception IllegalArgumentException <ul>
@@ -404,7 +404,7 @@ public class Tree extends Composite {
   /**
    * Returns the receiver's parent item, which must be a <code>TreeItem</code>
    * or null when the receiver is a root.
-   * 
+   *
    * @return the receiver's parent item
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -419,7 +419,7 @@ public class Tree extends Composite {
 
   /**
    * Removes all of the items from the receiver.
-   * 
+   *
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
@@ -439,7 +439,7 @@ public class Tree extends Composite {
    * Shows the item. If the item is already showing in the receiver, this method
    * simply returns. Otherwise, the items are scrolled and expanded until the
    * item is visible.
-   * 
+   *
    * @param item the item to be shown
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the item is null</li>
@@ -475,7 +475,7 @@ public class Tree extends Composite {
    * Shows the selection. If the selection is already showing in the receiver,
    * this method simply returns. Otherwise, the items are scrolled until the
    * selection is visible.
-   * 
+   *
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
@@ -501,7 +501,7 @@ public class Tree extends Composite {
    * Note: This is not the actual structure used by the receiver to maintain its
    * selection, so modifying the array will not affect the receiver.
    * </p>
-   * 
+   *
    * @return an array representing the selection
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -518,7 +518,7 @@ public class Tree extends Composite {
 
   /**
    * Returns the number of selected items contained in the receiver.
-   * 
+   *
    * @return the number of selected items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -537,7 +537,7 @@ public class Tree extends Composite {
    * <p>
    * If the item is not in the receiver, then it is ignored.
    * </p>
-   * 
+   *
    * @param selection the item to select
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the item is null</li>
@@ -566,7 +566,7 @@ public class Tree extends Composite {
    * Items that are not in the receiver are ignored. If the receiver is
    * single-select and multiple items are specified, then all items are ignored.
    * </p>
-   * 
+   *
    * @param selection the array of items
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the array of items is null</li>
@@ -630,7 +630,7 @@ public class Tree extends Composite {
    * <p>
    * If the receiver is single-select, do nothing.
    * </p>
-   * 
+   *
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
@@ -657,7 +657,7 @@ public class Tree extends Composite {
 
   /**
    * Deselects all selected items in the receiver.
-   * 
+   *
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
@@ -677,7 +677,7 @@ public class Tree extends Composite {
    * makes the receiver not visible, marking it visible may not actually cause
    * it to be displayed.
    * </p>
-   * 
+   *
    * @param value the new visibility state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -701,7 +701,7 @@ public class Tree extends Composite {
    * makes the receiver not visible, this method may still indicate that it is
    * considered visible even though it may not actually be showing.
    * </p>
-   * 
+   *
    * @return the visibility state of the lines
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -719,7 +719,7 @@ public class Tree extends Composite {
    * icon and other attributes of the item are set to the default value. If the
    * tree was created with the <code>SWT.VIRTUAL</code> style, these attributes
    * are requested again as needed.
-   * 
+   *
    * @param index the index of the item to clear
    * @param recursive <code>true</code> if all child items of the indexed item
    *          should be cleared recursively, and <code>false</code> otherwise
@@ -761,7 +761,7 @@ public class Tree extends Composite {
    * SWT.FULL_SELECTION style hint, which specifies the selection policy,
    * determines the extent of the selection.
    * </p>
-   * 
+   *
    * @param point the point used to locate the item
    * @return the item at the given point, or null if the point is not in a
    *         selectable item
@@ -813,7 +813,7 @@ public class Tree extends Composite {
   /**
    * Returns the height of the area which would be used to display <em>one</em>
    * of the items in the tree.
-   * 
+   *
    * @return the height of one item
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -837,7 +837,7 @@ public class Tree extends Composite {
    * of the items are set to their default values. If the tree was created with
    * the <code>SWT.VIRTUAL</code> style, these attributes are requested again as
    * needed.
-   * 
+   *
    * @param recursive <code>true</code> if all child items should be cleared
    *          recursively, and <code>false</code> otherwise
    * @exception SWTException <ul>
@@ -871,7 +871,7 @@ public class Tree extends Composite {
    * zero, despite the fact that visually, one column of items may be visible.
    * This occurs when the programmer uses the tree like a list, adding items but
    * never creating a column.
-   * 
+   *
    * @return the number of columns
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -942,7 +942,7 @@ public class Tree extends Composite {
 
   /**
    * Returns the height of the receiver's header
-   * 
+   *
    * @return the height of the header or zero if the header is not visible
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -976,7 +976,7 @@ public class Tree extends Composite {
    * makes the receiver not visible, marking it visible may not actually cause
    * it to be displayed.
    * </p>
-   * 
+   *
    * @param value the new visibility state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1000,7 +1000,7 @@ public class Tree extends Composite {
    * makes the receiver not visible, this method may still indicate that it is
    * considered visible even though it may not actually be showing.
    * </p>
-   * 
+   *
    * @return the receiver's header's visibility state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1017,7 +1017,7 @@ public class Tree extends Composite {
    * Searches the receiver's list starting at the first column (index 0) until a
    * column is found that is equal to the argument, and returns the index of
    * that column. If no column is found, returns -1.
-   * 
+   *
    * @param column the search column
    * @return the index of the column
    * @exception IllegalArgumentException <ul>
@@ -1053,7 +1053,7 @@ public class Tree extends Composite {
    * <code>ERROR_INVALID_RANGE</code> despite the fact that a single column of
    * data may be visible in the tree. This occurs when the programmer uses the
    * tree like a list, adding items but never creating a column.
-   * 
+   *
    * @param index the index of the column to return
    * @return the column at the given index
    * @exception IllegalArgumentException <ul>
@@ -1090,7 +1090,7 @@ public class Tree extends Composite {
    * Note: This is not the actual structure used by the receiver to maintain its
    * list of items, so modifying the array will not affect the receiver.
    * </p>
-   * 
+   *
    * @return the items in the receiver
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1112,7 +1112,7 @@ public class Tree extends Composite {
    * Sets the order that the items in the receiver should be displayed in to the
    * given argument which is described in terms of the zero-relative ordering of
    * when the items were added.
-   * 
+   *
    * @param order the new order to display the items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1174,7 +1174,7 @@ public class Tree extends Composite {
    * Sets the column used by the sort indicator for the receiver. A null value
    * will clear the sort indicator. The current sort column is cleared before
    * the new column is set.
-   * 
+   *
    * @param column the column used by the sort indicator or <code>null</code>
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li>
@@ -1205,7 +1205,7 @@ public class Tree extends Composite {
   /**
    * Sets the direction of the sort indicator for the receiver. The value can be
    * one of <code>UP</code>, <code>DOWN</code> or <code>NONE</code>.
-   * 
+   *
    * @param direction the direction of the sort indicator
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1229,7 +1229,7 @@ public class Tree extends Composite {
   /**
    * Returns the column which shows the sort indicator for the receiver. The
    * value may be null if no column shows the sort indicator.
-   * 
+   *
    * @return the sort indicator
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1246,7 +1246,7 @@ public class Tree extends Composite {
   /**
    * Returns the direction of the sort indicator for the receiver. The value
    * will be one of <code>UP</code>, <code>DOWN</code> or <code>NONE</code>.
-   * 
+   *
    * @return the sort direction
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1273,7 +1273,7 @@ public class Tree extends Composite {
    * Note: This is not the actual structure used by the receiver to maintain its
    * list of items, so modifying the array will not affect the receiver.
    * </p>
-   * 
+   *
    * @return the current visual order of the receiver's items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1299,7 +1299,7 @@ public class Tree extends Composite {
 
   ///////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will be notified when
    * the receiver's selection changes, by sending it one of the messages defined
@@ -1313,7 +1313,7 @@ public class Tree extends Composite {
    * event object is valid for default selection, but the detail field is not
    * used.
    * </p>
-   * 
+   *
    * @param listener the listener which should be notified
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -1335,7 +1335,7 @@ public class Tree extends Composite {
   /**
    * Removes the listener from the collection of listeners who will be notified
    * when the receiver's selection changes.
-   * 
+   *
    * @param listener the listener which should no longer be notified
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -1357,7 +1357,7 @@ public class Tree extends Composite {
    * Adds the listener to the collection of listeners who will be notified when
    * an item in the receiver is expanded or collapsed by sending it one of the
    * messages defined in the <code>TreeListener</code> interface.
-   * 
+   *
    * @param listener the listener which should be notified
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -1378,7 +1378,7 @@ public class Tree extends Composite {
   /**
    * Removes the listener from the collection of listeners who will be notified
    * when items in the receiver are expanded or collapsed.
-   * 
+   *
    * @param listener the listener which should no longer be notified
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -1398,7 +1398,7 @@ public class Tree extends Composite {
 
   /////////////////////////////////
   // Methods to cleanup on dispose
-  
+
   void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {
@@ -1438,7 +1438,7 @@ public class Tree extends Composite {
 
   /////////////////////
   // Widget dimensions
-  
+
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -1497,7 +1497,7 @@ public class Tree extends Composite {
 
   ///////////////////
   // Helping methods
-  
+
   final int getCheckWidth() {
     int result = 0;
     if( ( style & SWT.CHECK ) != 0 ) {
