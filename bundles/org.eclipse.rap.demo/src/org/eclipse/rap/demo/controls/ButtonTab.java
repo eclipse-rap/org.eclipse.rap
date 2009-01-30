@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
+
+import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rwt.graphics.Graphics;
@@ -28,10 +30,12 @@ public class ButtonTab extends ExampleTab {
   private Image buttonImage;
 
   private boolean showImage;
+  private boolean setGrayed;
 
   private Button pushButton;
   private Button toggleButton;
-  private Button checkButton;
+  private Button checkButton1;
+  private Button checkButton2;
   private Button radioButton1;
   private Button radioButton2;
   private Button radioButton3;
@@ -50,6 +54,7 @@ public class ButtonTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createImageButton( parent );
+    createGrayedButton( parent );
     createFgColorButton();
     createBgColorButton();
     createBgImageButton();
@@ -72,8 +77,13 @@ public class ButtonTab extends ExampleTab {
     updateButtonImage( pushButton );
     toggleButton = new Button( parent, style | SWT.TOGGLE );
     toggleButton.setText( "Toggle" );
-    checkButton = new Button( parent, style | SWT.CHECK );
-    checkButton.setText( "Check" );
+    checkButton1 = new Button( parent, style | SWT.CHECK );
+    checkButton1.setText( "Check" );
+    checkButton2 = new Button( parent, style | SWT.CHECK );
+    checkButton2.setText( "Check with image" );
+    ClassLoader classLoader = getClass().getClassLoader();
+    buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
+    checkButton2.setImage( buttonImage );
     radioButton1 = new Button( parent, style | SWT.RADIO );
     radioButton1.setText( "Radio 1" );
     radioButton2 = new Button( parent, style | SWT.RADIO );
@@ -82,7 +92,8 @@ public class ButtonTab extends ExampleTab {
     radioButton3.setText( "Radio 3" );
     registerControl( pushButton );
     registerControl( toggleButton );
-    registerControl( checkButton );
+    registerControl( checkButton1 );
+    registerControl( checkButton2 );
     registerControl( radioButton1 );
     registerControl( radioButton2 );
     registerControl( radioButton3 );
@@ -133,7 +144,7 @@ public class ButtonTab extends ExampleTab {
       }
     } );
   }
-
+  
   private void updateButtonImage( final Button button ) {
     if( showImage ) {
       if( buttonImage == null ) {
@@ -143,6 +154,25 @@ public class ButtonTab extends ExampleTab {
       button.setImage( buttonImage );
     } else {
       button.setImage( null );
+    }
+  }
+  
+  private void createGrayedButton( final Composite parent ) {
+    final Button grayedButton = new Button( parent, SWT.CHECK );
+    grayedButton.setText( "Grayed Check Buttons" );
+    grayedButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        setGrayed = grayedButton.getSelection();
+        updateButtonGrayed();
+      }
+    } );
+  }
+  
+  private void updateButtonGrayed( ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Button button = ( Button )iter.next();
+      button.setGrayed( setGrayed );
     }
   }
 }
