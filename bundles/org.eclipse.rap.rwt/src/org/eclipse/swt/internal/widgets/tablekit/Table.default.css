@@ -6,8 +6,8 @@ Table {
 }
 
 TableItem {
-  color: white;
-  background-color: rgb( 49, 106, 197 );
+  color: black;
+  background-color: transparent;
 }
 
 TableItem:selected {
