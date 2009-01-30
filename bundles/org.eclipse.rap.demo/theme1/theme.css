@@ -15,6 +15,11 @@
 
 Display {
   rwt-selectionmarker-color: #56a0ea;
+  rwt-error-image: url( /theme1/icons/dialog/error.png );
+  rwt-information-image: url( /theme1/icons/dialog/information.png );
+  rwt-warning-image: url( /theme1/icons/dialog/information.png );
+  rwt-question-image: url( /theme1/icons/dialog/question.png );
+  rwt-warning-image: url( /theme1/icons/dialog/warning.png );
 }
 
 /* All Widgets and Controls */
