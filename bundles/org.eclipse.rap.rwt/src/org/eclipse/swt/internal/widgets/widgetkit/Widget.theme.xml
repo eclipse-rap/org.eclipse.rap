@@ -12,6 +12,11 @@
 
 <theme>
 
+  <!-- Note [rst] The elements "Display" and "ToolTip" reside here because
+                  neither Display nor ToolTip are themeable widgets. Thus,
+                  a "Display.theme.xml" would not be found.
+    -->
+
   <element name="Display">
 
     <description>
