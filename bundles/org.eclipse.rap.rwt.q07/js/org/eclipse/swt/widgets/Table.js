@@ -800,10 +800,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _deselectItem : function( itemIndex, update ) {
       // remove itemIndex from array of selected itemIndices
-      this._selected.splice( this._selected.indexOf( itemIndex ), 1 );
-      // update item if requested
-      if( update ) {
-        this.updateItem( itemIndex, true );
+      var indexInSelection = this._selected.indexOf( itemIndex );
+      if( indexInSelection != -1 ) {
+        this._selected.splice( indexInSelection, 1 );
+        // update item if requested
+        if( update ) {
+          this.updateItem( itemIndex, true );
+        }
       }
     },
 
