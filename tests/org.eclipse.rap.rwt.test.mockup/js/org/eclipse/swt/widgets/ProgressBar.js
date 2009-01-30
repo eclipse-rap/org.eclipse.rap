@@ -92,7 +92,9 @@
        -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
       this._bar.setWidth( 
         org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
-      this._bar.setHeight( this.getHeight() - 2 );
+      if( this.getHeight() != null ) {
+        this._bar.setHeight( this.getHeight() - 2 );
+      }   
       this._timer = new qx.client.Timer( 120 );
       this._timer.addEventListener( "interval", this._moveHorizontal, this );
       this._timer.start();

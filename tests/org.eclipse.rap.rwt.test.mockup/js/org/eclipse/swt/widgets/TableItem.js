@@ -145,6 +145,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
       for( var i = 0; i < columnCount; i++ ) {
+        var text = "";
         var font = "";
         var foreground = "";
         var background = "";
@@ -174,17 +175,18 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         }
         // Draw text
         if( this._texts[ i ] !== undefined ) {
-          left = parent.getItemTextLeft( i );
-          width = parent.getItemTextWidth( i );
-          var align = qx.constant.Layout.ALIGN_LEFT;
-          var column = parent.getColumn( i );
-          if( column ) {
-            align = column.getHorizontalChildrenAlign();
-          }
-          var node = this._getChildNode( element, pos );
-          pos++;
-          this._renderText( node, this._texts[ i ], left, width, align, font, foreground, background );
+          text = this._texts[ i ];
         }
+        left = parent.getItemTextLeft( i );
+        width = parent.getItemTextWidth( i );
+        var align = qx.constant.Layout.ALIGN_LEFT;
+        var column = parent.getColumn( i );
+        if( column ) {
+          align = column.getHorizontalChildrenAlign();
+        }
+        var node = this._getChildNode( element, pos );
+        pos++;
+        this._renderText( node, text, left, width, align, font, foreground, background );
       }
       this._deleteRemainingChildNodes( element, pos );
     },
@@ -201,8 +203,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
 
     _deleteRemainingChildNodes : function( element, start ) {
-      for( var i = start; i < element.childNodes.length; i++ ) {
-        element.removeChild( element.childNodes[ start ] );
+      for( var i = element.childNodes.length - 1; i >= start; i-- ) {
+        element.removeChild( element.childNodes[ i ] );
       }
     },
 
@@ -248,10 +250,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.color = foreground;
       node.style.backgroundColor = background;
       node.style.backgroundImage = "none";
-      var border = this._parent.getLinesVisible()
-                   ? org.eclipse.swt.widgets.TableItem.LINE_BORDER
-                   : "";
-      node.style.borderRight = border;
+      if( this._parent.getLinesVisible() ) {
+        node.style.borderRightWidth = "1px";
+        node.style.borderRightStyle = "solid";
+        node.style.borderRightColor = this._parent.getGridLineColor();
+      } else {
+        node.style.borderRight = "";
+      }
     },
 
     _getIndex : function() {
