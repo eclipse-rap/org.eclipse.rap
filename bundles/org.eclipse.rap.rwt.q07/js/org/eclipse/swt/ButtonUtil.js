@@ -86,6 +86,7 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
       }
     },
 
+    /* These two methods are still needed for ToolItems with CHECK style */
     checkSelected : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var check = evt.getTarget();
