@@ -86,6 +86,25 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
       }
     },
 
+    checkSelected : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var check = evt.getTarget();
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( check );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( id + ".selection", check.getChecked() );
+      }
+    },
+
+    checkSelectedAction : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.swt.ButtonUtil.checkSelected( evt );
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+      }
+    },
+
     /* Called when a TOGGLE button is executed */
     onToggleExecute : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
