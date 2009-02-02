@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ public class ScaleLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     RWTFixture.markInitialized( display );
-    // Test preserved minimum, maximum, 
+    // Test preserved minimum, maximum,
     // selection, increment and ageIncrement
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
@@ -50,20 +50,20 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( 1, increment.intValue() );
     Integer pageIncrement
       = ( Integer )adapter.getPreserved( ScaleLCA.PROP_PAGE_INCREMENT );
-    assertEquals( 10, pageIncrement.intValue() );    
+    assertEquals( 10, pageIncrement.intValue() );
     RWTFixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( scale );
     // Test preserved selection listeners
     testPreserveSelectionListener( scale );
     display.dispose();
-  } 
+  }
 
   public void testSelectionEvent() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
-    testSelectionEvent( scale );    
+    testSelectionEvent( scale );
   }
 
   private void testPreserveControlProperties( final Scale scale ) {
@@ -155,8 +155,8 @@ public class ScaleLCA_Test extends TestCase {
       }
     };
     scale.addSelectionListener( selectionListener );
-    String dateTimeId = WidgetUtil.getId( scale );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
+    String scaleId = WidgetUtil.getId( scale );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, scaleId );
     RWTFixture.readDataAndProcessAction( scale );
     assertEquals( "widgetSelected", log.toString() );
   }
