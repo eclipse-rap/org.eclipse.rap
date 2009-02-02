@@ -246,11 +246,19 @@ public class TreeItem extends Item {
       }
 
       public Color[] getCellForegrounds() {
-        return cellForegrounds;
+        Color[] foregrounds = null;
+        if( cellForegrounds != null ) {
+          foregrounds = ( Color[] )cellForegrounds.clone();
+        }
+        return foregrounds;
       }
 
       public Font[] getCellFonts() {
-        return cellFonts;
+        Font[] fonts = null;
+        if( cellFonts != null ) {
+          fonts = ( Font[] )cellFonts.clone();
+        }
+        return fonts;
       }
     };
     int columnCount = parent.columnHolder.size();
