@@ -79,6 +79,15 @@ qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
         }
       }
     },
+    
+    _applyCursor : function( value, old ) {
+      this.base( arguments, value, old );
+      if( value ) {
+        this._content.setCursor( value );
+      } else {
+        this._content.resetCursor();
+      }
+    },
 
     // Event listeners
     _onclick : function( evt ) {
