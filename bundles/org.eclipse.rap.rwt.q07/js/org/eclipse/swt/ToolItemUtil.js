@@ -88,20 +88,39 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
         dropDown.addState( "rwt_FLAT" );
       }
       parent.add( dropDown );
-      var dropDownId = id + "_dropDown";
+      var dropDownId = org.eclipse.swt.ToolItemUtil._getDropDownId( button );
       org.eclipse.swt.WidgetManager.getInstance().add( dropDown, dropDownId, false );
       // Register enable listener that keeps enabled state of dropDown in sync
       // with the enabeled state of the actual button
       // TODO [rh] check whether this listener must be removed upon disposal
       button.addEventListener( "changeEnabled", 
                                org.eclipse.swt.ToolItemUtil._onDropDownChangeEnabled );
+      // Register beforeRemoveDom listener that disposes the dropDown when the
+      // actual button is disposed.
+      button.addEventListener( "beforeRemoveDom", 
+                               org.eclipse.swt.ToolItemUtil._onDropDownDisposed );
+    },
+    
+    _getDropDownId : function( button ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var buttonId = widgetManager.findIdByWidget( button );
+      var dropDownId = buttonId + "_dropDown";
+      return dropDownId;
+    },
+    
+    _onDropDownDisposed : function( evt ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var button = evt.getTarget();
+      button.removeEventListener( "beforeRemoveDom", 
+                                  org.eclipse.swt.ToolItemUtil._onDropDownDisposed );
+      var dropDownId = org.eclipse.swt.ToolItemUtil._getDropDownId( button );
+      widgetManager.dispose( dropDownId );
     },
 
     _onDropDownChangeEnabled : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var button = evt.getTarget();
-      var buttonId = widgetManager.findIdByWidget( button );
-      var dropDownId = buttonId + "_dropDown";
+      var dropDownId = org.eclipse.swt.ToolItemUtil._getDropDownId( button );
       var dropDown = widgetManager.findWidgetById( dropDownId );
       dropDown.setEnabled( button.getEnabled() );
     },
