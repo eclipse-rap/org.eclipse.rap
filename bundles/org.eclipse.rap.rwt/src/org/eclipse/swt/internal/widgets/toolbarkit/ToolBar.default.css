@@ -5,7 +5,11 @@ ToolBar {
   background-color: rgb( 248, 248, 255 );  
 }
 
-ToolItem:hover {
+ToolItem {
   color: black;
+  background-color: transparent;
+}
+
+ToolItem:hover {
   background-color: white;
 }
