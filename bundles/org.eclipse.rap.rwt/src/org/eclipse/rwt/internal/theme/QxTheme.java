@@ -102,91 +102,6 @@ public class QxTheme {
   }
 
   /**
-   * Appends a key-value pair to the generated font theme. Only applicable for
-   * instances with type FONT.
-   *
-   * @param key the key to append
-   * @param font the value for the key
-   */
-  public void appendFont( final String key, final QxFont font ) {
-    beforeWriteValue();
-    code.append( "    \"" + key + "\" : { " );
-    code.append( "family: [" );
-    for( int i = 0; i < font.family.length; i++ ) {
-      if( i > 0 ) {
-        code.append( " ," );
-      }
-      code.append( "\"" );
-      code.append( font.family[ i ] );
-      code.append( "\"" );
-    }
-    code.append( "]" );
-    code.append( ", size: " );
-    code.append( font.size );
-    if( font.bold ) {
-      code.append( ", bold: true" );
-    }
-    if( font.italic ) {
-      code.append( ", italic: true" );
-    }
-    code.append( " }" );
-    afterWriteValue();
-  }
-
-  /**
-   * Appends a key-value pair to the generated color theme. Only applicable for
-   * instances with type COLOR.
-   *
-   * @param key the key to append
-   * @param color the value for the key
-   */
-  public void appendColor( final String key, final QxColor color ) {
-    beforeWriteValue();
-    code.append( "    \"" + key + "\" : " );
-    code.append( "[ " );
-    code.append( color.red );
-    code.append( ", " );
-    code.append( color.green );
-    code.append( ", " );
-    code.append( color.blue );
-    code.append( " ]" );
-    afterWriteValue();
-  }
-
-  /**
-   * Appends a key-value pair to the generated border theme. Only applicable for
-   * instances with type BORDER.
-   *
-   * @param key the key to append
-   * @param border the value for the key
-   */
-  public void appendBorder( final String key, final QxBorder border ) {
-    beforeWriteValue();
-    code.append( "    \"" + key + "\" : " );
-    // none
-    code.append( "{ width : " );
-    code.append( border.width );
-    String style = border.getQxStyle();
-    if( style != null && !"solid".equals( style ) ) {
-      code.append( ", style : \"" );
-      code.append( style );
-      code.append( "\"" );
-    }
-//    String colors = border.getQxColors();
-//    if( colors != null ) {
-//      code.append( ", color : " );
-//      code.append( colors );
-//    }
-//    String innerColor = border.getQxInnerColors();
-//    if( innerColor != null ) {
-//      code.append( ", innerColor : " );
-//      code.append( innerColor );
-//    }
-    code.append( " }" );
-    afterWriteValue();
-  }
-
-  /**
    * Appends the single uri entry to the generated widget or icon theme. Only
    * applicable for instances with type WIDGET or ICON.
    *
@@ -194,7 +109,7 @@ public class QxTheme {
    */
   public void appendUri( final String pathPrefix ) {
     beforeWriteValue();
-    code.append( "    \"uri\" : \"" );
+    code.append( "    uri : \"" );
     code.append( pathPrefix );
     code.append( "\"" );
     afterWriteValue();

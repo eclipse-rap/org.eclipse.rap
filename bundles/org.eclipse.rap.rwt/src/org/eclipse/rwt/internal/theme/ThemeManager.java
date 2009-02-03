@@ -33,19 +33,6 @@ import org.w3c.css.sac.CSSException;
  */
 public final class ThemeManager {
 
-  /**
-   * Internal wrapper class to aggregate all information related to a registered
-   * theme. Used as value type for themes map.
-   */
-  private static final class ThemeWrapper {
-    final Theme theme;
-    final int count;
-    ThemeWrapper( final Theme theme, final int count ) {
-      this.theme = theme;
-      this.count = count;
-    }
-  }
-
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
@@ -168,8 +155,6 @@ public final class ThemeManager {
 
   private final Set customAppearances;
 
-  private final Map themeProperties;
-
   private final Map themes;
 
   private final Map adapters;
@@ -188,27 +173,17 @@ public final class ThemeManager {
 
   private CssElementHolder registeredCssElements;
 
-// TODO [rst] Evaluate timestamp approach to separate different versions of
-//            resources
-//  private String timestamp;
-
   private ThemeManager() {
     // prevent instantiation from outside
     initialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
     customAppearances = new HashSet();
-    themeProperties = new LinkedHashMap();
     themes = new LinkedHashMap();
     adapters = new HashMap();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
     defaultStyleSheetBuilder = new StyleSheetBuilder();
-//    timestamp = createTimeStamp();
   }
-
-//  private String createTimeStamp() {
-//    return new SimpleDateFormat( "yyyyMMddHHmm" ).format( new Date() );
-//  }
 
   /**
    * Returns the sole instance of the ThemeManager.
@@ -238,23 +213,10 @@ public final class ThemeManager {
       }
       // initialize predefined theme
       StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
-      ThemeProperty[] props = getThemeProperties();
-      predefinedTheme = Theme.loadFromStyleSheet( PREDEFINED_THEME_NAME,
-                                                  null,
-                                                  defaultStyleSheet );
-      predefinedTheme.fillOldPropertiesFromStyleSheet( props );
-      for( int i = 0; i < props.length; i++ ) {
-        ThemeProperty prop = props[ i ];
-        // set key only if not already defined by default CSS
-        if( !predefinedTheme.hasKey( prop.name ) ) {
-          log( "WARNING: missing value for property in CSS: " + prop.name );
-          predefinedTheme.setValue( prop.name, prop.defValue );
-        }
-      }
-      predefinedTheme.setValuesMap( createCssValuesMap( predefinedTheme ) );
-      themes.put( PREDEFINED_THEME_ID,
-                  new ThemeWrapper( predefinedTheme, themeCount++ ) );
-      predefinedTheme.setDefault( true );
+      predefinedTheme = new Theme( PREDEFINED_THEME_NAME, defaultStyleSheet );
+      predefinedTheme.initValuesMap( themeableWidgets.getAll() );
+      predefinedTheme.setJsId( PREDEFINED_THEME_ID );
+      themes.put( PREDEFINED_THEME_ID, predefinedTheme );
       initialized = true;
       logRegisteredThemeAdapters();
     }
@@ -270,7 +232,6 @@ public final class ThemeManager {
     if( initialized ) {
       themeableWidgets = new ThemeableWidgetHolder();
       customAppearances.clear();
-      themeProperties.clear();
       themes.clear();
       adapters.clear();
       registeredCssElements.clear();
@@ -344,19 +305,17 @@ public final class ThemeManager {
     }
     try {
       Theme theme;
-      ThemeProperty[] props = getThemeProperties();
       CssFileReader reader = new CssFileReader();
       try {
         StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
-        theme = Theme.loadFromStyleSheet( name != null ? name : "",
-                                          predefinedTheme,
-                                          styleSheet );
-        theme.fillOldPropertiesFromStyleSheet( props );
+        theme = new Theme( (name != null ? name : ""), styleSheet );
       } catch( CSSException e ) {
         throw new ThemeManagerException( "Failed parsing CSS file", e );
       }
-      theme.setValuesMap( createCssValuesMap( theme ) );
-      themes.put( id, new ThemeWrapper( theme, themeCount++ ) );
+      theme.initValuesMap( themeableWidgets.getAll() );
+      themeCount++;
+      theme.setJsId( THEME_PREFIX + "Custom_" + themeCount );
+      themes.put( id, theme );
     } finally {
       inputStream.close();
     }
@@ -433,24 +392,9 @@ public final class ThemeManager {
     checkInitialized();
     Theme result = null;
     if( themes.containsKey( themeId ) ) {
-      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
-      result = wrapper.theme;
+      result = ( Theme )themes.get( themeId );
     }
     return result;
-  }
-
-  /**
-   * Determines whether there is a theme adapter registered for controls of the
-   * specified type.
-   *
-   * @param controlClass the class to check for
-   * @return <code>true</code> if a theme adapter has been registered for the
-   *         given class
-   * @throws IllegalStateException if not initialized
-   */
-  public boolean hasThemeAdapter( final Class controlClass ) {
-    checkInitialized();
-    return adapters.containsKey( controlClass );
   }
 
   /**
@@ -478,86 +422,15 @@ public final class ThemeManager {
         adapters.put( widgetClass, result );
       } else {
         String msg = "No theme adapter registered for class "
-                                            + widgetClass.getName();
+                     + widgetClass.getName();
         throw new IllegalArgumentException( msg );
       }
     }
     return result;
   }
 
-  /**
-   * Returns the generated theme id to use on the client side which differs from
-   * the theme id that is given in the extension.
-   *
-   * @param id the theme id as specified in the theme extension
-   * @return a generated id for use on the client
-   * @throws IllegalStateException if not initialized
-   */
-  public String getJsThemeId( final String id ) {
-    checkInitialized();
-    String result;
-    if( PREDEFINED_THEME_ID.equals( id ) ) {
-      result = PREDEFINED_THEME_ID;
-    } else {
-      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
-      if( wrapper == null ) {
-        String mesg = "No theme registered with id " + id;
-        throw new IllegalArgumentException( mesg );
-      }
-      result = THEME_PREFIX + "Custom_" + wrapper.count;
-    }
-    return result;
-  }
-
   ThemeableWidget getThemeableWidget( final Class widget ) {
     return themeableWidgets.get( widget );
-  }
-
-  private ThemeCssValuesMap createCssValuesMap( final Theme theme ) {
-    ThemeCssValuesMap map = new ThemeCssValuesMap();
-    ThemeableWidget[] widgets = themeableWidgets.getAll();
-    StyleSheet styleSheet = theme.getStyleSheet();
-    for( int i = 0; i < widgets.length; i++ ) {
-      ThemeableWidget themeableWidget = widgets[ i ];
-      IThemeCssElement[] elements = themeableWidget.elements;
-      if( themeableWidget.elements != null ) {
-        for( int j = 0; j < elements.length; j++ ) {
-          IThemeCssElement themeCssElement = elements[ j ];
-          map.initElement( themeCssElement, styleSheet );
-        }
-      } else {
-        log( "WARNING: Missing theme.xml file for themeable widget: "
-             + themeableWidget.widget.getName() );
-      }
-    }
-    return map;
-  }
-
-  /**
-   * Writes a theme template file to the standard output.
-   *
-   * @param args ignored
-   */
-  public static void main( final String[] args ) {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    StringBuffer sb = new StringBuffer();
-    sb.append( "# Generated RAP theme file template\n" );
-    sb.append( "#\n" );
-    ThemeProperty[] properties = manager.getThemeProperties();
-    for( int i = 0; i < properties.length; i++ ) {
-      ThemeProperty prop = properties[ i ];
-      sb.append( "\n" );
-      if( prop.description == null ) {
-        throw new NullPointerException( "Description missing for " + prop.name );
-      }
-      String value = prop.defValue.toDefaultString();
-      String note = prop.transparentAllowed ? " (transparent allowed)" : "";
-      sb.append( "# " + prop.description.replaceAll( "\\n\\s*", "\n# " ) + "\n" );
-      sb.append( "# default: " + value + note + "\n" );
-      sb.append( "#" + prop.name + ": " + value  + "\n" );
-    }
-    System.out.println( sb.toString() );
   }
 
   private void checkInitialized() {
@@ -588,20 +461,15 @@ public final class ThemeManager {
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
         String pkgName = variants[ i ] + "." + className.toLowerCase() + "kit";
-        // TODO [rst] Is it possible to recognize whether a package exists?
         log( "  looking through package " + pkgName );
         found |= loadThemeDef( themeWidget, pkgName, className );
         found |= loadAppearanceJs( themeWidget, pkgName, className );
         found |= loadThemeAdapter( themeWidget, pkgName, className );
         found |= loadDefaultCss( themeWidget, pkgName, className );
       }
-      if( themeWidget.properties != null
-          && themeWidget.defaultStyleSheet == null )
-      {
-        log( "creating default style sheet for " + themeWidget.widget.getName() );
-        themeWidget.defaultStyleSheet
-          = PropertySupport.createDefaultStyleSheet( themeWidget );
-        log( themeWidget.defaultStyleSheet.toString() );
+      if( themeWidget.elements == null ) {
+        log( "WARNING: No elements defined for themeable widget: "
+             + themeWidget.widget.getClass().getName() );
       }
       if( themeWidget.defaultStyleSheet != null ) {
         defaultStyleSheetBuilder.addStyleSheet( themeWidget.defaultStyleSheet );
@@ -626,17 +494,8 @@ public final class ThemeManager {
       result = true;
       try {
         ThemeDefinitionReader reader
-          = new ThemeDefinitionReader( inStream, fileName, themeWidget.loader );
+          = new ThemeDefinitionReader( inStream, fileName );
         reader.read();
-        themeWidget.properties = reader.getThemeProperties();
-        for( int i = 0; i < themeWidget.properties.length; i++ ) {
-          ThemeProperty prop = themeWidget.properties[ i ];
-          if( themeProperties.containsKey( prop.name ) ) {
-            throw new IllegalArgumentException( "key defined twice: "
-                                                + prop.name );
-          }
-          themeProperties.put( prop.name, prop );
-        }
         themeWidget.elements = reader.getThemeCssElements();
         for( int i = 0; i < themeWidget.elements.length; i++ ) {
           registeredCssElements.addElement( themeWidget.elements[ i ] );
@@ -745,23 +604,20 @@ public final class ThemeManager {
   {
     synchronized( registeredThemeFiles ) {
       if( !registeredThemeFiles.contains( themeId ) ) {
-        ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
-        String jsId = getJsThemeId( themeId );
+        Theme theme = ( Theme )themes.get( themeId );
+        String jsId = theme.getJsId();
         registerNonThemeableWidgetImages( themeId );
         registerThemeableWidgetImages( themeId );
         StringBuffer sb = new StringBuffer();
-        sb.append( createColorTheme( wrapper.theme, jsId ) );
-        sb.append( createBorderTheme( wrapper.theme, jsId ) );
-        sb.append( createFontTheme( wrapper.theme, jsId ) );
-        sb.append( createIconTheme( wrapper.theme, jsId ) );
-        sb.append( createWidgetTheme( wrapper.theme, jsId ) );
-        sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
-        sb.append( createMetaTheme( wrapper.theme, jsId ) );
-        sb.append( createThemeStore( wrapper.theme, jsId ) );
-        sb.append( createThemeStoreCss( wrapper.theme, jsId ) );
-        sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
-        sb.append( "ts.fillColors( \"" + jsId + "\" );\n" );
-        sb.append( "delete ts;\n" );
+        sb.append( createQxTheme( theme, QxTheme.COLOR ) );
+        sb.append( createQxTheme( theme, QxTheme.BORDER ) );
+        sb.append( createQxTheme( theme, QxTheme.FONT ) );
+        sb.append( createQxTheme( theme, QxTheme.ICON ) );
+        sb.append( createQxTheme( theme, QxTheme.WIDGET ) );
+        sb.append( createQxTheme( theme, QxTheme.APPEARANCE ) );
+        sb.append( createQxTheme( theme, QxTheme.META ) );
+        sb.append( createThemeStore( theme ) );
+        sb.append( createThemeStoreCss( theme ) );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
@@ -773,22 +629,22 @@ public final class ThemeManager {
     }
   }
 
-  private void registerNonThemeableWidgetImages( final String id ) {
+  private void registerNonThemeableWidgetImages( final String themeId ) {
+    Theme theme = ( Theme )themes.get( themeId );
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
     // non-themeable images
-    log( " == register non-themeable images for theme " + id );
+    log( " == register non-themeable images for theme " + themeId );
     for( int i = 0; i < WIDGET_NOTHEME_RESOURCES.length; i++ ) {
       String imagePath = WIDGET_NOTHEME_RESOURCES[ i ];
-      InputStream inputStream = null;
       String res = WIDGET_RESOURCES_SRC + "/" + imagePath;
-      inputStream = classLoader.getResourceAsStream( res );
+      InputStream inputStream = classLoader.getResourceAsStream( res );
       if( inputStream == null ) {
         String mesg = "Resource not found: " + res;
         throw new IllegalArgumentException( mesg );
       }
       try {
-        String jsId = getJsThemeId( id );
-        String registerPath = getWidgetDestPath( jsId  ) + "/" + imagePath;
+        String jsId = theme.getJsId();
+        String registerPath = getWidgetDestPath( jsId ) + "/" + imagePath;
         IResourceManager resMgr = ResourceManager.getInstance();
         resMgr.register( registerPath, inputStream );
         String location = resMgr.getLocation( registerPath );
@@ -804,16 +660,15 @@ public final class ThemeManager {
   }
 
   private void registerThemeableWidgetImages( final String themeId ) {
-    ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
-    Theme theme = wrapper.theme;
+    Theme theme = ( Theme )themes.get( themeId );
     // themeable images
     log( " == register themeable images for theme " + themeId );
-    String[] keys = theme.getKeysWithVariants();
-    for( int i = 0; i < keys.length; i++ ) {
-      String key = keys[ i ];
-      Object value = theme.getValue( key );
+    QxType[] values = theme.getValues();
+    for( int i = 0; i < values.length; i++ ) {
+      QxType value = values[ i ];
       if( value instanceof QxImage ) {
         QxImage image = ( QxImage )value;
+        String key = Theme.createCssKey( value );
         String path = image.path;
         log( " register theme image " + key + ", path=" + path );
         InputStream inputStream;
@@ -833,18 +688,8 @@ public final class ThemeManager {
             throw new IllegalArgumentException( mesg );
           }
           try {
-            String jsId = getJsThemeId( themeId );
-            String widgetDestPath;
-            if( isCssKey( key ) ) {
-              widgetDestPath = getImageDestPath();
-            } else {
-              widgetDestPath = getWidgetDestPath( jsId );
-            }
-            ThemeProperty prop
-              = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-            String targetPath
-              = prop != null && prop.targetPath != null ? prop.targetPath : key;
-            String registerPath = widgetDestPath + "/" + targetPath;
+            String widgetDestPath = getImageDestPath();
+            String registerPath = widgetDestPath + "/" + key;
             IResourceManager resMgr = ResourceManager.getInstance();
             resMgr.register( registerPath, inputStream );
             String location = resMgr.getLocation( registerPath );
@@ -880,8 +725,8 @@ public final class ThemeManager {
       byte[] buffer;
       try {
         buffer = code.getBytes( CHARSET );
-      } catch( final UnsupportedEncodingException e ) {
-        throw new RuntimeException( e );
+      } catch( final UnsupportedEncodingException shouldNotHappen ) {
+        throw new RuntimeException( shouldNotHappen );
       }
       ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
       manager.register( name, inputStream, CHARSET, option );
@@ -893,104 +738,41 @@ public final class ThemeManager {
     responseWriter.useJSLibrary( name );
   }
 
-  private static String createColorTheme( final Theme theme, final String id ) {
-    QxTheme colorTheme = new QxTheme( id, theme.getName(), QxTheme.COLOR );
-    String[] keys = theme.getKeysWithVariants();
-    Arrays.sort( keys );
-    for( int i = 0; i < keys.length; i++ ) {
-      if( !isCssKey( keys[ i ] ) ) {
-        Object value = theme.getValue( keys[ i ] );
-        if( value instanceof QxColor ) {
-          QxColor color = ( QxColor )value;
-          colorTheme.appendColor( keys[ i ], color );
-        }
+  private String createQxTheme( final Theme theme, final int type ) {
+    String jsId = theme.getJsId();
+    String base = null;
+    if( type == QxTheme.BORDER ) {
+      base = THEME_PREFIX + "BordersBase";
+    } else if( type == QxTheme.APPEARANCE ) {
+      base = "org.eclipse.swt.theme.AppearancesBase";
+    }
+    QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
+    if( type == QxTheme.WIDGET || type == QxTheme.ICON ) {
+      qxTheme.appendUri( getWidgetDestPath( jsId ) );
+    } else if( type == QxTheme.APPEARANCE ) {
+      Iterator iterator = customAppearances.iterator();
+      while( iterator.hasNext() ) {
+        String appearance = ( String )iterator.next();
+        qxTheme.appendValues( appearance );
       }
+    } else if( type == QxTheme.META ) {
+      qxTheme.appendTheme( "color", jsId  + "Colors" );
+      qxTheme.appendTheme( "border", jsId + "Borders" );
+      qxTheme.appendTheme( "font", jsId + "Fonts" );
+      qxTheme.appendTheme( "icon", jsId + "Icons" );
+      qxTheme.appendTheme( "widget", jsId + "Widgets" );
+      qxTheme.appendTheme( "appearance", jsId + "Appearances" );
     }
-    return colorTheme.getJsCode();
+    return qxTheme.getJsCode();
   }
 
-  private static String createBorderTheme( final Theme theme, final String id )
-  {
-    String base = THEME_PREFIX + "BordersBase";
-    QxTheme borderTheme = new QxTheme( id,
-                                       theme.getName(),
-                                       QxTheme.BORDER,
-                                       base );
-    String[] keys = theme.getKeysWithVariants();
-    Arrays.sort( keys );
-    for( int i = 0; i < keys.length; i++ ) {
-      if( !isCssKey( keys[ i ] ) ) {
-        Object value = theme.getValue( keys[ i ] );
-        if( value instanceof QxBorder ) {
-          QxBorder border = ( QxBorder )value;
-          borderTheme.appendBorder( keys[ i ], border );
-        }
-      }
-    }
-    return borderTheme.getJsCode();
-  }
-
-  private static String createFontTheme( final Theme theme, final String id ) {
-    QxTheme fontTheme = new QxTheme( id, theme.getName(), QxTheme.FONT );
-    String[] keys = theme.getKeysWithVariants();
-    Arrays.sort( keys );
-    for( int i = 0; i < keys.length; i++ ) {
-      if( !isCssKey( keys[ i ] ) ) {
-        Object value = theme.getValue( keys[ i ] );
-        if( value instanceof QxFont ) {
-          QxFont font = ( QxFont )value;
-          fontTheme.appendFont( keys[ i ], font );
-        }
-      }
-    }
-    return fontTheme.getJsCode();
-  }
-
-  private String createWidgetTheme( final Theme theme, final String id ) {
-    QxTheme widgetTheme = new QxTheme( id, theme.getName(), QxTheme.WIDGET );
-    widgetTheme.appendUri( getWidgetDestPath( id ) );
-    return widgetTheme.getJsCode();
-  }
-
-  private String createIconTheme( final Theme theme, final String id ) {
-    QxTheme iconTheme = new QxTheme( id, theme.getName(), QxTheme.ICON );
-    iconTheme.appendUri( getWidgetDestPath( id ) );
-    return iconTheme.getJsCode();
-  }
-
-  private String createAppearanceTheme( final Theme theme, final String id ) {
-    QxTheme appTheme = new QxTheme( id,
-                                    theme.getName(),
-                                    QxTheme.APPEARANCE,
-                                    "org.eclipse.swt.theme.AppearancesBase" );
-    Iterator iterator = customAppearances.iterator();
-    while( iterator.hasNext() ) {
-      String addAppearance = ( String )iterator.next();
-      String values = AppearancesUtil.substituteMacros( addAppearance, theme );
-      appTheme.appendValues( values );
-    }
-    return appTheme.getJsCode();
-  }
-
-  private static String createMetaTheme( final Theme theme, final String id ) {
-    QxTheme metaTheme = new QxTheme( id, theme.getName(), QxTheme.META );
-    metaTheme.appendTheme( "color", id + "Colors" );
-    metaTheme.appendTheme( "border", id + "Borders" );
-    metaTheme.appendTheme( "font", id + "Fonts" );
-    metaTheme.appendTheme( "icon", id + "Icons" );
-    metaTheme.appendTheme( "widget", id + "Widgets" );
-    metaTheme.appendTheme( "appearance", id + "Appearances" );
-    return metaTheme.getJsCode();
-  }
-
-  private String createThemeStore( final Theme theme, final String jsId ) {
+  private String createThemeStore( final Theme theme ) {
     StringBuffer sb = new StringBuffer();
-    String[] keys = theme.getKeysWithVariants();
-    Arrays.sort( keys );
+    QxType[] values = theme.getValues();
     sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
-    for( int i = 0; i < keys.length; i++ ) {
-      Object value = theme.getValue( keys[ i ] );
-      String key = keys[ i ];
+    for( int i = 0; i < values.length; i++ ) {
+      QxType value = values[ i ];
+      String key = Theme.createCssKey( value );
       String type = null;
       JsonValue jsValue = null;
       if( value instanceof QxDimension ) {
@@ -1016,36 +798,19 @@ public final class ThemeManager {
         if( image.none ) {
           jsValue = JsonValue.NULL;
         } else {
-          ThemeProperty prop
-            = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-          String targetPath
-            = prop != null && prop.targetPath != null ? prop.targetPath : key;
-          jsValue = JsonValue.valueOf( targetPath );
+          jsValue = JsonValue.valueOf( key );
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
-        if( isCssKey( key ) ) {
-          type = "color";
-          if( color.transparent ) {
-            jsValue = JsonValue.valueOf( "undefined" );
-          } else {
-            jsValue = JsonValue.valueOf( QxColor.toHtmlString( color.red,
-                                                               color.green,
-                                                               color.blue ) );
-          }
-        } else if( color.transparent ) {
-          ThemeProperty prop
-            = ( ThemeProperty )themeProperties.get( stripVariant( key ) );
-          if( prop != null && !prop.transparentAllowed ) {
-            // TODO [rst] Move this check to Theme class
-            String message = "Transparency not allowed for key " + key;
-            throw new IllegalArgumentException( message );
-          }
-          type = "trcolor";
-          jsValue = JsonValue.TRUE;
+        type = "color";
+        if( color.transparent ) {
+          jsValue = JsonValue.valueOf( "undefined" );
+        } else {
+          jsValue = JsonValue.valueOf( QxColor.toHtmlString( color.red,
+                                                             color.green,
+                                                             color.blue ) );
         }
-      // === new values ===
-      } else if( value instanceof QxFont && isCssKey( key ) ) {
+      } else if( value instanceof QxFont && true ) {
         QxFont font = ( QxFont )value;
         JsonObject fontObject = new JsonObject();
         fontObject.append( "family", JsonArray.valueOf( font.family ) );
@@ -1054,11 +819,11 @@ public final class ThemeManager {
         fontObject.append( "italic", font.italic );
         type = "font";
         jsValue = fontObject;
-      } else if( value instanceof QxBorder && isCssKey( key ) ) {
+      } else if( value instanceof QxBorder && true ) {
         QxBorder border = ( QxBorder )value;
         JsonObject borderObject = new JsonObject();
         borderObject.append( "width", border.width );
-        String style = border.getQxStyle();
+        String style = QxBorderUtil.getQxStyle( border );
         if( style != null ) {
           borderObject.append( "style", style );
         }
@@ -1074,18 +839,17 @@ public final class ThemeManager {
         jsValue = borderObject;
       }
       if( type != null ) {
-        String pattern = "ts.setValue( \"{0}\", \"{1}\", {2}, \"{3}\" );\n";
-        String tid = isCssKey( key ) ? "_" : jsId;
-        Object[] arguments = new Object[] { type, key, jsValue.toString(), tid };
+        String pattern = "ts.setValue( \"{0}\", \"{1}\", {2} );\n";
+        Object[] arguments = new Object[] { type, key, jsValue.toString() };
         sb.append( MessageFormat.format( pattern, arguments ) );
       }
     }
-    sb.append( "ts.resolveBorderColors( \"_\" );\n" );
+    sb.append( "ts.resolveBorderColors();\n" );
     sb.append( "delete ts;\n" );
     return sb.toString();
   }
 
-  private String createThemeStoreCss( final Theme theme, final String jsId ) {
+  private String createThemeStoreCss( final Theme theme ) {
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     IThemeCssElement[] elements = registeredCssElements.getAllElements();
     JsonObject mainObject = new JsonObject();
@@ -1104,7 +868,7 @@ public final class ThemeManager {
           ConditionalValue conditionalValue = values[ k ];
           JsonArray array = new JsonArray();
           array.append( JsonArray.valueOf( conditionalValue.constraints ) );
-          array.append( Theme.createCssPropertyName( conditionalValue.value ) );
+          array.append( Theme.createCssKey( conditionalValue.value ) );
           valuesArray.append( array );
         }
         elementObj.append( property.getName(), valuesArray );
@@ -1114,29 +878,15 @@ public final class ThemeManager {
     StringBuffer sb = new StringBuffer();
     sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
     sb.append( "ts.setThemeCssValues( " );
-    sb.append( JsonValue.quoteString( jsId ) );
+    sb.append( JsonValue.quoteString( theme.getJsId() ) );
     sb.append( ", " );
     sb.append( mainObject.toString() );
     sb.append( ", " );
-    sb.append( theme.isDefault() );
+    sb.append( theme == predefinedTheme );
     sb.append( " );\n" );
+    sb.append( "ts.fillColors( \"" + theme.getJsId() + "\" );\n" );
     sb.append( "delete ts;\n" );
     return sb.toString();
-  }
-
-  /**
-   * Returns theme properties as array.
-   */
-  ThemeProperty[] getThemeProperties() {
-    ThemeProperty[] propArray = new ThemeProperty[ themeProperties.size() ];
-    Iterator iterator = themeProperties.keySet().iterator();
-    for( int i = 0; i < propArray.length; i++ ) {
-      if( iterator.hasNext() ) {
-        Object key = iterator.next();
-        propArray[ i ] = ( ThemeProperty )themeProperties.get( key );
-      }
-    }
-    return propArray;
   }
 
   /**
@@ -1156,10 +906,6 @@ public final class ThemeManager {
     return THEME_RESOURCE_DEST + "/images";
   }
 
-  private static boolean isCssKey( final String key ) {
-    return key.charAt( 0 ) == '_';
-  }
-
   private void checkId( final String id ) {
     if( id == null ) {
       throw new NullPointerException( "id" );
@@ -1167,15 +913,6 @@ public final class ThemeManager {
     if( id.length() == 0 ) {
       throw new IllegalArgumentException( "empty id" );
     }
-  }
-
-  private static String stripVariant( final String key ) {
-    String result = key;
-    int index = key.indexOf( '/' );
-    if( index != -1 ) {
-      result = key.substring( index + 1 );
-    }
-    return result;
   }
 
   private void logRegisteredThemeAdapters() {

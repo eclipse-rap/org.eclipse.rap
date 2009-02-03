@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ public class QxImage_Test extends TestCase {
     }
   };
 
-  public void testIllegalArguments() throws Exception {
+  public void testIllegalArguments() {
     try {
       QxImage.valueOf( null, null );
       fail( "Must throw NPE" );
@@ -49,7 +49,7 @@ public class QxImage_Test extends TestCase {
     }
   }
 
-  public void testNone() throws Exception {
+  public void testNone() {
     assertSame( QxImage.NONE, QxImage.valueOf( "none", null ) );
     assertSame( QxImage.NONE, QxImage.valueOf( "none", dummyLoader ) );
     assertNotSame( QxImage.NONE, QxImage.valueOf( "None", dummyLoader ) );
@@ -58,19 +58,19 @@ public class QxImage_Test extends TestCase {
     assertNull( QxImage.NONE.loader );
   }
 
-  public void testCreate() throws Exception {
+  public void testCreate() {
     QxImage qxImage = QxImage.valueOf( "foo", dummyLoader );
     assertFalse( qxImage.none );
     assertEquals( "foo", qxImage.path );
     assertSame( dummyLoader, qxImage.loader );
   }
 
-  public void testDefaultString() throws Exception {
+  public void testDefaultString() {
     assertEquals( "none", QxImage.NONE.toDefaultString() );
     assertEquals( "", QxImage.valueOf( "foo", dummyLoader ).toDefaultString() );
   }
 
-  public void testHashCode() throws Exception {
+  public void testHashCode() {
     assertEquals( -1, QxImage.NONE.hashCode() );
     QxImage qxImage1 = QxImage.valueOf( "None", dummyLoader );
     QxImage qxImage2 = QxImage.valueOf( "None", dummyLoader );

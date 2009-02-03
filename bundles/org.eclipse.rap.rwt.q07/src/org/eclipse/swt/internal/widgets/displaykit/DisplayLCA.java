@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,7 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
@@ -170,12 +169,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
     if( !currThemeId.equals( oldThemeId ) ) {
-      String code = "qx.theme.manager.Meta.getInstance().setTheme( "
-                  + ThemeManager.getInstance().getJsThemeId( currThemeId )
-                  + " );";
+      Theme theme = ThemeManager.getInstance().getTheme( currThemeId );
+      StringBuffer buffer = new StringBuffer();
+      buffer.append( "qx.theme.manager.Meta.getInstance().setTheme( " );
+      buffer.append( theme.getJsId() );
+      buffer.append( " );" );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter out = stateInfo.getResponseWriter();
-      out.write( code );
+      out.write( buffer.toString() );
     }
   }
 

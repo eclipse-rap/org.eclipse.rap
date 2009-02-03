@@ -109,22 +109,6 @@ public class QxBorder implements QxType {
     return QxBorder.create( width, style, color );
   }
 
-  public String getQxStyle() {
-    String result = style;
-    if( color == null ) {
-      if( ( "outset".equals( style ) || "inset".equals( style ) )
-          && ( width == 1 || width == 2 ) )
-      {
-        result = "solid";
-      } else if( ( "ridge".equals( style ) || "groove".equals( style ) )
-                 && width == 2 )
-      {
-        result = "solid";
-      }
-    }
-    return result;
-  }
-
   public String toDefaultString() {
     StringBuffer result = new StringBuffer();
     if( width == 0 ) {

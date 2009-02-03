@@ -10,134 +10,45 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 public class Theme_Test extends TestCase {
 
-  public void testGetSetValues() {
-    Theme defTheme = new Theme( "Default Theme" );
-    QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );
-    QxBorder qxBorder2 = QxBorder.valueOf( "2 solid green" );
-    QxColor qxColor1 = QxColor.valueOf( "#fffaf0" );
-    defTheme.setValue( "foo.border", qxBorder1 );
-    assertEquals( qxBorder1, defTheme.getValue( "foo.border" ) );
-    try {
-      defTheme.setValue( "foo.border", qxBorder2 );
-      fail( "IAE expected when value is redefined" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      defTheme.setValue( "foo.border", qxColor1 );
-      fail( "Type of themeable property must remain unchangeable" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      defTheme.getValue( "foo.foreground" );
-      fail( "Getting an undefined property should result in an Exception" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-    }
-    defTheme.setValue( "foo.foreground", qxColor1 );
-    assertEquals( qxColor1, defTheme.getValue( "foo.foreground" ) );
-    Theme theme = new Theme( "Another Theme", defTheme );
-    try {
-      theme.setValue( "foo.bar", qxColor1 );
-      fail( "Setting an undefined key in derived theme should result in IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-    }
-    assertEquals( qxBorder1, theme.getValue( "foo.border" ) );
-    theme.setValue( "foo.border", qxBorder2 );
-    assertEquals( qxBorder2, theme.getValue( "foo.border" ) );
+  private static final String PACKAGE = "resources/theme/";
+
+  private static final String TEST_SYNTAX_CSS = "TestExample.css";
+
+  public void testNothing() throws Exception {
+    // TODO wrte some tests
+    CssFileReader reader = new CssFileReader();
+    InputStream inStream = getInputStream( TEST_SYNTAX_CSS );
+    assertNotNull( inStream );
+    StyleSheet styleSheet = reader.parse( inStream, TEST_SYNTAX_CSS, null );
+    assertNotNull( styleSheet );
+    String name = "TestTheme";
+    Theme theme = new Theme( name, styleSheet );
+    assertEquals( name, theme.getName() );
+    assertEquals( styleSheet, theme.getStyleSheet() );
+    assertNotNull( theme.getValues() );
+    assertTrue( theme.getValues().length > 0 );
+    assertNull( theme.getValuesMap() );
+    assertNull( theme.getJsId() );
+    String jsId = "some.nifty.js.id";
+    theme.setJsId( jsId );
+    assertEquals( jsId, theme.getJsId() );
+    theme.initValuesMap( new ThemeableWidget[ 0 ]  );
+    assertNotNull( theme.getValuesMap() );
   }
 
-  public void testGetSetTypedValues() {
-    Theme theme;
-    theme = new Theme( "foo" );
-    QxBorder qxBorder = QxBorder.valueOf( "1 solid blue" );
-    QxBoxDimensions qxBoxDimensions = QxBoxDimensions.valueOf( "0 1 2 3" );
-    QxColor qxColor = QxColor.valueOf( "#fffaf0" );
-    QxDimension qxDimension = QxDimension.valueOf( "5" );
-    theme.setValue( "foo.border", qxBorder );
-    theme.setValue( "foo.boxdim", qxBoxDimensions );
-    theme.setValue( "foo.color", qxColor );
-    theme.setValue( "foo.dimension", qxDimension );
-    assertEquals( qxBorder, theme.getBorder( "foo.border", null ) );
-    assertEquals( qxBoxDimensions, theme.getBoxDimensions( "foo.boxdim", null ) );
-    assertEquals( qxColor, theme.getValue( "foo.color" ) );
-    assertEquals( qxDimension, theme.getValue( "foo.dimension" ) );
-    try {
-      theme.getBorder( "foo.color", null );
-      fail( "Typed getter must fail for wrong types" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
-    }
-  }
-
-  public void testGetKeys() {
-    QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );
-    QxBorder qxBorder2 = QxBorder.valueOf( "2 solid green" );
-    QxColor qxColor1 = QxColor.valueOf( "#fffaf0" );
-    Theme defTheme = new Theme( "Default Theme" );
-    defTheme.setValue( "foo.foreground", qxColor1 );
-    defTheme.setValue( "foo.border", qxBorder1 );
-    Theme theme = new Theme( "Another Theme", defTheme );
-    theme.setValue( "foo.border", qxBorder2 );
-    String[] defKeys = defTheme.getKeys();
-    assertEquals( 2, defKeys.length );
-    String[] keys = theme.getKeys();
-    assertEquals( 2, keys.length );
-  }
-
-  public void testHasKey() {
-    Theme defTheme = new Theme( "Default Theme" );
-    QxBorder qxBorder1 = QxBorder.valueOf( "1 solid blue" );
-    QxBorder qxBorder2 = QxBorder.valueOf( "2 solid green" );
-    assertFalse( defTheme.hasKey( "foo.border" ) );
-    assertFalse( defTheme.definesKey( "foo.border" ) );
-    defTheme.setValue( "foo.border", qxBorder1 );
-    assertTrue( defTheme.hasKey( "foo.border" ) );
-    assertTrue( defTheme.definesKey( "foo.border" ) );
-    Theme theme = new Theme( "Another Theme", defTheme );
-    assertTrue( theme.hasKey( "foo.border" ) );
-    assertFalse( theme.definesKey( "foo.border" ) );
-    theme.setValue( "foo.border", qxBorder2 );
-    assertTrue( theme.hasKey( "foo.border" ) );
-    assertTrue( theme.definesKey( "foo.border" ) );
-  }
-
-  public void testVariants() {
-    Theme defTheme = new Theme( "Default Theme" );
-    defTheme.setValue( "test.border", QxBorder.NONE );
-    defTheme.setValue( "test.color", QxColor.BLACK );
-    String[] defKeys = defTheme.getKeys();
-    assertNotNull( defKeys );
-    assertEquals( 2, defKeys.length );
-    String[] defKeysWithVariants = defTheme.getKeysWithVariants();
-    assertNotNull( defKeysWithVariants );
-    assertEquals( 2, defKeysWithVariants.length );
-    Theme theme = new Theme( "Custom Theme", defTheme );
-    theme.setValue( "test.border", QxBorder.valueOf( "2px red" ) );
-    theme.setValue( "test.color", "myvariant", QxColor.WHITE );
-    String[] keys = theme.getKeys();
-    assertNotNull( keys );
-    assertEquals( 2, keys.length );
-    String[] keysWithVariants = theme.getKeysWithVariants();
-    assertNotNull( keysWithVariants );
-    assertEquals( 3, keysWithVariants.length );
-    assertTrue( theme.hasKey( "test.color" ) );
-    assertFalse( theme.definesKey( "test.color" ) );
-    assertEquals( QxColor.BLACK, defTheme.getColor( "test.color", null ) );
-    assertEquals( QxColor.BLACK, theme.getColor( "test.color", null ) );
-    assertEquals( QxColor.BLACK, theme.getColor( "test.color", "foovariant" ) );
-    assertEquals( QxColor.WHITE, theme.getColor( "test.color", "myvariant" ) );
-    assertEquals( QxBorder.NONE, defTheme.getBorder( "test.border", null ) );
-    assertEquals( QxBorder.valueOf( "2px red" ),
-                  theme.getBorder( "test.border", null ) );
-    assertEquals( QxBorder.valueOf( "2px red" ),
-                  theme.getBorder( "test.border", "myvariant" ) );
+  private static InputStream getInputStream( final String fileName ) {
+    ClassLoader classLoader = Theme_Test.class.getClassLoader();
+    InputStream inStream = classLoader.getResourceAsStream( PACKAGE + fileName );
+    return inStream;
   }
 }

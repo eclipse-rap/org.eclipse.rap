@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
@@ -16,15 +15,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class AppearancesUtil {
+public final class AppearancesUtil {
 
-  private static final Pattern PATTERN_REPLACE
-    = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
+  private static final Pattern END_TEMPLATE_PATTERN
+    = Pattern.compile( "(\\r|\\n).*?END TEMPLATE" );
+  private static final Pattern BEGIN_TEMPLATE_PATTERN
+    = Pattern.compile( "BEGIN TEMPLATE.*(\\r|\\n)" );
+  
+  private AppearancesUtil() {
+    // prevent instantiation
+  }
 
   public static String readAppearanceFile( final InputStream inStream )
     throws IOException
   {
-    String result;
     StringBuffer sb = new StringBuffer();
     InputStreamReader reader = new InputStreamReader( inStream, "UTF-8" );
     BufferedReader br = new BufferedReader( reader );
@@ -35,56 +39,18 @@ public class AppearancesUtil {
         character = br.read();
       }
     }
-    result = stripTemplate( sb.toString() );
-    return result;
+    return stripTemplate( sb.toString() );
   }
 
-  /**
-   * Replaces all THEME_VALUE() macros in a given template with the actual
-   * values from the specified theme.
-   *
-   * @param template the template string that contains the macros to replace
-   * @param theme the theme to get the values from
-   * @return the template string with all macros replaced
-   */
-  static String substituteMacros( final String template, final Theme theme ) {
-    Matcher matcher = PATTERN_REPLACE.matcher( template );
-    StringBuffer sb = new StringBuffer();
-    while( matcher.find() ) {
-      String key = matcher.group( 1 );
-      QxType result = theme.getValue( key );
-      String repl;
-      if( result instanceof QxBoolean ) {
-        QxBoolean bool = ( QxBoolean )result;
-        repl = String.valueOf( bool.value );
-      } else if( result instanceof QxDimension ) {
-        QxDimension dim = ( QxDimension )result;
-        repl = String.valueOf( dim.value );
-      } else if( result instanceof QxBoxDimensions ) {
-        QxBoxDimensions boxdim = ( QxBoxDimensions )result;
-        repl = boxdim.toJsArray();
-      } else {
-        String mesg = "Only boolean values, dimensions, and box dimensions"
-                      + " can be substituted in appearance templates";
-        throw new IllegalArgumentException( mesg );
-      }
-      matcher.appendReplacement( sb, repl );
-    }
-    matcher.appendTail( sb );
-    return sb.toString();
-  }
-
-  static String stripTemplate( final String input ) {
-    Pattern startPattern = Pattern.compile( "BEGIN TEMPLATE.*(\\r|\\n)" );
-    Pattern endPattern = Pattern.compile( "(\\r|\\n).*?END TEMPLATE" );
+  private static String stripTemplate( final String input ) {
     int beginIndex = 0;
     int endIndex = input.length();
     Matcher matcher;
-    matcher = startPattern.matcher( input );
+    matcher = BEGIN_TEMPLATE_PATTERN.matcher( input );
     if( matcher.find() ) {
       beginIndex = matcher.end();
     }
-    matcher = endPattern.matcher( input );
+    matcher = END_TEMPLATE_PATTERN.matcher( input );
     if( matcher.find() ) {
       endIndex = matcher.start();
     }

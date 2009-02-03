@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,14 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
+
 public class QxFont_Test extends TestCase {
 
-  public void testIllegalArguments() throws Exception {
+  public void testIllegalArguments() {
     try {
       QxFont.valueOf( null );
       fail( "null arguement should throw NPE" );
@@ -30,7 +30,7 @@ public class QxFont_Test extends TestCase {
     }
   }
 
-  public void testParse1() throws Exception {
+  public void testParse1() {
     String def = "bold 16 \"Bitstream Vera Sans\" , Helvetica,sans-serif";
     QxFont qxFont = QxFont.valueOf( def  );
     assertTrue( qxFont.bold );
@@ -42,7 +42,7 @@ public class QxFont_Test extends TestCase {
     assertEquals( "sans-serif", qxFont.family[ 2 ] );
   }
 
-  public void testParse2() throws Exception {
+  public void testParse2() {
     String def = "italic 11px 'Bitstream Vera Sans', Helvetica, sans-serif";
     QxFont qxFont = QxFont.valueOf( def  );
     assertFalse( qxFont.bold );
@@ -54,7 +54,7 @@ public class QxFont_Test extends TestCase {
     assertEquals( "sans-serif", qxFont.family[ 2 ] );
   }
 
-  public void testDefaultString() throws Exception {
+  public void testDefaultString() {
     String input = "bold 16 \"Bitstream Vera Sans\" , 'Helvetica',sans-serif";
     String exp = "bold 16px \"Bitstream Vera Sans\", Helvetica, sans-serif";
     QxFont qxFont = QxFont.valueOf( input );

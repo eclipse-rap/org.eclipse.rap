@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 public class JsonArray_Test extends TestCase {
 
-  public void testAppend() throws Exception {
+  public void testAppend() {
     JsonArray array = new JsonArray();
     assertEquals( "[]", array.toString() );
     array.append( "a" );
@@ -29,7 +29,7 @@ public class JsonArray_Test extends TestCase {
     assertEquals( "[ \"a\", 23, false, null ]", array.toString() );
   }
 
-  public void testAppendArray() throws Exception {
+  public void testAppendArray() {
     JsonArray array = new JsonArray();
     array.append( 1 );
     array.append( new JsonArray() );
@@ -38,7 +38,7 @@ public class JsonArray_Test extends TestCase {
     assertEquals( "[ 1, [], null ]", array.toString() );
   }
 
-  public void testAppendObject() throws Exception {
+  public void testAppendObject() {
     JsonArray array = new JsonArray();
     array.append( 1 );
     array.append( new JsonObject() );
@@ -47,7 +47,7 @@ public class JsonArray_Test extends TestCase {
     assertEquals( "[ 1, {}, null ]", array.toString() );
   }
 
-  public void testValueOf() throws Exception {
+  public void testValueOf() {
     assertEquals( "[]", JsonArray.valueOf( new String[ 0 ] ).toString() );
     JsonArray expected = new JsonArray();
     expected.append( "A" );

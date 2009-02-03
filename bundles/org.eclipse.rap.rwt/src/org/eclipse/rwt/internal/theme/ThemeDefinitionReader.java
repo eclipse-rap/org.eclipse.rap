@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,10 +29,6 @@ import org.xml.sax.*;
  */
 public class ThemeDefinitionReader {
 
-  public static interface ThemeDefHandler {
-    public abstract void readThemeProperty( ThemeProperty def );
-  }
-
   private static final String ELEM_ROOT = "theme";
 
   private static final String ELEM_ELEMENT = "element";
@@ -48,20 +44,6 @@ public class ThemeDefinitionReader {
   private static final String ATTR_TYPE = "type";
 
   private static final String ATTR_DESCRIPTION = "description";
-
-  private static final String ATTR_DEFAULT = "default";
-
-  private static final String ATTR_INHERIT = "inherit";
-
-  private static final String ATTR_TARGET_PATH = "targetPath";
-
-  private static final String ATTR_TRANSPARENT_ALLOWED = "transparentAllowed";
-
-  private static final String ATTR_CSS_ELEMENTS = "css-elements";
-
-  private static final String ATTR_CSS_PROPERTY = "css-property";
-
-  private static final String ATTR_CSS_SELECTORS = "css-selectors";
 
   public static final String TYPE_BOOLEAN = "boolean";
 
@@ -87,13 +69,9 @@ public class ThemeDefinitionReader {
 
   private final InputStream inputStream;
 
-  private final ResourceLoader loader;
-
   private final String fileName;
 
   private final Collection cssElements;
-
-  private final Collection themeProperties;
 
   /**
    * An instance of this class reads theme definitions from an XML resource.
@@ -104,29 +82,12 @@ public class ThemeDefinitionReader {
   public ThemeDefinitionReader( final InputStream inputStream,
                                 final String fileName )
   {
-    this( inputStream, fileName, null );
-  }
-
-  /**
-   * An instance of this class reads theme definitions from an XML resource.
-   *
-   * @param inputStream input stream from a theme definition XML
-   * @param fileName the file name to refer to in (error) messages
-   * @param loader the resource loader to use for images
-   * @deprecated only needed for obsolete property system
-   */
-  public ThemeDefinitionReader( final InputStream inputStream,
-                                final String fileName,
-                                final ResourceLoader loader )
-  {
     if( inputStream == null ) {
       throw new NullPointerException( "null argument" );
     }
     this.inputStream = inputStream;
     this.fileName = fileName;
-    this.loader = loader;
     this.cssElements = new ArrayList();
-    this.themeProperties = new ArrayList();
   }
 
   /**
@@ -146,8 +107,6 @@ public class ThemeDefinitionReader {
       if( node.getNodeType() == Node.ELEMENT_NODE ) {
         if( ELEM_ELEMENT.equals( node.getNodeName() ) ) {
           readElement( node );
-        } else if( loader != null ) {
-          readOldProperty( node );
         }
       }
     }
@@ -159,15 +118,6 @@ public class ThemeDefinitionReader {
   public IThemeCssElement[] getThemeCssElements() {
     IThemeCssElement[] result = new IThemeCssElement[ cssElements.size() ];
     cssElements.toArray( result );
-    return result;
-  }
-
-  /**
-   * Returns the (old) theme properties in the definition.
-   */
-  public ThemeProperty[] getThemeProperties() {
-    ThemeProperty[] result = new ThemeProperty[ themeProperties.size() ];
-    themeProperties.toArray( result );
     return result;
   }
 
@@ -233,63 +183,6 @@ public class ThemeDefinitionReader {
       result.setDescription( description );
     }
     return result;
-  }
-
-  /**
-   * @deprecated only needed for obsolete property system
-   */
-  private void readOldProperty( final Node node ) {
-    String type = node.getNodeName();
-    String name = getAttributeValue( node, ATTR_NAME );
-    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
-    String inherit = getAttributeValue( node, ATTR_INHERIT );
-    String defaultStr = getAttributeValue( node, ATTR_DEFAULT );
-    String cssElements = getAttributeValue( node, ATTR_CSS_ELEMENTS );
-    if( cssElements == null ) {
-      cssElements = getAttributeValue( node.getParentNode(), ATTR_CSS_ELEMENTS );
-    }
-    String cssProperty = getAttributeValue( node, ATTR_CSS_PROPERTY );
-    String cssSelectors = getAttributeValue( node, ATTR_CSS_SELECTORS );
-    QxType value;
-    String targetPath = null;
-    boolean transparentAllowed = false;
-    ThemeProperty result = null;
-    if( "property".equals( type ) || "element".equals( type ) ) {
-      // new syntax, ignore for now
-    } else {
-      if( TYPE_FONT.equals( type ) ) {
-        value = QxFont.valueOf( defaultStr );
-      } else if( TYPE_COLOR.equals( type ) ) {
-        String transpValue = getAttributeValue( node, ATTR_TRANSPARENT_ALLOWED );
-        transparentAllowed = Boolean.valueOf( transpValue ).booleanValue();
-        value = QxColor.valueOf( defaultStr );
-      } else if( TYPE_BOOLEAN.equals( type ) ) {
-        value = QxBoolean.valueOf( defaultStr );
-      } else if( TYPE_BORDER.equals( type ) ) {
-        value = QxBorder.valueOf( defaultStr );
-      } else if( TYPE_BOXDIMENSIONS.equals( type ) ) {
-        value = QxBoxDimensions.valueOf( defaultStr );
-      } else if( TYPE_DIMENSION.equals( type ) ) {
-        value = QxDimension.valueOf( defaultStr );
-      } else if( TYPE_IMAGE.equals( type ) ) {
-        targetPath = getAttributeValue( node, ATTR_TARGET_PATH );
-        value = QxImage.valueOf( defaultStr, loader );
-      } else {
-        // TODO [rst] Remove when XML validation is active
-        throw new IllegalArgumentException( "Illegal type: " + type );
-      }
-      result = new ThemeProperty( name, inherit, value, description );
-      result.targetPath = targetPath;
-      result.transparentAllowed = transparentAllowed;
-      if( cssElements != null && cssProperty != null ) {
-        result.cssElements = cssElements.split( "\\s+" );
-        result.cssProperty = cssProperty;
-        if( cssSelectors != null ) {
-          result.cssSelectors = cssSelectors.split( "\\s+" );
-        }
-      }
-    }
-    themeProperties.add( result );
   }
 
   private Document parseThemeDefinition( final InputStream is )

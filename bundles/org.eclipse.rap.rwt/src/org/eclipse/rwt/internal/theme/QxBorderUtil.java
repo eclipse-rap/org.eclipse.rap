@@ -93,8 +93,8 @@ public final class QxBorderUtil {
   {
     QxColor color1 = getColor( theme, properties[ 0 ] );
     QxColor color2 = getColor( theme, properties[ 1 ] );
-    String name1 = Theme.createCssPropertyName( color1 );
-    String name2 = Theme.createCssPropertyName( color2 );
+    String name1 = Theme.createCssKey( color1 );
+    String name2 = Theme.createCssKey( color2 );
     JsonArray array = new JsonArray();
     array.append( name1 );
     array.append( name2 );
@@ -103,9 +103,9 @@ public final class QxBorderUtil {
     return array;
   }
 
-  private static QxColor getColor( final Theme theme, final String key ) {
+  private static QxColor getColor( final Theme theme, final String property ) {
     QxType result
-      = ThemeUtil.getCssValue( "Display", key, SimpleSelector.DEFAULT, null );
+      = ThemeUtil.getCssValue( "Display", property, SimpleSelector.DEFAULT );
     return ( QxColor )result;
   }
 }

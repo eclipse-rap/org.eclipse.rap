@@ -21,7 +21,15 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
   extend : qx.core.Object,
 
   construct : function() {
-    this._values = {};
+    this._values = {
+      dimensions : {},
+      boxdims : {},
+      booleans : {},
+      images : {},
+      fonts : {},
+      colors : {},
+      borders : {}
+    };
     this._cssValues = {};
     this._statesMap = {
       "*" : {
@@ -66,59 +74,33 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
   members : {
 
     /**
-     * Returns the values container for a given theme. If no theme is given, the
-     * values container for the current theme is returned. If the requested
-     * values container does not exist, it is created.
-     * 
-     * TODO [rst] A theme value of "_" is used for shared CSS values. Later, the
-     * parameter can be dropped, as there will only be one values object.
+     * Returns the values container.
      */
-    getThemeValues : function( theme ) {
-      if( theme == null ) {
-        theme = qx.theme.manager.Meta.getInstance().getTheme().name;
-      }
-      if( this._values[ theme ] === undefined ) {
-        this._values[ theme ] = {
-          dimensions : {},
-          boxdims : {},
-          booleans : {},
-          images : {},
-          trcolors : {},
-          // === new types ===
-          fonts : {},
-          colors : {},
-          borders : {}
-        };
-      }
-      return this._values[ theme ];
+    getThemeValues : function() {
+      return this._values;
     },
 
     /**
-     * Adds a dimension with the given type, key and value to the values
-     * container for the given theme.
+     * Adds a value to the values container.
      */
-    setValue : function( type, key, value, theme ) {
-      var values = this.getThemeValues( theme );
+    setValue : function( type, key, value ) {
       if( type == "dimension" ) {
-        values.dimensions[ key ] = value;
+        this._values.dimensions[ key ] = value;
       } else if ( type == "boxdim" ) {
-        values.boxdims[ key ] = value;
+        this._values.boxdims[ key ] = value;
       } else if ( type == "boolean" ) {
-        values.booleans[ key ] = value;
+        this._values.booleans[ key ] = value;
       } else if ( type == "image" ) {
-        values.images[ key ] = value;
-      } else if ( type == "trcolor" ) {
-        values.trcolors[ key ] = value;
-      // === new types ===
+        this._values.images[ key ] = value;
       } else if ( type == "font" ) {
         var font = new qx.ui.core.Font();
         font.setSize( value.size );
         font.setFamily( value.family );
         font.setBold( value.bold );
         font.setItalic( value.italic );
-        values.fonts[ key ] = font;
+        this._values.fonts[ key ] = font;
       } else if ( type == "color" ) {
-        values.colors[ key ] = value;
+        this._values.colors[ key ] = value;
       } else if ( type == "border" ) {
         var border = new qx.ui.core.Border( value.width, value.style );
         if( value.color ) {
@@ -127,16 +109,15 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         if( value.innerColor ) {
           border.setUserData( "innerColor", value.innerColor );
         }
-        values.borders[ key ] = border;
+        this._values.borders[ key ] = border;
       } else {
         this.error( "invalid type: " + type );
       }
     },
 
-    resolveBorderColors : function( theme ) {
-      var values = this.getThemeValues( theme );
-      for( var key in values.borders ) {
-        var border = values.borders[ key ];
+    resolveBorderColors : function() {
+      for( var key in this._values.borders ) {
+        var border = this._values.borders[ key ];
         var colorData = border.getUserData( "color" );
         if( colorData != null ) {
           var colors = [];
@@ -144,7 +125,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
             if( colorData[ i ].charAt( 0 ) == "#" ) {
               colors.push( colorData[ i ] );
             } else {
-              colors.push( values.colors[ colorData[ i ] ] );
+              colors.push( this._values.colors[ colorData[ i ] ] );
             }
           }
           border.setColor( colors );
@@ -154,7 +135,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         if( innerColorData != null ) {
           var innerColors = [];
           for( var i = 0; i < innerColorData.length; i++ ) {
-            innerColors.push( values.colors[ innerColorData[ i ] ] );
+            innerColors.push( this._values.colors[ innerColorData[ i ] ] );
           }
           border.setInnerColor( innerColors );
           border.setUserData( "innerColor", null );
@@ -191,8 +172,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
 
     _getColor : function( element, states, property, theme ) {
       var vkey = this.getCssValue( element, states, property, theme );
-      var values = this.getThemeValues( "_" );
-      return values.colors[ vkey ];
+      return this._values.colors[ vkey ];
     },
 
     // CSS SUPPORT

@@ -8,10 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
+
 
 public class QxBorder_Test extends TestCase {
 
@@ -71,59 +71,15 @@ public class QxBorder_Test extends TestCase {
     assertEquals( 1, dashedRed.width );
     assertEquals( "dashed", dashedRed.style );
     assertEquals( "red", dashedRed.color );
+    QxBorder groove = QxBorder.valueOf( "2 groove" );
+    assertEquals( 2, groove.width );
+    assertEquals( "groove", groove.style );
+    assertEquals( null, groove.color );
+    QxBorder ridge = QxBorder.valueOf( "2 ridge" );
+    assertEquals( 2, ridge.width );
+    assertEquals( "ridge", ridge.style );
+    assertEquals( null, ridge.color );
   }
-
-//  public void testQxColors() {
-//    assertNull( QxBorder.NONE.getQxColors() );
-//    // thin inset
-//    QxBorder thinInset = QxBorder.valueOf( "1 inset" );
-//    assertEquals( "solid", thinInset.getQxStyle() );
-//    assertEquals( "[ \"rwt-shadow-color\", \"rwt-highlight-color\","
-//                      + " \"rwt-highlight-color\", \"rwt-shadow-color\" ]",
-//                  thinInset.getQxColors() );
-//    // thin outset
-//    QxBorder thinOutset = QxBorder.valueOf( "1px outset" );
-//    assertEquals( "solid", thinOutset.getQxStyle() );
-//    assertEquals( "[ \"rwt-highlight-color\", \"rwt-shadow-color\","
-//                      + " \"rwt-shadow-color\", \"rwt-highlight-color\" ]",
-//                  thinOutset.getQxColors() );
-//    // inset
-//    QxBorder inset = QxBorder.valueOf( "2px inset" );
-//    assertEquals( "solid", inset.getQxStyle() );
-//    assertEquals( "[ \"rwt-shadow-color\", \"rwt-highlight-color\","
-//                      + " \"rwt-highlight-color\", \"rwt-shadow-color\" ]",
-//                  inset.getQxColors() );
-//    assertEquals( "[ \"rwt-darkshadow-color\", \"rwt-lightshadow-color\","
-//                      + " \"rwt-lightshadow-color\", \"rwt-darkshadow-color\" ]",
-//                  inset.getQxInnerColors() );
-//    // outset
-//    QxBorder outset = QxBorder.valueOf( "2 outset" );
-//    assertEquals( "solid", outset.getQxStyle() );
-//    assertEquals( "[ \"rwt-lightshadow-color\", \"rwt-darkshadow-color\","
-//                      + " \"rwt-darkshadow-color\", \"rwt-lightshadow-color\" ]",
-//                  outset.getQxColors() );
-//    assertEquals( "[ \"rwt-highlight-color\", \"rwt-shadow-color\","
-//                      + " \"rwt-shadow-color\", \"rwt-highlight-color\" ]",
-//                  outset.getQxInnerColors() );
-//    // groove
-//    QxBorder groove = QxBorder.valueOf( "2 groove" );
-//    assertEquals( "solid", groove.getQxStyle() );
-//    assertEquals( "[ \"rwt-shadow-color\", \"rwt-highlight-color\","
-//                      + " \"rwt-highlight-color\", \"rwt-shadow-color\" ]",
-//                  groove.getQxColors() );
-//    assertEquals( "[ \"rwt-highlight-color\", \"rwt-shadow-color\","
-//                      + " \"rwt-shadow-color\", \"rwt-highlight-color\" ]",
-//                  groove.getQxInnerColors() );
-//    // ridge
-//    QxBorder ridge = QxBorder.valueOf( "2 ridge" );
-//    assertEquals( "solid", ridge.getQxStyle() );
-//    assertEquals( "[ \"rwt-highlight-color\", \"rwt-shadow-color\","
-//                      + " \"rwt-shadow-color\", \"rwt-highlight-color\" ]",
-//                  ridge.getQxColors() );
-//    assertEquals( "[ \"rwt-shadow-color\", \"rwt-highlight-color\","
-//                      + " \"rwt-highlight-color\", \"rwt-shadow-color\" ]",
-//                  ridge.getQxInnerColors() );
-//  }
 
   public void testDefaultString() {
     QxBorder red = QxBorder.valueOf( "red" );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 public class JsonValue_Test extends TestCase {
 
-  public void testQuoteString() throws Exception {
+  public void testQuoteString() {
     // empty string
     assertEquals( "\"\"", JsonValue.quoteString( "" ) );
     // one char
@@ -34,7 +34,7 @@ public class JsonValue_Test extends TestCase {
                   JsonValue.quoteString( "a\\\"b\\\"" ) );
   }
 
-  public void testValueOf() throws Exception {
+  public void testValueOf() {
     assertEquals( "\"\"", JsonValue.valueOf( "" ).toString() );
     assertEquals( "\"Hallo\"", JsonValue.valueOf( "Hallo" ).toString() );
     assertEquals( "\"\\\"Hallo\\\"\"",

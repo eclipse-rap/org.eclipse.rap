@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
@@ -16,7 +15,7 @@ import junit.framework.TestCase;
 
 public class QxColor_Test extends TestCase {
 
-  public void testIllegalArguments() throws Exception {
+  public void testIllegalArguments() {
     try {
       QxColor.valueOf( "#0000" );
       fail( "Exception expected" );
@@ -37,7 +36,7 @@ public class QxColor_Test extends TestCase {
     }
   }
 
-  public void test6HexNotation() throws Exception {
+  public void test6HexNotation() {
     QxColor color1 = QxColor.valueOf( "#0023ff" );
     assertEquals( 0, color1.red );
     assertEquals( 35, color1.green );
@@ -49,7 +48,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 239, color2.blue );
   }
 
-  public void test3HexNotation() throws Exception {
+  public void test3HexNotation() {
     QxColor color1 = QxColor.valueOf( "#03f" );
     assertEquals( 0, color1.red );
     assertEquals( 51, color1.green );
@@ -62,7 +61,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( QxColor.valueOf( "#ffffff"), QxColor.valueOf( "#fff" ) );
   }
 
-  public void testNamedColors() throws Exception {
+  public void testNamedColors() {
     QxColor color1 = QxColor.valueOf( "red" );
     assertEquals( 255, color1.red );
     assertEquals( 0, color1.green );
@@ -74,7 +73,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 255, color2.blue );
   }
 
-  public void testCommaSeparatedValues() throws Exception {
+  public void testCommaSeparatedValues() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( 100, color.red );
     assertEquals( 23, color.green );
@@ -82,11 +81,11 @@ public class QxColor_Test extends TestCase {
     assertFalse( color.transparent );
   }
 
-  public void testTransparent() throws Exception {
+  public void testTransparent() {
     assertTrue( QxColor.TRANSPARENT.transparent );
   }
 
-  public void testShared() throws Exception {
+  public void testShared() {
     assertSame( QxColor.WHITE, QxColor.valueOf( "white" ) );
     assertSame( QxColor.WHITE, QxColor.valueOf( "255, 255, 255" ) );
     assertSame( QxColor.WHITE, QxColor.valueOf( "#ffffff" ) );
@@ -96,12 +95,12 @@ public class QxColor_Test extends TestCase {
     assertSame( QxColor.TRANSPARENT, QxColor.valueOf( "transparent" ) );
   }
 
-  public void testToString() throws Exception {
+  public void testToString() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( "QxColor{ 100, 23, 42 }", color.toString() );
   }
 
-  public void testDefaultString() throws Exception {
+  public void testDefaultString() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( "#64172a", color.toDefaultString() );
   }

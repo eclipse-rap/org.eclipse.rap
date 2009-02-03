@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
@@ -67,20 +66,6 @@ public class ThemeManager_Test extends TestCase {
     String[] themeIds = manager.getRegisteredThemeIds();
     assertNotNull( themeIds );
     assertTrue( themeIds.length > 0 );
-  }
-
-  public void testStripTemplate() {
-    String content;
-    String template;
-    content = "Line 1\r\n// BEGIN TEMPLATE (bla)\r\nLine3\r\n";
-    template = AppearancesUtil.stripTemplate( content );
-    assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
-    content = "Line 1\r// BEGIN TEMPLATE (bla)\rLine3\r";
-    template = AppearancesUtil.stripTemplate( content );
-    assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
-    content = "Line 1\n// BEGIN TEMPLATE (bla)\nLine3\n";
-    template = AppearancesUtil.stripTemplate( content );
-    assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
   }
 
   public void testRegisterThemeNull() throws Exception {
