@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 
 /**
  * This class contains static functions for toolbar items.
@@ -133,6 +134,25 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       var top = qx.html.Location.getPageBoxBottom( element );
       var req = org.eclipse.swt.Request.getInstance();
       org.eclipse.swt.EventUtil.doWidgetSelected( dropDownId, left, top, 0, 0 );
+    },
+
+    checkSelected : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var check = evt.getTarget();
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( check );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( id + ".selection", check.getChecked() );
+      }
+    },
+
+    checkSelectedAction : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.swt.ToolItemUtil.checkSelected( evt );
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+      }
     }
   }
 });
