@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,16 +15,16 @@
 qx.Class.define( "org.eclipse.swt.ComboUtil", {
 
   statics : {
-    
+
     modifyText : function( evt ) {
       var combo = evt.getTarget();
       // If the drop-down list is not visible, the target is the text field
       // instead of the combo.
-      if( !( combo instanceof qx.ui.form.ComboBox ) ) {
+      if( !( combo instanceof org.eclipse.swt.widgets.Combo ) ) {
       	combo = combo.getParent();
       }
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) )
       {
         // if not yet done, register an event listener that adds a request param
         // with the text widgets' content just before the request is sent
@@ -36,21 +36,21 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       }
       org.eclipse.swt.TextUtil._handleSelectionChange( combo.getField(), combo );
     },
-    
+
     /**
-     * This function gets assigned to the 'keyup' event of a text widget if 
+     * This function gets assigned to the 'keyup' event of a text widget if
      * there was a server-side ModifyListener registered.
      */
     modifyTextAction : function( evt ) {
       var combo = evt.getTarget();
       // If the drop-down list is not visible, the target is the text field
       // instead of the combo.
-      if( !( combo instanceof qx.ui.form.ComboBox ) ) {
+      if( !( combo instanceof org.eclipse.swt.widgets.Combo ) ) {
       	combo = combo.getParent();
       }
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && !org.eclipse.swt.TextUtil._isModified( combo ) 
-          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+          && !org.eclipse.swt.TextUtil._isModified( combo )
+          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) )
       {
         var req = org.eclipse.swt.Request.getInstance();
         // Register 'send'-listener that adds a request param with current text
@@ -63,8 +63,8 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         var id = widgetManager.findIdByWidget( combo );
         req.addEvent( "org.eclipse.swt.events.modifyText", id );
         // register listener that is notified when a request is sent
-        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, 
-                              combo, 
+        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend,
+                              combo,
                               500 );
       }
       org.eclipse.swt.TextUtil._handleSelectionChange( combo.getField(), combo );
@@ -75,8 +75,8 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
      * was a server-side ModifyListener registered.
      */
     modifyTextOnBlur : function( evt ) {
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && org.eclipse.swt.TextUtil._isModified( evt.getTarget() ) ) 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+          && org.eclipse.swt.TextUtil._isModified( evt.getTarget() ) )
       {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
@@ -85,7 +85,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         req.send();
       }
     },
-    
+
     _onSend : function( evt ) {
       // NOTE: 'this' references the combo widget
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -101,7 +101,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         this.setValue( this.getField().getComputedValue() );
       }
     },
-    
+
     onSelectionChanged : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var combo = evt.getTarget();
@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       // TODO [rst] This listener was also called on focus out, if no item was
       //      selected. This fix should work since combos cannot be deselected.
       if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getValue() != null ) {
-        org.eclipse.swt.ComboUtil.onSelectionChanged( evt );      
+        org.eclipse.swt.ComboUtil.onSelectionChanged( evt );
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
         org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );

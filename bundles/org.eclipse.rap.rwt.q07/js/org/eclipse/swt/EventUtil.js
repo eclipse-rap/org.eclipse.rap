@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,8 +122,10 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       if(    !org_eclipse_rap_rwt_EventUtil_suspend
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
-        // from now on, redirect mouse event to this widget
-        this.setCapture( true );
+        // disabled capturing as it interferes with Combo capturing
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+        //// from now on, redirect mouse event to this widget
+        //this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
         // Add parameters for double-click event
         if( org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) {
@@ -143,6 +145,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         }
         // Collect request parameters and send
         org.eclipse.swt.EventUtil._mouseDownParams( this, evt );
+        var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }
     },
@@ -151,13 +154,16 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       if(    !org_eclipse_rap_rwt_EventUtil_suspend
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) ) 
       {
-        // release mouse event capturing
-        this.setCapture( false );
+        // disabled capturing as it interferes with Combo capturing
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+        //// release mouse event capturing
+        //this.setCapture( false );
         org.eclipse.swt.EventUtil._capturingWidget = null;
         // increase number of mouse-up events since last stored mouse down
         org.eclipse.swt.EventUtil._lastMouseDown.mouseUpCount += 1;
         // Add mouse-up request parameter
         org.eclipse.swt.EventUtil._mouseUpParams( this, evt );
+        var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }
     },
