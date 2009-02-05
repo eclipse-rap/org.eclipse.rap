@@ -252,13 +252,31 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   // RadioButton
 
   "radio-button" : {
-    include : "check-box",
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        cursor : "default",
-        verticalChildrenAlign : "top",
-        spacing : 4
-      };
+        border : tv.getCssBorder( "Button", "border" ),
+        font : tv.getCssFont( "Button", "font" ),
+        textColor : states.disabled
+                    ? tv.getColor( "widget.graytext" )
+                    : tv.getCssColor( "Button", "color" ),
+        backgroundColor : tv.getCssColor( "Button", "background-color" ),
+        padding : tv.getCssBoxDimensions( "Button", "padding" )
+      }
+    }
+  },
+
+  "radio-button-icon" : {
+    include: "image",    
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.width = 13;
+      result.height = 13;
+      result.clipWidth = 13;
+      result.clipHeight = 13;
+      result.source = tv.getCssImage( "Button-RadioIcon", "background-image" );
+      return result;
     }
   },
 

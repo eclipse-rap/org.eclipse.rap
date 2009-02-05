@@ -205,7 +205,7 @@ public class Button extends Control {
       this.selected = selected;
     }
   }
-
+  
   /**
    * Returns <code>true</code> if the receiver is grayed,
    * and false otherwise. When the widget does not have
@@ -217,10 +217,10 @@ public class Button extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
+   * 
    * @since 1.2
    */
-  public boolean getGrayed() {
+  public boolean getGrayed () {
     checkWidget();
     boolean result = false;
     if( ( style & SWT.CHECK ) != 0 ) {
@@ -228,9 +228,9 @@ public class Button extends Control {
     }
     return result;
   }
-
+  
   /**
-   * Sets the grayed state of the receiver.  This state change
+   * Sets the grayed state of the receiver.  This state change 
    * only applies if the control was created with the SWT.CHECK
    * style.
    *
@@ -240,7 +240,7 @@ public class Button extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   *
+   * 
    * @since 1.2
    */
   public void setGrayed( final boolean grayed ) {
@@ -279,10 +279,7 @@ public class Button extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * <hr/>
-   * Not implemented for RADIO.
    */
-  // TODO [rh] implement handling of images for RADIO as SWT does
   public void setImage( final Image image ) {
     checkWidget();
     if( ( style & SWT.ARROW ) == 0 ) {
@@ -377,10 +374,7 @@ public class Button extends Control {
     checkWidget();
     int width = 0;
     int height = 0;
-    // TODO [rst] Image is currently ignored for RADIO buttons,
-    //            remove when this restriction disappers
-    boolean imageIgnored = ( style & SWT.RADIO ) != 0;
-    boolean hasImage = image != null && !imageIgnored;
+    boolean hasImage = image != null;
     boolean hasText = text.length() > 0;
     if( hasImage ) {
       Rectangle imageBounds = image.getBounds ();

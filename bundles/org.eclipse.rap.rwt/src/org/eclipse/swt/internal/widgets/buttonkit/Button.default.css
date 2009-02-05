@@ -38,19 +38,19 @@ Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
 }
 
 Button-CheckIcon {
-  background-image: url( resource/widget/rap/button/check-off.png );
+  background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 
 Button-CheckIcon:hover {
-  background-image: url( resource/widget/rap/button/check-off-hover.png );
+  background-image: url( resource/widget/rap/button/check-unselected-hover.png );
 }
 
 Button-CheckIcon:selected {
-  background-image: url( resource/widget/rap/button/check-on.png );
+  background-image: url( resource/widget/rap/button/check-selected.png );
 }
 
 Button-CheckIcon:selected:hover {
-  background-image: url( resource/widget/rap/button/check-on-hover.png );
+  background-image: url( resource/widget/rap/button/check-selected-hover.png );
 }
 
 Button-CheckIcon:selected:grayed {
@@ -59,4 +59,20 @@ Button-CheckIcon:selected:grayed {
 
 Button-CheckIcon:selected:hover:grayed {
   background-image: url( resource/widget/rap/button/check-grayed-hover.png );
+}
+
+Button-RadioIcon {
+  background-image: url( resource/widget/rap/button/radio-unselected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( resource/widget/rap/button/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( resource/widget/rap/button/radio-selected.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( resource/widget/rap/button/radio-selected-hover.png );
 }

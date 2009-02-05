@@ -131,7 +131,7 @@ public class Button_Test extends TestCase {
   	button3.setSelection( false );
   	assertFalse( button3.getSelection() );
   }
-
+  
   public void testGrayed() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -227,10 +227,13 @@ public class Button_Test extends TestCase {
 
     // RADIO button
     button = new Button( shell, SWT.RADIO );
+    expected = new Point( 28, 21 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     expected = new Point( 75, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
+    expected = new Point( 177, 58 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // RADIO button with border
@@ -238,8 +241,10 @@ public class Button_Test extends TestCase {
     expected = new Point( 32, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    button.setImage( image );
     expected = new Point( 79, 25 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( image );
+    expected = new Point( 181, 62 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // fixed size

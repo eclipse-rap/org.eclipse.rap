@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
@@ -141,6 +140,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/Slider.js";
   private static final String CHECKBOX_JS
     = "org/eclipse/swt/widgets/CheckBox.js";
+  private static final String RADIOBUTTON_JS
+    = "org/eclipse/swt/widgets/RadioButton.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -222,6 +223,7 @@ final class QooxdooResourcesUtil {
       register( EXPAND_ITEM_JS, compress );
       register( SLIDER_JS, compress );
       register( CHECKBOX_JS, compress );
+      register( RADIOBUTTON_JS, compress );
 
       // register contributions
       registerContributions();

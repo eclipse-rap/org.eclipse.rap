@@ -89,6 +89,20 @@
           description="Applies when the check box is grayed." />
 
     </element>
+    
+    <element name="Button-RadioIcon"
+        description="The icon to indicate the selected state of a Button with style RADIO" >
+
+      <property name="background-image"
+          type="image"
+          description="Icon image of the radio button. The size of the image should be 13 x 13 pixels." />
+          
+      <state name="selected"
+          description="Applies for selected radio buttons." />
+          
+      <state name="hover"
+          description="Applies while the user hovers over the radio button." />
+    </element>
 
   </element>
 
