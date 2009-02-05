@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
@@ -25,12 +24,14 @@ import org.eclipse.swt.widgets.Button;
 
 final class ButtonLCAUtil {
 
-
+  private static final String JS_PROP_SELECTION = "selection";
   private static final String JS_PROP_HORIZONTAL_CHILDREN_ALIGN
     = "horizontalChildrenAlign";
+  
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_DEFAULT = "defaultButton";
+
   private static final String PARAM_SELECTION = "selection";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
 
@@ -128,14 +129,13 @@ final class ButtonLCAUtil {
 
   static void writeSelection( final Button button ) throws IOException {
     Boolean newValue = Boolean.valueOf( button.getSelection() );
-    Boolean defValue = Boolean.FALSE;
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.set( PROP_SELECTION, JSConst.QX_FIELD_CHECKED, newValue, defValue );
+    writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
   }
 
   static void resetSelection() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.set(  JSConst.QX_FIELD_CHECKED, Boolean.FALSE );
+    writer.set( JS_PROP_SELECTION, Boolean.FALSE );
   }
 
   static void writeDefault( final Button button ) throws IOException {

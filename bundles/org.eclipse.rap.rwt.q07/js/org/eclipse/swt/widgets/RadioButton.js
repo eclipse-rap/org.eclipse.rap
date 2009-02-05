@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     this.setAppearance( "radio-button" );
     
     // Default values
-    this._selected = false;
+    this._selection = false;
     this._text = "";
     this._image = null;
     this._hasSelectionListener = false;
@@ -78,29 +78,13 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     },
 
     _sendChanges : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && this._hasSelectionListener ) 
+      {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( id + ".selection", this._selected );
-        if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-          req.send();
-        }
-      }
-    },
-
-    // Set the "checked" property of the other radio buttons, 
-    // that belong to the same parent (group), to false.
-    _setOtherRbFalse : function() {
-      var parent = this.getParent();
-      var siblings = parent.getChildren();
-      for( var i = 0; i < siblings.length; i++ ) {
-        if(    siblings[ i ] != this 
-            && siblings[ i ].classname == this.classname )
-        {
-          siblings[ i ].setChecked( false );
-        }
+        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+        req.send();
       }
     },
 
@@ -130,7 +114,7 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
       nextSelectedRbIndex = currentRbIndex;
       if ( command == "next" ) {
         nextSelectedRbIndex = currentRbIndex + 1;
-        if( nextSelectedRbIndex == allRb.length ) {
+        if( nextSelectedRbIndex >= allRb.length ) {
           nextSelectedRbIndex = 0;
         }
       }
@@ -140,15 +124,14 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
           nextSelectedRbIndex = allRb.length - 1;
         }
       }
-      allRb[ nextSelectedRbIndex ].setChecked( true );
+      allRb[ nextSelectedRbIndex ].setSelection( true );
       allRb[ nextSelectedRbIndex ].setFocused( true );
     },
 
     // Event listeners
     _onclick : function( evt ) {
-      if ( !this._selected ) {
-      	this.setChecked( true );
-      }
+    	this.setSelection( true );
+    	this._sendChanges();
     },
     
     _onmouseover : function( evt ) {
@@ -164,9 +147,8 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     // If "Space" is pressed, the property "checked" is set to true
     _onkeyup : function( evt ) {
       if ( evt.getKeyIdentifier() == "Space" ) {
-        if ( !this._selected ) {
-      	  this.setChecked( true );
-        }
+    	  this.setSelection( true );
+    	  this._sendChanges();
       }
     },
     
@@ -177,10 +159,12 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
         case "Left":
         case "Up":
           this._setNextOrPrevious( "previous" );
+          this._sendChanges();
           break;
         case "Right":
         case "Down":
           this._setNextOrPrevious( "next" );
+          this._sendChanges();
           break;
       }
     },
@@ -188,10 +172,6 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     // Set-functions
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
-    },
-    
-    setSelection : function( value ) {
-      this._selected = value;
     },
     
     setLabel : function( value ) {
@@ -208,17 +188,36 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
       this._content.setHorizontalChildrenAlign( value );
     },
     
-    setChecked : function( value ) {
-      this._selected = value;
-      if( this._selected ) {
-        this._icon.addState( "selected" );
-        this.addState( "selected" );
-        this._setOtherRbFalse();
-      } else {
-        this._icon.removeState( "selected" );
-        this.removeState( "selected" );
+    setSelection : function( value ) {
+      if( this._selection !== value ) {
+        this._selection = value;
+        if( this._selection ) {
+          this._icon.addState( "selected" );
+          this.addState( "selected" );
+          this._unselectSiblings();
+        } else {
+          this._icon.removeState( "selected" );
+          this.removeState( "selected" );
+        }
+        if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( this );
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addParameter( id + ".selection", this._selection );
+        }
       }
-      this._sendChanges();
+    },
+    
+    _unselectSiblings : function() {
+      var parent = this.getParent();
+      var siblings = parent.getChildren();
+      for( var i = 0; i < siblings.length; i++ ) {
+        if( siblings[ i ] != this && siblings[ i ].classname === this.classname )
+        {
+          siblings[ i ].setSelection( false );
+        }
+      }
     }
+  
   }
 } );

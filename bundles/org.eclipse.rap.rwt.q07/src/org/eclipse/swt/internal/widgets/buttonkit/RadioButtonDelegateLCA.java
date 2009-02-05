@@ -23,7 +23,6 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   static final String TYPE_POOL_ID
     = RadioButtonDelegateLCA.class.getName();
-  private static final String QX_TYPE = "org.eclipse.swt.widgets.RadioButton";
 
   void preserveValues( final Button button ) {
     ControlLCAUtil.preserveValues( button );
@@ -44,15 +43,12 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.newWidget( QX_TYPE );
+    writer.newWidget( "org.eclipse.swt.widgets.RadioButton" );
     ControlLCAUtil.writeStyleFlags( button );
     WidgetLCAUtil.writeStyleFlag( button, SWT.RADIO, "RADIO" );
   }
 
   void renderChanges( final Button button ) throws IOException {
-    // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
-    // bounds of the widget that was clicked -> In the SelectionEvent
-    // for Button the bounds are undefined
     ControlLCAUtil.writeChanges( button );
     ButtonLCAUtil.writeSelection( button );
     ButtonLCAUtil.writeText( button );

@@ -150,7 +150,6 @@ public final class JSConst {
   public static final String QX_FIELD_ENABLED = "enabled";
   public static final String QX_FIELD_EDITABLE = "editable";
   public static final String QX_FIELD_VISIBLE = "visibility";
-  public static final String QX_FIELD_CHECKED = "checked";
   public static final String QX_FIELD_APPEARANCE = "appearance";
   public static final String QX_FIELD_Z_INDEX = "zIndex";
   public static final String QX_FIELD_TAB_INDEX = "tabIndex";

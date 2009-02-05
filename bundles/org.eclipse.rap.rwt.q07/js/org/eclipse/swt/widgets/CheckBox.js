@@ -91,7 +91,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
 
     // Event listeners
     _onclick : function( evt ) {
-      this.setChecked( !this._selected );
+      this.setSelection( !this._selected );
     },
 
     _onmouseover : function( evt ) {
@@ -107,17 +107,13 @@ qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
     // Toggles property "checked" when "Space" key was pressed.
     _onkeyup : function( evt ) {
       if ( evt.getKeyIdentifier() == "Space" ) {
-        this.setChecked( !this._selected );
+        this.setSelection( !this._selected );
       }
     },
 
     // Set-functions
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
-    },
-
-    setSelection : function( value ) {
-      this._selected = value;
     },
 
     setLabel : function( value ) {
@@ -134,7 +130,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
       this._content.setHorizontalChildrenAlign( value );
     },
 
-    setChecked : function( value ) {
+    setSelection : function( value ) {
       this._selected = value;
       if( this._selected ) {
         this._icon.addState( "selected" );
