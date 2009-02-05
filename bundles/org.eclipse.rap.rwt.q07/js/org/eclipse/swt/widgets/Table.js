@@ -258,6 +258,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
   members : {
 
+    // This is needed to sort out events on nested widgets (cell editors)
+    // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=262155
+    _isRelevantEvent : function( evt ) {
+      var target = evt.getTarget();
+      return    target === this
+             || target instanceof org.eclipse.swt.widgets.TableRow;
+    },
+
     setCursor : function( value ) {
       this._columnArea.setCursor( value );
       this._clientArea.setCursor( value );
@@ -612,8 +620,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _onClientAreaMouseWheel : function( evt ) {
-      var change = evt.getWheelDelta() * this._itemHeight * 2;
-      this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
+      if( this._isRelevantEvent( evt ) ) {
+        var change = evt.getWheelDelta() * this._itemHeight * 2;
+        this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
+      }
     },
 
     _onChangeSize : function( evt ) {
@@ -629,26 +639,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Keyboard navigation
 
     _onKeyDown : function( evt ) {
-      switch( evt.getKeyIdentifier() ) {
-        case "Space":
-          this._toggleCheckState( this._focusIndex );
-          break;
-        case "Enter":
-          // in sync with SWT: fire defaultSelection when <Return> is pressed,
-          // regardless which modifier-key(s) are held down
-          if( this._focusIndex !== -1 ) {
-            var itemIndex = this._getItemIndexFromRowIndex( this._focusIndex );
-            if( itemIndex !== -1 ) {
-              this.createDispatchDataEvent( "itemdefaultselected", itemIndex );
+      if( this._isRelevantEvent( evt ) ) {
+        switch( evt.getKeyIdentifier() ) {
+          case "Space":
+            this._toggleCheckState( this._focusIndex );
+            break;
+          case "Enter":
+            // in sync with SWT: fire defaultSelection when <Return> is pressed,
+            // regardless which modifier-key(s) are held down
+            if( this._focusIndex !== -1 ) {
+              var itemIndex = this._getItemIndexFromRowIndex( this._focusIndex );
+              if( itemIndex !== -1 ) {
+                this.createDispatchDataEvent( "itemdefaultselected", itemIndex );
+              }
             }
-          }
-          break;
+            break;
+        }
       }
     },
 
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
-      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
+      if(    this._isRelevantEvent( evt )
+          && org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
           && (    keyIdentifier === "Up"
                || keyIdentifier === "Down"
                || keyIdentifier === "PageUp"
