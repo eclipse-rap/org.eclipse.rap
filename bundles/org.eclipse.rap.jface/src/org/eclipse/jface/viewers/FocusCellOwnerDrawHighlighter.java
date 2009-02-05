@@ -141,24 +141,39 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
       viewer.addSelectionChangedListener( new ISelectionChangedListener() {
 
         private Widget[] oldSelection = getSelectedItems();
+        private ViewerCell oldFocusCell = getFocusCell();
 
         public void selectionChanged( SelectionChangedEvent event ) {
           // erase old selection
           for( int i = 0; i < oldSelection.length; i++ ) {
             Widget item = oldSelection[ i ];
             ViewerRow row = viewer.getViewerRowFromItem( item );
-            ViewerCell cell = row.getCell( 0 );
-            removeSelectionInformation( null, cell );
+            int count = row.getColumnCount();
+            for( int j = 0; j < count; j++ ) {
+              ViewerCell cell = row.getCell( j );
+              removeSelectionInformation( null, cell );
+            }
+          }
+          if( oldFocusCell != null ) {
+            removeSelectionInformation( null, oldFocusCell );
           }
           // colorize new selection
           Widget[] selection = getSelectedItems();
+          ViewerCell focusCell = getFocusCell();
+          int index = 0;
+          if( focusCell != null ) {
+            index = focusCell.getColumnIndex();
+          } else if( oldFocusCell != null ) {
+            index = oldFocusCell.getColumnIndex();
+          }
           for( int i = 0; i < selection.length; i++ ) {
             Widget item = selection[ i ];
             ViewerRow row = viewer.getViewerRowFromItem( item );
-            ViewerCell cell = row.getCell( 0 );
+            ViewerCell cell = row.getCell( index );
             markFocusedCell( null, cell );
           }
           oldSelection = selection;
+          oldFocusCell = focusCell;
         }
 
         private Widget[] getSelectedItems() {
