@@ -16,25 +16,25 @@
  * * if the doit-flag was left to true while processing the server-side
  *   key event, the reponse calls a function that re-dispatches the event.
  *   Otherwise nothing interesting happens. The event was already cancelled.
- *  
+ *
  * Now for the nightmare part:
  * Certain keys on certain input elements are considered "untrusted" by
- * Gecko-based browsers. Untrusted key events are not processed if they 
- * were created programmatically. 
- * For example the text input element does not accept programmatically 
+ * Gecko-based browsers. Untrusted key events are not processed if they
+ * were created programmatically.
+ * For example the text input element does not accept programmatically
  * created arrow keys.
- * 
+ *
  * As described above, it is crucial to be able to first cancel an event and
- * later on re-dispatch it. The only "solution" that is left of now  is to 
- * filter out these key events and let them pass without giving the server a 
+ * later on re-dispatch it. The only "solution" that is left of now  is to
+ * filter out these key events and let them pass without giving the server a
  * chance to process them.
  */
 qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
 {
   type : "singleton",
   extend : qx.core.Object,
-  
-  /* Within this file, an EventInfo data structure is used. It is declared 
+
+  /* Within this file, an EventInfo data structure is used. It is declared
    * as follows (pseudo-syntax, borrowed from Java):
    * EventInfo {
        HTMLElement target,
@@ -48,9 +48,9 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
        int keyCode,
        int charCode,
        boolean isChar
-   * } 
+   * }
    */
-  
+
   construct : function() {
     this.base( arguments );
     this._pendingEventInfo = null;
@@ -60,14 +60,14 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "received", this._onRequestReceived, this );
   },
-  
+
   destruct : function() {
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "received", this._onRequestReceived, this );
   },
-  
+
   members : {
-    _untrustedKeyCodes : qx.core.Variant.select( "qx.client", { 
+    _untrustedKeyCodes : qx.core.Variant.select( "qx.client", {
       "gecko" : [
         37,  // Left
         38,  // Up
@@ -92,40 +92,41 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       ],
       "default" : []
     } ),
-    
+
     intercept : function( eventType, keyCode, charCode, domEvent ) {
       var result = false;
-      var control = this._getTargetControl();
-      var hasKeyListener = this._hasKeyListener( control );
-      var hasTraverseListener = this._hasTraverseListener( control );
-      var isTraverseKey = false;
-      if( hasTraverseListener ) {
-        isTraverseKey = this._isTraverseKey( keyCode ); 
-      }
-      if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
-        if( !this._isUntrustedKey( control, keyCode ) ) {
-          if( this._keyEventRequestRunning || this._bufferedEvents.length > 0 ) {
-            if( !this._redispatching ) {
+      if( !this._redispatching ) {
+        var control = this._getTargetControl();
+        var hasKeyListener = this._hasKeyListener( control );
+        var hasTraverseListener = this._hasTraverseListener( control );
+        var isTraverseKey = false;
+        if( hasTraverseListener ) {
+          isTraverseKey = this._isTraverseKey( keyCode );
+        }
+        if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
+          if( !this._isUntrustedKey( control, keyCode ) ) {
+            if( this._keyEventRequestRunning || this._bufferedEvents.length > 0 )
+            {
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
               this._cancelDomEvent( domEvent );
               result = true;
+            } else if( this._isRelevantEvent( eventType, keyCode ) ) {
+              var key = charCode == 0 ? keyCode : charCode;
+              this._pendingEventInfo = this._getEventInfo( domEvent );
+              this._sendKeyDown( control, key, domEvent );
+              this._cancelDomEvent( domEvent );
+              result = true;
             }
-          } else if( this._isRelevantEvent( eventType, keyCode ) ) {
-            var key = charCode == 0 ? keyCode : charCode;
-            this._pendingEventInfo = this._getEventInfo( domEvent );
-            this._sendKeyDown( control, key, domEvent );
-            this._cancelDomEvent( domEvent );
-            result = true;
           }
         }
       }
       return result;
     },
-    
+
     cancelEvent : function() {
       this._pendingEventInfo = null;
     },
-    
+
     allowEvent : function() {
       if( this._pendingEventInfo !== null ) {
         // [rst] switch suspend off while re-dispatching event
@@ -136,13 +137,13 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         org_eclipse_rap_rwt_EventUtil_suspend = suspendBuffer;
       }
     },
-    
+
     _isRelevantEvent : function( eventType, keyCode ) {
       var result;
       if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         var keyEventHandler = qx.event.handler.KeyEventHandler.getInstance();
         var nonPrintable
-          =  keyEventHandler._isNonPrintableKeyCode( keyCode ) 
+          =  keyEventHandler._isNonPrintableKeyCode( keyCode )
           || keyCode == 27 // escape
           || keyCode == 8  // backspace
           || keyCode == 9; // tab
@@ -154,9 +155,9 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       } else {
         result = eventType === "keypress";
       }
-      return result;      
+      return result;
     },
-    
+
     _isUntrustedKey : function( control, keyCode ) {
       var result = false;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
@@ -170,12 +171,12 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       }
       return result;
     },
-    
+
     _getTargetControl : function() {
       var result = qx.event.handler.EventHandler.getInstance().getCaptureWidget();
       if( !result ) {
         var focusRoot = qx.event.handler.EventHandler.getInstance().getFocusRoot();
-        result = focusRoot == null ? null : focusRoot.getActiveChild();  
+        result = focusRoot == null ? null : focusRoot.getActiveChild();
       }
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       while( result !== null && !widgetManager.isControl( result ) ) {
@@ -183,15 +184,15 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       }
       return result;
     },
-        
+
     _hasKeyListener : function( widget ) {
       return widget !== null && widget.getUserData( "keyListener" ) === true;
     },
-    
+
     _hasTraverseListener : function( widget ) {
       return widget !== null && widget.getUserData( "traverseListener" ) === true;
     },
-    
+
     _isTraverseKey : function( keyCode ) {
       var result = false;
       if(    keyCode === 27
@@ -202,7 +203,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       }
       return result;
     },
-    
+
     _cancelDomEvent : function( domEvent ) {
       if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         domEvent.returnValue = false;
@@ -212,7 +213,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         domEvent.stopPropagation();
       }
     },
-    
+
     _sendKeyDown : function( widget, keyCode, domEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
@@ -232,14 +233,14 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       this._keyEventRequestRunning = true;
       req._sendImmediate( true );
     },
-    
+
     _onRequestReceived : function( evt ) {
       if( this._keyEventRequestRunning ) {
         this._keyEventRequestRunning = false;
         this._checkBufferedEvents();
       }
     },
-    
+
     _getEventInfo : function( event ) {
       return {
         target: event.target || event.srcElement,
@@ -256,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         pageY: event.pageY
       };
     },
-    
+
     _checkBufferedEvents : function() {
       while( this._bufferedEvents.length > 0 && !this._keyEventRequestRunning ) {
         var size = this._bufferedEvents.length;
@@ -264,7 +265,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         this._redispatchKeyEvent( oldEvent );
       }
     },
-    
+
     _redispatchKeyEvent : function( eventInfo ) {
       this._redispatching = true;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
@@ -286,7 +287,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         newEvent.view = eventInfo.view;
         newEvent.ctrlKey = eventInfo.ctrlKey;
         newEvent.altKey = eventInfo.altKey;
-        newEvent.metaKey = eventInfo.metaKey; 
+        newEvent.metaKey = eventInfo.metaKey;
         newEvent.keyCode = eventInfo.keyCode;
         eventInfo.target.dispatchEvent( newEvent );
       } else if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
@@ -298,7 +299,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         }
         newEvent.ctrlKey = eventInfo.ctrlKey;
         newEvent.altKey = eventInfo.altKey;
-        newEvent.metaKey = eventInfo.metaKey; 
+        newEvent.metaKey = eventInfo.metaKey;
         newEvent.keyCode = eventInfo.keyCode;
         eventInfo.srcElement.fireEvent( newEvent );
       } else {
@@ -320,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
 //        + " }";
 //      this.debug( msg );
 //    }
-    
+
   }
 } );
 
