@@ -1094,10 +1094,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );      
       return {
-        top     : margin[0],
-        right   : margin[1],
-        bottom  : margin[2], 
-        left    : margin[3],              
+        top     : margin[ 0 ],
+        right   : margin[ 1 ],
+        bottom  : margin[ 2 ], 
+        left    : margin[ 3 ],              
         border  : tv.getCssBorder( "Group-Frame", "border" )
       };
     }
