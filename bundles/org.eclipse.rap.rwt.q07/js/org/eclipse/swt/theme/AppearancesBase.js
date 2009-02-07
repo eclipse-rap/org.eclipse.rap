@@ -1092,13 +1092,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "group-box-frame" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );      
       return {
-        top : 0,
-        left : 0,
-        right : 0,
-        bottom : 0,
-        margin : tv.getCssBoxDimensions( "Group-Frame", "margin" ),
-        border : tv.getCssBorder( "Group-Frame", "border" )
+        top     : margin[0],
+        right   : margin[1],
+        bottom  : margin[2], 
+        left    : margin[3],              
+        border  : tv.getCssBorder( "Group-Frame", "border" )
       };
     }
   },
@@ -1930,6 +1930,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.width = 16;
       result.height = 16;
+      result.clipHeight = 16;
       result.right = 4;
       result.backgroundImage
         = tv.getCssImage( "ExpandItem-Button", "background-image" );
