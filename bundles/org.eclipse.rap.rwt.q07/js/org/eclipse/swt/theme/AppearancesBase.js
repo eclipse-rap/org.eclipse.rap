@@ -258,7 +258,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         border : tv.getCssBorder( "Button", "border" ),
         font : tv.getCssFont( "Button", "font" ),
         textColor : states.disabled
-                    ? tv.getColor( "widget.graytext" )
+                    ? "widget.graytext"
                     : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" )
