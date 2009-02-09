@@ -224,9 +224,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         border : tv.getCssBorder( "Button", "border" ),
         font : tv.getCssFont( "Button", "font" ),
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : tv.getCssColor( "Button", "color" ),
+        textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         backgroundImage : tv.getCssImage( "Button", "background-image" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" )
@@ -247,17 +245,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
-  "check-box-text" : {
-    include : "atom",
-    style : function( states ) {
-      return {
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : "undefined"
-      }
-    }
-  },
 
   // ------------------------------------------------------------------------
   // RadioButton
@@ -268,9 +255,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         border : tv.getCssBorder( "Button", "border" ),
         font : tv.getCssFont( "Button", "font" ),
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : tv.getCssColor( "Button", "color" ),
+        textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
@@ -288,17 +273,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.clipHeight = 13;
       result.source = tv.getCssImage( "Button-RadioIcon", "background-image" );
       return result;
-    }
-  },
-  
-  "radio-button-text" : {
-    include : "atom",
-    style : function( states ) {
-      return {
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : "undefined"
-      }
     }
   },
 
