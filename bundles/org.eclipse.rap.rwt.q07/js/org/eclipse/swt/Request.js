@@ -414,7 +414,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
       app.setExitConfirmation( null );
       qx.io.remote.RequestQueue.getInstance().setEnabled( false );
       // write the error page content
-      document.open( "text/html", true );
+      var client = qx.core.Client.getInstance();
+      if( client.isMshtml() && client.getMajor() == 6 ) {
+        // do nothing for IE6, see bug 264150: Error page is broken in IE6
+      } else {
+        document.open( "text/html", true );
+      }
       document.write( content );
       document.close();
     }
