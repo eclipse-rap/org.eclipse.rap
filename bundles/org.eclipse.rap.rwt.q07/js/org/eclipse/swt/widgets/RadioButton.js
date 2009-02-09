@@ -27,11 +27,12 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     
     // RadioButton icon
     this._icon = new qx.ui.basic.Image;
-    this._icon.setAppearance( "radio-button-icon" ); 
+    this._icon.setAppearance( "radio-button-icon" );
     this.add( this._icon );
     
     // RadioButton content - image and text
     this._content = new qx.ui.basic.Atom( "(empty)", this._image );
+    this._content.setAppearance( "radio-button-text" );
     this._content.setLeft( 17 );
     this._content.setLabel( this._text );
     this._content.setHorizontalChildrenAlign( "center" );

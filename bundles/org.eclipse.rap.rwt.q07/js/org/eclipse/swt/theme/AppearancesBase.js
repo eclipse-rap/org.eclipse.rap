@@ -247,6 +247,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "check-box-text" : {
+    include : "atom",
+    style : function( states ) {
+      return {
+        textColor : states.disabled
+                    ? "widget.graytext"
+                    : "undefined"
+      }
+    }
+  },
 
   // ------------------------------------------------------------------------
   // RadioButton
@@ -277,6 +288,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.clipHeight = 13;
       result.source = tv.getCssImage( "Button-RadioIcon", "background-image" );
       return result;
+    }
+  },
+  
+  "radio-button-text" : {
+    include : "atom",
+    style : function( states ) {
+      return {
+        textColor : states.disabled
+                    ? "widget.graytext"
+                    : "undefined"
+      }
     }
   },
 

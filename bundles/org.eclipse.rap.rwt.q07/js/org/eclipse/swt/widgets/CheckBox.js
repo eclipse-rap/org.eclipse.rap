@@ -33,6 +33,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
 
     // CheckButton content - image and text
     this._content = new qx.ui.basic.Atom( "(empty)", this._image );
+    this._content.setAppearance( "check-box-text" );
     this._content.setLeft( 17 );
     this._content.setLabel( this._text );
     this._content.setHorizontalChildrenAlign( "center" );
