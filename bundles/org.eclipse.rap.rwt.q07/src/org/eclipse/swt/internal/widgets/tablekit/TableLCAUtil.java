@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,9 @@ public final class TableLCAUtil {
 
   // Constants used by alignment
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
+
+  // extra space needed for image padding and left border
+  private static final int IMAGE_PADDING = 2;
 
 
   ////////////////////////////
@@ -69,16 +72,16 @@ public final class TableLCAUtil {
     return hasItemMetricsChanged( table, itemMetrics );
   }
 
-  public static void writeItemMetrics( final Table table ) 
-    throws IOException 
+  public static void writeItemMetrics( final Table table )
+    throws IOException
   {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     if( hasItemMetricsChanged( table, itemMetrics ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );
       for( int i = 0; i < itemMetrics.length; i++ ) {
-        Object[] args = new Object[] { 
-          new Integer( i ), 
-          new Integer( itemMetrics[ i ].imageLeft ), 
+        Object[] args = new Object[] {
+          new Integer( i ),
+          new Integer( itemMetrics[ i ].imageLeft ),
           new Integer( itemMetrics[ i ].imageWidth ),
           new Integer( itemMetrics[ i ].textLeft ),
           new Integer( itemMetrics[ i ].textWidth )
@@ -87,7 +90,7 @@ public final class TableLCAUtil {
       }
     }
   }
-  
+
   ////////
   // Focus
   
@@ -134,6 +137,9 @@ public final class TableLCAUtil {
         int textLeft = textBounds.x - checkWidth;
         result[ i ].imageLeft = imageLeft;
         result[ i ].imageWidth = imageWidth;
+        if( imageWidth > 0 ) {
+          result[ i ].imageWidth += IMAGE_PADDING;
+        }
         result[ i ].textLeft = textLeft;
         result[ i ].textWidth = textBounds.width;
       }

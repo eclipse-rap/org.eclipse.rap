@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,9 +61,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     TEXT_STYLE_CLOSE : "\"",
     TEXT_CLOSE : ">",
     TEXT_END : "</div>",
-    
+
     // TODO [rh] make border color themeable
-    LINE_BORDER : "border-right:1px solid #eeeeee;",
+    LINE_BORDER : "border-left:1px solid #eeeeee;",
+    PADDING_IMAGE : "padding-left:1px;",
+    PADDING_TEXT : "padding-left:2px;",
 
     TOP : "top:",
     LEFT : "left:",
@@ -204,13 +206,19 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
               = org.eclipse.swt.widgets.TableItem.BACKGROUND 
               + this._backgrounds[ i ] 
               + ";";
-          } 
+          }
         }
+        var isEmpty = this._getIndex() == -1;
+        var columnHasImage = parent.getItemImageWidth( i ) > 0;
+        var showLine = this._parent.getLinesVisible() && i > 0;
+        var showImage = !isEmpty && columnHasImage;
         // Draw image
-        if( this._images && this._images[ i ] ) {
+        if( showImage ) {
           left = parent.getItemImageLeft( i );
           width = parent.getItemImageWidth( i );
-          markup.push( this._getImageMarkup( this._images[ i ], left, width, background ) );
+          var image = this._images == null ? null : this._images[ i ];
+          markup.push( this._getImageMarkup( image, left, width, background, showLine ) );
+          showLine = false;
         }
         // Draw text
         if( this._texts[ i ] !== undefined ) {
@@ -221,75 +229,82 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           if( column ) {
             align = column.getHorizontalChildrenAlign();
           }
-          markup.push( this._getTextMarkup( this._texts[ i ], left, width, align, font, foreground, background ) );
+          markup.push( this._getTextMarkup( this._texts[ i ], left, width, align, font, foreground, background, showLine, showImage ) );
         }
       }
       return markup.join( "" );
     },
-    
-    _getImageMarkup : function( image, left, width, background ) {
+
+    _getImageMarkup : function( image, left, width, background, showLine ) {
       var result = "";
-      if( image != null ) {
+      if( image != null || showLine ) {
         var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
         buffer.length = 0;
         // TODO [rh] replace div/img markup with only a div with a bg-image
         buffer.push( org.eclipse.swt.widgets.TableItem.IMG_START );
         buffer.push( org.eclipse.swt.widgets.TableItem.IMG_STYLE_OPEN );
-          buffer.push( org.eclipse.swt.widgets.TableItem.TOP );
-          buffer.push( "0" ); 
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        if( showLine ) {
+          buffer.push( org.eclipse.swt.widgets.TableItem.LINE_BORDER );
+        }
+        buffer.push( org.eclipse.swt.widgets.TableItem.PADDING_IMAGE );
+        buffer.push( org.eclipse.swt.widgets.TableItem.TOP );
+        buffer.push( "0" ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
         buffer.push( org.eclipse.swt.widgets.TableItem.LEFT );
-          buffer.push( left );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( left );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
         buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH );
-          buffer.push( width );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( width );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
         buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT );
-          buffer.push( this._parent.getItemHeight() );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( this._parent.getItemHeight() );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
         buffer.push( background );
         buffer.push( org.eclipse.swt.widgets.TableItem.IMG_STYLE_CLOSE );
         buffer.push( org.eclipse.swt.widgets.TableItem.IMG_CLOSE );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN );
-        buffer.push( image );
-        buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_CLOSE );
+        if( image != null ) {
+          buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN );
+          buffer.push( image );
+          buffer.push( org.eclipse.swt.widgets.TableItem.IMG_SRC_CLOSE );
+        }
         buffer.push( org.eclipse.swt.widgets.TableItem.IMG_END );
         result = buffer.join( "" );
       }
       return result;
     },
 
-    _getTextMarkup : function( text, left, width, align, font, foreground, background ) {
+    _getTextMarkup : function( text, left, width, align, font, foreground, background, showLine, showImage ) {
       var result;
       if( text == "" ) {
         result = "";
       } else {
-        var border 
-          = this._parent.getLinesVisible() 
-          ? org.eclipse.swt.widgets.TableItem.LINE_BORDER 
-          : "";
         var buffer = org.eclipse.swt.widgets.TableItem.STRING_BUILDER;
         buffer.length = 0;
         buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_OPEN );
         buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_OPEN );
-        buffer.push( org.eclipse.swt.widgets.TableItem.TOP ); 
-          buffer.push( "0" );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        if( showLine ) {
+          buffer.push( org.eclipse.swt.widgets.TableItem.LINE_BORDER );
+        }
+        if( !showImage ) {
+          buffer.push( org.eclipse.swt.widgets.TableItem.PADDING_TEXT );
+        }
+        buffer.push( org.eclipse.swt.widgets.TableItem.TOP );
+        buffer.push( "0" );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
         buffer.push( org.eclipse.swt.widgets.TableItem.LEFT ); 
-          buffer.push( left ); 
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
+        buffer.push( left ); 
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX ); 
         buffer.push( org.eclipse.swt.widgets.TableItem.WIDTH ); 
-          buffer.push( width );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( width );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
         buffer.push( org.eclipse.swt.widgets.TableItem.HEIGHT ); 
-          buffer.push( this._parent.getItemHeight() );
-          buffer.push( org.eclipse.swt.widgets.TableItem.PX );
+        buffer.push( this._parent.getItemHeight() );
+        buffer.push( org.eclipse.swt.widgets.TableItem.PX );
         buffer.push( font );  
         buffer.push( foreground );
         buffer.push( background );
-        buffer.push( border );
         buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_ALIGN ); 
-          buffer.push( align );
+        buffer.push( align );
         buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE );
         buffer.push( org.eclipse.swt.widgets.TableItem.TEXT_CLOSE );
         buffer.push( text );
@@ -298,11 +313,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       }
       return result;
     },
-    
+
     _getIndex : function() {
       // TODO [rh] improve this: don't access internal structures of Table
       return this._parent._items.indexOf( this );
     }
-
   }
 });

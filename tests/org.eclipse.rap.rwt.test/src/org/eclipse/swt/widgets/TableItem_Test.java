@@ -176,7 +176,7 @@ public class TableItem_Test extends TestCase {
     item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
-    assertEquals( 100, bounds.width );
+    assertEquals( 102, bounds.width );
   }
 
   public void testImageBoundsWithColumns() {
@@ -202,7 +202,7 @@ public class TableItem_Test extends TestCase {
     item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
-    assertEquals( 100, bounds.width );
+    assertEquals( 102, bounds.width );
 
     // A column width that is smaller than the images width does not clip the
     // image bounds
@@ -210,7 +210,7 @@ public class TableItem_Test extends TestCase {
     item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
-    assertEquals( 100, bounds.width );
+    assertEquals( 102, bounds.width );
     
     // ImageBounds for item without an image
     column.setWidth( 20 );

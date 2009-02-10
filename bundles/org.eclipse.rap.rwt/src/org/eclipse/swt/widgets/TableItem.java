@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,10 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  */
 public class TableItem extends Item {
 
-  private static final int RIGHT_MARGIN = 2;
   private static final int IMAGE_TEXT_GAP = 2;
-  
+  private static final int CELL_PADDING = 2;
+  static final int IMAGE_PADDING = 2;
+
   private static final class Data {
     String text = "";
     Image image;
@@ -810,7 +811,10 @@ public class TableItem extends Item {
       top = getTop( itemIndex );
       width = getImageWidth( index );
       height = parent.getItemHeight();
-    } 
+    }
+    if( getParent().getLinesVisible() ) {
+      left -= 1; // justify left item border under column header
+    }
     return new Rectangle( left, top, width, height );
   }
 
@@ -833,7 +837,7 @@ public class TableItem extends Item {
     // deprecated and this not implemented, therefore we can safely return 0
     return 0;
   }
-  
+
   /**
    * Returns a rectangle describing the size and location
    * relative to its parent of the text at a column in the
@@ -855,13 +859,15 @@ public class TableItem extends Item {
       error (SWT.ERROR_WIDGET_DISPOSED);
     }
     int left = 0;
-    int top = 0; 
+    int top = 0;
     int width = 0;
     int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
       int imageWidth = 0;
       if( parent.hasColumnImages( 0 ) ) {
-        imageWidth = parent.getItemImageSize().x + getImageGap( 0 );
+        imageWidth = parent.getItemImageSize().x
+                     + IMAGE_PADDING
+                     + getImageGap( 0 );
       }
       left = getCheckWidth( 0 ) + imageWidth;
       top = getTop( itemIndex );
@@ -873,7 +879,7 @@ public class TableItem extends Item {
         int gap = 0;
         int imageWidth = 0;
         if( parent.hasColumnImages( index ) ) {
-          imageWidth = parent.getItemImageSize().x;
+          imageWidth = parent.getItemImageSize().x + IMAGE_PADDING;
           gap = getImageGap( index );
         }
         int columnLeft = parent.getColumn( index ).getLeft();
@@ -884,8 +890,12 @@ public class TableItem extends Item {
           width = 0;
         }
         height = parent.getItemHeight();
-      } 
+      }
     }
+    if( getParent().getLinesVisible() ) {
+      left -= 1; // justify left item border under column header
+    }
+    width -= CELL_PADDING;
     return new Rectangle( left, top, width, height );
   }
 
@@ -897,13 +907,17 @@ public class TableItem extends Item {
   private int getTop( final int itemIndex ) {
     return itemIndex * parent.getItemHeight();
   }
-  
+
   final int getPackWidth( final int index ) {
-    return 
-        getImageWidth( index )
+    int result
+      = TextSizeDetermination.stringExtent( parent.getFont(), getText( index ) ).x
+      + getImageWidth( index )
       + getImageGap( index )
-      + TextSizeDetermination.stringExtent( parent.getFont(), getText( index ) ).x
-      + RIGHT_MARGIN;
+      + CELL_PADDING;
+    if( !parent.hasColumnImages( index ) ) {
+      result += CELL_PADDING;
+    }
+    return result;
   }
   
   final int getCheckWidth( final int index ) {
@@ -918,16 +932,16 @@ public class TableItem extends Item {
     }
     return result;
   }
-  
+
   private int getImageWidth( final int index ) {
     int width = 0;
     Image image = getImage( index );
     if( image != null ) {
-      width = parent.getItemImageSize().x;
+      width = parent.getItemImageSize().x + IMAGE_PADDING;
     }
     return width;
   }
-  
+
   private int getImageGap( final int index ) {
     int result = 0;
     if( parent.hasColumnImages( index ) ) {
