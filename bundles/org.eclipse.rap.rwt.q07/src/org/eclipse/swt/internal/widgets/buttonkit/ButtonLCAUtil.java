@@ -27,7 +27,7 @@ final class ButtonLCAUtil {
   private static final String JS_PROP_SELECTION = "selection";
   private static final String JS_PROP_HORIZONTAL_CHILDREN_ALIGN
     = "horizontalChildrenAlign";
-  
+
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_DEFAULT = "defaultButton";
@@ -40,11 +40,12 @@ final class ButtonLCAUtil {
     // prevent instantiation
   }
 
-  static void readSelection( final Button button ) {
+  static boolean readSelection( final Button button ) {
     String value = WidgetLCAUtil.readPropertyValue( button, PARAM_SELECTION );
     if( value != null ) {
       button.setSelection( Boolean.valueOf( value ).booleanValue() );
     }
+    return value != null;
   }
 
   static void preserveValues( final Button button ) {
@@ -57,7 +58,7 @@ final class ButtonLCAUtil {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
-    adapter.preserve( PROP_DEFAULT, 
+    adapter.preserve( PROP_DEFAULT,
                       Boolean.valueOf( isDefaultButton( button ) ) );
   }
 

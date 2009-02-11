@@ -84,7 +84,6 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
         req.send();
       }
     },

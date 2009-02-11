@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 
@@ -35,8 +36,13 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   void readData( final Button button ) {
-    ButtonLCAUtil.readSelection( button );
-    ControlLCAUtil.processSelection( button, null, true );
+    // [if] The selection event is based on the request "selection" parameter
+    // and not on the selection event, because it is not possible to fire the
+    // same event (Id) from javascript for two widgets (selected and unselected
+    // radio button) at the same time.
+    if( ButtonLCAUtil.readSelection( button ) ) {
+      processSelectionEvent( button );
+    }
     ControlLCAUtil.processMouseEvents( button );
     ControlLCAUtil.processKeyEvents( button );
   }
@@ -81,14 +87,30 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
   }
-  
-  private void writeListener( final Button button ) throws IOException {  
+
+  private void writeListener( final Button button ) throws IOException {
     boolean hasListener = SelectionEvent.hasListener( button );
     Boolean newValue = Boolean.valueOf( hasListener );
     String prop = Props.SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( button );
       writer.set( "hasSelectionListener", newValue );
+    }
+  }
+
+  private void processSelectionEvent( final Button button ) {
+    if( SelectionEvent.hasListener( button ) ) {
+      Rectangle bounds  = WidgetLCAUtil.readBounds( button,
+                                                    button.getBounds() );
+      int type = SelectionEvent.WIDGET_SELECTED;
+      SelectionEvent event = new SelectionEvent( button,
+                                                 null,
+                                                 type,
+                                                 bounds,
+                                                 null,
+                                                 true,
+                                                 SWT.NONE );
+      event.processEvent();
     }
   }
 }

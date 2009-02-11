@@ -25,7 +25,6 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.sliderkit.SliderLCA;
 import org.eclipse.swt.widgets.*;
 
 public class ButtonLCA_Test extends TestCase {
@@ -378,6 +377,52 @@ public class ButtonLCA_Test extends TestCase {
     assertFalse( ButtonLCAUtil.isDefaultButton( button ) );
     shell.setDefaultButton( button );
     assertTrue( ButtonLCAUtil.isDefaultButton( button ) );
+  }
+
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
+  public void testRadioSelectionEvent() {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Button button1 = new Button( shell, SWT.RADIO );
+    button1.setText( "1" );
+    final Button button2 = new Button( shell, SWT.RADIO );
+    button2.setText( "2" );
+    final Button button3 = new Button( shell, SWT.RADIO );
+    button3.setText( "3" );
+    SelectionAdapter listener = new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Button button = ( Button )event.getSource();
+        log.append( button.getText() );
+        log.append( ":" );
+        log.append( button.getSelection() );
+        log.append( "|" );
+      }
+    };
+    button1.addSelectionListener( listener );
+    button2.addSelectionListener( listener );
+    button3.addSelectionListener( listener );
+    String displayId = DisplayUtil.getId( display );
+    String button1Id = WidgetUtil.getId( button1 );
+    String button2Id = WidgetUtil.getId( button2 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertTrue( log.indexOf( "1:true" ) != -1 );
+    assertTrue( log.indexOf( "2:" ) == -1 );
+    assertTrue( log.indexOf( "3:" ) == -1 );
+
+    log.delete( 0, log.length() );
+
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( button1Id + ".selection", "false" );
+    Fixture.fakeRequestParam( button2Id + ".selection", "true" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertTrue( log.indexOf( "1:false" ) != -1 );
+    assertTrue( log.indexOf( "2:true" ) != -1 );
+    assertTrue( log.indexOf( "3:" ) == -1 );
   }
 
   protected void setUp() throws Exception {
