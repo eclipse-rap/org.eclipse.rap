@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     this._header.setLabel( this._text );      
     this.add( this._header );    
     // Chevron image
-    this._chevron = new qx.ui.basic.Atom();
+    this._chevron = new qx.ui.basic.Image;
     this._chevron.setAppearance( "expand-item-chevron-button" );    
     this._chevron.setTop( ( this._headerHeight - this._chevron.getHeight() ) / 2 );
     this._chevron.addEventListener( "click", this._onClick, this ); 

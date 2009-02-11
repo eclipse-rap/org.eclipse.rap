@@ -1926,10 +1926,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.width = 16;
       result.height = 16;
+      result.clipWidth = 16;
       result.clipHeight = 16;
       result.right = 4;
-      result.backgroundImage
-        = tv.getCssImage( "ExpandItem-Button", "background-image" );
+      result.source = tv.getCssImage( "ExpandItem-Button", "background-image" );
       result.cursor = states.disabled ? "default" : "pointer";
       return result;
     }
@@ -1948,6 +1948,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.paddingRight = 24;
       result.backgroundColor
         = tv.getCssColor( "ExpandItem-Header", "background-color" );
+      result.textColor = states.disabled ? "widget.graytext" : "undefined";
       result.cursor = states.disabled ? "default" : "pointer";
       return result;
     }
