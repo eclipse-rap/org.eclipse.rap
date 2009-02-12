@@ -17,9 +17,18 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     this.setTabIndex( 1 );
     this.setAppearance( "browser" );
+    this.addEventListener( "load", this._onLoad, this );
   },
+  
+  destruct : function() {
+    this.removeEventListener( "load", this._onLoad, this );
+  },  
 
   members : {
+    
+    _onLoad : function( evt ) {
+      this.release();
+    },
     
     execute : function( script ) {
       var result = true;
