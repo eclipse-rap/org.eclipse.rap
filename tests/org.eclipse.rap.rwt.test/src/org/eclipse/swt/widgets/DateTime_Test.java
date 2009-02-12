@@ -93,6 +93,28 @@ public class DateTime_Test extends TestCase {
     assertEquals( 0, dateTime.getSeconds() );
   }
 
+  public void testSetDate() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    DateTime dateTime = new DateTime( shell, SWT.NONE );
+
+    dateTime.setDate(1985, 10, 29);
+    assertEquals(29, dateTime.getDay());
+    assertEquals(10, dateTime.getMonth());
+    assertEquals(1985, dateTime.getYear());
+  }
+  
+  public void testSetTime() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    DateTime dateTime = new DateTime( shell, SWT.NONE );
+
+    dateTime.setTime(2, 10, 30);
+    assertEquals(2, dateTime.getHours());
+    assertEquals(10, dateTime.getMinutes());
+    assertEquals(30, dateTime.getSeconds());
+  }
+  
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

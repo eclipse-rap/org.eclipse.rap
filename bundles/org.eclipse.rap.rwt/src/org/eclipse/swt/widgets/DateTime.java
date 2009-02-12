@@ -214,6 +214,7 @@ public class DateTime extends Composite {
    * @see SelectionEvent
    */
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
@@ -236,6 +237,7 @@ public class DateTime extends Composite {
    * @see #addSelectionListener
    */
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
@@ -487,6 +489,55 @@ public class DateTime extends Composite {
     }
   }
 
+  /**
+   * Sets the receiver's year, month, and day in a single operation.
+   * <p>
+   * This is the recommended way to set the date, because setting the year,
+   * month, and day separately may result in invalid intermediate dates.
+   * </p>
+   *
+   * @param year an integer between 1752 and 9999
+   * @param month an integer between 0 and 11
+   * @param day a positive integer beginning with 1
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   * </ul>
+   *
+   * @since 1.2
+   */
+  public void setDate( final int year, final int month, final int day ) {
+    checkWidget();
+    setYear( year );
+    setMonth( month );
+    setDay( day );
+  }
+  
+  /**
+   * Sets the receiver's hours, minutes, and seconds in a single operation.
+   *
+   * @param hours an integer between 0 and 23
+   * @param minutes an integer between 0 and 59
+   * @param seconds an integer between 0 and 59
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   * </ul>
+   *
+   * @since 1.2
+   */
+  public void setTime( final int hours, final int minutes, final int seconds ) {
+    checkWidget();
+    setHours( hours );
+    setMinutes( minutes );
+    setSeconds( seconds );
+  }
+
+  
   /**
    * Sets the font that the receiver will use to paint textual information
    * to the font specified by the argument, or to the default font for that
