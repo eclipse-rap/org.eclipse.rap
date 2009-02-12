@@ -697,13 +697,16 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.1
    */
-  public void sleep() {
+  public boolean sleep() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.sleep();
+    // return true as we cannot reliably determinate what actually caused 
+    // lifeCycle#sleep() to return
+    return true;
   }
 
   /**
-   * Notifies the client side to send an life cycle request as UI thread to
+   * Notifies the client side to send a life cycle request as UI thread to
    * perform UI-updates. Note that this method may be called from any thread.
    *
    * <p>Note that this only works as expected if the 
