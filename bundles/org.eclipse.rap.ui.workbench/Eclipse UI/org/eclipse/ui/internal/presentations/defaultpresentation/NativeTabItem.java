@@ -38,17 +38,15 @@ public class NativeTabItem extends WidgetTabItem {
         if (!Util.equals(widget.getText(), info.name)) {
             widget.setText(info.name);
         }
-        // RAP [bm]: TabItem#setToolTipText
-//        String oldToolTip = Util.safeString(widget.getToolTipText());
-//        
-//        if (!Util.equals(info.toolTip, oldToolTip)) {
-//            String toolTip = info.toolTip;
-//            if (toolTip.length() == 0) {
-//                toolTip = null;
-//            }
-//            widget.setToolTipText(toolTip);
-//        }
-        // RAPEND: [bm] 
+        String oldToolTip = Util.safeString(widget.getToolTipText());
+        
+        if (!Util.equals(info.toolTip, oldToolTip)) {
+            String toolTip = info.toolTip;
+            if (toolTip.length() == 0) {
+                toolTip = null;
+            }
+            widget.setToolTipText(toolTip);
+        }
 
     }    
 }

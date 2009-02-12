@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class TabItem extends Item {
 
   private final TabFolder parent;
   private Control control;
+  private String toolTipText;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -192,6 +193,38 @@ public class TabItem extends Item {
     if (index > -1) {
       super.setImage (image);
     }
+  }
+  
+  /**
+   * Sets the receiver's tool tip text to the argument, which
+   * may be null indicating that no tool tip text should be shown.
+   *
+   * @param string the new tool tip text (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setToolTipText( String string ) {
+    checkWidget();
+    toolTipText = string;
+  }
+  
+  /**
+   * Returns the receiver's tool tip text, or null if it has
+   * not been set.
+   *
+   * @return the receiver's tool tip text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String getToolTipText() {
+    checkWidget();
+    return toolTipText;
   }
   
   ///////////////////////////////////

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ public class TabFolderTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     folder = new TabFolder( parent, getStyle() );
+    folder.setToolTipText( "Tab Folder Tooltip" );
     tabItems = new TabItem[ MAX_ITEMS ];
     folder.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -76,6 +77,7 @@ public class TabFolderTab extends ExampleTab {
     for( int i = 0; i < MAX_ITEMS; i++ ) {
       tabItems[ i ] = new TabItem( folder, SWT.NONE );
       tabItems[ i ].setText( "TabItem " + i );
+      tabItems[ i ].setToolTipText( "Tooltip for TabItem " + i );
       if( !onDemandContent ) {
         createItemContent( tabItems[ i ] );
       }
@@ -116,6 +118,7 @@ public class TabFolderTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         TabItem tabItem = new TabItem( folder, SWT.NONE, 0 );
         tabItem.setText( "TabItem " + folder.indexOf( tabItem ) );
+        tabItem.setToolTipText( "Tooltip for TabItem " + folder.indexOf( tabItem ) );
         if( !onDemandContent ) {
           createItemContent( tabItem );
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellLCA_Test;
 import org.eclipse.swt.internal.widgets.sliderkit.SliderLCA_Test;
 import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerLCA_Test;
 import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderLCA_Test;
+import org.eclipse.swt.internal.widgets.tabitemkit.TabItemLCA_Test;
 import org.eclipse.swt.internal.widgets.tablecolumnkit.TableColumnLCA_Test;
 import org.eclipse.swt.internal.widgets.tableitemkit.TableItemLCA_Test;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA_Test;
@@ -119,6 +120,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ComboLCA_Test.class );
     suite.addTestSuite( ToolItemLCA_Test.class );
     suite.addTestSuite( TabFolderLCA_Test.class );
+    suite.addTestSuite( TabItemLCA_Test.class );
     suite.addTestSuite( ScrolledCompositeLCA_Test.class );
     suite.addTestSuite( BrowserLCA_Test.class );
     suite.addTestSuite( ScaleLCA_Test.class );

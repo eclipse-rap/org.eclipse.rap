@@ -318,8 +318,7 @@ public class NativeStackPresentation extends StackPresentation {
      */
     protected void initTab(TabItem tabItem, IPresentablePart part) {
         tabItem.setText(part.getName());
-        // RAP [bm]: TabItem#setTooltipText
-//        tabItem.setToolTipText(part.getTitleToolTip());
+        tabItem.setToolTipText(part.getTitleToolTip());
 
         Image tabImage = part.getTitleImage();
         if (tabImage != tabItem.getImage()) {

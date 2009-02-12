@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
+    WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( item );
   }
   
@@ -71,6 +72,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     setJSParent( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
     writeSelection( tabItem );
+    WidgetLCAUtil.writeToolTip( tabItem, tabItem.getToolTipText() );
     WidgetLCAUtil.writeCustomVariant( tabItem );
   }
   
