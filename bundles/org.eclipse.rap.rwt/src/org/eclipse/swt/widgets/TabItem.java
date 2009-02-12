@@ -205,10 +205,12 @@ public class TabItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.2
    */
-  public void setToolTipText( String string ) {
+  public void setToolTipText( final String toolTip ) {
     checkWidget();
-    toolTipText = string;
+    toolTipText = toolTip;
   }
   
   /**
@@ -221,6 +223,8 @@ public class TabItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.2
    */
   public String getToolTipText() {
     checkWidget();
