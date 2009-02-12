@@ -1851,7 +1851,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font          : boldFont,
         textAlign     : "center",
-        textColor     : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
+        textColor     : states.disabled 
+                        ? "widget.graytext" 
+                        : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
         verticalAlign : "middle",
         cursor        : "default"
       };
@@ -1873,7 +1875,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       });
       return {
         border          : border,
-        textAlign       : "center"
+        textAlign       : "center",
+        textColor       : states.disabled
+                          ? "widget.graytext"
+                          : "undefined"
       };
     }
   },
@@ -1881,19 +1886,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "calendar-day" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var border = new qx.ui.core.Border( 1, "solid", "red" );
+      var borderColor = "red";
       var result = {
         textAlign       : "center",
-        verticalAlign   : "middle",
-        border          : states.today ? border : "undefined"
+        verticalAlign   : "middle"
       };
+      
       if( states.selected || states.otherMonth ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", 
+                                                 "background-color" );
+      } else if( states.disabled ) {
+        result.textColor = "widget.graytext";        
+        borderColor = "widget.graytext";  
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
       }
+      var border = new qx.ui.core.Border( 1, "solid", borderColor );
+      result.border = states.today ? border : "undefined"
       return result;
     }
   },
