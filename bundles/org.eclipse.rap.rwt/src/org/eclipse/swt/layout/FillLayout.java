@@ -63,8 +63,6 @@ public final class FillLayout extends Layout {
    * that will be placed along the left and right edges of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginWidth = 0;
   
@@ -73,8 +71,6 @@ public final class FillLayout extends Layout {
    * that will be placed along the top and bottom edges of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginHeight = 0;
   
@@ -83,8 +79,6 @@ public final class FillLayout extends Layout {
    * and the edge of its neighbouring cell.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int spacing = 0;
   
@@ -98,7 +92,6 @@ public FillLayout () {
  * Constructs a new instance of this class given the type.
  *
  * @param type the type of fill layout
-   * @since 1.0
  */
 public FillLayout (int type) {
   this.type = type;

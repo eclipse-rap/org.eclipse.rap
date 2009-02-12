@@ -112,8 +112,6 @@ public final class GridData {
    * that will be placed along the top side of the cell.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int verticalIndent = 0;
   
@@ -204,7 +202,6 @@ public final class GridData {
    *
    * The default value is 0.
    *
-   * @since 1.0
    * @see Control#computeSize(int, int, boolean)
    * @see GridData#widthHint
    */
@@ -219,7 +216,6 @@ public final class GridData {
    *
    * The default value is 0.
    *
-   * @since 1.0
    * @see Control#computeSize(int, int, boolean)
    * @see GridData#heightHint
    */
@@ -233,8 +229,6 @@ public final class GridData {
    * position of the control will be computed and assigned.
    * 
    * The default value is <code>false</code>.
-   * 
-   * @since 1.0
    */
   public boolean exclude = false;
   
@@ -430,8 +424,6 @@ public GridData (int style) {
  *    one of: SWT.BEGINNING (or SWT.TOP), SWT.CENTER, SWT.END (or SWT.BOTTOM), or SWT.FILL
  * @param grabExcessHorizontalSpace whether cell will be made wide enough to fit the remaining horizontal space
  * @param grabExcessVerticalSpace whether cell will be made high enough to fit the remaining vertical space
- * 
- * @since 1.0
  */
 public GridData (int horizontalAlignment, int verticalAlignment, boolean grabExcessHorizontalSpace, boolean grabExcessVerticalSpace) {
   this (horizontalAlignment, verticalAlignment, grabExcessHorizontalSpace, grabExcessVerticalSpace, 1, 1);
@@ -448,8 +440,6 @@ public GridData (int horizontalAlignment, int verticalAlignment, boolean grabExc
  * @param grabExcessVerticalSpace whether cell will be made high enough to fit the remaining vertical space
  * @param horizontalSpan the number of column cells that the control will take up
  * @param verticalSpan the number of row cells that the control will take up
- * 
- * @since 1.0
  */
 public GridData (int horizontalAlignment, int verticalAlignment, boolean grabExcessHorizontalSpace, boolean grabExcessVerticalSpace, int horizontalSpan, int verticalSpan) {
   super ();
@@ -468,8 +458,6 @@ public GridData (int horizontalAlignment, int verticalAlignment, boolean grabExc
  * 
  * @param width a minimum width for the column
  * @param height a minimum height for the row
- * 
- * @since 1.0
  */
 public GridData (int width, int height) {
   super ();

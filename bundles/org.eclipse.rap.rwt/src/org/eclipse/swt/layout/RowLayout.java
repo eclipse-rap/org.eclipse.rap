@@ -68,8 +68,6 @@ public final class RowLayout extends Layout {
    *    <li>HORIZONTAL: Position the controls horizontally from left to right</li>
    *    <li>VERTICAL: Position the controls vertically from top to bottom</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public int type = SWT.HORIZONTAL;
   
@@ -78,8 +76,6 @@ public final class RowLayout extends Layout {
    * that will be placed along the left and right edges of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginWidth = 0;
   
@@ -88,8 +84,6 @@ public final class RowLayout extends Layout {
    * that will be placed along the top and bottom edges of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginHeight = 0;
 
@@ -126,8 +120,6 @@ public final class RowLayout extends Layout {
    * width for vertical layouts.
    *
    * The default value is false.
-   * 
-   * @since 1.0
    */
   public boolean fill = false;
 
@@ -192,8 +184,6 @@ public RowLayout () {
  * Constructs a new instance of this class given the type.
  *
  * @param type the type of row layout
- * 
- * @since 1.0
  */
 public RowLayout (int type) {
   this.type = type;

@@ -85,8 +85,6 @@ public final class GridLayout extends Layout {
    * that will be placed along the left edge of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginLeft = 0;
 
@@ -95,8 +93,6 @@ public final class GridLayout extends Layout {
    * that will be placed along the top edge of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginTop = 0;
 
@@ -105,8 +101,6 @@ public final class GridLayout extends Layout {
    * that will be placed along the right edge of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginRight = 0;
 
@@ -115,8 +109,6 @@ public final class GridLayout extends Layout {
    * that will be placed along the bottom edge of the layout.
    *
    * The default value is 0.
-   * 
-   * @since 1.0
    */
   public int marginBottom = 0;
 
@@ -151,8 +143,6 @@ public GridLayout () {}
  *
  * @param numColumns the number of columns in the grid
  * @param makeColumnsEqualWidth whether or not the columns will have equal width
- * 
- * @since 1.0
  */
 public GridLayout (int numColumns, boolean makeColumnsEqualWidth) {
   this.numColumns = numColumns;
