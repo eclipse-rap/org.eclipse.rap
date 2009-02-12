@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal.branding;
+package org.eclipse.rap.ui.internal.branding;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +19,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
+import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.servlet.HttpServiceTracker;
 import org.osgi.framework.Bundle;
 
 public final class BrandingExtension {

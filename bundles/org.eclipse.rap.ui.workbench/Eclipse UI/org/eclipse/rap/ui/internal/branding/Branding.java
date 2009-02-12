@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal.branding;
+package org.eclipse.rap.ui.internal.branding;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +17,10 @@ import java.util.*;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
+import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.ui.internal.servlet.EntryPointExtension;
 
 public final class Branding extends AbstractBranding {
 

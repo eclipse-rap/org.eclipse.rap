@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal.servlet;
+package org.eclipse.rap.ui.internal.servlet;
 
 import java.util.*;
 

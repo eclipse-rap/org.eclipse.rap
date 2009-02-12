@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal.servlet;
+package org.eclipse.rap.ui.internal.servlet;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -244,7 +244,6 @@ final class EngineConfigWrapper implements IEngineConfig {
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
         ResourceLoader resLoader = new ResourceLoader() {
-
           public InputStream getResourceAsStream( final String resourceName )
             throws IOException
           {
