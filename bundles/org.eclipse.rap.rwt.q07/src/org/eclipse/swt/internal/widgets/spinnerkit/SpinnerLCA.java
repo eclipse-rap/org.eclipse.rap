@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Widget;
 
@@ -32,6 +31,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
+  static final String PROP_SELECTION_LISTENER = "selectionListener";
 
   public void preserveValues( final Widget widget ) {
     Spinner spinner = ( Spinner )widget;
@@ -45,6 +45,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                       new Integer( spinner.getPageIncrement() ) );
     adapter.preserve( PROP_MODIFY_LISTENER,
                       Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
+    adapter.preserve( PROP_SELECTION_LISTENER,
+                      Boolean.valueOf( SelectionEvent.hasListener( spinner ) ) );
     WidgetLCAUtil.preserveCustomVariant( spinner );
   }
 
@@ -58,6 +60,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     if( value != null ) {
       spinner.setSelection( Integer.parseInt( value ) );
     }
+    ControlLCAUtil.processSelection( widget, null, false );
     ControlLCAUtil.processMouseEvents( spinner );
     ControlLCAUtil.processKeyEvents( spinner );
   }
@@ -76,6 +79,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( spinner );
     writeValues( spinner );
     writeModifyListener( spinner );
+    writeSelectionListener( spinner );
     WidgetLCAUtil.writeCustomVariant( spinner );
   }
 
@@ -163,12 +167,20 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   private static void writeModifyListener( final Spinner spinner )
     throws IOException
   {
-    if( ( spinner.getStyle() & SWT.READ_ONLY ) == 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( spinner );
-      String prop = PROP_MODIFY_LISTENER;
-      Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( spinner ) );
-      Boolean defValue = Boolean.FALSE;
-      writer.set( prop, "hasModifyListener", newValue, defValue );
-    }
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    String prop = PROP_MODIFY_LISTENER;
+    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( spinner ) );
+    Boolean defValue = Boolean.FALSE;
+    writer.set( prop, "hasModifyListener", newValue, defValue );
+  }
+
+  private static void writeSelectionListener( final Spinner spinner )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    String prop = PROP_SELECTION_LISTENER;
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( spinner ) );
+    Boolean defValue = Boolean.FALSE;
+    writer.set( prop, "hasSelectionListener", newValue, defValue );
   }
 }

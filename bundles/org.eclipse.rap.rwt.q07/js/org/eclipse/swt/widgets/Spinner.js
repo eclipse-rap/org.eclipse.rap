@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
   extend : qx.ui.form.Spinner,
 
@@ -26,10 +26,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     rap_init : function() {
       this._isModified = false;
       this._hasModifyListener = false;
+      this._hasSelectionListener = false;
       this.setWrap( false );
       this.getManager().addEventListener( "change", this._onChangeValue, this );
       this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.addEventListener( "blur", this._onChangeValue, this );
+      this._textfield.addEventListener( "keydown", this._onKeyDown, this );
       this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     },
     
@@ -37,6 +39,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this.getManager().removeEventListener( "change", this._onChangeValue, this );
       this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.removeEventListener( "blur", this._onChangeValue, this );
+      this._textfield.removeEventListener( "keydown", this._onKeyDown, this );
       this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     },
     
@@ -60,17 +63,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     setTabIndex : function( value ) {
       this._textfield.setTabIndex( value );
     },
-    
+
     setHasModifyListener : function( value ) {
       this._hasModifyListener = value;      
     },
-    
+
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;      
+    },
+
     _onChangeValue : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend && !this._isModified ) {
         this._isModified = true;
         var req = org.eclipse.swt.Request.getInstance();
         req.addEventListener( "send", this._onSend, this );
-        if( this._hasModifyListener ) {
+        if( this._hasSelectionListener ) {
+          this._addModifyTextEvent();
+          this._sendWidgetSelected();
+        } else if( this._hasModifyListener ) {
           this._addModifyTextEvent();
           qx.client.Timer.once( this._sendModifyText, this, 500 );
         }
@@ -85,11 +95,42 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._downbutton.setEnabled( enabled && this.getValue() > this.getMin() );
     },
 
+    _onKeyDown : function( event ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        if(    event.getKeyIdentifier() == "Enter"
+            && !event.isShiftPressed()
+            && !event.isAltPressed()
+            && !event.isCtrlPressed()
+            && !event.isMetaPressed()
+            && this._hasSelectionListener )
+        {
+          event.stopPropagation();
+          this._sendWidgetDefaultSelected();
+        }
+      }
+    },
+
     _addModifyTextEvent : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.modifyText", id );
+    },
+
+    _sendWidgetSelected : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+      req.send();
+    },
+
+    _sendWidgetDefaultSelected : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      req.send();
     },
 
     _onSend : function( evt ) {

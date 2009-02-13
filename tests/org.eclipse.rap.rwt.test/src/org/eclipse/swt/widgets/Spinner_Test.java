@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -16,8 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -102,7 +100,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( 10, spinner.getPageIncrement() );
   }
 
-  public void testModifyEvent() {
+  public void testModifyAndSelectionEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
@@ -112,6 +110,13 @@ public class Spinner_Test extends TestCase {
       public void modifyText( final ModifyEvent event ) {
         assertSame( spinner, event.getSource() );
         log.append( "modifyEvent" );
+      }
+    } );
+    // Changing the selection programmatically never triggers a selection event
+    spinner.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        assertSame( spinner, event.getSource() );
+        log.append( "selectionEvent" );
       }
     } );
     // Changing the selection causes a modifyEvent
@@ -128,7 +133,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( "modifyEvent", log.toString() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -148,7 +153,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( expected, spinner.computeSize( 100, 100 ) );
   }
 
-  public void testComputeTrim() throws Exception {
+  public void testComputeTrim() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

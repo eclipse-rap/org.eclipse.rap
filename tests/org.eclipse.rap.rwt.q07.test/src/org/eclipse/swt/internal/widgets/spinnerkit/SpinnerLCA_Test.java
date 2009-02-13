@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import junit.framework.TestCase;
@@ -27,6 +26,7 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+
 
 public class SpinnerLCA_Test extends TestCase {
 
@@ -47,10 +47,13 @@ public class SpinnerLCA_Test extends TestCase {
     Object increment = adapter.getPreserved( SpinnerLCA.PROP_INCREMENT );
     assertEquals( new Integer( 1 ), increment );
     Object pageIncrement
-     = adapter.getPreserved( SpinnerLCA.PROP_PAGE_INCREMENT );
+      = adapter.getPreserved( SpinnerLCA.PROP_PAGE_INCREMENT );
     assertEquals( new Integer( 10 ), pageIncrement );
     hasListeners
-     = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
+      = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
+    assertEquals( Boolean.FALSE, hasListeners );
+    hasListeners
+      = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     spinner.setSelection( 5 );
@@ -63,6 +66,7 @@ public class SpinnerLCA_Test extends TestCase {
       public void modifyText( final ModifyEvent event ) {
       }
     } );
+    spinner.addSelectionListener( new SelectionAdapter() {} );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     selection = adapter.getPreserved( Props.SELECTION_INDICES );
@@ -76,7 +80,10 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), increment );
     assertEquals( new Integer( 9 ), pageIncrement );
     hasListeners
-     = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
+      = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
+    hasListeners
+      = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
     // control: enabled
@@ -225,8 +232,8 @@ public class SpinnerLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
   }
-  
-  public void testModifyEvent() {
+
+  public void testModifyAndSelectionEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -236,26 +243,45 @@ public class SpinnerLCA_Test extends TestCase {
     String spinnerId = WidgetUtil.getId( spinner );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( spinnerId + ".selection", "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( "", log.toString() );
     log.setLength( 0 );
     spinner.addModifyListener( new ModifyListener() {
 
       public void modifyText( final ModifyEvent event ) {
         assertEquals( spinner, event.getSource() );
-        log.append( "modifyText" );
+        log.append( ".modifyText" );
+      }
+    } );
+    spinner.addSelectionListener( new SelectionListener() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        assertEquals( spinner, event.getSource() );
+        log.append( ".widgetSelected" );
+      }
+
+      public void widgetDefaultSelected( final SelectionEvent event ) {
+        assertEquals( spinner, event.getSource() );
+        log.append( ".widgetDefaultSelected" );
       }
     } );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "2" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
-    RWTFixture.executeLifeCycleFromServerThread( );
-    assertEquals( "modifyText", log.toString() );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( ".modifyText.widgetSelected", log.toString() );
+    log.setLength( 0 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( ".widgetDefaultSelected", log.toString() );
   }
-  
+
   protected void setUp() {
     RWTFixture.setUp();
   }

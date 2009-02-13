@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,16 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
+
 
 /**
  * Instances of this class are selectable user interface
@@ -37,7 +36,6 @@ import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
  * @since 1.0
  */
 // TODO cut/copy/past not implemented
-// TODO SelectionListener: widgetSelected is fired whenever the value changes
 public class Spinner extends Composite {
 
   private static final int UP_DOWN_MIN_HEIGHT = 18;
@@ -440,6 +438,67 @@ public class Spinner extends Composite {
     ModifyEvent.removeListener( this, listener );
   }
 
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the control is selected by the user, by sending
+   * it one of the messages defined in the <code>SelectionListener</code>
+   * interface.
+   * <p>
+   * <code>widgetSelected</code> is not called for texts.
+   * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed in a single-line text.
+   * </p>
+   *
+   * @param listener the listener which should be notified when the control is selected by the user
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #removeSelectionListener
+   * @see SelectionEvent
+   * 
+   * @since 1.2
+   */
+  public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    SelectionEvent.addListener( this, listener );
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the control is selected by the user.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #addSelectionListener
+   *
+   * @since 1.2
+   */
+  public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    SelectionEvent.addListener( this, listener );
+  }
+  
   //////////////////
   // Helping methods
 
