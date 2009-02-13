@@ -483,7 +483,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       
       var year = this.getShownYear();      
       var month = org.eclipse.swt.widgets.Calendar.MONTH_NAMES[ this.getShownMonth() ];
-      this._monthYearLabel.setText( month + ", " + year );
+      this._monthYearLabel.setText( month + " " + year );
 
       // Show the day names
       var firstDayOfWeek = helpDate.getDay();
