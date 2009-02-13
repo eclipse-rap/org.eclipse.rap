@@ -64,6 +64,7 @@ public interface IWidgetAdapter {
    * Notifies the receiver that the given <code>widget</code> has beend 
    * disposed of.
    * @param widget the widget that has been disposed of
+   * @since 1.2
    */
   void markDisposed( Widget widget );
 }
