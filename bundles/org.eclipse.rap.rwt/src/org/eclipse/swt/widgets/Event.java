@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Rectangle;
  * 
  * @see Listener
  * @see org.eclipse.swt.events.TypedEvent
+ * @since 1.0
  */
 public class Event {
 
