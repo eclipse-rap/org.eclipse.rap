@@ -386,6 +386,42 @@ public class Display_Test extends TestCase {
     assertEquals( "w1", DisplayUtil.getId( Display.getCurrent() ) );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
+  
+  public void testSetData() {
+    Display display = new Display();
+    display.setData( new Integer( 10 ) );
+    Integer i = ( Integer )display.getData();
+    assertNotNull( i );
+    assertTrue( i.equals( new Integer( 10 ) ) );
+  }
+  
+  public void testSetDataKey() throws Exception {
+    Display display = new Display();
+    display.setData( "Integer", new Integer( 10 ) );
+    display.setData( "String", "xyz" );
+    Integer i = ( Integer )display.getData( "Integer" );
+    assertNotNull( i );
+    assertTrue( i.equals( new Integer( 10 ) ) );
+    String s = ( String )display.getData( "String" );
+    assertNotNull( s );
+    assertTrue( s.equals( "xyz" ) );
+    display.setData( "Integer", null );
+    Object result = display.getData( "Integer" );
+    assertNull( result );
+    try {
+      display.setData( null, "no" );
+      fail( "should throw IllegalArgumentException ");
+    } catch ( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      display.getData( null );
+      fail( "should throw IllegalArgumentException ");
+    } catch ( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

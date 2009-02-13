@@ -169,6 +169,11 @@ public class Display extends Device implements Adaptable {
   private Control focusControl;
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
+  
+  /* Display Data */
+  private Object data;
+  private String [] keys;
+  private Object [] values;
 
   /**
    * Constructs a new instance of this class.
@@ -1055,6 +1060,189 @@ public class Display extends Device implements Adaptable {
    */
   void error( int code ) {
     SWT.error( code );
+  }
+
+  ///////////////
+  // Data methods
+
+  /**
+   * Returns the application defined, display specific data
+   * associated with the receiver, or null if it has not been
+   * set. The <em>display specific data</em> is a single,
+   * unnamed field that is stored with every display.
+   * <p>
+   * Applications may put arbitrary objects in this field. If
+   * the object stored in the display specific data needs to
+   * be notified when the display is disposed of, it is the
+   * application's responsibility to provide a
+   * <code>disposeExec()</code> handler which does so.
+   * </p>
+   *
+   * @return the display specific data
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #setData(Object)
+   * @see #disposeExec(Runnable)
+   * 
+   * @since 1.2
+   */
+  public Object getData() {
+    checkDevice();
+    return data;
+  }
+  
+  /**
+   * Sets the application defined, display specific data
+   * associated with the receiver, to the argument.
+   * The <em>display specific data</em> is a single,
+   * unnamed field that is stored with every display. 
+   * <p>
+   * Applications may put arbitrary objects in this field. If
+   * the object stored in the display specific data needs to
+   * be notified when the display is disposed of, it is the
+   * application's responsibility provide a
+   * <code>disposeExec()</code> handler which does so.
+   * </p>
+   *
+   * @param data the new display specific data
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #getData()
+   * @see #disposeExec(Runnable)
+   * 
+   * @since 1.2
+   */
+  public void setData( final Object data ) {
+    checkDevice ();
+    this.data = data;
+  }
+
+  /**
+   * Sets the application defined property of the receiver
+   * with the specified name to the given argument.
+   * <p>
+   * Applications may have associated arbitrary objects with the
+   * receiver in this fashion. If the objects stored in the
+   * properties need to be notified when the display is disposed
+   * of, it is the application's responsibility provide a
+   * <code>disposeExec()</code> handler which does so.
+   * </p>
+   *
+   * @param key the name of the property
+   * @param value the new value for the property
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the key is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #getData(String)
+   * @see #disposeExec(Runnable)
+   * 
+   * @since 1.2
+   */
+  // XXX [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
+  public void setData( final String key, final Object value ) {
+    checkDevice ();
+    if (key == null) error (SWT.ERROR_NULL_ARGUMENT);
+
+    /* Remove the key/value pair */
+    if (value == null) {
+      if (keys == null) return;
+      int index = 0;
+      while (index < keys.length && !keys [index].equals (key)) index++;
+      if (index == keys.length) return;
+      if (keys.length == 1) {
+        keys = null;
+        values = null;
+      } else {
+        String [] newKeys = new String [keys.length - 1];
+        Object [] newValues = new Object [values.length - 1];
+        System.arraycopy (keys, 0, newKeys, 0, index);
+        System.arraycopy (keys, index + 1, newKeys, index, newKeys.length - index);
+        System.arraycopy (values, 0, newValues, 0, index);
+        System.arraycopy (values, index + 1, newValues, index, newValues.length - index);
+        keys = newKeys;
+        values = newValues;
+      }
+      return;
+    }
+    
+    /* Add the key/value pair */
+    if (keys == null) {
+      keys = new String [] {key};
+      values = new Object [] {value};
+      return;
+    }
+    for (int i=0; i<keys.length; i++) {
+      if (keys [i].equals (key)) {
+        values [i] = value;
+        return;
+      }
+    }
+    String [] newKeys = new String [keys.length + 1];
+    Object [] newValues = new Object [values.length + 1];
+    System.arraycopy (keys, 0, newKeys, 0, keys.length);
+    System.arraycopy (values, 0, newValues, 0, values.length);
+    newKeys [keys.length] = key;
+    newValues [values.length] = value;
+    keys = newKeys;
+    values = newValues;
+  }
+
+  /**
+   * Returns the application defined property of the receiver
+   * with the specified name, or null if it has not been set.
+   * <p>
+   * Applications may have associated arbitrary objects with the
+   * receiver in this fashion. If the objects stored in the
+   * properties need to be notified when the display is disposed
+   * of, it is the application's responsibility to provide a
+   * <code>disposeExec()</code> handler which does so.
+   * </p>
+   *
+   * @param key the name of the property
+   * @return the value of the property or null if it has not been set
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the key is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #setData(String, Object)
+   * @see #disposeExec(Runnable)
+   * 
+   * @since 1.2
+   */
+  // XXX [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
+  public Object getData( final String key ) {
+    checkDevice ();
+    if( key == null ) {
+      error (SWT.ERROR_NULL_ARGUMENT);
+    }
+    if (keys == null) return null;
+    for (int i=0; i<keys.length; i++) {
+      if (keys [i].equals (key)) return values [i];
+    }
+    return null;
   }
   
   //////////////////
