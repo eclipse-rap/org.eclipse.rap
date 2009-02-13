@@ -34,12 +34,13 @@ public class SelectionEvent_Test extends TestCase {
   }
 
   public void testButtonAddRemoveListener() {
-    Display display = new Display();
+    final Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         assertSame( button, event.getSource() );
+        assertSame( display, event.display );
         assertNull( event.item );
         assertEquals( 10, event.x );
         assertEquals( 20, event.y );
