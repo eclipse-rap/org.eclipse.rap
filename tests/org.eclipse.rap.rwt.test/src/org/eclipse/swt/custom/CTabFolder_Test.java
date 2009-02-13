@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import java.util.Arrays;
@@ -30,7 +29,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testInitialValues() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
 
     assertEquals( false, folder.getMRUVisible() );
@@ -48,7 +47,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testHierarchy() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( 0, folder.getItemCount() );
     assertTrue( Arrays.equals( new CTabItem[ 0 ], folder.getItems() ) );
@@ -76,7 +75,7 @@ public class CTabFolder_Test extends TestCase {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer  log = new StringBuffer();
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
     folder1.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -104,7 +103,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testStyle() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
     assertEquals( SWT.TOP | SWT.MULTI | SWT.LEFT_TO_RIGHT, folder1.getStyle() );
     assertEquals( SWT.TOP, folder1.getTabPosition() );
@@ -135,7 +134,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testSelectionIndex() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
 
     // Test folder without items: initial value must be -1 / null
@@ -182,7 +181,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testSelectionWithControl() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
     folder.setSize( 100, 200 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -211,7 +210,7 @@ public class CTabFolder_Test extends TestCase {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     final CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     final CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
@@ -235,7 +234,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testMinimizeMaximize() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     // Test initial state
     assertEquals( false, folder.getMinimized() );
@@ -264,7 +263,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testMinMaxVisible() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     // test getter/setter
     folder.setMinimizeVisible( false );
@@ -276,7 +275,7 @@ public class CTabFolder_Test extends TestCase {
   public void testResize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setMinimizeVisible( true );
     folder.setMaximizeVisible( true );
@@ -298,7 +297,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testLayout() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( CTabFolderLayout.class, folder.getLayout().getClass() );
 
@@ -308,7 +307,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testTabHeight() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     // Test initial value
     assertTrue( folder.getTabHeight() > 0 );
@@ -326,7 +325,7 @@ public class CTabFolder_Test extends TestCase {
 
   public void testTopRight() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     ToolBar toolBar = new ToolBar( folder, SWT.NONE );
     // Test initial value
@@ -433,7 +432,7 @@ public class CTabFolder_Test extends TestCase {
   public void testComputeTrim() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Rectangle expected = new Rectangle( -2, -18, 4, 20 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
@@ -460,7 +459,7 @@ public class CTabFolder_Test extends TestCase {
   public void testClientArea() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -488,7 +487,7 @@ public class CTabFolder_Test extends TestCase {
   public void testComputeSize() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( new Point( 0, 0 ), folder.getSize() );
     Point expected = new Point( 7, 84 );
@@ -516,6 +515,21 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( trimExpected, folder.computeTrim( 0, 0, 0, 0 ) );
     expected = new Point( 304, 323 );
     assertEquals( expected, folder.computeSize( 300, 300 ) );
+  }
+  
+  public void testGetItem() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item1 = new CTabItem( folder, SWT.NONE );
+    item1.setText( "abc" );
+    
+    assertNull( folder.getItem( new Point( 1000, 80 ) ) );
+    assertNull( folder.getItem( new Point( 10, 7 ) ) );
+
+    folder.setSize( 800, 800 );
+    assertSame( item1, folder.getItem( new Point( 10, 7 ) ) );
   }
 
   protected void setUp() throws Exception {

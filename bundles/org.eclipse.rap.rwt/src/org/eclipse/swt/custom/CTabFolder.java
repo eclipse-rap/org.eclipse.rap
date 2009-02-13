@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -211,7 +210,7 @@ public class CTabFolder extends Composite {
    */
   public CTabItem[] getItems() {
     checkWidget();
-    return (org.eclipse.swt.custom.CTabItem[] )itemHolder.getItems();
+    return ( CTabItem[] )itemHolder.getItems();
   }
 
   /**
@@ -231,6 +230,36 @@ public class CTabFolder extends Composite {
   public CTabItem getItem( final int index ) {
     checkWidget();
     return ( CTabItem )itemHolder.getItem( index );
+  }
+
+  /**
+   * Gets the item at a point in the widget.
+   *
+   * @param pt the point in coordinates relative to the CTabFolder
+   * @return the item at a point or null
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   * @since 1.2
+   */
+  public CTabItem getItem( final Point pt ) {
+    // checkWidget();
+    CTabItem result = null;
+    Point size = getSize();
+    boolean onChevron = showChevron && chevronRect.contains( pt );
+    int itemCount = itemHolder.size();
+    if( itemCount > 0 && size.x > borderLeft + borderRight && !onChevron ) {
+      CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+      for( int i = 0; result == null && i < priority.length; i++ ) {
+        CTabItem item = items[ priority[ i ] ];
+        Rectangle rect = item.getBounds();
+        if( rect.contains( pt ) )
+          result = item;
+      }
+    }
+    return result ;
   }
 
   /**
