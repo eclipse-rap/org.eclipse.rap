@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 
-final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class DropDownToolItemLCA extends ToolItemDelegateLCA {
 
   private static final String DROP_DOWN_SUFFIX = "_dropDown";
 
@@ -42,6 +41,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    ToolItemLCAUtil.preserveImage( toolItem );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
@@ -74,7 +74,8 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ItemLCAUtil.writeChanges( toolItem );
+    ItemLCAUtil.writeText( toolItem, false );
+    ToolItemLCAUtil.writeImage( toolItem );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned

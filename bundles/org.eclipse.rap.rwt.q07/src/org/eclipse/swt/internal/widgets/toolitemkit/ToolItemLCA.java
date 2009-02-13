@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
@@ -22,15 +21,15 @@ import org.eclipse.swt.widgets.Widget;
 public final class ToolItemLCA extends AbstractWidgetLCA {
   
   private final static ToolItemDelegateLCA PUSH
-    = new PushToolItemDelegateLCA();
+    = new PushToolItemLCA();
   private final static ToolItemDelegateLCA CHECK
-    = new CheckToolItemDelegateLCA();
+    = new CheckToolItemLCA();
   private final static ToolItemDelegateLCA RADIO
-    = new RadioToolItemDelegateLCA();
+    = new RadioToolItemLCA();
   private final static ToolItemDelegateLCA SEPERATOR
-    = new SeparatorToolItemDelegateLCA();
+    = new SeparatorToolItemLCA();
   private final static ToolItemDelegateLCA DROP_DOWN
-    = new DropDownToolItemDelegateLCA();
+    = new DropDownToolItemLCA();
   
   public void preserveValues( final Widget widget ) {
     getLCADelegate( widget ).preserveValues( ( ToolItem )widget );

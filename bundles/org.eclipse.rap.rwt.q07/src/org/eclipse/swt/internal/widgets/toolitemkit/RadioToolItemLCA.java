@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 
-final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class RadioToolItemLCA extends ToolItemDelegateLCA {
 
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
   private static final String CREATE_RADIO
@@ -38,6 +37,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    ToolItemLCAUtil.preserveImage( toolItem );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
@@ -82,7 +82,8 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ItemLCAUtil.writeChanges( toolItem );
+    ItemLCAUtil.writeText( toolItem, false );
+    ToolItemLCAUtil.writeImage( toolItem );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );

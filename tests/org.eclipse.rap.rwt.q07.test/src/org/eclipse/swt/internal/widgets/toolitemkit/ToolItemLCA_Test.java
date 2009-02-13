@@ -18,13 +18,15 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Ie6;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -159,19 +161,42 @@ public class ToolItemLCA_Test extends TestCase {
   public void testReadData() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
-    ToolBar tb = new ToolBar( shell, SWT.FLAT );
-    final ToolItem item = new ToolItem( tb, SWT.CHECK );
+    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     String itemId = WidgetUtil.getId( item );
     // read changed selection
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
     Fixture.fakeRequestParam( itemId + ".selection", "true" );
     WidgetUtil.getLCA( item ).readData( item );
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
-    // XXX: is there a way to clear the request params?
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
     Fixture.fakeRequestParam( itemId + ".selection", "false" );
     WidgetUtil.getLCA( item ).readData( item );
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );
+  }
+  
+  public void testGetImage() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( toolBar, SWT.CHECK );
+    
+    Image enabledImage = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image disabledImage = Graphics.getImage( RWTFixture.IMAGE2 );
+    assertNull( ToolItemLCAUtil.getImage( item ) );
+    
+    item.setImage( enabledImage );
+    assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
+
+    item.setImage( enabledImage );
+    item.setDisabledImage( disabledImage );
+    assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
+    
+    item.setEnabled( false );
+    assertSame( disabledImage, ToolItemLCAUtil.getImage( item ) );
+    
+    item.setDisabledImage( null );
+    assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
   }
 
   protected void setUp() throws Exception {
@@ -201,18 +226,15 @@ public class ToolItemLCA_Test extends TestCase {
     };
     item.addSelectionListener( selectionListener );
     item.setText( "some text" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     item.setEnabled( false );
     item.setToolTipText( "tooltip text" );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
     if( ( item.getStyle() & SWT.SEPARATOR ) == 0 ) {
       assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-      assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ),
-                    adapter.getPreserved( Props.IMAGE ) );
     }
+    assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( "tooltip text", adapter.getPreserved( Props.TOOLTIP ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
   }

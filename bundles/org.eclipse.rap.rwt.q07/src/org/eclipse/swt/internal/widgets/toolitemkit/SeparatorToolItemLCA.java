@@ -20,7 +20,7 @@ import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
-final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
 
   private static final String PROP_CONTROL = "control";
   

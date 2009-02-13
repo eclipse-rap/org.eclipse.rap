@@ -21,13 +21,15 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.ToolItem;
 
 
-final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class CheckToolItemLCA extends ToolItemDelegateLCA {
 
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
   private static final String WIDGET_SELECTED
     = "org.eclipse.swt.ToolItemUtil.checkSelected";
   private static final String CREATE_CHECK
     = "org.eclipse.swt.ToolItemUtil.createCheck";
+  
+  private static final String PROP_SELECTION = "selection";
 
   private final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
@@ -36,8 +38,9 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    ToolItemLCAUtil.preserveImage( toolItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
-    adapter.preserve( "selection",
+    adapter.preserve( PROP_SELECTION,
                       Boolean.valueOf( toolItem.getSelection() ) );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
@@ -65,7 +68,8 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ItemLCAUtil.writeChanges( toolItem );
+    ItemLCAUtil.writeText( toolItem, false );
+    ToolItemLCAUtil.writeImage( toolItem );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned
@@ -84,12 +88,12 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 
-  void writeSelection( final ToolItem toolItem, final boolean selection )
+  static void writeSelection( final ToolItem toolItem, final boolean selection )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     Boolean newValue = Boolean.valueOf( selection );
     Boolean defValue = Boolean.FALSE;
-    writer.set( "selection", "checked", newValue, defValue );
+    writer.set( PROP_SELECTION, "checked", newValue, defValue );
   }
 }

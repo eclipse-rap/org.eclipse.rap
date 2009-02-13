@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,15 +51,9 @@ public class ToolItem extends Item {
   private Control control;
   private int width;
   private String toolTipText;
-  private boolean visible = true;
-  
-  private IToolItemAdapter toolitemAdapter = new IToolItemAdapter() {
-
-    public boolean getVisible() {
-      return ToolItem.this.visible;
-    }
-
-  };
+  private boolean visible;
+  private Image disabledImage;
+  private final IToolItemAdapter toolItemAdapter;
  
 
   /**
@@ -139,8 +133,14 @@ public class ToolItem extends Item {
   public ToolItem( final ToolBar parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
+    visible = true;
     ItemHolder.insertItem( parent, this, index );
     computeInitialWidth();
+    toolItemAdapter = new IToolItemAdapter() {
+      public boolean getVisible() {
+        return ToolItem.this.visible;
+      }
+    };  
   }
 
   /**
@@ -199,15 +199,54 @@ public class ToolItem extends Item {
   public void setImage( final Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
-      // TODO [rh] uncomment or remove when decided whether isDisposed will
-      //      be 'implemented'
-//      if( image != null && image.isDisposed() ) {
-//        error( SWT.ERROR_INVALID_ARGUMENT );
-//      }
       super.setImage( image );
     } 
   }
   
+  /**
+   * Sets the receiver's disabled image to the argument, which may be
+   * null indicating that no disabled image should be displayed.
+   * <p>
+   * The disabled image is displayed when the receiver is disabled.
+   * </p>
+   *
+   * @param image the disabled image to display on the receiver (may be null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setDisabledImage( final Image image ) {
+    checkWidget();
+    if( ( style & SWT.SEPARATOR ) == 0 ) {
+      disabledImage = image;
+    } 
+  }
+
+  /**
+   * Returns the receiver's disabled image if it has one, or null
+   * if it does not.
+   * <p>
+   * The disabled image is displayed when the receiver is disabled.
+   * </p>
+   *
+   * @return the receiver's disabled image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.2
+   */
+  public Image getDisabledImage() {
+    checkWidget();
+    return disabledImage;
+  }
+
   /**
    * Sets the control that is used to fill the bounds of
    * the item when the item is a <code>SEPARATOR</code>.
@@ -388,7 +427,7 @@ public class ToolItem extends Item {
 
     int height = DEFAULT_HEIGHT;
     if( !"".equals( getText() ) ) {
-      int charHeight = TextSizeDetermination.getCharHeight( parent.getFont()  );
+      int charHeight = TextSizeDetermination.getCharHeight( parent.getFont() );
       height = Math.max( DEFAULT_HEIGHT, charHeight );
       if( getImage() != null ) {
         height = Math.max( height, getImage().getBounds().y );
@@ -573,7 +612,7 @@ public class ToolItem extends Item {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if ( adapter == IToolItemAdapter.class ) {
-      result = toolitemAdapter;
+      result = toolItemAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
