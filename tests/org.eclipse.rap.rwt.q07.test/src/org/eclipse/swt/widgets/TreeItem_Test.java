@@ -501,7 +501,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
   }
 
-  public void testGetBounds() {
+  public void testGetBoundsEmptyItem() {
     final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -514,7 +514,7 @@ public class TreeItem_Test extends TestCase {
     assertTrue( treeItem.getBounds().width > 0 );
   }
 
-  public void testGetBoundsI() {
+  public void testGetBoundsWithoutColumns() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -586,7 +586,7 @@ public class TreeItem_Test extends TestCase {
                                                       imageBounds.height ) );
   }
 
-  public void testGetBoundsII() {
+  public void testGetBoundsSubsequentRootItems() {
     final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -605,7 +605,7 @@ public class TreeItem_Test extends TestCase {
                                            + subItem.getBounds().height );
   }
 
-  public void testGetBoundsIII() throws Exception {
+  public void testGetBoundsWithScrolling() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -626,7 +626,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, rootItem3.getBounds().y );
   }
 
-  public void testGetBoundsIV() {
+  public void testGetBoundsWithColumns() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
