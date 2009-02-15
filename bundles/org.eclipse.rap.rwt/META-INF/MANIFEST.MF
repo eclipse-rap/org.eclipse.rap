@@ -52,7 +52,7 @@ Export-Package: org.apache.batik.css.parser;x-internal:=true,
    org.eclipse.rap.ui.workbench,
    org.eclipse.rap.w4t,
    org.eclipse.rap.ui",
- org.eclipse.rwt.internal.theme,
+ org.eclipse.rwt.internal.theme;x-friends:="org.eclipse.rap.ui.workbench",
  org.eclipse.rwt.internal.theme.css;x-internal:=true,
  org.eclipse.rwt.internal.util;
   x-friends:="org.eclipse.rap.w4t,
