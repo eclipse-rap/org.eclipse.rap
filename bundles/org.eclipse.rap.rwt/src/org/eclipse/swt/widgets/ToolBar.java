@@ -42,6 +42,9 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  */
 public class ToolBar extends Composite {
 
+  private static final int DEFAULT_TOOLBAR_WIDTH = 24;
+  private static final int DEFAULT_TOOLBAR_HEIGHT = 22;
+  
   private final ItemHolder itemHolder = new ItemHolder( ToolItem.class );
 
   /**
@@ -210,10 +213,10 @@ public class ToolBar extends Composite {
       width += itemBounds.width;
     }
     if( width == 0 ) {
-      width = DEFAULT_WIDTH;
+      width = DEFAULT_TOOLBAR_WIDTH;
     }
     if( height == 0 ) {
-      height = DEFAULT_HEIGHT;
+      height = DEFAULT_TOOLBAR_HEIGHT;
     }
     if( wHint != SWT.DEFAULT ) {
       width = wHint;
