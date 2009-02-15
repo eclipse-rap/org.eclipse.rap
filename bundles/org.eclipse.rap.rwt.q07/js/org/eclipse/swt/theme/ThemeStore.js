@@ -80,72 +80,83 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       return this._values;
     },
 
-    /**
-     * Adds a value to the values container.
-     */
-    setValue : function( type, key, value ) {
-      if( type == "dimension" ) {
-        this._values.dimensions[ key ] = value;
-      } else if ( type == "boxdim" ) {
-        this._values.boxdims[ key ] = value;
-      } else if ( type == "boolean" ) {
-        this._values.booleans[ key ] = value;
-      } else if ( type == "image" ) {
-        this._values.images[ key ] = value;
-      } else if ( type == "font" ) {
-        var font = new qx.ui.core.Font();
-        font.setSize( value.size );
-        font.setFamily( value.family );
-        font.setBold( value.bold );
-        font.setItalic( value.italic );
-        this._values.fonts[ key ] = font;
-      } else if ( type == "color" ) {
-        this._values.colors[ key ] = value;
-      } else if ( type == "border" ) {
-        var border = new qx.ui.core.Border( value.width, value.style );
-        if( value.color ) {
-          border.setUserData( "color", value.color );
-        }
-        if( value.innerColor ) {
-          border.setUserData( "innerColor", value.innerColor );
-        }
-        this._values.borders[ key ] = border;
-      } else {
-        this.error( "invalid type: " + type );
-      }
-    },
-
-    resolveBorderColors : function() {
-      for( var key in this._values.borders ) {
-        var border = this._values.borders[ key ];
-        var colorData = border.getUserData( "color" );
-        if( colorData != null ) {
-          var colors = [];
-          for( var i = 0; i < colorData.length; i++ ) {
-            if( colorData[ i ].charAt( 0 ) == "#" ) {
-              colors.push( colorData[ i ] );
-            } else {
-              colors.push( this._values.colors[ colorData[ i ] ] );
+    defineValues : function( values ) {
+      for( var type in this._values ) {
+        if( type in values ) {
+          for( key in values[ type ] ) {
+            if( !( key in this._values[ type ] ) ) {
+              this._values[ type ][ key ] = values[ type ][ key ];
             }
           }
-          border.setColor( colors );
-          border.setUserData( "color", null );
         }
-        var innerColorData = border.getUserData( "innerColor" );
-        if( innerColorData != null ) {
-          var innerColors = [];
-          for( var i = 0; i < innerColorData.length; i++ ) {
-            innerColors.push( this._values.colors[ innerColorData[ i ] ] );
-          }
-          border.setInnerColor( innerColors );
-          border.setUserData( "innerColor", null );
+      }
+      this._resolveFonts();
+      this._resolveBorders();
+    },
+
+    _resolveFonts : function() {
+      for( var key in this._values.fonts ) {
+        var value = this._values.fonts[ key ];
+        // TODO [rst] remove this check when values are rendered only once
+        if( !( value instanceof qx.ui.core.Font ) ) {
+          var font = new qx.ui.core.Font();
+          font.setSize( value.size );
+          font.setFamily( value.family );
+          font.setBold( value.bold );
+          font.setItalic( value.italic );
+          this._values.fonts[ key ] = font;
         }
       }
     },
 
-    // TODO [rst] Replace with a generic "init" method
+    _resolveBorders : function() {
+      for( var key in this._values.borders ) {
+        var value = this._values.borders[ key ];
+        // TODO [rst] remove this check when values are rendered only once
+        if( !( value instanceof qx.ui.core.Border ) && typeof( value ) != "string" ) {
+          var border = null;
+          if( value.color == null ) {
+            if( value.width == 1 ) {
+              if( value.style == "outset" ) {
+                border = "thinOutset";
+              } else if( value.style == "inset" ) {
+                border = "thinInset";
+              }
+            } else if( value.width == 2 ) {
+              if( value.style == "outset" ) {
+                border = "outset";
+              } else if( value.style == "inset" ) {
+                border = "inset";
+              } else if( value.style == "ridge" ) {
+                border = "ridget";
+              } else if( value.style == "groove" ) {
+                border = "groove";
+              }
+            }
+          }
+          if( border == null ) {
+            border = new qx.ui.core.Border( value.width, value.style );
+            if( value.color ) {
+              border.setColor( value.color );
+            }
+          }
+          this._values.borders[ key ] = border;
+        }
+      }
+    },
+
+    setThemeCssValues : function( theme, values, isDefault ) {
+      if( this._cssValues[ theme ] === undefined ) {
+        this._cssValues[ theme ] = values;
+      }
+      if( isDefault ) {
+        this.defaultTheme = theme;
+      }
+      this._fillColors( theme );
+    },
+
     // Fills qx color theme with some named colors necessary for BordersBase
-    fillColors : function( theme ) {
+    _fillColors : function( theme ) {
       var ct = qx.Theme.getByName( theme + "Colors" );
       ct.colors[ "widget.darkshadow" ]
         = this._getColor( "Display", {}, "rwt-darkshadow-color", theme );
@@ -173,17 +184,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     _getColor : function( element, states, property, theme ) {
       var vkey = this.getCssValue( element, states, property, theme );
       return this._values.colors[ vkey ];
-    },
-
-    // CSS SUPPORT
-
-    setThemeCssValues : function( theme, values, isDefault ) {
-      if( this._cssValues[ theme ] === undefined ) {
-        this._cssValues[ theme ] = values;
-      }
-      if( isDefault ) {
-        this.defaultTheme = theme;
-      }
     },
 
     getCssValue : function( element, states, property, theme ) {

@@ -173,7 +173,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ThemeDefinitionReader_Test.class );
     suite.addTestSuite( QxColor_Test.class );
     suite.addTestSuite( QxBorder_Test.class );
-    suite.addTestSuite( QxBorderUtil_Test.class );
     suite.addTestSuite( QxBoolean_Test.class );
     suite.addTestSuite( QxDimension_Test.class );
     suite.addTestSuite( QxBoxDimensions_Test.class );

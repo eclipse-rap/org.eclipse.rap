@@ -77,25 +77,7 @@ public final class Theme {
   }
 
   public static String createCssKey( final QxType value ) {
-    char typePrefix;
-    if( value instanceof QxBoolean ) {
-      typePrefix = 'L';
-    } else if( value instanceof QxBorder ) {
-      typePrefix = 'B';
-    } else if( value instanceof QxBoxDimensions ) {
-      typePrefix = 'X';
-    } else if( value instanceof QxColor ) {
-      typePrefix = 'C';
-    } else if( value instanceof QxDimension ) {
-      typePrefix = 'D';
-    } else if( value instanceof QxFont ) {
-      typePrefix = 'F';
-    } else if( value instanceof QxImage ) {
-      typePrefix = 'I';
-    } else {
-      throw new IllegalArgumentException( "unsupported qx type" );
-    }
-    return "_" + typePrefix + Integer.toHexString( value.hashCode() );
+    return Integer.toHexString( value.hashCode() );
   }
 
   private void checkName( final String name ) {

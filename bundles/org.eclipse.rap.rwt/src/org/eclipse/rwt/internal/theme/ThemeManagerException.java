@@ -16,6 +16,10 @@ public final class ThemeManagerException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
+  public ThemeManagerException( final String message ) {
+    super( message );
+  }
+
   public ThemeManagerException( final String message, final Throwable cause ) {
     super( message, cause );
   }

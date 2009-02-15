@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
@@ -609,15 +608,12 @@ public final class ThemeManager {
         registerNonThemeableWidgetImages( themeId );
         registerThemeableWidgetImages( themeId );
         StringBuffer sb = new StringBuffer();
-        sb.append( createQxTheme( theme, QxTheme.COLOR ) );
-        sb.append( createQxTheme( theme, QxTheme.BORDER ) );
-        sb.append( createQxTheme( theme, QxTheme.FONT ) );
-        sb.append( createQxTheme( theme, QxTheme.ICON ) );
-        sb.append( createQxTheme( theme, QxTheme.WIDGET ) );
-        sb.append( createQxTheme( theme, QxTheme.APPEARANCE ) );
-        sb.append( createQxTheme( theme, QxTheme.META ) );
-        sb.append( createThemeStore( theme ) );
-        sb.append( createThemeStoreCss( theme ) );
+        sb.append( createQxThemes( theme ) );
+        // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
+        IThemeCssElement[] elements = registeredCssElements.getAllElements();
+        ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
+        storeWriter.addTheme( theme, theme == predefinedTheme );
+        sb.append( storeWriter.createJs() );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
@@ -738,6 +734,18 @@ public final class ThemeManager {
     responseWriter.useJSLibrary( name );
   }
 
+  private String createQxThemes( final Theme theme ) {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( createQxTheme( theme, QxTheme.COLOR ) );
+    buffer.append( createQxTheme( theme, QxTheme.BORDER ) );
+    buffer.append( createQxTheme( theme, QxTheme.FONT ) );
+    buffer.append( createQxTheme( theme, QxTheme.ICON ) );
+    buffer.append( createQxTheme( theme, QxTheme.WIDGET ) );
+    buffer.append( createQxTheme( theme, QxTheme.APPEARANCE ) );
+    buffer.append( createQxTheme( theme, QxTheme.META ) );
+    return buffer.toString();
+  }
+
   private String createQxTheme( final Theme theme, final int type ) {
     String jsId = theme.getJsId();
     String base = null;
@@ -764,129 +772,6 @@ public final class ThemeManager {
       qxTheme.appendTheme( "appearance", jsId + "Appearances" );
     }
     return qxTheme.getJsCode();
-  }
-
-  private String createThemeStore( final Theme theme ) {
-    StringBuffer sb = new StringBuffer();
-    QxType[] values = theme.getValues();
-    sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
-    for( int i = 0; i < values.length; i++ ) {
-      QxType value = values[ i ];
-      String key = Theme.createCssKey( value );
-      String type = null;
-      JsonValue jsValue = null;
-      if( value instanceof QxDimension ) {
-        QxDimension dim = ( QxDimension )value;
-        type = "dimension";
-        jsValue = JsonValue.valueOf( dim.value );
-      } else if( value instanceof QxBoxDimensions ) {
-        QxBoxDimensions boxdim = ( QxBoxDimensions )value;
-        JsonArray boxArray = new JsonArray();
-        boxArray.append( boxdim.top );
-        boxArray.append( boxdim.right );
-        boxArray.append( boxdim.bottom );
-        boxArray.append( boxdim.left );
-        type = "boxdim";
-        jsValue = boxArray;
-      } else if( value instanceof QxBoolean ) {
-        QxBoolean bool = ( QxBoolean )value;
-        type = "boolean";
-        jsValue = JsonValue.valueOf( bool.value );
-      } else if( value instanceof QxImage ) {
-        QxImage image = ( QxImage )value;
-        type = "image";
-        if( image.none ) {
-          jsValue = JsonValue.NULL;
-        } else {
-          jsValue = JsonValue.valueOf( key );
-        }
-      } else if( value instanceof QxColor ) {
-        QxColor color = ( QxColor )value;
-        type = "color";
-        if( color.transparent ) {
-          jsValue = JsonValue.valueOf( "undefined" );
-        } else {
-          jsValue = JsonValue.valueOf( QxColor.toHtmlString( color.red,
-                                                             color.green,
-                                                             color.blue ) );
-        }
-      } else if( value instanceof QxFont && true ) {
-        QxFont font = ( QxFont )value;
-        JsonObject fontObject = new JsonObject();
-        fontObject.append( "family", JsonArray.valueOf( font.family ) );
-        fontObject.append( "size", font.size );
-        fontObject.append( "bold", font.bold );
-        fontObject.append( "italic", font.italic );
-        type = "font";
-        jsValue = fontObject;
-      } else if( value instanceof QxBorder && true ) {
-        QxBorder border = ( QxBorder )value;
-        JsonObject borderObject = new JsonObject();
-        borderObject.append( "width", border.width );
-        String style = QxBorderUtil.getQxStyle( border );
-        if( style != null ) {
-          borderObject.append( "style", style );
-        }
-        JsonArray colors = QxBorderUtil.getColors( border, theme );
-        if( colors != null ) {
-          borderObject.append( "color", colors );
-        }
-        JsonArray innerColors = QxBorderUtil.getInnerColors( border, theme );
-        if( innerColors != null ) {
-          borderObject.append( "innerColor", innerColors );
-        }
-        type = "border";
-        jsValue = borderObject;
-      }
-      if( type != null ) {
-        String pattern = "ts.setValue( \"{0}\", \"{1}\", {2} );\n";
-        Object[] arguments = new Object[] { type, key, jsValue.toString() };
-        sb.append( MessageFormat.format( pattern, arguments ) );
-      }
-    }
-    sb.append( "ts.resolveBorderColors();\n" );
-    sb.append( "delete ts;\n" );
-    return sb.toString();
-  }
-
-  private String createThemeStoreCss( final Theme theme ) {
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
-    IThemeCssElement[] elements = registeredCssElements.getAllElements();
-    JsonObject mainObject = new JsonObject();
-    for( int i = 0; i < elements.length; i++ ) {
-      IThemeCssElement element = elements[ i ];
-      String elementName = element.getName();
-      JsonObject elementObj = new JsonObject();
-      IThemeCssProperty[] properties = element.getProperties();
-      for( int j = 0; j < properties.length; j++ ) {
-        IThemeCssProperty property = properties[ j ];
-        JsonArray valuesArray = new JsonArray();
-        String propertyName = property.getName();
-        ConditionalValue[] values
-          = valuesMap.getValues( elementName, propertyName );
-        for( int k = 0; k < values.length; k++ ) {
-          ConditionalValue conditionalValue = values[ k ];
-          JsonArray array = new JsonArray();
-          array.append( JsonArray.valueOf( conditionalValue.constraints ) );
-          array.append( Theme.createCssKey( conditionalValue.value ) );
-          valuesArray.append( array );
-        }
-        elementObj.append( property.getName(), valuesArray );
-      }
-      mainObject.append( elementName, elementObj );
-    }
-    StringBuffer sb = new StringBuffer();
-    sb.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
-    sb.append( "ts.setThemeCssValues( " );
-    sb.append( JsonValue.quoteString( theme.getJsId() ) );
-    sb.append( ", " );
-    sb.append( mainObject.toString() );
-    sb.append( ", " );
-    sb.append( theme == predefinedTheme );
-    sb.append( " );\n" );
-    sb.append( "ts.fillColors( \"" + theme.getJsId() + "\" );\n" );
-    sb.append( "delete ts;\n" );
-    return sb.toString();
   }
 
   /**
