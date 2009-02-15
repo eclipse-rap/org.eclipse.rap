@@ -87,6 +87,6 @@ public final class WidgetMatcher implements ValueSelector {
   private static boolean hasVariant( final Widget widget, final String variant )
   {
     String actualVariant = WidgetUtil.getVariant( widget );
-    return actualVariant != null && variant.equals( variant );
+    return actualVariant != null && actualVariant.equals( variant );
   }
 }

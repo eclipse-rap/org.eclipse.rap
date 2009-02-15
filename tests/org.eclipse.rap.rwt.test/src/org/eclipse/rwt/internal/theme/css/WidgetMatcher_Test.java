@@ -53,25 +53,29 @@ public class WidgetMatcher_Test extends TestCase {
     Shell shell = new Shell( display );
     Widget button1 = new Button( shell, SWT.PUSH );
 
-    QxType value0 = matcher.select( values, button1 );
-    assertNull( value0 );
+    QxType result = matcher.select( values, button1 );
+    assertNull( result );
 
     Button button2 = new Button( shell, SWT.PUSH | SWT.BORDER );
-    QxType result1 = matcher.select( values, button2 );
-    assertNotNull( result1 );
-    assertEquals( value1.value, result1 );
+    result = matcher.select( values, button2 );
+    assertNotNull( result );
+    assertEquals( value1.value, result );
 
     button2.setEnabled( false );
     button2.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
-    QxType result2 = matcher.select( values, button2 );
-    assertNotNull( result2 );
-    assertEquals( value2.value, result2 );
+    result = matcher.select( values, button2 );
+    assertNotNull( result );
+    assertEquals( value2.value, result );
 
     Button button3 = new Button( shell, SWT.PUSH );
     button3.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
-    QxType result3 = matcher.select( values, button3 );
-    assertNotNull( result3 );
-    assertEquals( value3.value, result3 );
+    result = matcher.select( values, button3 );
+    assertNotNull( result );
+    assertEquals( value3.value, result );
+
+    button3.setData( WidgetUtil.CUSTOM_VARIANT, "other" );
+    result = matcher.select( values, button3 );
+    assertNull( result );
   }
 
   protected void setUp() throws Exception {
