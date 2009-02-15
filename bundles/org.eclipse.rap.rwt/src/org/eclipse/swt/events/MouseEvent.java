@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,8 @@ public final class MouseEvent extends TypedEvent {
    * NOTE: This field is an unsigned integer and should
    * be AND'ed with 0xFFFFFFFFL so that it can be treated
    * as a signed long.
+   * 
+   * @since 1.2
    */ 
   public int time;
 
@@ -98,6 +100,8 @@ public final class MouseEvent extends TypedEvent {
    * information in the given untyped event.
    *
    * @param event the untyped event containing the information
+   * 
+   * @since 1.2
    */
   public MouseEvent( final Event event ) {
     this( event.widget, event.type );
@@ -113,6 +117,8 @@ public final class MouseEvent extends TypedEvent {
    * within the packages provided by RWT. It should never be accessed 
    * from application code.
    * </p>
+   * 
+   * @since 1.2
    */
   public MouseEvent( final Widget source, final int id ) {
     super( source, id );
