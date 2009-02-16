@@ -1726,6 +1726,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "*", "font" );
       result.textColor = tv.getCssColor( "*", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.padding = 1;
       return result;
     }
   },
@@ -1738,6 +1739,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "*", "font" );
       result.textColor = tv.getCssColor( "*", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.padding = 1;
       return result;
     }
   },
@@ -1758,9 +1760,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
+        cursor    : "default",
         textAlign : "center",
-        padding   : [2, 3],
-        border    : null
+        padding   : [ 2, 3 ]
       };
       if( states.disabled ) {
         result.textColor = "widget.graytext";
@@ -1781,7 +1783,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
     style : function( states ) {
       var result = {
-        paddingTop : 3
+        cursor     : "default",
+        paddingTop : 2
       };
       return result;
     }
@@ -1885,26 +1888,24 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "calendar-day" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var borderColor = "red";
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );      
       var result = {
         textAlign       : "center",
         verticalAlign   : "middle"
-      };
-      
+      };      
       if( states.selected || states.otherMonth ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", 
+        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
                                                  "background-color" );
       } else if( states.disabled ) {
-        result.textColor = "widget.graytext";        
-        borderColor = "widget.graytext";  
+        result.textColor = "widget.graytext";
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
-      }
+      }      
+      var borderColor = states.disabled ? "widget.graytext" : "red";
       var border = new qx.ui.core.Border( 1, "solid", borderColor );
-      result.border = states.today ? border : "undefined"
+      result.border = states.today ? border : "undefined";
       return result;
     }
   },

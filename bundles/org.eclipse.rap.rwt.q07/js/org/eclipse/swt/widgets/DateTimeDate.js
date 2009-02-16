@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,171 +12,142 @@
 qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function( style, monthNames, weekdayNames, 
-                        dateSeparator, datePattern ) {
+  construct : function( style,
+                        monthNames,
+                        weekdayNames,
+                        dateSeparator,
+                        datePattern )
+  {
     this.base( arguments );
     this.setAppearance( "datetime-date" );
-    
+    this.setTabIndex( 1 );
+
     // Get styles
     this._short = qx.lang.String.contains( style, "short" );
     this._medium = qx.lang.String.contains( style, "medium" );
     this._long = qx.lang.String.contains( style, "long" );
-    
+
     // Has selection listener
     this._hasSelectionListener = false;
-    
+
     // Flag that indicates that the next request can be sent
     this._readyToSendChanges = true;
-    
+
     // Get names of weekdays and months
     this._weekday = weekdayNames;
     this._monthname = monthNames;
-        
+
     // Date pattern
     this._datePattern = datePattern;
-    
+
     // Add listener for font change
     this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
-    
+
+    this.addEventListener( "keypress", this._onKeyPress, this );
+    this.addEventListener( "keyup", this._onKeyUp, this );
+    this.addEventListener( "contextmenu", this._onContextMenu, this );
+    this.addEventListener( "focus", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onFocusOut, this );
+
     // Focused text field
-    this._focusedTextField = null;    
+    this._focusedTextField = null;
     // Weekday
-    this._weekdayTextField = new qx.ui.form.TextField;
+    this._weekdayTextField = new qx.ui.basic.Label;
     this._weekdayTextField.setAppearance( "datetime-field" );
-    this._weekdayTextField.set({  
-      selectable: false,
-      readOnly: true
-    });
     if( this._long ) {
-      this.add( this._weekdayTextField ); 
+      this.add( this._weekdayTextField );
     }
-    this._weekdayTextField.addEventListener( "keypress", this._onKeyPress, this );
-    this._weekdayTextField.addEventListener( "contextmenu", this._onContextMenu, this );
     // Separator
     this._separator0 = new qx.ui.basic.Label(",");
     this._separator0.setAppearance( "datetime-separator" );
-    this._separator0.addEventListener( "contextmenu", this._onContextMenu, this );
     if( this._long ) {
       this.add(this._separator0);
-    }    
-    // Month       
-    this._monthTextField = new qx.ui.form.TextField;
+    }
+    // Month
+    this._monthTextField = new qx.ui.basic.Label;
     this._monthTextField.setAppearance( "datetime-field" );
-    this._monthTextField.set({        
-      textAlign: this._medium ? "right" : "center",
-      selectable: false,
-      readOnly: true
+    this._monthTextField.set({
+      textAlign: this._medium ? "right" : "center"
     });
-    // Integer value of the month 
+    // Integer value of the month
     this._monthInt = 1;
     if( this._medium ) {
-      this._monthTextField.setValue( this._monthInt );
-    } else {   
-      this._monthTextField.setValue( this._monthname[ this._monthInt - 1 ] );
+      this._monthTextField.setText( "1" );
+    } else {
+      this._monthTextField.setText( this._monthname[ this._monthInt - 1 ] );
     }
-    this._monthTextField.addEventListener( "click",  this._onClick, this ); 
-    this._monthTextField.addEventListener( "keypress", this._onKeyPress, this );
-    this._monthTextField.addEventListener( "keyup", this._onKeyUp, this ); 
-    this._monthTextField.addEventListener( "contextmenu", this._onContextMenu, this );
+    this._monthTextField.addEventListener( "mousedown",  this._onMouseDown, this );
     this.add( this._monthTextField );
-    // Separator 
+    // Separator
     this._separator1 = new qx.ui.basic.Label( dateSeparator );
-    this._separator1.setAppearance( "datetime-separator" );    
-    this._separator1.addEventListener( "contextmenu", this._onContextMenu, this );
+    this._separator1.setAppearance( "datetime-separator" );
     if( this._medium ) {
       this.add(this._separator1);
-    }   
-    // Date     
-    this._dayTextField = new qx.ui.form.TextField;
+    }
+    // Date
+    this._dayTextField = new qx.ui.basic.Label( "1" );
     this._dayTextField.setAppearance( "datetime-field" );
+    this._dayTextField.setUserData( "maxLength", 2 );
     this._dayTextField.set({
-      maxLength: 2,
-      textAlign: "right",
-      selectable: false,
-      readOnly: true
+      textAlign: "right"
     });
-    this._dayTextField.setValue( 1 );
-    this._dayTextField.addEventListener( "click",  this._onClick, this );
-    this._dayTextField.addEventListener( "keypress", this._onKeyPress, this );
-    this._dayTextField.addEventListener( "keyup", this._onKeyUp, this );  
-    this._dayTextField.addEventListener( "contextmenu", this._onContextMenu, this );  
+    this._dayTextField.addEventListener( "mousedown",  this._onMouseDown, this );
     if( !this._short ) {
       this.add( this._dayTextField );
     }
     // Separator
     this._separator2 = new qx.ui.basic.Label( "," );
-    this._separator2.setAppearance( "datetime-separator" );    
+    this._separator2.setAppearance( "datetime-separator" );
     if( this._medium ) {
       this._separator2.setText( dateSeparator );
     }
-    this._separator2.addEventListener( "contextmenu", this._onContextMenu, this );  
-    this.add(this._separator2);     
-    // Year    
-    this._yearTextField = new qx.ui.form.TextField;
+    this.add(this._separator2);
+    // Year
+    this._yearTextField = new qx.ui.basic.Label( "1970" );
     this._yearTextField.setAppearance( "datetime-field" );
-    this._yearTextField.set({        
-      maxLength: 4,
-      textAlign: "right",
-      selectable: false,
-      readOnly: true
-    }); 
+    this._yearTextField.setUserData( "maxLength", 4 );
+    this._yearTextField.set({
+      textAlign: "right"
+    });
     // Last valid year
     this._lastValidYear = 1970;
-    this._yearTextField.setValue( this._lastValidYear );
-    this._yearTextField.addEventListener( "click",  this._onClick, this );
-    this._yearTextField.addEventListener( "focusout",  this._onFocusOut, this );
-    this._yearTextField.addEventListener( "keypress", this._onKeyPress, this );
-    this._yearTextField.addEventListener( "keyup", this._onKeyUp, this ); 
-    this._yearTextField.addEventListener( "contextmenu", this._onContextMenu, this );  
-    this.add( this._yearTextField ); 
-    // Spinner 
+    this._yearTextField.addEventListener( "mousedown",  this._onMouseDown, this );
+    this.add( this._yearTextField );
+    // Spinner
     this._spinner = new qx.ui.form.Spinner;
     this._spinner.set({
       wrap: true,
       border: null,
       backgroundColor: null
     });
-    this._spinner.setMin( 1 ); 
-    this._spinner.setMax( 12 );        
+    this._spinner.setMin( 1 );
+    this._spinner.setMax( 12 );
     this._spinner.setValue( this._monthInt );
     this._spinner.addEventListener( "change",  this._onSpinnerChange, this );
-    this._spinner.addEventListener( "mousedown",  this._onSpinnerMouseDown, this );
-    this._spinner.addEventListener( "mouseup",  this._onSpinnerMouseUp, this ); 
-    this._spinner.addEventListener( "keypress", this._onKeyPress, this );
-    this._spinner.addEventListener( "keyup", this._onKeyUp, this );
+    this._spinner._textfield.setTabIndex( -1 );
+    // Hack to prevent the spinner text field to request the focus
+    this._spinner._textfield.setFocused = function() {};
+    this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
+    this._spinner.removeEventListener("keydown", this._spinner._onkeydown, this._spinner);
+    this._spinner.removeEventListener("keyup", this._spinner._onkeyup, this._spinner);
     this.add( this._spinner );
     // Set the default focused text field
-    this._focusedTextField = this._monthTextField;  
+    this._focusedTextField = this._monthTextField;
     // Set the weekday
     this._setWeekday();
-      
   },
 
   destruct : function() {
     this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
-    this._weekdayTextField.removeEventListener( "keypress", this._onKeyPress, this );
-    this._weekdayTextField.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this._monthTextField.removeEventListener( "click",  this._onClick, this ); 
-    this._monthTextField.removeEventListener( "keypress", this._onKeyPress, this );
-    this._monthTextField.removeEventListener( "keyup", this._onKeyUp, this );
-    this._monthTextField.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this._dayTextField.removeEventListener( "click",  this._onClick, this );
-    this._dayTextField.removeEventListener( "keypress", this._onKeyPress, this );
-    this._dayTextField.removeEventListener( "keyup", this._onKeyUp, this );
-    this._dayTextField.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this._yearTextField.removeEventListener( "click",  this._onClick, this );
-    this._yearTextField.removeEventListener( "focusout",  this._onFocusOut, this );
-    this._yearTextField.removeEventListener( "keypress", this._onKeyPress, this );
-    this._yearTextField.removeEventListener( "keyup", this._onKeyUp, this );
-    this._yearTextField.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this._spinner.removeEventListener( "change",  this._onSpinnerChange, this ); 
-    this._spinner.removeEventListener( "mousedown",  this._onSpinnerMouseDown, this ); 
-    this._spinner.removeEventListener( "mouseup",  this._onSpinnerMouseUp, this ); 
-    this._spinner.removeEventListener( "keypress", this._onKeyPress, this );
-    this._spinner.removeEventListener( "keyup", this._onKeyUp, this ); 
-    this._separator0.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this._separator1.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this._separator2.removeEventListener( "contextmenu", this._onContextMenu, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
+    this.removeEventListener( "keyup", this._onKeyUp, this );
+    this.removeEventListener( "contextmenu", this._onContextMenu, this );
+    this.removeEventListener( "focus", this._onFocusIn, this );
+    this.removeEventListener( "blur", this._onFocusOut, this );
+    this._monthTextField.removeEventListener( "mousedown",  this._onMouseDown, this );
+    this._dayTextField.removeEventListener( "mousedown",  this._onMouseDown, this );
+    this._yearTextField.removeEventListener( "mousedown",  this._onMouseDown, this );
+    this._spinner.removeEventListener( "change",  this._onSpinnerChange, this );
     this._disposeObjects( "_weekdayTextField",
                           "_monthTextField",
                           "_dayTextField",
@@ -197,16 +168,16 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     MONTH_DATE_SEPARATOR : 5,
     DATE_YEAR_SEPARATOR : 6,
     SPINNER : 7,
-    
+
     _isNoModifierPressed : function( evt ) {
-      return    !evt.isCtrlPressed() 
-             && !evt.isShiftPressed() 
-             && !evt.isAltPressed() 
-             && !evt.isMetaPressed();      
+      return    !evt.isCtrlPressed()
+             && !evt.isShiftPressed()
+             && !evt.isAltPressed()
+             && !evt.isMetaPressed();
     }
   },
 
-  members : {    
+  members : {
     _rwt_onChangeFont : function( evt ) {
       var value = evt.getValue();
       this._weekdayTextField.setFont( value );
@@ -214,9 +185,9 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this._monthTextField.setFont( value );
       this._yearTextField.setFont( value );
     },
-    
-    _onContextMenu : function( evt ) {     
-      var menu = this.getContextMenu();      
+
+    _onContextMenu : function( evt ) {
+      var menu = this.getContextMenu();
       if( menu != null ) {
         menu.setLocation( evt.getPageX(), evt.getPageY() );
         menu.setOpener( this );
@@ -224,26 +195,42 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         evt.stopPropagation();
       }
     },
-    
-    _onClick : function( evt ) {           
+
+    _onFocusIn : function( evt ) {
+      qx.client.Timer.once( function() {
+        this._focusedTextField.addState( "selected" );
+      }, this, 100 );
+    },
+
+    _onFocusOut : function( evt ) {
+      if( this._focusedTextField === this._yearTextField ) {
+        this._checkAndApplyYearValue();
+      }
+      this._focusedTextField.removeState( "selected" );
+    },
+
+    _onMouseDown : function( evt ) {
+      if( this._focusedTextField === this._yearTextField ) {
+        this._checkAndApplyYearValue();
+      }
       this._setFocusedTextField( evt.getTarget() );
     },
-    
+
     _setFocusedTextField :  function( textField ) {
       var tmpValue;
       this._focusedTextField.removeState( "selected" );
       // Set focused text field to null
       this._focusedTextField = null;
       if( textField === this._dayTextField ) {
-        this._spinner.setMin( 1 );            
-        this._spinner.setMax( this._getDaysInMonth() ); 
-        tmpValue = this._removeLeadingZero( this._dayTextField.getValue() );
+        this._spinner.setMin( 1 );
+        this._spinner.setMax( this._getDaysInMonth() );
+        tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
         this._spinner.setValue( parseInt( tmpValue ) );
-      } else if( textField === this._monthTextField ) { 
-        this._spinner.setMin( 1 );           
+      } else if( textField === this._monthTextField ) {
+        this._spinner.setMin( 1 );
         this._spinner.setMax( 12 );
         this._spinner.setValue( this._monthInt );
-      } else if( textField === this._yearTextField ) {                                
+      } else if( textField === this._yearTextField ) {
         this._spinner.setMax( 9999 );
         this._spinner.setMin( 1752 );
         this._spinner.setValue( this._lastValidYear );
@@ -252,45 +239,37 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this._focusedTextField = textField;
       // Set highlight on focused text field
       this._focusedTextField.addState( "selected" );
-      // Request focus
-      this._focusedTextField.setFocused( true );
     },
-    
-    _onFocusOut : function( evt ) {
-      if( evt.getTarget() === this._yearTextField ) {
-        this._checkAndApplyYearValue();
-      }     
-    }, 
-    
-    _onSpinnerChange : function( evt ) {          
-      if( this._focusedTextField != null ) {        
-        var oldValue = this._focusedTextField.getValue();
+
+    _onSpinnerChange : function( evt ) {
+      if( this._focusedTextField != null ) {
+        var oldValue = this._focusedTextField.getText();
         // Set the value
         if( this._focusedTextField === this._monthTextField ) {
           this._monthInt = this._spinner.getValue();
           if( this._medium ) {
-            this._focusedTextField.setValue( this._addLeadingZero( this._monthInt ) );            
-          } else {   
-            this._focusedTextField.setValue( this._monthname[ this._monthInt - 1 ] );
-          }          
+            this._focusedTextField.setText( this._addLeadingZero( this._monthInt ) );
+          } else {
+            this._focusedTextField.setText( this._monthname[ this._monthInt - 1 ] );
+          }
         } else if( this._focusedTextField === this._yearTextField ) {
             this._lastValidYear = this._spinner.getValue();
-            this._focusedTextField.setValue( this._spinner.getValue() );
+            this._focusedTextField.setText( "" + this._spinner.getValue() );
         } else {
-          this._focusedTextField.setValue( this._addLeadingZero( this._spinner.getValue() ) );
+          this._focusedTextField.setText( this._addLeadingZero( this._spinner.getValue() ) );
         }
         // Adjust date field
         if( this._focusedTextField == this._monthTextField || // month
-            this._focusedTextField == this._yearTextField ) { // year          
-          var dateValue = this._dayTextField.getValue();
+            this._focusedTextField == this._yearTextField ) { // year
+          var dateValue = this._dayTextField.getText();
           if( dateValue > this._getDaysInMonth() ) {
-            this._dayTextField.setValue( this._getDaysInMonth() );
+            this._dayTextField.setText( "" + this._getDaysInMonth() );
           }
-        }  
+        }
         // Set the weekday field
         this._setWeekday();
-        
-        var newValue = this._focusedTextField.getValue();
+
+        var newValue = this._focusedTextField.getText();
         if( oldValue != newValue && this._readyToSendChanges ) {
           this._readyToSendChanges = false;
           // Send changes
@@ -298,16 +277,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
-    _onSpinnerMouseDown : function( evt ) {
-      // Set highlight on focused text field
-      this._focusedTextField.addState( "selected" );     
-    },
-    
-    _onSpinnerMouseUp : function( evt ) {      
-      this._focusedTextField.setFocused( true );
-    },
-    
+
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
       if( org.eclipse.swt.widgets.DateTimeDate._isNoModifierPressed( evt ) ) {
@@ -353,7 +323,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                                  this._yearTextField );
               }
             }
-            break; 
+            break;
           case "Up":
             if( this._focusedTextField === this._yearTextField ) {
               this._checkAndApplyYearValue();
@@ -379,7 +349,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _rollRight : function( first, second, third ) {
       // Apply year value
       if( this._focusedTextField === this._yearTextField ) {
@@ -397,7 +367,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           this._setFocusedTextField( third );
         } else {
           this._setFocusedTextField( first );
-        }  
+        }
       } else if( this._focusedTextField === third ) {
         if( first.isSeeable() ) {
           this._setFocusedTextField( first );
@@ -406,7 +376,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _rollLeft : function( first, second, third ) {
       // Apply year value
       if( this._focusedTextField === this._yearTextField ) {
@@ -424,7 +394,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           this._setFocusedTextField( first );
         } else {
           this._setFocusedTextField( third );
-        }  
+        }
       } else if( this._focusedTextField === third ) {
         if( second.isSeeable() ) {
           this._setFocusedTextField( second );
@@ -433,31 +403,27 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _onKeyUp : function( evt ) {
       var keypress = evt.getKeyIdentifier();
-      var value = this._focusedTextField.getComputedValue();
+      var value = this._focusedTextField.getText();
       value = this._removeLeadingZero( value );
       if( org.eclipse.swt.widgets.DateTimeDate._isNoModifierPressed( evt ) ) {
         switch( keypress ) {
-          case "Tab":         
-            this._focusedTextField.removeState( "selected" );
-            break;
           case "0": case "1": case "2": case "3": case "4":
           case "5": case "6": case "7": case "8": case "9":
-            this._focusedTextField.setFocused( true );          
-            var maxChars = this._focusedTextField.getMaxLength(); 
+            var maxChars = this._focusedTextField.getUserData( "maxLength" );
             if( this._focusedTextField === this._monthTextField ) {
               value = "" + this._monthInt;
               maxChars = 2;
-            }  
-            var newValue = keypress;    
+            }
+            var newValue = keypress;
             if( value.length < maxChars ) {
               newValue = value + keypress;
-            } 
-            var intValue = parseInt( newValue );  
+            }
+            var intValue = parseInt( newValue );
             if( this._focusedTextField === this._dayTextField ||
-                this._focusedTextField === this._monthTextField ) {                    
+                this._focusedTextField === this._monthTextField ) {
               if( intValue >= this._spinner.getMin() &&
                   intValue <= this._spinner.getMax() ) {
                 this._spinner.setValue( intValue );
@@ -471,28 +437,28 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                 }
               }
             } else if( this._focusedTextField == this._yearTextField ) {
-              this._focusedTextField.setValue( newValue );
-              if( newValue.length == 4 ) {                
+              this._focusedTextField.setText( newValue );
+              if( newValue.length == 4 ) {
                 this._checkAndApplyYearValue();
-              }  
+              }
             }
             break;
           case "Home":
             var newValue = this._spinner.getMin();
-            this._spinner.setValue( newValue );           
+            this._spinner.setValue( newValue );
             break;
           case "End":
             var newValue = this._spinner.getMax();
-            this._spinner.setValue( newValue );           
-            break;    
+            this._spinner.setValue( newValue );
+            break;
         }
       }
     },
-    
+
     _getDaysInMonth : function() {
       var result = 31;
       var tmpMonth = this._monthInt - 1;
-      var tmpYear = parseInt( this._yearTextField.getValue() );
+      var tmpYear = parseInt( this._yearTextField.getText() );
       var tmpDate = new Date();
       tmpDate.setYear( tmpYear );
       tmpDate.setMonth( tmpMonth );
@@ -513,20 +479,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           }
         }
       }
-      return result; 
+      return result;
     },
-    
-    _setWeekday : function() {      
+
+    _setWeekday : function() {
       var tmpDate = new Date();
-      tmpDate.setDate( parseInt( this._dayTextField.getValue() ) );
+      tmpDate.setDate( parseInt( this._dayTextField.getText() ) );
       tmpDate.setMonth( this._monthInt - 1 );
-      tmpDate.setFullYear( parseInt( this._yearTextField.getValue() ) );
-      this._weekdayTextField.setValue( this._weekday[ tmpDate.getDay() + 1 ] );
+      tmpDate.setFullYear( parseInt( this._yearTextField.getText() ) );
+      this._weekdayTextField.setText( this._weekday[ tmpDate.getDay() + 1 ] );
     },
-    
-    _checkAndApplyYearValue : function() {       
-      var oldValue = this._lastValidYear;     
-      var value = parseInt( this._yearTextField.getValue() );        
+
+    _checkAndApplyYearValue : function() {
+      var oldValue = this._lastValidYear;
+      var value = parseInt( this._yearTextField.getText() );
       if( value >= 0 && value <= 29 ) {
         this._lastValidYear = 2000 + value;
       } else if( value >= 30 && value <= 99 ) {
@@ -534,16 +500,16 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       } else if( value >= 1752 ) {
         this._lastValidYear = value;
       }
-      this._yearTextField.setValue( oldValue );
+      this._yearTextField.setText( "" + oldValue );
       if( oldValue != this._lastValidYear ) {
         this._spinner.setValue( this._lastValidYear );
       }
     },
-    
+
     _addLeadingZero : function( value ) {
-      return value < 10 ? "0" + value : value;
+      return value < 10 ? "0" + value : "" + value;
     },
-    
+
     _removeLeadingZero : function( value ) {
       var result = value;
       if( value.length == 2 ) {
@@ -552,13 +518,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       }
       return result;
     },
-    
+
     _sendChanges : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {        
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
-        var id = widgetManager.findIdByWidget( this );        
-        req.addParameter( id + ".day", this._removeLeadingZero( this._dayTextField.getValue() ) );
+        var id = widgetManager.findIdByWidget( this );
+        req.addParameter( id + ".day", this._removeLeadingZero( this._dayTextField.getText() ) );
         req.addParameter( id + ".month", this._monthInt - 1 );
         req.addParameter( id + ".year", this._lastValidYear );
         if( this._hasSelectionListener ) {
@@ -568,13 +534,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         this._readyToSendChanges = true;
       }
     },
-    
-    setMonth : function( value ) { 
+
+    setMonth : function( value ) {
       this._monthInt = value + 1;
       if( this._medium ) {
-        this._monthTextField.setValue( this._addLeadingZero( this._monthInt ) );
-      } else {   
-        this._monthTextField.setValue( this._monthname[ this._monthInt - 1 ] );
+        this._monthTextField.setText( this._addLeadingZero( this._monthInt ) );
+      } else {
+        this._monthTextField.setText( this._monthname[ this._monthInt - 1 ] );
       }
       if( this._focusedTextField === this._monthTextField ) {
         this._spinner.setValue( this._monthInt );
@@ -582,30 +548,30 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       // Set the weekday
       this._setWeekday();
     },
-    
+
     setDay : function( value ) {
-      this._dayTextField.setValue( this._addLeadingZero( value ) );
+      this._dayTextField.setText( this._addLeadingZero( value ) );
       if( this._focusedTextField === this._dayTextField ) {
         this._spinner.setValue( value );
       }
       // Set the weekday
       this._setWeekday();
     },
-    
+
     setYear : function( value ) {
       this._lastValidYear = value;
-      this._yearTextField.setValue( value );
+      this._yearTextField.setText( "" + value );
       if( this._focusedTextField === this._yearTextField ) {
         this._spinner.setValue( value );
       }
       // Set the weekday
       this._setWeekday();
     },
-    
+
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },
-    
+
     setBounds : function( ind, x, y, width, height ) {
       var widget;
       switch( ind ) {
@@ -634,12 +600,12 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           widget = this._spinner;
         break;
       }
-      widget.set({        
+      widget.set({
         left: x,
         top: y,
         width: width,
         height: height
-      });  
+      });
     }
   }
 } );

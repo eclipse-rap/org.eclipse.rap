@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,7 @@ public class DateTime extends Composite {
 
   private int V_PADDING = 6;
   private int H_PADDING = 6;
+  private int PADDING = 1;
 
   private String[] monthNames;
   private String[] weekdayNames;
@@ -514,7 +515,7 @@ public class DateTime extends Composite {
     setMonth( month );
     setDay( day );
   }
-  
+
   /**
    * Sets the receiver's hours, minutes, and seconds in a single operation.
    *
@@ -537,7 +538,7 @@ public class DateTime extends Composite {
     setSeconds( seconds );
   }
 
-  
+
   /**
    * Sets the font that the receiver will use to paint textual information
    * to the font specified by the argument, or to the default font for that
@@ -626,8 +627,8 @@ public class DateTime extends Composite {
         }
       }
       // Overall widget size
-      width = prefSize.x;
-      height = prefSize.y;
+      width = prefSize.x + PADDING * 2;
+      height = prefSize.y + PADDING * 2;
     } else if( ( style & SWT.TIME ) != 0 ) {
       // Hours text field
       hoursTextFieldBounds = new Rectangle( 0, 0, 0, 0 );
@@ -668,8 +669,8 @@ public class DateTime extends Composite {
       spinnerBounds.width = 17;
       spinnerBounds.height = hoursTextFieldBounds.height;
       // Overall widget size
-      width = spinnerBounds.x + spinnerBounds.width;
-      height = hoursTextFieldBounds.height;
+      width = spinnerBounds.x + spinnerBounds.width + PADDING * 2;
+      height = hoursTextFieldBounds.height + PADDING * 2;
     }
     return new Point( width, height );
   }
