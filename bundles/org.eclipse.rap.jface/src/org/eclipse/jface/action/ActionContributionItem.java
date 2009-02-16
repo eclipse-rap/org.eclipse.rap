@@ -1024,10 +1024,8 @@ public class ActionContributionItem extends ContributionItem {
 				if (image == null) {
 					image = action.getImageDescriptor();
 				}
-				// RAP [bm]: 
-//				ImageDescriptor disabledImage = action
-//						.getDisabledImageDescriptor();
-				// RAPEND: [bm] 
+				ImageDescriptor disabledImage = action
+						.getDisabledImageDescriptor();
 
 
 				// Make sure there is a valid image.
@@ -1040,12 +1038,10 @@ public class ActionContributionItem extends ContributionItem {
 
 				// performance: more efficient in SWT to set disabled and hot
 				// image before regular image
-				// RAP [bm]: ToolItem#setDisabledImage
-//				((ToolItem) widget)
-//						.setDisabledImage(disabledImage == null ? null
-//								: localManager
-//										.createImageWithDefault(disabledImage));
-				// RAPEND: [bm] 
+				((ToolItem) widget)
+						.setDisabledImage(disabledImage == null ? null
+								: localManager
+										.createImageWithDefault(disabledImage));
 				((ToolItem) widget).setImage(image == null ? null
 						: localManager.createImageWithDefault(image));
 
@@ -1055,8 +1051,9 @@ public class ActionContributionItem extends ContributionItem {
 				return image != null;
 			}
 			ImageDescriptor image = action.getImageDescriptor();
+			// RAP [bm]: hoverImage/hotImage not supported in RWT
 //			ImageDescriptor hoverImage = action.getHoverImageDescriptor();
-//			ImageDescriptor disabledImage = action.getDisabledImageDescriptor();
+			ImageDescriptor disabledImage = action.getDisabledImageDescriptor();
 
 			// If there is no regular image, but there is a hover image,
 			// convert the hover image to gray and use it as the regular image.
@@ -1091,9 +1088,9 @@ public class ActionContributionItem extends ContributionItem {
 
 			// performance: more efficient in SWT to set disabled and hot image
 			// before regular image
+			((ToolItem) widget).setDisabledImage(disabledImage == null ? null
+					: localManager.createImageWithDefault(disabledImage));
 			// RAP [bm]: 
-//			((ToolItem) widget).setDisabledImage(disabledImage == null ? null
-//					: localManager.createImageWithDefault(disabledImage));
 //			((ToolItem) widget).setHotImage(hoverImage == null ? null
 //					: localManager.createImageWithDefault(hoverImage));
 			// RAPEND: [bm] 

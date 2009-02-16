@@ -645,16 +645,14 @@ class ProgressInfoItem extends Composite {
 		if (isCompleted()) {
 			actionButton.setImage(JFaceResources
 					.getImage(CLEAR_FINISHED_JOB_KEY));
-// RAP [fappel]: disabled image not supported
-//			actionButton.setDisabledImage(JFaceResources
-//					.getImage(DISABLED_CLEAR_FINISHED_JOB_KEY));
+			actionButton.setDisabledImage(JFaceResources
+					.getImage(DISABLED_CLEAR_FINISHED_JOB_KEY));
 			actionButton
 					.setToolTipText(ProgressMessages.get().NewProgressView_ClearJobToolTip);
 		} else {
 			actionButton.setImage(JFaceResources.getImage(STOP_IMAGE_KEY));
-// RAP [fappel]: disabled image not supported
-//			actionButton.setDisabledImage(JFaceResources
-//					.getImage(DISABLED_STOP_IMAGE_KEY));
+			actionButton.setDisabledImage(JFaceResources
+					.getImage(DISABLED_STOP_IMAGE_KEY));
 
 		}
 		JobInfo[] infos = getJobInfos();

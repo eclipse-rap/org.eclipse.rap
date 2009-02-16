@@ -112,9 +112,8 @@ public final class CommandContributionItem extends ContributionItem {
 
 	private String tooltip;
 
+	private ImageDescriptor disabledIcon;
 	// RAP [bm]: 
-//	private ImageDescriptor disabledIcon;
-//
 //	private ImageDescriptor hoverIcon;
 	// RAPEND: [bm] 
 
@@ -156,8 +155,8 @@ public final class CommandContributionItem extends ContributionItem {
 		super(contributionParameters.id);
 
 		this.icon = contributionParameters.icon;
+		this.disabledIcon = contributionParameters.disabledIcon;
 		// RAP [bm]: 
-//		this.disabledIcon = contributionParameters.disabledIcon;
 //		this.hoverIcon = contributionParameters.hoverIcon;
 		// RAPEND: [bm] 
 
@@ -295,9 +294,9 @@ public final class CommandContributionItem extends ContributionItem {
 					.getService(ICommandImageService.class);
 			icon = service.getImageDescriptor(command.getId(),
 					ICommandImageService.TYPE_DEFAULT, iconStyle);
+			disabledIcon = service.getImageDescriptor(command.getId(),
+					ICommandImageService.TYPE_DISABLED, iconStyle);
 			// RAP [bm]: 
-//			disabledIcon = service.getImageDescriptor(command.getId(),
-//					ICommandImageService.TYPE_DISABLED, iconStyle);
 //			hoverIcon = service.getImageDescriptor(command.getId(),
 //					ICommandImageService.TYPE_HOVER, iconStyle);
 			// RAPEND: [bm] 
@@ -711,10 +710,9 @@ public final class CommandContributionItem extends ContributionItem {
 			ToolItem item = (ToolItem) widget;
 			LocalResourceManager m = new LocalResourceManager(JFaceResources
 					.getResources());
-			// RAP [bm]: ToolItem#setDisabledImage
 			// RAP [bm]: ToolItem#setHotImage
-//			item.setDisabledImage(disabledIcon == null ? null : m
-//					.createImage(disabledIcon));
+			item.setDisabledImage(disabledIcon == null ? null : m
+					.createImage(disabledIcon));
 //			item.setHotImage(hoverIcon == null ? null : m
 //					.createImage(hoverIcon));
 			// RAPEND: [bm] 
@@ -750,8 +748,7 @@ public final class CommandContributionItem extends ContributionItem {
 	}
 
 	private void setDisabledIcon(ImageDescriptor desc) {
-		// RAP [bm]: 
-//		disabledIcon = desc;
+		disabledIcon = desc;
 		updateIcons();
 	}
 

@@ -124,8 +124,7 @@ public class DefaultTabFolder extends AbstractTabFolder {
 	        ToolItem pullDownButton = new ToolItem(actualToolBar, SWT.PUSH);
 	        Image hoverImage = WorkbenchImages
 	                .getImage(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU);
-	        // RAP [bm]: ToolItem#setDisabledImage
-//	        pullDownButton.setDisabledImage(hoverImage);
+	        pullDownButton.setDisabledImage(hoverImage);
 	        pullDownButton.setImage(hoverImage);
 	        pullDownButton.setToolTipText(WorkbenchMessages.get().Menu); 
 // RAP [rh] disabled MouseListener for the view menu dropdown

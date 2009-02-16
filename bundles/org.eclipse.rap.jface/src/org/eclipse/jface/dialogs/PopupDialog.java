@@ -932,10 +932,8 @@ public class PopupDialog extends Window {
 				toolBar);
 		viewMenuButton.setImage(JFaceResources.getImage(POPUP_IMG_MENU));
 		
-		// RAP [bm]: 
-//		viewMenuButton.setDisabledImage(JFaceResources
-//				.getImage(POPUP_IMG_MENU_DISABLED));
-		// RAPEND: [bm] 
+		viewMenuButton.setDisabledImage(JFaceResources
+				.getImage(POPUP_IMG_MENU_DISABLED));
 
 		viewMenuButton.setToolTipText(JFaceResources
 				.getString("PopupDialog.menuTooltip")); //$NON-NLS-1$
