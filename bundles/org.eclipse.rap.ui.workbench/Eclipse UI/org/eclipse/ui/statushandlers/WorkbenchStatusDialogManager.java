@@ -2193,10 +2193,12 @@ public class WorkbenchStatusDialogManager {
 		if (statusAdapter != null) {
 			mainMessageLabel.setText(getMainMessage(statusAdapter));
 		}
-		if (getStatusAdapters().size() > 1 && singleStatusDisplayArea != null) {
-			singleStatusDisplayArea.dispose();
-		} else {
-			refreshSingleStatusArea();
+		if (singleStatusDisplayArea != null) {
+			if (getStatusAdapters().size() > 1) {
+				singleStatusDisplayArea.dispose();
+			} else {
+				refreshSingleStatusArea();
+			}
 		}
 		titleArea.layout();
 	}
