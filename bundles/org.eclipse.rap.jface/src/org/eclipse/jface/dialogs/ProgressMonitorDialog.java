@@ -134,6 +134,8 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * The cursor used in the cancel button;
+	 * 
+	 * @since 1.2
 	 */
 	protected Cursor arrowCursor;
 

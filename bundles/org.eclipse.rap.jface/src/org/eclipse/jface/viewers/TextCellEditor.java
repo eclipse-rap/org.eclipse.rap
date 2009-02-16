@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Text;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
+ * @since 1.2
  */
 public class TextCellEditor extends CellEditor {
 

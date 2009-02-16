@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * This is an editor implementation for {@link Tree}
  *
- * @since 1.0
+ * @since 1.2
  */
 public class TreeViewerEditor extends ColumnViewerEditor {
 	/**

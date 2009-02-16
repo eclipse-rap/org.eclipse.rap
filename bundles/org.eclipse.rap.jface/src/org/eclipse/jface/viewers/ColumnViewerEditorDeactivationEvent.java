@@ -18,7 +18,7 @@ import java.util.EventObject;
 /**
  * This event is fired when an editor deactivated
  *
- * @since 1.0
+ * @since 1.2
  *
  */
 public class ColumnViewerEditorDeactivationEvent extends EventObject {

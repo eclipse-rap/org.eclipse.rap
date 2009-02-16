@@ -243,7 +243,7 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * fonts. 
      * @return a FontDescriptor whose height differs from the reciever by the given number
      * of points. 
-     * @since 1.1
+     * @since 1.2
      */
     public final FontDescriptor increaseHeight(int heightDelta) {
     	if (heightDelta == 0) {

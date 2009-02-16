@@ -679,6 +679,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 
 	/**
 	 * @return the currently attached viewer editor
+	 * @since 1.2
 	 */
 	public ColumnViewerEditor getColumnViewerEditor() {
 		return viewerEditor;
