@@ -1123,7 +1123,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.2
    */
   public void setData( final Object data ) {
-    checkDevice ();
+    checkDevice();
     this.data = data;
   }
 
@@ -1155,7 +1155,7 @@ public class Display extends Device implements Adaptable {
    * 
    * @since 1.2
    */
-  // XXX [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
+  // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
   public void setData( final String key, final Object value ) {
     checkDevice ();
     if (key == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -1232,7 +1232,7 @@ public class Display extends Device implements Adaptable {
    * 
    * @since 1.2
    */
-  // XXX [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
+  // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
   public Object getData( final String key ) {
     checkDevice ();
     if( key == null ) {
