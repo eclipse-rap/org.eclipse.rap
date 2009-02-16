@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,7 +103,7 @@ public class DateTime_Test extends TestCase {
     assertEquals(10, dateTime.getMonth());
     assertEquals(1985, dateTime.getYear());
   }
-  
+
   public void testSetTime() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -114,7 +114,7 @@ public class DateTime_Test extends TestCase {
     assertEquals(10, dateTime.getMinutes());
     assertEquals(30, dateTime.getSeconds());
   }
-  
+
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -189,31 +189,31 @@ public class DateTime_Test extends TestCase {
     RWT.setLocale( Locale.US );
 
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT );
-    Point expected = new Point( 105, 19 );
+    Point expected = new Point( 107, 21 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.BORDER );
-    expected = new Point( 109, 23 );
+    expected = new Point( 111, 25 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    expected = new Point( 88, 19 );
+    expected = new Point( 90, 21 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.LONG );
-    expected = new Point( 183, 19 );
+    expected = new Point( 185, 21 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.SHORT );
-    expected = new Point( 56, 19 );
+    expected = new Point( 58, 21 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    expected = new Point( 78, 19 );
+    expected = new Point( 80, 21 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.LONG );
-    expected = new Point( 78, 19 );
+    expected = new Point( 80, 21 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.CALENDAR );
