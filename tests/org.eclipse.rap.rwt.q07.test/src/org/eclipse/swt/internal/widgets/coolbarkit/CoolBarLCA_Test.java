@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.*;
+//import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -335,11 +334,13 @@ public final class CoolBarLCA_Test extends TestCase {
   // assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   //    RWTFixture.removeUIThread();
   //  }
+  
   //////////////////
   // Helping methods
-  private static RWTLifeCycle createLifeCycle() {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    return lifeCycle;
-  }
+  
+//  private static RWTLifeCycle createLifeCycle() {
+//    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+//    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+//    return lifeCycle;
+//  }
 }
