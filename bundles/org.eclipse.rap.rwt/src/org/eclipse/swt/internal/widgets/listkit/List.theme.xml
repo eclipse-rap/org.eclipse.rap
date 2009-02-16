@@ -51,6 +51,9 @@
       <state name="inactive"
           description="Applies to items on unfocused lists." />
 
+      <state name="even"
+          description="Applies to items with an even index." />
+
     </element>
 
   </element>

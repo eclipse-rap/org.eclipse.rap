@@ -38,7 +38,7 @@ List, Tree, Table, Text, Spinner, Combo, DateTime {
   background-color: #fff1a1;
 }
 
-TableItem {
+List-Item, TableItem {
   background-color: transparent;
 }
 
@@ -319,10 +319,6 @@ ToolItem:hover {
 
 /* Table and Tree */
 
-TableItem:even {
-  background-color: #e0dfd0;
-}
-
 Table-Checkbox {
   background-image: url( "/theme1/icons/checkbox.white.off.gif" );
 }
@@ -353,6 +349,12 @@ TreeColumn-SortIndicator:down, TableColumn-SortIndicator:down {
 
 Table-GridLine {
   color: #aca899;
+}
+
+/* Alternating row colors */
+
+List-Item:even, TableItem:even {
+  background-color: #ebe3b3;
 }
 
 /* Selected Items */

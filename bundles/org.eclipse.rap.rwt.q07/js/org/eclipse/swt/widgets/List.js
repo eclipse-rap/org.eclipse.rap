@@ -78,6 +78,9 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           item.setLabel( "(empty)" );
           item.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
           item.setLabel( items[ i ] );
+          if( i % 2 == 0 ) {
+            item.addState( "even" );
+          }
           this.add( item );
         }
       }

@@ -11,7 +11,7 @@ List[BORDER] {
 }
 
 List-Item {
-  background-color: white;
+  background-color: transparent;
   color: black;
 }
 
@@ -22,5 +22,4 @@ List-Item:selected {
 
 List-Item:selected:inactive {
   background-color: rgb( 192, 192, 192 );
-  color: white;
 }
