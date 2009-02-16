@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,10 @@ Display {
 List, Tree, Table, Text, Spinner, Combo, DateTime {
   color: rgb( 39, 64, 139 );
   background-color: #fff1a1;
+}
+
+TableItem {
+  background-color: transparent;
 }
 
 /* Tooltips */
@@ -156,17 +160,6 @@ Group-Label {
 
 Link-Hyperlink {
   color: rgb( 34, 139, 34 );
-}
-
-/* List */
-
-List-Item:selected, TableItem:selected, TreeItem:selected {
-  color: white;
-  background-color: #56a0ea;
-}
-
-List-Item:selected:inactive, TreeItem:selected:inactive {
-  background-color: #c0c0c0;
 }
 
 /* Menu */
@@ -326,6 +319,10 @@ ToolItem:hover {
 
 /* Table and Tree */
 
+TableItem:even {
+  background-color: #e0dfd0;
+}
+
 Table-Checkbox {
   background-image: url( "/theme1/icons/checkbox.white.off.gif" );
 }
@@ -352,6 +349,21 @@ TreeColumn-SortIndicator:up, TableColumn-SortIndicator:up {
 
 TreeColumn-SortIndicator:down, TableColumn-SortIndicator:down {
   background-image: url( "/theme1/icons/sort-down.png" );
+}
+
+Table-GridLine {
+  color: #aca899;
+}
+
+/* Selected Items */
+
+List-Item:selected, TableItem:selected, TreeItem:selected {
+  color: white;
+  background-color: #56a0ea;
+}
+
+List-Item:selected:inactive, TreeItem:selected:inactive {
+  background-color: #c0c0c0;
 }
 
 /* Custom variants */

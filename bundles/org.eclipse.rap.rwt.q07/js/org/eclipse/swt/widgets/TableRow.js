@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /**
- * Used to represent a visible TableItem in a Table widget. 
+ * Used to represent a visible TableItem in a Table widget.
  */
 qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
   extend : qx.ui.embed.HtmlEmbed,
@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
   },
 
   members : {
-    
+
     setLinesVisible : function( value ) {
       if( value ) {
         this.addState( "lines" );
@@ -31,15 +31,22 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
         this.removeState( "lines" );
       }
     },
-    
+
     setItemIndex : function( value ) {
-      this._itemIndex = value;
+      if( value != this._itemIndex ) {
+        this._itemIndex = value;
+        if( value % 2 == 0 ) {
+          this.addState( "even" );
+        } else {
+          this.removeState( "even" );
+        }
+      }
     },
-    
+
     getItemIndex : function() {
       return this._itemIndex;
     },
-    
+
     // Override default focus behaviour
     _applyStateStyleFocus : qx.core.Variant.select( "qx.client",
     {

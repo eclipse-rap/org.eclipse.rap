@@ -1262,12 +1262,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.border = "undefined";
       }
-      result.textColor = states.disabled ? "widget.graytext" : "undefined";
-      result.backgroundColor = "undefined";
-      if( !states.disabled && states.selected ) {
-        result.textColor = tv.getCssColor( "TableItem", "color" );
-        result.backgroundColor = tv.getCssColor( "TableItem", "background-color" );
-      }
+      result.textColor = states.disabled
+                         ? "widget.graytext"
+                         : tv.getCssColor( "TableItem", "color" );
+      result.backgroundColor = tv.getCssColor( "TableItem", "background-color" );
       return result;
     }
   },

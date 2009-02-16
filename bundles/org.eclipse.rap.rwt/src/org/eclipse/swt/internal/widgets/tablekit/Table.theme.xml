@@ -34,7 +34,10 @@
           description="Table item background color" />
 
       <state name="selected"
-          description="When table item is selected" />
+          description="Applies when table item is selected." />
+
+      <state name="even"
+          description="Applies when the table item has an even index" />
 
     </element>
 
