@@ -103,7 +103,9 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     _setTextDelayed : function( evt ) {
       var widget = evt.getTarget();
       var text = widget.getUserData( "setText" );
-      org.eclipse.swt.LabelUtil._doSetText( widget, text );
+      if( text != null ) {
+        org.eclipse.swt.LabelUtil._doSetText( widget, text );
+      }
       widget.removeEventListener( "appear",
                                   org.eclipse.swt.LabelUtil._setTextDelayed );
       widget.removeEventListener( "insertDom",
@@ -113,7 +115,9 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     _setImageDelayed : function( evt ) {
       var widget = evt.getTarget();
       var imagePath = widget.getUserData( "setImage" );
-      org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
+      if( imagePath != null ) {
+        org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
+      }
       widget.removeEventListener( "appear",
                                   org.eclipse.swt.LabelUtil._setImageDelayed );
       widget.removeEventListener( "insertDom",
@@ -121,6 +125,8 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     },
     
     _doSetText : function( widget, text ) {
+      // Remove the delayed text
+      widget.setUserData( "setText", null );
       if ( text != null ) {
         widget.setLabel( text );
       } else {
@@ -131,6 +137,8 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     },
     
     _doSetImage : function( widget, imagePath ) {
+      // Remove the delayed image
+      widget.setUserData( "setImage", null );
       if( imagePath ) {
         widget.setIcon( imagePath );
         widget.setShow( org.eclipse.swt.LabelUtil.SHOW_ICON );
