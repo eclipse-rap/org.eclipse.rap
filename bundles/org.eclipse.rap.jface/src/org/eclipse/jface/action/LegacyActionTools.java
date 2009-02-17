@@ -487,29 +487,27 @@ public final class LegacyActionTools {
 		keyCodes.put("DELETE", new Integer(127)); //$NON-NLS-1$
 
 		keyCodes.put("SPACE", new Integer(' ')); //$NON-NLS-1$
-		// RAP [bm]: key constants
-//		keyCodes.put("ARROW_UP", new Integer(SWT.ARROW_UP)); //$NON-NLS-1$
-//		keyCodes.put("ARROW_DOWN", new Integer(SWT.ARROW_DOWN)); //$NON-NLS-1$
-//		keyCodes.put("ARROW_LEFT", new Integer(SWT.ARROW_LEFT)); //$NON-NLS-1$
-//		keyCodes.put("ARROW_RIGHT", new Integer(SWT.ARROW_RIGHT)); //$NON-NLS-1$
-//		keyCodes.put("PAGE_UP", new Integer(SWT.PAGE_UP)); //$NON-NLS-1$
-//		keyCodes.put("PAGE_DOWN", new Integer(SWT.PAGE_DOWN)); //$NON-NLS-1$
-//		keyCodes.put("HOME", new Integer(SWT.HOME)); //$NON-NLS-1$
-//		keyCodes.put("END", new Integer(SWT.END)); //$NON-NLS-1$
-//		keyCodes.put("INSERT", new Integer(SWT.INSERT)); //$NON-NLS-1$
-//		keyCodes.put("F1", new Integer(SWT.F1)); //$NON-NLS-1$
-//		keyCodes.put("F2", new Integer(SWT.F2)); //$NON-NLS-1$
-//		keyCodes.put("F3", new Integer(SWT.F3)); //$NON-NLS-1$
-//		keyCodes.put("F4", new Integer(SWT.F4)); //$NON-NLS-1$
-//		keyCodes.put("F5", new Integer(SWT.F5)); //$NON-NLS-1$
-//		keyCodes.put("F6", new Integer(SWT.F6)); //$NON-NLS-1$
-//		keyCodes.put("F7", new Integer(SWT.F7)); //$NON-NLS-1$
-//		keyCodes.put("F8", new Integer(SWT.F8)); //$NON-NLS-1$
-//		keyCodes.put("F9", new Integer(SWT.F9)); //$NON-NLS-1$
-//		keyCodes.put("F10", new Integer(SWT.F10)); //$NON-NLS-1$
-//		keyCodes.put("F11", new Integer(SWT.F11)); //$NON-NLS-1$
-//		keyCodes.put("F12", new Integer(SWT.F12)); //$NON-NLS-1$
-		// RAPEND: [bm] 
+		keyCodes.put("ARROW_UP", new Integer(SWT.ARROW_UP)); //$NON-NLS-1$
+		keyCodes.put("ARROW_DOWN", new Integer(SWT.ARROW_DOWN)); //$NON-NLS-1$
+		keyCodes.put("ARROW_LEFT", new Integer(SWT.ARROW_LEFT)); //$NON-NLS-1$
+		keyCodes.put("ARROW_RIGHT", new Integer(SWT.ARROW_RIGHT)); //$NON-NLS-1$
+		keyCodes.put("PAGE_UP", new Integer(SWT.PAGE_UP)); //$NON-NLS-1$
+		keyCodes.put("PAGE_DOWN", new Integer(SWT.PAGE_DOWN)); //$NON-NLS-1$
+		keyCodes.put("HOME", new Integer(SWT.HOME)); //$NON-NLS-1$
+		keyCodes.put("END", new Integer(SWT.END)); //$NON-NLS-1$
+		keyCodes.put("INSERT", new Integer(SWT.INSERT)); //$NON-NLS-1$
+		keyCodes.put("F1", new Integer(SWT.F1)); //$NON-NLS-1$
+		keyCodes.put("F2", new Integer(SWT.F2)); //$NON-NLS-1$
+		keyCodes.put("F3", new Integer(SWT.F3)); //$NON-NLS-1$
+		keyCodes.put("F4", new Integer(SWT.F4)); //$NON-NLS-1$
+		keyCodes.put("F5", new Integer(SWT.F5)); //$NON-NLS-1$
+		keyCodes.put("F6", new Integer(SWT.F6)); //$NON-NLS-1$
+		keyCodes.put("F7", new Integer(SWT.F7)); //$NON-NLS-1$
+		keyCodes.put("F8", new Integer(SWT.F8)); //$NON-NLS-1$
+		keyCodes.put("F9", new Integer(SWT.F9)); //$NON-NLS-1$
+		keyCodes.put("F10", new Integer(SWT.F10)); //$NON-NLS-1$
+		keyCodes.put("F11", new Integer(SWT.F11)); //$NON-NLS-1$
+		keyCodes.put("F12", new Integer(SWT.F12)); //$NON-NLS-1$
 	}
 
 	/**
@@ -528,36 +526,34 @@ public final class LegacyActionTools {
 
 		keyStrings.put(new Integer(' '), JFaceResources.getString("Space")); //$NON-NLS-1$
 
-		// RAP [bm]: key constants
-//		keyStrings.put(new Integer(SWT.ARROW_UP), JFaceResources
-//				.getString("Arrow_Up")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.ARROW_DOWN), JFaceResources
-//				.getString("Arrow_Down")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.ARROW_LEFT), JFaceResources
-//				.getString("Arrow_Left")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.ARROW_RIGHT), JFaceResources
-//				.getString("Arrow_Right")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.PAGE_UP), JFaceResources
-//				.getString("Page_Up")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.PAGE_DOWN), JFaceResources
-//				.getString("Page_Down")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.HOME), JFaceResources.getString("Home")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.END), JFaceResources.getString("End")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.INSERT), JFaceResources
-//				.getString("Insert")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F1), JFaceResources.getString("F1")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F2), JFaceResources.getString("F2")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F3), JFaceResources.getString("F3")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F4), JFaceResources.getString("F4")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F5), JFaceResources.getString("F5")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F6), JFaceResources.getString("F6")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F7), JFaceResources.getString("F7")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F8), JFaceResources.getString("F8")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F9), JFaceResources.getString("F9")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F10), JFaceResources.getString("F10")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F11), JFaceResources.getString("F11")); //$NON-NLS-1$
-//		keyStrings.put(new Integer(SWT.F12), JFaceResources.getString("F12")); //$NON-NLS-1$
-		// RAPEND: [bm] 
+		keyStrings.put(new Integer(SWT.ARROW_UP), JFaceResources
+				.getString("Arrow_Up")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.ARROW_DOWN), JFaceResources
+				.getString("Arrow_Down")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.ARROW_LEFT), JFaceResources
+				.getString("Arrow_Left")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.ARROW_RIGHT), JFaceResources
+				.getString("Arrow_Right")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.PAGE_UP), JFaceResources
+				.getString("Page_Up")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.PAGE_DOWN), JFaceResources
+				.getString("Page_Down")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.HOME), JFaceResources.getString("Home")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.END), JFaceResources.getString("End")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.INSERT), JFaceResources
+				.getString("Insert")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F1), JFaceResources.getString("F1")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F2), JFaceResources.getString("F2")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F3), JFaceResources.getString("F3")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F4), JFaceResources.getString("F4")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F5), JFaceResources.getString("F5")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F6), JFaceResources.getString("F6")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F7), JFaceResources.getString("F7")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F8), JFaceResources.getString("F8")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F9), JFaceResources.getString("F9")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F10), JFaceResources.getString("F10")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F11), JFaceResources.getString("F11")); //$NON-NLS-1$
+		keyStrings.put(new Integer(SWT.F12), JFaceResources.getString("F12")); //$NON-NLS-1$
 	}
 
 	/**
@@ -589,72 +585,70 @@ public final class LegacyActionTools {
 				.put(
 						JFaceResources.getString("Space").toUpperCase(), new Integer(' ')); //$NON-NLS-1$
 
-		// RAP [bm]: key constants
 
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Arrow_Up").toUpperCase(), new Integer(SWT.ARROW_UP)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Arrow_Down").toUpperCase(), new Integer(SWT.ARROW_DOWN)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Arrow_Left").toUpperCase(), new Integer(SWT.ARROW_LEFT)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Arrow_Right").toUpperCase(), new Integer(SWT.ARROW_RIGHT)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Page_Up").toUpperCase(), new Integer(SWT.PAGE_UP)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Page_Down").toUpperCase(), new Integer(SWT.PAGE_DOWN)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Home").toUpperCase(), new Integer(SWT.HOME)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("End").toUpperCase(), new Integer(SWT.END)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("Insert").toUpperCase(), new Integer(SWT.INSERT)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F1").toUpperCase(), new Integer(SWT.F1)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F2").toUpperCase(), new Integer(SWT.F2)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F3").toUpperCase(), new Integer(SWT.F3)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F4").toUpperCase(), new Integer(SWT.F4)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F5").toUpperCase(), new Integer(SWT.F5)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F6").toUpperCase(), new Integer(SWT.F6)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F7").toUpperCase(), new Integer(SWT.F7)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F8").toUpperCase(), new Integer(SWT.F8)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F9").toUpperCase(), new Integer(SWT.F9)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F10").toUpperCase(), new Integer(SWT.F10)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F11").toUpperCase(), new Integer(SWT.F11)); //$NON-NLS-1$
-//		localizedKeyCodes
-//				.put(
-//						JFaceResources.getString("F12").toUpperCase(), new Integer(SWT.F12)); //$NON-NLS-1$
-		// RAPEND: [bm] 
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Arrow_Up").toUpperCase(), new Integer(SWT.ARROW_UP)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Arrow_Down").toUpperCase(), new Integer(SWT.ARROW_DOWN)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Arrow_Left").toUpperCase(), new Integer(SWT.ARROW_LEFT)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Arrow_Right").toUpperCase(), new Integer(SWT.ARROW_RIGHT)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Page_Up").toUpperCase(), new Integer(SWT.PAGE_UP)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Page_Down").toUpperCase(), new Integer(SWT.PAGE_DOWN)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Home").toUpperCase(), new Integer(SWT.HOME)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("End").toUpperCase(), new Integer(SWT.END)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("Insert").toUpperCase(), new Integer(SWT.INSERT)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F1").toUpperCase(), new Integer(SWT.F1)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F2").toUpperCase(), new Integer(SWT.F2)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F3").toUpperCase(), new Integer(SWT.F3)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F4").toUpperCase(), new Integer(SWT.F4)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F5").toUpperCase(), new Integer(SWT.F5)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F6").toUpperCase(), new Integer(SWT.F6)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F7").toUpperCase(), new Integer(SWT.F7)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F8").toUpperCase(), new Integer(SWT.F8)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F9").toUpperCase(), new Integer(SWT.F9)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F10").toUpperCase(), new Integer(SWT.F10)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F11").toUpperCase(), new Integer(SWT.F11)); //$NON-NLS-1$
+		localizedKeyCodes
+				.put(
+						JFaceResources.getString("F12").toUpperCase(), new Integer(SWT.F12)); //$NON-NLS-1$
 	}
 
 	/**
