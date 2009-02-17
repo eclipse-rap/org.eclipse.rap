@@ -91,7 +91,7 @@ public class ToolBarTab extends ExampleTab {
     dropDownItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         if( event.detail == SWT.ARROW ) {
-          Point point = new Point( event.x, event.y );
+          Point point = toolBar.toDisplay( event.x, event.y );
           dropDownMenu.setLocation( point );
           dropDownMenu.setVisible( true );
         }

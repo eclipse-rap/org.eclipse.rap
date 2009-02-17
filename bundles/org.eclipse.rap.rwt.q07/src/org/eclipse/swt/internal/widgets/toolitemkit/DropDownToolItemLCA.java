@@ -18,11 +18,13 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.Display;
 
 final class DropDownToolItemLCA extends ToolItemDelegateLCA {
 
@@ -55,6 +57,11 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
       if( toolItemId.equals( widgetId ) ) {
         Rectangle defaultValue = new Rectangle( 0, 0, 0, 0 );
         Rectangle bounds = WidgetLCAUtil.readBounds( toolItemId, defaultValue );
+        Display display = toolItem.getDisplay();
+        Point coords
+          = display.map( null, toolItem.getParent(), bounds.x, bounds.y );
+        bounds.x = coords.x;
+        bounds.y = coords.y;
         SelectionEvent event
           = ToolItemLCAUtil.newSelectionEvent( toolItem, bounds, SWT.ARROW );
         event.processEvent();
@@ -69,7 +76,7 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
       toolItem.getParent(),
       Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
     };
-    writer.callStatic( CREATE_DROP_DOWN, args );    
+    writer.callStatic( CREATE_DROP_DOWN, args );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
