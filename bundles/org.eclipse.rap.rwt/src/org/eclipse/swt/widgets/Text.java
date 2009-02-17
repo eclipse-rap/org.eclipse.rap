@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
@@ -39,6 +38,9 @@ import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
  * @since 1.0
  */
 public class Text extends Scrollable {
+
+  // This factor must be kept in sync with TextUtil.js#_updateLineHeight
+  private static final double LINE_HEIGHT_FACTOR = 1.2;
 
   /**
    * The maximum number of characters that can be entered
@@ -204,6 +206,23 @@ public class Text extends Scrollable {
   public String getLineDelimiter() {
     checkWidget();
     return "\n";
+  }
+
+  /**
+   * Returns the height of a line.
+   *
+   * @return the height of a row of text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getLineHeight() {
+    checkWidget();
+    Font font = getFont();
+    int fontSize = font.getFontData()[ 0 ].getHeight();
+    return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
 
   //////////////////////////

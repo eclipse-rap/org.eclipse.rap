@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
   statics : {
 
+    // This factor must be in sync with server side Text#getLineHeight()
+    LINE_HEIGT_FACTOR : 1.2,
+
     // === Public methods ===
 
     /*
@@ -24,10 +27,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      */
     initialize : function( text ) {
       if( text.isCreated() ) {
-        org.eclipse.swt.TextUtil._doAddListener( text );
+        org.eclipse.swt.TextUtil._doInitialize( text );
       } else {
         text.addEventListener( "appear",
-                               org.eclipse.swt.TextUtil._onAppearAddListener );
+                               org.eclipse.swt.TextUtil._onAppearInitialize );
       }
       text.setLiveUpdate( true );
       text.setSpellCheck( false );
@@ -83,21 +86,23 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     // === Private methods ===
 
-    _onAppearAddListener : function( event ) {
+    _onAppearInitialize : function( event ) {
       // TODO [rst] Optimize: add/remove listener on change of
       //            hasVerifyOrModifyListener property
       var text = event.getTarget();
       text.removeEventListener( "appear",
-                                org.eclipse.swt.TextUtil._onAppearAddListener );
-      org.eclipse.swt.TextUtil._doAddListener( text );
+                                org.eclipse.swt.TextUtil._onAppearInitialize );
+      org.eclipse.swt.TextUtil._doInitialize( text );
     },
 
-    _doAddListener : function( text ) {
+    _doInitialize : function( text ) {
       text.addEventListener( "mouseup", org.eclipse.swt.TextUtil._onMouseUp );
       text.addEventListener( "keyup", org.eclipse.swt.TextUtil._onKeyUp );
       text.addEventListener( "keydown", org.eclipse.swt.TextUtil._onKeyDown );
       text.addEventListener( "keypress", org.eclipse.swt.TextUtil._onKeyPress );
       text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
+      text.addEventListener( "changeFont", org.eclipse.swt.TextUtil._onFontChange, text );
+      org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
 
     // === Event listener ===
@@ -145,12 +150,22 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onTextChange : function( event ) {
-//      event.debug( "_____ onTextChange ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleModification( text );
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
+    },
+
+    _onFontChange : function( event ) {
+      org.eclipse.swt.TextUtil._updateLineHeight( this );
+    },
+
+    _updateLineHeight : function( text ) {
+      var font = text.getFont();
+      var height = Math.floor( font.getSize()
+                               * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
+      text._inputElement.style.lineHeight = height + "px";
     },
 
     // === Request related ===

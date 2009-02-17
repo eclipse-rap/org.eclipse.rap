@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -61,6 +62,18 @@ public class Text_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // as expected
     }
+  }
+
+  public void testGetLineHeight() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.MULTI );
+    // default theme font is 11px
+    assertEquals( 13, text.getLineHeight() );
+    text.setFont( Graphics.getFont( "Helvetica", 12, SWT.NORMAL ) );
+    assertEquals( 14, text.getLineHeight() );
+    text.setFont( null );
+    assertEquals( 13, text.getLineHeight() );
   }
 
   public void testSelection() {
@@ -322,7 +335,7 @@ public class Text_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -353,7 +366,7 @@ public class Text_Test extends TestCase {
     assertEquals( expected, text.computeSize( 100, 100 ) );
   }
 
-  public void testComputeTrim() throws Exception {
+  public void testComputeTrim() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
