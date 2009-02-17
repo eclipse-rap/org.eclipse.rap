@@ -71,6 +71,8 @@ import org.eclipse.swt.graphics.Cursor;
  * you should do the bulk of your work in another Thread to prevent starvation.
  * It is recommended that fork is set to true in most cases.
  * </p>
+ * 
+ * @since 1.0
  */
 public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		IRunnableContext {
@@ -342,8 +344,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * The cancel button has been pressed.
-	 *
-	 * @since 1.0
 	 */
 	protected void cancelPressed() {
 		// NOTE: this was previously done from a listener installed on the
@@ -372,8 +372,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Clear the cursors in the dialog.
-	 *
-	 * @since 1.0
 	 */
 	protected void clearCursors() {
 		if (cancel != null && !cancel.isDisposed()) {
@@ -433,7 +431,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 *
 	 * @param parent
 	 *            the parent composite
-	 * @since 1.0
 	 */
 	protected void createCancelButton(Composite parent) {
 		cancel = createButton(parent, IDialogConstants.CANCEL_ID,
@@ -529,7 +526,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 *
 	 * @return <code>true</code> to open the dialog before run,
 	 *         <code>false</code> to only create the dialog, but not open it
-	 * @since 1.0
 	 */
 	public boolean getOpenOnRun() {
 		return openOnRun;
@@ -544,7 +540,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 *            <code>true</code> to open the dialog before run,
 	 *            <code>false</code> to only create the dialog, but not open
 	 *            it
-	 * @since 1.0
 	 */
 	public void setOpenOnRun(boolean openOnRun) {
 		this.openOnRun = openOnRun;
@@ -554,7 +549,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Returns the nesting depth of running operations.
 	 *
 	 * @return the nesting depth of running operations
-	 * @since 1.0
 	 */
 	protected int getNestingDepth() {
 		return nestingDepth;
@@ -562,8 +556,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Increments the nesting depth of running operations.
-	 *
-	 * @since 1.0
 	 */
 	protected void incrementNestingDepth() {
 		nestingDepth++;
@@ -571,9 +563,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 
 	/**
 	 * Decrements the nesting depth of running operations.
-	 *
-	 * @since 1.0
-	 *
 	 */
 	protected void decrementNestingDepth() {
 		nestingDepth--;
@@ -583,8 +572,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Called just before the operation is run. Default behaviour is to open or
 	 * create the dialog, based on the setting of <code>getOpenOnRun</code>,
 	 * and increment the nesting depth.
-	 *
-	 * @since 1.0
 	 */
 	protected void aboutToRun() {
 		if (getOpenOnRun()) {
@@ -598,8 +585,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	/**
 	 * Called just after the operation is run. Default behaviour is to decrement
 	 * the nesting depth, and close the dialog.
-	 *
-	 * @since 1.0
 	 */
 	protected void finishedRun() {
 		decrementNestingDepth();
@@ -627,7 +612,6 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * @param b
 	 *            <code>true</code> to enable the cancel button, and
 	 *            <code>false</code> to disable it
-	 * @since 1.0
 	 */
 	protected void setOperationCancelButtonEnabled(boolean b) {
 		operationCancelableState = b;
