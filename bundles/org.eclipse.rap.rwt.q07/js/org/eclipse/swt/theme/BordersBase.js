@@ -120,10 +120,8 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
     },
     
     "table.row.horizontalLine" : {
-      widthTop : 1,
-      widthBottom : 1,
-      colorTop : "table.row.line",
-      colorBottom : "table.row.line"
+      width : [ 0, 0, 1, 0 ],
+      color : "table.row.line"
     },
     
     // -- tree --
