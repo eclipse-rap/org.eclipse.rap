@@ -113,9 +113,7 @@ public final class CommandContributionItem extends ContributionItem {
 	private String tooltip;
 
 	private ImageDescriptor disabledIcon;
-	// RAP [bm]: 
-//	private ImageDescriptor hoverIcon;
-	// RAPEND: [bm] 
+	private ImageDescriptor hoverIcon;
 
 	private String mnemonic;
 
@@ -156,9 +154,7 @@ public final class CommandContributionItem extends ContributionItem {
 
 		this.icon = contributionParameters.icon;
 		this.disabledIcon = contributionParameters.disabledIcon;
-		// RAP [bm]: 
-//		this.hoverIcon = contributionParameters.hoverIcon;
-		// RAPEND: [bm] 
+		this.hoverIcon = contributionParameters.hoverIcon;
 
 		this.label = contributionParameters.label;
 		this.mnemonic = contributionParameters.mnemonic;
@@ -296,10 +292,8 @@ public final class CommandContributionItem extends ContributionItem {
 					ICommandImageService.TYPE_DEFAULT, iconStyle);
 			disabledIcon = service.getImageDescriptor(command.getId(),
 					ICommandImageService.TYPE_DISABLED, iconStyle);
-			// RAP [bm]: 
-//			hoverIcon = service.getImageDescriptor(command.getId(),
-//					ICommandImageService.TYPE_HOVER, iconStyle);
-			// RAPEND: [bm] 
+			hoverIcon = service.getImageDescriptor(command.getId(),
+					ICommandImageService.TYPE_HOVER, iconStyle);
 		}
 	}
 
@@ -710,12 +704,10 @@ public final class CommandContributionItem extends ContributionItem {
 			ToolItem item = (ToolItem) widget;
 			LocalResourceManager m = new LocalResourceManager(JFaceResources
 					.getResources());
-			// RAP [bm]: ToolItem#setHotImage
 			item.setDisabledImage(disabledIcon == null ? null : m
 					.createImage(disabledIcon));
-//			item.setHotImage(hoverIcon == null ? null : m
-//					.createImage(hoverIcon));
-			// RAPEND: [bm] 
+			item.setHotImage(hoverIcon == null ? null : m
+					.createImage(hoverIcon));
 
 			item.setImage(icon == null ? null : m.createImage(icon));
 			disposeOldImages();
@@ -753,8 +745,7 @@ public final class CommandContributionItem extends ContributionItem {
 	}
 
 	private void setHoverIcon(ImageDescriptor desc) {
-		// RAP [bm]: 
-//		hoverIcon = desc;
+		hoverIcon = desc;
 		updateIcons();
 	}
 

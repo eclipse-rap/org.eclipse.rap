@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
@@ -27,6 +28,7 @@ final class ToolItemLCAUtil {
 
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_IMAGE = "image";
+  private static final String PROP_HOT_IMAGE = "hotImage";
   
   private ToolItemLCAUtil() {
     // prevent instantiation
@@ -103,15 +105,25 @@ final class ToolItemLCAUtil {
   ////////
   // Image
 
-  static void preserveImage( final ToolItem toolItem ) {
+  static void preserveImages( final ToolItem toolItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
     adapter.preserve( PROP_IMAGE, getImage( toolItem ) );
+    adapter.preserve( PROP_HOT_IMAGE, toolItem.getHotImage() );
   }
   
-  static void writeImage( final ToolItem toolItem ) throws IOException {
+  static void writeImages( final ToolItem toolItem ) throws IOException {
     Image image = getImage( toolItem );
-    String jsProperty = JSConst.QX_FIELD_ICON;
-    WidgetLCAUtil.writeImage( toolItem, PROP_IMAGE, jsProperty, image );
+    if( WidgetLCAUtil.hasChanged( toolItem, PROP_IMAGE, image, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( toolItem );
+      Object[] args = new Object[] { toolItem, getImagePath( image ) };
+      writer.callStatic( "org.eclipse.swt.ToolItemUtil.setImage", args );
+    }
+    Image hotImage = toolItem.getHotImage();
+    if( WidgetLCAUtil.hasChanged( toolItem, PROP_HOT_IMAGE, hotImage, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( toolItem );
+      Object[] args = new Object[] { toolItem, getImagePath( hotImage ) };
+      writer.callStatic( "org.eclipse.swt.ToolItemUtil.setHotImage", args );
+    }
   }
 
   static Image getImage( final ToolItem toolItem ) {
@@ -125,5 +137,9 @@ final class ToolItemLCAUtil {
       }
     }
     return result;
+  }
+  
+  private static String getImagePath( final Image image ) {
+    return image == null ? null : ResourceFactory.getImagePath( image );
   }
 }

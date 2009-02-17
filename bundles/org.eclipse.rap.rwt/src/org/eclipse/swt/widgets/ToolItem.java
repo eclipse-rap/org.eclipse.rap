@@ -28,7 +28,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * <dd>Selection</dd>
  * </dl>
  * <p>
- * Note: Only one of the styles CHECK, PUSH, RADIO, SEPARATOR and DROP_DOWN 
+ * Note: Only one of the styles CHECK, PUSH, RADIO, SEPARATOR and DROP_DOWN
  * may be specified.
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
@@ -38,6 +38,7 @@ public class ToolItem extends Item {
 
   private static final int DEFAULT_WIDTH = 24;
   private static final int DEFAULT_HEIGHT = 22;
+
   // TODO [rst] Read these values from ThemeAdapter as soon as ToolItem is
   //            themeable
   private static final int DROP_DOWN_ARROW_WIDTH = 15;
@@ -53,8 +54,9 @@ public class ToolItem extends Item {
   private String toolTipText;
   private boolean visible;
   private Image disabledImage;
+  private Image hotImage;
   private final IToolItemAdapter toolItemAdapter;
- 
+
 
   /**
    * Constructs a new instance of this class given its parent
@@ -64,7 +66,7 @@ public class ToolItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -102,7 +104,7 @@ public class ToolItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -140,7 +142,7 @@ public class ToolItem extends Item {
       public boolean getVisible() {
         return ToolItem.this.visible;
       }
-    };  
+    };
   }
 
   /**
@@ -160,7 +162,7 @@ public class ToolItem extends Item {
 
   ////////////////////////////////////////
   // Displayed content (text, image, etc.)
-  
+
   /**
    * Sets the receiver's text. The string may include
    * the mnemonic character.
@@ -175,7 +177,7 @@ public class ToolItem extends Item {
    * escaped by doubling it in the string, causing a single
    * '&amp;' to be displayed.
    * </p>
-   * 
+   *
    * @param text the new text
    *
    * @exception IllegalArgumentException <ul>
@@ -195,14 +197,14 @@ public class ToolItem extends Item {
       super.setText( text );
     }
   }
-  
+
   public void setImage( final Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
-    } 
+    }
   }
-  
+
   /**
    * Sets the receiver's disabled image to the argument, which may be
    * null indicating that no disabled image should be displayed.
@@ -213,20 +215,20 @@ public class ToolItem extends Item {
    * @param image the disabled image to display on the receiver (may be null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public void setDisabledImage( final Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       disabledImage = image;
-    } 
+    }
   }
 
   /**
@@ -250,13 +252,58 @@ public class ToolItem extends Item {
   }
 
   /**
+   * Sets the receiver's hot image to the argument, which may be
+   * null indicating that no hot image should be displayed.
+   * <p>
+   * The hot image is displayed when the mouse enters the receiver.
+   * </p>
+   *
+   * @param image the hot image to display on the receiver (may be null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.2
+   */
+  public void setHotImage( final Image image ) {
+    checkWidget();
+    if( ( style & SWT.SEPARATOR ) == 0 ) {
+      hotImage = image;
+    }
+  }
+
+  /**
+   * Returns the receiver's hot image if it has one, or null
+   * if it does not.
+   * <p>
+   * The hot image is displayed when the mouse enters the receiver.
+   * </p>
+   *
+   * @return the receiver's hot image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.2
+   */
+  public Image getHotImage() {
+    checkWidget();
+    return hotImage;
+  }
+
+  /**
    * Sets the control that is used to fill the bounds of
    * the item when the item is a <code>SEPARATOR</code>.
    *
    * @param control the new control
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
    * </ul>
    * @exception SWTException <ul>
@@ -295,7 +342,7 @@ public class ToolItem extends Item {
     checkWidget();
     return control;
   }
-  
+
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -326,10 +373,10 @@ public class ToolItem extends Item {
     checkWidget();
     return toolTipText;
   }
-  
+
   ///////////
   // Enabled
-  
+
   /**
    * Enables the receiver if the argument is <code>true</code>,
    * and disables it otherwise.
@@ -367,14 +414,14 @@ public class ToolItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #isEnabled
    */
   public boolean getEnabled() {
     checkWidget();
     return ( state & DISABLED ) == 0;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is enabled and all
    * of the receiver's ancestors are enabled, and <code>false</code>
@@ -387,7 +434,7 @@ public class ToolItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #getEnabled
    */
   public boolean isEnabled() {
@@ -397,7 +444,7 @@ public class ToolItem extends Item {
 
   /////////////
   // Dimensions
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent.
@@ -417,7 +464,7 @@ public class ToolItem extends Item {
     int left = clientArea.x;
     int top = clientArea.y;
     int index = parent.indexOf( this );
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // RAP [fappel]: Implementation for performance reason done like suggested:
     //               https://bugs.eclipse.org/bugs/show_bug.cgi?id=231308
@@ -493,10 +540,10 @@ public class ToolItem extends Item {
       resizeControl();
     }
   }
-  
+
   ////////////
   // Selection
-  
+
   /**
    * Returns <code>true</code> if the receiver is selected,
    * and false otherwise.
@@ -522,7 +569,7 @@ public class ToolItem extends Item {
     }
     return result;
   }
-  
+
   /**
    * Sets the selection state of the receiver.
    * <p>
@@ -547,7 +594,7 @@ public class ToolItem extends Item {
 
   ///////////////////////////////////////////
   // Listener registration and deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is selected, by sending
@@ -599,10 +646,10 @@ public class ToolItem extends Item {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
   ///////////////////////////////////
   // Methods to dispose of the widget
-  
+
   void releaseParent() {
     super.releaseParent();
     ItemHolder.removeItem( parent, this );
@@ -620,12 +667,12 @@ public class ToolItem extends Item {
     }
     return result;
   }
-  
+
   private void resizeControl() {
     if( control != null && !control.isDisposed() ) {
       Rectangle itemRect = getBounds();
       control.setSize( itemRect.width, itemRect.height );
-      // In contrast to SWT, placement is relative to the toolitem. 
+      // In contrast to SWT, placement is relative to the toolitem.
       Rectangle rect = control.getBounds();
       int xoff = ( itemRect.width - rect.width ) / 2;
       int yoff = ( itemRect.height - rect.height ) / 2;
@@ -643,7 +690,7 @@ public class ToolItem extends Item {
       }
     }
   }
-  
+
   private static ToolBar checkNull( final ToolBar parent ) {
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -652,16 +699,16 @@ public class ToolItem extends Item {
   }
 
   private static int checkStyle( final int style ) {
-    return checkBits( style, 
-                      SWT.PUSH, 
+    return checkBits( style,
+                      SWT.PUSH,
                       SWT.CHECK,
-                      SWT.RADIO, 
-                      SWT.SEPARATOR, 
+                      SWT.RADIO,
+                      SWT.SEPARATOR,
                       SWT.DROP_DOWN,
                       0 );
   }
-  
-  void setVisible( boolean visible ) {
+
+  void setVisible( final boolean visible ) {
     this.visible = visible;
   }
 }

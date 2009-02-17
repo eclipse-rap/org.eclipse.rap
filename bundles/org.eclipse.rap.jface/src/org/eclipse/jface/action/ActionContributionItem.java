@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Widget;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
+ * @since 1.0
  */
 public class ActionContributionItem extends ContributionItem {
  
@@ -46,8 +47,6 @@ public class ActionContributionItem extends ContributionItem {
 	 * Mode bit: Show text on tool items or buttons, even if an image is
 	 * present. If this mode bit is not set, text is only shown on tool items if
 	 * there is no image present.
-	 * 
-	 * @since 1.0
 	 */
 	public static int MODE_FORCE_TEXT = 1;
 
@@ -1051,8 +1050,7 @@ public class ActionContributionItem extends ContributionItem {
 				return image != null;
 			}
 			ImageDescriptor image = action.getImageDescriptor();
-			// RAP [bm]: hoverImage/hotImage not supported in RWT
-//			ImageDescriptor hoverImage = action.getHoverImageDescriptor();
+			ImageDescriptor hoverImage = action.getHoverImageDescriptor();
 			ImageDescriptor disabledImage = action.getDisabledImageDescriptor();
 
 			// If there is no regular image, but there is a hover image,
@@ -1090,10 +1088,8 @@ public class ActionContributionItem extends ContributionItem {
 			// before regular image
 			((ToolItem) widget).setDisabledImage(disabledImage == null ? null
 					: localManager.createImageWithDefault(disabledImage));
-			// RAP [bm]: 
-//			((ToolItem) widget).setHotImage(hoverImage == null ? null
-//					: localManager.createImageWithDefault(hoverImage));
-			// RAPEND: [bm] 
+			((ToolItem) widget).setHotImage(hoverImage == null ? null
+					: localManager.createImageWithDefault(hoverImage));
 			((ToolItem) widget).setImage(image == null ? null : localManager
 					.createImageWithDefault(image));
 

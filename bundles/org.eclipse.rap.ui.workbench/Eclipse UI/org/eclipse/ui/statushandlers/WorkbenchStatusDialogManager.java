@@ -406,8 +406,7 @@ public class WorkbenchStatusDialogManager {
 
 		private IContributionItem closeAction;
 		private Image normal;
-		// RAP [bm]:
-//		private Image hover;
+		private Image hover;
 
 		private Composite supportArea;
 		private Composite supportAreaContent;
@@ -424,8 +423,7 @@ public class WorkbenchStatusDialogManager {
 				public void fill(ToolBar parent, int index) {
 					final ToolItem item = new ToolItem(parent, SWT.PUSH);
 					item.setImage(normal);
-					// RAP [bm]: ToolItem#setHotImage
-//					item.setHotImage(hover);
+					item.setHotImage(hover);
 					item.setToolTipText(JFaceResources.getString("close")); //$NON-NLS-1$
 					item.addListener(SWT.Selection, new Listener() {
 						public void handleEvent(Event event) {

@@ -41,7 +41,7 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
-    ToolItemLCAUtil.preserveImage( toolItem );
+    ToolItemLCAUtil.preserveImages( toolItem );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
@@ -75,7 +75,7 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeText( toolItem, false );
-    ToolItemLCAUtil.writeImage( toolItem );
+    ToolItemLCAUtil.writeImages( toolItem );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned

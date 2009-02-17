@@ -62,6 +62,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       radio.setLabel( "" );
       org.eclipse.swt.WidgetManager.getInstance().add( radio, id, false );
       radio.setParent( parent );
+      org.eclipse.swt.ToolItemUtil._registerMouseListeners( radio );
     },
 
     createPush : function( id, parent, isFlat ) {
@@ -75,6 +76,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       push.setLabel( "" );
       parent.add( push );
       org.eclipse.swt.WidgetManager.getInstance().add( push, id, false );
+      org.eclipse.swt.ToolItemUtil._registerMouseListeners( push );
     },
 
     createDropDown : function( id, parent, isFlat ) {
@@ -140,6 +142,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       var button = new qx.ui.toolbar.CheckBox();
       parent.add( button );
       org.eclipse.swt.WidgetManager.getInstance().add( button, id, false );
+      org.eclipse.swt.ToolItemUtil._registerMouseListeners( button );
     },
 
     _dropDownSelected : function( evt ) {
@@ -153,6 +156,51 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       var top = qx.html.Location.getPageBoxBottom( element );
       var req = org.eclipse.swt.Request.getInstance();
       org.eclipse.swt.EventUtil.doWidgetSelected( dropDownId, left, top, 0, 0 );
+    },
+    
+    setImage : function( toolItem, image ) {
+      toolItem.setUserData( "image", image );
+      org.eclipse.swt.ToolItemUtil._updateImages( toolItem );
+    },
+    
+    setHotImage : function( toolItem, image ) {
+      toolItem.setUserData( "hotImage", image );
+      org.eclipse.swt.ToolItemUtil._updateImages( toolItem );
+    },
+    
+    _onMouseOver : function( evt ) {
+      var toolItem = evt.getTarget();
+      toolItem.addState( "over" );
+      org.eclipse.swt.ToolItemUtil._updateImages( toolItem );
+    },
+    
+    _onMouseOut : function( evt ) {
+      var toolItem = evt.getTarget();
+      toolItem.removeState( "over" );
+      org.eclipse.swt.ToolItemUtil._updateImages( toolItem );
+    },
+    
+    _updateImages : function( toolItem ) {
+      var image = null;
+      if( toolItem.hasState( "over" ) && toolItem.getEnabled() ) {
+        image = toolItem.getUserData( "hotImage" );
+        if( image == null || image == undefined ) {
+          image = toolItem.getUserData( "image" );
+        }
+      } else {
+        image = toolItem.getUserData( "image" );
+      }     
+      if( image == undefined ) {
+        image = null;
+      }
+      toolItem.setIcon( image );    
+    },
+    
+    _registerMouseListeners : function( toolItem ) {
+      toolItem.addEventListener( "mouseover",
+                                 org.eclipse.swt.ToolItemUtil._onMouseOver );
+      toolItem.addEventListener( "mouseout", 
+                                 org.eclipse.swt.ToolItemUtil._onMouseOut );
     },
 
     checkSelected : function( evt ) {

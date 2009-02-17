@@ -37,7 +37,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
-    ToolItemLCAUtil.preserveImage( toolItem );
+    ToolItemLCAUtil.preserveImages( toolItem );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
@@ -83,7 +83,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeText( toolItem, false );
-    ToolItemLCAUtil.writeImage( toolItem );
+    ToolItemLCAUtil.writeImages( toolItem );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
