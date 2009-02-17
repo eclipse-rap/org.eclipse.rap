@@ -97,7 +97,7 @@
 
   <color name="table.row.line"
       description="Grid line color when linesVisible is true"
-      default="238, 238, 238"
+      default="208, 208, 208"
       css-elements="Table-GridLine"
       css-property="color"
       />

@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     TEXT_END : "</div>",
 
     // TODO [rh] make border color themeable
-    LINE_BORDER : "border-left:1px solid #eeeeee;",
+    LINE_BORDER : "border-left:1px solid #d0d0d0;",
     PADDING_IMAGE : "padding-left:1px;",
     PADDING_TEXT : "padding-left:2px;",
 
