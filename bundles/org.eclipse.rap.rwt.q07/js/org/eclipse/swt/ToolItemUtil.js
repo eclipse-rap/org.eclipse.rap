@@ -184,15 +184,12 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       var image = null;
       if( toolItem.hasState( "over" ) && toolItem.getEnabled() ) {
         image = toolItem.getUserData( "hotImage" );
-        if( image == null || image == undefined ) {
+        if( image === null ) {
           image = toolItem.getUserData( "image" );
         }
       } else {
         image = toolItem.getUserData( "image" );
       }     
-      if( image == undefined ) {
-        image = null;
-      }
       toolItem.setIcon( image );    
     },
     
