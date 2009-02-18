@@ -49,7 +49,7 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 //import org.eclipse.ui.internal.dnd.DragUtil;
 //import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.dnd.SwtUtil;
-//import org.eclipse.ui.internal.intro.IIntroConstants;
+import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.layout.ITrimManager;
 import org.eclipse.ui.internal.layout.IWindowTrim;
 import org.eclipse.ui.internal.presentations.PresentablePart;
@@ -1328,15 +1328,14 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
      * as a ViewPane (not if it's only a placeholder)
      */
     private boolean isIntroInStack() {
-// RAP [rh] Intro mechanism not supported
-//    	LayoutPart[] kids = getChildren();
-//    	for (int i = 0; i < kids.length; i++) {
-//    		if (kids[i] instanceof ViewPane) {
-//    			ViewPane vp = (ViewPane) kids[i];
-//    			if (vp.getID().equals(IIntroConstants.INTRO_VIEW_ID))
-//    				return true;
-//    		}
-//		}
+    	LayoutPart[] kids = getChildren();
+    	for (int i = 0; i < kids.length; i++) {
+    		if (kids[i] instanceof ViewPane) {
+    			ViewPane vp = (ViewPane) kids[i];
+    			if (vp.getID().equals(IIntroConstants.INTRO_VIEW_ID))
+    				return true;
+    		}
+		}
     	return false;
     }
 

@@ -16,7 +16,13 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
@@ -29,25 +35,49 @@ import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IElementFactory;
+import org.eclipse.ui.IPerspectiveRegistry;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.decorators.DecoratorManager;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceManager;
+import org.eclipse.ui.internal.intro.IIntroRegistry;
+import org.eclipse.ui.internal.intro.IntroRegistry;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.operations.WorkbenchOperationSupport;
 import org.eclipse.ui.internal.progress.JobManagerAdapter;
 import org.eclipse.ui.internal.progress.ProgressManager;
-import org.eclipse.ui.internal.registry.*;
-import org.eclipse.ui.internal.themes.*;
+import org.eclipse.ui.internal.registry.ActionSetRegistry;
+import org.eclipse.ui.internal.registry.EditorRegistry;
+import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
+import org.eclipse.ui.internal.registry.PerspectiveRegistry;
+import org.eclipse.ui.internal.registry.PreferencePageRegistryReader;
+import org.eclipse.ui.internal.registry.ViewRegistry;
+import org.eclipse.ui.internal.registry.WorkingSetRegistry;
+import org.eclipse.ui.internal.themes.IThemeRegistry;
+import org.eclipse.ui.internal.themes.ThemeRegistry;
+import org.eclipse.ui.internal.themes.ThemeRegistryReader;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.internal.util.SWTResourceUtil;
-import org.eclipse.ui.internal.wizards.*;
+import org.eclipse.ui.internal.wizards.ExportWizardRegistry;
+import org.eclipse.ui.internal.wizards.ImportWizardRegistry;
+import org.eclipse.ui.internal.wizards.NewWizardRegistry;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.presentations.AbstractPresentationFactory;
 import org.eclipse.ui.views.IViewRegistry;
 import org.eclipse.ui.wizards.IWizardRegistry;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.icu.text.MessageFormat;
@@ -268,7 +298,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      */
     private ProductInfo productInfo = null;
 
-// RAP [rh] Intro mechanism not supported
+    // RAP [bm]: not needed
 //    private IntroRegistry introRegistry;
     
     private WorkbenchOperationSupport operationSupport;
@@ -329,7 +359,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         sharedImages = null;
 
         productInfo = null;
-// RAP [rh] Intro mechanism not supported
+        // RAP [bm]: not needed
 //        introRegistry = null;
         
         if (operationSupport != null) {
@@ -738,19 +768,20 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
       return WorkingSetRegistryStore.getInstance().getWorkingSetRegistry();
     }
 
-// RAP [rh] Intro mechanism not supported
-//    /**
-//     * Returns the introduction registry.
-//     *
-//     * @return the introduction registry.
-//     * @since 1.1
-//     */
-//    public IIntroRegistry getIntroRegistry() {
+    /**
+     * Returns the introduction registry.
+     *
+     * @return the introduction registry.
+     * @since 1.2
+     */
+    public IIntroRegistry getIntroRegistry() {
+    	// RAP [bm]: IntroRegistry must be a session-singleton
 //        if (introRegistry == null) {
 //            introRegistry = new IntroRegistry();
 //        }
 //        return introRegistry;
-//    }
+    	return (IIntroRegistry) SessionSingletonBase.getInstance(IntroRegistry.class);
+    }
     
     /**
 	 * Returns the operation support.

@@ -27,7 +27,9 @@ The life cycle is as follows:
       <complexType>
          <sequence>
             <element ref="intro" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="introProductBinding" minOccurs="0" maxOccurs="unbounded"/>
+            <!-- RAP [bm]: replaced product with branding -->
+            <!--element ref="introProductBinding" minOccurs="0" maxOccurs="unbounded"/-->
+            <element ref="introBrandingBinding" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -116,7 +118,8 @@ Since 3.2
       </complexType>
    </element>
 
-   <element name="introProductBinding">
+   <!-- RAP [bm]: replaced product with branding -->
+   <!--element name="introProductBinding">
       <annotation>
          <documentation>
             Specifies a binding between a product and an introduction. These bindings determine which introduction is appropriate for the current product (as defined by &lt;code&gt;org.eclipse.core.runtime.Platform.getProduct()&lt;/code&gt;).
@@ -138,6 +141,30 @@ Since 3.2
             </annotation>
          </attribute>
       </complexType>
+   </element-->
+
+   <element name="introBrandingBinding">
+      <annotation>
+         <documentation>
+            Specifies a binding between a branding and an introduction. These bindings determine which introduction is appropriate for the current branding (as defined by &lt;code&gt;org.eclipse.rap.ui.branding&lt;/code&gt;).
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="brandingId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique id of a branding
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="introId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique id of an introduction
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
    </element>
 
    <annotation>
@@ -145,7 +172,7 @@ Since 3.2
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         3.0
+         1.2
       </documentation>
    </annotation>
 

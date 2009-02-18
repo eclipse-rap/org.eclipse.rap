@@ -13,22 +13,51 @@
 
 package org.eclipse.ui.internal;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.contexts.ContextManager;
 import org.eclipse.core.databinding.observable.Realm;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionDelta;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.action.ExternalActionManager.*;
-import org.eclipse.jface.bindings.*;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.ExternalActionManager;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ExternalActionManager.CommandCallback;
+import org.eclipse.jface.action.ExternalActionManager.IActiveChecker;
+import org.eclipse.jface.action.ExternalActionManager.IExecuteApplicable;
+import org.eclipse.jface.bindings.BindingManager;
+import org.eclipse.jface.bindings.BindingManagerEvent;
+import org.eclipse.jface.bindings.IBindingManagerListener;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -37,20 +66,53 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.window.*;
+import org.eclipse.jface.window.IShellProvider;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.window.WindowManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
+import org.eclipse.rwt.service.SettingStoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IElementFactory;
+import org.eclipse.ui.ILocalWorkingSetManager;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IPerspectiveRegistry;
+import org.eclipse.ui.ISaveableFilter;
+import org.eclipse.ui.ISaveablePart;
+import org.eclipse.ui.ISaveablesLifecycleListener;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.ISourceProvider;
+import org.eclipse.ui.ISources;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.Saveable;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.activities.IWorkbenchActivitySupport;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -64,27 +126,54 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.actions.CommandAction;
 import org.eclipse.ui.internal.activities.ws.WorkbenchActivitySupport;
 import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
-import org.eclipse.ui.internal.commands.*;
-import org.eclipse.ui.internal.contexts.*;
+import org.eclipse.ui.internal.commands.CommandImageManager;
+import org.eclipse.ui.internal.commands.CommandImageService;
+import org.eclipse.ui.internal.commands.CommandService;
+import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
+import org.eclipse.ui.internal.contexts.ContextService;
+import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
 import org.eclipse.ui.internal.dialogs.PropertyPageContributorManager;
+import org.eclipse.ui.internal.intro.IIntroRegistry;
+import org.eclipse.ui.internal.intro.IntroDescriptor;
 import org.eclipse.ui.internal.keys.BindingService;
 import org.eclipse.ui.internal.menus.FocusControlSourceProvider;
 import org.eclipse.ui.internal.menus.WorkbenchMenuService;
-import org.eclipse.ui.internal.misc.*;
+import org.eclipse.ui.internal.misc.Policy;
+import org.eclipse.ui.internal.misc.StatusUtil;
+import org.eclipse.ui.internal.misc.UIStats;
 import org.eclipse.ui.internal.model.ContributionService;
 import org.eclipse.ui.internal.progress.ProgressManager;
-import org.eclipse.ui.internal.registry.*;
-import org.eclipse.ui.internal.services.*;
+import org.eclipse.ui.internal.registry.IActionSetDescriptor;
+import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
+import org.eclipse.ui.internal.registry.UIExtensionTracker;
+import org.eclipse.ui.internal.services.ActionSetSourceProvider;
+import org.eclipse.ui.internal.services.EvaluationService;
+import org.eclipse.ui.internal.services.IRestrictionService;
+import org.eclipse.ui.internal.services.IServiceLocatorCreator;
+import org.eclipse.ui.internal.services.MenuSourceProvider;
+import org.eclipse.ui.internal.services.ServiceLocator;
+import org.eclipse.ui.internal.services.ServiceLocatorCreator;
+import org.eclipse.ui.internal.services.SourceProviderService;
 import org.eclipse.ui.internal.testing.WorkbenchTestable;
-import org.eclipse.ui.internal.themes.*;
-import org.eclipse.ui.internal.tweaklets.*;
-import org.eclipse.ui.internal.util.*;
+import org.eclipse.ui.internal.themes.ColorDefinition;
+import org.eclipse.ui.internal.themes.FontDefinition;
+import org.eclipse.ui.internal.themes.ThemeElementHelper;
+import org.eclipse.ui.internal.themes.WorkbenchThemeManager;
+import org.eclipse.ui.internal.tweaklets.GrabFocus;
+import org.eclipse.ui.internal.tweaklets.Tweaklets;
+import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
+import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.internal.util.SessionSingletonEventManager;
+import org.eclipse.ui.internal.util.Util;
+import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.model.IContributionService;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.ui.services.*;
+import org.eclipse.ui.services.IDisposable;
+import org.eclipse.ui.services.IEvaluationService;
+import org.eclipse.ui.services.ISourceProviderService;
 import org.eclipse.ui.swt.IFocusService;
 import org.eclipse.ui.themes.IThemeManager;
 import org.eclipse.ui.views.IViewRegistry;
@@ -1260,16 +1349,22 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		// create workbench window manager
 		windowManager = new WindowManager();
 
-// RAP [rh] Intro mechanism not supported
-//		IIntroRegistry introRegistry = WorkbenchPlugin.getDefault()
-//				.getIntroRegistry();
-//		if (introRegistry.getIntroCount() > 0) {
+		IIntroRegistry introRegistry = WorkbenchPlugin.getDefault()
+				.getIntroRegistry();
+		if (introRegistry.getIntroCount() > 0) {
+			// RAP [bm]: no product support - use branding instead
 //			IProduct product = Platform.getProduct();
 //			if (product != null) {
 //				introDescriptor = (IntroDescriptor) introRegistry
 //						.getIntroForProduct(product.getId());
 //			}
-//		}
+			String brandingId = BrandingUtil.getCurrentBrandingId();
+			if (brandingId != null) {
+				introDescriptor = (IntroDescriptor) introRegistry
+						.getIntroForBranding(brandingId);
+			}
+			// ENDRAP
+		}
 
 		// TODO Correctly order service initialization
 		// there needs to be some serious consideration given to
@@ -3036,54 +3131,53 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 
 	private ActivityPersistanceHelper activityHelper;
 
-// RAP [rh] Intro mechanism not supported
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.eclipse.ui.IWorkbench#getIntroManager()
-//	 */
-//	public IIntroManager getIntroManager() {
-//		return getWorkbenchIntroManager();
-//	}
-//
-//	/**
-//	 * @return the workbench intro manager
-//	 */
-//	/* package */WorkbenchIntroManager getWorkbenchIntroManager() {
-//		if (introManager == null) {
-//			introManager = new WorkbenchIntroManager(this);
-//		}
-//		return introManager;
-//	}
-//
-//	private WorkbenchIntroManager introManager;
-//
-//	/**
-//	 * @return the intro extension for this workbench.
-//	 */
-//	public IntroDescriptor getIntroDescriptor() {
-//		return introDescriptor;
-//	}
-//
-//	/**
-//	 * This method exists as a test hook. This method should <strong>NEVER</strong>
-//	 * be called by clients.
-//	 * 
-//	 * @param descriptor
-//	 *            The intro descriptor to use.
-//	 */
-//	public void setIntroDescriptor(IntroDescriptor descriptor) {
-//		if (getIntroManager().getIntro() != null) {
-//			getIntroManager().closeIntro(getIntroManager().getIntro());
-//		}
-//		introDescriptor = descriptor;
-//	}
-//
-//	/**
-//	 * The descriptor for the intro extension that is valid for this workspace,
-//	 * <code>null</code> if none.
-//	 */
-//	private IntroDescriptor introDescriptor;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IWorkbench#getIntroManager()
+	 */
+	public IIntroManager getIntroManager() {
+		return getWorkbenchIntroManager();
+	}
+
+	/**
+	 * @return the workbench intro manager
+	 */
+	/* package */WorkbenchIntroManager getWorkbenchIntroManager() {
+		if (introManager == null) {
+			introManager = new WorkbenchIntroManager(this);
+		}
+		return introManager;
+	}
+
+	private WorkbenchIntroManager introManager;
+
+	/**
+	 * @return the intro extension for this workbench.
+	 */
+	public IntroDescriptor getIntroDescriptor() {
+		return introDescriptor;
+	}
+
+	/**
+	 * This method exists as a test hook. This method should <strong>NEVER</strong>
+	 * be called by clients.
+	 * 
+	 * @param descriptor
+	 *            The intro descriptor to use.
+	 */
+	public void setIntroDescriptor(IntroDescriptor descriptor) {
+		if (getIntroManager().getIntro() != null) {
+			getIntroManager().closeIntro(getIntroManager().getIntro());
+		}
+		introDescriptor = descriptor;
+	}
+
+	/**
+	 * The descriptor for the intro extension that is valid for this workspace,
+	 * <code>null</code> if none.
+	 */
+	private IntroDescriptor introDescriptor;
 
 	private IExtensionTracker tracker;
 

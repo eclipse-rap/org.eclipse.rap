@@ -96,7 +96,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.WorkbenchWindow;
-//import org.eclipse.ui.internal.intro.IIntroConstants;
+import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2;
 import org.eclipse.ui.internal.registry.ActionSetDescriptor;
 import org.eclipse.ui.internal.registry.ActionSetRegistry;
@@ -1653,10 +1653,9 @@ public class CustomizePerspectiveDialog extends TrayDialog {
                 if (views != null) {
                     for (int j = 0; j < views.length; j++) {
                         IViewDescriptor view = views[j];
-// RAP [rh] Intro mechanism not supported
-//                        if (view.getId().equals(IIntroConstants.INTRO_VIEW_ID)) {
-//							continue;
-//						}
+                        if (view.getId().equals(IIntroConstants.INTRO_VIEW_ID)) {
+							continue;
+						}
                         if (WorkbenchActivityHelper.filterItem(view)) {
 							continue;
 						}

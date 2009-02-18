@@ -17,13 +17,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
-//import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.internal.WorkbenchWindowConfigurer;
-//import org.eclipse.ui.internal.util.PrefUtil;
-//import org.eclipse.ui.intro.IIntroManager;
+import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.intro.IIntroManager;
 
 /**
  * Public base class for configuring a workbench window.
@@ -134,50 +134,50 @@ public class WorkbenchWindowAdvisor {
         // do nothing
     }
 
-// RAP [rh] Intro mechanism not supported
-//    /**
-//     * Opens the introduction componenet.  
-//     * <p>
-//     * Clients must not call this method directly (although super calls are okay).
-//     * The default implementation opens the intro in the first window provided
-//     * if the preference IWorkbenchPreferences.SHOW_INTRO is <code>true</code>.  If 
-//     * an intro is shown then this preference will be set to <code>false</code>.  
-//     * Subsequently, and intro will be shown only if 
-//     * <code>WorkbenchConfigurer.getSaveAndRestore()</code> returns 
-//     * <code>true</code> and the introduction was visible on last shutdown.  
-//     * Subclasses may override.
-//     * </p>
-//     */
-//    public void openIntro() {
-//        // TODO: Refactor this into an IIntroManager.openIntro(IWorkbenchWindow) call
-//        
-//        // introOpened flag needs to be global
-//        IWorkbenchConfigurer wbConfig = getWindowConfigurer().getWorkbenchConfigurer();
-//        final String key = "introOpened"; //$NON-NLS-1$
-//        Boolean introOpened = (Boolean) wbConfig.getData(key);
-//        if (introOpened != null && introOpened.booleanValue()) {
-//			return;
-//		}
-//
-//        wbConfig.setData(key, Boolean.TRUE);
-//
-//        boolean showIntro = PrefUtil.getAPIPreferenceStore().getBoolean(
-//                IWorkbenchPreferenceConstants.SHOW_INTRO);
-//        
-//        IIntroManager introManager = wbConfig.getWorkbench().getIntroManager();
-//        
-//        boolean hasIntro = introManager.hasIntro();
-//        boolean isNewIntroContentAvailable = introManager.isNewContentAvailable();
-//        
-//		if (hasIntro && (showIntro || isNewIntroContentAvailable)) {
-//            introManager
-//                    .showIntro(getWindowConfigurer().getWindow(), false);
-//
-//            PrefUtil.getAPIPreferenceStore().setValue(
-//                    IWorkbenchPreferenceConstants.SHOW_INTRO, false);
-//            PrefUtil.saveAPIPrefs();
-//        }
-//    }
+    /**
+     * Opens the introduction componenet.  
+     * <p>
+     * Clients must not call this method directly (although super calls are okay).
+     * The default implementation opens the intro in the first window provided
+     * if the preference IWorkbenchPreferences.SHOW_INTRO is <code>true</code>.  If 
+     * an intro is shown then this preference will be set to <code>false</code>.  
+     * Subsequently, and intro will be shown only if 
+     * <code>WorkbenchConfigurer.getSaveAndRestore()</code> returns 
+     * <code>true</code> and the introduction was visible on last shutdown.  
+     * Subclasses may override.
+     * </p>
+	 * @since 1.2
+     */
+    public void openIntro() {
+        // TODO: Refactor this into an IIntroManager.openIntro(IWorkbenchWindow) call
+        
+        // introOpened flag needs to be global
+        IWorkbenchConfigurer wbConfig = getWindowConfigurer().getWorkbenchConfigurer();
+        final String key = "introOpened"; //$NON-NLS-1$
+        Boolean introOpened = (Boolean) wbConfig.getData(key);
+        if (introOpened != null && introOpened.booleanValue()) {
+			return;
+		}
+
+        wbConfig.setData(key, Boolean.TRUE);
+
+        boolean showIntro = PrefUtil.getAPIPreferenceStore().getBoolean(
+                IWorkbenchPreferenceConstants.SHOW_INTRO);
+        
+        IIntroManager introManager = wbConfig.getWorkbench().getIntroManager();
+        
+        boolean hasIntro = introManager.hasIntro();
+        boolean isNewIntroContentAvailable = introManager.isNewContentAvailable();
+        
+		if (hasIntro && (showIntro || isNewIntroContentAvailable)) {
+            introManager
+                    .showIntro(getWindowConfigurer().getWindow(), false);
+
+            PrefUtil.getAPIPreferenceStore().setValue(
+                    IWorkbenchPreferenceConstants.SHOW_INTRO, false);
+            PrefUtil.saveAPIPrefs();
+        }
+    }
 
     /**
      * Performs arbitrary actions after the window has been created (possibly 

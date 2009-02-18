@@ -220,19 +220,19 @@ public interface IWorkbenchPreferenceConstants {
 	 */
 	public static final String RIGHT = "right"; //$NON-NLS-1$
 
-	// RAP [bm]: intro
-//	/**
-//	 * A named preference indicating whether the workbench should show the
-//	 * introduction component (if available) on startup.
-//	 * 
-//	 * <p>
-//	 * The default value for this preference is: <code>true</code> (show
-//	 * intro)
-//	 * </p>
-//	 * 
-//	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#openIntro()
-//	 */
-//	public static final String SHOW_INTRO = "showIntro"; //$NON-NLS-1$
+	/**
+	 * A named preference indicating whether the workbench should show the
+	 * introduction component (if available) on startup.
+	 * 
+	 * <p>
+	 * The default value for this preference is: <code>true</code> (show
+	 * intro)
+	 * </p>
+	 * 
+	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#openIntro()
+     * @since 1.2
+	 */
+	public static final String SHOW_INTRO = "showIntro"; //$NON-NLS-1$
 
 	// RAP [bm]: no different tab styles in ctabfolder
 //	/**

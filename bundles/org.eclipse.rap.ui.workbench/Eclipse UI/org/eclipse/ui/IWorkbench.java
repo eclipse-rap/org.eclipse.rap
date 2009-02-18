@@ -20,11 +20,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.activities.IWorkbenchActivitySupport;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.commands.ICommandService;
-//import org.eclipse.ui.commands.IWorkbenchCommandSupport;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
-//import org.eclipse.ui.intro.IIntroManager;
+import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.eclipse.ui.progress.IProgressService;
@@ -497,15 +496,14 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 	 */
 	public IThemeManager getThemeManager();
 
-// RAP [rh] Intro mechanism not supported
-//	/**
-//	 * Return the intro manager for this workbench.
-//	 * 
-//	 * @return the intro manager for this workbench. Guaranteed not to be
-//	 *         <code>null</code>.
-//	 * @since 1.1
-//	 */
-//	public IIntroManager getIntroManager();
+	/**
+	 * Return the intro manager for this workbench.
+	 * 
+	 * @return the intro manager for this workbench. Guaranteed not to be
+	 *         <code>null</code>.
+	 * @since 1.2
+	 */
+	public IIntroManager getIntroManager();
 
 	// RAP [bm]: 
 //	/**

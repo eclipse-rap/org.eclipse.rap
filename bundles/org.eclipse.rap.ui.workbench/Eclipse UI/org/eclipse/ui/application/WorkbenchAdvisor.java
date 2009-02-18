@@ -25,6 +25,7 @@ import org.eclipse.ui.internal.StartupThreading;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.WorkbenchWindowConfigurer;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
+import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.model.ContributionComparator;
 import org.eclipse.ui.model.IContributionService;
 import org.eclipse.ui.statushandlers.AbstractStatusHandler;
@@ -159,8 +160,7 @@ public abstract class WorkbenchAdvisor {
 	 */
 	private AbstractStatusHandler workbenchErrorHandler;
 
-// RAP [rh] unused code as openIntro code is disabled 	
-//	private boolean introOpened;
+	private boolean introOpened;
 
 	/**
 	 * Creates and initializes a new workbench advisor instance.
@@ -485,52 +485,52 @@ public abstract class WorkbenchAdvisor {
 		// do nothing
 	}
 
-// RAP [rh] intro not yet supported	
-//	/**
-//	 * Opens the introduction componenet.
-//	 * <p>
-//	 * Clients must not call this method directly (although super calls are
-//	 * okay). The default implementation opens the intro in the first window
-//	 * provided the preference IWorkbenchPreferences.SHOW_INTRO is
-//	 * <code>true</code>. If an intro is shown then this preference will be
-//	 * set to <code>false</code>. Subsequently, and intro will be shown only
-//	 * if <code>WorkbenchConfigurer.getSaveAndRestore()</code> returns
-//	 * <code>true</code> and the introduction was visible on last shutdown.
-//	 * Subclasses may override.
-//	 * </p>
-//	 * 
-//	 * @param configurer
-//	 *            configurer an object for configuring the particular workbench
-//	 *            window just created
-//	 * 
-//	 * @deprecated since 3.1, override
-//	 *             {@link WorkbenchWindowAdvisor#openIntro()} instead
-//	 * @see #createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
-//	 */
-//	public void openIntro(IWorkbenchWindowConfigurer configurer) {
-//		if (introOpened) {
-//			return;
-//		}
-//
-//		introOpened = true;
-//
-//		boolean showIntro = PrefUtil.getAPIPreferenceStore().getBoolean(
-//				IWorkbenchPreferenceConstants.SHOW_INTRO);
-//
-//		if (!showIntro) {
-//			return;
-//		}
-//
-//		if (getWorkbenchConfigurer().getWorkbench().getIntroManager()
-//				.hasIntro()) {
-//			getWorkbenchConfigurer().getWorkbench().getIntroManager()
-//					.showIntro(configurer.getWindow(), false);
-//
-//			PrefUtil.getAPIPreferenceStore().setValue(
-//					IWorkbenchPreferenceConstants.SHOW_INTRO, false);
-//			PrefUtil.saveAPIPrefs();
-//		}
-//	}
+	/**
+	 * Opens the introduction componenet.
+	 * <p>
+	 * Clients must not call this method directly (although super calls are
+	 * okay). The default implementation opens the intro in the first window
+	 * provided the preference IWorkbenchPreferences.SHOW_INTRO is
+	 * <code>true</code>. If an intro is shown then this preference will be
+	 * set to <code>false</code>. Subsequently, and intro will be shown only
+	 * if <code>WorkbenchConfigurer.getSaveAndRestore()</code> returns
+	 * <code>true</code> and the introduction was visible on last shutdown.
+	 * Subclasses may override.
+	 * </p>
+	 * 
+	 * @param configurer
+	 *            configurer an object for configuring the particular workbench
+	 *            window just created
+	 * 
+	 * @deprecated since 3.1, override
+	 *             {@link WorkbenchWindowAdvisor#openIntro()} instead
+	 * @see #createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
+	 * @since 1.2
+	 */
+	public void openIntro(IWorkbenchWindowConfigurer configurer) {
+		if (introOpened) {
+			return;
+		}
+
+		introOpened = true;
+
+		boolean showIntro = PrefUtil.getAPIPreferenceStore().getBoolean(
+				IWorkbenchPreferenceConstants.SHOW_INTRO);
+
+		if (!showIntro) {
+			return;
+		}
+
+		if (getWorkbenchConfigurer().getWorkbench().getIntroManager()
+				.hasIntro()) {
+			getWorkbenchConfigurer().getWorkbench().getIntroManager()
+					.showIntro(configurer.getWindow(), false);
+
+			PrefUtil.getAPIPreferenceStore().setValue(
+					IWorkbenchPreferenceConstants.SHOW_INTRO, false);
+			PrefUtil.saveAPIPrefs();
+		}
+	}
 
 	/**
 	 * Performs arbitrary actions after the given workbench window has been

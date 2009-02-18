@@ -87,8 +87,7 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 				IWorkbenchPreferenceConstants.BOTTOM);
 
 		// default to showing intro on startup
-		// RAP [bm]: no intro
-//		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_INTRO, true);
+		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_INTRO, true);
 
 		// Default to the standard key configuration.
 		// RAP [bm]: Bindings

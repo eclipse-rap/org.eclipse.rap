@@ -92,7 +92,7 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.contexts.ContextAuthority;
 import org.eclipse.ui.internal.dialogs.CustomizePerspectiveDialog;
 import org.eclipse.ui.internal.dnd.SwtUtil;
-//import org.eclipse.ui.internal.intro.IIntroConstants;
+import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.misc.UIListenerLogging;
 import org.eclipse.ui.internal.misc.UIStats;
 import org.eclipse.ui.internal.registry.ActionSetRegistry;
@@ -862,17 +862,15 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      */
     private void busyResetPerspective() {
 
-// RAP [rh] Intro mechanism not supported
-//        ViewIntroAdapterPart introViewAdapter = ((WorkbenchIntroManager) getWorkbenchWindow()
-//                .getWorkbench().getIntroManager()).getViewIntroAdapterPart();
-//        PartPane introPane = null;
+        ViewIntroAdapterPart introViewAdapter = ((WorkbenchIntroManager) getWorkbenchWindow()
+                .getWorkbench().getIntroManager()).getViewIntroAdapterPart();
+        PartPane introPane = null;
         boolean introFullScreen = false;
-// RAP [rh] Intro mechanism not supported
-//        if (introViewAdapter != null) {
-//            introPane = ((PartSite) introViewAdapter.getSite()).getPane();
-//            introViewAdapter.setHandleZoomEvents(false);
-//            introFullScreen = introPane.isZoomed();
-//        }
+        if (introViewAdapter != null) {
+            introPane = ((PartSite) introViewAdapter.getSite()).getPane();
+            introViewAdapter.setHandleZoomEvents(false);
+            introFullScreen = introPane.isZoomed();
+        }
 
         //try to prevent intro flicker.
         if (introFullScreen) {
@@ -934,32 +932,30 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
             // Update the Coolbar layout.
             resetToolBarLayout();
 
-// RAP [rh] Intro mechanism not supported
-//            // restore the maximized intro
-//            if (introViewAdapter != null) {
-//                try {
-//                    // ensure that the intro is visible in the new perspective
-//                    showView(IIntroConstants.INTRO_VIEW_ID);
-//                    if (introFullScreen) {
-//						toggleZoom(introPane.getPartReference());
-//					}
-//                } catch (PartInitException e) {
-//                    WorkbenchPlugin.log("Could not restore intro", //$NON-NLS-1$
-//                            WorkbenchPlugin.getStatus(e));
-//                } finally {
-//                    // we want the intro back to a normal state before we fire the event
-//                    introViewAdapter.setHandleZoomEvents(true);
-//                }
-//            }
+            // restore the maximized intro
+            if (introViewAdapter != null) {
+                try {
+                    // ensure that the intro is visible in the new perspective
+                    showView(IIntroConstants.INTRO_VIEW_ID);
+                    if (introFullScreen) {
+						toggleZoom(introPane.getPartReference());
+					}
+                } catch (PartInitException e) {
+                    WorkbenchPlugin.log("Could not restore intro", //$NON-NLS-1$
+                            WorkbenchPlugin.getStatus(e));
+                } finally {
+                    // we want the intro back to a normal state before we fire the event
+                    introViewAdapter.setHandleZoomEvents(true);
+                }
+            }
             // Notify listeners that we have completed our reset.
             window.firePerspectiveChanged(this, desc, CHANGE_RESET_COMPLETE);
         } finally {
-// RAP [rh] Intro mechanism not supported
-//            // reset the handling of zoom events (possibly for the second time) in case there was 
-//            // an exception thrown
-//            if (introViewAdapter != null) {
-//				introViewAdapter.setHandleZoomEvents(true);
-//			}
+            // reset the handling of zoom events (possibly for the second time) in case there was 
+            // an exception thrown
+            if (introViewAdapter != null) {
+				introViewAdapter.setHandleZoomEvents(true);
+			}
 
             if (introFullScreen) {
 				window.getShell().setRedraw(true);
