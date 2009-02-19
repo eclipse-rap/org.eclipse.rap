@@ -17,6 +17,7 @@ import java.util.Map;
 //import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -61,10 +62,16 @@ import org.eclipse.ui.internal.util.BundleUtility;
  */
 public/*final*/class WorkbenchImages {
 
-    private static Map descriptors;
+// RAP [rh] imageRegistry and descriptors must have session scope  
+//    private static Map descriptors;
 
-    private static ImageRegistry imageRegistry;
-
+//    private static ImageRegistry imageRegistry;
+    private static final String DESCRIPTORS
+      = WorkbenchImages.class.getName() + "#descriptors";
+    private static final String IMAGE_REGISTRY
+      = WorkbenchImages.class.getName() + "#imageRegistry";
+// End RAP specific
+    
     /* Declare Common paths */
 
     public final static String ICONS_PATH = "$nl$/icons/full/";//$NON-NLS-1$
@@ -468,10 +475,17 @@ public/*final*/class WorkbenchImages {
      * @return the map from symbolic name to ImageDescriptor.
      */
     private static Map getDescriptors() {
-        if (descriptors == null) {
+// RAP [rh] imageRegistry and descriptors must have session scope  
+//        if (descriptors == null) {
+//            initializeImageRegistry();
+//        }
+//        return descriptors;
+      Map descriptors = ( Map )RWT.getSessionStore().getAttribute( DESCRIPTORS );
+      if( descriptors == null ) {
             initializeImageRegistry();
-        }
-        return descriptors;
+            descriptors = ( Map )RWT.getSessionStore().getAttribute( DESCRIPTORS );
+      }
+      return descriptors;
     }
     
     /**
@@ -502,7 +516,7 @@ public/*final*/class WorkbenchImages {
         return (ImageDescriptor) getDescriptors().get(symbolicName);
     }
 
-// RAP [rh] external programs not suuported     
+// RAP [rh] external programs not supported     
 //    /**
 //     * Convenience Method.
 //     * Returns an ImageDescriptor obtained from an external program.
@@ -535,10 +549,17 @@ public/*final*/class WorkbenchImages {
      * Returns the ImageRegistry.
      */
     public static ImageRegistry getImageRegistry() {
-        if (imageRegistry == null) {
-            initializeImageRegistry();
-        }
-        return imageRegistry;
+// RAP [rh] imageRegistry and descriptors must have session scope      
+//        if (imageRegistry == null) {
+//            initializeImageRegistry();
+//        }
+//        return imageRegistry;
+      ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY );
+      if( imageRegistry == null ) {
+        initializeImageRegistry();
+        imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY ); 
+      }
+      return imageRegistry;
     }
 
     /**
@@ -569,8 +590,14 @@ public/*final*/class WorkbenchImages {
      *  @see ImageRegistry
      */
     private static void initializeImageRegistry() {
-        imageRegistry = new ImageRegistry();
-        descriptors = new HashMap();
+// RAP [rh] imageRegistry and descriptors must have session scope  
+//        imageRegistry = new ImageRegistry();
+//        descriptors = new HashMap();
+        ImageRegistry imageRegistry = new ImageRegistry();
+        RWT.getSessionStore().setAttribute( IMAGE_REGISTRY, imageRegistry );
+        Map descriptors = new HashMap();
+        RWT.getSessionStore().setAttribute( DESCRIPTORS, descriptors );
+// End RAP specific        
         declareImages();
     }
     
@@ -579,11 +606,18 @@ public/*final*/class WorkbenchImages {
      * Called when the workbench is shutting down.
      */
     public static void dispose() {
-        if (imageRegistry != null) {
-            imageRegistry.dispose();
-            imageRegistry = null;
-            descriptors = null;
-        }
+// RAP [rh] imageRegistry and descriptors must have session scope        
+//        if (imageRegistry != null) {
+//            imageRegistry.dispose();
+//            imageRegistry = null;
+//            descriptors = null;
+//        }
+      ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY );
+      if (imageRegistry != null) {
+          imageRegistry.dispose();
+          RWT.getSessionStore().setAttribute( IMAGE_REGISTRY, null );
+          RWT.getSessionStore().setAttribute( DESCRIPTORS, null );
+      }
     }
 	
 	/**
