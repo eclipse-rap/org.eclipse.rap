@@ -109,7 +109,7 @@ public class ViewForm extends Composite {
   static final int OFFSCREEN = -200;
 
   // static final int BORDER1_COLOR = SWT.COLOR_WIDGET_NORMAL_SHADOW;
-  // static final int SELECTION_BACKGROUND = SWT.COLOR_LIST_BACKGROUND;
+  static final int SELECTION_BACKGROUND = SWT.COLOR_LIST_BACKGROUND;
   /**
    * Constructs a new instance of this class given its parent and a style value
    * describing its behavior and appearance.
@@ -179,14 +179,15 @@ public class ViewForm extends Composite {
     return style & mask /* | SWT.NO_REDRAW_RESIZE */ ;
   }
 
-  // protected void checkSubclass () {
-  // String name = getClass().getName ();
-  // String validName = ViewForm.class.getName();
-  // if (!validName.equals(name)) {
-  // SWT.error (SWT.ERROR_INVALID_SUBCLASS);
-  // }
-  // }
-  public Rectangle computeTrim( int x, int y, int width, int height ) {
+   protected void checkSubclass() {
+    String name = getClass().getName();
+    String validName = ViewForm.class.getName();
+    if( !validName.equals( name ) ) {
+      SWT.error( SWT.ERROR_INVALID_SUBCLASS );
+    }
+  }
+
+   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int trimX = x - borderLeft - highlight;
     int trimY = y - borderTop - highlight;
@@ -320,8 +321,7 @@ public class ViewForm extends Composite {
       this.content.setBounds( OFFSCREEN, OFFSCREEN, 0, 0 );
     }
     this.content = content;
-    // layout(false);
-    layout();
+    layout(false);
   }
 
   /**
@@ -349,10 +349,9 @@ public class ViewForm extends Composite {
     checkWidget();
     if( selectionBackground == color )
       return;
-    // if (color == null) color =
-    // getDisplay().getSystemColor(SELECTION_BACKGROUND);
+    if (color == null) color = getDisplay().getSystemColor(SELECTION_BACKGROUND);
     selectionBackground = color;
-    // redraw();
+    redraw();
   }
 
   /**
@@ -381,8 +380,7 @@ public class ViewForm extends Composite {
       this.topCenter.setLocation( OFFSCREEN - size.x, OFFSCREEN - size.y );
     }
     this.topCenter = topCenter;
-    // layout(false);
-    layout();
+    layout(false);
   }
 
   /**
@@ -411,8 +409,7 @@ public class ViewForm extends Composite {
       this.topLeft.setLocation( OFFSCREEN - size.x, OFFSCREEN - size.y );
     }
     this.topLeft = c;
-    // layout(false);
-    layout();
+    layout(false);
   }
 
   /**
@@ -442,8 +439,7 @@ public class ViewForm extends Composite {
       this.topRight.setLocation( OFFSCREEN - size.x, OFFSCREEN - size.y );
     }
     this.topRight = c;
-    // layout(false);
-    layout();
+    layout(false);
   }
 
   /**
@@ -470,9 +466,8 @@ public class ViewForm extends Composite {
       borderBottom = borderTop = borderLeft = borderRight = 0;
       highlight = 0;
     }
-    // layout(false);
-    layout();
-    // redraw();
+    layout(false);
+    redraw();
   }
 
   /**
@@ -492,7 +487,6 @@ public class ViewForm extends Composite {
   public void setTopCenterSeparate( boolean show ) {
     checkWidget();
     separateTopCenter = show;
-    // layout(false);
-    layout();
+    layout(false);
   }
 }
