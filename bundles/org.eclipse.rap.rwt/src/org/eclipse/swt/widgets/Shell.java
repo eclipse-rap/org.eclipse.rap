@@ -393,7 +393,6 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @since 1.0
    * @see Control#moveAbove
    * @see Control#setFocus
    * @see Control#setVisible
