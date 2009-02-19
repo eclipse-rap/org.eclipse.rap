@@ -14,8 +14,7 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -411,6 +410,31 @@ public class Shell extends Decorations {
     }
   }
 
+  /**
+   * If the receiver is visible, moves it to the top of the drawing order for
+   * the display on which it was created (so that all other shells on that
+   * display, which are not the receiver's children will be drawn behind it) and
+   * forces the window manager to make the shell active.
+   * 
+   * @exception SWTException <ul>
+   *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *   <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *   created the receiver</li>
+   * </ul>
+   * @since 1.2
+   * @see Control#moveAbove
+   * @see Control#setFocus
+   * @see Control#setVisible
+   * @see Display#getActiveShell
+   * <!--@see Decorations#setDefaultButton-->
+   * @see Shell#open
+   * @see Shell#setActive
+   */
+  public void forceActive() {
+    checkWidget();
+    setActive();
+  }
+
   /////////////////////
   // Shell measurements
 
@@ -590,7 +614,7 @@ public class Shell extends Decorations {
    * <!-- @see Decorations#setDefaultButton -->
    * @see Shell#setDefaultButton(Button)
    * @see Shell#setActive
-   * <!--@see Shell#forceActive-->
+   * @see Shell#forceActive
    */
   public void open() {
     checkWidget();
@@ -894,7 +918,7 @@ public class Shell extends Decorations {
   public void addShellListener( final ShellListener listener ) {
     ShellEvent.addListener( this, listener );
   }
-
+  
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when operations are performed on the receiver.

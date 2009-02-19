@@ -284,6 +284,17 @@ public class Shell_Test extends TestCase {
     assertEquals( null, shell.getDefaultButton() );
   }
 
+  public void testForceActive() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Shell secondShell = new Shell( display );
+    shell.open();
+    secondShell.open();
+    assertSame( secondShell, display.getActiveShell() );
+    shell.forceActive();
+    assertSame( shell, display.getActiveShell() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
