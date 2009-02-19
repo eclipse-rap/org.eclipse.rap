@@ -127,6 +127,36 @@ public abstract class Device {
     return QxFont.createFont( ( QxFont )font );
   }
 
+  /**
+   * Returns a rectangle which describes the area of the receiver which is
+   * capable of displaying data.
+   * 
+   * @return the client area
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @see #getBounds
+   * @since 1.2
+   */
+  public Rectangle getClientArea() {
+    checkDevice();
+    return getBounds();
+  }
+  
+  /**
+   * Returns a rectangle describing the receiver's size and location.
+   * 
+   * @return the bounding rectangle
+   * @exception SWTException <ul>
+   *   <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @since 1.2
+   */
+  public Rectangle getBounds() {
+    checkDevice();
+    return new Rectangle( 0, 0, 0, 0 );
+  }
+  
 //  /**
 //   * Throws an <code>SWTException</code> if the receiver can not
 //   * be accessed by the caller. This may include both checks on

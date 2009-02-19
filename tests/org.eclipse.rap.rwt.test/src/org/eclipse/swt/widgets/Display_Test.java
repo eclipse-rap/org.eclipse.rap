@@ -24,6 +24,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
 public class Display_Test extends TestCase {
@@ -134,7 +135,16 @@ public class Display_Test extends TestCase {
     assertTrue( bounds.x != display.getBounds().x );
   }
 
-
+  public void testClientArea() throws Exception {
+    Display display = new Display();
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    Rectangle testRect = new Rectangle( 1, 2, 3, 4 );
+    displayAdapter.setBounds( testRect );
+    Rectangle clientArea = display.getClientArea();
+    assertEquals( testRect, clientArea );
+  }
+  
   public void testMap() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
