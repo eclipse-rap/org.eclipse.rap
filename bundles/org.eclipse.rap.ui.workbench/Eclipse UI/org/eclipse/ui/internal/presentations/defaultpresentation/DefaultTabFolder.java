@@ -55,6 +55,8 @@ public class DefaultTabFolder extends AbstractTabFolder {
     private PaneFolder paneFolder;
     private Control viewToolBar;
     private Label titleLabel;
+// RAP [if] ActivateListener used for mimic the part activation that is done via mouse listeners
+    private ActivateListener activateListener;
     
     private PaneFolderButtonListener buttonListener = new PaneFolderButtonListener() {
         public void stateButtonPressed(int buttonId) {
@@ -143,7 +145,7 @@ public class DefaultTabFolder extends AbstractTabFolder {
         }
 
 // RAP [rh] create ActivateListener, used below       
-        ActivateListener activateListener = new ActivateAdapter() {
+        activateListener = new ActivateAdapter() {
             public void activated( ActivateEvent event ) {
               fireEvent( TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART );
             }
@@ -427,6 +429,10 @@ public class DefaultTabFolder extends AbstractTabFolder {
      * @see org.eclipse.ui.internal.presentations.util.AbstractTabFolder#setToolbar(org.eclipse.swt.widgets.Control)
      */
     public void setToolbar(Control toolbarControl) {
+// RAP [if] Mimic the part activation that is done via mouse listeners
+        if( toolbarControl != null ) {
+          ActivateEvent.addListener( toolbarControl, activateListener );
+        }
         paneFolder.setTopCenter(toolbarControl);
         super.setToolbar(toolbarControl);
     }
