@@ -8,8 +8,22 @@ ToolBar {
 ToolItem {
   color: black;
   background-color: transparent;
+  border: 1px outset;
+  padding: 2px 3px;
+}
+
+ToolItem[FLAT] {
+  border: none;
+  padding: 3px 4px;
 }
 
 ToolItem:hover {
   background-color: white;
+  border: 1px outset;
+  padding: 2px 3px;
+}
+
+ToolItem:pressed, ToolItem:selected {
+  border: 1px inset;
+  padding: 3px 2px 1px 4px;
 }

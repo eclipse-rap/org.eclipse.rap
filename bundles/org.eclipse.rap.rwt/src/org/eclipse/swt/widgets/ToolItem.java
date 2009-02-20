@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -17,6 +18,8 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
+
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -41,11 +44,9 @@ public class ToolItem extends Item {
 
   // TODO [rst] Read these values from ThemeAdapter as soon as ToolItem is
   //            themeable
-  private static final int DROP_DOWN_ARROW_WIDTH = 15;
+  private static final int DROP_DOWN_ARROW_WIDTH = 9;
   private static final int SEPARATOR_WIDTH = 8;
   private static final int SPACING = 4;
-  private static final int PADDING_WIDTH = 6;
-  private static final int BORDER_WIDTH = 2;
 
   private final ToolBar parent;
   private boolean selected;
@@ -515,12 +516,30 @@ public class ToolItem extends Item {
       if( hasText && hasImage ) {
         result += SPACING;
       }
+      int paddingWidth = getPadding();
+      int borderWidth = getBorderWidth() * 2;
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
         result += DROP_DOWN_ARROW_WIDTH;
+        result += paddingWidth + borderWidth;
       }
-      result += PADDING_WIDTH + BORDER_WIDTH;
+      result += paddingWidth + borderWidth;
     }
     return result;
+  }
+
+  private int getBorderWidth() {
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getItemBorderWidth( parent );
+  }
+
+  private int getPadding() {
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getItemPadding( parent ).width;
+  }
+
+  private ToolBarThemeAdapter getToolBarThemeAdapter() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    return ( ToolBarThemeAdapter )themeMgr.getThemeAdapter( ToolBar.class );
   }
 
   /**

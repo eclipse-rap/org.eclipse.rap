@@ -313,8 +313,17 @@ Text[BORDER] {
 
 /* Toolbar */
 
+ToolItem {
+  border: 1px transparent;
+  padding: 3px;
+}
+
 ToolItem:hover {
-  background-color: rgb( 238, 233, 233 );
+  background-color: #abe3ff;
+}
+
+ToolItem:pressed, ToolItem:selected {
+  border: 1px #1694d4;
 }
 
 /* Table and Tree */

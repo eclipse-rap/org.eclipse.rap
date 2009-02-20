@@ -29,7 +29,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * </p><p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>FLAT, <!-- WRAP, RIGHT, --> HORIZONTAL, VERTICAL, SHADOW_OUT</dd>
+ * <dd>FLAT, <!-- WRAP, RIGHT, --> HORIZONTAL, VERTICAL<!--, SHADOW_OUT--></dd>
  * <dt><b>Events:</b></dt>
  * <dd>(none)</dd>
  * </dl>
@@ -72,10 +72,10 @@ public class ToolBar extends Composite {
    * </ul>
    *
    * @see SWT#FLAT
-   * @see SWT#WRAP
-   * @see SWT#RIGHT
+   *<!-- @see SWT#WRAP -->
+   *<!-- @see SWT#RIGHT -->
    * @see SWT#HORIZONTAL
-   * @see SWT#SHADOW_OUT
+   *<!-- @see SWT#SHADOW_OUT -->
    * @see SWT#VERTICAL
    * <!--@see Widget#checkSubclass()-->
    * @see Widget#getStyle()

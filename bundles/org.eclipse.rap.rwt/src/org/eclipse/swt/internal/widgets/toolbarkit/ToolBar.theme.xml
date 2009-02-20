@@ -34,8 +34,25 @@
           type="color"
           description="Background color for tool bar items" />
 
+      <property name="border"
+          type="border"
+          description="Border for tool bar items" />
+
+      <property name="padding"
+          type="boxdim"
+          description="Padding (inner distance) for tool bar items." />
+
+      <style name="FLAT"
+          description="Applies when style FLAT is set on the parent ToolBar." />
+
       <state name="hover"
-          description="Mouse over state" />
+          description="Applies on mouse over." />
+
+      <state name="pressed"
+          description="Applies while the ToolItem is pressed." />
+
+      <state name="selected"
+          description="Applies while the ToolItem is selected (CHECK of RADIO style)." />
 
     </element>
 

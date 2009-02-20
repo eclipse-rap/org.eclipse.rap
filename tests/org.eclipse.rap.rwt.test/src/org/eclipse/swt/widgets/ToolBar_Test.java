@@ -209,21 +209,27 @@ public class ToolBar_Test extends TestCase {
     assertEquals( null, separator.getControl() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    Point expected = new Point( 24, 22 );
-    assertEquals( expected, toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 24, 22 ),
+                  toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    new ToolItem( toolbar, SWT.NONE );
+    ToolItem toolItem1 = new ToolItem( toolbar, SWT.PUSH );
+    toolItem1.setText( "Item 1" );
+    new ToolItem( toolbar, SWT.SEPARATOR );
+    new ToolItem( toolbar, SWT.CHECK );
+    ToolItem toolItem2 = new ToolItem( toolbar, SWT.PUSH );
+    toolItem2.setText( "Item 2" );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     separator.setControl( new Text( toolbar, SWT.NONE ) );
-    expected = new Point( 16, 22 );
-    assertEquals( expected, toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    ToolItem toolItem3 = new ToolItem( toolbar, SWT.DROP_DOWN );
+    toolItem3.setText( "Item 3" );
+    assertEquals( new Point( 161, 22 ),
+                  toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 100, 100 );
-    assertEquals( expected, toolbar.computeSize( 100, 100 ) );
+    assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );
   }
 }

@@ -337,16 +337,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
         result.textColor = tv.getCssColor( "ToolItem", "color" );
       }
-      if( states.pressed || states.checked || states.abandoned ) {
-        result.border = "thinInset";
-        result.padding = [ 3, 2, 1, 4 ];
-      } else if( !states.rwt_FLAT || states.over ) {
-        result.border = "thinOutset";
-        result.padding = [ 2, 3 ];
-      } else {
-        result.border = "undefined";
-        result.padding = [ 3, 4 ];
+      if( states.pressed || states.checked ) {
+        states.selected = true;
+      } else if( states.selected ) {
+        delete states.selected;
       }
+      result.border = tv.getCssBorder( "ToolItem", "border" );
+      result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
       return result;
     }
   },
