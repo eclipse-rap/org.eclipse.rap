@@ -135,6 +135,17 @@ public class Display_Test extends TestCase {
     assertTrue( bounds.x != display.getBounds().x );
   }
 
+  public void testBounds() throws Exception {
+    Display display = new Display();
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    Rectangle expectedBounds = new Rectangle( 0, 10, 60, 99 );
+    displayAdapter.setBounds( expectedBounds );
+    Rectangle bounds = display.getBounds();
+    assertEquals( expectedBounds, bounds );
+    assertNotSame( expectedBounds, bounds );
+  }
+  
   public void testClientArea() throws Exception {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
@@ -143,6 +154,7 @@ public class Display_Test extends TestCase {
     displayAdapter.setBounds( testRect );
     Rectangle clientArea = display.getClientArea();
     assertEquals( testRect, clientArea );
+    assertNotSame( testRect, clientArea );
   }
   
   public void testMap() {
