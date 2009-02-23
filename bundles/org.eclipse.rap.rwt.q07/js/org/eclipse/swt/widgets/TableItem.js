@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /**
- * This class provides the client-side counterpart for 
+ * This class provides the client-side counterpart for
  * org.eclipse.swt.widgets.TableItem.
  */
 qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
@@ -27,18 +27,18 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this._fonts = null;
     this._backgrounds = null;
     this._foregrounds = null;
-    // HACK: Table needs one 'emptyItem' (draws the remaining space that is not 
+    // HACK: Table needs one 'emptyItem' (draws the remaining space that is not
     //       occupied by actual items) and a 'virtualItem' (represents a not
-    //       yet resolved items) 
+    //       yet resolved items)
     // Those have an index of -1
     if ( index >= 0 ) {
       parent._addItem( this, index );
     }
   },
-  
+
   destruct : function() {
     // When changing this, re-check destructor of Table.js as well as TableLCA
-    // and TableItemLCA 
+    // and TableItemLCA
     if( !this._parent.getDisposed() ) {
       this._parent._removeItem( this );
     }
@@ -47,39 +47,36 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
 
   statics : {
 
-    // TODO [rh] make border color themeable
-    LINE_BORDER : "1px solid #eeeeee",
-
     PX : "px"
 
   },
-  
+
   members : {
 
     getCached : function() {
       return this._cached;
     },
-    
+
     setChecked : function( value ) {
       if( this._checked != value ) {
         this._checked = value;
       }
     },
-    
+
     getChecked : function() {
       return this._checked;
     },
-    
+
     setGrayed : function( value ) {
       if( this._grayed != value ) {
         this._grayed = value;
       }
     },
-    
+
     getGrayed : function() {
       return this._grayed;
     },
-    
+
     setSelection : function( value ) {
       // TODO [rh] improve this: don't access internal structures of Table
       var index = this._getIndex();
@@ -91,32 +88,32 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         this._parent._deselectItem( index, false );
       }
     },
-    
+
     setTexts : function( texts ) {
       this._texts = texts;
     },
-    
+
     setImages : function( images ) {
       this._images = images;
     },
-    
+
     setFonts : function( fonts ) {
       this._fonts = fonts;
     },
-    
+
     setBackgrounds : function( backgrounds ) {
       this._backgrounds = backgrounds;
     },
-    
+
     setForegrounds : function( foregrounds ) {
       this._foregrounds = foregrounds;
     },
-    
+
     update : function() {
       this._cached = true;
       this._parent.updateItem( this._getIndex(), true );
     },
-    
+
     clear : function() {
       this._cached = false;
       this._checked = false;
@@ -227,7 +224,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.backgroundImage = "url(" + image + ")";
       node.style.backgroundRepeat = "no-repeat";
       node.style.backgroundPosition = "center";
-      node.style.borderRight = "";
     },
 
     _renderText : function( node, text, left, width, align, font, foreground, background )
@@ -250,13 +246,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.color = foreground;
       node.style.backgroundColor = background;
       node.style.backgroundImage = "none";
-      if( this._parent.getLinesVisible() ) {
-        node.style.borderRightWidth = "1px";
-        node.style.borderRightStyle = "solid";
-        node.style.borderRightColor = this._parent.getGridLineColor();
-      } else {
-        node.style.borderRight = "";
-      }
     },
 
     _getIndex : function() {

@@ -48,6 +48,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._itemHeight = 0;
     this._rows = new Array();
     this._items = new Array();
+    this._gridLines = new Array();
     this._itemCount = 0;
     this._unresolvedItems = null;
     this._checkBoxes = null;
@@ -167,6 +168,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._vertScrollBar.dispose();
       this._vertScrollBar = null;
     }
+    for( var i = 0; i < this._gridLines.length; i++ ) {
+      this._gridLines[ i ].dispose();
+      this._gridLines[ i ] = null;
+    }
     if( this._clientArea ) {
       this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       this._clientArea.removeEventListener( "appear", this._onClientAppear, this );
@@ -204,14 +209,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     "itemselected" : "qx.event.type.DataEvent",
     "itemdefaultselected" : "qx.event.type.DataEvent",
     "itemchecked" : "qx.event.type.DataEvent"
-  },
-
-  properties : {
-    gridLineColor : {
-      check : "Color",
-      init : null,
-      themeable: true
-    }
   },
 
   statics : {
@@ -315,6 +312,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._vertScrollBar.setValue( 0 );
       this._horzScrollBar.setValue( 0 );
       this._updateClientAreaSize();
+      this._updateGridLines();
     },
 
     setItemHeight : function( value ) {
@@ -419,7 +417,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       for( var i = 0; i < this._rows.length; i++ ) {
         this._rows[ i ].setLinesVisible( value );
       }
-      this._updateRows();
+      this._updateGridLines();
     },
 
     getLinesVisible : function() {
@@ -633,6 +631,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onClientAppear : function( evt ) {
       this._updateRowCount();
       this._updateRows();
+      this._updateGridLines();
     },
 
     ///////////////////////
@@ -775,6 +774,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onHorzScrollBarChangeValue : function() {
       this._columnArea.setLeft( 0 - this._horzScrollBar.getValue() );
       this._updateRowBounds();
+      this._updateGridLines();
       this._leftOffsetChanged = true;
     },
 
@@ -936,6 +936,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       this._horzScrollBar.setMaximum( width );
       this._columnArea.setWidth( width );
+      this._updateGridLines();
     },
 
     _updateClientAreaSize : function() {
@@ -1227,6 +1228,43 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _hideResizeLine : function() {
       this._resizeLine.setStyleProperty( "visibility", "hidden" );
+    },
+
+    //////////////////////////////////////////////////////////////
+    // Vertical gridlines
+
+    _updateGridLines : function() {
+      if( this.getLinesVisible() ) {
+        var columns = this._columnArea.getChildren();
+        this._showGridLines( columns.length );
+        var height = this._clientArea.getHeight();
+        var offset = this._columnArea.getLeft();
+        for( var i = 0; i < columns.length; i++ ) {
+          var line = this._gridLines[ i ];
+          var left = offset + columns[ i ].getLeft() + columns[ i ].getWidth();
+          line.setSpace( left - 1, 2, 0, height );
+          line.removeStyleProperty( "visibility" );
+        }
+      } else {
+        this._showGridLines( 0 );
+      }
+    },
+
+    _showGridLines : function( count ) {
+      // create missing gridlines
+      for( var i = this._gridLines.length; i < count; i++ ) {
+        var line = new qx.ui.basic.Terminator();
+        line.setAppearance( "table-gridline-vertical" );
+        line.addState( "vertical" );
+        line.setZIndex( 1e5 );
+        this._gridLines.push( line );
+        this._clientArea.add( line );
+      }
+      // hide superflous gridlines
+      for( var i = count; i < this._gridLines.length; i++ ) {
+        var line = this._gridLines[ i ];
+        line.setStyleProperty( "visibility", "hidden" );
+      }
     },
 
     ////////////////////////////////////////////////////////////

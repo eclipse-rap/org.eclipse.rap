@@ -263,7 +263,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "radio-button-icon" : {
-    include: "image",    
+    include: "image",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
@@ -1079,12 +1079,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "group-box-frame" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );      
+      var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );
       return {
         top     : margin[ 0 ],
         right   : margin[ 1 ],
-        bottom  : margin[ 2 ], 
-        left    : margin[ 3 ],              
+        bottom  : margin[ 2 ],
+        left    : margin[ 3 ],
         border  : tv.getCssBorder( "Group-Frame", "border" )
       };
     }
@@ -1178,8 +1178,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundColor : tv.getCssColor( "Table", "background-color" ),
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "*", "font" ),
-        border : tv.getCssBorder( "*", "border" ),
-        gridLineColor : tv.getCssColor( "Table-GridLine", "color" )
+        border : tv.getCssBorder( "*", "border" )
       };
     }
   },
@@ -1244,7 +1243,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         cursor : "default"
       };
-//      border : states.lines ? "table.row.horizontalLine" : "undefined"
       if( states.lines ) {
         // TODO [rst] Optimize: this function might be called a few times,
         //            the border can be cached somewhere
@@ -1273,6 +1271,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.clipWidth = 13;
       result.clipHeight = 13;
       result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
+      return result;
+    }
+  },
+
+  "table-gridline-vertical" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      var border = new qx.ui.core.Border( 0 );
+      border.setColor( tv.getCssColor( "Table-GridLine", "color" ) );
+      border.setWidthLeft( 1 );
+      result.border = border;
       return result;
     }
   },
@@ -1845,8 +1855,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font          : boldFont,
         textAlign     : "center",
-        textColor     : states.disabled 
-                        ? "widget.graytext" 
+        textColor     : states.disabled
+                        ? "widget.graytext"
                         : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
         verticalAlign : "middle",
         cursor        : "default"
@@ -1879,11 +1889,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "calendar-day" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );      
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         textAlign       : "center",
         verticalAlign   : "middle"
-      };      
+      };
       if( states.selected || states.otherMonth ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
@@ -1893,7 +1903,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
-      }      
+      }
       var borderColor = states.disabled ? "widget.graytext" : "red";
       var border = new qx.ui.core.Border( 1, "solid", borderColor );
       result.border = states.today ? border : "undefined";
