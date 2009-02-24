@@ -14,6 +14,7 @@ package org.eclipse.ui.internal.presentations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -22,6 +23,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -74,6 +76,9 @@ public class PresentablePart implements IPresentablePart {
     private boolean isDirty = false;
     private boolean isBusy = false;
     private boolean hasViewMenu = false;
+
+    // RAP [hs] IAdaptable for interactiondesign API
+    private IAdaptable adaptable;
    
     /**
      * Constructor
@@ -283,10 +288,19 @@ public class PresentablePart implements IPresentablePart {
 	 * @see org.eclipse.ui.presentations.IPresentablePart#getToolBar()
 	 */
     public Control getToolBar() {
-        if (enableOutputs) {
-			return getPane().getToolBar();
-		}
-		return null;
+//      if (enableOutputs) {
+//        return getPane().getToolBar();
+//      }
+//      return null;
+      Control result = null;
+      // RAP [hs] patched for interactiondesign API
+      if( adaptable != null ) {
+        result = ( Control ) adaptable.getAdapter( ToolBar.class );
+      } else if (enableOutputs) {
+        result = getPane().getToolBar();
+       
+      }
+      return result;
     }
 
     /*
@@ -296,7 +310,7 @@ public class PresentablePart implements IPresentablePart {
 	 */
     public IPartMenu getMenu() {
         boolean hasMenu;
-        
+        IPartMenu result = null;
         if (enableOutputs) {
             hasMenu = part.hasViewMenu();
         } else {
@@ -306,16 +320,28 @@ public class PresentablePart implements IPresentablePart {
         if (!hasMenu) {
             return null;
         }
-
-        if (viewMenu == null) {
-            viewMenu = new IPartMenu() {
-                public void showMenu(Point location) {
-                    part.showViewMenu(location);
-                }
-            };
+//        if (viewMenu == null) {
+//            viewMenu = new IPartMenu() {
+//                public void showMenu(Point location) {
+//                    part.showViewMenu(location);
+//                }
+//            };
+//        }
+//
+//        return viewMenu;        
+        // RAP [hs] patched for interactiondesign API
+        if( adaptable != null ) {
+          viewMenu = ( IPartMenu ) adaptable.getAdapter( IPartMenu.class );
+          
+        } else if (viewMenu == null) {
+          viewMenu = new IPartMenu() {
+            public void showMenu(Point location) {
+              part.showViewMenu(location);
+            }
+          };
         }
-
-        return viewMenu;
+        result = viewMenu;
+        return result;
     }
 
     /* (non-Javadoc)
@@ -415,5 +441,9 @@ public class PresentablePart implements IPresentablePart {
 	    return getPane().getSizeFlags(width);
 	}
 
+	// RAP [hs]: introduced for interaction design API
+    public void setConfigurationAdaptable( IAdaptable adaptable ) {
+        this.adaptable = adaptable;
+    }
 
 }

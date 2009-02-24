@@ -11,6 +11,10 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.rap.ui.branding,
+ org.eclipse.rap.ui.interactiondesign,
+ org.eclipse.rap.ui.interactiondesign.internal;x-friends:="org.eclipse.rap.ui.tests",
+ org.eclipse.rap.ui.interactiondesign.layout,
+ org.eclipse.rap.ui.interactiondesign.layout.model,
  org.eclipse.ui;ui.workbench=split;mandatory:="ui.workbench",
  org.eclipse.ui.about,
  org.eclipse.ui.actions;ui.workbench=split;mandatory:="ui.workbench",
@@ -96,11 +100,11 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.4.0,4.0.0)";visibili
  org.eclipse.equinox.http.registry,
  org.eclipse.osgi.services
 Import-Package: com.ibm.icu.text,
+ javax.servlet;version="[2.3.0,2.5.0]",
+ javax.servlet.http;version="[2.3.0,2.5.0]",
  javax.xml.parsers,
  org.w3c.dom,
- org.xml.sax,
- javax.servlet;version="[2.3.0,2.5.0]",
- javax.servlet.http;version="[2.3.0,2.5.0]"
+ org.xml.sax
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  CDC-1.0/Foundation-1.0,
  J2SE-1.3

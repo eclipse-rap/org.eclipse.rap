@@ -317,10 +317,19 @@ public class ViewPane extends PartPane {
      * @see ViewActionBars
      */
     public MenuManager getMenuManager() {
-        if (isvMenuMgr == null) {
-			isvMenuMgr = new PaneMenuManager();
-		}
-        return isvMenuMgr;
+      if( isvMenuMgr == null ) {
+        WorkbenchWindow window = page.window;
+//        if (isvMenuMgr == null) {
+//			isvMenuMgr = new PaneMenuManager();
+//		}
+        // RAP [hs] patched for interactiondesign API
+        if( window.getConfigurablePresentationFactory() != null ) {
+          isvMenuMgr = window.createPartMenuManager();
+        } else {        
+          isvMenuMgr = new PaneMenuManager();
+        }
+      }
+      return isvMenuMgr;
     }
 
     /**

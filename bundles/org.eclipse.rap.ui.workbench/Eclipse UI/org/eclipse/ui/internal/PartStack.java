@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-//import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistable;
 import org.eclipse.ui.IPropertyListener;
@@ -49,6 +48,7 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 //import org.eclipse.ui.internal.dnd.DragUtil;
 //import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.dnd.SwtUtil;
+
 import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.layout.ITrimManager;
 import org.eclipse.ui.internal.layout.IWindowTrim;
@@ -168,9 +168,17 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
             return (IPresentablePart[]) parts.toArray(new IPresentablePart[parts.size()]);
         }
 
-        public String getProperty(String id) {            
-            return PartStack.this.getProperty(id);
+        public String getProperty(String id) { 
+//            return PartStack.this.getProperty(id);
+          // RAP [hs] patched for interactiondesign API
+          String result = PartStack.this.getProperty(id);
+          if( id.equals( "id" ) ) {
+            result = PartStack.this.getID();
+          }
+          return result;
         }
+        
+
     };
 
 // RAP [rh] PartStackDropResult disabled since DnD support is missing    

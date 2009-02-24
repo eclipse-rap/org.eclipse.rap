@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.rap.ui" id="layouts" name="Layouts"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to register a custom Layout. This means a grafical Layout not a Layout from the programmers point of view.&lt;br&gt;
+Every Layout can hold attributes called LayoutSets. A LayoutSet is a simple container for images, fonts, colors and position data. These sets are usually coupled to a &lt;code&gt;ElementBuilder&lt;/code&gt;.&lt;br&gt;
+A Layout can override LayoutSets of other Layouts. These overriden LayoutSets are used if the user switch the Layout during runtime.&lt;br&gt;
+The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse.rap.ui.branding&lt;/code&gt; extension point. If there is no default Layout defined a fallback mechanism will be used to show the standard Layout.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="layout" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="layoutSet">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique identifier for a LayoutSet. This id can be used to override a LayoutSet in a different Layout.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  This optional attribute is just to give the LayoutSet a readable name.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The definition of a LayoutSet. This is a class that has to implement the ILayoutSetInitializer interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="layout">
+      <complexType>
+         <sequence>
+            <element ref="layoutSet" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         RAP 1.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example of a Layout with three LayoutSets: 
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension
+         id=&quot;org.eclipse.presentation.example.layout&quot;
+         name=&quot;Example Layout&quot;
+         point=&quot;org.eclipse.ui.presentations.Layouts&quot;&gt;
+      &lt;LayoutSet
+            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.HeaderLayoutSet2&quot;
+            id=&quot;header.layoutset&quot;
+            name=&quot;Header2&quot;&gt;
+      &lt;/LayoutSet&gt;
+      &lt;LayoutSet
+            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.MacBarLayoutSet2&quot;
+            id=&quot;macBar.layoutset&quot;
+            name=&quot;MacBar 2&quot;&gt;
+      &lt;/LayoutSet&gt;
+      &lt;LayoutSet
+            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.FooterLayoutSet2&quot;
+            id=&quot;footer.layoutset&quot;
+            name=&quot;Footer&quot;&gt;
+      &lt;/LayoutSet&gt;
+      &lt;LayoutSet
+            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.NavigationPaneLayoutSet2&quot;
+            id=&quot;navigationpane.layoutset&quot;
+            name=&quot;NavigationPane&quot;&gt;
+      &lt;/LayoutSet&gt;
+   &lt;/extension&gt;
+ &lt;/pre&gt;
+ &lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         Each LayoutSet in a Layout has to implement the &lt;code&gt;ILayoutSetInitializer&lt;/code&gt; interface. The method within is called during the plugin activation to initialize components like images or fonts for this LayoutSet. This implementation can look like this:
+
+&lt;pre&gt;
+public class HeaderLayoutSet implements ILayoutSetInitializer {
+  public void initializeLayoutSet( LayoutSet layoutSet ) {
+    layoutSet.addImagePath( HeaderBuilderData.LEFT, &quot;icons/headerLeft.png&quot; );
+    layoutSet.addImagePath( HeaderBuilderData.CENTER, &quot;icons/headerCenter.png&quot; );
+    layoutSet.addImagePath( HeaderBuilderData.RIGHT, &quot;icons/headerRight.png&quot; );
+    layoutSet.addImagePath( HeaderBuilderData.LOGO, &quot;icons/headerLogo.png&quot; );
+    addHeaderPositions( layoutSet );
+  }
+}
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         A detailed implementation example can be found in the &lt;code&gt;org.eclipse.rap.presentation.example&lt;/code&gt; project. This project defines two Layouts and a bunch of LayoutSets. They look not pretty but they do their job.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2008 EclipseSource and others. All rights reserved. This
+program and the accompanying materials are made available under the terms of
+the Eclipse Public License v1.0 which accompanies this distribution, and is
+available at &lt;a 
+href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+</schema>

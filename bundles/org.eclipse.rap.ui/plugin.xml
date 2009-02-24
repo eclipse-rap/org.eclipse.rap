@@ -12,6 +12,8 @@
    <extension-point id="settingstores" name="%ExtPoint.rap.settingstores" schema="schema/rap/settingstores.exsd"/>
    <extension-point id="themes" name="%ExtPoint.rap.themes" schema="schema/rap/themes.exsd"/>
    <extension-point id="themeableWidgets" name="%ExtPoint.rap.themeableWidgets" schema="schema/rap/themeableWidgets.exsd"/>
+   <extension-point id="layouts" name="%ExtPoint.layouts" schema="schema/rap/layouts.exsd"/>
+   <extension-point id="stackPresentations" name="%ExtPoint.configurableStackPresentation" schema="schema/rap/stackPresentations.exsd"/>
         
 <!-- Workbench extension points -->
    <!-- RAP [bm] deprecated

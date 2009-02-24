@@ -13,7 +13,11 @@ package org.eclipse.ui.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -25,6 +29,8 @@ import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.TextProcessor;
+import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -578,28 +584,72 @@ public final class WorkbenchWindowConfigurer implements
      * factory default presentation factory is used.
      */
     private AbstractPresentationFactory createDefaultPresentationFactory() {
-        final String factoryId = ((Workbench) window.getWorkbench())
-                .getPresentationId();
+//      final String factoryId = ((Workbench) window.getWorkbench())
+//                .getPresentationId();
+      // RAP [hs] patched for interactiondesign API
+      String tempId = getBrandingPresentationFactoryId();
+      if( tempId == null ) {
+        tempId = ( ( Workbench ) window.getWorkbench() ).getPresentationId();
+      }
+      final String factoryId = tempId;
 
-        if (factoryId != null && factoryId.length() > 0) {
-            final AbstractPresentationFactory [] factory = new AbstractPresentationFactory[1];
-            StartupThreading.runWithoutExceptions(new StartupRunnable() {
-
-				public void runWithException() throws Throwable {
-					factory[0] = WorkbenchPlugin.getDefault()
-							.getPresentationFactory(factoryId);
-				}
-			});
-            
-            if (factory[0] != null) {
-                return factory[0];
+      if (factoryId != null && factoryId.length() > 0) {
+        final AbstractPresentationFactory [] factory = new AbstractPresentationFactory[1];
+        StartupThreading.runWithoutExceptions(new StartupRunnable() {
+      
+            public void runWithException() throws Throwable {
+                factory[0] = WorkbenchPlugin.getDefault()
+                        .getPresentationFactory(factoryId);
             }
+        });
+        
+        if (factory[0] != null) {
+            return factory[0];
         }
-        // presentation ID must be a bogus value, reset it to the default
-        PrefUtil.getAPIPreferenceStore().setValue(
-				IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
-				IWorkbenchConstants.DEFAULT_PRESENTATION_ID);
-        return new WorkbenchPresentationFactory();
+      }
+      // presentation ID must be a bogus value, reset it to the default
+      PrefUtil.getAPIPreferenceStore().setValue(
+            IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
+            IWorkbenchConstants.DEFAULT_PRESENTATION_ID);
+      return new WorkbenchPresentationFactory();
+    }
+    
+    // RAP [hs] method introduced for interactiondesign API
+    private String getBrandingPresentationFactoryId() {
+      String result = null;
+      AbstractBranding branding = BrandingUtil.findBranding();
+      if( branding != null ) {
+        String brandingId = branding.getId();
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        final String id = "org.eclipse.rap.ui.branding";
+        IExtensionPoint brandingPoint = registry.getExtensionPoint( id );
+        if( brandingPoint != null ) {
+          IConfigurationElement[] elements 
+            = brandingPoint.getConfigurationElements();
+          boolean found = false;
+          for( int i = 0; i < elements.length && !found; i++ ) {
+            String tempId = elements[ i ].getAttribute( "id" );
+            if( tempId.equals( brandingId ) ) {
+              found = true;
+              result = loadBrandingPresentationFactoryId( elements[ i ] );
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    // RAP [hs] method introduced for interactiondesign API
+    private String loadBrandingPresentationFactoryId( 
+      final IConfigurationElement element )
+    {
+      String result = null;
+      IConfigurationElement[] factory 
+        = element.getChildren( "presentationFactory" );
+      if( factory.length > 0 ) {
+        result = factory[ 0 ].getAttribute( "id" );
+      }
+      return result;
     }
 
     /* (non-Javadoc)

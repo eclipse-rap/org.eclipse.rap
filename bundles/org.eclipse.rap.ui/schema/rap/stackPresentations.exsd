@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.rap.ui" id="stackPresentations" name="StackPresentations"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to register &lt;code&gt;ConfigurableStack&lt;/code&gt;s. This object extending a ordinary &lt;code&gt;StackPresentation&lt;/code&gt; so it can be used to style a &lt;code&gt;LayoutPart&lt;/code&gt;. To register such a &lt;code&gt;ConfigurableStack&lt;/code&gt; only makes sence if the PresentationFactory is a &lt;code&gt;org.eclipse.rap.presentation.PresentationFactory&lt;/code&gt;. Because only this PresentationFactory can handle a &lt;code&gt;ConfigurableStack&lt;/code&gt;.&lt;br&gt;
+This extension point is also used to couple a &lt;code&gt;ConfigurationAction&lt;/code&gt; to such a &lt;code&gt;ConfigurableStack&lt;/code&gt;. With this you can implement different configuration behaviours for different &lt;code&gt;ConfigurableStack&lt;/code&gt; implementations.&lt;br&gt;
+You can define default StackPresentations for a part using the &lt;code&gt;org.eclipse.rap.ui.branding&lt;/code&gt; extension point.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="stackPresentation" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="stackPresentation">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The identifier for the ConfigurableStack. This is for load and save such a part presentation.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  An implementation of &lt;code&gt;ConfigurableStack&lt;/code&gt;
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.rap.ui.interactiondesign.ConfigurableStack:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of ConfigurableStack, this is just to give it a readable name.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type" use="required">
+            <annotation>
+               <documentation>
+                  This defines the type where the ConfigurableStack can be used. there are three possible types: Editor, View and StandaloneView.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="editor">
+                  </enumeration>
+                  <enumeration value="view">
+                  </enumeration>
+                  <enumeration value="standaloneview">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="actionClass" type="string">
+            <annotation>
+               <documentation>
+                  An implementation of &lt;code&gt;ConfigurationAction&lt;/code&gt;.
+With this action you can implement configuration bahaviour e.g. this action can create a popup dialog that shows configuration elements.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.rap.ui.interactiondesign.ConfigurationAction:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="actionIcon" type="string">
+            <annotation>
+               <documentation>
+                  The icon for the ConfigurationAction.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="menuIcon" type="string">
+            <annotation>
+               <documentation>
+                  The icon for a view&apos;s menu if it has one.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         RAP 1.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension
+         point=&quot;org.eclipse.ui.presentations.StackPresentations&quot;&gt;
+      &lt;stackPresentation
+            actionClass=&quot;org.eclipse.rap.ui.interactiondesign.example.configaction.ExampleConfigAction&quot;
+            actionIcon=&quot;icons/configure.png&quot;
+            class=&quot;org.eclipse.rap.ui.interactiondesign.example.stacks.NavigationPaneStackPresentation&quot;
+            id=&quot;org.eclipse.rap.ui.interactiondesign.navigationPaneStackPresentation&quot;
+            menuIcon=&quot;icons/menuIcon.gif&quot;
+            name=&quot;Navigation Pane&quot;
+            type=&quot;view&quot;&gt;
+      &lt;/stackPresentation&gt;
+&lt;/extension&gt;      
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         Each stackPresentation has to extend &lt;code&gt;org.eclipse.rap.ui.interactiondesign.ConfigurableStack&lt;/code&gt; to handle different mechanisms, e.g. stackPresentation changing on the fly and so on.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         A detailed implementation example can be found in the &lt;code&gt;org.eclipse.rap.presentation.example&lt;/code&gt; project. This project defines two different &lt;code&gt;ConfigurableStack&lt;/code&gt; implementations.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2008 EclipseSource and others. All rights reserved. This
+program and the accompanying materials are made available under the terms of
+the Eclipse Public License v1.0 which accompanies this distribution, and is
+available at &lt;a 
+href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+</schema>

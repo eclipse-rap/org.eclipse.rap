@@ -2,9 +2,9 @@
 <!-- Schema file written by PDE -->
 <schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
-      <appInfo>
+      <appinfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="branding" name="Branding"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          The branding extension points allows you to have a RCP-like branding functionality but with additional aspects regarding web applications. You can specify values for the used servlet name or the favicon. Additionally you&apos;re able to group entrypoints together to one branding which helps you to brand external entrypoints.
       </documentation>
@@ -12,9 +12,9 @@
 
    <element name="extension">
       <annotation>
-         <appInfo>
+         <appinfo>
             <meta.element />
-         </appInfo>
+         </appinfo>
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
@@ -39,9 +39,9 @@
                <documentation>
                   
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute translatable="true"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
@@ -49,14 +49,15 @@
 
    <element name="branding">
       <annotation>
-         <appInfo>
+         <appinfo>
             <meta.element labelAttribute="title"/>
-         </appInfo>
+         </appinfo>
       </annotation>
       <complexType>
          <sequence>
             <element ref="additionalHeaders" minOccurs="0" maxOccurs="1"/>
             <element ref="associatedEntrypoints" minOccurs="0" maxOccurs="1"/>
+            <element ref="presentationFactory" minOccurs="0" maxOccurs="1"/>
          </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -91,9 +92,9 @@
                <documentation>
                   The title attribute is responsible for the title of the RAP application. This will show up in the browser window or as title of the tab in the browser.
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute translatable="true"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="favicon" type="string">
@@ -101,9 +102,9 @@
                <documentation>
                   If you have a logo or something for your web application you put its path here so it can be displayed as icon in the browser near the adressbar or in the favourites. Be sure you specify a file in the .ico format as most browsers don&apos;t accept other image types as favicons.
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute kind="resource"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="body" type="string">
@@ -111,9 +112,9 @@
                <documentation>
                   You can define any valid html file to be used as body of the RAP startup page. You can put whatever you want in it as long as it does not break the page.
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute kind="resource"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="exitConfirmationClass" type="string">
@@ -129,9 +130,9 @@ This setting overrides the attribute exitConfirmation.
 This will only work in browsers of the Mozilla family and Internet Explorer.
 &lt;/p&gt;
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute kind="java" basedOn=":org.eclipse.rap.ui.branding.IExitConfirmation"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
@@ -239,9 +240,9 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
 
    <element name="entrypoint">
       <annotation>
-         <appInfo>
+         <appinfo>
             <meta.element labelAttribute="id"/>
-         </appInfo>
+         </appinfo>
          <documentation>
             An element which references to an existing entrypoint defined by &lt;code&gt;org.eclipse.rap.ui.entrypoint&lt;/code&gt;.
          </documentation>
@@ -257,19 +258,89 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
       </complexType>
    </element>
 
+   <element name="presentationFactory">
+      <complexType>
+         <sequence>
+            <element ref="stackPresentation" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="defaultStackPresentation" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the PresentationFactory to load.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="defaultLayoutId" type="string">
+            <annotation>
+               <documentation>
+                  The id of the default Layout to load.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="stackPresentation">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the StackPresentation
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.stackPresentations/stackPresentation/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="partId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the part to couple with the id of the StackPresentation.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="defaultStackPresentation">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the StackPresentation, which is loaded if no mapping for parts and stackPresentations exists.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.stackPresentations/stackPresentation/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="since"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          RAP 1.0
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="examples"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          &lt;pre&gt;
 &lt;extension
@@ -290,9 +361,9 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="apiInfo"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          There is no API available for branding.
       </documentation>
@@ -300,9 +371,9 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
 
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="copyright"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          Copyright (c) 2007 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made
