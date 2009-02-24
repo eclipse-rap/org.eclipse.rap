@@ -289,7 +289,7 @@ public final class ThemeManager {
     log( "Register theme " + id + " from " + fileName );
     checkId( id );
     if( fileName == null ) {
-      throw new NullPointerException( "null argument" );
+      throw new NullPointerException( "fileName" );
     }
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
@@ -297,9 +297,11 @@ public final class ThemeManager {
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
+    themeCount++;
+    String jsId = THEME_PREFIX + "Custom_" + themeCount;
     InputStream inputStream = loader.getResourceAsStream( fileName );
     if( inputStream == null ) {
-      throw new IllegalArgumentException( "Could not open resource "
+      throw new IllegalArgumentException(   "Could not open resource "
                                           + fileName );
     }
     try {
@@ -307,13 +309,12 @@ public final class ThemeManager {
       CssFileReader reader = new CssFileReader();
       try {
         StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
-        theme = new Theme( (name != null ? name : ""), styleSheet );
+        theme = new Theme( name != null ? name : jsId, styleSheet );
       } catch( CSSException e ) {
         throw new ThemeManagerException( "Failed parsing CSS file", e );
       }
       theme.initValuesMap( themeableWidgets.getAll() );
-      themeCount++;
-      theme.setJsId( THEME_PREFIX + "Custom_" + themeCount );
+      theme.setJsId( jsId );
       themes.put( id, theme );
     } finally {
       inputStream.close();
