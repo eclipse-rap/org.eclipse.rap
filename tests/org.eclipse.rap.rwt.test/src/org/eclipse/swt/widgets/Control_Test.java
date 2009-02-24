@@ -560,6 +560,22 @@ public class Control_Test extends TestCase {
     assertSame( null, display.getFocusControl() );
   }
   
+  // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=265634
+  public void testNoFocusOutOnDispose() {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control control = new Button( shell, SWT.PUSH );
+    control.addFocusListener( new FocusAdapter() {
+      public void focusLost( FocusEvent event ) {
+        log.append( "focusout" );
+      }
+    } );
+    shell.open();
+    control.dispose();
+    assertEquals( "", log.toString() );
+  }
+  
   public void testHideFocusedControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

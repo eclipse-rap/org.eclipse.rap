@@ -78,12 +78,12 @@ public abstract class Widget implements Adaptable {
   static final int LAYOUT_CHILD = 1 << 7;
 
   /* Background flags */
-
-  /* The widget is configured to adopt its parent's background */
   static final int THEME_BACKGROUND = 1 << 8;
-
-  /* The control is able to adopt its parent's background */
   static final int PARENT_BACKGROUND = 1 << 10;
+
+  /* Dispose and release flags */
+  static final int RELEASED = 1 << 11;
+  static final int DISPOSE_SENT = 1 << 12;
 
   int style;
   int state;
@@ -607,8 +607,11 @@ public abstract class Widget implements Adaptable {
       if( !isValidThread() ) {
         error( SWT.ERROR_THREAD_INVALID_ACCESS );
       }
-      DisposeEvent disposeEvent = new DisposeEvent( this );
-      disposeEvent.processEvent();
+      if( ( state & DISPOSE_SENT ) == 0 ) {
+        state |= DISPOSE_SENT;
+        DisposeEvent disposeEvent = new DisposeEvent( this );
+        disposeEvent.processEvent();
+      }
       releaseChildren();
       releaseParent();
       releaseWidget();
