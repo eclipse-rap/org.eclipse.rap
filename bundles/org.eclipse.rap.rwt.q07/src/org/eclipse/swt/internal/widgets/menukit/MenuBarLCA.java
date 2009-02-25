@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.Menu;
 final class MenuBarLCA extends MenuDelegateLCA {
 
   // pseudo-property that denotes the shell which uses a menu for its menu bar
-  static final String PROP_SHELL 
+  static final String PROP_SHELL
     = "menuBarShell";
-  private static final String PROP_SHELL_MENU_BOUNDS 
+  private static final String PROP_SHELL_MENU_BOUNDS
     = "menuBarShellClientArea";
-  
+
   void preserveValues( final Menu menu ) {
     Decorations parent = getParent( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
@@ -36,14 +36,14 @@ final class MenuBarLCA extends MenuDelegateLCA {
     MenuLCAUtil.preserveMenuListener( menu );
     WidgetLCAUtil.preserveCustomVariant( menu );
   }
-  
+
   void readData( final Menu menu ) {
     MenuLCAUtil.readMenuEvent( menu );
   }
 
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.newWidget( "qx.ui.menubar.MenuBar" );    
+    writer.newWidget( "qx.ui.menubar.MenuBar" );
   }
 
   void renderChanges( final Menu menu ) throws IOException {
@@ -57,10 +57,10 @@ final class MenuBarLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeUnhideMenu( menu );
     WidgetLCAUtil.writeCustomVariant( menu );
   }
-  
+
   //////////////////////////////////////////////////
   // Helping method to write properties for menu bar
-  
+
   private static Decorations getParent( final Menu menu ) {
     Decorations result = null;
     if( menu.getParent().getMenuBar() == menu ) {
@@ -85,7 +85,8 @@ final class MenuBarLCA extends MenuDelegateLCA {
         = ( IShellAdapter )parent.getAdapter( IShellAdapter.class );
       Rectangle menuBounds = shellAdapter.getMenuBounds();
       String prop = PROP_SHELL_MENU_BOUNDS;
-      if( WidgetLCAUtil.hasChanged( menu, prop, menuBounds, null ) ) {
+      // [if] Menu bounds are preserved in ShellLCA.
+      if( WidgetLCAUtil.hasChanged( parent, prop, menuBounds, null ) ) {
         // parameter order of setSpace: x, width, y, height
         Object[] args = new Object[] {
           new Integer( menuBounds.x ),
@@ -95,10 +96,6 @@ final class MenuBarLCA extends MenuDelegateLCA {
         };
         writer.set( "space", args );
       }
-      // We can't preserve values in the right phase because client-side changes
-      // wouldn't be noticed this way (perserveValues happens after readData)
-      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( menu );
-      widgetAdapter.preserve( PROP_SHELL_MENU_BOUNDS, menuBounds );
     }
   }
 }

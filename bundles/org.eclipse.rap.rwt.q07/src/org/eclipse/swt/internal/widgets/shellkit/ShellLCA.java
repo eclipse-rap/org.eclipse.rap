@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
@@ -40,6 +41,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_ACTIVE_SHELL = "activeShell";
   static final String PROP_MODE = "mode";
   static final String PROP_SHELL_LISTENER = "shellListener";
+  static final String PROP_SHELL_MENU_BOUNDS  = "menuBarShellClientArea";
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -58,6 +60,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     Shell shell = ( Shell )widget;
+    // [if] Preserve the menu bounds before setting the new shell bounds.
+    preserveMenuBounds( shell );
     ControlLCAUtil.readBounds( shell );
     readMode( shell );
     if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
@@ -339,5 +343,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
       result = "maximized";
     }
     return result;
+  }
+
+  private static void preserveMenuBounds( final Shell shell ) {
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    Rectangle menuBounds = shellAdapter.getMenuBounds();
+    IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( shell );
+    widgetAdapter.preserve( PROP_SHELL_MENU_BOUNDS, menuBounds );
   }
 }
