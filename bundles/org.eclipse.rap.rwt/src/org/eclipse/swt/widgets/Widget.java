@@ -638,6 +638,10 @@ public abstract class Widget implements Adaptable {
     return ( state & DISPOSED ) != 0;
   }
 
+  boolean isInDispose() {
+    return ( state & Widget.DISPOSE_SENT ) != 0;
+  }
+
   void releaseChildren() {
     // do nothing - derived classes may override
   }

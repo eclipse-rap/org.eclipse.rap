@@ -241,7 +241,7 @@ public class Display extends Device implements Adaptable {
 
   private void setFocusControl( final Control focusControl ) {
     if( this.focusControl != focusControl ) {
-      if( this.focusControl != null && !isInDispose( this.focusControl ) ) {
+      if( this.focusControl != null && !this.focusControl.isInDispose() ) {
         FocusEvent event
           = new FocusEvent( this.focusControl, FocusEvent.FOCUS_LOST );
         event.processEvent();
@@ -253,10 +253,6 @@ public class Display extends Device implements Adaptable {
         event.processEvent();
       }
     }
-  }
-
-  private static boolean isInDispose( final Widget widget ) {
-    return ( widget.state & Widget.DISPOSE_SENT ) != 0;
   }
 
   /**
