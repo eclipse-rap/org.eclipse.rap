@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             if( value.length < maxChars ) {
               newValue = value + keypress;
             }
-            var intValue = parseInt( newValue );
+            var intValue = parseInt( this._removeLeadingZero( newValue ) );
             if( this._focusedTextField === this._dayTextField ||
                 this._focusedTextField === this._monthTextField ) {
               if( intValue >= this._spinner.getMin() &&

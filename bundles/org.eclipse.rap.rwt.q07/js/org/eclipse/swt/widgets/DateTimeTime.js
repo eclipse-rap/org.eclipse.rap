@@ -263,7 +263,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             if( value.length < maxChars ) {
               newValue = value + keypress;
             }
-            var intValue = parseInt( newValue );
+            var intValue = parseInt( this._removeLeadingZero( newValue ) );
             if( intValue >= this._spinner.getMin() &&
                 intValue <= this._spinner.getMax() ) {
               this._spinner.setValue( intValue );
