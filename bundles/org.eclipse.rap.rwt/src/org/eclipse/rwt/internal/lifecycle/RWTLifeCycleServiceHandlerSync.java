@@ -14,10 +14,12 @@ import java.io.IOException;
 import java.text.MessageFormat;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
+import org.eclipse.rwt.internal.util.HTML;
 
 /**
  * TODO [fappel]: documentation
@@ -27,7 +29,7 @@ public class RWTLifeCycleServiceHandlerSync
 {
   // TODO [if]: Move this code to a fragment
   private static final String PATTERN_RELOAD
-    = "qx.core.Init.getInstance().getApplication().reload( ''{0}'' )";
+    = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
 
   public void service() throws ServletException, IOException {
     synchronized( ContextProvider.getSession() ) {
@@ -59,9 +61,11 @@ public class RWTLifeCycleServiceHandlerSync
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
     String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
-    Object[] param = new Object[] { message };
+    Object[] args = new Object[] { message };
     // Note: [rst] Do not use writeText as umlauts must not be encoded here
-    out.write( MessageFormat.format( PATTERN_RELOAD, param ) );
+    out.write( MessageFormat.format( PATTERN_RELOAD, args ) );
+    HttpServletResponse response = ContextProvider.getResponse();
+    response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
     LifeCycleServiceHandler.writeOutput();
   }
 }
