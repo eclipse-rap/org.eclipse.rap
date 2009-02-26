@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,8 @@ import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 
 
-public class RWTRequestVersionControl {
+public final class RWTRequestVersionControl {
+  
   private static final String VERSION
     = RWTRequestVersionControl.class + ".Version";
 
@@ -58,13 +58,17 @@ public class RWTRequestVersionControl {
       IServiceStore serviceStore = RWT.getServiceStore();
       Integer version = ( Integer )serviceStore.getAttribute( VERSION );
       if( version != null ) {
-          ISessionStore session = ContextProvider.getSession();
-          session.setAttribute( VERSION, version );
+        ISessionStore session = ContextProvider.getSession();
+        session.setAttribute( VERSION, version );
       }
     } catch( final RuntimeException ignore ) {
       // TODO [fappel]: rude solution for problems with blocked threads. But
       //                as that blocking mechanism will be replaced on the road
       //                to 1.1 this hack will be also obsolete soon. 
     }
+  }
+  
+  private RWTRequestVersionControl() {
+    // prevent instantiation
   }
 }

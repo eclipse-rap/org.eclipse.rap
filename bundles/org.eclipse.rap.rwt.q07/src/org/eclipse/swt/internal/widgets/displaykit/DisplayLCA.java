@@ -264,7 +264,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.HTTP_EQUIV, HTML.CONTENT_TYPE, null );
     out.writeAttribute( HTML.CONTENT, HTML.CONTENT_TEXT_HTML_UTF_8, null );
     out.startElement( HTML.TITLE, null );
- //    out.writeText( shell.getTitle(), null );
     out.endElement( HTML.TITLE );
 
     writeLibraries();
@@ -302,7 +301,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeJSLibraries() throws IOException {
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
-
     IResource[] resources = ResourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
@@ -356,10 +354,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static String jsAppInitialization( final String displayId ) {
     StringBuffer code = new StringBuffer();
-
     // font size measurment
     code.append( TextSizeDeterminationFacadeImpl.getStartupProbeCode() );
-
     // application
     HttpServletRequest request = ContextProvider.getRequest();
     String url = request.getServletPath().substring( 1 );
@@ -369,7 +365,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       displayId
     };
     code.append( MessageFormat.format( PATTERN_APP_STARTUP, param ) );
-
     return code.toString();
   }
 
@@ -431,7 +426,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // TODO [rh] the browser does not seem to be detected when this
     //      code gets executed. Once this is fixed, do only render this when
     //      browser is IE
-	// TODO [bm] this could be part of ralfs themeing or?
+	  // TODO [bm] this could be part of ralfs themeing or?
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     out.startElement( HTML.STYLE, out );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
