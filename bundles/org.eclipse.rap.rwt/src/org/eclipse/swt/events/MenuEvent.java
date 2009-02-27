@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import org.eclipse.rwt.Adaptable;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Widget;
  * </p>
  *
  * @see MenuListener
+ * @since 1.0
  */
 public final class MenuEvent extends TypedEvent {
 

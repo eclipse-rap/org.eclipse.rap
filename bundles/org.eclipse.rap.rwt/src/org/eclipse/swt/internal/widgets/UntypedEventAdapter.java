@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.text.MessageFormat;
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.events.ShowEvent;
+import org.eclipse.swt.internal.events.ShowListener;
 import org.eclipse.swt.widgets.*;
 
 
@@ -32,9 +33,9 @@ public final class UntypedEventAdapter
              VerifyListener,
              MouseListener,
              KeyListener,
-             TraverseListener
+             TraverseListener,
+             ShowListener
 {
-  private ArrayList listeners = new ArrayList();
 
   private class Entry {
     final int eventType;
@@ -45,19 +46,21 @@ public final class UntypedEventAdapter
     }
   }
   
+  private final java.util.List listeners = new ArrayList();
+
   public void controlMoved( final ControlEvent evt ) {
     Event event = createEvent( SWT.Move, evt.getSource() );
-    dispatchEvent( SWT.Move, event );
+    dispatchEvent( event );
   }
 
   public void controlResized( final ControlEvent evt ) {
     Event event = createEvent( SWT.Resize, evt.getSource() );
-    dispatchEvent( SWT.Resize, event );
+    dispatchEvent( event );
   }
 
   public void widgetDisposed( final DisposeEvent evt ) {
     Event event = createEvent( SWT.Dispose, evt.getSource() );
-    dispatchEvent( SWT.Dispose, event );
+    dispatchEvent( event );
   }
 
   public void widgetDefaultSelected( final SelectionEvent evt ) {
@@ -67,7 +70,7 @@ public final class UntypedEventAdapter
     event.height = evt.height;
     event.width = evt.width;
     event.item = evt.item;
-    dispatchEvent( SWT.DefaultSelection, event );
+    dispatchEvent( event );
   }
 
   public void widgetSelected( final SelectionEvent evt ) {
@@ -79,73 +82,73 @@ public final class UntypedEventAdapter
     event.detail = evt.detail;
     event.item = evt.item;
     event.text = evt.text;
-    dispatchEvent( SWT.Selection, event );
+    dispatchEvent( event );
   }
 
   public void focusGained( final FocusEvent evt ) {
     Event event = createEvent( SWT.FocusIn, evt.getSource() );
-    dispatchEvent( SWT.FocusIn, event );
+    dispatchEvent( event );
   }
 
   public void focusLost( final FocusEvent evt ) {
     Event event = createEvent( SWT.FocusOut, evt.getSource() );
-    dispatchEvent( SWT.FocusOut, event );
+    dispatchEvent( event );
   }
 
   public void treeCollapsed( final TreeEvent evt ) {
     Event event = createEvent( SWT.Collapse, evt.getSource() );
     event.item = evt.item;
-    dispatchEvent( SWT.Collapse, event );
+    dispatchEvent( event );
   }
 
   public void treeExpanded( final TreeEvent evt ) {
     Event event = createEvent( SWT.Expand, evt.getSource() );
     event.item = evt.item;
-    dispatchEvent( SWT.Expand, event );
+    dispatchEvent( event );
   }
 
   public void shellActivated( final ShellEvent evt ) {
     Event event = createEvent( SWT.Activate, evt.getSource() );
-    dispatchEvent( SWT.Activate, event );
+    dispatchEvent( event );
   }
 
   public void shellClosed( final ShellEvent evt ) {
     Event event = createEvent( SWT.Close, evt.getSource() );
-    dispatchEvent( SWT.Close, event );
+    dispatchEvent( event );
   }
 
   public void shellDeactivated( final ShellEvent evt ) {
     Event event = createEvent( SWT.Deactivate, evt.getSource() );
-    dispatchEvent( SWT.Deactivate, event );
+    dispatchEvent( event );
   }
 
   public void menuHidden( final MenuEvent evt ) {
     Event event = createEvent( SWT.Hide, evt.getSource() );
-    dispatchEvent( SWT.Hide, event );
+    dispatchEvent( event );
   }
 
   public void menuShown( final MenuEvent evt ) {
     Event event = createEvent( SWT.Show, evt.getSource() );
-    dispatchEvent( SWT.Show, event );
+    dispatchEvent( event );
   }
 
   public void modifyText( final ModifyEvent evt ) {
     Event event = createEvent( SWT.Modify, evt.getSource() );
-    dispatchEvent( SWT.Modify, event );
+    dispatchEvent( event );
   }
   
   public void verifyText( final VerifyEvent evt ) {
     Event event = createEvent( SWT.Verify, evt.getSource() );
     event.doit = evt.doit;
     event.text = evt.text;
-    dispatchEvent( SWT.Verify, event );
+    dispatchEvent( event );
   }
   
   public void update( final SetDataEvent evt ) {
     Event event = createEvent( SWT.SetData, evt.getSource() );
     event.item = evt.item;
     event.index = evt.index;
-    dispatchEvent( SWT.SetData, event );
+    dispatchEvent( event );
   }
   
   public void mouseDown( final MouseEvent evt ) {
@@ -154,7 +157,7 @@ public final class UntypedEventAdapter
     event.x = evt.x;
     event.y = evt.y;
     event.time = evt.time;
-    dispatchEvent( SWT.MouseDown, event );
+    dispatchEvent( event );
   }
   
   public void mouseUp( final MouseEvent evt ) {
@@ -163,7 +166,7 @@ public final class UntypedEventAdapter
     event.x = evt.x;
     event.y = evt.y;
     event.time = evt.time;
-    dispatchEvent( SWT.MouseUp, event );
+    dispatchEvent( event );
   }
   
   public void mouseDoubleClick( final MouseEvent evt ) {
@@ -172,7 +175,7 @@ public final class UntypedEventAdapter
     event.x = evt.x;
     event.y = evt.y;
     event.time = evt.time;
-    dispatchEvent( SWT.MouseDoubleClick, event );
+    dispatchEvent( event );
   }
   
   public void keyPressed( final KeyEvent typedEvent ) {
@@ -182,7 +185,7 @@ public final class UntypedEventAdapter
     event.stateMask = typedEvent.stateMask;
     event.doit = typedEvent.doit;
     event.data = typedEvent.data;
-    dispatchEvent( SWT.KeyDown, event );
+    dispatchEvent( event );
     typedEvent.doit = event.doit;
   }
   
@@ -193,7 +196,7 @@ public final class UntypedEventAdapter
     event.stateMask = typedEvent.stateMask;
     event.doit = typedEvent.doit;
     event.data = typedEvent.data;
-    dispatchEvent( SWT.KeyUp, event );
+    dispatchEvent( event );
   }
   
   public void keyTraversed( final TraverseEvent typedEvent ) {
@@ -204,8 +207,18 @@ public final class UntypedEventAdapter
     event.doit = typedEvent.doit;
     event.data = typedEvent.data;
     event.detail = typedEvent.detail;
-    dispatchEvent( SWT.Traverse, event );
+    dispatchEvent( event );
     typedEvent.doit = event.doit;
+  }
+  
+  public void controlShown( final ShowEvent typedEvent ) {
+    Event event = createEvent( SWT.Show, typedEvent.getSource() );
+    dispatchEvent( event );
+  }
+  
+  public void controlHidden( final ShowEvent typedEvent ) {
+    Event event = createEvent( SWT.Hide, typedEvent.getSource() );
+    dispatchEvent( event );
   }
   
   public void addListener( final Widget widget, 
@@ -239,8 +252,18 @@ public final class UntypedEventAdapter
         ShellEvent.addListener( widget, this );
       break;
       case SWT.Hide:
+        if( widget instanceof Control ) {
+          ShowEvent.addListener( widget, this );
+        } else {
+          MenuEvent.addListener( widget, this );
+        }
+        break;
       case SWT.Show:
-        MenuEvent.addListener( widget, this );
+        if( widget instanceof Control ) {
+          ShowEvent.addListener( widget, this );
+        } else {
+          MenuEvent.addListener( widget, this );
+        }
       break;
       case SWT.Modify:
         ModifyEvent.addListener( widget, this );
@@ -302,8 +325,18 @@ public final class UntypedEventAdapter
         ShellEvent.removeListener( widget, this );
       break;
       case SWT.Hide:
+        if( widget instanceof Control ) {
+          ShowEvent.removeListener( widget, this );
+        } else {
+          MenuEvent.removeListener( widget, this );
+        }
+        break;
       case SWT.Show:
-        MenuEvent.removeListener( widget, this );
+        if( widget instanceof Control ) {
+          ShowEvent.removeListener( widget, this );
+        } else {
+          MenuEvent.removeListener( widget, this );
+        }
       break;
       case SWT.Modify:
         ModifyEvent.removeListener( widget, this );
@@ -358,7 +391,9 @@ public final class UntypedEventAdapter
   //////////////////
   // helping methods
 
-  private void dispatchEvent( final int eventType, final Event event ) {
+  private void dispatchEvent( final Event event ) {
+    // [rh] protect against manipulating the event type in listener code
+    int eventType = event.type;
     Entry[] entries = getEntries();
     for( int i = 0; i < entries.length; i++ ) {
       if( entries[ i ].eventType == eventType ) {

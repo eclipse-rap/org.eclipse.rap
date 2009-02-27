@@ -11,7 +11,11 @@
 
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -136,12 +140,42 @@ public class Menu_Test extends TestCase {
     assertEquals( true, fileMenu.isDisposed() );
     assertEquals( true, exitMenuItem.isDisposed() );
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         assertTrue( widget != fileMenu );
         return true;
       }
     } );
+  }
+  
+  public void testUntypedShowEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Listener listener = new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    // popup menus fire show events
+    Menu popupMenu = new Menu( shell, SWT.POP_UP );
+    popupMenu.addListener( SWT.Show, listener );
+    popupMenu.setVisible( true );
+    assertEquals( 1, log.size() );
+    assertSame( popupMenu, ( ( Event )log.get( 0 ) ).widget );
+    assertEquals( SWT.Show, ( ( Event )log.get( 0 ) ).type );
+    // BAR menus must not fire show events
+    log.clear();
+    Menu barMenu = new Menu( shell, SWT.BAR );
+    barMenu.addListener( SWT.Show, listener );
+    barMenu.setVisible( true );
+    assertEquals( 0, log.size() );
+    // DROP_DOWN menus must not fire show events
+    log.clear();
+    Menu dropDownMenu = new Menu( shell, SWT.DROP_DOWN );
+    dropDownMenu.addListener( SWT.Show, listener );
+    dropDownMenu.setVisible( true );
+    assertEquals( 0, log.size() );
   }
   
   protected void setUp() throws Exception {

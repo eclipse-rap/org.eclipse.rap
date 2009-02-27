@@ -16,6 +16,7 @@ import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.events.ShowEvent;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
@@ -211,16 +212,26 @@ public abstract class Control extends Widget {
    */
   public void setVisible( final boolean visible ) {
     checkWidget();
-    Control control = null;
-    boolean fixFocus = false;
-    if( !visible ) {
-      control = display.getFocusControl();
-      fixFocus = isFocusAncestor( control );
-    }
-    state = visible ? state & ~HIDDEN : state | HIDDEN;
-    if( fixFocus ) {
-      fixFocus( control );
-    }
+    if( ( ( state & HIDDEN ) != 0 ) != !visible ) {
+      if( visible ) {
+        ShowEvent event = new ShowEvent( this, ShowEvent.SHOWN );
+        event.processEvent();
+      }
+      Control control = null;
+      boolean fixFocus = false;
+      if( !visible ) {
+        control = display.getFocusControl();
+        fixFocus = isFocusAncestor( control );
+      }
+      state = visible ? state & ~HIDDEN : state | HIDDEN;
+      if( !visible ) {
+        ShowEvent event = new ShowEvent( this, ShowEvent.HIDDEN );
+        event.processEvent();
+      }
+      if( fixFocus ) {
+        fixFocus( control );
+      }
+    } 
   }
 
   /**

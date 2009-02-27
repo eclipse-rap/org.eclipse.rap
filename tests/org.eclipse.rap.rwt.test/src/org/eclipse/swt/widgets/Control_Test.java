@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -429,7 +431,7 @@ public class Control_Test extends TestCase {
     assertEquals( true, control.getVisible() );
     assertEquals( false, control.isVisible() );
   }
-
+  
   public void testZOrder() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -675,29 +677,91 @@ public class Control_Test extends TestCase {
    * orientation to SWT.LEFT_TO_RIGHT
    */
   public void testOrientation() {
-    // TODO: uncomment, when SWT:RIGHT_TO_LEFT is supported
-    
     Display display = new Display();
     Shell shellDefault = new Shell( display, SWT.NONE );
     Composite childDefault = new Composite( shellDefault, SWT.NONE );
     assertTrue( "default orientation: SWT.LEFT_TO_RIGHT",
                 ( shellDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
-    // assertTrue("default orientation: SWT.LEFT_TO_RIGHT", (shellDefault.getStyle() & SWT.RIGHT_TO_LEFT) ==0);
-
     assertTrue( "default orientation inherited: SWT.LEFT_TO_RIGHT",
                 ( childDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
-    // assertTrue("default orientation inherited: SWT.LEFT_TO_RIGHT", (childDefault.getStyle() & SWT.RIGHT_TO_LEFT) ==0);
-
-    
-    // Shell shellRIGHT_TO_LEFT = new Shell(display, SWT.RIGHT_TO_LEFT);
-    // Composite childRIGHT_TO_LEFT=new Composite(shellRIGHT_TO_LEFT, SWT.NONE);
-    //  
-    // assertTrue("orientation: SWT.RIGHT_TO_LEFT",(shellRIGHT_TO_LEFT.getStyle() & SWT.LEFT_TO_RIGHT) ==0);
-    // assertTrue("orientation: SWT.RIGHT_TO_LEFT",(shellRIGHT_TO_LEFT.getStyle() & SWT.RIGHT_TO_LEFT) !=0);
-    // assertTrue("orientation inherited: SWT.RIGHT_TO_LEFT", (childRIGHT_TO_LEFT.getStyle() & SWT.LEFT_TO_RIGHT) ==0);
-    // assertTrue("orientation inherited: SWT.RIGHT_TO_LEFT", (childRIGHT_TO_LEFT.getStyle() & SWT.RIGHT_TO_LEFT) !=0);
   }
   
+  public void testShowEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Listener showListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addListener( SWT.Show, showListener );
+    Control control = new Button( shell, SWT.NONE );
+    control.addListener( SWT.Show, showListener );
+    // Separate test for shell (since it overides setVisible); Show event is
+    // only sent for the shell itself, not for its containing controls
+    shell.setVisible( true );
+    assertEquals( 1, log.size() );
+    Event event = ( Event )log.get( 0 );
+    assertSame( shell, event.widget );
+    // Calling setVisible(true) on an already visible control does not trigger
+    // event
+    log.clear();
+    control.setVisible( true );
+    assertEquals( 0, log.size() );
+    // Making an invisible control visible, sends the Show event
+    control.setVisible( false );
+    log.clear();
+    control.setVisible( true );
+    assertEquals( 1, log.size() );
+    assertSame( control, ( ( Event )log.get( 0 ) ).widget );
+  }
+  
+  public void testShowEventDetails() {
+    Listener ensureInvisible = new Listener() {
+      public void handleEvent( final Event event ) {
+        assertFalse( ( ( Control )event.widget ).getVisible() );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addListener( SWT.Show, ensureInvisible );
+    shell.setVisible( true );
+  }
+  
+  public void testHideEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Listener showListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addListener( SWT.Hide, showListener );
+    Control control = new Button( shell, SWT.NONE );
+    control.addListener( SWT.Hide, showListener );
+    shell.open();
+
+    log.clear();
+    control.setVisible( false );
+    assertEquals( 1, log.size() );
+    assertSame( control, ( ( Event )log.get( 0 ) ).widget );
+    
+    log.clear();
+    shell.setVisible( false );
+    assertEquals( 1, log.size() );
+    assertSame( shell, ( ( Event )log.get( 0 ) ).widget );
+    
+    log.clear();
+    shell.setVisible( true );
+    control.setVisible( true );
+    shell.setVisible( false );
+    assertEquals( 1, log.size() );
+    assertSame( shell, ( ( Event )log.get( 0 ) ).widget );
+  }
 
   public void testCursor() {
     Display display = new Display();
