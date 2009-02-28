@@ -12,16 +12,16 @@ package org.eclipse.swt.internal.events;
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
- * Typed listener for the <code>Show</code> event.
+ * Typed listener for the <code>Show</code> and <code>Hide</code> events.
  * <p>This class is <em>not</em> intended to be used by clients.</p>
  * 
  * @see ShowEvent
  * @see org.eclipse.swt.SWT#Show
+ * @see org.eclipse.swt.SWT#Hide
  * @since 1.2
  */
 public interface ShowListener extends SWTEventListener {
 
   void controlShown( ShowEvent event );
-
   void controlHidden( ShowEvent showEvent );
 }
