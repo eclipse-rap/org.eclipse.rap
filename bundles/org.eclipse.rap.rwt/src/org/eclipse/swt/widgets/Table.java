@@ -970,17 +970,19 @@ public class Table extends Composite {
   public int getSelectionIndex() {
     checkWidget();
     int result = -1;
-    if( selection.length > 0 ) {
-      result = selection[ selection.length - 1 ];
-    }
-    if( focusIndex != result ) {
-      boolean found = false;
-      for( int i = 0; !found && i < selection.length; i++ ) {
-        if( focusIndex == selection[ i ] ) {
-          result = focusIndex;
-          found = true;
-        }
+    int topSelectedIndex = -1;
+    for( int i = 0; i < selection.length; i++ ) {
+      if( focusIndex == selection[ i ] ) {
+        result = selection[ i ];
       }
+      if( topSelectedIndex == -1 ) {
+        topSelectedIndex = selection[ i ];
+      } else {
+        topSelectedIndex = Math.min( topSelectedIndex, selection[ i ] );
+      }
+    }
+    if( result == -1 ) {
+      result = topSelectedIndex;
     }
     return result;
   }

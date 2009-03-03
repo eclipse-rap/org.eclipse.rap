@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( textLeft, itemMetrics[ 0 ].textLeft );
     int textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
-    assertEquals( Boolean.FALSE, 
+    assertEquals( Boolean.FALSE,
                   adapter.getPreserved( TableLCA.PROP_HIDE_SELECTION ) );
     RWTFixture.clearPreserved();
     TableColumn tc1 = new TableColumn( table, SWT.CENTER );
@@ -305,7 +305,7 @@ public class TableLCA_Test extends TestCase {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
     Display display = new Display();
     Shell shell = new Shell( display );
-    final Table table = new Table( shell, SWT.NONE );
+    final Table table = new Table( shell, SWT.MULTI );
     TableItem item1 = new TableItem( table, SWT.NONE );
     final TableItem item2 = new TableItem( table, SWT.NONE );
     table.setSelection( 0 );
@@ -321,7 +321,7 @@ public class TableLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
-    String item2Index = String.valueOf( table.indexOf( item2 ));
+    String item2Index = String.valueOf( table.indexOf( item2 ) );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
@@ -336,8 +336,69 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 0, events[ 0 ].height );
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( item1, table.getSelection()[ 0 ] );
+    // Simulate request that comes when <Return> is pressed
+    // with focused item is one of the selected
+    events[ 0 ] = null;
+    table.setSelection( 1 ); // Set focused item
+    table.select( 0 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
+    assertEquals( table, events[ 0 ].getSource() );
+    assertEquals( item2, events[ 0 ].item );
+    assertEquals( true, events[ 0 ].doit );
+    assertEquals( 0, events[ 0 ].x );
+    assertEquals( 0, events[ 0 ].y );
+    assertEquals( 0, events[ 0 ].width );
+    assertEquals( 0, events[ 0 ].height );
+    assertEquals( 2, table.getSelectionCount() );
+    assertEquals( 1, table.getSelectionIndex() );
+    // Simulate request that comes when <Return> is pressed
+    // with focused item is not one of the selected
+    events[ 0 ] = null;
+    table.setSelection( 0 ); // Set focused item
+    table.deselectAll();
+    table.select( 1 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
+    assertEquals( table, events[ 0 ].getSource() );
+    assertEquals( item2, events[ 0 ].item );
+    assertEquals( true, events[ 0 ].doit );
+    assertEquals( 0, events[ 0 ].x );
+    assertEquals( 0, events[ 0 ].y );
+    assertEquals( 0, events[ 0 ].width );
+    assertEquals( 0, events[ 0 ].height );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( 1, table.getSelectionIndex() );
+    // Simulate request that comes when <Return> is pressed
+    // and there is no selection
+    events[ 0 ] = null;
+    table.setSelection( 1 ); // Set focused item
+    table.deselectAll();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
+    assertEquals( table, events[ 0 ].getSource() );
+    assertEquals( item2, events[ 0 ].item );
+    assertEquals( true, events[ 0 ].doit );
+    assertEquals( 0, events[ 0 ].x );
+    assertEquals( 0, events[ 0 ].y );
+    assertEquals( 0, events[ 0 ].width );
+    assertEquals( 0, events[ 0 ].height );
+    assertEquals( 0, table.getSelectionCount() );
+    assertEquals( -1, table.getSelectionIndex() );
   }
-  
+
   public void testGetMeasureItemWithoutColumnsVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final String[] data = new String[ 1000 ];
@@ -498,7 +559,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testSelectUnresolvedVirtualItem() {
-    // Set up VIRTUAL table with SetData listener 
+    // Set up VIRTUAL table with SetData listener
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -506,7 +567,7 @@ public class TableLCA_Test extends TestCase {
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
-        item.setText( "Item " + event.index ); 
+        item.setText( "Item " + event.index );
       }
     };
     table.addListener( SWT.SetData, listener );
@@ -525,7 +586,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
     Fixture.fakeRequestParam( tableId + ".selection", "500" );
     RWTFixture.executeLifeCycleFromServerThread();
-    // Remove SetData listener to not accidentially resolve item with asserts 
+    // Remove SetData listener to not accidentially resolve item with asserts
     table.removeListener( SWT.SetData, listener );
     // assert request results
     assertFalse( isItemVirtual( table, 500 ) );
@@ -533,13 +594,13 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 500, table.getSelectionIndices()[ 0 ] );
     assertTrue( Fixture.getAllMarkup().indexOf( "Item 500" ) != -1 );
   }
-  
+
   /*
    * Ensures that checkData calls with an invalid index are silently ignored.
    * This may happen, when the itemCount is reduced during a SetData event.
    * Queued SetData events may then have stale (out-of-bounds) indices.
-   * See 235368: [table] [table] ArrayIndexOutOfBoundsException in virtual 
-   *     TableViewer 
+   * See 235368: [table] [table] ArrayIndexOutOfBoundsException in virtual
+   *     TableViewer
    *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
    */
   public void testReduceItemCountInSetData() {
@@ -550,7 +611,7 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
-        fail( "Must not trigger SetData event" ); 
+        fail( "Must not trigger SetData event" );
       }
     } );
 
@@ -559,7 +620,7 @@ public class TableLCA_Test extends TestCase {
     ITableAdapter adapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.checkData( 0 );
-    
+
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     table.setItemCount( 0 );
     int eventCount = 0;
@@ -589,27 +650,27 @@ public class TableLCA_Test extends TestCase {
     item2.setText( "item2" );
     TableItem item3 = new TableItem( table, SWT.NONE );
     item3.setText( "item3" );
-    
+
     item2.setImage( image );
     ItemMetrics[] itemMetrics = TableLCAUtil.getItemMetrics( table );
     assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
-    
+
     item1.setImage( image );
     itemMetrics = TableLCAUtil.getItemMetrics( table );
     assertEquals( 0, itemMetrics[ 0 ].imageLeft );
     assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
-    
+
     item1.setImage( image );
     RWTFixture.preserveWidgets();
     item1.setImage( ( Image )null );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
-    
+
     RWTFixture.preserveWidgets();
     item1.setImage( image );
     table.setSelection( item1 );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
   }
-  
+
   public void testHideSelection() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -620,7 +681,7 @@ public class TableLCA_Test extends TestCase {
     table.setData( Table.HIDE_SELECTION, "true" );
     assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
   }
-  
+
   private static int countResolvedItems( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;

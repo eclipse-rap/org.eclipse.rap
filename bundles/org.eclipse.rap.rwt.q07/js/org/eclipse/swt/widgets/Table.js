@@ -646,12 +646,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           case "Enter":
             // in sync with SWT: fire defaultSelection when <Return> is pressed,
             // regardless which modifier-key(s) are held down
-            if( this._focusIndex !== -1 ) {
-              var itemIndex = this._getItemIndexFromRowIndex( this._focusIndex );
-              if( itemIndex !== -1 ) {
-                this.createDispatchDataEvent( "itemdefaultselected", itemIndex );
+            var itemDefaultSelected = -1;
+            var topSelectedItem = -1;
+            for( var i = 0; i < this._selected.length; i++ ) {              
+              if( this._focusIndex === this._selected[ i ] ) {
+                itemDefaultSelected = this._selected[ i ];
+              }
+              if( topSelectedItem === -1 ) {
+                topSelectedItem = this._selected[ i ];
+              } else {
+                topSelectedItem = Math.min( topSelectedItem, this._selected[ i ] );
               }
             }
+            if( itemDefaultSelected === -1 ) {
+              itemDefaultSelected = topSelectedItem;
+            }            
+            this.createDispatchDataEvent( "itemdefaultselected",
+                                          itemDefaultSelected );
             break;
         }
       }

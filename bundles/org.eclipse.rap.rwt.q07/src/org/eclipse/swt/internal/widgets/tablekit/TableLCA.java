@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,8 +222,12 @@ public final class TableLCA extends AbstractWidgetLCA {
   private void readWidgetDefaultSelected( final Table table ) {
     String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( table, defaultSelectedParam ) ) {
-      // TODO [rh] do something about when index points to unresolved item!
-      TableItem item = table.getItem( getWidgetSelectedIndex() );
+      TableItem item = getFocusedItem( table );
+      int selectedIndex = getWidgetSelectedIndex();
+      if( selectedIndex != -1 ) {
+        // TODO [rh] do something about when index points to unresolved item!
+        item = table.getItem( selectedIndex );
+      }
       int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
       SelectionEvent event = new SelectionEvent( table, item, id );
       event.processEvent();
@@ -240,6 +244,17 @@ public final class TableLCA extends AbstractWidgetLCA {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
     return Integer.parseInt( value );
+  }
+
+  private static TableItem getFocusedItem( final Table table ) {
+    TableItem focusItem = null;
+    ITableAdapter tableAdapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    int focusIndex = tableAdapter.getFocusIndex();
+    if( focusIndex != -1) {
+      focusItem = table.getItem( focusIndex );
+    }
+    return focusItem;
   }
 
   ///////////////////////////////////////////
@@ -314,7 +329,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     Integer defValue = DEFAULT_DEFAULT_COLUMN_WIDTH;
     writer.set( prop, "defaultColumnWidth", newValue, defValue );
   }
-  
+
   private void writeHideSelection( final Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = hideSelection( table );
