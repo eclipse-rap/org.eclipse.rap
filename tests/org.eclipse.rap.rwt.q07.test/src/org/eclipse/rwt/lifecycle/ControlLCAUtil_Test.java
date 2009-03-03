@@ -389,7 +389,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( 2, eventLog.size() );
     assertEquals( SWT.KeyDown, ( ( Event )eventLog.get( 0 ) ).type );
@@ -566,6 +566,10 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.CAPS_LOCK, keyCode );
     keyCode = ControlLCAUtil.translateKeyCode( 36 );
     assertEquals( SWT.HOME, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 115 );
+    assertEquals( SWT.F4, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 123 );
+    assertEquals( SWT.F12, keyCode );
   }
 
   public void testWriteBackgroundImage() throws IOException {
