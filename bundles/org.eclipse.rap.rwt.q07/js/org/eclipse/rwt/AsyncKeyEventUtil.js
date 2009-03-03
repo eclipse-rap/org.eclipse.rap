@@ -110,11 +110,9 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
               this._cancelDomEvent( domEvent );
               result = true;
-            } else if( this._isRelevantEvent( eventType, keyCode ) ) {
-              // Use a negative keyCode to distinguish from the same charCode
-              var key = charCode == 0 ? -keyCode : charCode;
+            } else if( this._isRelevantEvent( eventType, keyCode ) ) {              
               this._pendingEventInfo = this._getEventInfo( domEvent );
-              this._sendKeyDown( control, key, domEvent );
+              this._sendKeyDown( control, keyCode, charCode, domEvent );
               this._cancelDomEvent( domEvent );
               result = true;
             }
@@ -215,11 +213,12 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       }
     },
 
-    _sendKeyDown : function( widget, keyCode, domEvent ) {
+    _sendKeyDown : function( widget, keyCode, charCode, domEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       req.addEvent( "org.eclipse.swt.events.keyDown", id );
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
+      req.addParameter( "org.eclipse.swt.events.keyDown.charCode", charCode );
       var modifier = "";
       if( domEvent.shiftKey ) {
         modifier += "shift,";
