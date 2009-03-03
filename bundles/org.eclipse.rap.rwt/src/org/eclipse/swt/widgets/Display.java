@@ -615,7 +615,7 @@ public class Display extends Device implements Adaptable {
 //    }
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().addAsync( runnable, Display.this );
+        UICallBackManager.getInstance().addAsync( Display.this, runnable );
       }
     } );
   }
@@ -650,11 +650,50 @@ public class Display extends Device implements Adaptable {
 //  }
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().addSync( runnable, Display.this );
+        UICallBackManager.getInstance().addSync( Display.this, runnable );
       }
     } );
   }
 
+  /**
+   * Causes the <code>run()</code> method of the runnable to
+   * be invoked by the user-interface thread after the specified
+   * number of milliseconds have elapsed. If milliseconds is less
+   * than zero, the runnable is not executed.
+   * <p>
+   * Note that at the time the runnable is invoked, widgets 
+   * that have the receiver as their display may have been
+   * disposed. Therefore, it is necessary to check for this
+   * case inside the runnable before accessing the widget.
+   * </p>
+   *
+   * @param milliseconds the delay before running the runnable
+   * @param runnable code to run on the user-interface thread
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the runnable is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #asyncExec
+   * @since 1.2
+   */
+  public void timerExec( final int milliseconds, final Runnable runnable ) {
+    checkDevice();
+    if( runnable == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    final long time = System.currentTimeMillis() + milliseconds;
+    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
+      public void run() {
+        UICallBackManager callBackManager = UICallBackManager.getInstance();
+        callBackManager.addTimer( Display.this, runnable, time );
+      }
+    } );
+  }
 
   /**
    * Reads an event from the <!-- operating system's --> event queue,

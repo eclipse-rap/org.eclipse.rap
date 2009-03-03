@@ -443,7 +443,30 @@ public class Display_Test extends TestCase {
       // expected
     }
   }
-  
+
+  public void testTimerExec() throws InterruptedException {
+    // Ensure that parameters are checked properly
+    final Display display = new Display();
+    try {
+      display.timerExec( 0, null );
+      fail( "timerExec must throw exception when null-runnable is passed in " );
+    } catch( Exception e ) {
+      // expected
+    }
+    // Ensure that invoking from background thread works
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        display.timerExec( 1, new Runnable() {
+          public void run() {
+            // do nothing
+          }
+        } );
+      }
+    } );
+    thread.start();
+    thread.join();
+    // Further timerExec tests can be found in UICallbackManager_Test
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

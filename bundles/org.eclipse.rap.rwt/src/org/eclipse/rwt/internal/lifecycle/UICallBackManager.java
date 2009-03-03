@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,15 +20,23 @@ import org.eclipse.swt.widgets.Display;
 
 
 public final class UICallBackManager
-  extends SessionSingletonBase
   implements SessionStoreListener
 {
 
+  public static UICallBackManager getInstance() {
+    Object inst = SessionSingletonBase.getInstance( UICallBackManager.class );
+    return ( UICallBackManager )inst;
+  }
+  
+  private static Timer sendTimer;
+
   // List of RunnableBase or SyncRunnable objects as added by add(A)sync 
-  private List runnables = new ArrayList();
+  List runnables;
+  // synchronziation-object to control access to the runnables List
+  private final Object runnablesLock;
   // locked contains a reference to the callback thread that is currently 
   // blocked. 
-  private Set locked = new HashSet();
+  private final Set locked;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
@@ -40,63 +48,44 @@ public final class UICallBackManager
   // no callback thread must be blocked.
   private boolean active;
   
-  static class RunnableBase implements Runnable {
-    final Runnable runnable;
-    RunnableBase( final Runnable runnable ) {
-      this.runnable = runnable;
-    }
-    public void run() {
-      if( runnable != null ) {
-        runnable.run();
-      }
-    }
-  }
-  
-  static class SyncRunnable extends RunnableBase implements Runnable {
-    SyncRunnable( final Runnable runnable ) {
-      super( runnable );
-    }
-    public void run() {
-      super.run();
-      synchronized( runnable ) {
-        runnable.notifyAll();
-      }
-    }
-    public void block() {
-      synchronized( runnable ) {
-        try {
-          runnable.wait();
-        } catch( final InterruptedException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-    }
-  }
-  
-  public static UICallBackManager getInstance() {
-    return ( UICallBackManager )getInstance( UICallBackManager.class );
-  }
-  
-  
   private UICallBackManager() {
+    runnables = new ArrayList();
+    runnablesLock = new Object();
+    locked = new HashSet();
+    uiThreadRunning = false;
+    waitForUIThread = false;
+    active = false;
   }
 
   boolean isCallBackRequestBlocked() {
-    synchronized( runnables ) {
+    synchronized( runnablesLock ) {
       return !locked.isEmpty();
     }
   }
   
 
   public void setActive( final boolean active ) {
-    synchronized( runnables ) {
+    synchronized( runnablesLock ) {
       this.active = active;
     }
   }
   
+  public void sendUICallBack( final long time ) {
+    synchronized( UICallBackManager.class ) {
+      if( sendTimer == null ) {
+        sendTimer = new Timer( true );
+      }
+    }
+    TimerTask task = new TimerTask() {
+      public void run() {
+        sendUICallBack();
+      }
+    };
+    sendTimer.schedule( task, new Date( time ) );
+  }
+
   public void sendUICallBack() {
-    synchronized( runnables ) {
+    synchronized( runnablesLock ) {
       if( !uiThreadRunning || !active ) {
         sendImmediately();
       }
@@ -104,13 +93,13 @@ public final class UICallBackManager
   }
 
   public void sendImmediately() {
-    synchronized( runnables ) {
-      runnables.notifyAll();
+    synchronized( runnablesLock ) {
+      runnablesLock.notifyAll();
     }
   }
   
-  public void addAsync( final Runnable runnable, final Display display ) {
-    synchronized( runnables ) {
+  public void addAsync( final Display display, final Runnable runnable ) {
+    synchronized( runnablesLock ) {
       runnables.add( new RunnableBase( runnable ) );
       // TODO [fappel]: This may not work properly in case asyncExcec is
       //                called in before render of a PhaseListener
@@ -120,23 +109,55 @@ public final class UICallBackManager
     }
   }
   
-  public void addSync( final Runnable runnable, final Display display ) {
+  public void addSync( final Display display, final Runnable runnable ) {
     // TODO [fappel]: the synchronized block should synchronize on runnables
     //                not runnable, but by doing so the application may run
     //                into a deadlock. This is because the SyncRunnable blocks
     //                the thread execution on a different lock.
     synchronized( runnable ) {
-      if( Thread.currentThread() != display.getThread() ) {
+      if( Thread.currentThread() == display.getThread() ) {
+        runnable.run();
+      } else {
         SyncRunnable syncRunnable = new SyncRunnable( runnable );
         runnables.add( syncRunnable );
         sendUICallBack();
         syncRunnable.block();
-      } else {
-        runnable.run();
       }
     }
   }
   
+  public void addTimer( final Display display, 
+                        final Runnable runnable, 
+                        final long time ) 
+  {
+    if( time < 0 ) {
+      removeTimer( runnable );
+    } else {
+      synchronized( runnablesLock ) {
+        TimerRunnable timerRunnable = new TimerRunnable( runnable, time );
+        runnables.add( timerRunnable );
+        if( Thread.currentThread() != display.getThread() ) {
+          sendUICallBack( time );
+        }
+      }
+    }
+  }
+
+
+  private void removeTimer( final Runnable runnable ) {
+    synchronized( runnablesLock ) {
+      Iterator iter = runnables.iterator();
+      boolean found = false;
+      while( !found && iter.hasNext() ) {
+        RunnableBase next = ( RunnableBase )iter.next();
+        if( next.equalsRunnable( runnable ) ) {
+          runnables.remove( next );
+          found = true;
+        }
+      }
+    }
+  }
+
   void notifyUIThreadStart() {
     uiThreadRunning = true;
     waitForUIThread = false;
@@ -144,7 +165,7 @@ public final class UICallBackManager
 
   void notifyUIThreadEnd() {
     uiThreadRunning = false;
-    synchronized( runnables ) {
+    synchronized( runnablesLock ) {
       if( !runnables.isEmpty() ) {
         sendUICallBack();
       }
@@ -152,12 +173,15 @@ public final class UICallBackManager
   }
 
   boolean processNextRunnableInUIThread() {
-    Runnable runnable = null;
-    boolean hasRunnable = false;
-    synchronized( runnables ) {
-      hasRunnable = !runnables.isEmpty();
-      if( hasRunnable ) {
-        runnable = ( Runnable )runnables.remove( 0 );
+    RunnableBase runnable = null;
+    synchronized( runnablesLock ) {
+      Iterator iter = runnables.iterator();
+      while( runnable == null && iter.hasNext() ) {
+        RunnableBase next = ( RunnableBase )iter.next();
+        if( next.canRun() ) {
+          runnable = next;
+          runnables.remove( runnable );
+        }
       }
     }
     if( runnable != null ) {
@@ -167,12 +191,12 @@ public final class UICallBackManager
         SWT.error( SWT.ERROR_FAILED_EXEC, t );
       }
     }
-    return hasRunnable;
+    return runnable != null;
   }
   
   boolean blockCallBackRequest() {
     boolean result = false;
-    synchronized( runnables ) {
+    synchronized( runnablesLock ) {
       final Thread currentThread = Thread.currentThread();
       SessionStoreListener listener = new SessionStoreListener() {
         public void beforeDestroy( final SessionStoreEvent event ) {
@@ -184,7 +208,7 @@ public final class UICallBackManager
           locked.add( currentThread );
           ISessionStore session = ContextProvider.getSession();
           session.addSessionStoreListener( listener );
-          runnables.wait();
+          runnablesLock.wait();
         }
       } catch( final InterruptedException ie ) {
         result = true;
@@ -208,24 +232,81 @@ public final class UICallBackManager
   }
   
   
-  ///////////////////////////////////////
+  /////////////////////////////////
   // interface SessionStoreListener
 
   // TODO [rh] revise this when bug #219465 is closed
   //      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
   public void beforeDestroy( final SessionStoreEvent event ) {
-    synchronized( runnables ) {
+    synchronized( runnablesLock ) {
       if( runnables != null ) {
         RunnableBase[] toBeExecuted = new RunnableBase[ runnables.size() ]; 
         runnables.toArray( toBeExecuted );
         for( int i = 0; i < toBeExecuted.length; i++ ) {
           RunnableBase runnable = toBeExecuted[ i ];
-          runnable.run();
+          if( runnable.canRun() ) {
+            runnable.run();
+          }
         }
         sendImmediately();
       }
       runnables.clear();
       runnables = null;
+    }
+  }
+
+  /////////////////////////////////////////////////////
+  // Runnable wrapper classes for sync/async/timer exec
+
+  static class RunnableBase {
+    private final Runnable runnable;
+    RunnableBase( final Runnable runnable ) {
+      this.runnable = runnable;
+    }
+    boolean canRun() {
+      return true;
+    }
+    void run() {
+      if( runnable != null ) {
+        runnable.run();
+      }
+    }
+    boolean equalsRunnable( final Runnable runnable ) {
+      return this.runnable == runnable;
+    }
+  }
+  
+  static final class SyncRunnable extends RunnableBase {
+    private final Object lock;
+    SyncRunnable( final Runnable runnable ) {
+      super( runnable );
+      lock = new Object();
+    }
+    void run() {
+      super.run();
+      synchronized( lock ) {
+        lock.notifyAll();
+      }
+    }
+    void block() {
+      synchronized( lock ) {
+        try {
+          lock.wait();
+        } catch( final InterruptedException e ) {
+          // stop waiting
+        }
+      }
+    }
+  }
+  
+  static final class TimerRunnable extends RunnableBase {
+    private final long time;
+    TimerRunnable( final Runnable runnable, final long time ) {
+      super( runnable );
+      this.time = time;
+    }
+    boolean canRun() {
+      return System.currentTimeMillis() >= time;
     }
   }
 }

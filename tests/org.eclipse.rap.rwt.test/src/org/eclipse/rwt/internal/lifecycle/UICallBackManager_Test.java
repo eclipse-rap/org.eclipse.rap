@@ -26,8 +26,10 @@ import org.eclipse.swt.widgets.Display;
 public class UICallBackManager_Test extends TestCase {
   
   private static final int SLEEP_TIME = 200;
+  private static final int TIMER_EXEC_DELAY = 1000;
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final String RUN_SYNC_EXEC = "run sync exec|";
+  private static final String RUN_TIMER_EXEC = "timerExecCode|";
   private static String log = "";
   
   protected void setUp() throws Exception {
@@ -158,7 +160,7 @@ public class UICallBackManager_Test extends TestCase {
         throw exception;
       }
     };
-    UICallBackManager.getInstance().addAsync( runnable, display );
+    UICallBackManager.getInstance().addAsync( display, runnable );
     try {
       UICallBackManager.getInstance().processNextRunnableInUIThread();
       String msg 
@@ -171,7 +173,77 @@ public class UICallBackManager_Test extends TestCase {
     }
   }
 
-  private Thread simulateUiCallBackThread( 
+  // Calling addAsync with a null-runnable must still cause the UI callback
+  // to be triggered
+  public void testAddAsyncWithNullRunnable() throws InterruptedException {
+    final Display display = new Display();
+    final Runnable addAsyncRunnable = new Runnable() {
+      public void run() {
+        UICallBackManager.getInstance().addAsync( display, null );
+      }
+    };
+    Runnable threadRunnable = new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, addAsyncRunnable );
+      }
+    };
+    Thread thread = new Thread( threadRunnable );
+    thread.start();
+    thread.join();
+    assertEquals( 1, UICallBackManager.getInstance().runnables.size() );
+    // 'Execute' the null-runnable: must not cause exception
+    UICallBackManager.getInstance().processNextRunnableInUIThread();
+  }
+  
+  public void testAddTimer() throws Exception {
+    final Display display = new Display();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        log += RUN_TIMER_EXEC;
+      }
+    };
+    long time = System.currentTimeMillis() + TIMER_EXEC_DELAY;
+    simulateTimerExecAddition( display, runnable, time );
+    UICallBackManager callbackManager = UICallBackManager.getInstance();
+    assertFalse( callbackManager.processNextRunnableInUIThread() );
+    assertEquals( "", log.toString() );
+    Thread.sleep( TIMER_EXEC_DELAY + 1 );
+    assertTrue( callbackManager.processNextRunnableInUIThread() );
+    assertEquals( RUN_TIMER_EXEC, log.toString() );
+  }
+  
+  // Ensure that runnables that were added via addTimer but should be executed
+  // in the future are *not* executed on session shutdown
+  public void testShutdown() throws Exception {
+    final Display display = new Display();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        log += RUN_TIMER_EXEC;
+      }
+    };
+    long timeInTheFarFuture = System.currentTimeMillis() + 10000;
+    simulateTimerExecAddition( display, runnable, timeInTheFarFuture );
+    UICallBackManager callbackManager = UICallBackManager.getInstance();
+    callbackManager.beforeDestroy( null );
+    assertEquals( "", log.toString() );
+  }
+  
+  public void testRemoveAddedTimer() throws Exception {
+    final Display display = new Display();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        log += RUN_TIMER_EXEC;
+      }
+    };
+    long timeInTheFarFuture = System.currentTimeMillis() + 10000;
+    simulateTimerExecAddition( display, runnable, timeInTheFarFuture );
+    UICallBackManager callbackManager = UICallBackManager.getInstance();
+    callbackManager.addTimer( display, runnable, -1 );
+    assertEquals( 0, callbackManager.runnables.size() );
+    assertEquals( "", log );
+  }
+
+  private static Thread simulateUiCallBackThread( 
     final Throwable[] uiCallBackServiceHandlerThrowable, 
     final ServiceContext[] context ) 
     throws InterruptedException
@@ -196,48 +268,68 @@ public class UICallBackManager_Test extends TestCase {
     Thread.sleep( SLEEP_TIME );
     return uiCallBackThread;
   }
+  
+  private static void simulateTimerExecAddition( final Display display, 
+                                                 final Runnable runnable,
+                                                 final long time ) 
+    throws InterruptedException
+  {
+    final Runnable simulateRunnable = new Runnable() {
+      public void run() {
+        UICallBackManager.getInstance().addTimer( display, runnable, time );
+      }
+    };
+    Runnable threadRunnable = new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, simulateRunnable );
+      }
+    };
+    Thread thread = new Thread( threadRunnable );
+    thread.start();
+    thread.join();
+  }
 
-  private void simulateBackgroundAddition( final ServiceContext[] context, 
-                                           final Display display )
+  private static void simulateBackgroundAddition( 
+    final ServiceContext[] context, 
+    final Display display )
     throws InterruptedException
   {
     Thread backgroundThread = new Thread( new Runnable() {
       public void run() {        
         ContextProvider.setContext( context[ 0 ] );
         UICallBackManager instance = UICallBackManager.getInstance();
-        instance.addAsync( new Runnable() {
+        instance.addAsync( display, new Runnable() {
           public void run() {
             log += RUN_ASYNC_EXEC;
           }
-        }, display );
-        instance.addAsync( new Runnable() {
+        } );
+        instance.addAsync( display, new Runnable() {
           public void run() {
             log += RUN_ASYNC_EXEC;
           }
-        }, display );
+        } );
       }
     } );
     backgroundThread.start();
     Thread.sleep( SLEEP_TIME );
   }
 
-  private void simulateBackgroundAdditionDuringLifeCycle( 
+  private static void simulateBackgroundAdditionDuringLifeCycle( 
     final ServiceContext[] context,
     final Display display )
   {
     final RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-
       public void afterPhase( final PhaseEvent event ) {
         Thread thread = new Thread( new Runnable() {
           public void run() {
             ContextProvider.setContext( context[ 0 ] );
-            UICallBackManager.getInstance().addAsync( new Runnable() {
+            UICallBackManager.getInstance().addAsync( display, new Runnable() {
               public void run() {
                 log += RUN_ASYNC_EXEC;
               }
-            }, display );
+            } );
           }
         } );
         thread.start();
@@ -249,7 +341,6 @@ public class UICallBackManager_Test extends TestCase {
         }
         lifeCycle.removePhaseListener( this );
       }
-
       public void beforePhase( final PhaseEvent event ) {
       }
       public PhaseId getPhaseId() {
@@ -258,7 +349,7 @@ public class UICallBackManager_Test extends TestCase {
     } );
   }
   
-  private void simulateUICallBackThreadLockDuringLifeCycle( 
+  private static void simulateUICallBackThreadLockDuringLifeCycle( 
     final ServiceContext[] context,
     final Throwable[] uiCallBackServiceHandlerThrowable )
   {
@@ -299,7 +390,7 @@ public class UICallBackManager_Test extends TestCase {
     } );
   }
 
-  private void fakeRequestParam( final Display display ) {
+  private static void fakeRequestParam( final Display display ) {
     Fixture.fakeResponseWriter();
     String id = "org.eclipse.swt.display";
     ContextProvider.getSession().setAttribute( id, display );
