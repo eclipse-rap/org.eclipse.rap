@@ -111,7 +111,8 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
               this._cancelDomEvent( domEvent );
               result = true;
             } else if( this._isRelevantEvent( eventType, keyCode ) ) {
-              var key = charCode == 0 ? keyCode : charCode;
+              // Use a negative keyCode to distinguish from the same charCode
+              var key = charCode == 0 ? -keyCode : charCode;
               this._pendingEventInfo = this._getEventInfo( domEvent );
               this._sendKeyDown( control, key, domEvent );
               this._cancelDomEvent( domEvent );

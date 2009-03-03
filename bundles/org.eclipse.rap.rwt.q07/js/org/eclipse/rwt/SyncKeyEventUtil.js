@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,8 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
         var hasKeyListener = this._hasKeyListener( control );
         var hasTraverseListener = this._hasTraverseListener( control );
         if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
-          var key = charCode == 0 ? keyCode : charCode;
+          // Use a negative keyCode to distinguish from the same charCode
+          var key = charCode == 0 ? -keyCode : charCode;
           this._pendingEvent = domEvent;
           this._sendKeyDown( control, key, domEvent );
           result = this._isDomEventCanceled( domEvent );
