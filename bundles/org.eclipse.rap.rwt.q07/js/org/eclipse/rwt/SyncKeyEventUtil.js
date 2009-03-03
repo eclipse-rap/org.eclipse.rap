@@ -28,10 +28,8 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
         var hasKeyListener = this._hasKeyListener( control );
         var hasTraverseListener = this._hasTraverseListener( control );
         if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
-          // Use a negative keyCode to distinguish from the same charCode
-          var key = charCode == 0 ? -keyCode : charCode;
           this._pendingEvent = domEvent;
-          this._sendKeyDown( control, key, domEvent );
+          this._sendKeyDown( control, keyCode, charCode, domEvent );
           result = this._isDomEventCanceled( domEvent );
         } 
       }
@@ -119,11 +117,12 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
       }
     },
     
-    _sendKeyDown : function( widget, keyCode, domEvent ) {
+    _sendKeyDown : function( widget, keyCode, charCode, domEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       req.addEvent( "org.eclipse.swt.events.keyDown", id );
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
+      req.addParameter( "org.eclipse.swt.events.keyDown.charCode", charCode );
       var modifier = "";
       if( domEvent.shiftKey ) {
         modifier += "shift,";

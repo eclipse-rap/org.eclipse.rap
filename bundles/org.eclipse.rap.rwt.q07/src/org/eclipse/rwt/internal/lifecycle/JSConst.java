@@ -96,6 +96,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDoubleClick.time";
   public static final String EVENT_KEY_DOWN_KEY_CODE
     = "org.eclipse.swt.events.keyDown.keyCode";
+  public static final String EVENT_KEY_DOWN_CHAR_CODE
+    = "org.eclipse.swt.events.keyDown.charCode";
   public static final String EVENT_KEY_DOWN_MODIFIER
     = "org.eclipse.swt.events.keyDown.modifier";
 

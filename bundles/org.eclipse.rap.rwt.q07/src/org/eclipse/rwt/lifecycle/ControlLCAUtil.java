@@ -950,6 +950,7 @@ public class ControlLCAUtil {
   public static void processKeyEvents( final Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
+      final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
       String modifier = readStringParam( JSConst.EVENT_KEY_DOWN_MODIFIER );
       final int stateMask = translateModifier( modifier );
       final int traverseKey = getTraverseKey( keyCode, stateMask );
@@ -958,7 +959,7 @@ public class ControlLCAUtil {
           boolean allow = true;
           if( traverseKey != SWT.TRAVERSE_NONE ) {
             TraverseEvent traverseEvent = new TraverseEvent( control );
-            initializeKeyEvent( traverseEvent, keyCode, stateMask );
+            initializeKeyEvent( traverseEvent, keyCode, charCode, stateMask );
             traverseEvent.detail = traverseKey;
             traverseEvent.processEvent();
             if( !traverseEvent.doit ) {
@@ -966,12 +967,12 @@ public class ControlLCAUtil {
             }
           }
           KeyEvent pressedEvent = new KeyEvent( control, KeyEvent.KEY_PRESSED );
-          initializeKeyEvent( pressedEvent, keyCode, stateMask );
+          initializeKeyEvent( pressedEvent, keyCode, charCode, stateMask );
           pressedEvent.processEvent();
           if( pressedEvent.doit ) {
             KeyEvent releasedEvent
               = new KeyEvent( control, KeyEvent.KEY_RELEASED );
-            initializeKeyEvent( releasedEvent, keyCode, stateMask );
+            initializeKeyEvent( releasedEvent, keyCode, charCode, stateMask );
             releasedEvent.processEvent();
           } else {
             allow = false;
@@ -989,13 +990,13 @@ public class ControlLCAUtil {
   static int getTraverseKey( final int keyCode, final int stateMask ) {
     int result = SWT.TRAVERSE_NONE;
     switch( keyCode ) {
-      case -27:
+      case 27:
         result = SWT.TRAVERSE_ESCAPE;
       break;
-      case -13:
+      case 13:
         result = SWT.TRAVERSE_RETURN;
       break;
-      case -9:
+      case 9:
         if( ( stateMask & SWT.MODIFIER_MASK ) == 0 ) {
           result = SWT.TRAVERSE_TAB_NEXT;
         } else if( stateMask == SWT.SHIFT ) {
@@ -1008,11 +1009,17 @@ public class ControlLCAUtil {
 
   private static void initializeKeyEvent( final KeyEvent event,
                                           final int keyCode,
+                                          final int charCode,
                                           final int stateMask )
   {
-    event.keyCode = translateKeyCode( keyCode );
-    if( ( event.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
-      event.character = translateCharacter( event.keyCode );
+    if( charCode == 0 ) {
+      event.keyCode = translateKeyCode( keyCode );
+      if( ( event.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
+        event.character = translateCharacter( event.keyCode );
+      }
+    } else {
+      event.keyCode = charCode;
+      event.character = translateCharacter( charCode );
     }
     event.stateMask = stateMask;
   }
@@ -1020,89 +1027,89 @@ public class ControlLCAUtil {
   static int translateKeyCode( final int keyCode ) {
     int result;
     switch( keyCode ) {
-      case -20:
+      case 20:
         result = SWT.CAPS_LOCK;
       break;
-      case -38:
+      case 38:
         result = SWT.ARROW_UP;
       break;
-      case -37:
+      case 37:
         result = SWT.ARROW_LEFT;
       break;
-      case -39:
+      case 39:
         result = SWT.ARROW_RIGHT;
       break;
-      case -40:
+      case 40:
         result = SWT.ARROW_DOWN;
       break;
-      case -33:
+      case 33:
         result = SWT.PAGE_UP;
       break;
-      case -34:
+      case 34:
         result = SWT.PAGE_DOWN;
       break;
-      case -35:
+      case 35:
         result = SWT.END;
       break;
-      case -36:
+      case 36:
         result = SWT.HOME;
       break;
-      case -45:
+      case 45:
         result = SWT.INSERT;
       break;
-      case -46:
+      case 46:
         result = SWT.DEL;
       break;
-      case -112:
+      case 112:
         result = SWT.F1;
       break;
-      case -113:
+      case 113:
         result = SWT.F2;
       break;
-      case -114:
+      case 114:
         result = SWT.F3;
       break;
-      case -115:
+      case 115:
         result = SWT.F4;
       break;
-      case -116:
+      case 116:
         result = SWT.F5;
       break;
-      case -117:
+      case 117:
         result = SWT.F6;
       break;
-      case -118:
+      case 118:
         result = SWT.F7;
       break;
-      case -119:
+      case 119:
         result = SWT.F8;
       break;
-      case -120:
+      case 120:
         result = SWT.F9;
       break;
-      case -121:
+      case 121:
         result = SWT.F10;
       break;
-      case -122:
+      case 122:
         result = SWT.F11;
       break;
-      case -123:
+      case 123:
         result = SWT.F12;
       break;
-      case -144:
+      case 144:
         result = SWT.NUM_LOCK;
       break;
-      case -44:
+      case 44:
         result = SWT.PRINT_SCREEN;
       break;
-      case -145:
+      case 145:
         result = SWT.SCROLL_LOCK;
       break;
-      case -19:
+      case 19:
         result = SWT.PAUSE;
       break;
       default:
-        result = Math.abs( keyCode );
+        result = keyCode;
     }
     return result;
   }
