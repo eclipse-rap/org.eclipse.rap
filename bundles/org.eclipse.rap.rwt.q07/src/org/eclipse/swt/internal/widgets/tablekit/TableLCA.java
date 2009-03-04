@@ -222,6 +222,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   private void readWidgetDefaultSelected( final Table table ) {
     String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( table, defaultSelectedParam ) ) {
+      // A default-selected event can occur without a selection being present.
+      // In this case the event.item field points to the focused item
       TableItem item = getFocusedItem( table );
       int selectedIndex = getWidgetSelectedIndex();
       if( selectedIndex != -1 ) {
@@ -247,14 +249,15 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static TableItem getFocusedItem( final Table table ) {
-    TableItem focusItem = null;
+    TableItem result = null;
     ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     int focusIndex = tableAdapter.getFocusIndex();
-    if( focusIndex != -1) {
-      focusItem = table.getItem( focusIndex );
+    if( focusIndex != -1 ) {
+      // TODO [rh] do something about when index points to unresolved item!
+      result = table.getItem( focusIndex );
     }
-    return focusItem;
+    return result;
   }
 
   ///////////////////////////////////////////
