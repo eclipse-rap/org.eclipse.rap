@@ -345,7 +345,7 @@ public abstract class ConfigurableStack extends StackPresentation {
             if( id.equals( stackPresentationId ) ) {
               
               actionClass = elements[ i ].getAttribute( CONFIG_ACTION_NAME );
-              if( !actionClass.equals( defaultValue ) ) {
+              if( actionClass != null && !actionClass.equals( defaultValue ) ) {
                 breakValue = false;
                 element = elements[ i ];
                 String actionImage = element.getAttribute( "actionIcon" );
