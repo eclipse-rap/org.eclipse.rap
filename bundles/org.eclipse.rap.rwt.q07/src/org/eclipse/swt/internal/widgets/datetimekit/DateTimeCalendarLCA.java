@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,17 +42,16 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
   }
 
   void readData( final DateTime dateTime ) {
-    String value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_DAY );
-    if( value != null ) {
-      dateTime.setDay( Integer.parseInt( value ) );
-    }
-    value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
-    if( value != null ) {
-      dateTime.setMonth( Integer.parseInt( value ) );
-    }
-    value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
-    if( value != null ) {
-      dateTime.setYear( Integer.parseInt( value ) );
+    String day = WidgetLCAUtil.readPropertyValue( dateTime, PROP_DAY );
+    String month = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
+    String year = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
+    if( day != null && month != null && year != null ) {
+      dateTime.setYear( 9999 );
+      dateTime.setMonth( 11 );
+      dateTime.setDay( 1 );
+      dateTime.setYear( Integer.parseInt( year ) );
+      dateTime.setMonth( Integer.parseInt( month ) );
+      dateTime.setDay( Integer.parseInt( day ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
     ControlLCAUtil.processKeyEvents( dateTime );
