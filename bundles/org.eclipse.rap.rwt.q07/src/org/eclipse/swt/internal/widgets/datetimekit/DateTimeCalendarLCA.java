@@ -46,12 +46,9 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
     String month = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
     String year = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
     if( day != null && month != null && year != null ) {
-      dateTime.setYear( 9999 );
-      dateTime.setMonth( 11 );
-      dateTime.setDay( 1 );
-      dateTime.setYear( Integer.parseInt( year ) );
-      dateTime.setMonth( Integer.parseInt( month ) );
-      dateTime.setDay( Integer.parseInt( day ) );
+      dateTime.setDate( Integer.parseInt( year ),
+                        Integer.parseInt( month ),
+                        Integer.parseInt( day ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
     ControlLCAUtil.processKeyEvents( dateTime );

@@ -511,6 +511,11 @@ public class DateTime extends Composite {
    */
   public void setDate( final int year, final int month, final int day ) {
     checkWidget();
+    // reset
+    setYear( 9999 );
+    setMonth( 11 );
+    setDay( 1 );
+    // set new value
     setYear( year );
     setMonth( month );
     setDay( day );
