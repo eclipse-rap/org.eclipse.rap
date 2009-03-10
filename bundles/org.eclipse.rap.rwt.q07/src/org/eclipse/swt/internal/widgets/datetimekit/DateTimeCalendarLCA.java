@@ -80,9 +80,9 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
 
   void renderChanges( final DateTime dateTime ) throws IOException {
     ControlLCAUtil.writeChanges( dateTime );
-    writeDay( dateTime );
-    writeMonth( dateTime );
     writeYear( dateTime );
+    writeMonth( dateTime );
+    writeDay( dateTime );
     DateTimeLCAUtil.writeListener( dateTime );
   }
 
