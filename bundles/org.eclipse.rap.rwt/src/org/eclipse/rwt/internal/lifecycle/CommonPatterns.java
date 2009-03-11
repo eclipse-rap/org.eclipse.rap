@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,34 +23,39 @@ public final class CommonPatterns {
   private CommonPatterns() {
     // prevent instantiation
   }
-  
+
   /**
    * Pattern that matches line feeds on Windows, UNIX, and MacOS platform.
    */
   public static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
-  
+
   /**
    * String to replace line feed matches with <code>\n</code>.
    */
   private static final String NEWLINE_REPLACEMENT = "\\\\n";
-  
+
   /**
    * Pattern for escaping double quoted strings, matches <code>&quot;</code>
    * and <code>\</code>.
    */
   private static final Pattern DOUBLE_QUOTE_PATTERN
     = Pattern.compile( "(\"|\\\\)" );
-  
+
   /**
    * Replacement string that prepends all matches with <code>\</code>.
    */
   private static final String DOUBLE_QUOTE_REPLACEMENT = "\\\\$1";
 
   /**
+   * Replacement string that is used for all leading and trailing spaces.
+   */
+  private static final String LEADING_TRAILING_SPACES_REPLACEMENT = "&nbsp;";
+
+  /**
    * Escapes all double quote and backslash characters in the given input
    * string.
-   * 
+   *
    * @param input the string to process
    * @return a copy of the input string with all double quotes and backslashes
    *         replaced
@@ -59,24 +64,48 @@ public final class CommonPatterns {
     Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
     return matcher.replaceAll( DOUBLE_QUOTE_REPLACEMENT );
   }
-  
+
+  /**
+   * Escapes all leading and trailing spaces in the given input string.
+   *
+   * @param input the string to process
+   * @return a copy of the input string with all leading and trailing spaces
+   * replaced
+   */
+  public static String escapeLeadingTrailingSpaces( final String input ) {
+    String spaces = "";
+    String result = input;
+    while( result.startsWith( " " ) ) {
+      spaces += LEADING_TRAILING_SPACES_REPLACEMENT;
+      result = result.substring( 1 );
+    }
+    result = spaces + result;
+    spaces = "";
+    while( result.endsWith( " " ) ) {
+      spaces += LEADING_TRAILING_SPACES_REPLACEMENT;
+      result = result.substring( 0, result.length() - 1 );
+    }
+    result = result + spaces;
+    return result;
+  }
+
   /**
    * Replaces all newline characters in the specified input string with
    * <code>\n</code>. All common newline characters are replaced (Unix,
    * Windows, and MacOS).
-   * 
+   *
    * @param input the string to process
    * @return a copy of the input string with all newline characters replaced
    */
   public static String replaceNewLines( final String input ) {
     return replaceNewLines( input, NEWLINE_REPLACEMENT );
   }
-  
+
   /**
    * Replaces all newline characters in the specified input string with the
    * given replacement string. All common newline characters are replaced (Unix,
    * Windows, and MacOS).
-   * 
+   *
    * @param input the string to process
    * @param replacement the string to replace line feeds with.
    * @return a copy of the input string with all newline characters replaced

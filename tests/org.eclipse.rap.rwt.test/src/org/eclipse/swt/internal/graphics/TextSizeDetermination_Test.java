@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,11 @@ public class TextSizeDetermination_Test extends TestCase {
     Point singleLine = TextSizeDetermination.stringExtent( font, "First Line" );
     Point multiLine = TextSizeDetermination.stringExtent( font, "First Line\nSecond Line" );
     assertEquals( singleLine.y, multiLine.y );
+
+    // make sure that leading and trailing space are calculated
+    Point str = TextSizeDetermination.stringExtent( font, "  First Line    " );
+    Point trimStr = TextSizeDetermination.stringExtent( font, "First Line" );
+    assertTrue( str.x > trimStr.x );
   }
 
   public void testTextExtent() {

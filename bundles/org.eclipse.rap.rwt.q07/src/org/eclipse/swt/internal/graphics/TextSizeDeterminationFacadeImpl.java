@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,10 @@ public final class TextSizeDeterminationFacadeImpl
         param.append( item.hashCode() );
         param.append( ", " );
         param.append( "\"" );
-        param.append( CommonPatterns.escapeDoubleQuoted( item.getString() ) );
+        String itemString = item.getString();
+        itemString = CommonPatterns.escapeDoubleQuoted( itemString );
+        itemString = CommonPatterns.escapeLeadingTrailingSpaces( itemString );
+        param.append( itemString );
         param.append( "\", " );
         param.append( createFontParam( item.getFont() ) );
         param.append( ", " );

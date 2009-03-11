@@ -106,6 +106,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( JSLibraryServiceHandler_Test.class);
     suite.addTestSuite( RWTLifeCycleServiceHandlerSync_Test.class );
     suite.addTestSuite( TemplateHolder_Test.class );
+    suite.addTestSuite( CommonPatterns_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Shell_Test.class );
