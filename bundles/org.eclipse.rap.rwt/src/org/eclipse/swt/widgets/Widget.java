@@ -525,6 +525,36 @@ public abstract class Widget implements Adaptable {
     }
   }
 
+  /**
+   * Notifies all of the receiver's listeners for events
+   * of the given type that one such event has occurred by
+   * invoking their <code>handleEvent()</code> method.  The
+   * event type is one of the event constants defined in class
+   * <code>SWT</code>.
+   *
+   * @param eventType the type of event which has occurred
+   * @param event the event data
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT
+   * @see #addListener
+   * @see #getListeners(int)
+   * @see #removeListener(int, Listener)
+   * @since 1.2
+   */
+  public void notifyListeners( final int eventType, final Event event ) {
+    checkWidget();
+    Event newEvent = event == null ? new Event() : event;
+    newEvent.widget = this;
+    newEvent.type = eventType;
+    newEvent.display = display;
+    UntypedEventAdapter.notifyListeners( eventType, newEvent );
+  }
+  
   ///////////////////////
   // toString and helpers
 
@@ -652,6 +682,7 @@ public abstract class Widget implements Adaptable {
 
   void releaseWidget() {
     adapterManager = null;
+    untypedAdapter = null;
     // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
     //       running.
 //    data = null;

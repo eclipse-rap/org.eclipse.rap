@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
-package org.eclipse.swt.internal.widgets;
+package org.eclipse.swt.internal.events;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.*;
 
 
 
@@ -27,16 +25,20 @@ public final class SetDataEvent extends TypedEvent {
   
   private static final Class LISTENER = SetDataListener.class;
 
-  public Item item;
+  public Widget item;
   public int index;
   
-  public SetDataEvent( final Control source, final Item item, final int index ) 
+  public SetDataEvent( final Widget source, final Widget item, final int index ) 
   {
     super( source, SET_DATA );
     this.item = item;
     this.index = index;
   }
   
+  public SetDataEvent( final Event event ) {
+    this( event.widget, event.item, event.index );
+  }
+
   protected void dispatchToObserver( final Object listener ) {
     switch( getID() ) {
       case SET_DATA:

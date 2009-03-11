@@ -13,6 +13,7 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * Instances of this class are sent as a result of controls being shown. 
@@ -34,6 +35,10 @@ public final class ShowEvent extends TypedEvent {
 
   public ShowEvent( final Control source, final int id ) {
     super( source, id );
+  }
+
+  public ShowEvent( final Event event ) {
+    super( event.widget, event.type );
   }
 
   protected void dispatchToObserver( final Object listener ) {

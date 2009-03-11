@@ -8,8 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
-package org.eclipse.swt.internal.widgets;
+package org.eclipse.swt.internal.events;
 
 import java.util.EventListener;
 

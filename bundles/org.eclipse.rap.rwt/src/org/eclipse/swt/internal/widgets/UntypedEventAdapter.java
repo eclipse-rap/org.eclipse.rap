@@ -14,8 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.events.ShowEvent;
-import org.eclipse.swt.internal.events.ShowListener;
+import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -45,8 +44,14 @@ public final class UntypedEventAdapter
     }
   }
   
-  private final java.util.List listeners = new ArrayList();
+  private final java.util.List listeners;
+  
+  public UntypedEventAdapter() {
+    listeners = new ArrayList();
+  }
 
+  // XXXListener interface imlementations 
+  
   public void controlMoved( final ControlEvent evt ) {
     Event event = createEvent( SWT.Move, evt.getSource() );
     dispatchEvent( event );
@@ -220,6 +225,9 @@ public final class UntypedEventAdapter
     dispatchEvent( event );
   }
   
+  //////////////////////
+  // Listener management
+  
   public void addListener( final Widget widget, 
                            final int eventType,
                            final Listener listener )
@@ -293,6 +301,10 @@ public final class UntypedEventAdapter
     }
   }
 
+  void addListener( final int eventType, final Listener listener ) {
+    listeners.add( new Entry( eventType, listener ) );
+  }
+  
   public void removeListener( final Widget widget, 
                               final int eventType, 
                               final Listener listener )
@@ -366,10 +378,6 @@ public final class UntypedEventAdapter
     }
   }
 
-  void addListener( final int eventType, final Listener listener ) {
-    listeners.add( new Entry( eventType, listener ) );
-  }
-  
   void removeListener( final int eventType, final Listener listener ) {
     Entry[] entries = getEntries();
     boolean found = false;
@@ -382,6 +390,68 @@ public final class UntypedEventAdapter
     }
   }
 
+  public static void notifyListeners( final int eventType, final Event event ) {
+    TypedEvent typedEvent = null;
+    switch( eventType ) {
+      case SWT.Move:
+      case SWT.Resize:
+        typedEvent = new ControlEvent( event );
+      break;
+      case SWT.Dispose:
+        typedEvent = new DisposeEvent( event );
+      break;
+      case SWT.Selection:
+      case SWT.DefaultSelection:
+        typedEvent = new SelectionEvent( event );
+      break;
+      case SWT.FocusIn:
+      case SWT.FocusOut:
+        typedEvent = new FocusEvent( event );
+      break;
+      case SWT.Expand:
+      case SWT.Collapse:
+        typedEvent = new TreeEvent( event );
+      break;
+      case SWT.Activate:
+      case SWT.Deactivate:
+      case SWT.Close:
+        typedEvent = new ShellEvent( event );
+      break;
+      case SWT.Hide:
+      case SWT.Show:
+        if( event.widget instanceof Control ) {
+          typedEvent = new ShowEvent( event );
+        } else {
+          typedEvent = new MenuEvent( event );
+        }
+      break;
+      case SWT.Modify:
+        typedEvent = new ModifyEvent( event );
+      break;
+      case SWT.Verify:
+        typedEvent = new VerifyEvent( event );
+      break;
+      case SWT.SetData:
+        typedEvent = new SetDataEvent( event );
+      break;
+      case SWT.MouseDown:
+      case SWT.MouseUp:
+      case SWT.MouseDoubleClick:
+        typedEvent = new MouseEvent( event );
+      break;
+      case SWT.KeyDown:
+      case SWT.KeyUp:
+        typedEvent = new KeyEvent( event );
+      break;
+      case SWT.Traverse:
+        typedEvent = new TraverseEvent( event );
+      break;
+    }
+    if( typedEvent != null ) {
+      typedEvent.processEvent();
+    }
+  }
+  
   public boolean isEmpty() {
     return listeners.isEmpty();
   }

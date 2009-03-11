@@ -21,9 +21,8 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
-import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.SetDataEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -48,6 +47,7 @@ public class TypedEvent extends Event {
   private static final Class[] EVENT_ORDER = {
     ControlEvent.class,
     ActivateEvent.class,
+    ShowEvent.class,
     DisposeEvent.class,
     SetDataEvent.class,
     MouseEvent.class,
