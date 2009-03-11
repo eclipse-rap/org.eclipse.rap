@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
@@ -225,7 +224,7 @@ public final class UntypedEventAdapter
                            final int eventType,
                            final Listener listener )
   {
-    addListener( eventType, listener );
+    boolean validEventType = true;
     switch( eventType ) {
       case SWT.Move:
       case SWT.Resize:
@@ -287,18 +286,18 @@ public final class UntypedEventAdapter
         TraverseEvent.addListener( widget, ( TraverseListener )this );
       break;
       default:
-        String txt = "The untyped event ''{0}'' is not supported.";
-        Object[] param = new Object[] { new Integer( eventType ) };
-        String msg = MessageFormat.format( txt, param );
-        throw new IllegalArgumentException( msg );
-    }    
+        validEventType = false;
+    }
+    if( validEventType ) {
+      addListener( eventType, listener );
+    }
   }
 
   public void removeListener( final Widget widget, 
                               final int eventType, 
                               final Listener listener )
   {
-    removeListener( eventType, listener );
+    boolean validEventType = true;
     switch( eventType ) {
       case SWT.Move:
       case SWT.Resize:
@@ -360,10 +359,10 @@ public final class UntypedEventAdapter
         TraverseEvent.removeListener( widget, ( TraverseListener )this );
       break;
       default:
-        String txt = "The untyped event ''{0}'' is not supported.";
-        Object[] param = new Object[] { new Integer( eventType ) };
-        String msg = MessageFormat.format( txt, param );
-        throw new IllegalArgumentException( msg );
+        validEventType = false;
+    }
+    if( validEventType ) {
+      removeListener( eventType, listener );
     }
   }
 

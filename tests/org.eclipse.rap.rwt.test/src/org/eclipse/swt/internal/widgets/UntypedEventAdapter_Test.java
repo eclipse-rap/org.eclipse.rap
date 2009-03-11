@@ -217,4 +217,19 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( keyEvent.data, eventLog[ 0 ].data );
     assertEquals( keyEvent.doit, eventLog[ 0 ].doit );
   }
+  
+  public void testInvalidEventType() {
+    final Event[] eventLog = { null };
+    Listener listener = new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog[ 0 ] = event;
+      }
+    };
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    // Ensure that adding an unknown/invalid event type is silently ignored
+    widget.addListener( 505, listener );
+    assertNull( eventLog[ 0 ] );
+    widget.removeListener( 505, listener );
+  }
 }
