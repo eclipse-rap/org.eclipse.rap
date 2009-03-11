@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
@@ -72,6 +71,11 @@ public class CommonPatterns_Test extends TestCase {
 
     stringToEscape = " \n  All rights reserved. \n ";
     expected = "&nbsp;\n  All rights reserved. \n&nbsp;";
+    result = CommonPatterns.escapeLeadingTrailingSpaces( stringToEscape );
+    assertEquals( expected, result );
+
+    stringToEscape = "  ";
+    expected = "&nbsp;&nbsp;";
     result = CommonPatterns.escapeLeadingTrailingSpaces( stringToEscape );
     assertEquals( expected, result );
   }
