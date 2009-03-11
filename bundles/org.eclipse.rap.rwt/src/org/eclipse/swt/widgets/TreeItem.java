@@ -30,9 +30,49 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class TreeItem extends Item {
 
+  private final class TreeItemAdapter implements ITreeItemAdapter {
+
+    public Color getUserBackgound() {
+      return background;
+    }
+
+    public Color getUserForegound() {
+      return foreground;
+    }
+
+    public Font getUserFont() {
+      return font;
+    }
+
+    public Color[] getCellBackgrounds() {
+      Color[] backgrounds = null;
+      if( cellBackgrounds != null ) {
+        backgrounds = ( Color[] )cellBackgrounds.clone();
+      }
+      return backgrounds;
+    }
+
+    public Color[] getCellForegrounds() {
+      Color[] foregrounds = null;
+      if( cellForegrounds != null ) {
+        foregrounds = ( Color[] )cellForegrounds.clone();
+      }
+      return foregrounds;
+    }
+
+    public Font[] getCellFonts() {
+      Font[] fonts = null;
+      if( cellFonts != null ) {
+        fonts = ( Font[] )cellFonts.clone();
+      }
+      return fonts;
+    }
+  }
+
   private static final int IMAGE_TEXT_GAP = 2;
   private static final int INDENT_WIDTH = 19;
   private static final int ITEM_HEIGHT = 16;
+  
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
@@ -211,56 +251,15 @@ public class TreeItem extends Item {
     }
     int newIndex;
     if( parentItem != null ) {
-      newIndex = index == -1
-                            ? parentItem.getItemCount()
-                            : index;
+      newIndex = index == -1 ? parentItem.getItemCount() : index;
       ItemHolder.insertItem( parentItem, this, newIndex );
     } else {
-      newIndex = index == -1
-                            ? parent.getItemCount()
-                            : index;
+      newIndex = index == -1 ? parent.getItemCount() : index;
       ItemHolder.insertItem( parent, this, newIndex );
     }
     this.index = newIndex;
     itemHolder = new ItemHolder( TreeItem.class );
-    treeItemAdapter = new ITreeItemAdapter() {
-
-      public Color getUserBackgound() {
-        return background;
-      }
-
-      public Color getUserForegound() {
-        return foreground;
-      }
-
-      public Font getUserFont() {
-        return font;
-      }
-
-      public Color[] getCellBackgrounds() {
-        Color[] backgrounds = null;
-        if( cellBackgrounds != null ) {
-          backgrounds = ( Color[] )cellBackgrounds.clone();
-        }
-        return backgrounds;
-      }
-
-      public Color[] getCellForegrounds() {
-        Color[] foregrounds = null;
-        if( cellForegrounds != null ) {
-          foregrounds = ( Color[] )cellForegrounds.clone();
-        }
-        return foregrounds;
-      }
-
-      public Font[] getCellFonts() {
-        Font[] fonts = null;
-        if( cellFonts != null ) {
-          fonts = ( Font[] )cellFonts.clone();
-        }
-        return fonts;
-      }
-    };
+    treeItemAdapter = new TreeItemAdapter();
     int columnCount = parent.columnHolder.size();
     texts = new String[ columnCount ];
     images = new Image[ columnCount ];
