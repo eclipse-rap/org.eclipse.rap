@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,14 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public interface ITreeAdapter {
 
-  public abstract TreeItem getShowItem();
-  public abstract void clearShowItem();
+  TreeItem getShowItem();
+  void clearShowItem();
   
-  public abstract void setScrollTop( final int top );
-  public abstract void setScrollLeft( final int left );
-  public int getScrollTop();
-  public int getScrollLeft();
-  public boolean isCached( final TreeItem item );
-  public void checkAllData( Tree tree );
+  void setScrollTop( final int top );
+  void setScrollLeft( final int left );
+  int getScrollTop();
+  int getScrollLeft();
+  
+  boolean isCached( final TreeItem item );
+  void checkAllData( Tree tree );
 }

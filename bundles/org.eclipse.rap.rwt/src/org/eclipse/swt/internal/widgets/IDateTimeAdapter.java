@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.swt.graphics.Rectangle;
 
 public interface IDateTimeAdapter {
+  
   // Date
   int WEEKDAY_TEXTFIELD = 0;
   int DAY_TEXTFIELD = 1;
@@ -32,13 +33,8 @@ public interface IDateTimeAdapter {
   Rectangle getBounds( int widget );
 
   String[] getMonthNames();
-
   String[] getWeekdayNames();
-
   String[] getWeekdayShortNames();
-
   String getDateSeparator();
-
   String getDatePattern();
-
 }

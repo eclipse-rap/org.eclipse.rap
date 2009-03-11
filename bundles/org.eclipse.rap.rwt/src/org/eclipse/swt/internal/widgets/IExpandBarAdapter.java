@@ -20,5 +20,4 @@ public interface IExpandBarAdapter {
   boolean isVScrollbarVisible();
 
   Rectangle getBottomSpacingBounds();
-
 }
