@@ -91,6 +91,18 @@ public class DateTime_Test extends TestCase {
     assertEquals( 0, dateTime.getSeconds() );
     dateTime.setSeconds( -1 );
     assertEquals( 0, dateTime.getSeconds() );
+    // Test date
+    dateTime.setDate( 2009, 5, 6 );
+    dateTime.setDate( 2008, 1, 30 );
+    assertEquals( 6, dateTime.getDay() );
+    assertEquals( 5, dateTime.getMonth() );
+    assertEquals( 2009, dateTime.getYear() );
+    // Test time
+    dateTime.setTime( 12, 14, 16 );
+    dateTime.setTime( 23, 76, 15 );
+    assertEquals( 12, dateTime.getHours() );
+    assertEquals( 14, dateTime.getMinutes() );
+    assertEquals( 16, dateTime.getSeconds() );
   }
 
   public void testSetDate() {
@@ -98,10 +110,15 @@ public class DateTime_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
-    dateTime.setDate(1985, 10, 29);
-    assertEquals(29, dateTime.getDay());
-    assertEquals(10, dateTime.getMonth());
-    assertEquals(1985, dateTime.getYear());
+    dateTime.setDate( 1985, 10, 29 );
+    assertEquals( 29, dateTime.getDay() );
+    assertEquals( 10, dateTime.getMonth() );
+    assertEquals( 1985, dateTime.getYear() );
+
+    dateTime.setDate( 2008, 1, 29 );
+    assertEquals( 29, dateTime.getDay() );
+    assertEquals( 1, dateTime.getMonth() );
+    assertEquals( 2008, dateTime.getYear() );
   }
 
   public void testSetTime() throws Exception {
@@ -110,9 +127,9 @@ public class DateTime_Test extends TestCase {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
     dateTime.setTime(2, 10, 30);
-    assertEquals(2, dateTime.getHours());
-    assertEquals(10, dateTime.getMinutes());
-    assertEquals(30, dateTime.getSeconds());
+    assertEquals( 2, dateTime.getHours() );
+    assertEquals( 10, dateTime.getMinutes() );
+    assertEquals( 30, dateTime.getSeconds() );
   }
 
   public void testStyle() {

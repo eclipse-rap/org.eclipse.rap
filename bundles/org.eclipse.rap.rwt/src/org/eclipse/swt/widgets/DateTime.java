@@ -555,9 +555,20 @@ public class DateTime extends Composite {
    */
   public void setTime( final int hours, final int minutes, final int seconds ) {
     checkWidget();
+    int oldHours = getHours();
+    int oldMinutes = getMinutes();
+    int oldSeconds = getSeconds();
     setHours( hours );
     setMinutes( minutes );
     setSeconds( seconds );
+    int newHours = getHours();
+    int newMinutes = getMinutes();
+    int newSeconds = getSeconds();
+    if( newHours != hours || newMinutes != minutes || newSeconds != seconds ) {
+      setHours( oldHours );
+      setMinutes( oldMinutes );
+      setSeconds( oldSeconds );
+    }
   }
 
 
