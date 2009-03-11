@@ -246,9 +246,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
           css[ i ] = toCss( fonts[ i ] );
         }
       }
-      writer.set( "fonts", new Object[]{
-        css
-      } );
+      writer.set( "fonts", new Object[]{ css } );
     }
   }
 
