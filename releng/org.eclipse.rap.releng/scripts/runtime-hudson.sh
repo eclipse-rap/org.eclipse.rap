@@ -5,6 +5,9 @@
 # See Job -> Configure... -> This build is parameterized
 #
 
+# Cleanup workspace dir
+rm -rf "$WORKSPACE"/*
+
 runtimeDir=/projects/rapbuild/build-runtime/3.4.1/
 
 ./build-common.sh \
