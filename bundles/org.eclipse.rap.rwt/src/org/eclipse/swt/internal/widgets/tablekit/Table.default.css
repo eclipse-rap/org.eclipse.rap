@@ -31,8 +31,13 @@ TableColumn-SortIndicator:down {
   background-image: url( resource/widget/rap/column/down.gif );
 }
 
+Table-Cell {
+  spacing: 2px;
+  padding: 0px 2px;
+}
+
 Table-GridLine {
-  color: rgb( 238, 238, 238 );
+  color: #d0d0d0;
 }
 
 Table-Checkbox {

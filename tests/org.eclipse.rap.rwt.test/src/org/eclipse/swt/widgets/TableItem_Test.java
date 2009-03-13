@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,14 +213,15 @@ public class TableItem_Test extends TestCase {
 
     // Asking for the bounds of a non-existing image returns an empty rectangle
     bounds = item.getImageBounds( 1 );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    assertEquals( 0, bounds.width );
+    assertEquals( 0, bounds.height );
     bounds = item.getImageBounds( 100 );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    assertEquals( 0, bounds.width );
+    assertEquals( 0, bounds.height );
 
     // A zero-width rectangle is returned when asking for an unset image of the
     // imaginary first column
     bounds = item.getImageBounds( 0 );
-    assertEquals( 0, bounds.x );
     assertEquals( 0, bounds.y );
     assertEquals( 0, bounds.width );
     assertTrue( bounds.height > 0 );
@@ -245,9 +246,11 @@ public class TableItem_Test extends TestCase {
 
     // Asking for the bounds of a non-existing image returns an empty rectangle
     bounds = item.getImageBounds( -1 );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    assertEquals( 0, bounds.width );
+    assertEquals( 0, bounds.height );
     bounds = item.getImageBounds( 100 );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    assertEquals( 0, bounds.width );
+    assertEquals( 0, bounds.height );
 
     // Bounds of an image of a column that provides enough space are ruled by
     // the images size

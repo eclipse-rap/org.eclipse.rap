@@ -32,12 +32,12 @@ public final class TableLCAUtil {
 
   ////////////////////////////
   // Column and Item alignment
-
+  
   public static void preserveAlignment( final TableColumn column ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
   }
-
+  
   public static boolean hasAlignmentChanged( final Table table ) {
     boolean result = false;
     TableColumn[] columns = table.getColumns();
@@ -48,22 +48,22 @@ public final class TableLCAUtil {
     }
     return result;
   }
-
+  
   public static boolean hasAlignmentChanged( final TableColumn column ) {
-    return WidgetLCAUtil.hasChanged( column,
-                                     PROP_ALIGNMENT,
-                                     new Integer( column.getAlignment() ),
+    return WidgetLCAUtil.hasChanged( column, 
+                                     PROP_ALIGNMENT, 
+                                     new Integer( column.getAlignment() ), 
                                      DEFAULT_ALIGNMENT );
   }
-
+  
   ///////////////
   // Item metrics
-
+  
   public static void preserveItemMetrics( final Table table ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
     adapter.preserve( PROP_ITEM_METRICS, getItemMetrics( table ) );
   }
-
+  
   public static boolean hasItemMetricsChanged( final Table table ) {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     return hasItemMetricsChanged( table, itemMetrics );
@@ -91,7 +91,7 @@ public final class TableLCAUtil {
 
   ////////
   // Focus
-
+  
   public static void preserveFocusIndex( final Table table ) {
     ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
@@ -99,19 +99,19 @@ public final class TableLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
     adapter.preserve( PROP_FOCUS_INDEX, new Integer( focusIndex ) );
   }
-
+  
   public static boolean hasFocusIndexChanged( final Table table ) {
     ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     Integer focusIndex = new Integer( tableAdapter.getFocusIndex() );
     return WidgetLCAUtil.hasChanged( table, PROP_FOCUS_INDEX, focusIndex );
   }
-
+  
   //////////////////
   // Helping methods
 
-  private static boolean hasItemMetricsChanged( final Table table,
-                                                final ItemMetrics[] metrics  )
+  private static boolean hasItemMetricsChanged( final Table table, 
+                                                final ItemMetrics[] metrics  ) 
   {
     return WidgetLCAUtil.hasChanged( table, PROP_ITEM_METRICS, metrics );
   }
@@ -130,16 +130,19 @@ public final class TableLCAUtil {
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
         Rectangle textBounds = measureItem.getTextBounds( i );
-        int imageWidth = tableAdapter.getItemImageWidth( i );
         int imageLeft = imageBounds.x - checkWidth;
-        if( imageLeft + imageWidth > bounds.x + bounds.width ) {
-          imageWidth = imageLeft - bounds.x + bounds.width;
+        int imageWidth = tableAdapter.getItemImageWidth( i );
+        // cut image width if image exceeds right border
+        int maxImageWidth = bounds.width - ( imageLeft - bounds.x );
+        if( imageWidth > maxImageWidth ) {
+          imageWidth = maxImageWidth;
         }
         int textLeft = textBounds.x - checkWidth;
+        int textWidth = textBounds.width;
         result[ i ].imageLeft = imageLeft;
         result[ i ].imageWidth = imageWidth;
         result[ i ].textLeft = textLeft;
-        result[ i ].textWidth = textBounds.width;
+        result[ i ].textWidth = textWidth;
       }
     }
     return result;
@@ -150,7 +153,7 @@ public final class TableLCAUtil {
     TableItem[] items = tableAdapter.getCachedItems();
     TableItem result = null;
     if( table.getColumnCount() == 0 ) {
-      // Find item with longest text because the imaginary only column stretches
+      // Find item with longest text because the imaginary only column stretches 
       // as wide as the longest item (images cannot differ in width)
       for( int i = 0; i < items.length; i++ ) {
         if( result == null ) {
@@ -188,20 +191,20 @@ public final class TableLCAUtil {
 
   /////////////////
   // Inner classes
-
+  
   static final class ItemMetrics {
     int imageLeft;
     int imageWidth;
     int textLeft;
     int textWidth;
-
+    
     public boolean equals( final Object obj ) {
       boolean result;
       if( obj == this ) {
         result = true;
       } else  if( obj instanceof ItemMetrics ) {
         ItemMetrics other = ( ItemMetrics )obj;
-        result =  other.imageLeft == imageLeft
+        result =  other.imageLeft == imageLeft 
                && other.imageWidth == imageWidth
                && other.textLeft == textLeft
                && other.textWidth == textWidth;

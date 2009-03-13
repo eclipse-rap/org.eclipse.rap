@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -17,6 +18,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
 /**
@@ -231,6 +233,8 @@ public class Table extends Composite {
   private TableColumn sortColumn;
   private int sortDirection;
   private Point itemImageSize;
+  private Rectangle bufferedCellPadding = null;
+  private int bufferedCellSpacing = -1;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -1733,9 +1737,11 @@ public class Table extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int result = TextSizeDetermination.getCharHeight( getFont() ) + 4;
-    int itemImageHeight = getItemImageSize().y;
-    result = Math.max( itemImageHeight, result );
+    int textHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int paddingHeight = getCellPadding().height;
+    textHeight += Math.max( paddingHeight, 4 );
+    int itemImageHeight = getItemImageSize().y + paddingHeight;
+    int result = Math.max( itemImageHeight, textHeight );
     if( ( style & SWT.CHECK ) != 0 ) {
       result = Math.max( CHECK_HEIGHT, result );
     }
@@ -1884,7 +1890,7 @@ public class Table extends Composite {
     if( ( style & SWT.H_SCROLL ) != 0 ) {
       height += SCROLL_SIZE;
     }
-    return new Point (width, height);
+    return new Point( width, height );
   }
 
   final int getItemsPreferredWidth( final int columnIndex ) {
@@ -2196,6 +2202,26 @@ public class Table extends Composite {
 
   final Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
+  }
+
+  Rectangle getCellPadding() {
+    if( bufferedCellPadding == null ) {
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      bufferedCellPadding = adapter.getCellPadding( this );
+    }
+    return bufferedCellPadding;
+  }
+
+  int getCellSpacing() {
+    if( bufferedCellSpacing < 0 ) {
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      bufferedCellSpacing = adapter.getCellSpacing( parent );
+    }
+    return bufferedCellSpacing;
   }
 
   ////////////////////////////

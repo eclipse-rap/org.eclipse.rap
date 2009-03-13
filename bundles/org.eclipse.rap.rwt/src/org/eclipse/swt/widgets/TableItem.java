@@ -12,9 +12,9 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -31,9 +31,6 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  */
 public class TableItem extends Item {
 
-  private static final int RIGHT_MARGIN = 2;
-  private static final int IMAGE_TEXT_GAP = 2;
-  
   private static final class Data {
     String text = "";
     Image image;
@@ -41,7 +38,7 @@ public class TableItem extends Item {
     Color background;
     Color foreground;
   }
-  
+
   private final Table parent;
   boolean cached;
   private Data[] data;
@@ -59,7 +56,7 @@ public class TableItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -93,7 +90,7 @@ public class TableItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -120,11 +117,11 @@ public class TableItem extends Item {
   public TableItem( final Table parent, final int style, final int index ) {
     this( parent, style, index, true );
   }
-  
-  TableItem( final Table parent, 
-             final int style, 
-             final int index, 
-             final boolean create ) 
+
+  TableItem( final Table parent,
+             final int style,
+             final int index,
+             final boolean create )
   {
     super( parent, style );
     this.parent = parent;
@@ -132,7 +129,7 @@ public class TableItem extends Item {
       this.parent.createItem( this, index );
     }
   }
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>Table</code>.
    *
@@ -147,15 +144,15 @@ public class TableItem extends Item {
     checkWidget();
     return parent;
   }
-  
+
   ///////////////////////////
-  // Methods to get/set texts  
-  
+  // Methods to get/set texts
+
   public void setText( final String text ) {
     checkWidget();
     setText( 0, text );
   }
-  
+
   /**
    * Sets the receiver's text at a column
    *
@@ -187,8 +184,8 @@ public class TableItem extends Item {
   }
 
   /**
-   * Sets the text for multiple columns in the table. 
-   * 
+   * Sets the text for multiple columns in the table.
+   *
    * @param strings the array of new strings
    *
    * @exception IllegalArgumentException <ul>
@@ -198,7 +195,7 @@ public class TableItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public void setText( final String[] strings ) {
@@ -213,12 +210,12 @@ public class TableItem extends Item {
       }
     }
   }
-  
+
   public String getText() {
     checkWidget();
     return getText( 0 );
   }
-  
+
   /**
    * Returns the text stored at the given column index in the receiver,
    * or empty string if the text has not been set.
@@ -237,10 +234,10 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     String result = "";
-    if(    data != null 
-        && index >= 0 
-        && index < data.length 
-        && data[ index ] != null ) 
+    if(    data != null
+        && index >= 0
+        && index < data.length
+        && data[ index ] != null )
     {
       result = data[ index ].text;
     }
@@ -248,13 +245,13 @@ public class TableItem extends Item {
   }
 
   ////////////////////////////
-  // Methods to get/set images  
-  
+  // Methods to get/set images
+
   public void setImage( final Image image ) {
     checkWidget();
     setImage( 0, image );
   }
-  
+
   /**
    * Sets the receiver's image at a column.
    *
@@ -285,8 +282,8 @@ public class TableItem extends Item {
   }
 
   /**
-   * Sets the image for multiple columns in the table. 
-   * 
+   * Sets the image for multiple columns in the table.
+   *
    * @param images the array of new images
    *
    * @exception IllegalArgumentException <ul>
@@ -312,7 +309,7 @@ public class TableItem extends Item {
     checkWidget();
     return getImage( 0 );
   }
-  
+
   /**
    * Returns the image stored at the given column index in the receiver,
    * or null if the image has not been set or if the column does not exist.
@@ -335,10 +332,10 @@ public class TableItem extends Item {
 
   Image getImageInternal( final int index ) {
     Image result = null;
-    if(    data != null 
-        && index >= 0 
-        && index < data.length 
-        && data[ index ] != null ) 
+    if(    data != null
+        && index >= 0
+        && index < data.length
+        && data[ index ] != null )
     {
       result = data[ index ].image;
     }
@@ -347,7 +344,7 @@ public class TableItem extends Item {
 
   ////////////////////
   // Colors and Fonts
-  
+
   /**
    * Sets the receiver's background color to the color specified
    * by the argument, or to the default system color for the item
@@ -356,7 +353,7 @@ public class TableItem extends Item {
    * @param color the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -397,7 +394,7 @@ public class TableItem extends Item {
   }
 
   /**
-   * Sets the background color at the given column index in the receiver 
+   * Sets the background color at the given column index in the receiver
    * to the color specified by the argument, or to the default system color for the item
    * if the argument is null.
    *
@@ -405,7 +402,7 @@ public class TableItem extends Item {
    * @param color the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -442,11 +439,11 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Color result = getBackground();
-    if(    data != null 
-        && index >= 0 
-        && index < data.length 
-        && data[ index ] != null 
-        && data[ index ].background != null ) 
+    if(    data != null
+        && index >= 0
+        && index < data.length
+        && data[ index ] != null
+        && data[ index ].background != null )
     {
       result = data[ index ].background;
     }
@@ -457,7 +454,7 @@ public class TableItem extends Item {
    * Sets the receiver's foreground color to the color specified by the
    * argument, or to the default system color for the item if the argument is
    * null.
-   * 
+   *
    * @param color the new color (or null)
    * @exception IllegalArgumentException
    *              <ul>
@@ -503,9 +500,9 @@ public class TableItem extends Item {
     }
     return result;
   }
-  
+
   /**
-   * Sets the foreground color at the given column index in the receiver 
+   * Sets the foreground color at the given column index in the receiver
    * to the color specified by the argument, or to the default system color for the item
    * if the argument is null.
    *
@@ -513,7 +510,7 @@ public class TableItem extends Item {
    * @param color the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -534,7 +531,7 @@ public class TableItem extends Item {
   }
 
   /**
-   * 
+   *
    * Returns the foreground color at the given column index in the receiver.
    *
    * @param index the column index
@@ -551,11 +548,11 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Color result = getForeground();
-    if(    data != null 
-        && index >= 0 
-        && index < data.length 
-        && data[ index ] != null 
-        && data[ index ].foreground != null ) 
+    if(    data != null
+        && index >= 0
+        && index < data.length
+        && data[ index ] != null
+        && data[ index ].foreground != null )
     {
       result = data[ index ].foreground;
     }
@@ -570,7 +567,7 @@ public class TableItem extends Item {
    * @param font the new font (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -585,7 +582,7 @@ public class TableItem extends Item {
       parent.redraw();
     }
   }
-  
+
   /**
    * Returns the font that the receiver will use to paint textual information for this item.
    *
@@ -609,18 +606,18 @@ public class TableItem extends Item {
     }
     return result;
   }
-  
+
   /**
    * Sets the font that the receiver will use to paint textual information
-   * for the specified cell in this item to the font specified by the 
-   * argument, or to the default font for that kind of control if the 
+   * for the specified cell in this item to the font specified by the
+   * argument, or to the default font for that kind of control if the
    * argument is null.
    *
    * @param index the column index
    * @param font the new font (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -658,11 +655,11 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Font result = getFont();
-    if(    data != null 
-        && index >= 0 
-        && index < data.length 
-        && data[ index ] != null 
-        && data[ index ].font != null ) 
+    if(    data != null
+        && index >= 0
+        && index < data.length
+        && data[ index ] != null
+        && data[ index ].font != null )
     {
       result = data[ index ].font;
     }
@@ -671,9 +668,9 @@ public class TableItem extends Item {
 
   ///////////////////
   // Checked & Grayed
-  
+
   /**
-   * Sets the checked state of the checkbox for this item.  This state change 
+   * Sets the checked state of the checkbox for this item.  This state change
    * only applies if the Table was created with the SWT.CHECK style.
    *
    * @param checked the new checked state of the checkbox
@@ -687,7 +684,7 @@ public class TableItem extends Item {
     checkWidget();
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       this.checked = checked;
-    } 
+    }
   }
 
   /**
@@ -710,15 +707,15 @@ public class TableItem extends Item {
     boolean result = false;
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       result = checked;
-    } 
+    }
     return result;
   }
 
   /**
-   * Sets the grayed state of the checkbox for this item.  This state change 
+   * Sets the grayed state of the checkbox for this item.  This state change
    * only applies if the Table was created with the SWT.CHECK style.
    *
-   * @param grayed the new grayed state of the checkbox; 
+   * @param grayed the new grayed state of the checkbox;
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -729,7 +726,7 @@ public class TableItem extends Item {
     checkWidget();
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       this.grayed = grayed;
-    } 
+    }
   }
 
   /**
@@ -758,7 +755,7 @@ public class TableItem extends Item {
 
   /////////////////////
   // Dimension methods
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent.
@@ -773,7 +770,7 @@ public class TableItem extends Item {
    public Rectangle getBounds() {
     return getBounds( 0 );
   }
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent at a column in the table.
@@ -803,8 +800,9 @@ public class TableItem extends Item {
       int width = 0;
       if( index == 0 && columnCount == 0 ) {
         Rectangle imageBounds = getImageBounds( index );
-        int gap = getImageGap( index );
-        width = 2 + imageBounds.width + gap + textBounds.width + 2;
+        int spacing = getSpacing( index );
+        int paddingWidth = parent.getCellPadding().width;
+        width = imageBounds.width + spacing + textBounds.width + paddingWidth;
       } else if( index >= 0 && index < columnCount ) {
         width = parent.getColumn( index ).getWidth();
       }
@@ -813,7 +811,7 @@ public class TableItem extends Item {
     }
     return result;
   }
-  
+
   /**
    * Returns a rectangle describing the size and location
    * relative to its parent of an image at a column in the
@@ -834,13 +832,14 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     int itemIndex = parent.indexOf( this );
-    int left = getLeft( index );
+    Rectangle cellPadding = parent.getCellPadding();
+    int left = getLeft( index ) + cellPadding.x;
     int top = getTop( itemIndex );
     int width = getImageWidth( index );
     int height = getHeight( index );
     return new Rectangle( left, top, width, height );
   }
-  
+
   /**
    * Gets the image indent.
    *
@@ -856,11 +855,11 @@ public class TableItem extends Item {
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    // [rh] The only method to manipulate the image indent (setImageIndent) is 
+    // [rh] The only method to manipulate the image indent (setImageIndent) is
     // deprecated and thus not implemented, therefore we can safely return 0
     return 0;
   }
-  
+
   /**
    * Returns a rectangle describing the size and location
    * relative to its parent of the text at a column in the
@@ -882,28 +881,35 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     int left = 0;
-    int top = 0; 
+    int top = 0;
     int width = 0;
+    Rectangle cellPadding = parent.getCellPadding();
     if( index == 0 && parent.getColumnCount() == 0 ) {
       int imageWidth = 0;
       if( parent.hasColumnImages( 0 ) ) {
-        imageWidth = parent.getItemImageSize().x + getImageGap( 0 );
+        imageWidth = parent.getItemImageSize().x + getSpacing( 0 );
       }
       left = getCheckWidth( 0 ) + imageWidth;
       top = getTop( itemIndex );
       Font font = parent.getFont();
       width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
-      int gap = 0;
       int imageWidth = 0;
       if( parent.hasColumnImages( index ) ) {
         imageWidth = parent.getItemImageSize().x;
-        gap = getImageGap( index );
       }
+      int spacing = getSpacing( index );
       int columnLeft = parent.getColumn( index ).getLeft();
-      left = columnLeft + getCheckWidth( index ) + imageWidth + gap;
+      left =   columnLeft
+             + getCheckWidth( index )
+             + cellPadding.x
+             + imageWidth
+             + spacing;
       top = getTop( itemIndex );
-      width = getColumnWidth( index ) - ( gap + imageWidth );
+      width =   getColumnWidth( index )
+              - cellPadding.width
+              - imageWidth
+              - spacing;
       if( width < 0 ) {
         width = 0;
       }
@@ -929,13 +935,14 @@ public class TableItem extends Item {
     }
     return result;
   }
-  
+
   private int getTop( final int itemIndex ) {
     int relativeItemIndex = itemIndex - parent.getTopIndex();
     int headerHeight = parent.getHeaderHeight();
-    return headerHeight + relativeItemIndex * parent.getItemHeight();
+    int itemHeight = parent.getItemHeight();
+    return headerHeight + relativeItemIndex * itemHeight;
   }
-  
+
   private int getHeight( final int index ) {
     int result = 0;
     int columnCount = parent.getColumnCount();
@@ -948,14 +955,13 @@ public class TableItem extends Item {
   }
 
   final int getPackWidth( final int index ) {
-    String text = getText( index );
-    return 
+    return
         getImageWidth( index )
-      + getImageGap( index )
-      + TextSizeDetermination.stringExtent( parent.getFont(), text ).x
-      + RIGHT_MARGIN;
+      + getSpacing( index )
+      + getTextWidth( index )
+      + parent.getCellPadding().width;
   }
-  
+
   final int getCheckWidth( final int index ) {
     int result = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
@@ -968,20 +974,29 @@ public class TableItem extends Item {
     }
     return result;
   }
-  
+
   private int getImageWidth( final int index ) {
-    int width = 0;
+    int result = 0;
     Image image = getImage( index );
     if( image != null ) {
-      width = parent.getItemImageSize().x;
+      result = parent.getItemImageSize().x;
     }
-    return width;
+    return result;
   }
-  
-  private int getImageGap( final int index ) {
+
+  private int getTextWidth( final int index ) {
+    int result = 0;
+    String text = getText( index );
+    if( text.length() > 0 ) {
+      result = TextSizeDetermination.stringExtent( parent.getFont(), text ).x;
+    }
+    return result;
+  }
+
+  private int getSpacing( final int index ) {
     int result = 0;
     if( parent.hasColumnImages( index ) ) {
-      result = IMAGE_TEXT_GAP;
+      result = parent.getCellSpacing();
     }
     return result;
   }
@@ -998,7 +1013,7 @@ public class TableItem extends Item {
       data = newData;
     }
   }
-  
+
   final void clear() {
     data = null;
     checked = false;
@@ -1027,7 +1042,7 @@ public class TableItem extends Item {
 
   //////////////////
   // Helping methods
-  
+
   private void markCached() {
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = true;
@@ -1046,7 +1061,7 @@ public class TableItem extends Item {
       data[ index ] = new Data();
     }
   }
-  
+
   private static boolean equals( final Object object1, final Object object2 ) {
     boolean result;
     if( object1 == object2 ) {

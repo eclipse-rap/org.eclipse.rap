@@ -69,6 +69,19 @@
 
       </element>
 
+      <element name="Table-Cell"
+          description="A single cell in a multi-column Table.">
+
+        <property name="padding"
+            type="boxdim"
+            description="Defines the padding (i.e. the inner distance between border and content) for a table cell." />
+
+        <property name="spacing"
+            type="dimension"
+            description="Defines the spacing between image and text within a table cell." />
+
+      </element>
+
       <element name="Table-GridLine"
           description="Grid lines in Table controls">
 

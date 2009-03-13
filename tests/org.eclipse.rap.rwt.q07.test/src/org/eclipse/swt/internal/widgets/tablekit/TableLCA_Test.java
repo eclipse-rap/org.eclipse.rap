@@ -656,13 +656,19 @@ public class TableLCA_Test extends TestCase {
 
     item1.setImage( image );
     itemMetrics = TableLCAUtil.getItemMetrics( table );
-    assertEquals( 0, itemMetrics[ 0 ].imageLeft );
+    int defaultLeftPadding = 2;
+    assertEquals( defaultLeftPadding, itemMetrics[ 0 ].imageLeft );
     assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
 
     item1.setImage( image );
     RWTFixture.preserveWidgets();
     item1.setImage( ( Image )null );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
+
+    // image must not exceed right column border
+    column.setWidth( 12 );
+    itemMetrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 10, itemMetrics[ 0 ].imageWidth );
 
     RWTFixture.preserveWidgets();
     item1.setImage( image );

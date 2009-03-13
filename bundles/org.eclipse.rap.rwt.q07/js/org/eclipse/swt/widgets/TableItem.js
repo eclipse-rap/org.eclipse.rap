@@ -218,8 +218,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.top = "0px";
       node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
       node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
-      node.style.height = this._parent.getItemHeight()
-                          + org.eclipse.swt.widgets.TableItem.PX;
+      var height = this._parent.getItemHeight() + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.height = height;
+      // set line height to enable vertical centering
+      node.style.lineHeight = height;
       node.style.backgroundColor = background;
       node.style.backgroundImage = "url(" + image + ")";
       node.style.backgroundRepeat = "no-repeat";
@@ -237,8 +239,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.whiteSpace = "nowrap";
       node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
       node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
-      node.style.height = this._parent.getItemHeight()
-                          + org.eclipse.swt.widgets.TableItem.PX;
+      var height = this._parent.getItemHeight() + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.height = height;
+      // set line height to enable vertical centering
+      node.style.lineHeight = height;
       if( font != "" ) {
         // TODO [rst] problem in IE: font cannot be reset
         node.style.font = font;
