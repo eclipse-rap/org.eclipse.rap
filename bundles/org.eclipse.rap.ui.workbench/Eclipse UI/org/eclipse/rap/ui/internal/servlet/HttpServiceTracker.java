@@ -13,6 +13,7 @@ package org.eclipse.rap.ui.internal.servlet;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -30,7 +31,7 @@ public class HttpServiceTracker extends ServiceTracker {
   public static final String ID_HTTP_CONTEXT = "org.eclipse.rap.httpcontext";
 
   private HttpService httpService;
-  private final ArrayList servletAliases = new ArrayList();
+  private final List servletAliases = new ArrayList();
 
   public HttpServiceTracker( final BundleContext context ) {
     super( context, HttpService.class.getName(), null );
@@ -40,9 +41,9 @@ public class HttpServiceTracker extends ServiceTracker {
     httpService = ( HttpService )context.getService( reference );
     HttpContext rapContext = getRAPHttpContext( reference );
 
-    if(servletAliases.size() == 0) {
+    if( servletAliases.size() == 0 ) {
     	// register default servlet
-    	servletAliases.add(DEFAULT_SERVLET);
+      servletAliases.add( DEFAULT_SERVLET );
     }
     for( Iterator it = servletAliases.iterator(); it.hasNext(); ) {
       String name = ( String )it.next();
@@ -50,7 +51,7 @@ public class HttpServiceTracker extends ServiceTracker {
         RequestHandler handler = new RequestHandler();
         httpService.registerServlet( "/" + name, handler, null, rapContext ); //$NON-NLS-1$
       } catch( Exception e ) {
-        String text =   "Could not register servlet mapping ''{0}''.";
+        String text = "Could not register servlet mapping ''{0}''.";
         Object[] param = new Object[] { name };
         String msg = MessageFormat.format( text, param );
         Status status = new Status( IStatus.ERROR,
