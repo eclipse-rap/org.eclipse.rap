@@ -1175,7 +1175,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : tv.getCssColor( "Table", "background-color" ),
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "*", "font" ),
         border : tv.getCssBorder( "*", "border" )
@@ -1183,7 +1182,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
- "table-column-area" : {
+  "table-client-area" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        backgroundColor : tv.getCssColor( "Table", "background-color" ),
+      };
+      return result;
+    }
+  },
+
+  "table-column-area" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {

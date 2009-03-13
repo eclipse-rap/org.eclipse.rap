@@ -89,6 +89,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.add( this._columnArea );
     // Construct client area in which the table items will live
     this._clientArea = new qx.ui.layout.CanvasLayout();
+    this._clientArea.setAppearance( "table-client-area" );
     this._clientArea.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this._clientArea.setTop( 20 );
     this._clientArea.setLeft( 0 );
@@ -295,6 +296,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._checkBoxes[ i ].resetCursor();
         }
       }
+    },
+
+    setBackgroundColor : function( color ) {
+      this._clientArea.setBackgroundColor( color );
+    },
+
+    resetBackgroundColor : function() {
+      this._clientArea.resetBackgroundColor();
     },
 
     setHeaderHeight : function( value ) {
