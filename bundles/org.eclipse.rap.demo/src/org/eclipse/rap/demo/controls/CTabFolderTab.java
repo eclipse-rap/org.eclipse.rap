@@ -62,7 +62,10 @@ public class CTabFolderTab extends ExampleTab {
       Button rbSelectTab = createPropertyButton( rbText, SWT.RADIO );
       rbSelectTab.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
-          folder.setSelection( index );
+          Button radio = ( Button )event.getSource();
+          if( radio.getSelection() ) {
+            folder.setSelection( index );
+          }
         }
       } );
     }
