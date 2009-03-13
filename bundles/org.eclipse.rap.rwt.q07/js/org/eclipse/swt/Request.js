@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -253,7 +253,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( giveUp ) {
         this._hideWaitHint();
         var content;
-        var text = evt.getTarget().getImplementation().getRequest().responseText;
+        var text = null;
+        var request = evt.getTarget().getImplementation().getRequest();
+        if( typeof( request.responseText ) != "unknown" ) {
+          text = request.responseText;
+        }
         if( text == "" || text == null ) {
           content 
             = "<html><head><title>Error Page</title></head><body>"
