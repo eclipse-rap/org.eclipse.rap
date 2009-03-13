@@ -15,7 +15,6 @@ import java.util.*;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
