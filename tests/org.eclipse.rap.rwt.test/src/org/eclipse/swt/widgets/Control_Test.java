@@ -780,8 +780,7 @@ public class Control_Test extends TestCase {
   
   public void testGetMonitor() throws Exception {
     Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Control control = new Button( shell, SWT.PUSH );
+    Control control = new Shell( display );
     Monitor monitor = control.getMonitor();
     assertNotNull( monitor );
     assertEquals( display.getPrimaryMonitor(), monitor );
