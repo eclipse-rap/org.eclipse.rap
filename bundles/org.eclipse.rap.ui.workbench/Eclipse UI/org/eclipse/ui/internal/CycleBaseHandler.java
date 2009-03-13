@@ -226,12 +226,10 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		Rectangle dialogBounds = dialog.getBounds();
 		Rectangle parentBounds = dialog.getParent().getBounds();
 
-// RAP [rh] Monitor not implemented		
-//		// the bounds of the monitor that contains the currently active part.
-//		Rectangle monitorBounds = activePart == null ? display
-//				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
-//				.getSite()).getPane().getControl().getMonitor().getBounds();
-    Rectangle monitorBounds = display.getBounds();
+		// the bounds of the monitor that contains the currently active part.
+		Rectangle monitorBounds = activePart == null ? display
+				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
+				.getSite()).getPane().getControl().getMonitor().getBounds();
 		
 		// Place it in the center of its parent;
 		dialogBounds.x = parentBounds.x

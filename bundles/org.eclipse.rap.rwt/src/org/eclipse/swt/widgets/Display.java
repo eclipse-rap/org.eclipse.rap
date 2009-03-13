@@ -169,6 +169,7 @@ public class Display extends Device implements Adaptable {
   private Control focusControl;
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
+  private Monitor monitor;
   
   /* Display Data */
   private Object data;
@@ -204,6 +205,7 @@ public class Display extends Device implements Adaptable {
     ContextProvider.getSession().setAttribute( DISPLAY_ID, this );
     shells = new ArrayList();
     readInitialBounds();
+    monitor = new Monitor( this );
   }
 
   /**
@@ -1282,6 +1284,34 @@ public class Display extends Device implements Adaptable {
       if (keys [i].equals (key)) return values [i];
     }
     return null;
+  }
+
+  //////////////////
+  // Monitors
+
+  /**
+   * Returns an array of monitors attached to the device.
+   * 
+   * @return the array of monitors
+   * 
+   * @since 1.2
+   */
+  public Monitor[] getMonitors() {
+    checkDevice();
+    Monitor[] result = new Monitor[] { monitor };
+    return result;
+  }
+  
+  /**
+   * Returns the primary monitor for that device.
+   * 
+   * @return the primary monitor
+   * 
+   * @since 1.2
+   */
+  public Monitor getPrimaryMonitor() {
+    checkDevice();
+    return monitor;
   }
   
   //////////////////

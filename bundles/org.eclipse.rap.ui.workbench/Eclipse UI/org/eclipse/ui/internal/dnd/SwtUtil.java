@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-//import org.eclipse.swt.widgets.Monitor;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -216,20 +216,17 @@ public class SwtUtil {
      */
     public static boolean intersectsAnyMonitor(Display display,
             Rectangle someRectangle) {
-// RAP [rh] Monitor not implemented    
-//        Monitor[] monitors = display.getMonitors();
-//    
-//        for (int idx = 0; idx < monitors.length; idx++) {
-//            Monitor mon = monitors[idx];
-//    
-//            if (mon.getClientArea().intersects(someRectangle)) {
-//                return true;
-//            }
-//        }
-//    
-//        return false;
-    	// rap alternative
-    	return display.getBounds().intersects(someRectangle);
+        Monitor[] monitors = display.getMonitors();
+    
+        for (int idx = 0; idx < monitors.length; idx++) {
+            Monitor mon = monitors[idx];
+    
+            if (mon.getClientArea().intersects(someRectangle)) {
+                return true;
+            }
+        }
+    
+        return false;
     }
 
 }

@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
-//import org.eclipse.swt.widgets.Monitor;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -568,15 +568,12 @@ public abstract class Window implements IShellProvider {
 	protected Point getInitialLocation(Point initialSize) {
 		Composite parent = shell.getParent();
 
-		// RAP [bm]: Monitor
-//		Monitor monitor = shell.getDisplay().getPrimaryMonitor();
-//		if (parent != null) {
-//			monitor = parent.getMonitor();
-//		}
-//
-//		Rectangle monitorBounds = monitor.getClientArea();
-		Rectangle monitorBounds = shell.getDisplay().getBounds();
-		// RAPEND: [bm] 
+		Monitor monitor = shell.getDisplay().getPrimaryMonitor();
+		if (parent != null) {
+			monitor = parent.getMonitor();
+		}
+
+		Rectangle monitorBounds = monitor.getClientArea();
 
 		Point centerPoint;
 		if (parent != null) {
@@ -930,32 +927,31 @@ public abstract class Window implements IShellProvider {
 	 *            point to find (display coordinates)
 	 * @return the montor closest to the given point
 	 */
-	// RAP [bm]: Monitor
-//	private static Monitor getClosestMonitor(Display toSearch, Point toFind) {
-//		int closest = Integer.MAX_VALUE;
-//
-//		Monitor[] monitors = toSearch.getMonitors();
-//		Monitor result = monitors[0];
-//
-//		for (int idx = 0; idx < monitors.length; idx++) {
-//			Monitor current = monitors[idx];
-//
-//			Rectangle clientArea = current.getClientArea();
-//
-//			if (clientArea.contains(toFind)) {
-//				return current;
-//			}
-//
-//			int distance = Geometry.distanceSquared(Geometry
-//					.centerPoint(clientArea), toFind);
-//			if (distance < closest) {
-//				closest = distance;
-//				result = current;
-//			}
-//		}
-//
-//		return result;
-//	}
+	private static Monitor getClosestMonitor(Display toSearch, Point toFind) {
+		int closest = Integer.MAX_VALUE;
+
+		Monitor[] monitors = toSearch.getMonitors();
+		Monitor result = monitors[0];
+
+		for (int idx = 0; idx < monitors.length; idx++) {
+			Monitor current = monitors[idx];
+
+			Rectangle clientArea = current.getClientArea();
+
+			if (clientArea.contains(toFind)) {
+				return current;
+			}
+
+			int distance = Geometry.distanceSquared(Geometry
+					.centerPoint(clientArea), toFind);
+			if (distance < closest) {
+				closest = distance;
+				result = current;
+			}
+		}
+
+		return result;
+	}
 
 	/**
 	 * Given the desired position of the window, this method returns an adjusted
@@ -975,13 +971,10 @@ public abstract class Window implements IShellProvider {
 		Rectangle result = new Rectangle(preferredSize.x, preferredSize.y,
 				preferredSize.width, preferredSize.height);
 
-		// RAP [bm]: Monitor 
-//		Monitor mon = getClosestMonitor(getShell().getDisplay(), Geometry
-//				.centerPoint(result));
-//
-//		Rectangle bounds = mon.getClientArea();
-		Rectangle bounds = getShell().getDisplay().getBounds();
-		// RAPEND: [bm] 
+		Monitor mon = getClosestMonitor(getShell().getDisplay(), Geometry
+				.centerPoint(result));
+
+		Rectangle bounds = mon.getClientArea();
 
 		if (result.height > bounds.height) {
 			result.height = bounds.height;

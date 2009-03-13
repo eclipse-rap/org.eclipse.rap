@@ -136,12 +136,9 @@ public class CyclePageHandler extends CycleBaseHandler {
 				.getShell().getBounds();
 
 		// the bounds of the monitor that contains the currently active part.
-		// RAP [bm]: Monitors
-//		Rectangle monitorBounds = activePart == null ? display
-//				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
-//				.getSite()).getPane().getControl().getMonitor().getBounds();
-		Rectangle monitorBounds = display.getBounds();
-		// RAPEND: [bm] 
+		Rectangle monitorBounds = activePart == null ? display
+				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
+				.getSite()).getPane().getControl().getMonitor().getBounds();
 
 		// Place it in the center of its parent;
 		dialogBounds.x = parentBounds.x + viewBounds.x + (viewBounds.width / 2)

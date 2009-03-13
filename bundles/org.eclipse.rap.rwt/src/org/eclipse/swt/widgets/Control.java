@@ -191,6 +191,18 @@ public abstract class Control extends Widget {
     return parent.getShell();
   }
 
+  /**
+   * Returns the receiver's monitor.
+   * 
+   * @return the receiver's monitor
+   * 
+   * @since 1.2
+   */
+  public Monitor getMonitor() {
+    checkWidget();
+    return display.getPrimaryMonitor();
+  }
+  
   //////////////
   // Visibility
 

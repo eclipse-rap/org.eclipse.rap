@@ -109,6 +109,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( CommonPatterns_Test.class );
 
     suite.addTestSuite( Display_Test.class );
+    suite.addTestSuite( Monitor_Test.class );
     suite.addTestSuite( Shell_Test.class );
     suite.addTestSuite( Widget_Test.class );
     suite.addTestSuite( Control_Test.class );

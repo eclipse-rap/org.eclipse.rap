@@ -467,6 +467,23 @@ public class Display_Test extends TestCase {
     thread.join();
     // Further timerExec tests can be found in UICallbackManager_Test
   }
+  
+  public void testGetMonitors() {
+    final Display display = new Display();
+    Monitor[] monitors = display.getMonitors();
+    assertNotNull( monitors );
+    assertEquals( 1, monitors.length );
+    Monitor monitor = monitors[ 0 ];
+    assertNotNull( monitor );
+    // Further monitor tests can be found in Monitor_Test
+  }
+
+  public void testGetPrimaryMonitor() {
+    final Display display = new Display();
+    Monitor monitor = display.getPrimaryMonitor();
+    assertNotNull( monitor );
+    // Further monitor tests can be found in Monitor_Test
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

@@ -777,4 +777,14 @@ public class Control_Test extends TestCase {
     control.setCursor( null );
     assertNull( control.getCursor() );
   }
+  
+  public void testGetMonitor() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Control control = new Button( shell, SWT.PUSH );
+    Monitor monitor = control.getMonitor();
+    assertNotNull( monitor );
+    assertEquals( display.getPrimaryMonitor(), monitor );
+  }
+  
 }
