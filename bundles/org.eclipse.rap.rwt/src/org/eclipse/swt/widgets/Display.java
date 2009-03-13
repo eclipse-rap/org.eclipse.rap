@@ -467,15 +467,9 @@ public class Display extends Device implements Adaptable {
   //////////
   // Dispose
 
-  // TODO [rh] This is preliminary!
-  // TODO [rh] move to Device
   public void dispose() {
+    super.dispose();
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
-  }
-
-  // TODO [rh] move to Device
-  public boolean isDisposed() {
-    return false;
   }
 
   /////////////////////

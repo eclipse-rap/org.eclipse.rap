@@ -12,6 +12,7 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
@@ -156,7 +157,17 @@ public abstract class Device {
     checkDevice();
     return new Rectangle( 0, 0, 0, 0 );
   }
-  
+
+  public void dispose() {
+    // Superclasses may override
+  }
+
+  public boolean isDisposed() {
+    // TODO [rh] implementation missing, add JavaDoc, once dispose/isDisposed 
+    //      do actually something 
+    return false;
+  }
+
 //  /**
 //   * Throws an <code>SWTException</code> if the receiver can not
 //   * be accessed by the caller. This may include both checks on
