@@ -47,7 +47,10 @@ public class TabFolderTab extends ExampleTab {
       final int itemIndex = i;
       tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
-          folder.setSelection( itemIndex );
+          Button radio = ( Button )event.getSource();
+          if( radio.getSelection() ) {
+            folder.setSelection( itemIndex );
+          }
         }
       } );
     }
@@ -125,7 +128,7 @@ public class TabFolderTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createDisposeItemButton( final Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose of selected item" );
@@ -146,7 +149,7 @@ public class TabFolderTab extends ExampleTab {
       int index = folder.indexOf( item );
       String text = "This is the content for item " + index;
       if( onDemandContent ) {
-        text += "\nIt was created on demand, when the item was selected " 
+        text += "\nIt was created on demand, when the item was selected "
              +  "for the first time through user interaction.";
       }
       content.setText( text );
