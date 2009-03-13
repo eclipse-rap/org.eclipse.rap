@@ -73,20 +73,22 @@ public final class CommonPatterns {
    * replaced
    */
   public static String escapeLeadingTrailingSpaces( final String input ) {
-    String spaces = "";
-    String result = input;
-    while( result.startsWith( " " ) ) {
-      spaces += LEADING_TRAILING_SPACES_REPLACEMENT;
-      result = result.substring( 1 );
+    StringBuffer buffer = new StringBuffer();
+    int beginIndex = 0;
+    int endIndex = input.length();
+    while( beginIndex < input.length() && input.charAt( beginIndex ) == ' ' ) {
+      beginIndex++;
+      buffer.append( LEADING_TRAILING_SPACES_REPLACEMENT );
     }
-    result = spaces + result;
-    spaces = "";
-    while( result.endsWith( " " ) ) {
-      spaces += LEADING_TRAILING_SPACES_REPLACEMENT;
-      result = result.substring( 0, result.length() - 1 );
+    while( endIndex > beginIndex && input.charAt( endIndex - 1 ) == ' ' ) {
+      endIndex--;
     }
-    result = result + spaces;
-    return result;
+    buffer.append( input.substring( beginIndex, endIndex ) );
+    int endCount = input.length() - endIndex;
+    for( int i = 0; i < endCount; i++ ) {
+      buffer.append( LEADING_TRAILING_SPACES_REPLACEMENT );
+    }
+    return buffer.toString();
   }
 
   /**

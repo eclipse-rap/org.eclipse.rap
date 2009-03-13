@@ -78,5 +78,10 @@ public class CommonPatterns_Test extends TestCase {
     expected = "&nbsp;&nbsp;";
     result = CommonPatterns.escapeLeadingTrailingSpaces( stringToEscape );
     assertEquals( expected, result );
+
+    stringToEscape = "";
+    expected = "";
+    result = CommonPatterns.escapeLeadingTrailingSpaces( stringToEscape );
+    assertEquals( expected, result );
   }
 }
