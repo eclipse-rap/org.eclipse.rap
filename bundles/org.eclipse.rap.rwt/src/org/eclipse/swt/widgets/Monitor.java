@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 public final class Monitor {
 
-  private Display display;
+  private final Display display;
 
   /**
    * Prevents uninitialized instances from being created outside the package.

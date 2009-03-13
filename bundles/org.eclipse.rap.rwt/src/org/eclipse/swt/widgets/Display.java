@@ -169,7 +169,7 @@ public class Display extends Device implements Adaptable {
   private Control focusControl;
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
-  private Monitor monitor;
+  private final Monitor monitor;
   
   /* Display Data */
   private Object data;
