@@ -108,7 +108,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     // === Event listener ===
 
     _onMouseUp : function( event ) {
-//      event.debug( "_____ onMouseUp ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -116,7 +115,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onKeyDown : function( event ) {
-//      event.debug( "_____ onKeyDown ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -127,14 +125,13 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             && !event.isMetaPressed()
             && org.eclipse.swt.TextUtil.hasSelectionListener( text ) )
         {
-          event.setPropagationStopped( true );        
+          event.setPropagationStopped( true );
           org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
         }
       }
     },
 
     _onKeyPress : function( event ) {
-//      event.debug( "_____ onKeyPress ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -142,7 +139,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onKeyUp : function( event ) {
-//      event.debug( "_____ onKeyUp ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -162,10 +158,13 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _updateLineHeight : function( text ) {
-      var font = text.getFont();
-      var height = Math.floor( font.getSize()
-                               * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
-      text._inputElement.style.lineHeight = height + "px";
+      // TODO [rst] _inputElement can be undefined when text created invisible
+      if( text._inputElement !== undefined ) {
+        var font = text.getFont();
+        var height = Math.floor( font.getSize()
+                                 * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
+        text._inputElement.style.lineHeight = height + "px";
+      }
     },
 
     // === Request related ===
@@ -247,7 +246,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     /**
-     * Determines whether the given keyIdentifier potentially modifies the 
+     * Determines whether the given keyIdentifier potentially modifies the
      * content of a text widget.
      * TODO [rst] Obsolete but still used by ComboUtil
      */
@@ -343,7 +342,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var start = text.getUserData( "onAppear.selectionStart" );
       var length = text.getUserData( "onAppear.selectionLength" );
       org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
-      text.removeEventListener( "appear", 
+      text.removeEventListener( "appear",
                                 org.eclipse.swt.TextUtil._onAppearSetSelection );
     },
 
