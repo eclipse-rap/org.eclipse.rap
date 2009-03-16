@@ -69,49 +69,49 @@
 
       </element>
 
-      <element name="Table-Cell"
-          description="A single cell in a multi-column Table.">
+    </element>
 
-        <property name="padding"
-            type="boxdim"
-            description="Defines the padding (i.e. the inner distance between border and content) for a table cell." />
+    <element name="Table-Cell"
+        description="A single cell in a multi-column Table.">
 
-        <property name="spacing"
-            type="dimension"
-            description="Defines the spacing between image and text within a table cell." />
+      <property name="padding"
+          type="boxdim"
+          description="Defines the padding (i.e. the inner distance between border and content) for a table cell." />
 
-      </element>
+      <property name="spacing"
+          type="dimension"
+          description="Defines the spacing between image and text within a table cell." />
 
-      <element name="Table-GridLine"
-          description="Grid lines in Table controls">
+    </element>
 
-        <property name="color"
-            type="color"
-            description="Grid line color when linesVisible is true" />
+    <element name="Table-GridLine"
+        description="Grid lines in Table controls">
 
-      </element>
+      <property name="color"
+          type="color"
+          description="Grid line color when linesVisible is true" />
 
-      <element name="Table-Checkbox"
-          description="Checkboxes in Table controls">
+    </element>
 
-        <property name="width"
-            type="dimension"
-            description="Width of check boxes" />
+    <element name="Table-Checkbox"
+        description="Checkboxes in Table controls">
+
+      <property name="width"
+          type="dimension"
+          description="Width of check boxes" />
             
-        <property name="background-image" type="image">
-          <description>
-            Background image for the table checkbox.
-            The size of the image should be 13 x 13 pixels.
-          </description>
-        </property>
+      <property name="background-image" type="image">
+        <description>
+          Background image for the table checkbox.
+          The size of the image should be 13 x 13 pixels.
+        </description>
+      </property>
 
-        <state name="grayed"
-          description="When table checkbox is grayed" />
+      <state name="grayed"
+        description="When table checkbox is grayed" />
 
-        <state name="checked"
-          description="When table checkbox is checked" />  
-
-      </element>
+      <state name="checked"
+        description="When table checkbox is checked" />  
 
     </element>
 
