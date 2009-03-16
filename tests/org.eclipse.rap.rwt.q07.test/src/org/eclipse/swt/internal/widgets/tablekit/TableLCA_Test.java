@@ -651,25 +651,32 @@ public class TableLCA_Test extends TestCase {
     item3.setText( "item3" );
 
     item2.setImage( image );
-    ItemMetrics[] itemMetrics = TableLCAUtil.getItemMetrics( table );
-    assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
+    ItemMetrics[] metrics = TableLCAUtil.getItemMetrics( table );
+    assertTrue( metrics[ 0 ].imageWidth > 0 );
 
     item1.setImage( image );
-    itemMetrics = TableLCAUtil.getItemMetrics( table );
+    metrics = TableLCAUtil.getItemMetrics( table );
     int defaultLeftPadding = 2;
-    assertEquals( defaultLeftPadding, itemMetrics[ 0 ].imageLeft );
-    assertTrue( itemMetrics[ 0 ].imageWidth > 0 );
+    assertEquals( defaultLeftPadding, metrics[ 0 ].imageLeft );
+    assertTrue( metrics[ 0 ].imageWidth > 0 );
 
     item1.setImage( image );
     RWTFixture.preserveWidgets();
     item1.setImage( ( Image )null );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
 
+    // spacing must be respected
+    int defaultSpacing = 2;
+    int expected =   metrics[ 0 ].imageLeft
+                   + metrics[ 0 ].imageWidth
+                   + defaultSpacing;
+    assertEquals( expected, metrics[ 0 ].textLeft );
+
     // image must not exceed right column border
     column.setWidth( 12 );
-    itemMetrics = TableLCAUtil.getItemMetrics( table );
-    assertEquals( 10, itemMetrics[ 0 ].imageWidth );
-
+    metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 10, metrics[ 0 ].imageWidth );
+    
     RWTFixture.preserveWidgets();
     item1.setImage( image );
     table.setSelection( item1 );
