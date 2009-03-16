@@ -1,0 +1,12 @@
+/* FormText default theme */
+
+FormText {  
+  color: black;
+  background-color: rgb( 255, 255, 255 );
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;  
+  border: none;
+}
+
+FormText[BORDER] {
+  border: 2px inset;
+}

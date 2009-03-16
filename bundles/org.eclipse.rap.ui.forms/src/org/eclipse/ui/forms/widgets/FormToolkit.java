@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Michael Williamson (eclipse-bugs@magnaworks.com) - patch (see Bugzilla #92545) 
+ *     Michael Williamson (eclipse-bugs@magnaworks.com) - patch (see Bugzilla #92545)
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -76,7 +76,7 @@ import org.eclipse.ui.internal.forms.widgets.FormUtil;
  * FormToolkit is normally instantiated, but can also be subclassed if some of
  * the methods needs to be modified. In those cases, <code>super</code> must
  * be called to preserve normal behaviour.
- * 
+ *
  * @since 1.0
  */
 public class FormToolkit {
@@ -178,7 +178,7 @@ public class FormToolkit {
 		}
 	}
 
-	// RAP [rh] key events missing 
+	// RAP [rh] key events missing
 //	private static class KeyboardHandler extends KeyAdapter {
 //		public void keyPressed(KeyEvent e) {
 //			Widget w = e.widget;
@@ -223,7 +223,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a toolkit that is self-sufficient (will manage its own colors).
-	 * 
+	 *
 	 */
 	public FormToolkit(Display display) {
 		this(new FormColors(display));
@@ -233,7 +233,7 @@ public class FormToolkit {
 	 * Creates a toolkit that will use the provided (shared) colors. The toolkit
 	 * will dispose the colors if and only if they are <b>not</b> marked as
 	 * shared via the <code>markShared()</code> method.
-	 * 
+	 *
 	 * @param colors
 	 *            the shared colors
 	 */
@@ -244,7 +244,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a button as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the button parent
 	 * @param text
@@ -263,7 +263,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates the composite as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the composite parent
 	 * @return the composite widget
@@ -274,7 +274,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates the composite as part of the form using the provided style.
-	 * 
+	 *
 	 * @param parent
 	 *            the composite parent
 	 * @param style
@@ -291,15 +291,15 @@ public class FormToolkit {
 	 * Creats the composite that can server as a separator between various parts
 	 * of a form. Separator height should be controlled by setting the height
 	 * hint on the layout data for the composite.
-	 * 
+	 *
 	 * @param parent
 	 *            the separator parent
 	 * @return the separator widget
 	 */
-// RAP [rh] createCompositeSeparator: currently no useful implementation possible, delete?		
+// RAP [rh] createCompositeSeparator: currently no useful implementation possible, delete?
 	public Composite createCompositeSeparator(Composite parent) {
 		final Composite composite = new Composite(parent, orientation);
-// RAP [rh] GC and paint events missing		
+// RAP [rh] GC and paint events missing
 //		composite.addListener(SWT.Paint, new Listener() {
 //			public void handleEvent(Event e) {
 //				if (composite.isDisposed())
@@ -320,7 +320,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a label as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the label parent
 	 * @param text
@@ -333,7 +333,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a label as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the label parent
 	 * @param text
@@ -353,7 +353,7 @@ public class FormToolkit {
 	/**
 	 * Creates a hyperlink as a part of the form. The hyperlink will be added to
 	 * the hyperlink group that belongs to this toolkit.
-	 * 
+	 *
 	 * @param parent
 	 *            the hyperlink parent
 	 * @param text
@@ -367,7 +367,7 @@ public class FormToolkit {
 		if (text != null)
 			hyperlink.setText(text);
 		hyperlink.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing		
+// RAP [rh] Key events missing
 //		hyperlink.addKeyListener(keyboardHandler);
 		hyperlinkGroup.add(hyperlink);
 		return hyperlink;
@@ -376,7 +376,7 @@ public class FormToolkit {
 	/**
 	 * Creates an image hyperlink as a part of the form. The hyperlink will be
 	 * added to the hyperlink group that belongs to this toolkit.
-	 * 
+	 *
 	 * @param parent
 	 *            the hyperlink parent
 	 * @param style
@@ -393,33 +393,32 @@ public class FormToolkit {
 		return hyperlink;
 	}
 
-// RAP [rh] FormText not implemented
-//	/**
-//	 * Creates a rich text as a part of the form.
-//	 * 
-//	 * @param parent
-//	 *            the rich text parent
-//	 * @param trackFocus
-//	 *            if <code>true</code>, the toolkit will monitor focus
-//	 *            transfers to ensure that the hyperlink in focus is visible in
-//	 *            the form.
-//	 * @return the rich text widget
-//	 */
-//	public FormText createFormText(Composite parent, boolean trackFocus) {
-//		FormText engine = new FormText(parent, SWT.WRAP | orientation);
-//		engine.marginWidth = 1;
-//		engine.marginHeight = 0;
-//		engine.setHyperlinkSettings(getHyperlinkGroup());
-//		adapt(engine, trackFocus, true);
-//		engine.setMenu(parent.getMenu());
-//		return engine;
-//	}
+	/**
+	 * Creates a rich text as a part of the form.
+	 *
+	 * @param parent
+	 *            the rich text parent
+	 * @param trackFocus
+	 *            if <code>true</code>, the toolkit will monitor focus
+	 *            transfers to ensure that the hyperlink in focus is visible in
+	 *            the form.
+	 * @return the rich text widget
+	 */
+	public FormText createFormText(Composite parent, boolean trackFocus) {
+		FormText engine = new FormText(parent, SWT.WRAP | orientation);
+		engine.marginWidth = 1;
+		engine.marginHeight = 0;
+		engine.setHyperlinkSettings(getHyperlinkGroup());
+		adapt(engine, trackFocus, true);
+		engine.setMenu(parent.getMenu());
+		return engine;
+	}
 
 	/**
 	 * Adapts a control to be used in a form that is associated with this
 	 * toolkit. This involves adjusting colors and optionally adding handlers to
 	 * ensure focus tracking and keyboard management.
-	 * 
+	 *
 	 * @param control
 	 *            a control to adapt
 	 * @param trackFocus
@@ -444,14 +443,14 @@ public class FormToolkit {
 			if (ec.toggle != null) {
 				if (trackFocus)
 					ec.toggle.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing				
+// RAP [rh] Key events missing
 //				if (trackKeyboard)
 //					ec.toggle.addKeyListener(keyboardHandler);
 			}
 			if (ec.textLabel != null) {
 				if (trackFocus)
 					ec.textLabel.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing				
+// RAP [rh] Key events missing
 //				if (trackKeyboard)
 //					ec.textLabel.addKeyListener(keyboardHandler);
 			}
@@ -466,7 +465,7 @@ public class FormToolkit {
 
 	/**
 	 * Adapts a composite to be used in a form associated with this toolkit.
-	 * 
+	 *
 	 * @param composite
 	 *            the composite to adapt
 	 */
@@ -485,7 +484,7 @@ public class FormToolkit {
 	 * ScrolledComposite is somewhere in the parent chain. If scroll bars are
 	 * visible and the control is clipped, the client of the scrolled composite
 	 * will be scrolled to reveal the control.
-	 * 
+	 *
 	 * @param c
 	 *            the control to reveal
 	 */
@@ -495,7 +494,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a section as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the section parent
 	 * @param sectionStyle
@@ -527,7 +526,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates an expandable composite as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the expandable composite parent
 	 * @param expansionStyle
@@ -546,7 +545,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a separator label as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the separator parent
 	 * @param style
@@ -562,7 +561,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a table as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the table parent
 	 * @param style
@@ -578,7 +577,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a text as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the text parent
 	 * @param value
@@ -591,7 +590,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a text as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the text parent
 	 * @param value
@@ -612,7 +611,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a tree widget as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the tree parent
 	 * @param style
@@ -630,7 +629,7 @@ public class FormToolkit {
 	 * Creates a scrolled form widget in the provided parent. If you do not
 	 * require scrolling because there is already a scrolled composite up the
 	 * parent chain, use 'createForm' instead.
-	 * 
+	 *
 	 * @param parent
 	 *            the scrolled form parent
 	 * @return the form that can scroll itself
@@ -651,7 +650,7 @@ public class FormToolkit {
 	 * Creates a form widget in the provided parent. Note that this widget does
 	 * not scroll its content, so make sure there is a scrolled composite up the
 	 * parent chain. If you require scrolling, use 'createScrolledForm' instead.
-	 * 
+	 *
 	 * @param parent
 	 *            the form parent
 	 * @return the form that does not scroll
@@ -669,7 +668,7 @@ public class FormToolkit {
 	 * Takes advantage of the gradients and other capabilities to decorate the
 	 * form heading using colors computed based on the current skin and
 	 * operating system.
-	 * 
+	 *
 	 * @param form
 	 *            the form to decorate
 	 */
@@ -696,7 +695,7 @@ public class FormToolkit {
 
 	/**
 	 * Creates a scrolled page book widget as a part of the form.
-	 * 
+	 *
 	 * @param parent
 	 *            the page book parent
 	 * @param style
@@ -724,7 +723,7 @@ public class FormToolkit {
 
 	/**
 	 * Returns the hyperlink group that manages hyperlinks for this toolkit.
-	 * 
+	 *
 	 * @return the hyperlink group
 	 */
 	public HyperlinkGroup getHyperlinkGroup() {
@@ -735,7 +734,7 @@ public class FormToolkit {
 	 * Sets the background color for the entire toolkit. The method delegates
 	 * the call to the FormColors object and also updates the hyperlink group so
 	 * that hyperlinks and other objects are in sync.
-	 * 
+	 *
 	 * @param bg
 	 *            the new background color
 	 */
@@ -764,21 +763,21 @@ public class FormToolkit {
 //	 * Borders are painted for some controls that are selected by the toolkit by
 //	 * default. If a control needs a border but is not on its list, it is
 //	 * possible to force border in the following way:
-//	 * 
+//	 *
 //	 * <pre>
-//	 *   
-//	 *    
-//	 *     
+//	 *
+//	 *
+//	 *
 //	 *             widget.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-//	 *             
+//	 *
 //	 *             or
-//	 *             
+//	 *
 //	 *             widget.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-//	 *            
-//	 *     
-//	 *    
+//	 *
+//	 *
+//	 *
 //	 * </pre>
-//	 * 
+//	 *
 //	 * @param parent
 //	 *            the parent that owns the children for which the border needs
 //	 *            to be painted.
@@ -793,7 +792,7 @@ public class FormToolkit {
 
 	/**
 	 * Returns the colors used by this toolkit.
-	 * 
+	 *
 	 * @return the color object
 	 */
 	public FormColors getColors() {
@@ -807,7 +806,7 @@ public class FormToolkit {
 	 * already flat, we set the style to SWT.BORDER and don't paint the borders
 	 * ourselves. Otherwise, the style is set to SWT.NULL, and borders are
 	 * painted by the toolkit.
-	 * 
+	 *
 	 * @return the global border style
 	 */
 	public int getBorderStyle() {
@@ -820,7 +819,7 @@ public class FormToolkit {
 	 * the border is painted around the controls on the parent, a number of
 	 * pixels needs to be reserved for this border. For windowing systems where
 	 * the native border is used, this margin is 0.
-	 * 
+	 *
 	 * @return the margin in the parent when children have their border painted
 	 */
 	public int getBorderMargin() {
@@ -831,7 +830,7 @@ public class FormToolkit {
 	 * Sets the border style to be used when creating widgets. The toolkit
 	 * chooses the correct style based on the platform but this value can be
 	 * changed using this method.
-	 * 
+	 *
 	 * @param style
 	 *            <code>SWT.BORDER</code> or <code>SWT.NULL</code>
 	 * @see #getBorderStyle
@@ -846,7 +845,7 @@ public class FormToolkit {
 	 * class that extends ScrolledComposite somewhere in the parent chain. If
 	 * the control is partially or fully clipped, the composite is scrolled to
 	 * set by setting the origin to the control origin.
-	 * 
+	 *
 	 * @param c
 	 *            the control to make visible
 	 * @param verticalOnly
@@ -867,7 +866,7 @@ public class FormToolkit {
 		hyperlinkGroup = new HyperlinkGroup(colors.getDisplay());
 		hyperlinkGroup.setBackground(colors.getBackground());
 		visibilityHandler = new VisibilityHandler();
-// RAP [rh] Key events missing		
+// RAP [rh] Key events missing
 //		keyboardHandler = new KeyboardHandler();
 		boldFontHolder = new BoldFontHolder();
 	}
@@ -893,7 +892,7 @@ public class FormToolkit {
 	 * Returns the orientation that all the widgets created by this toolkit will
 	 * inherit, if set. Can be <code>SWT.NULL</code>,
 	 * <code>SWT.LEFT_TO_RIGHT</code> and <code>SWT.RIGHT_TO_LEFT</code>.
-	 * 
+	 *
 	 * @return orientation style for this toolkit, or <code>SWT.NULL</code> if
 	 *         not set. The default orientation is inherited from the Window
 	 *         default orientation.
@@ -908,7 +907,7 @@ public class FormToolkit {
 	 * Sets the orientation that all the widgets created by this toolkit will
 	 * inherit. Can be <code>SWT.NULL</code>, <code>SWT.LEFT_TO_RIGHT</code>
 	 * and <code>SWT.RIGHT_TO_LEFT</code>.
-	 * 
+	 *
 	 * @param orientation
 	 *            style for this toolkit.
 	 */

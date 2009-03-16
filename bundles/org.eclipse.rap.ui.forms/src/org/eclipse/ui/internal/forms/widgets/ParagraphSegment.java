@@ -1,45 +1,50 @@
-// RAP [rh] FormText helper class
-///*******************************************************************************
-// * Copyright (c) 2000, 2007 IBM Corporation and others.
-// * All rights reserved. This program and the accompanying materials
-// * are made available under the terms of the Eclipse Public License v1.0
-// * which accompanies this distribution, and is available at
-// * http://www.eclipse.org/legal/epl-v10.html
-// *
-// * Contributors:
-// *     IBM Corporation - initial API and implementation
-// *******************************************************************************/
-//package org.eclipse.ui.internal.forms.widgets;
-//
-//import java.util.Hashtable;
-//
-//import org.eclipse.swt.graphics.*;
+/*******************************************************************************
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.ui.internal.forms.widgets;
+
+import java.util.Hashtable;
+
+import org.eclipse.swt.graphics.*;
+// RAP [if] GC not supported
 //import org.eclipse.swt.graphics.GC;
-//
-///**
-// * @version 	1.0
-// * @author
-// */
-//public abstract class ParagraphSegment {
-//	/**
-//	 * Moves the locator according to the content of this segment.
-//	 * @param gc
-//	 * @param wHint
-//	 * @param loc
-//	 * @param objectTable
-//	 * @param computeHeightOnly
-//	 * @return <code>true</code> if text wrapped to the new line, <code>false</code> otherwise.
-//	 */
+
+/**
+ * @version 	1.0
+ * @author
+ */
+public abstract class ParagraphSegment {
+	/**
+	 * Moves the locator according to the content of this segment.
+	 * @param gc
+	 * @param wHint
+	 * @param loc
+	 * @param objectTable
+	 * @param computeHeightOnly
+	 * @return <code>true</code> if text wrapped to the new line, <code>false</code> otherwise.
+	 */
+// RAP [if] changed method signature and implementation to cope with missing GC
 //	public abstract boolean advanceLocator(GC gc, int wHint, Locator loc, Hashtable objectTable, boolean computeHeightOnly);
-//	/**
-//	 * Computes bounding rectangles and row heights of this segments.
-//	 * @param gc
-//	 * @param width
-//	 * @param loc
-//	 * @param resourceTable
-//	 * @param selected
-//	 */
+	public abstract boolean advanceLocator(Font font, int wHint, Locator loc, Hashtable objectTable, boolean computeHeightOnly);
+	/**
+	 * Computes bounding rectangles and row heights of this segments.
+	 * @param gc
+	 * @param width
+	 * @param loc
+	 * @param resourceTable
+	 * @param selected
+	 */
+// RAP [if] changed method signature and implementation to cope with missing GC
 //	public abstract void layout(GC gc, int width, Locator loc, Hashtable resourceTable, boolean selected);
+	public abstract void layout(Font font, int width, Locator loc, Hashtable resourceTable, boolean selected);
+// RAP [if] paint unnecessary
 //	/**
 //	 * Paints this segment.
 //	 * @param gc
@@ -50,41 +55,43 @@
 //	 * @param region
 //	 */
 //	public abstract void paint(GC gc, boolean hover, Hashtable resourceTable, boolean selected, SelectionData selData, Rectangle region);
-//	/**
-//	 * Paints this segment.
-//	 * @param gc
-//	 * @param resourceTable
-//	 * @param selData
-//	 */
-//	public abstract void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData);	
-//	/**
-//	 * Tests if the coordinates are contained in one of the
-//	 * bounding rectangles of this segment.
-//	 * @param x
-//	 * @param y
-//	 * @return true if inside the bounding rectangle, false otherwise.
-//	 */
-//	public abstract boolean contains(int x, int y);
-//	/**
-//	 * Tests if the source rectangle intersects with
-//	 * one of the bounding rectangles of this segment.
-//	 * @param rect
-//	 * @return true if the two rectangles intersect, false otherwise.
-//	 */
-//	public abstract boolean intersects(Rectangle rect);
-//	/**
-//	 * Returns the tool tip of this segment or <code>null</code>
-//	 * if not defined.
-//	 * @return tooltip or <code>null</code>.
-//	 */
-//	public String getTooltipText() {
-//		return null;
-//	}
-//	/**
-//	 * Clears the text metrics cache for the provided font id.
-//	 * @param fontId the id of the font that the cache is kept for.
-//	 * 
-//	 */
-//	public void clearCache(String fontId) {
-//	}
-//}
+	/**
+	 * Paints this segment.
+	 * @param gc
+	 * @param resourceTable
+	 * @param selData
+	 */
+// RAP [if] changed method signature and implementation to cope with missing GC
+//	public abstract void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData);
+	public abstract void computeSelection(Font font, Hashtable resourceTable, SelectionData selData);
+	/**
+	 * Tests if the coordinates are contained in one of the
+	 * bounding rectangles of this segment.
+	 * @param x
+	 * @param y
+	 * @return true if inside the bounding rectangle, false otherwise.
+	 */
+	public abstract boolean contains(int x, int y);
+	/**
+	 * Tests if the source rectangle intersects with
+	 * one of the bounding rectangles of this segment.
+	 * @param rect
+	 * @return true if the two rectangles intersect, false otherwise.
+	 */
+	public abstract boolean intersects(Rectangle rect);
+	/**
+	 * Returns the tool tip of this segment or <code>null</code>
+	 * if not defined.
+	 * @return tooltip or <code>null</code>.
+	 */
+	public String getTooltipText() {
+		return null;
+	}
+	/**
+	 * Clears the text metrics cache for the provided font id.
+	 * @param fontId the id of the font that the cache is kept for.
+	 *
+	 */
+	public void clearCache(String fontId) {
+	}
+}

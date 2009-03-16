@@ -1,42 +1,42 @@
-// RAP [rh] FormText helper class
-///*******************************************************************************
-// * Copyright (c) 2000, 2005 IBM Corporation and others.
-// * All rights reserved. This program and the accompanying materials
-// * are made available under the terms of the Eclipse Public License v1.0
-// * which accompanies this distribution, and is available at
-// * http://www.eclipse.org/legal/epl-v10.html
-// *
-// * Contributors:
-// *     IBM Corporation - initial API and implementation
-// *******************************************************************************/
-//package org.eclipse.ui.internal.forms.widgets;
-//
-//import java.util.Hashtable;
-//
-//import org.eclipse.swt.graphics.*;
-//
-///**
-// * @version 1.0
-// * @author
-// */
-//public class ImageSegment extends ObjectSegment {
-//	public static final String SEL_IMAGE_PREFIX = "isel."; //$NON-NLS-1$
-//
-//	public Image getImage(Hashtable objectTable) {
-//		return getImage(getObjectId(), objectTable);
-//	}
-//
-//	private Image getImage(String key, Hashtable objectTable) {
-//		if (key == null)
-//			return null;
-//		Object obj = objectTable.get(key);
-//		if (obj == null)
-//			return null;
-//		if (obj instanceof Image)
-//			return (Image) obj;
-//		return null;
-//	}
-//
+/*******************************************************************************
+ * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.ui.internal.forms.widgets;
+
+import java.util.Hashtable;
+
+import org.eclipse.swt.graphics.*;
+
+/**
+ * @version 1.0
+ * @author
+ */
+public class ImageSegment extends ObjectSegment {
+	public static final String SEL_IMAGE_PREFIX = "isel."; //$NON-NLS-1$
+
+	public Image getImage(Hashtable objectTable) {
+		return getImage(getObjectId(), objectTable);
+	}
+
+	private Image getImage(String key, Hashtable objectTable) {
+		if (key == null)
+			return null;
+		Object obj = objectTable.get(key);
+		if (obj == null)
+			return null;
+		if (obj instanceof Image)
+			return (Image) obj;
+		return null;
+	}
+
+// RAP [if] getSelectedImage unnecessary
 //	private Image getSelectedImage(Hashtable objectTable, SelectionData selData) {
 //		String key = SEL_IMAGE_PREFIX + getObjectId();
 //		Image image = getImage(key, objectTable);
@@ -47,14 +47,15 @@
 //		}
 //		return image;
 //	}
-///*
-//	private String getSelectedImageId() {
-//		if (getObjectId() == null)
-//			return null;
-//		return SEL_IMAGE_PREFIX + getObjectId();
-//	}
-//*/
-//	
+/*
+	private String getSelectedImageId() {
+		if (getObjectId() == null)
+			return null;
+		return SEL_IMAGE_PREFIX + getObjectId();
+	}
+*/
+
+// RAP [if] paint unnecessary
 //	public void paint(GC gc, boolean hover, Hashtable resourceTable, boolean selected, SelectionData selData, Rectangle repaintRegion) {
 //		Image image = getImage(resourceTable);
 //		int iwidth = 0;
@@ -119,19 +120,20 @@
 //			gc.drawFocus(fx, fy, bounds.width, bounds.height);
 //		}
 //	}
+// RAP [if] drawClipImage unnecessary
 //	private void drawClipImage(GC gc, Image image, int ix, int iy, Rectangle repaintRegion) {
 //		if (repaintRegion!=null) {
 //			ix -= repaintRegion.x;
 //			iy -= repaintRegion.y;
 //		}
-//		gc.drawImage(image, ix, iy);			
+//		gc.drawImage(image, ix, iy);
 //	}
-//
-//	protected Point getObjectSize(Hashtable resourceTable, int wHint) {
-//		Image image = getImage(resourceTable);
-//		if (image==null)
-//			return new Point(0, 0);
-//		Rectangle ibounds = image.getBounds();
-//		return new Point(ibounds.width, ibounds.height);
-//	}
-//}
+
+	protected Point getObjectSize(Hashtable resourceTable, int wHint) {
+		Image image = getImage(resourceTable);
+		if (image==null)
+			return new Point(0, 0);
+		Rectangle ibounds = image.getBounds();
+		return new Point(ibounds.width, ibounds.height);
+	}
+}

@@ -1,53 +1,54 @@
-// RAP [rh] FormText helper class
-///*******************************************************************************
-// * Copyright (c) 2000, 2005 IBM Corporation and others.
-// * All rights reserved. This program and the accompanying materials
-// * are made available under the terms of the Eclipse Public License v1.0
-// * which accompanies this distribution, and is available at
-// * http://www.eclipse.org/legal/epl-v10.html
-// *
-// * Contributors:
-// *     IBM Corporation - initial API and implementation
-// *******************************************************************************/
-//package org.eclipse.ui.internal.forms.widgets;
-//
-//import java.util.Hashtable;
-//
+/*******************************************************************************
+ * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.ui.internal.forms.widgets;
+
+import java.util.Hashtable;
+
+// RAP [if] unnecessary
 //import org.eclipse.swt.graphics.*;
-//import org.eclipse.ui.forms.HyperlinkSettings;
-//
-///**
-// * @version 1.0
-// * @author
-// */
-//public class TextHyperlinkSegment extends TextSegment implements
-//		IHyperlinkSegment {
-//	private String href;
-//
-//	private String tooltipText;
-//
-//	//private static final String LINK_FG = "c.___link_fg";
-//
-//	private HyperlinkSettings settings;
-//
-//	public TextHyperlinkSegment(String text, HyperlinkSettings settings,
-//			String fontId) {
-//		super(text, fontId);
-//		this.settings = settings;
-//		underline = settings.getHyperlinkUnderlineMode() == HyperlinkSettings.UNDERLINE_ALWAYS;
-//	}
-//
-//	/*
-//	 * @see IObjectReference#getObjectId()
-//	 */
-//	public String getHref() {
-//		return href;
-//	}
-//
-//	public void setHref(String href) {
-//		this.href = href;
-//	}
-//
+import org.eclipse.ui.forms.HyperlinkSettings;
+
+/**
+ * @version 1.0
+ * @author
+ */
+public class TextHyperlinkSegment extends TextSegment implements
+		IHyperlinkSegment {
+	private String href;
+
+	private String tooltipText;
+
+	//private static final String LINK_FG = "c.___link_fg";
+
+	private HyperlinkSettings settings;
+
+	public TextHyperlinkSegment(String text, HyperlinkSettings settings,
+			String fontId) {
+		super(text, fontId);
+		this.settings = settings;
+		underline = settings.getHyperlinkUnderlineMode() == HyperlinkSettings.UNDERLINE_ALWAYS;
+	}
+
+	/*
+	 * @see IObjectReference#getObjectId()
+	 */
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+// RAP [if] paint unnecessary
 //	/*
 //	 * public void paint(GC gc, int width, Locator locator, Hashtable
 //	 * resourceTable, boolean selected, SelectionData selData) {
@@ -63,29 +64,29 @@
 //		Color newFg = hover ? settings.getActiveForeground() : settings
 //				.getForeground();
 //		if (newFg!=null)
-//			gc.setForeground(newFg); 
+//			gc.setForeground(newFg);
 //		super.paint(gc, hover, resourceTable, selected, rolloverMode, selData,
 //				repaintRegion);
 //		gc.setForeground(savedFg);
 //	}
-//
-//	public String getTooltipText() {
-//		return tooltipText;
-//	}
-//
-//	public void setTooltipText(String tooltip) {
-//		this.tooltipText = tooltip;
-//	}
-//	
-//	public boolean isSelectable() {
-//		return true;
-//	}
-//
-//	public boolean isFocusSelectable(Hashtable resourceTable) {
-//		return true;
-//	}
-//
-//	public boolean setFocus(Hashtable resourceTable, boolean direction) {
-//		return true;
-//	}
-//}
+
+	public String getTooltipText() {
+		return tooltipText;
+	}
+
+	public void setTooltipText(String tooltip) {
+		this.tooltipText = tooltip;
+	}
+
+	public boolean isSelectable() {
+		return true;
+	}
+
+	public boolean isFocusSelectable(Hashtable resourceTable) {
+		return true;
+	}
+
+	public boolean setFocus(Hashtable resourceTable, boolean direction) {
+		return true;
+	}
+}

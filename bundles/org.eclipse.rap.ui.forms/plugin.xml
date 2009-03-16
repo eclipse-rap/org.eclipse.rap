@@ -9,6 +9,9 @@
       <resource
             class="org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkResource">
       </resource>
+      <resource
+            class="org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource">
+      </resource>
    </extension>
    <extension
          point="org.eclipse.rap.ui.themeableWidgets">
@@ -16,6 +19,11 @@
             class="org.eclipse.ui.forms.widgets.Hyperlink"
             id="org.eclipse.ui.forms.widgets.Hyperlink"
             name="Hyperlink">
+      </widget>
+      <widget
+            class="org.eclipse.ui.forms.widgets.FormText"
+            id="org.eclipse.ui.forms.widgets.FormText"
+            name="FormText">
       </widget>
    </extension>
 
