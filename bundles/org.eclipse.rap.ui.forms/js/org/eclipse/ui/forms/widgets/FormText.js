@@ -187,9 +187,8 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
 
     _onMouseMove : function( evt ) {
       var hyperlink = evt.getTarget();
-      var hover = hyperlink.getUserData( "hover" );
-      if( hover == null ) {
-        hyperlink.setUserData( "hover", true );
+      if( !this.hasState( "hover" ) ) {
+        this.addState( "hover" );
         hyperlink.setTextColor( this._hyperlinkActiveForeground );
         if( this._hyperlinkMode == org.eclipse.ui.forms.widgets.FormText.UNDERLINE_HOVER ) {
           hyperlink.setStyleProperty( "textDecoration", "underline");
@@ -199,9 +198,8 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
 
     _onMouseOut : function( evt ) {
       var hyperlink = evt.getTarget();
-      var hover = hyperlink.getUserData( "hover" );
-      if( hover ) {
-        hover = hyperlink.setUserData( "hover", null );
+      if( this.hasState( "hover" ) ) {
+        this.removeState( "hover" );
         hyperlink.setTextColor( this._hyperlinkForeground );
         if( this._hyperlinkMode == org.eclipse.ui.forms.widgets.FormText.UNDERLINE_HOVER ) {
           hyperlink.setStyleProperty( "textDecoration", "none");
