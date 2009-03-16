@@ -7,7 +7,6 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import org.eclipse.rwt.resources.IResource;

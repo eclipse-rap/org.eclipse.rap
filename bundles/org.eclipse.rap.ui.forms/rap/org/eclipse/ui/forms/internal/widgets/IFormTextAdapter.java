@@ -7,7 +7,6 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets;
 
 import java.util.Hashtable;
@@ -19,5 +18,4 @@ public interface IFormTextAdapter {
   Paragraph[] getParagraphs();
   Hashtable getResourceTable();
   boolean hasLayoutChanged();
-
 }

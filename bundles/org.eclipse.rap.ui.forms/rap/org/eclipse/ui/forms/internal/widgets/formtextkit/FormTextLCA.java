@@ -7,7 +7,6 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.HyperlinkSettings;
@@ -91,12 +89,16 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   ////////////////
   // Write changes
-  private void writeParagraphs( final FormText formText ) throws IOException {
+
+  private static void writeParagraphs( final FormText formText )
+    throws IOException
+  {
     Paragraph[] paragraphs = getParagraphs( formText );
     String prop = PROP_PARAGRAPHS;
     Paragraph[] defValue = DEFAULT_PARAGRAPHS;
     if(    WidgetLCAUtil.hasChanged( formText, prop, paragraphs, defValue )
-        || hasLayoutChanged( formText ) ) {
+        || hasLayoutChanged( formText ) )
+    {
       clearContent( formText );
       for( int i = 0; i < paragraphs.length; i++ ) {
         Paragraph paragraph = paragraphs[ i ];
@@ -111,8 +113,8 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeBullet( final FormText formText,
-                            final BulletParagraph bullet )
+  private static void writeBullet( final FormText formText,
+                                   final BulletParagraph bullet )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( formText );
@@ -133,18 +135,18 @@ public class FormTextLCA extends AbstractWidgetLCA {
     writer.call( "createBullet", args ); //$NON-NLS-1$
   }
 
-  private void writeSegments( final FormText formText,
-                              final ParagraphSegment[] segments )
+  private static void writeSegments( final FormText formText,
+                                     final ParagraphSegment[] segments )
     throws IOException
   {
     for( int i = 0; i < segments.length; i++ ) {
       ParagraphSegment segment = segments[ i ];
       if( segment instanceof TextHyperlinkSegment ) {
-         writeTextHyperlinkSegment( formText, ( TextHyperlinkSegment )segment );
+        writeTextHyperlinkSegment( formText, ( TextHyperlinkSegment )segment );
       } else if( segment instanceof TextSegment ) {
-         writeTextSegment( formText, ( TextSegment )segment );
+        writeTextSegment( formText, ( TextSegment )segment );
       } else if( segment instanceof ImageHyperlinkSegment ) {
-         writeImageHyperlinkSegment( formText, ( ImageHyperlinkSegment )segment );
+        writeImageHyperlinkSegment( formText, ( ImageHyperlinkSegment )segment );
       } else if( segment instanceof ImageSegment ) {
         writeImageSegment( formText, ( ImageSegment )segment );
       } else if( segment instanceof ControlSegment ) {
@@ -153,8 +155,8 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeTextSegment( final FormText formText,
-                                 final TextSegment segment )
+  private static void writeTextSegment( final FormText formText,
+                                        final TextSegment segment )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( formText );
@@ -187,8 +189,9 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeTextHyperlinkSegment( final FormText formText,
-                                          final TextHyperlinkSegment segment )
+  private static void writeTextHyperlinkSegment(
+    final FormText formText,
+    final TextHyperlinkSegment segment )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( formText );
@@ -217,8 +220,8 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeImageSegment( final FormText formText,
-                                  final ImageSegment segment )
+  private static void writeImageSegment( final FormText formText,
+                                         final ImageSegment segment )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( formText );
@@ -235,8 +238,9 @@ public class FormTextLCA extends AbstractWidgetLCA {
     writer.call( "createImageSegment", args ); //$NON-NLS-1$
   }
 
-  private void writeImageHyperlinkSegment( final FormText formText,
-                                           final ImageHyperlinkSegment segment )
+  private static void writeImageHyperlinkSegment(
+    final FormText formText,
+    final ImageHyperlinkSegment segment )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( formText );
@@ -255,8 +259,8 @@ public class FormTextLCA extends AbstractWidgetLCA {
     writer.call( "createImageHyperlinkSegment", args ); //$NON-NLS-1$
   }
 
-  private void writeControlSegment( final FormText formText,
-                                    final ControlSegment segment )
+  private static void writeControlSegment( final FormText formText,
+                                           final ControlSegment segment )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( formText );
@@ -267,7 +271,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     writer.call( "createControlSegment", args ); //$NON-NLS-1$
   }
 
-  private void writeHyperlinkSettings( final FormText formText )
+  private static void writeHyperlinkSettings( final FormText formText )
     throws IOException
   {
     HyperlinkSettings newValue = formText.getHyperlinkSettings();
@@ -286,39 +290,41 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void clearContent( final FormText formText ) throws IOException {
+  private static void clearContent( final FormText formText ) throws IOException
+  {
     JSWriter writer = JSWriter.getWriterFor( formText );
     writer.call( "clearContent", new Object[ 0 ] ); //$NON-NLS-1$
   }
 
-  private void updateHyperlinks( final FormText formText ) throws IOException {
+  private static void updateHyperlinks( final FormText formText )
+    throws IOException
+  {
     JSWriter writer = JSWriter.getWriterFor( formText );
     writer.call( "updateHyperlinks", new Object[ 0 ] ); //$NON-NLS-1$
   }
 
   //////////////////
   // Helping methods
-  private IFormTextAdapter getAdapter( final FormText formText ) {
+
+  private static IFormTextAdapter getAdapter( final FormText formText ) {
     Object adapter = formText.getAdapter( IFormTextAdapter.class );
-    IFormTextAdapter formTextAdapter = ( IFormTextAdapter )adapter;
-    return formTextAdapter;
+    return ( IFormTextAdapter )adapter;
   }
 
-  private ITextSegmentAdapter getAdapter( final TextSegment segment ) {
+  private static ITextSegmentAdapter getAdapter( final TextSegment segment ) {
     Object adapter = segment.getAdapter( ITextSegmentAdapter.class );
-    ITextSegmentAdapter textSegmentAdapter = ( ITextSegmentAdapter )adapter;
-    return textSegmentAdapter;
+    return ( ITextSegmentAdapter )adapter;
   }
 
-  private IBulletParagraphAdapter getAdapter( final BulletParagraph bullet ) {
+  private static IBulletParagraphAdapter getAdapter(
+    final BulletParagraph bullet )
+  {
     Object adapter = bullet.getAdapter( IBulletParagraphAdapter.class );
-    IBulletParagraphAdapter bulletParagraphAdapter
-      = ( IBulletParagraphAdapter )adapter;
-    return bulletParagraphAdapter;
+    return ( IBulletParagraphAdapter )adapter;
   }
 
-  private Image getBulletImage( final FormText formText,
-                                final BulletParagraph bullet)
+  private static Image getBulletImage( final FormText formText,
+                                       final BulletParagraph bullet )
   {
     ClassLoader classLoader = FormTextLCA.class.getClassLoader();
     Image bulletImage = Graphics.getImage( BULLET_CIRCLE_GIF, classLoader );
@@ -334,42 +340,43 @@ public class FormTextLCA extends AbstractWidgetLCA {
     return bulletImage;
   }
 
-  private Rectangle getBulletBounds( final BulletParagraph bullet ) {
+  private static Rectangle getBulletBounds( final BulletParagraph bullet ) {
     IBulletParagraphAdapter bulletParagraphAdapter = getAdapter( bullet );
     return bulletParagraphAdapter.getBulletBounds();
   }
 
-  private Paragraph[] getParagraphs( final FormText formText ) {
+  private static Paragraph[] getParagraphs( final FormText formText ) {
     IFormTextAdapter adapter = getAdapter( formText );
     return adapter.getParagraphs();
   }
 
-  private Hashtable getResourceTable( final FormText formText ) {
+  private static Hashtable getResourceTable( final FormText formText ) {
     IFormTextAdapter adapter = getAdapter( formText );
     return adapter.getResourceTable();
   }
 
-  private boolean hasLayoutChanged( final FormText formText ) {
+  private static boolean hasLayoutChanged( final FormText formText ) {
     IFormTextAdapter adapter = getAdapter( formText );
     return adapter.hasLayoutChanged();
   }
 
-  private String[] getTextFragments( final TextSegment segment ) {
+  private static String[] getTextFragments( final TextSegment segment ) {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getTextFragments();
   }
 
-  private Rectangle[] getTextFragmentsBounds( final TextSegment segment ) {
+  private static Rectangle[] getTextFragmentsBounds( final TextSegment segment )
+  {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getTextFragmentsBounds();
   }
 
-  private String getFontId( final TextSegment segment ) {
+  private static String getFontId( final TextSegment segment ) {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getFontId();
   }
 
-  private String colorToHtmlString( final Color color ) {
+  private static String colorToHtmlString( final Color color ) {
     String result = null;
     if( color != null ) {
       int red = color.getRed();
@@ -385,12 +392,12 @@ public class FormTextLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private String getHexStr( final int value ) {
+  private static String getHexStr( final int value ) {
     String hex = Integer.toHexString( value );
     return hex.length() == 1 ? "0" + hex : hex; //$NON-NLS-1$
   }
 
-  private String[] getFontName( final Font font ) {
+  private static String[] getFontName( final Font font ) {
     String[] result = null;
     if( font != null ) {
       FontData fontData = font.getFontData()[ 0 ];
@@ -405,7 +412,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private Integer getFontSize( final Font font ) {
+  private static Integer getFontSize( final Font font ) {
     Integer result = null;
     if( font != null ) {
       FontData fontData = font.getFontData()[ 0 ];
@@ -414,7 +421,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private Boolean getFontStyle( final Font font, final int style ) {
+  private static Boolean getFontStyle( final Font font, final int style ) {
     Boolean result = null;
     if( font != null ) {
       FontData fontData = font.getFontData()[ 0 ];

@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets;
 
 import org.eclipse.swt.graphics.Color;

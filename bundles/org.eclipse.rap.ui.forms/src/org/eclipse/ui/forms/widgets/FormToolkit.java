@@ -403,6 +403,7 @@ public class FormToolkit {
 	 *            transfers to ensure that the hyperlink in focus is visible in
 	 *            the form.
 	 * @return the rich text widget
+	 * @since 1.2
 	 */
 	public FormText createFormText(Composite parent, boolean trackFocus) {
 		FormText engine = new FormText(parent, SWT.WRAP | orientation);

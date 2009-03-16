@@ -7,7 +7,6 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets;
 
 import org.eclipse.swt.graphics.Rectangle;
@@ -15,5 +14,4 @@ import org.eclipse.swt.graphics.Rectangle;
 public interface IBulletParagraphAdapter {
 
   Rectangle getBulletBounds();
-
 }
