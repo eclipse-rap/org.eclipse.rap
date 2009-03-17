@@ -15,23 +15,47 @@ import java.util.Vector;
 
 // RAP [if] unnecessary
 //import org.eclipse.swt.graphics.Color;
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.graphics.Font;
 // RAP [if] GC not supported
 //import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.ui.forms.internal.widgets.IAggregateHyperlinkSegmentAdapter;
 
 /**
  * This segment contains a collection of images and links that all belong to one
  * logical hyperlink.
  */
 public class AggregateHyperlinkSegment extends ParagraphSegment implements
-		IHyperlinkSegment {
+		IHyperlinkSegment, Adaptable {
 	private String href;
 
 	private Vector segments = new Vector();
 
+    // RAP [if] Adapter to reach into widget implementation from within LCA
+	private IAggregateHyperlinkSegmentAdapter aggregateHyperlinkSegmentAdapter;
+
 	public AggregateHyperlinkSegment() {
 	}
+
+	// RAP [if] getAdapter implementation
+    public Object getAdapter( Class adapter ) {
+      Object result = null;
+      if( adapter == IAggregateHyperlinkSegmentAdapter.class ) {
+        if( aggregateHyperlinkSegmentAdapter == null ) {
+          aggregateHyperlinkSegmentAdapter
+            = new IAggregateHyperlinkSegmentAdapter() {
+
+              public Object[] getHyperlinkSegments() {
+                return segments.toArray();
+              }
+
+          };
+        }
+        result = aggregateHyperlinkSegmentAdapter;
+      }
+      return result;
+    }
 
 	public void add(TextHyperlinkSegment segment) {
 		segments.add(segment);

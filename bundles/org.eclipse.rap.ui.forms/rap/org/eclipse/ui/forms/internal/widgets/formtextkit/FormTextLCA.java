@@ -151,6 +151,9 @@ public class FormTextLCA extends AbstractWidgetLCA {
         writeImageSegment( formText, ( ImageSegment )segment );
       } else if( segment instanceof ControlSegment ) {
         writeControlSegment( formText, ( ControlSegment )segment );
+      } else if( segment instanceof AggregateHyperlinkSegment ) {
+        writeAggregateHyperlinkSegment( formText,
+                                        ( AggregateHyperlinkSegment )segment );
       }
     }
   }
@@ -271,6 +274,24 @@ public class FormTextLCA extends AbstractWidgetLCA {
     writer.call( "createControlSegment", args ); //$NON-NLS-1$
   }
 
+  private static void writeAggregateHyperlinkSegment(
+    final FormText formText,
+    final AggregateHyperlinkSegment segment )
+    throws IOException
+  {
+    Object[] segments = getHyperlinkSegments( segment );
+    for( int i = 0; i < segments.length; i++ ) {
+      Object hyperlinkSegment = segments[ i ];
+      if( hyperlinkSegment instanceof TextHyperlinkSegment ) {
+        writeTextHyperlinkSegment( formText,
+                                   ( TextHyperlinkSegment )hyperlinkSegment );
+      } else if( hyperlinkSegment instanceof ImageHyperlinkSegment ) {
+        writeImageHyperlinkSegment( formText,
+                                    ( ImageHyperlinkSegment )hyperlinkSegment );
+      }
+    }
+  }
+
   private static void writeHyperlinkSettings( final FormText formText )
     throws IOException
   {
@@ -321,6 +342,14 @@ public class FormTextLCA extends AbstractWidgetLCA {
   {
     Object adapter = bullet.getAdapter( IBulletParagraphAdapter.class );
     return ( IBulletParagraphAdapter )adapter;
+  }
+
+  private static IAggregateHyperlinkSegmentAdapter getAdapter(
+    final AggregateHyperlinkSegment segment )
+  {
+    Object adapter
+      = segment.getAdapter( IAggregateHyperlinkSegmentAdapter.class );
+    return ( IAggregateHyperlinkSegmentAdapter )adapter;
   }
 
   private static Image getBulletImage( final FormText formText,
@@ -374,6 +403,14 @@ public class FormTextLCA extends AbstractWidgetLCA {
   private static String getFontId( final TextSegment segment ) {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getFontId();
+  }
+
+  private static Object[] getHyperlinkSegments(
+    final AggregateHyperlinkSegment segment )
+  {
+    IAggregateHyperlinkSegmentAdapter hyperlinkSegmentAdapter
+      = getAdapter( segment );
+    return hyperlinkSegmentAdapter.getHyperlinkSegments();
   }
 
   private static String colorToHtmlString( final Color color ) {
