@@ -90,6 +90,7 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
     disposeRadioMenuItem : function( menuItem ) {
       var manager = menuItem.getManager();
       manager.remove( menuItem );
+      menuItem.setDisplay( false );
       menuItem.dispose();
       if( manager.getItems().length == 0 ) {
         manager.dispose();
