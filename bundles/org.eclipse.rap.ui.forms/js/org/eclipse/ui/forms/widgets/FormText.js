@@ -123,11 +123,12 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
       var imageHyperlink = new qx.ui.basic.Image();
       imageHyperlink.setAppearance( "formtext-hyperlink" );
       imageHyperlink.set( {
-        source  : source,
-        top     : y,
-        left    : x,
-        width   : width,
-        height  : height
+        source      : source,
+        top         : y,
+        left        : x,
+        width       : width,
+        height      : height,
+        paddingTop  : 2
       } );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       widgetManager.setToolTip( imageHyperlink, toolTip );
