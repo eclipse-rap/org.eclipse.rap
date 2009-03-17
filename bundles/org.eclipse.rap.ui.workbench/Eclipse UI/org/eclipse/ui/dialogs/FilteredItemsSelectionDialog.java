@@ -85,6 +85,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -935,11 +936,7 @@ public abstract class FilteredItemsSelectionDialog extends
 				} else {
 					refreshWithLastSelection = true;
 					list.getTable().setSelection(0);
-// RAP [rh] Widget#notifyListeners missing					
-//					list.getTable().notifyListeners(SWT.Selection, new Event());
-					SelectionEvent event
-					  = new SelectionEvent( list.getTable(), null, SelectionEvent.WIDGET_SELECTED );
-					event.processEvent();
+					list.getTable().notifyListeners(SWT.Selection, new Event());
 				}
 			} else {
 				list.setSelection(StructuredSelection.EMPTY);
@@ -2061,14 +2058,20 @@ public abstract class FilteredItemsSelectionDialog extends
 		 * Filter used during the filtering process.
 		 */
 		protected ItemsFilter itemsFilter;
-
+// RAP [rh] WorkbenchMessages cannot be accessed from background thread (no context)
+		private final String searchJobTaskName;
+		private final String cacheSearchJobTaskName;
+		
 		/**
 		 * Creates new instance of FilterJob
 		 */
 		public FilterJob() {
 			super(WorkbenchMessages.get().FilteredItemsSelectionDialog_jobLabel);
 			setSystem(true);
-		}
+// RAP [rh] WorkbenchMessages cannot be accessed from background thread (no context)
+      searchJobTaskName = WorkbenchMessages.get().FilteredItemsSelectionDialog_searchJob_taskName;
+      cacheSearchJobTaskName = WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheSearchJob_taskName;
+    }
 
 		/*
 		 * (non-Javadoc)
@@ -2146,7 +2149,9 @@ public abstract class FilteredItemsSelectionDialog extends
 				int length = lastCompletedResult.size() / 500;
 				monitor
 						.beginTask(
-								WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheSearchJob_taskName,
+// RAP [rh] WorkbenchMessages cannot be accessed from background thread (no context)
+//								WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheSearchJob_taskName,
+                cacheSearchJobTaskName,
 								length);
 
 				for (int pos = 0; pos < lastCompletedResult.size(); pos++) {
@@ -2170,7 +2175,9 @@ public abstract class FilteredItemsSelectionDialog extends
 				if (monitor != null) {
 					monitor
 							.beginTask(
-									WorkbenchMessages.get().FilteredItemsSelectionDialog_searchJob_taskName,
+// RAP [rh] WorkbenchMessages cannot be accessed from background thread (no context)
+//									WorkbenchMessages.get().FilteredItemsSelectionDialog_searchJob_taskName,
+                  searchJobTaskName,
 									100);
 					subMonitor = new SubProgressMonitor(monitor, 95);
 
