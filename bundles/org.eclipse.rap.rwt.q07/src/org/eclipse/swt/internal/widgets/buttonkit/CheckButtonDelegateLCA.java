@@ -86,7 +86,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  private void writeGrayed( final Button button ) throws IOException {
+  private static void writeGrayed( final Button button ) throws IOException {
     Boolean newValue = Boolean.valueOf( button.getGrayed() );
     String prop = PROP_GRAYED;
     if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
@@ -95,7 +95,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     }
   }
 
-  private void writeListener( final Button button ) throws IOException {
+  private static void writeListener( final Button button ) throws IOException {
     boolean hasListener = SelectionEvent.hasListener( button );
     Boolean newValue = Boolean.valueOf( hasListener );
     String prop = Props.SELECTION_LISTENERS;

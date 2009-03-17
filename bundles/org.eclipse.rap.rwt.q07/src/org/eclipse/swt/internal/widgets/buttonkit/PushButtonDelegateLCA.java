@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
@@ -87,20 +86,6 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     writer.dispose();
   }
 
-  private void writeSelection( final Button button ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( button );
-    String property = ButtonLCAUtil.PROP_SELECTION;
-    Boolean newValue = Boolean.valueOf( button.getSelection() );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( button, property, newValue, defValue ) ) {
-      if( newValue.booleanValue() ) {
-        writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_CHECKED );
-      } else {
-        writer.call( JSConst.QX_FUNC_REMOVE_STATE, PARAM_CHECKED );
-      }
-    }
-  }
-
   String getTypePoolId( final Button button ) {
 //    TODO [rst] Temporarily disabled pooling of PUSH buttons due to obscure JS
 //               errors. Also reactivate test case in RenderDispose_Test!
@@ -123,5 +108,19 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
+  }
+
+  private static void writeSelection( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
+    String property = ButtonLCAUtil.PROP_SELECTION;
+    Boolean newValue = Boolean.valueOf( button.getSelection() );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( button, property, newValue, defValue ) ) {
+      if( newValue.booleanValue() ) {
+        writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_CHECKED );
+      } else {
+        writer.call( JSConst.QX_FUNC_REMOVE_STATE, PARAM_CHECKED );
+      }
+    }
   }
 }

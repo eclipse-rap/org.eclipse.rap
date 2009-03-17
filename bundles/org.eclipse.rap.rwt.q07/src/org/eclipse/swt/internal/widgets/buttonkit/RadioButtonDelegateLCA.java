@@ -88,7 +88,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  private void writeListener( final Button button ) throws IOException {
+  private static void writeListener( final Button button ) throws IOException {
     boolean hasListener = SelectionEvent.hasListener( button );
     Boolean newValue = Boolean.valueOf( hasListener );
     String prop = Props.SELECTION_LISTENERS;
@@ -98,7 +98,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     }
   }
 
-  private void processSelectionEvent( final Button button ) {
+  private static void processSelectionEvent( final Button button ) {
     if( SelectionEvent.hasListener( button ) ) {
       Rectangle bounds  = WidgetLCAUtil.readBounds( button,
                                                     button.getBounds() );
