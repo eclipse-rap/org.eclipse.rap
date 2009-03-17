@@ -142,6 +142,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/CheckBox.js";
   private static final String RADIOBUTTON_JS
     = "org/eclipse/swt/widgets/RadioButton.js";
+  private static final String CCOMBO_JS
+    = "org/eclipse/swt/custom/CCombo.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -224,6 +226,7 @@ final class QooxdooResourcesUtil {
       register( SLIDER_JS, compress );
       register( CHECKBOX_JS, compress );
       register( RADIOBUTTON_JS, compress );
+      register( CCOMBO_JS, compress );
 
       // register contributions
       registerContributions();

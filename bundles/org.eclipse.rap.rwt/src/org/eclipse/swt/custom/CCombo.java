@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *   EclipseSource - initial API and implementation
  ******************************************************************************/
+package org.eclipse.swt.custom;
 
-package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
@@ -17,97 +16,116 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
-import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
+import org.eclipse.swt.widgets.*;
 
 /**
- * Instances of this class are controls that allow the user
- * to choose an item from a list of items, or optionally
- * enter a new value by typing it into an editable text
- * field. Often, <code>Combo</code>s are used in the same place
- * where a single selection <code>List</code> widget could
- * be used but space is limited. A <code>Combo</code> takes
- * less space than a <code>List</code> widget and shows
- * similar information.
+ * The CCombo class represents a selectable user interface object
+ * that combines a text field and a list and issues notification
+ * when an item is selected from the list.
  * <p>
- * Note: Since <code>Combo</code>s can contain both a list
- * and an editable text field, it is possible to confuse methods
- * which access one versus the other (compare for example,
- * <code>clearSelection()</code> and <code>deselectAll()</code>).
- * The API documentation is careful to indicate either "the
- * receiver's list" or the "the receiver's text field" to
- * distinguish between the two cases.
- * </p><p>
+ * CCombo was written to work around certain limitations in the native
+ * combo box. Specifically, on win32, the height of a CCombo can be set;
+ * attempts to set the height of a Combo are ignored. CCombo can be used
+ * anywhere that having the increased flexibility is more important than
+ * getting native L&F, but the decision should not be taken lightly. 
+ * There is no is no strict requirement that CCombo look or behave
+ * the same as the native combo box.
+ * </p>
+ * <p>
  * Note that although this class is a subclass of <code>Composite</code>,
  * it does not make sense to add children to it, or set a layout on it.
  * </p>
  * <dl>
- * <dt><b>Styles:</b></dt>
- * <dd>DROP_DOWN, READ_ONLY<!--, SIMPLE --></dd>
- * <dt><b>Events:</b></dt>
- * <dd>DefaultSelection, Modify, Selection</dd>
+ * <dt><b>Styles:</b>
+ * <dd>BORDER, READ_ONLY, FLAT</dd>
+ * <dt><b>Events:</b>
+ * <dd>DefaultSelection, Modify, Selection, Verify</dd>
  * </dl>
- * <p>
- * <!-- Note: Only one of the styles DROP_DOWN and SIMPLE may be specified. -->
- * </p><p>
- * IMPORTANT: This class is <em>not</em> intended to be subclassed.
- * </p>
  *
- * @see List
- * @since 1.0
+ * @see <a href="http://www.eclipse.org/swt/snippets/#ccombo">CCombo snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: CustomControlExample</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @since 1.2
  */
-// TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
-//      are added/removed
-public class Combo extends Composite {
+public final class CCombo extends Composite {
 
+  /* Default size for widgets */
+  static final int DEFAULT_WIDTH = 64;
+  static final int DEFAULT_HEIGHT = 64;
+  
+  // Must be in sync with appearance "list-item"
+  private static final int LIST_ITEM_PADDING = 3;
   private static final int DROP_DOWN_BUTTON_WIDTH = 14;
+  
+  /**
+   * The maximum number of characters that can be entered
+   * into a text widget.
+   * <p>
+   * Note that this value is platform dependent, based upon
+   * the native widget implementation.
+   * </p>
+   */
+  public static final int LIMIT = Integer.MAX_VALUE;
+  
   private final ListModel model;
-  private String text = "";
-  private int visibleCount = 5;
-
+  private String text;
+  private int textLimit;
+  private final Point selection;
+  private int visibleCount;
+  private boolean editable;
+  private boolean dropped;
+	
   /**
    * Constructs a new instance of this class given its parent
    * and a style value describing its behavior and appearance.
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together
+   * class, or must be built by <em>bitwise OR</em>'ing together 
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
    * Style bits are also inherited from superclasses.
    * </p>
    *
-   * @param parent a composite control which will be the parent of the new instance (cannot be null)
-   * @param style the style of control to construct
+   * @param parent a widget which will be the parent of the new instance (cannot be null)
+   * @param style the style of widget to construct
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
-   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    *
-   * @see SWT#DROP_DOWN
+   * @see SWT#BORDER
    * @see SWT#READ_ONLY
-   * @see SWT#SIMPLE
-   * @see Widget#checkSubclass
-   * @see Widget#getStyle
+   * @see SWT#FLAT
+   * @see Widget#getStyle()
    */
-  public Combo( final Composite parent, final int style ) {
-    super( parent, checkStyle( style ) );
-    model = new ListModel( true );
+  public CCombo( final Composite parent, final int style ) {
+  	super( parent, checkStyle( style ) );
+  	text = "";
+  	textLimit = LIMIT;
+  	selection = new Point( 0, 0 );
+  	visibleCount = 5;
+  	dropped = false;
+  	editable = ( style & SWT.READ_ONLY ) != 0 ? false : true;
+  	model = new ListModel( true );
   }
-
-  void initState() {
-    state &= ~( /* CANVAS | */THEME_BACKGROUND );
+  
+  public int getStyle() {
+    int result = super.getStyle();
+    result &= ~SWT.READ_ONLY;
+    if( !editable ) {
+      result |= SWT.READ_ONLY;
+    }
+    return result;
   }
-
-  //////////////////////////////////////
-  // Methods to manipulate the selection
-
+  
   /**
    * Returns the zero-relative index of the item which is currently
    * selected in the receiver's list, or -1 if no item is selected.
@@ -123,28 +141,27 @@ public class Combo extends Composite {
     checkWidget();
     return model.getSelectionIndex();
   }
-
+  
   /**
-   * Selects the item at the given zero-relative index in the receiver's
+   * Selects the item at the given zero-relative index in the receiver's 
    * list.  If the item at the index was already selected, it remains
    * selected. Indices that are out of range are ignored.
    *
-   * @param selectionIndex the index of the item to select
+   * @param index the index of the item to select
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void select( final int selectionIndex ) {
+  public void select( final int index ) {
     checkWidget();
-    model.setSelection( selectionIndex );
-    // update text
+    model.setSelection( index );
     updateText();
   }
-
+  
   /**
-   * Deselects the item at the given zero-relative index in the receiver's
+   * Deselects the item at the given zero-relative index in the receiver's 
    * list.  If the item at the index was already deselected, it remains
    * deselected. Indices that are out of range are ignored.
    *
@@ -162,7 +179,7 @@ public class Combo extends Composite {
     }
     updateText();
   }
-
+  
   /**
    * Deselects all selected items in the receiver's list.
    * <p>
@@ -180,33 +197,119 @@ public class Combo extends Composite {
   public void deselectAll() {
     checkWidget();
     model.deselectAll();
+  }
+  
+  /**
+   * Sets the selection in the receiver's text field to the
+   * range specified by the argument whose x coordinate is the
+   * start of the selection and whose y coordinate is the end
+   * of the selection. 
+   *
+   * @param selection a point representing the new selection start and end
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setSelection( final Point selection ) {
+    checkWidget();
+    if( selection == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
+    int start = selection.x;
+    int end = selection.y;
+    if( start >= 0 && end >= start ) {
+      int validatedStart = Math.min( start, text.length() );
+      int validatedEnd = Math.min( end, text.length() );
+      this.selection.x = validatedStart;
+      this.selection.y = validatedEnd;
     }
-
-//  /**
-//   * Sets the selection in the receiver's text field to an empty
-//   * selection starting just before the first character. If the
-//   * text field is editable, this has the effect of placing the
-//   * i-beam at the start of the text.
-//   * <p>
-//   * Note: To clear the selected items in the receiver's list,
-//   * use <code>deselectAll()</code>.
-//   * </p>
-//   *
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   *
-//   * @see #deselectAll
-//   */
+  }
+  
+  /**
+   * Returns a <code>Point</code> whose x coordinate is the start
+   * of the selection in the receiver's text field, and whose y
+   * coordinate is the end of the selection. The returned values
+   * are zero-relative. An "empty" selection as indicated by
+   * the the x and y coordinates having the same value.
+   *
+   * @return a point representing the selection start and end
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Point getSelection() {
+    checkWidget();
+    return new Point( selection.x, selection.y );
+  }
+  
+  /**
+   * Sets the maximum number of characters that the receiver's
+   * text field is capable of holding to be the argument.
+   *
+   * @param limit new text limit
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_CANNOT_BE_ZERO - if the limit is zero</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setTextLimit( final int limit ) {
+    checkWidget();
+    if( limit == 0 ) {
+      SWT.error ( SWT.ERROR_CANNOT_BE_ZERO );
+    }
+    textLimit = limit;
+  }
+  
+  /**
+   * Returns the maximum number of characters that the receiver's
+   * text field is capable of holding. If this has not been changed
+   * by <code>setTextLimit()</code>, it will be the constant
+   * <code>Combo.LIMIT</code>.
+   * 
+   * @return the text limit
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getTextLimit() {
+    checkWidget();
+    return textLimit;
+  }
+  
+  /**
+   * Sets the selection in the receiver's text field to an empty
+   * selection starting just before the first character. If the
+   * text field is editable, this has the effect of placing the
+   * i-beam at the start of the text.
+   * <p>
+   * Note: To clear the selected items in the receiver's list, 
+   * use <code>deselectAll()</code>.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #deselectAll
+   */
   public void clearSelection() {
     checkWidget();
-    // TODO [rh] IMPLEMENTATION MISSING
+    selection.x = 0;
+    selection.y = 0;
   }
-
-  ///////////////////////////////////////
-  // Methods to manipulate and get items
-
+  
   /**
    * Adds the argument to the end of the receiver's list.
    *
@@ -223,10 +326,10 @@ public class Combo extends Composite {
    * @see #add(String,int)
    */
   public void add( final String string ) {
-    checkWidget();
-    model.add( string );
+  	checkWidget();
+  	model.add( string );
   }
-
+  
   /**
    * Adds the argument to the receiver's list at the given
    * zero-relative index.
@@ -250,11 +353,11 @@ public class Combo extends Composite {
    *
    * @see #add(String)
    */
-  public void add( final String string, final int index ) {
-    checkWidget();
-    model.add( string, index );
+  public void add( final String string, final int index) {
+  	checkWidget();
+  	model.add( string, index );
   }
-
+  
   /**
    * Removes the item from the receiver's list at the given
    * zero-relative index.
@@ -274,10 +377,10 @@ public class Combo extends Composite {
     model.remove( index );
     updateText();
   }
-
+  
   /**
    * Removes the items from the receiver's list which are
-   * between the given zero-relative start and end
+   * between the given zero-relative start and end 
    * indices (inclusive).
    *
    * @param start the start of the range
@@ -293,20 +396,21 @@ public class Combo extends Composite {
    */
   public void remove( final int start, final int end ) {
     checkWidget();
-    if( ( style & SWT.READ_ONLY ) == 0) {
+    int style = super.getStyle();
+    if( ( style & SWT.READ_ONLY ) == 0 ) {
       String[] items = model.getItems();
       for( int i = start; i < end; i++ ) {
-        if(text.equals( items[i] )) {
+        if( text.equals( items[i] ) ) {
           text = "";
         }
       }
     }
     model.remove( start, end );
   }
-
+  
   /**
    * Searches the receiver's list starting at the first item
-   * until an item is found that is equal to the argument,
+   * until an item is found that is equal to the argument, 
    * and removes that item from the list.
    *
    * @param string the item to remove
@@ -324,7 +428,7 @@ public class Combo extends Composite {
     checkWidget();
     model.remove( string );
   }
-
+  
   /**
    * Removes all of the items from the receiver's list and clear the
    * contents of receiver's text field.
@@ -339,12 +443,12 @@ public class Combo extends Composite {
     text = "";
     model.removeAll();
   }
-
+  
   /**
    * Sets the text of the item in the receiver's list at the given
    * zero-relative index to the string argument. This is equivalent
-   * to removing the old item at the index, and then adding the new
-   * item at that index.
+   * to <code>remove</code>'ing the old item at the index, and then
+   * <code>add</code>'ing the new item at that index.
    *
    * @param index the index for the item
    * @param string the new text for the item
@@ -362,7 +466,7 @@ public class Combo extends Composite {
     checkWidget();
     model.setItem( index, string );
   }
-
+  
   /**
    * Sets the receiver's list to be the given array of items.
    *
@@ -377,11 +481,11 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItems( final String[] items ) {
+  public void setItems( final String [] items ) {
     checkWidget();
     model.setItems( items );
   }
-
+  
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver's list. Throws an exception if the index is out
@@ -402,28 +506,7 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItem( index );
   }
-
-  /**
-   * Returns a (possibly empty) array of <code>String</code>s which are
-   * the items in the receiver's list.
-   * <p>
-   * Note: This is not the actual structure used by the receiver
-   * to maintain its list of items, so modifying the array will
-   * not affect the receiver.
-   * </p>
-   *
-   * @return the items in the receiver's list
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  public String[] getItems() {
-    checkWidget();
-    return model.getItems();
-  }
-
+  
   /**
    * Returns the number of items contained in the receiver's list.
    *
@@ -438,14 +521,49 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItemCount();
   }
-
+  
+  /**
+   * Returns the height of the area which would be used to
+   * display <em>one</em> of the items in the receiver's list.
+   *
+   * @return the height of one item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getItemHeight() {
+    checkWidget();
+    int charHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int padding = 2 * LIST_ITEM_PADDING;
+    return charHeight + padding;
+  }
+  
+  /**
+   * Returns an array of <code>String</code>s which are the items
+   * in the receiver's list. 
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the items in the receiver's list
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String[] getItems() {
+    checkWidget();
+    return model.getItems();
+  }
+  
   /**
    * Sets the number of items that are visible in the drop
    * down portion of the receiver's list.
-   * <p>
-   * Note: This operation is a hint and is not supported on
-   * platforms that do not have this concept.
-   * </p>
    *
    * @param count the new number of items to be visible
    *
@@ -453,6 +571,7 @@ public class Combo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
    */
   public void setVisibleItemCount( final int count ) {
     checkWidget();
@@ -460,14 +579,10 @@ public class Combo extends Composite {
       visibleCount = count;
     }
   }
-
+  
   /**
    * Gets the number of items that are visible in the drop
    * down portion of the receiver's list.
-   * <p>
-   * Note: This operation is a hint and is not supported on
-   * platforms that do not have this concept.
-   * </p>
    *
    * @return the number of items that are visible
    *
@@ -475,15 +590,61 @@ public class Combo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
    */
-  public int getVisibleItemCount () {
+  public int getVisibleItemCount() {
     checkWidget();
-    return visibleCount ;
+    return visibleCount;
   }
-
+  
+  /**
+   * Marks the receiver's list as visible if the argument is <code>true</code>,
+   * and marks it invisible otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, marking
+   * it visible may not actually cause it to be displayed.
+   * </p>
+   *
+   * @param visible the new visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   */
+  public void setListVisible( final boolean visible ) {
+    checkWidget();
+    dropped = visible;
+  }
+  
+  /**
+   * Returns <code>true</code> if the receiver's list is visible,
+   * and <code>false</code> otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, this method
+   * may still indicate that it is considered visible even though
+   * it may not actually be showing.
+   * </p>
+   *
+   * @return the receiver's list's visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   */
+  public boolean getListVisible() {
+    checkWidget();
+    return dropped;
+  }
+  
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the
+   * (index 0) until an item is found that is equal to the 
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -500,11 +661,12 @@ public class Combo extends Composite {
    */
   public int indexOf( final String string ) {
     checkWidget();
+    if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     return indexOf( string, 0 );
   }
-
+  
   /**
-   * Searches the receiver's list starting at the given,
+   * Searches the receiver's list starting at the given, 
    * zero-relative index until an item is found that is equal
    * to the argument, and returns the index of that item. If
    * no item is found or the starting index is out of range,
@@ -522,10 +684,9 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final String string, final int start ) {
+  public int indexOf ( final String string, final int start ) {
     checkWidget();
-    if( string == null )
-      error( SWT.ERROR_NULL_ARGUMENT );
+    if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     if( !( 0 <= start && start < model.getItemCount() ) )
       return -1;
     for( int i = start; i < model.getItemCount(); i++ ) {
@@ -534,59 +695,34 @@ public class Combo extends Composite {
     }
     return -1;
   }
-
+  
   /**
-   * Returns a string containing a copy of the contents of the
-   * receiver's text field, or an empty string if there are no
-   * contents.
+   * Sets the contents of the receiver's text field to the
+   * given string.
+   * <p>
+   * Note: The text field in a <code>Combo</code> is typically
+   * only capable of displaying a single line of text. Thus,
+   * setting the text to a string containing line breaks or
+   * other special characters will probably cause it to 
+   * display incorrectly.
+   * </p>
    *
-   * @return the receiver's text
+   * @param string the new text
    *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public String getText() {
-    checkWidget();
-    String result = "";
-    if( ( style & SWT.READ_ONLY ) != 0 ) {
-      int idx = model.getSelectionIndex();
-      if( idx != -1 ) {
-        result = model.getItem( idx );
-      }
-    } else {
-      result = text;
-    }
-    return result;
-  }
-
-  /**
-   * Sets the contents of the receiver's text field to the given string.
-   * <p>
-   * Note: The text field in a <code>Combo</code> is typically only capable of
-   * displaying a single line of text. Thus, setting the text to a string
-   * containing line breaks or other special characters will probably cause it
-   * to display incorrectly.
-   * </p>
-   *
-   * @param string the new text
-   * @exception IllegalArgumentException
-   *              <ul>
-   *              <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-   *              </ul>
-   * @exception SWTException
-   *              <ul>
-   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-   *              thread that created the receiver</li>
-   *              </ul>
-   */
   public void setText( final String string ) {
     checkWidget();
     if( string == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
+      SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     }
+    int style = super.getStyle();
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       int index = indexOf( string );
       if( index == -1 ) {
@@ -601,14 +737,67 @@ public class Combo extends Composite {
       modifyEvent.processEvent();
     }
   }
-
-  // //////////////////
-  // Widget dimensions
-
-  // TODO [rst] Revise: In SWT, a width or height hint of 0 does not result in
-  //      the DEFAULT_WIDTH/HEIGHT.
-  public Point computeSize( final int wHint,
-                            final int hHint,
+  
+  /**
+   * Returns a string containing a copy of the contents of the
+   * receiver's text field.
+   *
+   * @return the receiver's text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String getText() {
+    checkWidget();
+    String result = "";
+    int style = super.getStyle();
+    if( ( style & SWT.READ_ONLY ) != 0 ) {
+      int idx = model.getSelectionIndex();
+      if( idx != -1 ) {
+        result = model.getItem( idx );
+      }
+    } else {
+      result = text;
+    }
+    return result;
+  }
+  
+  /**
+   * Sets the editable state.
+   *
+   * @param editable the new editable state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   */
+  public void setEditable( final boolean editable ) {
+    checkWidget();
+    this.editable = editable;
+  }
+  
+  /**
+   * Gets the editable state.
+   *
+   * @return whether or not the receiver is editable
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   */
+  public boolean getEditable() {
+    checkWidget();
+    return editable;
+  }
+  
+  public Point computeSize( final int wHint, 
+                            final int hHint, 
                             final boolean changed )
   {
     checkWidget();
@@ -648,13 +837,10 @@ public class Combo extends Composite {
     width += 2 * border;
     return new Point( width, height );
   }
-
-  /////////////////////////////////////////
-  // Listener registration/de-registration
-
+  
   /**
    * Adds the listener to the collection of listeners who will
-   * be notified when the receiver's selection changes, by sending
+   * be notified when the user changes the receiver's selection, by sending
    * it one of the messages defined in the <code>SelectionListener</code>
    * interface.
    * <p>
@@ -662,7 +848,7 @@ public class Combo extends Composite {
    * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed the combo's text area.
    * </p>
    *
-   * @param listener the listener which should be notified
+   * @param listener the listener which should be notified when the user changes the receiver's selection
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -680,10 +866,10 @@ public class Combo extends Composite {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
-
+  
   /**
    * Removes the listener from the collection of listeners who will
-   * be notified when the receiver's selection changes.
+   * be notified when the user changes the receiver's selection.
    *
    * @param listener the listener which should no longer be notified
    *
@@ -702,7 +888,7 @@ public class Combo extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-
+  
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's text is modified, by sending
@@ -724,10 +910,9 @@ public class Combo extends Composite {
    */
   public void addModifyListener( final ModifyListener listener ) {
     checkWidget();
-    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
     ModifyEvent.addListener( this, listener );
   }
-
+  
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the receiver's text is modified.
@@ -747,17 +932,16 @@ public class Combo extends Composite {
    */
   public void removeModifyListener( final ModifyListener listener ) {
     checkWidget();
-    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
     ModifyEvent.removeListener( this, listener );
   }
-
+  
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's text is verified, by sending
    * it one of the messages defined in the <code>VerifyListener</code>
    * interface.
    *
-   * @param verifyListener the listener which should be notified
+   * @param listener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -769,16 +953,17 @@ public class Combo extends Composite {
    *
    * @see VerifyListener
    * @see #removeVerifyListener
+   * 
    */
   public void addVerifyListener( final VerifyListener verifyListener ) {
     VerifyEvent.addListener( this, verifyListener );
   }
-
+  
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the control is verified.
    *
-   * @param verifyListener the listener which should no longer be notified
+   * @param listener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -790,23 +975,41 @@ public class Combo extends Composite {
    *
    * @see VerifyListener
    * @see #addVerifyListener
+   * 
    */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
     VerifyEvent.removeListener( this, verifyListener );
   }
-
-
-  boolean isTabGroup() {
-    return true;
+  
+  public Control[] getChildren() {
+  	checkWidget();
+  	return new Control[ 0 ];
   }
-
-  String getNameText() {
-    return getText();
+  
+  /**
+   * Sets the layout which is associated with the receiver to be
+   * the argument which may be null.
+   * <p>
+   * Note: No Layout can be set on this Control because it already
+   * manages the size and position of its children.
+   * </p>
+   *
+   * @param layout the receiver's new layout or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setLayout( final Layout layout ) {
+  	checkWidget();
+  	return;
   }
-
+  
   //////////////////
   // Helping methods
 
+  // Direct copy from Combo.java
   private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
@@ -827,8 +1030,10 @@ public class Combo extends Composite {
     }
     return result;
   }
-
+  
+  // Direct copy from Combo.java
   private void updateText() {
+    int style = super.getStyle();
     if( ( style & SWT.READ_ONLY ) == 0 ) {
       int selectionIndex = getSelectionIndex();
       if( selectionIndex != -1 ) {
@@ -838,43 +1043,17 @@ public class Combo extends Composite {
       }
     }
   }
-
+  
+  // Made in the same way as in Combo.java
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();
-    ComboThemeAdapter adapter
-      = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
+    CComboThemeAdapter adapter
+      = ( CComboThemeAdapter )manager.getThemeAdapter( CCombo.class );
     return adapter.getPadding( this );
   }
 
   private static int checkStyle( final int style ) {
-    int result = style;
-    /*
-     * Feature in Windows.  It is not possible to create
-     * a combo box that has a border using Windows style
-     * bits.  All combo boxes draw their own border and
-     * do not use the standard Windows border styles.
-     * Therefore, no matter what style bits are specified,
-     * clear the BORDER bits so that the SWT style will
-     * match the Windows widget.
-     *
-     * The Windows behavior is currently implemented on
-     * all platforms.
-     */
-    result &= ~SWT.BORDER;
-
-    /*
-     * Even though it is legal to create this widget
-     * with scroll bars, they serve no useful purpose
-     * because they do not automatically scroll the
-     * widget's client area.  The fix is to clear
-     * the SWT style.
-     */
-    result &= ~( SWT.H_SCROLL | SWT.V_SCROLL );
-    result = checkBits( result, SWT.DROP_DOWN, SWT.SIMPLE, 0, 0, 0, 0 );
-    if( ( result & SWT.SIMPLE ) != 0 ) {
-      return result & ~SWT.READ_ONLY;
-    }
-    result |= SWT.H_SCROLL; // Copied from SWT Combo constructor
-    return result;
+    int mask = SWT.BORDER | SWT.READ_ONLY | SWT.FLAT | SWT.LEFT_TO_RIGHT;
+    return style & mask;
   }
 }

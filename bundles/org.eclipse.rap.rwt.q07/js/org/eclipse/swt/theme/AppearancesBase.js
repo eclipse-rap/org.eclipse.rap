@@ -2053,6 +2053,72 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
       return result;
     }
+  },
+  
+  // ------------------------------------------------------------------------
+  // CCombo
+
+  "ccombo" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        border : tv.getCssBorder( "CCombo", "border" ),
+        backgroundColor : tv.getCssColor( "CCombo", "background-color" ),
+        textColor : tv.getCssColor( "CCombo", "color" ),
+        font : tv.getCssFont( "CCombo", "font" )
+      };
+    }
+  },
+
+  "ccombo-list" : {
+    include : "list",
+    style : function( states ) {
+   	  var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+      	border   : tv.getCssBorder( "CCombo-List", "border" ),
+        overflow : "scrollY",
+        textColor : tv.getCssColor( "CCombo", "color" ),
+        font : tv.getCssFont( "*", "font" ),
+        backgroundColor : tv.getCssColor( "CCombo", "background-color" )
+      };
+    }
+  },
+
+  "ccombo-field" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        font : tv.getCssFont( "*", "font" ),
+        padding : tv.getCssBoxDimensions( "Text", "padding" ),
+        width : null,
+        height : null,
+        left : 0,
+        right : org.eclipse.swt.custom.CCombo.BUTTON_WIDTH,
+        top : 0,
+        bottom : 0,
+        textColor : states.disabled
+                    ? "widget.graytext"
+                    : tv.getCssColor( "CCombo", "color" ),
+        backgroundColor : tv.getCssColor( "CCombo", "background-color" )
+      };
+    }
+  },
+
+  "ccombo-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        border : tv.getCssBorder( "CCombo-Button", "border" ),
+        width : org.eclipse.swt.custom.CCombo.BUTTON_WIDTH,
+        height : null,
+        top : 0,
+        bottom : 0,
+        right : 0,
+        icon : tv.getCssImage( "CCombo-Button", "background-image" ),
+        // TODO [rst] rather use button.bgcolor?
+        backgroundColor : tv.getCssColor( "CCombo-Button", "background-color" )
+      };
+    }
   }
 }
 } );

@@ -147,7 +147,8 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.DateTime.class,
     org.eclipse.swt.widgets.ExpandBar.class,
     org.eclipse.swt.widgets.Sash.class,
-    org.eclipse.swt.widgets.Slider.class
+    org.eclipse.swt.widgets.Slider.class,
+    org.eclipse.swt.custom.CCombo.class
   };
 
   private static ThemeManager instance;

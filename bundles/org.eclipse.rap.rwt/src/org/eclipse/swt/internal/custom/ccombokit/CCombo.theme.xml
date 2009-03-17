@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!--
+ Copyright (c) 2009 Innoopract Informationssysteme GmbH.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+
+ Contributors:
+     Innoopract Informationssysteme GmbH - initial API and implementation
+ -->
+
+<theme>
+
+  <element name="CCombo">
+    <description>
+      The theming of RWT CCombo.
+    </description>
+
+    <property name="color" type="color">
+      <description>
+        The text color used for the text field and the drop-down list of
+        a CCombo.
+      </description>
+    </property> 
+
+    <property name="background-color" type="color">
+      <description>
+        The background color used for the text field and the drop-down list of
+        a CCombo.
+      </description>
+    </property> 
+
+    <property name="font" type="font">
+      <description>
+        The font used for the text field and the drop-down list of a CCombo.
+      </description>
+    </property>
+
+    <property name="border" type="border">
+      <description>
+        The border that is drawn around a CCombo.
+      </description>
+    </property>
+    
+    <style name="BORDER"
+        description="Style constant for bordered behavior." />
+
+    <element name="CCombo-Button">
+      <description>
+        The drop-down button of RWT CCombo.
+      </description>
+
+      <property name="background-image" type="image">
+        <description>
+          The icon for the CCombo drop-down button.
+          The size of the image should be 12 x 12 pixels.
+        </description>
+      </property> 
+
+      <property name="background-color" type="color">
+        <description>
+          The background color of the drop-down button of the CCombo.
+        </description>
+      </property> 
+
+      <property name="border" type="border">
+        <description>
+          The border of the drop-down button of the CCombo.
+        </description>
+      </property>
+      
+      <style name="FLAT"
+          description="Applies when style FLAT is set on the parent." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the CCombo button." />
+
+    </element>
+    
+    <element name="CCombo-Field">
+      <description>
+        The text field of RWT CCombo.
+      </description>
+      
+      <style name="FLAT"
+          description="Applies when style FLAT is set on the parent." />
+      
+    </element>
+    
+    <element name="CCombo-List">
+      <description>
+        The list of RWT CCombo.
+      </description>
+      
+      <property name="border" type="border">
+        <description>
+          The border of the list of the CCombo.
+        </description>
+      </property>
+      
+      <style name="FLAT"
+          description="Applies when style FLAT is set on the parent." />
+      
+    </element>
+
+  </element>
+
+</theme>

@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.service.BrowserSurvey_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.browser.browserkit.BrowserLCA_Test;
+import org.eclipse.swt.internal.custom.ccombokit.CComboLCA_Test;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
@@ -128,6 +129,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ExpandBarLCA_Test.class );
     suite.addTestSuite( ExpandItemLCA_Test.class );
     suite.addTestSuite( SliderLCA_Test.class );
+    suite.addTestSuite( CComboLCA_Test.class );
 
     return suite;
   }

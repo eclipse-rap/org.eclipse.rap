@@ -1,0 +1,33 @@
+/* CCombo default theme */
+
+CCombo {
+  background-color: white;
+  color: black;
+  border: none;
+}
+
+CCombo[BORDER] {
+  border: 2px inset;
+}
+
+CCombo-Button {
+  background-image: url( resource/widget/rap/ccombo/down_button.gif );
+  background-color: rgb( 248, 248, 255 );
+  border: 1px outset;
+}
+
+CCombo-Button[FLAT] {
+  border: none;
+}
+
+CCombo-Button[FLAT]:hover {
+  border: 1px outset;
+}
+
+CCombo-List {
+  border: 1px rgb( 167, 166, 170 );
+}
+
+CCombo-List[FLAT] {
+  border: 1px rgb( 225, 225, 225 );
+}

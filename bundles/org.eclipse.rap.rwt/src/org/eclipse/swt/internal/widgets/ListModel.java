@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,15 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.internal.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.eclipse.swt.SWT;
 
 
-final class ListModel {
+public final class ListModel {
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
@@ -24,7 +24,7 @@ final class ListModel {
   private final java.util.List items;
   private int[] selection = EMPTY_SELECTION;
 
-  ListModel( final boolean single ) {
+  public ListModel( final boolean single ) {
     this.single = single;
     items = new ArrayList();
   }
@@ -32,7 +32,7 @@ final class ListModel {
   ///////////////////////////////
   // Methods to get/set selection
 
-  int getSelectionIndex() {
+  public int getSelectionIndex() {
     int result = -1;
     if( selection.length > 0 ) {
       result = selection[ 0 ];
@@ -40,24 +40,24 @@ final class ListModel {
     return result;
   }
 
-  int[] getSelectionIndices() {
+  public int[] getSelectionIndices() {
     int[] result = new int[ selection.length ];
     System.arraycopy( selection, 0, result, 0, selection.length );
     return result;
   }
   
-  int getSelectionCount() {
+  public int getSelectionCount() {
     return selection.length;
   }
 
-  void setSelection( final int selection ) {
+  public void setSelection( final int selection ) {
     deselectAll();
     if( selection >= 0 && selection <= getItemCount() - 1 ) {
       this.selection = new int[]{ selection };
     }
   }
 
-  void setSelection( final int[] selection ) {
+  public void setSelection( final int[] selection ) {
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -87,7 +87,7 @@ final class ListModel {
     }
   }
   
-  void setSelection( final int start, final int end ) {
+  public void setSelection( final int start, final int end ) {
     deselectAll();
     if( end >= 0 && start <= end && start <= getItemCount() - 1 ) {
       if( single ) {
@@ -107,7 +107,7 @@ final class ListModel {
     }
   }
   
-  void setSelection( final String[] selection ) {
+  public void setSelection( final String[] selection ) {
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -131,7 +131,7 @@ final class ListModel {
     }
   }
 
-  void addSelection( final int index ) {
+  public void addSelection( final int index ) {
     if( index >= 0 && index < getItemCount() ) {
       boolean exists = false;
       for( int i = 0; i < selection.length; i++ ) {
@@ -149,7 +149,7 @@ final class ListModel {
     }
   }
 
-  void selectAll() {
+  public void selectAll() {
     if( !single ) {
       selection = new int[ items.size() ];
       for( int i = 0; i < selection.length; i++ ) {
@@ -158,21 +158,21 @@ final class ListModel {
     }
   }
 
-  void deselectAll() {
+  public void deselectAll() {
     this.selection = EMPTY_SELECTION;
   }
   
   ////////////////////////////////
   // Methods to maintain the items
   
-  void add( final String string ) {
+  public void add( final String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     items.add( string );
   }
 
-  void add( final String string, final int index ) {
+  public void add( final String string, final int index ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -182,13 +182,13 @@ final class ListModel {
     items.add( index, string );
   }
 
-  void remove( final int index ) {
+  public void remove( final int index ) {
     checkIndex( index );
     items.remove( index );
     removeFromSelection( index );
   }
 
-  void remove( final int start, final int end ) {
+  public void remove( final int start, final int end ) {
     checkIndex( start );
     checkIndex( end );
     for( int i = end; i >= start; i-- ) {
@@ -196,7 +196,7 @@ final class ListModel {
     }
   }
   
-  void remove( final int[] indices ) {
+  public void remove( final int[] indices ) {
     if( indices == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -212,7 +212,7 @@ final class ListModel {
     }
   }
 
-  void remove( final String string ) {
+  public void remove( final String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -221,12 +221,12 @@ final class ListModel {
     remove( index );
   }
 
-  void removeAll() {
+  public void removeAll() {
     items.clear();
     deselectAll();
   }
 
-  void setItem( final int index, final String string ) {
+  public void setItem( final int index, final String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -234,7 +234,7 @@ final class ListModel {
     items.set( index, string );
   }
 
-  void setItems( final String[] items ) {
+  public void setItems( final String[] items ) {
     if( items == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     } 
@@ -248,16 +248,16 @@ final class ListModel {
     deselectAll();
   }
 
-  String getItem( final int index ) {
+  public String getItem( final int index ) {
     checkIndex( index );
     return ( String )items.get( index );
   }
 
-  int getItemCount() {
+  public int getItemCount() {
     return items.size();
   }
 
-  String[] getItems() {
+  public String[] getItems() {
     String[] result = new String[ items.size() ];
     items.toArray( result );
     return result;
