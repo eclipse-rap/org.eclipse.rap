@@ -106,7 +106,7 @@ public final class TableLCAUtil {
     Integer focusIndex = new Integer( tableAdapter.getFocusIndex() );
     return WidgetLCAUtil.hasChanged( table, PROP_FOCUS_INDEX, focusIndex );
   }
-  
+
   //////////////////
   // Helping methods
 
@@ -132,10 +132,12 @@ public final class TableLCAUtil {
         Rectangle textBounds = measureItem.getTextBounds( i );
         int imageLeft = imageBounds.x - checkWidth;
         int imageWidth = tableAdapter.getItemImageWidth( i );
-        // cut image width if image exceeds right border
-        int maxImageWidth = bounds.width - ( imageLeft - bounds.x );
-        if( imageWidth > maxImageWidth ) {
-          imageWidth = maxImageWidth;
+        // If in column mode, cut image width if image exceeds right cell border
+        if( table.getColumnCount() > 0 ) {
+          int maxImageWidth = bounds.width - ( imageLeft - bounds.x );
+          if( imageWidth > maxImageWidth ) {
+            imageWidth = maxImageWidth;
+          }
         }
         int textLeft = textBounds.x - checkWidth;
         int textWidth = textBounds.width;

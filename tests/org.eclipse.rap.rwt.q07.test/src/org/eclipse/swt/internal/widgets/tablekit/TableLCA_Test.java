@@ -676,7 +676,50 @@ public class TableLCA_Test extends TestCase {
     column.setWidth( 12 );
     metrics = TableLCAUtil.getItemMetrics( table );
     assertEquals( 10, metrics[ 0 ].imageWidth );
-    
+
+    RWTFixture.preserveWidgets();
+    item1.setImage( image );
+    table.setSelection( item1 );
+    assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
+  }
+
+  public void testGetItemMetricsWithoutColumns() {
+    Display display = new Display();
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Shell shell = new Shell( display );
+    shell.setBounds( 0, 0, 800, 600 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.NONE );
+    table.setHeaderVisible( true );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    item1.setText( "item1" );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    item2.setText( "item2" );
+    TableItem item3 = new TableItem( table, SWT.NONE );
+    item3.setText( "item3" );
+
+    ItemMetrics[] metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 0, metrics[ 0 ].imageWidth );
+
+    item2.setImage( image );
+    metrics = TableLCAUtil.getItemMetrics( table );
+    assertTrue( metrics[ 0 ].imageWidth > 0 );
+    int defaultLeftPadding = 2;
+    assertEquals( defaultLeftPadding, metrics[ 0 ].imageLeft );
+    assertTrue( metrics[ 0 ].imageWidth > 0 );
+
+    item1.setImage( image );
+    RWTFixture.preserveWidgets();
+    item1.setImage( ( Image )null );
+    assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
+
+    // spacing must be respected
+    int defaultSpacing = 2;
+    int expected =   metrics[ 0 ].imageLeft
+                   + metrics[ 0 ].imageWidth
+                   + defaultSpacing;
+    assertEquals( expected, metrics[ 0 ].textLeft );
+
     RWTFixture.preserveWidgets();
     item1.setImage( image );
     table.setSelection( item1 );

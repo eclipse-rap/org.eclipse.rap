@@ -886,10 +886,15 @@ public class TableItem extends Item {
     Rectangle cellPadding = parent.getCellPadding();
     if( index == 0 && parent.getColumnCount() == 0 ) {
       int imageWidth = 0;
+      int spacing = 0;
       if( parent.hasColumnImages( 0 ) ) {
-        imageWidth = parent.getItemImageSize().x + getSpacing( 0 );
+        imageWidth = parent.getItemImageSize().x;
+        spacing = getSpacing( 0 );
       }
-      left = getCheckWidth( 0 ) + imageWidth;
+      left =   getCheckWidth( 0 )
+             + cellPadding.x
+             + imageWidth
+             + spacing;
       top = getTop( itemIndex );
       Font font = parent.getFont();
       width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
@@ -899,8 +904,7 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
       }
       int spacing = getSpacing( index );
-      int columnLeft = parent.getColumn( index ).getLeft();
-      left =   columnLeft
+      left =   parent.getColumn( index ).getLeft()
              + getCheckWidth( index )
              + cellPadding.x
              + imageWidth
