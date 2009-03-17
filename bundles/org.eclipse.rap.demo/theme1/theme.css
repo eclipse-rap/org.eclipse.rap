@@ -356,6 +356,11 @@ TreeColumn-SortIndicator:down, TableColumn-SortIndicator:down {
   background-image: url( "/theme1/icons/sort-down.png" );
 }
 
+Table-Cell {
+  spacing: 4px;
+  padding: 4px;
+}
+
 Table-GridLine {
   color: #aca899;
 }
