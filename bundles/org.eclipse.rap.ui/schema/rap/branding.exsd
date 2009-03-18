@@ -78,6 +78,9 @@
                <documentation>
                   To not have an application-wide entrypoint you can define a default entrypoint per branding. Having an URI like http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt; will automatically start the server with the entrypoint you defined here.
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.entrypoint/entrypoint/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="themeId" type="string">
@@ -85,6 +88,9 @@
                <documentation>
                   To have the right look &amp;amp; feel for your application you can define the theme which should be used here.
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.themes/theme/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="title" type="string">
@@ -228,7 +234,7 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
    <element name="associatedEntrypoints">
       <annotation>
          <documentation>
-            Defines all entrypoints which are allowed the started with this branding (or servletName). If there are now entrypoints defined in this branding every entrypoint is allowed to be started.
+            Defines all entrypoints which are allowed to be started with this branding (or servletName). If there are no entrypoints defined in this branding, any entrypoint is allowed to be started.
          </documentation>
       </annotation>
       <complexType>
@@ -253,6 +259,9 @@ This will only work in browsers of the Mozilla family and Internet Explorer.
                <documentation>
                   The id of the referenced entrypoint extension.
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.entrypoint/entrypoint/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
