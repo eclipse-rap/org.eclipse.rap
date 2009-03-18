@@ -1248,15 +1248,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
      * to be opened.
      */
     private void fireWindowOpening() {
-//      // let the application do further configuration
-//      getWindowAdvisor().preWindowOpen();
+      // let the application do further configuration
+      getWindowAdvisor().preWindowOpen();
       // RAP [hs] patched for interactiondesign API
       if( getConfigurablePresentationFactory() != null ) {
         callConfigurablePreWindowOpen();
-      } else {
-        // let the application do further configuration
-        getWindowAdvisor().preWindowOpen();
-      }        
+      } 
     }
 
     /**
@@ -1287,15 +1284,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
      * that the window has been opened.
      */
     private void fireWindowOpened() {
-//        getWorkbenchImpl().fireWindowOpened(this);
-//        getWindowAdvisor().postWindowOpen();
-        getWorkbenchImpl().fireWindowOpened(this);
+        getWorkbenchImpl().fireWindowOpened(this);        
+        getWindowAdvisor().postWindowOpen();
         // RAP [hs] patched for interactiondesign API  
         if( getConfigurablePresentationFactory() != null ) {
           callConfigurablePostWindowOpen();
-        } else {
-          getWindowAdvisor().postWindowOpen();
-        }
+        } 
     }
 
     /**
