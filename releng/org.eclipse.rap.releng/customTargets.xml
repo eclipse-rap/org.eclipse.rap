@@ -91,9 +91,13 @@
       <include name="org.eclipse.core.contenttype_*" />
       <include name="org.eclipse.core.contenttype.source_*" />
       <include name="org.eclipse.core.databinding_*" />
+      <include name="org.eclipse.core.databinding.source_*" />
       <include name="org.eclipse.core.databinding.beans_*" />
       <include name="org.eclipse.core.databinding.beans.source_*" />
-      <include name="org.eclipse.core.databinding.source_*" />
+      <include name="org.eclipse.core.databinding.observable_*" />
+      <include name="org.eclipse.core.databinding.observable.source_*" />
+      <include name="org.eclipse.core.databinding.property_*" />
+      <include name="org.eclipse.core.databinding.property.source_*" />
       <include name="org.eclipse.core.expressions_*" />
       <include name="org.eclipse.core.expressions.source_*" />
       <include name="org.eclipse.core.jobs_*" />
