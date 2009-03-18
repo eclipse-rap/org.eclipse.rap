@@ -30,6 +30,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" ); //$NON-NLS-1$
+  private static final String NBSP = "&nbsp;";  //$NON-NLS-1$
   private static final String PREFIX
     = "resource/widget/rap/formtext/"; //$NON-NLS-1$
   private static final String BULLET_CIRCLE_GIF
@@ -177,7 +178,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
     for( int i = 0; i < textFragments.length; i++ ) {
       Object[] args = new Object[] {
-        textFragments[ i ],
+        textFragments[ i ].replaceAll( " ", NBSP ), //$NON-NLS-1$,
         new Integer( textFragmentsBounds[ i ].x ),
         new Integer( textFragmentsBounds[ i ].y ),
         new Integer( textFragmentsBounds[ i ].width ),
@@ -208,7 +209,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
     for( int i = 0; i < textFragments.length; i++ ) {
       Object[] args = new Object[] {
-        textFragments[ i ],
+        textFragments[ i ].replaceAll( " ", NBSP ), //$NON-NLS-1$
         tooltipText,
         new Integer( textFragmentsBounds[ i ].x ),
         new Integer( textFragmentsBounds[ i ].y ),
