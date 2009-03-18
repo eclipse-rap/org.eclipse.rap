@@ -497,13 +497,21 @@ public abstract class ConfigurableStack extends StackPresentation {
   }
   
   /**
+   * Returns the type of the Stack. 
+   * @return the type. See <code>PresentationFactory</code> constants.
+   */
+  protected String getType() {
+    return proxy.getType();
+  }
+
+
+  /**
    * This is called right after all necessary fields are initialized e.g. site,
    * stackPresentationId, parent and proxy. Subclasses can implement any 
    * initializaion behaviour using this mehtod.
    */
   public abstract void init();
-
-
+  
   /**
    * This method is called right after the constructor is called. It's 
    * necessary for creating a <code>ConfigurableStack</code> object over an 

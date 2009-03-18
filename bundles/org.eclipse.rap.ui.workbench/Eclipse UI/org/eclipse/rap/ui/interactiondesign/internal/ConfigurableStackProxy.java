@@ -44,18 +44,18 @@ public class ConfigurableStackProxy extends StackPresentation {
   
   public static final String STACK_PRESENTATION_ID = "stackPresentationId"; 
   
-  private StackPresentation currentStackPresentation;
-  
-  private NativeStackPresentation nativeStackPresentation;
-
-  private Composite parent;
-  private IStackPresentationSite site;
-  private String type;
-  private String currentId;
-  private boolean showTitle = false;
-
-  
   private IConfigurationElement brandingElement;
+  
+  private String currentId;
+
+  private StackPresentation currentStackPresentation;
+  private NativeStackPresentation nativeStackPresentation;
+  private Composite parent;
+  private boolean showTitle = false;
+  private IStackPresentationSite site;
+
+  
+  private String type;
   
   public ConfigurableStackProxy( 
     final Composite parent, 
@@ -147,9 +147,7 @@ public class ConfigurableStackProxy extends StackPresentation {
   public void dispose() {
     getDelegate().dispose();
   }
-
-  // Delegate methods
-
+  
   private IConfigurationElement getBrandingElement() {
     if( brandingElement == null ) {
       AbstractBranding branding = BrandingUtil.findBranding();
@@ -175,6 +173,8 @@ public class ConfigurableStackProxy extends StackPresentation {
     }
     return brandingElement;
   }
+
+  // Delegate methods
 
   private String getBrandingPresentationFactoryId() {
     return loadBrandingPresentationFactoryId( getBrandingElement() );
@@ -232,19 +232,27 @@ public class ConfigurableStackProxy extends StackPresentation {
   public boolean getShowTitle() {
     return showTitle;
   }
-  
+
   /**
    * @see StackPresentation
    */
   public int getSizeFlags( final boolean width ) {
     return getDelegate().getSizeFlags( width );
   }
-
+  
   /**
    * @see StackPresentation
    */
   public Control[] getTabList( final IPresentablePart part ) {
     return getDelegate().getTabList( part );
+  }
+
+  /**
+   * Returns the type of the Stack. 
+   * @return the type. See <code>PresentationFactory</code> constants.
+   */
+  public String getType() {
+    return type;
   }
 
   private String loadBrandingPresentationFactoryId( 
