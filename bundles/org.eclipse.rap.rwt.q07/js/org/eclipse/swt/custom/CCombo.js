@@ -66,6 +66,8 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     this.addEventListener( "mouseup", this._onMouseUp, this );
     this.addEventListener( "click", this._onMouseClick, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
+    this.addEventListener( "mouseover", this._onMouseOver, this );
+    this.addEventListener( "mouseout", this._onMouseOut, this );
     // Keyboard events
     this.addEventListener( "keydown", this._onKeyDown );
     this.addEventListener( "keypress", this._onKeyPress );
@@ -73,8 +75,6 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     // Specific events
     this._field.addEventListener( "blur", this._onTextBlur, this );
     this._list.addEventListener( "appear", this._onListAppear, this );
-    this._button.addEventListener( "mouseover", this._onButtonMouseOver );
-    this._button.addEventListener( "mouseout", this._onButtonMouseOut );
   },
 
   destruct : function() {
@@ -92,13 +92,13 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this.removeEventListener( "click", this._onMouseClick, this );
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
+    this.removeEventListener( "mouseover", this._onMouseOver, this );
+    this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "keydown", this._onKeyDown );
     this.removeEventListener( "keypress", this._onKeyPress );
     this.removeEventListener( "keyinput", this._onKeyInput );
     this._field.removeEventListener( "blur", this._onTextBlur, this );
     this._list.removeEventListener( "appear", this._onListAppear, this );
-    this._button.removeEventListener( "mouseover", this._onButtonMouseOver );
-    this._button.removeEventListener( "mouseout", this._onButtonMouseOut );
     this._disposeObjects( "_field", 
                           "_button", 
                           "_list", 
@@ -114,7 +114,7 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     _onChangeSize : function( evt ) {
       this._list.setWidth( this.getWidth() );
       this._list.setTop( this.getHeight() - this._borderWidth );
-      this._list.setLeft( -this._borderWidth );
+      this._list.setLeft( - this._borderWidth );
     },
 
     _onAppear : function( evt ) {
@@ -269,11 +269,23 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
               this._toggleListVisibility();
               this.setFocused( true );
             } else if( this._dropped ) {
+              // Click is outside the CCombo
+              if( this._selected ) {
+                this._manager.setLeadItem( this._selected );
+                this._manager.setAnchorItem( this._selected );
+                this._manager.setSelectedItem( this._selected );
+              } else {
+              	this._manager.deselectAll();
+              	this._manager.setLeadItem( null );
+                this._manager.setAnchorItem( null );
+              }
               this._toggleListVisibility();
             }
         }
       }
-      this._button.removeState( "over" );
+      if( this._button.hasState( "over" ) ) {
+        this._button.removeState( "over" );
+      }
     },
 
     _onMouseUp : function( evt ) {
@@ -301,12 +313,23 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
       }
     },
     
-    _onButtonMouseOver : function( evt ) {
-      this._button.addState( "over" );
+    _onMouseOver : function( evt ) {
+      var vTarget = evt.getTarget();
+      if( vTarget instanceof qx.ui.form.ListItem ) {
+        this._manager.deselectAll();
+        this._manager.setLeadItem( vTarget );
+        this._manager.setAnchorItem( vTarget );
+        this._manager.setSelectedItem( vTarget );
+      } else if( vTarget == this._button ) {
+      	this._button.addState( "over" );
+      }
     },
     
-    _onButtonMouseOut : function( evt ) {
-      this._button.removeState( "over" );
+    _onMouseOut : function( evt ) {
+      var vTarget = evt.getTarget();
+      if( vTarget == this._button ) {
+        this._button.removeState( "over" );
+      }
     },
 
     // Keyboard events handling
