@@ -132,7 +132,7 @@ public final class RWT {
           } catch( final Exception ex ) {
             throw new IllegalStateException( ex.getMessage() );
           }
-          final Field[] fieldArray = clazz.getDeclaredFields();
+          Field[] fieldArray = clazz.getDeclaredFields();
           for( int i = 0; i < fieldArray.length; i++ ) {
             try {
               int modifiers = fieldArray[ i ].getModifiers();
