@@ -13,7 +13,10 @@
 package org.eclipse.jface.internal.databinding.viewers;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.IElementComparer;
@@ -30,7 +33,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
  * use with {@link StructuredViewer} which uses {@link IElementComparer} for
  * element comparisons.
  * 
- * @since 1.1
+ * @since 1.2
  */
 public class ViewerElementSet implements Set {
 	private final Set wrappedSet;

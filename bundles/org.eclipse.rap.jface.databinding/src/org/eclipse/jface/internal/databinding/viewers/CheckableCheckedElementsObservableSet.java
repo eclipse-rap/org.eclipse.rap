@@ -7,21 +7,28 @@
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 124684)
+ *     Matthew Hall - bug 259380
  ******************************************************************************/
 
 package org.eclipse.jface.internal.databinding.viewers;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.core.databinding.observable.Diffs;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.set.AbstractObservableSet;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckable;
 
 /**
  * 
- * @since 1.1
+ * @since 1.2
  */
 public class CheckableCheckedElementsObservableSet extends
 		AbstractObservableSet {
@@ -31,34 +38,19 @@ public class CheckableCheckedElementsObservableSet extends
 	private ICheckStateListener listener;
 
 	/**
-	 * Constructs a new instance on the given realm and checkable.
-	 * 
-	 * @param realm
-	 *            the observable's realm
-	 * @param checkable
-	 *            the ICheckable to track
-	 * @param elementType
-	 *            type of elements in the set
-	 */
-	public CheckableCheckedElementsObservableSet(Realm realm,
-			ICheckable checkable, Object elementType) {
-		this(realm, checkable, elementType, new HashSet());
-	}
-
-	/**
 	 * Constructs a new instance of the given realm, and checkable,
 	 * 
 	 * @param realm
 	 *            the observable's realm
-	 * @param checkable
-	 *            the ICheckable to track
-	 * @param elementType
-	 *            type of elements in the set
 	 * @param wrappedSet
 	 *            the set being wrapped
+	 * @param elementType
+	 *            type of elements in the set
+	 * @param checkable
+	 *            the ICheckable to track
 	 */
 	public CheckableCheckedElementsObservableSet(Realm realm,
-			ICheckable checkable, Object elementType, final Set wrappedSet) {
+			final Set wrappedSet, Object elementType, ICheckable checkable) {
 		super(realm);
 		Assert.isNotNull(checkable, "Checkable cannot be null"); //$NON-NLS-1$
 		Assert.isNotNull(wrappedSet, "Wrapped set cannot be null"); //$NON-NLS-1$

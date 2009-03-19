@@ -7,15 +7,21 @@
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 215531)
+ *     Matthew Hall - bug 230267
  ******************************************************************************/
 
 package org.eclipse.jface.internal.databinding.viewers;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.core.databinding.observable.Diffs;
 import org.eclipse.core.databinding.observable.Realm;
-import org.eclipse.core.databinding.observable.set.*;
+import org.eclipse.core.databinding.observable.set.AbstractObservableSet;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -32,10 +38,9 @@ import org.eclipse.jface.viewers.StructuredViewer;
  * {@link IElementComparer} for element comparisons.
  * 
  * 
- * @since 1.1
+ * @since 1.2
  */
-public class ObservableViewerElementSet extends AbstractObservableSet implements
-		IObservableSet {
+public class ObservableViewerElementSet extends AbstractObservableSet {
 	private Set wrappedSet;
 	private Object elementType;
 	private IElementComparer comparer;

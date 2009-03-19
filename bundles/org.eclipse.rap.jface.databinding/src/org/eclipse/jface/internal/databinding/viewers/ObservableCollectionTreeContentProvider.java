@@ -7,13 +7,23 @@
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 207858)
+ *     Matthew Hall - bugs 226765, 239015, 222991, 263693, 263956, 226292,
+ *                    266038
  ******************************************************************************/
 
 package org.eclipse.jface.internal.databinding.viewers;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.core.databinding.observable.*;
+import org.eclipse.core.databinding.observable.IObservable;
+import org.eclipse.core.databinding.observable.IObservableCollection;
+import org.eclipse.core.databinding.observable.IObservablesListener;
+import org.eclipse.core.databinding.observable.Observables;
+import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
 import org.eclipse.core.databinding.observable.masterdetail.MasterDetailObservables;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
@@ -23,7 +33,12 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.TreeStructureAdvisor;
 import org.eclipse.jface.util.Util;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.IElementComparer;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -32,26 +47,45 @@ import org.eclipse.swt.widgets.Display;
  * elements of a tree. Each observable collection obtained from the factory is
  * observed such that changes in the collection are reflected in the viewer.
  * 
- * @since 1.1
+ * @since 1.2
  */
 public abstract class ObservableCollectionTreeContentProvider implements
 		ITreeContentProvider {
 	private Realm realm;
 
-	private IObservableValue viewerObservable;
+	private Display display;
 
-	/**
-	 * Interfaces for sending updates to the viewer.
-	 */
-	protected ITreeViewerUpdater viewerUpdater;
+	private IObservableValue viewerObservable;
 
 	/**
 	 * Element comparer used by the viewer (may be null).
 	 */
 	protected IElementComparer comparer;
 
-	private IObservableSet knownElements;
+	private IObservableFactory elementSetFactory;
+
+	/**
+	 * Interfaces for sending updates to the viewer.
+	 */
+	protected TreeViewerUpdater viewerUpdater;
+
+	/**
+	 * Observable set of all elements known to the content provider. Subclasses
+	 * must add new elements to this set <b>before</b> adding them to the
+	 * viewer, and must remove old elements from this set <b>after</b> removing
+	 * them from the viewer.
+	 */
+	protected IObservableSet knownElements;
 	private IObservableSet unmodifiableKnownElements;
+
+	/**
+	 * Observable set of known elements which have been realized in the viewer.
+	 * Subclasses must add new elements to this set <b>after</b> adding them to
+	 * the viewer, and must remove old elements from this set <b>before</b>
+	 * removing them from the viewer.
+	 */
+	protected IObservableSet realizedElements;
+	private IObservableSet unmodifiableRealizedElements;
 
 	private IObservableFactory /* <IObservableCollection> */collectionFactory;
 
@@ -66,26 +100,25 @@ public abstract class ObservableCollectionTreeContentProvider implements
 	 * @param collectionFactory
 	 *            observable factory that produces an IObservableList of
 	 *            children for a given parent element.
-	 * @param structureAdvisor 
+	 * @param structureAdvisor
 	 */
 	protected ObservableCollectionTreeContentProvider(
-			IObservableFactory collectionFactory, TreeStructureAdvisor structureAdvisor) {
+			IObservableFactory collectionFactory,
+			TreeStructureAdvisor structureAdvisor) {
 		this.structureAdvisor = structureAdvisor;
-		realm = SWTObservables.getRealm(Display.getDefault());
+		display = Display.getDefault();
+		realm = SWTObservables.getRealm(display);
 		viewerObservable = new WritableValue(realm);
 		viewerUpdater = null;
 
-		// Known elements is a detail set of viewerObservable, so that when we
-		// get the viewer instance we can swap in a set that uses its
-		// IElementComparer, if any.
-		IObservableFactory knownElementsFactory = new IObservableFactory() {
+		elementSetFactory = new IObservableFactory() {
 			public IObservable createObservable(Object target) {
 				return ObservableViewerElementSet.withComparer(realm, null,
 						getElementComparer((Viewer) target));
 			}
 		};
 		knownElements = MasterDetailObservables.detailSet(viewerObservable,
-				knownElementsFactory, null);
+				elementSetFactory, null);
 		unmodifiableKnownElements = Observables
 				.unmodifiableObservableSet(knownElements);
 
@@ -107,10 +140,14 @@ public abstract class ObservableCollectionTreeContentProvider implements
 		}
 
 		setViewer(viewer);
+
+		knownElements.clear();
+		if (realizedElements != null)
+			realizedElements.clear();
 	}
 
 	private void setViewer(Viewer viewer) {
-		viewerUpdater = getViewerUpdater(viewer);
+		viewerUpdater = createViewerUpdater(viewer);
 		comparer = getElementComparer(viewer);
 		elementNodes = ViewerElementMap.withComparer(comparer);
 		viewerObservable.setValue(viewer); // (clears knownElements)
@@ -122,7 +159,9 @@ public abstract class ObservableCollectionTreeContentProvider implements
 		return null;
 	}
 
-	private static ITreeViewerUpdater getViewerUpdater(Viewer viewer) {
+	private static TreeViewerUpdater createViewerUpdater(Viewer viewer) {
+		if (viewer instanceof CheckboxTreeViewer)
+			return new CheckboxTreeViewerUpdater((CheckboxTreeViewer) viewer);
 		if (viewer instanceof AbstractTreeViewer)
 			return new TreeViewerUpdater((AbstractTreeViewer) viewer);
 		throw new IllegalArgumentException(
@@ -143,14 +182,45 @@ public abstract class ObservableCollectionTreeContentProvider implements
 	}
 
 	public Object[] getElements(Object input) {
-		return getChildren(input);
+		return getChildren(input, true);
 	}
 
 	public Object[] getChildren(Object element) {
-		Object[] children = getOrCreateNode(element).getChildren();
+		return getChildren(element, false);
+	}
+
+	private Object[] getChildren(Object element, boolean input) {
+		TreeNode node = getOrCreateNode(element, input);
+		Object[] children = node.getChildren().toArray();
 		for (int i = 0; i < children.length; i++)
-			getOrCreateNode(children[i]).addParent(element);
+			getOrCreateNode(children[i], false).addParent(element);
+		knownElements.addAll(node.getChildren());
+		asyncUpdateRealizedElements();
 		return children;
+	}
+
+	boolean asyncUpdatePending;
+	Runnable asyncUpdateRunnable;
+
+	private void asyncUpdateRealizedElements() {
+		if (realizedElements == null)
+			return;
+		if (asyncUpdatePending)
+			return;
+		if (!realizedElements.equals(knownElements)) {
+			if (asyncUpdateRunnable == null) {
+				asyncUpdateRunnable = new Runnable() {
+					public void run() {
+						asyncUpdatePending = false;
+						if (realizedElements != null) {
+							realizedElements.addAll(knownElements);
+						}
+					}
+				};
+			}
+			asyncUpdatePending = true;
+			display.asyncExec(asyncUpdateRunnable);
+		}
 	}
 
 	public boolean hasChildren(Object element) {
@@ -160,14 +230,22 @@ public abstract class ObservableCollectionTreeContentProvider implements
 				return hasChildren.booleanValue();
 			}
 		}
-		return getOrCreateNode(element).hasChildren();
+		return getOrCreateNode(element, false).hasChildren();
 	}
 
 	protected TreeNode getOrCreateNode(Object element) {
+		return getOrCreateNode(element, false);
+	}
+
+	private TreeNode getOrCreateNode(Object element, boolean input) {
 		TreeNode node = getExistingNode(element);
 		if (node == null) {
 			node = new TreeNode(element);
+			elementNodes.put(element, node);
 		}
+		// In case the input element is also a visible node in the tree.
+		if (!input)
+			knownElements.add(element);
 		return node;
 	}
 
@@ -195,7 +273,6 @@ public abstract class ObservableCollectionTreeContentProvider implements
 			elementNodes = null;
 		}
 		if (viewerObservable != null) {
-			viewerObservable.setValue(null);
 			viewerObservable.dispose();
 			viewerObservable = null;
 		}
@@ -204,6 +281,7 @@ public abstract class ObservableCollectionTreeContentProvider implements
 		knownElements = null;
 		unmodifiableKnownElements = null;
 		collectionFactory = null;
+		asyncUpdateRunnable = null;
 	}
 
 	/**
@@ -213,10 +291,66 @@ public abstract class ObservableCollectionTreeContentProvider implements
 	 * after the element was removed from the viewer. This is intended for use
 	 * by label providers, as it will always return the items that need labels.
 	 * 
-	 * @return readableSet of items that will need labels
+	 * @return unmodifiable observable set of items that will need labels
 	 */
 	public IObservableSet getKnownElements() {
 		return unmodifiableKnownElements;
+	}
+
+	/**
+	 * Returns the set of known elements which have been realized in the viewer.
+	 * Clients may track this set in order to perform custom actions on elements
+	 * while they are known to be present in the viewer.
+	 * 
+	 * @return the set of known elements which have been realized in the viewer.
+	 * @since 1.3
+	 */
+	public IObservableSet getRealizedElements() {
+		if (realizedElements == null) {
+			realizedElements = MasterDetailObservables.detailSet(
+					viewerObservable, elementSetFactory, null);
+			unmodifiableRealizedElements = Observables
+					.unmodifiableObservableSet(realizedElements);
+			asyncUpdateRealizedElements();
+		}
+		return unmodifiableRealizedElements;
+	}
+
+	/**
+	 * Returns the set of all elements that would be removed from the known
+	 * elements set if the given elements were removed as children of the given
+	 * parent element.
+	 * 
+	 * @param parent
+	 *            the parent element of the elements being removed
+	 * @param elementsToBeRemoved
+	 *            the elements being removed
+	 * @return the set of all elements that would be removed from the known
+	 *         elements set
+	 */
+	protected Set findPendingRemovals(Object parent,
+			Collection elementsToBeRemoved) {
+		Set result = ViewerElementSet.withComparer(comparer);
+		Set parents = ViewerElementSet.withComparer(comparer);
+		parents.add(parent);
+		accumulatePendingRemovals(result, parents, elementsToBeRemoved);
+		return result;
+	}
+
+	private void accumulatePendingRemovals(Set removals, Set parents,
+			Collection elementsToRemove) {
+		for (Iterator it = elementsToRemove.iterator(); it.hasNext();) {
+			Object element = it.next();
+			TreeNode node = getExistingNode(element);
+			if (node != null) {
+				if (parents.containsAll(node.getParents())) {
+					removals.add(element);
+					parents.add(element);
+					Collection children = node.getChildren();
+					accumulatePendingRemovals(removals, parents, children);
+				}
+			}
+		}
 	}
 
 	/**
@@ -256,6 +390,12 @@ public abstract class ObservableCollectionTreeContentProvider implements
 	protected abstract void removeCollectionChangeListener(
 			IObservableCollection collection, IObservablesListener listener);
 
+	protected boolean equal(Object left, Object right) {
+		if (comparer == null)
+			return Util.equals(left, right);
+		return comparer.equals(left, right);
+	}
+
 	protected final class TreeNode {
 		private Object element;
 
@@ -269,18 +409,10 @@ public abstract class ObservableCollectionTreeContentProvider implements
 		TreeNode(Object element) {
 			Assert.isNotNull(element, "element cannot be null"); //$NON-NLS-1$
 			this.element = element;
-			knownElements.add(element);
-			elementNodes.put(element, this);
 		}
 
 		Object getElement() {
 			return element;
-		}
-
-		private boolean equal(Object left, Object right) {
-			if (comparer == null)
-				return Util.equals(left, right);
-			return comparer.equals(left, right);
 		}
 
 		public void addParent(Object newParent) {
@@ -296,21 +428,19 @@ public abstract class ObservableCollectionTreeContentProvider implements
 		}
 
 		public void removeParent(Object oldParent) {
-			if (parentSet != null)
+			if (parentSet != null) {
 				parentSet.remove(oldParent);
-
-			if (equal(parent, oldParent)) {
-				if (parentSet == null || parentSet.isEmpty()) {
-					parent = null;
-				} else {
-					Iterator iterator = parentSet.iterator();
-					parent = iterator.next();
-					iterator.remove();
-				}
+				if (parentSet.isEmpty())
+					parentSet = null;
 			}
 
-			if (parentSet != null && parentSet.isEmpty())
-				parentSet = null;
+			if (equal(parent, oldParent)) {
+				if (parentSet == null) {
+					parent = null;
+				} else {
+					parent = parentSet.iterator().next();
+				}
+			}
 
 			if (parent == null) {
 				dispose();
@@ -319,6 +449,14 @@ public abstract class ObservableCollectionTreeContentProvider implements
 
 		private Object getParent() {
 			return parent;
+		}
+
+		public Set getParents() {
+			if (parentSet != null)
+				return parentSet;
+			if (parent != null)
+				return Collections.singleton(parent);
+			return Collections.EMPTY_SET;
 		}
 
 		private void initChildren() {
@@ -343,17 +481,16 @@ public abstract class ObservableCollectionTreeContentProvider implements
 			return !children.isEmpty();
 		}
 
-		Object[] getChildren() {
+		public Collection getChildren() {
 			initChildren();
-			return children.toArray();
+			return children;
 		}
 
 		private void dispose() {
 			if (element != null) {
 				elementNodes.remove(element);
-				knownElements.remove(element);
 			}
-			if (children != null) {
+			if (children != null && !children.isDisposed()) {
 				for (Iterator iterator = children.iterator(); iterator
 						.hasNext();) {
 					TreeNode child = getExistingNode(iterator.next());

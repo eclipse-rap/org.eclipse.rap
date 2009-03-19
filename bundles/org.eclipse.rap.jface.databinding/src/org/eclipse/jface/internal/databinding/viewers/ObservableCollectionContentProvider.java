@@ -7,11 +7,15 @@
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 215531)
+ *     Matthew Hall - bugs 226765, 222991, 238296, 263956, 226292, 265051,
+ *                    266038
  ******************************************************************************/
 
 package org.eclipse.jface.internal.databinding.viewers;
 
-import org.eclipse.core.databinding.observable.*;
+import org.eclipse.core.databinding.observable.IObservable;
+import org.eclipse.core.databinding.observable.IObservableCollection;
+import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
 import org.eclipse.core.databinding.observable.masterdetail.MasterDetailObservables;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
@@ -19,18 +23,36 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.databinding.viewers.IViewerUpdater;
+import org.eclipse.jface.viewers.AbstractListViewer;
+import org.eclipse.jface.viewers.AbstractTableViewer;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.IElementComparer;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * NON-API - Abstract base class for content providers where the viewer input is
  * expected to be an {@link IObservableCollection}.
  * 
- * @since 1.1
+ * @since 1.2
  */
 public abstract class ObservableCollectionContentProvider implements
 		IStructuredContentProvider {
+	private Display display;
+
 	private IObservableValue viewerObservable;
+
+	/**
+	 * Element comparer used by the viewer (may be null).
+	 */
+	protected IElementComparer comparer;
+
+	private IObservableFactory elementSetFactory;
+
+	private final IViewerUpdater explicitViewerUpdater;
 
 	/**
 	 * Interface for sending updates to the viewer.
@@ -44,32 +66,43 @@ public abstract class ObservableCollectionContentProvider implements
 	 * them from the viewer.
 	 */
 	protected IObservableSet knownElements;
-
 	private IObservableSet unmodifiableKnownElements;
+
+	/**
+	 * Observable set of known elements which have been realized in the viewer.
+	 * Subclasses must add new elements to this set <b>after</b> adding them to
+	 * the viewer, and must remove old elements from this set <b>before</b>
+	 * removing them from the viewer.
+	 */
+	protected IObservableSet realizedElements;
+	private IObservableSet unmodifiableRealizedElements;
+
 	private IObservableCollection observableCollection;
 
 	/**
 	 * Constructs an ObservableCollectionContentProvider
+	 * 
+	 * @param explicitViewerUpdater
 	 */
-	protected ObservableCollectionContentProvider() {
-		final Realm realm = SWTObservables.getRealm(Display.getDefault());
-		viewerObservable = new WritableValue(realm);
+	protected ObservableCollectionContentProvider(
+			IViewerUpdater explicitViewerUpdater) {
+		this.explicitViewerUpdater = explicitViewerUpdater;
+
+		display = Display.getDefault();
+		viewerObservable = new WritableValue(SWTObservables.getRealm(display));
 		viewerUpdater = null;
 
-		// Known elements is a detail set of viewerObservable, so that when we
-		// get the viewer instance we can swap in a set that uses its
-		// IElementComparer, if any.
-		IObservableFactory knownElementsFactory = new IObservableFactory() {
+		elementSetFactory = new IObservableFactory() {
 			public IObservable createObservable(Object target) {
 				IElementComparer comparer = null;
 				if (target instanceof StructuredViewer)
 					comparer = ((StructuredViewer) target).getComparer();
-				return ObservableViewerElementSet.withComparer(realm, null,
-						comparer);
+				return ObservableViewerElementSet.withComparer(SWTObservables
+						.getRealm(display), null, comparer);
 			}
 		};
 		knownElements = MasterDetailObservables.detailSet(viewerObservable,
-				knownElementsFactory, null);
+				elementSetFactory, null);
 		unmodifiableKnownElements = Observables
 				.unmodifiableObservableSet(knownElements);
 
@@ -79,7 +112,27 @@ public abstract class ObservableCollectionContentProvider implements
 	public Object[] getElements(Object inputElement) {
 		if (observableCollection == null)
 			return new Object[0];
+
+		knownElements.addAll(observableCollection);
+		if (realizedElements != null) {
+			if (!realizedElements.equals(knownElements)) {
+				asyncUpdateRealizedElements();
+			}
+		}
+
 		return observableCollection.toArray();
+	}
+
+	private void asyncUpdateRealizedElements() {
+		if (realizedElements == null)
+			return;
+		display.asyncExec(new Runnable() {
+			public void run() {
+				if (realizedElements != null) {
+					realizedElements.addAll(knownElements);
+				}
+			}
+		});
 	}
 
 	public void dispose() {
@@ -87,13 +140,15 @@ public abstract class ObservableCollectionContentProvider implements
 			removeCollectionChangeListener(observableCollection);
 
 		if (viewerObservable != null) {
-			viewerObservable.setValue(null);
 			viewerObservable.dispose();
 			viewerObservable = null;
 		}
 		viewerUpdater = null;
 		knownElements = null;
 		unmodifiableKnownElements = null;
+		realizedElements = null;
+		unmodifiableRealizedElements = null;
+		display = null;
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -102,13 +157,24 @@ public abstract class ObservableCollectionContentProvider implements
 	}
 
 	private void setViewer(Viewer viewer) {
-		viewerUpdater = getViewerUpdater(viewer);
+		viewerUpdater = createViewerUpdater(viewer);
+		comparer = getElementComparer(viewer);
 		viewerObservable.setValue(viewer); // (clears knownElements)
 	}
 
-	IViewerUpdater getViewerUpdater(Viewer viewer) {
+	private static IElementComparer getElementComparer(Viewer viewer) {
+		if (viewer instanceof StructuredViewer)
+			return ((StructuredViewer) viewer).getComparer();
+		return null;
+	}
+
+	IViewerUpdater createViewerUpdater(Viewer viewer) {
+		if (explicitViewerUpdater != null)
+			return explicitViewerUpdater;
 		if (viewer instanceof AbstractListViewer)
 			return new ListViewerUpdater((AbstractListViewer) viewer);
+		if (viewer instanceof CheckboxTableViewer)
+			return new CheckboxTableViewerUpdater((CheckboxTableViewer) viewer);
 		if (viewer instanceof AbstractTableViewer)
 			return new TableViewerUpdater((AbstractTableViewer) viewer);
 		throw new IllegalArgumentException(
@@ -121,13 +187,16 @@ public abstract class ObservableCollectionContentProvider implements
 			observableCollection = null;
 		}
 
+		knownElements.clear();
+		if (realizedElements != null)
+			realizedElements.clear();
+
 		if (input != null) {
 			checkInput(input);
 			Assert.isTrue(input instanceof IObservableCollection,
 					"Input must be an IObservableCollection"); //$NON-NLS-1$
 			observableCollection = (IObservableCollection) input;
 			addCollectionChangeListener(observableCollection);
-			knownElements.addAll(observableCollection);
 		}
 	}
 
@@ -145,7 +214,8 @@ public abstract class ObservableCollectionContentProvider implements
 	 * @param collection
 	 *            observable collection to listen to
 	 */
-	protected abstract void addCollectionChangeListener(IObservableCollection collection);
+	protected abstract void addCollectionChangeListener(
+			IObservableCollection collection);
 
 	/**
 	 * Deregisters from change events notification on the given collection.
@@ -159,7 +229,7 @@ public abstract class ObservableCollectionContentProvider implements
 	/**
 	 * Returns whether the viewer is disposed. Collection change listeners in
 	 * subclasses should verify that the viewer is not disposed before sending
-	 * any updates to the {@link IViewerUpdater viewer updater}.
+	 * any updates to the {@link ViewerUpdater viewer updater}.
 	 * 
 	 * @return whether the viewer is disposed.
 	 */
@@ -176,9 +246,28 @@ public abstract class ObservableCollectionContentProvider implements
 	 * after the element was removed from the viewer. This is intended for use
 	 * by label providers, as it will always return the items that need labels.
 	 * 
-	 * @return readableSet of items that will need labels
+	 * @return unmodifiable observable set of items that will need labels
 	 */
 	public IObservableSet getKnownElements() {
 		return unmodifiableKnownElements;
+	}
+
+	/**
+	 * Returns the set of known elements which have been realized in the viewer.
+	 * Clients may track this set in order to perform custom actions on elements
+	 * while they are known to be present in the viewer.
+	 * 
+	 * @return the set of known elements which have been realized in the viewer.
+	 * @since 1.3
+	 */
+	public IObservableSet getRealizedElements() {
+		if (realizedElements == null) {
+			realizedElements = MasterDetailObservables.detailSet(
+					viewerObservable, elementSetFactory, null);
+			unmodifiableRealizedElements = Observables
+					.unmodifiableObservableSet(realizedElements);
+			asyncUpdateRealizedElements();
+		}
+		return unmodifiableRealizedElements;
 	}
 }

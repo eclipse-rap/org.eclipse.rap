@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,7 @@ public abstract class CompositeUpdater {
 	 * To be called from {@link #updateWidget(Widget, Object)} or {@link #createWidget(int)}
 	 * if this updater's composite's layout may need to be updated. 
 	 * @param control
+	 * @since 1.2
 	 */
 	protected void requestLayout(Control control) {
 		layoutRunnable.add(control);
@@ -181,6 +182,7 @@ public abstract class CompositeUpdater {
 
 	/**
 	 * @param position
+	 * @since 1.2
 	 */
 	protected void disposeWidget(int position) {
 		theComposite.getChildren()[position].dispose();

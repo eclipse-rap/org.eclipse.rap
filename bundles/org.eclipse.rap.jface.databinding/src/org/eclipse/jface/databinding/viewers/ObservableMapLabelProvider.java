@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,17 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 
 /**
+ * A label provider based on one or more observable maps that track attributes
+ * that this label provider uses for display. Clients may customize by
+ * subclassing and overriding {@link #getColumnText(Object, int)},
+ * {@link #getColumnImage(Object, int)}, for tables or trees with columns, or by
+ * implementing additional mixin interfaces for colors, fonts etc.
+ * 
  * @since 1.1
  * 
  */
-public class ObservableMapLabelProvider extends LabelProvider
-		implements ILabelProvider, ITableLabelProvider {
+public class ObservableMapLabelProvider extends LabelProvider implements
+		ILabelProvider, ITableLabelProvider {
 
 	private final IObservableMap[] attributeMaps;
 
@@ -37,8 +43,7 @@ public class ObservableMapLabelProvider extends LabelProvider
 		public void handleMapChange(MapChangeEvent event) {
 			Set affectedElements = event.diff.getChangedKeys();
 			LabelProviderChangedEvent newEvent = new LabelProviderChangedEvent(
-					ObservableMapLabelProvider.this, affectedElements
-							.toArray());
+					ObservableMapLabelProvider.this, affectedElements.toArray());
 			fireLabelProviderChanged(newEvent);
 		}
 	};
@@ -54,7 +59,9 @@ public class ObservableMapLabelProvider extends LabelProvider
 	 * @param attributeMaps
 	 */
 	public ObservableMapLabelProvider(IObservableMap[] attributeMaps) {
-		System.arraycopy(attributeMaps, 0, this.attributeMaps = attributeMaps, 0, attributeMaps.length);
+		System.arraycopy(attributeMaps, 0,
+				this.attributeMaps = new IObservableMap[attributeMaps.length],
+				0, attributeMaps.length);
 		for (int i = 0; i < attributeMaps.length; i++) {
 			attributeMaps[i].addMapChangeListener(mapChangeListener);
 		}
