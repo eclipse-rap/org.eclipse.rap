@@ -28,5 +28,13 @@
             id="Databinding.Examples"
             name="Databinding Examples"/>
    </extension>
+   <extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.eclipse.rap.demo.databinding.DataBindingEntryPoint"
+            id="org.eclipse.rap.demo.databinding.entrypoint1"
+            parameter="databinding">
+      </entrypoint>
+   </extension>
      
 </plugin>
