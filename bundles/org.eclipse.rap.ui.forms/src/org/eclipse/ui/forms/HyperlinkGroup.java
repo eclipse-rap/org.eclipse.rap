@@ -144,7 +144,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 			link.setUnderlined(true);
 		hook(link);
     // RAP [rh] Provides information to handle hover effect on the client-side
-    updateActiveColors();
+    updateHyperlinkSettings();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 // RAP [rh] Obsolete, as mouse events are missing
 //		isActiveBackgroundSet = true;
     // RAP [rh] Provides information to handle hover effect on the client-side
-    updateActiveColors();
+    updateHyperlinkSettings();
 	}
 
 	/**
@@ -172,25 +172,26 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 // RAP [rh] Obsolete, as mouse events are missing
 //		isActiveForegroundSet = true;
     // RAP [rh] Provides information to handle hover effect on the client-side
-    updateActiveColors();
+    updateHyperlinkSettings();
 	}
 
   // RAP [rh] Update information to handle hover effect on the client-side
-  private void updateActiveColors() {
+  private void updateHyperlinkSettings() {
     if( links != null ) {
       Hyperlink[] hyperlinks = new Hyperlink[ links.size() ];
       links.toArray( hyperlinks );
       for( int i = 0; i < hyperlinks.length; i++ ) {
-        updateActiveColors( hyperlinks[ i ] );
+        updateHyperlinkSettings( hyperlinks[ i ] );
       }
     }
-    }
+  }
 
-  private void updateActiveColors( final Hyperlink link ) {
+  private void updateHyperlinkSettings( final Hyperlink link ) {
     Object adapter = link.getAdapter( IHyperlinkAdapter.class );
     IHyperlinkAdapter hyperlinkAdapter = ( IHyperlinkAdapter )adapter;
     hyperlinkAdapter.setActiveForeground( getActiveForeground() );
     hyperlinkAdapter.setActiveBackground( getActiveBackground() );
+    hyperlinkAdapter.setUnderlineMode( getHyperlinkUnderlineMode() );
   }
   // RAP [rh] END
 
@@ -243,6 +244,8 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 				label.setUnderlined(mode == UNDERLINE_ALWAYS);
 			}
 		}
+		// RAP [if] Provides information to handle hover effect on the client-side
+	    updateHyperlinkSettings();
 	}
 
 	private void hook(Hyperlink link) {

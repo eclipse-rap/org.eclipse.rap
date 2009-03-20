@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     this._savedTextColor = null;
     this._activeBackgroundColor = null;
     this._activeTextColor = null;
+    this._underlineMode = null;
     this._hover = false;
     this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
@@ -41,7 +42,9 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
   },
 
   statics : {
-
+    UNDERLINE_NEVER : 1,
+    UNDERLINE_HOVER : 2,
+    UNDERLINE_ALWAYS : 3,
     // This event handler is added/removed by the server-side LCA
     onClick : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
@@ -63,6 +66,10 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     setActiveTextColor : function( value ) {
       this._activeTextColor = value;      
     },
+    
+    setUnderlineMode : function( value ) {
+      this._underlineMode = value;      
+    },
 
     _onMouseMove : function( evt ) {
       if( !this._hover ) {
@@ -74,6 +81,10 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
         if( this._activeTextColor != null ) {
           this.setTextColor( this._activeTextColor );
         }
+        var mode = org.eclipse.ui.forms.widgets.Hyperlink.UNDERLINE_HOVER;
+        if( this._underlineMode == mode ) {
+          this.setStyleProperty( "textDecoration", "underline");
+        }
         this._hover = true;
       }
     },
@@ -83,6 +94,10 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
         this._hover = false;
         this.setBackgroundColor( this._savedBackgroundColor );
         this.setTextColor( this._savedTextColor );
+        var mode = org.eclipse.ui.forms.widgets.Hyperlink.UNDERLINE_HOVER;
+        if( this._underlineMode == mode ) {
+          this.setStyleProperty( "textDecoration", "none");
+        }
       }
     }
   }

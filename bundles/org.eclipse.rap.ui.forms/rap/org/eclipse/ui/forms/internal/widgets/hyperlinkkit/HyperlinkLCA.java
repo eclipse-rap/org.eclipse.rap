@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     = "inactiveForeground"; //$NON-NLS-1$
   private static final String PROP_INACTIVE_BACKGROUND
     = "inactiveBackground"; //$NON-NLS-1$
+  private static final String PROP_UNDERLINE_MODE
+    = "underlineMode"; //$NON-NLS-1$
 
   private static final JSListenerInfo SELECTION_LISTENER
     = new JSListenerInfo( "click", //$NON-NLS-1$
@@ -73,6 +75,8 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     		          getActiveBackground( hyperlink ) );
     adapter.preserve( PROP_ACTIVE_FOREGROUND,
                       getActiveForeground( hyperlink ) );
+    adapter.preserve( PROP_UNDERLINE_MODE,
+                      getUnderlineMode( hyperlink ) );
 //    adapter.preserve( PROP_INACTIVE_BACKGROUND, hyperlink.getBackground() );
 //    adapter.preserve( PROP_INACTIVE_FOREGROUND, hyperlink.getForeground() );
   }
@@ -91,6 +95,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     writeSelectionListener( hyperlink );
     writeActiveForeground( hyperlink );
     writeActiveBackground( hyperlink );
+    writeUnderlineMode( hyperlink );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -134,9 +139,9 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
   {
 	  Color newValue = getActiveForeground( hyperlink );
 	  JSWriter writer = JSWriter.getWriterFor( hyperlink );
-	  writer.set( PROP_ACTIVE_FOREGROUND, 
-	              "activeTextColor", //$NON-NLS-1$ 
-	              newValue, 
+	  writer.set( PROP_ACTIVE_FOREGROUND,
+	              "activeTextColor", //$NON-NLS-1$
+	              newValue,
 	              null );
   }
 
@@ -146,8 +151,19 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     Color newValue = getActiveBackground( hyperlink );
     JSWriter writer = JSWriter.getWriterFor( hyperlink );
     writer.set( PROP_ACTIVE_BACKGROUND,
-                "activeBackgroundColor", //$NON-NLS-1$ 
-                newValue, 
+                "activeBackgroundColor", //$NON-NLS-1$
+                newValue,
+                null );
+  }
+
+  private static void writeUnderlineMode( final Hyperlink hyperlink )
+    throws IOException
+  {
+    Integer newValue = getUnderlineMode( hyperlink );
+    JSWriter writer = JSWriter.getWriterFor( hyperlink );
+    writer.set( PROP_UNDERLINE_MODE,
+                "underlineMode", //$NON-NLS-1$
+                newValue,
                 null );
   }
 
@@ -173,6 +189,13 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     Object adapter = hyperlink.getAdapter( IHyperlinkAdapter.class );
     IHyperlinkAdapter hyperlinkAdapter = ( IHyperlinkAdapter )adapter;
     Color newValue = hyperlinkAdapter.getActiveBackground();
+    return newValue;
+  }
+
+  private static Integer getUnderlineMode( final Hyperlink hyperlink ) {
+    Object adapter = hyperlink.getAdapter( IHyperlinkAdapter.class );
+    IHyperlinkAdapter hyperlinkAdapter = ( IHyperlinkAdapter )adapter;
+    Integer newValue = new Integer( hyperlinkAdapter.getUnderlineMode() );
     return newValue;
   }
 
