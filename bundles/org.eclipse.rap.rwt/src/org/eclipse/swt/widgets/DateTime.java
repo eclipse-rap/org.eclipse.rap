@@ -372,7 +372,7 @@ public class DateTime extends Composite {
    */
   public void setHours( final int hours ) {
     checkWidget();
-    if( hours >= 0 && hours <= 23 ) {
+    if( checkTime( hours, getMinutes(), getSeconds() ) ) {
       rightNow.set( Calendar.HOUR_OF_DAY, hours );
     }
   }
@@ -393,7 +393,7 @@ public class DateTime extends Composite {
    */
   public void setMinutes( final int minutes ) {
     checkWidget();
-    if( minutes >= 0 && minutes <= 59 ) {
+    if( checkTime( getHours(), minutes, getSeconds() ) ) {
       rightNow.set( Calendar.MINUTE, minutes );
     }
   }
@@ -414,7 +414,7 @@ public class DateTime extends Composite {
    */
   public void setSeconds( final int seconds ) {
     checkWidget();
-    if( seconds >= 0 && seconds <= 59 ) {
+    if( checkTime( getHours(), getMinutes(), seconds ) ) {
       rightNow.set( Calendar.SECOND, seconds );
     }
   }
@@ -438,7 +438,7 @@ public class DateTime extends Composite {
     checkWidget();
     int month = rightNow.get( Calendar.MONTH );
     int year = rightNow.get( Calendar.YEAR );
-    if( day >= 1 && day <= getDaysInMonth( month, year ) ) {
+    if( checkDate( year, month, day ) ) {
       rightNow.set( Calendar.DATE, day );
     }
   }
@@ -459,9 +459,9 @@ public class DateTime extends Composite {
    */
   public void setMonth( final int month ) {
     checkWidget();
-    int date = rightNow.get( Calendar.DATE );
+    int day = rightNow.get( Calendar.DATE );
     int year = rightNow.get( Calendar.YEAR );
-    if( month >= 0 && month <= 11 && date <= getDaysInMonth( month, year ) ) {
+    if( checkDate( year, month, day ) ) {
       rightNow.set( Calendar.MONTH, month );
     }
   }
@@ -482,9 +482,9 @@ public class DateTime extends Composite {
    */
   public void setYear( final int year ) {
     checkWidget();
-    int date = rightNow.get( Calendar.DATE );
+    int day = rightNow.get( Calendar.DATE );
     int month = rightNow.get( Calendar.MONTH );
-    if( year >= 1752 && year <= 9999 && date <= getDaysInMonth( month, year ) ) {
+    if( checkDate( year, month, day ) ) {
       rightNow.set( Calendar.YEAR, year );
     }
   }
@@ -510,30 +510,15 @@ public class DateTime extends Composite {
    */
   public void setDate( final int year, final int month, final int day ) {
     checkWidget();
-    int oldYear = getYear();
-    int oldMonth = getMonth();
-    int oldDay = getDay();
-    // reset
-    setYear( 9996 );
-    setMonth( 11 );
-    setDay( 1 );
-    // try to set the new value
-    setYear( year );
-    setMonth( month );
-    setDay( day );
-    // check if new values are set
-    int newYear = getYear();
-    int newMonth = getMonth();
-    int newDay = getDay();
-    if( newYear != year || newMonth != month || newDay != day ) {
+    if( checkDate( year, month, day ) ) {
       // reset
       setYear( 9996 );
-      setMonth( 11 );
+      setMonth( 0 );
       setDay( 1 );
-      // revert old date
-      setYear( oldYear );
-      setMonth( oldMonth );
-      setDay( oldDay );
+      // set
+      setYear( year );
+      setMonth( month );
+      setDay( day );
     }
   }
 
@@ -554,22 +539,12 @@ public class DateTime extends Composite {
    */
   public void setTime( final int hours, final int minutes, final int seconds ) {
     checkWidget();
-    int oldHours = getHours();
-    int oldMinutes = getMinutes();
-    int oldSeconds = getSeconds();
-    setHours( hours );
-    setMinutes( minutes );
-    setSeconds( seconds );
-    int newHours = getHours();
-    int newMinutes = getMinutes();
-    int newSeconds = getSeconds();
-    if( newHours != hours || newMinutes != minutes || newSeconds != seconds ) {
-      setHours( oldHours );
-      setMinutes( oldMinutes );
-      setSeconds( oldSeconds );
+    if( checkTime( hours, minutes, seconds ) ) {
+      setHours( hours );
+      setMinutes( minutes );
+      setSeconds( seconds );
     }
   }
-
 
   /**
    * Sets the font that the receiver will use to paint textual information
@@ -978,6 +953,26 @@ public class DateTime extends Composite {
 
   String getNameText() {
     return "DateTime";
+  }
+
+  private boolean checkDate( final int year,
+                             final int month,
+                             final int day ) {
+    int daysInMonth = getDaysInMonth( month, year );
+    boolean validYear = ( year >= 1752 && year <= 9999 && day <= daysInMonth );
+    boolean validMonth = ( month >= 0 && month <= 11 && day <= daysInMonth );
+    boolean validDay = ( day >= 1 && day <= daysInMonth );
+    return validYear && validMonth && validDay;
+  }
+
+  private boolean checkTime( final int hours,
+                             final int minutes,
+                             final int seconds )
+  {
+    boolean validHours = ( hours >= 0 && hours <= 23 );
+    boolean validMinutes = ( minutes >= 0 && minutes <= 59 );
+    boolean validSeconds = ( seconds >= 0 && seconds <= 59 );
+    return validHours && validMinutes && validSeconds;
   }
 
   static int checkStyle( final int value ) {
