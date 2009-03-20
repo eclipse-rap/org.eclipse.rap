@@ -957,7 +957,8 @@ public class DateTime extends Composite {
 
   private boolean checkDate( final int year,
                              final int month,
-                             final int day ) {
+                             final int day )
+  {
     int daysInMonth = getDaysInMonth( month, year );
     boolean validYear = ( year >= 1752 && year <= 9999 && day <= daysInMonth );
     boolean validMonth = ( month >= 0 && month <= 11 && day <= daysInMonth );
