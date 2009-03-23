@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Menu;
 final class MenuBarLCA extends MenuDelegateLCA {
 
   // pseudo-property that denotes the shell which uses a menu for its menu bar
-  static final String PROP_SHELL
-    = "menuBarShell";
+  static final String PROP_SHELL = "menuBarShell";
+  private static final String PROP_SHELL_MENU = "menuBar";
   private static final String PROP_SHELL_MENU_BOUNDS
     = "menuBarShellClientArea";
 
@@ -85,8 +85,10 @@ final class MenuBarLCA extends MenuDelegateLCA {
         = ( IShellAdapter )parent.getAdapter( IShellAdapter.class );
       Rectangle menuBounds = shellAdapter.getMenuBounds();
       String prop = PROP_SHELL_MENU_BOUNDS;
-      // [if] Menu bounds are preserved in ShellLCA.
-      if( WidgetLCAUtil.hasChanged( parent, prop, menuBounds, null ) ) {
+      // [if] MenuBar and its bounds are preserved in ShellLCA.
+      if(    WidgetLCAUtil.hasChanged( parent, prop, menuBounds, null )
+          || WidgetLCAUtil.hasChanged( parent, PROP_SHELL_MENU, menu, null ) )
+      {
         // parameter order of setSpace: x, width, y, height
         Object[] args = new Object[] {
           new Integer( menuBounds.x ),

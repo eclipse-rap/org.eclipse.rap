@@ -41,7 +41,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_ACTIVE_SHELL = "activeShell";
   static final String PROP_MODE = "mode";
   static final String PROP_SHELL_LISTENER = "shellListener";
-  static final String PROP_SHELL_MENU_BOUNDS  = "menuBarShellClientArea";
+  private static final String PROP_SHELL_MENU  = "menuBar";
+  private static final String PROP_SHELL_MENU_BOUNDS  = "menuBarShellClientArea";
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -55,6 +56,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MODE, getMode( shell ) );
     adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
+    adapter.preserve( PROP_SHELL_MENU, shell.getMenuBar() );
     WidgetLCAUtil.preserveCustomVariant( shell );
   }
 
