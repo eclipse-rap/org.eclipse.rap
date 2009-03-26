@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
       dateTime.setSeconds( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
+    ControlLCAUtil.processMouseEvents( dateTime );
     ControlLCAUtil.processKeyEvents( dateTime );
   }
 
@@ -95,7 +96,7 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
 
   ///////////////////////////////////////
   // Helping methods to write properties
-  
+
   private void writeHours( final DateTime dateTime ) throws IOException {
     Integer newValue = new Integer( dateTime.getHours() );
     if( WidgetLCAUtil.hasChanged( dateTime, PROP_HOURS, newValue ) ) {

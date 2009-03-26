@@ -56,6 +56,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
       dateTime.setYear( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
+    ControlLCAUtil.processMouseEvents( dateTime );
     ControlLCAUtil.processKeyEvents( dateTime );
   }
 
