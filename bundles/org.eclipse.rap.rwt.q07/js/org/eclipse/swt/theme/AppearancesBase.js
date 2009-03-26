@@ -1831,8 +1831,20 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "calendar-toolbar-last-year-button" : {
+    include: "calendar-toolbar-button",
 
-  "calendar-toolbar-last-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-LastYearButton",
+                               "background-image" )
+      };
+    }
+  },
+
+  "calendar-toolbar-last-month-button" : {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
@@ -1844,13 +1856,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "calendar-toolbar-next-button" : {
+  "calendar-toolbar-next-month-button" : {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextButton",
+                               "background-image" )
+      };
+    }
+  },
+  
+  "calendar-toolbar-next-year-button" : {
+    include: "calendar-toolbar-button",
+
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-NextYearButton",
                                "background-image" )
       };
     }
@@ -1877,6 +1901,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       return {
         backgroundColor : "undefined"
+      };
+    }
+  },
+  
+  "calendar-week" : {
+    style : function( states ) {
+      if( states.header ) {
+        var border = qx.ui.core.Border.fromConfig({
+          right   : [ 1, "solid", "gray" ],
+          bottom  : [ 1, "solid", "gray" ]
+        });
+      } else {
+        var border = qx.ui.core.Border.fromConfig({
+          right   : [ 1, "solid", "gray" ]
+        });
+      }
+      return {
+        textAlign       : "center",
+        verticalAlign   : "middle",
+        textColor       : states.disabled
+                          ? "widget.graytext"
+                          : "undefined",       
+        border          : border
       };
     }
   },

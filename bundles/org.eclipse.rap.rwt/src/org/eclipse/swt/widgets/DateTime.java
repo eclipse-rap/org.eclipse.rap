@@ -618,8 +618,8 @@ public class DateTime extends Composite {
     Font font = getFont();
     int width = 0, height = 0;
     if( ( style & SWT.CALENDAR ) != 0 ) {
-      width = 168;
-      height = 140;
+      width = 192;
+      height = 136;
     } else if( ( style & SWT.DATE ) != 0 ) {
       Point prefSize = new Point( 0, 0 );
       if( datePattern.equals( "MDY" ) ) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <!--
- Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -85,6 +85,30 @@
       <property name="background-image" type="image">
         <description>
           Background image for the Calendar next month button.
+          The size of the image should be 16 x 16 pixels.
+        </description>
+      </property>
+          
+    </element>
+    
+    <element name="DateTime-Calendar-LastYearButton"
+        description="The calendar last year button">
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the Calendar last year button.
+          The size of the image should be 16 x 16 pixels.
+        </description>
+      </property> 
+          
+    </element>
+    
+    <element name="DateTime-Calendar-NextYearButton"
+        description="The calendar next year button">
+      
+      <property name="background-image" type="image">
+        <description>
+          Background image for the Calendar next year button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>

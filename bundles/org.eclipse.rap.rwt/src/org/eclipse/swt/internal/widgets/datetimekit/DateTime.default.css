@@ -26,3 +26,11 @@ DateTime-Calendar-LastButton {
 DateTime-Calendar-NextButton {
   background-image: url( resource/widget/rap/calendar/nextMonth.gif );
 }
+
+DateTime-Calendar-LastYearButton {
+  background-image: url( resource/widget/rap/calendar/lastYear.gif );
+}
+
+DateTime-Calendar-NextYearButton {
+  background-image: url( resource/widget/rap/calendar/nextYear.gif );
+}

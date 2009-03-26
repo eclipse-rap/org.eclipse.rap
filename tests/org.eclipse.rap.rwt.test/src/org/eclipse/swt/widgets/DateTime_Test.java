@@ -234,7 +234,7 @@ public class DateTime_Test extends TestCase {
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.CALENDAR );
-    expected = new Point( 168, 140 );
+    expected = new Point( 192, 136 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 100, 100 );

@@ -56,12 +56,22 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       spacing : 1
     });
 
+    var lastYearBt = new qx.ui.toolbar.Button;
     var lastMonthBt = new qx.ui.toolbar.Button;
     var monthYearLabel = new qx.ui.basic.Label;
     var nextMonthBt = new qx.ui.toolbar.Button;
+    var nextYearBt = new qx.ui.toolbar.Button;
 
+    this._lastYearBtToolTip = new qx.ui.popup.ToolTip(this.tr("Last year"));
     this._lastMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Last month"));
     this._nextMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next month"));
+    this._nextYearBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next year"));
+    
+    lastYearBt.set({
+      show    : 'icon',
+      toolTip : this._lastYearBtToolTip,
+      spacing : 0
+    });
     
     lastMonthBt.set({
       show    : 'icon',
@@ -71,21 +81,32 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     nextMonthBt.set({
       show    : 'icon',
       toolTip : this._nextMonthBtToolTip
-    });    
+    });
+    
+    nextYearBt.set({
+      show    : 'icon',
+      toolTip : this._nextYearBtToolTip
+    });
 
-    lastMonthBt.setAppearance("calendar-toolbar-last-button");
-    nextMonthBt.setAppearance("calendar-toolbar-next-button");
+    lastYearBt.setAppearance("calendar-toolbar-last-year-button");
+    lastMonthBt.setAppearance("calendar-toolbar-last-month-button");
+    nextMonthBt.setAppearance("calendar-toolbar-next-month-button");
+    nextYearBt.setAppearance("calendar-toolbar-next-year-button");
 
+    lastYearBt.addEventListener("click", this._onNavButtonClicked, this);
     lastMonthBt.addEventListener("click", this._onNavButtonClicked, this);
     nextMonthBt.addEventListener("click", this._onNavButtonClicked, this);
+    nextYearBt.addEventListener("click", this._onNavButtonClicked, this);
 
+    this._lastYearBt = lastYearBt;
     this._lastMonthBt = lastMonthBt;
     this._nextMonthBt = nextMonthBt;
+    this._nextYearBt = nextYearBt;
 
     monthYearLabel.setAppearance("calendar-monthyear");
     monthYearLabel.set({ width : "1*" });
 
-    navBar.add(lastMonthBt, monthYearLabel, nextMonthBt);
+    navBar.add(lastYearBt, lastMonthBt, monthYearLabel, nextMonthBt, nextYearBt);
     this._monthYearLabel = monthYearLabel;
     navBar.setHtmlProperty("id", "navBar");
 
@@ -94,13 +115,28 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     datePane.setAppearance("calendar-datepane");
 
     datePane.set({
-      width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH * 7,
+      width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH * 8,
       height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT * 7
     });
+    
+    // Create the weekdays
+    // Add an empty label as spacer for the week numbers
+    var label = new qx.ui.basic.Label;
+    label.setAppearance("calendar-week");
+
+    label.set(
+    {
+      width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
+      height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT,
+      left   : 0
+    });
+
+    label.addState("header");
+    datePane.add(label);
 
     this._weekdayLabelArr = [];
 
-    for (var i=0; i<7; i++) {
+    for (var i=1; i<8; i++) {
       var label = new qx.ui.basic.Label;
       label.setAppearance("calendar-weekday");
       label.setSelectable(false);
@@ -118,10 +154,28 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
     // Add the days
     this._dayLabelArr = [];
+    this._weekLabelArr = [];
 
     for (var y=0; y<6; y++) {
+      // Add the week label
+      var label = new qx.ui.basic.Label;
+      label.setAppearance("calendar-week");
+      label.setSelectable(false);
+      label.setCursor("default");
+
+      label.set(
+      {
+        width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
+        height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT,
+        left   : 0,
+        top    : (y + 1) * org.eclipse.swt.widgets.Calendar.CELL_HEIGHT
+      });
+
+      datePane.add(label);
+      this._weekLabelArr.push(label);
+      
       // Add the day labels
-      for (var x=0; x<7; x++) {
+      for (var x=1; x<8; x++) {
         var label = new qx.ui.basic.Label;
         label.setAppearance("calendar-day");
         label.setSelectable(false);
@@ -297,6 +351,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       var month = this.getShownMonth();
 
       switch(evt.getCurrentTarget()) {
+        case this._lastYearBt:
+          year--;
+          break;
+          
         case this._lastMonthBt:
           month--;
 
@@ -304,7 +362,6 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
             month = 11;
             year--;
           }
-
           break;
 
         case this._nextMonthBt:
@@ -314,7 +371,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
             month = 0;
             year++;
           }
-
+          break;
+          
+        case this._nextYearBt:
+          year++;
           break;
       }
 
@@ -497,8 +557,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         helpDate.setDate(firstSundayInMonth + day);
         
         var weekdayName = org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES[ helpDate.getDay() + 1 ];
-        weekdayName = weekdayName.substring( 0, 3 );
-        
+                
         dayLabel.setText( weekdayName );
 
         if (this.__isWeekend(day)) {
@@ -514,6 +573,8 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       helpDate.setDate(helpDate.getDate() - nrDaysOfLastMonth);
 
       for (var week=0; week<6; week++) {
+        this._weekLabelArr[week].setText("" + this.__getWeekInYear(helpDate));
+        
         for (var i=0; i<7; i++) {
           var dayLabel = this._dayLabelArr[week * 7 + i];
 
@@ -550,7 +611,45 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
           helpDate.setDate(helpDate.getDate() + 1);
         }
       }
-    }, 
+    },
+    
+    /**
+     * Returns the thursday in the same week as the date.
+     *
+     * @type member
+     * @param date {Date} the date to get the thursday of.
+     * @return {Date} the thursday in the same week as the date.
+     */
+    __thursdayOfSameWeek : function(date) {
+      return new Date(date.getTime() + (3 - ((date.getDay() + 6) % 7)) * 86400000);
+    },
+    
+    /**
+     * Returns the week in year of a date.
+     *
+     * @type member
+     * @param date {Date} the date to get the week in year of.
+     * @return {Integer} the week in year.
+     */
+    __getWeekInYear : function(date) {
+      // This algorithm gets the correct calendar week after ISO 8601.
+      // This standard is used in almost all european countries.
+      // TODO: In the US week in year is calculated different!
+      // See http://www.merlyn.demon.co.uk/weekinfo.htm
+      // The following algorithm comes from http://www.salesianer.de/util/kalwoch.html
+      // Get the thursday of the week the date belongs to
+      var thursdayDate = this.__thursdayOfSameWeek(date);
+
+      // Get the year the thursday (and therefor the week) belongs to
+      var weekYear = thursdayDate.getFullYear();
+
+      // Get the thursday of the week january 4th belongs to
+      // (which defines week 1 of a year)
+      var thursdayWeek1 = this.__thursdayOfSameWeek(new Date(weekYear, 0, 4));
+
+      // Calculate the calendar week
+      return Math.floor(1.5 + (thursdayDate.getTime() - thursdayWeek1.getTime()) / 86400000 / 7);
+    },
     
     /**
      * Return the day the week starts with
@@ -761,10 +860,11 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
   destruct : function() {
     qx.locale.Manager.getInstance().removeEventListener("changeLocale", this._updateDatePane, this);
     
-    this._disposeObjects("_lastMonthBtToolTip", "_nextMonthBtToolTip");
-    this._disposeObjects("_lastMonthBt", "_nextMonthBt", "_monthYearLabel");
+    this._disposeObjects("_lastYearBtToolTip", "_lastMonthBtToolTip", "_nextMonthBtToolTip", "_nextYearBtToolTip");
+    this._disposeObjects("_lastYearBt", "_lastMonthBt", "_nextMonthBt", "_nextYearBt", "_monthYearLabel");
 
     this._disposeObjectDeep("_weekdayLabelArr", 1);
-    this._disposeObjectDeep("_dayLabelArr", 1);    
+    this._disposeObjectDeep("_dayLabelArr", 1);
+    this._disposeObjectDeep("_weekLabelArr", 1);
   }
 });

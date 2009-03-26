@@ -130,6 +130,14 @@ DateTime-Calendar-NextButton {
   background-image: url( "/theme1/icons/calendar.next.gif" );
 }
 
+DateTime-Calendar-LastYearButton {
+  background-image: url( "/theme1/icons/calendar.last.year.gif" );
+}
+
+DateTime-Calendar-NextYearButton {
+  background-image: url( "/theme1/icons/calendar.next.year.gif" );
+}
+
 /* ExpandBar */
 
 ExpandBar {
