@@ -24,18 +24,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES = weekdayNames;
     
     // The Calendar
-    this._calendar = new org.eclipse.swt.widgets.Calendar;
+    this._calendar = new org.eclipse.swt.widgets.Calendar();
     this._calendar.addEventListener( "changeDate", this._onChangeDate, this );
     this._calendar.setDate( new Date( 74, 5, 6 ) );
     this._calendar.setTabIndex( -1 );
     this.add( this._calendar );
     
     this.addEventListener( "contextmenu", this._onContextMenu, this );
+    this.addEventListener( "keypress", this._onKeyPress, this );
   },
 
   destruct : function() {
     this._calendar.removeEventListener( "changeDate", this._onChangeDate, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
     this._disposeObjects( "_calendar" );
   },
 
@@ -53,6 +55,10 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
         menu.show();
         evt.stopPropagation();
       }
+    },
+    
+    _onKeyPress : function( evt ) {
+      this._calendar._onkeypress( evt );
     },
     
     _sendChanges : function( date, month, year ) {
