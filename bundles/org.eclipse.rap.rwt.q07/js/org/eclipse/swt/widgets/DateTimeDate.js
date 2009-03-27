@@ -20,7 +20,6 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
   {
     this.base( arguments );
     this.setAppearance( "datetime-date" );
-    this.setTabIndex( 1 );
 
     // Get styles
     this._short = qx.lang.String.contains( style, "short" );
