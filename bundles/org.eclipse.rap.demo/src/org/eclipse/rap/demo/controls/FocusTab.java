@@ -48,6 +48,7 @@ public class FocusTab extends ExampleTab {
   private DateTime time;
   private DateTime date;
   private DateTime calendar;
+  private Spinner spinner;
 
   public FocusTab( final CTabFolder topFolder ) {
     super( topFolder, "Focus" );
@@ -69,6 +70,7 @@ public class FocusTab extends ExampleTab {
     createFocusButton( "Focus Composite", composite, parent );
     createFocusButton( "Focus Slider", slider, parent );
     createFocusButton( "Focus Scale", scale, parent );
+    createFocusButton( "Focus Spinner", spinner, parent );
     createFocusButton( "Focus DateTime Time", time, parent );
     createFocusButton( "Focus DateTime Date", date, parent );
     createFocusButton( "Focus DateTime Calendar", calendar, parent );
@@ -161,6 +163,8 @@ public class FocusTab extends ExampleTab {
     addFocusListener( slider );
     scale = new Scale( parent, SWT.HORIZONTAL );
     addFocusListener( scale );
+    spinner = new Spinner( parent, SWT.NONE );
+    addFocusListener( spinner );
     time = new DateTime( parent, SWT.TIME | SWT.BORDER );
     addFocusListener( time );
     date = new DateTime( parent, SWT.DATE | SWT.BORDER );
