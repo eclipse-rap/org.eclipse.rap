@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
   construct : function( style ) {
     this.base( arguments );
     this.setAppearance( "scale" );
+    this.setTabIndex( 1 );
     
     // Get styles
     this._horizontal = qx.lang.String.contains( style, "horizontal" );
@@ -38,7 +39,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._pxStep = 1.34;
     
     // Base line
-    this._line = new qx.ui.basic.Image;
+    this._line = new qx.ui.basic.Image();
     if( this._horizontal ) {
       this._line.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
     }
@@ -48,7 +49,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.add( this._line );
     
     // Thumb
-    this._thumb = new qx.ui.basic.Image;
+    this._thumb = new qx.ui.basic.Image();
     if( this._horizontal ) {
       this._thumb.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
     }
@@ -63,7 +64,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._thumbOffset = 0;
     
     // Min marker
-    this._minMarker = new qx.ui.basic.Image;
+    this._minMarker = new qx.ui.basic.Image();
     if( this._horizontal ) {
       this._minMarker.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
     }
@@ -71,7 +72,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.add( this._minMarker );
     
     // Max marker    
-    this._maxMarker = new qx.ui.basic.Image;
+    this._maxMarker = new qx.ui.basic.Image();
     if( this._horizontal ) {
       this._maxMarker.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
     }
@@ -332,15 +333,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       for( var i = 0; i < this._middleMarkers.length; i++ ) {
         var marker = this._middleMarkers[ i ];
         this.remove( marker );
-//        marker.dispose();
-        marker.destroy();
+        marker.dispose();
       }
       
       // Create and add new markets
       this._middleMarkers = new Array();
       var markersNum = Math.round( ( this._maximum - this._minimum ) / this._pageIncrement ) - 1;
       for( var i = 0; i < markersNum; i++ ) {
-        var marker = new qx.ui.basic.Image;
+        var marker = new qx.ui.basic.Image();
         var pos =   org.eclipse.swt.widgets.Scale.PADDING
                   + org.eclipse.swt.widgets.Scale.HALF_THUMB
                   + ( i + 1 ) * this._pageIncrement * this._pxStep;
