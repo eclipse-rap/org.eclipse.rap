@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH. All rights reserved.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -18,6 +18,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
   construct : function( style ) {
     this.base( arguments );
     this.setAppearance( "slider" );
+    this.setTabIndex( 1 );
     // Get styles
     this._horizontal = qx.lang.String.contains( style, "horizontal" );
     //
@@ -47,7 +48,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     // _scrollReadyToStart: Flag for starting the scrollTimer
     this._scrollReadyToStart = false;
     // Line - the area behind the thumb
-    this._line = new qx.ui.basic.Atom;
+    this._line = new qx.ui.basic.Atom();
     if( this._horizontal ) {
       this._line.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     }
@@ -62,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
                                  this );
     this.add( this._line );
     // Thumb
-    this._thumb = new qx.ui.basic.Atom;
+    this._thumb = new qx.ui.basic.Atom();
     if( this._horizontal ) {
       this._thumb.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     }
@@ -76,7 +77,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     // Thumb offset
     this._thumbOffset = 0;
     // Min button
-    this._minButton = new qx.ui.form.Button;
+    this._minButton = new qx.ui.form.Button();
+    this._minButton.setTabIndex( -1 );
     if( this._horizontal ) {
       this._minButton.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
@@ -97,7 +99,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._minButton );
     this.add( this._minButton );
     // Max button
-    this._maxButton = new qx.ui.form.Button;
+    this._maxButton = new qx.ui.form.Button();
+    this._maxButton.setTabIndex( -1 );
     if( this._horizontal ) {
       this._maxButton.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
