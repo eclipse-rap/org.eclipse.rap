@@ -44,6 +44,10 @@ public class FocusTab extends ExampleTab {
   private Label label;
   private List log;
   private Slider slider;
+  private Scale scale;
+  private DateTime time;
+  private DateTime date;
+  private DateTime calendar;
 
   public FocusTab( final CTabFolder topFolder ) {
     super( topFolder, "Focus" );
@@ -64,6 +68,10 @@ public class FocusTab extends ExampleTab {
     createFocusButton( "Focus Tree", tree, parent );
     createFocusButton( "Focus Composite", composite, parent );
     createFocusButton( "Focus Slider", slider, parent );
+    createFocusButton( "Focus Scale", scale, parent );
+    createFocusButton( "Focus DateTime Time", time, parent );
+    createFocusButton( "Focus DateTime Date", date, parent );
+    createFocusButton( "Focus DateTime Calendar", calendar, parent );
 
     final Label label = new Label( parent, SWT.NONE );
     label.setText( "Log" );
@@ -151,6 +159,14 @@ public class FocusTab extends ExampleTab {
     addFocusListener( tabFolder2 );
     slider = new Slider( parent, SWT.HORIZONTAL );
     addFocusListener( slider );
+    scale = new Scale( parent, SWT.HORIZONTAL );
+    addFocusListener( scale );
+    time = new DateTime( parent, SWT.TIME | SWT.BORDER );
+    addFocusListener( time );
+    date = new DateTime( parent, SWT.DATE | SWT.BORDER );
+    addFocusListener( date );
+    calendar = new DateTime( parent, SWT.CALENDAR | SWT.BORDER );
+    addFocusListener( calendar );
   }
 
   private void createFocusButton( final String text,
