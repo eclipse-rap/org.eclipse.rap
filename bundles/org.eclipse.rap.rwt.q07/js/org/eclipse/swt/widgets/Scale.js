@@ -19,7 +19,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
   construct : function( style ) {
     this.base( arguments );
     this.setAppearance( "scale" );
-    this.setTabIndex( 1 );
     
     // Get styles
     this._horizontal = qx.lang.String.contains( style, "horizontal" );
