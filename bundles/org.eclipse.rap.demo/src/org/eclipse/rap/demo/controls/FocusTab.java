@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.*;
 
 public class FocusTab extends ExampleTab {
 
-  private static final String DEFAULT_HTML 
-    = "<html>" 
+  private static final String DEFAULT_HTML
+    = "<html>"
     + "<head></head>"
     + "<body><p>Hello World</p></body>"
     + "</html>";
@@ -43,6 +43,7 @@ public class FocusTab extends ExampleTab {
   private Text multiText;
   private Label label;
   private List log;
+  private Slider slider;
 
   public FocusTab( final CTabFolder topFolder ) {
     super( topFolder, "Focus" );
@@ -62,7 +63,8 @@ public class FocusTab extends ExampleTab {
     createFocusButton( "Focus Table", table, parent );
     createFocusButton( "Focus Tree", tree, parent );
     createFocusButton( "Focus Composite", composite, parent );
-    
+    createFocusButton( "Focus Slider", slider, parent );
+
     final Label label = new Label( parent, SWT.NONE );
     label.setText( "Log" );
     log = new List( parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
@@ -147,9 +149,11 @@ public class FocusTab extends ExampleTab {
     tabItem2 = new CTabItem( tabFolder2, SWT.NONE );
     tabItem2.setText( "Item 2" );
     addFocusListener( tabFolder2 );
+    slider = new Slider( parent, SWT.HORIZONTAL );
+    addFocusListener( slider );
   }
-  
-  private void createFocusButton( final String text, 
+
+  private void createFocusButton( final String text,
                                   final Control targetControl,
                                   final Composite parent )
   {
@@ -161,7 +165,7 @@ public class FocusTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void addFocusListener( final Control control ) {
     control.addFocusListener( new FocusListener() {
       public void focusGained( final FocusEvent event ) {

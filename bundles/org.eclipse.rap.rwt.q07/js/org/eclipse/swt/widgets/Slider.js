@@ -18,7 +18,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
   construct : function( style ) {
     this.base( arguments );
     this.setAppearance( "slider" );
-    this.setTabIndex( 1 );
     // Get styles
     this._horizontal = qx.lang.String.contains( style, "horizontal" );
     //

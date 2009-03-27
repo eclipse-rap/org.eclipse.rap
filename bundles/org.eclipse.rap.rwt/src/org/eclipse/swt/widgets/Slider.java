@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import org.eclipse.swt.events.*;
 
 /**
  * Instances of this class are selectable user interface
- * objects that represent a range of positive, numeric values. 
+ * objects that represent a range of positive, numeric values.
  * <p>
- * At any given moment, a given slider will have a 
+ * At any given moment, a given slider will have a
  * single 'selection' that is considered to be its
  * value, which is constrained to be within the range of
  * values the slider represents (that is, between its
@@ -67,9 +67,9 @@ import org.eclipse.swt.events.*;
  * @since 1.2
  */
 public class Slider extends Control {
-	
+
   private final Point PREFERRED_SIZE = new Point( 170, 16 );
-  
+
   private int increment;
   private int maximum;
   private int minimum;
@@ -83,7 +83,7 @@ public class Slider extends Control {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -115,7 +115,7 @@ public class Slider extends Control {
     selection = 0;
     thumb = 10;
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the user changes the receiver's value, by sending
@@ -151,7 +151,7 @@ public class Slider extends Control {
   public void addSelectionListener( final SelectionListener listener ) {
     SelectionEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the user changes the receiver's value.
@@ -171,15 +171,15 @@ public class Slider extends Control {
    */
   public void removeSelectionListener( final SelectionListener listener ) {
     SelectionEvent.removeListener( this, listener );
-  }  
-  
+  }
+
   static int checkStyle( final int style ) {
   	return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
-  
-  public Point computeSize( final int wHint, 
-                            final int hHint, 
-                            final boolean changed ) 
+
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
   {
   	checkWidget();
     int width, height;
@@ -192,25 +192,25 @@ public class Slider extends Control {
     }
     if( wHint != SWT.DEFAULT ) {
       width = wHint;
-    }  
+    }
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
   	return new Point( width, height );
   }
-  
+
   void createWidget() {
   	increment = 1;
   	pageIncrement = 10;
   	maximum = 100;
   	thumb = 10;
   }
-  
+
   public boolean getEnabled() {
   	checkWidget();
   	return( state & DISABLED ) == 0;
   }
-  
+
   /**
    * Returns the amount that the receiver's value will be
    * modified by when the up/down (or right/left) arrows
@@ -227,7 +227,7 @@ public class Slider extends Control {
   	checkWidget();
   	return increment;
   }
-  
+
   /**
    * Returns the maximum value which the receiver will allow.
    *
@@ -242,7 +242,7 @@ public class Slider extends Control {
   	checkWidget();
   	return maximum;
   }
-  
+
   /**
    * Returns the minimum value which the receiver will allow.
    *
@@ -257,7 +257,7 @@ public class Slider extends Control {
   	checkWidget();
   	return minimum;
   }
-  
+
   /**
    * Returns the amount that the receiver's value will be
    * modified by when the page increment/decrement areas
@@ -274,7 +274,7 @@ public class Slider extends Control {
   	checkWidget();
   	return pageIncrement;
   }
-  
+
   /**
    * Returns the 'selection', which is the receiver's value.
    *
@@ -289,7 +289,7 @@ public class Slider extends Control {
   	checkWidget();
   	return selection;
   }
-  
+
   /**
    * Returns the size of the receiver's thumb relative to the
    * difference between its maximum and minimum values.
@@ -305,11 +305,11 @@ public class Slider extends Control {
   	checkWidget();
   	return thumb;
   }
-  
+
   /**
    * Sets the amount that the receiver's value will be
    * modified by when the up/down (or right/left) arrows
-   * are pressed to the argument, which must be at least 
+   * are pressed to the argument, which must be at least
    * one.
    *
    * @param value the new increment (must be greater than zero)
@@ -325,7 +325,7 @@ public class Slider extends Control {
       increment = value;
     }
   }
-  
+
   /**
    * Sets the maximum. If this value is negative or less than or
    * equal to the minimum, the value is ignored. If necessary, first
@@ -352,7 +352,7 @@ public class Slider extends Control {
       selection = minimum;
     }
   }
-  
+
   /**
    * Sets the minimum value. If this value is negative or greater
    * than or equal to the maximum, the value is ignored. If necessary,
@@ -379,7 +379,7 @@ public class Slider extends Control {
       selection = minimum;
     }
   }
-  
+
   /**
    * Sets the amount that the receiver's value will be
    * modified by when the page increment/decrement areas
@@ -399,7 +399,7 @@ public class Slider extends Control {
       pageIncrement = value;
     }
   }
-  
+
   /**
    * Sets the 'selection', which is the receiver's
    * value, to the argument which must be greater than or equal
@@ -422,7 +422,7 @@ public class Slider extends Control {
       selection = value;
     }
   }
-  
+
   /**
    * Sets the size of the receiver's thumb relative to the
    * difference between its maximum and minimum values.  This new
@@ -447,13 +447,13 @@ public class Slider extends Control {
   	  selection = minimum;
   	}
   }
-  
+
   /**
    * Sets the receiver's selection, minimum value, maximum
    * value, thumb, increment and page increment all at once.
    * <p>
    * Note: This is similar to setting the values individually
-   * using the appropriate methods, but may be implemented in a 
+   * using the appropriate methods, but may be implemented in a
    * more efficient fashion on some platforms.
    * </p>
    *
@@ -469,12 +469,12 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setValues( final int selection, 
-                         final int minimum, 
-                         final int maximum, 
-                         final int thumb, 
-                         final int increment, 
-                         final int pageIncrement ) 
+  public void setValues( final int selection,
+                         final int minimum,
+                         final int maximum,
+                         final int thumb,
+                         final int increment,
+                         final int pageIncrement )
   {
   	checkWidget();
   	if( selection >= minimum && selection <= maximum ) {
@@ -505,6 +505,13 @@ public class Slider extends Control {
       this.thumb = maximum - minimum;
       this.selection = minimum;
     }
+  }
+
+  ///////////////////
+  // Widget overrides
+
+  boolean isTabGroup() {
+    return true;
   }
 
 }
