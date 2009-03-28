@@ -195,9 +195,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       }
     }
 
+    // [if] The focus and key keypress event are handled by DateTimeCalendar
     // Make focusable
-    this.setTabIndex(1);
-    this.addEventListener("keypress", this._onkeypress);
+    // this.setTabIndex(1);
+    // this.addEventListener("keypress", this._onkeypress);
 
     // Show the right date
     var shownDate = (date != null) ? date : new Date();
