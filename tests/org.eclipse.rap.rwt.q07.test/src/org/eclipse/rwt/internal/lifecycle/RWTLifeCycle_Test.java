@@ -26,6 +26,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.RWTFixture;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
@@ -240,7 +241,7 @@ public class RWTLifeCycle_Test extends TestCase {
     };
     lifeCycle.addPhaseListener( listener );
     lifeCycle.execute();
-    String expected = BEFORE
+    String expected =   BEFORE
                       + PhaseId.PREPARE_UI_ROOT
                       + "|"
                       + AFTER
@@ -255,7 +256,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( expected, log.toString() );
     log.setLength( 0 );
     lifeCycle.execute();
-    expected = BEFORE
+    expected =   BEFORE
                + PhaseId.PREPARE_UI_ROOT
                + "|"
                + AFTER
@@ -302,7 +303,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     } );
     lifeCycle.execute();
-    expected = BEFORE
+    expected =   BEFORE
                + PhaseId.PREPARE_UI_ROOT
                + "|"
                + AFTER
@@ -314,7 +315,7 @@ public class RWTLifeCycle_Test extends TestCase {
     try {
       lifeCycle.execute();
       fail();
-    } catch( final IllegalStateException iae ) {
+    } catch( final SWTError e ) {
       // expected
     }
     EntryPointManager.deregister( EntryPointManager.DEFAULT );

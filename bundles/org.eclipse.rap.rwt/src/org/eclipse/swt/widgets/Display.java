@@ -199,8 +199,7 @@ public class Display extends Device implements Adaptable {
     thread = Thread.currentThread();
     session = ContextProvider.getSession();
     if( getCurrent() != null ) {
-      String msg = "Currently only one display per session is supported.";
-      throw new IllegalStateException( msg );
+      SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
     ContextProvider.getSession().setAttribute( DISPLAY_ID, this );
     shells = new ArrayList();

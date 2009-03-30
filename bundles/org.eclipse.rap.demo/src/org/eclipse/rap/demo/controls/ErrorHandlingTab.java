@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -91,11 +92,18 @@ public class ErrorHandlingTab extends ExampleTab {
         } );
       }
     } );
-    Button btnServerError = new Button( parent, SWT.PUSH );
-    btnServerError.setText( "Throw uncaught server-side exeption" );
-    btnServerError.addSelectionListener( new SelectionAdapter() {
+    Button btnServerException = new Button( parent, SWT.PUSH );
+    btnServerException.setText( "Throw uncaught server-side exeption" );
+    btnServerException.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         throw new RuntimeException( "Shit happens, rama rama ding ding" );
+      }
+    } );
+    Button btnServerError = new Button( parent, SWT.PUSH );
+    btnServerError.setText( "Throw uncaught server-side error" );
+    btnServerError.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        throw new SWTError( "Some error occured" );
       }
     } );
   }

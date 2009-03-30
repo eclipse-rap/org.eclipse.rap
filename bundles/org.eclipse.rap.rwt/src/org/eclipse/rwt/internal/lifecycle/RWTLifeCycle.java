@@ -287,6 +287,8 @@ public class RWTLifeCycle extends LifeCycle {
         throw ( RuntimeException )throwable;
       } else if( throwable instanceof InterruptedException ) {
         throw ( InterruptedException )throwable;
+      } else if( throwable instanceof Error ) {
+        throw ( Error )throwable;
       } else {
         throw new RuntimeException( throwable );
       }

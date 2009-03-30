@@ -21,8 +21,7 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
@@ -44,7 +43,7 @@ public class Display_Test extends TestCase {
     try {
       new Display();
       fail( "Only one display allowed per session" );
-    } catch( IllegalStateException e ) {
+    } catch( SWTError e ) {
       // expected
     }
   }
