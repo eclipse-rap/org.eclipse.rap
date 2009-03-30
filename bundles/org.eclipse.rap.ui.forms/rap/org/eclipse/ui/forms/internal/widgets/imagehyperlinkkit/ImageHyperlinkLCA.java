@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 public class ImageHyperlinkLCA extends HyperlinkLCA {
 
-  private static final String PROP_IMAGE = "image"; //$NON-NLS-1$
+  static final String PROP_IMAGE = "image"; //$NON-NLS-1$
 
   public void renderChanges( Widget widget ) throws IOException {
     super.renderChanges( widget );

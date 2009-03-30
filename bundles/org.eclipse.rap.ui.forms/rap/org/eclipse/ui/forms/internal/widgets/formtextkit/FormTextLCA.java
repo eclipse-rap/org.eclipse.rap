@@ -37,8 +37,8 @@ public class FormTextLCA extends AbstractWidgetLCA {
     = PREFIX + "bullet_circle.gif"; //$NON-NLS-1$
 
   // Property names for preserveValues
-  private static final String PROP_PARAGRAPHS = "paragraphs"; //$NON-NLS-1$
-  private static final String PROP_HYPERLINK_SETTINGS
+  static final String PROP_PARAGRAPHS = "paragraphs"; //$NON-NLS-1$
+  static final String PROP_HYPERLINK_SETTINGS
     = "hyperlinkSettings"; //$NON-NLS-1$
 
   // Default values

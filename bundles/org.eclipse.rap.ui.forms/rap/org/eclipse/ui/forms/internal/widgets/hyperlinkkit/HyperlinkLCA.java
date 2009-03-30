@@ -26,21 +26,21 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class HyperlinkLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_TEXT
+  static final String PROP_TEXT
     = "text"; //$NON-NLS-1$
-  private static final String PROP_UNDERLINED
+  static final String PROP_UNDERLINED
     = "underlined"; //$NON-NLS-1$
-  private static final String PROP_SELECTION_LISTENERS
+  static final String PROP_SELECTION_LISTENERS
     = "selectionListeners"; //$NON-NLS-1$
-  private static final String PROP_ACTIVE_FOREGROUND
+  static final String PROP_ACTIVE_FOREGROUND
     = "activeForeground"; //$NON-NLS-1$
-  private static final String PROP_ACTIVE_BACKGROUND
+  static final String PROP_ACTIVE_BACKGROUND
     = "activeBackground"; //$NON-NLS-1$
-  private static final String PROP_INACTIVE_FOREGROUND
+  static final String PROP_INACTIVE_FOREGROUND
     = "inactiveForeground"; //$NON-NLS-1$
-  private static final String PROP_INACTIVE_BACKGROUND
+  static final String PROP_INACTIVE_BACKGROUND
     = "inactiveBackground"; //$NON-NLS-1$
-  private static final String PROP_UNDERLINE_MODE
+  static final String PROP_UNDERLINE_MODE
     = "underlineMode"; //$NON-NLS-1$
 
   private static final JSListenerInfo SELECTION_LISTENER
