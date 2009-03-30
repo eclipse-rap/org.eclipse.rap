@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,9 +27,9 @@ import org.eclipse.ui.forms.widgets.*;
  */
 public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_EXPANDED
+  static final String PROP_EXPANDED
     = "expanded"; //$NON-NLS-1$
-  private static final String PROP_SELECTION_LISTENERS
+  static final String PROP_SELECTION_LISTENERS
     = "selectionListeners"; //$NON-NLS-1$
 
   private static final String PREFIX
@@ -67,7 +67,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     // will always be registered (see ToggleHyperlink).
     ControlLCAUtil.processSelection( widget, null, false );
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     JSWriter writer = JSWriter.getWriterFor( hyperlink );
@@ -118,9 +118,9 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( hyperlink );
     Boolean newValue = Boolean.valueOf( hyperlink.isExpanded() );
-    writer.set( PROP_EXPANDED, 
-                "expanded", //$NON-NLS-1$ 
-                newValue, 
+    writer.set( PROP_EXPANDED,
+                "expanded", //$NON-NLS-1$
+                newValue,
                 Boolean.FALSE );
   }
 
