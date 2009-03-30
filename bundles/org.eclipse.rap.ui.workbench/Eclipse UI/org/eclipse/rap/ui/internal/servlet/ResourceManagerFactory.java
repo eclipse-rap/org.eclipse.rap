@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -50,7 +51,12 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
     public URL getResource( final String name ) {
       URL result = null;
       try {
-        result = new URL( "file", "", name );
+        // Preliminary fix for bug 268759
+        // 268759: ResourceManager handles non-existing resources incorrectly
+        File file = new File( name );
+        if( file.exists() && !file.isDirectory() ) {
+          result = new URL( "file", "", name );
+        }
       } catch( final MalformedURLException shouldNotHappen ) {
         throw new RuntimeException( shouldNotHappen );
       }
