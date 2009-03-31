@@ -196,9 +196,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     },
 
     _onFocusIn : function( evt ) {
-      qx.client.Timer.once( function() {
-        this._focusedTextField.addState( "selected" );
-      }, this, 100 );
+      this._focusedTextField.addState( "selected" );
     },
 
     _onFocusOut : function( evt ) {
