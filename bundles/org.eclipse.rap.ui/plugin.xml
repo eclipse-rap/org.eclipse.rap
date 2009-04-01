@@ -1395,13 +1395,14 @@
          </description>
       </colorDefinition>
       <data
-      	name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="true">
+      	name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="false">
       </data>
 <!-- Active Tab Colors -->
       <colorDefinition
-            label="%Color.activeTabText"
             categoryId="org.eclipse.ui.presentation.default"
-            id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR">
+            id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR"
+            label="%Color.activeTabText"
+            value="COLOR_LIST_SELECTION_TEXT">
          <description>
             %Color.activeTabTextDesc
          </description>
@@ -1424,7 +1425,8 @@
       <colorDefinition
             categoryId="org.eclipse.ui.presentation.default"
             id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"
-            label="%Color.activeTabBGEnd">
+            label="%Color.activeTabBGEnd"
+            value="COLOR_LIST_SELECTION">
          <description>
             %Color.activeTabBGEndDesc
          </description>
@@ -1445,9 +1447,10 @@
          </colorFactory>
       </colorDefinition>
       <colorDefinition
-            label="%Color.activeTabBGStart"
             categoryId="org.eclipse.ui.presentation.default"
-            id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START">
+            id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"
+            label="%Color.activeTabBGStart"
+            value="COLOR_LIST_SELECTION">
          <description>
             %Color.activeTabBGStartDesc
          </description>
@@ -1471,7 +1474,7 @@
       <colorDefinition
             label="%Color.activeNofocusTabText"
             categoryId="org.eclipse.ui.presentation.default"
-            value="COLOR_TITLE_INACTIVE_FOREGROUND"
+            value="COLOR_LIST_SELECTION_TEXT"
             id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_TEXT_COLOR">
          <description>
             %Color.activeNofocusTabTextDesc
@@ -1480,16 +1483,17 @@
       <colorDefinition
             label="%Color.activeNofocusTabBGEnd"
             categoryId="org.eclipse.ui.presentation.default"
-            value="COLOR_TITLE_INACTIVE_BACKGROUND"
+            value="COLOR_LIST_SELECTION"
             id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_END">
          <description>
             %Color.activeNofocusTabBGEndDesc
          </description>
       </colorDefinition>
       <colorDefinition
-            label="%Color.activeNofocusTabBGStart"
             categoryId="org.eclipse.ui.presentation.default"
-            id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START">
+            id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START"
+            label="%Color.activeNofocusTabBGStart"
+            value="COLOR_LIST_SELECTION">
          <description>
             %Color.activeNofocusTabBGStartDesc
          </description>
