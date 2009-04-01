@@ -79,7 +79,7 @@ public class PropertyPageNode extends WorkbenchPreferenceExtensionNode {
             icon = null;
         }
 // RAP [rh] fix for bug 248365        
-//        super.disposeResources();
+        super.disposeResources();
     }
 
     /**
