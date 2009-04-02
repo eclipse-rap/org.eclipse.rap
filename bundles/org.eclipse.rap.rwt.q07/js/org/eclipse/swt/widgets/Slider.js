@@ -123,6 +123,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
+    this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
@@ -162,6 +163,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     if( this._scrollTimer != null ) {
       this._scrollTimer.stop();
@@ -175,18 +177,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     STATE_HORIZONTAL : "horizontal",
     STATE_VERTICAL : "vertical",
     BUTTON_WIDTH : 16,
-    STATE_PRESSED : "pressed"
+    STATE_PRESSED : "pressed",
+    
+    _isNoModifierPressed : function( evt ) {
+      return    !evt.isCtrlPressed() 
+             && !evt.isShiftPressed() 
+             && !evt.isAltPressed() 
+             && !evt.isMetaPressed();      
+    }
   },
 
   members : {
     _onChangeSize : function( evt ) {
       if( this._horizontal ) {
-        var left = this.getWidth()
-                 - org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        var left =   this.getWidth()
+                   - org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
         this._maxButton.setLeft( left );
       } else {
-        var top = this.getHeight()
-                - org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        var top =   this.getHeight()
+                  - org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
         this._maxButton.setTop( top );
       }
       this._updateLineSize();
@@ -203,6 +212,70 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         evt.stopPropagation();
       }
     },
+    
+    _onKeyPress : function( evt ) {
+      var keyIdentifier = evt.getKeyIdentifier();
+      var sel;
+      if( org.eclipse.swt.widgets.Slider._isNoModifierPressed( evt ) ) {
+        switch( keyIdentifier ) {
+          case "Left":
+            sel = this._selection - this._increment;
+            break
+          case "Down":
+            if( this._horizontal ) {
+              sel = this._selection - this._increment;  
+            } else {
+              sel = this._selection + this._increment;
+            }                     
+            break;
+          case "Right":
+            sel = this._selection + this._increment; 
+            break;
+          case "Up": 
+            if( this._horizontal ) {
+              sel = this._selection + this._increment;
+            } else {
+              sel = this._selection - this._increment;    
+            }                 
+            break; 
+          case "Home":
+            sel = this._minimum;
+            break;
+          case "End":
+            sel = this._maximum;
+            break;
+          case "PageDown":
+            if( this._horizontal ) {
+              sel = this._selection - this._pageIncrement;
+            } else {
+              sel = this._selection + this._pageIncrement;
+            }           
+            break;
+          case "PageUp":
+            if( this._horizontal ) {
+              sel = this._selection + this._pageIncrement;
+            } else {
+              sel = this._selection - this._pageIncrement;   
+            }            
+            break;
+        }
+        
+        if( sel != undefined ) {
+          if( sel < this._minimum ) {
+            sel = this._minimum;
+          } 
+          if( sel > this._maximum ) {
+            sel = this._maximum;
+          }
+          this.setSelection( sel );
+          if( this._readyToSendChanges ) {
+            this._readyToSendChanges = false;
+            // Send changes
+            qx.client.Timer.once( this._sendChanges, this, 500 );
+          }
+        }
+      }
+    },
 
     _onChangeEnabled : function( evt ) {
       this._thumb.setVisibility( evt.getValue() );
@@ -216,16 +289,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       if( evt.isLeftButtonPressed() ) {
         if( this._horizontal ) {
           pxSel = this._thumb.getLeft() + ( this._thumb.getWidth() ) / 2;
-          this._mousePos = evt.getPageX()
-                         - qx.html.Location.getClientBoxLeft( this.getElement() );
-          thumbMov = this._pageIncrement * this._pxStep
-                   + this._thumb.getWidth() / 2;
+          this._mousePos =   evt.getPageX()
+                           - qx.html.Location.getClientBoxLeft( this.getElement() );
+          thumbMov =   this._pageIncrement * this._pxStep
+                     + this._thumb.getWidth() / 2;
         } else {
           pxSel = this._thumb.getTop() + ( this._thumb.getHeight() ) / 2;
-          this._mousePos = evt.getPageY()
-                         - qx.html.Location.getClientBoxTop( this.getElement() );
-          thumbMov = this._pageIncrement * this._pxStep
-                   + this._thumb.getHeight() / 2;
+          this._mousePos =   evt.getPageY()
+                           - qx.html.Location.getClientBoxTop( this.getElement() );
+          thumbMov =   this._pageIncrement * this._pxStep
+                     + this._thumb.getHeight() / 2;
         }
         if( this._mousePos > pxSel ) {
           sel = this._selection + this._pageIncrement;
@@ -248,11 +321,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
 
     _onLineMouseMove : function( evt ) {
       if( this._horizontal ) {
-        this._mousePos = evt.getPageX()
-                       - qx.html.Location.getClientBoxLeft( this.getElement() );
+        this._mousePos =   evt.getPageX()
+                         - qx.html.Location.getClientBoxLeft( this.getElement() );
       } else {
-        this._mousePos = evt.getPageY()
-                       - qx.html.Location.getClientBoxTop( this.getElement() );
+        this._mousePos =   evt.getPageY()
+                         - qx.html.Location.getClientBoxTop( this.getElement() );
       }
     },
 
@@ -313,12 +386,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           var thumbMov; // Thumb movement after interaction
           if( this._horizontal ) {
             pxSel = this._thumb.getLeft() + this._thumb.getWidth() / 2;
-            thumbMov = this._pageIncrement * this._pxStep
-                     + this._thumb.getWidth() / 2;
+            thumbMov =   this._pageIncrement * this._pxStep
+                       + this._thumb.getWidth() / 2;
           } else {
             pxSel = this._thumb.getTop() + this._thumb.getHeight() / 2;
-            thumbMov = this._pageIncrement * this._pxStep
-                     + this._thumb.getHeight() / 2;
+            thumbMov =   this._pageIncrement * this._pxStep
+                       + this._thumb.getHeight() / 2;
           }
           if( this._mousePos > pxSel ) {
             sel = this._selection + this._pageIncrement;
@@ -353,12 +426,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       this._thumbPressed = true;
       if( evt.isLeftButtonPressed() ) {
         if( this._horizontal ) {
-          mousePos = evt.getPageX()
-                   - qx.html.Location.getClientBoxLeft( this.getElement() );
+          mousePos =   evt.getPageX()
+                     - qx.html.Location.getClientBoxLeft( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getLeft();
         } else {
-          mousePos = evt.getPageY()
-                   - qx.html.Location.getClientBoxTop( this.getElement() );
+          mousePos =   evt.getPageY()
+                     - qx.html.Location.getClientBoxTop( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getTop();
         }
         this._thumb.setCapture( true );
@@ -369,14 +442,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       var mousePos;
       if( this._thumb.getCapture() ) {
         if( this._horizontal ) {
-          mousePos = evt.getPageX()
-                   - qx.html.Location.getClientBoxLeft( this.getElement() );
+          mousePos =   evt.getPageX()
+                     - qx.html.Location.getClientBoxLeft( this.getElement() );
         } else {
-          mousePos = evt.getPageY()
-                   - qx.html.Location.getClientBoxTop( this.getElement() );
+          mousePos =   evt.getPageY()
+                     - qx.html.Location.getClientBoxTop( this.getElement() );
         }
-        var sel = this._getSelectionFromThumbPosition( mousePos
-                - this._thumbOffset );
+        var sel =   this._getSelectionFromThumbPosition( mousePos
+                  - this._thumbOffset );
         if( this._selection != sel ) {
           this.setSelection( sel );
           if( this._readyToSendChanges ) {
@@ -413,12 +486,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       var numSteps = this._maximum - this._minimum - this._thumbWidth;
       if( numSteps != 0 ) {
         if( this._horizontal ) {
-          padding = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH
-                  + ( this._thumb.getWidth() ) / 2;
+          padding =   org.eclipse.swt.widgets.Slider.BUTTON_WIDTH
+                    + ( this._thumb.getWidth() ) / 2;
           this._pxStep = ( this.getWidth() - 2 * padding ) / numSteps;
         } else {
-          padding = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH
-                  + ( this._thumb.getHeight() ) / 2;
+          padding =   org.eclipse.swt.widgets.Slider.BUTTON_WIDTH
+                    + ( this._thumb.getHeight() ) / 2;
           this._pxStep = ( this.getHeight() - 2 * padding ) / numSteps;
         }
       } else {
@@ -430,15 +503,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     _updateThumbPosition : function() {
       var pos;
       if( this._selection >= ( this._maximum - this._thumbWidth ) ) {
-        pos = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH + this._pxStep
-            * ( this._maximum - this._minimum - this._thumbWidth );
+        pos =   org.eclipse.swt.widgets.Slider.BUTTON_WIDTH + this._pxStep
+              * ( this._maximum - this._minimum - this._thumbWidth );
         this._selection = this._maximum - this._thumbWidth;
       } else if( this._selection <= this._minimum ) {
         pos = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
         this._selection = this._minimum;
       } else {
-        pos = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH + this._pxStep
-            * ( this._selection - this._minimum );
+        pos =   org.eclipse.swt.widgets.Slider.BUTTON_WIDTH + this._pxStep
+              * ( this._selection - this._minimum );
       }
       if( this._horizontal ) {
         this._thumb.setLeft( pos );
@@ -456,13 +529,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
 
     _updateLineSize : function() {
       if( this._horizontal ) {
-        this._line.setWidth( this.getWidth() - 2
-                           * org.eclipse.swt.widgets.Slider.BUTTON_WIDTH );
+        this._line.setWidth(   this.getWidth() - 2
+                             * org.eclipse.swt.widgets.Slider.BUTTON_WIDTH );
         this._line.setHeight( this.getHeight() );
       } else {
         this._line.setWidth( this.getWidth() );
-        this._line.setHeight( this.getHeight() - 2
-                            * org.eclipse.swt.widgets.Slider.BUTTON_WIDTH );
+        this._line.setHeight(   this.getHeight() - 2
+                              * org.eclipse.swt.widgets.Slider.BUTTON_WIDTH );
       }
     },
 
@@ -477,8 +550,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     },
 
     _getSelectionFromThumbPosition : function( position ) {
-      var sel = ( position - org.eclipse.swt.widgets.Slider.BUTTON_WIDTH )
-              / this._pxStep + this._minimum;
+      var sel =   ( position - org.eclipse.swt.widgets.Slider.BUTTON_WIDTH )
+                / this._pxStep + this._minimum;
       sel = Math.round( sel );
       var sel_final;
       if( sel < this._minimum ) {
