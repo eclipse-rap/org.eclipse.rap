@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -126,9 +128,20 @@ public class WorkbenchServiceRegistry {
 			if (elements[i].getName().equals(
 					IWorkbenchRegistryConstants.TAG_SOURCE_PROVIDER)) {
 				try {
-					providers
-							.add(elements[i]
-									.createExecutableExtension(IWorkbenchRegistryConstants.ATTR_PROVIDER));
+					Object sourceProvider = elements[i]
+							.createExecutableExtension(IWorkbenchRegistryConstants.ATTR_PROVIDER);
+					if (!(sourceProvider instanceof AbstractSourceProvider)) {
+						String attributeName = elements[i]
+								.getAttribute(IWorkbenchRegistryConstants.ATTR_PROVIDER);
+						final String message = "Source Provider '" + //$NON-NLS-1$
+								attributeName
+								+ "' should extend AbstractSourceProvider"; //$NON-NLS-1$
+						final IStatus status = new Status(IStatus.ERROR,
+								WorkbenchPlugin.PI_WORKBENCH, message);
+						WorkbenchPlugin.log(status);
+						continue;
+					}
+					providers.add(sourceProvider);
 					processVariables(elements[i]
 							.getChildren(IWorkbenchRegistryConstants.TAG_VARIABLE));
 				} catch (CoreException e) {
