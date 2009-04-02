@@ -27,9 +27,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
 
-// RAP [if]
-//import com.ibm.icu.text.BreakIterator;
-import java.text.BreakIterator;
+import com.ibm.icu.text.BreakIterator;
 
 /**
  * @version 1.0

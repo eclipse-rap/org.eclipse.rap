@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.forms.widgets;
 
-import java.text.BreakIterator;
-
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -26,13 +24,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 //import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ColumnLayout;
-import org.eclipse.ui.forms.widgets.Form;
-//import org.eclipse.ui.forms.widgets.FormText;
+import org.eclipse.ui.forms.widgets.*;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ILayoutExtension;
 
-//import com.ibm.icu.text.BreakIterator;
+import com.ibm.icu.text.BreakIterator;
 
 public class FormUtil {
 	public static final String PLUGIN_ID = "org.eclipse.ui.forms"; //$NON-NLS-1$
@@ -231,9 +227,8 @@ public class FormUtil {
 	public static void ensureVisible(ScrolledComposite scomp, Control control) {
 		// if the control is a FormText we do not need to scroll since it will
 		// ensure visibility of its segments as necessary
-// RAP [rh] FormText not implemented
-//		if (control instanceof FormText)
-//			return;
+		if (control instanceof FormText)
+			return;
 		Point controlSize = control.getSize();
 		Point controlOrigin = getControlLocation(scomp, control);
 		ensureVisible(scomp, controlOrigin, controlSize);
