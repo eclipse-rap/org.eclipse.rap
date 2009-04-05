@@ -2326,9 +2326,11 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //			createSplashWrapper();
 		// RAPEND: [bm] 
 
-		// ModalContext should not spin the event loop (there is no UI yet to
-		// block)
-		ModalContext.setAllowReadAndDispatch(false);
+// RAP [rh] workaround for bug #249630 
+//		 (IRunnableWithProgress in WorkbenchAdvisor does not show dialog)
+//		// ModalContext should not spin the event loop (there is no UI yet to
+//		// block)
+//		ModalContext.setAllowReadAndDispatch(false);
 
 		// if the -debug command line argument is used and the event loop is
 		// being
