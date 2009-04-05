@@ -56,7 +56,8 @@ public class CComboLCA_Test extends TestCase {
                   adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
+    assertEquals( Boolean.FALSE, 
+                  adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
     // Test preserving CCombo with items, where one is selected
     RWTFixture.clearPreserved();
@@ -148,7 +149,7 @@ public class CComboLCA_Test extends TestCase {
     } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
-    hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
+    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
     display.dispose();
@@ -162,8 +163,24 @@ public class CComboLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( Boolean.TRUE , adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
+    // activateListeners, focusListeners
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( ccombo );
+    Boolean focusListener
+     = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
+    assertEquals( Boolean.FALSE, focusListener );
     RWTFixture.clearPreserved();
-    display.dispose();
+    ccombo.addFocusListener( new FocusListener (){
+      public void focusGained( final FocusEvent event ) {
+      }
+
+      public void focusLost( final FocusEvent event ) {
+      }} );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( ccombo );
+    Boolean hasListeners
+       = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testRenderChanges() throws IOException {
