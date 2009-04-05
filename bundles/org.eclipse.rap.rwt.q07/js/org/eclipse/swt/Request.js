@@ -255,8 +255,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var content;
         var text = null;
         var request = evt.getTarget().getImplementation().getRequest();
-        // [if] The typeof(..) == "unknown" is IE specific.
-        // Use it to prevent the IE error:
+        // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
         // "The data  necessary to complete this operation is not yet available"
         if( typeof( request.responseText ) != "unknown" ) {
           text = request.responseText;
