@@ -30,6 +30,7 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     // Text field
     this._field = new qx.ui.form.TextField();
     this._field.setAppearance( "ccombo-field" );
+    this._field.setTabIndex( -1 );
     this._field.setAllowStretchY( true );
     this.add( this._field );
     // Drop down button
@@ -49,9 +50,12 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
     this._manager.setDragSelection( false );
+    // Do not visualize the focus rectangle around the widget
+    this.setHideFocus( true );
     // Add events listeners
     var cDocument = qx.ui.core.ClientDocument.getInstance();
-    cDocument.addEventListener( "windowblur", this._onBlurCloseList, this );
+    cDocument.addEventListener( "windowblur", this._onBlur, this );
+    this.addEventListener( "blur", this._onBlur, this );
     // Init events
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeWidth", this._onChangeSize, this );
@@ -79,7 +83,8 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
 
   destruct : function() {
     var cDocument = qx.ui.core.ClientDocument.getInstance();
-    cDocument.removeEventListener( "windowblur", this._onBlurCloseList, this );
+    cDocument.removeEventListener( "windowblur", this._onBlur, this );
+    this.removeEventListener( "blur", this._onBlur, this );
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
@@ -120,9 +125,12 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     _onAppear : function( evt ) {
       var ccombo = this.getElement();
       var field = this._field.getElement();
-      var leftCcombo = qx.html.Location.getPageBoxLeft( ccombo );
-      var leftField = qx.html.Location.getPageBoxLeft( field );
-      this._borderWidth = leftField - leftCcombo;
+      if( ccombo != null && field != null ) {
+      	// TODO [ad] This solution doesn't work properly in Safari
+        var leftCcombo = qx.html.Location.getPageBoxLeft( ccombo );
+        var leftField = qx.html.Location.getPageBoxLeft( field );
+        this._borderWidth = leftField - leftCcombo;
+      }
       this._list.setTop( this.getHeight() - this._borderWidth );
       this._list.setLeft( - this._borderWidth );
       if( this.hasState( "rwt_FLAT" ) ) {
@@ -162,10 +170,16 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
       this._field.setBackgroundColor( value );
       this._list.setBackgroundColor( value );
     },
-
+    
+    // On "blur" or "windowblur" event: closes the list, if it is seeable
+    _onBlur : function( evt ) {
+      if( this._dropped ) {
+        this._toggleListVisibility();
+      }
+    },
+    
     _applyCursor : function( value, old ) {
       this.base( arguments, value, old );
-      this._userCursor = value;
       if( value ) {
         this._field.setCursor( value );
         this._button.setCursor( value );
@@ -177,6 +191,22 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
       }
     },
     
+    // Focus handling
+    _visualizeFocus : function() {
+      if( this._field.isCreated() ) {
+        this._field._visualizeFocus();
+        this._field.selectAll();
+      }
+    },
+    
+    _visualizeBlur : function() {
+      if( this._field.isCreated() ) {
+        // setting selection lenght to 0 needed for IE to deselect text
+        this._field.setSelectionLength( 0 );
+        this._field._visualizeBlur();
+      }
+    },
+    
     _setSelected : function( value ) {
       this._selected = value;
       this._manager.setLeadItem( value );
@@ -184,7 +214,6 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
       if( value ) {
         var fieldValue = value.getLabel().toString();
         this._field.setValue( fieldValue );
-        this._field._visualizeFocus();
         if( this._field.isCreated() ) {
           this._field.selectAll();
         }
@@ -197,17 +226,15 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     },
 
     _toggleListVisibility : function() {
+      // Temporary make the text field ReadOnly, when the list is dropped.
+      if( this._editable ) {
+        this._field.setReadOnly( !this._dropped  );
+      }
       if( !this._dropped ) {
-        if( this._editable ) {
-          this._field.setReadOnly( true );
-        }
         // Brings this widget on top of the others with same parent.
         this._bringToFront();
         this.setCapture( true );
       } else {
-        if( this._editable ) {
-          this._field.setReadOnly( false );
-        }
         this.setCapture( false );
       }
       this._list.setVisibility( !this._dropped );
@@ -251,6 +278,24 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
 
     _onMouseClick : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
+      	// Correction of the list manager selection 
+      	// after a mouse over interaction with ListItem
+        if( this._selected ) {
+          // There is a selected ListItem
+          this._manager.setLeadItem( this._selected );
+          this._manager.setAnchorItem( this._selected );
+          this._manager.setSelectedItem( this._selected );
+        } else {
+          // There is no selected ListItem
+      	  this._manager.deselectAll();
+      	  this._manager.setLeadItem( null );
+          this._manager.setAnchorItem( null );
+        }
+        // In case the 'mouseout' event has not been catched
+        if( this._button.hasState( "over" ) ) {
+          this._button.removeState( "over" );
+        }
+        // Redirecting the action, according to the click target 
         var vTarget = evt.getTarget();
         switch( vTarget ) {
           case this:
@@ -261,30 +306,18 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
             this._toggleListVisibility();
             break;
           default:
+            // Click on a list item
             if(    vTarget instanceof qx.ui.form.ListItem 
                 && vTarget.getParent() === this._list ) 
             {
               this._list._onmousedown( evt );
               this._setSelected( this._list.getSelectedItem() );
               this._toggleListVisibility();
-              this.setFocused( true );
             } else if( this._dropped ) {
               // Click is outside the CCombo
-              if( this._selected ) {
-                this._manager.setLeadItem( this._selected );
-                this._manager.setAnchorItem( this._selected );
-                this._manager.setSelectedItem( this._selected );
-              } else {
-              	this._manager.deselectAll();
-              	this._manager.setLeadItem( null );
-                this._manager.setAnchorItem( null );
-              }
               this._toggleListVisibility();
             }
         }
-      }
-      if( this._button.hasState( "over" ) ) {
-        this._button.removeState( "over" );
       }
     },
 
@@ -379,27 +412,31 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
             }
           }
           break;
-      }
-      // Default handling
-      if(    !this._editable
-          || this._dropped
-          || ( this._editable && evt.getKeyIdentifier() == "Up" )
-          || ( this._editable && evt.getKeyIdentifier() == "Down" ) ) 
-      {
-        this._list._onkeypress( evt );
-        var selected = this._manager.getSelectedItem();
-        this._setSelected( selected );
-      } else if( this._editable && this._isModifyingKey( evt.getKeyIdentifier() ) ) 
-      {
-        this._setSelected( null );
-        if( !org_eclipse_rap_rwt_EventUtil_suspend && !this._isModified ) {
-          this._isModified = true;
-          var req = org.eclipse.swt.Request.getInstance();
-          req.addEventListener( "send", this._onSend, this );
-          if( this._hasVerifyModifyListener ) {
-            qx.client.Timer.once( this._sendModifyText, this, 500 );
+        case "Up":
+        case "Down":
+        case "PageUp":
+        case "PageDown":
+          this._list._onkeypress( evt );
+          var selected = this._manager.getSelectedItem();
+          this._setSelected( selected );
+          break;
+        default:
+          charCode = evt.getCharCode();
+          keyIdentifier = evt.getKeyIdentifier();
+          if( this._editable && (    charCode > 0 
+                                  || keyIdentifier == "Delete" 
+                                  || keyIdentifier == "Backspace" ) ) 
+          {
+            this._isModified = true;
+            this._setSelected( null );
+            if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+              var req = org.eclipse.swt.Request.getInstance();
+              req.addEventListener( "send", this._onSend, this );
+              if( this._hasVerifyModifyListener ) {
+                qx.client.Timer.once( this._sendModifyText, this, 500 );
+              }
+            }
           }
-        }
       }
     },
 
@@ -408,13 +445,6 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
         this._list._onkeyinput( evt );
         var selected = this._manager.getSelectedItem();
         this._setSelected( selected );
-      }
-    },
-
-    // On "windowblur" event: closes the list, if it is seeable.
-    _onBlurCloseList : function() {
-      if( this._dropped ) {
-        this._toggleListVisibility();
       }
     },
 
@@ -440,14 +470,12 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     },
 
     _sendModifyText : function() {
-      if( this._isModified ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.modifyText", id );
-        req.send();
-        this._isModified = false;
-      }
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addEvent( "org.eclipse.swt.events.modifyText", id );
+      req.send();
+      this._isModified = false;
     },
 
     _sendWidgetSelected : function() {
@@ -472,54 +500,6 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".listVisible", this._list.getVisibility() );
       }
-    },
-
-    _isModifyingKey : function( keyIdentifier ) {
-      var result = false;
-      switch( keyIdentifier ) {
-        // Modifier keys
-        case "Shift":
-        case "Control":
-        case "Alt":
-        case "Meta":
-        case "Win":
-        // Navigation keys
-        case "Left":
-        case "Right":
-        case "Home":
-        case "End":
-        case "PageUp":
-        case "PageDown":
-        case "Tab":
-        // Context menu key
-        case "Apps":
-        //
-        case "Escape":
-        case "Insert":
-        case "Enter":
-        //
-        case "CapsLock":
-        case "NumLock":
-        case "Scroll":
-        case "PrintScreen":
-        // Function keys 1 - 12
-        case "F1":
-        case "F2":
-        case "F3":
-        case "F4":
-        case "F5":
-        case "F6":
-        case "F7":
-        case "F8":
-        case "F9":
-        case "F10":
-        case "F11":
-        case "F12":
-          break;
-        default:
-          result = true;
-      }
-      return result;
     },
 
     // Set methods
