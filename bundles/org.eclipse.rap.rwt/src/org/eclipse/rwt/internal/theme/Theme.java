@@ -77,7 +77,14 @@ public final class Theme {
   }
 
   public static String createCssKey( final QxType value ) {
-    return Integer.toHexString( value.hashCode() );
+    String result;
+    if( value instanceof QxIdentifier || value instanceof QxBoolean ) {
+      // Identifiers and boolean values are written directly
+      result = value.toDefaultString();
+    } else {
+      result = Integer.toHexString( value.hashCode() );
+    }
+    return result;
   }
 
   private void checkName( final String name ) {

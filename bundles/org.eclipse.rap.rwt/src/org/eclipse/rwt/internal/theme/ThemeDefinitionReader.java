@@ -59,6 +59,8 @@ public class ThemeDefinitionReader {
 
   public static final String TYPE_IMAGE = "image";
 
+  public static final String TYPE_TEXT_DECORATION = "text-decoration";
+
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
 
   private static final String JAXP_SCHEMA_LANGUAGE

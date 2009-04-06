@@ -74,9 +74,13 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssBoolean : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.booleans[ vkey ];
+      var result = this._store.getCssValue( element, this._states, key );
+      this.__checkDefined( result, element, key );
+      return result;
+    },
+
+    getCssIdentifier : function( element, key ) {
+      var result = this._store.getCssValue( element, this._states, key );
       this.__checkDefined( result, element, key );
       return result;
     },

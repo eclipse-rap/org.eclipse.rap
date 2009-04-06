@@ -57,7 +57,7 @@ Button-CheckIcon:selected:grayed {
   background-image: url( resource/widget/rap/button/check-grayed.png );
 }
 
-Button-CheckIcon:selected:hover:grayed {
+Button-CheckIcon:selected:grayed:hover {
   background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }
 

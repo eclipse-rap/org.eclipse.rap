@@ -24,7 +24,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     this._values = {
       dimensions : {},
       boxdims : {},
-      booleans : {},
       images : {},
       fonts : {},
       colors : {},

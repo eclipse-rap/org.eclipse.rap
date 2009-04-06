@@ -129,6 +129,8 @@ public final class PropertyResolver {
       result = readFont( unit );
     } else if( ThemeDefinitionReader.TYPE_IMAGE.equals( type ) ) {
       result = readBackgroundImage( unit, loader );
+    } else if( ThemeDefinitionReader.TYPE_TEXT_DECORATION.equals( type ) ) {
+      result = readTextDecoration( unit );
     } else {
       throw new RuntimeException( "Illegal type " + type );
     }
@@ -162,6 +164,8 @@ public final class PropertyResolver {
                || property.endsWith( "-image" ) )
     {
       result = ThemeDefinitionReader.TYPE_IMAGE;
+    } else if( "text-decoration".equals( property ) ) {
+      result = ThemeDefinitionReader.TYPE_TEXT_DECORATION;
     }
     return result;
   }
@@ -449,6 +453,25 @@ public final class PropertyResolver {
       String value = unit.getStringValue();
       if( NONE.equals( value ) ) {
         result = QxImage.NONE;
+      }
+    }
+    return result;
+  }
+
+  static QxIdentifier readTextDecoration( final LexicalUnit unit ) {
+    QxIdentifier result = null;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = unit.getStringValue();
+      if( "underline".equals( value )
+          || "overline".equals( value )
+          || "line-through".equals( value )
+          || "none".equals( value ) )
+      {
+        result = new QxIdentifier( value );
+      } else {
+        String msg = "Invalid value for text-decoration: " + value;
+        throw new IllegalArgumentException( msg );
       }
     }
     return result;

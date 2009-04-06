@@ -34,6 +34,10 @@
         type="border"
         description="Border for labels." />
 
+    <property name="text-decoration"
+        type="text-decoration"
+        description="Decoration for label text." />
+
     <style name="BORDER"
         description="Indicates that the widget should have a border." />
 

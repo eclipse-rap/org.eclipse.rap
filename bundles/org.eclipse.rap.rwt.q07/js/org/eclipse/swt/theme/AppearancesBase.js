@@ -127,6 +127,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Label", "font" );
+      var decoration = tv.getCssIdentifier( "Label", "text-decoration" );
+      if( decoration != null && decoration != "none" ) {
+        var decoratedFont = new qx.ui.core.Font();
+        decoratedFont.setSize( result.font.getSize() );
+        decoratedFont.setFamily( result.font.getFamily() );
+        decoratedFont.setBold( result.font.getBold() );
+        decoratedFont.setItalic( result.font.getItalic() );
+        decoratedFont.setDecoration( decoration );
+        result.font = decoratedFont;
+      }
       result.textColor = tv.getCssColor( "Label", "color" );
       result.backgroundColor = tv.getCssColor( "Label", "background-color" );
       result.border = tv.getCssBorder( "Label", "border" );

@@ -110,19 +110,21 @@ public class QxBorder implements QxType {
   }
 
   public String toDefaultString() {
-    StringBuffer result = new StringBuffer();
+    String result;
     if( width == 0 ) {
-      result.append( "none" );
+      result = "none";
     } else {
-      result.append( width + "px" );
-      result.append( " " );
-      result.append( style );
+      StringBuffer buffer = new StringBuffer();
+      buffer.append( width );
+      buffer.append( "px " );
+      buffer.append( style );
       if( color != null ) {
-        result.append( " " );
-        result.append( color );
+        buffer.append( " " );
+        buffer.append( color );
       }
+      result = buffer.toString();
     }
-    return result.toString();
+    return result;
   }
 
   public boolean equals( final Object object ) {

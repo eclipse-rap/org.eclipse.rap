@@ -55,7 +55,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
   public void property( final String name,
                         final LexicalUnit value,
                         final boolean important ) throws CSSException
-                        {
+  {
     log( "  property "
          + name
          + " := "
