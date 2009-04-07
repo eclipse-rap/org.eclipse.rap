@@ -20,7 +20,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
   private final CssFileReader reader;
   private final ResourceLoader loader;
   private final StyleSheetBuilder styleSheetBuilder;
-  private StylePropertyMap currentStyleProperties = null;
+  private StylePropertyMap currentStyleProperties;
 
   public DocumentHandlerImpl( final CssFileReader reader,
                               final ResourceLoader loader )
@@ -54,7 +54,8 @@ public class DocumentHandlerImpl implements DocumentHandler {
 
   public void property( final String name,
                         final LexicalUnit value,
-                        final boolean important ) throws CSSException
+                        final boolean important )
+    throws CSSException
   {
     log( "  property "
          + name
@@ -87,14 +88,14 @@ public class DocumentHandlerImpl implements DocumentHandler {
   public void importStyle( final String uri,
                            final SACMediaList media,
                            final String defaultNamespaceURI )
-  throws CSSException
+    throws CSSException
   {
     log( "importStyle " + uri + ", " + media + ", " + defaultNamespaceURI );
     reader.addProblem( new CSSException( "import rules not supported - ignored" ) );
   }
 
   public void namespaceDeclaration( final String prefix, final String uri )
-  throws CSSException
+    throws CSSException
   {
     log( "namespaceDeclaration " + prefix + ", " + uri );
     reader.addProblem( new CSSException( "unsupported namespace declaration '"
@@ -112,14 +113,14 @@ public class DocumentHandlerImpl implements DocumentHandler {
   }
 
   public void startPage( final String name, final String pseudo_page )
-  throws CSSException
+    throws CSSException
   {
     log( "startPage " + name + ", " + pseudo_page );
     reader.addProblem( new CSSException( "page rules not supported - ignored" ) );
   }
 
   public void endPage( final String name, final String pseudo_page )
-  throws CSSException
+    throws CSSException
   {
     log( "endPage " + name + ", " + pseudo_page );
   }
