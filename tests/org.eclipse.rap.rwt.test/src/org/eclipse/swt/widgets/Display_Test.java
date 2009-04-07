@@ -223,13 +223,27 @@ public class Display_Test extends TestCase {
     Composite comp1 = new Composite( shell, SWT.BORDER );
     comp1.setBounds( 0, 0, 20, 20 );
     int comp1Border = comp1.getBorderWidth();
+    // Test with scrollable
     Composite comp2 = new Composite( shell, SWT.NONE );
     comp2.setBounds( 10, 10, 20, 20 );
+    int comp2Border = comp2.getBorderWidth();
     Rectangle actual = display.map( comp2, comp1, 1, 2, 3, 4 );
-    Rectangle expected = new Rectangle( 1 + comp2.getBounds().x - comp1Border,
-                                        2 + comp2.getBounds().y - comp1Border,
-                                        3,
-                                        4 );
+    Rectangle expected
+      = new Rectangle( 1 + comp2.getBounds().x + comp2Border - comp1Border,
+                       2 + comp2.getBounds().y + comp2Border - comp1Border,
+                       3,
+                       4 );
+    assertEquals( expected, actual );
+    // Test with control
+    Button button = new Button( shell, SWT.NONE );
+    button.setBounds( 10, 10, 20, 20 );
+    int buttonBorder = button.getBorderWidth();
+    actual = display.map( button, comp1, 1, 2, 3, 4 );
+    expected
+      = new Rectangle( 1 + button.getBounds().x + buttonBorder - comp1Border,
+                       2 + button.getBounds().y + buttonBorder - comp1Border,
+                       3,
+                       4 );
     assertEquals( expected, actual );
   }
 

@@ -255,7 +255,7 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
-  
+
   /////////////////////
   // Coordinate mapping
 
@@ -447,7 +447,7 @@ public class Display extends Device implements Adaptable {
     newY += fromLocation.y;
     if( currentFrom instanceof Shell ) {
       currentFrom = null;
-    } else {
+    } else if( currentFrom instanceof Scrollable ) {
       currentFrom = currentFrom.getParent();
     }
     while( currentFrom != null ) {
