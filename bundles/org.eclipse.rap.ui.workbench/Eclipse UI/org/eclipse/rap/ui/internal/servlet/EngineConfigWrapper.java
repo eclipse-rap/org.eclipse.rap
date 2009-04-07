@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.osgi.framework.Bundle;
-
 
 
 /**
@@ -87,7 +86,6 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerUICallBackServiceHandler();
     registerJSLibraryServiceHandler();
   }
-
 
   public File getClassDir() {
     return engineConfig.getClassDir();
@@ -297,12 +295,8 @@ final class EngineConfigWrapper implements IEngineConfig {
           public InputStream getResourceAsStream( final String resourceName )
             throws IOException
           {
-            InputStream result = null;
-            URL url = bundle.getResource( resourceName );
-            if( url != null ) {
-              result = url.openStream();
-            }
-            return result;
+            IPath file = new Path( resourceName );
+            return FileLocator.openStream( bundle, file, false );
           }
         };
         ThemeManager.getInstance().registerTheme( themeId,
