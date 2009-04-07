@@ -255,6 +255,9 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
+  
+  /////////////////////
+  // Coordinate mapping
 
   /**
    * Maps a point from one coordinate system to another.
@@ -444,14 +447,14 @@ public class Display extends Device implements Adaptable {
     newY += fromLocation.y;
     if( currentFrom instanceof Shell ) {
       currentFrom = null;
-    } else if( currentFrom instanceof Scrollable ) {
+    } else {
       currentFrom = currentFrom.getParent();
     }
     while( currentFrom != null ) {
       Rectangle bounds = currentFrom.getBounds();
       int border = currentFrom.getBorderWidth();
-      newX += ( bounds.x + border );
-      newY += ( bounds.y + border );
+      newX += bounds.x + border;
+      newY += bounds.y + border;
       if( currentFrom instanceof Shell ) {
         currentFrom = null;
       } else {
@@ -481,16 +484,16 @@ public class Display extends Device implements Adaptable {
     return new Rectangle( newX, newY, width, height );
   }
 
-  private Point fixScrollableLocation( final Control control ) {
-    Point loc = new Point( 0, 0 );
+  private static Point fixScrollableLocation( final Control control ) {
+    Point result = new Point( 0, 0 );
     if( control instanceof Scrollable ) {
       Point location = control.getLocation();
       Rectangle trimmings
         = ( ( Scrollable )control ).computeTrim( 0, 0, 0, 0 );
-      loc.x = location.x - trimmings.x;
-      loc.y = location.y - trimmings.y;
+      result.x = location.x - trimmings.x;
+      result.y = location.y - trimmings.y;
     }
-    return loc;
+    return result;
   }
 
   //////////
