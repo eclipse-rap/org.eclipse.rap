@@ -22,6 +22,8 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.*;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
@@ -144,7 +146,7 @@ public class Display_Test extends TestCase {
     assertEquals( expectedBounds, bounds );
     assertNotSame( expectedBounds, bounds );
   }
-  
+
   public void testClientArea() throws Exception {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
@@ -155,11 +157,12 @@ public class Display_Test extends TestCase {
     assertEquals( testRect, clientArea );
     assertNotSame( testRect, clientArea );
   }
-  
+
   public void testMap() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Rectangle shellBounds = new Rectangle( 10, 10, 400, 400 );
+    int shellBorder = shell.getBorderWidth();
     shell.setBounds( shellBounds );
 
     Rectangle actual = display.map( shell, shell, 1, 2, 3, 4 );
@@ -167,25 +170,27 @@ public class Display_Test extends TestCase {
     assertEquals( expected, actual );
 
     actual = display.map( shell, null, 5, 6, 7, 8 );
-    expected = new Rectangle( shellBounds.x + 5,
-                              shellBounds.y + 6,
+    expected = new Rectangle( shellBounds.x + shellBorder + 5,
+                              shellBounds.y + shellBorder + 6,
                               7,
                               8 );
     assertEquals( expected, actual );
 
     shell.setLayout( new FillLayout() );
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    TabFolder folder = new TabFolder( shell, SWT.BORDER );
+    int folderBorder = folder.getBorderWidth();
     shell.layout();
     actual = display.map( folder, shell, 6, 7, 8, 9 );
-    expected = new Rectangle( folder.getBounds().x + 6,
-                              folder.getBounds().y + 7,
+    expected = new Rectangle( folder.getBounds().x + folderBorder + 6,
+                              folder.getBounds().y + folderBorder + 7,
                               8,
                               9 );
     assertEquals( expected, actual );
 
+    int borders = shellBorder + folderBorder;
     actual = display.map( null, folder, 1, 2, 3, 4 );
-    expected = new Rectangle( 1 - shell.getBounds().x - folder.getBounds().x,
-                              2 - shell.getBounds().y - folder.getBounds().y,
+    expected = new Rectangle( 1 - shell.getBounds().x - borders,
+                              2 - shell.getBounds().y - borders,
                               3,
                               4 );
     assertEquals( expected, actual );
@@ -197,7 +202,9 @@ public class Display_Test extends TestCase {
     shell.setBounds( 100, 100, 800, 600 );
     Shell childShell1 = new Shell( shell, SWT.NONE );
     childShell1.setBounds( 200, 200, 800, 600 );
-    Point expected = new Point( 200, 200 );
+    int childShell1Border = childShell1.getBorderWidth();
+    Point expected = new Point( 200 + childShell1Border,
+                                200 + childShell1Border );
     Point actual = display.map( childShell1, null, 0, 0 );
     assertEquals( expected, actual );
     expected = new Point( 100, 100 );
@@ -208,6 +215,49 @@ public class Display_Test extends TestCase {
     childShell2.setBounds( 200, 200, 800, 600 );
     expected = new Point( 14, 17 );
     actual = display.map( childShell1, childShell2, 14, 17 );
+    assertEquals( expected, actual );
+  }
+
+  public void testMapWithDifferentBorders() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setBounds( 100, 100, 800, 600 );
+    Composite comp1 = new Composite( shell, SWT.BORDER );
+    comp1.setBounds( 0, 0, 20, 20 );
+    int comp1Border = comp1.getBorderWidth();
+    // Test with scrollable
+    Composite comp2 = new Composite( shell, SWT.NONE );
+    comp2.setBounds( 10, 10, 20, 20 );
+    int comp2Border = comp2.getBorderWidth();
+    Rectangle actual = display.map( comp2, comp1, 1, 2, 3, 4 );
+    Rectangle expected
+      = new Rectangle( 1 + comp2.getBounds().x + comp2Border - comp1Border,
+                       2 + comp2.getBounds().y + comp2Border - comp1Border,
+                       3,
+                       4 );
+    assertEquals( expected, actual );
+    // Test with control
+    Button button = new Button( shell, SWT.NONE );
+    button.setBounds( 10, 10, 20, 20 );
+    int buttonBorder = button.getBorderWidth();
+    actual = display.map( button, comp1, 1, 2, 3, 4 );
+    expected
+      = new Rectangle( 1 + button.getBounds().x + buttonBorder - comp1Border,
+                       2 + button.getBounds().y + buttonBorder - comp1Border,
+                       3,
+                       4 );
+    assertEquals( expected, actual );
+    // Test with CTabFolder
+    CTabFolder folder = new CTabFolder( shell, SWT.CLOSE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    item.setText( "Item" );
+    folder.setBounds( 10, 10, 100, 100 );
+    actual = display.map( folder, comp1, 1, 2, 3, 4 );
+    expected
+      = new Rectangle( 1 + folder.getBounds().x - comp1Border,
+                       2 + folder.getBounds().y - comp1Border,
+                       3,
+                       4 );
     assertEquals( expected, actual );
   }
 
@@ -407,7 +457,7 @@ public class Display_Test extends TestCase {
     assertEquals( "w1", DisplayUtil.getId( Display.getCurrent() ) );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
-  
+
   public void testSetData() {
     Display display = new Display();
     display.setData( new Integer( 10 ) );
@@ -415,7 +465,7 @@ public class Display_Test extends TestCase {
     assertNotNull( i );
     assertTrue( i.equals( new Integer( 10 ) ) );
   }
-  
+
   public void testSetDataKey() throws Exception {
     Display display = new Display();
     display.setData( "Integer", new Integer( 10 ) );
@@ -466,7 +516,7 @@ public class Display_Test extends TestCase {
     thread.join();
     // Further timerExec tests can be found in UICallbackManager_Test
   }
-  
+
   public void testGetMonitors() {
     final Display display = new Display();
     Monitor[] monitors = display.getMonitors();

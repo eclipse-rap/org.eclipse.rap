@@ -35,6 +35,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.custom.CTabFolder;
 
 
 /**
@@ -153,7 +154,7 @@ public class Display extends Device implements Adaptable {
    * RWT specific: This will not return a new display if there is none
    * available. This may be fixed in the future.
    * </p>
-   * 
+   *
    * @return the default display
    */
   public static Display getDefault() {
@@ -170,7 +171,7 @@ public class Display extends Device implements Adaptable {
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
   private final Monitor monitor;
-  
+
   /* Display Data */
   private Object data;
   private String [] keys;
@@ -255,6 +256,9 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
+
+  /////////////////////
+  // Coordinate mapping
 
   /**
    * Maps a point from one coordinate system to another.
@@ -439,10 +443,19 @@ public class Display extends Device implements Adaptable {
     int newX = x;
     int newY = y;
     Control currentFrom = from;
+    Point fromLocation = fixScrollableLocation( from );
+    newX += fromLocation.x;
+    newY += fromLocation.y;
+    if( currentFrom instanceof Shell ) {
+      currentFrom = null;
+    } else if( currentFrom instanceof Scrollable ) {
+      currentFrom = currentFrom.getParent();
+    }
     while( currentFrom != null ) {
       Rectangle bounds = currentFrom.getBounds();
-      newX += bounds.x;
-      newY += bounds.y;
+      int border = currentFrom.getBorderWidth();
+      newX += bounds.x + border;
+      newY += bounds.y + border;
       if( currentFrom instanceof Shell ) {
         currentFrom = null;
       } else {
@@ -450,10 +463,19 @@ public class Display extends Device implements Adaptable {
       }
     }
     Control currentTo = to;
+    Point toLocation = fixScrollableLocation( to );
+    newX -= toLocation.x;
+    newY -= toLocation.y;
+    if( currentTo instanceof Shell ) {
+      currentTo = null;
+    } else if( currentTo instanceof Scrollable ) {
+      currentTo = currentTo.getParent();
+    }
     while( currentTo != null ) {
       Rectangle bounds = currentTo.getBounds();
-      newX -= bounds.x;
-      newY -= bounds.y;
+      int border = currentTo.getBorderWidth();
+      newX -= ( bounds.x + border );
+      newY -= ( bounds.y + border );
       if( currentTo instanceof Shell ) {
         currentTo = null;
       } else {
@@ -462,7 +484,24 @@ public class Display extends Device implements Adaptable {
     }
     return new Rectangle( newX, newY, width, height );
   }
-  
+
+  private static Point fixScrollableLocation( final Control control ) {
+    Point result = new Point( 0, 0 );
+    if( control != null ) {
+      Point location = control.getLocation();
+      if( control instanceof CTabFolder ) {
+        result.x = location.x;
+        result.y = location.y;
+      } else if( control instanceof Scrollable ) {
+        Rectangle trimmings
+          = ( ( Scrollable )control ).computeTrim( 0, 0, 0, 0 );
+        result.x = location.x - trimmings.x;
+        result.y = location.y - trimmings.y;
+      }
+    }
+    return result;
+  }
+
   //////////
   // Dispose
 
@@ -656,7 +695,7 @@ public class Display extends Device implements Adaptable {
    * number of milliseconds have elapsed. If milliseconds is less
    * than zero, the runnable is not executed.
    * <p>
-   * Note that at the time the runnable is invoked, widgets 
+   * Note that at the time the runnable is invoked, widgets
    * that have the receiver as their display may have been
    * disposed. Therefore, it is necessary to check for this
    * case inside the runnable before accessing the widget.
@@ -739,7 +778,7 @@ public class Display extends Device implements Adaptable {
   public boolean sleep() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.sleep();
-    // return true as we cannot reliably determinate what actually caused 
+    // return true as we cannot reliably determinate what actually caused
     // lifeCycle#sleep() to return
     return true;
   }
@@ -748,7 +787,7 @@ public class Display extends Device implements Adaptable {
    * Notifies the client side to send a life cycle request as UI thread to
    * perform UI-updates. Note that this method may be called from any thread.
    *
-   * <p>Note that this only works as expected if the 
+   * <p>Note that this only works as expected if the
    * <code>{@link org.eclipse.rwt.lifecycle.UICallBack UICallBack}</code>
    * mechanism is activated.</p>
    *
@@ -981,7 +1020,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public int getDoubleClickTime() {
@@ -1122,19 +1161,19 @@ public class Display extends Device implements Adaptable {
    *
    * @see #setData(Object)
    * @see #disposeExec(Runnable)
-   * 
+   *
    * @since 1.2
    */
   public Object getData() {
     checkDevice();
     return data;
   }
-  
+
   /**
    * Sets the application defined, display specific data
    * associated with the receiver, to the argument.
    * The <em>display specific data</em> is a single,
-   * unnamed field that is stored with every display. 
+   * unnamed field that is stored with every display.
    * <p>
    * Applications may put arbitrary objects in this field. If
    * the object stored in the display specific data needs to
@@ -1153,7 +1192,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see #getData()
    * @see #disposeExec(Runnable)
-   * 
+   *
    * @since 1.2
    */
   public void setData( final Object data ) {
@@ -1186,7 +1225,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see #getData(String)
    * @see #disposeExec(Runnable)
-   * 
+   *
    * @since 1.2
    */
   // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
@@ -1215,7 +1254,7 @@ public class Display extends Device implements Adaptable {
       }
       return;
     }
-    
+
     /* Add the key/value pair */
     if (keys == null) {
       keys = new String [] {key};
@@ -1263,7 +1302,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see #setData(String, Object)
    * @see #disposeExec(Runnable)
-   * 
+   *
    * @since 1.2
    */
   // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
@@ -1284,9 +1323,9 @@ public class Display extends Device implements Adaptable {
 
   /**
    * Returns an array of monitors attached to the device.
-   * 
+   *
    * @return the array of monitors
-   * 
+   *
    * @since 1.2
    */
   public Monitor[] getMonitors() {
@@ -1294,19 +1333,19 @@ public class Display extends Device implements Adaptable {
     Monitor[] result = new Monitor[] { monitor };
     return result;
   }
-  
+
   /**
    * Returns the primary monitor for that device.
-   * 
+   *
    * @return the primary monitor
-   * 
+   *
    * @since 1.2
    */
   public Monitor getPrimaryMonitor() {
     checkDevice();
     return monitor;
   }
-  
+
   //////////////////
   // Helping methods
 

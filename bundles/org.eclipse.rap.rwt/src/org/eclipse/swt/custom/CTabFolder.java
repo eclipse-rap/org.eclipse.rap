@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.*;
  * <li><code>BORDER</code> and <code>FLAT</code> styles are not fully
  * implemented</li>
  * </ul>
- * 
+ *
  * @since 1.0
  */
 public class CTabFolder extends Composite {
@@ -237,7 +237,7 @@ public class CTabFolder extends Composite {
    *
    * @param pt the point in coordinates relative to the CTabFolder
    * @return the item at a point or null
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
@@ -1166,6 +1166,11 @@ public class CTabFolder extends Composite {
         updateItems();
       }
     }
+  }
+
+  public int getBorderWidth() {
+    checkWidget();
+    return 0;
   }
 
   //////////////////////
