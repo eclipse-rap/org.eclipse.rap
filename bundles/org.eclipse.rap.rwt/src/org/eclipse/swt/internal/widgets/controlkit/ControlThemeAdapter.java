@@ -25,7 +25,6 @@ public class ControlThemeAdapter extends AbstractThemeAdapter
 
   protected void configureMatcher( final WidgetMatcher matcher ) {
     matcher.addStyle( "BORDER", SWT.BORDER );
-    matcher.addState( "enabled", WidgetMatcher.CONTROL_ENABLED );
   }
 
   public int getBorderWidth( final Control control ) {

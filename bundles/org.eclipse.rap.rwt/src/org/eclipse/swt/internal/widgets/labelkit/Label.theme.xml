@@ -44,6 +44,9 @@
     <state name="hover"
         description="Applies to widgets while the cursor hovers over them." />
 
+    <state name="disabled"
+        description="Applies to disabled labels." />
+
   </element>
 
 </theme>

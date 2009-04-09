@@ -26,13 +26,6 @@ public final class WidgetMatcher implements ValueSelector {
     boolean matches( Widget widget );
   }
 
-  public static final Constraint CONTROL_ENABLED = new Constraint() {
-
-    public boolean matches( final Widget widget ) {
-      return ( ( Control )widget ).isEnabled();
-    }
-  };
-
   // TODO [rst] Optimize, linear search might be faster than hashmap overhead
   private final Map constraintMap = new HashMap();
 

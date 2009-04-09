@@ -34,6 +34,9 @@
     <style name="BORDER"
         description="Indicates that the list should have a border." />
 
+    <state name="disabled"
+        description="Applies to disabled Lists." />
+
     <element name="List-Item"
         description="Items of list controls.">
 
@@ -53,6 +56,9 @@
 
       <state name="even"
           description="Applies to items with an even index." />
+
+      <state name="disabled"
+          description="Applies when List is disabled." />
 
     </element>
 

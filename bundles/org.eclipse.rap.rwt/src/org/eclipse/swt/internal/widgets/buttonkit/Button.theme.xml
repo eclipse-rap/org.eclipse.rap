@@ -72,6 +72,9 @@
     <state name="selected"
         description="Applies for selected TOGGLE, CHECK and RADIO buttons." />
 
+    <state name="disabled"
+        description="Applies for disabled buttons." />
+
     <element name="Button-CheckIcon"
         description="The icon to indicate the check and/or grayed state of a Button with style CHECK" >
 
@@ -88,8 +91,11 @@
       <state name="grayed"
           description="Applies when the check box is grayed." />
 
+      <state name="disabled"
+          description="Applies when the button is disabled." />
+
     </element>
-    
+
     <element name="Button-RadioIcon"
         description="The icon to indicate the selected state of a Button with style RADIO" >
 
@@ -102,6 +108,10 @@
           
       <state name="hover"
           description="Applies while the user hovers over the radio button." />
+
+      <state name="disabled"
+          description="Applies when the button is disabled." />
+
     </element>
 
   </element>

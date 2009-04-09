@@ -18,20 +18,26 @@
     <property name="background-color"
         type="color"
         description="Background color for scale" />
-        
+
     <property name="border"
         type="border"
-        description="Scale border" />    
-        
+        description="Scale border" />
+
     <style name="BORDER"
-        description="Style constant for bordered behavior." />    
+        description="Style constant for bordered behavior." />
+
+    <state name="disabled"
+        description="Applies to disabled Scale controls." />
 
     <element name="Scale-Thumb"
-        description="The movable thumb">
+        description="The movable knob on a Scale control.">
 
       <property name="background-color"
           type="color"
-          description="Background color for scale thumb" />      
+          description="Background color for scale thumb." />
+
+      <state name="disabled"
+          description="Applies to the thumb of a disabled Scale control." />
 
     </element>
 

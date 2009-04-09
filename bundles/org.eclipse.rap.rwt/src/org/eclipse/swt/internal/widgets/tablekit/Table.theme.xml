@@ -14,13 +14,16 @@
 
   <element name="Table">
 
-      <property name="color"
-          type="color"
-          description="Text color for tables." />
+    <property name="color"
+        type="color"
+        description="Text color for tables." />
 
-      <property name="background-color"
-          type="color"
-          description="Background color for tables." />
+    <property name="background-color"
+        type="color"
+        description="Background color for tables." />
+
+    <state name="disabled"
+        description="Applies to disabled tables." />
 
     <element name="TableItem"
         description="Item elements of table controls">
@@ -38,6 +41,9 @@
 
       <state name="even"
           description="Applies when the table item has an even index" />
+
+      <state name="disabled"
+          description="Applies to the items of a disabled table." />
 
     </element>
 
@@ -111,7 +117,10 @@
         description="When table checkbox is grayed" />
 
       <state name="checked"
-        description="When table checkbox is checked" />  
+        description="When table checkbox is checked" />
+
+      <state name="disabled"
+          description="Applies to the items of a disabled table." />
 
     </element>
 

@@ -14,105 +14,108 @@
 
   <element name="DateTime"
       description="DateTime controls">
-    
+
     <property name="background-color"
-          type="color"
-          description="Background color" />
-    
+        type="color"
+        description="Background color" />
+
+    <state name="disabled"
+        description="Applies to disbled DateTime controls." />
+
     <element name="DateTime-Field"
         description="Fields for date, month, year, hours, minutes, seconds">
-      
+
       <property name="color"
           type="color"
           description="Text color for DateTime fields." />
-          
+
       <property name="background-color"
           type="color"
           description="Background color for DateTime fields" />
-          
+
       <state name="selected"
           description="Applies to selected DateTime fields." />
-          
+
     </element>
-    
+
     <element name="DateTime-Calendar-Day"
         description="Day from the calendar">
-      
+
       <property name="color"
           type="color"
           description="Text color" />
-          
+
       <property name="background-color"
           type="color"
           description="Background color" />
-          
+
       <state name="selected"
           description="Applies to selected day." />
-          
+
       <state name="otherMonth"
-          description="Applies to the day that belongs to other month." />    
-          
+          description="Applies to the day that belongs to other month." />
+
     </element>
-    
+
     <element name="DateTime-Calendar-Navbar"
         description="The calendar navigation bar">
-      
+
       <property name="color"
           type="color"
           description="Text color" />
-          
+
       <property name="background-color"
           type="color"
           description="Background color" />
-          
+
     </element>
-    
+
     <element name="DateTime-Calendar-LastButton"
         description="The calendar last month button">
-      
+
       <property name="background-image" type="image">
         <description>
           Background image for the Calendar last month button.
           The size of the image should be 16 x 16 pixels.
         </description>
-      </property> 
-          
+      </property>
+
     </element>
-    
+
     <element name="DateTime-Calendar-NextButton"
         description="The calendar next month button">
-      
+
       <property name="background-image" type="image">
         <description>
           Background image for the Calendar next month button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-          
+
     </element>
-    
+
     <element name="DateTime-Calendar-LastYearButton"
         description="The calendar last year button">
-      
+
       <property name="background-image" type="image">
         <description>
           Background image for the Calendar last year button.
           The size of the image should be 16 x 16 pixels.
         </description>
-      </property> 
-          
+      </property>
+
     </element>
-    
+
     <element name="DateTime-Calendar-NextYearButton"
         description="The calendar next year button">
-      
+
       <property name="background-image" type="image">
         <description>
           Background image for the Calendar next year button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-          
+
     </element>
 
   </element>

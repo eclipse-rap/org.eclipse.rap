@@ -23,6 +23,9 @@
           type="color"
           description="CTabFolder border color." />
 
+    <state name="disabled"
+        description="Applies to items of a disabled CTabFolder." />
+
     <element name="CTabItem"
         description="Items of a CTabFolder control.">
 
@@ -36,6 +39,9 @@
 
       <state name="selected"
           description="Applies to the selected item." />
+
+      <state name="disabled"
+          description="Applies to items of a disabled CTabFolder." />
 
     </element>
 

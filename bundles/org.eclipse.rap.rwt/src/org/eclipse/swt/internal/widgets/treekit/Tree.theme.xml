@@ -14,13 +14,16 @@
 
   <element name="Tree">
 
-      <property name="color"
-          type="color"
-          description="Text color for trees." />
+    <property name="color"
+        type="color"
+        description="Text color for trees." />
 
-      <property name="background-color"
-          type="color"
-          description="Background color for trees." />
+    <property name="background-color"
+        type="color"
+        description="Background color for trees." />
+
+    <state name="disabled"
+        description="Applies to disabled trees." />
 
     <element name="TreeItem"
         description="Item elements of tree controls">
@@ -39,6 +42,9 @@
       <state name="inactive"
           description="When the focus is not on the tree" />
 
+      <state name="disabled"
+          description="Applies to the items of a disabled tree." />
+
     </element>
 
     <element name="TreeColumn"
@@ -50,6 +56,9 @@
 
       <state name="hover"
           description="Mouse over state" />
+
+      <state name="disabled"
+          description="Applies to column headers of a disabled tree." />
 
       <element name="TreeColumn-SortIndicator"
           description="Sort indicators in Tree column headers">
@@ -63,6 +72,9 @@
 
         <state name="down"
             description="On sorting down" />
+
+        <state name="disabled"
+            description="Applies when the tree is disabled." />
 
       </element>
 

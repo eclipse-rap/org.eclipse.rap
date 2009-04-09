@@ -37,6 +37,9 @@
     <style name="BORDER"
         description="Indicates that the group box should have a border." />
 
+    <state name="disabled"
+        description="Applies to disabled group boxes." />
+
     <element name="Group-Frame"
         description="The frame that contains the child controls.">
 
@@ -51,6 +54,9 @@
       <property name="padding"
           type="boxdim"
           description="Padding for group box frames (inner distance between frame border and content)." />
+
+      <state name="disabled"
+          description="Applies to the frame of a disabled group box." />
 
     </element>
 

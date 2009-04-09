@@ -25,7 +25,10 @@
         
     <property name="border"
         type="border"
-        description="Border for progress bars." />    
+        description="Border for progress bars." />
+
+    <state name="disabled"
+        description="Applies to disabled progress bars." />
 
     <element name="ProgressBar-Indicator"
         description="The movable bar that indicates the progress">
@@ -37,6 +40,9 @@
       <property name="background-image"
           type="image"
           description="Background image for progress indicator" />
+
+      <state name="disabled"
+          description="Applies to the progress indicator of a disabled progress bar." />
 
     </element>
 

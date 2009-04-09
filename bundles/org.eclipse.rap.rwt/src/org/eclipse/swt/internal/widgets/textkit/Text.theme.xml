@@ -44,6 +44,9 @@
     <style name="MULTI"
         description="Style constant for multy line text area behavior." />
 
+    <state name="disabled"
+        description="Applies to disabled Texts." />
+
   </element>
 
 </theme>

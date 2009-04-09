@@ -27,21 +27,25 @@ public class WidgetMatcher_Test extends TestCase {
     WidgetMatcher matcher = new WidgetMatcher();
     matcher.addStyle( "BORDER", SWT.BORDER );
     matcher.addStyle( "PUSH", SWT.PUSH );
-    matcher.addState( "enabled", WidgetMatcher.CONTROL_ENABLED );
-    matcher.addState( "disabled", new Constraint() {
+    matcher.addStyle( "TOGGLE", SWT.TOGGLE );
+    matcher.addState( "selected", new Constraint() {
 
-      public boolean matches( final Widget widget ) {
-        return !( ( Control )widget ).isEnabled();
+      public boolean matches( Widget widget ) {
+        Button button = ( Button )widget;
+        return button.getSelection();
       }
     } );
 
     // Get set of conditional results
+    // rule 1
     ConditionalValue value1 = new ConditionalValue(
-      new String[] { "[BORDER", "[PUSH", ":enabled" },
+      new String[] { "[BORDER", "[TOGGLE", ":selected" },
       QxBorder.create( 2, "solid", "red" ) );
+    // rule 2
     ConditionalValue value2 = new ConditionalValue(
-      new String[] { "[BORDER", "[PUSH" },
+      new String[] { "[BORDER", "[TOGGLE" },
       QxBorder.create( 2, "dotted", "blue" ) );
+    // rule 3
     ConditionalValue value3 = new ConditionalValue(
       new String[] { ".special" },
       QxBorder.create( 1, "solid", "green" ) );
@@ -51,28 +55,34 @@ public class WidgetMatcher_Test extends TestCase {
     // Test matcher with example widgets
     Display display = new Display();
     Shell shell = new Shell( display );
-    Widget button1 = new Button( shell, SWT.PUSH );
-
+    
+    // A button that matches none of the rules
+    Widget button1 = new Button( shell, SWT.TOGGLE );
     QxType result = matcher.select( values, button1 );
     assertNull( result );
 
-    Button button2 = new Button( shell, SWT.PUSH | SWT.BORDER );
+    // A button that matches rule 2
+    Button button2 = new Button( shell, SWT.TOGGLE | SWT.BORDER );
     result = matcher.select( values, button2 );
-    assertNotNull( result );
-    assertEquals( value1.value, result );
-
-    button2.setEnabled( false );
-    button2.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
-    result = matcher.select( values, button2 );
-    assertNotNull( result );
     assertEquals( value2.value, result );
 
-    Button button3 = new Button( shell, SWT.PUSH );
+    // now matches rule 1 and rule 2, but 1 takes precedence
+    button2.setSelection( true );
+    result = matcher.select( values, button2 );
+    assertEquals( value1.value, result );
+
+    // now matches all three rules, still 1 takes precedence
+    button2.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
+    result = matcher.select( values, button2 );
+    assertEquals( value1.value, result );
+
+    // A button that only matches rule 3
+    Button button3 = new Button( shell, SWT.TOGGLE );
     button3.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
     result = matcher.select( values, button3 );
-    assertNotNull( result );
     assertEquals( value3.value, result );
 
+    // After this change it does not match anymore
     button3.setData( WidgetUtil.CUSTOM_VARIANT, "other" );
     result = matcher.select( values, button3 );
     assertNull( result );

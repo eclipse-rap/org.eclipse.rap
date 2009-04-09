@@ -43,6 +43,9 @@
       </description>
     </property>
 
+    <state name="disabled"
+        description="Applies to disabled combo boxes." />
+
     <element name="Combo-Button">
       <description>
         The drop-down button of RWT Combo.
@@ -69,6 +72,9 @@
 
       <state name="hover"
           description="Applies while the user hovers over the combo button." />
+
+      <state name="disabled"
+          description="Applies when the combo box is disabled." />
 
     </element>
 

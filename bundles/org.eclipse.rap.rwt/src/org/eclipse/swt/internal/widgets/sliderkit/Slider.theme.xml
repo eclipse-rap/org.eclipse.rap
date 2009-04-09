@@ -19,82 +19,85 @@
         type="color"
         description="Background color for slider" />
 
+    <state name="disabled"
+        description="Applies to disabled sliders." />
+
     <element name="Slider-Thumb"
         description="The movable thumb">
 
       <property name="background-color"
           type="color"
           description="Background color for slider thumb" />
-      
+
       <property name="border"
           type="border"
           description="Thumb border" />
-          
+
       <state name="hover"
           description="On thumb roll over" />
-          
+
       <state name="pressed"
-          description="On thumb pressed" />      
+          description="On thumb pressed" />
 
     </element>
-    
+
     <element name="Slider-DownButton"
         description="The button for decreasing selection value">
 
       <property name="background-color"
           type="color"
           description="Background color for min button" />
-          
+
       <property name="border"
           type="border"
           description="Down button border" />
-      
+
       <property name="background-image"
           type="image"
           description="Icon of the down button - horizontal.
                        The max size of the image should be 16 x 16 pixels." />
-          
+
       <state name="hover"
           description="On button roll over" />
-          
+
       <state name="pressed"
           description="On button pressed" />
-      
+
       <state name="horizontal"
           description="Corresponds to SWT.HORIZONTAL state of the slider." />
-          
+
       <state name="vertical"
-          description="Corresponds to SWT.VERTICAL state of the slider." />    
+          description="Corresponds to SWT.VERTICAL state of the slider." />
 
     </element>
-    
+
     <element name="Slider-UpButton"
         description="The button for increasing selection value">
 
       <property name="background-color"
           type="color"
           description="Background color for up button" />
-          
+
       <property name="border"
           type="border"
           description="Up button border" />
-          
+
       <property name="background-image"
           type="image"
           description="Icon of the up button - horizontal.
                        The max size of the image should be 16 x 16 pixels." />
-          
+
       <state name="hover"
           description="On button roll over" />
-          
+
       <state name="pressed"
           description="On button pressed" />
-          
+
       <state name="horizontal"
           description="Corresponds to SWT.HORIZONTAL state of the slider." />
-          
+
       <state name="vertical"
-          description="Corresponds to SWT.VERTICAL state of the slider." />     
+          description="Corresponds to SWT.VERTICAL state of the slider." />
 
     </element>
 
