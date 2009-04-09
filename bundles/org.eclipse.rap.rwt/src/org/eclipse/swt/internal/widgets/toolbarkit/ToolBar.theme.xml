@@ -23,8 +23,8 @@
         type="color"
         description="Background color for tool bar" />
 
-    <!--state name="disabled"
-        description="Applies to disabled tool bars." /-->
+    <state name="disabled"
+        description="Applies to disabled tool bars." />
 
     <element name="ToolItem"
         description="Items of ToolBar controls">
@@ -57,8 +57,8 @@
       <state name="selected"
           description="Applies while the ToolItem is selected (CHECK of RADIO style)." />
 
-      <!--state name="disabled"
-          description="Applies to disabled tool items." /-->
+      <state name="disabled"
+          description="Applies to disabled tool items." />
 
     </element>
 

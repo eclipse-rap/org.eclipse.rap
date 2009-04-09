@@ -6,7 +6,7 @@ ToolBar {
 }
 
 ToolItem {
-  color: black;
+  color: transparent;
   background-color: transparent;
   border: 1px outset;
   padding: 2px 3px;

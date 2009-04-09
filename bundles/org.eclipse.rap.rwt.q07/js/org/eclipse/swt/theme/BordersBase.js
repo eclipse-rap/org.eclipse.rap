@@ -83,25 +83,25 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
       colorLeft : "widget.highlight",
       colorRight : "widget.shadow"
     },
-    
+
     // -- toolbar --
-    
+
     "toolbar.BORDER.border" : {
       width : 1,
       color : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
     },
-    
+
     "toolbar.border" : {
       width : 0
     },
-        
+
     // -- table --
-    
+
     "table.column.border" : {
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.thinborder", "widget.thinborder" ]
     },
-    
+
     "table.column.hover.border" : {
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.selection-marker", "widget.thinborder" ]

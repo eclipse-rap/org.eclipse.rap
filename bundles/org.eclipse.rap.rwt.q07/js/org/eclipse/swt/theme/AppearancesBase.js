@@ -299,9 +299,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font : tv.getCssFont( "*", "font" ),
         overflow : "hidden",
         border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : tv.getCssColor( "ToolBar", "color" ),
+        textColor : tv.getCssColor( "ToolBar", "color" ),
         backgroundColor : tv.getCssColor( "ToolBar", "background-color" )
       };
     }
@@ -329,6 +327,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "toolbar-button" : {
     style : function( states ) {
+      if( states.pressed || states.checked ) {
+        states.selected = true;
+      } else if( states.selected ) {
+        delete states.selected;
+      }
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
@@ -337,21 +340,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         width : "auto",
         verticalChildrenAlign : "middle"
       };
+      result.textColor = states.disabled
+                         ? "widget.graytext"
+                         : tv.getCssColor( "ToolItem", "color" );
+      result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.backgroundImage = states.checked && !states.over
                                ? "static/image/dotted_white.gif"
                                : null;
-      if( states.disabled ) {
-        result.backgroundColor = tv.getCssColor( "ToolBar", "background-color" );
-        result.textColor = "widget.graytext";
-      } else {
-        result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
-        result.textColor = tv.getCssColor( "ToolItem", "color" );
-      }
-      if( states.pressed || states.checked ) {
-        states.selected = true;
-      } else if( states.selected ) {
-        delete states.selected;
-      }
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
       return result;
@@ -1841,7 +1836,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "calendar-toolbar-last-year-button" : {
     include: "calendar-toolbar-button",
 
@@ -1877,7 +1872,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "calendar-toolbar-next-year-button" : {
     include: "calendar-toolbar-button",
 
@@ -1914,7 +1909,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   "calendar-week" : {
     style : function( states ) {
       if( states.header ) {
@@ -1932,7 +1927,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         verticalAlign   : "middle",
         textColor       : states.disabled
                           ? "widget.graytext"
-                          : "undefined",       
+                          : "undefined",
         border          : border
       };
     }
@@ -2111,7 +2106,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   // ------------------------------------------------------------------------
   // CCombo
 
