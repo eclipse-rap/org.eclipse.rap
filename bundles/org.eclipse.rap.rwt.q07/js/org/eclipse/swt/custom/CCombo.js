@@ -27,6 +27,8 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     this._editable = true;
     this._dropped = false;
     this._borderWidth = 0;
+    this._selectionStart = 0;
+    this._selectionLength = 0;
     // Text field
     this._field = new qx.ui.form.TextField();
     this._field.setAppearance( "ccombo-field" );
@@ -195,7 +197,18 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     _visualizeFocus : function() {
       if( this._field.isCreated() ) {
         this._field._visualizeFocus();
+        if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+          this._handleSelectionChange();
+        }
+      }
+    },
+    
+    _ontabfocus : function() {
+      if( this._field.isCreated() ) {
         this._field.selectAll();
+        if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+          this._handleSelectionChange();
+        }
       }
     },
     
@@ -216,6 +229,9 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
         this._field.setValue( fieldValue );
         if( this._field.isCreated() ) {
           this._field.selectAll();
+          if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+            this._handleSelectionChange();
+          }
         }
         this._manager.setSelectedItem( value );
         this._manager.scrollItemIntoView( value );
@@ -325,6 +341,9 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
       if( !this._dropped ) {
         this.setCapture( false );
       }
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        this._handleSelectionChange();
+      }
     },
 
     _onMouseWheel : function( evt ) {
@@ -385,6 +404,9 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
           }
           break;
       }
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        this._handleSelectionChange();
+      }
     },
 
     _onKeyPress : function( evt ) {
@@ -438,6 +460,9 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
             }
           }
       }
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        this._handleSelectionChange();
+      }
     },
 
     _onKeyInput : function( evt ) {
@@ -447,7 +472,7 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
         this._setSelected( selected );
       }
     },
-
+    
     // Actions, connected with server communication
     _onTextBlur : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend && this._isModified ) {
@@ -501,6 +526,36 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
         req.addParameter( id + ".listVisible", this._list.getVisibility() );
       }
     },
+    
+    // Checks for a text field selection change and updates 
+    // the request parameter if necessary.
+    _handleSelectionChange : function() {
+      var start = this._field.getSelectionStart();
+      // TODO [ad] Solution from TextUtil.js - must be in synch with it
+      // TODO [rst] Quick fix for bug 258632
+      //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
+      if( start === undefined ) {
+        start = 0;
+      }
+      var length = this._field.getSelectionLength();
+      // TODO [ad] Solution from TextUtil.js - must be in synch with it
+      // TODO [rst] Workaround for qx bug 521. Might be redundant as the
+      //            bug is marked as (partly) fixed.
+      //            See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
+      if( typeof length == "undefined" ) {
+        text.debug( "___ qx bug 521 still exists" );
+        length = 0;
+      }
+      if( this._selectionStart != start || this._selectionLength != length ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        this._selectionStart = start;
+        req.addParameter( id + ".selectionStart", start );
+        this._selectionLength = length;
+        req.addParameter( id + ".selectionLength", length );
+      }
+    },
 
     // Set methods
     setItems : function( items ) {
@@ -547,7 +602,9 @@ qx.Class.define( "org.eclipse.swt.custom.CCombo", {
     
     setTextSelection : function( start, length ) {
       if( this._field.isCreated() ) {
+      	this._selectionStart = start;
         this._field.setSelectionStart( start );
+        this._selectionLength = length;
         this._field.setSelectionLength( length );
       }
     },

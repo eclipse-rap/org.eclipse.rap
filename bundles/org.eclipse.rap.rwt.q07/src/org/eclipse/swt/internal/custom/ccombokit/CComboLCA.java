@@ -71,20 +71,20 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    final CCombo combo = ( CCombo )widget;
-    String value = WidgetLCAUtil.readPropertyValue( combo, "selectedItem" );
+    final CCombo ccombo = ( CCombo )widget;
+    String value = WidgetLCAUtil.readPropertyValue( ccombo, "selectedItem" );
     if( value != null ) {
-      combo.select( Integer.parseInt( value ) );
+      ccombo.select( Integer.parseInt( value ) );
     }
     String listVisible
-      = WidgetLCAUtil.readPropertyValue( combo, "listVisible" );
+      = WidgetLCAUtil.readPropertyValue( ccombo, "listVisible" );
     if( listVisible != null ) {
-      combo.setListVisible( Boolean.valueOf( listVisible ).booleanValue() );
+      ccombo.setListVisible( Boolean.valueOf( listVisible ).booleanValue() );
     }
-    readText( combo );
-    ControlLCAUtil.processSelection( combo, null, true );
-    ControlLCAUtil.processMouseEvents( combo );
-    ControlLCAUtil.processKeyEvents( combo );
+    readTextAndSelection( ccombo );
+    ControlLCAUtil.processSelection( ccombo, null, true );
+    ControlLCAUtil.processMouseEvents( ccombo );
+    ControlLCAUtil.processKeyEvents( ccombo );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -130,26 +130,54 @@ public final class CComboLCA extends AbstractWidgetLCA {
   ///////////////////////////////////////
   // Helping methods to read client state
 
-  private static void readText( final CCombo ccombo ) {
-    final String value = WidgetLCAUtil.readPropertyValue( ccombo, "text" );
-    if( value != null ) {
+  private static void readTextAndSelection( final CCombo ccombo ) {
+    final Point selection = readSelection( ccombo );
+    final String txt = WidgetLCAUtil.readPropertyValue( ccombo, "text" );
+    if( txt != null ) {
       if( VerifyEvent.hasListener( ccombo ) ) {
         // setText needs to be executed in a ProcessAcction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            ccombo.setText( value );
+            ccombo.setText( txt );
+            ccombo.setSelection( selection );
             // since text is set in process action, preserved values have to be
             // replaced
             IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
-            adapter.preserve( PROP_TEXT, value );
+            adapter.preserve( PROP_TEXT, txt );
+            if( selection != null ) {
+              adapter.preserve( PROP_TEXT_SELECTION, selection );
+            }
          }
         } );
       } else {
-        ccombo.setText( value );
+        ccombo.setText( txt );
+        if( selection != null ) {
+          ccombo.setSelection( selection );
+        }
+      }
+    } else if( selection != null ) {
+      ccombo.setSelection( selection );
+    }
+  }
+  
+  private static Point readSelection( final CCombo ccombo ) {
+    Point result = null;
+    String selStart = WidgetLCAUtil.readPropertyValue( ccombo, 
+                                                       "selectionStart" );
+    String selLength = WidgetLCAUtil.readPropertyValue( ccombo, 
+                                                        "selectionLength" );
+    if( selStart != null || selLength != null ) {
+      result = new Point( 0, 0 );
+      if( selStart != null ) {
+        result.x = Integer.parseInt( selStart );
+      }
+      if( selLength != null ) {
+        result.y = result.x + Integer.parseInt( selLength );
       }
     }
+    return result;
   }
 
   //////////////////////////////////////////////
@@ -182,9 +210,9 @@ public final class CComboLCA extends AbstractWidgetLCA {
                                                          newValue, 
                                                          defValue );
     // The 'textChanged' statement covers the following use case:
-    // combo.add( "a" );  combo.select( 0 );
+    // ccombo.add( "a" );  ccombo.select( 0 );
     // -- in a subsequent request --
-    // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
+    // ccombo.removeAll();  ccombo.add( "b" );  ccombo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
     boolean textChanged = !isEditable( ccombo )
                           && WidgetLCAUtil.hasChanged( ccombo, 
