@@ -40,6 +40,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "List-Item" : {
         "inactive" : "parent_unfocused"
       },
+      "Text" : {
+        "read-only" : "readonly"
+      },
       "TreeItem" : {
         "inactive" : "parent_unfocused"
       },
