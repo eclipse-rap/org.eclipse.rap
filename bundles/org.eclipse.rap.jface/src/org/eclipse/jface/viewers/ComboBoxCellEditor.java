@@ -18,7 +18,7 @@ import java.text.MessageFormat; // Not using ICU to support standalone JFace
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Control;
  * </p>
  * @since 1.2
  */
-//RAP [rh] replaced CCombo from original JFace implementation with Combo 
 public class ComboBoxCellEditor extends AbstractComboBoxCellEditor {
 
 	/**
@@ -54,7 +53,7 @@ public class ComboBoxCellEditor extends AbstractComboBoxCellEditor {
 	/**
 	 * The custom combo box control.
 	 */
-	Combo comboBox;
+	CCombo comboBox;
 
 	/**
 	 * Default ComboBoxCellEditor style
@@ -133,7 +132,7 @@ public class ComboBoxCellEditor extends AbstractComboBoxCellEditor {
 	 */
 	protected Control createControl(Composite parent) {
 
-		comboBox = new Combo(parent, getStyle());
+		comboBox = new CCombo(parent, getStyle());
 		comboBox.setFont(parent.getFont());
 
 		populateComboBoxItems();
@@ -205,7 +204,7 @@ public class ComboBoxCellEditor extends AbstractComboBoxCellEditor {
 			layoutData.minimumWidth = 60;
 		} else {
 			// make the comboBox 10 characters wide
-// RAP [rh] font metrics missing		  
+// RAP [rh] font metrics missing
 //			GC gc = new GC(comboBox);
 //			layoutData.minimumWidth = (gc.getFontMetrics()
 //					.getAverageCharWidth() * 10) + 10;

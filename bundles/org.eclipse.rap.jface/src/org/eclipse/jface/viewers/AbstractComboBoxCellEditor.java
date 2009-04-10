@@ -12,6 +12,7 @@
 package org.eclipse.jface.viewers;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -20,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
  * @since 1.2
  *
  */
-// RAP [rh] replaced CCombo from original JFace implementation with Combo 
 abstract class AbstractComboBoxCellEditor extends CellEditor {
 	/**
 	 * The list is dropped down when the activation is done through the mouse
@@ -90,14 +90,14 @@ abstract class AbstractComboBoxCellEditor extends CellEditor {
 			}
 
 			if (dropDown) {
-// RAP [rh] opening list part programmatically not supported			  
-//				getControl().getDisplay().asyncExec(new Runnable() {
-//
-//					public void run() {
-//						((CCombo) getControl()).setListVisible(true);
-//					}
-//
-//				});
+
+				getControl().getDisplay().asyncExec(new Runnable() {
+
+					public void run() {
+						((CCombo) getControl()).setListVisible(true);
+					}
+
+				});
 
 			}
 		}

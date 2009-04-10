@@ -19,7 +19,7 @@ import java.text.MessageFormat; // Not using ICU to support standalone JFace
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * A cell editor that presents a list of items in a combo box. In contrast to
- * {@link ComboBoxCellEditor} it wraps the underlying {@link Combo} using a
+ * {@link ComboBoxCellEditor} it wraps the underlying {@link CCombo} using a
  * {@link ComboViewer}
  * @since 1.2
  */
@@ -79,9 +79,7 @@ public class ComboBoxViewerCellEditor extends AbstractComboBoxCellEditor {
 	 */
 	protected Control createControl(Composite parent) {
 
-// RAP [rh] CCombo missing	  
-//		CCombo comboBox = new CCombo(parent, getStyle());
-		Combo comboBox = new Combo(parent, getStyle());
+		CCombo comboBox = new CCombo(parent, getStyle());
 		comboBox.setFont(parent.getFont());
 		viewer = new ComboViewer(comboBox);
 
@@ -158,7 +156,7 @@ public class ComboBoxViewerCellEditor extends AbstractComboBoxCellEditor {
 			layoutData.minimumWidth = 60;
 		} else {
 			// make the comboBox 10 characters wide
-// RAP [rh] font metrics missing      
+// RAP [rh] font metrics missing
 //			GC gc = new GC(viewer.getControl());
 //			layoutData.minimumWidth = (gc.getFontMetrics()
 //					.getAverageCharWidth() * 10) + 10;
