@@ -28,8 +28,6 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
     = "org.eclipse.swt.ToolItemUtil.checkSelected";
   private static final String CREATE_CHECK
     = "org.eclipse.swt.ToolItemUtil.createCheck";
-  
-  private static final String PROP_SELECTION = "selection";
 
   private final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
@@ -39,9 +37,7 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
     ToolItemLCAUtil.preserveImages( toolItem );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
-    adapter.preserve( PROP_SELECTION,
-                      Boolean.valueOf( toolItem.getSelection() ) );
+    ToolItemLCAUtil.preserveSelection( toolItem );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
@@ -59,7 +55,7 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent()
     };
-    writer.callStatic( CREATE_CHECK, args );    
+    writer.callStatic( CREATE_CHECK, args );
     writer.set( "checked", toolItem.getSelection() );
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
@@ -84,16 +80,7 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     ToolItemLCAUtil.writeBounds( toolItem );
-    writeSelection( toolItem, toolItem.getSelection() );
+    ToolItemLCAUtil.writeSelection( toolItem, toolItem.getSelection() );
     WidgetLCAUtil.writeCustomVariant( toolItem );
-  }
-
-  static void writeSelection( final ToolItem toolItem, final boolean selection )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( toolItem );
-    Boolean newValue = Boolean.valueOf( selection );
-    Boolean defValue = Boolean.FALSE;
-    writer.set( PROP_SELECTION, "checked", newValue, defValue );
   }
 }

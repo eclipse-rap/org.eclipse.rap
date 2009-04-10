@@ -38,6 +38,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
     ToolItemLCAUtil.preserveImages( toolItem );
+    ToolItemLCAUtil.preserveSelection( toolItem );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
@@ -74,7 +75,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
       toolItem.getSelection() ? "true" : null,
       neighbour
     };
-    writer.callStatic( CREATE_RADIO, args );    
+    writer.callStatic( CREATE_RADIO, args );
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
@@ -88,6 +89,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     ToolItemLCAUtil.writeBounds( toolItem );
+    ToolItemLCAUtil.writeSelection( toolItem, toolItem.getSelection() );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned

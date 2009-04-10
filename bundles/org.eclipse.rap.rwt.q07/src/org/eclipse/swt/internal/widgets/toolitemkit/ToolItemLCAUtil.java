@@ -29,7 +29,8 @@ final class ToolItemLCAUtil {
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_HOT_IMAGE = "hotImage";
-  
+  private static final String PROP_SELECTION = "selection";
+
   private ToolItemLCAUtil() {
     // prevent instantiation
   }
@@ -45,9 +46,24 @@ final class ToolItemLCAUtil {
                       Boolean.valueOf( hasListener ) );
     adapter.preserve( Props.BOUNDS, toolItem.getBounds() );
   }
-  
+
   ////////////
   // Selection
+
+  static void preserveSelection( final ToolItem toolItem ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
+    adapter.preserve( PROP_SELECTION,
+                      Boolean.valueOf( toolItem.getSelection() ) );
+  }
+
+  static void writeSelection( final ToolItem toolItem, final boolean selection )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
+    Boolean newValue = Boolean.valueOf( selection );
+    Boolean defValue = Boolean.FALSE;
+    writer.set( PROP_SELECTION, "checked", newValue, defValue );
+  }
 
   static void processSelection( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) )
@@ -71,7 +87,7 @@ final class ToolItemLCAUtil {
                                true,
                                detail );
   }
-  
+
   /////////////
   // Visibility
 
@@ -91,8 +107,8 @@ final class ToolItemLCAUtil {
   }
 
   //////////
-  // Bounds 
-  
+  // Bounds
+
   static void writeBounds( final ToolItem toolItem ) throws IOException {
     Rectangle bounds = toolItem.getBounds();
     // [rst] Chevron-button is created as a separate widget on the client side
@@ -101,7 +117,7 @@ final class ToolItemLCAUtil {
     }
     WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
   }
-  
+
   ////////
   // Image
 
@@ -110,7 +126,7 @@ final class ToolItemLCAUtil {
     adapter.preserve( PROP_IMAGE, getImage( toolItem ) );
     adapter.preserve( PROP_HOT_IMAGE, toolItem.getHotImage() );
   }
-  
+
   static void writeImages( final ToolItem toolItem ) throws IOException {
     Image image = getImage( toolItem );
     if( WidgetLCAUtil.hasChanged( toolItem, PROP_IMAGE, image, null ) ) {
@@ -138,7 +154,7 @@ final class ToolItemLCAUtil {
     }
     return result;
   }
-  
+
   private static String getImagePath( final Image image ) {
     return image == null ? null : ResourceFactory.getImagePath( image );
   }

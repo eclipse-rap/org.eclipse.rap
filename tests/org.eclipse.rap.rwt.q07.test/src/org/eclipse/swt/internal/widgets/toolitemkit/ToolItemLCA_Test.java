@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,15 @@ public class ToolItemLCA_Test extends TestCase {
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.RADIO );
     RWTFixture.markInitialized( display );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.FALSE,
+                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+    RWTFixture.clearPreserved();
+    item.setSelection( true );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( Props.SELECTION_INDICES ) );
     testPreserveValues( display, item );
     display.dispose();
   }
@@ -174,27 +183,27 @@ public class ToolItemLCA_Test extends TestCase {
     WidgetUtil.getLCA( item ).readData( item );
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );
   }
-  
+
   public void testGetImage() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( toolBar, SWT.CHECK );
-    
+
     Image enabledImage = Graphics.getImage( RWTFixture.IMAGE1 );
     Image disabledImage = Graphics.getImage( RWTFixture.IMAGE2 );
     assertNull( ToolItemLCAUtil.getImage( item ) );
-    
+
     item.setImage( enabledImage );
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
 
     item.setImage( enabledImage );
     item.setDisabledImage( disabledImage );
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
-    
+
     item.setEnabled( false );
     assertSame( disabledImage, ToolItemLCAUtil.getImage( item ) );
-    
+
     item.setDisabledImage( null );
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
   }
