@@ -32,6 +32,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.addEventListener( "blur", this._onChangeValue, this );
       this._textfield.addEventListener( "keydown", this._onKeyDown, this );
+      this._textfield.setTabIndex( -1 );
       this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     },
     
@@ -60,16 +61,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       }
     },
 
-    setTabIndex : function( value ) {
-      this._textfield.setTabIndex( value );
-    },
-
     setHasModifyListener : function( value ) {
       this._hasModifyListener = value;      
     },
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;      
+    },
+    
+    _visualizeFocus : function() {
+      this._textfield._visualizeFocus();
+      if( this._textfield.isCreated() ) {
+        this._textfield.selectAll();
+      }
+    },
+      
+    _visualizeBlur : function() {
+      // setSelectionLength( 0 ) for TextField - needed for IE
+      this._textfield.setSelectionLength( 0 );
+      this._textfield._visualizeBlur();
     },
 
     _onChangeValue : function( evt ) {
