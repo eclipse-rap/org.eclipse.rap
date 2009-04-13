@@ -104,6 +104,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         // TODO [rst] Add item parameter in doWidgetSelected
         var itemId = widgetManager.findIdByWidget( tab );
+        var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( "org.eclipse.swt.events.widgetSelected.item", 
                           itemId );
         var id = widgetManager.findIdByWidget( tab.getParent().getParent() );
