@@ -402,7 +402,7 @@ public class Shell extends Decorations {
    * @see Shell#open
    * @see Shell#setActive
    */
-  public void setActive () {
+  public void setActive() {
     checkWidget();
     if( isVisible() ) {
       display.setActiveShell( this );
@@ -618,8 +618,10 @@ public class Shell extends Decorations {
   public void open() {
     checkWidget();
     bringToTop();
-    display.setActiveShell( this );
+    // Order of setVisible/setActive is crucial: see isVisible-check in 
+    // Shell#setActive()
     setVisible( true );
+    display.setActiveShell( this );
     if( !restoreFocus() && !traverseGroup( true ) ) {
       setFocus();
     }

@@ -12,8 +12,6 @@ package org.eclipse.ui.internal;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.internal.misc.UIListenerLogging;
@@ -66,30 +64,12 @@ public class PartService implements IPartService {
         listeners2.removePartListener(l);
     }
 
-// RAP [fappel]: workaround for missing untyped ActivateListener
-// TODO [fappel]: check whether the ActivateEvent could also be adapted by
-//                the UntypedEventAdapter    
-//    private abstract class PartListener implements Listener {
-      private abstract class PartListener
-        extends ActivateAdapter
-        implements Listener
-      {
+    private abstract class PartListener implements Listener {
 		IWorkbenchPartReference ref;
 
 		public PartListener(IWorkbenchPartReference ref) {
 			this.ref = ref;
 		}
-		
-		// RAP [fappel]: workaround for missing untyped ActivateListener
-		public void activated( final ActivateEvent event ) {
-		  Widget widget = ( Widget )event.getSource();
-		  Event untyped = new Event();
-		  untyped.type = SWT.Activate;
-		  untyped.widget = widget;
-		  untyped.display = widget.getDisplay();
-		  handleEvent( untyped );
-		}
-		
 
 		public void handleEvent(Event event) {
 			if (event.type == SWT.Resize || event.type == SWT.Show
@@ -111,9 +91,6 @@ public class PartService implements IPartService {
 			event.widget.removeListener(SWT.Dispose, this);
 			// this is a "safety" event
 			event.widget.removeListener(SWT.Activate, this);
-
-			// RAP [fappel]: workaround for missing untyped ActivateListener
-			ActivateEvent.removeListener( event.widget, this );
 		}
 
 		abstract void fire();
@@ -180,9 +157,6 @@ public class PartService implements IPartService {
 		control.addListener(SWT.Show, listener);
 		control.addListener(SWT.Activate, listener);
 		control.addListener(SWT.Dispose, listener);
-
-		// RAP [fappel]: workaround for missing untyped ActivateListener
-		ActivateEvent.addListener( control, listener );
 	}
     
     /**
