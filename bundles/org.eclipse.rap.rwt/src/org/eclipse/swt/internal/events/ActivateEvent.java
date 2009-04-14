@@ -15,6 +15,7 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * Instances of this class are sent as a result of controls being activated 
@@ -34,7 +35,10 @@ public final class ActivateEvent extends TypedEvent {
   
   private static final Class LISTENER = ActivateListener.class;
 
-
+  public ActivateEvent( Event event ) {
+    this( ( Control )event.widget, event.type );
+  }
+  
   public ActivateEvent( final Control source, final int id ) {
     super( source, id );
   }

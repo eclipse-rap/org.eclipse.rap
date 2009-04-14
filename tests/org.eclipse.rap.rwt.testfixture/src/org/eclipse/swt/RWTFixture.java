@@ -303,7 +303,6 @@ public final class RWTFixture {
     preserveWidgets();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     displayLCA.processAction( display );
-
   }
 
   public static void fakeContext() {

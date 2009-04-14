@@ -32,7 +32,8 @@ public final class UntypedEventAdapter
              MouseListener,
              KeyListener,
              TraverseListener,
-             ShowListener
+             ShowListener,
+             ActivateListener
 {
 
   private class Entry {
@@ -225,6 +226,16 @@ public final class UntypedEventAdapter
     dispatchEvent( event );
   }
   
+  public void activated( final ActivateEvent typedEvent ) {
+    Event event = createEvent( SWT.Activate, typedEvent.getSource() );
+    dispatchEvent( event );
+  }
+  
+  public void deactivated( final ActivateEvent typedEvent ) {
+    Event event = createEvent( SWT.Deactivate, typedEvent.getSource() );
+    dispatchEvent( event );
+  }
+  
   //////////////////////
   // Listener management
   
@@ -255,6 +266,12 @@ public final class UntypedEventAdapter
       break;
       case SWT.Activate:
       case SWT.Deactivate:
+        if( widget instanceof Shell ) {
+          ShellEvent.addListener( widget, this );
+        } else {
+          ActivateEvent.addListener( widget, this );
+        }
+      break;
       case SWT.Close:
         ShellEvent.addListener( widget, this );
       break;
@@ -332,6 +349,12 @@ public final class UntypedEventAdapter
       break;
       case SWT.Activate:
       case SWT.Deactivate:
+        if( widget instanceof Shell ) {
+          ShellEvent.removeListener( widget, this );
+        } else {
+          ActivateEvent.removeListener( widget, this );
+        }
+      break;
       case SWT.Close:
         ShellEvent.removeListener( widget, this );
       break;
@@ -414,6 +437,12 @@ public final class UntypedEventAdapter
       break;
       case SWT.Activate:
       case SWT.Deactivate:
+        if( event.widget instanceof Shell ) {
+          typedEvent = new ShellEvent( event );
+        } else {
+          typedEvent = new ActivateEvent( event );
+        }
+      break;
       case SWT.Close:
         typedEvent = new ShellEvent( event );
       break;
