@@ -791,7 +791,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       return {
         width  : 16,
-        height : 16
+        height : 16,
+        marginRight : 2
       };
     }
   },

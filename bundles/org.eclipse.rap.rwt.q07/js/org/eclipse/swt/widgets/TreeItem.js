@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -251,7 +251,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     columnAdded : function() {
       var obj = new qx.ui.basic.Atom( "" );
       obj.setHorizontalChildrenAlign( "left" );
-      this._row.addObject(obj, true);
+      this._row.addObject( obj, true );
       this._colLabels[ this._colLabels.length ] = obj;
     },
     
@@ -284,15 +284,15 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
                 // TODO
               }
             } else {
-              this._colLabels[ c -1 ].setHeight( this.getIndentObject().getHeight() );
-              this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
-              this._colLabels[ c -1 ].setIcon( this._images[ col ] );
+              this._colLabels[ c - 1 ].setHeight( this.getIndentObject().getHeight() );
+              this._colLabels[ c - 1 ].setLabel( this._texts[ col ] );
+              this._colLabels[ c - 1 ].setIcon( this._images[ col ] );
               // colors and fonts
               if( this._backgrounds && this._backgrounds[ col ] ) {
-                this._colLabels[ c -1 ].getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
+                this._colLabels[ c - 1 ].getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
               }
               if( this._foregrounds && this._foregrounds[ col ] ) {
-                this._colLabels[ c -1 ].setTextColor( this._foregrounds[ col ]);
+                this._colLabels[ c - 1 ].setTextColor( this._foregrounds[ col ]);
               }
               if( this._fonts && this._fonts[ col ] ) {
                 // TODO
@@ -307,23 +307,29 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       var columnWidth = new Array();
       var fullWidth = this.getTree().getParent().getColumnsWidth();
       this.setWidth( fullWidth );
-        for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
-          columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
-        }
+      for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+        columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
+      }
       if( columnWidth.length > 0 ) {
-        var checkboxWidth = ( this._checkBox == null ? 0 : 16); // 13 width + 3 checkbox margin 
-        var imageWidth = ( this._images[0] == null ? 0 : this.getIconObject().getWidth() );
-        this.getLabelObject().setWidth( columnWidth[ 0 ]
+        var checkboxWidth = this._checkBox == null ? 0 : 16; // 13 width + 3 checkbox margin 
+        var imageWidth = this._images[ 0 ] == null ? 0 : this.getIconObject().getWidth();
+        var spacing = imageWidth > 0 ? this.getIconObject().getMarginRight() : 0;        
+        this.getLabelObject().setWidth( columnWidth[ 0 ]         
+          - ( this.getLevel() * 19 )   // TODO: [bm] replace with computed indent width
+          - checkboxWidth
           - imageWidth
-          - ( this.getLevel() * 19)   // TODO: [bm] replace with computed indent width
-          - checkboxWidth );
+          - spacing );
         var coLabel;
-         for( var i=1; i<columnWidth.length; i++ ) {
-           coLabel = this._colLabels[ i-1 ];
-           if( coLabel != null && coLabel.getLabelObject() != null ) {
-             coLabel.getLabelObject().setWidth( columnWidth[ i ] );
-           }
-         }
+        for( var i = 1; i < columnWidth.length; i++ ) {          
+          coLabel = this._colLabels[ i - 1 ];          
+          imageWidth = this._images[ i ] == null ? 0 : 16;
+          spacing = imageWidth > 0 ? coLabel.getSpacing() : 0;          
+          if( coLabel != null && coLabel.getLabelObject() != null ) {
+            coLabel.getLabelObject().setWidth( columnWidth[ i ] 
+              - imageWidth 
+              - spacing );
+          }
+        }
       }
     }
     
