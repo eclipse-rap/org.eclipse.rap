@@ -262,10 +262,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       if( this._texts != null ) {
         for( var c = 0; c < colCount; c++ ) {
           var col = colOrder[ c ];
-          var text = this._texts[ col ];
-          if( text != null && text != "") {
+          var text = this._texts[ col ] == "" ? " " : this._texts[ col ];
+          if( text != null ) {
             if( c == 0 ) {
-              this.setLabel( this._texts[ col ] );
+              this.setLabel( text );
               this.setImage( this._images[ col ] );
               if( this._backgrounds && this._backgrounds[ col ] ) {
                 // TODO [bm] disabled due to qooxdoo bug that selection disappears
@@ -285,7 +285,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
               }
             } else {
               this._colLabels[ c - 1 ].setHeight( this.getIndentObject().getHeight() );
-              this._colLabels[ c - 1 ].setLabel( this._texts[ col ] );
+              this._colLabels[ c - 1 ].setLabel( text );
               this._colLabels[ c - 1 ].setIcon( this._images[ col ] );
               // colors and fonts
               if( this._backgrounds && this._backgrounds[ col ] ) {
