@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
-import org.eclipse.swt.custom.CTabFolder;
 
 
 /**
@@ -442,62 +441,49 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     int newX = x;
     int newY = y;
-    Control currentFrom = from;
-    Point fromLocation = fixScrollableLocation( from );
-    newX += fromLocation.x;
-    newY += fromLocation.y;
-    if( currentFrom instanceof Shell ) {
-      currentFrom = null;
-    } else if( currentFrom instanceof Scrollable ) {
-      currentFrom = currentFrom.getParent();
+    if( from != null ) {
+      Point fromOrigin = getAbsoluteOrigin( from );
+      newX += fromOrigin.x;
+      newY += fromOrigin.y;
     }
-    while( currentFrom != null ) {
-      Rectangle bounds = currentFrom.getBounds();
-      int border = currentFrom.getBorderWidth();
-      newX += bounds.x + border;
-      newY += bounds.y + border;
-      if( currentFrom instanceof Shell ) {
-        currentFrom = null;
-      } else {
-        currentFrom = currentFrom.getParent();
-      }
-    }
-    Control currentTo = to;
-    Point toLocation = fixScrollableLocation( to );
-    newX -= toLocation.x;
-    newY -= toLocation.y;
-    if( currentTo instanceof Shell ) {
-      currentTo = null;
-    } else if( currentTo instanceof Scrollable ) {
-      currentTo = currentTo.getParent();
-    }
-    while( currentTo != null ) {
-      Rectangle bounds = currentTo.getBounds();
-      int border = currentTo.getBorderWidth();
-      newX -= ( bounds.x + border );
-      newY -= ( bounds.y + border );
-      if( currentTo instanceof Shell ) {
-        currentTo = null;
-      } else {
-        currentTo = currentTo.getParent();
-      }
+    if( to != null ) {
+      Point toOrigin = getAbsoluteOrigin( to );
+      newX -= toOrigin.x;
+      newY -= toOrigin.y;
     }
     return new Rectangle( newX, newY, width, height );
   }
 
-  private static Point fixScrollableLocation( final Control control ) {
-    Point result = new Point( 0, 0 );
-    if( control != null ) {
-      Point location = control.getLocation();
-      if( control instanceof CTabFolder ) {
-        result.x = location.x;
-        result.y = location.y;
-      } else if( control instanceof Scrollable ) {
-        Rectangle trimmings
-          = ( ( Scrollable )control ).computeTrim( 0, 0, 0, 0 );
-        result.x = location.x - trimmings.x;
-        result.y = location.y - trimmings.y;
+  /*
+   * Returns the origin of the coordinate system of a given control in absolute
+   * coordinates, i.e. relative to the display.
+   */
+  private static Point getAbsoluteOrigin( final Control control ) {
+    Control currentControl = control;
+    Point absolute = new Point( 0, 0 );
+    while( currentControl != null ) {
+      Point origin = getOrigin( currentControl );
+      absolute.x += origin.x;
+      absolute.y += origin.y;
+      if( currentControl instanceof Shell ) {
+        currentControl = null;
+      } else {
+        currentControl = currentControl.getParent();
       }
+    }
+    return new Point( absolute.x, absolute.y );
+  }
+
+  /*
+   * Returns the origin of the coordinate system of a given control, relative to
+   * it's parent or, if it does not have a parent, relative to the display.
+   */
+  private static Point getOrigin( final Control control ) {
+    Point result = control.getLocation();
+    if( control instanceof Scrollable ) {
+      int borderWidth = control.getBorderWidth();
+      result.x += borderWidth;
+      result.y += borderWidth;
     }
     return result;
   }

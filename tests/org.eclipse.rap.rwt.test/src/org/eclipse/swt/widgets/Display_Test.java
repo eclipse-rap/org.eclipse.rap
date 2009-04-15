@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
@@ -27,6 +26,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
+
 
 public class Display_Test extends TestCase {
 
@@ -136,7 +136,7 @@ public class Display_Test extends TestCase {
     assertTrue( bounds.x != display.getBounds().x );
   }
 
-  public void testBounds() throws Exception {
+  public void testBounds() {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -147,7 +147,7 @@ public class Display_Test extends TestCase {
     assertNotSame( expectedBounds, bounds );
   }
 
-  public void testClientArea() throws Exception {
+  public void testClientArea() {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -224,28 +224,25 @@ public class Display_Test extends TestCase {
     shell.setBounds( 100, 100, 800, 600 );
     Composite comp1 = new Composite( shell, SWT.BORDER );
     comp1.setBounds( 0, 0, 20, 20 );
-    int comp1Border = comp1.getBorderWidth();
+    int comp1Offset = comp1.getBorderWidth();
     // Test with scrollable
     Composite comp2 = new Composite( shell, SWT.NONE );
     comp2.setBounds( 10, 10, 20, 20 );
-    int comp2Border = comp2.getBorderWidth();
+    int comp2Offset = comp2.getBorderWidth();
     Rectangle actual = display.map( comp2, comp1, 1, 2, 3, 4 );
-    Rectangle expected
-      = new Rectangle( 1 + comp2.getBounds().x + comp2Border - comp1Border,
-                       2 + comp2.getBounds().y + comp2Border - comp1Border,
-                       3,
-                       4 );
+    Rectangle expected = new Rectangle( 1 + 10 + comp2Offset - comp1Offset,
+                                        2 + 10 + comp2Offset - comp1Offset,
+                                        3,
+                                        4 );
     assertEquals( expected, actual );
     // Test with control
     Button button = new Button( shell, SWT.NONE );
     button.setBounds( 10, 10, 20, 20 );
-    int buttonBorder = button.getBorderWidth();
     actual = display.map( button, comp1, 1, 2, 3, 4 );
-    expected
-      = new Rectangle( 1 + button.getBounds().x + buttonBorder - comp1Border,
-                       2 + button.getBounds().y + buttonBorder - comp1Border,
-                       3,
-                       4 );
+    expected = new Rectangle( 1 + 10 - comp1Offset,
+                              2 + 10 - comp1Offset,
+                              3,
+                              4 );
     assertEquals( expected, actual );
     // Test with CTabFolder
     CTabFolder folder = new CTabFolder( shell, SWT.CLOSE );
@@ -253,12 +250,304 @@ public class Display_Test extends TestCase {
     item.setText( "Item" );
     folder.setBounds( 10, 10, 100, 100 );
     actual = display.map( folder, comp1, 1, 2, 3, 4 );
-    expected
-      = new Rectangle( 1 + folder.getBounds().x - comp1Border,
-                       2 + folder.getBounds().y - comp1Border,
-                       3,
-                       4 );
+    expected = new Rectangle( 1 + 10 - comp1Offset,
+                              2 + 10 - comp1Offset,
+                              3,
+                              4 );
     assertEquals( expected, actual );
+  }
+
+  ////////////////////////////
+  // SWT Tests for Display#map
+
+  /*
+   * Verbatim copy from SWT Test_org_eclipse_swt_widgets_Display
+   */
+  public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlII() {
+    Display display = new Display();
+    try {
+      Shell shell = new Shell(display, SWT.NO_TRIM);
+      Button button1 = new Button(shell, SWT.PUSH);
+      button1.setBounds(0,0,100,100);
+      Button button2 = new Button(shell, SWT.PUSH);
+      button2.setBounds(200,100,100,100);
+      shell.setBounds(0,0,400,400);
+      shell.open();
+      
+      Point shellOffset = shell.getLocation();
+      // [rst] Shell offset includes 1px border in RAP
+      shellOffset.x += 1;
+      shellOffset.y += 1;
+      Point result;
+      
+      result = display.map(button1, button2, 0, 0);
+      assertEquals(new Point(-200,-100), result);
+      result = display.map(button1, button2, -10, -20);
+      assertEquals(new Point(-210,-120), result);
+      result = display.map(button1, button2, 30, 40);
+      assertEquals(new Point(-170,-60), result);
+      
+      result = display.map(button2, button1, 0, 0);
+      assertEquals(new Point(200,100), result);
+      result = display.map(button2, button1, -5, -15);
+      assertEquals(new Point(195,85), result);
+      result = display.map(button2, button1, 25, 35);
+      assertEquals(new Point(225,135), result);
+      
+      result = display.map(null, button2, 0, 0);
+      assertEquals(new Point(-200 - shellOffset.x,-100 - shellOffset.y), result);
+      result = display.map(null, button2, -2, -4);
+      assertEquals(new Point(-202 - shellOffset.x,-104 - shellOffset.y), result);
+      result = display.map(null, button2, 6, 8);
+      assertEquals(new Point(-194 - shellOffset.x,-92 - shellOffset.y), result);
+      
+      result = display.map(button2, null, 0, 0);
+      assertEquals(new Point(shellOffset.x + 200,shellOffset.y + 100), result);
+      result = display.map(button2, null, -3, -6);
+      assertEquals(new Point(shellOffset.x + 197,shellOffset.y + 94), result);
+      result = display.map(button2, null, 9, 12);
+      assertEquals(new Point(shellOffset.x + 209,shellOffset.y + 112), result);
+      
+//      button1.dispose();
+//      try {
+//        result = display.map(button1, button2, 0, 0);
+//        fail("No exception thrown for map from control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map from control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+//      try {
+//        result = display.map(button2, button1, 0, 0);
+//        fail("No exception thrown for map to control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+      
+      shell.dispose();
+    } finally {
+      display.dispose();
+    }
+  }
+
+  /*
+   * Verbatim copy from SWT Test_org_eclipse_swt_widgets_Display
+   */
+  public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlIIII() {
+    Display display = new Display();
+    try {
+      Shell shell = new Shell(display, SWT.NO_TRIM);
+      Button button1 = new Button(shell, SWT.PUSH);
+      button1.setBounds(0,0,100,100);
+      Button button2 = new Button(shell, SWT.PUSH);
+      button2.setBounds(200,100,100,100);
+      shell.setBounds(0,0,400,400);
+      shell.open();
+      
+      Point shellOffset = shell.getLocation();
+      // [rst] Shell offset includes 1px border in RAP
+      shellOffset.x += 1;
+      shellOffset.y += 1;
+      Rectangle result;
+      
+      result = display.map(button1, button2, 0, 0, 100, 100);
+      assertEquals(new Rectangle(-200,-100,100,100), result);
+      result = display.map(button1, button2, -10, -20, 130, 140);
+      assertEquals(new Rectangle(-210,-120,130,140), result);
+      result = display.map(button1, button2, 50, 60, 170, 180);
+      assertEquals(new Rectangle(-150,-40,170,180), result);
+      
+      result = display.map(button2, button1, 0, 0, 100, 100);
+      assertEquals(new Rectangle(200,100,100,100), result);
+      result = display.map(button2, button1, -5, -15, 125, 135);
+      assertEquals(new Rectangle(195,85,125,135), result);
+      result = display.map(button2, button1, 45, 55, 165, 175);
+      assertEquals(new Rectangle(245,155,165,175), result);
+      
+      result = display.map(null, button2, 0, 0, 100, 100);
+      assertEquals(new Rectangle(-200 - shellOffset.x,-100 - shellOffset.y,100,100), result);
+      result = display.map(null, button2, -2, -4, 106, 108);
+      assertEquals(new Rectangle(-202 - shellOffset.x,-104 - shellOffset.y,106,108), result);
+      result = display.map(null, button2, 10, 12, 114, 116);
+      assertEquals(new Rectangle(-190 - shellOffset.x,-88 - shellOffset.y,114,116), result);
+      
+      result = display.map(button2, null, 0, 0, 100, 100);
+      assertEquals(new Rectangle(shellOffset.x + 200,shellOffset.y + 100,100,100), result);
+      result = display.map(button2, null, -3, -6, 109, 112);
+      assertEquals(new Rectangle(shellOffset.x + 197,shellOffset.y + 94,109,112), result);
+      result = display.map(button2, null, 15, 18, 121, 124);
+      assertEquals(new Rectangle(shellOffset.x + 215,shellOffset.y + 118,121,124), result);
+      
+//      button1.dispose();
+//      try {
+//        result = display.map(button1, button2, 0, 0, 100, 100);
+//        fail("No exception thrown for map from control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map from control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+//      try {
+//        result = display.map(button2, button1, 0, 0, 100, 100);
+//        fail("No exception thrown for map to control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+      
+      shell.dispose();
+    } finally {
+      display.dispose();
+    }
+  }
+
+  /*
+   * Verbatim copy from SWT Test_org_eclipse_swt_widgets_Display
+   */
+  public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_graphics_Point() {
+    Display display = new Display();
+    try {
+      Shell shell = new Shell(display, SWT.NO_TRIM);
+      Button button1 = new Button(shell, SWT.PUSH);
+      button1.setBounds(0,0,100,100);
+      Button button2 = new Button(shell, SWT.PUSH);
+      button2.setBounds(200,100,100,100);
+      shell.setBounds(0,0,400,400);
+      shell.open();
+      
+      Point result;
+      Point point = new Point(0,0);
+      Point shellOffset = shell.getLocation();
+      // [rst] Shell offset includes 1px border in RAP
+      shellOffset.x += 1;
+      shellOffset.y += 1;
+
+      
+      result = display.map(button1, button2, point);
+      assertEquals(new Point(-200,-100), result);
+      result = display.map(button1, button2, new Point(-10,-20));
+      assertEquals(new Point(-210,-120), result);
+      result = display.map(button1, button2, new Point(30,40));
+      assertEquals(new Point(-170,-60), result);
+      
+      result = display.map(button2, button1, point);
+      assertEquals(new Point(200,100), result);
+      result = display.map(button2, button1, new Point(-5,-15));
+      assertEquals(new Point(195,85), result);
+      result = display.map(button2, button1, new Point(25,35));
+      assertEquals(new Point(225,135), result);
+      
+      result = display.map(null, button2, point);
+      assertEquals(new Point(-200 - shellOffset.x,-100 - shellOffset.y), result);
+      result = display.map(null, button2, new Point(-2,-4));
+      assertEquals(new Point(-202 - shellOffset.x,-104 - shellOffset.y), result);
+      result = display.map(null, button2, new Point(6,8));
+      assertEquals(new Point(-194 - shellOffset.x,-92 - shellOffset.y), result);
+      
+      result = display.map(button2, null, point);
+      assertEquals(new Point(shellOffset.x + 200,shellOffset.y + 100), result);
+      result = display.map(button2, null, new Point(-3,-6));
+      assertEquals(new Point(shellOffset.x + 197,shellOffset.y + 94), result);
+      result = display.map(button2, null, new Point(9,12));
+      assertEquals(new Point(shellOffset.x + 209,shellOffset.y + 112), result);
+      
+//      button1.dispose();
+//      try {
+//        result = display.map(button1, button2, point);
+//        fail("No exception thrown for map from control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map from control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+//      try {
+//        result = display.map(button2, button1, point);
+//        fail("No exception thrown for map to control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+//      
+//      try {
+//        result = display.map(button2, button1, (Point) null);
+//        fail("No exception thrown for null point");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for point being null", SWT.ERROR_NULL_ARGUMENT, e);
+//      }
+
+      shell.dispose();
+    } finally {
+      display.dispose();
+    }
+  }
+
+  /*
+   * Verbatim copy from SWT Test_org_eclipse_swt_widgets_Display
+   */
+  public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_graphics_Rectangle() {
+    Display display = new Display();
+    try {
+      Shell shell = new Shell(display, SWT.NO_TRIM);
+      Button button1 = new Button(shell, SWT.PUSH);
+      button1.setBounds(0,0,100,100);
+      Button button2 = new Button(shell, SWT.PUSH);
+      button2.setBounds(200,100,100,100);
+      shell.setBounds(0,0,400,400);
+      shell.open();
+      
+      Rectangle result;
+      Rectangle rect = new Rectangle(0,0,100,100);
+      Point shellOffset = shell.getLocation();
+      // [rst] Shell offset includes 1px border in RAP
+      shellOffset.x += 1;
+      shellOffset.y += 1;
+      
+      result = display.map(button1, button2, rect);
+      assertEquals(new Rectangle(-200,-100,100,100), result);
+      result = display.map(button1, button2, new Rectangle(-10, -20, 130, 140));
+      assertEquals(new Rectangle(-210,-120,130,140), result);
+      result = display.map(button1, button2, new Rectangle(50, 60, 170, 180));
+      assertEquals(new Rectangle(-150,-40,170,180), result);
+      
+      result = display.map(button2, button1, rect);
+      assertEquals(new Rectangle(200,100,100,100), result);
+      result = display.map(button2, button1, new Rectangle(-5, -15, 125, 135));
+      assertEquals(new Rectangle(195,85,125,135), result);
+      result = display.map(button2, button1, new Rectangle(45, 55, 165, 175));
+      assertEquals(new Rectangle(245,155,165,175), result);
+      
+      result = display.map(null, button2, rect);
+      assertEquals(new Rectangle(-200 - shellOffset.x,-100 - shellOffset.y,100,100), result);
+      result = display.map(null, button2, new Rectangle(-2, -4, 106, 108));
+      assertEquals(new Rectangle(-202 - shellOffset.x,-104 - shellOffset.y,106,108), result);
+      result = display.map(null, button2, new Rectangle(10, 12, 114, 116));
+      assertEquals(new Rectangle(-190 - shellOffset.x,-88 - shellOffset.y,114,116), result);
+      
+      result = display.map(button2, null, rect);
+      assertEquals(new Rectangle(shellOffset.x + 200,shellOffset.y + 100,100,100), result);
+      result = display.map(button2, null, new Rectangle(-3, -6, 109, 112));
+      assertEquals(new Rectangle(shellOffset.x + 197,shellOffset.y + 94,109,112), result);
+      result = display.map(button2, null, new Rectangle(15, 18, 121, 124));
+      assertEquals(new Rectangle(shellOffset.x + 215,shellOffset.y + 118,121,124), result);
+      
+    
+//      button1.dispose();
+//      try {
+//        result = display.map(button1, button2, rect);
+//        fail("No exception thrown for map from control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map from control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+//      try {
+//        result = display.map(button2, button1, rect);
+//        fail("No exception thrown for map to control being disposed");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
+//      }
+//      
+//      try {
+//        result = display.map(button2, button1, (Rectangle) null);
+//        fail("No exception thrown for null point");
+//      } catch (IllegalArgumentException e) {
+//        assertEquals("Incorrect exception thrown for rectangle being null", SWT.ERROR_NULL_ARGUMENT, e);
+//      }
+      
+      shell.dispose();
+    } finally {
+      display.dispose();
+    }
   }
 
   public void testActiveShell() {
@@ -466,7 +755,7 @@ public class Display_Test extends TestCase {
     assertTrue( i.equals( new Integer( 10 ) ) );
   }
 
-  public void testSetDataKey() throws Exception {
+  public void testSetDataKey() {
     Display display = new Display();
     display.setData( "Integer", new Integer( 10 ) );
     display.setData( "String", "xyz" );
