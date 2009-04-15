@@ -482,9 +482,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //             mouse has been moved to another element between down and up.
     //             See https://bugs.eclipse.org/bugs/show_bug.cgi?id=257338
     _onRowClick : function( evt ) {
-      var row = evt.getCurrentTarget();
-      var rowIndex = this._rows.indexOf( row );
-      var itemIndex = this._topIndex + rowIndex;
+      this._rowClicked( evt.getTarget() );
+    },
+    
+    _rowClicked : function( row ) {
+      var itemIndex = this._topIndex + this._rows.indexOf( row );
       if(    itemIndex >= 0
           && itemIndex < this._itemCount
           && this._items[ itemIndex ]
@@ -495,7 +497,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                               this,
                               org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         if( this._multiSelect ) {
-          this._onMultiSelectRowClick( evt, itemIndex );
+          this._multiSelectRowClicked( evt, itemIndex );
         } else {
           this._setSingleSelection( itemIndex );
         }
@@ -506,7 +508,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
-    _onMultiSelectRowClick : function( evt, itemIndex ) {
+    _multiSelectRowClicked : function( evt, itemIndex ) {
       if( evt.isRightButtonPressed() ) {
         if( !this._isItemSelected( itemIndex ) ) {
           this._setSingleSelection( itemIndex );
@@ -1251,7 +1253,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
 
-    //////////////////////////////////////////////////////////////
+    //////////////////////
     // Vertical gridlines
 
     _updateGridLines : function() {
@@ -1292,14 +1294,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onGridLinesMouseDown : function( evt ) {
       var row = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );      
       if( row != null ) {
-        evt.setCurrentTarget( row );
-        this._onRowClick( evt );
+        this._rowClicked( row );
       }
     },
     
     _getRowAtPoint : function( pageX, pageY ) {
       var result = null;
-      for( var i = 0; i < this._rows.length; i++ ) {
+      for( var i = 0; result === null && i < this._rows.length; i++ ) {
         var row = this._rows[ i ];
         var element = row.getElement();
         var pageLeft = qx.html.Location.getPageBoxLeft( element );
@@ -1307,7 +1308,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if(    pageX >= pageLeft 
             && pageX < pageLeft + row.getWidth()          
             && pageY >= pageTop 
-            && pageY < pageTop + row.getHeight() ) {
+            && pageY < pageTop + row.getHeight() )
+        {
           result = row;
         }
       }
