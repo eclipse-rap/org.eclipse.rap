@@ -170,6 +170,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._vertScrollBar = null;
     }
     for( var i = 0; i < this._gridLines.length; i++ ) {
+      this._gridLines[ i ].removeEventListener( "mousedown", this._onGridLinesMouseDown, this );
       this._gridLines[ i ].dispose();
       this._gridLines[ i ] = null;
     }
@@ -481,7 +482,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //             mouse has been moved to another element between down and up.
     //             See https://bugs.eclipse.org/bugs/show_bug.cgi?id=257338
     _onRowClick : function( evt ) {
-      var row = evt.getTarget();
+      var row = evt.getCurrentTarget();
       var rowIndex = this._rows.indexOf( row );
       var itemIndex = this._topIndex + rowIndex;
       if(    itemIndex >= 0
@@ -1277,6 +1278,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         line.setAppearance( "table-gridline-vertical" );
         line.addState( "vertical" );
         line.setZIndex( 1e5 );
+        line.addEventListener( "mousedown", this._onGridLinesMouseDown, this );
         this._gridLines.push( line );
         this._clientArea.add( line );
       }
@@ -1285,6 +1287,31 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var line = this._gridLines[ i ];
         line.setStyleProperty( "visibility", "hidden" );
       }
+    },
+    
+    _onGridLinesMouseDown : function( evt ) {
+      var row = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );      
+      if( row != null ) {
+        evt.setCurrentTarget( row );
+        this._onRowClick( evt );
+      }
+    },
+    
+    _getRowAtPoint : function( pageX, pageY ) {
+      var result = null;
+      for( var i = 0; i < this._rows.length; i++ ) {
+        var row = this._rows[ i ];
+        var element = row.getElement();
+        var pageLeft = qx.html.Location.getPageBoxLeft( element );
+        var pageTop = qx.html.Location.getPageBoxTop( element );
+        if(    pageX >= pageLeft 
+            && pageX < pageLeft + row.getWidth()          
+            && pageY >= pageTop 
+            && pageY < pageTop + row.getHeight() ) {
+          result = row;
+        }
+      }
+      return result;
     },
 
     ////////////////////////////////////////////////////////////
