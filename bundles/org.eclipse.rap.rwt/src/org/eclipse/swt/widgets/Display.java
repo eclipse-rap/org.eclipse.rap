@@ -480,7 +480,12 @@ public class Display extends Device implements Adaptable {
    */
   private static Point getOrigin( final Control control ) {
     Point result = control.getLocation();
-    if( control instanceof Scrollable ) {
+    // Due the way that the qx client implementation works, the coordinate
+    // system of composites starts at the inner edge of their border and thus
+    // need to be offset by the border width.
+    // Since only composites can contain child widgets, only they need this
+    // correction. This implementation seems to be a good fit with SWT.
+    if( control instanceof Composite ) {
       int borderWidth = control.getBorderWidth();
       result.x += borderWidth;
       result.y += borderWidth;
