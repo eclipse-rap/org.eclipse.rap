@@ -34,9 +34,9 @@ import org.eclipse.rwt.service.IServiceHandler;
  *  be sent over the wire.</p>
  *  <p>As the filename of the delivered javascript has a version postfix the
  *  browser is informed to store the javascript in its cache.</p>
- *  
  */
 public class JSLibraryServiceHandler implements IServiceHandler {
+
   public static final String HANDLER_ID
     = JSLibraryServiceHandler.class.getName();
   static final String EXPIRES_NEVER = "Sun, 17 Jan 2038 19:14:07 GMT";
@@ -46,6 +46,17 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   private static byte[] unCompressed;
   private static byte[] compressed; 
 
+  public static String getRequestURL() throws IOException {
+    initializeOutput();
+    Object[] param = new Object[] { 
+      RWT.getRequest().getServletPath().substring( 1 ),
+      IServiceHandler.REQUEST_PARAM,
+      HANDLER_ID,
+      hashCode
+    };
+    return MessageFormat.format( REQUEST_PATTERN, param );
+  }
+  
   public void service() throws IOException, ServletException {
     initializeOutput();
     HttpServletResponse response = RWT.getResponse();
@@ -58,19 +69,19 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     }
   }
 
-  private void writeUnCompressedOutput() throws IOException {
-    HttpServletResponse response = RWT.getResponse();
-    OutputStream out = new BufferedOutputStream( response.getOutputStream() );
-    write( out, unCompressed );
-  }
-
-  private void writeCompressedOutput() throws IOException {
+  private static void writeCompressedOutput() throws IOException {
     RWT.getResponse().setHeader( HTML.CONTENT_ENCODING, HTML.ENCODING_GZIP );
     HttpServletResponse response = RWT.getResponse();
     OutputStream out = new BufferedOutputStream( response.getOutputStream() );
     write( out, compressed );
   }
 
+  private static void writeUnCompressedOutput() throws IOException {
+    HttpServletResponse response = RWT.getResponse();
+    OutputStream out = new BufferedOutputStream( response.getOutputStream() );
+    write( out, unCompressed );
+  }
+  
   private static void write( final OutputStream out, final byte[] content )
     throws IOException
   {
@@ -98,17 +109,6 @@ public class JSLibraryServiceHandler implements IServiceHandler {
         compressed = baos.toByteArray();
       }
     }
-  }
-  
-  public static String getRequestURL() throws IOException {
-    initializeOutput();
-    Object[] param = new Object[] { 
-      RWT.getRequest().getServletPath().substring( 1 ),
-      IServiceHandler.REQUEST_PARAM,
-      HANDLER_ID,
-      hashCode
-    };
-    return MessageFormat.format( REQUEST_PATTERN, param );
   }
   
   private static boolean isAcceptEncoding() {
