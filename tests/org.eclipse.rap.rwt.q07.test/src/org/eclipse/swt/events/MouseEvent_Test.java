@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,7 @@ public class MouseEvent_Test extends TestCase {
     event.processEvent();
     assertEquals( "", log );
   }
-  
+
   public void testAddRemoveUntypedListener() {
     final java.util.List log = new ArrayList();
     Display display = new Display();
@@ -144,49 +144,49 @@ public class MouseEvent_Test extends TestCase {
     // Simulate request that sends a mouseDown + mouseUp sequence
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    fakeMouseDownRequest( shellId, shellX + 4, shellY + 4 );
-    fakeMouseUpRequest( shellId, shellX + 4, shellY + 4 );
+    fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( 2, events.size() );
     MouseEvent mouseEvent = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     mouseEvent = ( ( MouseEvent )events.get( 1 ) );
     assertEquals( MouseEvent.MOUSE_UP, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
     events.clear();
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    fakeMouseDownRequest( shellId, shellX + 4, shellY + 4 );
-    fakeMouseUpRequest( shellId, shellX + 4, shellY + 4 );
-    fakeMouseDoubleClickRequest( shellId, shellX + 4, shellY + 4 );
+    fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseDoubleClickRequest( shellId, shellX + 24, shellY + 24 );
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( 3, events.size() );
     mouseEvent = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     mouseEvent = ( ( MouseEvent )events.get( 1 ) );
     assertEquals( MouseEvent.MOUSE_DOUBLE_CLICK, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     mouseEvent = ( ( MouseEvent )events.get( 2 ) );
     assertEquals( MouseEvent.MOUSE_UP, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
   }
 
   public void testUntypedMouseEventOrder() {
@@ -217,49 +217,98 @@ public class MouseEvent_Test extends TestCase {
     // Simulate request that sends a mouseDown + mouseUp sequence
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    fakeMouseDownRequest( shellId, shellX + 4, shellY + 4 );
-    fakeMouseUpRequest( shellId, shellX + 4, shellY + 4 );
+    fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( 2, events.size() );
     Event mouseEvent = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     mouseEvent = ( ( Event )events.get( 1 ) );
     assertEquals( SWT.MouseUp, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
     events.clear();
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    fakeMouseDownRequest( shellId, shellX + 4, shellY + 4 );
-    fakeMouseUpRequest( shellId, shellX + 4, shellY + 4 );
-    fakeMouseDoubleClickRequest( shellId, shellX + 4, shellY + 4 );
+    fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseDoubleClickRequest( shellId, shellX + 24, shellY + 24 );
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( 3, events.size() );
     mouseEvent = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     mouseEvent = ( ( Event )events.get( 1 ) );
     assertEquals( SWT.MouseDoubleClick, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
     mouseEvent = ( ( Event )events.get( 2 ) );
     assertEquals( SWT.MouseUp, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 2, mouseEvent.x );
-    assertEquals( 2, mouseEvent.y );
+    assertEquals( 22, mouseEvent.x );
+    assertEquals( 22, mouseEvent.y );
+  }
+
+  public void testNoMouseEventOutsideClientArea() {
+    final java.util.List events = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Menu menuBar = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( menuBar );
+    shell.setLocation( 100, 100 );
+    shell.open();
+    shell.addMouseListener( new MouseListener() {
+      public void mouseDoubleClick( final MouseEvent event ) {
+        events.add( event );
+      }
+      public void mouseDown( final MouseEvent event ) {
+        events.add( event );
+      }
+      public void mouseUp( final MouseEvent event ) {
+        events.add( event );
+      }
+    } );
+    String displayId = DisplayUtil.getId( display );
+    String shellId = WidgetUtil.getId( shell );
+    int shellX = shell.getLocation().x;
+    int shellY = shell.getLocation().y;
+    // Simulate request that sends a mouseDown + mouseUp on shell border
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    fakeMouseDownRequest( shellId, shellX + 1, shellY + 1 );
+    fakeMouseUpRequest( shellId, shellX + 1, shellY + 1 );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, shell.getBorderWidth() );
+    assertEquals( 0, events.size() );
+    events.clear();
+    // Simulate request that sends a mouseDown + mouseUp on shell titlebar
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    fakeMouseDownRequest( shellId, shellX + 10, shellY + 10 );
+    fakeMouseUpRequest( shellId, shellX + 10, shellY + 10 );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 0, events.size() );
+    events.clear();
+    // Simulate request that sends a mouseDown + mouseUp on shell menubar
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
+    fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 0, events.size() );
   }
 
   private static void fakeMouseDoubleClickRequest( final String shellId,
@@ -275,8 +324,8 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME, "0" );
   }
 
-  private static void fakeMouseUpRequest( final String shellId, 
-                                          final int x, 
+  private static void fakeMouseUpRequest( final String shellId,
+                                          final int x,
                                           final int y )
   {
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP, shellId );
@@ -286,8 +335,8 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_TIME, "0" );
   }
 
-  private static void fakeMouseDownRequest( final String shellId, 
-                                            final int x, 
+  private static void fakeMouseDownRequest( final String shellId,
+                                            final int x,
                                             final int y )
   {
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN, shellId );

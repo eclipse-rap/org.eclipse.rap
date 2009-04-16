@@ -1169,9 +1169,7 @@ public class ControlLCAUtil {
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
-      if( point.x >= 0 && point.y >= 0 ) {
-        event.processEvent();
-      }
+      checkAndProcessMouseEvent( event );
     }
     String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
     if( WidgetLCAUtil.wasEventSent( control, eventId ) ) {
@@ -1185,9 +1183,7 @@ public class ControlLCAUtil {
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
-      if( point.x >= 0 && point.y >= 0 ) {
-        event.processEvent();
-      }
+      checkAndProcessMouseEvent( event );
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
@@ -1198,9 +1194,22 @@ public class ControlLCAUtil {
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
-      if( point.x >= 0 && point.y >= 0 ) {
-        event.processEvent();
-      }
+      checkAndProcessMouseEvent( event );
+    }
+  }
+
+  private static void checkAndProcessMouseEvent( final MouseEvent event ) {
+    boolean pass = false;
+    Control control = ( Control )event.widget;
+    if( control instanceof Scrollable ) {
+      Scrollable scrollable = ( Scrollable )control;
+      Rectangle clientArea = scrollable.getClientArea();
+      pass = event.x >= clientArea.x && event.y >= clientArea.y;
+    } else {
+      pass = event.x >= 0 && event.y >= 0;
+    }
+    if( pass ) {
+      event.processEvent();
     }
   }
 
