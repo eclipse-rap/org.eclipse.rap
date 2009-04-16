@@ -318,9 +318,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     setHeaderVisible : function( value ) {
       this._columnArea.setVisibility( value );
-      this._topIndex = 0;
-      this._vertScrollBar.setValue( 0 );
-      this._horzScrollBar.setValue( 0 );
       this._updateClientAreaSize();
       this._updateGridLines();
     },
