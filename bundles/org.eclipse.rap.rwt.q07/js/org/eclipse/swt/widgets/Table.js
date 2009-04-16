@@ -345,6 +345,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._itemTextWidth[ columnIndex ] = textWidth;
     },
 
+    setScrollBarsVisibile : function( horzVisible, vertVisible ) {
+      this._horzScrollBar.setVisibility( horzVisible );
+      this._vertScrollBar.setVisibility( vertVisible );
+      this._updateClientAreaSize();
+    },
+
     updateRows : function() {
       this._updateRows();
     },
@@ -404,6 +410,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getColumnsWidth : function() {
       var result = 0;
       var columns = this._columnArea.getChildren();
+      // TODO [rst] columns[ i ] is sometimes null when disposing table
       for( var i = 0; i < columns.length; i++ ) {
         result += columns[ i ].getWidth();
       }
@@ -964,15 +971,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this._columnArea.getVisibility() ) {
         top = this._columnArea.getHeight();
       }
-      var clientHeight = this.getHeight() - top - this._horzScrollBar.getHeight() - ( 2 * this._borderWidth );
-      var clientWidth = this.getWidth() - this._vertScrollBar.getWidth() - ( 2 * this._borderWidth );
+      var horzScrollBarHeight = this._horzScrollBar.getVisibility()
+                                ? this._horzScrollBar.getHeight()
+                                : 0;
+      var vertScrollBarWidth = this._vertScrollBar.getVisibility()
+                               ? this._vertScrollBar.getWidth()
+                               : 0;
+      var clientHeight = this.getHeight() - top - horzScrollBarHeight - ( 2 * this._borderWidth );
+      var clientWidth = this.getWidth() - vertScrollBarWidth - ( 2 * this._borderWidth );
       // vertical scrollBar
-      this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getWidth() - ( 2 * this._borderWidth ) );
+      this._vertScrollBar.setLeft( this.getWidth() - vertScrollBarWidth - ( 2 * this._borderWidth ) );
       this._vertScrollBar.setTop( top );
       this._vertScrollBar.setHeight( clientHeight );
       // horizontal scrollBar
       this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setTop( this.getHeight() - this._horzScrollBar.getHeight() - ( 2 * this._borderWidth ) );
+      this._horzScrollBar.setTop( this.getHeight() - horzScrollBarHeight - ( 2 * this._borderWidth ) );
       this._horzScrollBar.setWidth( clientWidth );
       // client area
       this._clientArea.setTop( top );

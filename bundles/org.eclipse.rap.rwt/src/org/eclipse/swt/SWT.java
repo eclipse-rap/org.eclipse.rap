@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1294,6 +1294,23 @@ public class SWT {
    * </ul></p>
    */
   public static final int V_SCROLL = 1 << 9;
+
+  /**
+   * Style constant for no scrollbar behavior (value is 1&lt;&lt;4).
+   * <p>
+   * When neither H_SCROLL or V_SCROLL are specified, controls
+   * are free to create the default scroll bars for the control.
+   * Using NO_SCROLL overrides the default and forces the control
+   * to have no scroll bars.
+   * 
+   * <b>Used By:</b><ul>
+   * <!--li><code>Tree</code></li-->
+   * <li><code>Table</code></li>
+   * </ul></p>
+   *
+   * @since 1.2
+   */
+  public static final int NO_SCROLL = 1 << 4;
 
   /**
    * Style constant for read-only behavior (value is 1&lt;&lt;3).

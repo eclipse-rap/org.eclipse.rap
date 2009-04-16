@@ -1809,6 +1809,75 @@ public class Table_Test extends TestCase {
     assertEquals( 50, table.getItemHeight() );
   }
 
+  public void testNeedsScrollBarWithoutColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 200, 200 );
+    assertFalse( table.needsVScrollBar() );
+    assertFalse( table.needsHScrollBar() );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "Item" );
+    assertFalse( table.needsVScrollBar() );
+    assertFalse( table.needsHScrollBar() );
+    item.setText( "Very very very very very long item text " );
+    assertFalse( table.needsVScrollBar() );
+    assertTrue( table.needsHScrollBar() );
+    for( int i = 0; i < 100; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    assertTrue( table.needsVScrollBar() );
+    assertTrue( table.needsHScrollBar() );
+    item.setText( "Item" );
+    assertTrue( table.needsVScrollBar() );
+    assertFalse( table.needsHScrollBar() );
+  }
+  
+  public void testNeedsScrollBarWithColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 200, 200 );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 10 );
+    assertFalse( table.needsVScrollBar() );
+    assertFalse( table.needsHScrollBar() );
+    column.setWidth( 220 );
+    assertFalse( table.needsVScrollBar() );
+    assertTrue( table.needsHScrollBar() );
+    column.setWidth( 5 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "Very very very very very long item text " );
+    assertFalse( table.needsVScrollBar() );
+    assertFalse( table.needsHScrollBar() );
+  }
+  
+  public void testHasScrollBar_NO_SCROLL() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    table.setSize( 200, 200 );
+    assertFalse( table.hasVScrollBar() );
+    assertFalse( table.hasHScrollBar() );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 220 );
+    assertFalse( table.hasVScrollBar() );
+    assertFalse( table.hasHScrollBar() );
+  }
+
+  public void testGetScrollBarWidth() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 200, 200 );
+    assertTrue( table.getVScrollBarWidth() > 0 );
+    assertTrue( table.getHScrollBarHeight() > 0 );
+    Table noScrollTable = new Table( shell, SWT.NO_SCROLL );
+    noScrollTable.setSize( 200, 200 );
+    assertEquals( 0, noScrollTable.getVScrollBarWidth() );
+    assertEquals( 0, noScrollTable.getHScrollBarHeight() );
+  }
+
   private static void clearColumns( final Table table ) {
     while( table.getColumnCount() > 0 ) {
       table.getColumn( 0 ).dispose();

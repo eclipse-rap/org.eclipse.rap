@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -26,6 +28,7 @@ import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class TableLCA_Test extends TestCase {
 
@@ -193,6 +196,13 @@ public class TableLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
+    RWTFixture.clearPreserved();
+    // scroll bars
+    RWTFixture.preserveWidgets();
+    Object preserved = adapter.getPreserved( TableLCA.PROP_HAS_H_SCROLL_BAR );
+    assertTrue( preserved != null );
+    preserved = adapter.getPreserved( TableLCA.PROP_HAS_V_SCROLL_BAR );
+    assertTrue( preserved != null );
     RWTFixture.clearPreserved();
     //tooltiptext
     RWTFixture.preserveWidgets();
@@ -755,6 +765,18 @@ public class TableLCA_Test extends TestCase {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return tableAdapter.isItemVirtual( index );
+  }
+
+  public void testWriteScrollbarsVisible() throws IOException {
+    RWTFixture.fakeNewRequest();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Table table = new Table( shell, SWT.NO_SCROLL );
+    TableLCA lca = new TableLCA();
+    lca.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setScrollBarsVisibile( false, false );";
+    assertTrue( markup.indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {

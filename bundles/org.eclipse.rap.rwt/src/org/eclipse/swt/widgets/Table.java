@@ -193,6 +193,14 @@ public class Table extends Composite {
     public TableItem[] getCreatedItems() {
       return Table.this.getCreatedItems();
     }
+
+    public boolean hasHScrollBar() {
+      return Table.this.hasHScrollBar();
+    }
+
+    public boolean hasVScrollBar() {
+      return Table.this.hasVScrollBar();
+    }
   }
 
   private final class ResizeListener extends ControlAdapter {
@@ -212,7 +220,6 @@ public class Table extends Composite {
 
   private static final int GRID_WIDTH = 1;
   private static final int CHECK_HEIGHT = 13;
-  private static final int SCROLL_SIZE = 16;
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
@@ -1884,12 +1891,8 @@ public class Table extends Composite {
     int border = getBorderWidth ();
     width += border * 2;
     height += border * 2;
-    if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += SCROLL_SIZE;
-    }
-    if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += SCROLL_SIZE;
-    }
+    width += getVScrollBarWidth();
+    height += getHScrollBarHeight();
     return new Point( width, height );
   }
 
@@ -2239,7 +2242,7 @@ public class Table extends Composite {
   final int getVisibleItemCount( final boolean includePartlyVisible ) {
     int clientHeight = getBounds().height
                      - getHeaderHeight()
-                     - ScrollBar.SCROLL_BAR_HEIGHT;
+                     - getHScrollBarHeight();
     int result = 0;
     if( clientHeight >= 0 ) {
       int itemHeight = getItemHeight();
@@ -2336,5 +2339,93 @@ public class Table extends Composite {
     int result = style;
     result |= SWT.H_SCROLL | SWT.V_SCROLL;
     return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
+  }
+
+  boolean needsVScrollBar() {
+    int height = getHeaderHeight();
+    height += getItemCount() * getItemHeight();
+    int clientAreaHeight = getClientArea().height;
+    return height > clientAreaHeight;
+  }
+  
+  boolean needsHScrollBar() {
+    boolean result = false;
+    int columnCount = getColumnCount();
+    int clientAreaWidth = getClientArea().width;
+    if( columnCount > 0 ) {
+      int totalWidth = 0;
+      for( int i = 0; i < columnCount; i++ ) {
+        TableColumn column = getColumn( i );
+        totalWidth += column.getWidth();
+      }
+      result = totalWidth > clientAreaWidth;
+    } else {
+      TableItem measureItem = getMeasureItem( this );
+      if( measureItem != null ) {
+        int itemWidth = measureItem.getBounds().width;
+        result = itemWidth > clientAreaWidth;
+      }
+    }
+    return result;
+  }
+
+  // TODO [rst] copy of TableLCAUtil
+  TableItem getMeasureItem( final Table table ) {
+    TableItem[] items = tableAdapter.getCachedItems();
+    TableItem result = null;
+    if( table.getColumnCount() == 0 ) {
+      // Find item with longest text because the imaginary only column stretches 
+      // as wide as the longest item (images cannot differ in width)
+      for( int i = 0; i < items.length; i++ ) {
+        if( result == null ) {
+          result = items[ i ];
+        } else {
+          result = max( result, items[ i ] );
+        }
+      }
+    } else {
+      // Take the first item if any
+      if( items.length > 0 ) {
+        result = items[ 0 ];
+      }
+    }
+    return result;
+  }
+
+  // TODO [rst] copy of TableLCAUtil
+  private static TableItem max( final TableItem item1, final TableItem item2 ) {
+    TableItem result;
+    if( item1.getText( 0 ).length() > item2.getText( 0 ).length() ) {
+      result = item1;
+    } else {
+      result = item2;
+    }
+    return result;
+  }
+
+  boolean hasVScrollBar() {
+    boolean hasNoScroll = ( getStyle() & SWT.NO_SCROLL ) != 0;
+    return !hasNoScroll;
+  }
+
+  boolean hasHScrollBar() {
+    boolean hasNoScroll = ( getStyle() & SWT.NO_SCROLL ) != 0;
+    return !hasNoScroll;
+  }
+
+  int getVScrollBarWidth() {
+    int result = 0;
+    if( hasVScrollBar() ) {
+      result = ScrollBar.SCROLL_BAR_WIDTH;
+    }
+    return result;
+  }
+
+  int getHScrollBarHeight() {
+    int result = 0;
+    if( hasHScrollBar() ) {
+      result = ScrollBar.SCROLL_BAR_HEIGHT;
+    }
+    return result;
   }
 }

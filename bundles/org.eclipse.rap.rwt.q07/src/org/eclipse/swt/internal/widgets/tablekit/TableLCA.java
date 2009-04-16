@@ -36,6 +36,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
   static final String PROP_ITEM_COUNT = "itemCount";
   static final String PROP_HIDE_SELECTION = "hideSelection";
+  static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
+  static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
@@ -56,7 +58,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     = new JSListenerInfo( "itemchecked",
                           "this.onItemChecked",
                           JSListenerType.ACTION );
-
 
   public void preserveValues( final Widget widget ) {
     Table table = ( Table )widget;
@@ -79,6 +80,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     TableLCAUtil.preserveFocusIndex( table );
     WidgetLCAUtil.preserveCustomVariant( table );
     adapter.preserve( PROP_HIDE_SELECTION, hideSelection( table ) );
+    adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( table ) );
+    adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( table ) );
   }
 
   public void readData( final Widget widget ) {
@@ -122,6 +125,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
     writeHideSelection( table );
+    writeScrollBarsVisible( table );
     WidgetLCAUtil.writeCustomVariant( table );
   }
 
@@ -340,8 +344,39 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( PROP_HIDE_SELECTION, "hideSelection", newValue, defValue );
   }
 
+  private void writeScrollBarsVisible( final Table table ) throws IOException {
+    boolean hasHChanged = WidgetLCAUtil.hasChanged( table,
+                                                    PROP_HAS_H_SCROLL_BAR,
+                                                    hasHScrollBar( table ),
+                                                    Boolean.TRUE );
+    boolean hasVChanged = WidgetLCAUtil.hasChanged( table,
+                                                    PROP_HAS_V_SCROLL_BAR,
+                                                    hasVScrollBar( table ),
+                                                    Boolean.TRUE );
+    if( hasHChanged || hasVChanged ) {
+      JSWriter writer = JSWriter.getWriterFor( table );
+      Object[] args = new Object[]{
+        hasHScrollBar( table ),
+        hasVScrollBar( table )
+      };
+      writer.call( "setScrollBarsVisibile", args );
+    }
+  }
+  
   //////////////////
   // Helping methods
+
+  private Boolean hasHScrollBar( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return Boolean.valueOf( tableAdapter.hasHScrollBar() );
+  }
+
+  private Boolean hasVScrollBar( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return Boolean.valueOf( tableAdapter.hasVScrollBar() );
+  }
 
   static int getDefaultColumnWidth( final Table table ) {
     int result = 0;
