@@ -482,10 +482,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //             mouse has been moved to another element between down and up.
     //             See https://bugs.eclipse.org/bugs/show_bug.cgi?id=257338
     _onRowClick : function( evt ) {
-      this._rowClicked( evt.getTarget() );
+      this._rowClicked( evt, evt.getTarget() );
     },
     
-    _rowClicked : function( row ) {
+    _rowClicked : function( evt, row ) {
       var itemIndex = this._topIndex + this._rows.indexOf( row );
       if(    itemIndex >= 0
           && itemIndex < this._itemCount
@@ -1294,7 +1294,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onGridLinesMouseDown : function( evt ) {
       var row = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );      
       if( row != null ) {
-        this._rowClicked( row );
+        this._rowClicked( evt, row );
       }
     },
     
