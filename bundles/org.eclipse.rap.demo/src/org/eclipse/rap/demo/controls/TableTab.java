@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.core.runtime.*;
@@ -23,9 +22,10 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+
 public class TableTab extends ExampleTab {
 
-  private static final int INITIAL_ITEMS = 1;
+  private static final int INITIAL_ITEMS = 15;
 
   private Table table;
   private boolean headerVisible = true;
@@ -55,6 +55,7 @@ public class TableTab extends ExampleTab {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "CHECK", SWT.CHECK );
     createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "NO_SCROLL", SWT.NO_SCROLL );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createVisibilityButton();
     createEnablementButton();
@@ -85,6 +86,9 @@ public class TableTab extends ExampleTab {
     createBackgroundControl();
     createSelectAtPointControl();
     createQueryTopIndex();
+    createIndexForegroundControl();
+    createIndexBackgroundControl();
+    createIndexFontControl();
     createCursorCombo();
   }
 
@@ -648,10 +652,52 @@ public class TableTab extends ExampleTab {
     Button btn = new Button( styleComp, SWT.PUSH );
     btn.setText( "Query topIndex" );
     btn.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         Shell shell = styleComp.getShell();
         String msg = "Current topIndex: " + getTable().getTopIndex();
         MessageDialog.openInformation( shell, "Information", msg );
+      }
+    } );
+  }
+
+  private void createIndexForegroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Custom Foreground @0,0" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        if( getTable().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? FG_COLOR_RED  : null;
+          getTable().getItem( 0 ).setForeground( 0, color );
+        }
+      }
+    } );
+  }
+
+  private void createIndexBackgroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Custom Background @0,0" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        if( getTable().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
+          getTable().getItem( 0 ).setBackground( 0, color );
+        }
+      }
+    } );
+  }
+
+  private void createIndexFontControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Custom Font @0,0" );
+    btn.addSelectionListener( new SelectionAdapter() {
+
+      Font cellFont = Graphics.getFont( "Times", 13, SWT.ITALIC );
+
+      public void widgetSelected( final SelectionEvent e ) {
+        if( getTable().getItemCount() > 0 ) {
+          Font font = btn.getSelection() ? cellFont : null;
+          getTable().getItem( 0 ).setFont( 0, font );
+        }
       }
     } );
   }
