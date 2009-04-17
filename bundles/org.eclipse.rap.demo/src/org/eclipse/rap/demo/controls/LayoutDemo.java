@@ -50,7 +50,6 @@ public class LayoutDemo implements IEntryPoint {
     final CTabFolder topFolder = new CTabFolder( parent, SWT.TOP );
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
-    topFolder.setSelectionBackground( Graphics.getColor( 0, 128, 192 ) );
     final ExampleTab[] tabs = new ExampleTab[] {
       new FillLayoutTab( topFolder ),
       new RowLayoutTab( topFolder ),

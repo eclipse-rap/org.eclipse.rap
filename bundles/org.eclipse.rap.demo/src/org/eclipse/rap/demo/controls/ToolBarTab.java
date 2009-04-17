@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -20,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class ToolBarTab extends ExampleTab {
 
@@ -39,6 +39,7 @@ public class ToolBarTab extends ExampleTab {
     createStyleButton( "FLAT", SWT.FLAT );
     createVisibilityButton();
     createEnablementButton();
+    createFgColorButton();
     createBgColorButton();
     createBgImageButton();
     createFontChooser();
@@ -58,6 +59,7 @@ public class ToolBarTab extends ExampleTab {
     item1.setImage( imageNewFile );
     ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
     item2.setText( "open" );
+    item2.setEnabled( false );
     item2.setImage( imagenewFolder );
     new ToolItem( toolBar, SWT.SEPARATOR );
     dropDownItem = new ToolItem( toolBar, SWT.DROP_DOWN );

@@ -38,6 +38,7 @@ public class ProgressBarTab extends ExampleTab {
 
     parent.setLayout( new GridLayout() );
     final ProgressBar progressBar = new ProgressBar( parent, style );
+    registerControl( progressBar );
     progressBar.setMaximum( COUNT );
 
     final Button button = new Button( parent, SWT.PUSH );
@@ -113,5 +114,9 @@ public class ProgressBarTab extends ExampleTab {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
     createStyleButton( "VERTICAL", SWT.VERTICAL, false );
     createStyleButton( "INDETERMINATE", SWT.INDETERMINATE, false );
+    createVisibilityButton();
+    createEnablementButton();
+    createBgImageButton();
+    createBgColorButton();
   }
 }
