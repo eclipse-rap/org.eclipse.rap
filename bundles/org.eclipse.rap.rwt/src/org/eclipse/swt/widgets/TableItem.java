@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
@@ -178,6 +177,9 @@ public class TableItem extends Item {
       if( !text.equals( data[ index ].text ) ) {
         data[ index ].text = text;
         markCached();
+        if( parent.getColumnCount() == 0 ) {
+          parent.updateScrollBars();
+        }
         parent.redraw();
       }
     }
@@ -276,6 +278,9 @@ public class TableItem extends Item {
         data[ index ].image = image;
         parent.updateItemImageSize( image );
         markCached();
+        if( parent.getColumnCount() == 0 ) {
+          parent.updateScrollBars();
+        }
         parent.redraw();
       }
     }
@@ -579,6 +584,9 @@ public class TableItem extends Item {
     if( !equals( this.font, font ) ) {
       this.font = font;
       markCached();
+      if( parent.getColumnCount() == 0 ) {
+        parent.updateScrollBars();
+      }
       parent.redraw();
     }
   }
@@ -896,7 +904,7 @@ public class TableItem extends Item {
              + imageWidth
              + spacing;
       top = getTop( itemIndex );
-      Font font = parent.getFont();
+      Font font = getFont();
       width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
       int imageWidth = 0;
@@ -1022,6 +1030,7 @@ public class TableItem extends Item {
     data = null;
     checked = false;
     grayed = false;
+    parent.updateScrollBars();
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = false;
       parent.redraw();

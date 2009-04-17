@@ -36,4 +36,6 @@ public interface ITableAdapter {
 
   boolean hasHScrollBar();
   boolean hasVScrollBar();
+
+  TableItem getMeasureItem();
 }

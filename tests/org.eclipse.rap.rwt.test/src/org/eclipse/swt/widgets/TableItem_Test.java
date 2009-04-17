@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.layout.FillLayout;
-
 
 
 public class TableItem_Test extends TestCase {
@@ -171,7 +169,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
   }
   
-  public void testTextBoundsWidthInvalidIndex() {
+  public void testTextBoundsWithInvalidIndex() {
     // Test setup
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -200,7 +198,22 @@ public class TableItem_Test extends TestCase {
     item.setImage( 0, null );
     assertTrue( item.getTextBounds( 0 ).x < image.getBounds().width );
   }
-  
+
+  public void testTextBoundsWithChangedFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "abc" );
+    Rectangle origBounds = item.getTextBounds( 0 );
+    item.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
+    Rectangle actualBounds = item.getTextBounds( 0 );
+    assertTrue( actualBounds.width > origBounds.width );
+    item.setFont( null );
+    actualBounds = item.getTextBounds( 0 );
+    assertEquals( origBounds, actualBounds );
+  }
+
   public void testImageBoundsWithoutColumns() {
     // Test setup
     Display display = new Display();

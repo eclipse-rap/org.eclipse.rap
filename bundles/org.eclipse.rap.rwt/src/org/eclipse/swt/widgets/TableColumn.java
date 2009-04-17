@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
@@ -16,6 +15,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+
 
 /**
  * Instances of this class represent a column in a table widget.
@@ -242,6 +242,7 @@ public class TableColumn extends Item {
     checkWidget();
     if( width >= 0 ) {
       this.width = width;
+      parent.updateScrollBars();
       int eventId = ControlEvent.CONTROL_RESIZED;
       ControlEvent event = new ControlEvent( this, eventId );
       event.processEvent();

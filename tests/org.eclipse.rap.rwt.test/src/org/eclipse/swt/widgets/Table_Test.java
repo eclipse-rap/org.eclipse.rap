@@ -16,8 +16,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.layout.FillLayout;
@@ -55,6 +54,11 @@ public class Table_Test extends TestCase {
     assertTrue( ( table.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( table.getStyle() & SWT.V_SCROLL ) != 0 );
     assertTrue( ( table.getStyle() & SWT.SINGLE ) != 0 );
+
+    table = new Table( shell, SWT.NO_SCROLL );
+    assertTrue( ( table.getStyle() & SWT.NO_SCROLL ) != 0 );
+    assertTrue( ( table.getStyle() & SWT.V_SCROLL ) == 0 );
+    assertTrue( ( table.getStyle() & SWT.H_SCROLL ) == 0 );
 
     table = new Table( shell, SWT.SINGLE | SWT.MULTI );
     assertTrue( ( table.getStyle() & SWT.SINGLE ) != 0 );
@@ -1203,6 +1207,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowItem() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -1213,10 +1218,9 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < itemCount; i++ ) {
       new TableItem( table, SWT.NONE );
     }
-    int itemHeight = table.getItem( 0 ).getBounds().height;
+    int itemHeight = table.getItemHeight();
     int visibleLines = 100;
-    int scrollBarHeight = ScrollBar.SCROLL_BAR_HEIGHT;
-    table.setSize( 100, visibleLines * itemHeight + scrollBarHeight );
+    table.setSize( 100, visibleLines * itemHeight );
     assertEquals( visibleLines, table.getVisibleItemCount( false ) );
 
     table.showItem( table.getItem( 99 ) );
@@ -1603,6 +1607,17 @@ public class Table_Test extends TestCase {
     item0.setImage( 0, null );
     assertFalse( table.hasColumnImages( 0 ) );
   }
+  
+  public void testHasColumnImagesAfterColumnDispose() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.dispose();
+    // No assertion here,
+    // call hasColumnImages() to make sure the internal structures are OK
+    table.hasColumnImages( 0 );
+  }
 
   public void testGetItem() {
     Display display = new Display();
@@ -1777,6 +1792,15 @@ public class Table_Test extends TestCase {
     assertEquals( expected, table.computeSize( 300, 300 ) );
   }
 
+  public void testComputeSizeNoScroll() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    Point actual = table.computeSize( 20, 20 );
+    Point expected = new Point( 20, 20 );
+    assertEquals( expected, actual );
+  }
+
   public void testGetVisibleItemCount() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1814,23 +1838,23 @@ public class Table_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 200, 200 );
-    assertFalse( table.needsVScrollBar() );
     assertFalse( table.needsHScrollBar() );
+    assertFalse( table.needsVScrollBar() );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "Item" );
-    assertFalse( table.needsVScrollBar() );
     assertFalse( table.needsHScrollBar() );
-    item.setText( "Very very very very very long item text " );
     assertFalse( table.needsVScrollBar() );
+    item.setText( "Very very very very very long item text " );
     assertTrue( table.needsHScrollBar() );
+    assertFalse( table.needsVScrollBar() );
     for( int i = 0; i < 100; i++ ) {
       new TableItem( table, SWT.NONE );
     }
-    assertTrue( table.needsVScrollBar() );
     assertTrue( table.needsHScrollBar() );
-    item.setText( "Item" );
     assertTrue( table.needsVScrollBar() );
+    item.setText( "Item" );
     assertFalse( table.needsHScrollBar() );
+    assertTrue( table.needsVScrollBar() );
   }
   
   public void testNeedsScrollBarWithColumn() {
@@ -1840,16 +1864,16 @@ public class Table_Test extends TestCase {
     table.setSize( 200, 200 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 10 );
-    assertFalse( table.needsVScrollBar() );
     assertFalse( table.needsHScrollBar() );
-    column.setWidth( 220 );
     assertFalse( table.needsVScrollBar() );
+    column.setWidth( 220 );
     assertTrue( table.needsHScrollBar() );
+    assertFalse( table.needsVScrollBar() );
     column.setWidth( 5 );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "Very very very very very long item text " );
-    assertFalse( table.needsVScrollBar() );
     assertFalse( table.needsHScrollBar() );
+    assertFalse( table.needsVScrollBar() );
   }
   
   public void testHasScrollBar_NO_SCROLL() {
@@ -1869,13 +1893,217 @@ public class Table_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-    table.setSize( 200, 200 );
+    table.setSize( 10, 10 );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 20 );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
     assertTrue( table.getVScrollBarWidth() > 0 );
     assertTrue( table.getHScrollBarHeight() > 0 );
     Table noScrollTable = new Table( shell, SWT.NO_SCROLL );
     noScrollTable.setSize( 200, 200 );
     assertEquals( 0, noScrollTable.getVScrollBarWidth() );
     assertEquals( 0, noScrollTable.getHScrollBarHeight() );
+  }
+
+  public void testUpdateScrollBarOnColumnChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 20, 20 );
+    assertFalse( table.hasHScrollBar() );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 25 );
+    assertTrue( table.hasHScrollBar() );
+    column.pack();
+    assertFalse( table.hasHScrollBar() );
+    column.setWidth( 25 );
+    assertTrue( table.hasHScrollBar() );
+    column.dispose();
+    assertFalse( table.hasHScrollBar() );
+  }
+  
+  public void testUpdateScrollBarOnItemsChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 20, 20 );
+    assertFalse( table.hasVScrollBar() );
+    for( int i = 0; i < 20; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    assertTrue( table.hasVScrollBar() );
+    table.removeAll();
+    assertFalse( table.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnResize() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 20, 20 );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 25 );
+    assertTrue( table.hasHScrollBar() );
+    table.setSize( 30, 30 );
+    assertFalse( table.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnItemWidthChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 60, 60 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    assertFalse( table.hasHScrollBar() );
+    item.setText( "Very long long long long long long long long text" );
+    assertTrue( table.hasHScrollBar() );
+    item.setText( "" );
+    assertFalse( table.hasHScrollBar() );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    item.setImage( image );
+    assertTrue( table.hasHScrollBar() );
+    item.setImage( ( Image )null );
+    assertFalse( table.hasHScrollBar() );
+    item.setText( "Very long long long long long long long long text" );
+    item.setImage( image );
+    table.clearAll();
+    assertFalse( table.hasHScrollBar() );
+    // change font
+    item.setText( "short" );
+    assertFalse( table.hasHScrollBar() );
+    Font bigFont = Graphics.getFont( "Helvetica", 50, SWT.BOLD );
+    item.setFont( bigFont );
+    assertTrue( table.hasHScrollBar() );
+    item.setFont( null );
+    assertFalse( table.hasHScrollBar() );
+    table.setFont( bigFont );
+    assertTrue( table.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnHeaderVisibleChange() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    int itemCount = 5;
+    for( int i = 0; i < itemCount ; i++ ) {
+      TableItem item = new TableItem( table, SWT.NONE );
+      item.setText( "Item" );
+    }
+    table.setSize( 100, itemCount * table.getItemHeight() + 4 );
+    assertFalse( table.hasVScrollBar() );
+    table.setHeaderVisible( true );
+    assertTrue( table.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarItemWidthChangeWithColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 20, 20 );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 10 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    assertFalse( table.hasHScrollBar() );
+    item.setText( "Very long long long long long long long long text" );
+    assertFalse( table.hasHScrollBar() );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    item.setImage( image );
+    assertFalse( table.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarWithInterDependencyHFirst() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 20 );
+    new TableItem( table, SWT.NONE );
+    table.setSize( 30, table.getItemHeight() + 4 );
+    assertFalse( table.needsVScrollBar() );
+    assertFalse( table.needsHScrollBar() );
+    assertFalse( table.hasHScrollBar() );
+    assertFalse( table.hasVScrollBar() );
+    column.setWidth( 40 );
+    assertTrue( table.hasHScrollBar() );
+    assertTrue( table.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarWithInterDependencyVFirst() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 26 );
+    table.setSize( 30, 30 );
+    assertFalse( table.hasHScrollBar() );
+    assertFalse( table.hasVScrollBar() );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    assertTrue( table.hasHScrollBar() );
+    assertTrue( table.hasVScrollBar() );
+  }
+
+  public void testGetMeasureItemWithoutColumnsVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final String[] data = new String[ 1000 ];
+    for( int i = 0; i < data.length; i++ ) {
+      data[ i ] = "";
+    }
+    Listener setDataListener = new Listener() {
+
+      public void handleEvent( final Event event ) {
+        TableItem item = ( TableItem )event.item;
+        int index = item.getParent().indexOf( item );
+        item.setText( data[ index ] );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.addListener( SWT.SetData, setDataListener );
+    table.setItemCount( data.length );
+    table.setSize( 90, 90 );
+    shell.open();
+    int resolvedItemCount;
+    TableItem measureItem;
+    // Test with items that all have the same width
+    resolvedItemCount = countResolvedItems( table );
+    measureItem = table.getMeasureItem();
+    assertNotNull( measureItem );
+    assertEquals( resolvedItemCount, countResolvedItems( table ) );
+    // Test with items that have ascending length
+    data[ 0 ] = "a";
+    for( int i = 1; i < data.length; i++ ) {
+      data[ i ] = data[ i - 1 ] + "a";
+    }
+    table.getItem( 100 ).getText(); // resolves item
+    resolvedItemCount = countResolvedItems( table );
+    measureItem = table.getMeasureItem();
+    int measureItemIndex = measureItem.getParent().indexOf( measureItem );
+    assertEquals( 100, measureItemIndex );
+    assertEquals( resolvedItemCount, countResolvedItems( table ) );
+  }
+
+  private static int countResolvedItems( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    int result = 0;
+    TableItem[] createdItems = tableAdapter.getCreatedItems();
+    for( int i = 0; i < createdItems.length; i++ ) {
+      int index = table.indexOf( createdItems[ i ] );
+      if( !tableAdapter.isItemVirtual( index ) ) {
+        result++;
+      }
+    }
+    return result;
   }
 
   private static void clearColumns( final Table table ) {

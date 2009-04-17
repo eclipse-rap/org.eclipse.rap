@@ -201,11 +201,18 @@ public class Table extends Composite {
     public boolean hasVScrollBar() {
       return Table.this.hasVScrollBar();
     }
+
+    public TableItem getMeasureItem() {
+      return Table.this.getMeasureItem();
+    }
   }
 
   private final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
-      Table.this.checkData();
+      if( ( Table.this.style & SWT.VIRTUAL ) != 0 ) {
+        Table.this.checkData();
+      }
+      Table.this.updateScrollBars();
     }
   }
 
@@ -234,6 +241,8 @@ public class Table extends Composite {
   private int[] selection;
   private boolean linesVisible;
   private boolean headerVisible;
+  private boolean hasVScrollBar;
+  private boolean hasHScrollBar;
   private int topIndex;
   int leftOffset;
   private int focusIndex;
@@ -287,12 +296,8 @@ public class Table extends Composite {
     columnHolder = new ItemHolder( TableColumn.class );
     setTableEmpty();
     selection = EMPTY_SELECTION;
-    if( ( this.style & SWT.VIRTUAL ) != 0 ) {
-      resizeListener = new ResizeListener();
-      addControlListener( resizeListener );
-    } else {
-      resizeListener = null;
-    }
+    resizeListener = new ResizeListener();
+    addControlListener( resizeListener );
   }
 
   void initState() {
@@ -1581,7 +1586,11 @@ public class Table extends Composite {
    */
   public void setHeaderVisible( final boolean headerVisible ) {
     checkWidget();
+    boolean changed = headerVisible != this.headerVisible;
     this.headerVisible = headerVisible;
+    if( changed ) {
+      updateScrollBars();
+    }
   }
 
   /**
@@ -1856,6 +1865,11 @@ public class Table extends Composite {
     SelectionEvent.removeListener( this, listener );
   }
 
+  public void setFont( final Font font ) {
+    super.setFont( font );
+    updateScrollBars();
+  }
+
   ////////////////////
   // Widget dimensions
 
@@ -1864,7 +1878,8 @@ public class Table extends Composite {
                             final boolean changed )
   {
     checkWidget ();
-    int width = 0, height = 0;
+    int width = 0; 
+    int height = 0;
 
     if( getColumnCount() > 0 ) {
       for( int i = 0; i < getColumnCount(); i++ ) {
@@ -1888,11 +1903,15 @@ public class Table extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth ();
+    int border = getBorderWidth();
     width += border * 2;
     height += border * 2;
-    width += getVScrollBarWidth();
-    height += getHScrollBarHeight();
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      width += ScrollBar.SCROLL_BAR_WIDTH;
+    }
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      height += ScrollBar.SCROLL_BAR_HEIGHT;
+    }
     return new Point( width, height );
   }
 
@@ -1950,6 +1969,7 @@ public class Table extends Composite {
                         length - index );
       columnImageCount = newColumnImageCount;
     }
+    updateScrollBars();
   }
 
   final void destroyColumn( final TableColumn column ) {
@@ -1982,15 +2002,20 @@ public class Table extends Composite {
     }
     columnOrder = newColumnOrder;
     // Remove from columnImageCount
-    count = 0;
-    int[] newColumnImageCount = new int[ columnImageCount.length - 1 ];
-    for( int i = 0; i < columnImageCount.length; i++ ) {
-      if( i != index ) {
-        newColumnImageCount[ count ] = columnImageCount[ i ];
-        count++;
+    if( columnImageCount.length == 1 ) {
+      columnImageCount = null;
+    } else {
+      count = 0;
+      int[] newColumnImageCount = new int[ columnImageCount.length - 1 ];
+      for( int i = 0; i < columnImageCount.length; i++ ) {
+        if( i != index ) {
+          newColumnImageCount[ count ] = columnImageCount[ i ];
+          count++;
+        }
       }
+      columnImageCount = newColumnImageCount;
     }
-    columnImageCount = newColumnImageCount;
+    updateScrollBars();
   }
 
   ////////////////////////////
@@ -2028,6 +2053,7 @@ public class Table extends Composite {
     if( index <= focusIndex ) {
       focusIndex++;
     }
+    updateScrollBars();
   }
 
   final void destroyItem( final TableItem item,  final int index ) {
@@ -2051,6 +2077,7 @@ public class Table extends Composite {
     if( index == focusIndex || focusIndex > itemCount - 1 ) {
       adjustFocusIndex();
     }
+    updateScrollBars();
   }
 
   ////////////////
@@ -2074,9 +2101,7 @@ public class Table extends Composite {
 
   void releaseWidget() {
     super.releaseWidget();
-    if( resizeListener != null ) {
-      removeControlListener( resizeListener );
-    }
+    removeControlListener( resizeListener );
   }
 
   //////////////////////////////////
@@ -2227,6 +2252,44 @@ public class Table extends Composite {
     return bufferedCellSpacing;
   }
 
+  ///////////////////////////////////////
+  // Helping methods - dynamic scrollbars
+  
+  boolean hasVScrollBar() {
+    return hasVScrollBar;
+  }
+
+  boolean hasHScrollBar() {
+    return hasHScrollBar;
+  }
+
+  int getVScrollBarWidth() {
+    int result = 0;
+    if( hasVScrollBar() ) {
+      result = ScrollBar.SCROLL_BAR_WIDTH;
+    }
+    return result;
+  }
+
+  int getHScrollBarHeight() {
+    int result = 0;
+    if( hasHScrollBar() ) {
+      result = ScrollBar.SCROLL_BAR_HEIGHT;
+    }
+    return result;
+  }
+
+  void updateScrollBars() {
+    if( ( style & SWT.NO_SCROLL ) == 0 ) {
+      hasVScrollBar = false;
+      hasHScrollBar = needsHScrollBar();
+      if( needsVScrollBar() ) {
+        hasVScrollBar = true;
+        hasHScrollBar = needsHScrollBar();
+      }
+    }
+  }
+
   ////////////////////////////
   // Helping methods - various
 
@@ -2337,43 +2400,44 @@ public class Table extends Composite {
 
   private static int checkStyle( final int style ) {
     int result = style;
-    result |= SWT.H_SCROLL | SWT.V_SCROLL;
+    if( ( style & SWT.NO_SCROLL ) == 0 ) {
+      result |= SWT.H_SCROLL | SWT.V_SCROLL;
+    }
     return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
   }
 
   boolean needsVScrollBar() {
+    int availableHeight = getClientArea().height - getHScrollBarHeight();
     int height = getHeaderHeight();
     height += getItemCount() * getItemHeight();
-    int clientAreaHeight = getClientArea().height;
-    return height > clientAreaHeight;
+    return height > availableHeight;
   }
-  
+
   boolean needsHScrollBar() {
     boolean result = false;
+    int availableWidth = getClientArea().width - getVScrollBarWidth();
     int columnCount = getColumnCount();
-    int clientAreaWidth = getClientArea().width;
     if( columnCount > 0 ) {
       int totalWidth = 0;
       for( int i = 0; i < columnCount; i++ ) {
         TableColumn column = getColumn( i );
         totalWidth += column.getWidth();
       }
-      result = totalWidth > clientAreaWidth;
+      result = totalWidth > availableWidth;
     } else {
-      TableItem measureItem = getMeasureItem( this );
+      TableItem measureItem = getMeasureItem();
       if( measureItem != null ) {
         int itemWidth = measureItem.getBounds().width;
-        result = itemWidth > clientAreaWidth;
+        result = itemWidth > availableWidth;
       }
     }
     return result;
   }
 
-  // TODO [rst] copy of TableLCAUtil
-  TableItem getMeasureItem( final Table table ) {
+  TableItem getMeasureItem() {
     TableItem[] items = tableAdapter.getCachedItems();
     TableItem result = null;
-    if( table.getColumnCount() == 0 ) {
+    if( getColumnCount() == 0 ) {
       // Find item with longest text because the imaginary only column stretches 
       // as wide as the longest item (images cannot differ in width)
       for( int i = 0; i < items.length; i++ ) {
@@ -2392,39 +2456,12 @@ public class Table extends Composite {
     return result;
   }
 
-  // TODO [rst] copy of TableLCAUtil
   private static TableItem max( final TableItem item1, final TableItem item2 ) {
     TableItem result;
     if( item1.getText( 0 ).length() > item2.getText( 0 ).length() ) {
       result = item1;
     } else {
       result = item2;
-    }
-    return result;
-  }
-
-  boolean hasVScrollBar() {
-    boolean hasNoScroll = ( getStyle() & SWT.NO_SCROLL ) != 0;
-    return !hasNoScroll;
-  }
-
-  boolean hasHScrollBar() {
-    boolean hasNoScroll = ( getStyle() & SWT.NO_SCROLL ) != 0;
-    return !hasNoScroll;
-  }
-
-  int getVScrollBarWidth() {
-    int result = 0;
-    if( hasVScrollBar() ) {
-      result = ScrollBar.SCROLL_BAR_WIDTH;
-    }
-    return result;
-  }
-
-  int getHScrollBarHeight() {
-    int result = 0;
-    if( hasHScrollBar() ) {
-      result = ScrollBar.SCROLL_BAR_HEIGHT;
     }
     return result;
   }

@@ -122,7 +122,7 @@ public class TableLCA_Test extends TestCase {
     textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
     RWTFixture.clearPreserved();
-    //control: enabled
+    // control: enabled
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
@@ -132,7 +132,7 @@ public class TableLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     RWTFixture.clearPreserved();
-    //visible
+    // visible
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
@@ -142,7 +142,7 @@ public class TableLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     RWTFixture.clearPreserved();
-    //menu
+    // menu
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
@@ -155,31 +155,25 @@ public class TableLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     RWTFixture.clearPreserved();
-    //bound
+    // bounds
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     table.setBounds( rectangle );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     RWTFixture.clearPreserved();
-    //control_listeners
-    RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( table );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
-    table.addControlListener( new ControlAdapter() { } );
+    // control_listeners (Table always registers a control listener)
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
-    //z-index
+    // z-index
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     RWTFixture.clearPreserved();
-    //foreground background font
+    // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     table.setBackground( background );
     Color foreground = Graphics.getColor( 211, 178, 211 );
@@ -192,7 +186,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     RWTFixture.clearPreserved();
-    //tab_index
+    // tab_index
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
@@ -204,7 +198,7 @@ public class TableLCA_Test extends TestCase {
     preserved = adapter.getPreserved( TableLCA.PROP_HAS_V_SCROLL_BAR );
     assertTrue( preserved != null );
     RWTFixture.clearPreserved();
-    //tooltiptext
+    // tooltip text
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( null, table.getToolTipText() );
@@ -214,7 +208,7 @@ public class TableLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( "some text", table.getToolTipText() );
     RWTFixture.clearPreserved();
-    //activate_listeners   Focus_listeners
+    // activate listeners, focus listeners
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -406,48 +400,6 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 0, events[ 0 ].height );
     assertEquals( 0, table.getSelectionCount() );
     assertEquals( -1, table.getSelectionIndex() );
-  }
-
-  public void testGetMeasureItemWithoutColumnsVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final String[] data = new String[ 1000 ];
-    for( int i = 0; i < data.length; i++ ) {
-      data[ i ] = "";
-    }
-    Listener setDataListener = new Listener() {
-
-      public void handleEvent( final Event event ) {
-        TableItem item = ( TableItem )event.item;
-        int index = item.getParent().indexOf( item );
-        item.setText( data[ index ] );
-      }
-    };
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    shell.setSize( 100, 100 );
-    Table table = new Table( shell, SWT.VIRTUAL );
-    table.addListener( SWT.SetData, setDataListener );
-    table.setItemCount( data.length );
-    table.setSize( 90, 90 );
-    shell.open();
-    int resolvedItemCount;
-    TableItem measureItem;
-    // Test with items that all have the same width
-    resolvedItemCount = countResolvedItems( table );
-    measureItem = TableLCAUtil.getMeasureItem( table );
-    assertNotNull( measureItem );
-    assertEquals( resolvedItemCount, countResolvedItems( table ) );
-    // Test with items that have ascending length
-    data[ 0 ] = "a";
-    for( int i = 1; i < data.length; i++ ) {
-      data[ i ] = data[ i - 1 ] + "a";
-    }
-    table.getItem( 100 ).getText(); // resolves item
-    resolvedItemCount = countResolvedItems( table );
-    measureItem = TableLCAUtil.getMeasureItem( table );
-    int measureItemIndex = measureItem.getParent().indexOf( measureItem );
-    assertEquals( 100, measureItemIndex );
-    assertEquals( resolvedItemCount, countResolvedItems( table ) );
   }
 
   public void testRedraw() {
@@ -745,20 +697,6 @@ public class TableLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, TableLCA.hideSelection( table ) );
     table.setData( Table.HIDE_SELECTION, "true" );
     assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
-  }
-
-  private static int countResolvedItems( final Table table ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    int result = 0;
-    TableItem[] createdItems = tableAdapter.getCreatedItems();
-    for( int i = 0; i < createdItems.length; i++ ) {
-      int index = table.indexOf( createdItems[ i ] );
-      if( !tableAdapter.isItemVirtual( index ) ) {
-        result++;
-      }
-    }
-    return result;
   }
 
   private static boolean isItemVirtual( final Table table, final int index ) {

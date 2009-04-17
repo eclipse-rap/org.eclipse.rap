@@ -122,9 +122,9 @@ public final class TableLCAUtil {
     for( int i = 0; i < columnCount; i++ ) {
       result[ i ] = new ItemMetrics();
     }
-    TableItem measureItem = getMeasureItem( table );
+    ITableAdapter tableAdapter = getTableAdapter( table );
+    TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
-      ITableAdapter tableAdapter = getTableAdapter( table );
       int checkWidth = tableAdapter.getCheckWidth();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );
@@ -146,39 +146,6 @@ public final class TableLCAUtil {
         result[ i ].textLeft = textLeft;
         result[ i ].textWidth = textWidth;
       }
-    }
-    return result;
-  }
-
-  static TableItem getMeasureItem( final Table table ) {
-    ITableAdapter tableAdapter = getTableAdapter( table );
-    TableItem[] items = tableAdapter.getCachedItems();
-    TableItem result = null;
-    if( table.getColumnCount() == 0 ) {
-      // Find item with longest text because the imaginary only column stretches 
-      // as wide as the longest item (images cannot differ in width)
-      for( int i = 0; i < items.length; i++ ) {
-        if( result == null ) {
-          result = items[ i ];
-        } else {
-          result = max( result, items[ i ] );
-        }
-      }
-    } else {
-      // Take the first item if any
-      if( items.length > 0 ) {
-        result = items[ 0 ];
-      }
-    }
-    return result;
-  }
-
-  private static TableItem max( final TableItem item1, final TableItem item2 ) {
-    TableItem result;
-    if( item1.getText( 0 ).length() > item2.getText( 0 ).length() ) {
-      result = item1;
-    } else {
-      result = item2;
     }
     return result;
   }
