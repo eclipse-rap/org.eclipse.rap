@@ -1528,13 +1528,13 @@ public class Table extends Composite {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     int itemIndex = indexOf( item );
-    int visibleItemCount = getVisibleItemCount( false );
+    int itemCount = getVisibleItemCount( false );
     if( itemIndex < topIndex ) {
       // Show item as top item
       setTopIndex( itemIndex );
-    } else if( itemIndex >= topIndex + visibleItemCount ) {
+    } else if( itemCount > 0 && itemIndex >= topIndex + itemCount ) {
       // Show item as last item
-      setTopIndex( itemIndex - visibleItemCount + 1 );
+      setTopIndex( itemIndex - itemCount + 1 );
     }
   }
 

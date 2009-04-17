@@ -1242,6 +1242,35 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getTopIndex() );
   }
 
+  public void testSetSelectionBeforeSetSize() {
+    // Calling setSelection() before setSize() should not change top index
+    // See bug 272714, https://bugs.eclipse.org/bugs/show_bug.cgi?id=272714
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    table.setSelection( 0 );
+    table.setSize( 100, 100 );
+    assertEquals( 0, table.getTopIndex() );
+    table.setSize( 0, 0 );
+    table.setSelection( 3 );
+    table.setSize( 100, 100 );
+    assertEquals( 0, table.getTopIndex() );
+    // table with one item and item height == 1
+    table = new Table( shell, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    table.setSelection( 0 );
+    table.setSize( 100, table.getItemHeight() + 4 );
+    assertEquals( 0, table.getTopIndex() );
+    table.setSize( 0, 0 );
+    table.setSelection( 1 );
+    table.setSize( 100, table.getItemHeight() + 4 );
+    assertEquals( 0, table.getTopIndex() );
+  }
+
   public void testSortColumnAndDirection() {
     Display display = new Display();
     Shell shell = new Shell( display );
