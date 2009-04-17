@@ -64,13 +64,6 @@ import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * <p>Current state of Table implementation:</p>
- * <ul>
- *  <li>showSelection and showItem currently do a very rough proximation since
- *  getClientArea is not yet implemented properly</li>
- *  <li>Scroll bars are visible even though not necessary</li>
- *  <li>No keyboard navigation</li>
- * </ul>
  *
  * @since 1.0
  */
