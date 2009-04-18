@@ -25,10 +25,9 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
 import org.w3c.css.sac.CSSException;
 
-
 /**
- * The ThemeManager is responsible for reading custom themes and installing them
- * on the client.
+ * The ThemeManager maintains information about the themeable widgets and the
+ * installed themes.
  */
 public final class ThemeManager {
 
@@ -245,9 +244,16 @@ public final class ThemeManager {
   /**
    * Adds a custom widget to the list of themeable widgets. Note that this
    * method must be called <em>before</em> initializing the ThemeManager.
-   *
+   * 
    * @param widget the themeable widget to add, must not be <code>null</code>
+   * @param loader the resource loader used to load theme resources like theme
+   *          definitions etc. The resources to load follow a naming convention
+   *          and must be resolved by the class loader. This argument must not
+   *          be <code>null</code>.
    * @throws IllegalStateException if the ThemeManager is already initialized
+   * @throws NullPointerException if a parameter is null
+   * @throws IllegalArgumentException if the given widget is not a subtype of
+   *           {@link Widget}
    */
   public void addThemeableWidget( final Class widget,
                                   final ResourceLoader loader )
@@ -256,10 +262,13 @@ public final class ThemeManager {
       throw new IllegalStateException( "ThemeManager is already initialized" );
     }
     if( widget == null ) {
-      throw new NullPointerException( "null argument" );
+      throw new NullPointerException( "widget" );
+    }
+    if( loader == null ) {
+      throw new NullPointerException( "loader" );
     }
     if( !Widget.class.isAssignableFrom( widget ) ) {
-      String message = "Themeable widget is not a subtype of Widget: "
+      String message =   "Themeable widget is not a subtype of Widget: "
                        + widget.getName();
       throw new IllegalArgumentException( message );
     }
@@ -269,16 +278,19 @@ public final class ThemeManager {
   /**
    * Registers a theme from an input stream. Note that <code>initialize()</code>
    * must be called first.
-   *
+   * 
    * @param id an id that identifies the theme in the Java code. Note that this
-   *            id is not valid on the client-side. To get the id that is used
-   *            on the client, see method <code>getJsThemeId</code>
+   *          id is not valid on the client-side. To get the id that is used on
+   *          the client, see method <code>getJsThemeId</code>
    * @param name a name that describes the theme. Currently not used.
    * @param fileName the filename of the theme file
-   * @param loader a ResourceLoader instance that is able to load resources
-   *            needed by this theme
-   * @throws IOException if an I/O error occurs
+   * @param loader a resource loader that will load theme resources by path
    * @throws IllegalStateException if not initialized
+   * @throws NullPointerException if one of the parameters id, fileName, or
+   *           loader is <code>null</code>
+   * @throws IllegalArgumentException if parameter id is empty
+   * @throws IOException if an I/O error occurs while reading the theme file
+   * @throws ThemeManagerException if the CSS file cannot be parsed
    */
   public void registerTheme( final String id,
                              final String name,
@@ -291,6 +303,9 @@ public final class ThemeManager {
     checkId( id );
     if( fileName == null ) {
       throw new NullPointerException( "fileName" );
+    }
+    if( loader == null ) {
+      throw new NullPointerException( "loader" );
     }
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
@@ -400,10 +415,12 @@ public final class ThemeManager {
 
   /**
    * Returns the theme adapter to use for controls of the specified type.
-   *
+   * 
    * @param widgetClass
    * @return the theme adapter
    * @throws IllegalStateException if not initialized
+   * @throws IllegalArgumentException if no theme adapter has been registered
+   *           for the given widget
    */
   public IThemeAdapter getThemeAdapter( final Class widgetClass ) {
     checkInitialized();
@@ -555,11 +572,11 @@ public final class ThemeManager {
     } catch( final ClassNotFoundException e ) {
       // ignore and try to load from next package name variant
     } catch( final InstantiationException e ) {
-      String message = "Failed to instantiate theme adapter class "
+      String message =   "Failed to instantiate theme adapter class "
                        + adapterClassName;
       throw new ThemeManagerException( message, e );
     } catch( final IllegalAccessException e ) {
-      String message = "Failed to instantiate theme adapter class "
+      String message =   "Failed to instantiate theme adapter class "
                        + adapterClassName;
       throw new ThemeManagerException( message, e );
     }

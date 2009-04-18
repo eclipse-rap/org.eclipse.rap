@@ -246,6 +246,8 @@ final class EngineConfigWrapper implements IEngineConfig {
             throws IOException
           {
             InputStream result = null;
+            // We need to call getResource() here since resources must be loaded
+            // by the bundle classloader
             URL url = bundle.getResource( resourceName );
             if( url != null ) {
               result = url.openStream();
@@ -257,7 +259,7 @@ final class EngineConfigWrapper implements IEngineConfig {
         widget = bundle.loadClass( widgetClass );
         ThemeManager.getInstance().addThemeableWidget( widget, resLoader );
       } catch( final Throwable e ) {
-        String text =   "Could not register themeable widget ''{0}''.";
+        String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
         String msg = MessageFormat.format( text, param );
         Status status = new Status( IStatus.ERROR,
@@ -303,8 +305,8 @@ final class EngineConfigWrapper implements IEngineConfig {
                                                   themeName,
                                                   themeFile,
                                                   resLoader );
-      } catch( final Throwable e ) {
-        String text = "Could not register custom theme ''{0}'' "
+      } catch( final Exception e ) {
+        String text =   "Could not register custom theme ''{0}'' "
                       + "from file ''{1}''.";
         Object[] param = new Object[] { themeId, themeFile };
         String msg = MessageFormat.format( text, param );
