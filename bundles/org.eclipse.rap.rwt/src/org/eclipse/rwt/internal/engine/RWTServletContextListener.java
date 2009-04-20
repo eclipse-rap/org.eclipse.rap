@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.engine;
 
 import java.io.IOException;
@@ -405,16 +404,15 @@ public final class RWTServletContextListener implements ServletContextListener {
   private static void setRegisteredBrandings( final ServletContext context, 
                                               final List brandings ) 
   {
-    AbstractBranding[] registeredBrandings = new AbstractBranding[ brandings.size() ];
+    AbstractBranding[] registeredBrandings
+      = new AbstractBranding[ brandings.size() ];
     brandings.toArray( registeredBrandings );
     context.setAttribute( REGISTERED_BRANDINGS, registeredBrandings );
-    
   }
   
-  private static void deregisterBrandings( final ServletContext servletContext ) 
-  {
+  private static void deregisterBrandings( final ServletContext context ) {
     AbstractBranding[] brandings 
-      = ( AbstractBranding[] )servletContext.getAttribute( REGISTERED_BRANDINGS );
+      = ( AbstractBranding[] )context.getAttribute( REGISTERED_BRANDINGS );
     if( brandings != null ) {
       for( int i = 0; i < brandings.length; i++ ) {
         BrandingManager.deregister( brandings[ i ] );
