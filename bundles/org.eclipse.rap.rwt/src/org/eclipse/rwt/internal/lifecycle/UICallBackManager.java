@@ -110,19 +110,15 @@ public final class UICallBackManager
   }
   
   public void addSync( final Display display, final Runnable runnable ) {
-    // TODO [fappel]: the synchronized block should synchronize on runnables
-    //                not runnable, but by doing so the application may run
-    //                into a deadlock. This is because the SyncRunnable blocks
-    //                the thread execution on a different lock.
-    synchronized( runnable ) {
-      if( Thread.currentThread() == display.getThread() ) {
-        runnable.run();
-      } else {
-        SyncRunnable syncRunnable = new SyncRunnable( runnable );
+    if( Thread.currentThread() == display.getThread() ) {
+      runnable.run();
+    } else {
+      SyncRunnable syncRunnable = new SyncRunnable( runnable );
+      synchronized( runnablesLock ) {
         runnables.add( syncRunnable );
-        sendUICallBack();
-        syncRunnable.block();
       }
+      sendUICallBack();
+      syncRunnable.block();
     }
   }
   
@@ -278,6 +274,7 @@ public final class UICallBackManager
   
   static final class SyncRunnable extends RunnableBase {
     private final Object lock;
+    private boolean terminated;
     SyncRunnable( final Runnable runnable ) {
       super( runnable );
       lock = new Object();
@@ -285,15 +282,18 @@ public final class UICallBackManager
     void run() {
       super.run();
       synchronized( lock ) {
+        terminated = true;
         lock.notifyAll();
       }
     }
     void block() {
       synchronized( lock ) {
-        try {
-          lock.wait();
-        } catch( final InterruptedException e ) {
-          // stop waiting
+        if( !terminated ) {
+          try {
+            lock.wait();
+          } catch( final InterruptedException e ) {
+            // stop waiting
+          }
         }
       }
     }
