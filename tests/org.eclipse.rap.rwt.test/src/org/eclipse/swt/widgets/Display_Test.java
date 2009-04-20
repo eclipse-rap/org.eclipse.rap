@@ -822,6 +822,14 @@ public class Display_Test extends TestCase {
     assertNotNull( monitor );
     // Further monitor tests can be found in Monitor_Test
   }
+  
+  public void testDispose() {
+    Display display = new Display();
+    assertFalse( display.isDisposed() );
+    display.dispose();
+    assertTrue( display.isDisposed() );
+    assertNull( Display.getCurrent() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

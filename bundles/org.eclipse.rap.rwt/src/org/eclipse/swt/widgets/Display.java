@@ -28,6 +28,7 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -118,8 +119,9 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 // TODO: [doc] Update display javadoc
 public class Display extends Device implements Adaptable {
 
-  private static final String DISPLAY_ID = "org.eclipse.swt.display";
-  private static final String INVALIDATE_FOCUS
+  private static final String ATTR_DISPLAY
+    = Display.class.getName() + "#current";
+  private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
 
 
@@ -140,7 +142,7 @@ public class Display extends Device implements Adaptable {
     Display result = null;
     if( ContextProvider.hasContext() ) {
       ISessionStore sessionStore = ContextProvider.getSession();
-      result = ( Display )sessionStore.getAttribute( DISPLAY_ID );
+      result = ( Display )sessionStore.getAttribute( ATTR_DISPLAY );
     }
     return result;
   }
@@ -201,7 +203,7 @@ public class Display extends Device implements Adaptable {
     if( getCurrent() != null ) {
       SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
-    ContextProvider.getSession().setAttribute( DISPLAY_ID, this );
+    ContextProvider.getSession().setAttribute( ATTR_DISPLAY, this );
     shells = new ArrayList();
     readInitialBounds();
     monitor = new Monitor( this );
@@ -496,9 +498,9 @@ public class Display extends Device implements Adaptable {
   //////////
   // Dispose
 
-  public void dispose() {
-    super.dispose();
-    ContextProvider.getSession().removeAttribute( DISPLAY_ID );
+  public void release() {
+    ContextProvider.getSession().removeAttribute( ATTR_DISPLAY );
+    // TODO [rh] zero fields
   }
 
   /////////////////////
@@ -634,10 +636,11 @@ public class Display extends Device implements Adaptable {
    * @see #syncExec
    */
   public void asyncExec( final Runnable runnable ) {
-// TODO: [fappel] disposal check
-//    if( isDisposed() ) {
-//      error( SWT.ERROR_DEVICE_DISPOSED );
-//    }
+    // TODO [rh] there might be cases where the display is disposed between 
+    //      this check and adding the runnable to the execution list
+    if( isDisposed() ) {
+      error( SWT.ERROR_DEVICE_DISPOSED );
+    }
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().addAsync( Display.this, runnable );
@@ -669,10 +672,11 @@ public class Display extends Device implements Adaptable {
    * @see #asyncExec
    */
   public void syncExec( final Runnable runnable ) {
-//  TODO: [fappel] disposal check
-//  if( isDisposed() ) {
-//    error( SWT.ERROR_DEVICE_DISPOSED );
-//  }
+    // TODO [rh] there might be cases where the display is disposed between 
+    //      this check and adding the runnable to the execution list
+    if( isDisposed() ) {
+      error( SWT.ERROR_DEVICE_DISPOSED );
+    }
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().addSync( Display.this, runnable );
@@ -1399,11 +1403,12 @@ public class Display extends Device implements Adaptable {
     }
 
     public void invalidateFocus() {
-      RWT.getServiceStore().setAttribute( INVALIDATE_FOCUS, Boolean.TRUE );
+      RWT.getServiceStore().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
     }
 
     public boolean isFocusInvalidated() {
-      Object value = RWT.getServiceStore().getAttribute( INVALIDATE_FOCUS );
+      IServiceStore serviceStore = RWT.getServiceStore();
+      Object value = serviceStore.getAttribute( ATTR_INVALIDATE_FOCUS );
       return value != null;
     }
 
