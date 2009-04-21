@@ -39,7 +39,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   destruct : function() {
     // When changing this, re-check destructor of Table.js as well as TableLCA
     // and TableItemLCA
-    if( !this._parent.getDisposed() ) {
+    // [if] The qx.core.Object.inGlobalDispose() is used to skip table rendering
+    // on browser refresh. See bug:
+    // 272686: [Table] Javascript error during table disposal
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=272686
+    if( !this._parent.getDisposed() && !qx.core.Object.inGlobalDispose() ) {
       this._parent._removeItem( this );
     }
     org.eclipse.swt.WidgetManager.getInstance().remove( this );

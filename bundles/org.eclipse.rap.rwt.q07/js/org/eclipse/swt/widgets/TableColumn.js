@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this._disposeFields( "_sortImage" );
-    if( !this._table.getDisposed() ) {
+    // [if] The qx.core.Object.inGlobalDispose() is used to skip table rendering
+    // on browser refresh. See bug:
+    // 272686: [Table] Javascript error during table disposal
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=272686
+    if( !this._table.getDisposed() && !qx.core.Object.inGlobalDispose() ) {
       this._table._removeColumn( this );
     }
   },
