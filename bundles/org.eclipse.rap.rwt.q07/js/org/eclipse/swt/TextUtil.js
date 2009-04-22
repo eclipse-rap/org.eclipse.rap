@@ -122,11 +122,14 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             && !event.isShiftPressed()
             && !event.isAltPressed()
             && !event.isCtrlPressed()
-            && !event.isMetaPressed()
-            && org.eclipse.swt.TextUtil.hasSelectionListener( text ) )
-        {
-          event.setPropagationStopped( true );
-          org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
+            && !event.isMetaPressed() )
+        {          
+          if( text.hasState( "rwt_MULTI" ) ) {
+            event.stopPropagation();
+          }
+          if( org.eclipse.swt.TextUtil.hasSelectionListener( text ) ) {
+            org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
+          }
         }
       }
     },
