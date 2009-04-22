@@ -348,9 +348,21 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     _doSetSelection : function( text, start, length ) {
       text.setUserData( "selectionStart", start );
-      text.setSelectionStart( start );
       text.setUserData( "selectionLength", length );
-      text.setSelectionLength( length );
+      // [if] Workaround for bug
+      // 262908: Focus jump when setting text in focusLost event
+      if( start == 0 && length == 0 ) {
+        // [if] Clear the selection by setting the text again. 
+        // This way the text field does not gain the focus.
+        if( text._inputElement !== undefined ) {
+          var value = text.getValue();
+          text._inputElement.value = "";
+          text._inputElement.value = value;
+        }
+      } else {  
+        text.setSelectionStart( start );
+        text.setSelectionLength( length );
+      }
     }
 
   }
