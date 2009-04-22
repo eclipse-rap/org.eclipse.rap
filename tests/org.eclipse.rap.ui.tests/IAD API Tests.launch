@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="askclear" value="false"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<booleanAttribute key="clearws" value="true"/>
+<booleanAttribute key="com.mountainminds.eclemma.core.INPLACE_INSTRUMENTATION" value="true"/>
+<listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
+<listEntry value="/org.eclipse.rap.ui.workbench.iad.test/bin"/>
+<listEntry value="/org.eclipse.rap.ui.workbench/bin"/>
+</listAttribute>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/org.eclipse.rap.ui.tests/IAD API Tests/org/eclipse/rap/interactiondesign/tests"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="2"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.eclipse.rap.ui.tests/IAD API Tests&lt;org.eclipse.rap.interactiondesign.tests"/>
+<booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
+<stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
+<stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit3"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console -consolelog"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.rap.ui.tests"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true"/>
+<stringAttribute key="org.eclipse.rap.launch.browserMode" value="EXTERNAL"/>
+<stringAttribute key="org.eclipse.rap.launch.entryPoint" value="testentry"/>
+<stringAttribute key="org.eclipse.rap.launch.libraryVariant" value="STANDARD"/>
+<stringAttribute key="org.eclipse.rap.launch.logLevel" value="OFF"/>
+<booleanAttribute key="org.eclipse.rap.launch.openBrowser" value="true"/>
+<intAttribute key="org.eclipse.rap.launch.port" value="10080"/>
+<stringAttribute key="org.eclipse.rap.launch.servletName" value="iadtest"/>
+<booleanAttribute key="org.eclipse.rap.launch.terminatePrevious" value="true"/>
+<booleanAttribute key="org.eclipse.rap.launch.useManualPort" value="true"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.eclipse.sdk.ide"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="org.eclipse.osgi@:,org.apache.commons.logging@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.core.databinding.beans@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.core.databinding.observable@default:default,org.mortbay.jetty.server@default:default,org.eclipse.core.databinding@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.core.runtime@default:true,org.eclipse.core.filesystem@default:default,org.eclipse.equinox.app@default:default,org.eclipse.jdt.junit.runtime@default:default,org.eclipse.core.expressions@default:default,org.eclipse.osgi.services@default:default,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.common@default:default,com.ibm.icu.base@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.resources@default:default,org.junit@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.core.databinding.property@default:default,org.eclipse.core.resources.compatibility@default:false,org.mortbay.jetty.util@default:default,javax.servlet@default:default,org.eclipse.core.commands@default:default"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="false"/>
+<booleanAttribute key="useProduct" value="true"/>
+<stringAttribute key="workspace_bundles" value="org.eclipse.rap.junit.runtime@default:default,org.eclipse.rap.equinox.registry@default:false,org.eclipse.rap.ui.tests@default:default,org.eclipse.core.runtime.compatibility@default:default,org.eclipse.rap.rwt.q07@default:false,org.eclipse.rap.ui.forms@default:default,org.eclipse.rap.ui.tests.harness@default:default,org.eclipse.update.configurator@default:default,org.eclipse.rap.ui.views@default:default,org.eclipse.rap.jface.databinding@default:default,org.eclipse.rap.rwt@default:default,org.eclipse.rap.jface@default:default,org.eclipse.test.performance@default:default,org.eclipse.rap.ui.workbench@default:default,org.eclipse.rap.ui@default:default,org.eclipse.rap.junit@default:default,org.eclipse.core.tests.harness@default:default"/>
+</launchConfiguration>
