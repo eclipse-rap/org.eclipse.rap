@@ -38,11 +38,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
     this._currentRequest = null;
     this._timeoutPage = "";
   },
-  
+
   destruct : function() {
     this._currentRequest = null;
   },
-  
+
   events : {
     "send" : "qx.event.type.DataEvent",
     "received" : "qx.event.type.DataEvent"
@@ -54,9 +54,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._url = url;
       } else {
         this._url = encodedURL;
-      }      
+      }
     },
-    
+
     getUrl : function() {
       return this._url;
     },
@@ -90,10 +90,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
     removeParameter : function( name ) {
       delete this._parameters[ name ];
     },
-    
+
     /**
      * Returns the parameter value for the given name or null if no parameter
-     * with such a name exists. 
+     * with such a name exists.
      */
     getParameter : function( name ) {
       var result = this._parameters[ name ];
@@ -113,34 +113,34 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     /**
      * To enable server callbacks to the UI this method sends a request
-     * that will be blocked by the server till background activities 
+     * that will be blocked by the server till background activities
      * require UI updates.
      */
     enableUICallBack : function() {
       var request = new qx.io.remote.Request( this._url,
-                                              qx.net.Http.METHOD_GET, 
+                                              qx.net.Http.METHOD_GET,
                                               qx.util.Mime.JAVASCRIPT );
-      request.setParameter( 
-        "custom_service_handler", 
+      request.setParameter(
+        "custom_service_handler",
         "org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler" );
       this._sendStandalone( request );
     },
-    
+
     /**
-     * Sends this request asynchronously. All parameters that were added since 
+     * Sends this request asynchronously. All parameters that were added since
      * the last 'send()' will now be sent.
      */
     send : function() {
       if( !this._inDelayedSend ) {
         this._inDelayedSend = true;
         // Wait and then actually send the request
-        // TODO [rh] optimize wait interval (below 60ms seems to not work 
+        // TODO [rh] optimize wait interval (below 60ms seems to not work
         //      reliable)
         var func = function() { this._sendImmediate( true ) };
         qx.client.Timer.once( func, this, 60 );
       }
     },
-    
+
     sendSyncronous : function() {
       this._sendImmediate( false );
     },
@@ -183,30 +183,30 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
       }
     },
-    
+
     _copyParameters : function( request ) {
       var data = new Array();
       for( var parameterName in this._parameters ) {
-        data.push(   encodeURIComponent( parameterName ) 
-                   + "=" 
+        data.push(   encodeURIComponent( parameterName )
+                   + "="
                    + encodeURIComponent( this._parameters[ parameterName ] ) );
       }
       request.setData( data.join( "&" ) );
     },
-    
+
     _createRequest : function() {
-      var result = new qx.io.remote.Request( this._url, 
-                                             qx.net.Http.METHOD_POST, 
+      var result = new qx.io.remote.Request( this._url,
+                                             qx.net.Http.METHOD_POST,
                                              qx.util.Mime.TEXT );
       result.addEventListener( "sending", this._handleSending, this );
       result.addEventListener( "completed", this._handleCompleted, this );
       result.addEventListener( "failed", this._handleFailed, this );
       return result;
     },
-    
+
     _logSend : function() {
       if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
-        var msg = "sending request [ "; 
+        var msg = "sending request [ ";
         for( var parameterName in this._parameters ) {
           msg += parameterName + "=" + this._parameters[ parameterName ] + "; ";
         }
@@ -217,10 +217,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     _sendStandalone : function( request ) {
       // TODO [rh] WORKAROUND
-      //      we would need two requestQueues (one for 'normal' requests that 
+      //      we would need two requestQueues (one for 'normal' requests that
       //      is limited to 1 concurrent request and one for the 'independant'
       //      requests created here
-      //      Until qooxdoo supports multiple requestQueues we create and 
+      //      Until qooxdoo supports multiple requestQueues we create and
       //      send this kind of request without knownledge of the request queue
       var vRequest = request;
       var vTransport = new qx.io.remote.Exchange(vRequest);
@@ -239,17 +239,22 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     ////////////////////////
     // Handle request events
-    
+
     _handleSending : function( evt ) {
       var exchange = evt.getTarget();
       this._currentRequest = exchange.getRequest();
     },
-    
+
     _handleFailed : function( evt ) {
+      // [vt] workaround for bug #253756: Copied code from _handleSending since
+      // the sending phase is skipped on failure in IE
+      // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=253756
+      var exchange = evt.getTarget();
+      this._currentRequest = exchange.getRequest();
       var giveUp = true;
       if( this._isConnectionError( evt.getStatusCode() ) ) {
         giveUp = !this._handleConnectionError( evt );
-      } 
+      }
       if( giveUp ) {
         this._hideWaitHint();
         var content;
@@ -261,7 +266,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
           text = request.responseText;
         }
         if( text == "" || text == null ) {
-          content 
+          content
             = "<html><head><title>Error Page</title></head><body>"
             + "<p>Request failed.</p><pre>"
             + "HTTP Status Code: "
@@ -273,15 +278,15 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._writeErrorPage( content );
       }
     },
-    
+
     _handleCompleted : function( evt ) {
       var text = evt.getTarget().getImplementation().getRequest().responseText;
       if( text && text.indexOf( "<!DOCTYPE" ) === 0 ) {
         // Handle request to timed out session: write info page and offer
-        // link to restart application. This way was chosen for two reasons: 
-        // - with rendering an anchor tag we can restart the same entry point as 
+        // link to restart application. This way was chosen for two reasons:
+        // - with rendering an anchor tag we can restart the same entry point as
         //   is currently used
-        // - as clicking the link issues a regular request, we can be sure that 
+        // - as clicking the link issues a regular request, we can be sure that
         //   the stale application will be cleaned up properly by the browser
         var hrefAttr = "href=\"" + window.location + "\"";
         var content = this._timeoutPage.replace( /{HREF_URL}/, hrefAttr );
@@ -293,10 +298,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
             window.eval( text );
           }
           this._runningRequestCount--;
-          this._hideWaitHint(); 
+          this._hideWaitHint();
         } catch( ex ) {
           this.error( "Could not execute javascript: [" + text + "]", ex );
-          var content 
+          var content
             = "<html><head><title>Error Page</title></head><body>"
             + "<p>Could not evaluate javascript response:</p><pre>"
             + ex
@@ -304,14 +309,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
             + text
             + "</pre></body></html>";
           this._writeErrorPage( content );
-          errorOccured = true;     
+          errorOccured = true;
         }
         if( !errorOccured ) {
           this._dispatchReceivedEvent();
         }
       }
     },
-    
+
     ///////////////////////////////
     // Handling connection problems
 
@@ -325,7 +330,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var failedRequest = this._currentRequest;
         request.setAsynchronous( failedRequest.getAsynchronous() );
         // Reusing the same request object causes strange behaviour, therefore
-        // create a new request and copy the relevant parts from the failed one 
+        // create a new request and copy the relevant parts from the failed one
         var failedHeaders = failedRequest.getRequestHeaders();
         for( var headerName in failedHeaders ) {
           request.setRequestHeader( headerName, failedHeaders[ headerName ] );
@@ -340,11 +345,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
       return result;
     },
-    
+
     _restartRequest : function( request ) {
       // TODO [rh] this is adapted from qx.io.remote.RequestQueue#add as there
       //      is no official way to insert a new request as the first one in
-      //      RequestQueue 
+      //      RequestQueue
       request.setState( "queued" );
       var requestQueue = qx.io.remote.RequestQueue.getInstance();
       qx.lang.Array.insertAt( requestQueue._queue, request, 0 );
@@ -353,12 +358,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
         requestQueue._timer.start();
       }
     },
-    
+
     _isConnectionError : function( statusCode ) {
       var result;
       if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         // for a description of the IE status codes, see
-        // http://support.microsoft.com/kb/193625 
+        // http://support.microsoft.com/kb/193625
         result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
                    || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
                    || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
@@ -381,17 +386,17 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
       return result;
     },
-    
+
     ///////////////////////////////////////////////////
     // Wait hint - UI feedback while request is running
-    
+
     _showWaitHint : function() {
       if( this._runningRequestCount > 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
       }
     },
-    
+
     _hideWaitHint : function() {
       if( this._runningRequestCount === 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
@@ -405,7 +410,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this.dispatchEvent( event, true );
       }
     },
-    
+
     _dispatchReceivedEvent : function() {
       if( this.hasEventListeners( "received" ) ) {
         var event = new qx.event.type.DataEvent( "received", this );
@@ -415,7 +420,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     _writeErrorPage : function( content ) {
       // shutdown or disable all things that could interfere with showing the
-      // error page 
+      // error page
       var app = qx.core.Init.getInstance().getApplication();
       app.setExitConfirmation( null );
       qx.io.remote.RequestQueue.getInstance().setEnabled( false );
