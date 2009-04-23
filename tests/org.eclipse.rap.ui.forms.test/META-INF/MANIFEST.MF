@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.rap.ui.forms.test
+Bundle-Version: 1.2.0.qualifier
+Fragment-Host: org.eclipse.rap.ui.forms
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-Vendor: %Bundle-Vendor
+Require-Bundle: org.junit
