@@ -2024,6 +2024,19 @@ public class Table_Test extends TestCase {
     table.setHeaderVisible( true );
     assertTrue( table.hasVScrollBar() );
   }
+  
+  public void testUpdateScrollBarOnVirtualItemCountChange() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    int itemCount = 5;
+    table.setSize( 100, itemCount * table.getItemHeight() + 4 );
+    table.setItemCount( itemCount );
+    assertFalse( table.hasVScrollBar() );
+    table.setItemCount( itemCount * 2 );
+    assertTrue( table.hasVScrollBar() );
+  }
 
   public void testUpdateScrollBarItemWidthChangeWithColumn() {
     Display display = new Display();

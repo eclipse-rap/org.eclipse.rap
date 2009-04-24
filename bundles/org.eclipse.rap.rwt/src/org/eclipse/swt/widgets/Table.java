@@ -562,6 +562,9 @@ public class Table extends Composite {
       if( focusIndex > itemCount - 1 ) {
         adjustFocusIndex();
       }
+      if( ( style & SWT.VIRTUAL ) != 0 ) {
+        updateScrollBars();
+      }
     }
   }
 

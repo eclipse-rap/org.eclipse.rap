@@ -608,7 +608,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Thread getThread () {
+  public Thread getThread() {
     return thread;
   }
 

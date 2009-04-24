@@ -778,7 +778,6 @@ public abstract class Widget implements Adaptable {
    */
   boolean isValidThread() {
     return getDisplay().getThread() == Thread.currentThread();
-//    return RWTLifeCycle.getThread() == Thread.currentThread();
   }
 
   static int checkBits( final int style,
