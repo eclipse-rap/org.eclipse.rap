@@ -59,7 +59,7 @@ private static TaskExplorerManager instance;
 				Bundle bundle = Platform.getBundle(explorerInfo.getPluginId());
 				extClass = bundle.loadClass(className);
 			} catch (Exception e) {
-				String message = NLS.bind(Messages.ERROR_LOADING_CLASS, (new Object[] {className}));
+				String message = NLS.bind(Messages.get().ERROR_LOADING_CLASS, (new Object[] {className}));
 				Status status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 				CheatSheetPlugin.getPlugin().getLog().log(status);
 			}
@@ -70,7 +70,7 @@ private static TaskExplorerManager instance;
 					explorerInstance = (TaskExplorer) c.newInstance(parameters);
 				}
 			} catch (Exception e) {
-				String message = NLS.bind(Messages.ERROR_CREATING_CLASS, (new Object[] {className}));
+				String message = NLS.bind(Messages.get().ERROR_CREATING_CLASS, (new Object[] {className}));
 				IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 				CheatSheetPlugin.getPlugin().getLog().log(status);
 			}

@@ -34,7 +34,7 @@ public class EditableTaskParseStrategy implements ITaskParseStrategy {
 			if (!editableChildErrorReported  ){
 				 editableChildErrorReported = true;
 				 String message = NLS.bind(
-							Messages.ERROR_EDITABLE_TASK_WITH_CHILDREN,
+							Messages.get().ERROR_EDITABLE_TASK_WITH_CHILDREN,
 							(new Object[] { parentTask.getName()}));
 				status.addStatus(IStatus.ERROR, message, null);
 			}
@@ -47,13 +47,13 @@ public class EditableTaskParseStrategy implements ITaskParseStrategy {
 	public void parsingComplete(AbstractTask parentTask, IStatusContainer status) {
 		if (parentTask.getKind() == null) {
 			String message = NLS.bind(
-					Messages.ERROR_PARSING_TASK_NO_KIND,
+					Messages.get().ERROR_PARSING_TASK_NO_KIND,
 					(new Object[] { parentTask.getName()}));
 		    status.addStatus(IStatus.ERROR, message, null);
 		} else if (CheatSheetRegistryReader.getInstance().
 				findTaskEditor(parentTask.getKind()) == null) {
 			String message = NLS.bind(
-					Messages.ERROR_PARSING_TASK_INVALID_KIND,
+					Messages.get().ERROR_PARSING_TASK_INVALID_KIND,
 					(new Object[] { parentTask.getKind(), ICompositeCheatsheetTags.TASK, parentTask.getName()}));
 		    status.addStatus(IStatus.ERROR, message, null);
 		}

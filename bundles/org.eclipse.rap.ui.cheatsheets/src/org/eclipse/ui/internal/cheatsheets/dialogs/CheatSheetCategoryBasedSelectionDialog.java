@@ -217,7 +217,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 		this.cheatsheetCategories = cheatsheetCategories;
 
-		this.title = Messages.CHEAT_SHEET_SELECTION_DIALOG_TITLE;
+		this.title = Messages.get().CHEAT_SHEET_SELECTION_DIALOG_TITLE;
 
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -275,7 +275,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 		// Create radio button
 		selectRegisteredRadio = new Button(outerContainer, SWT.RADIO);
-		selectRegisteredRadio.setText(Messages.SELECTION_DIALOG_OPEN_REGISTERED);
+		selectRegisteredRadio.setText(Messages.get().SELECTION_DIALOG_OPEN_REGISTERED);
 
 		SashForm sform = new SashForm(outerContainer, SWT.VERTICAL);
 		GridData data = new GridData(GridData.FILL_BOTH);
@@ -319,7 +319,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 // RAP [if] Selecting the file from the local machine is not supported
 //        // Create radio button for select from file
 //		selectFileRadio = new Button(outerContainer, SWT.RADIO);
-//		selectFileRadio.setText(Messages.SELECTION_DIALOG_OPEN_FROM_FILE);
+//		selectFileRadio.setText(Messages.get().SELECTION_DIALOG_OPEN_FROM_FILE);
 //
 //		Composite selectFileComposite = new Composite(outerContainer, SWT.NULL);
 //		GridLayout selectFileLayout = new GridLayout();
@@ -336,12 +336,12 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 //		GridData sfTextData = new GridData(GridData.FILL_HORIZONTAL);
 //		selectFileCombo.setLayoutData(sfTextData);
 //		browseFileButton = new Button(selectFileComposite, SWT.NULL);
-//		browseFileButton.setText(Messages.SELECTION_DIALOG_FILEPICKER_BROWSE);
+//		browseFileButton.setText(Messages.get().SELECTION_DIALOG_FILEPICKER_BROWSE);
 //		setButtonLayoutData(browseFileButton);
 
 		// Create radio button for select from URL
 		selectUrlRadio = new Button(outerContainer, SWT.RADIO);
-		selectUrlRadio.setText(Messages.SELECTION_DIALOG_OPEN_FROM_URL);
+		selectUrlRadio.setText(Messages.get().SELECTION_DIALOG_OPEN_FROM_URL);
 		selectUrlCombo = new Combo(outerContainer, SWT.BORDER);
 		GridData suTextData = new GridData(GridData.FILL_HORIZONTAL);
 		selectUrlCombo.setLayoutData(suTextData);
@@ -382,7 +382,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 //			// Launch a file dialog to select a cheatsheet file
 //			FileDialog fileDlg = new FileDialog(getShell());
 //			fileDlg.setFilterExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
-//			fileDlg.setText(Messages.SELECTION_DIALOG_FILEPICKER_TITLE);
+//			fileDlg.setText(Messages.get().SELECTION_DIALOG_FILEPICKER_TITLE);
 //			fileDlg.open();
 //			String filename = fileDlg.getFileName();
 //			if (filename != null) {
@@ -429,7 +429,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 	private void createShowAllButton(Composite parent) {
 		showAllButton = new Button(parent, SWT.CHECK);
 		showAllButton
-				.setText(Messages.CheatSheetCategoryBasedSelectionDialog_showAll);
+				.setText(Messages.get().CheatSheetCategoryBasedSelectionDialog_showAll);
 		showAllButton.addSelectionListener(new SelectionAdapter() {
 
 			/*
@@ -623,7 +623,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 //		    opened = false;
 //	    }
 //	    if (!opened) {
-//	    	String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {selectFileCombo.getText()}));
+//	    	String message = NLS.bind(Messages.get().ERROR_OPENING_FILE, (new Object[] {selectFileCombo.getText()}));
 //	    	status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, ParserStatusUtility.PARSER_ERROR, message, null);
 //	    	CheatSheetView view = ViewUtilities.showCheatSheetView();
 //	    	view.getCheatSheetViewer().showError(message);
@@ -656,7 +656,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		    opened = false;
 	    }
 	    if (!opened) {
-	    	String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {selectUrlCombo.getText()}));
+	    	String message = NLS.bind(Messages.get().ERROR_OPENING_FILE, (new Object[] {selectUrlCombo.getText()}));
 	    	status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, ParserStatusUtility.PARSER_ERROR, message, null);
 	    	view.getCheatSheetViewer().showError(message);
 	    }
@@ -838,7 +838,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 	private Label createMessageArea(Composite composite) {
 		Label label = new Label(composite, SWT.NONE);
-		label.setText(Messages.CHEAT_SHEET_SELECTION_DIALOG_MSG);
+		label.setText(Messages.get().CHEAT_SHEET_SELECTION_DIALOG_MSG);
 		label.setFont(composite.getFont());
 		return label;
 	}

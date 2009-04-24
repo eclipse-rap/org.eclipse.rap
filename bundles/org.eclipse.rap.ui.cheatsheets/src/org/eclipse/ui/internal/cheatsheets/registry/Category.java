@@ -34,7 +34,7 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	/**
 	 * Name of the miscellaneous category
 	 */
-	public final static String MISC_NAME = Messages.CATEGORY_OTHER;
+	public final static String MISC_NAME = Messages.get().CATEGORY_OTHER;
 
 	/**
 	 */

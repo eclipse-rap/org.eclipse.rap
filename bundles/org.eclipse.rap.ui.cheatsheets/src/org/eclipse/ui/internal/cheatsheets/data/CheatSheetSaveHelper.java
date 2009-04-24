@@ -234,7 +234,7 @@ public class CheatSheetSaveHelper {
 			addMapToMemento(writeMemento,  (Map)properties.get(IParserTags.SUBITEMSKIPPED), IParserTags.SUBITEMSKIPPED);
 
 		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_SAVING_STATEFILE_URL,
+			String message = NLS.bind(Messages.get().ERROR_SAVING_STATEFILE_URL,
 					(new Object[] { csID }));
 			IStatus status = new Status(IStatus.ERROR,
 					ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK,

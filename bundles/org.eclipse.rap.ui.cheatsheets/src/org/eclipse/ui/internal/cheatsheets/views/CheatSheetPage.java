@@ -252,7 +252,7 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 
 	private int contributeRestartItem(Menu menu, int index) {
 		MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
-		item.setText(Messages.RESTART_MENU);
+		item.setText(Messages.get().RESTART_MENU);
 		item.setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_RETURN));
 
 		item.addSelectionListener(new SelectionAdapter() {

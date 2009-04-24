@@ -56,7 +56,7 @@ public class TaskGroupParseStrategy implements ITaskParseStrategy {
 			checkForChildren(parentTask, status);
 		} else {
 			String message = NLS.bind(
-					Messages.ERROR_PARSING_TASK_INVALID_KIND,
+					Messages.get().ERROR_PARSING_TASK_INVALID_KIND,
 					(new Object[] { parentTask.getKind(), ICompositeCheatsheetTags.TASK_GROUP, parentTask.getName()}));
 		    status.addStatus(IStatus.ERROR, message, null);
 		}
@@ -65,7 +65,7 @@ public class TaskGroupParseStrategy implements ITaskParseStrategy {
 	private void checkForChildren(AbstractTask parentTask, IStatusContainer status) {
 		if (parentTask.getSubtasks().length < 1) {
 			String message = NLS.bind(
-					Messages.ERROR_PARSING_CHILDLESS_TASK_GROUP,
+					Messages.get().ERROR_PARSING_CHILDLESS_TASK_GROUP,
 					(new Object[] { parentTask.getName()}));
 		    status.addStatus(IStatus.ERROR, message, null);
 		}

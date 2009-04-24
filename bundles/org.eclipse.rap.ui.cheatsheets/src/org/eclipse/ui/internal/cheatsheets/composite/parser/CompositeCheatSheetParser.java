@@ -66,7 +66,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 //				documentBuilder.setEntityResolver(new LocalEntityResolver());
 				documentBuilder.setEntityResolver(null);
 			} catch (Exception e) {
-				addStatus(IStatus.ERROR, Messages.ERROR_CREATING_DOCUMENT_BUILDER, e);
+				addStatus(IStatus.ERROR, Messages.get().ERROR_CREATING_DOCUMENT_BUILDER, e);
 			}
 		}
 		return documentBuilder;
@@ -85,7 +85,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 	public CompositeCheatSheetModel parseGuide(URL url) {
 		status = Status.OK_STATUS;
 		if(url == null) {
-			String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {""})); //$NON-NLS-1$
+			String message = NLS.bind(Messages.get().ERROR_OPENING_FILE, (new Object[] {""})); //$NON-NLS-1$
 			addStatus(IStatus.ERROR,  message,  null);
 			return null;
 		}
@@ -96,12 +96,12 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			is = url.openStream();
 
 			if (is == null) {
-				String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
+				String message = NLS.bind(Messages.get().ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
 				addStatus(IStatus.ERROR,  message,  null);
 				return null;
 			}
 		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
+			String message = NLS.bind(Messages.get().ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
 			addStatus(IStatus.ERROR,  message,  e);
 			return null;
 		}
@@ -112,15 +112,15 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			InputSource inputSource = new InputSource(is);
 			document = getDocumentBuilder().parse(inputSource);
 		} catch (IOException e) {
-			String message = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
+			String message = NLS.bind(Messages.get().ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
 			addStatus(IStatus.ERROR,  message,  e);
 			return null;
 		} catch (SAXParseException spe) {
-			String message = NLS.bind(Messages.ERROR_SAX_PARSING_WITH_LOCATION, (new Object[] {filename, new Integer(spe.getLineNumber()), new Integer(spe.getColumnNumber())}));
+			String message = NLS.bind(Messages.get().ERROR_SAX_PARSING_WITH_LOCATION, (new Object[] {filename, new Integer(spe.getLineNumber()), new Integer(spe.getColumnNumber())}));
 			addStatus(IStatus.ERROR,  message,  spe);
 			return null;
 		} catch (SAXException se) {
-			String message = NLS.bind(Messages.ERROR_SAX_PARSING, (new Object[] {filename}));
+			String message = NLS.bind(Messages.get().ERROR_SAX_PARSING, (new Object[] {filename}));
 			addStatus(IStatus.ERROR,  message, se);
 			return null;
 		} finally {
@@ -152,7 +152,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 
 				// Is the root node correct?
 				if( !rootnode.getNodeName().equals(ICompositeCheatsheetTags.COMPOSITE_CHEATSHEET )) {
-					String message = NLS.bind(Messages.ERROR_PARSING_ROOT_NODE_TYPE, (
+					String message = NLS.bind(Messages.get().ERROR_PARSING_ROOT_NODE_TYPE, (
 							new Object[] {ICompositeCheatsheetTags.COMPOSITE_CHEATSHEET}));
 					throw new CheatSheetParserException(message);
 				}
@@ -182,10 +182,10 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 				compositeCS.getDependencies().resolveDependencies(this);
 
 				if (compositeCS.getRootTask() == null) {
-					addStatus(IStatus.ERROR, Messages.ERROR_PARSING_NO_ROOT, null);
+					addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_NO_ROOT, null);
 				}
 				if (!nameFound) {
-					addStatus(IStatus.ERROR, Messages.ERROR_PARSING_CCS_NO_NAME, null);
+					addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_CCS_NO_NAME, null);
 				}
 				if (status.getSeverity() != IStatus.ERROR) {
 					compositeCS.setContentUrl(url);
@@ -210,7 +210,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 					model.setRootTask(task);
 					parseTaskChildren(nextNode, task, model);
 			    } else {
-				    addStatus(IStatus.ERROR, Messages.ERROR_PARSING_MULTIPLE_ROOT, null);
+				    addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_MULTIPLE_ROOT, null);
 			    }
 			}
 		}
@@ -247,7 +247,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 					if (!strategy.parseElementNode(childNode, parentNode, parentTask, this)) {
 						String message = NLS
 						.bind(
-								Messages.WARNING_PARSING_UNKNOWN_ELEMENT,
+								Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT,
 								(new Object[] { nodeName,
 										parentNode.getNodeName() }));
 				        addStatus(IStatus.WARNING, message, null);
@@ -267,7 +267,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 		    	 String requiredTaskId = taskAttribute.getNodeValue();
 		    	 model.getDependencies().addDependency(task, requiredTaskId);
 		     } else {
-		    	 addStatus(IStatus.ERROR, Messages.ERROR_PARSING_NO_ID, null);
+		    	 addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_NO_ID, null);
 		     }
 		}
 	}
@@ -291,10 +291,10 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			}
 		}
 		if (name == null) {
-			addStatus(IStatus.WARNING, Messages.ERROR_PARSING_NO_NAME, null);
+			addStatus(IStatus.WARNING, Messages.get().ERROR_PARSING_NO_NAME, null);
 			return;
 		} else if (value == null) {
-			addStatus(IStatus.WARNING, Messages.ERROR_PARSING_NO_VALUE, null);
+			addStatus(IStatus.WARNING, Messages.get().ERROR_PARSING_NO_VALUE, null);
 			return;
 		} else {
 			parentTask.getParameters().put(name, value);
@@ -335,14 +335,14 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			id = autoGenerateId();
 		}
 		if (name == null) {
-			String message = NLS.bind(Messages.ERROR_PARSING_TASK_NO_NAME, (new Object[] {nodeName}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_TASK_NO_NAME, (new Object[] {nodeName}));
 			addStatus(IStatus.ERROR, message, null);
 		}
 		task = createTask(nodeName, model, kind, id, name);
 		task.setSkippable(skippable);
 
 		if (model.getDependencies().getTask(id) != null) {
-			String message = NLS.bind(Messages.ERROR_PARSING_DUPLICATE_TASK_ID, (new Object[] {id, }));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_DUPLICATE_TASK_ID, (new Object[] {id, }));
 			addStatus(IStatus.ERROR, message, null);
 		} else {
 		    model.getDependencies().saveId(task);
@@ -358,7 +358,7 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 		} else {
 			task = new EditableTask(model, id, name, kind);
 		}
-		task.setCompletionMessage(Messages.COMPLETED_TASK);
+		task.setCompletionMessage(Messages.get().COMPLETED_TASK);
 		return task;
 	}
 

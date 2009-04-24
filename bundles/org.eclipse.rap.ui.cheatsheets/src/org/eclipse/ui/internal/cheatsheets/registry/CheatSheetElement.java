@@ -159,7 +159,7 @@ public class CheatSheetElement extends WorkbenchAdapter implements IAdaptable, I
 			Bundle bundle = Platform.getBundle(pluginId);
 			extClass = bundle.loadClass(listenerClass);
 		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_LOADING_CLASS, (new Object[] {listenerClass}));
+			String message = NLS.bind(Messages.get().ERROR_LOADING_CLASS, (new Object[] {listenerClass}));
 			IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 			CheatSheetPlugin.getPlugin().getLog().log(status);
 		}
@@ -168,7 +168,7 @@ public class CheatSheetElement extends WorkbenchAdapter implements IAdaptable, I
 				listener = (CheatSheetListener) extClass.newInstance();
 			}
 		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_CREATING_CLASS, (new Object[] {listenerClass}));
+			String message = NLS.bind(Messages.get().ERROR_CREATING_CLASS, (new Object[] {listenerClass}));
 			IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 			CheatSheetPlugin.getPlugin().getLog().log(status);
 		}

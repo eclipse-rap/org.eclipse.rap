@@ -74,7 +74,7 @@ public class CheatsheetTaskEditor extends TaskEditor {
 		} else if (id != null){
 		    viewer.setInput(id, stateManager);
 		} else {
-			viewer.showError(Messages.CHEATSHEET_TASK_NO_ID);
+			viewer.showError(Messages.get().CHEATSHEET_TASK_NO_ID);
 		}
 		if (!showIntro) {
 			viewer.advanceIntroItem();
@@ -83,7 +83,7 @@ public class CheatsheetTaskEditor extends TaskEditor {
 	}
 
 	private void errorBadUrl(String path) {
-		String message = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {path}));			
+		String message = NLS.bind(Messages.get().ERROR_OPENING_FILE_IN_PARSER, (new Object[] {path}));			
 		viewer.showError(message);
 	}
 	

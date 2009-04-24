@@ -151,7 +151,7 @@ public abstract class ViewItem {
 		if(item.getContextId() != null || item.getHref() != null) {
 			// adjust the layout count
 			number++;
-			ImageHyperlink helpButton = createButton(titleComposite, CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_HELP), this, itemColor, Messages.HELP_BUTTON_TOOLTIP);
+			ImageHyperlink helpButton = createButton(titleComposite, CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_HELP), this, itemColor, Messages.get().HELP_BUTTON_TOOLTIP);
 			helpButton.addHyperlinkListener(new HyperlinkAdapter() {
 				public void linkActivated(HyperlinkEvent e) {
 // RAP [if] Help system not supported

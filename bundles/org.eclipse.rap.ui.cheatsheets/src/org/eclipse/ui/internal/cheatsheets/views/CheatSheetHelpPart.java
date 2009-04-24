@@ -66,8 +66,8 @@ public class CheatSheetHelpPart extends AbstractFormPart {
 	private void contributeToToolBar(IToolBarManager tbm) {
 		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("collapseall.gif");//$NON-NLS-1$
 		ImageDescriptor collapseImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);
-		CheatSheetExpandRestoreAction expandRestoreAction = new CheatSheetExpandRestoreAction(Messages.COLLAPSE_ALL_BUT_CURRENT_TOOLTIP, false, viewer);
-		expandRestoreAction.setToolTipText(Messages.COLLAPSE_ALL_BUT_CURRENT_TOOLTIP);
+		CheatSheetExpandRestoreAction expandRestoreAction = new CheatSheetExpandRestoreAction(Messages.get().COLLAPSE_ALL_BUT_CURRENT_TOOLTIP, false, viewer);
+		expandRestoreAction.setToolTipText(Messages.get().COLLAPSE_ALL_BUT_CURRENT_TOOLTIP);
 		expandRestoreAction.setImageDescriptor(collapseImage);
 		tbm.insertBefore("back", expandRestoreAction); //$NON-NLS-1$
 		tbm.insertBefore("back", new Separator()); //$NON-NLS-1$

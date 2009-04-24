@@ -25,7 +25,7 @@ public class StartAction extends Action {
 
 	public StartAction(ICompositeCheatSheetTask task) {
 		this.task = (AbstractTask) task;
-		this.setText(Messages.COMPOSITE_MENU_START);
+		this.setText(Messages.get().COMPOSITE_MENU_START);
 		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append(START_CCS_TASK_GIF);
 		ImageDescriptor startImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);	
 		this.setImageDescriptor(startImage);

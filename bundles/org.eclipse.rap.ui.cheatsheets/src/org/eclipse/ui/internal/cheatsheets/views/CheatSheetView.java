@@ -47,7 +47,7 @@ public class CheatSheetView extends ViewPart {
 		IMenuManager menuManager = bars.getMenuManager();
 		IToolBarManager tbmanager = bars.getToolBarManager();
 
-		expandRestoreAction = new CheatSheetExpandRestoreAction(Messages.COLLAPSE_ALL_BUT_CURRENT_TOOLTIP, false, viewer);
+		expandRestoreAction = new CheatSheetExpandRestoreAction(Messages.get().COLLAPSE_ALL_BUT_CURRENT_TOOLTIP, false, viewer);
 // RAP [if] Clipboard
 //		copyAction = new Action("copy") { //$NON-NLS-1$
 //			public void run() {

@@ -54,7 +54,7 @@ public class TaskEditorManager {
 				Bundle bundle = Platform.getBundle(editorInfo.getPluginId());
 				extClass = bundle.loadClass(className);
 			} catch (Exception e) {
-				String message = NLS.bind(Messages.ERROR_LOADING_CLASS, (new Object[] {className}));
+				String message = NLS.bind(Messages.get().ERROR_LOADING_CLASS, (new Object[] {className}));
 				Status status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 				CheatSheetPlugin.getPlugin().getLog().log(status);
 			}
@@ -65,7 +65,7 @@ public class TaskEditorManager {
 					editorInstance = (TaskEditor) c.newInstance(parameters);
 				}
 			} catch (Exception e) {
-				String message = NLS.bind(Messages.ERROR_CREATING_CLASS, (new Object[] {className}));
+				String message = NLS.bind(Messages.get().ERROR_CREATING_CLASS, (new Object[] {className}));
 				IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 				CheatSheetPlugin.getPlugin().getLog().log(status);
 			}

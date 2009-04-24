@@ -70,7 +70,7 @@ public class CommandRunner {
 			return new Status
 			(IStatus.ERROR, 
 			ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, 0,
-			Messages.ERROR_COMMAND_SERVICE_UNAVAILABLE, null);
+			Messages.get().ERROR_COMMAND_SERVICE_UNAVAILABLE, null);
 		}
 
 		ParameterizedCommand selectedCommand;
@@ -97,7 +97,7 @@ public class CommandRunner {
 			}
 			
 		} catch (NotDefinedException e) {
-			String message = NLS.bind(Messages.ERROR_COMMAND_ID_NOT_FOUND, (new Object[] {rawSerialization}));
+			String message = NLS.bind(Messages.get().ERROR_COMMAND_ID_NOT_FOUND, (new Object[] {rawSerialization}));
 			return new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);		
 		} catch (CommandException e) {
 			return commandFailureStatus(e);
@@ -112,7 +112,7 @@ public class CommandRunner {
 		return new Status
 		(IStatus.ERROR, 
 		ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, 0,
-		Messages.ERROR_COMMAND_ERROR_STATUS, exception);
+		Messages.get().ERROR_COMMAND_ERROR_STATUS, exception);
 	}
 
 }

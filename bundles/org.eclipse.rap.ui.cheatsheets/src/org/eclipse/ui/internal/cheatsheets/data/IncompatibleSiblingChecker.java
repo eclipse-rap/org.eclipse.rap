@@ -73,9 +73,9 @@ public class IncompatibleSiblingChecker {
 		errorReported = true;
 		String message;
         if (elementKind.equals(existingChild)) {
-		     message = NLS.bind(Messages.ERROR_PARSING_DUPLICATE_CHILD, (new Object[] {parentNode.getNodeName(), elementKind}));
+		     message = NLS.bind(Messages.get().ERROR_PARSING_DUPLICATE_CHILD, (new Object[] {parentNode.getNodeName(), elementKind}));
         } else {
-		     message = NLS.bind(Messages.ERROR_PARSING_INCOMPATIBLE_CHILDREN, (new Object[] {parentNode.getNodeName(), existingChild, elementKind}));		       
+		     message = NLS.bind(Messages.get().ERROR_PARSING_INCOMPATIBLE_CHILDREN, (new Object[] {parentNode.getNodeName(), existingChild, elementKind}));		       
         }
 	    statusContainer.addStatus(IStatus.ERROR, message, null);
 	}

@@ -54,9 +54,9 @@ public class CheatSheetExpandRestoreAction extends Action {
 		super.setChecked(value);
 		collapsed = value;
 		if(value) {
-			setToolTipText(Messages.RESTORE_ALL_TOOLTIP);
+			setToolTipText(Messages.get().RESTORE_ALL_TOOLTIP);
 		} else {
-			setToolTipText(Messages.COLLAPSE_ALL_BUT_CURRENT_TOOLTIP);
+			setToolTipText(Messages.get().COLLAPSE_ALL_BUT_CURRENT_TOOLTIP);
 		}
 	}
 }

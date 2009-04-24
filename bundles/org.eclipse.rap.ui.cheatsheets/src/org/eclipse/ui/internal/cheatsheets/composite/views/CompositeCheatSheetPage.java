@@ -367,7 +367,7 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 	    text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	    StringBuffer buf = new StringBuffer();
 	    buf.append("<form>"); //$NON-NLS-1$
-	    addHyperlink(buf, END_REVIEW_TAG + task.getId(), DescriptionPanel.REVIEW_IMAGE, Messages.COMPOSITE_PAGE_END_REVIEW );
+	    addHyperlink(buf, END_REVIEW_TAG + task.getId(), DescriptionPanel.REVIEW_IMAGE, Messages.get().COMPOSITE_PAGE_END_REVIEW );
 	    buf.append("</form>"); //$NON-NLS-1$
 	    text.setText(buf.toString(), true, false);
 		task.setUnderReview(true);
@@ -505,7 +505,7 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 
 	private int contributeRestartMenuItem(Menu menu, int index) {
 		MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
-		item.setText(Messages.RESTART_ALL_MENU);
+		item.setText(Messages.get().RESTART_ALL_MENU);
 		item.setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.COMPOSITE_RESTART_ALL));
 		item.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -526,7 +526,7 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 		}
         MenuItem menuItem = new MenuItem(menu, SWT.CASCADE, index++);
 
-        menuItem.setText(Messages.EXPLORER_PULLDOWN_MENU);
+        menuItem.setText(Messages.get().EXPLORER_PULLDOWN_MENU);
     
         Menu subMenu = new Menu(menu);
         menuItem.setMenu(subMenu);

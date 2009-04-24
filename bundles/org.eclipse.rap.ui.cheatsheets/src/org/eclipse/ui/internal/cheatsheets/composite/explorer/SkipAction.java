@@ -26,7 +26,7 @@ public class SkipAction extends Action {
 
 	public SkipAction(ICompositeCheatSheetTask task) {
 		this.task = (AbstractTask) task;
-		this.setText(Messages.COMPOSITE_MENU_SKIP);
+		this.setText(Messages.get().COMPOSITE_MENU_SKIP);
 		IPath ePath = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append(SKIP_CCS_TASK_GIF);
 		ImageDescriptor skipImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), ePath);	
 		this.setImageDescriptor(skipImage);

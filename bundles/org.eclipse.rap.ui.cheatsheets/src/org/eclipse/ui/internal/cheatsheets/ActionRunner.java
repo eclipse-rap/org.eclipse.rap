@@ -35,7 +35,7 @@ public class ActionRunner {
 		String[] params = cheatSheetAction.getParams();
 		Bundle bundle = Platform.getBundle(pluginId);
 		if (bundle == null) {
-			String message = NLS.bind(Messages.ERROR_FINDING_PLUGIN_FOR_ACTION, (new Object[] {pluginId}));
+			String message = NLS.bind(Messages.get().ERROR_FINDING_PLUGIN_FOR_ACTION, (new Object[] {pluginId}));
 			return new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, null);
 		}
 		Class actionClass;
@@ -43,13 +43,13 @@ public class ActionRunner {
 		try {
 			actionClass = bundle.loadClass(className);
 		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_LOADING_CLASS_FOR_ACTION, (new Object[] {className}));
+			String message = NLS.bind(Messages.get().ERROR_LOADING_CLASS_FOR_ACTION, (new Object[] {className}));
 			return new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 		}
 		try {
 			action = (IAction) actionClass.newInstance();
 		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_CREATING_CLASS_FOR_ACTION, (new Object[] {className}));
+			String message = NLS.bind(Messages.get().ERROR_CREATING_CLASS_FOR_ACTION, (new Object[] {className}));
 			return new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 		}
 
@@ -88,7 +88,7 @@ public class ActionRunner {
 			try {
 				action.run();
 			} catch (Throwable e) {
-				status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.EXCEPTION_RUNNING_ACTION, e);
+				status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.get().EXCEPTION_RUNNING_ACTION, e);
 			}
 		}
 
@@ -97,7 +97,7 @@ public class ActionRunner {
 
 		if (status.isOK() && listenerFired[0]) {
 			if (!listenerResult[0]) {				
-			    status =new Status(IStatus.WARNING, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.ACTION_FAILED, null);
+			    status =new Status(IStatus.WARNING, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.get().ACTION_FAILED, null);
 		    }
 		}
 

@@ -27,7 +27,7 @@ public class RestartAllAction extends Action {
 
 	public RestartAllAction(ICompositeCheatSheet model) {
         this.model = model;
-		this.setText(Messages.RESTART_ALL_MENU);
+		this.setText(Messages.get().RESTART_ALL_MENU);
 		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("restart_all.gif");//$NON-NLS-1$
 		ImageDescriptor restartImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);	
 		this.setImageDescriptor(restartImage);
@@ -42,8 +42,8 @@ public class RestartAllAction extends Action {
 	public static boolean confirmRestart() {
 		return MessageDialog.openConfirm(
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-				Messages.COMPOSITE_RESTART_DIALOG_TITLE, 
-				Messages.COMPOSITE_RESTART_CONFIRM_MESSAGE); 
+				Messages.get().COMPOSITE_RESTART_DIALOG_TITLE, 
+				Messages.get().COMPOSITE_RESTART_CONFIRM_MESSAGE); 
 	}
 
 }

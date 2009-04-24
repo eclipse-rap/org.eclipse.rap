@@ -31,7 +31,7 @@ public interface ITaskParseStrategy {
 	 * @param childNode The child node
 	 * @param parentNode The task node
 	 * @param parentTask The task object
-	 * @param status Used to add error messages.
+	 * @param status Used to add error Messages.get().
 	 * @return True if this element is a valid child
 	 */
 	public boolean parseElementNode(Node childNode, Node parentNode, AbstractTask parentTask, IStatusContainer status);

@@ -100,7 +100,7 @@ public class CheatSheetMenu extends ContributionItem {
 	 */
 	private void createOtherItem(Menu menu, int index) {
 		MenuItem mi = new MenuItem(menu, SWT.PUSH, index);
-		mi.setText(Messages.CHEAT_SHEET_OTHER_MENU);
+		mi.setText(Messages.get().CHEAT_SHEET_OTHER_MENU);
 		mi.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				runOther(e);

@@ -65,10 +65,10 @@ public class ViewUtilities {
 				view = (CheatSheetView)page.showView(ICheatSheetResource.CHEAT_SHEET_VIEW_ID);
 				page.activate(view);
 			} catch (PartInitException pie) {
-				String message = Messages.LAUNCH_SHEET_ERROR;
+				String message = Messages.get().LAUNCH_SHEET_ERROR;
 				IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, pie);
 				CheatSheetPlugin.getPlugin().getLog().log(status);
-				org.eclipse.jface.dialogs.ErrorDialog.openError(window.getShell(), Messages.CHEAT_SHEET_ERROR_OPENING, null, pie.getStatus());
+				org.eclipse.jface.dialogs.ErrorDialog.openError(window.getShell(), Messages.get().CHEAT_SHEET_ERROR_OPENING, null, pie.getStatus());
 				return null;
 			}
 		}

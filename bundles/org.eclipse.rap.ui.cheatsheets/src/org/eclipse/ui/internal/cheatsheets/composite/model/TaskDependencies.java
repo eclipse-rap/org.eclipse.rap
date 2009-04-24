@@ -89,7 +89,7 @@ public class TaskDependencies {
 			 AbstractTask sourceTask = dep.getSourceTask();
 			 AbstractTask requiredTask = getTask(dep.requiredTaskId);
 			 if (requiredTask == null) {
-					String message = NLS.bind(Messages.ERROR_PARSING_INVALID_ID, (new Object[] {dep.getRequiredTaskId()}));	
+					String message = NLS.bind(Messages.get().ERROR_PARSING_INVALID_ID, (new Object[] {dep.getRequiredTaskId()}));	
 					status.addStatus(IStatus.ERROR, message, null);
 			 } else if (!sourceTask.requiresTask(requiredTask)) {
 				 sourceTask.addRequiredTask(requiredTask);
@@ -142,7 +142,7 @@ public class TaskDependencies {
 			tasks = remainingTasks;
 		}
 		if (!tasks.isEmpty()) {
-			status.addStatus(IStatus.ERROR, Messages.ERROR_PARSING_CYCLE_DETECTED, null);
+			status.addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_CYCLE_DETECTED, null);
 			// Detect one of the cycles and report its members
 			List cycle = new ArrayList();
 			ICompositeCheatSheetTask cycleStartTask = (ICompositeCheatSheetTask)tasks.iterator().next();
@@ -171,12 +171,12 @@ public class TaskDependencies {
 					lastTask = thisTask;
 					thisTask = task.getName();
 					if (lastTask != null) {
-					    String message = NLS.bind(Messages.ERROR_PARSING_CYCLE_CONTAINS, (new Object[] {lastTask, thisTask}));	
+					    String message = NLS.bind(Messages.get().ERROR_PARSING_CYCLE_CONTAINS, (new Object[] {lastTask, thisTask}));	
 					    status.addStatus(IStatus.ERROR, message, null);
 					}
 				}
 			}
-			String message = NLS.bind(Messages.ERROR_PARSING_CYCLE_CONTAINS, (new Object[] {thisTask, firstTask}));	
+			String message = NLS.bind(Messages.get().ERROR_PARSING_CYCLE_CONTAINS, (new Object[] {thisTask, firstTask}));	
 		    status.addStatus(IStatus.ERROR, message, null);
 		}
 	}

@@ -138,27 +138,27 @@ public class DescriptionPanel {
 			buf.append(MarkupParser.createParagraph(task.getCompletionMessage(), null));
 			isSkippable = false;
 		} else if (task.getState() == ICompositeCheatSheetTask.SKIPPED) {
-			buf.append(MarkupParser.createParagraph(Messages.THIS_TASK_SKIPPED, INFORMATION_IMAGE));
+			buf.append(MarkupParser.createParagraph(Messages.get().THIS_TASK_SKIPPED, INFORMATION_IMAGE));
 			isSkippable = false;
 		} else if (TaskStateUtilities.findSkippedAncestor(task) != null) {
 			ICompositeCheatSheetTask skipped = TaskStateUtilities.findSkippedAncestor(task);
-			String skipParentMsg = NLS.bind(Messages.PARENT_SKIPPED, 
+			String skipParentMsg = NLS.bind(Messages.get().PARENT_SKIPPED, 
 				(new Object[] {MarkupParser.escapeText((skipped.getName()))}));	
 			buf.append(MarkupParser.createParagraph(skipParentMsg, WARNING_IMAGE));
 			isSkippable = false;
 		} else if (TaskStateUtilities.findCompletedAncestor(task) != null) {
 			ICompositeCheatSheetTask completed = TaskStateUtilities.findCompletedAncestor(task);
-			String completedParentMsg = NLS.bind(Messages.PARENT_COMPLETED, 
+			String completedParentMsg = NLS.bind(Messages.get().PARENT_COMPLETED, 
 			   (new Object[] {MarkupParser.escapeText(completed.getName())}));	
 			buf.append(MarkupParser.createParagraph(completedParentMsg, WARNING_IMAGE));
 			isSkippable = false;
 		} else if (!task.requiredTasksCompleted()) {
 			isBlocked = true;
-			showBlockingTasks(Messages.COMPOSITE_PAGE_BLOCKED, task, buf);
+			showBlockingTasks(Messages.get().COMPOSITE_PAGE_BLOCKED, task, buf);
 		} else if (TaskStateUtilities.findBlockedAncestor(task) != null) {
 			isBlocked = true;
 			ICompositeCheatSheetTask blockedAncestor = TaskStateUtilities.findBlockedAncestor(task);
-			String blockingAncestorMsg = NLS.bind(Messages.PARENT_BLOCKED, 
+			String blockingAncestorMsg = NLS.bind(Messages.get().PARENT_BLOCKED, 
 					(new Object[] {MarkupParser.escapeText(blockedAncestor.getName())}));	
 			showBlockingTasks(blockingAncestorMsg , blockedAncestor, buf);
 		} else {
@@ -166,19 +166,19 @@ public class DescriptionPanel {
 		}
 		
 		if (startable) {
-			addHyperlink(buf, CompositeCheatSheetPage.START_HREF, START_IMAGE, Messages.COMPOSITE_PAGE_START_TASK);
+			addHyperlink(buf, CompositeCheatSheetPage.START_HREF, START_IMAGE, Messages.get().COMPOSITE_PAGE_START_TASK);
 		}
 
 		if (task instanceof IEditableTask && task.getState() == ICompositeCheatSheetTask.COMPLETED ) {
-			addHyperlink(buf, CompositeCheatSheetPage.REVIEW_TAG, REVIEW_IMAGE, Messages.COMPOSITE_PAGE_REVIEW_TASK);
+			addHyperlink(buf, CompositeCheatSheetPage.REVIEW_TAG, REVIEW_IMAGE, Messages.get().COMPOSITE_PAGE_REVIEW_TASK);
 		}		
 		
 		if (isSkippable) {
 			String skipMessage;
 			if (task instanceof ITaskGroup) {
-				skipMessage = Messages.COMPOSITE_PAGE_SKIP_TASK_GROUP;
+				skipMessage = Messages.get().COMPOSITE_PAGE_SKIP_TASK_GROUP;
 			} else {
-				skipMessage = Messages.COMPOSITE_PAGE_SKIP_TASK;					
+				skipMessage = Messages.get().COMPOSITE_PAGE_SKIP_TASK;					
 			}
 		    addHyperlink(buf, CompositeCheatSheetPage.SKIP_HREF, SKIP_IMAGE, skipMessage);
 		}
@@ -233,7 +233,7 @@ public class DescriptionPanel {
 			buf.append(CompositeCheatSheetPage.GOTO_TASK_TAG);
 			buf.append(task.getId());
 			buf.append("\">"); //$NON-NLS-1$	
-			buf.append(NLS.bind(Messages.COMPOSITE_PAGE_TASK_NOT_COMPLETE, (new Object[] 
+			buf.append(NLS.bind(Messages.get().COMPOSITE_PAGE_TASK_NOT_COMPLETE, (new Object[] 
 			    {MarkupParser.escapeText(task.getName())})));	
 			buf.append("</a>"); //$NON-NLS-1$	
 			buf.append("</li>"); //$NON-NLS-1$
@@ -245,7 +245,7 @@ public class DescriptionPanel {
 		ICompositeCheatSheetTask[] successorTasks = new SuccesorTaskFinder(task).getRecommendedSuccessors();
 		for (int i = 0; i < successorTasks.length; i++) {
 			ICompositeCheatSheetTask successor = successorTasks[i];
-			String message = NLS.bind(Messages.COMPOSITE_PAGE_GOTO_TASK, (new Object[] 
+			String message = NLS.bind(Messages.get().COMPOSITE_PAGE_GOTO_TASK, (new Object[] 
 			     {MarkupParser.escapeText(successor.getName())}));
 			addHyperlink(buf, CompositeCheatSheetPage.GOTO_TASK_TAG + successor.getId(), GOTO_IMAGE, message);
 		}

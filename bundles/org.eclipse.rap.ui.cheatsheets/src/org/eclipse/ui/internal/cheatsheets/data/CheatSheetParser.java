@@ -254,15 +254,15 @@ public class CheatSheetParser implements IStatusContainer {
 						if(num>-1 && num<9){
 							params[num] = attribute.getNodeValue();
 						} else {
-							String message = NLS.bind(Messages.ERROR_PARSING_PARAM_INVALIDRANGE, (new Object[] {attributeName, paramNum}));
+							String message = NLS.bind(Messages.get().ERROR_PARSING_PARAM_INVALIDRANGE, (new Object[] {attributeName, paramNum}));
 							addStatus(IStatus.ERROR, message, null);
 						}
 					} catch(NumberFormatException e) {
-						String message = Messages.ERROR_PARSING_PARAM_INVALIDNUMBER;
+						String message = Messages.get().ERROR_PARSING_PARAM_INVALIDNUMBER;
 						addStatus(IStatus.ERROR, message, e);
 					}
 				} else if (!executable.handleAttribute(attribute)) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, executableNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, executableNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
@@ -281,7 +281,7 @@ public class CheatSheetParser implements IStatusContainer {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node node = nodes.item(i);
 			if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-				String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), parentNode.getNodeName()}));
+				String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), parentNode.getNodeName()}));
 				addStatus(IStatus.WARNING, message, null);
 			}
 		}
@@ -306,14 +306,14 @@ public class CheatSheetParser implements IStatusContainer {
 					title = true;
 					cheatSheet.setTitle(attribute.getNodeValue());
 				} else {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, cheatSheetNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, cheatSheetNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!title) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_TITLE, (new Object[] {cheatSheetNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_TITLE, (new Object[] {cheatSheetNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 	}
@@ -340,14 +340,14 @@ public class CheatSheetParser implements IStatusContainer {
 					condition = true;
 					conditionalSubItem.setCondition(attribute.getNodeValue());
 				} else {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, conditionalSubItemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, conditionalSubItemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!condition) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_CONDITION, (new Object[] {conditionalSubItemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_CONDITION, (new Object[] {conditionalSubItemNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -363,14 +363,14 @@ public class CheatSheetParser implements IStatusContainer {
 				handleSubItem(conditionalSubItem, node);
 			} else {
 				if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), conditionalSubItemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), conditionalSubItemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!subitem) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_SUBITEM, (new Object[] {conditionalSubItemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_SUBITEM, (new Object[] {conditionalSubItemNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -391,7 +391,7 @@ public class CheatSheetParser implements IStatusContainer {
 			if( startNode.getNodeName().equals(IParserTags.DESCRIPTION) ) {
 				parentNode = startNode.getParentNode();
 			}
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_DESCRIPTION, (new Object[] {parentNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_DESCRIPTION, (new Object[] {parentNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 	}
@@ -480,9 +480,9 @@ public class CheatSheetParser implements IStatusContainer {
 		}
 		String message;
 		if (IParserTags.DESCRIPTION.equals(nodeName)) {
-		    message = NLS.bind(Messages.WARNING_PARSING_DESCRIPTION_UNKNOWN_ELEMENT, (new Object[] {parentNode.getNodeName(), node.getNodeName()}));
+		    message = NLS.bind(Messages.get().WARNING_PARSING_DESCRIPTION_UNKNOWN_ELEMENT, (new Object[] {parentNode.getNodeName(), node.getNodeName()}));
 		} else {
-			message = NLS.bind(Messages.WARNING_PARSING_ON_COMPLETION_UNKNOWN_ELEMENT, (new Object[] {parentNode.getNodeName(), node.getNodeName()}));
+			message = NLS.bind(Messages.get().WARNING_PARSING_ON_COMPLETION_UNKNOWN_ELEMENT, (new Object[] {parentNode.getNodeName(), node.getNodeName()}));
 		}
 		addStatus(IStatus.WARNING, message, null);
 
@@ -496,7 +496,7 @@ public class CheatSheetParser implements IStatusContainer {
 	private void handleIntroNode(CheatSheet cheatSheet, Node introNode)
 			throws CheatSheetParserException {
 		Item introItem = new Item();
-		introItem.setTitle(Messages.CHEAT_SHEET_INTRO_TITLE);
+		introItem.setTitle(Messages.get().CHEAT_SHEET_INTRO_TITLE);
 
 		handleIntroAttributes(introItem, introNode);
 
@@ -508,7 +508,7 @@ public class CheatSheetParser implements IStatusContainer {
 
 			if(node.getNodeName().equals(IParserTags.DESCRIPTION)) {
 				if (hasDescription) {
-					String message = NLS.bind(Messages.ERROR_PARSING_MULTIPLE_DESCRIPTION, (new Object[] {introNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().ERROR_PARSING_MULTIPLE_DESCRIPTION, (new Object[] {introNode.getNodeName()}));
 					addStatus(IStatus.ERROR, message, null);
 				} else {
 				    hasDescription = true;
@@ -516,14 +516,14 @@ public class CheatSheetParser implements IStatusContainer {
 				}
 			} else {
 				if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), introNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), introNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!hasDescription) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_DESCRIPTION, (new Object[] {introNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_DESCRIPTION, (new Object[] {introNode.getNodeName()}));
 			addStatus(IStatus.ERROR, message, null);
 		}
 
@@ -547,7 +547,7 @@ public class CheatSheetParser implements IStatusContainer {
 				} else if (attributeName.equals(IParserTags.HREF)) {
 					item.setHref(attribute.getNodeValue());
 				} else {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, introNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, introNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
@@ -576,7 +576,7 @@ public class CheatSheetParser implements IStatusContainer {
 				handleExecutable(item, node, new CheatSheetCommand());
 			} else if(node.getNodeName().equals(IParserTags.DESCRIPTION)) {
 				if (hasDescription) {
-					String message = NLS.bind(Messages.ERROR_PARSING_MULTIPLE_DESCRIPTION, (new Object[] {itemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().ERROR_PARSING_MULTIPLE_DESCRIPTION, (new Object[] {itemNode.getNodeName()}));
 					addStatus(IStatus.ERROR, message, null);
 				} else {
 				    hasDescription = true;
@@ -594,14 +594,14 @@ public class CheatSheetParser implements IStatusContainer {
 				handlePerformWhen(item, node);
 			} else {
 				if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), itemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), itemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!hasDescription) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_DESCRIPTION, (new Object[] {itemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_DESCRIPTION, (new Object[] {itemNode.getNodeName()}));
 			addStatus(IStatus.ERROR, message, null);
 		}
 
@@ -640,7 +640,7 @@ public class CheatSheetParser implements IStatusContainer {
 					if (ie != null) {
 						itemExtensionElements.add(ie);
 					} else {
-						String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, itemNode.getNodeName()}));
+						String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, itemNode.getNodeName()}));
 						addStatus(IStatus.WARNING, message, null);
 					}
 				}
@@ -648,7 +648,7 @@ public class CheatSheetParser implements IStatusContainer {
 		}
 
 		if(!title) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_TITLE, (new Object[] {itemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_TITLE, (new Object[] {itemNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -678,14 +678,14 @@ public class CheatSheetParser implements IStatusContainer {
 					condition = true;
 					performWhen.setCondition(attribute.getNodeValue());
 				} else {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, performWhenNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, performWhenNode.getNodeName()}));
 					addStatus(IStatus.WARNING,message, null);
 				}
 			}
 		}
 
 		if(!condition) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_CONDITION, (new Object[] {performWhenNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_CONDITION, (new Object[] {performWhenNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -703,14 +703,14 @@ public class CheatSheetParser implements IStatusContainer {
 				handleExecutable(performWhen, node, new CheatSheetCommand());
 			} else {
 				if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), performWhenNode .getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), performWhenNode .getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!exeutable) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_ACTION, (new Object[] {performWhenNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_ACTION, (new Object[] {performWhenNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -739,14 +739,14 @@ public class CheatSheetParser implements IStatusContainer {
 					values = true;
 					repeatedSubItem.setValues(attribute.getNodeValue());
 				} else {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, repeatedSubItemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, repeatedSubItemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!values) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_VALUES, (new Object[] {repeatedSubItemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_VALUES, (new Object[] {repeatedSubItemNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -762,14 +762,14 @@ public class CheatSheetParser implements IStatusContainer {
 				handleSubItem(repeatedSubItem, node);
 			} else {
 				if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), repeatedSubItemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), repeatedSubItemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!subitem) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_SUBITEM, (new Object[] {repeatedSubItemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_SUBITEM, (new Object[] {repeatedSubItemNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 
@@ -800,7 +800,7 @@ public class CheatSheetParser implements IStatusContainer {
 				handlePerformWhen(subItem, node);
 			} else {
 				if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), subItemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), subItemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
@@ -830,14 +830,14 @@ public class CheatSheetParser implements IStatusContainer {
 				} else if (attributeName.equals(IParserTags.WHEN)) {
 					subItem.setWhen(attribute.getNodeValue());
 				} else {
-					String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, subItemNode.getNodeName()}));
+					String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {attributeName, subItemNode.getNodeName()}));
 					addStatus(IStatus.WARNING, message, null);
 				}
 			}
 		}
 
 		if(!label) {
-			String message = NLS.bind(Messages.ERROR_PARSING_NO_LABEL, (new Object[] {subItemNode.getNodeName()}));
+			String message = NLS.bind(Messages.get().ERROR_PARSING_NO_LABEL, (new Object[] {subItemNode.getNodeName()}));
 			throw new CheatSheetParserException(message);
 		}
 	}
@@ -860,7 +860,7 @@ public class CheatSheetParser implements IStatusContainer {
 		}
 
 		if(al.size() == 0) {
-			String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {item.getNodeName(), node.getNodeName()}));
+			String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ATTRIBUTE, (new Object[] {item.getNodeName(), node.getNodeName()}));
 			addStatus(IStatus.WARNING, message, null);
 		}
 		return (AbstractItemExtensionElement[])al.toArray(new AbstractItemExtensionElement[al.size()]);
@@ -897,7 +897,7 @@ public class CheatSheetParser implements IStatusContainer {
 					inputSource = new InputSource(is);
 				}
 			} catch (Exception e) {
-				String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
+				String message = NLS.bind(Messages.get().ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
 				addStatus(IStatus.ERROR, message, e);
 				return null;
 			}
@@ -912,20 +912,20 @@ public class CheatSheetParser implements IStatusContainer {
 		Document document;
 		try {
 			if(documentBuilder == null) {
-				addStatus(IStatus.ERROR, Messages.ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
+				addStatus(IStatus.ERROR, Messages.get().ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
 				return null;
 			}
 			document = documentBuilder.parse(inputSource);
 		} catch (IOException e) {
-			String message = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
+			String message = NLS.bind(Messages.get().ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
 			addStatus(IStatus.ERROR, message, e);
 			return null;
 		} catch (SAXParseException spe) {
-			String message = NLS.bind(Messages.ERROR_SAX_PARSING_WITH_LOCATION, (new Object[] {filename, new Integer(spe.getLineNumber()), new Integer(spe.getColumnNumber())}));
+			String message = NLS.bind(Messages.get().ERROR_SAX_PARSING_WITH_LOCATION, (new Object[] {filename, new Integer(spe.getLineNumber()), new Integer(spe.getColumnNumber())}));
 			addStatus(IStatus.ERROR, message, spe);
 			return null;
 		} catch (SAXException se) {
-			String message = NLS.bind(Messages.ERROR_SAX_PARSING, (new Object[] {filename}));
+			String message = NLS.bind(Messages.get().ERROR_SAX_PARSING, (new Object[] {filename}));
 			addStatus(IStatus.ERROR, message, se);
 			return null;
 		} finally {
@@ -982,7 +982,7 @@ public class CheatSheetParser implements IStatusContainer {
 
 			// Is the root node really <cheatsheet>?
 			if( !rootnode.getNodeName().equals(IParserTags.CHEATSHEET) ) {
-				throw new CheatSheetParserException(Messages.ERROR_PARSING_CHEATSHEET_ELEMENT);
+				throw new CheatSheetParserException(Messages.get().ERROR_PARSING_CHEATSHEET_ELEMENT);
 			}
 
 			// Create the cheat sheet model object
@@ -1006,24 +1006,24 @@ public class CheatSheetParser implements IStatusContainer {
 					cheatSheet.addItem(item);
 				} else if(node.getNodeName().equals(IParserTags.INTRO)) {
 					if (hasIntro) {
-						addStatus(IStatus.ERROR, Messages.ERROR_PARSING_MORE_THAN_ONE_INTRO, null);
+						addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_MORE_THAN_ONE_INTRO, null);
 					} else {
 					    hasIntro = true;
 					    handleIntroNode(cheatSheet, node);
 					}
 				} else {
 					if(node.getNodeType() != Node.TEXT_NODE && node.getNodeType() != Node.COMMENT_NODE ) {
-						String message = NLS.bind(Messages.WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), rootnode.getNodeName()}));
+						String message = NLS.bind(Messages.get().WARNING_PARSING_UNKNOWN_ELEMENT, (new Object[] {node.getNodeName(), rootnode.getNodeName()}));
 						addStatus(IStatus.WARNING, message, null);
 					}
 				}
 			}
 
 			if(!hasIntro) {
-				addStatus(IStatus.ERROR, Messages.ERROR_PARSING_NO_INTRO, null);
+				addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_NO_INTRO, null);
 			}
 			if(!hasItem) {
-				addStatus(IStatus.ERROR, Messages.ERROR_PARSING_NO_ITEM, null);
+				addStatus(IStatus.ERROR, Messages.get().ERROR_PARSING_NO_ITEM, null);
 			}
 
 			//handleIntro(cheatSheet, document);
@@ -1037,7 +1037,7 @@ public class CheatSheetParser implements IStatusContainer {
 			cheatSheet.setContainsCommandOrAction(actionCount != 0 || commandCount != 0);
 			return cheatSheet;
 		}
-		throw new CheatSheetParserException(Messages.ERROR_PARSING_CHEATSHEET_CONTENTS);
+		throw new CheatSheetParserException(Messages.get().ERROR_PARSING_CHEATSHEET_CONTENTS);
 	}
 
 // RAP [if] Help system not supported

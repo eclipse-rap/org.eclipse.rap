@@ -35,7 +35,7 @@ public class ParserStatusUtility {
 			return status;
 		} else {
 			MultiStatus multiStatus = new MultiStatus(ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, 
-					Messages.ERROR_MULTIPLE_ERRORS,  exception);
+					Messages.get().ERROR_MULTIPLE_ERRORS,  exception);
 			multiStatus.add(status);
 			multiStatus.add(newStatus);
 			return multiStatus;

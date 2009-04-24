@@ -80,7 +80,7 @@ public class ConfirmRestartDialog extends Dialog {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
 		Label header = new Label(composite,SWT.NULL);
-		header.setText(Messages.COMPOSITE_RESET_TASK_DIALOG_MESSAGE);
+		header.setText(Messages.get().COMPOSITE_RESET_TASK_DIALOG_MESSAGE);
 		TableViewer viewer = new TableViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		viewer.setContentProvider(new TaskContentProvider());
 		viewer.setLabelProvider(new TaskLabelProvider());
@@ -98,7 +98,7 @@ public class ConfirmRestartDialog extends Dialog {
 		super.configureShell(newShell);
 		newShell.setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_RETURN));
 		setShellStyle(getShellStyle() | SWT.RESIZE);
-		newShell.setText(Messages.COMPOSITE_RESET_TASK_DIALOG_TITLE);
+		newShell.setText(Messages.get().COMPOSITE_RESET_TASK_DIALOG_TITLE);
 	}
 
 }

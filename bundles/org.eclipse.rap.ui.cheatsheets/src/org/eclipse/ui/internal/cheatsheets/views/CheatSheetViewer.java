@@ -438,7 +438,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 									SubItemCompositeHolder s = (SubItemCompositeHolder) l.get(Integer.parseInt(token));
 									if (s != null && s.getStartButton() != null) {
 										s.getStartButton().setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_RESTART));
-										s.getStartButton().setToolTipText(Messages.RESTART_TASK_TOOLTIP);
+										s.getStartButton().setToolTipText(Messages.get().RESTART_TASK_TOOLTIP);
 									}
 
 								}
@@ -499,8 +499,8 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 			// not as likely to encounter this.
 
 			boolean reset = MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					Messages.CHEATSHEET_STATE_RESTORE_FAIL_TITLE,
-					Messages.CHEATSHEET_STATE_RESET_CONFIRM);
+					Messages.get().CHEATSHEET_STATE_RESTORE_FAIL_TITLE,
+					Messages.get().CHEATSHEET_STATE_RESET_CONFIRM);
 
 			if (reset) {
 				restart();
@@ -509,7 +509,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 			// Log the exception
 			String stateFile = saveHelper.getStateFile(currentID).toOSString();
-			String message = NLS.bind(Messages.ERROR_APPLYING_STATE_DATA_LOG, (new Object[] {stateFile, currentID}));
+			String message = NLS.bind(Messages.get().ERROR_APPLYING_STATE_DATA_LOG, (new Object[] {stateFile, currentID}));
 			IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 			CheatSheetPlugin.getPlugin().getLog().log(status);
 
@@ -527,7 +527,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 			viewItemList = new ArrayList();
 
 			// Create the errorpage to show the user
-			createErrorPage(Messages.ERROR_APPLYING_STATE_DATA);
+			createErrorPage(Messages.get().ERROR_APPLYING_STATE_DATA);
 
 			return false;
 		}
@@ -589,7 +589,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		internalDispose();
 
 		howToBegin = new Label(control, SWT.WRAP);
-		howToBegin.setText(Messages.INITIAL_VIEW_DIRECTIONS);
+		howToBegin.setText(Messages.get().INITIAL_VIEW_DIRECTIONS);
 		howToBegin.setLayoutData(new GridData(GridData.FILL_BOTH));
 		currentPage = null;
 		control.layout(true);
@@ -853,7 +853,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		}
 
 		if(invalidCheatSheetId) {
-			createErrorPage(Messages.ERROR_CHEATSHEET_DOESNOT_EXIST);
+			createErrorPage(Messages.get().ERROR_CHEATSHEET_DOESNOT_EXIST);
 			return false;
 		}
 
@@ -879,8 +879,8 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 		    if (isRestricted && cheatSheetModel.isContainsCommandOrAction()) {
 		    	boolean isOK = MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-						Messages.CHEATSHEET_FROM_URL_WITH_EXEC_TITLE,
-						Messages.CHEATSHEET_FROM_URL_WITH_EXEC);
+						Messages.get().CHEATSHEET_FROM_URL_WITH_EXEC_TITLE,
+						Messages.get().CHEATSHEET_FROM_URL_WITH_EXEC);
 
 				if (!isOK) {
 					control.setRedraw(true);
@@ -1081,13 +1081,13 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 					ArrayList l = coreItem.getListOfSubItemCompositeHolders();
 					SubItemCompositeHolder s = (SubItemCompositeHolder) l.get(subItemIndex);
 					s.getStartButton().setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_RESTART));
-					s.getStartButton().setToolTipText(Messages.RESTART_TASK_TOOLTIP);
+					s.getStartButton().setToolTipText(Messages.get().RESTART_TASK_TOOLTIP);
 					advanceSubItem(link, true, subItemIndex);
 					saveCurrentSheet();
 				}
 			}
 		} catch (RuntimeException e) {
-			IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.ERROR_RUNNING_ACTION, e);
+			IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.get().ERROR_RUNNING_ACTION, e);
 			CheatSheetPlugin.getPlugin().getLog().log(status);
 			org.eclipse.jface.dialogs.ErrorDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), null, null, status);
 		} finally {
@@ -1172,7 +1172,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		if (bundle != null) {
 			contentURL = FileLocator.find(bundle, new Path(element.getContentFile()), null);
 			if (contentURL == null && element.getContentFile() != null) {
-				errorMessage = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {element.getContentFile()}));
+				errorMessage = NLS.bind(Messages.get().ERROR_OPENING_FILE_IN_PARSER, (new Object[] {element.getContentFile()}));
 			}
 		}
 
@@ -1182,7 +1182,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 			} catch (MalformedURLException mue) {
 			}
 			if (contentURL == null && element.getHref() != null) {
-				errorMessage = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {element.getHref()}));
+				errorMessage = NLS.bind(Messages.get().ERROR_OPENING_FILE_IN_PARSER, (new Object[] {element.getHref()}));
 			}
 		}
 	    String pluginId = bundle != null ? bundle.getSymbolicName() : null;
@@ -1226,7 +1226,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 			element = CheatSheetRegistryReader.getInstance().findCheatSheet(id);
 			if(element == null) {
-				String message = NLS.bind(Messages.ERROR_INVALID_CHEATSHEET_ID, (new Object[] {id}));
+				String message = NLS.bind(Messages.get().ERROR_INVALID_CHEATSHEET_ID, (new Object[] {id}));
 				IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, null);
 				CheatSheetPlugin.getPlugin().getLog().log(status);
 				invalidCheatSheetId = true;

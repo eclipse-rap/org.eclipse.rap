@@ -80,13 +80,13 @@ public class Action extends AbstractExecutable {
 
 	public String checkAttributes(Node node) {
 		if(!hasClassAttr) {
-			return NLS.bind(Messages.ERROR_PARSING_NO_CLASS, (new Object[] {node.getNodeName()}));
+			return NLS.bind(Messages.get().ERROR_PARSING_NO_CLASS, (new Object[] {node.getNodeName()}));
 		}
 		if(!hasPluginId) {
-			return NLS.bind(Messages.ERROR_PARSING_NO_PLUGINID, (new Object[] {node.getNodeName()}));
+			return NLS.bind(Messages.get().ERROR_PARSING_NO_PLUGINID, (new Object[] {node.getNodeName()}));
 		}
 		if(isConfirm() && !isRequired()) {
-			return NLS.bind(Messages.ERROR_PARSING_REQUIRED_CONFIRM, (new Object[] {node.getNodeName()}));
+			return NLS.bind(Messages.get().ERROR_PARSING_REQUIRED_CONFIRM, (new Object[] {node.getNodeName()}));
 		}
 		return null;
 	}
