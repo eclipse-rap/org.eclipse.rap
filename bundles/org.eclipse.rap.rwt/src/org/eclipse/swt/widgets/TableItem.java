@@ -38,8 +38,9 @@ public class TableItem extends Item {
     Color foreground;
   }
 
-  private final Table parent;
+  final Table parent;
   boolean cached;
+  int index;
   private Data[] data;
   private boolean checked;
   private boolean grayed;
@@ -78,7 +79,7 @@ public class TableItem extends Item {
    * @see Widget#getStyle
    */
   public TableItem( final Table parent, final int style ) {
-    this( parent, style, checkNull( parent).getItemCount() );
+    this( parent, style, checkNull( parent ).getItemCount() );
   }
 
   /**
@@ -124,6 +125,7 @@ public class TableItem extends Item {
   {
     super( parent, style );
     this.parent = parent;
+    this.index = index;
     if( create ) {
       this.parent.createItem( this, index );
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,13 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class UITestUtil {
 
+  static boolean enabled;
+
+  static {
+    String property = System.getProperty( WidgetUtil.ENABLE_UI_TESTS );
+    enabled = Boolean.valueOf( property ).booleanValue();
+  }
+
   public static void writeId( final Widget widget ) throws IOException {
     if( !isInitialized( widget ) && isEnabled() ) {
       String id = WidgetUtil.getId( widget );
@@ -32,8 +39,7 @@ public final class UITestUtil {
   }
 
   public static boolean isEnabled() {
-    String property = System.getProperty( WidgetUtil.ENABLE_UI_TESTS );
-    return Boolean.valueOf( property ).booleanValue();
+    return enabled;
   }
 
   //////////////////

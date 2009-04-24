@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.*;
@@ -38,8 +37,21 @@ public class UITestUtil_Test extends TestCase {
     assertFalse( UITestUtil.isValidId( "A/8" ) );
   }
   
+  public void testOverrideId() {
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    String customId = "customId";
+    String generatedId = WidgetUtil.getId( widget );
+    // ensure that generated id remains unchanged when UITests are disabled
+    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, customId );
+    assertEquals( generatedId, WidgetUtil.getId( widget ) );
+    // ensure that custom id is taken into account when UITests are enabled
+    UITestUtil.enabled = true;
+    assertEquals( customId, WidgetUtil.getId( widget ) );
+  }
+
   public void testWriteIds() throws IOException {
-    System.setProperty( WidgetUtil.ENABLE_UI_TESTS, "true" );
+    UITestUtil.enabled = true;
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     String displayId = DisplayUtil.getId( display );
@@ -68,14 +80,11 @@ public class UITestUtil_Test extends TestCase {
       fail( "widget id contains illegal characters" );
     } catch( final IllegalArgumentException iae ) {
     }
-      
-    // clean up
-    System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
   }
   
   public void testGetIdAfterDispose() {
     // set up test scenario
-    System.setProperty( WidgetUtil.ENABLE_UI_TESTS, "true" );
+    UITestUtil.enabled = true;
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     // ensure that the overridden id is available after the widget was disposed
@@ -85,8 +94,6 @@ public class UITestUtil_Test extends TestCase {
     assertEquals( "customId", WidgetUtil.getId( shell ) );
     shell.dispose();
     assertEquals( "customId", WidgetUtil.getId( shell ) );
-    // clean up
-    System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
   }
   
   protected void setUp() throws Exception {
@@ -95,5 +102,6 @@ public class UITestUtil_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+    UITestUtil.enabled = false;
   }
 }

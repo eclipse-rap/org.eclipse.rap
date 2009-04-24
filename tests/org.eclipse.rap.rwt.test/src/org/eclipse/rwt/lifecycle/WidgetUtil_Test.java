@@ -34,21 +34,6 @@ public class WidgetUtil_Test extends TestCase {
     assertNull( WidgetUtil.find( composite, shellId ) );
   }
 
-  public void testId() {
-    Display display = new Display();
-    Widget widget = new Shell( display );
-    String customId = "customId";
-    String generatedId = WidgetUtil.getId( widget );
-    // ensure that generated id remains unchanged when UITests are disabled
-    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, customId );
-    assertEquals( generatedId, WidgetUtil.getId( widget ) );
-    // ensure that custom id is taken into account when UITests are enabled
-    System.setProperty( WidgetUtil.ENABLE_UI_TESTS, "true" );
-    assertEquals( customId, WidgetUtil.getId( widget ) );
-    // clean up
-    System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
-  }
-
   public void testGetVariant() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );

@@ -123,7 +123,7 @@ public class Table_Test extends TestCase {
     column0.setWidth( 100 );
     assertEquals( 100, column0.getWidth() );
   }
-
+  
   public void testHeaderHeight() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -301,7 +301,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         event.item.dispose();
       }
     } );
@@ -364,7 +364,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -495,7 +495,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -541,7 +541,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -559,8 +559,9 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       items[ i ] = new TableItem( table, 0 );
+    }
     table.remove( 1 );
     assertTrue( items[ 1 ].isDisposed() );
     assertEquals( table.getItemCount(), 4 );
@@ -570,21 +571,15 @@ public class Table_Test extends TestCase {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
-    shell.setSize( 100, 100 );
-    shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
-    new TableColumn( table, SWT.NONE );
-    table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
-        Item item = ( Item )event.item;
-        item.setText( "Item " + event.index );
-      }
-    } );
-    shell.layout();
-    shell.open();
+    table.setSize( 100, 100 );
     table.setItemCount( 10 );
     table.remove( 0 );
     assertEquals( 9, table.getItemCount() );
+    TableItem item5 = table.getItem( 5 );
+    table.remove( 2 );
+    assertSame( item5, table.getItem( 4 ) );
+    assertEquals( 8, table.getItemCount() );
   }
 
   public void testRemoveArrayVirtual() {
@@ -596,7 +591,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -633,8 +628,9 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     int number = 15;
     TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       items[ i ] = new TableItem( table, 0 );
+    }
     try {
       table.remove( null );
       fail( "No exception thrown for tableItems == null" );
@@ -657,8 +653,9 @@ public class Table_Test extends TestCase {
     }
     table.remove( new int[]{} );
     table = new Table( shell, SWT.NONE );
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       items[ i ] = new TableItem( table, 0 );
+    }
     assertTrue( ":a:", !items[ 2 ].isDisposed() );
     table.remove( new int[]{ 2 } );
     assertTrue( ":b:", items[ 2 ].isDisposed() );
@@ -1636,7 +1633,7 @@ public class Table_Test extends TestCase {
     item0.setImage( 0, null );
     assertFalse( table.hasColumnImages( 0 ) );
   }
-  
+
   public void testHasColumnImagesAfterColumnDispose() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -1885,7 +1882,7 @@ public class Table_Test extends TestCase {
     assertFalse( table.needsHScrollBar() );
     assertTrue( table.needsVScrollBar() );
   }
-  
+
   public void testNeedsScrollBarWithColumn() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1904,7 +1901,7 @@ public class Table_Test extends TestCase {
     assertFalse( table.needsHScrollBar() );
     assertFalse( table.needsVScrollBar() );
   }
-  
+
   public void testHasScrollBar_NO_SCROLL() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1952,7 +1949,7 @@ public class Table_Test extends TestCase {
     column.dispose();
     assertFalse( table.hasHScrollBar() );
   }
-  
+
   public void testUpdateScrollBarOnItemsChange() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -2086,7 +2083,6 @@ public class Table_Test extends TestCase {
       data[ i ] = "";
     }
     Listener setDataListener = new Listener() {
-
       public void handleEvent( final Event event ) {
         TableItem item = ( TableItem )event.item;
         int index = item.getParent().indexOf( item );
@@ -2119,6 +2115,53 @@ public class Table_Test extends TestCase {
     int measureItemIndex = measureItem.getParent().indexOf( measureItem );
     assertEquals( 100, measureItemIndex );
     assertEquals( resolvedItemCount, countResolvedItems( table ) );
+  }
+
+  public void testIndexOf() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    assertEquals( 0, table.indexOf( item1 ) );
+    TableItem item0 = new TableItem( table, SWT.NONE, 0 );
+    assertEquals( 0, table.indexOf( item0 ) );
+    assertEquals( 1, table.indexOf( item1 ) );
+    table.removeAll();
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    TableItem itemBefore = new TableItem( table, SWT.NONE );
+    // -> this is the place for 'newItem'
+    TableItem itemAfter = new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    TableItem newItem = new TableItem( table, SWT.NONE, 3 );
+    assertEquals( 3, table.indexOf( newItem ) );
+    assertEquals( 2, table.indexOf( itemBefore ) );
+    assertEquals( 4, table.indexOf( itemAfter ) );
+    newItem.dispose();
+    assertEquals( -1, table.indexOf( newItem ) );
+    assertEquals( 2, table.indexOf( itemBefore ) );
+    assertEquals( 3, table.indexOf( itemAfter ) );
+    table.remove( table.getItemCount() - 1 );
+    assertEquals( 3, table.indexOf( itemAfter ) );
+  }
+
+  public void testIndexOfVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 10 );
+    TableItem item = table.getItem( 0 );
+    assertEquals( 0, table.indexOf( item ) );
+    item = table.getItem( 5 );
+    assertEquals( 5, table.indexOf( item ) );
+    item = table.getItem( 9 );
+    assertEquals( 9, table.indexOf( item ) );
+    // ensure that updating null-items does not throw NPE
+    table.remove( 5 );
   }
 
   private static int countResolvedItems( final Table table ) {

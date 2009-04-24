@@ -47,12 +47,22 @@ public class TableItem_Test extends TestCase {
     TableItem item0 = new TableItem( table, SWT.NONE, 0 );
     assertEquals( 2, table.getItemCount() );
     assertSame( item0, table.getItem( 0 ) );
-    // Try to add an item whit an index which is out of bounds
+    // Try to add an item with an index which is out of bounds
     try {
       new TableItem( table, SWT.NONE, table.getItemCount() + 8 );
       String msg
         = "Index out of bounds expected when creating an item with "
         + "index > itemCount";
+      fail( msg );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // Try to add an item with a negative index
+    try {
+      new TableItem( table, SWT.NONE, -1 );
+      String msg
+        = "Index out of bounds expected when creating an item with "
+        + "index == -1";
       fail( msg );
     } catch( IllegalArgumentException e ) {
       // expected

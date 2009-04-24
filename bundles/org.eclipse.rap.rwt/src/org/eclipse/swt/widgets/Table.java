@@ -697,13 +697,7 @@ public class Table extends Composite {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int result = -1;
-    for( int i = 0; result == -1 && i < itemCount; i++ ) {
-      if( items[ i ] == item ) {
-        result = i;
-      }
-    }
-    return result;
+    return item.parent == this ? item.index : -1;
   }
 
   /**
@@ -717,7 +711,7 @@ public class Table extends Composite {
   public void removeAll() {
     checkWidget();
     while( itemCount > 0 ) {
-      removeItem( items[ 0 ] );
+      removeItem( 0 );
     }
   }
 
@@ -746,16 +740,8 @@ public class Table extends Composite {
       if( !( 0 <= start && start <= end && end < itemCount ) ) {
         error( SWT.ERROR_INVALID_RANGE );
       }
-      TableItem[] itemsToRemove = new TableItem[ end - start + 1 ];
-      int count = 0;
-      for( int i = start; i <= end; i++ ) {
-        if( items[ i ] != null && !items[ i ].isDisposed() ) {
-          itemsToRemove[ count ] = items[ i ];
-          count++;
-        }
-      }
-      for( int i = 0; i < itemsToRemove.length; i++ ) {
-        removeItem( itemsToRemove[ i ] );
+      for( int i = end; i >= start; i-- ) {
+        removeItem( i );
       }
     }
   }
@@ -781,7 +767,7 @@ public class Table extends Composite {
     if( !( 0 <= index && index < itemCount ) ) {
       SWT.error( SWT.ERROR_ITEM_NOT_REMOVED );
     }
-    removeItem( items[ index ] );
+    removeItem( index );
   }
 
   /**
@@ -816,12 +802,8 @@ public class Table extends Composite {
       if( !( 0 <= start && start <= end && end < itemCount ) ) {
         SWT.error( SWT.ERROR_INVALID_RANGE );
       }
-      TableItem[] itemsToRemove = new TableItem[ sortedIndices.length ];
-      for( int i = 0; i < itemsToRemove.length; i++ ) {
-        itemsToRemove[ i ] = items[ sortedIndices[ i ] ];
-      }
-      for( int i = 0; i < itemsToRemove.length; i++ ) {
-        removeItem( itemsToRemove[ i ] );
+      for( int i = 0; i < sortedIndices.length; i++ ) {
+        removeItem( sortedIndices[ i ] );
       }
       if( itemCount == 0 ) {
         setTableEmpty();
@@ -1215,6 +1197,7 @@ public class Table extends Composite {
    */
   public int[] getSelectionIndices() {
     checkWidget();
+    // TODO [rh] directly return a copy of the selection array
     TableItem[] currentSelection = getSelection();
     int[] result = new int[ currentSelection.length ];
     for( int i = 0; i < currentSelection.length; i++ ) {
@@ -2036,6 +2019,7 @@ public class Table extends Composite {
     System.arraycopy( items, index, items, index + 1, count - index );
     items[ index ] = item;
     itemCount++;
+    adjustItemIndices( index );
     // adjust the selection indices
     for( int i = 0; i < selection.length; i++ ) {
       if( selection[ i ] >= index ) {
@@ -2049,7 +2033,7 @@ public class Table extends Composite {
     updateScrollBars();
   }
 
-  final void destroyItem( final TableItem item,  final int index ) {
+  final void destroyItem( final TableItem item, final int index ) {
     removeFromSelection( index );
     adjustSelectionIdices( index );
     if( item != null ) {
@@ -2060,11 +2044,14 @@ public class Table extends Composite {
     }
     itemCount--;
     if( item != null ) {
-      System.arraycopy( items, index + 1, items, index, itemCount - index );
-      items[ itemCount ] = null;
+      item.index = -1;
     }
     if( itemCount == 0 ) {
       setTableEmpty();
+    } else {
+      System.arraycopy( items, index + 1, items, index, itemCount - index );
+      items[ itemCount ] = null;
+      adjustItemIndices( index );
     }
     adjustTopIndex();
     if( index == focusIndex || focusIndex > itemCount - 1 ) {
@@ -2102,7 +2089,7 @@ public class Table extends Composite {
 
   private TableItem _getItem( final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && items[ index ] == null ) {
-      items[ index ] = new TableItem( this, SWT.NONE, -1, false );
+      items[ index ] = new TableItem( this, SWT.NONE, index, false );
     }
     return items[ index ];
   }
@@ -2316,11 +2303,12 @@ public class Table extends Composite {
     }
   }
 
-  private void removeItem( final TableItem item ) {
+  private void removeItem( final int index ) {
+    TableItem item = items[ index ];
     if( item != null && !item.isDisposed() ) {
       item.dispose();
     } else {
-      itemCount--;
+      destroyItem( null, index );
     }
   }
 
@@ -2360,6 +2348,14 @@ public class Table extends Composite {
     // Must reset focusIndex before calling getSelectionIndex
     focusIndex = -1;
     focusIndex = getSelectionIndex();
+  }
+  
+  private void adjustItemIndices( final int start ) {
+    for( int i = start; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].index = i;
+      }
+    }
   }
 
   private boolean isItemVisible( final int index ) {
