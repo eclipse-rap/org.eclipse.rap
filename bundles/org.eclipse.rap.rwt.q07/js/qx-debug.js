@@ -20163,7 +20163,10 @@ if(this._innerStyle){return el.firstChild;
 }},
 _generateIframeElement:function(vFrameName){if(qx.core.Variant.isSet("qx.client",
 "mshtml")){var nameStr=vFrameName?'name="'+vFrameName+'"':'';
-var frameEl=qx.ui.embed.Iframe._element=document.createElement('<iframe onload="parent.qx.ui.embed.Iframe.load(this)" '+nameStr+'></iframe>');
+var frameEl=qx.ui.embed.Iframe._element=document.createElement("<iframe"+nameStr+"></iframe>");
+frameEl.attachEvent("onload",
+function(){qx.ui.embed.Iframe.load(frameEl);
+});
 }else{var frameEl=qx.ui.embed.Iframe._element=document.createElement("iframe");
 frameEl.onload=qx.ui.embed.Iframe.load;
 if(vFrameName){frameEl.name=vFrameName;
