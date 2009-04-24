@@ -27,24 +27,24 @@ import org.eclipse.swt.widgets.*;
 
 
 public class TypedEvent_Test extends TestCase {
-  
-  private static final String EVENT_FIRED 
+
+  private static final String EVENT_FIRED
     = "eventFired|";
-  private static final String AFTER_RENDER 
+  private static final String AFTER_RENDER
     = "after" + PhaseId.RENDER + "|";
-  private static final String BEFORE_RENDER 
+  private static final String BEFORE_RENDER
     = "before" + PhaseId.RENDER + "|";
-  private static final String AFTER_PROCESS_ACTION 
+  private static final String AFTER_PROCESS_ACTION
     = "after" + PhaseId.PROCESS_ACTION + "|";
-  private static final String BEFORE_PROCESS_ACTION 
+  private static final String BEFORE_PROCESS_ACTION
     = "before" + PhaseId.PROCESS_ACTION + "|";
-  private static final String AFTER_READ_DATA 
+  private static final String AFTER_READ_DATA
     = "after" + PhaseId.READ_DATA + "|";
-  private static final String BEFORE_READ_DATA 
+  private static final String BEFORE_READ_DATA
     = "before" + PhaseId.READ_DATA + "|";
-  private static final String AFTER_PREPARE_UI_ROOT 
+  private static final String AFTER_PREPARE_UI_ROOT
     = "after" + PhaseId.PREPARE_UI_ROOT + "|";
-  private static final String BEFORE_PREPARE_UI_ROOT 
+  private static final String BEFORE_PREPARE_UI_ROOT
     = "before" + PhaseId.PREPARE_UI_ROOT + "|";
 
   protected void setUp() throws Exception {
@@ -85,7 +85,7 @@ public class TypedEvent_Test extends TestCase {
       }
     } );
     RWTFixture.executeLifeCycleFromServerThread( );
-    String expected 
+    String expected
       = BEFORE_PREPARE_UI_ROOT
       + AFTER_PREPARE_UI_ROOT
       + BEFORE_READ_DATA
@@ -97,7 +97,7 @@ public class TypedEvent_Test extends TestCase {
       + AFTER_RENDER;
     assertEquals( expected, log.toString() );
   }
-  
+
   public void testMultipleEventsInOneRequest() {
     // Ensure that two events get fired in the order as it is specified in
     // TypedEvent
@@ -121,9 +121,40 @@ public class TypedEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
-    
+
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( ActivateEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( SelectionEvent.class, eventLog.get( 1 ).getClass() );
+
+    // Ensure that the focus events are fired before the mouse events.
+    // This is important for cell editors activation/deactivation.
+    // See bug 262167:
+    // [Table] Selection activates the CellEditor differently every two rows
+    eventLog.clear();
+    button = new Button( shell, SWT.PUSH );
+    button.addMouseListener( new MouseAdapter() {
+      public void mouseDown( final MouseEvent event ) {
+        eventLog.add( event );
+      }
+    } );
+    button.addFocusListener( new FocusAdapter() {
+      public void focusGained( final FocusEvent event ) {
+        eventLog.add( event );
+      }
+    } );
+    buttonId = WidgetUtil.getId( button );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN, buttonId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_BUTTON, "1" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_X, "1" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_Y, "1" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_TIME, "0" );
+    String focusedControlParam = displayId + ".focusControl";
+    Fixture.fakeRequestParam( focusedControlParam, buttonId );
+
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( FocusEvent.class, eventLog.get( 0 ).getClass() );
+    assertEquals( MouseEvent.class, eventLog.get( 1 ).getClass() );
   }
 }

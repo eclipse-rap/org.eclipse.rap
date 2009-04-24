@@ -40,7 +40,7 @@ public class TypedEvent extends Event {
 
   private static final long serialVersionUID = 1L;
 
-  private static final String ATTR_SCHEDULED_EVENT_LIST 
+  private static final String ATTR_SCHEDULED_EVENT_LIST
     = TypedEvent.class.getName() + "_scheduledEventList";
 
   // TODO [rh] event order is preliminary
@@ -50,55 +50,55 @@ public class TypedEvent extends Event {
     ShowEvent.class,
     DisposeEvent.class,
     SetDataEvent.class,
+    FocusEvent.class,
     MouseEvent.class,
     VerifyEvent.class,
     ModifyEvent.class,
     TreeEvent.class,
     CTabFolderEvent.class,
     ExpandEvent.class,
-    FocusEvent.class,
     SelectionEvent.class,
     LocationEvent.class,
     ShellEvent.class,
     MenuEvent.class,
     KeyEvent.class
   };
-  
+
   /**
    * the display where the event occurred
-   * 
-   * @since 1.2 
-   */ 
+   *
+   * @since 1.2
+   */
   public Display display;
-    
+
   /**
    * the widget that issued the event
    */
   public Widget widget;
-  
+
   /**
    * a field for application use
    */
   public Object data;
-  
+
   /**
    * Constructs a new instance of this class.
-   * 
+   *
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
   public TypedEvent( final Object source, final int id ) {
     super( source, id );
     widget = ( Widget )source;
-    display = widget.getDisplay(); 
+    display = widget.getDisplay();
   }
-  
+
   public Object getSource() {
-    // TODO [rh] introduced to get rid of discouraged access warning when 
-    //      application code accesses getSource() which is defined in 
+    // TODO [rh] introduced to get rid of discouraged access warning when
+    //      application code accesses getSource() which is defined in
     //      org.eclipse.rwt.internal.events.Event
     return super.getSource();
   }
@@ -106,7 +106,7 @@ public class TypedEvent extends Event {
   /**
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -116,8 +116,8 @@ public class TypedEvent extends Event {
     //                may improve with the new readAndDispatch mechanism in
     //                place.
     if( CurrentPhase.get() != null ) {
-      if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
-          || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
+      if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() )
+          || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) )
       {
         // TODO [fappel]: changes of the event fields in the filter handler
         //                methods should be forwarded to this event...
@@ -133,7 +133,7 @@ public class TypedEvent extends Event {
   /**
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -147,11 +147,11 @@ public class TypedEvent extends Event {
     }
     clearScheduledEventList();
   }
-  
+
   /**
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -169,10 +169,10 @@ public class TypedEvent extends Event {
     }
     return result;
   }
-  
+
   ////////////////////////////////////
-  // methods for filter implementation 
-  
+  // methods for filter implementation
+
   private org.eclipse.swt.widgets.Event processFilters() {
     IFilterEntry[] filters = getFilterEntries();
     org.eclipse.swt.widgets.Event result
@@ -193,18 +193,18 @@ public class TypedEvent extends Event {
 
   private IFilterEntry[] getFilterEntries() {
     Display display = Display.getCurrent();
-    IDisplayAdapter adapter 
+    IDisplayAdapter adapter
       = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     return adapter.getFilters();
   }
 
   ///////////////////////////////////////////////
   // Methods to maintain list of scheduled events
-  
+
   private static void addToScheduledEvents( final TypedEvent event ) {
     getScheduledEventList().add( event );
   }
-  
+
   private static TypedEvent[] getScheduledEvents() {
     List list = getScheduledEventList();
     List sortedEvents = new ArrayList();
@@ -220,7 +220,7 @@ public class TypedEvent extends Event {
     sortedEvents.toArray( result );
     return result;
   }
-  
+
   private static List getScheduledEventList() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     List result = ( List )stateInfo.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
@@ -230,19 +230,19 @@ public class TypedEvent extends Event {
     }
     return result;
   }
-  
+
   private static void clearScheduledEventList() {
     getScheduledEventList().clear();
   }
 
   ///////////////////////
   // Stub implementations
-  
+
   protected boolean allowProcessing() {
   	String msg = "Derived classes must override allowProcessing.";
   	throw new UnsupportedOperationException( msg );
   }
-  
+
   // Exception to get rid of abstract TypedEvent
   protected void dispatchToObserver( final Object listener ) {
   	String msg = "Derived classes must override dispatchToObserver.";
@@ -254,22 +254,22 @@ public class TypedEvent extends Event {
   	String msg = "Derived classes must override getListenerType.";
   	throw new UnsupportedOperationException( msg );
   }
-  
+
   ///////////////////////////////
-  // toString & getName from SWT 
+  // toString & getName from SWT
 
   // this implementation is extended by subclasses
   public String toString() {
     return getName()
         + "{"
-        + widget 
+        + widget
 //        TODO [rst] uncomment when these public fields are implemented
-//        + " time=" + time + 
-        + " data=" 
+//        + " time=" + time +
+        + " data="
         + data
         + "}";
   }
-  
+
   private String getName() {
     String result = getClass().getName();
     int index = result.lastIndexOf( '.' );
