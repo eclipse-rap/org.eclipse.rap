@@ -97,20 +97,16 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     focusGained : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        // [if] The focusControl parameter is added in the request in Shell.js
         var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.focusGained", id );
         req.send();
       }
     },
 
     focusLost : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        // [if] The focusControl parameter is added in the request in Shell.js
         var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.focusLost", id );
         req.send();
       }
     },

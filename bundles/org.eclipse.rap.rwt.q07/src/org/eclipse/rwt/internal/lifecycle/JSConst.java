@@ -41,10 +41,6 @@ public final class JSConst {
     = "org.eclipse.swt.events.treeCollapsed";
   public static final String EVENT_MODIFY_TEXT
     = "org.eclipse.swt.events.modifyText";
-  public static final String EVENT_FOCUS_GAINED
-    = "org.eclipse.swt.events.focusGained";
-  public static final String EVENT_FOCUS_LOST
-    = "org.eclipse.swt.events.focusLost";
   public static final String EVENT_MENU_SHOWN
     = "org.eclipse.swt.events.menuShown";
   public static final String EVENT_MENU_HIDDEN
