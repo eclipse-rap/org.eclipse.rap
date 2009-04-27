@@ -32,6 +32,7 @@ import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -564,6 +565,7 @@ public class Display extends Device implements Adaptable {
 
   final void setActiveShell( final Shell activeShell ) {
     checkDevice();
+    Shell lastActiveShell = this.activeShell;
     if( this.activeShell != null ) {
       this.activeShell.saveFocus();
     }
@@ -572,7 +574,18 @@ public class Display extends Device implements Adaptable {
       shells.remove( activeShell );
       shells.add( activeShell );
     }
+    ShellEvent shellEvent;
+    if( lastActiveShell != null ) {
+      shellEvent = new ShellEvent( lastActiveShell,
+                                   ShellEvent.SHELL_DEACTIVATED );
+      shellEvent.processEvent();
+    }
     this.activeShell = activeShell;
+    if( activeShell != null && activeShell != lastActiveShell ) {
+      shellEvent = new ShellEvent( activeShell,
+                                   ShellEvent.SHELL_ACTIVATED );
+      shellEvent.processEvent();
+    }
     if( this.activeShell != null ) {
       this.activeShell.restoreFocus();
     }
@@ -636,7 +649,7 @@ public class Display extends Device implements Adaptable {
    * @see #syncExec
    */
   public void asyncExec( final Runnable runnable ) {
-    // TODO [rh] there might be cases where the display is disposed between 
+    // TODO [rh] there might be cases where the display is disposed between
     //      this check and adding the runnable to the execution list
     if( isDisposed() ) {
       error( SWT.ERROR_DEVICE_DISPOSED );
@@ -672,7 +685,7 @@ public class Display extends Device implements Adaptable {
    * @see #asyncExec
    */
   public void syncExec( final Runnable runnable ) {
-    // TODO [rh] there might be cases where the display is disposed between 
+    // TODO [rh] there might be cases where the display is disposed between
     //      this check and adding the runnable to the execution list
     if( isDisposed() ) {
       error( SWT.ERROR_DEVICE_DISPOSED );

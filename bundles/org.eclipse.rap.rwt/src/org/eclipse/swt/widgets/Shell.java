@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -414,7 +414,7 @@ public class Shell extends Decorations {
    * the display on which it was created (so that all other shells on that
    * display, which are not the receiver's children will be drawn behind it) and
    * forces the window manager to make the shell active.
-   * 
+   *
    * @exception SWTException <ul>
    *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *   <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
@@ -618,17 +618,13 @@ public class Shell extends Decorations {
   public void open() {
     checkWidget();
     bringToTop();
-    // Order of setVisible/setActive is crucial: see isVisible-check in 
+    // Order of setVisible/setActive is crucial: see isVisible-check in
     // Shell#setActive()
     setVisible( true );
     display.setActiveShell( this );
     if( !restoreFocus() && !traverseGroup( true ) ) {
       setFocus();
     }
-    // fire shell activated event
-    // TODO: is there any possibility where it should not be fired on open() ?
-    ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_ACTIVATED );
-    shellEvent.processEvent();
   }
 
   /**
@@ -919,7 +915,7 @@ public class Shell extends Decorations {
   public void addShellListener( final ShellListener listener ) {
     ShellEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when operations are performed on the receiver.

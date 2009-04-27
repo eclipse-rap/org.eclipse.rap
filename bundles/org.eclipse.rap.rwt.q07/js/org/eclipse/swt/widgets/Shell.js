@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -303,14 +303,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-// TODO [fappel]: fix this
-//        if( qx.lang.Array.contains( this._activateListenerWidgets, this ) ) {
-          req.removeParameter( req.getUIRootId() + ".activeShell" );
-          req.addEvent( "org.eclipse.swt.events.shellActivated", id );
-          req.send();
-//        } else {
-//          req.addParameter( req.getUIRootId() + ".activeShell", id );
-//        }
+        req.addEvent( "org.eclipse.swt.events.shellActivated", id );
+        req.send();
       }
       var active = evt.getValue();
       if( active ) {

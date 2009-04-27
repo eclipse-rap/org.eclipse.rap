@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
@@ -213,21 +212,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
       }
       event = new ActivateEvent( shell, ActivateEvent.ACTIVATED );
       event.processEvent();
-      ShellEvent shellEvent;
-      if( lastActiveShell != null ) {
-        shellEvent = new ShellEvent( lastActiveShell,
-                                     ShellEvent.SHELL_DEACTIVATED );
-        shellEvent.processEvent();
-      }
-      shellEvent = new ShellEvent( shell, ShellEvent.SHELL_ACTIVATED );
-      shellEvent.processEvent();
-    } else {
-      String displayId = DisplayUtil.getId( shell.getDisplay() );
-      HttpServletRequest request = ContextProvider.getRequest();
-      String activeShellId = request.getParameter( displayId + ".activeShell" );
-      if( WidgetUtil.getId( shell ).equals( activeShellId ) ) {
-        setActiveShell( shell );
-      }
     }
   }
 
