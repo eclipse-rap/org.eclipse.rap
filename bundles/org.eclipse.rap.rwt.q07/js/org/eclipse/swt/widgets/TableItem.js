@@ -248,8 +248,15 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       // set line height to enable vertical centering
       node.style.lineHeight = height;
       if( font != "" ) {
-        // TODO [rst] problem in IE: font cannot be reset
         node.style.font = font;
+      } else {
+        // Resetting style.font causes errors in IE with any of these syntaxes:
+        // node.style.font = null | undefined | "inherit" | "";
+        node.style.fontFamily = "";
+        node.style.fontSize = "";
+        node.style.fontVariant = "";
+        node.style.fontStyle = "";
+        node.style.fontWeight = "";
       }
       node.style.color = foreground;
       node.style.backgroundColor = background;

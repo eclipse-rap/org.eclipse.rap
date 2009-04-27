@@ -11,7 +11,6 @@
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -197,14 +196,14 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static boolean writeFont( final TableItem item ) throws IOException {
     Font[] fonts = getFonts( item );
+    // default values are null
     Font[] defValue = new Font[ fonts.length ];
-    Arrays.fill( defValue, item.getParent().getFont() );
     boolean result
       = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
     if( result ) {
       String[] css = new String[ fonts.length ];
       for( int i = 0; i < fonts.length; i++ ) {
-        css[ i ] = toCss( fonts[ i ] );
+        css[ i ] = fonts[ i ] != null ? toCss( fonts[ i ] ) : null;
       }
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "fonts", new Object[] { css } );
@@ -338,34 +337,21 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   static Font[] getFonts( final TableItem item ) {
-    int columnCount = getColumnCount( item );
-    Font[] result = new Font[ columnCount ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getFont( i );
-    }
-    return result;
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    return tableItemAdapter.getCellFonts();
   }
 
   static Color[] getBackgrounds( final TableItem item ) {
-    int columnCount = getColumnCount( item );
-    Color[] result = new Color[ columnCount ];
-    Color parentBackground = item.getParent().getBackground();
-    for( int i = 0; i < result.length; i++ ) {
-      Color itemBackground = item.getBackground( i );
-      result[ i ] = itemBackground == parentBackground ? null : itemBackground;
-    }
-    return result;
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    return tableItemAdapter.getCellBackgrounds();
   }
 
   static Color[] getForegrounds( final TableItem item ) {
-    int columnCount = getColumnCount( item );
-    Color[] result = new Color[ columnCount ];
-    Color parentForeground = item.getParent().getForeground();
-    for( int i = 0; i < result.length; i++ ) {
-      Color itemForeground = item.getForeground( i );
-      result[ i ] = itemForeground == parentForeground ? null : itemForeground;
-    }
-    return result;
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    return tableItemAdapter.getCellForegrounds();
   }
 
   private static int getColumnCount( final TableItem item ) {

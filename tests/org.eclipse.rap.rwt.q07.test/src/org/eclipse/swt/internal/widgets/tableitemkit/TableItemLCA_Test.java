@@ -308,19 +308,28 @@ public class TableItemLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
+    Color itemColor = display.getSystemColor( SWT.COLOR_RED );
+    Color cellColor = display.getSystemColor( SWT.COLOR_BLUE );
     // simple case: no explicit colors at all
     Color[] foregrounds = TableItemLCA.getForegrounds( item );
-    assertEquals( null, foregrounds[ 0 ] );
+    assertNull( foregrounds[ 0 ] );
     // set foreground on table but not on item
-    table.setForeground( red );
+    table.setForeground( tableColor );
     foregrounds = TableItemLCA.getForegrounds( item );
-    assertEquals( null, foregrounds[ 0 ] );
-    // clear foreground on table and set on item
-    table.setForeground( null );
-    item.setForeground( red );
+    assertNull( foregrounds[ 0 ] );
+    // set foreground on item
+    item.setForeground( itemColor );
     foregrounds = TableItemLCA.getForegrounds( item );
-    assertEquals( red, foregrounds[ 0 ] );
+    assertSame( itemColor, foregrounds[ 0 ] );
+    // ensure same result when item-internal data array exists
+    item.setText( "Item 1" );
+    foregrounds = TableItemLCA.getForegrounds( item );
+    assertSame( itemColor, foregrounds[ 0 ] );
+    // set foreground on cell
+    item.setForeground( 0, cellColor );
+    foregrounds = TableItemLCA.getForegrounds( item );
+    assertSame( cellColor, foregrounds[ 0 ] );
   }
 
   public void testGetBackground() {
@@ -328,21 +337,58 @@ public class TableItemLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
+    Color itemColor = display.getSystemColor( SWT.COLOR_RED );
+    Color cellColor = display.getSystemColor( SWT.COLOR_BLUE );
     // simple case: no explicit colors at all
     Color[] backgrounds = TableItemLCA.getBackgrounds( item );
-    assertEquals( null, backgrounds[ 0 ] );
+    assertNull( backgrounds[ 0 ] );
     // set background on table but not on item
-    table.setBackground( red );
+    table.setBackground( tableColor );
     backgrounds = TableItemLCA.getBackgrounds( item );
-    assertEquals( null, backgrounds[ 0 ] );
-    // clear background on table and set on item
-    table.setBackground( null );
-    item.setBackground( red );
+    assertNull( backgrounds[ 0 ] );
+    // set background on item
+    item.setBackground( itemColor );
     backgrounds = TableItemLCA.getBackgrounds( item );
-    assertEquals( red, backgrounds[ 0 ] );
+    assertSame( itemColor, backgrounds[ 0 ] );
+    // ensure same result when item-internal data array exists
+    item.setText( "Item 1" );
+    backgrounds = TableItemLCA.getBackgrounds( item );
+    assertSame( itemColor, backgrounds[ 0 ] );
+    // set a cell color
+    item.setBackground( 0, cellColor );
+    backgrounds = TableItemLCA.getBackgrounds( item );
+    assertSame( cellColor, backgrounds[ 0 ] );
   }
 
+  public void testGetFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Font tableFont = Graphics.getFont( "TableFont", 11, SWT.ITALIC );
+    Font itemFont = Graphics.getFont( "ItemFont", 12, SWT.BOLD );
+    Font cellFont = Graphics.getFont( "CellFont", 13, SWT.NORMAL );
+    // simple case: no explicit fonts at all
+    Font[] fonts = TableItemLCA.getFonts( item );
+    assertNull( fonts[ 0 ] );
+    // set font on table but not on item
+    table.setFont( tableFont );
+    fonts = TableItemLCA.getFonts( item );
+    assertNull( fonts[ 0 ] );
+    // set font on item
+    item.setFont( itemFont );
+    fonts = TableItemLCA.getFonts( item );
+    assertSame( itemFont, fonts[ 0 ] );
+    // ensure same result when item-internal data array exists
+    item.setText( "Item 1" );
+    fonts = TableItemLCA.getFonts( item );
+    assertSame( itemFont, fonts[ 0 ] );
+    // set a cell font
+    item.setFont( 0, cellFont );
+    fonts = TableItemLCA.getFonts( item );
+    assertSame( cellFont, fonts[ 0 ] );
+  }
 
   public void testCheckAndGrayedAccess() throws IOException {
     final String[] lcaMethod = { "" };

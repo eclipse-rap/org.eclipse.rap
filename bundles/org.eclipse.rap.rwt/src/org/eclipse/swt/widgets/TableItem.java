@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -30,6 +31,51 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  */
 public class TableItem extends Item {
 
+  private final class TableItemAdapter implements ITableItemAdapter {
+
+    public Color[] getCellBackgrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = new Color[ columnCount ];
+      for( int i = 0; i < result.length; i++ ) {
+        if( data != null && data[ i ] != null ) {
+          result[ i ] = data[ i ].background;
+        }
+        if( result[ i ] == null ) {
+          result[ i ] = background;
+        }
+      }
+      return result;
+    }
+
+    public Color[] getCellForegrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = new Color[ columnCount ];
+      for( int i = 0; i < result.length; i++ ) {
+        if( data != null && data[ i ] != null ) {
+          result[ i ] = data[ i ].foreground;
+        }
+        if( result[ i ] == null ) {
+          result[ i ] = foreground;
+        }
+      }
+      return result;
+    }
+
+    public Font[] getCellFonts() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Font[] result = new Font[ columnCount ];
+      for( int i = 0; i < result.length; i++ ) {
+        if( data != null && data[ i ] != null ) {
+          result[ i ] = data[ i ].font;
+        }
+        if( result[ i ] == null ) {
+          result[ i ] = font;
+        }
+      }
+      return result;
+    }
+  }
+
   private static final class Data {
     String text = "";
     Image image;
@@ -38,6 +84,7 @@ public class TableItem extends Item {
     Color foreground;
   }
 
+  private final TableItemAdapter tableItemAdapter;
   final Table parent;
   boolean cached;
   int index;
@@ -79,7 +126,7 @@ public class TableItem extends Item {
    * @see Widget#getStyle
    */
   public TableItem( final Table parent, final int style ) {
-    this( parent, style, checkNull( parent ).getItemCount() );
+    this( parent, style, checkNull( parent).getItemCount() );
   }
 
   /**
@@ -126,9 +173,23 @@ public class TableItem extends Item {
     super( parent, style );
     this.parent = parent;
     this.index = index;
+    tableItemAdapter = new TableItemAdapter();
     if( create ) {
       this.parent.createItem( this, index );
     }
+  }
+
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if(    adapter == IWidgetFontAdapter.class
+        || adapter == IWidgetColorAdapter.class
+        || adapter == ITableItemAdapter.class )
+    {
+      result = tableItemAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
   }
 
   /**
@@ -421,7 +482,7 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      if( !equals( data[index].background, color ) ) {
+      if( !equals( data[ index ].background, color ) ) {
         data[ index ].background = color;
         markCached();
         parent.redraw();
