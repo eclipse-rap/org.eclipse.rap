@@ -10,3 +10,9 @@ Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
  javax.servlet.http;version="[2.3.0,2.5.0]"
 Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Export-Package: org.eclipse.rap.demo;x-internal:=true,
+ org.eclipse.rap.demo.actions;x-internal:=true,
+ org.eclipse.rap.demo.controls;x-internal:=true,
+ org.eclipse.rap.demo.editor;x-internal:=true,
+ org.eclipse.rap.demo.presentation;x-internal:=true,
+ org.eclipse.rap.demo.wizard;x-internal:=true
