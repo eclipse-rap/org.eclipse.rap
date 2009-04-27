@@ -103,7 +103,7 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
-        + ", 'qx.ui.form.Button' );";
+        + ", \"qx.ui.form.Button\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that the WidgetManager, once initialized, is not initialized
     // twice
@@ -111,7 +111,7 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     expected +=   "var w = wm.newWidget( \"w2\", \"w3\", true, "
                 + getTypePoolIdHash( shell.button )
-                +  ", 'qx.ui.form.Button' );";
+                +  ", \"qx.ui.form.Button\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that obtaining the widget reference (var w =) is only rendered
     // once
@@ -135,7 +135,7 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
-        + ", 'qx.ui.form.Button' );";
+        + ", \"qx.ui.form.Button\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -186,7 +186,7 @@ public class JSWriter_Test extends TestCase {
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"\", false, 767544711, "
-        + "'qx.ui.widget' );";
+        + "\"qx.ui.widget\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
@@ -208,7 +208,7 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
-        + ", 'qx.ui.form.Button', '\"abc\", [\"#ff0000\" ]' );";
+        + ", \"qx.ui.form.Button\", '\"abc\", [\"#ff0000\" ]' );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -223,7 +223,7 @@ public class JSWriter_Test extends TestCase {
     expected
       =   "var w = wm.newWidget( \"w4\", \"\", false, "
         + getTypePoolIdHash( item )
-        + ", 'TreeItem' );";
+        + ", \"TreeItem\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

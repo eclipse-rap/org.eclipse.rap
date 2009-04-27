@@ -377,8 +377,12 @@ public final class WidgetLCAUtil {
         writer.set( JS_PROP_WIDTH, newBounds.width );
         writer.set( JS_PROP_HEIGHT, newBounds.height );
       } else {
-        int[] args = new int[] {
-          newBounds.x, newBounds.width, newBounds.y, newBounds.height
+        // [rh] for performance reasons, use the set(Object,Object[]) method
+        Integer[] args = new Integer[] {
+          new Integer( newBounds.x ), 
+          new Integer( newBounds.width ), 
+          new Integer( newBounds.y ),
+          new Integer( newBounds.height )
         };
         writer.set( JS_PROP_SPACE, args );
       }

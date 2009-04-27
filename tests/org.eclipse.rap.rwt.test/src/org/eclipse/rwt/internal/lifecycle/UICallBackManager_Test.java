@@ -210,7 +210,7 @@ public class UICallBackManager_Test extends TestCase {
     UICallBackManager callbackManager = UICallBackManager.getInstance();
     assertFalse( callbackManager.processNextRunnableInUIThread() );
     assertEquals( "", log.toString() );
-    Thread.sleep( TIMER_EXEC_DELAY + 1 );
+    Thread.sleep( TIMER_EXEC_DELAY + 50 );
     assertTrue( callbackManager.processNextRunnableInUIThread() );
     assertEquals( RUN_TIMER_EXEC, log.toString() );
   }

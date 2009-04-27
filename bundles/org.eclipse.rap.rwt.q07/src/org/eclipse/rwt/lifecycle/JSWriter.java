@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.*;
  * <p></p>
  * <p>Note that the JavaScript code that is rendered relies on the client-side
  * <code>org.eclipse.swt.WidgetManager</code> to be present. </p>
- * 
+ *
  * @see AbstractWidgetLCA
  * @see ControlLCAUtil
  * @see WidgetLCAUtil
@@ -41,39 +41,35 @@ public final class JSWriter {
 
   /**
    * A reference to the current widget manager on the client side.
-   * 
+   *
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
-  
+
   /**
    * Reference to the widget of this JSWriter instance.
-   * 
+   *
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
   public static JSVar WIDGET_REF = new JSVar( "w" );
-  
+
   private static final JSVar TARGET_REF = new JSVar( "t" );
 
-  private static final String NEW_WIDGET_PATTERN
-    =   "var w = wm.newWidget( \"{0}\", \"{1}\", {2}, "
-      + "{3,number,#}, ''{4}''{5} );";
-    
   private static final String WRITER_MAP
     = JSWriter.class.getName() + "#map";
   private static final String HAS_WINDOW_MANAGER
     = JSWriter.class.getName() + "#hasWindowManager";
   private static final String CURRENT_WIDGET_REF
     = JSWriter.class.getName() + "#currentWidgetRef";
-  
+
   private static final Map setterNames = new HashMap();
   private static final Map getterNames = new HashMap();
   private static final Map resetterNames = new HashMap();
@@ -85,7 +81,7 @@ public final class JSWriter {
    * Returns an instance of {@link JSWriter} for the specified
    * <code>widget</code>. Only this writer can modify attributes and call
    * methods on the client-side representation of the widget.
-   * 
+   *
    * @param widget the widget for the requested {@link JSWriter}
    * @return the corresponding {@link JSWriter}
    */
@@ -110,7 +106,7 @@ public final class JSWriter {
    * Returns the {@link JSWriter} instance used to reset
    * a widgets attributes in order to take part in the
    * pooling mechanism.
-   * 
+   *
    * @return the {@link JSWriter} instance
    */
   public static JSWriter getWriterForResetHandler() {
@@ -123,10 +119,10 @@ public final class JSWriter {
 
   /**
    * Creates a new widget on the client-side by creating an instance of the
-   * corresponding javascript class defined by <code>className</code>. This 
-   * is normally done in the <code>renderInitialization</code> method of the 
+   * corresponding javascript class defined by <code>className</code>. This
+   * is normally done in the <code>renderInitialization</code> method of the
    * widgets life-cycle adapter (LCA).
-   * 
+   *
    * @param className the javascript class to initiate
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA#renderInitialization
@@ -141,10 +137,10 @@ public final class JSWriter {
    * the <code>renderInitialization</code> method of the widgets life-cycle
    * adapter (LCA). All arguments passed to this function will be transmitted
    * to the client and used to call the constructor of the javascript widget.
-   * 
+   *
    * @param className the javascript class to initiate
    * @param args the arguments for the widgets constructor on the client-side
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA#renderInitialization
    */
@@ -153,15 +149,23 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String typePoolId = getTypePoolId( widget );
-    Object[] args1 = new Object[] {
-      WidgetUtil.getId( widget ),
-      getJSParentId( widget ),
-      useSetParent(),
-      typePoolId == null ? null : new Integer( typePoolId.hashCode() ),
-      className,
-      createParamList( ", '", args, "'", false )
-    };
-    getWriter().write( format( NEW_WIDGET_PATTERN, args1 ) );
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "var w = wm.newWidget( \"" );
+    buffer.append( WidgetUtil.getId( widget ) );
+    buffer.append( "\", \"" );
+    buffer.append( getJSParentId( widget ) );
+    buffer.append( "\", " );
+    buffer.append( useSetParent() );
+    buffer.append( ", " );
+    Integer poolIdHashCode
+      = typePoolId == null ? null : new Integer( typePoolId.hashCode() );
+    buffer.append( poolIdHashCode );
+    buffer.append( ", \"" );
+    buffer.append( className );
+    buffer.append( "\"" );
+    buffer.append( createParamList( ", '", args, "'", false ) );
+    buffer.append( " );" );
+    getWriter().write( buffer.toString() );
     setCurrentWidgetRef( widget );
     if( widget instanceof Shell ) {
       call( "addToDocument", null );
@@ -170,7 +174,7 @@ public final class JSWriter {
 
   /**
    * Explicitly sets the parent of the client-side widget.
-   * 
+   *
    * @param parentId the widget id of the parent
    * @throws IOException if an I/O error occurs
    * @see WidgetUtil
@@ -181,10 +185,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param value the new value
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -196,10 +200,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param value the new value
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -211,10 +215,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param value the new value
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -226,10 +230,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param value the new value
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -241,10 +245,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param values the new values
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -261,10 +265,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param values the new values
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -281,10 +285,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param values the new values
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -292,20 +296,20 @@ public final class JSWriter {
     throws IOException
   {
     ensureWidgetRef();
+    String functionName = getSetterName( jsProperty );
     Boolean[] parameters = new Boolean[ values.length ];
     for( int i = 0; i < values.length; i++ ) {
       parameters[ i ] = Boolean.valueOf( values[ i ] );
     }
-    String pattern = createSetPatternForPrimitives( values.length, "" );
-    writeProperty( pattern, jsProperty, parameters );
+    call( widget, functionName, parameters );
   }
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param value the new value
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -317,10 +321,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified property of the client-side widget to a new value.
-   * 
+   *
    * @param jsProperty the attribute to change
    * @param values the new values
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -333,10 +337,10 @@ public final class JSWriter {
 
   /**
    * Sets the specified properties of the client-side widget to new values.
-   * 
+   *
    * @param jsPropertyChain the attributes to change
    * @param values the new values
-   * 
+   *
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
@@ -347,20 +351,20 @@ public final class JSWriter {
   }
 
   /**
-   * Sets the specified <code>jsProperty</code> of the client-side widget to 
+   * Sets the specified <code>jsProperty</code> of the client-side widget to
    * the new value. Uses the specified <code>javaProperty</code> as a key
-   * to obtain the preserved value and only sets the new value if it has 
-   * changed since it was preserved. 
-   * 
+   * to obtain the preserved value and only sets the new value if it has
+   * changed since it was preserved.
+   *
    * @param javaProperty the key used to obtain the preserved value
    * @param jsProperty the client-side attribute to change
    * @param newValue the new values
-   * 
+   *
    * @return <code>true</code> if the new value differs from the preserved
    * value (meaning that JavaScript was written); <code>false</code> otherwise
-   * 
+   *
    * @throws IOException if an I/O error occurs
-   * 
+   *
    * @see AbstractWidgetLCA#preserveValues(Widget)
    */
   public boolean set( final String javaProperty,
@@ -379,27 +383,27 @@ public final class JSWriter {
   }
 
   /**
-   * Sets the specified <code>jsProperty</code> of the client-side widget to 
+   * Sets the specified <code>jsProperty</code> of the client-side widget to
    * the new value. Uses the specified <code>javaProperty</code> as a key
-   * to obtain the preserved value and only sets the new value if it has 
-   * changed since it was preserved. 
-   * <p>If the widget is rendered for the first time, there is no preserved 
-   * value present. In this case the <code>defValue</code> is taken into 
-   * account instead of the preserved value of the <code>javaProperty</code>. 
+   * to obtain the preserved value and only sets the new value if it has
+   * changed since it was preserved.
+   * <p>If the widget is rendered for the first time, there is no preserved
+   * value present. In this case the <code>defValue</code> is taken into
+   * account instead of the preserved value of the <code>javaProperty</code>.
    * Therefore, the default value must match the initial value of the attribute
    * of the client-side widget. If there is no constant initial client-side
    * value, resort the {@link #set(String,String,Object)}.</p>
-   * 
+   *
    * @param javaProperty the key used to obtain the preserved value
    * @param jsProperty the client-side attribute to change
    * @param newValue the new values
    * @param defValue the default value
-   * 
+   *
    * @return <code>true</code> if the new value differs from the preserved
    * value (meaning that JavaScript was written); <code>false</code> otherwise
-   * 
+   *
    * @throws IOException if an I/O error occurs
-   * 
+   *
    * @see AbstractWidgetLCA#preserveValues(Widget)
    */
   public boolean set( final String javaProperty,
@@ -418,9 +422,9 @@ public final class JSWriter {
 
   /**
    * Resets the specified javascript property to its initial value.
-   * 
+   *
    * @param jsProperty the javascript property to reset
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void reset( final String jsProperty ) throws IOException {
@@ -429,9 +433,9 @@ public final class JSWriter {
 
   /**
    * Resets the specified javascript properties to their initial values.
-   * 
+   *
    * @param jsPropertyChain the javascript properties to reset
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void reset( final String[] jsPropertyChain ) throws IOException {
@@ -442,11 +446,11 @@ public final class JSWriter {
    * This will add a listener to an object specified by the property of
    * the widget. The listener has to be a javascript function which accepts
    * exact one parameter - an <code>qx.event.type.Event</code> object.
-   * 
+   *
    * @param property the property of the widget to what the listener should be added
    * @param eventType the type of the event
    * @param listener reference to the listener function
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void addListener( final String property,
@@ -476,10 +480,10 @@ public final class JSWriter {
    * This will add a listener to the widget of this {@link JSWriter}. The
    * listener has to be a javascript function which accepts exact one
    * parameter - an <code>qx.event.type.Event</code> object.
-   * 
+   *
    * @param eventType the type of the event
    * @param listener reference to the listener function
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void addListener( final String eventType, final String listener )
@@ -545,10 +549,10 @@ public final class JSWriter {
 
   /**
    * Calls a specific function of the widget on the client-side.
-   * 
+   *
    * @param function the function name
    * @param args the arguments for the function
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void call( final String function, final Object[] args )
@@ -560,11 +564,11 @@ public final class JSWriter {
   /**
    * Calls the specific <code>function</code> of the widget identified by
    * <code>target</code> on the client-side.
-   * 
+   *
    * @param target the widget on which the function should be called
    * @param function the function to be called
    * @param args the arguments for the function
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void call( final Widget target,
@@ -579,20 +583,20 @@ public final class JSWriter {
       refVariable = WIDGET_REF;
     } else {
       refVariable = TARGET_REF;
-      write( "var {0} = {1};", refVariable, createFindWidgetById( target ) );
+      writeVarAssignment( refVariable, createFindWidgetById( target ) );
     }
     String params = createParamList( args );
-    write( "{0}.{1}({2});", refVariable, function, params );
+    writeCall( refVariable, function, params );
   }
 
   /**
    * Calls the specific <code>function</code> of the widget identified by
    * <code>target</code> on the client-side.
-   * 
+   *
    * @param target the widget on which the function should be called
    * @param function the function name
    * @param args the arguments for the function
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void call( final JSVar target,
@@ -602,7 +606,7 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String params = createParamList( args );
-    write( "{0}.{1}({2});", target, function, params );
+    writeCall( target, function, params );
   }
 
   public void startCall( final JSVar target,
@@ -622,10 +626,10 @@ public final class JSWriter {
 
   /**
    * Calls the specified Javascript function with the given arguments.
-   * 
+   *
    * @param function the function name
    * @param args the arguments for the function
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   // TODO [rh] should we name this method 'call' and make it a static method?
@@ -634,7 +638,12 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String params = createParamList( args );
-    write( "{0}({1});", function, params );
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( function );
+    buffer.append( '(' );
+    buffer.append( params );
+    buffer.append( ");" );
+    getWriter().write( buffer.toString() );
   }
 
   public void callFieldAssignment( final JSVar target,
@@ -646,12 +655,12 @@ public final class JSWriter {
   }
 
   /**
-   * Dispose is used to dispose of the widget of this {@link JSWriter} on the 
-   * client side. As todays browser have several memory issues this will only 
+   * Dispose is used to dispose of the widget of this {@link JSWriter} on the
+   * client side. As todays browser have several memory issues this will only
    * dispose of the widget if there are no pooling informations available.
-   * 
+   *
    * @throws IOException if an I/O error occurs
-   * 
+   *
    * @see AbstractWidgetLCA#getTypePoolId(Widget)
    * @see AbstractWidgetLCA#createResetHandlerCalls(String)
    */
@@ -769,8 +778,8 @@ public final class JSWriter {
         && widget != null
         && stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null )
     {
-      write( "var {0} = org.eclipse.swt.WidgetManager.getInstance();",
-             WIDGET_MANAGER_REF );
+      writeVarAssignment( WIDGET_MANAGER_REF,
+                          "org.eclipse.swt.WidgetManager.getInstance()" );
       stateInfo.setAttribute( HAS_WINDOW_MANAGER, Boolean.TRUE );
     }
   }
@@ -790,8 +799,7 @@ public final class JSWriter {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Object currentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
     if( widget != currentWidgetRef && widget != null ) {
-      String code = "var {0} = {1};";
-      write( code, WIDGET_REF, createFindWidgetById( widget ) );
+      writeVarAssignment( WIDGET_REF, createFindWidgetById( widget ) );
       setCurrentWidgetRef( widget );
     }
   }
@@ -811,30 +819,19 @@ public final class JSWriter {
   }
 
   private static String createFindWidgetById( final String id ) {
-    String pattern = "{0}.findWidgetById( \"{1}\" )";
-    Object[] args = new Object[] { WIDGET_MANAGER_REF, id };
-    return format( pattern, args );
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( WIDGET_MANAGER_REF.toString() );
+    buffer.append( ".findWidgetById( \"" );
+    buffer.append( id );
+    buffer.append( "\" )" );
+    return buffer.toString();
+//    String pattern = "{0}.findWidgetById( \"{1}\" )";
+//    Object[] args = new Object[] { WIDGET_MANAGER_REF, id };
+//    return format( pattern, args );
   }
 
   ///////////////////////////////////////////////
   // Helping methods tp construct parameter lists
-
-  private static String createSetPatternForPrimitives( final int parameterCount,
-                                                       final String typeAndStyle )
-  {
-    StringBuffer buffer = new StringBuffer( "w.set{0}(" );
-    for( int i = 0; i < parameterCount; i++ ) {
-      buffer.append( " {" );
-      buffer.append( i + 1  );
-      buffer.append( typeAndStyle );
-      buffer.append( "}" );
-      if( i + 1 < parameterCount ) {
-        buffer.append( "," );
-      }
-    }
-    buffer.append( " );" );
-    return buffer.toString();
-  }
 
   private static String createParamList( final Object[] args ) {
     return createParamList( " ", args, " ", true );
@@ -963,7 +960,7 @@ public final class JSWriter {
         functionName.append( capitalize( jsProperty ) );
         result =  functionName.toString();
         setterNames.put( jsProperty, result );
-      }    
+      }
       return result;
     }
   }
@@ -999,22 +996,31 @@ public final class JSWriter {
   /////////////////////////////////////////////////////////
   // Helping methods to write to the actual response writer
 
-  private static void write( final String pattern, final Object arg1 )
+  private void writeCall( final JSVar target,
+                          final String function,
+                          final String params )
     throws IOException
   {
-    Object[] args = new Object[] { arg1 };
-    getWriter().write( format( pattern, args ) );
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( target.toString() );
+    buffer.append( '.' );
+    buffer.append( function );
+    buffer.append( '(' );
+    buffer.append( params );
+    buffer.append( ");" );
+    getWriter().write( buffer.toString() );
   }
-  
-  private static void writeProperty( final String pattern,
-                                     final String propertyName,
-                                     final Object[] arx )
+
+  private void writeVarAssignment( final JSVar var, final String value )
     throws IOException
   {
-    Object[] arguments = new Object[ arx.length + 1 ];
-    System.arraycopy( arx, 0, arguments, 1, arx.length );
-    arguments[ 0 ] = capitalize( propertyName );
-    getWriter().write( format( pattern, arguments ) );
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "var " );
+    buffer.append( var.toString() );
+    buffer.append( " = " );
+    buffer.append( value );
+    buffer.append( ';' );
+    getWriter().write( buffer.toString() );
   }
 
   private static String format( final String pattern,
