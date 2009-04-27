@@ -81,10 +81,7 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     _sendChanges : function() {
       if( !org_eclipse_rap_rwt_EventUtil_suspend && this._hasSelectionListener ) 
       {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.send();
+        org.eclipse.swt.Request.getInstance().send();
       }
     },
 
