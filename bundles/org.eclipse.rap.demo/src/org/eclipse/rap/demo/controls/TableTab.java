@@ -86,9 +86,12 @@ public class TableTab extends ExampleTab {
     createBackgroundControl();
     createSelectAtPointControl();
     createQueryTopIndex();
-    createIndexForegroundControl();
-    createIndexBackgroundControl();
-    createIndexFontControl();
+    createItemForegroundControl();
+    createItemBackgroundControl();
+    createItemFontControl();
+    createCellForegroundControl();
+    createCellBackgroundControl();
+    createCellFontControl();
     createCursorCombo();
   }
 
@@ -660,9 +663,51 @@ public class TableTab extends ExampleTab {
     } );
   }
 
-  private void createIndexForegroundControl() {
+  private void createItemForegroundControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
-    btn.setText( "Custom Foreground @0,0" );
+    btn.setText( "Item 0 Foreground" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        if( getTable().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? FG_COLOR_BLUE  : null;
+          getTable().getItem( 0 ).setForeground( color );
+        }
+      }
+    } );
+  }
+
+  private void createItemBackgroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Item 0 Background" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        if( getTable().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
+          getTable().getItem( 0 ).setBackground( color );
+        }
+      }
+    } );
+  }
+
+  private void createItemFontControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Item 0 Font" );
+    btn.addSelectionListener( new SelectionAdapter() {
+
+      Font customFont = Graphics.getFont( "Courier", 11, SWT.BOLD );
+
+      public void widgetSelected( final SelectionEvent e ) {
+        if( getTable().getItemCount() > 0 ) {
+          Font font = btn.getSelection() ? customFont : null;
+          getTable().getItem( 0 ).setFont( font );
+        }
+      }
+    } );
+  }
+
+  private void createCellForegroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Cell 0,0 Foreground" );
     btn.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
@@ -673,22 +718,22 @@ public class TableTab extends ExampleTab {
     } );
   }
 
-  private void createIndexBackgroundControl() {
+  private void createCellBackgroundControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
-    btn.setText( "Custom Background @0,0" );
+    btn.setText( "Cell 0,0 Background" );
     btn.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
+          Color color = btn.getSelection() ? BG_COLOR_GREEN  : null;
           getTable().getItem( 0 ).setBackground( 0, color );
         }
       }
     } );
   }
 
-  private void createIndexFontControl() {
+  private void createCellFontControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
-    btn.setText( "Custom Font @0,0" );
+    btn.setText( "Cell 0,0 Font" );
     btn.addSelectionListener( new SelectionAdapter() {
 
       Font cellFont = Graphics.getFont( "Times", 13, SWT.ITALIC );
