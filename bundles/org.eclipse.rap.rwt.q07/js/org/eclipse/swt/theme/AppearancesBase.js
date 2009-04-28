@@ -685,9 +685,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Text", "font" );
-      result.textColor = states.disabled
-                         ? "widget.graytext"
-                         : tv.getCssColor( "Text", "color" );
+      result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
       result.border = tv.getCssBorder( "Text", "border" );
       result.padding = tv.getCssBoxDimensions( "Text", "padding" );
