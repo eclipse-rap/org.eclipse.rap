@@ -14,6 +14,10 @@
 
   <element name="DateTime"
       description="DateTime controls">
+    
+    <property name="color"
+        type="color"
+        description="Text color for DateTime." />
 
     <property name="background-color"
         type="color"

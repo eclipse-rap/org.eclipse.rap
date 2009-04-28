@@ -1779,8 +1779,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding   : [ 2, 3 ]
       };
       if( states.disabled ) {
-        result.textColor = "widget.graytext";
-        result.backgroundColor = "undefined";
+        result.textColor = tv.getCssColor( "DateTime", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       } else if( states.selected ) {
         result.textColor = tv.getCssColor( "DateTime-Field", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
@@ -1793,13 +1793,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "datetime-separator" : {
-    include: "label-graytext",
-
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor     : "default",
         paddingTop : 2
       };
+      if( states.disabled ) {
+        result.textColor = tv.getCssColor( "DateTime", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      } else {
+        result.textColor = "undefined";
+        result.backgroundColor = "undefined";
+      }      
       return result;
     }
   },
@@ -1893,7 +1899,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font          : boldFont,
         textAlign     : "center",
         textColor     : states.disabled
-                        ? "widget.graytext"
+                        ? tv.getCssColor( "DateTime", "color" )
                         : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
         verticalAlign : "middle",
         cursor        : "default"
@@ -1911,6 +1917,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "calendar-week" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( states.header ) {
         var border = qx.ui.core.Border.fromConfig({
           right   : [ 1, "solid", "gray" ],
@@ -1925,7 +1932,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textAlign       : "center",
         verticalAlign   : "middle",
         textColor       : states.disabled
-                          ? "widget.graytext"
+                          ? tv.getCssColor( "DateTime", "color" )
                           : "undefined",
         border          : border
       };
@@ -1934,6 +1941,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "calendar-weekday" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = qx.ui.core.Border.fromConfig({
         bottom : [ 1, "solid", "gray" ]
       });
@@ -1941,7 +1949,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         border          : border,
         textAlign       : "center",
         textColor       : states.disabled
-                          ? "widget.graytext"
+                          ? tv.getCssColor( "DateTime", "color" )
                           : "undefined"
       };
     }
@@ -1959,7 +1967,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
                                                  "background-color" );
       } else if( states.disabled ) {
-        result.textColor = "widget.graytext";
+        result.textColor = tv.getCssColor( "DateTime", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
