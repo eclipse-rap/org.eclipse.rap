@@ -669,7 +669,7 @@ public class TableTab extends ExampleTab {
     btn.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? FG_COLOR_BLUE  : null;
+          Color color = btn.getSelection() ? FG_COLOR_ORANGE  : null;
           getTable().getItem( 0 ).setForeground( color );
         }
       }
