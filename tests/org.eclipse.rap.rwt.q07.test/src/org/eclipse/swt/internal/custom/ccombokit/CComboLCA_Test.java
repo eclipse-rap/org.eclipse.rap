@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.custom.ccombokit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -74,6 +75,7 @@ public class CComboLCA_Test extends TestCase {
       public void modifyText( final ModifyEvent event ) {
       }} );
     RWTFixture.preserveWidgets();
+    
     adapter = WidgetUtil.getAdapter( ccombo );
     items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 2, items.length );
@@ -247,6 +249,16 @@ public class CComboLCA_Test extends TestCase {
     WidgetUtil.getLCA( ccombo ).readData( ccombo );
     assertEquals( 0, ccombo.getSelectionIndex() );
     assertEquals( "widgetSelected", log.toString() );
+    // read changed text
+    Fixture.fakeRequestParam( ccomboId + ".text", "abc" );
+    WidgetUtil.getLCA( ccombo ).readData( ccombo );
+    assertEquals( "abc", ccombo.getText() );
+    // read changed selection
+    Fixture.fakeRequestParam( ccomboId + ".text", "abc" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "1" );
+    WidgetUtil.getLCA( ccombo ).readData( ccombo );
+    assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
   }
   
   public void testReadText() {
@@ -254,7 +266,7 @@ public class CComboLCA_Test extends TestCase {
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    final CCombo ccombo = new CCombo( shell, SWT.BORDER );
+    final CCombo ccombo = new CCombo( shell, SWT.NONE );
     shell.open();
     RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( shell );
@@ -291,6 +303,123 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
     assertEquals( "verify me", ccombo.getText() );
     assertEquals( "verify me", log.toString() );
+  }
+  
+  public void testTextSelectionWithVerifyEvent() {
+    final java.util.List log = new ArrayList();
+    // register preserve-values phase-listener
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final CCombo ccombo = new CCombo( shell, SWT.NONE );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    String ccomboId = WidgetUtil.getId( ccombo );
+    // ensure that selection is unchanged in case a verify-listener is 
+    // registered that does not change the text
+    VerifyListener emptyVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+      }
+    };
+    ccombo.addVerifyListener( emptyVerifyListener );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( ccombo );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
+    RWTFixture.executeLifeCycleFromServerThread();
+    // ensure that an empty verify listener does not lead to sending the
+    // original text and selection values back to the client
+    String markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
+    assertEquals( "verify me", ccombo.getText() );
+    ccombo.removeVerifyListener( emptyVerifyListener );
+    // ensure that selection is unchanged in case a verify-listener changes 
+    // the incoming text within the limits of the selection
+    ccombo.setText( "" );
+    VerifyListener alteringVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+        event.text = "verified";
+      }
+    };
+    ccombo.addVerifyListener( alteringVerifyListener );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
+    assertEquals( "verified", ccombo.getText() );
+    ccombo.removeVerifyListener( alteringVerifyListener );
+    // ensure that selection is adjusted in case a verify-listener changes 
+    // the incoming text in a way that would result in an invalid selection
+    ccombo.setText( "" );
+    alteringVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+        event.text = "";
+      }
+    };
+    ccombo.addVerifyListener( alteringVerifyListener );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 0, 0 ), ccombo.getSelection() );
+    assertEquals( "", ccombo.getText() );
+    ccombo.removeVerifyListener( alteringVerifyListener );
+  }
+  
+  public void testTextLimit() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final CCombo ccombo = new CCombo( shell, SWT.BORDER );
+    CComboLCA lca = new CComboLCA();
+    // run LCA one to dump the here uninteresting prolog
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( ccombo );
+    // Initially no textLimit must be rendered if the initial value is untouched
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( ccombo );
+    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setTextLimit" ) );
+    // Positive textLimit is written as setMaxLength( ... )
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( ccombo );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    ccombo.setTextLimit( 12 );
+    lca.renderChanges( ccombo );
+    String expected = "setTextLimit( 12 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    // Negative textLimit is tread as 'no limit'
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( ccombo );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    ccombo.setTextLimit( -1 );
+    lca.renderChanges( ccombo );
+    expected = "setTextLimit( null );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   public void testSelectionAfterRemoveAll() {

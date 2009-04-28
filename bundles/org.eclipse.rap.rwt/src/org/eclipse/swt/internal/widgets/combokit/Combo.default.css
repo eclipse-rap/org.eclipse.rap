@@ -11,3 +11,7 @@ Combo-Button {
   background-color: rgb( 248, 248, 255 );
   border: 1px outset;
 }
+
+Combo-List {
+  border: 1px rgb( 167, 166, 170 );
+}

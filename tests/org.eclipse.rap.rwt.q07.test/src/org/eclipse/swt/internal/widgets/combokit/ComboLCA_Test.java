@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,8 +46,8 @@ public class ComboLCA_Test extends TestCase {
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
-    Object height = adapter.getPreserved( ComboLCA.PROP_MAX_POPUP_HEIGHT );
-    assertEquals( new Integer( ComboLCA.getMaxPopupHeight( combo ) ), height );
+    Object height = adapter.getPreserved( ComboLCA.PROP_MAX_LIST_HEIGHT );
+    assertEquals( new Integer( ComboLCA.getMaxListHeight( combo ) ), height );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
@@ -71,8 +71,8 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "item 1", items[ 0 ] );
     assertEquals( "item 2", items[ 1 ] );
     assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION ) );
-    height = adapter.getPreserved( ComboLCA.PROP_MAX_POPUP_HEIGHT );
-    assertEquals( new Integer( ComboLCA.getMaxPopupHeight( combo ) ), height );
+    height = adapter.getPreserved( ComboLCA.PROP_MAX_LIST_HEIGHT );
+    assertEquals( new Integer( ComboLCA.getMaxListHeight( combo ) ), height );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
@@ -188,14 +188,14 @@ public class ComboLCA_Test extends TestCase {
     combo.add( "item 2" );
     comboLCA.renderChanges( combo );
     String expected;
-    expected = "w.rwt_setItems( [ \"item 1\", \"item 2\" ] );";
+    expected = "w.setItems( [ \"item 1\", \"item 2\" ] );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     combo.select( 1 );
     comboLCA.renderChanges( combo );
-    expected = "w.rwt_select( 1 );";
+    expected = "w.select( 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -309,7 +309,7 @@ public class ComboLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     RWTFixture.executeLifeCycleFromServerThread();
-    String expected = "w.rwt_select( 0 )";
+    String expected = "w.select( 0 )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

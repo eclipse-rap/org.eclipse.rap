@@ -196,7 +196,9 @@ public final class CCombo extends Composite {
    */
   public void deselectAll() {
     checkWidget();
+    text = "";
     model.deselectAll();
+    updateText();
   }
   
   /**
@@ -218,14 +220,19 @@ public final class CCombo extends Composite {
   public void setSelection( final Point selection ) {
     checkWidget();
     if( selection == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
+    int validatedStart = this.selection.x;
+    int validatedEnd = this.selection.y;
     int start = selection.x;
     int end = selection.y;
     if( start >= 0 && end >= start ) {
-      int validatedStart = Math.min( start, text.length() );
-      int validatedEnd = Math.min( end, text.length() );
-      this.selection.x = validatedStart;
-      this.selection.y = validatedEnd;
+      validatedStart = Math.min( start, text.length() );
+      validatedEnd = Math.min( end, text.length() );
+    } else if ( end >= 0 && start > end ) {
+      validatedStart = Math.min( end, text.length() );
+      validatedEnd = Math.min( start, text.length() );
     }
+    this.selection.x = validatedStart;
+    this.selection.y = validatedEnd;
   }
   
   /**
@@ -374,8 +381,11 @@ public final class CCombo extends Composite {
    */
   public void remove( final int index ) {
     checkWidget();
+    int selectionIndex = getSelectionIndex();
+    if( selectionIndex == index ) {
+      deselect( index );
+    }
     model.remove( index );
-    updateText();
   }
   
   /**
@@ -396,13 +406,12 @@ public final class CCombo extends Composite {
    */
   public void remove( final int start, final int end ) {
     checkWidget();
-    int style = super.getStyle();
-    if( ( style & SWT.READ_ONLY ) == 0 ) {
-      String[] items = model.getItems();
-      for( int i = start; i < end; i++ ) {
-        if( text.equals( items[i] ) ) {
-          text = "";
-        }
+    int selectionIndex = getSelectionIndex();
+    String[] items = model.getItems();
+    for( int i = start; i <= end; i++ ) {
+      int indexTemp = indexOf( items[i] );
+      if( selectionIndex == indexTemp ) {
+        deselect( indexTemp );
       }
     }
     model.remove( start, end );
@@ -426,6 +435,11 @@ public final class CCombo extends Composite {
    */
   public void remove( final String string ) {
     checkWidget();
+    int indexOfThisString = indexOf( string );
+    int selectionIndex = getSelectionIndex();
+    if( selectionIndex == indexOfThisString ) {
+      deselect( indexOfThisString );
+    }
     model.remove( string );
   }
   
@@ -440,7 +454,7 @@ public final class CCombo extends Composite {
    */
   public void removeAll() {
     checkWidget();
-    text = "";
+    deselectAll();
     model.removeAll();
   }
   
@@ -732,9 +746,16 @@ public final class CCombo extends Composite {
     }
     String verifiedText = verifyText( string, 0, text.length() );
     if( verifiedText != null ) {
+      model.deselectAll();
+      String[] items = model.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        if( verifiedText == items[i] ) {
+          model.setSelection( i );
+          break;
+        }
+      }
       text = verifiedText;
-      ModifyEvent modifyEvent = new ModifyEvent( this );
-      modifyEvent.processEvent();
+      fireModifyEvent();
     }
   }
   
@@ -1031,7 +1052,6 @@ public final class CCombo extends Composite {
     return result;
   }
   
-  // Direct copy from Combo.java
   private void updateText() {
     int style = super.getStyle();
     if( ( style & SWT.READ_ONLY ) == 0 ) {
@@ -1041,7 +1061,15 @@ public final class CCombo extends Composite {
       } else {
         setText( "" );
       }
+    } else {
+      // Covers "SWT.READ_ONLY selection" use case
+      fireModifyEvent();
     }
+  }
+  
+  private void fireModifyEvent() {
+    ModifyEvent modifyEvent = new ModifyEvent( this );
+    modifyEvent.processEvent();
   }
   
   // Made in the same way as in Combo.java

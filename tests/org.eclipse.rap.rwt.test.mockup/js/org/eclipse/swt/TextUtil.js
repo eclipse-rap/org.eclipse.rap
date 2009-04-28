@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
   statics : {
 
+    // This factor must be in sync with server side Text#getLineHeight()
+    LINE_HEIGT_FACTOR : 1.2,
+
     // === Public methods ===
 
     /*
@@ -24,10 +27,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      */
     initialize : function( text ) {
       if( text.isCreated() ) {
-        org.eclipse.swt.TextUtil._doAddListener( text );
+        org.eclipse.swt.TextUtil._doInitialize( text );
       } else {
         text.addEventListener( "appear",
-                               org.eclipse.swt.TextUtil._onAppearAddListener );
+                               org.eclipse.swt.TextUtil._onAppearInitialize );
       }
       text.setLiveUpdate( true );
       text.setSpellCheck( false );
@@ -83,27 +86,28 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     // === Private methods ===
 
-    _onAppearAddListener : function( event ) {
+    _onAppearInitialize : function( event ) {
       // TODO [rst] Optimize: add/remove listener on change of
       //            hasVerifyOrModifyListener property
       var text = event.getTarget();
       text.removeEventListener( "appear",
-                                org.eclipse.swt.TextUtil._onAppearAddListener );
-      org.eclipse.swt.TextUtil._doAddListener( text );
+                                org.eclipse.swt.TextUtil._onAppearInitialize );
+      org.eclipse.swt.TextUtil._doInitialize( text );
     },
 
-    _doAddListener : function( text ) {
+    _doInitialize : function( text ) {
       text.addEventListener( "mouseup", org.eclipse.swt.TextUtil._onMouseUp );
       text.addEventListener( "keyup", org.eclipse.swt.TextUtil._onKeyUp );
       text.addEventListener( "keydown", org.eclipse.swt.TextUtil._onKeyDown );
       text.addEventListener( "keypress", org.eclipse.swt.TextUtil._onKeyPress );
       text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
+      text.addEventListener( "changeFont", org.eclipse.swt.TextUtil._onFontChange, text );
+      org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
 
     // === Event listener ===
 
     _onMouseUp : function( event ) {
-//      event.debug( "_____ onMouseUp ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -111,7 +115,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onKeyDown : function( event ) {
-//      event.debug( "_____ onKeyDown ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -119,17 +122,19 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             && !event.isShiftPressed()
             && !event.isAltPressed()
             && !event.isCtrlPressed()
-            && !event.isMetaPressed()
-            && org.eclipse.swt.TextUtil.hasSelectionListener( text ) )
-        {
-          event.setPropagationStopped( true );        
-          org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
+            && !event.isMetaPressed() )
+        {          
+          if( text.hasState( "rwt_MULTI" ) ) {
+            event.stopPropagation();
+          }
+          if( org.eclipse.swt.TextUtil.hasSelectionListener( text ) ) {
+            org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
+          }
         }
       }
     },
 
     _onKeyPress : function( event ) {
-//      event.debug( "_____ onKeyPress ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -137,7 +142,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onKeyUp : function( event ) {
-//      event.debug( "_____ onKeyUp ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -145,11 +149,24 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onTextChange : function( event ) {
-//      event.debug( "_____ onTextChange ", event );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleModification( text );
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
+      }
+    },
+
+    _onFontChange : function( event ) {
+      org.eclipse.swt.TextUtil._updateLineHeight( this );
+    },
+
+    _updateLineHeight : function( text ) {
+      // TODO [rst] _inputElement can be undefined when text created invisible
+      if( text._inputElement !== undefined ) {
+        var font = text.getFont();
+        var height = Math.floor( font.getSize()
+                                 * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
+        text._inputElement.style.lineHeight = height + "px";
       }
     },
 
@@ -231,61 +248,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       widget.setUserData( "modified", modified );
     },
 
-    /**
-     * Determines whether the given keyIdentifier potentially modifies the 
-     * content of a text widget.
-     * TODO [rst] Obsolete but still used by ComboUtil
-     */
-    _isModifyingKey : function( keyIdentifier ) {
-      var result = false;
-      switch( keyIdentifier ) {
-        // Modifier keys
-        case "Shift":
-        case "Control":
-        case "Alt":
-        case "Meta":
-        case "Win":
-        // Navigation keys
-        case "Up":
-        case "Down":
-        case "Left":
-        case "Right":
-        case "Home":
-        case "End":
-        case "PageUp":
-        case "PageDown":
-        case "Tab":
-        // Context menu key
-        case "Apps":
-        //
-        case "Escape":
-        case "Insert":
-        case "Enter":
-        //
-        case "CapsLock":
-        case "NumLock":
-        case "Scroll":
-        case "PrintScreen":
-        // Function keys 1 - 12
-        case "F1":
-        case "F2":
-        case "F3":
-        case "F4":
-        case "F5":
-        case "F6":
-        case "F7":
-        case "F8":
-        case "F9":
-        case "F10":
-        case "F11":
-        case "F12":
-          break;
-        default:
-          result = true;
-      }
-      return result;
-    },
-
     ///////////////////////////////////////////////////////////////////
     // Functions to maintain the selection-start and -length properties
 
@@ -328,15 +290,27 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var start = text.getUserData( "onAppear.selectionStart" );
       var length = text.getUserData( "onAppear.selectionLength" );
       org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
-      text.removeEventListener( "appear", 
+      text.removeEventListener( "appear",
                                 org.eclipse.swt.TextUtil._onAppearSetSelection );
     },
 
     _doSetSelection : function( text, start, length ) {
       text.setUserData( "selectionStart", start );
-      text.setSelectionStart( start );
       text.setUserData( "selectionLength", length );
-      text.setSelectionLength( length );
+      // [if] Workaround for bug
+      // 262908: Focus jump when setting text in focusLost event
+      if( start == 0 && length == 0 ) {
+        // [if] Clear the selection by setting the text again. 
+        // This way the text field does not gain the focus.
+        if( text._inputElement !== undefined ) {
+          var value = text.getValue();
+          text._inputElement.value = "";
+          text._inputElement.value = value;
+        }
+      } else {  
+        text.setSelectionStart( start );
+        text.setSelectionLength( length );
+      }
     }
 
   }

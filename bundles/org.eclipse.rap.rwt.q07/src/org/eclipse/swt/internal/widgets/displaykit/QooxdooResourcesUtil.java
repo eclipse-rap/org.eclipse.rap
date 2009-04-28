@@ -54,8 +54,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/TabUtil.js";
   private static final String BUTTON_UTIL_JS
     = "org/eclipse/swt/ButtonUtil.js";
-  private static final String COMBO_UTIL_JS
-    = "org/eclipse/swt/ComboUtil.js";
   private static final String TOOL_ITEM_JS
     = "org/eclipse/swt/ToolItemUtil.js";
   private static final String MENU_UTIL_JS
@@ -142,8 +140,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/CheckBox.js";
   private static final String RADIOBUTTON_JS
     = "org/eclipse/swt/widgets/RadioButton.js";
-  private static final String CCOMBO_JS
-    = "org/eclipse/swt/custom/CCombo.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -186,7 +182,6 @@ final class QooxdooResourcesUtil {
       register( WIDGET_UTIL_JS, compress );
       register( SASH_JS, compress );
       register( TAB_UTIL_JS, compress );
-      register( COMBO_UTIL_JS, compress );
       register( BUTTON_UTIL_JS, compress );
       register( TOOL_ITEM_JS, compress );
       register( MENU_UTIL_JS, compress );
@@ -226,7 +221,6 @@ final class QooxdooResourcesUtil {
       register( SLIDER_JS, compress );
       register( CHECKBOX_JS, compress );
       register( RADIOBUTTON_JS, compress );
-      register( CCOMBO_JS, compress );
 
       // register contributions
       registerContributions();

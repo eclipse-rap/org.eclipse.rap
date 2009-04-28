@@ -113,10 +113,16 @@ public class CCombo_Test extends TestCase {
     combo.setSelection( new Point( 1, 3 ) );
     combo.clearSelection();
     assertEquals( new Point( 0, 0 ), combo.getSelection() );
-    // test setSelection
-    combo.setText( "abc" );
-    combo.setSelection( new Point( 1, 1 ) );
-    assertEquals( new Point( 1, 1 ), combo.getSelection() );
+    // test setSelection( a, b ), a < b
+    combo.clearSelection();
+    combo.setText( "test text" );
+    combo.setSelection( new Point( 3, 6 ) );
+    assertEquals( new Point( 3, 6 ), combo.getSelection() );
+    // test setSelection( a, b ), a > b
+    combo.clearSelection();
+    combo.setSelection( new Point( 5, 2 ) );
+    assertEquals( new Point( 2, 5 ), combo.getSelection() );
+    
   }
 
   public void testIndexOf() {
@@ -302,9 +308,16 @@ public class CCombo_Test extends TestCase {
     combo.add( "test1" );
     combo.add( "test2" );
     combo.select( 1 );
+    combo.remove( "test1" );
+    assertEquals( "", combo.getText() );
+    combo = new CCombo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
     combo.setText( "foo" );
     combo.remove( 1 );
-    assertEquals( "", combo.getText() );
+    assertEquals( "foo", combo.getText() );
     combo.removeAll();
     combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -352,6 +365,7 @@ public class CCombo_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
       public void modifyText( final ModifyEvent event ) {
         listenerCalled = true;
@@ -369,9 +383,109 @@ public class CCombo_Test extends TestCase {
     combo.setText( "new text" );
     assertTrue( listenerCalled );
     listenerCalled = false;
+ // select and deselect item(s) test cases
+    combo.select( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselect( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.select( 0 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselectAll();
+    assertTrue( listenerCalled );
+    // remove item(s) test cases
+    listenerCalled = false;
+    combo.select(0);
+    combo.remove(0);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove("A-1");
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove(0,1);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.removeAll();
+    assertTrue( listenerCalled );
+    //
+    listenerCalled = false;
     combo.removeModifyListener( listener );
     // cause to call the listener.
     combo.setText( "line" );
+    assertFalse( listenerCalled );
+    try {
+      combo.removeModifyListener( null );
+      fail( "removeModifyListener must not allow null listener" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+  }
+  
+  public void testAddModifyListenerReadOnly() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display );
+    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    ModifyListener listener = new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        listenerCalled = true;
+      }
+    };
+    try {
+      combo.addModifyListener( null );
+      fail( "removeModifyListener must not allow null listener" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    // test whether all content modifying API methods send a Modify event
+    combo.addModifyListener( listener );
+    listenerCalled = false;
+ // select and deselect item(s) test cases
+    combo.select( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselect( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.select( 0 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselectAll();
+    assertTrue( listenerCalled );
+    // remove item(s) test cases
+    listenerCalled = false;
+    combo.select(0);
+    combo.remove(0);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove("A-1");
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove(0,1);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.removeAll();
+    assertTrue( listenerCalled );
+    //
+    listenerCalled = false;
+    combo.removeModifyListener( listener );
+    // cause to call the listener.
+    combo.select( 2 );
     assertFalse( listenerCalled );
     try {
       combo.removeModifyListener( null );

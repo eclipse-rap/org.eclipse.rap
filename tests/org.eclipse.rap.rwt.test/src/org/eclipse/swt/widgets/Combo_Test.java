@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import org.eclipse.swt.graphics.Point;
  * They are covered in List_Test
  */
 public class Combo_Test extends TestCase {
+  
+  protected boolean listenerCalled;
 
   public void testDeselect() {
     Display display = new Display();
@@ -244,9 +246,17 @@ public class Combo_Test extends TestCase {
     combo.add( "test1" );
     combo.add( "test2" );
     combo.select( 1 );
+    combo.remove( "test1" );
+    assertEquals( "", combo.getText() );
+    combo.removeAll();
+    combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
     combo.setText( "foo" );
     combo.remove( 1 );
-    assertEquals( "", combo.getText() );
+    assertEquals( "foo", combo.getText() );
     combo.removeAll();
     combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
@@ -288,45 +298,139 @@ public class Combo_Test extends TestCase {
     assertTrue( combo.isDisposed() );
   }
 
-  protected boolean listenerCalled;
   public void testAddModifyListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-
-    boolean exceptionThrown = false;
-
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
-
       public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
     };
     try {
       combo.addModifyListener( null );
-    } catch( IllegalArgumentException e ) {
-      exceptionThrown = true;
+      fail( "removeModifyListener must not allow null listener" );
+    } catch( NullPointerException e ) {
+      // expected
     }
-    assertTrue( "Expected exception not thrown", exceptionThrown );
-    exceptionThrown = false;
     // test whether all content modifying API methods send a Modify event
     combo.addModifyListener( listener );
     listenerCalled = false;
     combo.setText( "new text" );
-    assertTrue( "setText does not send event", listenerCalled );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    // select and deselect item(s) test cases
+    combo.select( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselect( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.select( 0 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselectAll();
+    assertTrue( listenerCalled );
+    // remove item(s) test cases
+    listenerCalled = false;
+    combo.select(0);
+    combo.remove(0);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove("A-1");
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove(0,1);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.removeAll();
+    assertTrue( listenerCalled );
+    //
     listenerCalled = false;
     combo.removeModifyListener( listener );
     // cause to call the listener.
     combo.setText( "line" );
-    assertTrue( "Listener not removed", listenerCalled == false );
+    assertFalse( listenerCalled );
     try {
       combo.removeModifyListener( null );
-    } catch( IllegalArgumentException e ) {
-      exceptionThrown = true;
+      fail( "removeModifyListener must not allow null listener" );
+    } catch( NullPointerException e ) {
+      // expected
     }
-    assertTrue( "Expected exception not thrown", exceptionThrown );
+  }
+  
+  public void testAddModifyListenerReadOnly() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    ModifyListener listener = new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+        listenerCalled = true;
+      }
+    };
+    try {
+      combo.addModifyListener( null );
+      fail( "removeModifyListener must not allow null listener" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    // test whether all content modifying API methods send a Modify event
+    combo.addModifyListener( listener );
+    listenerCalled = false;
+    // select and deselect item(s) test cases
+    combo.select( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselect( 1 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.select( 0 );
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.deselectAll();
+    assertTrue( listenerCalled );
+    // remove item(s) test cases
+    listenerCalled = false;
+    combo.select(0);
+    combo.remove(0);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove("A-1");
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.remove(0,1);
+    assertTrue( listenerCalled );
+    listenerCalled = false;
+    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.select(0);
+    combo.removeAll();
+    assertTrue( listenerCalled );
+    //
+    listenerCalled = false;
+    combo.removeModifyListener( listener );
+    // cause to call the listener.
+    combo.select( 2 );
+    assertFalse( listenerCalled );
+    try {
+      combo.removeModifyListener( null );
+      fail( "removeModifyListener must not allow null listener" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
   }
 
   public void testVisibleItemCount() {

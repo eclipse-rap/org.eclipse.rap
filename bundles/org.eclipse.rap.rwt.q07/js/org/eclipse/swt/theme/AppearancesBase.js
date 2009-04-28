@@ -708,65 +708,79 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   ---------------------------------------------------------------------------
   */
 
-  "combo-box" : {
+  "combo" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "Combo", "border" ),
-        backgroundColor : tv.getCssColor( "Combo", "background-color" ),
-        textColor : tv.getCssColor( "Combo", "color" ),
-        font : tv.getCssFont( "Combo", "font" )
-      };
+      var result = {};
+      if( states.rwt_CCOMBO ) {
+        result.border = tv.getCssBorder( "CCombo", "border" );
+      } else {
+        result.border = tv.getCssBorder( "Combo", "border" );
+      }
+      result.backgroundColor = tv.getCssColor( "Combo",
+                                               "background-color" );
+      result.textColor = tv.getCssColor( "Combo", "color" );
+      result.font = tv.getCssFont( "Combo", "font" );
+      return result;
     }
   },
 
-  "combo-box-list" : {
+  "combo-list" : {
     include : "list",
     style : function( states ) {
-      return {
-        border   : "undefined",
-        overflow : "scrollY"
-      };
+   	  var tv = new org.eclipse.swt.theme.ThemeValues( states );
+   	  var result = {};
+      result.border = tv.getCssBorder( "Combo-List", "border" );
+      result.height = "auto";
+      result.overflow = "scrollY";
+      result.textColor = tv.getCssColor( "Combo", "color" );
+      result.font = tv.getCssFont( "*", "font" );
+      result.backgroundColor = tv.getCssColor( "Combo", 
+                                               "background-color" );
+      return result;
+    }
+  },
+  
+  "combo-field" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.font = tv.getCssFont( "*", "font" );
+      result.padding = tv.getCssBoxDimensions( "Text", "padding" );
+      result.width = null;
+      result.height = null;
+      result.left = 0;
+      result.right = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
+      result.top = 0;
+      result.bottom = 0;
+      result.textColor =   states.disabled
+                         ? "widget.graytext"
+                         : tv.getCssColor( "Combo", "color" );
+      result.backgroundColor = tv.getCssColor( "Combo", 
+                                               "background-color" );
+      return result;
     }
   },
 
-  "combo-box-popup" : {
-    include : "list",
+  "combo-button" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        height    : "auto",
-        border    : "shadow",
-        textColor : tv.getCssColor( "Combo", "color" ),
-        backgroundColor : tv.getCssColor( "Combo", "background-color" )
-      };
-    }
-  },
-
-  "combo-box-text-field" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        font : tv.getCssFont( "*", "font" ),
-        padding : tv.getCssBoxDimensions( "Text", "padding" ),
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : tv.getCssColor( "Combo", "color" ),
-        backgroundColor : tv.getCssColor( "Combo", "background-color" )
-      };
-    }
-  },
-
-  "combo-box-button" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "Combo-Button", "border" ),
-        width : 14,
-        icon : tv.getCssImage( "Combo-Button", "background-image" ),
-        // TODO [rst] rather use button.bgcolor?
-        backgroundColor : tv.getCssColor( "Combo-Button", "background-color" )
-      };
+      var result = {};
+      if( states.rwt_CCOMBO ) {
+        result.border = tv.getCssBorder( "CCombo-Button", "border" );
+      } else {
+        result.border = tv.getCssBorder( "Combo-Button", "border" );
+      }
+      result.width = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
+      result.height = null;
+      result.top = 0;
+      result.bottom = 0;
+      result.right = 0;
+      result.icon = tv.getCssImage( "Combo-Button", "background-image" );
+      // TODO [rst] rather use button.bgcolor?
+      result.backgroundColor = tv.getCssColor( "Combo-Button", 
+                                               "background-color" );
+      return result;
     }
   },
 
@@ -2112,72 +2126,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       }
       return result;
-    }
-  },
-
-  // ------------------------------------------------------------------------
-  // CCombo
-
-  "ccombo" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "CCombo", "border" ),
-        backgroundColor : tv.getCssColor( "CCombo", "background-color" ),
-        textColor : tv.getCssColor( "CCombo", "color" ),
-        font : tv.getCssFont( "CCombo", "font" )
-      };
-    }
-  },
-
-  "ccombo-list" : {
-    include : "list",
-    style : function( states ) {
-   	  var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-      	border   : tv.getCssBorder( "CCombo-List", "border" ),
-        overflow : "scrollY",
-        textColor : tv.getCssColor( "CCombo", "color" ),
-        font : tv.getCssFont( "*", "font" ),
-        backgroundColor : tv.getCssColor( "CCombo", "background-color" )
-      };
-    }
-  },
-
-  "ccombo-field" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        font : tv.getCssFont( "*", "font" ),
-        padding : tv.getCssBoxDimensions( "Text", "padding" ),
-        width : null,
-        height : null,
-        left : 0,
-        right : org.eclipse.swt.custom.CCombo.BUTTON_WIDTH,
-        top : 0,
-        bottom : 0,
-        textColor : states.disabled
-                    ? "widget.graytext"
-                    : tv.getCssColor( "CCombo", "color" ),
-        backgroundColor : tv.getCssColor( "CCombo", "background-color" )
-      };
-    }
-  },
-
-  "ccombo-button" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : tv.getCssBorder( "CCombo-Button", "border" ),
-        width : org.eclipse.swt.custom.CCombo.BUTTON_WIDTH,
-        height : null,
-        top : 0,
-        bottom : 0,
-        right : 0,
-        icon : tv.getCssImage( "CCombo-Button", "background-image" ),
-        // TODO [rst] rather use button.bgcolor?
-        backgroundColor : tv.getCssColor( "CCombo-Button", "background-color" )
-      };
     }
   }
 }

@@ -11,6 +11,7 @@ package org.eclipse.swt.internal.custom.ccombokit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -29,7 +30,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   // Constants for JS functions names
   private static final String JS_FUNC_SELECT = "select";
-  private static final String JS_FUNC_SET_MAX_LIST_HEIGHT = "setMaxListHeight";
   private static final String JS_FUNC_SET_SELECTION_TEXT = "setTextSelection";
 
   // Property names for preserve-value facility
@@ -42,6 +42,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_MAX_LIST_HEIGHT = "maxListHeight";
+  static final String PROP_LIST_ITEM_HEIGHT = "listItemHeight";
 
   public void preserveValues( final Widget widget ) {
     CCombo ccombo = ( CCombo )widget;
@@ -56,6 +57,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
                       new Integer( ccombo.getTextLimit() ) );
     adapter.preserve( PROP_MAX_LIST_HEIGHT,
                       new Integer( getMaxListHeight( ccombo ) ) );
+    adapter.preserve( PROP_LIST_ITEM_HEIGHT,
+                      new Integer( ccombo.getItemHeight() ) );
     adapter.preserve( PROP_TEXT, ccombo.getText() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( ccombo ) ) );
@@ -90,14 +93,16 @@ public final class CComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.custom.CCombo" );
+    writer.newWidget( "org.eclipse.swt.widgets.Combo" );
     ControlLCAUtil.writeStyleFlags( ccombo );
-    WidgetLCAUtil.writeStyleFlag( ccombo, SWT.FLAT, "FLAT" );
+    writer.call( JSConst.QX_FUNC_ADD_STATE, 
+                 new Object[] { "rwt_CCOMBO" } );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
     ControlLCAUtil.writeChanges( ccombo );
+    writeListItemHeight( ccombo );
     writeItems( ccombo );
     writeSelection( ccombo );
     writeMaxListHeight( ccombo );
@@ -262,14 +267,27 @@ public final class CComboLCA extends AbstractWidgetLCA {
                                   defValue ) )
     {
       // Negative values are treated as 'no limit' which is achieved by passing
-      // null to the client-side maxLength property
+      // null to the client-side textLimit property
       if( newValue.intValue() < 0 ) {
         newValue = null;
       }
-      writer.set( PROP_TEXT_LIMIT, "textLimit", newValue, defValue );
+      writer.set( "textLimit", newValue );
     }
   }
 
+  private static void writeListItemHeight( final CCombo ccombo )
+  throws IOException
+  {
+    Integer newValue = new Integer( ccombo.getItemHeight() );
+    if( WidgetLCAUtil.hasChanged( ccombo,
+                                  PROP_LIST_ITEM_HEIGHT,
+                                  newValue ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( ccombo );
+      writer.set( PROP_LIST_ITEM_HEIGHT, "listItemHeight", newValue );
+    }
+  }
+  
   private static void writeMaxListHeight( final CCombo ccombo )
     throws IOException
   {
@@ -279,7 +297,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
                                   newValue ) )
     {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.call( JS_FUNC_SET_MAX_LIST_HEIGHT, new Object[] { newValue } );
+      writer.set( PROP_MAX_LIST_HEIGHT, "maxListHeight", newValue );
     }
   }
 
@@ -288,10 +306,9 @@ public final class CComboLCA extends AbstractWidgetLCA {
   {
     boolean listVisible = ccombo.getListVisible();
     Boolean newValue = Boolean.valueOf( listVisible );
-    String prop = PROP_LIST_VISIBLE;
-    if( WidgetLCAUtil.hasChanged( ccombo, prop, newValue ) ) {
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_LIST_VISIBLE, newValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( prop, "listVisible", newValue, null );
+      writer.set( PROP_LIST_VISIBLE, "listVisible", newValue, null );
     }
   }
 
@@ -307,7 +324,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void writeText( final CCombo ccombo ) throws IOException {
-    if( isEditable( ccombo ) ) {
+    if( isEditable( ccombo ) || ccombo.getSelectionIndex() == -1 ) {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
       writer.set( PROP_TEXT, "value", ccombo.getText(), "" );
     }
@@ -328,20 +345,14 @@ public final class CComboLCA extends AbstractWidgetLCA {
   private static void writeVerifyAndModifyListener( final CCombo ccombo )
     throws IOException
   {
-    if( isEditable( ccombo ) ) {
-      boolean hasVerifyListener = VerifyEvent.hasListener( ccombo );
-      boolean hasModifyListener = ModifyEvent.hasListener( ccombo );
-      boolean hasListener = hasVerifyListener || hasModifyListener;
-      Boolean newValue = Boolean.valueOf( hasListener );
-      String prop = PROP_VERIFY_MODIFY_LISTENER;
-      if( WidgetLCAUtil.hasChanged( ccombo,
-                                    prop,
-                                    newValue,
-                                    Boolean.FALSE ) )
-      {
-        JSWriter writer = JSWriter.getWriterFor( ccombo );
-        writer.set( "hasVerifyModifyListener", ccombo );
-      }
+    boolean hasVerifyListener = VerifyEvent.hasListener( ccombo );
+    boolean hasModifyListener = ModifyEvent.hasListener( ccombo );
+    boolean hasListener = hasVerifyListener || hasModifyListener;
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = PROP_VERIFY_MODIFY_LISTENER;
+    if( WidgetLCAUtil.hasChanged( ccombo, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( ccombo );
+      writer.set( "hasVerifyModifyListener", ccombo );
     }
   }
 

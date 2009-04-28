@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class ComboTab extends ExampleTab {
@@ -340,8 +341,7 @@ public class ComboTab extends ExampleTab {
   
   private void showSelection( final String[] items, final int selectionIndex ) {
     String selection = "(nothing)";
-    int index = cCombo.getSelectionIndex();
-    if( index != -1 ) {
+    if( selectionIndex != -1 ) {
       selection = items[ selectionIndex ];
     }
     String msg = "Your Selection: " + selection;

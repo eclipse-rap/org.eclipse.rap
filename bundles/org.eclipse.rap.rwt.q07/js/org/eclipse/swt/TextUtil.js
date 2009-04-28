@@ -248,61 +248,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       widget.setUserData( "modified", modified );
     },
 
-    /**
-     * Determines whether the given keyIdentifier potentially modifies the
-     * content of a text widget.
-     * TODO [rst] Obsolete but still used by ComboUtil
-     */
-    _isModifyingKey : function( keyIdentifier ) {
-      var result = false;
-      switch( keyIdentifier ) {
-        // Modifier keys
-        case "Shift":
-        case "Control":
-        case "Alt":
-        case "Meta":
-        case "Win":
-        // Navigation keys
-        case "Up":
-        case "Down":
-        case "Left":
-        case "Right":
-        case "Home":
-        case "End":
-        case "PageUp":
-        case "PageDown":
-        case "Tab":
-        // Context menu key
-        case "Apps":
-        //
-        case "Escape":
-        case "Insert":
-        case "Enter":
-        //
-        case "CapsLock":
-        case "NumLock":
-        case "Scroll":
-        case "PrintScreen":
-        // Function keys 1 - 12
-        case "F1":
-        case "F2":
-        case "F3":
-        case "F4":
-        case "F5":
-        case "F6":
-        case "F7":
-        case "F8":
-        case "F9":
-        case "F10":
-        case "F11":
-        case "F12":
-          break;
-        default:
-          result = true;
-      }
-      return result;
-    },
-
     ///////////////////////////////////////////////////////////////////
     // Functions to maintain the selection-start and -length properties
 

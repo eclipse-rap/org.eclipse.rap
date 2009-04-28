@@ -57,8 +57,6 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * @see List
  * @since 1.0
  */
-// TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
-//      are added/removed
 public class Combo extends Composite {
 
   private static final int DROP_DOWN_BUTTON_WIDTH = 14;
@@ -180,7 +178,9 @@ public class Combo extends Composite {
   public void deselectAll() {
     checkWidget();
     model.deselectAll();
-    }
+    text = "";
+    fireModifyEvent();
+  }
 
 //  /**
 //   * Sets the selection in the receiver's text field to an empty
@@ -271,8 +271,11 @@ public class Combo extends Composite {
    */
   public void remove( final int index ) {
     checkWidget();
+    int selectionIndex = getSelectionIndex();
+    if( selectionIndex == index ) {
+      deselect( index );
+    }
     model.remove( index );
-    updateText();
   }
 
   /**
@@ -293,12 +296,12 @@ public class Combo extends Composite {
    */
   public void remove( final int start, final int end ) {
     checkWidget();
-    if( ( style & SWT.READ_ONLY ) == 0) {
-      String[] items = model.getItems();
-      for( int i = start; i < end; i++ ) {
-        if(text.equals( items[i] )) {
-          text = "";
-        }
+    int selectionIndex = getSelectionIndex();
+    String[] items = model.getItems();
+    for( int i = start; i <= end; i++ ) {
+      int indexTemp = indexOf( items[i] );
+      if( selectionIndex == indexTemp ) {
+        deselect( indexTemp );
       }
     }
     model.remove( start, end );
@@ -322,6 +325,11 @@ public class Combo extends Composite {
    */
   public void remove( final String string ) {
     checkWidget();
+    int indexOfThisString = indexOf( string );
+    int selectionIndex = getSelectionIndex();
+    if( selectionIndex == indexOfThisString ) {
+      deselect( indexOfThisString );
+    }
     model.remove( string );
   }
 
@@ -336,7 +344,7 @@ public class Combo extends Composite {
    */
   public void removeAll() {
     checkWidget();
-    text = "";
+    deselectAll();
     model.removeAll();
   }
 
@@ -596,9 +604,16 @@ public class Combo extends Composite {
     }
     String verifiedText = verifyText( string, 0, text.length() );
     if( verifiedText != null ) {
+      model.deselectAll();
+      String[] items = model.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        if( verifiedText == items[i] ) {
+          model.setSelection( i );
+          break;
+        }
+      }
       text = verifiedText;
-      ModifyEvent modifyEvent = new ModifyEvent( this );
-      modifyEvent.processEvent();
+      fireModifyEvent();
     }
   }
 
@@ -724,7 +739,6 @@ public class Combo extends Composite {
    */
   public void addModifyListener( final ModifyListener listener ) {
     checkWidget();
-    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
     ModifyEvent.addListener( this, listener );
   }
 
@@ -747,7 +761,6 @@ public class Combo extends Composite {
    */
   public void removeModifyListener( final ModifyListener listener ) {
     checkWidget();
-    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
     ModifyEvent.removeListener( this, listener );
   }
 
@@ -836,7 +849,15 @@ public class Combo extends Composite {
       } else {
         setText( "" );
       }
+    } else {
+      // Covers "SWT.READ_ONLY selection" use case
+      fireModifyEvent();
     }
+  }
+  
+  private void fireModifyEvent() {
+    ModifyEvent modifyEvent = new ModifyEvent( this );
+    modifyEvent.processEvent();
   }
 
   private Rectangle getPadding() {

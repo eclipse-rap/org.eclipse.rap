@@ -1,174 +1,690 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
 /**
- * This class extends qx.ui.form.ComboBox to ease its usage in RWT.
+ * This class provides the client-side counterpart for
+ * org.eclipse.swt.widget.Combo and org.eclipse.swt.custom.CCombo.
  */
 qx.Class.define( "org.eclipse.swt.widgets.Combo", {
-  extend : qx.ui.form.ComboBox,
+  extend : qx.ui.layout.CanvasLayout,
 
-  construct : function() {
+  construct : function( style ) {
     this.base( arguments );
-    this.rap_init();    
+    this.setAppearance( "combo" );
+    //
+    this._hasSelectionListener = false;
+    this._hasVerifyModifyListener = false;
+    this._isModified = false;
+    // Default values
+    this._selected = null;
+    this._editable = true;
+    this._dropped = false;
+    this._borderWidth = 0;
+    this._selectionStart = 0;
+    this._selectionLength = 0;
+    this._listItemHeight = "auto";
+    // Text field
+    this._field = new qx.ui.form.TextField();
+    this._field.setAppearance( "combo-field" );
+    this._field.setTabIndex( -1 );
+    this._field.setAllowStretchY( true );
+    this.add( this._field );
+    // Drop down button
+    this._button = new qx.ui.form.Button();
+    this._button.setAppearance( "combo-button" );
+    this._button.setTabIndex( -1 );
+    this._button.setAllowStretchY( true );
+    this.add( this._button );
+    // List
+    this._list = new qx.ui.form.List();
+    this._list.setAppearance( "combo-list" );
+    this._list.setTabIndex( -1 );
+    this._list.setVisibility( false );
+    // List Manager
+    this._manager = this._list.getManager();
+    this._manager.setMultiSelection( false );
+    this._manager.setDragSelection( false );
+    // Do not visualize the focus rectangle around the widget
+    this.setHideFocus( true );
+    // Add events listeners
+    var cDocument = qx.ui.core.ClientDocument.getInstance();
+    cDocument.addEventListener( "windowblur", this._onBlur, this );
+    // Init events
+    this.addEventListener( "appear", this._onAppear, this );
+    this.addEventListener( "changeWidth", this._onChangeSize, this );
+    this.addEventListener( "changeHeight", this._onChangeSize, this );
+    this.addEventListener( "contextmenu", this._onContextMenu, this );
+    this.addEventListener( "changeFont", this._onChangeFont, this );
+    this.addEventListener( "changeTextColor", this._onChangeTextColor, this );
+    this.addEventListener( "changeBackgroundColor",
+                           this._onChangeBackgoundColor, 
+                           this );
+    // Mouse events
+    this.addEventListener( "mousedown", this._onMouseDown, this );
+    this.addEventListener( "mouseup", this._onMouseUp, this );
+    this.addEventListener( "click", this._onMouseClick, this );
+    this.addEventListener( "mousewheel", this._onMouseWheel, this );
+    this.addEventListener( "mouseover", this._onMouseOver, this );
+    this.addEventListener( "mouseout", this._onMouseOut, this );
+    // Keyboard events
+    this.addEventListener( "keydown", this._onKeyDown );
+    this.addEventListener( "keypress", this._onKeyPress );
+    this.addEventListener( "keyinput", this._onKeyInput );
+    // Specific events
+    this._field.addEventListener( "blur", this._onTextBlur, this );
+    this._list.addEventListener( "appear", this._onListAppear, this );
+  },
+
+  destruct : function() {
+    var cDocument = qx.ui.core.ClientDocument.getInstance();
+    cDocument.removeEventListener( "windowblur", this._onBlur, this );
+    this.removeEventListener( "appear", this._onAppear, this );
+    this.removeEventListener( "changeWidth", this._onChangeSize, this );
+    this.removeEventListener( "changeHeight", this._onChangeSize, this );
+    this.removeEventListener( "contextmenu", this._onContextMenu, this );
+    this.removeEventListener( "changeFont", this._onChangeFont, this );
+    this.removeEventListener( "changeTextColor", this._onChangeTextColor, this );
+    this.removeEventListener( "changeBackgroundColor",
+                              this._onChangeBackgoundColor, 
+                              this );
+    this.removeEventListener( "mousedown", this._onLineMouseDown, this );
+    this.removeEventListener( "mouseup", this._onMouseUp, this );
+    this.removeEventListener( "click", this._onMouseClick, this );
+    this.removeEventListener( "mousewheel", this._onMouseWheel, this );
+    this.removeEventListener( "mouseover", this._onMouseOver, this );
+    this.removeEventListener( "mouseout", this._onMouseOut, this );
+    this.removeEventListener( "keydown", this._onKeyDown );
+    this.removeEventListener( "keypress", this._onKeyPress );
+    this.removeEventListener( "keyinput", this._onKeyInput );
+    this._field.removeEventListener( "blur", this._onTextBlur, this );
+    this._list.removeEventListener( "appear", this._onListAppear, this );
+    this._disposeObjects( "_field", 
+                          "_button", 
+                          "_list", 
+                          "_manager", 
+                          "_selected" );
+  },
+
+  statics : {
+    BUTTON_WIDTH : 14
   },
 
   members : {
-    rap_init : function() {
-      this._userCursor = null;
-      this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
-      this.addEventListener( "changeTextColor", this._rwt_onChangeTextColor, this );
-      this.addEventListener( "changeBackgroundColor", this._rwt_onChangeBackgoundColor, this );
-      this.addEventListener( "changeValue", this._rwt_onChangeValue, this );
-      this.addEventListener( "changeEditable", this._rwt_onChangeEditable, this );
-      this._popup.addEventListener( "appear", this._rwt_onPopupAppear, this );
-      this._popup.addEventListener( "disappear", this._rwt_onPopupDisappear, this );
-      this._button.addEventListener( "mouseover", this._rwt_onButtonMouseOver, this );
-      this._button.addEventListener( "mouseout", this._rwt_onButtonMouseOut, this );
+    _onChangeSize : function( evt ) {
+      this._list.setWidth( this.getWidth() );
+      this._listPositioning();
     },
 
-    rap_reset : function() {
-      this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
-      this.removeEventListener( "changeTextColor", this._rwt_onChangeTextColor, this );
-      this.removeEventListener( "changeBackgroundColor", this._rwt_onChangeBackgoundColor, this );
-      this.removeEventListener( "changeValue", this._rwt_onChangeValue, this );
-      this.removeEventListener( "changeEditable", this._rwt_onChangeEditable, this );
-      this._popup.removeEventListener( "appear", this._rwt_onPopupAppear, this );
-      this._popup.removeEventListener( "disappear", this._rwt_onPopupDisappear, this );
-      this._button.removeEventListener( "mouseover", this._rwt_onButtonMouseOver, this );
-      this._button.removeEventListener( "mouseout", this._rwt_onButtonMouseOut, this );
+    _onAppear : function( evt ) {
+      if( this.hasState( "rwt_CCOMBO" ) ) {
+        this._field.addState( "rwt_CCOMBO" );
+        this._button.addState( "rwt_CCOMBO" );
+        this._list.addState( "rwt_CCOMBO" );
+      }
+      if( this.hasState( "rwt_CCOMBO" ) && this.hasState( "rwt_FLAT" ) ) {
+        this._field.addState( "rwt_FLAT" );
+        this._button.addState( "rwt_FLAT" );
+        this._list.addState( "rwt_FLAT" );
+      }
+      this.getTopLevelWidget().add( this._list );
     },
 
-    // workaround for missing property propagation in qx ComboBox
-    _rwt_onChangeFont : function( evt ) {
-      var combo = evt.getTarget();
-      // Apply changed font to embedded text-field and drop-down-button
-      var children = combo.getChildren();
-      for( var i = 0; i < children.length; i++ ) {
-        children[ i ].setFont( combo.getFont() );
-      }  
-      // Apply changed font to items
-      var items = combo.getList().getChildren();
+    _onContextMenu : function( evt ) {
+      var menu = this.getContextMenu();
+      if( menu != null ) {
+        menu.setLocation( evt.getPageX(), evt.getPageY() );
+        menu.setOpener( this );
+        menu.show();
+        evt.stopPropagation();
+      }
+    },
+
+    _onChangeFont : function( evt ) {
+      var value = evt.getValue();
+      this._field.setFont( value );
+      var items = this._list.getChildren();
       for( var i = 0; i < items.length; i++ ) {
-        items[ i ].setFont( combo.getFont() );
+        items[ i ].setFont( value );
+      }
+    },
+
+    _onChangeTextColor : function( evt ) {
+      var value = evt.getValue();
+      this._field.setTextColor( value );
+      this._list.setTextColor( value );
+    },
+
+    _onChangeBackgoundColor : function( evt ) {
+      var value = evt.getValue();
+      this._field.setBackgroundColor( value );
+      this._list.setBackgroundColor( value );
+    },
+    
+    _applyCursor : function( value, old ) {
+      this.base( arguments, value, old );
+      if( value ) {
+        this._field.setCursor( value );
+        this._button.setCursor( value );
+        this._list.setCursor( value );
+      } else {
+        this._field.resetCursor();
+        this._button.resetCursor();
+        this._list.resetCursor();
       }
     },
     
-    // workaround for missing property propagation in qx ComboBox
-    _rwt_onChangeTextColor : function( evt ) {
-      var combo = evt.getTarget();
-      var value = evt.getValue();
-      combo._field.setTextColor( value );
-      combo._list.setTextColor( value );
+    // Focus handling methods
+    _visualizeFocus : function() {
+      if( this._field.isCreated() ) {
+        this._field._visualizeFocus();
+        if(    this.hasState( "rwt_CCOMBO" )
+            && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+        {
+          this._handleSelectionChange();
+        }
+      }
+    },
+    
+    // Override of the _ontabfocus method from qx.ui.core.Widget
+    _ontabfocus : function() {
+      if( this._field.isCreated() ) {
+        this._field.selectAll();
+        if(    this.hasState( "rwt_CCOMBO" )
+            && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+        {
+          this._handleSelectionChange();
+        }
+      }
+    },
+    
+    _visualizeBlur : function() {
+      if( this._field.isCreated() ) {
+        // setting selection lenght to 0 needed for IE to deselect text
+        this._field.setSelectionLength( 0 );
+        this._field._visualizeBlur();
+      }
+    },
+    
+    // On "blur" or "windowblur" event: closes the list, if it is seeable
+    _onBlur : function( evt ) {
+      if( this._dropped ) {
+        this._toggleListVisibility();
+      }
+    },
+    
+    // List and list-items handling methods
+    _listPositioning : function() {
+      if( this.getElement() ){
+        var elementPos = qx.bom.element.Location.get( this.getElement() );
+        this._list.setLocation( elementPos.left,
+                                elementPos.top + this.getHeight() );
+      }
+    },
+    
+    _toggleListVisibility : function() {
+      this._listPositioning();
+      if( this._list.getChildrenLength() ) {
+        // Temporary make the text field ReadOnly, when the list is dropped.
+        if( this._editable ) {
+          this._field.setReadOnly( !this._dropped  );
+        }
+        if( !this._dropped ) {
+          // Brings this widget on top of the others with same parent.
+          this._bringToFront();
+          this.setCapture( true );
+        } else {
+          this.setCapture( false );
+        }
+        this._list.setVisibility( !this._dropped );
+        this._dropped = !this._dropped;
+        if( this.hasState( "rwt_CCOMBO" ) ) {
+          this._updateListVisibleRequestParam();
+        }
+      }
+    },
+    
+    _resetListSelection : function() {
+      this._manager.deselectAll();
+      this._manager.setLeadItem( null );
+      this._manager.setAnchorItem( null );
     },
 
-    // workaround for missing property propagation in qx ComboBox
-    _rwt_onChangeBackgoundColor : function( evt ) {
-      var combo = evt.getTarget();
-      var value = evt.getValue();
-      combo._field.setBackgroundColor( value );
-      combo._list.setBackgroundColor( value );
-    },
-
-    _rwt_onChangeValue : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getValue() != null ) {
-        var combo = evt.getTarget();
-        var value = combo.getValue();
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( combo );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( id + ".text", value );
+    _onListAppear : function( evt ) {
+      if( this._selected ) {
+        this._selected.scrollIntoView();
       }
     },
 
-    rwt_setItems : function( items ) {
-      this.removeAll();
+    _bringToFront : function() {
+      var someObject, vHashCode;
+      var allWidgets = this.getTopLevelWidget().getChildren();
+      for( vHashCode in allWidgets ) {
+        someObject = allWidgets[vHashCode];
+        if( someObject.getZIndex ) {
+          if( this._list.getZIndex() < someObject.getZIndex() ) {
+            tmpZIndex = this._list.getZIndex();
+            this._list.setZIndex( someObject.getZIndex() );
+            someObject.setZIndex( tmpZIndex );
+          }
+        }
+      }
+    },
+   
+    _setSelected : function( value ) {
+      this._selected = value;
+      this._manager.setLeadItem( value );
+      this._manager.setAnchorItem( value );
+      if( value ) {
+        var fieldValue = value.getLabel().toString();
+        this._field.setValue( this._formatText( fieldValue ) );
+        if( this._field.isCreated() ) {
+          this._field.selectAll();
+          if(    this.hasState( "rwt_CCOMBO" )
+              && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+          {
+            this._handleSelectionChange();
+          }
+        }
+        this._manager.setSelectedItem( value );
+        this._manager.scrollItemIntoView( value );
+      } else {
+        this._resetListSelection();
+      }
+      if( !this._dropped ) {
+        this._sendWidgetSelected();
+      }
+    },
+    
+    _formatText : function( value ) {
+      var fieldValue = value;
+      fieldValue = fieldValue.replace( /<[^>]+?>/g, "" );
+      fieldValue = qx.html.String.unescape( fieldValue );
+      return fieldValue;
+    },
+
+    // Mouse events handling methods
+    _onMouseDown : function( evt ) {
+      if( evt.isLeftButtonPressed() ) {
+        var vTarget = evt.getTarget();
+        if( vTarget == this._field ) {
+          if( !this._editable || this._dropped ) {
+            this._toggleListVisibility();
+          }
+        }
+        evt.stopPropagation();
+      }
+    },
+
+    _onMouseClick : function( evt ) {
+      if( evt.isLeftButtonPressed() ) {
+        // Correction of the list manager selection 
+        // after a mouse over interaction with ListItem
+        if( this._selected ) {
+          // There is a selected ListItem
+          this._manager.setLeadItem( this._selected );
+          this._manager.setAnchorItem( this._selected );
+          this._manager.setSelectedItem( this._selected );
+        } else {
+          // There is no selected ListItem
+          this._resetListSelection();
+        }
+        // In case the 'mouseout' event has not been catched
+        if( this._button.hasState( "over" ) ) {
+          this._button.removeState( "over" );
+        }
+        // Redirecting the action, according to the click target 
+        var vTarget = evt.getTarget();
+        // Click is on a list item
+        if(    vTarget instanceof qx.ui.form.ListItem 
+            && vTarget.getParent() === this._list )
+        {
+          this._list._onmousedown( evt );
+          this._toggleListVisibility();
+          this._setSelected( this._list.getSelectedItem() );
+        // Click is on the combo's button or outside the dropped combo
+        } else if(    vTarget == this._button
+                   || (    this._dropped
+                        && vTarget != this 
+                        && vTarget != this._field 
+                        && vTarget != this._list ) ) 
+        {
+          this._toggleListVisibility();
+        }
+      }
+    },
+
+    _onMouseUp : function( evt ) {
+      if( !this._dropped ) {
+        this.setCapture( false );
+      }
+      if(    this.hasState( "rwt_CCOMBO" )
+          && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+      {
+        this._handleSelectionChange();
+      }
+    },
+
+    _onMouseWheel : function( evt ) {
+      if( !this._dropped ) {
+        var toSelect;
+        var isSelected = this._selected;
+        if( evt.getWheelDelta() < 0 ) {
+          toSelect =   isSelected
+                     ? this._manager.getNext( isSelected )
+                     : this._manager.getFirst();
+        } else {
+          toSelect =   isSelected
+                     ? this._manager.getPrevious( isSelected )
+                     : this._manager.getLast();
+        }
+        if( toSelect ) {
+          this._setSelected( toSelect );
+        }
+      }
+    },
+    
+    _onMouseOver : function( evt ) {
+      var vTarget = evt.getTarget();
+      if( vTarget instanceof qx.ui.form.ListItem ) {
+        this._manager.deselectAll();
+        this._manager.setLeadItem( vTarget );
+        this._manager.setAnchorItem( vTarget );
+        this._manager.setSelectedItem( vTarget );
+      } else if( vTarget == this._button ) {
+        this._button.addState( "over" );
+      }
+    },
+    
+    _onMouseOut : function( evt ) {
+      var vTarget = evt.getTarget();
+      if( vTarget == this._button ) {
+        this._button.removeState( "over" );
+      }
+    },
+
+    // Keyboard events handling methods
+    _onKeyDown : function( evt ) {
+      switch( evt.getKeyIdentifier() ) {
+        // Handle <ENTER>, <ESC>
+        case "Enter":
+          if( this._dropped ) {
+            this._toggleListVisibility();
+            this._setSelected( this._manager.getSelectedItem() );
+          } else if(    !evt.isShiftPressed()
+                     && !evt.isAltPressed()
+                     && !evt.isCtrlPressed()
+                     && !evt.isMetaPressed() )
+          {
+            this._sendWidgetDefaultSelected();
+          }
+          evt.stopPropagation();
+          break;
+        case "Escape":
+          if( this._dropped ) {
+            this._toggleListVisibility();
+            this._setSelected( this._manager.getSelectedItem() );
+          } 
+          evt.stopPropagation();
+          break;
+        // Handle Alt+Down, Alt+Up
+        case "Down":
+        case "Up":
+          if( evt.isAltPressed() ) {
+            this._toggleListVisibility();
+          }
+          break;
+      }
+      if(    this.hasState( "rwt_CCOMBO" )
+          && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+      {
+        this._handleSelectionChange();
+      }
+    },
+
+    _onKeyPress : function( evt ) {
+      switch( evt.getKeyIdentifier() ) {
+        case "Escape":
+          evt.stopPropagation();
+          break;
+        case "Tab":
+          if( this._dropped ) {
+            this._toggleListVisibility();
+          }
+          break;
+        case "Right":
+          if( this._dropped ) {
+            var toSelect =   this._selected
+                           ? this._manager.getNext( this._selected )
+                           : this._manager.getFirst();
+            if( toSelect ) {
+              this._setSelected( toSelect );
+            }
+          }
+          break;
+        case "Left":
+          if( this._dropped ) {
+            var toSelect =   this._selected
+                           ? this._manager.getPrevious( this._selected )
+                           : this._manager.getLast();
+            if( toSelect ) {
+              this._setSelected( toSelect );
+            }
+          }
+          break;
+        case "Up":
+        case "Down":
+        case "PageUp":
+        case "PageDown":
+          this._list._onkeypress( evt );
+          var selected = this._manager.getSelectedItem();
+          this._setSelected( selected );
+          break;
+        default:
+          charCode = evt.getCharCode();
+          keyIdentifier = evt.getKeyIdentifier();
+          if( this._editable && (    charCode > 0 
+                                  || keyIdentifier == "Delete" 
+                                  || keyIdentifier == "Backspace" ) ) 
+          {
+            this._isModified = true;
+            this._selected = null;
+            this._resetListSelection();
+            if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+              var req = org.eclipse.swt.Request.getInstance();
+              req.addEventListener( "send", this._onSend, this );
+              if( this._hasVerifyModifyListener ) {
+                qx.client.Timer.once( this._sendModifyText, this, 500 );
+              }
+            }
+          }
+      }
+      if(    this.hasState( "rwt_CCOMBO" )
+          && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+      {
+        this._handleSelectionChange();
+      }
+    },
+
+    _onKeyInput : function( evt ) {
+      if( this._dropped ) {
+        this._list._onkeyinput( evt );
+        var selected = this._manager.getSelectedItem();
+        this._setSelected( selected );
+      }
+    },
+    
+    // Actions, connected with server communication
+    _onTextBlur : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && this._isModified ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.send();
+      }
+    },
+
+    _onSend : function( evt ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( id + ".text", this._field.getComputedValue() );
+      req.removeEventListener( "send", this._onSend, this );
+      this._isModified = false;
+      this.setValue( this._field.getComputedValue() );
+    },
+
+    _sendModifyText : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.send();
+      this._isModified = false;
+    },
+
+    _sendWidgetSelected : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var list = this._list;
+        var listItem = this._list.getSelectedItem();
+        req.addParameter( id + ".selectedItem", list.indexOf( listItem ) );
+        if( this._hasSelectionListener || this._hasVerifyModifyListener ) {
+          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          req.send();
+        }
+      }
+    },
+    
+    _sendWidgetDefaultSelected : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        if( this._hasSelectionListener ) {
+          req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          req.send();
+        }
+      }
+    },
+    
+    _updateListVisibleRequestParam : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        req.addParameter( id + ".listVisible", this._list.getVisibility() );
+      }
+    },
+    
+    // Checks for a text field selection change and updates 
+    // the request parameter if necessary.
+    _handleSelectionChange : function() {
+      var start = this._field.getSelectionStart();
+      // TODO [ad] Solution from TextUtil.js - must be in synch with it
+      // TODO [rst] Quick fix for bug 258632
+      //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
+      if( start === undefined ) {
+        start = 0;
+      }
+      var length = this._field.getSelectionLength();
+      // TODO [ad] Solution from TextUtil.js - must be in synch with it
+      // TODO [rst] Workaround for qx bug 521. Might be redundant as the
+      //            bug is marked as (partly) fixed.
+      //            See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
+      if( typeof length == "undefined" ) {
+        text.debug( "___ qx bug 521 still exists" );
+        length = 0;
+      }
+      if( this._selectionStart != start || this._selectionLength != length ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        this._selectionStart = start;
+        req.addParameter( id + ".selectionStart", start );
+        this._selectionLength = length;
+        req.addParameter( id + ".selectionLength", length );
+      }
+    },
+
+    // Set methods
+    setItems : function( items ) {
+      this._list.removeAll();
       for( var i = 0; i < items.length; i++ ) {
         var item = new qx.ui.form.ListItem();
         item.setLabel( "(empty)" );
         item.getLabelObject().setMode( "html" );
         item.setLabel( items[ i ] );
         item.setFont( this.getFont() );
-        this.add( item );
+        item.setHeight( this._listItemHeight );
+        this._list.add( item );
       }
     },
 
-    rwt_select : function( index ) {
-      var items = this.getList().getChildren();
+    setMaxListHeight : function( value ) {
+      this._list.setMaxHeight( value );
+    },
+    
+    setListItemHeight : function( value ) {
+      this._listItemHeight = value;
+      var items = this._list.getChildren();
+      for( var i = 0; i < items.length; i++ ) {
+        items[ i ].setHeight( this._listItemHeight );
+      }
+    },
+
+    select : function( index ) {
+      var items = this._list.getChildren();
       var item = null;
       if( index >= 0 && index <= items.length - 1 ) {
         item = items[ index ];
       }
-      this.setSelected( item );
+      this._setSelected( item );
     },
 
-    rwt_setMaxPopupHeight : function( maxHeight ) {
-      this.getPopup().setMaxHeight( maxHeight );
+    setEditable : function( value ) {
+      this._editable = value;
+      this._field.setReadOnly( !value );
+      this._field.setCursor( value ? null : "default" );
     },
-
-    // workaround for broken context menu on qx ComboBox
-    // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
-    rwt_applyContextMenu : function( evt ) {
-      var menu = this.getContextMenu();
-      this._field.setContextMenu( menu );
-      this._button.setContextMenu( menu );
-    },
-
-    // Disable text field when popup opens up
-    _rwt_onPopupAppear : function( evt ) {
-      var f = this.getField();
-      f.setReadOnly( true );
-      if( this._userCursor == null ) {
-        f.setCursor( "default" );
+    
+    setListVisible : function( value ) {
+      if( this._list.setVisibility != value ) {
+        this._dropped = !value;
+        this._toggleListVisibility();
       }
-      f.setSelectable( false );
     },
 
-    // Enable text field when popup closes
-    _rwt_onPopupDisappear : function( evt ) {
-      var editable = this.getEditable();
-      var f = this.getField();
-      f.setReadOnly( !editable );
-      if( this._userCursor == null ) {
-        f.setCursor( editable ? null : "default" );
+    setValue : function( value ) {
+      this._field.setValue( value );
+    },
+    
+    setTextSelection : function( start, length ) {
+      if( this._field.isCreated() ) {
+        this._selectionStart = start;
+        this._field.setSelectionStart( start );
+        this._selectionLength = length;
+        this._field.setSelectionLength( length );
       }
-      f.setSelectable( editable );
-      this._button.removeState( "over" );
+    },
+    
+    setTextLimit : function( value ) {
+      this._field.setMaxLength( value );
     },
 
-    _rwt_onButtonMouseOver : function( evt ) {
-      this._button.addState( "over" );
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
     },
 
-    _rwt_onButtonMouseOut : function( evt ) {
-      this._button.removeState( "over" );
-    },
-
-    _rwt_onChangeEditable : function( evt ) {
-      if( this._userCursor != null ) {
-        this.getField().setCursor( this._userCursor );
-      }  
-    },  
-
-    _applyCursor : function( value, old ) {
-      this.base( arguments, value, old );
-      this._userCursor = value;
-      if( value ) {
-        this.getField().setCursor( value );
-        this.getButton().setCursor( value );
-        this.getList().setCursor( value );
-      } else {
-        this.getField().resetCursor();
-        this.getButton().resetCursor();
-        this.getList().resetCursor();
-      }
+    setHasVerifyModifyListener : function( value ) {
+      this._hasVerifyModifyListener = value;
     }
   }
 } );
