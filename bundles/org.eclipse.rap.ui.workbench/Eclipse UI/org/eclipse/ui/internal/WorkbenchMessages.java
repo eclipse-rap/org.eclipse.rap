@@ -12,6 +12,8 @@
 package org.eclipse.ui.internal;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Message class for workbench messages.  These messages are used 
@@ -1066,5 +1068,15 @@ public class WorkbenchMessages {
       Class clazz = WorkbenchMessages.class;
       Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
       return ( WorkbenchMessages )result;
+    }
+    
+    public static WorkbenchMessages get( Display display ) {
+      final WorkbenchMessages[] result = { null };
+      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        public void run() {
+          result[ 0 ] = get();
+        }
+      } );
+      return result[ 0 ];
     }
 }
