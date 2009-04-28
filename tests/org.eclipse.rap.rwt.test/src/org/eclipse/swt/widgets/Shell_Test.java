@@ -221,6 +221,18 @@ public class Shell_Test extends TestCase {
     shell.setEnabled( true );
     assertEquals( focusedControl, display.getFocusControl() );
   }
+  
+  public void testSavedFocus() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control control = new Button( shell, SWT.PUSH );
+    shell.open();
+    control.setFocus();
+    assertSame( shell.getSavedFocus(), control );  // ensure precondition
+    control.dispose();
+    assertNotSame( control, shell.getSavedFocus() );
+    assertNull( shell.getSavedFocus() );
+  }
 
   public void testInvalidDefaultButton() {
     Display display = new Display();

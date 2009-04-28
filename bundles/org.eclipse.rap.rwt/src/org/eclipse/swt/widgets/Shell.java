@@ -998,6 +998,11 @@ public class Shell extends Decorations {
   final void setSavedFocus( final Control control ) {
     savedFocus = control;
   }
+  
+  // TODO [rh] move to Decorations as soon as exists
+  final Control getSavedFocus() {
+    return savedFocus;
+  }
 
   // TODO [rh] move to Decorations as soon as exists
   final void saveFocus() {

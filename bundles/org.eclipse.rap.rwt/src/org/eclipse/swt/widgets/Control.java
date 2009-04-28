@@ -1737,8 +1737,8 @@ public abstract class Control extends Widget {
   // Disposal
 
   void releaseParent() {
-    if( getParent() != null ) {
-      getParent().removeControl( this );
+    if( parent != null ) {
+      parent.removeControl( this );
     }
   }
 
@@ -1748,9 +1748,9 @@ public abstract class Control extends Widget {
       menu.dispose();
       menu = null;
     }
-    if( getDisplay().getFocusControl() == this ) {
+    if( display.getFocusControl() == this ) {
       Control focusControl = null;
-      Control parent = getParent();
+      Control parent = this.parent;
       while( focusControl == null && parent != null ) {
         if( !parent.isDisposed() ) {
           focusControl = parent;
@@ -1759,6 +1759,10 @@ public abstract class Control extends Widget {
         }
       }
       setFocusControl( focusControl );
+    }
+    Shell shell = getShell();
+    if( shell.getSavedFocus() == this ) {
+      shell.setSavedFocus( null );
     }
     RWTLifeCycle.fakeRedraw( this, false );
     super.releaseWidget();
