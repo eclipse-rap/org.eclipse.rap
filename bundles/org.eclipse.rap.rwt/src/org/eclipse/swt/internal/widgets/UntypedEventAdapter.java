@@ -55,165 +55,165 @@ public final class UntypedEventAdapter
 
   public void controlMoved( final ControlEvent evt ) {
     Event event = createEvent( SWT.Move, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void controlResized( final ControlEvent evt ) {
     Event event = createEvent( SWT.Resize, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void widgetDisposed( final DisposeEvent evt ) {
     Event event = createEvent( SWT.Dispose, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void widgetDefaultSelected( final SelectionEvent evt ) {
     Event event = createEvent( SWT.DefaultSelection, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void widgetSelected( final SelectionEvent evt ) {
     Event event = createEvent( SWT.Selection, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void focusGained( final FocusEvent evt ) {
     Event event = createEvent( SWT.FocusIn, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void focusLost( final FocusEvent evt ) {
     Event event = createEvent( SWT.FocusOut, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void treeCollapsed( final TreeEvent evt ) {
     Event event = createEvent( SWT.Collapse, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void treeExpanded( final TreeEvent evt ) {
     Event event = createEvent( SWT.Expand, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void shellActivated( final ShellEvent evt ) {
     Event event = createEvent( SWT.Activate, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void shellClosed( final ShellEvent evt ) {
     Event event = createEvent( SWT.Close, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void shellDeactivated( final ShellEvent evt ) {
     Event event = createEvent( SWT.Deactivate, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void menuHidden( final MenuEvent evt ) {
     Event event = createEvent( SWT.Hide, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void menuShown( final MenuEvent evt ) {
     Event event = createEvent( SWT.Show, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void modifyText( final ModifyEvent evt ) {
     Event event = createEvent( SWT.Modify, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void verifyText( final VerifyEvent evt ) {
     Event event = createEvent( SWT.Verify, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void update( final SetDataEvent evt ) {
     Event event = createEvent( SWT.SetData, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void mouseDown( final MouseEvent evt ) {
     Event event = createEvent( SWT.MouseDown, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void mouseUp( final MouseEvent evt ) {
     Event event = createEvent( SWT.MouseUp, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void mouseDoubleClick( final MouseEvent evt ) {
     Event event = createEvent( SWT.MouseDoubleClick, evt.getSource() );
-    copyFields( event, evt );
+    copyFields( evt, event );
     dispatchEvent( event );
   }
 
   public void keyPressed( final KeyEvent typedEvent ) {
     Event event = createEvent( SWT.KeyDown, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
     typedEvent.doit = event.doit;
   }
 
   public void keyReleased( final KeyEvent typedEvent ) {
     Event event = createEvent( SWT.KeyUp, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
   public void keyTraversed( final TraverseEvent typedEvent ) {
     Event event = createEvent( SWT.Traverse, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
     typedEvent.doit = event.doit;
   }
 
   public void controlShown( final ShowEvent typedEvent ) {
     Event event = createEvent( SWT.Show, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
   public void controlHidden( final ShowEvent typedEvent ) {
     Event event = createEvent( SWT.Hide, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
   public void activated( final ActivateEvent typedEvent ) {
     Event event = createEvent( SWT.Activate, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
   public void deactivated( final ActivateEvent typedEvent ) {
     Event event = createEvent( SWT.Deactivate, typedEvent.getSource() );
-    copyFields( event, typedEvent );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
@@ -466,7 +466,6 @@ public final class UntypedEventAdapter
     return listeners.isEmpty();
   }
 
-
   //////////////////
   // helping methods
 
@@ -496,77 +495,77 @@ public final class UntypedEventAdapter
     return result;
   }
 
-  private static void copyFields( final Event untyped, final TypedEvent typed ) {
-    untyped.display = typed.display;
-    untyped.widget = typed.widget;
-    untyped.data = typed.data;
+  private static void copyFields( final TypedEvent from, final Event to ) {
+    to.display = from.display;
+    to.widget = from.widget;
+    to.data = from.data;
   }
 
-  private static void copyFields( final Event untyped, final SelectionEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.detail = typed.detail;
-    untyped.doit = typed.doit;
-    untyped.x = typed.x;
-    untyped.y = typed.y;
-    untyped.width = typed.width;
-    untyped.height = typed.height;
-    untyped.item = typed.item;
-    untyped.text = typed.text;
+  private static void copyFields( final SelectionEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.detail = from.detail;
+    to.doit = from.doit;
+    to.x = from.x;
+    to.y = from.y;
+    to.width = from.width;
+    to.height = from.height;
+    to.item = from.item;
+    to.text = from.text;
   }
 
-  private static void copyFields( final Event untyped, final TreeEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.detail = typed.detail;
-    untyped.doit = typed.doit;
-    untyped.x = typed.x;
-    untyped.y = typed.y;
-    untyped.height = typed.height;
-    untyped.width = typed.width;
-    untyped.item = typed.item;
-    untyped.text = typed.text;
+  private static void copyFields( final TreeEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.detail = from.detail;
+    to.doit = from.doit;
+    to.x = from.x;
+    to.y = from.y;
+    to.height = from.height;
+    to.width = from.width;
+    to.item = from.item;
+    to.text = from.text;
   }
 
-  private static void copyFields( final Event untyped, final VerifyEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.start = typed.start;
-    untyped.end = typed.end;
-    untyped.doit = typed.doit;
-    untyped.text = typed.text;
+  private static void copyFields( final VerifyEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.start = from.start;
+    to.end = from.end;
+    to.doit = from.doit;
+    to.text = from.text;
   }
 
-  private static void copyFields( final Event untyped, final SetDataEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.index = typed.index;
-    untyped.item = typed.item;
+  private static void copyFields( final SetDataEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.index = from.index;
+    to.item = from.item;
   }
 
-  private static void copyFields( final Event untyped, final MouseEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.button = typed.button;
-    untyped.time = typed.time;
-    untyped.x = typed.x;
-    untyped.y = typed.y;
+  private static void copyFields( final MouseEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.button = from.button;
+    to.time = from.time;
+    to.x = from.x;
+    to.y = from.y;
   }
 
-  private static void copyFields( final Event untyped, final ShellEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.doit = typed.doit;
+  private static void copyFields( final ShellEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.doit = from.doit;
   }
 
-  private static void copyFields( final Event untyped, final KeyEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.character = typed.character;
-    untyped.keyCode = typed.keyCode;
-    untyped.stateMask = typed.stateMask;
-    untyped.doit = typed.doit;
+  private static void copyFields( final KeyEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.character = from.character;
+    to.keyCode = from.keyCode;
+    to.stateMask = from.stateMask;
+    to.doit = from.doit;
   }
 
-  private static void copyFields( final Event untyped, final TraverseEvent typed ) {
-    copyFields( untyped, ( TypedEvent )typed );
-    untyped.character = typed.character;
-    untyped.keyCode = typed.keyCode;
-    untyped.stateMask = typed.stateMask;
-    untyped.detail = typed.detail;
-    untyped.doit = typed.doit;
+  private static void copyFields( final TraverseEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.character = from.character;
+    to.keyCode = from.keyCode;
+    to.stateMask = from.stateMask;
+    to.detail = from.detail;
+    to.doit = from.doit;
   }
 }
