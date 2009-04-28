@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
       this.add(this._secondsTextField);
     }
     // Spinner
-    this._spinner = new qx.ui.form.Spinner;
+    this._spinner = new qx.ui.form.Spinner();
     this._spinner.set({
       wrap: true,
       border: null,
@@ -128,6 +128,30 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
   },
 
   members : {
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._hoursTextField.addState( state );
+        this._minutesTextField.addState( state );
+        this._secondsTextField.addState( state );
+        this._spinner.addState( state );
+        this._separator3.addState( state );
+        this._separator4.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._hoursTextField.removeState( state );
+        this._minutesTextField.removeState( state );
+        this._secondsTextField.removeState( state );
+        this._spinner.removeState( state );
+        this._separator3.removeState( state );
+        this._separator4.removeState( state );
+      }
+    },
+    
     _rwt_onChangeFont : function( evt ) {
       var value = evt.getValue();
       this._hoursTextField.setFont( value );

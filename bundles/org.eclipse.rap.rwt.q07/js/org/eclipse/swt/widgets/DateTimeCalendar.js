@@ -42,6 +42,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
   },
 
   members : {
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._calendar.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._calendar.removeState( state );
+      }
+    },
+    
     _onChangeDate : function() {
       var date = this._calendar.getDate();      
       this._sendChanges( date.getDate(), date.getMonth(), date.getFullYear() );

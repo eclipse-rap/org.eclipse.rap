@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     // Focused text field
     this._focusedTextField = null;
     // Weekday
-    this._weekdayTextField = new qx.ui.basic.Label;
+    this._weekdayTextField = new qx.ui.basic.Label();
     this._weekdayTextField.setAppearance( "datetime-field" );
     if( this._long ) {
       this.add( this._weekdayTextField );
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this.add(this._separator0);
     }
     // Month
-    this._monthTextField = new qx.ui.basic.Label;
+    this._monthTextField = new qx.ui.basic.Label();
     this._monthTextField.setAppearance( "datetime-field" );
     this._monthTextField.set({
       textAlign: this._medium ? "right" : "center"
@@ -113,7 +113,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this._yearTextField.addEventListener( "mousedown",  this._onMouseDown, this );
     this.add( this._yearTextField );
     // Spinner
-    this._spinner = new qx.ui.form.Spinner;
+    this._spinner = new qx.ui.form.Spinner();
     this._spinner.set({
       wrap: true,
       border: null,
@@ -177,6 +177,34 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
   },
 
   members : {
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._weekdayTextField.addState( state );
+        this._monthTextField.addState( state );
+        this._dayTextField.addState( state );
+        this._yearTextField.addState( state );
+        this._spinner.addState( state );
+        this._separator0.addState( state );
+        this._separator1.addState( state );
+        this._separator2.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._weekdayTextField.removeState( state );
+        this._monthTextField.removeState( state );
+        this._dayTextField.removeState( state );
+        this._yearTextField.removeState( state );
+        this._spinner.removeState( state );
+        this._separator0.removeState( state );
+        this._separator1.removeState( state );
+        this._separator2.removeState( state );
+      }
+    },
+    
     _rwt_onChangeFont : function( evt ) {
       var value = evt.getValue();
       this._weekdayTextField.setFont( value );
