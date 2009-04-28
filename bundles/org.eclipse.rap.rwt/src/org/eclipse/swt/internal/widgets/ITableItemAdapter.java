@@ -15,6 +15,9 @@ import org.eclipse.swt.graphics.Font;
 
 public interface ITableItemAdapter {
 
+  Color getUserBackground();
+  Color getUserForeground();
+  Font getUserFont();
   Color[] getCellBackgrounds();
   Color[] getCellForegrounds();
   Font[] getCellFonts();

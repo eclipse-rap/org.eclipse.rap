@@ -24,9 +24,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this._grayed = false;
     this._texts = new Array();
     this._images = new Array();
-    this._fonts = null;
-    this._backgrounds = null;
-    this._foregrounds = null;
+    this._background = null;
+    this._foreground = null;
+    this._font = null;
+    this._cellBackgrounds = null;
+    this._cellForegrounds = null;
+    this._cellFonts = null;
     // HACK: Table needs one 'emptyItem' (draws the remaining space that is not
     //       occupied by actual items) and a 'virtualItem' (represents a not
     //       yet resolved items)
@@ -101,16 +104,28 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._images = images;
     },
 
-    setFonts : function( fonts ) {
-      this._fonts = fonts;
+    setBackground : function( background ) {
+      this._background = background;
     },
 
-    setBackgrounds : function( backgrounds ) {
-      this._backgrounds = backgrounds;
+    setForeground : function( foreground ) {
+      this._foreground = foreground;
     },
 
-    setForegrounds : function( foregrounds ) {
-      this._foregrounds = foregrounds;
+    setFont : function( font ) {
+      this._font = font;
+    },
+
+    setCellBackgrounds : function( backgrounds ) {
+      this._cellBackgrounds = backgrounds;
+    },
+
+    setCellForegrounds : function( foregrounds ) {
+      this._cellForegrounds = foregrounds;
+    },
+
+    setCellFonts : function( fonts ) {
+      this._cellFonts = fonts;
     },
 
     update : function() {
@@ -124,15 +139,19 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._grayed = false;
       this._texts = new Array();
       this._images = new Array();
-      this._fonts = null;
-      this._backgrounds = null;
-      this._foregrounds = null;
+      this._background = null;
+      this._foreground = null;
+      this._font = null;
+      this._cellBackgrounds = null;
+      this._cellForegrounds = null;
+      this._cellFonts = null;
     },
 
     /**
      * Called by Table when updating visible rows.
      */
-    _render : function( element ) {
+    _render : function( row ) {
+      var element = row.getElement();
       var parent = this._parent;
       var pos = 0;
       var left = 0;
@@ -145,25 +164,32 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       if( parent.hasCheckBoxes() ) {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
+      // Row background color
+      if( this._drawColors() && this._background != null ) {
+        row.setBackgroundColor( this._background );
+      } else {
+        row.resetBackgroundColor();
+      }
       for( var i = 0; i < columnCount; i++ ) {
         var text = "";
         var font = "";
         var foreground = "";
         var background = "";
         // Font
-        if( this._fonts && this._fonts[ i ] ) {
-          font = this._fonts[ i ];
+        if( this._cellFonts && this._cellFonts[ i ] ) {
+          font = this._cellFonts[ i ];
+        } else if( this._font != null ) {
+          font = this._font;
         }
         // Foreground and background color
         if( this._drawColors() ) {
-          if( this._foregrounds && this._foregrounds[ i ] ) {
-            foreground = this._foregrounds[ i ];
-          } else if( !qx.util.ColorUtil.isThemedColor( parent.getTextColor() ) )
-          {
-            foreground = parent.getTextColor();
+          if( this._cellForegrounds && this._cellForegrounds[ i ] ) {
+            foreground = this._cellForegrounds[ i ];
+          } else if( this._foreground != null ) {
+            foreground = this._foreground;
           }
-          if( this._backgrounds && this._backgrounds[ i ] ) {
-            background = this._backgrounds[ i ];
+          if( this._cellBackgrounds && this._cellBackgrounds[ i ] ) {
+            background = this._cellBackgrounds[ i ];
           }
         }
         // Draw image

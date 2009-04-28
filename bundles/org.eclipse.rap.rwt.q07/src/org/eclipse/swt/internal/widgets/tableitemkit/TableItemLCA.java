@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,9 +33,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   static final String PROP_GRAYED = "grayed";
   static final String PROP_INDEX = "index";
   static final String PROP_SELECTED = "selected";
-  static final String PROP_FONT = "font";
   static final String PROP_BACKGROUND = "background";
   static final String PROP_FOREGROUND = "foreground";
+  static final String PROP_FONT = "font";
+  static final String PROP_CELL_BACKGROUNDS = "cellBackgrounds";
+  static final String PROP_CELL_FOREGROUNDS = "cellForegrounds";
+  static final String PROP_CELL_FONTS = "cellFonts";
   static final String PROP_CACHED = "cached";
 
   public void preserveValues( final Widget widget ) {
@@ -55,9 +58,16 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       adapter.preserve( PROP_INDEX, new Integer( index ) );
       adapter.preserve( PROP_SELECTED,
                         Boolean.valueOf( isSelected( table, index ) ) );
-      adapter.preserve( PROP_FONT, getFonts( item ) );
-      adapter.preserve( PROP_BACKGROUND, getBackgrounds( item ) );
-      adapter.preserve( PROP_FOREGROUND, getForegrounds( item ) );
+      Object itemAdapter = item.getAdapter( ITableItemAdapter.class );
+      ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )itemAdapter;
+      adapter.preserve( PROP_BACKGROUND, tableItemAdapter.getUserBackground() );
+      adapter.preserve( PROP_FOREGROUND, tableItemAdapter.getUserForeground() );
+      adapter.preserve( PROP_FONT, tableItemAdapter.getUserFont() );
+      adapter.preserve( PROP_CELL_BACKGROUNDS,
+                        tableItemAdapter.getCellBackgrounds() );
+      adapter.preserve( PROP_CELL_FOREGROUNDS,
+                        tableItemAdapter.getCellForegrounds() );
+      adapter.preserve( PROP_CELL_FONTS, tableItemAdapter.getCellFonts() );
     }
     adapter.preserve( PROP_CACHED,
                       Boolean.valueOf( isCached( table, index ) ) );
@@ -140,9 +150,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     boolean needUpdate = false;
     needUpdate |= writeTexts( item );
     needUpdate |= writeImages( item );
-    needUpdate |= writeFont( item );
     needUpdate |= writeBackground( item );
     needUpdate |= writeForeground( item );
+    needUpdate |= writeFont( item );
+    needUpdate |= writeCellBackgrounds( item );
+    needUpdate |= writeCellForegrounds( item );
+    needUpdate |= writeCellFonts( item );
     needUpdate |= writeChecked( item );
     needUpdate |= writeGrayed( item );
     needUpdate |= writeSelection( item );
@@ -194,41 +207,86 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static boolean writeFont( final TableItem item ) throws IOException {
-    Font[] fonts = getFonts( item );
+  private static boolean writeBackground( final TableItem item )
+    throws IOException
+  {
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    Color background = tableItemAdapter.getUserBackground();
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_BACKGROUND, "background", background, null );
+  }
+
+  private static boolean writeForeground( final TableItem item )
+    throws IOException
+  {
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    Color foreground = tableItemAdapter.getUserForeground();
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_FOREGROUND, "foreground", foreground, null );
+  }
+
+  private static boolean writeFont( final TableItem item )
+    throws IOException
+  {
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    Font font = tableItemAdapter.getUserFont();
+    JSWriter writer = JSWriter.getWriterFor( item );
+    String fontCss = font != null ? toCss( font ) : null;
+    return writer.set( PROP_FONT, "font", fontCss, null );
+  }
+
+  private static boolean writeCellBackgrounds( final TableItem item )
+    throws IOException
+  {
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    Color[] backgrounds = tableItemAdapter.getCellBackgrounds();
+    // default values are null
+    Color[] defValue = new Color[ getColumnCount( item ) ];
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_CELL_BACKGROUNDS,
+                       "cellBackgrounds",
+                       backgrounds,
+                       defValue );
+  }
+
+  private static boolean writeCellForegrounds( final TableItem item )
+    throws IOException
+  {
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    Color[] foregrounds = tableItemAdapter.getCellForegrounds();
+    // default values are null
+    Color[] defValue = new Color[ getColumnCount( item ) ];
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_CELL_FOREGROUNDS,
+                       "cellForegrounds",
+                       foregrounds,
+                       defValue );
+  }
+
+  private static boolean writeCellFonts( final TableItem item )
+    throws IOException
+  {
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    Font[] fonts = tableItemAdapter.getCellFonts();
     // default values are null
     Font[] defValue = new Font[ fonts.length ];
     boolean result
-      = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
+      = WidgetLCAUtil.hasChanged( item, PROP_CELL_FONTS, fonts, defValue );
     if( result ) {
       String[] css = new String[ fonts.length ];
       for( int i = 0; i < fonts.length; i++ ) {
         css[ i ] = fonts[ i ] != null ? toCss( fonts[ i ] ) : null;
       }
       JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( "fonts", new Object[] { css } );
+      writer.set( "cellFonts", new Object[] { css } );
     }
     return result;
-  }
-
-  private static boolean writeBackground( final TableItem item )
-    throws IOException
-  {
-    Color[] backgrounds = getBackgrounds( item );
-    // default values are null
-    Color[] defValue = new Color[ getColumnCount( item ) ];
-    JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue );
-  }
-
-  private static boolean writeForeground( final TableItem item )
-    throws IOException
-  {
-    Color[] foregrounds = getForegrounds( item );
-    // default values are null
-    Color[] defValue = new Color[ getColumnCount( item ) ];
-    JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_FOREGROUND, "foregrounds", foregrounds, defValue );
   }
 
   private static boolean writeChecked( final TableItem item )
@@ -334,24 +392,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       result[ i ] = item.getImage( i );
     }
     return result;
-  }
-
-  static Font[] getFonts( final TableItem item ) {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    return tableItemAdapter.getCellFonts();
-  }
-
-  static Color[] getBackgrounds( final TableItem item ) {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    return tableItemAdapter.getCellBackgrounds();
-  }
-
-  static Color[] getForegrounds( final TableItem item ) {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    return tableItemAdapter.getCellForegrounds();
   }
 
   private static int getColumnCount( final TableItem item ) {

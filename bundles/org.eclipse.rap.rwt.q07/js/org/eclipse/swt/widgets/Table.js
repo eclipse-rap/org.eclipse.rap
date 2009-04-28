@@ -299,6 +299,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
+    setTextColor : function( color ) {
+      this._clientArea.setTextColor( color );
+    },
+
+    resetTextColor : function() {
+      this._clientArea.resetTextColor();
+    },
+
     setBackgroundColor : function( color ) {
       this._clientArea.setBackgroundColor( color );
     },
@@ -1166,10 +1174,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _renderItem : function( row, item ) {
       if( row.isCreated() ) {
-        item._render( row.getElement() );
+        item._render( row );
       } else {
         var listener = function() {
-          item._render( row.getElement() );
+          item._render( row );
           row.removeEventListener( "create", listener );
         };
         row.addEventListener( "create", listener );

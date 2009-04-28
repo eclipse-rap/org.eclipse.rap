@@ -33,15 +33,24 @@ public class TableItem extends Item {
 
   private final class TableItemAdapter implements ITableItemAdapter {
 
+    public Color getUserBackground() {
+      return background;
+    }
+
+    public Color getUserForeground() {
+      return foreground;
+    }
+
+    public Font getUserFont() {
+      return font;
+    }
+
     public Color[] getCellBackgrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
       for( int i = 0; i < result.length; i++ ) {
         if( data != null && data[ i ] != null ) {
           result[ i ] = data[ i ].background;
-        }
-        if( result[ i ] == null ) {
-          result[ i ] = background;
         }
       }
       return result;
@@ -54,9 +63,6 @@ public class TableItem extends Item {
         if( data != null && data[ i ] != null ) {
           result[ i ] = data[ i ].foreground;
         }
-        if( result[ i ] == null ) {
-          result[ i ] = foreground;
-        }
       }
       return result;
     }
@@ -67,9 +73,6 @@ public class TableItem extends Item {
       for( int i = 0; i < result.length; i++ ) {
         if( data != null && data[ i ] != null ) {
           result[ i ] = data[ i ].font;
-        }
-        if( result[ i ] == null ) {
-          result[ i ] = font;
         }
       }
       return result;

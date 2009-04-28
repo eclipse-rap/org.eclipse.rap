@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 public class TableItemLCA_Test extends TestCase {
@@ -74,32 +73,33 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( images1[ 0 ], images2[ 0 ] );
     assertEquals( images1[ 1 ], images2[ 1 ] );
     assertEquals( images1[ 2 ], images2[ 2 ] );
-    Font[] fonts1 = TableItemLCA.getFonts( item1 );
-    Font[] fonts2 = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_FONT );
-    assertEquals( fonts1[ 0 ], fonts2[ 0 ] );
-    assertEquals( fonts1[ 1 ], fonts2[ 1 ] );
-    assertEquals( fonts1[ 2 ], fonts2[ 2 ] );
-    Color[] backgrounds1 = TableItemLCA.getBackgrounds( item1 );
-    Color[] backgrounds2
-      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_BACKGROUND );
-    assertEquals( backgrounds1[ 0 ], backgrounds2[ 0 ] );
-    assertEquals( backgrounds1[ 1 ], backgrounds2[ 1 ] );
-    assertEquals( backgrounds1[ 2 ], backgrounds2[ 2 ] );
-    Color[] foregrounds1 = TableItemLCA.getForegrounds( item1 );
-    Color[] foregrounds2
-      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_FOREGROUND );
-    assertEquals( foregrounds1[ 0 ], foregrounds2[ 0 ] );
-    assertEquals( foregrounds1[ 1 ], foregrounds2[ 1 ] );
-    assertEquals( foregrounds1[ 2 ], foregrounds2[ 2 ] );
+    assertNull( adapter.getPreserved( TableItemLCA.PROP_BACKGROUND ) );
+    assertNull( adapter.getPreserved( TableItemLCA.PROP_FOREGROUND ) );
+    assertNull( adapter.getPreserved( TableItemLCA.PROP_FONT ) );
+    Color[] preservedCellBackgrounds
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_BACKGROUNDS );
+    assertNull( preservedCellBackgrounds[ 0 ] );
+    assertNull( preservedCellBackgrounds[ 1 ] );
+    assertNull( preservedCellBackgrounds[ 2 ] );
+    Color[] preservedCellForegrounds
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FOREGROUNDS );
+    assertNull( preservedCellForegrounds[ 0 ] );
+    assertNull( preservedCellForegrounds[ 1 ] );
+    assertNull( preservedCellForegrounds[ 2 ] );
+    Font[] preservedCellFonts =
+      ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
+    assertNull( preservedCellFonts[ 0 ] );
+    assertNull( preservedCellFonts[ 1 ] );
+    assertNull( preservedCellFonts[ 2 ] );
     RWTFixture.clearPreserved();
     item1.setText( 0, "item11" );
     item1.setText( 1, "item12" );
     item1.setText( 2, "item13" );
     Font font1 = Graphics.getFont( "font1", 10, 1 );
     item1.setFont( 0, font1 );
-    Font font2 = Graphics.getFont( "font1", 8, 1 );
+    Font font2 = Graphics.getFont( "font2", 8, 1 );
     item1.setFont( 1, font2 );
-    Font font3 = Graphics.getFont( "font1", 6, 1 );
+    Font font3 = Graphics.getFont( "font3", 6, 1 );
     item1.setFont( 2, font3 );
     Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
     Image image2 = Graphics.getImage( RWTFixture.IMAGE2 );
@@ -142,20 +142,21 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( image1, images2[ 0 ] );
     assertEquals( image2, images2[ 1 ] );
     assertEquals( image3, images2[ 2 ] );
-    fonts2 = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_FONT );
-    assertEquals( font1, fonts2[ 0 ] );
-    assertEquals( font2, fonts2[ 1 ] );
-    assertEquals( font3, fonts2[ 2 ] );
-    backgrounds2
-      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_BACKGROUND );
-    assertEquals( background1, backgrounds2[ 0 ] );
-    assertEquals( background2, backgrounds2[ 1 ] );
-    assertEquals( background3, backgrounds2[ 2 ] );
-    foregrounds2
-      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_FOREGROUND );
-    assertEquals( foreground1, foregrounds2[ 0 ] );
-    assertEquals( foreground2, foregrounds2[ 1 ] );
-    assertEquals( foreground3, foregrounds2[ 2 ] );
+    preservedCellFonts
+      = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
+    assertEquals( font1, preservedCellFonts[ 0 ] );
+    assertEquals( font2, preservedCellFonts[ 1 ] );
+    assertEquals( font3, preservedCellFonts[ 2 ] );
+    preservedCellBackgrounds
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_BACKGROUNDS );
+    assertEquals( background1, preservedCellBackgrounds[ 0 ] );
+    assertEquals( background2, preservedCellBackgrounds[ 1 ] );
+    assertEquals( background3, preservedCellBackgrounds[ 2 ] );
+    preservedCellForegrounds
+      = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FOREGROUNDS );
+    assertEquals( foreground1, preservedCellForegrounds[ 0 ] );
+    assertEquals( foreground2, preservedCellForegrounds[ 1 ] );
+    assertEquals( foreground3, preservedCellForegrounds[ 2 ] );
     RWTFixture.clearPreserved();
     // text
     RWTFixture.preserveWidgets();
@@ -301,93 +302,6 @@ public class TableItemLCA_Test extends TestCase {
     // uncached when entering the life cycle
     lca.renderChanges( item );
     assertEquals( "", Fixture.getAllMarkup() );
-  }
-
-  public void testGetForegrounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
-    Color itemColor = display.getSystemColor( SWT.COLOR_RED );
-    Color cellColor = display.getSystemColor( SWT.COLOR_BLUE );
-    // simple case: no explicit colors at all
-    Color[] foregrounds = TableItemLCA.getForegrounds( item );
-    assertNull( foregrounds[ 0 ] );
-    // set foreground on table but not on item
-    table.setForeground( tableColor );
-    foregrounds = TableItemLCA.getForegrounds( item );
-    assertNull( foregrounds[ 0 ] );
-    // set foreground on item
-    item.setForeground( itemColor );
-    foregrounds = TableItemLCA.getForegrounds( item );
-    assertSame( itemColor, foregrounds[ 0 ] );
-    // ensure same result when item-internal data array exists
-    item.setText( "Item 1" );
-    foregrounds = TableItemLCA.getForegrounds( item );
-    assertSame( itemColor, foregrounds[ 0 ] );
-    // set foreground on cell
-    item.setForeground( 0, cellColor );
-    foregrounds = TableItemLCA.getForegrounds( item );
-    assertSame( cellColor, foregrounds[ 0 ] );
-  }
-
-  public void testGetBackground() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
-    Color itemColor = display.getSystemColor( SWT.COLOR_RED );
-    Color cellColor = display.getSystemColor( SWT.COLOR_BLUE );
-    // simple case: no explicit colors at all
-    Color[] backgrounds = TableItemLCA.getBackgrounds( item );
-    assertNull( backgrounds[ 0 ] );
-    // set background on table but not on item
-    table.setBackground( tableColor );
-    backgrounds = TableItemLCA.getBackgrounds( item );
-    assertNull( backgrounds[ 0 ] );
-    // set background on item
-    item.setBackground( itemColor );
-    backgrounds = TableItemLCA.getBackgrounds( item );
-    assertSame( itemColor, backgrounds[ 0 ] );
-    // ensure same result when item-internal data array exists
-    item.setText( "Item 1" );
-    backgrounds = TableItemLCA.getBackgrounds( item );
-    assertSame( itemColor, backgrounds[ 0 ] );
-    // set a cell color
-    item.setBackground( 0, cellColor );
-    backgrounds = TableItemLCA.getBackgrounds( item );
-    assertSame( cellColor, backgrounds[ 0 ] );
-  }
-
-  public void testGetFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    Font tableFont = Graphics.getFont( "TableFont", 11, SWT.ITALIC );
-    Font itemFont = Graphics.getFont( "ItemFont", 12, SWT.BOLD );
-    Font cellFont = Graphics.getFont( "CellFont", 13, SWT.NORMAL );
-    // simple case: no explicit fonts at all
-    Font[] fonts = TableItemLCA.getFonts( item );
-    assertNull( fonts[ 0 ] );
-    // set font on table but not on item
-    table.setFont( tableFont );
-    fonts = TableItemLCA.getFonts( item );
-    assertNull( fonts[ 0 ] );
-    // set font on item
-    item.setFont( itemFont );
-    fonts = TableItemLCA.getFonts( item );
-    assertSame( itemFont, fonts[ 0 ] );
-    // ensure same result when item-internal data array exists
-    item.setText( "Item 1" );
-    fonts = TableItemLCA.getFonts( item );
-    assertSame( itemFont, fonts[ 0 ] );
-    // set a cell font
-    item.setFont( 0, cellFont );
-    fonts = TableItemLCA.getFonts( item );
-    assertSame( cellFont, fonts[ 0 ] );
   }
 
   public void testCheckAndGrayedAccess() throws IOException {

@@ -716,7 +716,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.border = tv.getCssBorder( "CCombo", "border" );
       } else {
         result.border = tv.getCssBorder( "Combo", "border" );
-      }
+    }
       result.backgroundColor = tv.getCssColor( "Combo",
                                                "background-color" );
       result.textColor = tv.getCssColor( "Combo", "color" );
@@ -728,7 +728,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "combo-list" : {
     include : "list",
     style : function( states ) {
-   	  var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
    	  var result = {};
       result.border = tv.getCssBorder( "Combo-List", "border" );
       result.height = "auto";
@@ -740,7 +740,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-  
+
   "combo-field" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -754,7 +754,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.top = 0;
       result.bottom = 0;
       result.textColor =   states.disabled
-                         ? "widget.graytext"
+                    ? "widget.graytext"
                          : tv.getCssColor( "Combo", "color" );
       result.backgroundColor = tv.getCssColor( "Combo", 
                                                "background-color" );
@@ -777,7 +777,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.bottom = 0;
       result.right = 0;
       result.icon = tv.getCssImage( "Combo-Button", "background-image" );
-      // TODO [rst] rather use button.bgcolor?
+        // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "Combo-Button", 
                                                "background-color" );
       return result;
@@ -1283,6 +1283,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = states.disabled
                          ? "widget.graytext"
                          : tv.getCssColor( "TableItem", "color" );
+      if( result.textColor == "undefined" ) {
+        result.textColor = "inherit";
+      }
       result.backgroundColor = tv.getCssColor( "TableItem", "background-color" );
       return result;
     }

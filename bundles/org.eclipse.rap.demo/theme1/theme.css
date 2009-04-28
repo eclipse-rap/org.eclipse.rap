@@ -39,6 +39,8 @@ List, Tree, Table, Text, Spinner, Combo, DateTime {
 }
 
 List-Item, TableItem {
+  /* let List/Table colors shine through */
+  color: transparent;
   background-color: transparent;
 }
 
@@ -463,4 +465,8 @@ Slider-UpButton:horizontal {
 
 Slider-UpButton:vertical {
   background-image: url( "/theme1/icons/slider.v_btn.max.gif" );
+}
+
+Label:hover {
+  text-decoration: underline;
 }

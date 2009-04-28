@@ -22,6 +22,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
 
@@ -636,6 +637,93 @@ public class TableItem_Test extends TestCase {
     assertEquals( new Integer( 28 ), log.get( 3 ) );
     assertEquals( new Integer( 29 ), log.get( 4 ) );
   }
+
+  /////////////////////////
+  // TableItemAdapter Tests
+
+  public void testGetBackground() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
+    Color itemColor = display.getSystemColor( SWT.COLOR_RED );
+    Color cellColor = display.getSystemColor( SWT.COLOR_BLUE );
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    // simple case: no explicit colors at all
+    Color[] backgrounds = tableItemAdapter.getCellBackgrounds();
+    assertNull( backgrounds[ 0 ] );
+    // set background on table but not on item
+    table.setBackground( tableColor );
+    backgrounds = tableItemAdapter.getCellBackgrounds();
+    assertNull( backgrounds[ 0 ] );
+    // set background on item
+    item.setBackground( itemColor );
+    backgrounds = tableItemAdapter.getCellBackgrounds();
+    assertNull( backgrounds[ 0 ] );
+    // set a cell color
+    item.setBackground( 0, cellColor );
+    backgrounds = tableItemAdapter.getCellBackgrounds();
+    assertSame( cellColor, backgrounds[ 0 ] );
+  }
+
+  public void testGetForegrounds() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
+    Color itemColor = display.getSystemColor( SWT.COLOR_RED );
+    Color cellColor = display.getSystemColor( SWT.COLOR_BLUE );
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    // simple case: no explicit colors at all
+    Color[] foregrounds = tableItemAdapter.getCellForegrounds();
+    assertNull( foregrounds[ 0 ] );
+    // set foreground on table but not on item
+    table.setForeground( tableColor );
+    foregrounds = tableItemAdapter.getCellForegrounds();
+    assertNull( foregrounds[ 0 ] );
+    // set foreground on item
+    item.setForeground( itemColor );
+    foregrounds = tableItemAdapter.getCellForegrounds();
+    assertNull( foregrounds[ 0 ] );
+    // set foreground on cell
+    item.setForeground( 0, cellColor );
+    foregrounds = tableItemAdapter.getCellForegrounds();
+    assertSame( cellColor, foregrounds[ 0 ] );
+  }
+
+  public void testGetFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Font tableFont = Graphics.getFont( "TableFont", 11, SWT.ITALIC );
+    Font itemFont = Graphics.getFont( "ItemFont", 12, SWT.BOLD );
+    Font cellFont = Graphics.getFont( "CellFont", 13, SWT.NORMAL );
+    Object adapter = item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
+    // simple case: no explicit fonts at all
+    Font[] fonts = tableItemAdapter.getCellFonts();
+    assertNull( fonts[ 0 ] );
+    // set font on table but not on item
+    table.setFont( tableFont );
+    fonts = tableItemAdapter.getCellFonts();
+    assertNull( fonts[ 0 ] );
+    // set font on item
+    item.setFont( itemFont );
+    fonts = tableItemAdapter.getCellFonts();
+    assertNull( fonts[ 0 ] );
+    // set a cell font
+    item.setFont( 0, cellFont );
+    fonts = tableItemAdapter.getCellFonts();
+    assertSame( cellFont, fonts[ 0 ] );
+  }
+
+  /////////////////
+  // helper methods
 
   private static int getCheckWidth( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
