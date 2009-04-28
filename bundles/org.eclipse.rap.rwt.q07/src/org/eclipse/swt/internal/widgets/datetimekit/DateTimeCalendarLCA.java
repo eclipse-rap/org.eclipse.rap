@@ -39,6 +39,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
                       new Integer( dateTime.getMonth() ) );
     adapter.preserve( PROP_YEAR,
                       new Integer( dateTime.getYear() ) );
+    WidgetLCAUtil.preserveCustomVariant( dateTime );
   }
 
   void readData( final DateTime dateTime ) {
@@ -75,7 +76,6 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
       dateTimeAdapter.getWeekdayShortNames()
     };
     writer.newWidget( "org.eclipse.swt.widgets.DateTimeCalendar", args );
-    WidgetLCAUtil.writeCustomVariant( dateTime );
     ControlLCAUtil.writeStyleFlags( dateTime );
   }
 
@@ -85,6 +85,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
     writeMonth( dateTime );
     writeDay( dateTime );
     DateTimeLCAUtil.writeListener( dateTime );
+    WidgetLCAUtil.writeCustomVariant( dateTime );
   }
 
   void renderDispose( final DateTime dateTime ) throws IOException {

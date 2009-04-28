@@ -40,6 +40,7 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
     adapter.preserve( PROP_SECONDS,
                       new Integer( dateTime.getSeconds() ) );
     preserveSubWidgetsBounds( dateTime );
+    WidgetLCAUtil.preserveCustomVariant( dateTime );
   }
 
   void readData( final DateTime dateTime ) {
@@ -76,7 +77,6 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
       style
     };
     writer.newWidget( "org.eclipse.swt.widgets.DateTimeTime", args );
-    WidgetLCAUtil.writeCustomVariant( dateTime );
     ControlLCAUtil.writeStyleFlags( dateTime );
   }
 
@@ -87,6 +87,7 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
     writeSeconds( dateTime );
     DateTimeLCAUtil.writeListener( dateTime );
     writeSubWidgetsBounds( dateTime );
+    WidgetLCAUtil.writeCustomVariant( dateTime );
   }
 
   void renderDispose( final DateTime dateTime ) throws IOException {
