@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,10 +44,32 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
             child.removeEventListener( "keydown",
                                        org.eclipse.swt.LinkUtil._onKeyDown );
           }          
-          // TODO [if] Replace child.dispose() with child.destroy()
-          // when qx 0.7.4 is in place
           child.dispose();
           child = children[ 0 ];
+        }
+      }
+    },
+    
+    addState : function( widget, state ) {
+      if( widget ) {
+        if( state.substr( 0, 8 ) == "variant_" ) {
+          widget.addState( state );
+          var children = widget.getChildren();
+          for( var i = 0; i < children.length; i++ ) {
+            children[ i ].addState( state );
+          }
+        }
+      }
+    },
+
+    removeState : function( widget, state ) {
+      if( widget ) {
+        if( state.substr( 0, 8 ) == "variant_" ) {
+          widget.removeState( state );
+          var children = widget.getChildren();
+          for( var i = 0; i < children.length; i++ ) {
+            children[ i ].removeState( state );
+          }
         }
       }
     },

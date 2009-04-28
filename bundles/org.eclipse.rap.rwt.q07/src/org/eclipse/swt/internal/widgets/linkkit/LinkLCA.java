@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,12 +36,16 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static final String JS_FUNC_INIT = JS_LINK_UTIL + ".init";
   private static final String JS_FUNC_ADD_LINK = JS_LINK_UTIL + ".addLink";
   private static final String JS_FUNC_ADD_TEXT = JS_LINK_UTIL + ".addText";
+  private static final String JS_FUNC_ADD_STATE = JS_LINK_UTIL + ".addState";
+  private static final String JS_FUNC_REMOVE_STATE
+    = JS_LINK_UTIL + ".removeState";
   private static final String JS_FUNC_CLEAR = JS_LINK_UTIL + ".clear";
   private static final String JS_FUNC_DESTROY = JS_LINK_UTIL + ".destroy";
   private static final String JS_FUNC_SET_SELECTION_LISTENER
     = JS_LINK_UTIL + ".setSelectionListener";
 
   private static final String PROP_TEXT = "text";
+  private static final String PROP_VARIANT = "variant";
   static final String PROP_SEL_LISTENER = "selectionListener";
 
   public void preserveValues( final Widget widget ) {
@@ -76,7 +80,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( link );
     writeSelectionListener( link );
     writeText( link );
-    WidgetLCAUtil.writeCustomVariant( link );
+    writeCustomVariant( link );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -190,6 +194,25 @@ public class LinkLCA extends AbstractWidgetLCA {
           = new SelectionEvent( link, null, SelectionEvent.WIDGET_SELECTED );
         event.text = ids[ index ];
         event.processEvent();
+      }
+    }
+  }
+
+  private static void writeCustomVariant( final Link link )
+    throws IOException
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
+    String oldValue = ( String )adapter.getPreserved( PROP_VARIANT );
+    String newValue = WidgetUtil.getVariant( link );
+    if( WidgetLCAUtil.hasChanged( link, PROP_VARIANT, newValue, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( link );
+      Object[] args = new Object[] { link, "variant_" + oldValue };
+      if( oldValue != null ) {
+        writer.callStatic( JS_FUNC_REMOVE_STATE, args );
+      }
+      if( newValue != null ) {
+        args = new Object[] { link, "variant_" + newValue };
+        writer.callStatic( JS_FUNC_ADD_STATE, args );
       }
     }
   }
