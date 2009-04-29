@@ -24,7 +24,7 @@
 
     <property name="color"
         type="color"
-        description="Text color for group boxes. Applied to the group box label." />
+        description="Text color for group boxes." />
 
     <property name="font"
         type="font"
@@ -70,6 +70,14 @@
       <property name="margin"
           type="boxdim"
           description="Margin for group box labels (offset of the group box label)." />
+          
+      <property name="background-color"
+          type="color"
+          description="Background color for group box label (override the color set by Group#setBackgroundColor())." />
+
+      <property name="color"
+          type="color"
+          description="Text color for group box label (override the color set by Group#setForegroundColor())." />
 
     </element>
 

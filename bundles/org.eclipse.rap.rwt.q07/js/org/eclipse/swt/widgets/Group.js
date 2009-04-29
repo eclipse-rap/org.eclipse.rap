@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
 
   members : {
     rap_init : function() {
+      this._tv = new org.eclipse.swt.theme.ThemeValues( null );
+      this._themeBackgroundColor = this._tv.getCssColor( "Group-Label", "background-color" );      
       // Make sure that the 'labelObject' is created
       var labelObject = this.getLegendObject().getLabelObject();
       if ( labelObject == null ) {
@@ -39,17 +41,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     },
 
     rap_reset : function() {
+      this._tv.dispose();
       this.removeEventListener( "changeBackgroundColor",
-                             this._onChangeBackgroundColor,
-                             this );
+                                this._onChangeBackgroundColor,
+                                this );
       this.removeEventListener( "changeFont",
-                             this._onChangeFont,
-                             this );
+                                this._onChangeFont,
+                                this );
     },
 
     _onChangeBackgroundColor : function( evt ) {
       var newColor = evt.getValue();
-      this.getLegendObject().setBackgroundColor( newColor );
+      if( this._themeBackgroundColor === "undefined" ) {
+        this.getLegendObject().setBackgroundColor( newColor );
+      }
     },
 
     _onChangeFont : function( evt ) {

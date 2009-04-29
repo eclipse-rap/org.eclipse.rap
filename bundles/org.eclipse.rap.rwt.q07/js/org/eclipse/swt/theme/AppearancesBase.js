@@ -1087,9 +1087,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         left : 0,
         padding : tv.getCssBoxDimensions( "Group-Label", "padding" ),
         margin : tv.getCssBoxDimensions( "Group-Label", "margin" ),
-        backgroundColor : tv.getCssColor( "Group", "background-color" ),
+        backgroundColor : tv.getCssColor( "Group-Label", "background-color" ),
         font : tv.getCssFont( "Group", "font"),
-        textColor : states.disabled ? "widget.graytext" : "undefined"
+        textColor : states.disabled
+                    ? tv.getCssColor( "Group", "color" )
+                    : tv.getCssColor( "Group-Label", "color" )
       };
     }
   },

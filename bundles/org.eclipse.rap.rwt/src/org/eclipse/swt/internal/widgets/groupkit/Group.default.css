@@ -14,4 +14,6 @@ Group-Label {
   margin: 1px 10px;
   padding: 0px 3px 0px 4px;
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  background-color: transparent;
+  color: transparent;
 }
