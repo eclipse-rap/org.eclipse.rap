@@ -156,7 +156,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       var pos = 0;
       var left = 0;
       var width = 0;
+      var height = this._parent.getItemHeight() - 1;
       var columnCount = parent.getColumnCount();
+      var drawColors = this._drawColors();
       if( columnCount == 0 ) {
         columnCount = 1;
       }
@@ -174,7 +176,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         var text = "";
         var font = "";
         var foreground = "";
-        var background = "";
+        var background = null;
         // Font
         if( this._cellFonts && this._cellFonts[ i ] ) {
           font = this._cellFonts[ i ];
@@ -182,7 +184,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           font = this._font;
         }
         // Foreground and background color
-        if( this._drawColors() ) {
+        if( drawColors ) {
           if( this._cellForegrounds && this._cellForegrounds[ i ] ) {
             foreground = this._cellForegrounds[ i ];
           } else if( this._foreground != null ) {
@@ -192,28 +194,36 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             background = this._cellBackgrounds[ i ];
           }
         }
-        // Draw image
-        if( this._images && this._images[ i ] ) {
-          left = parent.getItemImageLeft( i );
-          width = parent.getItemImageWidth( i );
+        // Create background div
+        if( background != null ) {
           var node = this._getChildNode( element, pos );
           pos++;
-          this._renderImage( node, this._images[ i ], left, width, background );
+          left = parent.getItemLeft( i );
+          width = parent.getItemWidth( i ) - 1;
+          this._renderBackground( node, left, width, height, background );
         }
-        // Draw text
+        // Create image div
+        if( this._images && this._images[ i ] ) {
+          var node = this._getChildNode( element, pos );
+          pos++;
+          left = parent.getItemImageLeft( i );
+          width = parent.getItemImageWidth( i );
+          this._renderImage( node, left, width, height, this._images[ i ] );
+        }
+        // Create text div
+        var node = this._getChildNode( element, pos );
+        pos++;
+        left = parent.getItemTextLeft( i );
+        width = parent.getItemTextWidth( i );
         if( this._texts[ i ] !== undefined ) {
           text = this._texts[ i ];
         }
-        left = parent.getItemTextLeft( i );
-        width = parent.getItemTextWidth( i );
         var align = qx.constant.Layout.ALIGN_LEFT;
         var column = parent.getColumn( i );
         if( column ) {
           align = column.getHorizontalChildrenAlign();
         }
-        var node = this._getChildNode( element, pos );
-        pos++;
-        this._renderText( node, text, left, width, align, font, foreground, background );
+        this._renderText( node, left, width, height, text, align, font, foreground );
       }
       this._deleteRemainingChildNodes( element, pos );
     },
@@ -241,25 +251,37 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       return enabled && ( this._parent._hideSelection || !selected );
     },
 
-    _renderImage : function( node, image, left, width, background ) {
+    _renderBackground : function( node, left, width, height, background ) {
+      node.innerHTML = "&nbsp;";
+      node.style.position = "absolute";
+      node.style.top = "0px";
+      node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.height = height + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.backgroundImage = "none";
+      node.style.backgroundColor = background;
+      // fix IE box height issue
+      node.style.fontSize = "0";
+      node.style.lineHeight = "0";
+    },
+
+    _renderImage : function( node, left, width, height, image ) {
       node.innerHTML = "";
       node.style.position = "absolute";
       node.style.overflow = "hidden";
       node.style.top = "0px";
       node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
       node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
-      var height = this._parent.getItemHeight() + org.eclipse.swt.widgets.TableItem.PX;
-      node.style.height = height;
+      node.style.height = height + org.eclipse.swt.widgets.TableItem.PX;
       // set line height to enable vertical centering
-      node.style.lineHeight = height;
-      node.style.backgroundColor = background;
+      node.style.lineHeight = height + org.eclipse.swt.widgets.TableItem.PX;
+      node.style.backgroundColor = "";
       node.style.backgroundImage = "url(" + image + ")";
       node.style.backgroundRepeat = "no-repeat";
       node.style.backgroundPosition = "center";
     },
 
-    _renderText : function( node, text, left, width, align, font, foreground, background )
-    {
+    _renderText : function( node, left, width, height, text, align, font, foreground ) {
       node.innerHTML = text;
       node.style.position = "absolute";
       node.style.overflow = "hidden";
@@ -269,10 +291,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.whiteSpace = "nowrap";
       node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
       node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
-      var height = this._parent.getItemHeight() + org.eclipse.swt.widgets.TableItem.PX;
-      node.style.height = height;
+      node.style.height = height + org.eclipse.swt.widgets.TableItem.PX;
       // set line height to enable vertical centering
-      node.style.lineHeight = height;
+      node.style.lineHeight = height + org.eclipse.swt.widgets.TableItem.PX;
       if( font != "" ) {
         node.style.font = font;
       } else {
@@ -285,7 +306,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         node.style.fontWeight = "";
       }
       node.style.color = foreground;
-      node.style.backgroundColor = background;
+      node.style.backgroundColor = "";
       node.style.backgroundImage = "none";
     },
 

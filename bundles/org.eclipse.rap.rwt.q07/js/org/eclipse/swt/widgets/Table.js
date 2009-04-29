@@ -75,6 +75,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // One resize line shown while resizing a column, provided for all columns
     this._resizeLine = null;
     // left and width values for the item-image and -text part for each column
+    this._itemLeft = new Array();
+    this._itemWidth = new Array();
     this._itemImageLeft = new Array();
     this._itemImageWidth = new Array();
     this._itemTextLeft = new Array();
@@ -95,7 +97,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._clientArea.setLeft( 0 );
     this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
     this._clientArea.addEventListener( "appear", this._onClientAppear, this );
-    this._clientArea.setHtmlProperty( "id", "client-area" );
     // Create horizontal scrollBar
     this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
     this._horzScrollBar.setZIndex( 1e8 );
@@ -201,6 +202,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       this._checkBoxes = null;
     }
+    this._itemLeft = null;
+    this._itemWidth = null;
     this._itemImageLeft = null;
     this._itemImageWidth = null;
     this._itemTextLeft = null;
@@ -346,7 +349,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._hideSelection = value;
     },
 
-    setItemMetrics : function( columnIndex, imageLeft, imageWidth, textLeft, textWidth ) {
+    setItemMetrics : function( columnIndex, left, width, imageLeft, imageWidth, textLeft, textWidth ) {
+      this._itemLeft[ columnIndex ] = left;
+      this._itemWidth[ columnIndex ] = width;
       this._itemImageLeft[ columnIndex ] = imageLeft;
       this._itemImageWidth[ columnIndex ] = imageWidth;
       this._itemTextLeft[ columnIndex ] = textLeft;
@@ -361,6 +366,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     updateRows : function() {
       this._updateRows();
+    },
+
+    getItemLeft : function( columnIndex ) {
+      return this._itemLeft[ columnIndex ];
+    },
+
+    getItemWidth : function( columnIndex ) {
+      return this._itemWidth[ columnIndex ];
     },
 
     getItemImageLeft : function( columnIndex ) {
@@ -418,7 +431,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getColumnsWidth : function() {
       var result = 0;
       var columns = this._columnArea.getChildren();
-      // TODO [rst] columns[ i ] is sometimes null when disposing table
       for( var i = 0; i < columns.length; i++ ) {
         result += columns[ i ].getWidth();
       }
