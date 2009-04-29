@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
 
   members : {
     rap_init : function() {
-      this._tv = new org.eclipse.swt.theme.ThemeValues( null );
+      this._tv = new org.eclipse.swt.theme.ThemeValues( {} );
       this._themeBackgroundColor = this._tv.getCssColor( "Group-Label", "background-color" );      
       // Make sure that the 'labelObject' is created
       var labelObject = this.getLegendObject().getLabelObject();
