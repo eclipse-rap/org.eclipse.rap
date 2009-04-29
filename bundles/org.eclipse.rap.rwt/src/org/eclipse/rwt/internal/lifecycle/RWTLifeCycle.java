@@ -38,6 +38,9 @@ public class RWTLifeCycle extends LifeCycle {
   public static final String UI_THREAD 
     = RWTLifeCycle.class.getName() + ".uiThread";
   private static final Integer ZERO = new Integer( 0 );
+  
+  private static final String ATTR_SESSION_DISPLAY
+    = RWTLifeCycle.class.getName() + "#sessionDisplay";
 
   private static final String REDRAW_CONTROLS
     = RWTLifeCycle.class.getName() + ".RedrawWidgets";
@@ -335,7 +338,7 @@ public class RWTLifeCycle extends LifeCycle {
     String startup = request.getParameter( RequestParams.STARTUP );
     if( startup != null ) {
       result = startup;
-    } else if( Display.getCurrent() == null ) {
+    } else if( getSessionDisplay() == null ) {
       result = EntryPointManager.DEFAULT;
     }
     return result;
@@ -468,5 +471,18 @@ public class RWTLifeCycle extends LifeCycle {
   IPhase[] getPhaseOrder() {
     IServiceStateInfo stateInfo = ContextProvider.getContext().getStateInfo();
     return ( IPhase[] )stateInfo.getAttribute( PHASE_ORDER );
+  }
+
+  public static void setSessionDisplay( final Display display ) {
+    ContextProvider.getSession().setAttribute( ATTR_SESSION_DISPLAY, display );
+  }
+
+  public static Display getSessionDisplay() {
+    Display result = null;
+    if( ContextProvider.hasContext() ) {
+      ISessionStore sessionStore = ContextProvider.getSession();
+      result = ( Display )sessionStore.getAttribute( ATTR_SESSION_DISPLAY );
+    }
+    return result;
   }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.widgets.Display;
 
 
 
@@ -35,7 +33,7 @@ final class PrepareUIRoot implements IPhase {
       TextSizeDetermination.readStartupProbes();
       EntryPointManager.createUI( startup );      
       result = PhaseId.RENDER;
-    } else if( Display.getCurrent() == null ) {
+    } else if( RWTLifeCycle.getSessionDisplay() == null ) {
       TextSizeDetermination.readStartupProbes();
       EntryPointManager.createUI( EntryPointManager.DEFAULT );
       result = PhaseId.RENDER;

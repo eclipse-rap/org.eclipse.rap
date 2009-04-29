@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
@@ -144,7 +145,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
                   if( !ContextProvider.hasContext() ) {
                     return;
                   }
-                  display = Display.getCurrent();
+                  display = RWTLifeCycle.getSessionDisplay();
                 } else {
                   display = getShell().getDisplay();
 

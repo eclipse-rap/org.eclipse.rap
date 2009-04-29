@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 import org.eclipse.swt.widgets.Display;
 
 
-public class DisplayUtil {
+public final class DisplayUtil {
   
   private DisplayUtil() {
     // prevent instance creation

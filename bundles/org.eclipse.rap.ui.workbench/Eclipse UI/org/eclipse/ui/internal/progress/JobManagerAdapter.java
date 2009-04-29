@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
@@ -140,7 +141,7 @@ public class JobManagerAdapter
     ProgressManager manager;
     synchronized( lock ) {
       if( ContextProvider.hasContext() ) {
-        jobs.put( event.getJob(), Display.getCurrent() );
+        jobs.put( event.getJob(), RWTLifeCycle.getSessionDisplay() );
         bindToSession( event.getJob() );
         String id = String.valueOf( event.getJob().hashCode() );
         UICallBack.activate( id );

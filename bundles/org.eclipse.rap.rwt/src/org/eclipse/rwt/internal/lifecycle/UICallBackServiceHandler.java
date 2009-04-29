@@ -427,8 +427,9 @@ public class UICallBackServiceHandler implements IServiceHandler {
   {
     // Don't replace local variables by method calls, since the context may
     // change during the methods execution.
+    Display sessionDisplay = RWTLifeCycle.getSessionDisplay();
     boolean useDifferentContext
-      = ContextProvider.hasContext() && Display.getCurrent() != display;
+      =  ContextProvider.hasContext() && sessionDisplay != display;
     ServiceContext contextBuffer = null;
     // TODO [fappel]: The context handling's getting very awkward in case of
     //                having the context mapped instead of stored it in

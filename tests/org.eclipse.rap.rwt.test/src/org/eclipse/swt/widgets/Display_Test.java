@@ -49,6 +49,32 @@ public class Display_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testGetCurrent() throws InterruptedException {
+    assertNull( Display.getCurrent() );
+    final Display display = new Display();
+    assertSame( display, Display.getCurrent() );
+    // init with something non-null
+    final Display[] displayFromBgThread = { display };
+    final Display[] displayFromBgThreadWithFakeContext = { display };
+    Runnable bgThread = new Runnable() {
+      public void run() {
+        displayFromBgThread[ 0 ] = Display.getCurrent();
+        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+          public void run() {
+            displayFromBgThreadWithFakeContext[ 0 ] = Display.getCurrent();
+          }
+        } );
+      }
+    };
+    Thread thread = new Thread( bgThread );
+    synchronized( thread ) {
+      thread.start();
+      thread.join();
+    }
+    assertNull( displayFromBgThread[ 0 ] );
+    assertNull( displayFromBgThreadWithFakeContext[ 0 ] );
+  }
 
   public void testGetThread() throws InterruptedException {
     Display first = new Display();
@@ -743,7 +769,7 @@ public class Display_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
-    assertEquals( "w1", DisplayUtil.getId( Display.getCurrent() ) );
+    assertEquals( "w1", DisplayUtil.getId( RWTLifeCycle.getSessionDisplay() ) );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 

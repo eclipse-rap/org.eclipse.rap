@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,7 @@ package org.eclipse.rwt.widgets;
 import java.io.IOException;
 import java.text.MessageFormat;
 
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
@@ -49,7 +48,7 @@ public final class ExternalBrowser {
     }
 
     public void afterPhase( final PhaseEvent event ) {
-      if( display == Display.getCurrent() ) {
+      if( display == RWTLifeCycle.getSessionDisplay() ) {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         HtmlResponseWriter writer = stateInfo.getResponseWriter();
         try {

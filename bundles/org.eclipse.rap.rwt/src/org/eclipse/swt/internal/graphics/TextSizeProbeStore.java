@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -204,7 +204,7 @@ final class TextSizeProbeStore extends SessionSingletonBase {
   private static String createProbeParam( final IProbe probe ) {
     StringBuffer result = new StringBuffer();
     final Display display = Display.getCurrent();
-    if( display != null && display.getThread() == Thread.currentThread() ) {
+    if( display != null ) {
       result.append( "[ " );
       result.append( probe.getFont().hashCode() );
       result.append( ", " );

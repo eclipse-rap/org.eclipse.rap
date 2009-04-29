@@ -372,7 +372,7 @@ public final class RWTFixture {
       }
     }
     
-    while( Display.getCurrent().readAndDispatch() ) {
+    while( RWTLifeCycle.getSessionDisplay().readAndDispatch() ) {
     }
     
     lifeCycle.sleep();

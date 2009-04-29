@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
@@ -40,7 +41,7 @@ final class TextSizeDeterminationHandler
   private IProbe[] probes;
 
   static void register() {
-    Display display = Display.getCurrent();
+    Display display = RWTLifeCycle.getSessionDisplay();
     if( display != null && display.getThread() == Thread.currentThread() ) {
       ISessionStore session = ContextProvider.getSession();
       if( session.getAttribute( CALCULATION_HANDLER ) == null ) {
@@ -63,7 +64,7 @@ final class TextSizeDeterminationHandler
   }
 
   public void afterPhase( final PhaseEvent event ) {
-    if( display == Display.getCurrent() ) {
+    if( display == RWTLifeCycle.getSessionDisplay() ) {
       try {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
           readProbedFonts( probes );

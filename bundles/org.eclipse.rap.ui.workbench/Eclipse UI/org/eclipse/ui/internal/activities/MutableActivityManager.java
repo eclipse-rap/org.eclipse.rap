@@ -979,7 +979,6 @@ public final class MutableActivityManager extends AbstractActivityManager
                             };
                             notifyJob.setSystem(true);
                             // RAP [fappel]: associate job with session
-                            final Display display = Display.getCurrent();
                             UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
                               public void run() {
                                 notifyJob.schedule();

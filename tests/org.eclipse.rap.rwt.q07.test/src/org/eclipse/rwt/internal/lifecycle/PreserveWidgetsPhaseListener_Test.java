@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
@@ -219,7 +218,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     lifeCycle.execute();
     // Second request: first 'real' one that writes JavaScript to create display
     Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( Display.getCurrent() );
+    fakeUIRootRequestParam( RWTLifeCycle.getSessionDisplay() );
     lifeCycle.execute();
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) != -1 );
     // clean up

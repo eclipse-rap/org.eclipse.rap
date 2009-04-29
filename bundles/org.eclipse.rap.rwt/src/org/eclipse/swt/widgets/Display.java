@@ -120,8 +120,6 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 // TODO: [doc] Update display javadoc
 public class Display extends Device implements Adaptable {
 
-  private static final String ATTR_DISPLAY
-    = Display.class.getName() + "#current";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
 
@@ -140,10 +138,9 @@ public class Display extends Device implements Adaptable {
    * @return the current display
    */
   public static Display getCurrent() {
-    Display result = null;
-    if( ContextProvider.hasContext() ) {
-      ISessionStore sessionStore = ContextProvider.getSession();
-      result = ( Display )sessionStore.getAttribute( ATTR_DISPLAY );
+    Display result = RWTLifeCycle.getSessionDisplay();
+    if( result != null && result.getThread() != Thread.currentThread() ) {
+      result = null;
     }
     return result;
   }
@@ -160,7 +157,7 @@ public class Display extends Device implements Adaptable {
    * @return the default display
    */
   public static Display getDefault() {
-    return getCurrent();
+    return RWTLifeCycle.getSessionDisplay();
   }
 
   private final List shells;
@@ -201,10 +198,10 @@ public class Display extends Device implements Adaptable {
   public Display() {
     thread = Thread.currentThread();
     session = ContextProvider.getSession();
-    if( getCurrent() != null ) {
+    if( RWTLifeCycle.getSessionDisplay() != null ) {
       SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
-    ContextProvider.getSession().setAttribute( ATTR_DISPLAY, this );
+    RWTLifeCycle.setSessionDisplay( this );
     shells = new ArrayList();
     readInitialBounds();
     monitor = new Monitor( this );
@@ -500,7 +497,7 @@ public class Display extends Device implements Adaptable {
   // Dispose
 
   public void release() {
-    ContextProvider.getSession().removeAttribute( ATTR_DISPLAY );
+    RWTLifeCycle.setSessionDisplay( null );
     // TODO [rh] zero fields
   }
 
