@@ -143,19 +143,21 @@ public class FilteredTree extends Composite {
 	/**
 	 * Get image descriptors for the clear button.
 	 */
-	static {
-		ImageDescriptor descriptor = AbstractUIPlugin
-				.imageDescriptorFromPlugin(PlatformUI.PLUGIN_ID,
-						"$nl$/icons/full/etool16/clear_co.gif"); //$NON-NLS-1$
-		if (descriptor != null) {
-			JFaceResources.getImageRegistry().put(CLEAR_ICON, descriptor);
-		}
-		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
-				PlatformUI.PLUGIN_ID, "$nl$/icons/full/dtool16/clear_co.gif"); //$NON-NLS-1$
-		if (descriptor != null) {
-			JFaceResources.getImageRegistry().put(DCLEAR_ICON, descriptor);
-		}
-	}
+// RAP [rh] JFaceResources is a session-singleton, hence its initialization must 	
+//     happen in session scope. See also initializeimageDscriptors()
+//	static {
+//		ImageDescriptor descriptor = AbstractUIPlugin
+//				.imageDescriptorFromPlugin(PlatformUI.PLUGIN_ID,
+//						"$nl$/icons/full/etool16/clear_co.gif"); //$NON-NLS-1$
+//		if (descriptor != null) {
+//			JFaceResources.getImageRegistry().put(CLEAR_ICON, descriptor);
+//		}
+//		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
+//				PlatformUI.PLUGIN_ID, "$nl$/icons/full/dtool16/clear_co.gif"); //$NON-NLS-1$
+//		if (descriptor != null) {
+//			JFaceResources.getImageRegistry().put(DCLEAR_ICON, descriptor);
+//		}
+//	}
 
 	/**
 	 * Create a new instance of the receiver.
@@ -170,6 +172,8 @@ public class FilteredTree extends Composite {
 	public FilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
 		super(parent, SWT.NONE);
 		this.parent = parent;
+// RAP [rh] initialize image descriptors in session scope  
+		initializeImageDescriptors();
 		init(treeStyle, filter);
 	}
 
@@ -186,8 +190,24 @@ public class FilteredTree extends Composite {
 	protected FilteredTree(Composite parent) {
 		super(parent, SWT.NONE);
 		this.parent = parent;
+// RAP [rh] initialize image descriptors in session scope  
+		initializeImageDescriptors();
 	}
-
+	
+// RAP [rh] initialize image descriptors in session scope  
+	private void initializeImageDescriptors() {
+    ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin( PlatformUI.PLUGIN_ID,
+                                                                             "$nl$/icons/full/etool16/clear_co.gif" ); //$NON-NLS-1$
+    if( descriptor != null ) {
+      JFaceResources.getImageRegistry().put( CLEAR_ICON, descriptor );
+    }
+    descriptor = AbstractUIPlugin.imageDescriptorFromPlugin( PlatformUI.PLUGIN_ID,
+                                                             "$nl$/icons/full/dtool16/clear_co.gif" ); //$NON-NLS-1$
+    if( descriptor != null ) {
+      JFaceResources.getImageRegistry().put( DCLEAR_ICON, descriptor );
+    }
+  }
+	
 	/**
 	 * Create the filtered tree.
 	 *
