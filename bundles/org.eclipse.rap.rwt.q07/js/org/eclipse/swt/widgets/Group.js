@@ -17,38 +17,36 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
 
   construct : function() {
     this.base( arguments );
-    this.rap_init();
+    var themeValues = new org.eclipse.swt.theme.ThemeValues( {} );
+    this._themeBackgroundColor
+      = themeValues.getCssColor( "Group-Label", "background-color" );
+    themeValues.dispose();
+    // Make sure that the 'labelObject' is created
+    var labelObject = this.getLegendObject().getLabelObject();
+    if ( labelObject == null ) {
+      this.setLegend( "(empty)" );
+      this.setLegend( "" );
+    }
+    labelObject = this.getLegendObject().getLabelObject();
+    labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
+    this.addEventListener( "changeBackgroundColor",
+                           this._onChangeBackgroundColor,
+                           this );
+    this.addEventListener( "changeFont",
+                           this._onChangeFont,
+                           this );
+  },
+
+  destruct : function() {
+    this.removeEventListener( "changeBackgroundColor",
+                              this._onChangeBackgroundColor,
+                              this );
+    this.removeEventListener( "changeFont",
+                              this._onChangeFont,
+                              this );
   },
 
   members : {
-    rap_init : function() {
-      this._tv = new org.eclipse.swt.theme.ThemeValues( {} );
-      this._themeBackgroundColor = this._tv.getCssColor( "Group-Label", "background-color" );      
-      // Make sure that the 'labelObject' is created
-      var labelObject = this.getLegendObject().getLabelObject();
-      if ( labelObject == null ) {
-        this.setLegend( "(empty)" );
-        this.setLegend( "" );
-      }
-      labelObject = this.getLegendObject().getLabelObject();
-      labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
-      this.addEventListener( "changeBackgroundColor",
-                             this._onChangeBackgroundColor,
-                             this );
-      this.addEventListener( "changeFont",
-                             this._onChangeFont,
-                             this );
-    },
-
-    rap_reset : function() {
-      this._tv.dispose();
-      this.removeEventListener( "changeBackgroundColor",
-                                this._onChangeBackgroundColor,
-                                this );
-      this.removeEventListener( "changeFont",
-                                this._onChangeFont,
-                                this );
-    },
 
     _onChangeBackgroundColor : function( evt ) {
       var newColor = evt.getValue();
