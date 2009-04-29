@@ -131,23 +131,20 @@ public final class TableLCAUtil {
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
         Rectangle textBounds = measureItem.getTextBounds( i );
-        int imageLeft = imageBounds.x - checkWidth;
-        int imageWidth = tableAdapter.getItemImageWidth( i );
         // If in column mode, cut image width if image exceeds right cell border
+        int imageWidth = tableAdapter.getItemImageWidth( i );
         if( table.getColumnCount() > 0 ) {
-          int maxImageWidth = bounds.width - ( imageLeft - bounds.x );
+          int maxImageWidth = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
           if( imageWidth > maxImageWidth ) {
             imageWidth = maxImageWidth;
           }
         }
-        int textLeft = textBounds.x - checkWidth;
-        int textWidth = textBounds.width;
-        result[ i ].left = bounds.x;
+        result[ i ].left = bounds.x - checkWidth;
         result[ i ].width = bounds.width;
-        result[ i ].imageLeft = imageLeft;
+        result[ i ].imageLeft = imageBounds.x - checkWidth;
         result[ i ].imageWidth = imageWidth;
-        result[ i ].textLeft = textLeft;
-        result[ i ].textWidth = textWidth;
+        result[ i ].textLeft = textBounds.x - checkWidth;
+        result[ i ].textWidth = textBounds.width;
       }
     }
     return result;

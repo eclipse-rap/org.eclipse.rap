@@ -878,7 +878,7 @@ public class TableItem extends Item {
         int paddingWidth = parent.getCellPadding().width;
         width = imageBounds.width + spacing + textBounds.width + paddingWidth;
       } else if( index >= 0 && index < columnCount ) {
-        width = parent.getColumn( index ).getWidth();
+        width = parent.getColumn( index ).getWidth() - getCheckWidth( index );
       }
       int height = getHeight( index );
       result = new Rectangle( left, top, width, height );

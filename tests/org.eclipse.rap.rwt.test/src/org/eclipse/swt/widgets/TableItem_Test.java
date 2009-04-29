@@ -225,6 +225,19 @@ public class TableItem_Test extends TestCase {
     assertEquals( origBounds, actualBounds );
   }
 
+  public void testTextBoundsWithCheckboxTable() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.CHECK );
+    TableColumn column = new TableColumn( table, SWT.LEFT );
+    column.setWidth( 100 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "rama rama ding dong" );
+    Rectangle textBounds = item.getTextBounds( 0 );
+    // Item 0 must share the first column with the check box
+    assertTrue( textBounds.width < 85 );
+  }
+
   public void testImageBoundsWithoutColumns() {
     // Test setup
     Display display = new Display();
@@ -310,10 +323,12 @@ public class TableItem_Test extends TestCase {
     assertTrue( item.getBounds().width >= 0 );
     // with columns
     table = new Table( shell, SWT.CHECK );
-    new TableColumn( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.setWidth( 100 );
     item = new TableItem( table, SWT.NONE );
     assertTrue( item.getBounds().x >= getCheckWidth( table ) );
     assertTrue( item.getBounds( 0 ).x >= getCheckWidth( table ) );
+    assertTrue( item.getBounds( 0 ).width < 100 );
     // with re-ordered columns
     table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
