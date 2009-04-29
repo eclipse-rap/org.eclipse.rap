@@ -13,15 +13,12 @@ package org.eclipse.swt.internal.graphics;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
-import org.eclipse.swt.widgets.*;
 
 
 public final class TextSizeDeterminationFacadeImpl
@@ -116,35 +113,24 @@ public final class TextSizeDeterminationFacadeImpl
   }
 
   public String createFontParamInternal( final Font font ) {
-    // TODO [fappel]: For convenience I reused the the WidgetLCAUtil#writeFont
-    //                method. This may have performance problems since a lot
-    //                of buffering and some additional string operations are
-    //                used. So revise this...
     StringBuffer result = new StringBuffer();
-    Shell shell = new Shell( Display.getCurrent(), SWT.NONE );
-    Label label = new Label( shell, SWT.NONE );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter buffer = stateInfo.getResponseWriter();
-    try {
-      HtmlResponseWriter htmlWriter = new HtmlResponseWriter();
-      stateInfo.setResponseWriter( htmlWriter );
-      WidgetLCAUtil.writeFont( label, font );
-      StringBuffer js = new StringBuffer();
-      for( int j = 0; j < htmlWriter.getBodySize(); j++ ) {
-        js.append( htmlWriter.getBodyToken( j ) );
+    FontData fontData = font.getFontData()[ 0 ];
+    String[] names = WidgetLCAUtil.parseFontName( fontData.getName() );
+    result.append( "[ " );
+    for( int i = 0; i < names.length; i++ ) {
+      result.append( "\"" );
+      result.append( names [ i ] );
+      result.append( "\"" );
+      if( i < names.length - 1 ) {
+        result.append( ", " );
       }
-      String fontString = js.toString();
-      String[] split = fontString.split( "\\[" );
-      int offset = split[ 1 ].length() - 3;
-      result.append( "[" );
-      result.append( split[ 1 ].substring( 0, offset ) );
-    } catch( final IOException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      shell.dispose();
-      stateInfo.setResponseWriter( buffer );
     }
+    result.append( " ], " );
+    result.append( fontData.getHeight() );
+    result.append( ", " );
+    result.append( ( fontData.getStyle() & SWT.BOLD ) != 0 );
+    result.append( ", " );
+    result.append( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
     return result.toString();
   }
 }

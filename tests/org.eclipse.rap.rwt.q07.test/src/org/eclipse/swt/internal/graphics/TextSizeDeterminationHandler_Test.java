@@ -62,7 +62,7 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
         return PhaseId.RENDER;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    RWTFixture.executeLifeCycleFromServerThread();
 
     String probe = TextSizeProbeStore.DEFAULT_PROBE;
     String[] expected = new String[] {
