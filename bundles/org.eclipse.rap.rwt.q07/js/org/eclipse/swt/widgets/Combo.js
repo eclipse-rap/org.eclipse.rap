@@ -58,6 +58,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     cDocument.addEventListener( "windowblur", this._onBlur, this );
     // Init events
     this.addEventListener( "appear", this._onAppear, this );
+    this.addEventListener( "focusin", this._onFocusIn, this );
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
@@ -86,6 +87,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     var cDocument = qx.ui.core.ClientDocument.getInstance();
     cDocument.removeEventListener( "windowblur", this._onBlur, this );
     this.removeEventListener( "appear", this._onAppear, this );
+    this.removeEventListener( "focusin", this._onFocusIn, this );
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
@@ -134,6 +136,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.addState( "rwt_FLAT" );
       }
       this.getTopLevelWidget().add( this._list );
+    },
+    
+    _onFocusIn : function( evt ) {
+      if(    this.hasState( "rwt_CCOMBO" )
+          && !org_eclipse_rap_rwt_EventUtil_suspend )
+      {
+        this._handleSelectionChange();
+      }
     },
 
     _onContextMenu : function( evt ) {
@@ -184,11 +194,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _visualizeFocus : function() {
       if( this._field.isCreated() ) {
         this._field._visualizeFocus();
-        if(    this.hasState( "rwt_CCOMBO" )
-            && !org_eclipse_rap_rwt_EventUtil_suspend ) 
-        {
-          this._handleSelectionChange();
-        }
       }
     },
     
@@ -196,11 +201,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _ontabfocus : function() {
       if( this._field.isCreated() ) {
         this._field.selectAll();
-        if(    this.hasState( "rwt_CCOMBO" )
-            && !org_eclipse_rap_rwt_EventUtil_suspend ) 
-        {
-          this._handleSelectionChange();
-        }
       }
     },
     
