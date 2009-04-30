@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onContextMenu : function( evt ) {
       var menu = this.getContextMenu();
-      if( menu != null ) {
+      if( menu != null && !this._dropped ) {
         menu.setLocation( evt.getPageX(), evt.getPageY() );
         menu.setOpener( this );
         menu.show();
@@ -346,7 +346,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         {
           this._list._onmousedown( evt );
           this._toggleListVisibility();
-          this._setSelected( this._list.getSelectedItem() );
+          this._setSelected( this._manager.getSelectedItem() );
+          this.setFocused( true );
         // Click is on the combo's button or outside the dropped combo
         } else if(    target == this._button
                    || (    this._dropped
@@ -422,6 +423,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           {
             this._sendWidgetDefaultSelected();
           }
+          this.setFocused( true );
           evt.stopPropagation();
           break;
         case "Escape":
@@ -429,6 +431,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             this._toggleListVisibility();
             this._setSelected( this._manager.getSelectedItem() );
           } 
+          this.setFocused( true );
           evt.stopPropagation();
           break;
         // Handle Alt+Down, Alt+Up
