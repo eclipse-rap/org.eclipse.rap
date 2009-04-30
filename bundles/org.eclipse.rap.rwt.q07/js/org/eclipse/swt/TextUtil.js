@@ -256,32 +256,37 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      * necessary.
      */
     _handleSelectionChange : function( text, enclosingWidget ) {
-      var widget = enclosingWidget != null ? enclosingWidget : text;
-      var start = text.getSelectionStart();
-      // TODO [rst] Quick fix for bug 258632
-      //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
-      if( start === undefined ) {
-        start = 0;
-      }
-      var length = text.getSelectionLength();
-      // TODO [rst] Workaround for qx bug 521. Might be redundant as the
-      // bug is marked as (partly) fixed.
-      // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
-      if( typeof length == "undefined" ) {
-        text.debug( "___ qx bug 521 still exists" );
-        length = 0;
-      }
-      if(    text.getUserData( "selectionStart" ) != start
-          || text.getUserData( "selectionLength" ) != length )
-      {
-        text.setUserData( "selectionStart", start );
-        org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
-                                                     "selectionStart",
-                                                     start );
-        text.setUserData( "selectionLength", length );
-        org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
-                                                     "selectionLength",
-                                                     length );
+      // [if] Workaround for bug 261611
+      // [Text] Javascript error "text.getSelectionStart is not a function"
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=261611
+      if( text instanceof qx.ui.form.TextField ) {        
+        var widget = enclosingWidget != null ? enclosingWidget : text;
+        var start = text.getSelectionStart();
+        // TODO [rst] Quick fix for bug 258632
+        //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
+        if( start === undefined ) {
+          start = 0;
+        }
+        var length = text.getSelectionLength();
+        // TODO [rst] Workaround for qx bug 521. Might be redundant as the
+        // bug is marked as (partly) fixed.
+        // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
+        if( typeof length == "undefined" ) {
+          text.debug( "___ qx bug 521 still exists" );
+          length = 0;
+        }
+        if(    text.getUserData( "selectionStart" ) != start
+            || text.getUserData( "selectionLength" ) != length )
+        {
+          text.setUserData( "selectionStart", start );
+          org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
+                                                       "selectionStart",
+                                                       start );
+          text.setUserData( "selectionLength", length );
+          org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
+                                                       "selectionLength",
+                                                       length );
+        }
       }
     },
 
