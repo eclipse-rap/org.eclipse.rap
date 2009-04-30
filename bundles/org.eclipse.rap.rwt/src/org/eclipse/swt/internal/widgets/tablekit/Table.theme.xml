@@ -38,6 +38,9 @@
 
       <state name="selected"
           description="Applies when table item is selected." />
+          
+      <state name="inactive"
+          description="Applies to items on unfocused table." />    
 
       <state name="even"
           description="Applies when the table item has an even index" />

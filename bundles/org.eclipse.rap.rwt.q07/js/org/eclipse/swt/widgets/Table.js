@@ -115,6 +115,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    // Listen to table focus and adjust selected rows state
+    this.addEventListener( "focus", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onFocusOut, this );
     // Keyboard navigation
     this._keyboardSelecionChanged = false;
     // TODO [rh] key events in Safari not working properly, see
@@ -140,6 +143,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this.removeEventListener( "focus", this._onFocusIn, this );
+    this.removeEventListener( "blur", this._onFocusOut, this );
     // TODO [rh] key events in Safari not working properly, see
     //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
     //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
@@ -528,6 +533,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this.setFocusIndex( itemIndex );
         this._makeItemFullyVisible( itemIndex );
         this._updateSelectionParam();
+        this._updateSelectedRowState();
         this.createDispatchDataEvent( "itemselected", itemIndex );
       }
     },
@@ -792,6 +798,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this._keyboardSelecionChanged ) {
         this._keyboardSelecionChanged = false;
         this._updateSelectionParam();
+        this._updateSelectedRowState();
         this.createDispatchDataEvent( "itemselected", this._focusIndex );
       }
     },
@@ -1393,6 +1400,26 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._leftOffsetChanged ) {
           req.addParameter( id + ".leftOffset", this._horzScrollBar.getValue() );
           this._leftOffsetChanged = false;
+        }
+      }
+    },
+    
+    _onFocusIn : function( evt ) {
+      this._updateSelectedRowState();
+    },
+
+    _onFocusOut : function( evt ) {
+      this._updateSelectedRowState();
+    },
+    
+    _updateSelectedRowState : function() {
+      var selectedItems = this._selected;
+      for( var i = 0; i < selectedItems.length; i++ ) {
+        var rowIndex = this._getRowIndexFromItemIndex( selectedItems[ i ] );
+        if( this.getFocused() ) {
+          this._rows[ rowIndex ].removeState( "parent_unfocused" );
+        } else {
+          this._rows[ rowIndex ].addState( "parent_unfocused" );
         }
       }
     }

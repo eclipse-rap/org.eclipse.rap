@@ -15,6 +15,10 @@ TableItem:selected {
   background-color: rgb( 49, 106, 197 );
 }
 
+TableItem:selected:inactive {
+  background-color: rgb( 192, 192, 192 );
+}
+
 TableColumn {
   background-color: rgb( 248, 248, 255 );
 }

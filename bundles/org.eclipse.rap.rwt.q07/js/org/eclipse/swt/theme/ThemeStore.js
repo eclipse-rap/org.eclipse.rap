@@ -67,6 +67,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "TableColumn" : {
         "hover" : "mouseover"
       },
+      "TableItem" : {
+        "inactive" : "parent_unfocused"
+      },
       "TabItem" : {
         "selected" : "checked"
       }
