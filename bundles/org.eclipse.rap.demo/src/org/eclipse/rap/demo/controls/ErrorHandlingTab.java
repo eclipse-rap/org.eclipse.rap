@@ -47,7 +47,7 @@ public class ErrorHandlingTab extends ExampleTab {
       + "Click the 'Invalidate Session' button that will invalidate the " 
       + "session after a short delay.\n"
       + "Thereafter, try to proceed using the application. With the next " 
-      + "request, a new session is created. You are informaed about that and" 
+      + "request, a new session is created. You are informed about that and " 
       + "can start working with the new session";
     lblInfo.setText( info );
     Button btnInvalidateSession = new Button( parent, SWT.PUSH );
