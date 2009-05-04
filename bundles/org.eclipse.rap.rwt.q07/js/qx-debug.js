@@ -16472,301 +16472,6 @@ members.getInnerHeight=members.getPreferredBoxHeight;
 
 
 
-/* ID: qx.ui.form.ComboBox */
-qx.Class.define("qx.ui.form.ComboBox",
-{extend:qx.ui.layout.HorizontalBoxLayout,
-construct:function(){this.base(arguments);
-var l=this._list=new qx.ui.form.List;
-l.setAppearance("combo-box-list");
-l.setTabIndex(-1);
-l.setEdge(0);
-var m=this._manager=this._list.getManager();
-m.setMultiSelection(false);
-m.setDragSelection(false);
-var p=this._popup=new qx.ui.popup.Popup;
-p.setAppearance("combo-box-popup");
-p.setRestrictToPageLeft(-100000);
-p.setRestrictToPageRight(-100000);
-p.setAutoHide(false);
-p.setHeight("auto");
-p.add(l);
-var f=this._field=new qx.ui.form.TextField;
-f.setAppearance("combo-box-text-field");
-f.setTabIndex(-1);
-f.setWidth("1*");
-f.setAllowStretchY(true);
-f.setHeight(null);
-this.add(f);
-var b=this._button=new qx.ui.basic.Atom;
-b.setAppearance("combo-box-button");
-b.setAllowStretchY(true);
-b.setTabIndex(-1);
-b.setHeight(null);
-this.add(b);
-this.addEventListener("mousedown",
-this._onmousedown);
-this.addEventListener("mouseup",
-this._onmouseup);
-this.addEventListener("click",
-this._onclick);
-this.addEventListener("mouseover",
-this._onmouseover);
-this.addEventListener("mousewheel",
-this._onmousewheel);
-this.addEventListener("keydown",
-this._onkeydown);
-this.addEventListener("keypress",
-this._onkeypress);
-this.addEventListener("keyinput",
-this._onkeyinput);
-this.addEventListener("beforeDisappear",
-this._onbeforedisappear);
-this._popup.addEventListener("appear",
-this._onpopupappear,
-this);
-this._field.addEventListener("input",
-this._oninput,
-this);
-qx.locale.Manager.getInstance().addEventListener("changeLocale",
-this._onlocalechange,
-this);
-var vDoc=qx.ui.core.ClientDocument.getInstance();
-vDoc.addEventListener("windowblur",
-this._testClosePopup,
-this);
-this.remapChildrenHandlingTo(l);
-this.initEditable();
-this.initTabIndex();
-this.initWidth();
-this.initHeight();
-this.initMinWidth();
-},
-events:{"beforeInitialOpen":"qx.event.type.Event"},
-properties:{appearance:{refine:true,
-init:"combo-box"},
-allowStretchY:{refine:true,
-init:false},
-width:{refine:true,
-init:120},
-height:{refine:true,
-init:"auto"},
-minWidth:{refine:true,
-init:40},
-tabIndex:{refine:true,
-init:1},
-editable:{check:"Boolean",
-apply:"_applyEditable",
-event:"changeEditable",
-init:false},
-selected:{check:"qx.ui.form.ListItem",
-nullable:true,
-apply:"_applySelected",
-event:"changeSelected"},
-value:{check:"String",
-nullable:true,
-apply:"_applyValue",
-event:"changeValue"},
-pagingInterval:{check:"Integer",
-init:10},
-format:{check:"Function",
-init:function(item){return this.__defaultFormat(item);
-},
-nullable:true}},
-members:{getManager:function(){return this._manager;
-},
-getPopup:function(){return this._popup;
-},
-getList:function(){return this._list;
-},
-getField:function(){return this._field;
-},
-getButton:function(){return this._button;
-},
-_applySelected:function(value,
-old){this._fromSelected=true;
-if(!this._fromValue){var valueLabel=value?value.getLabel().toString():"";
-if(this.getFormat()!=null){valueLabel=this.getFormat().call(this,
-value);
-}this.setValue(valueLabel);
-}this._manager.setLeadItem(value);
-this._manager.setAnchorItem(value);
-if(value){this._manager.setSelectedItem(value);
-}else{this._manager.deselectAll();
-}delete this._fromSelected;
-},
-_applyValue:function(value,
-old){this._fromValue=true;
-if(!this._fromInput){if(this._field.getValue()==value){this._field.setValue(null);
-}this._field.setValue(value);
-}delete this._fromValue;
-},
-_applyEditable:function(value,
-old){var f=this._field;
-f.setReadOnly(!value);
-f.setCursor(value?null:"default");
-f.setSelectable(value);
-},
-_oldSelected:null,
-_openPopup:function(){var p=this._popup;
-var el=this.getElement();
-if(!p.isCreated()){this.createDispatchEvent("beforeInitialOpen");
-}
-if(this._list.getChildrenLength()==0){return;
-}p.positionRelativeTo(el,
-1,
-qx.html.Dimension.getBoxHeight(el));
-p.setWidth(this.getBoxWidth()-2);
-p.setParent(this.getTopLevelWidget());
-p.show();
-this._oldSelected=this.getSelected();
-this.setCapture(true);
-},
-_closePopup:function(){this._popup.hide();
-this.setCapture(false);
-},
-_testClosePopup:function(){if(this._popup.isSeeable()){this._closePopup();
-}},
-_togglePopup:function(){this._popup.isSeeable()?this._closePopup():this._openPopup();
-},
-_onpopupappear:function(e){var vSelItem=this.getSelected();
-if(vSelItem){vSelItem.scrollIntoView();
-}},
-_oninput:function(e){this._fromInput=true;
-this.setValue(this._field.getComputedValue());
-var vSelected=this.getSelected();
-if(vSelected&&vSelected.getLabel()!=this.getValue()){this.resetSelected();
-}delete this._fromInput;
-},
-_onbeforedisappear:function(e){this._testClosePopup();
-},
-_onlocalechange:function(e){var selected=this.getSelected();
-this._applySelected(selected,
-selected);
-},
-_onmousedown:function(e){if(!e.isLeftButtonPressed()){return;
-}var vTarget=e.getTarget();
-switch(vTarget){case this._field:if(this.getEditable()){break;
-}case this._button:this._button.addState("pressed");
-this._togglePopup();
-this.setCapture(true);
-break;
-default:break;
-}e.stopPropagation();
-},
-_onclick:function(e){if(!e.isLeftButtonPressed()){return;
-}var vTarget=e.getTarget();
-switch(vTarget){case this._field:case this._button:case this:case this._list:break;
-default:if(vTarget instanceof qx.ui.form.ListItem&&vTarget.getParent()==this._list){this._list._onmousedown(e);
-this.setSelected(this._list.getSelectedItem());
-this._closePopup();
-this.setFocused(true);
-}else if(this._popup.isSeeable()){this._popup.hide();
-this.setCapture(false);
-}}},
-_onmouseup:function(e){this._button.removeState("pressed");
-if(!this._popup.isSeeable()){this.setCapture(false);
-}},
-_onmouseover:function(e){var vTarget=e.getTarget();
-if(vTarget instanceof qx.ui.form.ListItem){var vManager=this._manager;
-vManager.deselectAll();
-vManager.setLeadItem(vTarget);
-vManager.setAnchorItem(vTarget);
-vManager.setSelectedItem(vTarget);
-}},
-_onmousewheel:function(e){if(!this._popup.isSeeable()){var toSelect;
-var isSelected=this.getSelected();
-if(e.getWheelDelta()<0){toSelect=isSelected?this._manager.getNext(isSelected):this._manager.getFirst();
-}else{toSelect=isSelected?this._manager.getPrevious(isSelected):this._manager.getLast();
-}
-if(toSelect){this.setSelected(toSelect);
-}}else{var vTarget=e.getTarget();
-if(vTarget!=this&&vTarget.getParent()!=this._list){this._popup.hide();
-this.setCapture(false);
-}}},
-_onkeydown:function(e){var vManager=this._manager;
-var vVisible=this._popup.isSeeable();
-switch(e.getKeyIdentifier()){case "Enter":if(vVisible){this.setSelected(this._manager.getSelectedItem());
-this._closePopup();
-this.setFocused(true);
-}else{this._openPopup();
-}e.stopPropagation();
-return;
-case "Escape":if(vVisible){vManager.setLeadItem(this._oldSelected);
-vManager.setAnchorItem(this._oldSelected);
-vManager.setSelectedItem(this._oldSelected);
-this._field.setValue(this._oldSelected?this._oldSelected.getLabel():"");
-this._closePopup();
-this.setFocused(true);
-e.stopPropagation();
-}return;
-case "Down":if(e.isAltPressed()){this._togglePopup();
-return;
-}break;
-}},
-_onkeypress:function(e){var vVisible=this._popup.isSeeable();
-var vManager=this._manager;
-switch(e.getKeyIdentifier()){case "PageUp":if(!vVisible){var vPrevious;
-var vTemp=this.getSelected();
-if(vTemp){var vInterval=this.getPagingInterval();
-do{vPrevious=vTemp;
-}while(--vInterval&&(vTemp=vManager.getPrevious(vPrevious)));
-}else{vPrevious=vManager.getLast();
-}this.setSelected(vPrevious);
-return;
-}break;
-case "PageDown":if(!vVisible){var vNext;
-var vTemp=this.getSelected();
-if(vTemp){var vInterval=this.getPagingInterval();
-do{vNext=vTemp;
-}while(--vInterval&&(vTemp=vManager.getNext(vNext)));
-}else{vNext=vManager.getFirst();
-}this.setSelected(vNext||null);
-return;
-}break;
-case "Escape":e.stopPropagation();
-break;
-}if(!this.isEditable()||vVisible){this._list._onkeypress(e);
-}},
-_onkeyinput:function(e){var vVisible=this._popup.isSeeable();
-if(!this.isEditable()||vVisible){this._list._onkeyinput(e);
-}},
-_visualizeBlur:function(){this.getField()._visualizeBlur();
-this.removeState("focused");
-},
-_visualizeFocus:function(){this.getField()._visualizeFocus();
-this.getField().selectAll();
-this.addState("focused");
-},
-__defaultFormat:function(item){var valueLabel=item?item.getLabel().toString():"";
-var label=item?item.getLabelObject():null;
-if(label!=null){var mode=label.getMode();
-if(mode==="auto"){mode=qx.util.Validation.isValidString(valueLabel)&&valueLabel.match(/<.*>/)?"html":"text";
-}
-if(mode==="html"){valueLabel=valueLabel.replace(/<[^>]+?>/g,
-"");
-valueLabel=qx.html.String.unescape(valueLabel);
-}}return valueLabel;
-}},
-destruct:function(){if(this._popup&&!qx.core.Object.inGlobalDispose()){this._popup.setParent(null);
-}var vDoc=qx.ui.core.ClientDocument.getInstance();
-vDoc.removeEventListener("windowblur",
-this._testClosePopup,
-this);
-var vMgr=qx.locale.Manager.getInstance();
-vMgr.removeEventListener("changeLocale",
-this._onlocalechange,
-this);
-this._disposeObjects("_popup",
-"_list",
-"_manager",
-"_field",
-"_button",
-"_oldSelected");
-}});
-
-
-
-
 /* ID: qx.ui.form.List */
 qx.Class.define("qx.ui.form.List",
 {extend:qx.ui.layout.VerticalBoxLayout,
@@ -16913,6 +16618,55 @@ i);
 }}},
 destruct:function(){this._disposeObjects("_manager");
 }});
+
+
+
+
+/* ID: qx.ui.form.ListItem */
+qx.Class.define("qx.ui.form.ListItem",
+{extend:qx.ui.basic.Atom,
+construct:function(vText,
+vIcon,
+vValue){this.base(arguments,
+vText,
+vIcon);
+if(vValue!=null){this.setValue(vValue);
+}this.addEventListener("dblclick",
+this._ondblclick);
+this.initMinWidth();
+},
+events:{"action":"qx.event.type.Event"},
+properties:{appearance:{refine:true,
+init:"list-item"},
+minWidth:{refine:true,
+init:"auto"},
+width:{refine:true,
+init:null},
+allowStretchX:{refine:true,
+init:true},
+value:{check:"String",
+event:"changeValue"}},
+members:{handleStateChange:function(){if(this.hasState("lead")){this.setStyleProperty("outline",
+"1px dotted");
+}else{this.setStyleProperty("outline",
+"0px none");
+}},
+_applyStateStyleFocus:function(vStates){},
+matchesString:function(vText){vText=String(vText);
+return vText!=""&&this.getLabel().toString().toLowerCase().indexOf(vText.toLowerCase())==0;
+},
+matchesStringExact:function(vText){vText=String(vText);
+return vText!=""&&this.getLabel().toString().toLowerCase()==String(vText).toLowerCase();
+},
+matchesValue:function(vText){vText=String(vText);
+return vText!=""&&this.getValue().toLowerCase().indexOf(vText.toLowerCase())==0;
+},
+matchesValueExact:function(vText){vText=String(vText);
+return vText!=""&&this.getValue().toLowerCase()==String(vText).toLowerCase();
+},
+_ondblclick:function(e){var vCommand=this.getCommand();
+if(vCommand){vCommand.execute();
+}}}});
 
 
 
@@ -17317,55 +17071,6 @@ false);
 "__font",
 "__oninput");
 }});
-
-
-
-
-/* ID: qx.ui.form.ListItem */
-qx.Class.define("qx.ui.form.ListItem",
-{extend:qx.ui.basic.Atom,
-construct:function(vText,
-vIcon,
-vValue){this.base(arguments,
-vText,
-vIcon);
-if(vValue!=null){this.setValue(vValue);
-}this.addEventListener("dblclick",
-this._ondblclick);
-this.initMinWidth();
-},
-events:{"action":"qx.event.type.Event"},
-properties:{appearance:{refine:true,
-init:"list-item"},
-minWidth:{refine:true,
-init:"auto"},
-width:{refine:true,
-init:null},
-allowStretchX:{refine:true,
-init:true},
-value:{check:"String",
-event:"changeValue"}},
-members:{handleStateChange:function(){if(this.hasState("lead")){this.setStyleProperty("outline",
-"1px dotted");
-}else{this.setStyleProperty("outline",
-"0px none");
-}},
-_applyStateStyleFocus:function(vStates){},
-matchesString:function(vText){vText=String(vText);
-return vText!=""&&this.getLabel().toString().toLowerCase().indexOf(vText.toLowerCase())==0;
-},
-matchesStringExact:function(vText){vText=String(vText);
-return vText!=""&&this.getLabel().toString().toLowerCase()==String(vText).toLowerCase();
-},
-matchesValue:function(vText){vText=String(vText);
-return vText!=""&&this.getValue().toLowerCase().indexOf(vText.toLowerCase())==0;
-},
-matchesValueExact:function(vText){vText=String(vText);
-return vText!=""&&this.getValue().toLowerCase()==String(vText).toLowerCase();
-},
-_ondblclick:function(e){var vCommand=this.getCommand();
-if(vCommand){vCommand.execute();
-}}}});
 
 
 
