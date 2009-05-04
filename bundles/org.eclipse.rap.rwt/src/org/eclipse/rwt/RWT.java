@@ -47,7 +47,7 @@ public final class RWT {
    * <p>This utility class helps to provide a similar approach for compile safe
    * native language support than {@link org.eclipse.osgi.util.NLS NLS} does.
    * We can not use the original approach though, due to the nature of
-   * server side environments, that have to deal with different languages
+   * server side environments, that have to deal with different locales
    * per user session or even requests.</p>
    *
    * <p>
@@ -153,7 +153,7 @@ public final class RWT {
                 }
               }
             } catch( final Exception ex ) {
-              // TODO Auto-generated catch block
+              // TODO [rh] handle exception
               ex.printStackTrace();
             }
           }
@@ -177,8 +177,7 @@ public final class RWT {
   };
   
   /**
-   * Returns the instance of the current life cycle
-   * which is currently processed.
+   * Returns the instance of the life cycle which is currently processed.
    * 
    * @return instance of {@link ILifeCycle}
    */
@@ -258,10 +257,10 @@ public final class RWT {
    * Returns the preferred <code>Locale</code> that the client will accept
    * content in. This is eihter the <code>Locale</code> that was set in 
    * session-scope using the {@link #setLocale(Locale)} method or the locale
-   * based on the Accept-Language header of the current request. If neighter
-   * the <code>Locale</code> was set programmatically, nor the client request
-   * provides an Accept-Language header, this method returns the default
-   * locale for the server.
+   * based on the <code>Accept-Language</code> HTTP header of the current 
+   * request. If neither the <code>Locale</code> was set programmatically, nor 
+   * the client request provides an <code>Accept-Language</code> header, this 
+   * method returns the default locale for the server.
    * 
    * @return the preferred <code>Locale</code> for the client.
    * 
