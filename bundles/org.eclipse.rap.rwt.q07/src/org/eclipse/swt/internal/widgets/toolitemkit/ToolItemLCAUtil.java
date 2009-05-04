@@ -69,8 +69,7 @@ final class ToolItemLCAUtil {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) )
     {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      SelectionEvent event
-        = ToolItemLCAUtil.newSelectionEvent( toolItem, bounds, SWT.NONE );
+      SelectionEvent event = newSelectionEvent( toolItem, bounds, SWT.NONE );
       event.processEvent();
     }
   }

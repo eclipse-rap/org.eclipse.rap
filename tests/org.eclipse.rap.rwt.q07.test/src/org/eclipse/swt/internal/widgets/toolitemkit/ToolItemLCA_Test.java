@@ -138,6 +138,23 @@ public class ToolItemLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
+  
+  public void testRadioItemSelected() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
+    ToolItem item0 = new ToolItem( toolBar, SWT.RADIO );
+    item0.setSelection( true );
+    ToolItem item1 = new ToolItem( toolBar, SWT.RADIO );
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String item1Id = WidgetUtil.getId( item1 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( item1Id + ".selection", "true" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, item1Id );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertFalse( item0.getSelection() );
+    assertTrue( item1.getSelection() );
+  }
 
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();

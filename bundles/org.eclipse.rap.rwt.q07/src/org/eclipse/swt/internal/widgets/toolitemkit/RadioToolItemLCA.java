@@ -43,14 +43,12 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   }
 
   void readData( final ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      Control[] children = toolItem.getParent().getChildren();
-      for( int i = 0; i < children.length; i++ ) {
-        Widget child = children[ i ];
-        if( ( child instanceof ToolItem )
-            && ( ( child.getStyle() & SWT.RADIO ) != 0 ) )
-        {
-          ( ( ToolItem )child ).setSelection( false );
+    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) )
+    {
+      ToolItem[] items = toolItem.getParent().getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        if( ( items[ i ].getStyle() & SWT.RADIO ) != 0 ) {
+          items[ i ].setSelection( false );
         }
       }
       toolItem.setSelection( true );
