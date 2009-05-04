@@ -40,6 +40,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   static final String PROP_CELL_FOREGROUNDS = "cellForegrounds";
   static final String PROP_CELL_FONTS = "cellFonts";
   static final String PROP_CACHED = "cached";
+  static final String PROP_VARIANT = "variant";
 
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
@@ -68,6 +69,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       adapter.preserve( PROP_CELL_FOREGROUNDS,
                         tableItemAdapter.getCellForegrounds() );
       adapter.preserve( PROP_CELL_FONTS, tableItemAdapter.getCellFonts() );
+      adapter.preserve( PROP_VARIANT, WidgetUtil.getVariant( widget ) );
     }
     adapter.preserve( PROP_CACHED,
                       Boolean.valueOf( isCached( table, index ) ) );
@@ -159,6 +161,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     needUpdate |= writeChecked( item );
     needUpdate |= writeGrayed( item );
     needUpdate |= writeSelection( item );
+    needUpdate |= writeVariant( item );
     if( isVisible( item ) ) {
       Table table = item.getParent();
       needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
@@ -336,6 +339,18 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       Object[] args = new Object[] { new Integer( index ) };
       writer.call( item.getParent(), "setFocusIndex", args );
     }
+  }
+
+  private static boolean writeVariant( TableItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    String variant = WidgetUtil.getVariant( item );
+    boolean result
+      = WidgetLCAUtil.hasChanged( item, PROP_VARIANT, variant, null );
+    if( result ) {
+      Object[] args = new Object[] { "variant_" + variant };
+      writer.set( "variant", args );
+    }
+    return result;
   }
 
   private static void writeUpdate( final TableItem item ) throws IOException {

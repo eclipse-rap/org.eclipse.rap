@@ -128,6 +128,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._cellFonts = fonts;
     },
 
+    setVariant : function( variant ) {
+      this._variant = variant;
+    },
+
     update : function() {
       this._cached = true;
       this._parent.updateItem( this._getIndex(), true );
@@ -145,6 +149,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._cellBackgrounds = null;
       this._cellForegrounds = null;
       this._cellFonts = null;
+      this._variant = null;
     },
 
     /**
@@ -166,6 +171,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       if( parent.hasCheckBoxes() ) {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
+      row.setVariant( this._variant );
       // Row background color
       if( this._drawColors() && this._background != null ) {
         row.setBackgroundColor( this._background );
