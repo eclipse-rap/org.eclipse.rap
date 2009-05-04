@@ -1071,6 +1071,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           // Re-calculate the position and size for each row
           this._updateRowBounds();
           this._updateRowTop();
+          this._updateFocusState();
           result = true;
         }
       }
