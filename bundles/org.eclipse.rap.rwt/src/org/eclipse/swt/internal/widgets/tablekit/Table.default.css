@@ -15,7 +15,7 @@ TableItem:selected {
   background-color: rgb( 49, 106, 197 );
 }
 
-TableItem:selected:inactive {
+TableItem:selected:unfocused {
   background-color: rgb( 192, 192, 192 );
 }
 

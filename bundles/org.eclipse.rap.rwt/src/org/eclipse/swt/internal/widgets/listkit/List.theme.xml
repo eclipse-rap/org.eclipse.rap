@@ -51,7 +51,7 @@
       <state name="selected"
           description="Applies to selected items." />
 
-      <state name="inactive"
+      <state name="unfocused"
           description="Applies to items on unfocused lists." />
 
       <state name="even"

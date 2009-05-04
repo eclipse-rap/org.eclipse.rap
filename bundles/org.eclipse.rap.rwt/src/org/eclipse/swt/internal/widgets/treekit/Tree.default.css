@@ -15,7 +15,7 @@ TreeItem:selected {
   background-color: rgb( 49, 106, 197 );
 }
 
-TreeItem:selected:inactive {
+TreeItem:selected:unfocused {
   color: white;
   background-color: rgb( 192, 192, 192 );  
 }

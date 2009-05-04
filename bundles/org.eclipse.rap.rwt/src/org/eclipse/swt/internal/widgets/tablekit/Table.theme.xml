@@ -39,7 +39,7 @@
       <state name="selected"
           description="Applies when table item is selected." />
           
-      <state name="inactive"
+      <state name="unfocused"
           description="Applies to items on unfocused table." />    
 
       <state name="even"

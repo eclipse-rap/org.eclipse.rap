@@ -38,13 +38,13 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         "selected" : "checked"
       },
       "List-Item" : {
-        "inactive" : "parent_unfocused"
+        "unfocused" : "parent_unfocused"
       },
       "Text" : {
         "read-only" : "readonly"
       },
       "TreeItem" : {
-        "inactive" : "parent_unfocused"
+        "unfocused" : "parent_unfocused"
       },
       "TreeColumn" : {
         "hover" : "mouseover"
@@ -68,7 +68,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         "hover" : "mouseover"
       },
       "TableItem" : {
-        "inactive" : "parent_unfocused"
+        "unfocused" : "parent_unfocused"
       },
       "TabItem" : {
         "selected" : "checked"

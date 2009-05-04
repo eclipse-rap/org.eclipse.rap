@@ -20,6 +20,6 @@ List-Item:selected {
   color: white;
 }
 
-List-Item:selected:inactive {
+List-Item:selected:unfocused {
   background-color: rgb( 192, 192, 192 );
 }

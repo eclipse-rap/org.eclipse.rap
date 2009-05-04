@@ -39,7 +39,7 @@
       <state name="selected"
           description="When the tree item is selected" />
 
-      <state name="inactive"
+      <state name="unfocused"
           description="When the focus is not on the tree" />
 
       <state name="disabled"
