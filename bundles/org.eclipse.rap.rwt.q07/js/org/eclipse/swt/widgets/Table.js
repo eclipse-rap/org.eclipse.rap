@@ -533,7 +533,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this.setFocusIndex( itemIndex );
         this._makeItemFullyVisible( itemIndex );
         this._updateSelectionParam();
-        this._updateSelectedRowState();
         this.createDispatchDataEvent( "itemselected", itemIndex );
       }
     },
@@ -798,7 +797,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this._keyboardSelecionChanged ) {
         this._keyboardSelecionChanged = false;
         this._updateSelectionParam();
-        this._updateSelectedRowState();
         this.createDispatchDataEvent( "itemselected", this._focusIndex );
       }
     },
@@ -1413,13 +1411,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     _updateSelectedRowState : function() {
-      var selectedItems = this._selected;
-      for( var i = 0; i < selectedItems.length; i++ ) {
-        var rowIndex = this._getRowIndexFromItemIndex( selectedItems[ i ] );
+      for( var i = 0; i < this._rows.length; i++ ) {
         if( this.getFocused() ) {
-          this._rows[ rowIndex ].removeState( "parent_unfocused" );
+          this._rows[ i ].removeState( "parent_unfocused" );
         } else {
-          this._rows[ rowIndex ].addState( "parent_unfocused" );
+          this._rows[ i ].addState( "parent_unfocused" );
         }
       }
     }
