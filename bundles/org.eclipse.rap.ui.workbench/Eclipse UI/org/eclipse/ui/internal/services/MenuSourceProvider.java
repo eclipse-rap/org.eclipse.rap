@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
@@ -31,6 +32,7 @@ import org.eclipse.ui.ISources;
  * <code>org.eclipse.ui.workbench</code>.
  * </p>
  * 
+ * @since 3.2
  */
 public final class MenuSourceProvider extends AbstractSourceProvider {
 
@@ -64,11 +66,15 @@ public final class MenuSourceProvider extends AbstractSourceProvider {
 		m.put(ISources.ACTIVE_MENU_NAME, this.menuIds);
 		if (selection != localSelection) {
 			selection = localSelection;
-			m.put(ISources.ACTIVE_MENU_SELECTION_NAME, selection);
+			m.put(ISources.ACTIVE_MENU_SELECTION_NAME,
+					selection == null ? IEvaluationContext.UNDEFINED_VARIABLE
+							: selection);
 		}
 		if (input != localEditorInput) {
 			input = localEditorInput;
-			m.put(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME, input);
+			m.put(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME,
+					input == null ? IEvaluationContext.UNDEFINED_VARIABLE
+							: input);
 		}
 
 		fireSourceChanged(ISources.ACTIVE_MENU, m);
@@ -83,8 +89,11 @@ public final class MenuSourceProvider extends AbstractSourceProvider {
 	public final Map getCurrentState() {
 		final Map state = new HashMap();
 		state.put(ISources.ACTIVE_MENU_NAME, menuIds);
-		state.put(ISources.ACTIVE_MENU_SELECTION_NAME, selection);
-		state.put(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME, input);
+		state.put(ISources.ACTIVE_MENU_SELECTION_NAME,
+				selection == null ? IEvaluationContext.UNDEFINED_VARIABLE
+						: selection);
+		state.put(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME,
+				input == null ? IEvaluationContext.UNDEFINED_VARIABLE : input);
 		return state;
 	}
 
@@ -109,11 +118,15 @@ public final class MenuSourceProvider extends AbstractSourceProvider {
 		m.put(ISources.ACTIVE_MENU_NAME, this.menuIds);
 		if (selection != localSelection) {
 			selection = localSelection;
-			m.put(ISources.ACTIVE_MENU_SELECTION_NAME, selection);
+			m.put(ISources.ACTIVE_MENU_SELECTION_NAME,
+					selection == null ? IEvaluationContext.UNDEFINED_VARIABLE
+							: selection);
 		}
 		if (input != localEditorInput) {
 			input = localEditorInput;
-			m.put(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME, input);
+			m.put(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME,
+					input == null ? IEvaluationContext.UNDEFINED_VARIABLE
+							: input);
 		}
 		fireSourceChanged(ISources.ACTIVE_MENU, m);
 	}
