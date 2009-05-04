@@ -124,15 +124,15 @@ DateTime-Calendar-Navbar {
   color: white;
 }
 
-DateTime-Calendar-LastButton {
+DateTime-Calendar-PreviousMonthButton {
   background-image: url( "/theme1/icons/calendar.last.gif" );
 }
 
-DateTime-Calendar-NextButton {
+DateTime-Calendar-NextMonthButton {
   background-image: url( "/theme1/icons/calendar.next.gif" );
 }
 
-DateTime-Calendar-LastYearButton {
+DateTime-Calendar-PreviousYearButton {
   background-image: url( "/theme1/icons/calendar.last.year.gif" );
 }
 

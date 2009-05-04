@@ -74,19 +74,19 @@
 
     </element>
 
-    <element name="DateTime-Calendar-LastButton"
-        description="The calendar last month button">
+    <element name="DateTime-Calendar-PreviousMonthButton"
+        description="The calendar previous month button">
 
       <property name="background-image" type="image">
         <description>
-          Background image for the Calendar last month button.
+          Background image for the Calendar previous month button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
 
     </element>
 
-    <element name="DateTime-Calendar-NextButton"
+    <element name="DateTime-Calendar-NextMonthButton"
         description="The calendar next month button">
 
       <property name="background-image" type="image">
@@ -98,12 +98,12 @@
 
     </element>
 
-    <element name="DateTime-Calendar-LastYearButton"
-        description="The calendar last year button">
+    <element name="DateTime-Calendar-PreviousYearButton"
+        description="The calendar previous year button">
 
       <property name="background-image" type="image">
         <description>
-          Background image for the Calendar last year button.
+          Background image for the Calendar previous year button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>

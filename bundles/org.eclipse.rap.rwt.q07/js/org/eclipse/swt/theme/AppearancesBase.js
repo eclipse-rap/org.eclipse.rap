@@ -1861,25 +1861,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "calendar-toolbar-last-year-button" : {
+  "calendar-toolbar-previous-year-button" : {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-LastYearButton",
+        icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton",
                                "background-image" )
       };
     }
   },
 
-  "calendar-toolbar-last-month-button" : {
+  "calendar-toolbar-previous-month-button" : {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-LastButton",
+        icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton",
                                "background-image" )
       };
     }
@@ -1891,7 +1891,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-NextButton",
+        icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton",
                                "background-image" )
       };
     }

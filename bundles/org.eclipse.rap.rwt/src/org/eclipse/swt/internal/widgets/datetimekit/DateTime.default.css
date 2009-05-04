@@ -19,15 +19,15 @@ DateTime-Calendar-Navbar {
   color: white;
 }
 
-DateTime-Calendar-LastButton {
+DateTime-Calendar-PreviousMonthButton {
   background-image: url( resource/widget/rap/calendar/lastMonth.gif );
 }
 
-DateTime-Calendar-NextButton {
+DateTime-Calendar-NextMonthButton {
   background-image: url( resource/widget/rap/calendar/nextMonth.gif );
 }
 
-DateTime-Calendar-LastYearButton {
+DateTime-Calendar-PreviousYearButton {
   background-image: url( resource/widget/rap/calendar/lastYear.gif );
 }
 
