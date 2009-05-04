@@ -1244,6 +1244,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
+    _updateFocusState : function() {
+      var focused = this.getFocused();
+      for( var i = 0; i < this._rows.length; i++ ) {
+        if( focused ) {
+          this._rows[ i ].removeState( "parent_unfocused" );
+        } else {
+          this._rows[ i ].addState( "parent_unfocused" );
+        }
+      }
+    },
+    
     _resolveItem : function( itemIndex ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         if( this._unresolvedItems === null ) {
@@ -1350,7 +1361,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       return result;
     },
+    
+    //////////////////////////////////////////////////////////
+    // Focus tracking - may change appearance of selected row
 
+    _onFocusIn : function( evt ) {
+      this._updateFocusState()
+    },
+
+    _onFocusOut : function( evt ) {
+      this._updateFocusState()
+    },
+    
     ////////////////////////////////////////////////////////////
     // Event handling methods - added and removed by server-side
 
@@ -1400,24 +1422,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._leftOffsetChanged = false;
         }
       }
-    },
-    
-    _onFocusIn : function( evt ) {
-      this._updateSelectedRowState();
-    },
-
-    _onFocusOut : function( evt ) {
-      this._updateSelectedRowState();
-    },
-    
-    _updateSelectedRowState : function() {
-      for( var i = 0; i < this._rows.length; i++ ) {
-        if( this.getFocused() ) {
-          this._rows[ i ].removeState( "parent_unfocused" );
-        } else {
-          this._rows[ i ].addState( "parent_unfocused" );
-        }
-      }
     }
+    
   }
 });
