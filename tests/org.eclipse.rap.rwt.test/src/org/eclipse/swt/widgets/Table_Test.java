@@ -123,7 +123,7 @@ public class Table_Test extends TestCase {
     column0.setWidth( 100 );
     assertEquals( 100, column0.getWidth() );
   }
-  
+
   public void testHeaderHeight() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -236,6 +236,19 @@ public class Table_Test extends TestCase {
     table.removeAll();
     TableItem soleItem = new TableItem( table, SWT.NONE );
     soleItem.dispose();
+    assertEquals( 0, table.getTopIndex() );
+
+    // Ensure that topIndex stays 0 if no vertical scrollbar needed.
+    table.setSize( 100, 100 );
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    assertEquals( 0, table.getTopIndex() );
+    table.setTopIndex( 9 );
+    assertEquals( 9, table.getTopIndex() );
+    for( int i = 3; i < 10; i++ ) {
+      table.getItem( 3 ).dispose();
+    }
     assertEquals( 0, table.getTopIndex() );
   }
 
@@ -2024,7 +2037,7 @@ public class Table_Test extends TestCase {
     table.setHeaderVisible( true );
     assertTrue( table.hasVScrollBar() );
   }
-  
+
   public void testUpdateScrollBarOnVirtualItemCountChange() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();

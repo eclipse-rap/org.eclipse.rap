@@ -1857,7 +1857,7 @@ public class Table extends Composite {
                             final boolean changed )
   {
     checkWidget ();
-    int width = 0; 
+    int width = 0;
     int height = 0;
 
     if( getColumnCount() > 0 ) {
@@ -2237,7 +2237,7 @@ public class Table extends Composite {
 
   ///////////////////////////////////////
   // Helping methods - dynamic scrollbars
-  
+
   boolean hasVScrollBar() {
     return hasVScrollBar;
   }
@@ -2343,7 +2343,11 @@ public class Table extends Composite {
 
   private void adjustTopIndex() {
     if( topIndex > itemCount - 1 ) {
-      topIndex = Math.max( 0, itemCount - 1 );
+      if( needsVScrollBar() ) {
+        topIndex = Math.max( 0, itemCount - 1 );
+      } else {
+        topIndex = 0;
+      }
     }
   }
 
@@ -2352,7 +2356,7 @@ public class Table extends Composite {
     focusIndex = -1;
     focusIndex = getSelectionIndex();
   }
-  
+
   private void adjustItemIndices( final int start ) {
     for( int i = start; i < itemCount; i++ ) {
       if( items[ i ] != null ) {
@@ -2430,7 +2434,7 @@ public class Table extends Composite {
     TableItem[] items = tableAdapter.getCachedItems();
     TableItem result = null;
     if( getColumnCount() == 0 ) {
-      // Find item with longest text because the imaginary only column stretches 
+      // Find item with longest text because the imaginary only column stretches
       // as wide as the longest item (images cannot differ in width)
       for( int i = 0; i < items.length; i++ ) {
         if( result == null ) {
