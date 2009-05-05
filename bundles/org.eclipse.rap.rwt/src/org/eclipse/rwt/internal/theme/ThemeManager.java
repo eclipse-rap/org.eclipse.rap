@@ -487,7 +487,7 @@ public final class ThemeManager {
       }
       if( themeWidget.elements == null ) {
         log( "WARNING: No elements defined for themeable widget: "
-             + themeWidget.widget.getClass().getName() );
+             + themeWidget.widget.getName() );
       }
       if( themeWidget.defaultStyleSheet != null ) {
         defaultStyleSheetBuilder.addStyleSheet( themeWidget.defaultStyleSheet );
