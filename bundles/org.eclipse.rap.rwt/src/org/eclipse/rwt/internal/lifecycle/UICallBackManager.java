@@ -280,7 +280,13 @@ public final class UICallBackManager
       lock = new Object();
     }
     void run() {
-      super.run();
+      try {
+        super.run();
+      } finally {
+        notifyBlocked();
+      }
+    }
+    private void notifyBlocked() {
       synchronized( lock ) {
         terminated = true;
         lock.notifyAll();

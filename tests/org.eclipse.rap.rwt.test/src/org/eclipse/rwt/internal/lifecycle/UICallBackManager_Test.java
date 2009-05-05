@@ -286,6 +286,40 @@ public class UICallBackManager_Test extends TestCase {
     // sanity-check the test itself: all runnables must have been executed 
     assertTrue( UICallBackManager.getInstance().runnables.isEmpty() );
   }
+  
+  // This test ensures that SyncRunnable releases the blocked thread in case of 
+  // an exception
+  public void testAddSyncWithExceptionInRunnable() throws Exception {
+    final Display display = new Display();
+    final ServiceContext context = ContextProvider.getContext();
+    // the code in bgRunnable simulates a bg-thread that calls Display#addSync
+    // and causes an exception in the runnable
+    Runnable bgRunnable = new Runnable() {
+      public void run() {
+        ContextProvider.setContext( context );
+        Fixture.fakeResponseWriter();
+        Runnable causeException = new Runnable() {
+          public void run() {
+            throw new RuntimeException();
+          }
+        };
+        UICallBackManager.getInstance().addSync( display, causeException );
+      }
+    };
+    
+    Thread bgThread = new Thread( bgRunnable );
+    bgThread.setDaemon( true );
+    bgThread.start();
+    Thread.sleep( SLEEP_TIME );
+    try {
+      UICallBackManager.getInstance().processNextRunnableInUIThread();
+      fail( "Exception from causeException-runnable must end up here" );
+    } catch( SWTException e ) {
+      // expected
+    }
+    Thread.sleep( SLEEP_TIME );
+    assertFalse( bgThread.isAlive() );
+  }
 
   private static Thread simulateUiCallBackThread(
     final Throwable[] uiCallBackServiceHandlerThrowable,
