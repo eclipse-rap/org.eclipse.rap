@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -27,10 +29,10 @@ import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServic
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.service.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.layout.FillLayout;
@@ -49,13 +51,14 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static boolean createUIEntered;
   private static boolean createUIExited;
   
+  private static java.util.List eventLog;
+  
   private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
   private TestSession session;
 
   public static final class ExceptionInReadAndDispatchEntryPoint 
     implements IEntryPoint 
   {
-
     public int createUI() {
       createUIEntered = true;
       Display display = new Display();
@@ -85,10 +88,44 @@ public class RWTLifeCycle2_Test extends TestCase {
       }
     }
   }
+  
+  public static final class EventProcessingOnSessionRestartEntryPoint 
+    implements IEntryPoint 
+  {
+    public int createUI() {
+      createUIEntered = true;
+      try {
+        Display display = new Display();
+        final Shell shell = new Shell( display );
+        shell.addDisposeListener( new DisposeListener() {
+          public void widgetDisposed( final DisposeEvent event ) {
+            eventLog.add(  event );
+          }
+        } );
+        ISessionStore sessionStore = RWT.getSessionStore();
+        sessionStore.addSessionStoreListener( new SessionStoreListener() {
+          public void beforeDestroy( final SessionStoreEvent event ) {
+            shell.dispose();
+          }
+        } );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
 
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
-    EntryPointManager.register( EntryPointManager.DEFAULT, 
+    EntryPointManager.register( EntryPointManager.DEFAULT,
                                 ExceptionInReadAndDispatchEntryPoint.class );
 
     // send initial request - response is index.html
@@ -127,6 +164,31 @@ public class RWTLifeCycle2_Test extends TestCase {
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
     runRWTDelegate( request );
+  }
+  
+  public void testEventProcessinOnSessionRestart() throws Exception {
+    TestRequest request;
+    Class entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, entryPoint );
+    // send initial request - response is index.html
+    request = newRequest();
+    request.setParameter( RequestParams.STARTUP, "default" );
+    runRWTDelegate( request );
+    assertTrue( createUIEntered );
+    assertFalse( createUIExited );
+    // send 'application startup' request - response is JavaScript to create
+    // client-side representation of what was created in IEntryPoint#createUI
+    request = newRequest();
+    request.setParameter( RequestParams.UIROOT, "w1" );
+    runRWTDelegate( request );
+    assertTrue( createUIEntered );
+    assertFalse( createUIExited );
+    // send 'restart' request
+    request = newRequest();
+    request.setParameter( RequestParams.STARTUP, "default" );
+    runRWTDelegate( request );
+    assertTrue( createUIExited );
+    assertEquals( 1, eventLog.size() );
   }
 
   private static TestResponse runRWTDelegate( final HttpServletRequest request ) 
@@ -179,7 +241,8 @@ public class RWTLifeCycle2_Test extends TestCase {
     maliciousButtonId = null;
     createUIEntered = false;
     createUIExited = false;
-    bufferedConfigurer = LifeCycleServiceHandler.configurer; 
+    bufferedConfigurer = LifeCycleServiceHandler.configurer;
+    eventLog = new ArrayList();
     LifeCycleServiceHandler.configurer
       = new LifeCycleServiceHandlerConfigurer();
     Fixture.clearSingletons();

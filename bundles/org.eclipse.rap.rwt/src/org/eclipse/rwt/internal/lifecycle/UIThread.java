@@ -11,6 +11,7 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -90,6 +91,8 @@ final class UIThread
 
   public void processShutdown() {
     updateServiceContext();
+    // Simulate PROCESS_ACTION phase if the session times out
+    CurrentPhase.set( PhaseId.PROCESS_ACTION );
     shutdownCallback.run();
   }
 }
