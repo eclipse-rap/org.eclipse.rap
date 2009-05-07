@@ -14943,7 +14943,6 @@ this._dispatchChange();
 }else{if(!this.isEqual(item0,
 vItem)){this.renderItemSelectionState(vItem,
 false);
-this._selectedItems.removeAll();
 this._dispatchChange();
 }}break;
 }},
