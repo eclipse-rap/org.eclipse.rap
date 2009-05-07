@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     // 244952: [Tree] replacing child nodes leads to overlap
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=244952
     destroy : function() {
-      if( !this.isDisplayable() ) {
+      if( !this.isSeeable() ) {
         this._isDisplayable = true;
       }
       this.base( arguments );
