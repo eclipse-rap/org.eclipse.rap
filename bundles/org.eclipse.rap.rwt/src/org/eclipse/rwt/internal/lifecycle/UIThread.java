@@ -94,5 +94,6 @@ final class UIThread
     // Simulate PROCESS_ACTION phase if the session times out
     CurrentPhase.set( PhaseId.PROCESS_ACTION );
     shutdownCallback.run();
+    ContextProvider.disposeContext();
   }
 }
