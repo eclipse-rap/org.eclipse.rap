@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.*;
@@ -92,7 +93,8 @@ public final class BrowserSurvey {
     template.replace( TemplateHolder.VAR_SERVLET, getSerlvetName() );
     template.replace( TemplateHolder.VAR_FALLBACK_URL, createURL() );
     template.replace( TemplateHolder.VAR_ADMIN_OR_STARTUP, adminOrStartup() );
-    template.replace( TemplateHolder.VAR_ENTRY_POINT, getEntryPoint() );
+    template.replace( TemplateHolder.VAR_ENTRY_POINT,
+                      EntitiesUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
     for( int i = 0; i < tokens.length; i++ ) {
       if( tokens[ i ] != null ) {
@@ -136,7 +138,7 @@ public final class BrowserSurvey {
     HttpServletRequest request = ContextProvider.getRequest();
     String result = request.getParameter( RequestParams.STARTUP );
     if( result == null ) {
-      result = "default";
+      result = EntryPointManager.DEFAULT;
     }
     return result;
   }

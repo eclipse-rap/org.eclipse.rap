@@ -27,6 +27,7 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.util.EntitiesUtil;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -241,9 +242,10 @@ public final class LifeCycleServiceHandlerConfigurer
     BrandingUtil.replacePlaceholder( template,
                                      TemplateHolder.VAR_HEADERS,
                                      headers );
+    String encodedEntryPoint = EntitiesUtil.encodeHTMLEntities( entryPoint );
     BrandingUtil.replacePlaceholder( template,
                                      TemplateHolder.VAR_STARTUP,
-                                     entryPoint );
+                                     encodedEntryPoint );
     String script = BrandingUtil.exitMessageScript( branding );
     BrandingUtil.replacePlaceholder( template,
                                      TemplateHolder.VAR_EXIT_CONFIRMATION,
