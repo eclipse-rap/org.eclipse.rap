@@ -761,6 +761,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.1
    */
   public boolean readAndDispatch() {
+    checkDevice();
     return RWTLifeCycle.readAndDispatch();
   }
 
@@ -781,6 +782,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.1
    */
   public boolean sleep() {
+    checkDevice();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.sleep();
     // return true as we cannot reliably determinate what actually caused
