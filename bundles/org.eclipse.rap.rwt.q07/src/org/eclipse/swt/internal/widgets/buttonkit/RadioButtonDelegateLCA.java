@@ -15,7 +15,7 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.DeselectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 
@@ -100,16 +100,13 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   private static void processSelectionEvent( final Button button ) {
     if( SelectionEvent.hasListener( button ) ) {
-      Rectangle bounds  = WidgetLCAUtil.readBounds( button,
-                                                    button.getBounds() );
       int type = SelectionEvent.WIDGET_SELECTED;
-      SelectionEvent event = new SelectionEvent( button,
-                                                 null,
-                                                 type,
-                                                 bounds,
-                                                 null,
-                                                 true,
-                                                 SWT.NONE );
+      SelectionEvent event;
+      if( button.getSelection() ) {
+        event= new SelectionEvent( button, null, type );
+      } else {
+        event = new DeselectionEvent( button, null, type );
+      }
       event.processEvent();
     }
   }

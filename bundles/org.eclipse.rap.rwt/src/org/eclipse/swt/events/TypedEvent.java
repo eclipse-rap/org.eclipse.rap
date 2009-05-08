@@ -57,6 +57,7 @@ public class TypedEvent extends Event {
     TreeEvent.class,
     CTabFolderEvent.class,
     ExpandEvent.class,
+    DeselectionEvent.class,
     SelectionEvent.class,
     LocationEvent.class,
     ShellEvent.class,

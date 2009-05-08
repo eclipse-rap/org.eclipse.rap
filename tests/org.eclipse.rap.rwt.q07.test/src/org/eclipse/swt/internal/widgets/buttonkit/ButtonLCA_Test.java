@@ -10,11 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
@@ -423,6 +426,68 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( log.indexOf( "1:false" ) != -1 );
     assertTrue( log.indexOf( "2:true" ) != -1 );
     assertTrue( log.indexOf( "3:" ) == -1 );
+  }
+
+  public void testRadioTypedSelectionEventOrder() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button button1 = new Button( shell, SWT.RADIO );
+    button1.setText( "1" );
+    Button button2 = new Button( shell, SWT.RADIO );
+    button2.setText( "2" );
+    SelectionAdapter listener = new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        log.add( event );
+      }
+    };
+    button1.addSelectionListener( listener );
+    button2.addSelectionListener( listener );
+    button2.setSelection( true );
+    String displayId = DisplayUtil.getId( display );
+    String button1Id = WidgetUtil.getId( button1 );
+    String button2Id = WidgetUtil.getId( button2 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
+    Fixture.fakeRequestParam( button2Id + ".selection", "false" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, log.size() );
+    SelectionEvent event = ( SelectionEvent )log.get( 0 );
+    assertSame( button2, event.widget );
+    event = ( SelectionEvent )log.get( 1 );
+    assertSame( button1, event.widget );
+  }
+
+  public void testRadioUntypedSelectionEventOrder() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button button1 = new Button( shell, SWT.RADIO );
+    button1.setText( "1" );
+    Button button2 = new Button( shell, SWT.RADIO );
+    button2.setText( "2" );
+    Listener listener = new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    };
+    button1.addListener( SWT.Selection, listener );
+    button2.addListener( SWT.Selection, listener );
+    button2.setSelection( true );
+    String displayId = DisplayUtil.getId( display );
+    String button1Id = WidgetUtil.getId( button1 );
+    String button2Id = WidgetUtil.getId( button2 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
+    Fixture.fakeRequestParam( button2Id + ".selection", "false" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, log.size() );
+    Event event = ( Event )log.get( 0 );
+    assertSame( button2, event.widget );
+    event = ( Event )log.get( 1 );
+    assertSame( button1, event.widget );
   }
 
   protected void setUp() throws Exception {
