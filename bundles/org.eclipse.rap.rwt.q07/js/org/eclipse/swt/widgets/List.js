@@ -105,8 +105,12 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       } else {
         var item = this.getChildren()[ itemIndex ];
         this.getManager().setSelectedItem( item );
-        // TODO [rh] second parameter has no effect, figure out what it is for
-        this.getManager().scrollItemIntoView( item, true );
+        // avoid warning message. scrollIntoView works only for visible widgets
+        // the assumtion is that if 'this' is visible, the item to scroll into
+        // view is also visible
+        if ( this.isCreated() && this.isDisplayable() ) {
+          this.getManager().scrollItemIntoView( item, true );
+        }
       }
     },
 
