@@ -818,12 +818,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.cursor = "default";
       result.height = 16;
       result.padding = 2;
-      if( states.disabled ) {
-        result.textColor = "widget.graytext";
-        result.backgroundColor = "undefined";
-      } else if( states.selected ) {
+      if( states.selected ) {
         result.textColor = tv.getCssColor( "TreeItem", "color" );
         result.backgroundColor = tv.getCssColor( "TreeItem", "background-color" );
+      } else if( states.disabled ) {
+        result.textColor = "widget.graytext";
+        result.backgroundColor = "undefined";
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
