@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 final class MenuLCAUtil {
-  
+
   private static final int MENU_PADDING = 1;
   private static final int MENU_BORDER = 1;
   private static final int ITEM_LEFT_PADDING = 2;
@@ -67,7 +67,7 @@ final class MenuLCAUtil {
       writer.callStatic( SET_MENU_LISTENER, args );
     }
   }
-  
+
   public static void readMenuEvent( final Menu menu ) {
     if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_SHOWN ) ) {
       MenuEvent event = new MenuEvent( menu, MenuEvent.MENU_SHOWN );
@@ -78,7 +78,7 @@ final class MenuLCAUtil {
       event.processEvent();
     }
   }
-  
+
   /* (intentionally non-JavaDoc'ed)
    * Activates the menu if a menu event was received (in this case, only a
    * preliminary menu is displayed).
@@ -87,21 +87,22 @@ final class MenuLCAUtil {
     String eventId = JSConst.EVENT_MENU_SHOWN;
     if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
-      Object[] args = new Object[]{ menu };
+      Boolean reveal = Boolean.valueOf( menu.getItemCount() > 0 );
+      Object[] args = new Object[]{ menu, reveal };
       writer.callStatic( UNHIDE_MENU, args );
     }
   }
-  
+
   static void preserveWidth( final Menu menu ) {
     int width = computeWidth( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_WIDTH, new Integer( width ) );
   }
-  
+
   static void writeWidth( final Menu menu ) throws IOException {
     int width = computeWidth( menu );
     JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.set( PROP_WIDTH, "width", new Integer( width ), null ); 
+    writer.set( PROP_WIDTH, "width", new Integer( width ), null );
   }
 
   static int computeWidth( final Menu menu ) {
@@ -116,12 +117,12 @@ final class MenuLCAUtil {
 
   private static int getMenuItemWidth( final MenuItem menuItem ) {
     Font systemFont = menuItem.getDisplay().getSystemFont();
-    int result 
+    int result
       = ITEM_LEFT_PADDING
       + ITEM_IMAGE
       + ITEM_SPACING
       + Graphics.stringExtent( systemFont, menuItem.getText() ).x
-      + ITEM_SPACING 
+      + ITEM_SPACING
       + ITEM_IMAGE
       + ITEM_RIGHT_PADDING;
     return result;

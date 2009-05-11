@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,9 @@ import org.eclipse.swt.widgets.*;
 
 final class DropDownMenuLCA extends MenuDelegateLCA {
 
+  private static final String INITIALIZE
+    = "org.eclipse.swt.MenuUtil.initialize";
+
   void preserveValues( final Menu menu ) {
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
@@ -41,11 +44,13 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     //      assign a Menu to more than one MenuItem
     //      [rst] It's allowed in SWT but not in qooxdoo - we have a problem here
     writer.newWidget( "qx.ui.menu.Menu" );
-    writer.call( "addToDocument", null );    
-    MenuItem[] menuItems = DropDownMenuLCA.findReferringMenuItems( menu );
+    writer.call( "addToDocument", null );
+    MenuItem[] menuItems = findReferringMenuItems( menu );
     for( int i = 0; i < menuItems.length; i++ ) {
       writer.call( menuItems[ i ], "setMenu", new Object[] { menu } );
     }
+    Object[] args = new Object[] { menu };
+    writer.callStatic( INITIALIZE, args  );
   }
 
   void renderChanges( final Menu menu ) throws IOException {

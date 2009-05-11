@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,25 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.MenuUtil", {
 
   statics : {
+
+    MENU_LISTENER_KEY : "hasMenuListener",
+
     setLabelMode : function( menuItem ) {
       // Note: called directly after creating the menuItem instance, therefore
       // it is not necessary to check getLabelObject and/or preserve its label
       menuItem.setLabel( "(empty)" );
-      // TODO [rh] for some reason this workaround doesn't work for 
+      // TODO [rh] for some reason this workaround doesn't work for
       //      qx.ui.menubar.Button, the labelObject is still null
       if( menuItem.getLabelObject() != null ) {
         menuItem.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
       }
       menuItem.setLabel( "" );
     },
-    
+
     // Event listener for "contextmenu" event
     contextMenu : function( evt ) {
       var widget = evt.getTarget();
@@ -97,18 +100,15 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
       }
     },
 
+    initialize : function( menu ) {
+      menu.addEventListener( "beforeAppear",
+                             org.eclipse.swt.MenuUtil._menuShown );
+      menu.addEventListener( "disappear",
+                             org.eclipse.swt.MenuUtil._menuHidden );
+    },
+
     setMenuListener : function( menu, isset ) {
-      if( isset ) {
-        menu.addEventListener( "beforeAppear", 
-                               org.eclipse.swt.MenuUtil._menuShown );
-        menu.addEventListener( "disappear", 
-                               org.eclipse.swt.MenuUtil._menuHidden );
-      } else {
-        menu.removeEventListener( "beforeAppear", 
-                                  org.eclipse.swt.MenuUtil._menuShown );
-        menu.removeEventListener( "disappear", 
-                                  org.eclipse.swt.MenuUtil._menuHidden );
-      }
+      menu.setUserData( org.eclipse.swt.MenuUtil.MENU_LISTENER_KEY, isset );
     },
 
     /*
@@ -116,29 +116,40 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
      * preliminary item until the response is received.
      */
     _menuShown : function( evt ) {
-      // create preliminary item
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var preItem = this.getUserData( "preItem" );
-        if( !preItem ) {
-          preItem = new qx.ui.menu.Button();
-          preItem.setLabel( "..." );
-          preItem.setEnabled( false );
-          this.add( preItem );
-          this.setUserData( "preItem", preItem );
+        if( this.getUserData( org.eclipse.swt.MenuUtil.MENU_LISTENER_KEY ) ) {
+          // create preliminary item
+          var preItem = this.getUserData( "preItem" );
+          if( !preItem ) {
+            preItem = new qx.ui.menu.Button();
+            preItem.setLabel( "..." );
+            preItem.setEnabled( false );
+            this.add( preItem );
+            this.setUserData( "preItem", preItem );
+          }
+          // hide all but the preliminary item
+          var items = this.getLayout().getChildren();
+          for( var i = 0; i < items.length; i++ ) {
+            var item = items[ i ];
+            item.setDisplay( false );
+          }
+          preItem.setDisplay( true );
+          // TODO [rst] Ensure minimal width for preliminary item, remove
+          //            when menu width is calculated on the client
+          if( this.getWidth() < 60 ) {
+            this.setWidth( 60 );
+          }
+          this.setDisplay( true );
+          // send event
+          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          var id = wm.findIdByWidget( this );
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addEvent( "org.eclipse.swt.events.menuShown", id );
+          req.send();
+        } else {
+          var items = this.getLayout().getChildren();
+          this.setDisplay( items.length != 0 );
         }
-        // hide all but the preliminary item
-        var items = this.getLayout().getChildren();
-        for( var i = 0; i < items.length; i++ ) {
-          var item = items[ i ];
-          item.setDisplay( false );
-        }
-        preItem.setDisplay( true );
-        // send event
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.menuShown", id );
-        req.send();
       }
     },
 
@@ -147,11 +158,13 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
      */
     _menuHidden : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.menuHidden", id );
-        req.send();
+        if( this.getUserData( org.eclipse.swt.MenuUtil.MENU_LISTENER_KEY ) ) {
+          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          var id = wm.findIdByWidget( this );
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addEvent( "org.eclipse.swt.events.menuHidden", id );
+          req.send();
+        }
       }
     },
 
@@ -159,15 +172,22 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
      * Hides preliminary item and reveals the menu. Called by the response to a
      * menu shown event.
      */
-    unhideMenu : function( menu ) {
-      var items = menu.getLayout().getChildren();
-      for( var i = 0; i < items.length; i++ ) {
-        var item = items[ i ];
-        item.setDisplay( true );
-      }
-      var preItem = menu.getUserData( "preItem" );
-      if( preItem ) {
-        preItem.setDisplay( false );
+    unhideMenu : function( menu, reveal ) {
+      // [ad] Fix for Bug 216907 Context menu with no menu items
+      // If there are no menu items, the menu will be hide.
+      if( reveal ) {
+        var items = menu.getLayout().getChildren();
+        for( var i = 0; i < items.length; i++ ) {
+          var item = items[ i ];
+          item.setDisplay( true );
+        }
+        var preItem = menu.getUserData( "preItem" );
+        if( preItem ) {
+          preItem.setDisplay( false );
+        }
+        menu.show();
+      } else {
+        menu.hide();
       }
     }
   }
