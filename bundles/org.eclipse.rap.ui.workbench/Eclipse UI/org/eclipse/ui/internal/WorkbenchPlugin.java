@@ -32,7 +32,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.IEditorRegistry;
@@ -103,8 +105,13 @@ import com.ibm.icu.text.MessageFormat;
  *      
  */
 public class WorkbenchPlugin extends AbstractUIPlugin {
-	
-	// TODO [bm]: turn into real session scoped manager
+
+// RAP [rh] SessionStore key to initicate whether the session-scoped 
+//     PerspectiveRegistry is initialized   
+  private static final String PERSP_REGISTRY_INITIALIZED
+    = PerspectiveRegistry.class + "#initialized";
+
+  // TODO [bm]: turn into real session scoped manager
 	// RAP [rs]:
 	private final static class DecoratorManagerStore extends
 			SessionSingletonBase
@@ -125,30 +132,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 		}
 	}
 	// RAPEND]
-	
-	private final static class PerspectiveRegistryStore
-	  extends SessionSingletonBase
-	{
-		private final PerspectiveRegistry perspectiveRegistry;
-		
-		private PerspectiveRegistryStore() {
-			perspectiveRegistry = new PerspectiveRegistry();
-			StartupThreading.runWithoutExceptions(new StartupRunnable() {
-				public void runWithException() throws Throwable {
-					perspectiveRegistry.load();
-				}
-			});
-		}
-		
-		public static PerspectiveRegistryStore getInstance() {
-			Class clazz = PerspectiveRegistryStore.class;
-			return (PerspectiveRegistryStore) getInstance(clazz);
-		}
-		
-		public PerspectiveRegistry getPerspectiveRegistry() {
-			return perspectiveRegistry;
-		}
-	}
 	
 // RAP [rh] session-singleton-wrapper for getThemeRegistry
 	private final static class ThemeRegistryStore extends SessionSingletonBase {
@@ -286,7 +269,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //    private ViewRegistry viewRegistry;
     // RAPEND: [bm] 
 
-    private PerspectiveRegistry perspRegistry;
+// RAP [rh] PerspectiveRegistry has session scope    
+//    private PerspectiveRegistry perspRegistry;
 
     private ActionSetRegistry actionSetRegistry;
 
@@ -351,10 +335,12 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //        }
         // RAPEND: [bm] 
 
-        if (perspRegistry != null) {
-            perspRegistry.dispose();
-            perspRegistry = null;
-        }
+// RAP [rh] perspRegistry field is unused, PerspectiveRegistry has session scope    
+//        if (perspRegistry != null) {
+//            perspRegistry.dispose();
+//            perspRegistry = null;
+//        }
+        
         actionSetRegistry = null;
         sharedImages = null;
 
@@ -718,7 +704,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @return IPerspectiveRegistry. The registry for the receiver.
      */
     public IPerspectiveRegistry getPerspectiveRegistry() {
-    	// RAP [bm]: session scoped way
+// RAP [rh]: PerspectiveRegistry has session scope
 //        if (perspRegistry == null) {
 //            perspRegistry = new PerspectiveRegistry();
 //            // the load methods can touch on WorkbenchImages if an image is
@@ -734,8 +720,20 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //            
 //        }
 //        return perspRegistry;
-    	return PerspectiveRegistryStore.getInstance().getPerspectiveRegistry();
-    	// RAPEND: [bm] 
+      final PerspectiveRegistry result
+        = ( PerspectiveRegistry )SessionSingletonBase.getInstance( PerspectiveRegistry.class );
+      ISessionStore sessionStore = RWT.getSessionStore();
+      Boolean initialized
+        = ( Boolean )sessionStore.getAttribute( PERSP_REGISTRY_INITIALIZED );
+      if( initialized == null ) {
+        sessionStore.setAttribute( PERSP_REGISTRY_INITIALIZED, Boolean.TRUE );        
+        StartupThreading.runWithoutExceptions(new StartupRunnable() {
+          public void runWithException() throws Throwable {
+            result.load();
+          }
+        } );      
+      }
+    	return result;
     }
 
     /**
