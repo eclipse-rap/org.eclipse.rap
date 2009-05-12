@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     Tom Schindl<tom.schindl@bestsolution.at> - fix for issue 272674
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -262,7 +263,7 @@ public class ExpandItem extends Item {
                   final boolean move,
                   final boolean size )
   {
-    int headerHeight = parent.getBandHeight();
+    int headerHeight = getHeaderHeight();
     int aX = x;
     int aY = y;
     int aWidth = width;
@@ -325,7 +326,7 @@ public class ExpandItem extends Item {
     }
     this.control = control;
     if( control != null ) {
-      int headerHeight = parent.getBandHeight();
+      int headerHeight = getHeaderHeight();
       control.setVisible( expanded );
       if( !parent.isAppThemed() ) {
         int width = Math.max( 0, this.width - BORDER * 2 );
