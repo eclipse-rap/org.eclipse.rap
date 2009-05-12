@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "changeBackgroundColor",
                               this._onChangeBackgoundColor, 
                               this );
-    this.removeEventListener( "mousedown", this._onLineMouseDown, this );
+    this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this.removeEventListener( "click", this._onMouseClick, this );
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
@@ -107,6 +107,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "keyinput", this._onKeyInput );
     this._field.removeEventListener( "blur", this._onTextBlur, this );
     this._list.removeEventListener( "appear", this._onListAppear, this );
+    // Solution taken from Qooxdoo implementation of ComboBox
+    // in order to prevent memory leak and other problems.
+    if( this._list && !qx.core.Object.inGlobalDispose() ) {
+      this._list.setParent( null );
+    }
     this._disposeObjects( "_field", 
                           "_button", 
                           "_list", 
@@ -314,7 +319,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       return result;
     },
 
+    ////////////////////////////////
     // Mouse events handling methods
+    
     _onMouseDown : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
         if( evt.getTarget() == this._field ) {
@@ -413,7 +420,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
 
+    ////////////////////////////////////
     // Keyboard events handling methods
+    
     _onKeyDown : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
         // Handle <ENTER>, <ESC>
@@ -526,7 +535,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
     
+    ///////////////////////////////////////////////
     // Actions, connected with server communication
+    
     _onTextBlur : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend && this._isModified ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -620,7 +631,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
 
+    //////////////
     // Set methods
+    
     setItems : function( items ) {
       this._list.removeAll();
       for( var i = 0; i < items.length; i++ ) {
