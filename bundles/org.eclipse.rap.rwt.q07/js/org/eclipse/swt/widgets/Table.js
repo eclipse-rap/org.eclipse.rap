@@ -844,17 +844,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _removeItem : function( item ) {
       var itemIndex = this._items.indexOf( item );
-      var wasItemVisible = this._isItemVisible( itemIndex );
       this._items.splice( itemIndex, 1 );
       if( itemIndex === this._focusIndex ) {
         this._focusIndex = -1;
       }
-      this._updateSelectedIndices( itemIndex );
+      this._adjustSelectedIndices( itemIndex );
       this._deselectItem( itemIndex, false );
       this._updateScrollHeight();
-      if( wasItemVisible ) {
-        this._updateRows();
-      }
     },
 
     _selectItem : function( itemIndex ) {
@@ -886,7 +882,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
     
-    _updateSelectedIndices : function( itemIndex ) {
+    _adjustSelectedIndices : function( itemIndex ) {
       if( this._isItemSelected( itemIndex ) ) {
         for( var i = 0; i < this._selected.length; i++ ) {
           var index = this._selected[ i ];
