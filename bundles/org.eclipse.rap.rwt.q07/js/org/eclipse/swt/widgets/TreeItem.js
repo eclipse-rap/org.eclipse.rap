@@ -36,20 +36,21 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this._texts = null;
     this._images = new Array();
     this._colLabels = new Array();
+    this._foreground = null;
     this._background = null;
-    this._backgrounds = null;
-    this._foregrounds = null;
+    this._cellForegrounds = null;
+    this._cellBackgrounds = null;
     this._fonts = null;
 
     // Image
-    this._row.addIcon( null ); 
+    this._row.addIcon( null );
 
     // Text
     this._row.addLabel( "" );
-    
+
     // Virtual
     this._materialized = true;
-    
+
     // Construct TreeItem
     for( var c = 0; c < tree._columns.length; c++ ) {
         this.columnAdded();
@@ -60,13 +61,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.addEventListener( "appear", this._onAppear, this );
     //this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     parentItem.add( this );
-    
+
     this.getLabelObject().setMode( "html" );
-    
+
     // TODO [bm] need to set the color to prevent inheritance of colors
     this.setBackgroundColor( "transparent" );
   },
-  
+
   destruct : function() {
     if( this._checkBox != null ) {
       this._checkBox.removeEventListener( "click", this._onChangeChecked, this );
@@ -79,7 +80,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   },
 
   members : {
-    
+
     // [if] Workaround for bug
     // 244952: [Tree] replacing child nodes leads to overlap
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=244952
@@ -90,27 +91,32 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this.base( arguments );
     },
 
-    setBackground : function ( value ) {
-      this._background = value;
-    },
-    
-    // TODO: [bm] needed to override the property setters to apply color to label too
     setTextColor : function ( value ) {
-      if( typeof value == "undefined" ) return;
-      // TODO: see updateItem() for reasons
-      //this.getLabelObject().setTextColor( value );
-      // we have to go through each column
-      for(var i=0; i<this._colLabels.length; i++) {
-       this._colLabels[ i ].setTextColor( value );
+      this._foreground = value;
+      if( this.isCreated() ) {
+        this.updateItem();
       }
     },
 
-    resetBackgroundColor : function ( value ) {
-        this.getLabelObject().resetBackgroundColor();
+    resetTextColor : function ( value ) {
+      this._foreground = null;
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
     },
 
-    resetTextColor : function ( value ) {
-       this.getLabelObject().resetTextColor();
+    setBackgroundColor : function ( value ) {
+      this._background = value;
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
+    },
+
+    resetBackgroundColor : function () {
+      this._background = null;
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
     },
 
     setChecked : function( value ) {
@@ -122,15 +128,15 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         }
       }
     },
-    
+
     setMaterialized : function( value ) {
       this._materialized = value;
     },
-    
+
     isMaterialized : function( value ) {
       return this._materialized;
     },
-    
+
     setGrayed : function( value ) {
       if( this._checkBox != null ) {
         if( value ) {
@@ -140,7 +146,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         }
       }
     },
-    
+
     setSelection : function( value, focus ) {
       var manager = this.getTree().getManager();
       manager.setItemSelected( this, value );
@@ -155,6 +161,20 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this.setIcon( image );
       this.getIconObject().setSource( image );
       this.setIconSelected( image );
+    },
+
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state == "disabled" || state == "selected" ) {
+        this.updateItem();
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state == "disabled" || state == "selected" ) {
+        this.updateItem();
+      }
     },
 
     /*
@@ -183,7 +203,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       var result = false;
       var target = evt.getOriginalTarget();
       // TODO [rh] 'target &&' is either unnecessary or the if statement yields
-      //      a wrong result 
+      //      a wrong result
       if( target && target == this._iconObject || target == this._labelObject ) {
         result = true;
       }
@@ -193,13 +213,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     _onCheckBoxClick : function( evt ) {
       this._checked = !this._checked;
       if( this._checked ) {
-          this._checkBox.addState( "checked" );
+        this._checkBox.addState( "checked" );
       } else {
-          this._checkBox.removeState( "checked" );
+        this._checkBox.removeState( "checked" );
       }
       this._onChangeChecked( evt );
     },
-    
+
     /*
      * Prevent double clicks on check boxes from being propageted to the tree.
      */
@@ -220,56 +240,56 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
      */
     _onmouseup : function( evt ) {
     },
-    
+
     _onAppear : function( evt ) {
       this.updateItem();
       this.updateColumnsWidth();
     },
-    
+
     setTexts : function( texts ) {
       this._texts = texts;
       if( this.isCreated() ) {
         this.updateItem();
       }
     },
-    
+
     setImages : function( images ) {
       this._images = images;
       if( this.isCreated() ) {
         this.updateItem();
       }
     },
-    
+
     setBackgrounds : function( backgrounds ) {
-      this._backgrounds = backgrounds;
+      this._cellBackgrounds = backgrounds;
       if( this.isCreated() ) {
         this.updateItem();
       }
     },
-    
+
     setForegrounds : function( foregrounds ) {
-      this._foregrounds = foregrounds;
+      this._cellForegrounds = foregrounds;
       if( this.isCreated() ) {
         this.updateItem();
       }
     },
-    
+
     setFonts : function( fonts ) {
       this._fonts = fonts;
     },
-    
+
     columnAdded : function() {
       var obj = new qx.ui.basic.Atom( "" );
       obj.setHorizontalChildrenAlign( "left" );
       this._row.addObject( obj, true );
       this._colLabels[ this._colLabels.length ] = obj;
     },
-    
+
     updateItem : function() {
       var colOrder = this.getTree().getParent().getColumnOrder();
       var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
-      this.setBackgroundColor( this._background );
       if( this._texts != null ) {
+        // TODO [rst] Why is background only rendered when text != null?
         for( var c = 0; c < colCount; c++ ) {
           var col = colOrder[ c ];
           var text = this._texts[ col ] == "" ? " " : this._texts[ col ];
@@ -277,19 +297,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
             if( c == 0 ) {
               this.setLabel( text );
               this.setImage( this._images[ col ] );
-              if( this._backgrounds && this._backgrounds[ col ] ) {
-                // TODO [bm] disabled due to qooxdoo bug that selection disappears
-                // when using background color as color here has a higher priority
-                // then color in appearance + state
-                /*
-                this.getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
-                this.getIndentObject().setBackgroundColor( this._backgrounds[ col ] );
-                */
-              }
-              if( this._foregrounds && this._foregrounds[ col ] ) {
-                // TODO: [bm] disabled for the same reason
-                // this.getLabelObject().setTextColor( this._foregrounds[ col ]);
-              }
+              this._updateCellForeground( col, this.getLabelObject() );
+              this._updateCellBackground( col, this.getLabelObject() );
               if( this._fonts && this._fonts[ col ] ) {
                 // TODO
               }
@@ -298,12 +307,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
               this._colLabels[ c - 1 ].setLabel( text );
               this._colLabels[ c - 1 ].setIcon( this._images[ col ] );
               // colors and fonts
-              if( this._backgrounds && this._backgrounds[ col ] ) {
-                this._colLabels[ c - 1 ].getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
-              }
-              if( this._foregrounds && this._foregrounds[ col ] ) {
-                this._colLabels[ c - 1 ].setTextColor( this._foregrounds[ col ]);
-              }
+              this._updateCellForeground( col, this._colLabels[ c - 1 ] );
+              this._updateCellBackground( col, this._colLabels[ c - 1 ] );
               if( this._fonts && this._fonts[ col ] ) {
                 // TODO
               }
@@ -312,7 +317,30 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         }
       }
     },
-    
+
+    _updateCellForeground : function( col, widget ) {
+      var show =    ( col > 0 || !this.hasState( "selected" ) )
+                 && !this.hasState( "disabled" );
+      if( show && this._cellForegrounds && this._cellForegrounds[ col ] ) {
+        widget.setTextColor( this._cellForegrounds[ col ] );
+      } else if( show && this._foreground ) {
+        widget.setTextColor( this._foreground );
+      } else {
+        widget.resetTextColor();
+      }
+    },
+
+    _updateCellBackground : function( col, widget ) {
+      var show = ( col == 0 ) && !this.hasState( "selected" );
+      if( show && this._cellBackgrounds && this._cellBackgrounds[ col ] ) {
+        widget.setBackgroundColor( this._cellBackgrounds[ col ] );
+      } else if( show && this._background ) {
+        widget.setBackgroundColor( this._background );
+      } else {
+        widget.resetBackgroundColor();
+      }
+    },
+
     updateColumnsWidth : function() {
       var columnWidth = new Array();
       var fullWidth = this.getTree().getParent().getColumnsWidth();
@@ -321,26 +349,27 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
       }
       if( columnWidth.length > 0 ) {
-        var checkboxWidth = this._checkBox == null ? 0 : 16; // 13 width + 3 checkbox margin 
+        var checkboxWidth = this._checkBox == null ? 0 : 16; // 13 width + 3 checkbox margin
         var imageWidth = this._images[ 0 ] == null ? 0 : this.getIconObject().getWidth();
-        var spacing = imageWidth > 0 ? this.getIconObject().getMarginRight() : 0;        
-        this.getLabelObject().setWidth( columnWidth[ 0 ]         
+        var spacing = imageWidth > 0 ? this.getIconObject().getMarginRight() : 0;
+        this.getLabelObject().setWidth( columnWidth[ 0 ]
           - ( this.getLevel() * 19 )   // TODO: [bm] replace with computed indent width
           - checkboxWidth
           - imageWidth
           - spacing );
         var coLabel;
-        for( var i = 1; i < columnWidth.length; i++ ) {          
-          coLabel = this._colLabels[ i - 1 ];          
+        for( var i = 1; i < columnWidth.length; i++ ) {
+          coLabel = this._colLabels[ i - 1 ];
           imageWidth = this._images[ i ] == null ? 0 : 16;
-          spacing = imageWidth > 0 ? coLabel.getSpacing() : 0;          
+          spacing = imageWidth > 0 ? coLabel.getSpacing() : 0;
           if( coLabel != null && coLabel.getLabelObject() != null ) {
-            coLabel.getLabelObject().setWidth( columnWidth[ i ] 
-              - imageWidth 
+            coLabel.getLabelObject().setWidth( columnWidth[ i ]
+              - imageWidth
               - spacing );
           }
         }
       }
     }
-    
-  }});
+
+  }
+} );

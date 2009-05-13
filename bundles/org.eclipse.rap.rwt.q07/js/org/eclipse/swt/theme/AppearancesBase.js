@@ -861,7 +861,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.verticalChildrenAlign = "top";
       result.backgroundColor = tv.getCssColor( "Tree", "background-color" );
-      result.textColor = tv.getCssColor( "Tree", "color" );
+      result.textColor = states.disabled ? "widget.graytext" : tv.getCssColor( "Tree", "color" );
       return result;
     }
   },
