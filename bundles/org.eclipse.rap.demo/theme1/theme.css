@@ -40,7 +40,7 @@ List, Tree, Table, Text, Spinner, Combo, DateTime {
 
 List-Item, TableItem {
   /* let List/Table colors shine through */
-  color: transparent;
+  color: inherit;
   background-color: transparent;
 }
 

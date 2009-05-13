@@ -6,7 +6,7 @@ Table {
 }
 
 TableItem {
-  color: transparent;
+  color: inherit;
   background-color: transparent;
 }
 

@@ -204,6 +204,8 @@ public final class PropertyResolver {
         int[] values = ( int[] )NAMED_COLORS.get( string.toLowerCase() );
         result = QxColor.create( values[ 0 ], values[ 1 ], values[ 2 ] );
       }
+    } else if( type == LexicalUnit.SAC_INHERIT ) {
+      result = QxColor.TRANSPARENT;
     }
     return result;
   }
