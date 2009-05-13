@@ -195,35 +195,32 @@ public final class TableLCA extends AbstractWidgetLCA {
       ITableAdapter tableAdapter = ( ITableAdapter )adapter;
       for( int i = 0; i < indices.length; i++ ) {
         int index = Integer.parseInt( indices[ i ] );
-        if (index >-1 && index < table.getItemCount()) {
-            tableAdapter.checkData( index );
+        if( index > -1 && index < table.getItemCount() ) {
+          tableAdapter.checkData( index );
         }
       }
     }
   }
 
-  private void readWidgetSelected( final Table table ) {
+  private static void readWidgetSelected( final Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      // TODO [rh] do something about when index points to unresolved item!
-      final int widgetSelectedIndex = getWidgetSelectedIndex();
-      // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
-      if (widgetSelectedIndex > -1 && widgetSelectedIndex < table.getItemCount()) {
-          TableItem item = table.getItem( widgetSelectedIndex );
-          int detail = getWidgetSelectedDetail();
-          int id = SelectionEvent.WIDGET_SELECTED;
-          SelectionEvent event = new SelectionEvent( table,
-                  item,
-                  id,
-                  new Rectangle( 0, 0, 0, 0 ),
-                  "",
-                  true,
-                  detail );
-          event.processEvent();
+      // TODO [rh] do something reasonable when index points to unresolved item 
+      int index = getWidgetSelectedIndex();
+      // Bugfix: check if index is valid before firing event to avoid problems
+      //         with fast scrolling
+      if( index > -1 && index < table.getItemCount() ) {
+        TableItem item = table.getItem( index );
+        int detail = getWidgetSelectedDetail();
+        int id = SelectionEvent.WIDGET_SELECTED;
+        Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+        SelectionEvent event
+          = new SelectionEvent( table, item, id, bounds, "", true, detail );
+        event.processEvent();
       }
     }
   }
 
-  private void readWidgetDefaultSelected( final Table table ) {
+  private static void readWidgetDefaultSelected( final Table table ) {
     String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( table, defaultSelectedParam ) ) {
       // A default-selected event can occur without a selection being present.
