@@ -19,6 +19,8 @@ public interface ICheatSheetResource {
 	// ID used through out the cheatsheets:
 	//		plugin, menu, view
 	//
+// RAP [rh] extension namespace (differs from plug-in id in RAP)	
+	public static final String EXTENSION_NAMESPACE = "org.eclipse.ui.cheatsheets"; //$NON-NLS-1$
 // RAP [if]	Change plugin Id
 //	public static final String CHEAT_SHEET_PLUGIN_ID = "org.eclipse.ui.cheatsheets"; //$NON-NLS-1$
 	public static final String CHEAT_SHEET_PLUGIN_ID = "org.eclipse.rap.ui.cheatsheets"; //$NON-NLS-1$

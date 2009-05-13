@@ -156,7 +156,7 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 		if (instance == null) {
 			instance = new CheatSheetRegistryReader();
 			IExtensionRegistry xregistry = Platform.getExtensionRegistry();
-			xregistry.addRegistryChangeListener(instance, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID);
+			xregistry.addRegistryChangeListener(instance, ICheatSheetResource.EXTENSION_NAMESPACE);
 		}
 
 		return instance;
@@ -541,7 +541,7 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 
 		if (cheatsheets == null) {
 			cheatsheets = createEmptyCheatSheetCollection();
-			readRegistry(xregistry, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, CHEAT_SHEET_CONTENT);
+			readRegistry(xregistry, ICheatSheetResource.EXTENSION_NAMESPACE, CHEAT_SHEET_CONTENT);
 		}
 
 		finishCategories();
@@ -559,7 +559,7 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 
 			IExtensionRegistry xregistry = Platform.getExtensionRegistry();
 			//Now read the cheat sheet extensions.
-			readRegistry(xregistry, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, csItemExtension);
+			readRegistry(xregistry, ICheatSheetResource.EXTENSION_NAMESPACE, csItemExtension);
 		}
 
 		return cheatsheetItemExtensions;
@@ -662,13 +662,13 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 	 */
 	public void registryChanged(IRegistryChangeEvent event) {
-		IExtensionDelta[] cheatSheetDeltas = event.getExtensionDeltas(ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, CHEAT_SHEET_CONTENT);
+		IExtensionDelta[] cheatSheetDeltas = event.getExtensionDeltas(ICheatSheetResource.EXTENSION_NAMESPACE, CHEAT_SHEET_CONTENT);
 		if (cheatSheetDeltas.length > 0) {
 			// reset the list of cheat sheets, it will be build on demand
 			cheatsheets = null;
 		}
 
-		IExtensionDelta[] itemExtensionDeltas = event.getExtensionDeltas(ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, csItemExtension);
+		IExtensionDelta[] itemExtensionDeltas = event.getExtensionDeltas(ICheatSheetResource.EXTENSION_NAMESPACE, csItemExtension);
 		if (itemExtensionDeltas.length > 0) {
 			// reset the list of cheat sheets item extensions, it will be build on demand
 			cheatsheetItemExtensions = null;

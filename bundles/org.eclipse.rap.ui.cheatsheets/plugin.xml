@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
+<?eclipse version="3.2"?>
 <plugin>
 
     
@@ -11,7 +11,7 @@
    <!--                                                                                 -->
    <!-- =============================================================================== -->
    <extension-point
-      id="cheatSheetContent"
+      id="org.eclipse.ui.cheatsheets.cheatSheetContent"
       name="%CHEAT_SHEET_CONTENT"
       schema="schema/cheatSheetContent.exsd"/>
       
@@ -21,7 +21,7 @@
    <!--                                                                                 -->
    <!-- =============================================================================== -->
    <extension-point
-      id="cheatSheetItemExtension"
+      id="org.eclipse.ui.cheatsheets.cheatSheetItemExtension"
       name="%CHEAT_SHEET_ITEM_EXTENSION"
       schema="schema/cheatSheetItemExtension.exsd"/>
 
@@ -161,7 +161,7 @@
             commandId="org.eclipse.ui.cheatsheets.openCheatSheetURL"
             icon="$nl$/icons/view16/cheatsheet_view.gif"/>
    </extension>
-<!-- RAP [if]
+<!-- RAP [if] key bindings not supported
     <extension
     	point="org.eclipse.ui.bindings">
       <key
@@ -197,7 +197,7 @@
                value="true"/>
       </triggerPoint>
     </extension>
-<!-- RAP [if]
+<!-- RAP [if] org.eclipse.ui.search not available in RAP
    <extension
          point="org.eclipse.help.base.luceneSearchParticipants">
       <searchParticipant
@@ -208,7 +208,7 @@
    </extension>
 -->
    <extension
-         point="org.eclipse.rap.ui.cheatsheets.cheatSheetContent">
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
       <taskEditor
             class="org.eclipse.ui.internal.cheatsheets.composite.views.CheatsheetTaskEditor"
             icon="$nl$/icons/obj16/cheatsheet_task.gif"
