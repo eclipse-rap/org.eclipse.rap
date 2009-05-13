@@ -826,7 +826,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onHorzScrollBarChangeValue : function() {
       this._columnArea.setLeft( 0 - this._horzScrollBar.getValue() );
       this._updateRowBounds();
-      this._updateGridLines();
       this._leftOffsetChanged = true;
     },
 
@@ -1024,6 +1023,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea.setTop( top );
       this._clientArea.setHeight( clientHeight );
       this._clientArea.setWidth( clientWidth );
+      this._updateGridLines();
       // Adjust number of rows and update rows if necessary
       if( this._updateRowCount() ) {
         this._updateRows();
