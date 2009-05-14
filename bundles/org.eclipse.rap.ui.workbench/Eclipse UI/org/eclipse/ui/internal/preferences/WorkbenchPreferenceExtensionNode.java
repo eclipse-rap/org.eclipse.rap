@@ -52,6 +52,8 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
 	
 	private int priority;
 
+	private String pluginId;
+	
 	/**
 	 * Create a new instance of the reciever.
 	 * 
@@ -61,6 +63,7 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
 	public WorkbenchPreferenceExtensionNode(String id, IConfigurationElement configurationElement) {
 		super(id);
 		this.configurationElement = configurationElement;
+		this.pluginId = configurationElement.getNamespaceIdentifier();
 	}
 
 	/**
@@ -203,7 +206,7 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
 	 * @see org.eclipse.ui.activities.support.IPluginContribution#getPluginId()
 	 */
 	public String getPluginId() {
-		return null;
+		return pluginId;
 	}
 
     /* (non-Javadoc)
