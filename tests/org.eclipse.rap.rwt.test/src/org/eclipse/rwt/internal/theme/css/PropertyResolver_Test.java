@@ -61,7 +61,7 @@ public class PropertyResolver_Test extends TestCase {
       = PropertyResolver.readColor( parseProperty( "rgb( 0%, 50, 100 )" ) );
     assertNull( mixed );
     QxColor inherit = PropertyResolver.readColor( parseProperty( "inherit" ) );
-    assertNull( inherit );
+    assertEquals( QxColor.TRANSPARENT, inherit );
   }
 
   public void testDimension() throws Exception {
