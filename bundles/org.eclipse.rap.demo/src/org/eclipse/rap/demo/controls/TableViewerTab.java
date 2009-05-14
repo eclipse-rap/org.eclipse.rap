@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,18 @@ public class TableViewerTab extends ExampleTab {
   private static final int LAST_NAME = 1;
   private static final int AGE = 2;
   private static final int EDITABLE = 3;
+  private static final String[] LAST_NAMES = {
+    "Hövl&lt;_'><'&amp;",
+    "Panther",
+    "Marx",
+    "Loren",
+    "Cool",
+    "Einstein",
+    "Duck",
+    "Mouse",
+    "",
+    "Presley"
+  };
 
   private static final class Person {
     String firstName;
@@ -207,12 +219,10 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class NameEditingSupport extends EditingSupport {
+  private static final class FirstNameEditingSupport extends EditingSupport {
     private final CellEditor editor;
-    private final int property;
-    public NameEditingSupport( final TableViewer viewer, final int property ) {
+    public FirstNameEditingSupport( final TableViewer viewer ) {
       super( viewer );
-      this.property = property;
       editor = new TextCellEditor( viewer.getTable() );
     }
 
@@ -228,21 +238,49 @@ public class TableViewerTab extends ExampleTab {
     protected Object getValue( final Object element ) {
       Person person = ( Person )element;
       String result;
-      if( FIRST_NAME == property ) {
-        result = person.firstName;
-      } else {
-        result = person.lastName;
+      result = person.firstName;
+      return result;
+    }
+
+    protected void setValue( final Object element, final Object value ) {
+      Person person = ( Person )element;
+      person.firstName = ( String )value;
+      getViewer().update( element, null );
+    }
+  }
+
+  private static final class LastNameEditingSupport extends EditingSupport {
+    private final CellEditor editor;
+    public LastNameEditingSupport( final TableViewer viewer ) {
+      super( viewer );
+      editor = new ComboBoxCellEditor( viewer.getTable(),
+                                       LAST_NAMES,
+                                       SWT.READ_ONLY );
+    }
+
+    protected boolean canEdit( final Object element ) {
+      Person person = ( Person )element;
+      return person.editable;
+    }
+
+    protected CellEditor getCellEditor( final Object element ) {
+      return editor;
+    }
+
+    protected Object getValue( final Object element ) {
+      Person person = ( Person )element;
+      Integer result = new Integer( 0 );
+      for( int i = 0; i < LAST_NAMES.length; i++ ) {
+        if( LAST_NAMES[ i ].equals( person.lastName ) ) {
+          result = new Integer( i );
+        }
       }
       return result;
     }
 
     protected void setValue( final Object element, final Object value ) {
       Person person = ( Person )element;
-      if( property == FIRST_NAME ) {
-        person.firstName = ( String )value;
-      } else {
-        person.lastName = ( String )value;
-      }
+      person.lastName = LAST_NAMES[ ( ( Integer )value ).intValue() ];
       getViewer().update( element, null );
     }
   }
@@ -336,17 +374,17 @@ public class TableViewerTab extends ExampleTab {
 
   private void initPersons() {
     persons.clear();
-    persons.add( new Person( "Rögn\"íy&", "Hövl&lt;_'><'&amp;", 1, false ) );
-    persons.add( new Person( "Paul", "Panther", 1, false ) );
-    persons.add( new Person( "Karl", "Marx", 2, false ) );
-    persons.add( new Person( "Sofia", "Loren", 3, true ) );
-    persons.add( new Person( "King", "Cool", 4, false ) );
-    persons.add( new Person( "Albert", "Einstein", 5, true ) );
-    persons.add( new Person( "Donald", "Duck", 6, false ) );
-    persons.add( new Person( "Mickey", "Mouse", 7, true ) );
-    persons.add( new Person( "Asterix", "", 8, false ) );
-    persons.add( new Person( "Nero", "", 9, false ) );
-    persons.add( new Person( "Elvis", "Presley", 10, true ) );
+    persons.add( new Person( "Rögn\"íy&", LAST_NAMES[ 0 ], 1, false ) );
+    persons.add( new Person( "Paul", LAST_NAMES[ 1 ], 1, false ) );
+    persons.add( new Person( "Karl", LAST_NAMES[ 2 ], 2, false ) );
+    persons.add( new Person( "Sofia", LAST_NAMES[ 3 ], 3, true ) );
+    persons.add( new Person( "King", LAST_NAMES[ 4 ], 4, false ) );
+    persons.add( new Person( "Albert", LAST_NAMES[ 5 ], 5, true ) );
+    persons.add( new Person( "Donald", LAST_NAMES[ 6 ], 6, false ) );
+    persons.add( new Person( "Mickey", LAST_NAMES[ 7 ], 7, true ) );
+    persons.add( new Person( "Asterix", LAST_NAMES[ 8 ], 8, false ) );
+    persons.add( new Person( "Nero", LAST_NAMES[ 8 ], 9, false ) );
+    persons.add( new Person( "Elvis", LAST_NAMES[ 9 ], 10, true ) );
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -436,7 +474,7 @@ public class TableViewerTab extends ExampleTab {
     result.setLabelProvider( labelProvider );
     TableColumn column = result.getColumn();
     column.setText( "Last Name" );
-    column.setWidth( 100 );
+    column.setWidth( 120 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -560,9 +598,9 @@ public class TableViewerTab extends ExampleTab {
 
   private void createCellEditor() {
     EditingSupport editingSupport;
-    editingSupport = new NameEditingSupport( viewer, FIRST_NAME );
+    editingSupport = new FirstNameEditingSupport( viewer );
     firstNameColumn.setEditingSupport( editingSupport );
-    editingSupport = new NameEditingSupport( viewer, LAST_NAME );
+    editingSupport = new LastNameEditingSupport( viewer );
     lastNameColumn.setEditingSupport( editingSupport );
     editingSupport = new AgeEditingSupport( viewer );
     ageColumn.setEditingSupport( editingSupport );
