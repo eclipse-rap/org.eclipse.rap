@@ -479,6 +479,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._focusIndex !== -1 ) {
           this.updateItem( this._focusIndex, false );
         }
+        // This function is called from server-side and from within Table.js
+        // org_eclipse_rap_rwt_EventUtil_suspend is used to distinguish the caller
+        if( org_eclipse_rap_rwt_EventUtil_suspend ) {
+          this._selectionStart = -1;
+        } else {
+          var req = org.eclipse.swt.Request.getInstance();
+          var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
+          req.addParameter( id + ".focusIndex", value );
+        }
       }
     },
 
@@ -567,10 +576,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             var start = Math.min( selectionStart, itemIndex );
             var end = Math.max( selectionStart, itemIndex );
             for( var i = start; i <= end; i++ ) {
-              if( !this._isItemSelected( i ) ) {
-                this._selectItem( i );
-              }
+              this._selectItem( i );
             }
+          } else {
+            this._selectItem( itemIndex );
           }
         }
         if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
@@ -853,10 +862,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _selectItem : function( itemIndex ) {
-      this._selected.push( itemIndex );
-      // call updateItem with contentChanged-flag == true to override eventually
-      // set background colors, see https://bugs.eclipse.org/bugs/237134
-      this.updateItem( itemIndex, true );
+      if( !this._isItemSelected( itemIndex ) ) {
+        this._selected.push( itemIndex );
+        // Call updateItem with contentChanged = true to override potentially
+        // set background colors, see https://bugs.eclipse.org/bugs/237134
+        this.updateItem( itemIndex, true );
+      }
     },
 
     _deselectItem : function( itemIndex, update ) {

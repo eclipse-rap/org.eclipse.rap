@@ -328,7 +328,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   // TODO [rh] check if necessary to honor focusIndex == -1, would mean to
-  //      call jsTable.setFocusedItem( null ) in TableLCA
+  //      call jsTable.setFocusIndex( -1 ) in TableLCA
   private static void writeFocused( final TableItem item ) throws IOException
   {
     if(    TableLCAUtil.hasFocusIndexChanged( item.getParent() )

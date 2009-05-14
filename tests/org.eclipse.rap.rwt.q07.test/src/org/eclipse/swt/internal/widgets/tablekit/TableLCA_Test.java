@@ -699,21 +699,39 @@ public class TableLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
   }
 
-  private static boolean isItemVirtual( final Table table, final int index ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.isItemVirtual( index );
-  }
-
   public void testWriteScrollbarsVisible() throws IOException {
     RWTFixture.fakeNewRequest();
     Display display = new Display();
     Shell shell = new Shell( display );
-    final Table table = new Table( shell, SWT.NO_SCROLL );
+    Table table = new Table( shell, SWT.NO_SCROLL );
     TableLCA lca = new TableLCA();
     lca.renderChanges( table );
     String markup = Fixture.getAllMarkup();
     String expected = "w.setScrollBarsVisibile( false, false );";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
+  public void testWriteFocusIndex() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    for( int i = 0; i < 3; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    TableLCA lca = new TableLCA();
+    RWTFixture.fakeNewRequest();
+    lca.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setFocusIndex";
+    assertTrue( markup.indexOf( expected ) == -1 );
+    table.setSelection( 0 );
+    RWTFixture.fakeNewRequest();
+    RWTFixture.markInitialized( table );
+    lca.preserveValues( table );
+    table.getItem( 0 ).dispose();
+    lca.renderChanges( table );
+    markup = Fixture.getAllMarkup();
+    expected = "w.setFocusIndex( -1 )";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -723,5 +741,11 @@ public class TableLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+  }
+
+  private static boolean isItemVirtual( final Table table, final int index ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.isItemVirtual( index );
   }
 }

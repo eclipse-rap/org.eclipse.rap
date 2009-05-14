@@ -28,6 +28,7 @@ public final class TableLCAUtil {
 
   // Constants used by alignment
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
+  private static final Integer DEFAULT_FOCUS_INDEX = new Integer( -1 );
 
   ////////////////////////////
   // Column and Item alignment
@@ -105,7 +106,10 @@ public final class TableLCAUtil {
     ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     Integer focusIndex = new Integer( tableAdapter.getFocusIndex() );
-    return WidgetLCAUtil.hasChanged( table, PROP_FOCUS_INDEX, focusIndex );
+    return WidgetLCAUtil.hasChanged( table,
+                                     PROP_FOCUS_INDEX,
+                                     focusIndex,
+                                     DEFAULT_FOCUS_INDEX );
   }
 
   //////////////////

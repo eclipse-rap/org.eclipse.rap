@@ -87,6 +87,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
     readTopIndex( table ); // topIndex MUST be read *before* processSetData
+    readFocusIndex( table );
     readLeftOffset( table );
     readSelection( table );
     readSetData( table );
@@ -121,6 +122,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     TableLCAUtil.writeItemMetrics( table );
     writeItemCount( table );
     writeTopIndex( table );
+    writeFocusIndex( table );
     writeLinesVisible( table );
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
@@ -174,6 +176,15 @@ public final class TableLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( table, "topIndex" );
     if( value != null ) {
       table.setTopIndex( Integer.parseInt( value ) );
+    }
+  }
+
+  private static void readFocusIndex( final Table table ) {
+    String value = WidgetLCAUtil.readPropertyValue( table, "focusIndex" );
+    if( value != null ) {
+      ITableAdapter adapter
+        = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      adapter.setFocusIndex( Integer.parseInt( value ) );
     }
   }
 
@@ -298,6 +309,18 @@ public final class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getTopIndex() );
     writer.set( PROP_TOP_INDEX, "topIndex", newValue, DEFAULT_TOP_INDEX );
+  }
+
+  private static void writeFocusIndex( final Table table ) throws IOException {
+    if( TableLCAUtil.hasFocusIndexChanged( table ) ) {
+      ITableAdapter adapter
+        = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      // TableItemLCA renders focusIndex in case != -1
+      if( adapter.getFocusIndex() == -1 ) {
+        JSWriter writer = JSWriter.getWriterFor( table );
+        writer.set( "focusIndex", new Object[]{ new Integer( -1 ) } );
+      }
+    }
   }
 
   private static void writeLinesVisible( final Table table ) throws IOException
