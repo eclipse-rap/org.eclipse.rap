@@ -193,6 +193,29 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     }
   }
   
+// RAP [rh] session-singleton-wrapper for PreferenceManager
+  private final static class PreferenceManagerStore extends SessionSingletonBase {
+    private final WorkbenchPreferenceManager preferenceManager;
+    
+    static PreferenceManagerStore getInstance() {
+      Class clazz = PreferenceManagerStore.class;
+      return ( PreferenceManagerStore )getInstance( clazz );
+    }
+    
+    public PreferenceManagerStore() {
+// RAP [rh] PreferenceManager initialization code, copied from getPreferenceManager()
+      preferenceManager = new WorkbenchPreferenceManager( PREFERENCE_PAGE_CATEGORY_SEPARATOR );
+      // Get the pages from the registry
+      PreferencePageRegistryReader registryReader = new PreferencePageRegistryReader( PlatformUI.getWorkbench() );
+      registryReader.loadFromRegistry( Platform.getExtensionRegistry() );
+      preferenceManager.addPages( registryReader.getTopLevelNodes() );
+    }
+    
+    public PreferenceManager getPreferenceManager() {
+      return preferenceManager;
+    }
+  }
+  
 	// RAP [bm]:
 // /**
 // * Splash shell constant.
@@ -263,7 +286,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     public static char PREFERENCE_PAGE_CATEGORY_SEPARATOR = '/';
 
     // Other data.
-    private WorkbenchPreferenceManager preferenceManager;
+// RAP [rh] replaced with session-scoped one    
+//    private WorkbenchPreferenceManager preferenceManager;
 
     // RAP [bm]: replaced with session scoped one
 //    private ViewRegistry viewRegistry;
@@ -326,7 +350,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 // RAP [rh] workingSetRegistry field unneeded, replaced by session-singleton    
 //        workingSetRegistry = null;
 
-        preferenceManager = null;
+// RAP [rh] preferenceManager field is unused since replaced with session-singleton        
+//        preferenceManager = null;
 
         // RAP [bm]: 
 //        if (viewRegistry != null) {
@@ -801,19 +826,21 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * the receiver.
      */
     public PreferenceManager getPreferenceManager() {
-        if (preferenceManager == null) {
-            preferenceManager = new WorkbenchPreferenceManager(
-                    PREFERENCE_PAGE_CATEGORY_SEPARATOR);
-
-            //Get the pages from the registry
-            PreferencePageRegistryReader registryReader = new PreferencePageRegistryReader(
-                    getWorkbench());
-            registryReader
-                    .loadFromRegistry(Platform.getExtensionRegistry());
-            preferenceManager.addPages(registryReader.getTopLevelNodes());
-           
-        }
-        return preferenceManager;
+// RAP [rh] PreferenceManager must be a session-singleton
+//        if (preferenceManager == null) {
+//            preferenceManager = new WorkbenchPreferenceManager(
+//                    PREFERENCE_PAGE_CATEGORY_SEPARATOR);
+//
+//            //Get the pages from the registry
+//            PreferencePageRegistryReader registryReader = new PreferencePageRegistryReader(
+//                    getWorkbench());
+//            registryReader
+//                    .loadFromRegistry(Platform.getExtensionRegistry());
+//            preferenceManager.addPages(registryReader.getTopLevelNodes());
+//           
+//        }
+//        return preferenceManager;
+      return PreferenceManagerStore.getInstance().getPreferenceManager();
     }
 
     /**
