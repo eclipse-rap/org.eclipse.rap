@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class SpinnerTab extends ExampleTab {
     label = new Label( parent, SWT.NONE );
     label.setText( "Current value" );
     final Label lblSpinnerValue = new Label( parent, SWT.NONE );
+    lblSpinnerValue.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
     lblSpinnerValue.setText( String.valueOf( modifySpinner.getSelection() ) );
     modifySpinner.addModifyListener( new ModifyListener() {
 
@@ -94,6 +95,12 @@ public class SpinnerTab extends ExampleTab {
         spinner.setIncrement( Integer.parseInt( txtInc.getText() ) );
         spinner.setPageIncrement( Integer.parseInt( txtPageInc.getText() ) );
         spinner.setSelection( Integer.parseInt( txtSelection.getText() ) );
+
+        modifySpinner.setMinimum( Integer.parseInt( txtMin.getText() ) );
+        modifySpinner.setMaximum( Integer.parseInt( txtMax.getText() ) );
+        modifySpinner.setIncrement( Integer.parseInt( txtInc.getText() ) );
+        modifySpinner.setPageIncrement( Integer.parseInt( txtPageInc.getText() ) );
+        modifySpinner.setSelection( Integer.parseInt( txtSelection.getText() ) );
       }
     } );
   }

@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._hasModifyListener = false;
       this._hasSelectionListener = false;
       this.setWrap( false );
-      this.getManager().addEventListener( "change", this._onChangeValue, this );
+      this._textfield.addEventListener( "changeValue", this._onChangeValue, this );
       this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.addEventListener( "blur", this._onChangeValue, this );
       this._textfield.addEventListener( "keydown", this._onKeyDown, this );
@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     },
     
     rap_reset : function() {
-      this.getManager().removeEventListener( "change", this._onChangeValue, this );
+      this._textfield.removeEventListener( "changeValue", this._onChangeValue, this );
       this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.removeEventListener( "blur", this._onChangeValue, this );
       this._textfield.removeEventListener( "keydown", this._onKeyDown, this );
