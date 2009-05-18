@@ -735,6 +735,24 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
+  public void testReadFocusIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.MULTI );
+    for( int i = 0; i < 5; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    String tableId = WidgetUtil.getId( table );
+    // ensure that reading selection parameter does not override focusIndex
+    Fixture.fakeRequestParam( tableId + ".focusIndex", "5" );
+    Fixture.fakeRequestParam( tableId + ".selection", "0,1,2,3,4,5" );
+    TableLCA tableLCA = new TableLCA();
+    tableLCA.readData( table );
+    assertEquals( 5, tableAdapter.getFocusIndex() );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

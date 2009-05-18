@@ -87,9 +87,9 @@ public final class TableLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
     readTopIndex( table ); // topIndex MUST be read *before* processSetData
-    readFocusIndex( table );
     readLeftOffset( table );
     readSelection( table );
+    readFocusIndex( table ); // must be called *after* readSelection
     readSetData( table );
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
