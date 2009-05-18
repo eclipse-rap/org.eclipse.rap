@@ -16784,11 +16784,12 @@ old){this._syncFieldWidth();
 },
 _changeInnerHeight:function(value,
 old){this._syncFieldHeight();
+this._centerFieldVertically();
 },
 _syncFieldWidth:function(){this._inputElement.style.width=this.getInnerWidth()+"px";
 },
-_syncFieldHeight:function(){this._inputElement.style.height=(this.getInnerHeight()-2)+"px";
-},
+_syncFieldHeight:function(){if(this._inputTag!=="input"){this._inputElement.style.height=(this.getInnerHeight()-2)+"px";
+}},
 _applyCursor:function(value,
 old){if(this._inputElement){this._renderCursor();
 }},
@@ -16886,9 +16887,21 @@ _afterAppear:qx.core.Variant.select("qx.client",
 if(!this._firstInputFixApplied&&this._inputElement){qx.client.Timer.once(this._ieFirstInputFix,
 this,
 1);
-}},
+}this._centerFieldVertically();
+},
 "default":function(){this.base(arguments);
+this._centerFieldVertically();
 }}),
+_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=this.getInnerHeight();
+var inputElementHeight=qx.html.Dimension.getBoxHeight(this._inputElement);
+if(inputElementHeight!=0){if(qx.core.Variant.isSet("qx.client",
+"mshtml")){inputElementHeight-=2;
+}var top=(innerHeight-inputElementHeight)/2-1;
+if(top<0){top=0;
+}top=Math.floor(top);
+this._inputElement.style.position="relative";
+this._inputElement.style.top=top+"px";
+}}},
 _firstInputFixApplied:false,
 _textOnFocus:null,
 _oninputDom:qx.core.Variant.select("qx.client",

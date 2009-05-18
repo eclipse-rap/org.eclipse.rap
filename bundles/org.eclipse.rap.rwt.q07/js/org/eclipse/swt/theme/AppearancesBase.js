@@ -688,7 +688,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
       result.border = tv.getCssBorder( "Text", "border" );
-      result.padding = tv.getCssBoxDimensions( "Text", "padding" );
+      // [if] Do not apply top/bottom paddings on the client
+      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      result.paddingRight = cssPadding[ 1 ];
+      result.paddingLeft = cssPadding[ 3 ];
       return result;
     }
   },
@@ -746,15 +749,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "*", "font" );
-      result.padding = tv.getCssBoxDimensions( "Text", "padding" );
+      // [if] Do not apply top/bottom paddings on the client
+      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      result.paddingRight = cssPadding[ 1 ];
+      result.paddingLeft = cssPadding[ 3 ];
       result.width = null;
       result.height = null;
       result.left = 0;
       result.right = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
       result.top = 0;
       result.bottom = 0;
-      result.textColor =   states.disabled
-                    ? "widget.graytext"
+      result.textColor = states.disabled
+                         ? "widget.graytext"
                          : tv.getCssColor( "Combo", "color" );
       result.backgroundColor = tv.getCssColor( "Combo", 
                                                "background-color" );
