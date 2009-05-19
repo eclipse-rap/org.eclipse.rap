@@ -38,6 +38,7 @@ import org.eclipse.ui.internal.PartPane;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -263,6 +264,7 @@ public abstract class ConfigurableStack extends StackPresentation {
         
         for( int i = 0; i < items.length; i++ ) {
           if( items[ i ] instanceof ActionContributionItem ) {
+            // actions
             ActionContributionItem actionItem 
               = ( ActionContributionItem ) items[ i ];
             String actionId = actionItem.getAction().getId();
@@ -275,7 +277,19 @@ public abstract class ConfigurableStack extends StackPresentation {
             } else {              
               actionItem.setVisible( false );
             }
-          } 
+          } else if( items[ i ] instanceof CommandContributionItem ) {
+            // commands
+            CommandContributionItem item 
+              = ( CommandContributionItem ) items[ i ];
+            boolean isVisible 
+              = action.isViewActionVisibile( paneId, item.getId() );
+            if( isVisible ) {     
+              item.setVisible( true );
+              actionCount++;
+            } else {              
+              item.setVisible( false );
+            }
+          }
         }
         
         if( toolBarManager != null && result != null ) {
