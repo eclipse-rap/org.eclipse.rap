@@ -144,7 +144,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
     
     _onFocusIn : function( evt ) {
-      if(    this.hasState( "rwt_CCOMBO" )
+      if(    this._field.isCreated()
+          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend )
       {
         this._handleSelectionChange();
@@ -371,12 +372,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
       }
     },
-
+    
     _onMouseUp : function( evt ) {
       if( !this._dropped ) {
         this.setCapture( false );
       }
-      if(    this.hasState( "rwt_CCOMBO" )
+      if(    evt.getTarget() == this._field
+          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
@@ -456,7 +458,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           }
           break;
       }
-      if(    this.hasState( "rwt_CCOMBO" )
+      if(    this._field.isCreated()
+          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
@@ -520,7 +523,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             }
           }
       }
-      if(    this.hasState( "rwt_CCOMBO" )
+      if(    this._field.isCreated()
+          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
