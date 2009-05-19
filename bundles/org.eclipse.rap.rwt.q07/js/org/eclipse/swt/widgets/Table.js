@@ -835,6 +835,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onHorzScrollBarChangeValue : function() {
       this._columnArea.setLeft( 0 - this._horzScrollBar.getValue() );
       this._updateRowBounds();
+      this._updateGridLines();
       this._leftOffsetChanged = true;
     },
 
