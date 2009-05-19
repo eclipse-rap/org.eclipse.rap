@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._list = new qx.ui.form.List();
     this._list.setAppearance( "combo-list" );
     this._list.setTabIndex( -1 );
-    this._list.setVisibility( false );
+    this._list.setDisplay( false );
     // List Manager
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
@@ -128,7 +128,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
   members : {
     _onChangeSize : function( evt ) {
       this._list.setWidth( this.getWidth() );
-      this._listPositioning();
+      this._setListLocation();
     },
 
     _onAppear : function( evt ) {
@@ -143,6 +143,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.addState( "rwt_FLAT" );
       }
       this.getTopLevelWidget().add( this._list );
+      this._setListLocation();
     },
     
     _onFocusIn : function( evt ) {
@@ -233,9 +234,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._toggleListVisibility();
       }
     },
-    
+
+    ///////////////////////////////////////
     // List and list-items handling methods
-    _listPositioning : function() {
+
+    _setListLocation : function() {
       if( this.getElement() ){
         var elementPos = qx.bom.element.Location.get( this.getElement() );
         this._list.setLocation( elementPos.left,
@@ -244,7 +247,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
     
     _toggleListVisibility : function() {
-      this._listPositioning();
       if( this._list.getChildrenLength() ) {
         // Temporary make the text field ReadOnly, when the list is dropped.
         if( this._editable ) {
@@ -254,10 +256,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           // Brings this widget on top of the others with same parent.
           this._bringToFront();
           this.setCapture( true );
+          this._setListLocation();
         } else {
           this.setCapture( false );
         }
-        this._list.setVisibility( !this._dropped );
+        this._list.setDisplay( !this._dropped );
         this._dropped = !this._dropped;
         if( this.hasState( "rwt_CCOMBO" ) ) {
           this._updateListVisibleRequestParam();
@@ -610,7 +613,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".listVisible", this._list.getVisibility() );
+        req.addParameter( id + ".listVisible", this._list.getDisplay() );
       }
     },
     
@@ -688,7 +691,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
     
     setListVisible : function( value ) {
-      if( this._list.setVisibility != value ) {
+      if( this._list.getDisplay() != value ) {
         this._dropped = !value;
         this._toggleListVisibility();
       }
