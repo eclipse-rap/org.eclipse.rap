@@ -67,6 +67,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.addEventListener( "changeBackgroundColor",
                            this._onChangeBackgoundColor, 
                            this );
+    this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
     // Mouse events
     this.addEventListener( "mousedown", this._onMouseDown, this );
     this.addEventListener( "mouseup", this._onMouseUp, this );
@@ -96,6 +97,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "changeBackgroundColor",
                               this._onChangeBackgoundColor, 
                               this );
+    this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this.removeEventListener( "click", this._onMouseClick, this );
@@ -181,6 +183,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       var value = evt.getValue();
       this._field.setBackgroundColor( value );
       this._list.setBackgroundColor( value );
+    },
+    
+    _onChangeVisibility : function( evt ) {
+      var value = evt.getValue();
+      if( !value && this._dropped ) {
+        this._toggleListVisibility();
+      }
     },
     
     _applyCursor : function( value, old ) {
