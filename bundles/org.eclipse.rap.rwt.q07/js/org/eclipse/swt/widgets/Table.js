@@ -1323,6 +1323,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //////////////////////
     // Vertical gridlines
 
+    /*
+     * Updates x-position and height of vertical grid lines.
+     */
     _updateGridLines : function() {
       if( this.getLinesVisible() ) {
         var columns = this._columnArea.getChildren();
