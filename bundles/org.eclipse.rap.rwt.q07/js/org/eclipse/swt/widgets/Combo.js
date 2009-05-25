@@ -281,17 +281,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _bringToFront : function() {
-      var someObject, vHashCode;
       var allWidgets = this.getTopLevelWidget().getChildren();
-      for( vHashCode in allWidgets ) {
-        someObject = allWidgets[vHashCode];
-        if( someObject.getZIndex ) {
-          if( this._list.getZIndex() < someObject.getZIndex() ) {
-            tmpZIndex = this._list.getZIndex();
-            this._list.setZIndex( someObject.getZIndex() );
-            someObject.setZIndex( tmpZIndex );
+      var topZIndex = this._list.getZIndex();
+      for( var vHashCode in allWidgets ) {
+        var widget = allWidgets[ vHashCode ];
+        if( widget.getZIndex ) {
+          if( topZIndex < widget.getZIndex() ) {
+            topZIndex = widget.getZIndex();
           }
         }
+      }
+      if( topZIndex > this._list.getZIndex() ) {
+        this._list.setZIndex( topZIndex + 1 );
       }
     },
    
