@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,7 @@ public class TreeItem extends Item {
   private static final int IMAGE_TEXT_GAP = 2;
   private static final int INDENT_WIDTH = 19;
   private static final int ITEM_HEIGHT = 16;
-  
+
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
@@ -555,6 +555,14 @@ public class TreeItem extends Item {
     }
     if( cellBackgrounds == null ) {
       cellBackgrounds = new Color[ validColumnCount ];
+    } else if( cellBackgrounds.length < validColumnCount ) {
+      Color[] newCellBackgrounds = new Color[ validColumnCount ];
+      System.arraycopy( cellBackgrounds,
+                        0,
+                        newCellBackgrounds,
+                        0,
+                        cellBackgrounds.length );
+      cellBackgrounds = newCellBackgrounds;
     }
     if( cellBackgrounds[ columnIndex ] == value ) {
       return;
@@ -599,6 +607,10 @@ public class TreeItem extends Item {
         return;
       }
       cellFonts = new Font[ validColumnCount ];
+    } else if( cellFonts.length < validColumnCount ) {
+      Font[] newCellFonts = new Font[ validColumnCount ];
+      System.arraycopy( cellFonts, 0, newCellFonts, 0, cellFonts.length );
+      cellFonts = newCellFonts;
     }
     if( cellFonts[ columnIndex ] == value ) {
       return;
@@ -640,6 +652,14 @@ public class TreeItem extends Item {
     }
     if( cellForegrounds == null ) {
       cellForegrounds = new Color[ validColumnCount ];
+    } else if( cellForegrounds.length < validColumnCount ) {
+      Color[] newCellForegrounds = new Color[ validColumnCount ];
+      System.arraycopy( cellForegrounds,
+                        0,
+                        newCellForegrounds,
+                        0,
+                        cellForegrounds.length );
+      cellForegrounds = newCellForegrounds;
     }
     if( cellForegrounds[ columnIndex ] == value ) {
       return;

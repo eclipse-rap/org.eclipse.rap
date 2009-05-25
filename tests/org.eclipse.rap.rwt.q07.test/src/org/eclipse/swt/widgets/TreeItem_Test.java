@@ -654,7 +654,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 100, rootItem.getBounds( 1 ).x );
     assertEquals( 200, rootItem.getBounds( 2 ).x );
   }
-  
+
   public void testGetBoundsWithVisibleHeader() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -771,6 +771,23 @@ public class TreeItem_Test extends TestCase {
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
     item2.setImage( 0, image );
     assertTrue( col0Bounds.y < item2.getImageBounds( 0 ).y );
+  }
+
+  public void testDynamicColumnCountAttributes() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    createColumns( tree, 1 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    treeItem.setFont( 0, display.getSystemFont() );
+    treeItem.setForeground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
+    treeItem.setBackground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
+    treeItem.setImage( 0, Graphics.getImage( RWTFixture.IMAGE1 ) );
+    createColumns( tree, 1 );
+    treeItem.setFont( 1, display.getSystemFont() );
+    treeItem.setForeground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
+    treeItem.setBackground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
+    treeItem.setImage( 1, Graphics.getImage( RWTFixture.IMAGE1 ) );
   }
 
   protected void setUp() throws Exception {
