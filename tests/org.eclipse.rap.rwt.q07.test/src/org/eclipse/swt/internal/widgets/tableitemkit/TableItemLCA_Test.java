@@ -351,4 +351,18 @@ public class TableItemLCA_Test extends TestCase {
     String result = Fixture.getAllMarkup();
     assertTrue( result.indexOf( expected ) != -1 );
   }
+
+  public void testDynamicColumns() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setBackground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
+    // Create another column after setting a cell background
+    // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=277089
+    new TableColumn( table, SWT.NONE );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+  }
 }

@@ -48,9 +48,11 @@ public class TableItem extends Item {
     public Color[] getCellBackgrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
-      for( int i = 0; i < result.length; i++ ) {
-        if( data != null && data[ i ] != null ) {
-          result[ i ] = data[ i ].background;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].background;
+          }
         }
       }
       return result;
@@ -59,9 +61,11 @@ public class TableItem extends Item {
     public Color[] getCellForegrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
-      for( int i = 0; i < result.length; i++ ) {
-        if( data != null && data[ i ] != null ) {
-          result[ i ] = data[ i ].foreground;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].foreground;
+          }
         }
       }
       return result;
@@ -70,9 +74,11 @@ public class TableItem extends Item {
     public Font[] getCellFonts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Font[] result = new Font[ columnCount ];
-      for( int i = 0; i < result.length; i++ ) {
-        if( data != null && data[ i ] != null ) {
-          result[ i ] = data[ i ].font;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].font;
+          }
         }
       }
       return result;
