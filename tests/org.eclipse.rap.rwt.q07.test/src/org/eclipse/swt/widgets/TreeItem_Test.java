@@ -798,13 +798,12 @@ public class TreeItem_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
-  private TreeColumn[] createColumns( final Tree tree, final int count ) {
+  private static TreeColumn[] createColumns( final Tree tree, final int count )
+  {
     TreeColumn[] result = new TreeColumn[ count ];
     for( int i = 0; i < count; i++ ) {
       TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setText( i % 2 == 1
-                                ? "foo"
-                                : "bar" );
+      column.setText( i % 2 == 1 ? "foo" : "bar" );
       column.setWidth( 100 );
       result[ i ] = column;
     }
