@@ -51,7 +51,7 @@ public final class SessionScope implements IScopeContext {
    * Create and return a new session scope instance.
    */
   public SessionScope() {
-      super();
+    super();
   }
 
   public IPath getLocation() {

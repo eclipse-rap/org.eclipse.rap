@@ -19,7 +19,8 @@ import org.eclipse.core.runtime.preferences.IScope;
 public final class SessionPreferencesFactory implements IScope {
 
   public IEclipsePreferences create( final IEclipsePreferences parent, 
-                                     final String name ) {
+                                     final String name )
+  {
     return new SessionPreferencesNode( parent, name );
   }
   

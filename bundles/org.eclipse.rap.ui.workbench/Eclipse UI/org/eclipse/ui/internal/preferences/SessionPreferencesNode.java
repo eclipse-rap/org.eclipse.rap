@@ -25,9 +25,7 @@ import org.osgi.service.prefs.Preferences;
 /**
  * This node use the RWT setting store to persist its preferences.
  */
-final class SessionPreferencesNode 
-  implements IEclipsePreferences 
-{
+final class SessionPreferencesNode implements IEclipsePreferences {
 
   private static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
   private static final String DOUBLE_PATH_SEPARATOR = "//"; //$NON-NLS-1$
@@ -43,7 +41,8 @@ final class SessionPreferencesNode
   private final Map children = new HashMap();    // !thread safe
   
   SessionPreferencesNode( final IEclipsePreferences parent, 
-                          final String name ) {
+                          final String name )
+  {
     ParamCheck.notNull( parent, "parent" ); //$NON-NLS-1$
     ParamCheck.notNull( name, "name" ); //$NON-NLS-1$
     checkName( name );
@@ -163,13 +162,13 @@ final class SessionPreferencesNode
     return absolutePath;
   }
 
-  public synchronized String[] childrenNames() throws BackingStoreException {
+  public synchronized String[] childrenNames() {
     checkRemoved();
     Set names = children.keySet();
     return ( String[] )names.toArray( new String[ names.size() ] );
   }
 
-  public void clear() throws BackingStoreException {
+  public void clear() {
     checkRemoved();
     String[] keys = internalGetKeys();
     for( int i = 0; i < keys.length; i++ ) {
@@ -177,7 +176,7 @@ final class SessionPreferencesNode
     }
   }
 
-  public void flush() throws BackingStoreException {
+  public void flush() {
     checkRemoved();
     // the current implementation persists everytime the preferences 
     // are modified, so there's nothing to do here
@@ -264,7 +263,7 @@ final class SessionPreferencesNode
     return result;
   }
 
-  public String[] keys() throws BackingStoreException {
+  public String[] keys() {
     checkRemoved();
     return internalGetKeys();
   }

@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.preferences;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.osgi.service.prefs.BackingStoreException;
 
-class  ScopedPreferenceStoreCore
+final class  ScopedPreferenceStoreCore
   extends EventManager
   implements IPreferenceStore, IPersistentPreferenceStore
 {
