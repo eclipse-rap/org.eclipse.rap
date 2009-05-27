@@ -41,9 +41,8 @@ public class RWTLifeCycle extends LifeCycle {
   
   private static final String ATTR_SESSION_DISPLAY
     = RWTLifeCycle.class.getName() + "#sessionDisplay";
-
-  private static final String REDRAW_CONTROLS
-    = RWTLifeCycle.class.getName() + ".RedrawWidgets";
+  private static final String ATTR_REDRAW_CONTROLS
+    = RWTLifeCycle.class.getName() + "#redrawControls";
   private static final String INITIALIZED
     = RWTLifeCycle.class.getName() + "Initialized";
   private static final String CURRENT_PHASE
@@ -439,10 +438,10 @@ public class RWTLifeCycle extends LifeCycle {
                                  final boolean redraw )
   {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Set set = ( Set )stateInfo.getAttribute( REDRAW_CONTROLS );
+    Set set = ( Set )stateInfo.getAttribute( ATTR_REDRAW_CONTROLS );
     if( set == null ) {
       set = new HashSet();
-      stateInfo.setAttribute( REDRAW_CONTROLS, set );
+      stateInfo.setAttribute( ATTR_REDRAW_CONTROLS, set );
     }
     if( redraw ) {
       set.add( control );
@@ -450,10 +449,16 @@ public class RWTLifeCycle extends LifeCycle {
       set.remove( control );
     }
   }
-
-  private void doRedrawFake() {
+  
+  public static boolean needsFakeRedraw( final Control control ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Set set = ( Set )stateInfo.getAttribute( REDRAW_CONTROLS );
+    Set set = ( Set )stateInfo.getAttribute( ATTR_REDRAW_CONTROLS );
+    return set != null && set.contains( control );
+  }
+
+  private static void doRedrawFake() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Set set = ( Set )stateInfo.getAttribute( ATTR_REDRAW_CONTROLS );
     if( set != null ) {
       Object[] controls = set.toArray();
       for( int i = 0; i < controls.length; i++ ) {

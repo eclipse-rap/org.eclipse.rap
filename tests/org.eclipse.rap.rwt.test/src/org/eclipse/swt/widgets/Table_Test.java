@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
@@ -327,16 +328,6 @@ public class Table_Test extends TestCase {
     } catch( SWTException e ) {
       assertEquals( SWT.ERROR_WIDGET_DISPOSED, e.code );
     }
-  }
-
-  private static boolean find( final int element, final int[] array ) {
-    boolean result = false;
-    for( int i = 0; i < array.length; i++ ) {
-      if( element == array[ i ] ) {
-        result = true;
-      }
-    }
-    return result;
   }
 
   public void testReduceSetItemCountWithSelection() {
@@ -1438,6 +1429,20 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getColumnOrder()[ 0 ] );
     assertEquals( 1, table.getColumnOrder()[ 1 ] );
   }
+  
+  public void testRedrawAfterDisposeVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 100, 100 );
+    table.setItemCount( 150 );
+    // dispose the first item, this must cause a "redraw" which in turn triggers 
+    // a SetData event to populate the newly appeared item at the bottom of the
+    // table
+    table.getItem( 0 ).dispose();
+    assertTrue( RWTLifeCycle.needsFakeRedraw( table ) );
+  }
 
   public void testSetColumnOrderWithInvalidArguments() {
     Display display = new Display();
@@ -2188,6 +2193,16 @@ public class Table_Test extends TestCase {
     assertEquals( 9, table.indexOf( item ) );
     // ensure that updating null-items does not throw NPE
     table.remove( 5 );
+  }
+
+  private static boolean find( final int element, final int[] array ) {
+    boolean result = false;
+    for( int i = 0; i < array.length; i++ ) {
+      if( element == array[ i ] ) {
+        result = true;
+      }
+    }
+    return result;
   }
 
   private static int countResolvedItems( final Table table ) {

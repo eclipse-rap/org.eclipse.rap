@@ -2061,6 +2061,9 @@ public class Table extends Composite {
       adjustFocusIndex();
     }
     updateScrollBars();
+    if( ( style & SWT.VIRTUAL ) != 0 ) {
+      redraw();
+    }
   }
 
   ////////////////
