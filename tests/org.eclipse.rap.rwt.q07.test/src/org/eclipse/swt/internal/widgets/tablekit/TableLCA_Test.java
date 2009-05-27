@@ -409,7 +409,6 @@ public class TableLCA_Test extends TestCase {
     shell.setSize( 100, 100 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         table[ 0 ] = new Table( shell, SWT.VIRTUAL );
         table[ 0 ].setItemCount( 500 );
