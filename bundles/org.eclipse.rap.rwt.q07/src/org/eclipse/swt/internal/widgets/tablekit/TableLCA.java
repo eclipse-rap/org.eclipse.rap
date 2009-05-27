@@ -188,7 +188,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void readLeftOffset( final Table table ) {
+  private static void readLeftOffset( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "leftOffset" );
     if( value != null ) {
       Object adapter = table.getAdapter( ITableAdapter.class );
