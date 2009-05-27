@@ -86,7 +86,11 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
         viewerComposite.setLayout(layout);
         GridData viewerData = new GridData(GridData.FILL_BOTH);
         viewerData.horizontalSpan = 2;
-        viewerData.heightHint = 0;
+        // RAP [if] Workaround for bug 232911:
+        // Buttons disappear partly in Jobs Dialog using Internet Explorer
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=232911
+        // viewerData.heightHint = 0;
+        viewerData.heightHint = 1;
         viewerComposite.setLayoutData(viewerData);
 	}
 
