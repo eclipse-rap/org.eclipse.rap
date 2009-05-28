@@ -13,6 +13,8 @@ package org.eclipse.rap.demo;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.*;
 import org.eclipse.ui.application.*;
 
@@ -44,6 +46,10 @@ public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
   public void postWindowOpen() {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-    window.getShell().setLocation( 70, 25 );
+    Shell shell = window.getShell();
+    Rectangle shellBounds = shell.getBounds();
+    if( !shell.getMaximized() && shellBounds.x == 0 && shellBounds.y == 0 ) {
+      shell.setLocation( 70, 25 );
+    }
   }
 }
