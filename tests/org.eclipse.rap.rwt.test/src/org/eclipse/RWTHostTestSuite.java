@@ -69,7 +69,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( PhaseId_Test.class );
     suite.addTestSuite( Scope_Test.class );
     suite.addTestSuite( Logger_Test.class );
-    suite.addTestSuite( SessionStore_Test.class );
     suite.addTestSuite( ServiceHandler_Test.class );
     suite.addTestSuite( SessionStore_Test.class );
     suite.addTestSuite( EngineConfig_Test.class );
