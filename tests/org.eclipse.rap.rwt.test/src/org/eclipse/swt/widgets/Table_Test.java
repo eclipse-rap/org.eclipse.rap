@@ -251,6 +251,19 @@ public class Table_Test extends TestCase {
       table.getItem( 3 ).dispose();
     }
     assertEquals( 0, table.getTopIndex() );
+
+    // Ensure that topIndex is adjusted if it is bigger than item count
+    table.removeAll();
+    for( int i = 0; i < 20; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    table.setTopIndex( 14 );
+    for( int i = 10; i < 20; i++ ) {
+      table.getItem( 10 ).dispose();
+    }
+    int itemCount = table.getItemCount();
+    int visibleItemCount = table.getVisibleItemCount( false );
+    assertEquals( itemCount - visibleItemCount - 1, table.getTopIndex() );
   }
 
   public void testDispose() {
@@ -1429,7 +1442,7 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getColumnOrder()[ 0 ] );
     assertEquals( 1, table.getColumnOrder()[ 1 ] );
   }
-  
+
   public void testRedrawAfterDisposeVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1437,7 +1450,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 100, 100 );
     table.setItemCount( 150 );
-    // dispose the first item, this must cause a "redraw" which in turn triggers 
+    // dispose the first item, this must cause a "redraw" which in turn triggers
     // a SetData event to populate the newly appeared item at the bottom of the
     // table
     table.getItem( 0 ).dispose();

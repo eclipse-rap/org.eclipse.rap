@@ -2345,12 +2345,9 @@ public class Table extends Composite {
   }
 
   private void adjustTopIndex() {
-    if( topIndex > itemCount - 1 ) {
-      if( needsVScrollBar() ) {
-        topIndex = Math.max( 0, itemCount - 1 );
-      } else {
-        topIndex = 0;
-      }
+    int visibleItemCount = getVisibleItemCount( false );
+    if( topIndex > itemCount - visibleItemCount - 1 ) {
+      topIndex = Math.max( 0, itemCount - visibleItemCount - 1 );
     }
   }
 
