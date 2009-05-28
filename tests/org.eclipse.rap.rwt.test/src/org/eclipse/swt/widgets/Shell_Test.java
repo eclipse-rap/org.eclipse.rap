@@ -307,6 +307,15 @@ public class Shell_Test extends TestCase {
     assertSame( shell, display.getActiveShell() );
   }
   
+  public void testMaximized() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMaximized( true );
+    assertTrue( shell.getMaximized() );
+    assertEquals( shell.getBounds(), display.getBounds() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
