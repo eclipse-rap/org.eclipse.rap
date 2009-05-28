@@ -752,6 +752,26 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 5, tableAdapter.getFocusIndex() );
   }
 
+  public void testReadTopIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.MULTI );
+    table.setSize( 485, 485 );
+    for( int i = 0; i < 115; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    String tableId = WidgetUtil.getId( table );
+    String indices = "114,70,71,72,73,74,75,76,77,78,79,80,81,82,83,"
+      + "84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,"
+      + "99,100,101,102,103,104,105,106,107,108,109,"
+      + "110,111,112,113,0";
+    Fixture.fakeRequestParam( tableId + ".topIndex", "0" );
+    Fixture.fakeRequestParam( tableId + ".selection", indices );
+    TableLCA tableLCA = new TableLCA();
+    tableLCA.readData( table );
+    assertEquals( 0, table.getTopIndex() );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

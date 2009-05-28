@@ -168,7 +168,8 @@ public final class TableLCA extends AbstractWidgetLCA {
           newSelection[ i ] = Integer.parseInt( selectedIndices[ i ] );
         }
       }
-      table.setSelection( newSelection );
+      table.deselectAll();
+      table.select( newSelection );
     }
   }
 
@@ -215,7 +216,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void readWidgetSelected( final Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      // TODO [rh] do something reasonable when index points to unresolved item 
+      // TODO [rh] do something reasonable when index points to unresolved item
       int index = getWidgetSelectedIndex();
       // Bugfix: check if index is valid before firing event to avoid problems
       //         with fast scrolling
@@ -382,7 +383,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       writer.call( "setScrollBarsVisibile", args );
     }
   }
-  
+
   //////////////////
   // Helping methods
 
