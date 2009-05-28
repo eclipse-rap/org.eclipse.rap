@@ -1,0 +1,256 @@
+/******************************************************************************* 
+* Copyright (c) 2009 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/ 
+
+* {
+  color: #4a4a4a;
+  background-color: white;
+  font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+*:disabled {
+  color: #CFCFCF;
+}
+
+*[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
+Button[PUSH], Button[BORDER] {
+  background-color: #f5f6f6;
+  border: 1px solid #A4A4A4;
+  padding: 2px 5px;
+}
+
+Button:hover {
+  background-color: white;
+}
+
+Button.clearButton {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowInactive {
+  background-color: transparent;
+  background-image: url( /img/business/toolbar_overflow.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowInactive:hover {
+  background-image: url( /img/business/toolbar_overflow_hover.png );
+}
+
+Button.toolbarOverflowActive {
+  background-color: transparent;
+  background-image: url( /img/business/toolbar_overflow_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowActive:hover {
+  background-image: url( /img/business/toolbar_overflow_hover_active.png );
+}
+
+Button.menuBar {
+  background-color: transparent;
+  border: none;
+  color: rgb( 0, 89, 165 );
+  font: 13px Arial, Helvetica, sans-serif;
+}
+
+Button.coolBar {
+  background-color: transparent;
+  border: none;
+  spacing: 6px;
+  color: rgb( 255, 255, 255 );
+  font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Button.coolBar:hover {
+  background-image: url( /img/business/toolbarButtonBg.png );
+}
+
+Button.coolBarPulldown {
+  background-color: transparent;
+  border: none;
+  color: rgb( 255, 255, 255 );
+  font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Button.coolBarPulldown:hover {
+  background-image: url( /img/business/toolbarButtonBg.png );
+}
+
+Button.partActive {
+  background-color: transparent;
+  border: none;
+  color: rgb( 252, 252, 252 );
+  font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactive {
+  background-color: transparent;
+  border: none;
+  color: rgb( 102, 102, 102 );
+  font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Button.inactivePerspective {
+  background-color: transparent;
+  border: none;
+  color: rgb( 0, 80, 145 );
+}
+
+/* Shell */
+
+Shell-Titlebar {
+  color: white;
+  background-image: url( /theme/business/icons/shell-active-background.png );
+  padding: 2px 5px 2px;
+  margin: 0px;
+  height: 27px;
+  font: 14px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Shell-Titlebar:inactive {
+  color: #aaaaaa;
+  background-image: url( /theme/business/icons/shell-inactive-background.png );
+}
+
+Shell {
+  background-color: white;
+}
+
+Shell-CloseButton {
+  background-image: url( "/theme/business/icons/shell-close-button.png" );
+}
+
+Shell.shellGray {
+  background-color: rgb( 235, 235, 235 );
+}
+
+Shell.toolbarLayer {
+  background-color: rgb( 255, 255, 255 );
+  border: none;
+}
+
+/* Table */
+
+Table-Column.overflow {
+  background-color: transparent;
+}
+
+TableItem.overflow {
+  background-color: transparent;
+}
+
+TableItem.overflow:even {
+  background-color: transparent;
+}
+
+Table-Column {
+  background-color: #f3f3f4;
+}
+
+Table-Cell {
+  spacing: 3px;
+  padding: 5px;
+}
+
+List-Item, TableItem {
+  background-color: transparent;
+}
+
+List-Item:even, TableItem:even {
+  background-color: #f3f3f4;
+}
+
+/* Check Buttons */
+
+Button-CheckIcon {
+  background-image: url( /theme/business/icons/check-unselected.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( /theme/business/icons/check-selected.png );
+}
+
+Button-CheckIcon:grayed {
+  background-image: url( /theme/business/icons/check-grayed.png );
+}
+
+/* Menu */
+Menu {
+  color: rgb( 0, 89, 165 );;
+  background-color: white;
+  border: 1px rgb( 0, 89, 165 );
+}
+
+/* Selection color */
+
+List-Item:selected, TableItem:selected, TreeItem:selected {
+  background-color: #D2D2D2;
+  color: #4a4a4a;
+}
+
+.menuBarPopup {
+  border: none;
+}
+
+Label.menuBorder {
+  background-color: rgb( 221, 221, 221 );
+}
+
+Label.stackBorder {
+  background-color: rgb( 235, 235, 235 );
+}
+
+Label.standaloneView {
+  background-color: transparent;
+  border: none;
+  color: rgb( 102, 102, 102 );
+  font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+Tree {
+  border: none;
+}
+
+.compGray {
+  background-color: rgb( 235, 235, 235 );
+}
+
+.compTrans {
+  background-color: transparent;
+}
+
+.partBorder {
+  border: rgb( 235, 0, 0 );
+}
+
+.compTransNoBorder {
+  border: none;
+  background-color: rgb( 252, 252, 252 );
+}
+
+List, Text, Combo, Tree, Table {
+  background-color: rgb( 252, 252, 252 );
+}
+
+.formKey {
+  font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
+  color: gray;
+}
+
+.formValue {
+  font: bold 14px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}

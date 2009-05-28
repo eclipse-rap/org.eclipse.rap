@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.presentationFactories">
+      <factory
+            class="org.eclipse.rap.internal.design.example.business.BusinessPresentationFactory"
+            id="org.eclipse.rap.design..example.business.factory"
+            name="Business Presentation Factory">
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            favicon="img/business/favicon.png"
+            id="org.eclipse.rap.design.example.business.branding"
+            servletName="business"
+            themeId="org.eclipse.rap.design.example.business.theme"
+            title="RAP business design">
+         <presentationFactory
+               defaultLayoutId="org.eclipse.rap.design.example.business.layout"
+               id="org.eclipse.rap.design..example.business.factory"
+               name="Business Presentation Factory">
+            <defaultStackPresentation
+                  id="org.eclipse.rap.design.example.business.stack.view">
+            </defaultStackPresentation>
+         </presentationFactory>
+      </branding>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.layouts">
+      <layout
+            id="org.eclipse.rap.design.example.business.layout"
+            name="Business Layout Blue">
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.header"
+               name="Header">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.FooterInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.footer"
+               name="Footer">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.menubar"
+               name="MenuBar">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.PerspectiveSwitcherInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.perspective"
+               name="Perspective Switcher">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.stack"
+               name="Busniess Stack">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.ConfigDialogInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.confdialog"
+               name="Config Dialog">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.coolbar"
+               name="Coolbar">
+         </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarOverflowInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.coolbaroverflow"
+               name="Coolbar Overflow">
+         </layoutSet>
+      </layout>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.themes">
+      <theme
+            file="theme/business/business.css"
+            id="org.eclipse.rap.design.example.business.theme"
+            name="Business Theme">
+      </theme>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.stackPresentations">
+      <stackPresentation
+            actionClass="org.eclipse.rap.internal.design.example.business.stacks.ConfigAction"
+            class="org.eclipse.rap.internal.design.example.business.stacks.ViewStackPresentation"
+            id="org.eclipse.rap.design.example.business.stack.view"
+            name="Business"
+            type="view">
+      </stackPresentation>
+   </extension>
+
+</plugin>

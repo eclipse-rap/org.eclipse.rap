@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.rap.design.example;singleton:=true
+Bundle-Version: 1.2.0.qualifier
+Bundle-Vendor: %Bundle-Vendor
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Require-Bundle: org.eclipse.rap.ui;bundle-version="1.2.0"
+Bundle-Localization: plugin
+Export-Package: org.eclipse.rap.internal.design.example.business;x-internal:=true,
+ org.eclipse.rap.internal.design.example.business.builder;x-internal:=true,
+ org.eclipse.rap.internal.design.example.business.layoutsets;x-internal:=true,
+ org.eclipse.rap.internal.design.example.business.managers;x-internal:=true,
+ org.eclipse.rap.internal.design.example.business.popups;x-internal:=true,
+ org.eclipse.rap.internal.design.example.business.stacks;x-internal:=true
