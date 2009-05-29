@@ -29,9 +29,9 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * <dd>BORDER</dd>
  * <dd>LEFT_TO_RIGHT <!--, RIGHT_TO_LEFT --></dd>
  * <dt><b>Events:</b>
- * <dd>FocusIn, FocusOut, Help, KeyDown, KeyUp, MouseDoubleClick, MouseDown, MouseEnter,
- *     MouseExit, MouseHover, MouseUp, MouseMove, Move, Paint, Resize, Traverse,
- *     DragDetect, MenuDetect</dd>
+ * <dd>FocusIn, FocusOut, Help, KeyDown, KeyUp, MouseDoubleClick, MouseDown, <!-- MouseEnter, -->
+ *     <!-- MouseExit, MouseHover, --> MouseUp, <!-- MouseMove,--> Move, <!-- Paint, --> Resize, Traverse,
+ *     <!-- DragDetect, --> MenuDetect</dd>
  * </dl>
  * </p><p>
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
