@@ -15,9 +15,36 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
- * A Label can display a text or an image, but not both. The label always
- * displays those of both values that has been set last.
+ * Instances of this class represent a non-selectable
+ * user interface object that displays a string or image.
+ * When SEPARATOR is specified, displays a single
+ * vertical or horizontal line.
  * <p>
+ * Shadow styles are hints and may not be honoured
+ * by the platform.  To create a separator label
+ * with the default shadow style for the platform,
+ * do not specify a shadow style.
+ * </p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>SEPARATOR, HORIZONTAL, VERTICAL</dd>
+ * <dd>SHADOW_IN, SHADOW_OUT, SHADOW_NONE</dd>
+ * <dd>CENTER, LEFT, RIGHT, WRAP</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>(none)</dd>
+ * </dl>
+ * <p>
+ * Note: Only one of SHADOW_IN, SHADOW_OUT and SHADOW_NONE may be specified.
+ * SHADOW_NONE is a HINT. Only one of HORIZONTAL and VERTICAL may be specified.
+ * Only one of CENTER, LEFT and RIGHT may be specified.
+ * </p><p>
+ * IMPORTANT: This class is intended to be subclassed <em>only</em>
+ * within the SWT implementation.
+ * </p>
+ *
+ * @see <a href="http://www.eclipse.org/swt/snippets/#label">Label snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: ControlExample</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * <hr />
  * <strong>Note:</strong> Unlike in SWT, setting an image clears the text of the
  * label and vice versa. Thus, after calling <code>setText()</code>, the method
