@@ -17,6 +17,7 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.HTML;
@@ -415,8 +416,10 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   public void service() throws IOException, ServletException {
+    ISessionStore sessionStore = RWT.getSessionStore();
     if(    !UICallBackManager.getInstance().blockCallBackRequest()
-        && ContextProvider.hasContext() )
+        && ContextProvider.hasContext() 
+        && sessionStore.isBound() )
     {
       writeResponse();
     }
