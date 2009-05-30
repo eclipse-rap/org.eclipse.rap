@@ -5,7 +5,7 @@
          point="org.eclipse.ui.presentationFactories">
       <factory
             class="org.eclipse.rap.internal.design.example.business.BusinessPresentationFactory"
-            id="org.eclipse.rap.design..example.business.factory"
+            id="org.eclipse.rap.design.example.business.factory"
             name="Business Presentation Factory">
       </factory>
    </extension>
@@ -19,7 +19,7 @@
             title="RAP business design">
          <presentationFactory
                defaultLayoutId="org.eclipse.rap.design.example.business.layout"
-               id="org.eclipse.rap.design..example.business.factory"
+               id="org.eclipse.rap.design.example.business.factory"
                name="Business Presentation Factory">
             <defaultStackPresentation
                   id="org.eclipse.rap.design.example.business.stack.view">
