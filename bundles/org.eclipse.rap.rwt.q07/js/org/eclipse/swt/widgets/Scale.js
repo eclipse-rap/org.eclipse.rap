@@ -229,7 +229,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     },
     
     _onMouseWheel : function( evt ) {
-      var change = evt.getWheelDelta();
+      var change = Math.round( evt.getWheelDelta() );
       var sel = this._selection - change;
       if( sel < this._minimum ) {
         sel = this._minimum;
