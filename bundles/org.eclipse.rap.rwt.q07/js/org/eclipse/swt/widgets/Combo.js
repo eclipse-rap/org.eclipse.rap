@@ -647,12 +647,26 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         req.addParameter( id + ".selectionLength", length );
       }
     },
+    
+    // [if] Workaround for bug:
+    // 278361: [Combo] Overlays text after changing items
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=278361
+    // Items are not removed from DOM if the _isDisplayable property is false.
+    _removeAll : function() {
+      var items = this._list.getChildren();
+      var item = items.length > 0 ? items[ 0 ] : null;
+      while( item != null ) {
+        item._isDisplayable = true;
+        item.destroy();
+        item = items.length > 0 ? items[ 0 ] : null;
+      }
+    },
 
     //////////////
     // Set methods
     
     setItems : function( items ) {
-      this._list.removeAll();
+      this._removeAll();
       for( var i = 0; i < items.length; i++ ) {
         var item = new qx.ui.form.ListItem();
         item.setLabel( "(empty)" );
