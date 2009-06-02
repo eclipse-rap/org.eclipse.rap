@@ -277,6 +277,11 @@ public final class ListModel {
         if( i < length - 1 ) {
           System.arraycopy( selection, i + 1, newSelection, i, length - i - 1 );
         }
+        for( int j = 0; j < newSelection.length; j++ ) {
+          if( newSelection[ j ] > index ) {
+            newSelection[ j ] = newSelection[ j ] - 1;
+          }
+        }
         selection = newSelection;
         found = true;
       }

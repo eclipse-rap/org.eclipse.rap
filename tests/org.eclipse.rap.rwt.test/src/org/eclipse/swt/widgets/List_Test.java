@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -757,6 +757,30 @@ public class List_Test extends TestCase {
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     assertEquals( 1, list.getSelectionIndices()[ 1 ] );
     assertEquals( 2, list.getSelectionIndices()[ 2 ] );
+
+    // Ensure that no selection indices after remove all items one by one
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.select( new int[] { 0, 1, 2 } );
+    String[] listSelection = list.getSelection();
+    for( int i = 0; i < listSelection.length; i++ ) {
+      list.remove( listSelection[ i ] );
+    }
+    assertEquals( 0, list.getSelectionCount() );
+
+    // Ensure that no selection indices after remove selected items one by one
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.select( new int[] { 0, 1 } );
+    listSelection = list.getSelection();
+    for( int i = 0; i < listSelection.length; i++ ) {
+      list.remove( listSelection[ i ] );
+    }
+    assertEquals( 0, list.getSelectionCount() );
   }
 
   public void testSetItem() {
