@@ -1,18 +1,15 @@
 #!/bin/bash
 #
 # This script is used to publish a new RAP build to the download server.
-
+#
+# Links:
 # http://wiki.eclipse.org/JarProcessor_Options
 # http://java.sun.com/j2se/1.5.0/docs/api/java/util/jar/Pack200.Packer.html
 # http://wiki.eclipse.org/Pack200
 
-# Initialize variables that represent command line args with default values
 INPUT_ARCHIVE=
 ZIP_DOWNLOAD_PATH=
 UPDATE_SITE_PATH=
-
-JAVA_HOME=/home/ralf/tools/jvm/jdk1.5.0_19
-ECLIPSE_HOME=/home/ralf/eclipse/eclipse-SDK-3.5RC3/eclipse
 
 DOWNLOAD_LOCATION=/home/data/httpd/download.eclipse.org/rt/rap
 SIGNING_LOCATION=/opt/public/download-staging.priv/rt/rap
@@ -228,7 +225,6 @@ function generateMetadata() {
       -reusePack200Files \
       -noDefaultIUs || return 1
   else
-    echo no site version
     $JAVA_HOME/bin/java -Xmx512m -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
       -application org.eclipse.equinox.p2.metadata.generator.EclipseGenerator \
       -updateSite "$inputDir" \
@@ -279,7 +275,7 @@ if [ -n "$ZIP_DOWNLOAD_PATH" -o -n "$UPDATE_SITE_PATH" ]; then
   # pack200 - normalize
   echo "=== normalize $INPUT_ARCHIVE (pack200)"
   packBuild normalize "$INPUT_ARCHIVE" normalized-$INPUT_ARCHIVE_NAME || exit 1
-  
+
   # sign
   echo "=== sign normalized $INPUT_ARCHIVE"
   signBuild normalized-$INPUT_ARCHIVE_NAME signed-normalized-$INPUT_ARCHIVE_NAME || exit 1
@@ -334,4 +330,3 @@ if [ -n "$UPDATE_SITE_PATH" ]; then
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$UPDATE_SITE_PATH/ || exit 1
 
 fi
-
