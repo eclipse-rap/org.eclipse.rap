@@ -19,6 +19,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IContentProvider;
 //import org.eclipse.jface.viewers.ISelection;
@@ -196,15 +197,16 @@ public class FilteredTree extends Composite {
 	
 // RAP [rh] initialize image descriptors in session scope  
 	private void initializeImageDescriptors() {
+	  ImageRegistry registry = JFaceResources.getImageRegistry();
     ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin( PlatformUI.PLUGIN_ID,
                                                                              "$nl$/icons/full/etool16/clear_co.gif" ); //$NON-NLS-1$
-    if( descriptor != null ) {
-      JFaceResources.getImageRegistry().put( CLEAR_ICON, descriptor );
+    if( descriptor != null && registry.getDescriptor( CLEAR_ICON ) == null ) {
+      registry.put( CLEAR_ICON, descriptor );
     }
     descriptor = AbstractUIPlugin.imageDescriptorFromPlugin( PlatformUI.PLUGIN_ID,
                                                              "$nl$/icons/full/dtool16/clear_co.gif" ); //$NON-NLS-1$
-    if( descriptor != null ) {
-      JFaceResources.getImageRegistry().put( DCLEAR_ICON, descriptor );
+    if( descriptor != null && registry.getDescriptor( DCLEAR_ICON ) == null ) {
+      registry.put( DCLEAR_ICON, descriptor );
     }
   }
 	
