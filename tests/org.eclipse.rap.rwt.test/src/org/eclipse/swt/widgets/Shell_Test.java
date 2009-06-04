@@ -11,11 +11,15 @@
 
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
@@ -307,15 +311,6 @@ public class Shell_Test extends TestCase {
     assertSame( shell, display.getActiveShell() );
   }
 
-  public void testMaximized() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    shell.setBounds( 1, 2, 3, 4 );
-    shell.setMaximized( true );
-    assertTrue( shell.getMaximized() );
-    assertEquals( shell.getBounds(), display.getBounds() );
-  }
-
   public void testActivateInvisible() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -323,6 +318,52 @@ public class Shell_Test extends TestCase {
     shell.setVisible( false );
     shell.setActive();
     assertNull( display.getActiveShell() );
+  }
+
+  public void testSetActive() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    assertSame( shell, display.getActiveShell() );
+    shell.addShellListener( new ShellAdapter() {
+      public void shellActivated( final ShellEvent event ) {
+        log .add( event );
+      }
+      public void shellDeactivated( final ShellEvent event ) {
+        log .add( event );
+      }
+    } );
+    shell.setActive();
+    shell.setActive();
+    assertEquals( 0, log.size() );
+  }
+  
+  
+  /* test case to simulate the scenario reported in this bug:
+   * 278996: [Shell] Stackoverflow when closing child shell
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996 
+   */
+  public void testCloseOnDeactivate() {
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    shell.addShellListener( new ShellAdapter() {
+      public void shellDeactivated( final ShellEvent event ) {
+        shell.close();
+      }
+    } );
+    shell.open();
+    shell.setActive();
+    // no assert: test case is to ensure that no stack overflow occurs
+  }
+  
+  public void testMaximized() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMaximized( true );
+    assertTrue( shell.getMaximized() );
+    assertEquals( shell.getBounds(), display.getBounds() );
   }
 
   protected void setUp() throws Exception {

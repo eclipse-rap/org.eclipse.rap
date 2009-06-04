@@ -563,29 +563,31 @@ public class Display extends Device implements Adaptable {
 
   final void setActiveShell( final Shell activeShell ) {
     checkDevice();
-    Shell lastActiveShell = this.activeShell;
-    if( this.activeShell != null ) {
-      this.activeShell.saveFocus();
-    }
-    // Move active shell to end of list to maintain correct z-order
-    if( activeShell != null ) {
-      shells.remove( activeShell );
-      shells.add( activeShell );
-    }
-    ShellEvent shellEvent;
-    if( lastActiveShell != null ) {
-      shellEvent = new ShellEvent( lastActiveShell,
-                                   ShellEvent.SHELL_DEACTIVATED );
-      shellEvent.processEvent();
-    }
-    this.activeShell = activeShell;
-    if( activeShell != null && activeShell != lastActiveShell ) {
-      shellEvent = new ShellEvent( activeShell,
-                                   ShellEvent.SHELL_ACTIVATED );
-      shellEvent.processEvent();
-    }
-    if( this.activeShell != null ) {
-      this.activeShell.restoreFocus();
+    if( this.activeShell != activeShell ) {
+      Shell lastActiveShell = this.activeShell;
+      if( this.activeShell != null ) {
+        this.activeShell.saveFocus();
+      }
+      // Move active shell to end of list to maintain correct z-order
+      if( activeShell != null ) {
+        shells.remove( activeShell );
+        shells.add( activeShell );
+      }
+      ShellEvent shellEvent;
+      if( lastActiveShell != null ) {
+        shellEvent = new ShellEvent( lastActiveShell,
+                                     ShellEvent.SHELL_DEACTIVATED );
+        shellEvent.processEvent();
+      }
+      this.activeShell = activeShell;
+      if( activeShell != null ) {
+        shellEvent = new ShellEvent( activeShell,
+                                     ShellEvent.SHELL_ACTIVATED );
+        shellEvent.processEvent();
+      }
+      if( this.activeShell != null ) {
+        this.activeShell.restoreFocus();
+      }
     }
   }
 
