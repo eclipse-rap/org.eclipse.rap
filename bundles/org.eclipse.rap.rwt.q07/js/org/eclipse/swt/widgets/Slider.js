@@ -4,8 +4,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
