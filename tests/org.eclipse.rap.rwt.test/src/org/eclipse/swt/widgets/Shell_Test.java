@@ -169,14 +169,14 @@ public class Shell_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     shell.setLayout( new Layout() {
-      protected Point computeSize( Composite composite,
-                                   int hint,
-                                   int hint2,
-                                   boolean flushCache )
+      protected Point computeSize( final Composite composite,
+                                   final int hint,
+                                   final int hint2,
+                                   final boolean flushCache )
       {
         return null;
       }
-      protected void layout( Composite composite, boolean flushCache ) {
+      protected void layout( final Composite composite, final boolean flushCache ) {
         log.append( "layout" );
       }
     } );
@@ -221,7 +221,7 @@ public class Shell_Test extends TestCase {
     shell.setEnabled( true );
     assertEquals( focusedControl, display.getFocusControl() );
   }
-  
+
   public void testSavedFocus() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -306,7 +306,7 @@ public class Shell_Test extends TestCase {
     shell.forceActive();
     assertSame( shell, display.getActiveShell() );
   }
-  
+
   public void testMaximized() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -315,7 +315,16 @@ public class Shell_Test extends TestCase {
     assertTrue( shell.getMaximized() );
     assertEquals( shell.getBounds(), display.getBounds() );
   }
-  
+
+  public void testActivateInvisible() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 50, 50 );
+    shell.setVisible( false );
+    shell.setActive();
+    assertNull( display.getActiveShell() );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
