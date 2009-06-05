@@ -477,7 +477,7 @@ public abstract class Widget implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #removeListener
-   * <!--@see #notifyListeners-->
+   * @see #notifyListeners
    */
   public void addListener( final int eventType, final Listener listener ) {
     checkWidget();
@@ -511,7 +511,7 @@ public abstract class Widget implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #addListener
-   * <!--@see #notifyListeners-->
+   * @see #notifyListeners
    */
   public void removeListener( final int eventType, final Listener listener ) {
     checkWidget();
