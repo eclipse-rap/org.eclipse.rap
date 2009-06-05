@@ -31,8 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -269,6 +268,29 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( previousFocusControl, display.getFocusControl() );
+  }
+
+  public void testResizeMaximizedShells() {
+    Display display = new Display();
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
+    Shell shell1 = new Shell( display, SWT.NONE );
+    shell1.setBounds( 0, 0, 800, 600 );
+    Shell shell2 = new Shell( display, SWT.NONE );
+    shell2.setBounds( 0, 0, 300, 400 );
+    shell2.setMaximized( true );
+    // fake display resize
+    IDisplayLifeCycleAdapter lca = DisplayUtil.getLCA( display );
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".bounds.width", "700" );
+    Fixture.fakeRequestParam( displayId + ".bounds.height", "500" );
+    lca.readData( display );
+    // shell1 is not resized although it has the same size as the display
+    assertEquals( new Rectangle( 0, 0, 800, 600 ), shell1.getBounds() );
+    // shell2 is resized because it's maximized
+    assertEquals( new Rectangle( 0, 0, 700, 500 ), shell2.getBounds() );
   }
 
   protected void setUp() throws Exception {

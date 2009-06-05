@@ -312,7 +312,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   public void readData( final Display display ) {
-    Rectangle oldBounds = display.getBounds();
     readBounds( display );
     readFocusControl( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
@@ -328,12 +327,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       WidgetTreeVisitor.accept( shell, visitor );
     }
 
-    // TODO: [fappel] since there is no possibility yet to determine whether
-    //                a shell is maximized, we use this hack to adjust
-    //                the bounds of a maximized shell in case of a document
-    //                resize event
     for( int i = 0; i < shells.length; i++ ) {
-      if( shells[ i ].getBounds().equals( oldBounds ) ) {
+      if( shells[ i ].getMaximized() ) {
         shells[ i ].setBounds( display.getBounds() );
       }
     }
