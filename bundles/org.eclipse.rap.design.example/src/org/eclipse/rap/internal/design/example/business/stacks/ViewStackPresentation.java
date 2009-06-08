@@ -86,8 +86,8 @@ public class ViewStackPresentation extends ConfigurableStack {
       action.addConfigurationChangeListener( new IConfigurationChangeListener(){
       
         public void toolBarChanged() {
-          layoutToolBar();
-          setBounds( presentationControl.getBounds() );
+          ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
+          registry.fireToolBarChanged( );          
         }
       
         public void presentationChanged( final String newStackPresentationId ) {
@@ -96,7 +96,14 @@ public class ViewStackPresentation extends ConfigurableStack {
       } );
     }    
     presentationControl = createStyledControl();
-
+    ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
+    registry.addViewPartPresentation( this );
+  }
+  
+  
+  void catchToolbarChange() {
+    layoutToolBar();
+    setBounds( presentationControl.getBounds() );
   }
 
 
@@ -209,11 +216,12 @@ public class ViewStackPresentation extends ConfigurableStack {
         toolBar.setVisible( true );
         
         toolbarBg.moveBelow( toolBar );
-        presentationControl.moveBelow( toolBar );                   
+        presentationControl.moveBelow( toolBar );  
+        currentPart.getControl().moveBelow( toolBar );
       } 
       // toolbarbg and layer
       if( toolBar != null || viewMenu != null ) {
-        toolbarBg.setVisible( true );
+        toolbarBg.setVisible( true );        
         // Toolbar Layer
         if( !deactivated ) {          
           getToolBarLayer();
@@ -232,9 +240,8 @@ public class ViewStackPresentation extends ConfigurableStack {
       } else {
         toolbarBg.setVisible( false );
       }
-      toolbarBg.layout( true );
-    }
-    
+      toolbarBg.layout( true );       
+    }    
   }
 
   private void createPartButton( final IPresentablePart part ) {
@@ -498,7 +505,8 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public void dispose() {
-
+    ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
+    registry.removeViewPartPresentation( this );
   }
 
   public Control getControl() {
@@ -506,7 +514,17 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public Control[] getTabList( final IPresentablePart part ) {
-    return null;
+    ArrayList list = new ArrayList();
+    if (getControl() != null) {
+        list.add(getControl());
+    }
+    if (part.getToolBar() != null) {
+        list.add(part.getToolBar());
+    }
+    if (part.getControl() != null) {
+        list.add(part.getControl());
+    }
+    return (Control[]) list.toArray(new Control[list.size()]);
   }
 
   public void removePart( final IPresentablePart oldPart ) {

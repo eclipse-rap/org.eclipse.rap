@@ -18,7 +18,6 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.rap.ui.interactiondesign.internal.ConfigurableStackProxy;
@@ -27,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -35,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.DefaultStackPresentationSite;
 import org.eclipse.ui.internal.LayoutPart;
 import org.eclipse.ui.internal.PartPane;
-import org.eclipse.ui.internal.WorkbenchPage;
+import org.eclipse.ui.internal.ViewPane;
 import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -199,7 +199,6 @@ public abstract class ConfigurableStack extends StackPresentation {
   private ConfigurationAction configAction;
   private ImageDescriptor menuIcon;
   
-  
   private Composite parent;
 
   private ConfigurableStackProxy proxy;
@@ -230,73 +229,44 @@ public abstract class ConfigurableStack extends StackPresentation {
       IContributionItem[] items = manager.getItems();
       String paneId = getPaneId( site );
       
-      Composite toolBarParent = null;
+      // get the toolbar 
       IPresentablePart selectedPart = site.getSelectedPart();
       if( selectedPart instanceof PresentablePart ) {
         PresentablePart part = ( PresentablePart ) selectedPart;
-        Control nativeToolBar = part.getPane().getToolBar();
-        if( nativeToolBar != null ) {
-          nativeToolBar.setVisible( false );
-          toolBarParent = nativeToolBar.getParent();
-        }
-        
-      }
-      if( toolBarParent == null ) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow activeWindow = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage activePage = activeWindow.getActivePage();
-        if( activePage instanceof WorkbenchPage ) {
-          toolBarParent = ( ( WorkbenchPage ) activePage ).getClientComposite();
-        }
-      }
-
+        result = part.getPane().getToolBar();
+      }  
+      // set the correct visibility
       for( int i = 0; i < items.length; i++ ) {
-        items[ i ].setVisible( true );
+        if( items[ i ] instanceof ActionContributionItem ) {
+          // actions
+          ActionContributionItem actionItem 
+            = ( ActionContributionItem ) items[ i ];
+          String actionId = actionItem.getAction().getId();
+          boolean isVisible 
+            = action.isViewActionVisibile( paneId, actionId );
+          actionItem.setVisible( isVisible );
+          if( isVisible ) {     
+            actionCount++;
+          }
+        } else if( items[ i ] instanceof CommandContributionItem ) {
+          // commands
+          CommandContributionItem commandItem 
+            = ( CommandContributionItem ) items[ i ];
+          boolean isVisible 
+            = action.isViewActionVisibile( paneId, commandItem.getId() );
+          commandItem.setVisible( isVisible );
+          if( isVisible ) {     
+            actionCount++;
+          } 
+        }
       }
       
-      if( toolBarParent != null ) {  
-        IToolBarManager2 toolBarManager = null;
-        if( items.length > 0 && ( manager instanceof IToolBarManager2 ) ) {
-          toolBarManager = ( IToolBarManager2 ) manager;                        
-          result = toolBarManager.createControl2( toolBarParent );
-          toolBarManager.update( false );
-        }
-        
-        for( int i = 0; i < items.length; i++ ) {
-          if( items[ i ] instanceof ActionContributionItem ) {
-            // actions
-            ActionContributionItem actionItem 
-              = ( ActionContributionItem ) items[ i ];
-            String actionId = actionItem.getAction().getId();
-            boolean isVisible 
-              = action.isViewActionVisibile( paneId, actionId );
-   
-            if( isVisible ) {     
-              actionItem.setVisible( true );
-              actionCount++;
-            } else {              
-              actionItem.setVisible( false );
-            }
-          } else if( items[ i ] instanceof CommandContributionItem ) {
-            // commands
-            CommandContributionItem item 
-              = ( CommandContributionItem ) items[ i ];
-            boolean isVisible 
-              = action.isViewActionVisibile( paneId, item.getId() );
-            if( isVisible ) {     
-              item.setVisible( true );
-              actionCount++;
-            } else {              
-              item.setVisible( false );
-            }
-          }
-        }
-        
-        if( toolBarManager != null && result != null ) {
-          toolBarManager.update( false );
-        }      
-                        
-      } 
+      // update the toolbar manager with the new visibility
+      if( manager != null && result != null ) {
+        manager.update( false );
+      }      
+
+      // if no item is visible the toolbar should be null
       if( actionCount <= 0 ) {
         result = null;
       } 
@@ -304,13 +274,11 @@ public abstract class ConfigurableStack extends StackPresentation {
         result.pack();
         result.setVisible( true );
       } 
-    }
-    
+    }    
     return result;
   }
   
-  public IPartMenu createViewMenu() {
-    
+  public IPartMenu createViewMenu() {    
     IPartMenu result = null;
     if( isPartMenuVisisble() ) {    
       result = new IPartMenu() {
@@ -439,6 +407,20 @@ public abstract class ConfigurableStack extends StackPresentation {
     return result;
   }
   
+  private final String getSecondaryPaneId( final IStackPresentationSite site ) {
+    String result = null;    
+    IPresentablePart selectedPart = site.getSelectedPart();
+    if( selectedPart instanceof PresentablePart ) {
+      PresentablePart part = ( PresentablePart ) selectedPart;
+      PartPane pane = part.getPane();
+      if( pane instanceof ViewPane ) {
+        ViewPane viewPane = ( ViewPane ) pane;
+        result = viewPane.getViewReference().getSecondaryId();
+      }
+    }
+    return result;
+  }
+  
   /**
    * Returns the parent composite for this kind of <code>StackPresentation
    * </code>.
@@ -466,7 +448,16 @@ public abstract class ConfigurableStack extends StackPresentation {
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     IWorkbenchPage activePage = window.getActivePage();
     if( activePage != null ) {
-      IViewPart viewPart = activePage.findView( paneId );
+      String secId = getSecondaryPaneId( site );
+      IViewPart viewPart = null;
+      if( secId != null ) {
+        IViewReference ref = activePage.findViewReference( paneId, secId );
+        if( ref != null ) {
+          viewPart = ( ViewPart ) ref.getPart( false );
+        }
+      } else {
+        viewPart = activePage.findView( paneId );
+      }
       
       IActionBars bars = null;
       if( viewPart != null ) {    

@@ -12,6 +12,7 @@ package org.eclipse.rap.internal.design.example.business.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ContributionManager;
@@ -49,11 +50,16 @@ import org.eclipse.ui.menus.CommandContributionItem;
 
 
 public class BusinessViewToolBarManager extends ContributionManager 
-  implements IToolBarManager2 
+  implements IToolBarManager2, IAdaptable 
 {
 
   private Composite control;
   private List itemList = new ArrayList();
+  
+  
+  public BusinessViewToolBarManager() {
+//    
+  }
   
   public void addPropertyChangeListener( 
     final IPropertyChangeListener listener )  
@@ -65,15 +71,20 @@ public class BusinessViewToolBarManager extends ContributionManager
   }
 
   public Control createControl2( final Composite parent ) {
-    Composite result = null;
-    control = new Composite( parent, SWT.NONE );
-    control.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
-    RowLayout layout = new RowLayout();
-    layout.spacing = 3;
-    control.setLayout( layout );
-    result = control;
-    return result;
+    if( !toolBarExist() && parent != null ) {
+      control = new Composite( parent, SWT.NONE );
+      control.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
+      RowLayout layout = new RowLayout();
+      layout.spacing = 3;
+      control.setLayout( layout );
+    }
+    return control;
     
+  }
+    
+  
+  private boolean toolBarExist() {
+    return control != null && !control.isDisposed();
   }
 
   public ToolBar getControl() {
@@ -88,7 +99,7 @@ public class BusinessViewToolBarManager extends ContributionManager
     return getItems().length;
   }
 
-  private void makeButton( final Action action, final IContributionItem item ) {
+  private void makeActionButton( final Action action, final IContributionItem item ) {
     if( !itemList.contains( item.getId() ) ) {      
       int flags = SWT.PUSH;
       switch( action.getStyle() ) {
@@ -218,7 +229,7 @@ public class BusinessViewToolBarManager extends ContributionManager
       if( item.isVisible() && item instanceof ActionContributionItem ) {
         // actions
         IAction action = ( ( ActionContributionItem ) item ).getAction();
-        makeButton( ( Action ) action, item );
+        makeActionButton( ( Action ) action, item );
       } else if( item.isVisible() && item instanceof CommandContributionItem ) {
         // commands
         makeCommandButton( item );
@@ -232,7 +243,7 @@ public class BusinessViewToolBarManager extends ContributionManager
   private void makeCommandButton( final IContributionItem item ) {
     CommandContributionItem comamndItem = ( CommandContributionItem ) item;
     final Action action = CommandUtil.wrapCommand( comamndItem, control );
-    makeButton( action, item );
+    makeActionButton( action, item );
   }
 
   public void dispose() {
@@ -244,5 +255,11 @@ public class BusinessViewToolBarManager extends ContributionManager
         items[ i ].dispose();
     }
 
+  }
+
+  public Object getAdapter( Class adapter ) {
+    Object result = null;
+   
+    return result;
   } 
 }
