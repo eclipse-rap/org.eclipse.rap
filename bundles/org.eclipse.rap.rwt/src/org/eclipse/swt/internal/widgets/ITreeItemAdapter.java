@@ -15,9 +15,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 
-public interface ITreeItemAdapter
-  extends IWidgetColorAdapter, IWidgetFontAdapter
-{
+public interface ITreeItemAdapter {
 
   Color[] getCellBackgrounds();
   Color[] getCellForegrounds();

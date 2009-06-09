@@ -1591,7 +1591,6 @@ public class Tree extends Composite {
       try {
         if( currentItem == item || item.getParentItem() == currentItem ) {
           ProcessActionRunner.add( new Runnable() {
-
             public void run() {
               item.cached = true;
               SetDataEvent event = new SetDataEvent( Tree.this, item, index );

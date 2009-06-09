@@ -51,6 +51,10 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     ITreeItemAdapter itemAdapter
       = ( ITreeItemAdapter )treeItem.getAdapter( ITreeItemAdapter.class );
+    IWidgetColorAdapter colorAdapter
+      = ( IWidgetColorAdapter )treeItem.getAdapter( IWidgetColorAdapter.class );
+    IWidgetFontAdapter fontAdapter
+      = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     if( treeAdapter.isCached( treeItem ) ) {
       preserveFont( treeItem );
@@ -62,9 +66,9 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       adapter.preserve( PROP_IMAGES, getImages( treeItem ) );
       boolean selection = isSelected( treeItem );
       adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
-      adapter.preserve( PROP_BACKGROUND, itemAdapter.getUserBackgound() );
-      adapter.preserve( PROP_FOREGROUND, itemAdapter.getUserForegound() );
-      adapter.preserve( PROP_FONT, itemAdapter.getUserFont() );
+      adapter.preserve( PROP_BACKGROUND, colorAdapter.getUserBackgound() );
+      adapter.preserve( PROP_FOREGROUND, colorAdapter.getUserForegound() );
+      adapter.preserve( PROP_FONT, fontAdapter.getUserFont() );
       adapter.preserve( PROP_CELL_BACKGROUNDS,
                         itemAdapter.getCellBackgrounds() );
       adapter.preserve( PROP_CELL_FOREGROUNDS,

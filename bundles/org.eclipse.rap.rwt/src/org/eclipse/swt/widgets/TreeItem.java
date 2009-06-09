@@ -31,7 +31,9 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class TreeItem extends Item {
 
-  private final class TreeItemAdapter implements ITreeItemAdapter {
+  private final class TreeItemAdapter
+    implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
+  {
 
     public Color getUserBackgound() {
       return background;

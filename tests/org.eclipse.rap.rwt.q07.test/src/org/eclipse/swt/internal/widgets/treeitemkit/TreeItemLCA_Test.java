@@ -26,7 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.widgets.*;
 
 public class TreeItemLCA_Test extends TestCase {
@@ -56,16 +56,19 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( image, images[ 0 ] );
     Object selection = adapter.getPreserved( TreeItemLCA.PROP_SELECTION );
     assertEquals( Boolean.FALSE, selection );
-    ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )treeItem.getAdapter( ITreeItemAdapter.class );
+    IWidgetColorAdapter colorAdapter
+      = ( IWidgetColorAdapter )treeItem.getAdapter( IWidgetColorAdapter.class );
     Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
-    assertEquals( itemAdapter.getUserBackgound(), background );
+    assertEquals( colorAdapter.getUserBackgound(), background );
     Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
-    assertEquals( itemAdapter.getUserForegound(), foreground );
+    assertEquals( colorAdapter.getUserForegound(), foreground );
     Font[] fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_FONT );
     assertNull( fonts );
-    Color[] backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
+    Color[] backgrounds
+      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
     assertNull( backgrounds );
-    Color[] foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
+    Color[] foregrounds
+      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
     assertNull( foregrounds );
     Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
     assertEquals( Boolean.TRUE, materialized );
@@ -119,11 +122,13 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( font1, fonts[ 0 ] );
     assertEquals( font2, fonts[ 1 ] );
     assertEquals( font3, fonts[ 2 ] );
-    backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
+    backgrounds
+      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
     assertEquals( background1, backgrounds[ 0 ] );
     assertEquals( background2, backgrounds[ 1 ] );
     assertEquals( background3, backgrounds[ 2 ] );
-    foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
+    foregrounds
+      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
     assertEquals( foreground1, foregrounds[ 0 ] );
     assertEquals( foreground2, foregrounds[ 1 ] );
     assertEquals( foreground3, foregrounds[ 2 ] );
@@ -141,14 +146,17 @@ public class TreeItemLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
+    assertEquals( Boolean.FALSE,
+                  adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
     RWTFixture.clearPreserved();
     treeItem.setChecked( true );
     treeItem.setGrayed( true );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( treeItem );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
     RWTFixture.clearPreserved();
     display.dispose();
   }
@@ -176,7 +184,6 @@ public class TreeItemLCA_Test extends TestCase {
     new TreeItem( treeItem, SWT.NONE );
     final StringBuffer log = new StringBuffer();
     TreeListener listener = new TreeListener() {
-
       public void treeCollapsed( final TreeEvent event ) {
         assertEquals( tree, event.getSource() );
         assertEquals( treeItem, event.item );
