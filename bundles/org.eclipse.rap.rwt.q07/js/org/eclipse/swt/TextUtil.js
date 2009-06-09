@@ -273,7 +273,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         // bug is marked as (partly) fixed.
         // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
         if( typeof length == "undefined" ) {
-          text.debug( "___ qx bug 521 still exists" );
           length = 0;
         }
         if(    text.getUserData( "selectionStart" ) != start
