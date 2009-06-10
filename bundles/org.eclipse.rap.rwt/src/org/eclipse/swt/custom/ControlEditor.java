@@ -178,15 +178,17 @@ public class ControlEditor {
    * The composite and the editor Control are <b>not</b> disposed.
    */
   public void dispose() {
-    // if (parent != null && !parent.isDisposed()) {
-    // for (int i=0; i<EVENTS.length; i++) {
-    // parent.removeListener (EVENTS [i], controlListener);
-    // }
-    // ScrollBar hBar = parent.getHorizontalBar ();
-    // if (hBar != null) hBar.removeListener (SWT.Selection, scrollbarListener);
-    // ScrollBar vBar = parent.getVerticalBar ();
-    // if (vBar != null) vBar.removeListener (SWT.Selection, scrollbarListener);
-    // }
+    if( parent != null && !parent.isDisposed() ) {
+      for( int i = 0; i < EVENTS.length; i++ ) {
+        parent.removeListener( EVENTS[ i ], controlListener );
+      }
+      // ScrollBar hBar = parent.getHorizontalBar ();
+      // if (hBar != null) hBar.removeListener (SWT.Selection,
+      // scrollbarListener);
+      // ScrollBar vBar = parent.getVerticalBar ();
+      // if (vBar != null) vBar.removeListener (SWT.Selection,
+      // scrollbarListener);
+    }
     parent = null;
     editor = null;
     hadFocus = false;
