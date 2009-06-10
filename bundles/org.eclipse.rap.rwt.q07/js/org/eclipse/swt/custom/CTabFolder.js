@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
@@ -373,7 +374,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           }
         } else {
           // Maximize button was pressed
-          if( this._minMaxState == "normal" || this.minMaxState == "min" ) {
+          if( this._minMaxState == "normal" || this._minMaxState == "min" ) {
             this.setMinMaxState( "max" );
             event = "org.eclipse.swt.events.ctabFolderMaximized";
           } else {
