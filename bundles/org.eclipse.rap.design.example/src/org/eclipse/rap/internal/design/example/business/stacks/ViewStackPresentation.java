@@ -42,6 +42,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -66,7 +68,6 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Button confButton;
   private Label confCorner;
   private Map buttonPartMap = new HashMap();
-  private IPresentablePart lastPart;
   private List partList = new ArrayList();
   private List buttonList = new ArrayList();
   private Composite toolbarBg;
@@ -74,6 +75,56 @@ public class ViewStackPresentation extends ConfigurableStack {
   private int state;
   protected boolean deactivated;
   private Button viewMenuButton;
+  private Map dirtyListenerMap = new HashMap();
+  
+  private class DirtyListener implements IPropertyListener {
+    
+    private IPresentablePart part;
+    
+    public DirtyListener( final IPresentablePart part ) {
+      this.part = part;
+    }
+    
+    public void propertyChanged( Object source, int propId ) {
+      if( propId == ISaveablePart.PROP_DIRTY ) {  
+        Button partButton = getPartButton( part );
+        if( partButton != null ) {
+          String text = partButton.getText();
+          char lastCharacter = getLastCharacter( text );
+          if( part.isDirty() ) {
+            // mark the part as dirty                                        
+            if( lastCharacter != '*') {
+              text = text + "*";
+            }
+          } else {
+            // mark the part as clean
+            if( lastCharacter == '*' ) {
+              text = text.substring( 0, text.length() - 1 );
+            }
+          }
+          partButton.setText( text );
+        }
+      }
+    }
+    
+    private Button getPartButton( final IPresentablePart part ) {
+      Button result = null;
+      Object object = buttonPartMap.get( part );
+      if( object instanceof Composite ) {
+        Control[] children = ( ( Composite ) object ).getChildren();
+        if( children.length > 0 && children[ 0 ] instanceof Button ) {
+          result = ( Button ) children[ 0 ];
+        }
+      }
+      return result;
+    }
+    
+    private char getLastCharacter( final String text ) {
+      char[] starArray = new char[ 1 ];
+      text.getChars( text.length()-1, text.length(), starArray, 0);
+      return starArray[ 0 ];
+    }
+  };
 
   public ViewStackPresentation() {
     state = AS_INACTIVE;
@@ -154,7 +205,10 @@ public class ViewStackPresentation extends ConfigurableStack {
     } else {
       decorateStandaloneView( newPart );
     }
-    
+    // add the lsitener for the dirty state
+    IPropertyListener listener = new DirtyListener( newPart );
+    dirtyListenerMap .put( newPart, listener );
+    newPart.addPropertyListener( listener );
   }
   
   private void decorateStandaloneView( final IPresentablePart newPart ) {
@@ -349,7 +403,7 @@ public class ViewStackPresentation extends ConfigurableStack {
             close.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
             close.addSelectionListener( new SelectionAdapter() {
               public void widgetSelected( SelectionEvent e ) {
-                removePart( part );
+                getSite().close( new IPresentablePart[] { part } );
               };
             } );
             FormData fdClose = new FormData();
@@ -529,16 +583,16 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   public void removePart( final IPresentablePart oldPart ) {
     Object object = buttonPartMap.get( oldPart );
+    // remove the dirtyListener
+    Object listener = dirtyListenerMap.get( oldPart );
+    if( listener != null && listener instanceof IPropertyListener ) {
+      oldPart.removePropertyListener( ( IPropertyListener ) listener ); 
+    }
     buttonPartMap.remove( oldPart );
     buttonList.remove( object );
     ( ( Composite ) object ).dispose(); 
     partList.remove( oldPart );
-    if( lastPart != null ) {
-      selectPart( lastPart );
-    } else if( partList.size() > 0 ) {
-      IPresentablePart newPart = ( IPresentablePart ) partList.get( 0 );
-      selectPart( newPart );
-    }
+    oldPart.setVisible( false );
     tabBg.layout();
   }
 
@@ -546,11 +600,13 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( toSelect != null ) {
       toSelect.setVisible( true );
     }
-    if( currentPart != null ) {
-      currentPart.setVisible( false );
+    if( currentPart != null  ) {
+      if( currentPart instanceof PresentablePart 
+          && ( (PresentablePart) currentPart ).getPane() != null ) {
+        currentPart.setVisible( false ); 
+      }
     }
     makePartButtonInactive( currentPart );
-    lastPart = currentPart;
     currentPart = toSelect;
     makePartButtonActive( currentPart );
     activePart( currentPart );
