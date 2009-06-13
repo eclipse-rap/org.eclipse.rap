@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.Adaptable;
@@ -18,11 +18,15 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
+ * This event is sent when an event is generated in the <code>CTabFolder</code>.
+ * 
  * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
  * this class are <em>not</em> part of the RWT public API. They are marked 
  * public only so that they can be shared within the packages provided by RWT. 
  * They should never be accessed from application code.
  * </p>
+ * 
+ * @since 1.0
  */
 public class CTabFolderEvent extends TypedEvent {
   

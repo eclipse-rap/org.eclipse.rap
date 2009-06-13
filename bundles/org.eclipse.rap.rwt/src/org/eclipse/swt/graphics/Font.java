@@ -36,7 +36,6 @@ public final class Font extends Resource {
     this.fontData = new FontData[] { data };
   }
 
-  // TODO [bm] javadoc - revise this
   /**
    * Returns an array of <code>FontData</code>s representing the receiver.
    * <!--

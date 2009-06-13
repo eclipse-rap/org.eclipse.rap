@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
@@ -26,17 +26,17 @@ import org.eclipse.swt.widgets.*;
 
 
 /**
- * TODO [rh] JavaDoc
- * <p></p>
- * <p>Note that the JavaScript code that is rendered relies on the client-side
- * <code>org.eclipse.swt.WidgetManager</code> to be present. </p>
+ * This class provides helper methods to generate Javascript used to update the 
+ * client-side state of widgets.
+ * <p>Note that the Javascript code that is rendered relies on the client-side
+ * <code>org.eclipse.swt.WidgetManager</code> to be present.</p>
  *
  * @see AbstractWidgetLCA
  * @see ControlLCAUtil
  * @see WidgetLCAUtil
+ * 
+ * @since 1.0
  */
-// TODO [rh] decide whether method arguments are to be checked (not-null, etc)
-//      this also applies for other 'SPI's.
 public final class JSWriter {
 
   /**

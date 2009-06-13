@@ -15,8 +15,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
- * TODO [fappel]: javadoc
- * 
+ * Instances of this class describe fonts.
+ * <p>
+ * Application code does <em>not</em> need to explicitly release the
+ * resources managed by each instance when those instances are no longer
+ * required, and thus no <code>dispose()</code> method is provided.
+ *
+ * @see Font
  * @since 1.0
  */
 public final class FontData {
@@ -127,7 +132,6 @@ public final class FontData {
    * constructor.
    * 
    * @return a string representation of the FontData
-   * @see FontData
    */
   public String toString() {
     StringBuffer buffer = new StringBuffer();
@@ -150,13 +154,8 @@ public final class FontData {
     return height;
   }
 
-  // TODO javadoc - revise this
   /**
    * Returns the name of the receiver.
-   * <!--
-   * On platforms that support font foundries, the return value will
-   * be the foundry followed by a dash ("-") followed by the face name.
-   * -->
    * 
    * @return the name of this <code>FontData</code>
    */
