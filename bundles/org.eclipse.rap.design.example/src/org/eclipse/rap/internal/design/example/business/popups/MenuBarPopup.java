@@ -115,24 +115,25 @@ public class MenuBarPopup extends PopupDialog {
     layout.marginBottom = 0;
     content.setLayout( layout );
 
-    
     for( int i = 0; i < items.length; i++ ) {
       IContributionItem item = items[ i ];
-      if( item instanceof ActionContributionItem ) {
-        // Actions
-        ActionContributionItem actionItem = ( ActionContributionItem ) item;
-        makeActionEntry( actionItem.getAction(), content );
-      } else if( item instanceof MenuManager ) {
-        // MenuManagers
-        MenuManager manager = ( MenuManager ) item;
-        makeMenuManagerEntry( manager, content );
-      } else if( item instanceof CommandContributionItem ) {
-        // Commands                
-        CommandContributionItem command = ( CommandContributionItem ) item;
-        makeCommandEntry( command, content );
-      } else if( item instanceof ShowViewMenu ) {
-        // ViewMenu
-        makeViewEntries( content );
+      if( item.isVisible() ) {
+        if( item instanceof ActionContributionItem ) {
+          // Actions
+          ActionContributionItem actionItem = ( ActionContributionItem ) item;
+          makeActionEntry( actionItem.getAction(), content );
+        } else if( item instanceof MenuManager ) {
+          // MenuManagers
+          MenuManager manager = ( MenuManager ) item;
+          makeMenuManagerEntry( manager, content );
+        } else if( item instanceof CommandContributionItem ) {
+          // Commands                
+          CommandContributionItem command = ( CommandContributionItem ) item;
+          makeCommandEntry( command, content );
+        } else if( item instanceof ShowViewMenu ) {
+          // ViewMenu
+          makeViewEntries( content );
+        }
       }
     }
 
@@ -283,7 +284,7 @@ public class MenuBarPopup extends PopupDialog {
         public void widgetDisposed( DisposeEvent event ) {
           destroyItem( item );
         }
-      } );
+      } );      
     }
     
   }
