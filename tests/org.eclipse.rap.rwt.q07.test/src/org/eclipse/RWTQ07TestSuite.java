@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.events.ActivateEvent_Test;
 import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
 import org.eclipse.swt.internal.widgets.WidgetAdapter_Test;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
+import org.eclipse.swt.internal.widgets.clabelkit.CLabelLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
@@ -131,6 +132,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ExpandItemLCA_Test.class );
     suite.addTestSuite( SliderLCA_Test.class );
     suite.addTestSuite( CComboLCA_Test.class );
+    suite.addTestSuite( CLabelLCA_Test.class );
 
     return suite;
   }

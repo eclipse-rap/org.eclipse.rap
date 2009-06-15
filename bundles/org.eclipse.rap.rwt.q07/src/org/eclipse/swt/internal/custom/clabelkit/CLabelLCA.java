@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.custom.clabelkit;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
 
-public class CLabelLCA extends AbstractWidgetLCA {
+public final class CLabelLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -83,17 +83,20 @@ public class CLabelLCA extends AbstractWidgetLCA {
   }
 
   private static void writeText( final CLabel label ) throws IOException {
-    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
+    String text = label.getText();
+    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, text, "" ) ) {
+      if( text == null ) {
+        text = "";
+      }
+      text = WidgetLCAUtil.escapeText( text, true );
       JSWriter writer = JSWriter.getWriterFor( label );
-      String text = WidgetLCAUtil.escapeText( label.getText(), true );
       writer.set( JSConst.QX_FIELD_LABEL, text );
     }
   }
 
   private static void writeImage( final CLabel label ) throws IOException {
     Image image = label.getImage();
-    if( WidgetLCAUtil.hasChanged( label, Props.IMAGE, image, null ) )
-    {
+    if( WidgetLCAUtil.hasChanged( label, Props.IMAGE, image, null ) ) {
       String imagePath;
       if( image == null ) {
         imagePath = null;
