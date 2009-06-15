@@ -49,7 +49,6 @@ public class CLabelLCA extends AbstractWidgetLCA {
     CLabel label = ( CLabel )widget;
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( "qx.ui.basic.Atom" );
-
     if( ( widget.getStyle() & SWT.SHADOW_IN ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_IN" } );
     } else if( ( widget.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
@@ -86,7 +85,8 @@ public class CLabelLCA extends AbstractWidgetLCA {
   private static void writeText( final CLabel label ) throws IOException {
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( label );
-      writer.set( JSConst.QX_FIELD_LABEL, label.getText() );
+      String text = WidgetLCAUtil.escapeText( label.getText(), true );
+      writer.set( JSConst.QX_FIELD_LABEL, text );
     }
   }
 
