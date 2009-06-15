@@ -276,3 +276,28 @@ List, Text, Combo, Tree, Table {
 .formValue {
   font: bold 14px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
+
+/* Expand Bar */
+
+ExpandBar {
+  color: white;
+}
+
+ExpandItem-Header {
+  background-color: #005397;
+}
+
+ExpandItem-Button {
+  background-image: url( /theme/business/icons/expanditem-expand.gif );
+}
+
+ExpandItem-Button:expanded {
+  background-image: url( /theme/business/icons/expanditem-collapse.gif );
+}
+
+/* Combo */
+
+/* Combo always shows a border, the BORDER style flag is ignored by SWT */
+Combo {
+  border: 1px solid #C1C1C1;  
+}
