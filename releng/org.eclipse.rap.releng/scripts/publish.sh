@@ -6,6 +6,7 @@
 # http://wiki.eclipse.org/JarProcessor_Options
 # http://java.sun.com/j2se/1.5.0/docs/api/java/util/jar/Pack200.Packer.html
 # http://wiki.eclipse.org/Pack200
+# http://wiki.eclipse.org/Equinox/p2/Publisher
 
 INPUT_ARCHIVE=
 ZIP_DOWNLOAD_PATH=
@@ -213,28 +214,31 @@ function generateMetadata() {
   rm -f "$inputDir/artifacts.jar" && rm -f "$inputDir/content.jar" || return 1
   # create new metadata
   if [ -e "$inputDir/site.xml" ]; then
-    $JAVA_HOME/bin/java -Xmx512m -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
-      -application org.eclipse.equinox.p2.metadata.generator.EclipseGenerator \
-      -updateSite "$inputDir" \
-      -site "file:$inputDir/site.xml" \
-      -metadataRepository "file:$inputDir" \
+    $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
+      -application org.eclipse.equinox.p2.publisher.UpdateSitePublisher \
+      -metadataRepository file://$inputDir \
+      -artifactRepository file://$inputDir \
       -metadataRepositoryName "RAP Update Site" \
-      -artifactRepository "file:$inputDir" \
       -artifactRepositoryName "RAP Artifacts" \
+      -source $inputDir \
+      -configs gtk.linux.x86 \
+      -reusePackedFiles \
       -compress \
-      -reusePack200Files \
-      -noDefaultIUs || return 1
+      -publishArtifacts
   else
-    $JAVA_HOME/bin/java -Xmx512m -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
-      -application org.eclipse.equinox.p2.metadata.generator.EclipseGenerator \
-      -updateSite "$inputDir" \
-      -metadataRepository "file://$inputDir" \
-      -metadataRepositoryName "RAP Update Site" \
-      -artifactRepository "file://$inputDir" \
-      -artifactRepositoryName "RAP Artifacts" \
-      -reusePack200Files -noDefaultIUs || return 1
-#      -compress
+    $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
+      -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher \
+      -metadataRepository file://$inputDir \
+      -artifactRepository file://$inputDir \
+      -metadataRepositoryName "RAP Runtime SDK Repository" \
+      -artifactRepositoryName "RAP Runtime SDK Repository" \
+      -source $inputDir \
+      -configs gtk.linux.x86 \
+      -reusePackedFiles \
+      -compress \
+      -publishArtifacts
   fi
+  test $? -eq 0 || return 1
   echo ok
 }
 
@@ -257,23 +261,20 @@ function findLauncher() {
 ################################################################################
 # MAIN
 
-if [ $# -gt 0 ]; then
-
-  parseArguments "$@"
+# allow sourcing this script
+if [ -n "$PUBLISH_SCRIPT_INCLUDE" ]; then
   findLauncher
-  getUsername || exit 1
-
-else
-
-  # do not call exit if no args - enables sourcing this script
-  printUsage
-
+  return
 fi
+
+parseArguments "$@"
+findLauncher
+getUsername || exit 1
 
 if [ -n "$ZIP_DOWNLOAD_PATH" -o -n "$UPDATE_SITE_PATH" ]; then
 
   # pack200 - normalize
-  echo "=== normalize $INPUT_ARCHIVE (pack200)"
+  echo "=== normalize (pack200) $INPUT_ARCHIVE"
   packBuild normalize "$INPUT_ARCHIVE" normalized-$INPUT_ARCHIVE_NAME || exit 1
 
   # sign
@@ -302,6 +303,14 @@ if [ -n "$UPDATE_SITE_PATH" ]; then
     mv newSite/eclipse _eclipse_ && rm -rf newSite && mv _eclipse_ newSite || exit 1
   fi
 
+  # TODO manual processing necessary here:
+  if [ "${INPUT_ARCHIVE_NAME:0:11}" == "rap-runtime" ]; then
+    echo "--- manual processing needed here ---"
+    echo "replace folders with jars: both features and org.junit plug-in"
+    echo -n "press ok when finished "
+    read c
+  fi
+
   # download old site
   echo "=== merge repository dev.eclipse.org:$DOWNLOAD_LOCATION/$UPDATE_SITE_PATH/"
   echo "update local copy of repository..."
@@ -325,6 +334,9 @@ if [ -n "$UPDATE_SITE_PATH" ]; then
 
   # upload
   echo "=== upload repository"
+  echo check local repository before uploading: $copySite
+  echo -n "press ok to upload "
+  read c
   rsync -av --progress \
     $copySite/ \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$UPDATE_SITE_PATH/ || exit 1
