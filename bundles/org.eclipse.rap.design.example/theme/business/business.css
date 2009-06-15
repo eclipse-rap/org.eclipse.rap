@@ -38,6 +38,28 @@ Button.clearButton {
   padding: 2px;
 }
 
+Button.viewClose {
+  background-color: transparent;
+  background-image: url( /img/business/stack_tab_active_close_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.viewClose:hover {
+  background-image: url( /img/business/stack_tab_active_close_active_hover.png );
+}
+
+Button.viewCloseInactive {
+  background-color: transparent;
+  background-image: url( /img/business/stack_tab_inactive_close_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.viewCloseInactive:hover {
+  background-image: url( /img/business/stack_tab_inactive_close_active_hover.png );
+}
+
 Button.toolbarOverflowInactive {
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow.png );

@@ -302,16 +302,18 @@ public class BusinessCoolBarManager extends ContributionManager
         if( manager != null ) {
           IContributionItem[] toolItems = manager.getItems();
           for( int j = 0; j < toolItems.length; j++ ) {
-            if( toolItems[ j ] instanceof ActionContributionItem ) {
-              // actions
-              ActionContributionItem actionItem 
-                = ( ActionContributionItem ) toolItems[ j ];
-              addActionToCoolBar( actionItem );
-            } else if( toolItems[ j ] instanceof CommandContributionItem ) {
-              // commands
-              CommandContributionItem commandItem 
-                = ( CommandContributionItem ) toolItems[ j ];
-              addCommandToCoolBar( commandItem );
+            if( toolItems[ j ].isVisible() ) {
+              if( toolItems[ j ] instanceof ActionContributionItem ) {
+                // actions
+                ActionContributionItem actionItem 
+                  = ( ActionContributionItem ) toolItems[ j ];
+                addActionToCoolBar( actionItem );
+              } else if( toolItems[ j ] instanceof CommandContributionItem ) {
+                // commands
+                CommandContributionItem commandItem 
+                  = ( CommandContributionItem ) toolItems[ j ];
+                addCommandToCoolBar( commandItem );
+              }
             }
           }
         }      

@@ -354,7 +354,9 @@ public class ViewStackPresentation extends ConfigurableStack {
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     IWorkbenchPage activePage = window.getActivePage();
     IWorkbenchPart workbenchPart = getReference( part ).getPart( false );
-    activePage.activate( workbenchPart );    
+    if( workbenchPart != null ) {
+      activePage.activate( workbenchPart );
+    }
   }
   
   private IWorkbenchPartReference getReference( final IPresentablePart part) {
@@ -375,6 +377,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Image bg = stackBuilder.getImage( StackInitializer.CONF_BG_INACTIVE );
       buttonArea.setBackgroundImage( bg );
       Control[] children = buttonArea.getChildren();
+      buttonArea.setLayout( new FormLayout() );
       
       for( int i = 0; i < children.length; i++ ) {
         Control child = children[ i ];
@@ -396,11 +399,8 @@ public class ViewStackPresentation extends ConfigurableStack {
           fdCorner.height = cornerImage.getBounds().height;
           if( part.isCloseable() ) {
             Button close = new Button( buttonArea, SWT.PUSH );
-            close.setData( BUTTON_ID, ID_CLOSE );
-            String closeDesc = StackInitializer.TAB_INACTIVE_CLOSE_ACTIVE;
-            Image closeImage = stackBuilder.getImage( closeDesc );
-            close.setImage( closeImage );
-            close.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
+            close.setData( BUTTON_ID, ID_CLOSE );            
+            close.setData( WidgetUtil.CUSTOM_VARIANT, "viewClose" );
             close.addSelectionListener( new SelectionAdapter() {
               public void widgetSelected( SelectionEvent e ) {
                 getSite().close( new IPresentablePart[] { part } );
@@ -408,9 +408,12 @@ public class ViewStackPresentation extends ConfigurableStack {
             } );
             FormData fdClose = new FormData();
             close.setLayoutData( fdClose );
-            fdClose.right = new FormAttachment( corner, 2 );
-            fdClose.top = new FormAttachment( 0, 3 );
-            
+            fdClose.right = new FormAttachment( 100, -5 );
+            fdClose.top = new FormAttachment( 0, 6 );
+            fdClose.width = 8;
+            fdClose.height = 8;
+            close.setLayoutData( fdClose );
+            close.moveAbove( corner );
           }
         }
       }
@@ -561,6 +564,10 @@ public class ViewStackPresentation extends ConfigurableStack {
   public void dispose() {
     ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
     registry.removeViewPartPresentation( this );
+    if( toolBarLayer != null ) {
+      toolBarLayer.dispose();
+    }
+    presentationControl.dispose();
   }
 
   public Control getControl() {
@@ -583,6 +590,9 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   public void removePart( final IPresentablePart oldPart ) {
     Object object = buttonPartMap.get( oldPart );
+    if( toolBarLayer != null ) {
+      toolBarLayer.setVisible( false );
+    }
     // remove the dirtyListener
     Object listener = dirtyListenerMap.get( oldPart );
     if( listener != null && listener instanceof IPropertyListener ) {
@@ -660,20 +670,19 @@ public class ViewStackPresentation extends ConfigurableStack {
   private void changeSelectedActiveButton( final boolean selected ) {
     Image buttonAreaBg = null;
     Image corner = null;
-    Image close = null;
+    String close = "";
     if( selected ) {
       buttonAreaBg 
         = stackBuilder.getImage( StackInitializer.TAB_ACTIVE_BG_ACTIVE );
       corner = 
         stackBuilder.getImage( StackInitializer.TAB_ACTIVE_RIGHT_ACTIVE );
-      close = stackBuilder.getImage( StackInitializer.TAB_ACTIVE_CLOSE_ACTIVE );
+      close = "viewClose";
       
     } else {
       buttonAreaBg = stackBuilder.getImage( StackInitializer.CONF_BG_INACTIVE );
       corner 
         = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_CORNER_ACTIVE );
-      close 
-        = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_CLOSE_ACTIVE );
+      close = "viewCloseInactive";
     }
     Object object = buttonPartMap.get( currentPart );
     if( object != null && object instanceof Composite ) {
@@ -689,7 +698,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         } else if( child instanceof Button ) {
           Button button = ( Button ) child;
           if( button.getData( BUTTON_ID ) != null ) {
-            button.setImage( close );
+            button.setData( WidgetUtil.CUSTOM_VARIANT, close );
           }
         }
       }
