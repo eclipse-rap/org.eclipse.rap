@@ -25,6 +25,21 @@ import org.eclipse.swt.widgets.Shell;
 public class CLabelLCA_Test extends TestCase {
   
   /*
+   * 280166: [CLabel] script injection vulnerability
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280166
+   */
+  public void testTextEncoding() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setText( "<bad script>" );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( label );
+    lca.renderChanges( label );
+    String markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "<bad script>" ) );
+  }
+  
+  /*
    * 280291: [CLabel] causes NullPointerException when rendered uninitialized
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280291
    */
