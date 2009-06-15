@@ -1,17 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.rap.ui">
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="themes" name="RWT Themes"/>
       </appInfo>
       <documentation>
          This extension point is used to register custom RWT themes.
-An RWT theme is used to customize the look and feel of applications built with the Rich Ajax Platform. To create a custom theme, a theme definition file must be provided. A theme definition file is a &lt;code&gt;.property&lt;/code&gt; file that defines custom values for a number of theming keys. The valid keys are listed and described in the file &lt;code&gt;theme-template.properties&lt;/code&gt; in the source folder of the RWT plugin (&lt;code&gt;org.eclipse.rap.rwt&lt;/code&gt;). This file also serves as a template for theme definition files.
+An RWT theme is used to customize the look and feel of applications built with the Rich Ajax Platform. To create a custom theme, a CSS file must be provided. With this file the styling of one ore more widgets can be customized. A list of themeable widgets and properties can be found in the &quot;RAP Theming Reference&quot;.
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="theme" minOccurs="1" maxOccurs="unbounded"/>
@@ -67,7 +72,7 @@ An RWT theme is used to customize the look and feel of applications built with t
          <attribute name="file" type="string" use="required">
             <annotation>
                <documentation>
-                  a relative path of a &lt;code&gt;.properties&lt;/code&gt; file that contains the theme definitions
+                  a relative path of a &lt;code&gt;.css&lt;/code&gt; file that contains the theme definitions
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
@@ -105,14 +110,6 @@ An RWT theme is used to customize the look and feel of applications built with t
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="apiInfo"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>
