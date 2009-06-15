@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.ui.branding;
 
 /**
@@ -17,8 +17,7 @@ package org.eclipse.rap.ui.branding;
  * by certain browsers whenever the user tries to close the browser window or
  * tab or to navigate to another URL.
  * </p>
- * Note that this is feature is currently only supported by Internet Explorer
- * and browsers of the Mozilla family.
+ * Note that this is feature is not supported by every browser.
  * </p>
  * @since 1.1.1
  */
