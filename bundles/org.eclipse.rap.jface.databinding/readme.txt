@@ -1,1 +1,0 @@
-org.eclipse.jface.databinding base version: I20090310-0100

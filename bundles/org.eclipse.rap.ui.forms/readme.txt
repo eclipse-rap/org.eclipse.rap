@@ -1,1 +1,0 @@
-Based on code from dev.eclipse.org:/cvsroot/eclipse, Tag v20080407 
