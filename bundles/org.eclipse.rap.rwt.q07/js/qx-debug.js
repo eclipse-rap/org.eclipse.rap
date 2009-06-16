@@ -17054,7 +17054,7 @@ selectAll:function(){this._visualPropertyCheck();
 if(this.getValue()!=null){this.setSelectionStart(0);
 this.setSelectionLength(this._inputElement.value.length);
 }this._inputElement.select();
-if(this.isEnabled()){this._inputElement.focus();
+if(this.isEnabled()&&this.isSeeable()){this._inputElement.focus();
 }},
 selectFromTo:qx.core.Variant.select("qx.client",
 {"mshtml":function(vStart,
