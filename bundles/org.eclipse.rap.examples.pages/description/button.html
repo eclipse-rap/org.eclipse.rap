@@ -1,0 +1,40 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="default.css" media="screen" />
+</head>
+<body>
+
+  <h2>Button</h2>
+
+  <p>
+  The <code>Button</code> widget in SWT incorporates different types of buttons
+  that can be selected by specifying style flags.
+  </p>
+
+  <dl>
+    <dt><code>PUSH</code></dt>
+    <dd>
+      Normal push buttons. They have no state.
+      When the buttons is pressed, a selection event is fired.
+    </dd>
+    <dt><code>TOGGLE</code></dt>
+    <dd>
+      Toggle buttons look like push buttons but they maintain a selection state.
+      Once pressed they stay selected until they are pressed again.
+      A selection event is fired on selection and deselection.
+    </dd>
+    <dt><code>CHECK</code></dt>
+    <dd>
+      Check buttons are semantically equivalent to toggle buttons.
+      They also maintain a selection state but this state is displayed as a checkbox.
+    </dd>
+    <dt><code>RADIO</code></dt>
+    <dd>
+      Radio buttons are used to choose between different options.
+      A radio button can only be deselected by selecting another radio button
+      within the same composite.
+    </dd>
+  </dl>
+
+</body>
+</html>

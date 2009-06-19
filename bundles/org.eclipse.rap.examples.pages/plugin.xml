@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="org.eclipse.rap.examples.pages.default"
+         point="org.eclipse.rap.examples.pages">
+      <category
+            id="lists"
+            name="Lists and Trees">
+      </category>
+      <category
+            id="basicWidgets"
+            name="Basic Widgets">
+      </category>
+      <category
+            id="layouts"
+            name="Layouts"> 
+      </category>
+      <page
+            category="lists"
+            class="org.eclipse.rap.examples.pages.ListExample"
+            description="/description/list.html"
+            name="List">
+      </page>
+      <page
+            category="lists"
+            class="org.eclipse.rap.examples.pages.TableViewerExample"
+            description="/description/table.html"
+            name="Table">
+      </page>
+      <page
+            category="lists"
+            class="org.eclipse.rap.examples.pages.TreeViewerExample"
+            description="/description/tree.html"
+            name="Tree">
+      </page>
+      <page
+            category="basicWidgets"
+            class="org.eclipse.rap.examples.pages.ButtonExample"
+            description="description/button.html"
+            name="Buttons">
+      </page>
+      <page
+            category="basicWidgets"
+            class="org.eclipse.rap.examples.pages.LabelExample"
+            description="description/labels.html"
+            name="Label Widgets">
+      </page>
+      <page
+            category="basicWidgets"
+            class="org.eclipse.rap.examples.pages.InputExample"
+            description="description/input.html"
+            name="Input Widgets">
+      </page>
+      <page
+            category="layouts"
+            class="org.eclipse.rap.examples.pages.GridLayoutExample"
+            description="description/gridLayout.html"
+            name="GridLayout">
+      </page>
+      <page
+            category="layouts"
+            class="org.eclipse.rap.examples.pages.RowLayoutExample"
+            description="description/rowLayout.html"
+            name="RowLayout">
+      </page>
+      <page
+            category="layouts"
+            class="org.eclipse.rap.examples.pages.FillLayoutExample"
+            description="description/fillLayout.html"
+            name="FillLayout">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/org.eclipse.rap.examples.pages/description"
+            base-name="/description">
+      </resource>
+   </extension>
+</plugin>
