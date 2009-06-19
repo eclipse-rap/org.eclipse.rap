@@ -12,8 +12,8 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
 
 /**
@@ -730,5 +730,38 @@ public class Composite extends Scrollable {
       } );
     }
     super.notifyResize( oldSize );
+  }
+  
+  // RAP [bm]: e4-enabling hacks
+  PaintListener paintListener;
+  
+  // RAP [bm]: e4-enabling hacks
+  public void addPaintListener( final PaintListener newPaintListener ) {
+    this.paintListener = newPaintListener;
+    addControlListener( new ControlAdapter() {
+      public void controlResized( ControlEvent e ) {
+        redraw();
+      }
+    });
+  }
+  
+  // RAP [bm]: e4-enabling hacks
+  public void redraw() {
+    super.redraw();
+    if( paintListener != null ) {
+      Event event = new Event();
+      Point size;
+      size = new Point( bounds.width, bounds.height );
+      Image image = new Image( getDisplay(), size.x, size.y );
+      event.gc = new GC( image );
+      event.widget = Composite.this;
+      paintListener.paintControl( new PaintEvent( event ) );
+      event.gc.dispose();
+      setBackgroundImage( image );
+    }
+  }
+  
+  // RAP [bm]: e4-enabling hacks
+  public void setLayoutDeferred (boolean defer) {
   }
 }

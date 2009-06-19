@@ -28,7 +28,7 @@ import org.eclipse.rwt.graphics.Graphics;
  * 
  * @since 1.0
  */
-public class Color extends Resource {
+public class Color extends Resource implements IColor {
 
   /* (intentionally non-JavaDoc'ed)
    * Extension of class <code>Color</code> with an additional method that
@@ -36,19 +36,7 @@ public class Color extends Resource {
    * NOTE: Don't remove this class. Despite a possible warning that this class 
    * is never used locally - it IS. See ResourceFactory#createColorInstance.
    */
-  private static class ColorExt extends Color implements IColor {
-
     private final String colorValue;
-
-    private ColorExt( final int colorNr ) {
-      super( colorNr );
-      StringBuffer buffer = new StringBuffer();
-      buffer.append( "#" );
-      append( buffer, Integer.toHexString( getRed() ) );
-      append( buffer, Integer.toHexString( getGreen() ) );
-      append( buffer, Integer.toHexString( getBlue() ) );
-      colorValue = buffer.toString();
-    }
 
     private void append( final StringBuffer buffer, final String value ) {
       if( value.length() == 1  ) {
@@ -60,7 +48,6 @@ public class Color extends Resource {
     public String toColorValue() {
       return colorValue;
     }
-  }
 
   /**
    * Holds the color values within one integer.
@@ -72,6 +59,24 @@ public class Color extends Resource {
    */
   private Color( final int colorNr ) {
     this.colorNr = colorNr;
+    // RAP [bm]: e4-enabling hacks
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "#" );
+    append( buffer, Integer.toHexString( getRed() ) );
+    append( buffer, Integer.toHexString( getGreen() ) );
+    append( buffer, Integer.toHexString( getBlue() ) );
+    colorValue = buffer.toString();
+    // RAPEND
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public Color( Device display, RGB rgb ) {
+    this( display, rgb.red, rgb.green, rgb.blue );
+  }
+  
+  // RAP [bm]: e4-enabling hacks
+  public Color( Device display, int red, int green, int blue ) {
+    this( red | ( green << 8 ) | ( blue << 16 ) );
   }
 
   /**
@@ -163,5 +168,14 @@ public class Color extends Resource {
    */
   public String toString() {
     return "Color {" + getRed() + ", " + getGreen() + ", " + getBlue() + "}";
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public boolean isDisposed() {
+    return false;
+  }
+  
+  // RAP [bm]: e4-enabling hacks
+  public void dispose() {
   }
 }

@@ -13,8 +13,8 @@ package org.eclipse.swt.internal.image;
 
 import org.eclipse.swt.*;
 //import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ImageLoader;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 
 import java.io.*;
 

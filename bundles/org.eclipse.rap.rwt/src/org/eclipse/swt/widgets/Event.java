@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
 /**
@@ -147,6 +148,9 @@ public class Event {
    * a field for application use
    */
   public Object data;
+
+  // RAP [bm]: e4-enabling hacks
+  public GC gc;
 
   /**
    * Gets the bounds.

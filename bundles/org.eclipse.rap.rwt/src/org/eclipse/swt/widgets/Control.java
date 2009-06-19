@@ -15,6 +15,7 @@ import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ShowEvent;
@@ -46,6 +47,7 @@ public abstract class Control extends Widget {
   private final class ControlAdapter implements IControlAdapter {
 
     private int tabIndex = -1;
+    private Color[] backgroundGradient = new Color[ 2 ];
 
     public int getZIndex() {
       Composite parent = getParent();
@@ -74,6 +76,17 @@ public abstract class Control extends Widget {
 
     public boolean getBackgroundTransparency() {
       return backgroundTransparency;
+    }
+
+    public Color[] getBackgroundGradient() {
+      return ( Color[] )backgroundGradient.clone();
+    }
+
+    public void setBackgroundGradient( final Color startColor,
+                                       final Color endColor )
+    {
+      backgroundGradient[ 0 ] = startColor;
+      backgroundGradient[ 1 ] = endColor;
     }
 
     public int getTabIndex() {
@@ -1890,5 +1903,18 @@ public abstract class Control extends Widget {
   {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( IControlThemeAdapter )themeMgr.getThemeAdapter( controlClass );
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public void addMouseTrackListener( MouseTrackAdapter mouseHoverListener ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public void removeMouseTrackListener( MouseTrackAdapter mouseHoverListener ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public Accessible getAccessible () {
+    return new Accessible();
   }
 }

@@ -562,4 +562,13 @@ public class CTabItem extends Item {
     }
     return result;
   }
+
+  // RAP [bm]: e4-enabling hacks
+  public void setShowClose( boolean isShowClose ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public boolean getShowClose() {
+    return true;
+  }
 }

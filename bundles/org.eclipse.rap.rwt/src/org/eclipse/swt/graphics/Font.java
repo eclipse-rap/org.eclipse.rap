@@ -35,6 +35,11 @@ public final class Font extends Resource {
   private Font( final FontData data ) {
     this.fontData = new FontData[] { data };
   }
+  
+  // RAP [bm]: e4-enabling hacks
+  public Font( Device device, final FontData data ) {
+    this( data );
+  }
 
   /**
    * Returns an array of <code>FontData</code>s representing the receiver.
@@ -87,5 +92,13 @@ public final class Font extends Resource {
     }
     buffer.append( "}" );
     return buffer.toString();
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public boolean isDisposed() {
+    return false;
+  }
+
+  public void dispose() {
   }
 }

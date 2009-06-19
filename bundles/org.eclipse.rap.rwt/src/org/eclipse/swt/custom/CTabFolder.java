@@ -2126,4 +2126,33 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
       return selectionBackground;
     }
   }
+
+  // RAP [bm]: e4-enabling hacks
+  public void setSelectionBackground( Image image ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public void setSelectionBackground( Color[] swtColors,
+                                      int[] percents,
+                                      boolean b )
+  {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public void setSimple( boolean isSimple ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public boolean getSimple() {
+    return true;
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public void setUnselectedImageVisible( boolean isUnselectedImage ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public boolean getUnselectedImageVisible() {
+    return false;
+  }
 }

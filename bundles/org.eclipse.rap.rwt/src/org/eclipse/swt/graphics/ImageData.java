@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
 
 
 import java.io.*;
 import org.eclipse.swt.*;
 //import org.eclipse.swt.internal.CloneableCompatibility;
 //import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.internal.graphics.*;
 
 /**
  * Instances of this class are device-independent descriptions

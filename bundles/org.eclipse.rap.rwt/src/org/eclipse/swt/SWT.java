@@ -2777,4 +2777,439 @@ public class SWT {
     return RWTMessages.getMessage( key,
                                    "org.eclipse.swt.internal.SWTMessages" );
   }
+  
+  // RAP [bm]: e4-enabling hacks
+  /**
+   * Style constant for search behavior (value is 1&lt;&lt;7).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Text</code></li>
+   * </ul></p>
+   * 
+   * @since 3.3
+   */
+  public static final int SEARCH = 1 << 7;
+  
+  /**
+   * Style constant for shadow etched in behavior (value is 1&lt;&lt;4).
+   * <br>Note that this is a <em>HINT</em>. It is ignored on all platforms except Motif.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Group</code></li>
+   * </ul></p>
+   */
+  public static final int SHADOW_ETCHED_IN = 1 << 4;
+
+  /**
+   * Style constant for shadow etched out behavior (value is 1&lt;&lt;6).
+   * <br>Note that this is a <em>HINT</em>. It is ignored on all platforms except Motif.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Group</code></li>
+   * </ul></p>
+   */
+  public static final int SHADOW_ETCHED_OUT = 1 << 6;
+  
+  /**
+   * Style constant for tool window behavior (value is 1&lt;&lt;2).
+   * <p>
+   * A tool window is a window intended to be used as a floating toolbar.
+   * It typically has a title bar that is shorter than a normal title bar,
+   * and the window title is typically drawn using a smaller font.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Decorations</code> and subclasses</li>
+   * </ul></p>
+   */
+  public static final int TOOL = 1 << 2; 
+  
+  /**
+   * Style constant for shell menu trim (value is 1&lt;&lt;6,
+   * since we do not distinguish between CLOSE style and MENU style).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Decorations</code> and subclasses</li>
+   * </ul></p>
+   */
+  public static final int MENU = CLOSE;
+  
+  /**
+   * Style constant indicating that the window manager should clip
+   * a widget's children with respect to its viewable area. (value is 1&lt;&lt;12).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code> and subclasses</li>
+   * </ul></p>
+   */
+  public static final int CLIP_CHILDREN = 1 << 12; 
+
+  /**
+   * Style constant indicating that the window manager should clip
+   * a widget's siblings with respect to its viewable area. (value is 1&lt;&lt;13).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code> and subclasses</li>
+   * </ul></p>
+   */
+  public static final int CLIP_SIBLINGS = 1 << 13;
+
+  /**
+   * Style constant for modeless behavior (value is 0).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Dialog</code></li>
+   * <li><code>Shell</code></li>
+   * </ul></p>
+   */
+  public static final int MODELESS = 0;
+
+  /**
+   * Style constant for primary modal behavior (value is 1&lt;&lt;15).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Dialog</code></li>
+   * <li><code>Shell</code></li>
+   * </ul></p>
+   */
+  public static final int PRIMARY_MODAL = 1 << 15;
+  
+
+  /**
+   * Style constant for system modal behavior (value is 1&lt;&lt;17).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Dialog</code></li>
+   * <li><code>Shell</code></li>
+   * </ul></p>
+   */
+  public static final int SYSTEM_MODAL = 1 << 17;
+  
+  /**
+   * Style constant for selection hiding behavior when the widget loses focus (value is 1&lt;&lt;15).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Table</code></li>
+   * </ul></p>
+   */
+  public static final int HIDE_SELECTION = 1 << 15;
+  
+  /**
+   * Style constant for no background behavior (value is 1&lt;&lt;18).
+   * <p>
+   * By default, before a widget paints, the client area is filled with the current background.
+   * When this style is specified, the background is not filled, and the application is responsible
+   * for filling every pixel of the client area.
+   * This style might be used as an alternative to "double-buffering" in order to reduce flicker.
+   * This style does not mean "transparent" - widgets that are obscured will not draw through.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * </ul></p>
+   */
+  public static final int NO_BACKGROUND = 1 << 18;
+  
+
+  /**
+   * Style constant for no redraw on resize behavior (value is 1&lt;&lt;20).
+   * <p>
+   * This style stops the entire client area from being invalidated when the size
+   * of the Canvas changes. Specifically, when the size of the Canvas gets smaller,
+   * the SWT.Paint event is not sent. When it gets bigger, an SWT.Paint event is
+   * sent with a GC clipped to only the new areas to be painted. Without this
+   * style, the entire client area will be repainted.
+   * 
+   * <br>Note that this is a <em>HINT</em>.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * </ul></p>
+   */
+  public static final int NO_REDRAW_RESIZE = 1 << 20;
+
+  /**
+   * Style constant for no paint event merging behavior (value is 1&lt;&lt;21).
+   * 
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * </ul></p>
+   */
+  public static final int NO_MERGE_PAINTS = 1 << 21;
+  
+
+  /**
+   * Style constant for preventing child radio group behavior (value is 1&lt;&lt;22).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * <li><code>Menu</code></li>
+   * </ul></p>
+   */
+  public static final int NO_RADIO_GROUP = 1 << 22;
+  
+  /**
+   * Style constant for right to left orientation (value is 1&lt;&lt;26).
+   * <p>
+   * When orientation is not explicitly specified, orientation is
+   * inherited.  This means that children will be assigned the
+   * orientation of their parent.  To override this behavior and
+   * force an orientation for a child, explicitly set the orientation
+   * of the child when that child is created.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code></li>
+   * <li><code>Menu</code></li>
+   * <li><code>GC</code></li> 
+   * </ul></p>
+   * 
+   * @since 2.1.2
+   */
+  public static final int RIGHT_TO_LEFT = 1 << 26;
+  
+  /**
+   * Style constant to indicate coordinate mirroring (value is 1&lt;&lt;27).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code></li>
+   * <li><code>Menu</code></li>
+   * </ul></p>
+   * 
+   * @since 2.1.2
+   */
+  public static final int MIRRORED = 1 << 27;
+  
+
+  /**
+   * Style constant to indicate double buffering (value is 1&lt;&lt;29).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code></li>
+   * </ul></p>
+   * 
+   * @since 3.1
+   */
+  public static final int DOUBLE_BUFFERED = 1 << 29;
+  
+  /**
+   * Style constant specifying that a Browser should use a Mozilla GRE
+   * for rendering its content (value is 1&lt;&lt;15).
+   * <p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>Browser</code></li>
+   * </ul></p>
+   * 
+   * @since 3.3
+   */
+  public static final int MOZILLA = 1 << 15;
+  
+  /**
+   * Style constant for balloon behavior (value is 1&lt;&lt;12).
+   * <p><b>Used By:</b><ul>
+   * <li><code>ToolTip</code></li>
+   * </ul></p>
+   *
+   * @since 3.2
+   */ 
+  public static final int BALLOON = 1 << 12;
+  
+  /**
+   * Input Method Editor style constant for double byte
+   * input behavior (value is 1&lt;&lt;1).
+   */
+  public static final int DBCS = 1 << 1;
+  
+  /**
+   * Input Method Editor style constant for alpha
+   * input behavior (value is 1&lt;&lt;2).
+   */
+  public static final int ALPHA = 1 << 2;
+
+  /**
+   * Input Method Editor style constant for native
+   * input behavior (value is 1&lt;&lt;3).
+   */
+  public static final int NATIVE = 1 << 3;
+
+  /**
+   * Input Method Editor style constant for phonetic
+   * input behavior (value is 1&lt;&lt;4).
+   */
+  public static final int PHONETIC = 1 << 4;
+
+  /**
+   * Input Method Editor style constant for romanicized
+   * input behavior (value is 1&lt;&lt;5).
+   */
+  public static final int ROMAN = 1 << 5;
+
+
+  /**
+   * The <code>FileDialog</code> style constant for open file dialog behavior
+   * (value is 1&lt;&lt;12).
+   */
+  public static final int OPEN = 1 << 12;
+
+  /**
+   * The <code>FileDialog</code> style constant for save file dialog behavior
+   * (value is 1&lt;&lt;13).
+   */
+  public static final int SAVE = 1 << 13;
+  
+  
+  /**
+   * Line drawing style for flat end caps (value is 1).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineCap(int)
+   * @see org.eclipse.swt.graphics.GC#getLineCap()
+   * 
+   * @since 3.1
+   */
+  public static final int CAP_FLAT = 1;
+
+  /**
+   * Line drawing style for rounded end caps (value is 2).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineCap(int)
+   * @see org.eclipse.swt.graphics.GC#getLineCap()
+   * 
+   * @since 3.1
+   */
+  public static final int CAP_ROUND = 2;
+
+  /**
+   * Line drawing style for square end caps (value is 3).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineCap(int)
+   * @see org.eclipse.swt.graphics.GC#getLineCap()
+   * 
+   * @since 3.1
+   */
+  public static final int CAP_SQUARE = 3;
+
+  /**
+   * Line drawing style for miter joins (value is 1).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineJoin(int)
+   * @see org.eclipse.swt.graphics.GC#getLineJoin()
+   * 
+   * @since 3.1
+   */
+  public static final int JOIN_MITER = 1;
+
+  /**
+   * Line drawing  style for rounded joins (value is 2).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineJoin(int)
+   * @see org.eclipse.swt.graphics.GC#getLineJoin()
+   * 
+   * @since 3.1
+   */
+  public static final int JOIN_ROUND = 2;
+
+  /**
+   * Line drawing style for bevel joins (value is 3).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineJoin(int)
+   * @see org.eclipse.swt.graphics.GC#getLineJoin()
+   * 
+   * @since 3.1
+   */
+  public static final int JOIN_BEVEL = 3;
+
+  /**
+   * Line drawing style for solid lines  (value is 1).
+   */
+  public static final int LINE_SOLID = 1;
+    
+  /**
+   * Line drawing style for dashed lines (value is 2).
+   */
+  public static final int LINE_DASH = 2;
+    
+  /**
+   * Line drawing style for dotted lines (value is 3).
+   */
+  public static final int LINE_DOT = 3;
+    
+  /**
+   * Line drawing style for alternating dash-dot lines (value is 4).
+   */
+  public static final int LINE_DASHDOT = 4;
+    
+  /**
+   * Line drawing style for dash-dot-dot lines (value is 5).
+   */
+  public static final int LINE_DASHDOTDOT = 5;
+
+  /**
+   * Line drawing style for custom dashed lines (value is 6).
+   * 
+   * @see org.eclipse.swt.graphics.GC#setLineDash(int[])
+   * @see org.eclipse.swt.graphics.GC#getLineDash()
+   * 
+   * @since 3.1
+   */
+  public static final int LINE_CUSTOM = 6;
+  
+  /**
+   * Path constant that represents a "move to" operation (value is 1).
+   * 
+   * @since 3.1
+   */
+  public static final int PATH_MOVE_TO = 1;
+
+  /**
+   * Path constant that represents a "line to" operation (value is 2).
+   * 
+   * @since 3.1
+   */
+  public static final int PATH_LINE_TO = 2;
+
+  /**
+   * Path constant that represents a "quadratic curve to" operation (value is 3).
+   * 
+   * @since 3.1
+   */
+  public static final int PATH_QUAD_TO = 3;
+
+  /**
+   * Path constant that represents a "cubic curve to" operation (value is 4).
+   * 
+   * @since 3.1
+   */
+  public static final int PATH_CUBIC_TO = 4;
+
+  /**
+   * Path constant that represents a "close" operation (value is 5).
+   * 
+   * @since 3.1
+   */
+  public static final int PATH_CLOSE = 5;
+
+  /**
+   * Even odd rule for filling operations (value is 1).
+   * 
+   * @since 3.1
+   */
+  public static final int FILL_EVEN_ODD = 1;
+
+  /**
+   * Winding rule for filling operations (value is 2).
+   * 
+   * @since 3.1
+   */
+  public static final int FILL_WINDING = 2;
+
+  /**
+   * System up arrow cursor  (value is 18).
+   */
+  public static final int CURSOR_UPARROW = 18;
+
+  /**
+   * Indicates that a property is off (value is 0).
+   * 
+   * @since 3.1
+   */
+  public static final int OFF = 0;
+  
+  /**
+   * Indicates that a property is on (value is 1).
+   * 
+   * @since 3.1
+   */
+  public static final int ON = 1;
+  
+  // RAPEND
 }

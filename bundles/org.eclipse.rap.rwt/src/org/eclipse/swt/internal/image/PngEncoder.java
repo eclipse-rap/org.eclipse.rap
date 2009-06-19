@@ -13,9 +13,7 @@ package org.eclipse.swt.internal.image;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.internal.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ImageLoader;
+import org.eclipse.swt.graphics.*;
 
 final class PngEncoder extends Object {
 

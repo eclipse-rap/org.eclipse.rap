@@ -29,7 +29,7 @@ public final class ResourceFactory {
 
   private static final Map colors = new HashMap();
   private static final Map fonts = new HashMap();
-  private static final Map images = new HashMap();
+  public static final Map images = new HashMap();
   private static final Map cursors = new HashMap();
   private static final ImageDataCache imageDataCache = new ImageDataCache();
 
@@ -330,7 +330,8 @@ public final class ResourceFactory {
    *         second is the <em>height</em>, <code>null</code> if the bounds
    *         could not be read.
    */
-  private static Point readImageSize( final InputStream input ) {
+  // RAP [bm]: e4-enabling hacks
+  public static Point readImageSize( final InputStream input ) {
     Point result = null;
     boolean cacheBuffer = ImageIO.getUseCache();
     try {
@@ -383,7 +384,8 @@ public final class ResourceFactory {
     return result;
   }
 
-  private static String getImageFileExtension( final int type ) {
+  // RAP [bm]: e4-enabling hacks
+  public static String getImageFileExtension( final int type ) {
     String result;
     switch( type ) {
       case SWT.IMAGE_BMP:
@@ -430,8 +432,9 @@ public final class ResourceFactory {
     Color result = null;
     try {
       Class colorClass = Color.class;
-      Class[] classes = colorClass.getDeclaredClasses();
-      Class colorExtClass = classes[ 0 ];
+      // RAP [bm]: e4-enabling hacks
+//      Class[] classes = colorClass.getDeclaredClasses();
+      Class colorExtClass = colorClass;
       Class[] paramList = new Class[] { int.class };
       Constructor constr = colorExtClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );

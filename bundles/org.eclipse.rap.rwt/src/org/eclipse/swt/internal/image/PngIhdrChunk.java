@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.image;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.PaletteData;
 
 class PngIhdrChunk extends PngChunk {
 	static final int IHDR_DATA_LENGTH = 13;

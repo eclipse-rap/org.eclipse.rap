@@ -12,6 +12,7 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Instances of this class manage operating system resources that
@@ -68,6 +69,11 @@ public final class Cursor extends Resource {
   	}
   }
 
+  // RAP [bm]: e4-enabling hacks
+  public Cursor( Display display, int style ) {
+    this( style );
+  }
+
   /**
    * Compares the argument to the receiver, and returns true
    * if they represent the <em>same</em> object using a class
@@ -104,5 +110,14 @@ public final class Cursor extends Resource {
    */
   public String toString () {
     return "Cursor {" + value + "}";
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public boolean isDisposed() {
+    return false;
+  }
+  
+  // RAP [bm]: e4-enabling hacks
+  public void dispose() {
   }
 }

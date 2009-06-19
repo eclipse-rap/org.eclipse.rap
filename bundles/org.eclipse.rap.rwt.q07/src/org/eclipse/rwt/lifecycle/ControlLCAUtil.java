@@ -79,6 +79,10 @@ public class ControlLCAUtil {
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
+  private static final String PROP_BACKGROUND_GRADIENT = "backgroundGradient";
+
+  // Default values
+  private static final Color[] DEFAULT_BACKGROUND_GRADIENT = new Color[ 2 ];
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
@@ -144,6 +148,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveBackground( control,
                                       controlAdapter.getUserBackground(),
                                       controlAdapter.getBackgroundTransparency() );
+    preserveBackgroundGradient( control );
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
@@ -338,6 +343,7 @@ public class ControlLCAUtil {
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );
+    writeBackgroundGradient( control );
     writeBackgroundImage( control );
     writeFont( control );
     writeCursor( control );
@@ -363,6 +369,7 @@ public class ControlLCAUtil {
    * <li>enabled</li>
    * <li>foreground</li>
    * <li>background</li>
+   * <li>background gradient</li>
    * <li>font</li>
    * <!--li>whether ControlListeners are registered</li>
    * <li>whether ActivateListeners are registered</li>
@@ -381,6 +388,7 @@ public class ControlLCAUtil {
     resetToolTip();
     resetFont();
     resetBackground();
+    resetBackgroundGradient();
     resetForeground();
     resetEnabled();
     resetVisible();
@@ -845,6 +853,34 @@ public class ControlLCAUtil {
   private static void resetTabIndex() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JSConst.QX_FIELD_TAB_INDEX );
+  }
+
+  //////////////////////
+  // Background gradient
+
+  private static void preserveBackgroundGradient( final Control control ) {
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+     Color[] backgroundGradient = controlAdapter.getBackgroundGradient();
+     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+     adapter.preserve( PROP_BACKGROUND_GRADIENT, backgroundGradient );
+  }
+
+  private static void writeBackgroundGradient( final Control control )
+    throws IOException
+  {
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    Color[] newValue = controlAdapter.getBackgroundGradient();
+    String prop = PROP_BACKGROUND_GRADIENT;
+    Color[] defValue = DEFAULT_BACKGROUND_GRADIENT;
+    JSWriter writer = JSWriter.getWriterFor( control );
+    writer.set( prop, JSConst.QX_FIELD_BG_GRADIENT, newValue, defValue );
+  }
+
+  private static void resetBackgroundGradient() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_BG_GRADIENT );
   }
 
   /**

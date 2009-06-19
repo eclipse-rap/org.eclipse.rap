@@ -16,11 +16,9 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.*;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
-import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -86,6 +84,11 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writer.call( parent, "add", new Object[] { item } );
   }
 
+  private static final String PROP_BACKGROUND_GRADIENT = "backgroundGradient";
+
+  // Default values
+  private static final Color[] DEFAULT_BACKGROUND_GRADIENT = new Color[ 2 ];
+
   public void renderChanges( final Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.writeBounds( item, item.getParent(), item.getBounds() );
@@ -98,6 +101,14 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writeSelection( item );
     writeFirstItem( item );
     WidgetLCAUtil.writeCustomVariant( item );
+    
+    IControlAdapter controlAdapter
+    = ( IControlAdapter )item.getParent().getAdapter( IControlAdapter.class );
+    Color[] newValue = controlAdapter.getBackgroundGradient();
+    String prop = PROP_BACKGROUND_GRADIENT;
+    Color[] defValue = DEFAULT_BACKGROUND_GRADIENT;
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.set( prop, JSConst.QX_FIELD_BG_GRADIENT, newValue, defValue );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.graphics;
 
 
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**

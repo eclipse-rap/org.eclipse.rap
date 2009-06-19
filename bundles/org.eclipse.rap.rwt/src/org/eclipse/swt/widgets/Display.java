@@ -1435,4 +1435,17 @@ public class Display extends Device implements Adaptable {
       return getFilterEntries();
     }
   }
+
+  // RAP [bm]: e4-enabling hacks
+  public void addListener( int dispose, Listener listener ) {
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public static Display findDisplay( Thread currentThread ) {
+    return Display.getCurrent();
+  }
+
+  // RAP [bm]: e4-enabling hacks
+  public void update() {
+  }
 }
