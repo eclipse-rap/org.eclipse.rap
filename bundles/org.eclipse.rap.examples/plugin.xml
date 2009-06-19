@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension-point id="pages"
+         name="RAP examples pages"
+         schema="schema/pages.exsd" />
+
+   <extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.eclipse.rap.examples.viewer.internal.Application"
+            parameter="examples"
+            id="org.eclipse.rap.examples.viewer.entryPoint">
+      </entrypoint>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.rap.examples.viewer.internal.ExamplePerspective"
+            id="org.eclipse.rap.examples.viewer.examplePerspective"
+            name="Examples">
+      </perspective>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.eclipse.rap.examples.viewer.internal.ExampleView"
+            id="org.eclipse.rap.examples.viewer.exampleView"
+            name="Example">
+      </view>
+      <view
+            class="org.eclipse.rap.examples.viewer.internal.NavigationView"
+            id="org.eclipse.rap.examples.viewer.navigationView"
+            name="Navigation">
+      </view>
+      <view
+            class="org.eclipse.rap.examples.viewer.internal.DescriptionView"
+            id="org.eclipse.rap.examples.viewer.descriptionView"
+            name="Description">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            defaultEntrypointId="org.eclipse.rap.examples.viewer.entryPoint"
+            favicon="icons/favicon.png"
+            id="org.eclipse.rap.examples.branding"
+            servletName="examples"
+            themeId="org.eclipse.rap.design.example.business.theme"
+            title="RAP Examples">
+         <presentationFactory
+               id="org.eclipse.rap.design.example.business.factory"
+               defaultLayoutId="org.eclipse.rap.design.example.business.layout">
+            <defaultStackPresentation
+                  id="org.eclipse.rap.design.example.business.stack.view">
+            </defaultStackPresentation>
+         </presentationFactory>
+      </branding>
+   </extension>
+
+   <extension point="org.eclipse.ui.activities">
+      <activity
+            id="org.eclipse.rap.examples.viewer"
+            name="Enable org.eclipse.rap.examples.viewer contributions">
+         <enabledWhen>
+            <with variable="org.eclipse.rap.examples.viewer.entryPoint">
+               <iterate ifEmpty="true" operator="or">
+                  <equals value="examples" />
+               </iterate>
+            </with>
+         </enabledWhen>
+      </activity>
+      <activityPatternBinding activityId="org.eclipse.rap.examples.viewer"
+            pattern="^org\.eclipse\.rap\.examples\.viewer\.*">
+      </activityPatternBinding>
+      <activityPatternBinding activityId="org.eclipse.rap.examples.viewer"
+            pattern="^org\.eclipse\.rap\.examples\.pages\.*">
+      </activityPatternBinding>
+   </extension>
+
+</plugin>
