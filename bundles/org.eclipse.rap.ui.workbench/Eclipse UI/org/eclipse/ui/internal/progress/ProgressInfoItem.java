@@ -161,7 +161,7 @@ class ProgressInfoItem extends Composite {
 		// Mac has different Gamma value
 		int shift = "carbon".equals(SWT.getPlatform()) ? -25 : -10;//$NON-NLS-1$
 
-		Color lightColor = PlatformUI.getWorkbench().getDisplay()
+		Color lightColor = Display.getCurrent()
 				.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
 
 		// Determine a dark color by shifting the list color
