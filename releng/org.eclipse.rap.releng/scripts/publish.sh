@@ -332,6 +332,18 @@ if [ -n "$UPDATE_SITE_PATH" ]; then
   # metadata
   generateMetadata $copySite || exit 1
 
+  # TODO generate category metadata
+  echo update category.xml
+  echo generate category.xml like this:
+  echo $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
+   -console -consolelog -application org.eclipse.equinox.p2.publisher.CategoryPublisher \
+   -metadataRepository file:///home/ralf/proj/RAP/build/sites/1.2_runtime-update \
+   -categoryDefinition file:///home/ralf/proj/RAP/build/category.xml \
+   -categoryQualifier \
+   -compress
+  echo -n "press ok to proceed "
+  read c
+
   # upload
   echo "=== upload repository"
   echo check local repository before uploading: $copySite
