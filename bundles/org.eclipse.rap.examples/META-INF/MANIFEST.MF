@@ -11,3 +11,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0"
 Export-Package: org.eclipse.rap.examples.viewer
+Bundle-Vendor: Eclipse RAP Project
