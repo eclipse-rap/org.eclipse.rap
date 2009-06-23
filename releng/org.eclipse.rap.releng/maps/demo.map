@@ -14,6 +14,10 @@ feature@org.eclipse.rap.demo.feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cv
 plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.demo
 plugin@org.eclipse.rap.demo.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.demo.databinding
 
+# examples
+plugin@org.eclipse.rap.examples=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.examples
+plugin@org.eclipse.rap.examples.pages=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.examples.pages
+
 # mail demo
 plugin@org.eclipse.rap.maildemo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rap.maildemo
 plugin@org.eclipse.rap.maildemo.ext=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rap.maildemo.ext
