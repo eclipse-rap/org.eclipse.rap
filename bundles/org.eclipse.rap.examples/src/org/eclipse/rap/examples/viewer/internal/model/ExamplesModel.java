@@ -38,11 +38,8 @@ public class ExamplesModel extends SessionSingletonBase {
 
   private ExamplesModel() {
     IConfigurationElement[] extensions = readRegistry();
-    long start = System.currentTimeMillis();
     createCategories( extensions );
     createPages( extensions );
-    long end = System.currentTimeMillis();
-    System.out.println( "time " + ( end - start ) );
   }
 
   public static ExamplesModel getInstance() {
