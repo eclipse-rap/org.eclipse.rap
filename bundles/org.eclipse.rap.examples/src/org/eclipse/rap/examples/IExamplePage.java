@@ -7,7 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer;
+package org.eclipse.rap.examples;
 
 import org.eclipse.swt.widgets.Composite;
 

@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.rap.examples.viewer" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.rap.examples" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.rap.examples.viewer" id="org.eclipse.rap.examples.pages" name="RAP widgets examples"/>
+         <meta.schema plugin="org.eclipse.rap.examples" id="org.eclipse.rap.examples.pages" name="RAP widgets examples"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -75,7 +75,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.examples.viewer.IExamplePage"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.examples.IExamplePage"/>
                </appinfo>
             </annotation>
          </attribute>

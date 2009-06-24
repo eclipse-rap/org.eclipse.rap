@@ -7,20 +7,17 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.rap.examples.viewer.internal.model.ExamplesModel;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.examples.internal.model.ExamplesModel;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -31,21 +28,17 @@ import org.eclipse.ui.part.ViewPart;
 public class DescriptionView extends ViewPart {
 
   public static final String ID
-    = "org.eclipse.rap.examples.viewer.descriptionView";
+    = "org.eclipse.rap.examples.descriptionView";
   private static final String NO_DESCRIPTION = "";
+  private static final String BASE_URL = ".";
 
   private Browser browser;
-  private String baseUrl;
 
   public void createPartControl( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     browser = new Browser( parent, SWT.NONE );
     browser.setData( WidgetUtil.CUSTOM_VARIANT, "descriptionView" );
     createSelectionListener();
-    StringBuffer buf = RWT.getRequest().getRequestURL();
-    buf.delete( buf.lastIndexOf( RWT.getRequest().getRequestURI() ),
-                buf.length() );
-    baseUrl = buf.toString();
   }
 
   public void setFocus() {
@@ -76,7 +69,7 @@ public class DescriptionView extends ViewPart {
     String descriptionPath
       = ExamplesModel.getInstance().getDescriptionUrl( name );
     if( descriptionPath != null ) {
-      boolean loaded = browser.setUrl( baseUrl + descriptionPath );
+      boolean loaded = browser.setUrl( BASE_URL + descriptionPath );
       if( !loaded ) {
         browser.setText( NO_DESCRIPTION );
       }

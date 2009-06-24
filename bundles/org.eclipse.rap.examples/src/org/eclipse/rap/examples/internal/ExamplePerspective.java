@@ -7,7 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -16,7 +16,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class ExamplePerspective implements IPerspectiveFactory {
 
   public static final String ID
-    = "org.eclipse.rap.examples.viewer.examplePerspective";
+    = "org.eclipse.rap.examples.examplePerspective";
 
   public void createInitialLayout( final IPageLayout layout ) {
     String editorArea = layout.getEditorArea();

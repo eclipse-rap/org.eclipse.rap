@@ -7,15 +7,15 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.rap.examples.viewer.internal.model.ExamplesModel;
-import org.eclipse.rap.examples.viewer.internal.model.ExampleCategory;
+import org.eclipse.rap.examples.internal.model.ExampleCategory;
+import org.eclipse.rap.examples.internal.model.ExamplesModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FillLayout;
@@ -26,7 +26,7 @@ import org.eclipse.ui.part.ViewPart;
 public class NavigationView extends ViewPart {
 
   public static final String ID
-    = "org.eclipse.rap.examples.viewer.navigationView";
+    = "org.eclipse.rap.examples.navigationView";
   
   private ExpandBar expandBar;
 

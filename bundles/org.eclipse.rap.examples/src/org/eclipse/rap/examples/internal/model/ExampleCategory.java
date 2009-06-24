@@ -7,9 +7,9 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal.model;
+package org.eclipse.rap.examples.internal.model;
 
-import org.eclipse.rap.examples.viewer.IExamplePage;
+import org.eclipse.rap.examples.IExamplePage;
 
 
 public class ExampleCategory implements Comparable {

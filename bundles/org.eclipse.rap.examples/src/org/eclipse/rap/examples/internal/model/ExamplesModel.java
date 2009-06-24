@@ -7,12 +7,12 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal.model;
+package org.eclipse.rap.examples.internal.model;
 
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.rap.examples.viewer.IExamplePage;
+import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rwt.SessionSingletonBase;
 
 

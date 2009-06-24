@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.rap.examples.viewer.IExamplePage;
+import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

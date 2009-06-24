@@ -7,7 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -16,7 +16,7 @@ import org.osgi.framework.BundleContext;
 
 public class Activator extends AbstractUIPlugin {
 
-  public static final String PLUGIN_ID = "org.eclipse.rap.examples.viewer";
+  public static final String PLUGIN_ID = "org.eclipse.rap.examples";
 
   public static Activator getDefault() {
     return plugin;

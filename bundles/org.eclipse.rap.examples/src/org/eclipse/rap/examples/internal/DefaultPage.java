@@ -7,9 +7,9 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
-import org.eclipse.rap.examples.viewer.IExamplePage;
+import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

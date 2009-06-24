@@ -13,8 +13,8 @@ import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.viewers.*;
+import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.Elements.Element;
-import org.eclipse.rap.examples.viewer.IExamplePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;

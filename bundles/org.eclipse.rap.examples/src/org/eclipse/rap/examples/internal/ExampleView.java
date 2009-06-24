@@ -7,15 +7,15 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.rap.examples.viewer.IExamplePage;
-import org.eclipse.rap.examples.viewer.internal.model.ExamplesModel;
+import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.internal.model.ExamplesModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.*;
@@ -25,7 +25,7 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ExampleView extends ViewPart {
 
-  public static final String ID = "org.eclipse.rap.examples.viewer.exampleView";
+  public static final String ID = "org.eclipse.rap.examples.exampleView";
   private PageBook book;
   private Map examplePages = new HashMap();
   private SelectionListener selectionListener;

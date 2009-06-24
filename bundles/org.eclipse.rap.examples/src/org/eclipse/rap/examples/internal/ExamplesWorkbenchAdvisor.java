@@ -7,7 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.viewer.internal;
+package org.eclipse.rap.examples.internal;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,14 +20,14 @@ import org.eclipse.ui.application.*;
 
 public class ExamplesWorkbenchAdvisor extends WorkbenchAdvisor {
 
-  public void preStartup() {
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IMutableActivityManager activitySupport
-      = workbench.getActivitySupport().createWorkingCopy();
-    Set enabledActivityIds = new HashSet();
-    enabledActivityIds.add( "org.eclipse.rap.examples.viewer" );
-    activitySupport.setEnabledActivityIds( enabledActivityIds );
-  }
+//  public void preStartup() {
+//    IWorkbench workbench = PlatformUI.getWorkbench();
+//    IMutableActivityManager activitySupport
+//      = workbench.getActivitySupport().createWorkingCopy();
+//    Set enabledActivityIds = new HashSet();
+//    enabledActivityIds.add( "org.eclipse.rap.examples" );
+//    activitySupport.setEnabledActivityIds( enabledActivityIds );
+//  }
 
   public String getInitialWindowPerspectiveId() {
     return ExamplePerspective.ID;
