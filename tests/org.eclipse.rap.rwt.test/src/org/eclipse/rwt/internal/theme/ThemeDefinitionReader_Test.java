@@ -39,19 +39,18 @@ public class ThemeDefinitionReader_Test extends TestCase {
     assertNotNull( elements );
     assertTrue( elements.length > 0 );
     assertEquals( "Button", elements[ 0 ].getName() );
-    assertNotNull( elements[ 0 ].getDescription() );
-    IThemeCssProperty[] properties = elements[ 0 ].getProperties();
+    String[] properties = elements[ 0 ].getProperties();
     assertNotNull( properties );
     assertTrue( properties.length > 0 );
-    IThemeCssAttribute[] styles = elements[ 0 ].getStyles();
+    assertEquals( "color", properties[ 0 ] );
+    String[] styles = elements[ 0 ].getStyles();
     assertNotNull( styles );
     assertTrue( styles.length > 0 );
-    IThemeCssAttribute[] states = elements[ 0 ].getStates();
+    assertEquals( "PUSH", styles[ 0 ] );
+    String[] states = elements[ 0 ].getStates();
     assertNotNull( states );
     assertTrue( states.length > 0 );
-    assertTrue( properties.length > 0 );
-    assertEquals( "color", properties[ 0 ].getName() );
-    assertNotNull( properties[ 0 ].getDescription() );
+    assertEquals( "hover", states[ 0 ] );
   }
 
   public void testNestedElements() throws Exception {

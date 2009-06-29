@@ -20,11 +20,9 @@ public interface IThemeCssElement {
 
   public abstract String getName();
 
-  public abstract String getDescription();
+  public abstract String[] getProperties();
 
-  public abstract IThemeCssProperty[] getProperties();
+  public abstract String[] getStyles();
 
-  public abstract IThemeCssAttribute[] getStyles();
-
-  public abstract IThemeCssAttribute[] getStates();
+  public abstract String[] getStates();
 }

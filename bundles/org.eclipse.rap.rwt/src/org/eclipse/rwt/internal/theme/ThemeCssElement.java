@@ -18,8 +18,6 @@ public class ThemeCssElement implements IThemeCssElement {
 
   private final String name;
 
-  private String description;
-
   private Collection properties;
 
   private Collection styles;
@@ -37,41 +35,33 @@ public class ThemeCssElement implements IThemeCssElement {
     return name;
   }
 
-  public String getDescription() {
-    return description;
-  }
-
-  public IThemeCssProperty[] getProperties() {
-    IThemeCssProperty[] result = new IThemeCssProperty[ properties.size() ];
+  public String[] getProperties() {
+    String[] result = new String[ properties.size() ];
     properties.toArray( result );
     return result;
   }
 
-  public IThemeCssAttribute[] getStyles() {
-    IThemeCssAttribute[] result = new IThemeCssAttribute[ styles.size() ];
+  public String[] getStyles() {
+    String[] result = new String[ styles.size() ];
     styles.toArray( result );
     return result;
   }
   
-  public IThemeCssAttribute[] getStates() {
-    IThemeCssAttribute[] result = new IThemeCssAttribute[ states.size() ];
+  public String[] getStates() {
+    String[] result = new String[ states.size() ];
     states.toArray( result );
     return result;
   }
 
-  public void setDescription( final String description ) {
-    this.description = description;
-  }
-
-  public void addProperty( final IThemeCssProperty property ) {
+  public void addProperty( final String property ) {
     properties.add( property );
   }
 
-  public void addStyle( final IThemeCssAttribute style ) {
+  public void addStyle( final String style ) {
     styles.add( style );
   }
 
-  public void addState( final IThemeCssAttribute state ) {
+  public void addState( final String state ) {
     states.add( state );
   }
 }

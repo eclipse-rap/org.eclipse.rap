@@ -33,10 +33,9 @@ public class ThemeCssValuesMap {
                            final StyleSheet styleSheet )
   {
     String elementName = element.getName();
-    IThemeCssProperty[] properties = element.getProperties();
+    String[] properties = element.getProperties();
     for( int i = 0; i < properties.length; i++ ) {
-      IThemeCssProperty property = properties[ i ];
-      String propertyName = property.getName();
+      String propertyName = properties[ i ];
       ConditionalValue[] values = styleSheet.getValues( elementName,
                                                         propertyName );
       ConditionalValue[] filteredValues = filterValues( values, element );
@@ -100,13 +99,11 @@ public class ThemeCssValuesMap {
     return passed;
   }
 
-  private static boolean contains( final IThemeCssAttribute[] attributes,
-                                   final String name )
+  private static boolean contains( final String[] elements, final String string )
   {
     boolean result = false;
-    for( int i = 0; i < attributes.length && !result; i++ ) {
-      IThemeCssAttribute themeCssAttribute = attributes[ i ];
-      if( name.equals( themeCssAttribute.getName() ) ) {
+    for( int i = 0; i < elements.length && !result; i++ ) {
+      if( string.equals( elements[ i ] ) ) {
         result = true;
       }
     }
