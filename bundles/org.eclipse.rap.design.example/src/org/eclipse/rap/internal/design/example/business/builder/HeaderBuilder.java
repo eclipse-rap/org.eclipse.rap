@@ -118,7 +118,7 @@ public class HeaderBuilder extends ElementBuilder {
     fdLogoArea.right = new FormAttachment( rightLabel );
     fdLogoArea.top = new FormAttachment( 0, 0 );
     fdLogoArea.height = rightBg.getBounds().height;
-    fdLogoArea.width = logo.getBounds().width * 2 + 70;
+    fdLogoArea.width = logo.getBounds().width + 220;
     
     Label logoLabel = new Label( logoArea, SWT.NONE );
     logoLabel.setImage( logo ); 
