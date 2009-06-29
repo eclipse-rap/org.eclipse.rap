@@ -348,10 +348,7 @@ import org.eclipse.swt.widgets.ToolItem;
 			return;
 		}
 
-		// RAP [bm]:
-//		fProgressBar.getDisplay().timerExec(DELAY_PROGRESS, timer);
-		fProgressBar.getDisplay().syncExec(timer);
-		// RAPEND: [bm]
+		fProgressBar.getDisplay().timerExec(DELAY_PROGRESS, timer);
 
 		if (!animated) {
 			fProgressBar.beginTask(totalWork);

@@ -1876,10 +1876,7 @@ public class WorkbenchWindow extends ApplicationWindow implements
 
                 public void runWithException() {
                     if (!shellBounds.intersects(displayBounds[0])) {
-                        // RAP [bm]: Display#getClientArea
-//                      Rectangle clientArea = getShell().getDisplay().getClientArea();
-                        Rectangle clientArea = getShell().getDisplay().getBounds();
-                        // RAPEND: [bm] 
+                        Rectangle clientArea = getShell().getDisplay().getClientArea();
 
                         shellBounds.x = clientArea.x;
                         shellBounds.y = clientArea.y;

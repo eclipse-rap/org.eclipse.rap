@@ -101,9 +101,7 @@ public class DialogUtil {
     public static int availableRows(Composite parent) {
 
         int fontHeight = (parent.getFont().getFontData())[0].getHeight();
-// RAP [rh] Display#getClientArea() missing        
-//        int displayHeight = parent.getDisplay().getClientArea().height;
-        int displayHeight = parent.getDisplay().getBounds().height;
+        int displayHeight = parent.getDisplay().getClientArea().height;
 
         return displayHeight / fontHeight;
     }

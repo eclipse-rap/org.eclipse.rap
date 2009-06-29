@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 //import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
@@ -350,11 +351,7 @@ public class FilteredList extends Composite {
 			// accept selections, set the selection immediately.
 			if (fUpdateJob == null) {
 				fList.setSelection(selection);
-// RAP [rh] Widget#notifyListeners missing				
-//				fList.notifyListeners(SWT.Selection, new Event());
-				SelectionEvent event
-				  = new SelectionEvent( fList, null, SelectionEvent.WIDGET_SELECTED );
-				event.processEvent();
+				fList.notifyListeners(SWT.Selection, new Event());
 			} else {
 				// There is an update job doing the population of the list, so
 				// it should update the selection.
@@ -589,11 +586,7 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
             }
             // table empty -> no selection
             if (fCount == 0) {
-// RAP [rh] Widget#notifyListeners missing        
-//                fTable.notifyListeners(SWT.Selection, new Event());
-                SelectionEvent event
-                  = new SelectionEvent( fTable ,null, SelectionEvent.WIDGET_SELECTED );
-                event.processEvent();
+                fTable.notifyListeners(SWT.Selection, new Event());
                 return Status.OK_STATUS;
             }
             // How many we are going to do this time.
@@ -628,11 +621,7 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
                     		// job started.  Force a selection notification, since the
                     		// items represented by the selection have changed.
 							// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=119456
-// RAP [rh] Widget#notifyListeners missing                    	  
-//                    		fTable.notifyListeners(SWT.Selection, new Event());
-                    	  SelectionEvent event
-                    	    = new SelectionEvent( fTable, null, SelectionEvent.WIDGET_SELECTED );
-                    	  event.processEvent();
+                    		fTable.notifyListeners(SWT.Selection, new Event());
                     	}
                     }
                 } else {
@@ -679,11 +668,7 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
 				return;
 			}
 			fTable.setSelection(indices);
-// RAP [rh] Widget#notifyListeners missing			
-//			fTable.notifyListeners(SWT.Selection, new Event());
-			SelectionEvent event
-			  = new SelectionEvent( fTable, null, SelectionEvent.WIDGET_SELECTED );
-			event.processEvent();
+			fTable.notifyListeners(SWT.Selection, new Event());
 		}
 	}
 

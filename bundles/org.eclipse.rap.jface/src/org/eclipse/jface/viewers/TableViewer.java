@@ -328,10 +328,9 @@ public class TableViewer extends AbstractTableViewer {
 		if (checkBusy())
 			return;
 
-		// RAP [bm]: 
-//		if( isCellEditorActive() ) {
-//			cancelEditing();
-//		}
+		if( isCellEditorActive() ) {
+			cancelEditing();
+		}
 
 		preservingSelection(new Runnable() {
 			public void run() {

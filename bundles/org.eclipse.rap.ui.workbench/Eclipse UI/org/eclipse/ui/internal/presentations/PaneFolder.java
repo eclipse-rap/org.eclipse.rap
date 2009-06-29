@@ -825,11 +825,9 @@ public final class PaneFolder {
         return tabFolder.getItems();
     }
 
-    // RAP [bm]: TabFolder#getItem(Point)
-//    public CTabItem getItem(Point toGet) {
-//        return tabFolder.getItem(toGet);
-//    }
-    // RAPEND: [bm] 
+    public CTabItem getItem(Point toGet) {
+        return tabFolder.getItem(toGet);
+    }
 
     public CTabItem getSelection() {
         return tabFolder.getSelection();

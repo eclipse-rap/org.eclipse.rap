@@ -82,10 +82,7 @@ public class ImageAndMessageArea extends Composite {
 		setFont(JFaceResources.getDialogFont());
 
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		// RAP [bm]: Text#getLineHeight
-//		int lineHeight = ((Text) messageField.getControl()).getLineHeight();
-		int lineHeight = Graphics.getCharHeight(messageField.getControl().getFont());
-		// RAPEND: [bm] 
+		int lineHeight = ((Text) messageField.getControl()).getLineHeight();
 
 		if ((style & SWT.WRAP) > 0)
 			gd.heightHint = 2 * lineHeight;

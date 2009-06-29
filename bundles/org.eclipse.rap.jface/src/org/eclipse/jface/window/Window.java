@@ -1061,15 +1061,15 @@ public abstract class Window implements IShellProvider {
         defaultModalParent = provider;
     }
     
-	// RAP [bm]: SWT.RIGHT_TO_LEFT, LEFT_TO_RIGHT
+	// RAP [bm]: SWT.RIGHT_TO_LEFT
 	/**
 	 * Gets the default orientation for windows. If it is not
 	 * set the default value will be unspecified (SWT#NONE).
 	 * 
 	 * 
-	 * @return SWT#NONE <!--, SWT.RIGHT_TO_LEFT or SWT.LEFT_TO_RIGHT -->
+	 * @return SWT#NONE <!--, SWT.RIGHT_TO_LEFT --> or SWT.LEFT_TO_RIGHT
 	 * <!-- @see SWT#RIGHT_TO_LEFT -->
-	 * <!-- @see SWT#LEFT_TO_RIGHT -->
+	 * @see SWT#LEFT_TO_RIGHT
 	 * @see SWT#NONE
 	 * @since 1.0
 	 */
@@ -1078,14 +1078,13 @@ public abstract class Window implements IShellProvider {
 	}
 
 	
-	// RAP [bm]: SWT.RIGHT_TO_LEFT, LEFT_TO_RIGHT
+	// RAP [bm]: SWT.RIGHT_TO_LEFT
 	/**
 	 * Sets the default orientation of windows.
-	 * <!-- @param defaultOrientation one of 
-	 * 	SWT#RIGHT_TO_LEFT, SWT#LEFT_TO_RIGHT ,SWT#NONE -->
-	 * @param defaultOrientation only SWT#NONE
+	 * @param defaultOrientation one of 
+	 * 	<!-- SWT#RIGHT_TO_LEFT, --> SWT#LEFT_TO_RIGHT, SWT#NONE
 	 * <!-- @see SWT#RIGHT_TO_LEFT -->
-	 * <!-- @see SWT#LEFT_TO_RIGHT -->
+	 * @see SWT#LEFT_TO_RIGHT
 	 * @see SWT#NONE
 	 * @since 1.0
 	 */

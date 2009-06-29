@@ -1284,9 +1284,7 @@ public class ActionContributionItem extends ContributionItem {
 		
 		// we notify the real menu so it can populate itself if it was
 		// listening for SWT.Show
-		// RAP [bm]: not sure if this could be interesting for wb?
-//		realMenu.notifyListeners(SWT.Show, null);
-		// RAPEND: [bm] 
+		realMenu.notifyListeners(SWT.Show, null);
 
 		
 		final Listener passThrough = new Listener() {
@@ -1303,9 +1301,7 @@ public class ActionContributionItem extends ContributionItem {
 											.getSelection());
 						}
 						event.widget = realItem;
-						// RAP [bm]: not sure if this could be interesting for wb?
-//						realItem.notifyListeners(event.type, event);
-						// RAPEND: [bm] 
+						realItem.notifyListeners(event.type, event);
 					}
 				}
 			}
@@ -1367,9 +1363,7 @@ public class ActionContributionItem extends ContributionItem {
 					parentItem.setMenu(holdMenu);
 				}
 				if (holdMenu != null && !holdMenu.isDisposed()) {
-					// RAP [bm]: interesting for wb?
-//					holdMenu.notifyListeners(SWT.Hide, null);
-					// RAPEND: [bm] 
+					holdMenu.notifyListeners(SWT.Hide, null);
 
 				}
 				holdMenu = null;
