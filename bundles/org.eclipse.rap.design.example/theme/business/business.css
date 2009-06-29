@@ -22,10 +22,14 @@
   border: 1px solid #C1C1C1;
 }
 
-Button[PUSH], Button[BORDER] {
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
   background-color: #f5f6f6;
   border: 1px solid #A4A4A4;
   padding: 2px 5px;
+}
+
+Button[TOGGLE]:selected {
+  background-color: #d3d3d3;
 }
 
 Button:hover {
@@ -291,6 +295,10 @@ ExpandItem-Button {
   background-image: url( /theme/business/icons/expanditem-expand.gif );
 }
 
+ExpandItem-Button:hover {
+  background-image: url( /theme/business/icons/expanditem-expand-hover.png );
+}
+
 ExpandItem-Button:expanded {
   background-image: url( /theme/business/icons/expanditem-collapse.gif );
 }
@@ -298,6 +306,23 @@ ExpandItem-Button:expanded {
 /* Combo */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
+
 Combo {
-  border: 1px solid #C1C1C1;  
+  border: 1px solid #c1c1c1;
 }
+
+/*
+
+TODO: activate flat look on Combo and Spinner together
+      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=281770
+
+Combo-Button {
+  background-color: #c1c1c1;
+  border: none;
+}
+
+Combo-Button:hover {
+  background-color: #d2d2d2;
+}
+
+*/
