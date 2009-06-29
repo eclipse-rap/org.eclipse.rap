@@ -461,9 +461,9 @@ public final class ResourceFactory {
   {
     Image result = null;
     try {
-      Class fontClass = Image.class;
+      Class imageClass = Image.class;
       Class[] paramList = new Class[] { int.class, int.class };
-      Constructor constr = fontClass.getDeclaredConstructor( paramList );
+      Constructor constr = imageClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
       result = ( Image )constr.newInstance( new Object[] {
         new Integer( width ), new Integer( height )
