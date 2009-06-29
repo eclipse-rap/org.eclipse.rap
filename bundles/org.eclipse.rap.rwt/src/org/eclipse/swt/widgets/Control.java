@@ -799,14 +799,7 @@ public abstract class Control extends Widget {
     if( bounds == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    Point oldLocation = getLocation();
-    Point oldSize = getSize();
-    this.bounds
-      = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
-    this.bounds.width = Math.max( 0, this.bounds.width );
-    this.bounds.height = Math.max( 0, this.bounds.height );
-    notifyMove( oldLocation );
-    notifyResize( oldSize );
+    setBounds( bounds, true );
   }
 
   /**
@@ -1785,8 +1778,26 @@ public abstract class Control extends Widget {
     return result;
   }
 
-  //////////////////////////////////////////////////////
-  // Helping methods that throw move- and resize-events
+  ////////////////////////////////
+  // Helping methods for setBounds
+
+  void setBounds( final Rectangle bounds, boolean updateMode ) {
+    Point oldLocation = getLocation();
+    Point oldSize = getSize();
+    this.bounds
+      = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+    this.bounds.width = Math.max( 0, this.bounds.width );
+    this.bounds.height = Math.max( 0, this.bounds.height );
+    if( updateMode ) {
+      updateMode();
+    }
+    notifyMove( oldLocation );
+    notifyResize( oldSize );
+  }
+
+  void updateMode() {
+    // subclasses may override
+  }
 
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {

@@ -18,8 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
@@ -364,6 +363,82 @@ public class Shell_Test extends TestCase {
     shell.setMaximized( true );
     assertTrue( shell.getMaximized() );
     assertEquals( shell.getBounds(), display.getBounds() );
+  }
+
+  public void testSetBoundsResetMaximized() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMaximized( true );
+    Rectangle bounds = new Rectangle( 10, 10, 10, 10 );
+    shell.setBounds( bounds );
+    assertFalse( shell.getMaximized() );
+    assertEquals( bounds, shell.getBounds() );
+  }
+
+  public void testSetLocationResetMaximized() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMaximized( true );
+    shell.setLocation( 10, 10 );
+    assertFalse( shell.getMaximized() );
+  }
+
+  public void testSetSizeResetMaximized() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMaximized( true );
+    shell.setSize( 6, 6 );
+    assertFalse( shell.getMaximized() );
+  }
+
+  public void testSetBoundsResetMaximizedEventOrder() {
+    final boolean[] maximized = {
+      true
+    };
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent event ) {
+        maximized[ 0 ] = shell.getMaximized();
+      }
+    } );
+    shell.setMaximized( true );
+    shell.setSize( 6, 6 );
+    assertFalse( maximized[ 0 ] );
+  }
+
+  public void testShellAdapterSetBounds() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMaximized( true );
+    shell.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent event ) {
+        log.add( event );
+      }
+    } );
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    shellAdapter.setBounds( new Rectangle( 5, 6, 7, 8 ) );
+    assertEquals( new Rectangle( 5, 6, 7, 8 ), shell.getBounds() );
+    assertTrue( shell.getMaximized() );
+    assertEquals( 1, log.size() );
+  }
+
+  public void testSetBoundsResetMinimized() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setBounds( 1, 2, 3, 4 );
+    shell.setMinimized( true );
+    Rectangle bounds = new Rectangle( 10, 10, 10, 10 );
+    shell.setBounds( bounds );
+    assertFalse( shell.getMinimized() );
+    assertEquals( bounds, shell.getBounds() );
   }
 
   protected void setUp() throws Exception {

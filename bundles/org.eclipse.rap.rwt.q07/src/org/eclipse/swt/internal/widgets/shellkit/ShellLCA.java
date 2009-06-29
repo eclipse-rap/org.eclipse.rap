@@ -64,7 +64,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Shell shell = ( Shell )widget;
     // [if] Preserve the menu bounds before setting the new shell bounds.
     preserveMenuBounds( shell );
-    ControlLCAUtil.readBounds( shell );
+    readBounds( shell );
     readMode( shell );
     if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
       shell.close();
@@ -290,6 +290,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static void readBounds( final Shell shell ) {
+    Rectangle bounds = WidgetLCAUtil.readBounds( shell, shell.getBounds() );
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    shellAdapter.setBounds( bounds );
+  }
 
   private static void readMode( final Shell shell ) {
     final String value = WidgetLCAUtil.readPropertyValue( shell, "mode" );

@@ -128,13 +128,13 @@ public class Shell extends Decorations {
 
   private Control lastActive;
   private IShellAdapter shellAdapter;
-  private String text = "";
+  private String text;
   private Image image;
-  private int alpha = 0xFF;
+  private int alpha;
   private Button defaultButton;
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
-  private int mode = MODE_NONE;
+  private int mode;
 
   private Shell( final Display display,
                  final Shell parent,
@@ -147,6 +147,9 @@ public class Shell extends Decorations {
     } else {
       this.display = Display.getCurrent();
     }
+    text = "";
+    alpha = 0xFF;
+    mode = MODE_NONE;
     this.style = checkStyle( style );
     state |= HIDDEN;
     this.display.addShell( this );
@@ -527,6 +530,11 @@ public class Shell extends Decorations {
   Composite findDeferredControl() {
     return layoutCount > 0 ? this : null;
   }
+  
+  void updateMode() {
+    mode &= ~MODE_MAXIMIZED;
+    mode &= ~MODE_MINIMIZED;
+  }
 
   /////////////////////
   // Adaptable override
@@ -544,6 +552,9 @@ public class Shell extends Decorations {
           }
           public Rectangle getMenuBounds() {
             return Shell.this.getMenuBounds();
+          }
+          public void setBounds( final Rectangle bounds ) {
+            Shell.this.setBounds( bounds, false );
           }
         };
       }
@@ -1158,7 +1169,7 @@ public class Shell extends Decorations {
    * @see #setMaximized
    */
   public boolean getMaximized() {
-    return this.mode == MODE_MAXIMIZED;
+    return mode == MODE_MAXIMIZED;
   }
 
   ///////////////////
