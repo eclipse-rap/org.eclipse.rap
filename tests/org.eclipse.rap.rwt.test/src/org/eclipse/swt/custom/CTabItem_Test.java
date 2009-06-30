@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -167,6 +169,36 @@ public class CTabItem_Test extends TestCase {
     assertFalse( adapter.showItemClose( item ) );
     item = new CTabItem( folder, SWT.CLOSE );
     assertTrue( adapter.showItemClose( item ) );
+  }
+  
+  public void testShowImage() {
+    CTabItem item1, item2;
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    // Test with images, that should appear on unselected tabs
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 100, 100 );
+    folder.setUnselectedImageVisible( true );
+    ICTabFolderAdapter adapter
+      = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+    item1 = new CTabItem( folder, SWT.NONE );
+    item1.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item2 = new CTabItem( folder, SWT.NONE );
+    item2.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    folder.setSelection( item1 );
+    assertTrue( adapter.showItemImage( item1 ) );
+    assertTrue( adapter.showItemImage( item2 ) );
+    // Test with images, that should not appear on unselected tabs
+    folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 100, 100 );
+    folder.setUnselectedImageVisible( false );
+    item1 = new CTabItem( folder, SWT.NONE );
+    item1.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item2 = new CTabItem( folder, SWT.NONE );
+    item2.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    folder.setSelection( item1 );
+    assertTrue( adapter.showItemImage( item1 ) );
+    assertFalse( adapter.showItemImage( item2 ) );
   }
   
   protected void setUp() throws Exception {

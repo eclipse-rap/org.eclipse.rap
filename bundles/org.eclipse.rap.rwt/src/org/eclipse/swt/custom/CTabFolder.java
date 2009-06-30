@@ -13,6 +13,7 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
@@ -53,7 +54,6 @@ import org.eclipse.swt.widgets.*;
  * <p>Implementation Status: </p>
  * <p>The <code>SINGLE</code> style is implemented but not fully functional.</p>
  * <p>Attributes, found in SWT, that are not supported</p>
- * <ul><li>unselectedImageVisible (treated as if <code>true</code>)</li>
  * <li>simple (treated as <code>true</code>)</li>
  * <li><code>BORDER</code> and <code>FLAT</code> styles are not fully
  * implemented</li>
@@ -103,7 +103,6 @@ public class CTabFolder extends Composite {
   private int[] priority = new int[ 0 ];
   final boolean showClose;
   boolean showUnselectedClose = true;
-  // TODO [rh] no getter/setter implemented yet
   boolean showUnselectedImage = true;
   boolean showMax;
   boolean showMin;
@@ -906,6 +905,39 @@ public class CTabFolder extends Composite {
       borderTop = onBottom ? borderLeft : 0;
       borderBottom = onBottom ? 0 : borderLeft;
       updateItemsWithResizeEvent();
+    }
+  }
+  
+  /**
+   * Returns <code>true</code> if an image appears 
+   * in unselected tabs.
+   * 
+   * @return <code>true</code> if an image appears in unselected tabs
+   * 
+   * @since 1.3
+   */
+  public boolean getUnselectedImageVisible() {
+    checkWidget();
+    return showUnselectedImage;
+  }
+  
+  /**
+   * Specify whether the image appears on unselected tabs.
+   * 
+   * @param visible <code>true</code> makes the image appear
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public void setUnselectedImageVisible( final boolean visible ) {
+    checkWidget();
+    if( showUnselectedImage != visible ) {
+      showUnselectedImage = visible;
+      updateItems();
     }
   }
 

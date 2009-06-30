@@ -14,10 +14,12 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.Iterator;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -25,11 +27,15 @@ import org.eclipse.swt.widgets.*;
 
 public class CTabFolderTab extends ExampleTab {
 
-//  private static final int[] BACKGROUND_COLORS
-//    = { SWT.COLOR_RED, SWT.COLOR_GREEN, SWT.COLOR_BLUE, SWT.COLOR_DARK_GRAY };
+  private static final String CTAB_IMAGE_PATH
+    = "resources/newfolder_wiz.gif";
+  
+  private Image ctabImage;
 
   private CTabFolder folder;
   private boolean unselectedCloseVisible;
+  private boolean setImage;
+  private boolean unselectedImageVisible;
   private boolean showTopRightControl;
   private boolean minVisible;
   private boolean maxVisible;
@@ -84,7 +90,25 @@ public class CTabFolderTab extends ExampleTab {
         updateProperties();
       }
     } );
-    String text = "UnselectedCloseVisible";
+    String text = "Set Image";
+    Button cbSetImage = createPropertyButton( text, SWT.CHECK );
+    cbSetImage.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Button button = ( Button )event.widget;
+        setImage = button.getSelection();
+        updateProperties();
+      }
+    } );
+    text = "UnselectedImageVisible";
+    Button cbUnselectedImageVisible = createPropertyButton( text, SWT.CHECK );
+    cbUnselectedImageVisible.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Button button = ( Button )event.widget;
+        unselectedImageVisible = button.getSelection();
+        updateProperties();
+      }
+    } );
+    text = "UnselectedCloseVisible";
     Button cbUnselectedCloseVisible = createPropertyButton( text, SWT.CHECK );
     cbUnselectedCloseVisible.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -155,6 +179,13 @@ public class CTabFolderTab extends ExampleTab {
     CTabItem item = new CTabItem( folder, style );
     int count = folder.getItemCount();
     item.setText( "Tab " + count );
+    if( setImage ) {
+      ClassLoader classLoader = getClass().getClassLoader();
+      ctabImage = Graphics.getImage( CTAB_IMAGE_PATH, classLoader );
+      item.setImage( ctabImage );
+    } else {
+      item.setImage( null );
+    }
     if( count != 3 ) {
       Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
       if( count % 2 != 0 ) {
@@ -219,9 +250,20 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private void updateProperties() {
+    CTabItem[] items = folder.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      if( setImage ) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        ctabImage = Graphics.getImage( CTAB_IMAGE_PATH, classLoader );
+        items[ i ].setImage( ctabImage );
+      } else {
+        items[ i ].setImage( null );
+      }
+    }
     folder.setMinimizeVisible( minVisible );
     folder.setMaximizeVisible( maxVisible );
     folder.setUnselectedCloseVisible( unselectedCloseVisible );
+    folder.setUnselectedImageVisible( unselectedImageVisible );
   }
 
   private void updateTopRightControl() {
