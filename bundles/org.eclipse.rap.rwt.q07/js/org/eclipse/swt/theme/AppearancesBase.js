@@ -1591,6 +1591,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         cursor: "default",
+        padding : 2,
         font : tv.getCssFont( "Link", "font" ),
         border : tv.getCssBorder( "Link", "border" ),
         textColor : tv.getCssColor( "*", "color" )
@@ -1602,19 +1603,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor : states.disabled ? "widget.graytext" : "undefined"
-      }
-    }
-  },
-
-  "link-href" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        cursor : states.disabled ? "default" : "pointer",
         textColor: states.disabled
                    ? "widget.graytext"
-                   : tv.getCssColor( "Link-Hyperlink", "color" )
+                   : "inherit"
       }
     }
   },

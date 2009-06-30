@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 /* Alternative RAP theme */
@@ -414,6 +415,14 @@ Shell.special-red {
 Shell.special-blue {
   border: 3px solid blue;
   padding: 10px;
+}
+
+Link-Hyperlink.special-red {
+  color: #ffaaaa;
+}
+
+Link-Hyperlink.special-blue {
+  color: #aaaaff;
 }
 
 Button[PUSH].special-red, Button[TOGGLE].special-red {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -40,6 +41,7 @@ public class VariantsTab extends ExampleTab {
 
   private Button myButton;
   private Label myLabel;
+  private Link myLink;
   private Text myText;
   private List myList;
   private Tree myTree;
@@ -81,6 +83,13 @@ public class VariantsTab extends ExampleTab {
     myLabel.setText( "Customized Label" );
     myLabel.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
     registerControl( myLabel );
+    
+    // myLink
+    myLink = new Link( parent, style );
+    myLink.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    myLink.setText( "Customized <a>Link</a>" );
+    myLink.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    registerControl( myLink );
 
     // myText
     myText = new Text( parent, style );
@@ -149,6 +158,7 @@ public class VariantsTab extends ExampleTab {
   private void setCustomVariant( final String variant ) {
     myButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myLabel.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+    myLink.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myText.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myList.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myTree.setData( WidgetUtil.CUSTOM_VARIANT, variant );

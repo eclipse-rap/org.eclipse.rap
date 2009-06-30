@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -62,28 +63,40 @@ public class Link_Test extends TestCase {
     assertEquals( "www.eclipse.org", ids[ 0 ] );
     assertEquals( "SWT", ids[ 1 ] );
   }
-
+  
   public void testComputeSize() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
-    Point expected = new Point( 0, 0 );
+    Point expected = new Point( 4, 4 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     String text
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
       + "the <a>SWT</a> homepage.";
     link.setText( text );
-    expected = new Point( 269, 15 );
+    expected = new Point( 273, 18 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     link = new Link( shell, SWT.BORDER );
-    expected = new Point( 2, 2 );
+    expected = new Point( 8, 8 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 102, 102 );
+    expected = new Point( 108, 108 );
     assertEquals( expected, link.computeSize( 100, 100 ) );
+    
+    text = "<a>test & test2</a>";
+    link = new Link( shell, SWT.NONE );
+    link.setText( text );
+    expected = new Point( 62, 18 );
+    assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    
+    text = "<a>test && test2</a>";
+    link = new Link( shell, SWT.NONE );
+    link.setText( text );
+    expected = new Point( 73, 18 );
+    assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   protected void setUp() throws Exception {

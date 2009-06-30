@@ -22,40 +22,32 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * Life-cycle adapter for the Link widget
  */
 public class LinkLCA extends AbstractWidgetLCA {
+  
+  //Constants for JS functions names
+  private static final String JS_FUNC_ADDTEXT = "addText";
+  private static final String JS_FUNC_ADDLINK = "addLink";
+  private static final String JS_FUNC_APPLYTEXT = "applyText";
+  private static final String JS_FUNC_CLEAR = "clear";
 
-  private static final String QX_TYPE = "qx.ui.layout.HorizontalBoxLayout";
-
-//  private static final String TYPE_POOL_ID = LinkLCA.class.getName();
-
-  private static final String JS_LINK_UTIL = "org.eclipse.swt.LinkUtil";
-  private static final String JS_FUNC_INIT = JS_LINK_UTIL + ".init";
-  private static final String JS_FUNC_ADD_LINK = JS_LINK_UTIL + ".addLink";
-  private static final String JS_FUNC_ADD_TEXT = JS_LINK_UTIL + ".addText";
-  private static final String JS_FUNC_ADD_STATE = JS_LINK_UTIL + ".addState";
-  private static final String JS_FUNC_REMOVE_STATE
-    = JS_LINK_UTIL + ".removeState";
-  private static final String JS_FUNC_CLEAR = JS_LINK_UTIL + ".clear";
-  private static final String JS_FUNC_DESTROY = JS_LINK_UTIL + ".destroy";
-  private static final String JS_FUNC_SET_SELECTION_LISTENER
-    = JS_LINK_UTIL + ".setSelectionListener";
-
+  //Property names for preserveValues
   private static final String PROP_TEXT = "text";
-  private static final String PROP_VARIANT = "variant";
-  static final String PROP_SEL_LISTENER = "selectionListener";
 
   public void preserveValues( final Widget widget ) {
     Link link = ( Link )widget;
     ControlLCAUtil.preserveValues( link );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_TEXT, link.getText() );
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
-    adapter.preserve( PROP_SEL_LISTENER, newValue );
+    boolean hasListeners = SelectionEvent.hasListener( link );
+    adapter.preserve( Props.SELECTION_LISTENERS,
+                      Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( link );
   }
 
@@ -69,10 +61,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Link link = ( Link )widget;
     JSWriter writer = JSWriter.getWriterFor( link );
-    writer.newWidget( QX_TYPE );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
-    Object[] args = new Object[] { widget };
-    writer.callStatic( JS_FUNC_INIT, args );
+    writer.newWidget( "org.eclipse.swt.widgets.Link" );
     ControlLCAUtil.writeStyleFlags( link );
   }
 
@@ -81,13 +70,11 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( link );
     writeSelectionListener( link );
     writeText( link );
-    writeCustomVariant( link );
+    WidgetLCAUtil.writeCustomVariant( link );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    Object[] args = new Object[]{ widget };
-    writer.callStatic( JS_FUNC_DESTROY, args );
     writer.dispose();
   }
 
@@ -95,9 +82,6 @@ public class LinkLCA extends AbstractWidgetLCA {
     throws IOException
   {
     ControlLCAUtil.resetStyleFlags();
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    Object[] args = new Object[]{ JSWriter.WIDGET_REF };
-    writer.callStatic( JS_FUNC_CLEAR, args );
   }
 
   public String getTypePoolId( final Widget widget ) {
@@ -109,13 +93,12 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static void writeSelectionListener( final Link link )
     throws IOException
   {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
-    Boolean defValue = Boolean.FALSE;
-    String prop = PROP_SEL_LISTENER;
-    if( WidgetLCAUtil.hasChanged( link, prop, newValue, defValue ) ) {
+    boolean hasListener = SelectionEvent.hasListener( link );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = Props.SELECTION_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( link, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( link );
-      Object[] args = new Object[]{ link, newValue };
-      writer.callStatic( JS_FUNC_SET_SELECTION_LISTENER, args );
+      writer.set( "hasSelectionListener", newValue );
     }
   }
 
@@ -123,8 +106,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     String newValue = link.getText();
     if( WidgetLCAUtil.hasChanged( link, PROP_TEXT, newValue, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( link );
-      Object[] args = new Object[]{ link };
-      writer.callStatic( JS_FUNC_CLEAR, args );
+      writer.call( JS_FUNC_CLEAR, null );
       ILinkAdapter adapter
         = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
       String displayText = adapter.getDisplayText();
@@ -148,6 +130,7 @@ public class LinkLCA extends AbstractWidgetLCA {
       if( pos < length ) {
         writeNormalText( link, displayText.substring( pos, length ) );
       }
+      writeApplyText( link );
     }
   }
 
@@ -156,12 +139,11 @@ public class LinkLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( link );
     Object[] args = new Object[] {
-      link,
       // TODO [rst] mnemonics are already parsed by Link#parse()
       //            Revise when we're going to support underline once
       WidgetLCAUtil.escapeText( text, false )
     };
-    writer.callStatic( JS_FUNC_ADD_TEXT, args );
+    writer.call( JS_FUNC_ADDTEXT, args );
   }
 
   private static void writeLinkText( final Link link,
@@ -171,13 +153,17 @@ public class LinkLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( link );
     Object[] args = new Object[] {
-      link,
       // TODO [rst] mnemonics are already parsed by Link#parse()
       //            Revise when we're going to support underline once
       WidgetLCAUtil.escapeText( text, false ),
       new Integer( index )
     };
-    writer.callStatic( JS_FUNC_ADD_LINK, args );
+    writer.call( JS_FUNC_ADDLINK, args );
+  }
+  
+  private static void writeApplyText( final Link link ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( link );
+    writer.call( JS_FUNC_APPLYTEXT, null );
   }
 
   private static void processSelectionEvent( final Link link ) {
@@ -195,25 +181,6 @@ public class LinkLCA extends AbstractWidgetLCA {
           = new SelectionEvent( link, null, SelectionEvent.WIDGET_SELECTED );
         event.text = ids[ index ];
         event.processEvent();
-      }
-    }
-  }
-
-  private static void writeCustomVariant( final Link link )
-    throws IOException
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
-    String oldValue = ( String )adapter.getPreserved( PROP_VARIANT );
-    String newValue = WidgetUtil.getVariant( link );
-    if( WidgetLCAUtil.hasChanged( link, PROP_VARIANT, newValue, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( link );
-      Object[] args = new Object[] { link, "variant_" + oldValue };
-      if( oldValue != null ) {
-        writer.callStatic( JS_FUNC_REMOVE_STATE, args );
-      }
-      if( newValue != null ) {
-        args = new Object[] { link, "variant_" + newValue };
-        writer.callStatic( JS_FUNC_ADD_STATE, args );
       }
     }
   }

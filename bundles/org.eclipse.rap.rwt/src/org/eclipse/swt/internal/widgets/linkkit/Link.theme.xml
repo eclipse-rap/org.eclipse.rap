@@ -33,6 +33,9 @@
       <property name="color"
           type="color"
           description="Text color for hyperlinks in Link widget." />
+      
+      <state name="disabled"
+          description="Applies to hyperlinks of a disabled Link widget." />
 
     </element>
 

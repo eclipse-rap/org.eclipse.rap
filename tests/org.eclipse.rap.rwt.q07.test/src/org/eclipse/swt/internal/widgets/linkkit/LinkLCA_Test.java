@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.linkkit;
@@ -33,12 +34,12 @@ public class LinkLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
-    Boolean hasListeners;
     RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( LinkLCA.PROP_SEL_LISTENER );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
+    Boolean hasListeners
+      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     link.setText( "some text" );
@@ -52,8 +53,9 @@ public class LinkLCA_Test extends TestCase {
     } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( LinkLCA.PROP_SEL_LISTENER );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
+    hasListeners
+      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
     //control: enabled
@@ -235,10 +237,10 @@ public class LinkLCA_Test extends TestCase {
     LinkLCA lca = new LinkLCA();
     lca.renderChanges( link );
     String markup = Fixture.getAllMarkup();
-    assertContains( "LinkUtil.clear( w )", markup );
-    assertContains( "LinkUtil.addText( w, \"Big \" )", markup );
-    assertContains( "LinkUtil.addLink( w, \"&lt;b&gt;Bang&lt;/b&gt;\", 0 )",
-                    markup );
+    assertContains( "clear()", markup );
+    assertContains( "addText( \"Big \" )", markup );
+    assertContains( "addLink( \"&lt;b&gt;Bang&lt;/b&gt;\", 0 )", markup );
+    assertContains( "applyText()", markup );
   }
 
   public void testEscape() throws Exception {
