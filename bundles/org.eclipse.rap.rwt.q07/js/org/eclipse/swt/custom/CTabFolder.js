@@ -260,7 +260,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._maxButton.setAppearance( "ctabfolder-button" );
         this._maxButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
-        this._maxButton.addEventListener( "execute", this._onMinMaxExecute, this );
+        // [if] "mousedown" is used instead of "execute" because of the bug 247672
+        this._maxButton.addEventListener( "mousedown", this._onMinMaxExecute, this );
         this.add( this._maxButton );
       }
       this._maxButton.setTop( top );
@@ -271,7 +272,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     hideMaxButton : function() {
       if( this._maxButton != null ) {
-        this._maxButton.removeEventListener( "execute", 
+        this._maxButton.removeEventListener( "mousedown", 
                                              this._onMinMaxExecute, 
                                              this );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -288,7 +289,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._minButton.setAppearance( "ctabfolder-button" );
         this._minButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
-        this._minButton.addEventListener( "execute", this._onMinMaxExecute, this );
+        // [if] "mousedown" is used instead of "execute" because of the bug 247672
+        this._minButton.addEventListener( "mousedown", this._onMinMaxExecute, this );
         this.add( this._minButton );
       }
       this._minButton.setTop( top );
@@ -299,7 +301,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     hideMinButton : function( left ) {
       if( this._minButton != null ) {
-        this._minButton.removeEventListener( "execute", 
+        this._minButton.removeEventListener( "mousedown", 
                                              this._onMinMaxExecute, 
                                              this );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
