@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class represents the <code>org.eclipse.ui.presentations.Layouts</code>
+ * This class represents the <code>org.eclipse.rap.ui.layouts</code>
  * extension point. This means, that it can be hold any number of <code>
  * {@link LayoutSet}</code> objects. 
  * <p>
@@ -30,7 +30,7 @@ public class Layout {
   
   /**
    * Instantiate a object of this class and sets the unique id, which is 
-   * contributed to the <code>org.eclipse.ui.presentations.Layouts
+   * contributed to the <code>org.eclipse.rap.ui.layouts
    * </code> extension point.
    * 
    * @param id the unique <code>Layout</code> id.
