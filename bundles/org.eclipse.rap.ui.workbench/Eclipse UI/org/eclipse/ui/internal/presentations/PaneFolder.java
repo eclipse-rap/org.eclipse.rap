@@ -474,9 +474,7 @@ public final class PaneFolder {
         inLayout = true;
 		try {
 	        
-			// RAP [bm]: 
-//        	viewForm.setLayoutDeferred(true);
-			// RAPEND: [bm] 
+        	viewForm.setLayoutDeferred(true);
 
 	        tabFolder.setMinimizeVisible(showButtons && minimizeVisible);
 	        tabFolder.setMaximizeVisible(showButtons && maximizeVisible);
@@ -564,9 +562,7 @@ public final class PaneFolder {
 	        Rectangle newBounds = tabFolder.getClientArea();
 	        viewForm.setBounds(newBounds);
         } finally {
-        	// RAP [bm]: 
-//        	viewForm.setLayoutDeferred(false);
-        	// RAPEND: [bm] 
+        	viewForm.setLayoutDeferred(false);
 
         	inLayout = false;
         }

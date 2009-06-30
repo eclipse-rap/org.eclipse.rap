@@ -3067,12 +3067,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
         getMenuBarManager().update(false);
 
         // RAP [bm]: Composite#setLayoutDeferred
-//      try {
-//          getShell().setLayoutDeferred(true);
+      try {
+          getShell().setLayoutDeferred(true);
 //          getCoolBarManager2().update(false);
-//      } finally {
-//          getShell().setLayoutDeferred(false);
-//      }
+      } finally {
+          getShell().setLayoutDeferred(false);
+      }
         getCoolBarManager2().update(false);
         // RAPEND: [bm] 
 
