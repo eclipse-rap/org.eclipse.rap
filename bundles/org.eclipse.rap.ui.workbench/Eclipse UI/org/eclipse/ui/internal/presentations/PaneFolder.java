@@ -875,9 +875,7 @@ public final class PaneFolder {
      * @param b
      */
     public void setUnselectedImageVisible(boolean b) {
-    	// RAP [bm]: 
-//        tabFolder.setUnselectedImageVisible(b);
-    	// RAPEND: [bm] 
+        tabFolder.setUnselectedImageVisible(b);
     }
 
     /**
