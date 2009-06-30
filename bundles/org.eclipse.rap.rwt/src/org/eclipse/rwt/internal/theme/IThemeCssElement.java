@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource: ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
@@ -20,11 +21,9 @@ public interface IThemeCssElement {
 
   public abstract String getName();
 
-  public abstract String getDescription();
+  public abstract String[] getProperties();
 
-  public abstract IThemeCssProperty[] getProperties();
+  public abstract String[] getStyles();
 
-  public abstract IThemeCssAttribute[] getStyles();
-
-  public abstract IThemeCssAttribute[] getStates();
+  public abstract String[] getStates();
 }

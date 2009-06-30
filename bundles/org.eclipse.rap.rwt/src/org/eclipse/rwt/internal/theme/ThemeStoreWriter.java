@@ -116,11 +116,10 @@ public final class ThemeStoreWriter {
       IThemeCssElement element = elements[ i ];
       String elementName = element.getName();
       JsonObject elementObj = new JsonObject();
-      IThemeCssProperty[] properties = element.getProperties();
+      String[] properties = element.getProperties();
       for( int j = 0; j < properties.length; j++ ) {
-        IThemeCssProperty property = properties[ j ];
+        String propertyName = properties[ j ];
         JsonArray valuesArray = new JsonArray();
-        String propertyName = property.getName();
         ConditionalValue[] values
           = valuesMap.getValues( elementName, propertyName );
         for( int k = 0; k < values.length; k++ ) {
@@ -130,7 +129,7 @@ public final class ThemeStoreWriter {
           array.append( Theme.createCssKey( conditionalValue.value ) );
           valuesArray.append( array );
         }
-        elementObj.append( property.getName(), valuesArray );
+        elementObj.append( propertyName, valuesArray );
       }
       mainObject.append( elementName, elementObj );
     }
