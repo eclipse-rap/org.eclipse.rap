@@ -207,7 +207,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           pos++;
           left = parent.getItemLeft( i );
           width = parent.getItemWidth( i ) - 1;
-          if( width < 0 ) {
+          if( width < 0 ) {  // IE does not accept negative width (see bug 280731)
             width = 0;
           }
           this._renderBackground( node, left, width, height, background );
