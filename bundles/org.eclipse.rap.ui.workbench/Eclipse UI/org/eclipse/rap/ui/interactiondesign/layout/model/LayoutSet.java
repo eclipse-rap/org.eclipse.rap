@@ -39,7 +39,7 @@ public class LayoutSet {
 
   /**
    * Instantiate an object of this class with a given id. This id is contributed
-   * in the attributes of the <code>org.eclipse.ui.presentations.Layouts
+   * in the attributes of the <code>org.eclipse.rap.ui.layouts
    * </code> extension point.
    * 
    * @param id the id of the <code>LayoutSet</code>

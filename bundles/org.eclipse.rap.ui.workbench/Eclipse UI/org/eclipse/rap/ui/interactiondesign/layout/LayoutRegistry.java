@@ -22,25 +22,18 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.internal.util.PrefUtil;
 
 /**
  * This class represents a singleton object of a registry for 
  * <code>{@link Layout}</code> objects. This will contain all <code>Layout
  * </code>s, which are contributed to the
- * <code>org.eclipse.ui.presentations.Layouts</code> extension point.
+ * <code>org.eclipse.rap.ui.layouts</code> extension point.
  *
  * @since 1.2
  */
 public class LayoutRegistry {
-  
-  private static LayoutRegistry registry;
-  
-  private String layoutId;
-  private Map layoutMap;
-  private Layout activeLayout;
-  private List builders;
-  private Map layoutSetToPluginId;
   
   /**
    * This is the default <code>LayoutSet</code> id for the fallback mechanism.
@@ -56,91 +49,64 @@ public class LayoutRegistry {
    */
   public static final String SAVED_LAYOUT_KEY = LAYOUT_EXT_ID + ".saved";
   
+  private static Map layoutMap;
+  private static Map layoutSetToPluginId; 
+  
+  static {
+    init();
+  }
+  
+  private String activeLayoutId;  
+  private Layout activeLayout;
+  private List builders;
+  
+  private LayoutRegistry() {
+    activeLayoutId = DEFAULT_LAYOUT_ID;
+    builders = new ArrayList();
+  }   
+  
   /**
    * Returns the singleton instance of the <code>LayoutRegistry</code> object.
    * 
    * @return the singleton instance.
    */
   public static LayoutRegistry getInstance() {
-    if( registry == null ) {
-      registry = new LayoutRegistry();
-    }
-    return registry;
+    Object result = SessionSingletonBase.getInstance( LayoutRegistry.class );
+    return ( LayoutRegistry )result;
+  }  
+  
+  /**
+   * Saves the new <code>Layout</code> id in a 
+   * <code>ScopedPreferenceStore</code>.
+   * 
+   * @param id the new <code>Layout</code> id to save.
+   */
+  public void saveLayoutId( final String id ) {
+    IPreferenceStore preferenceStore = PrefUtil.getAPIPreferenceStore();
+    preferenceStore.putValue( SAVED_LAYOUT_KEY, id );
+    preferenceStore.firePropertyChangeEvent( SAVED_LAYOUT_KEY, "", id );
   }
   
-  private LayoutRegistry() {
-    layoutId = DEFAULT_LAYOUT_ID;
-    layoutMap = new HashMap();
-    builders = new ArrayList();
-    layoutSetToPluginId = new HashMap();
-    init();
-  }
-  
-  private void combineLayoutSets( 
-    final Layout layout, final Layout defaultLayout, final Layout activeLayout )
-  {
-    if( defaultLayout != null ) {
-      Map defaultLayoutSets = defaultLayout.getLayoutSets();
-      createLayoutSetFromLayout( layout, defaultLayoutSets );
+  /**
+   * Sets the active <code>Layout</code> to the one, which belongs to the 
+   * id in the paramter and save the new id if necessary.
+   * 
+   * @param id the new <code>Layout</code> id.
+   * @param save if <code>true</code> then the new <code>Layout</code> will be
+   * saved.
+   */
+  public void setActiveLayout( final String id, final boolean save ) {
+    Object object = layoutMap.get( id );
+    Layout newActive = ( Layout ) object;
+    if( newActive != null ) {
+      activeLayoutId = id;
+      activeLayout = newActive;
+      if( save ) {
+        saveLayoutId( activeLayoutId );
+      }
     }
-    Map activeLayoutSets = activeLayout.getLayoutSets();    
-    createLayoutSetFromLayout( layout, activeLayoutSets );        
   }
 
-  private Layout createHybridLayout() {
-    Layout result = new Layout( layoutId );    
-    Layout defaultLayout = ( Layout ) layoutMap.get( DEFAULT_LAYOUT_ID );    
-    combineLayoutSets( result, defaultLayout, activeLayout );    
-    return result;
-  }
-  
-  private void createLayoutSetFromLayout( final Layout layout, 
-                                          final Map layoutSets )
-  {
-    Object[] keys = layoutSets.keySet().toArray();
-    for( int i = 0; i < keys.length; i++ ) {
-      String key = ( String ) keys[ i ];
-      LayoutSet set = ( LayoutSet ) layoutSets.get( key );
-      layout.clearLayoutSet( key );
-      layout.addLayoutSet( set );
-    }
-  }
-  
-  String getPluginIdForLayoutSet( final String layoutSetId ) {
-    return ( String )layoutSetToPluginId.get( layoutSetId );
-  }
-  
-  private void createLayoutSets( 
-    final IConfigurationElement[] layoutSets, final Layout layout ) 
-  {
-    if( layoutSets != null && layoutSets.length > 0 ) {
-      for( int i = 0; i < layoutSets.length; i++ ) {
-        IConfigurationElement layoutSetElement = layoutSets[ i ];
-        
-        String pluginId = layoutSetElement.getContributor().getName();
-        String layoutSetId = layoutSetElement.getAttribute( "id" );
-        
-        layout.clearLayoutSet( layoutSetId );
-        LayoutSet layoutSet = layout.getLayoutSet( layoutSetId );
-        layoutSetToPluginId.put( layoutSetId, pluginId );
-
-        try {
-          Object initializer 
-            = layoutSetElement.createExecutableExtension( "class" );
-          if( initializer instanceof ILayoutSetInitializer ) {
-            ILayoutSetInitializer layoutInitializer 
-              = ( ILayoutSetInitializer ) initializer;
-            layoutInitializer.initializeLayoutSet( layoutSet );
-          }
-          
-        } catch( CoreException e ) {
-          e.printStackTrace();
-        }
-        
-      }      
-    }
-  }
-  
   /**
    * This method will call the <code>{@link ElementBuilder#dispose()}</code>
    * for all registered builders.
@@ -175,9 +141,9 @@ public class LayoutRegistry {
    */
   public Layout getActiveLayout() {
     Layout result = activeLayout;
-    if( layoutId.equals( DEFAULT_LAYOUT_ID ) ) {
+    if( activeLayoutId.equals( DEFAULT_LAYOUT_ID ) ) {
       if( result == null ) {
-        result =  ( Layout ) layoutMap.get( layoutId );
+        result =  ( Layout ) layoutMap.get( activeLayoutId );
         activeLayout = result;
       }      
     } else {
@@ -188,16 +154,14 @@ public class LayoutRegistry {
 
   /**
    * Returns an <code>IExtension</code> array, which contains all Layouts 
-   * contributed to the <code>org.eclipse.ui.presentations.Layouts</code> 
+   * contributed to the <code>org.eclipse.rap.ui.layouts</code> 
    * extension point.
    * 
    * @return all <code>Layout</code>s as an <code>IExtension<code> array.
    */
-  public IConfigurationElement[] getLayoutExtensions() {
+  public static IConfigurationElement[] getLayoutExtensions() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IConfigurationElement[] result 
-      = registry.getConfigurationElementsFor( LAYOUT_EXT_ID );
-    return result;
+    return registry.getConfigurationElementsFor( LAYOUT_EXT_ID );
   }
   
   /**
@@ -211,47 +175,7 @@ public class LayoutRegistry {
   public String getSavedLayoutId() {
     String result = IPreferenceStore.STRING_DEFAULT_DEFAULT;
     IPreferenceStore preferenceStore = PrefUtil.getAPIPreferenceStore();
-    result = preferenceStore.getString( SAVED_LAYOUT_KEY );
-    
-    return result;
-  }
-
-  /**
-   * Initialize the <code>{@link LayoutSet}</code> contributed to the
-   * <code>org.eclipse.ui.presentations.Layouts</code> extension point. 
-   * Additional it sets the active <code>Layout</code> to 
-   * <code>{#DEFAULT_LAYOUT_ID}</code>.
-   */
-  public void init() {
-    IConfigurationElement[] elements = getLayoutExtensions();
-    for( int i = 0; i < elements.length; i++ ) {
-      
-      String id = elements[ i ].getAttribute( "id" );
-      
-      Layout layout = ( Layout ) layoutMap.get( id );
-      IConfigurationElement[] layoutSets 
-        = elements[ i ].getChildren( "layoutSet" );
-      
-      if( layout == null ) {        
-        layout = initLayout( layoutSets, id );
-        layoutMap.put( id, layout );
-      } else {
-        createLayoutSets( layoutSets, layout );
-      }
-      
-    }
-  }
-
-  private Layout initLayout( 
-    final IConfigurationElement[] configurationElements, final String id )
-  {
-    Layout result = ( Layout ) layoutMap.get( id );
-    if( result == null ) {
-      result = new Layout( id );
-      
-    }
-    createLayoutSets( configurationElements, result );
-    
+    result = preferenceStore.getString( SAVED_LAYOUT_KEY );    
     return result;
   }
 
@@ -266,6 +190,11 @@ public class LayoutRegistry {
     disposeBuilders();
   }
   
+  
+  static String getPluginIdForLayoutSet( final String layoutSetId ) {
+    return ( String )layoutSetToPluginId.get( layoutSetId );
+  }
+  
   /**
    * Adds a <code>{@link ElementBuilder}</code> to a List of builders.
    * 
@@ -276,36 +205,99 @@ public class LayoutRegistry {
   void registerBuilder( final ElementBuilder builder ) {
     builders.add( builder );
   }
-  
+
   /**
-   * Saves the new <code>Layout</code> id in a 
-   * <code>ScopedPreferenceStore</code>.
-   * 
-   * @param id the new <code>Layout</code> id to save.
+   * Initialize the <code>{@link LayoutSet}</code> contributed to the
+   * <code>org.eclipse.rap.ui.layouts</code> extension point. 
+   * Additional it sets the active <code>Layout</code> to 
+   * <code>{#DEFAULT_LAYOUT_ID}</code>.
    */
-  public void saveLayoutId( final String id ) {
-    IPreferenceStore preferenceStore = PrefUtil.getAPIPreferenceStore();
-    preferenceStore.putValue( SAVED_LAYOUT_KEY, id );
-    preferenceStore.firePropertyChangeEvent( SAVED_LAYOUT_KEY, "", id );
+  private static void init() {
+    layoutSetToPluginId = new HashMap();
+    layoutMap = new HashMap();
+    IConfigurationElement[] elements = getLayoutExtensions();
+    for( int i = 0; i < elements.length; i++ ) {
+      String id = elements[ i ].getAttribute( "id" );
+      
+      Layout layout = ( Layout ) layoutMap.get( id );
+      IConfigurationElement[] layoutSets 
+        = elements[ i ].getChildren( "layoutSet" );
+      
+      if( layout == null ) {        
+        layout = initLayout( layoutSets, id );
+        layoutMap.put( id, layout );
+      } else {
+        createLayoutSets( layoutSets, layout );
+      }
+    }
+  }
+
+  private static Layout initLayout( final IConfigurationElement[] elements,
+                                    final String id )
+  {
+    Layout result = new Layout( id );
+    createLayoutSets( elements, result );
+    return result;
+  }
+
+  private static void createLayoutSets( final IConfigurationElement[] layoutSets, 
+                                        final Layout layout ) 
+  {
+    if( layoutSets != null && layoutSets.length > 0 ) {
+      for( int i = 0; i < layoutSets.length; i++ ) {
+        IConfigurationElement layoutSetElement = layoutSets[ i ];
+
+        String pluginId = layoutSetElement.getContributor().getName();
+        String layoutSetId = layoutSetElement.getAttribute( "id" );
+
+        layout.clearLayoutSet( layoutSetId );
+        LayoutSet layoutSet = layout.getLayoutSet( layoutSetId );
+        layoutSetToPluginId.put( layoutSetId, pluginId );
+
+        try {
+          Object initializer 
+            = layoutSetElement.createExecutableExtension( "class" );
+          if( initializer instanceof ILayoutSetInitializer ) {
+            ILayoutSetInitializer layoutInitializer 
+              = ( ILayoutSetInitializer ) initializer;
+            layoutInitializer.initializeLayoutSet( layoutSet );
+          }
+        } catch( CoreException e ) {
+          e.printStackTrace();
+        }
+      }      
+    }
+  }
+
+  private void combineLayoutSets( final Layout layout,
+                                  final Layout defaultLayout,
+                                  final Layout activeLayout )
+  {
+    if( defaultLayout != null ) {
+      Map defaultLayoutSets = defaultLayout.getLayoutSets();
+      createLayoutSetFromLayout( layout, defaultLayoutSets );
+    }
+    Map activeLayoutSets = activeLayout.getLayoutSets();
+    createLayoutSetFromLayout( layout, activeLayoutSets );
+  }
+
+  private Layout createHybridLayout() {
+    // TODO [hs] think about cache for hybrid Layouts
+    Layout result = new Layout( activeLayoutId );    
+    Layout defaultLayout = ( Layout )layoutMap.get( DEFAULT_LAYOUT_ID );
+    combineLayoutSets( result, defaultLayout, activeLayout );    
+    return result;
   }
   
-  /**
-   * Sets the active <code>Layout</code> to the one, which belongs to the 
-   * id in the paramter and save the new id if necessary.
-   * 
-   * @param id the new <code>Layout</code> id.
-   * @param save if <code>true</code> then the new <code>Layout</code> will be
-   * saved.
-   */
-  public void setActiveLayout( final String id, final boolean save ) {
-    Object object = layoutMap.get( id );
-    Layout newActive = ( Layout ) object;
-    if( newActive != null ) {
-      layoutId = id;
-      activeLayout = newActive;
-      if( save ) {
-        saveLayoutId( layoutId );
-      }
+  private void createLayoutSetFromLayout( final Layout layout,
+                                          final Map layoutSets )
+  {
+    Object[] keys = layoutSets.keySet().toArray();
+    for( int i = 0; i < keys.length; i++ ) {
+      String key = ( String )keys[ i ];
+      LayoutSet set = ( LayoutSet )layoutSets.get( key );
+      layout.clearLayoutSet( key );
+      layout.addLayoutSet( set );
     }
   }
 }

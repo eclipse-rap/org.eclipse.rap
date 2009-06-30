@@ -39,7 +39,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * </p>
  * <p>
  * Every builder needs a <code>{@link LayoutSet}</code>, which can be
- * contributed to the <code>org.eclipse.ui.presentations.Layouts</code>
+ * contributed to the <code>org.eclipse.rap.ui.layouts</code>
  * extension point.
  * </p>
  * The point is, every builder should regard, that a <code>LayoutSet</code>
@@ -190,8 +190,7 @@ public abstract class ElementBuilder implements IAdaptable {
   protected Image createImage( final String path ) {
     Image result = null;
     if( path != null ) {
-      LayoutRegistry layoutRegistry = LayoutRegistry.getInstance();
-      String id = layoutRegistry.getPluginIdForLayoutSet( layoutSet.getId() );
+      String id = LayoutRegistry.getPluginIdForLayoutSet( layoutSet.getId() );
       if( id != null ) {
         ImageDescriptor descriptor
           = AbstractUIPlugin.imageDescriptorFromPlugin( id, path );

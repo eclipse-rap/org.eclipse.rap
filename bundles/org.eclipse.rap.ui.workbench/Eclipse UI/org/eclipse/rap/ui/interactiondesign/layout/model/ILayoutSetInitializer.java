@@ -11,7 +11,7 @@ package org.eclipse.rap.ui.interactiondesign.layout.model;
 
 /**
  * This interface is implemented by the class defined in the attributes of the
- * <code>org.eclipse.ui.presentations.Layouts</code> extension point.
+ * <code>org.eclipse.rap.ui.layouts</code> extension point.
  * <p>
  * Classes implementing this interface to add components to a 
  * <code>{@link LayoutSet}</code> object. 
