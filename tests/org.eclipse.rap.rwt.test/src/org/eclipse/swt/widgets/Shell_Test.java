@@ -194,6 +194,15 @@ public class Shell_Test extends TestCase {
     shell.setVisible( false );
     assertEquals( "", log.toString() );
   }
+  
+  public void testCloseChildShells() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.open();
+    Shell childShell = new Shell( shell );
+    shell.close();
+    assertTrue( childShell.isDisposed() );
+  }
 
   public void testDisposeChildShell() {
     Display display = new Display();
@@ -201,6 +210,9 @@ public class Shell_Test extends TestCase {
     shell.open();
     Shell childShell = new Shell( shell );
     childShell.dispose();
+    assertTrue( childShell.isDisposed() );
+    childShell = new Shell( shell );
+    shell.dispose();
     assertTrue( childShell.isDisposed() );
   }
 
