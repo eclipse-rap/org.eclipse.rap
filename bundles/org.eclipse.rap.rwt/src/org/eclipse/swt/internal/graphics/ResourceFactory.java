@@ -215,7 +215,7 @@ public final class ResourceFactory {
     return result;
   }
 
-  ////////
+  ///////////
   // Cursors
 
   public static Cursor getCursor( final int style ) {
@@ -301,7 +301,6 @@ public final class ResourceFactory {
     //                It would be nice to find a solution without reading the
     //                stream twice.
 
-    IResourceManager manager = ResourceManager.getInstance();
     BufferedInputStream bis = new BufferedInputStream( inputStream );
     bis.mark( Integer.MAX_VALUE );
     Point size = readImageSize( bis );
@@ -317,6 +316,7 @@ public final class ResourceFactory {
       String msg = MessageFormat.format( txt, new Object[] { path } );
       throw new RuntimeException( msg, shouldNotHappen );
     }
+    IResourceManager manager = ResourceManager.getInstance();
     manager.register( path, bis );
 
     ////////////////////////////////////////////////////////////////////////////

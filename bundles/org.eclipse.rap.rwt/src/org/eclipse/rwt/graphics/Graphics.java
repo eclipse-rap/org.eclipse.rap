@@ -155,6 +155,8 @@ public final class Graphics {
    * @see SWT#CURSOR_HAND
    * 
    * @since 1.2
+   * @deprecated use {@link org.eclipse.swt.widgets.Display#getSystemCursor(int) 
+   * Display#getSystemCursor(int)}
    */
   public static Cursor getCursor( final int style ) {
     return ResourceFactory.getCursor( style );
