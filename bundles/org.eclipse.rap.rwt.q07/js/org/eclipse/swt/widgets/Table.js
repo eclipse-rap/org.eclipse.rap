@@ -316,6 +316,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea.resetTextColor();
     },
 
+    setBackgroundImage : function( image ) {
+      this._clientArea.setBackgroundImage( image );
+    },
+
+    resetBackgroundImage : function() {
+      this._clientArea.resetBackgroundImage();
+    },
+
     setBackgroundColor : function( color ) {
       this._clientArea.setBackgroundColor( color );
     },

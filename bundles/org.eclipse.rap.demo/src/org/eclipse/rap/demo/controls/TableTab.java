@@ -65,6 +65,7 @@ public class TableTab extends ExampleTab {
     createColumnImagesButton();
     createFgColorButton();
     createBgColorButton();
+    createBgImageButton();
     createFontChooser();
     createAddItemsButton();
     createInsertItemButton();
