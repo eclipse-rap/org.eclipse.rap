@@ -22,10 +22,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.widgets.*;
 
 
 public final class TableLCA extends AbstractWidgetLCA {
+
+  // Request cell tooltip text event
+  static final String EVENT_CELL_TOOLTIP_TEXT_REQUESTED
+    = "org.eclipse.swt.events.cellToolTipTextRequested";
+  // Parameter names that specify further event details
+  static final String EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL
+    = "org.eclipse.swt.events.cellToolTipTextRequested.cell";
 
   // Property names to preserve values
   static final String PROP_HEADER_HEIGHT = "headerHeight";
@@ -94,6 +102,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     readSetData( table );
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
+    readCellToolTipTextRequested( table );
     ControlLCAUtil.processMouseEvents( table );
     ControlLCAUtil.processKeyEvents( table );
   }
@@ -107,6 +116,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
     if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
       style += "|multi";
+    }
+    if( Boolean.TRUE.equals( table.getData( Table.ENABLE_CELL_TOOLTIP ) ) ) {
+      style += "|enableCellToolTip";
     }
     Object[] args = new Object[] { WidgetUtil.getId( table ), style };
     writer.newWidget( "org.eclipse.swt.widgets.Table", args );
@@ -129,6 +141,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeDefaultColumnWidth( table );
     writeHideSelection( table );
     writeScrollBarsVisible( table );
+    writeCellToolTipText( table );
     WidgetLCAUtil.writeCustomVariant( table );
   }
 
@@ -274,6 +287,25 @@ public final class TableLCA extends AbstractWidgetLCA {
     return result;
   }
 
+  private static void readCellToolTipTextRequested( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    tableAdapter.setToolTipText( null );
+    String event = EVENT_CELL_TOOLTIP_TEXT_REQUESTED;
+    if( WidgetLCAUtil.wasEventSent( table, event ) ) {
+      HttpServletRequest request = ContextProvider.getRequest();
+      String cell
+        = request.getParameter( EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL );
+      String[] indices = cell.split( "," );
+      int itemIndex = Integer.parseInt( indices[ 0 ] );
+      int columnIndex = Integer.parseInt( indices[ 1 ] );
+      ICellToolTipProvider provider = tableAdapter.getCellToolTipProvider();
+      if( provider != null ) {
+        provider.getToolTipText( itemIndex, columnIndex );
+      }
+    }
+  }
+
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
 
@@ -382,6 +414,17 @@ public final class TableLCA extends AbstractWidgetLCA {
         hasVScrollBar( table )
       };
       writer.call( "setScrollBarsVisibile", args );
+    }
+  }
+
+  private void writeCellToolTipText( final Table table ) throws IOException {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    String text = tableAdapter.getToolTipText();
+    if( text != null ) {
+      JSWriter writer = JSWriter.getWriterFor( table );
+      text = text.replaceAll( "\n", "<br>" );
+      writer.call( "setCellToolTipText", new String[]{ text } );
     }
   }
 

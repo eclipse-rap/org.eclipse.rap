@@ -136,6 +136,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     widgetManager.add( this._clientArea, id + "_clientArea", false );
     this.add( this._clientArea );
+    // Cell tooltip
+    this._cellToolTip = null;
+    if( qx.lang.String.contains( style, "enableCellToolTip" ) ) {
+      this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip();
+      this._cellToolTip.setTableId( id );
+      this._clientArea.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
+      this._clientArea.setToolTip( this._cellToolTip );
+    }
   },
 
   destruct : function() {
@@ -184,9 +192,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     if( this._clientArea ) {
       this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       this._clientArea.removeEventListener( "appear", this._onClientAppear, this );
+      if( this._cellToolTip ) {
+        this._clientArea.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );
+      }
       org.eclipse.swt.WidgetManager.getInstance().remove( this._clientArea );
       this._clientArea.dispose();
       this._clientArea = null;
+    }
+    if( this._cellToolTip ) {
+      this._cellToolTip.dispose();
+      this._cellToolTip = null;
     }
     if( this._columnArea ) {
       this._columnArea.dispose();
@@ -537,7 +552,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onRowClick : function( evt ) {
       this._rowClicked( evt, evt.getTarget() );
     },
-    
+
     _rowClicked : function( evt, row ) {
       var itemIndex = this._topIndex + this._rows.indexOf( row );
       if(    itemIndex >= 0
@@ -713,7 +728,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             // regardless which modifier-key(s) are held down
             var itemDefaultSelected = -1;
             var topSelectedItem = -1;
-            for( var i = 0; i < this._selected.length; i++ ) {              
+            for( var i = 0; i < this._selected.length; i++ ) {
               if( this._focusIndex === this._selected[ i ] ) {
                 itemDefaultSelected = this._selected[ i ];
               }
@@ -725,7 +740,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             }
             if( itemDefaultSelected === -1 ) {
               itemDefaultSelected = topSelectedItem;
-            }            
+            }
             this.createDispatchDataEvent( "itemdefaultselected",
                                           itemDefaultSelected );
             break;
@@ -907,7 +922,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._deselectItem( this._selected[ 0 ], true );
       }
     },
-    
+
     _adjustSelectedIndices : function( itemIndex ) {
       if( this._isItemSelected( itemIndex ) ) {
         for( var i = 0; i < this._selected.length; i++ ) {
@@ -1290,7 +1305,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
-    
+
     _resolveItem : function( itemIndex ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         if( this._unresolvedItems === null ) {
@@ -1375,14 +1390,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         line.setStyleProperty( "visibility", "hidden" );
       }
     },
-    
+
     _onGridLinesMouseDown : function( evt ) {
-      var row = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );      
+      var row = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );
       if( row != null ) {
         this._rowClicked( evt, row );
       }
     },
-    
+
     _getRowAtPoint : function( pageX, pageY ) {
       var result = null;
       for( var i = 0; result === null && i < this._rows.length; i++ ) {
@@ -1390,9 +1405,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var element = row.getElement();
         var pageLeft = qx.html.Location.getPageBoxLeft( element );
         var pageTop = qx.html.Location.getPageBoxTop( element );
-        if(    pageX >= pageLeft 
-            && pageX < pageLeft + row.getWidth()          
-            && pageY >= pageTop 
+        if(    pageX >= pageLeft
+            && pageX < pageLeft + row.getWidth()
+            && pageY >= pageTop
             && pageY < pageTop + row.getHeight() )
         {
           result = row;
@@ -1400,7 +1415,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       return result;
     },
-    
+
     //////////////////////////////////////////////////////////
     // Focus tracking - may change appearance of selected row
 
@@ -1411,7 +1426,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onFocusOut : function( evt ) {
       this._updateFocusState()
     },
-    
+
     ////////////////////////////////////////////////////////////
     // Event handling methods - added and removed by server-side
 
@@ -1461,7 +1476,39 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._leftOffsetChanged = false;
         }
       }
+    },
+
+    ////////////////////////
+    // Cell tooltip handling
+
+    _onClientAreaMouseMove : function( evt ) {
+      if( this._cellToolTip != null ) {
+        var pageX = evt.getPageX();
+        var pageY = evt.getPageY();
+        var row = this._getRowAtPoint( pageX, pageY );
+        var rowIndex = this._rows.indexOf( row );
+        var itemIndex = this._getItemIndexFromRowIndex( rowIndex );
+        var columnIndex = -1;
+        var columns = this.getColumns();
+        for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
+          var element = columns[ i ].getElement();
+          var pageLeft = qx.html.Location.getPageBoxLeft( element );
+          if(    pageX >= pageLeft
+              && pageX < pageLeft + columns[ i ].getWidth() )
+          {
+            columnIndex = i;
+          }
+        }
+        this._cellToolTip.setCell( itemIndex, columnIndex );
+      }
+    },
+
+    /** Only called by server-side */
+    setCellToolTipText : function( text ) {
+      if( this._cellToolTip != null ) {
+        this._cellToolTip.setText( text );
+      }
     }
-    
+
   }
 });

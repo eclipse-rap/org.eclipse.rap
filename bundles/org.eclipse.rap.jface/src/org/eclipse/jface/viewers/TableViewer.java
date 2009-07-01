@@ -186,7 +186,7 @@ public class TableViewer extends AbstractTableViewer {
 
 		if( selection.length == 1 ) {
 			int columnCount = table.getColumnCount();
-			
+
 			for( int i = 0; i < columnCount; i++ ) {
 				if( selection[0].getBounds(i).contains(p) ) {
 					return selection[0];
@@ -366,4 +366,11 @@ public class TableViewer extends AbstractTableViewer {
 	public void refresh(boolean updateLabels, boolean reveal) {
 		refresh(getRoot(), updateLabels, reveal);
 	}
+
+// RAP: [if] Table cell tooltips support
+	public void setLabelProvider( final IBaseLabelProvider labelProvider ) {
+	  super.setLabelProvider( labelProvider );
+	  CellToolTipProvider.attach( this, labelProvider );
+	}
+// RAPEND: [if]
 }

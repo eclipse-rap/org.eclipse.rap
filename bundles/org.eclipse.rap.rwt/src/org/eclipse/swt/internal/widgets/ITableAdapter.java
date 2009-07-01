@@ -21,12 +21,12 @@ public interface ITableAdapter {
 
   int getFocusIndex();
   void setFocusIndex( int focusIndex );
-  
+
   void setLeftOffset( int parseInt );
 
   void checkData();
   void checkData( int index );
-  
+
   int getColumnLeft( TableColumn column );
   int getDefaultColumnWidth();
 
@@ -39,4 +39,10 @@ public interface ITableAdapter {
   boolean hasVScrollBar();
 
   TableItem getMeasureItem();
+
+  ICellToolTipProvider getCellToolTipProvider();
+  void setCellToolTipProvider( ICellToolTipProvider provider );
+
+  String getToolTipText();
+  void setToolTipText( String toolTipText );
 }

@@ -773,6 +773,42 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 0, table.getTopIndex() );
   }
 
+  public void testGetCellToolTipText() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 5; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    final ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      public void getToolTipText( final int itemIndex,
+                                  final int columnIndex )
+      {
+        String text = "[" + itemIndex + "," + columnIndex + "]";
+        tableAdapter.setToolTipText( text );
+      }
+    } );
+    String displayId = DisplayUtil.getId( display );
+    String tableId = WidgetUtil.getId( table );
+    RWTFixture.fakeNewRequest();
+    RWTFixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setCellToolTipText(";
+    assertTrue( markup.indexOf( expected ) == -1 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_TEXT_REQUESTED,
+                              tableId );
+    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL,
+                              "1,2" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    markup = Fixture.getAllMarkup();
+    expected = "w.setCellToolTipText( \"[1,2]\" );";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

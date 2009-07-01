@@ -109,6 +109,9 @@ public class Table extends Composite {
 
   private final class TableAdapter implements ITableAdapter {
 
+    private String toolTipText;
+    private ICellToolTipProvider provider;
+
     public int getCheckWidth() {
       return Table.this.getCheckWidth();
     }
@@ -199,6 +202,22 @@ public class Table extends Composite {
     public TableItem getMeasureItem() {
       return Table.this.getMeasureItem();
     }
+
+    public ICellToolTipProvider getCellToolTipProvider() {
+      return provider;
+    }
+
+    public void setCellToolTipProvider( final ICellToolTipProvider provider ) {
+      this.provider = provider;
+    }
+
+    public String getToolTipText() {
+      return toolTipText;
+    }
+
+    public void setToolTipText( final String toolTipText ) {
+      this.toolTipText = toolTipText;
+    }
   }
 
   private final class ResizeListener extends ControlAdapter {
@@ -218,6 +237,15 @@ public class Table extends Composite {
    */
   public static final String HIDE_SELECTION
     = Table.class.getName() + "#hideSelection";
+
+  /**
+   * <strong>IMPORTANT:</strong> This field is <em>not</em> part of the SWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by SWT. It should never be accessed from
+   * application code.
+   */
+  public static final String ENABLE_CELL_TOOLTIP
+    = Table.class.getName() + "#enableCellToolTip";
 
   private static final int GRID_WIDTH = 1;
   private static final int CHECK_HEIGHT = 13;

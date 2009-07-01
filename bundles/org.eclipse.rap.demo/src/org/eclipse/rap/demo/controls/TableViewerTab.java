@@ -111,9 +111,14 @@ public class TableViewerTab extends ExampleTab {
   private static final class PersonLabelProvider
     extends CellLabelProvider
   {
+    private int columnIndex;
+
+    public PersonLabelProvider( final int columnIndex ) {
+      this.columnIndex = columnIndex;
+    }
+
     public void update( final ViewerCell cell ) {
       Person person = ( Person )cell.getElement();
-      int columnIndex = cell.getColumnIndex();
       switch( columnIndex ) {
         case FIRST_NAME:
           cell.setText( person.firstName );
@@ -128,6 +133,26 @@ public class TableViewerTab extends ExampleTab {
           cell.setText( person.editable ? "yes" : "no" );
           break;
       }
+    }
+
+    public String getToolTipText( final Object element ) {
+      Person person = ( Person )element;
+      String text = null;
+      switch( columnIndex ) {
+        case FIRST_NAME:
+          text = person.firstName;
+          break;
+        case LAST_NAME:
+          text = person.lastName;
+          break;
+        case AGE:
+          text = String.valueOf( person.age );
+          break;
+        case EDITABLE:
+          text = person.editable ? "yes" : "no";
+          break;
+      }
+      return text;
     }
   }
 
@@ -363,13 +388,11 @@ public class TableViewerTab extends ExampleTab {
   private Label lblSelection;
   private Button btnCreateCellEditor;
   private final PersonFilter viewerFilter;
-  private final PersonLabelProvider labelProvider;
   private final java.util.List persons = new ArrayList();
 
   public TableViewerTab( final CTabFolder topFolder ) {
     super( topFolder, "TableViewer" );
     viewerFilter = new PersonFilter();
-    labelProvider = new PersonLabelProvider();
   }
 
   private void initPersons() {
@@ -430,7 +453,6 @@ public class TableViewerTab extends ExampleTab {
     } else {
       viewer.setContentProvider( new LazyPersonContentProvider() );
     }
-    viewer.setLabelProvider( new PersonLabelProvider() );
     firstNameColumn = createFirstNameColumn();
     lastNameColumn = createLastNameColumn();
     ageColumn = createAgeColumn();
@@ -445,6 +467,7 @@ public class TableViewerTab extends ExampleTab {
       }
     } );
     viewer.getTable().setHeaderVisible( true );
+    viewer.getTable().setData( Table.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
     gridDataFactory = GridDataFactory.swtDefaults();
     gridDataFactory.grab( true, true );
     gridDataFactory.align( SWT.FILL, SWT.FILL );
@@ -455,7 +478,7 @@ public class TableViewerTab extends ExampleTab {
 
   private TableViewerColumn createFirstNameColumn() {
     TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
-    result.setLabelProvider( labelProvider );
+    result.setLabelProvider( new PersonLabelProvider( FIRST_NAME ) );
     TableColumn column = result.getColumn();
     column.setText( "First Name" );
     column.setWidth( 170 );
@@ -471,7 +494,7 @@ public class TableViewerTab extends ExampleTab {
 
   private TableViewerColumn createLastNameColumn() {
     TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
-    result.setLabelProvider( labelProvider );
+    result.setLabelProvider( new PersonLabelProvider( LAST_NAME ) );
     TableColumn column = result.getColumn();
     column.setText( "Last Name" );
     column.setWidth( 120 );
@@ -487,7 +510,7 @@ public class TableViewerTab extends ExampleTab {
 
   private TableViewerColumn createAgeColumn() {
     TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
-    result.setLabelProvider( labelProvider );
+    result.setLabelProvider( new PersonLabelProvider( AGE ) );
     TableColumn column = result.getColumn();
     column.setText( "Age" );
     column.setWidth( 80 );
@@ -503,7 +526,7 @@ public class TableViewerTab extends ExampleTab {
 
   private TableViewerColumn createEditableColumn() {
     TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
-    result.setLabelProvider( labelProvider );
+    result.setLabelProvider( new PersonLabelProvider( EDITABLE ) );
     TableColumn column = result.getColumn();
     column.setText( "Editable" );
     column.setWidth( 50 );
