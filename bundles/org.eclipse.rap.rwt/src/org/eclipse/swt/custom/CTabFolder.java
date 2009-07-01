@@ -1766,7 +1766,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   }
 
   boolean updateTabHeight(boolean force){
-CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+    CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     int style = getStyle();
     if (fixedTabHeight == 0 && (style & SWT.FLAT) != 0 && (style & SWT.BORDER) == 0) highlight_header = 0;
     int oldHeight = tabHeight;

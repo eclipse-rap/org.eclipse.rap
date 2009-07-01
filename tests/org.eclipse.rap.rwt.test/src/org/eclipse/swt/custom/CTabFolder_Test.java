@@ -324,6 +324,19 @@ public class CTabFolder_Test extends TestCase {
     }
   }
 
+  // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=279592
+  public void testTabHeightImage() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.CLOSE );
+    item.setText( "foo" );
+    int textOnlyHeight = folder.getTabHeight();
+    assertTrue( textOnlyHeight > 0 );
+    item.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
+    assertTrue( folder.getTabHeight() > textOnlyHeight );
+  }
+
   public void testTopRight() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
