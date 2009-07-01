@@ -48,6 +48,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     setFont : function( value ) {
       this._textfield.setFont( value );
     },
+    
+    setMaxLength : function( value ) {
+      this._textfield.setMaxLength( value );
+    },
 
     _applyCursor : function( value, old ) {
       this.base( arguments, value, old );

@@ -166,4 +166,27 @@ public class Spinner_Test extends TestCase {
     expected = new Rectangle( -1, -1, 118, 102 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
+  
+  public void testGetText() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    spinner.setSelection( 5 );
+    assertEquals( "5", spinner.getText() );
+  }
+  
+  public void testTextLimit() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    assertEquals( Spinner.LIMIT, spinner.getTextLimit() );
+    spinner.setTextLimit( 1 );
+    assertEquals( 1, spinner.getTextLimit() );
+    try {
+      spinner.setTextLimit( 0 );
+      fail( "Must not allow zero" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
 }

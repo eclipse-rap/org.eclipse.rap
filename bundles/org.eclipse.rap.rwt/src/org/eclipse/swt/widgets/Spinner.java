@@ -39,6 +39,14 @@ import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
 // TODO cut/copy/past not implemented
 public class Spinner extends Composite {
 
+  /**
+   * the <!-- operating system --> limit for the number of characters
+   * that the text field in an instance of this class can hold
+   * 
+   * @since 1.3
+   */
+  public static final int LIMIT = Integer.MAX_VALUE;
+
   private static final int UP_DOWN_MIN_HEIGHT = 18;
   private static final int UP_DOWN_WIDTH = 16;
 
@@ -48,6 +56,7 @@ public class Spinner extends Composite {
   private int minimum = 0;
   private int pageIncrement = 10;
   private int selection = 0;
+  private int textLimit = LIMIT;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -120,7 +129,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int getIncrement () {
+  public int getIncrement() {
     checkWidget();
     return increment;
   }
@@ -154,7 +163,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int getMinimum () {
+  public int getMinimum() {
     checkWidget();
     return minimum;
   }
@@ -192,7 +201,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int getMaximum () {
+  public int getMaximum() {
     checkWidget();
     return maximum;
   }
@@ -231,7 +240,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int getPageIncrement () {
+  public int getPageIncrement() {
     checkWidget();
     return pageIncrement;
   }
@@ -265,7 +274,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int getSelection () {
+  public int getSelection() {
     checkWidget();
     return selection;
   }
@@ -324,6 +333,83 @@ public class Spinner extends Composite {
     setIncrement( increment );
     setPageIncrement( pageIncrement );
     setSelection( selection );
+  }
+  
+  /**
+   * Returns a string containing a copy of the contents of the
+   * receiver's text field, or an empty string if there are no
+   * contents.
+   *
+   * @return the receiver's text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public String getText() {
+    checkWidget();
+    return String.valueOf( selection );
+  }
+
+  /**
+   * Sets the maximum number of characters that the receiver
+   * is capable of holding to be the argument.
+   * <p>
+   * Instead of trying to set the text limit to zero, consider
+   * creating a read-only text widget.
+   * </p><p>
+   * To reset this value to the default, use <code>setTextLimit(Text.LIMIT)</code>.
+   * Specifying a limit value larger than <code>Text.LIMIT</code> sets the
+   * receiver's limit to <code>Text.LIMIT</code>.
+   * </p>
+   *
+   * @param textLimit new text limit
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_CANNOT_BE_ZERO - if the limit is zero</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #LIMIT
+   * @since 1.3
+   */
+  public void setTextLimit( final int textLimit ) {
+    checkWidget();
+    if( textLimit == 0 ) {
+      error( SWT.ERROR_CANNOT_BE_ZERO );
+    }
+    // Note that we mimic here the behavior of SWT Text with style MULTI on
+    // Windows. In SWT, other operating systems and/or style flags behave
+    // different.
+    this.textLimit = textLimit;
+  }
+
+  /**
+   * Returns the maximum number of characters that the receiver is capable of holding.
+   * <p>
+   * If this has not been changed by <code>setTextLimit()</code>,
+   * it will be the constant <code>Text.LIMIT</code>.
+   * </p>
+   *
+   * @return the text limit
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #LIMIT
+   * @since 1.3
+   */
+  public int getTextLimit() {
+    checkWidget ();
+    return textLimit;
   }
 
   ///////////////////

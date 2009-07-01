@@ -17,14 +17,16 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Spinner";
 //  private static final String TYPE_POOL_ID = SpinnerLCA.class.getName();
+
+  private static final Integer DEFAULT_TEXT_LIMIT
+    = new Integer( Spinner.LIMIT );
   
   private static final String PROP_SELECTION = "selection";
   static final String PROP_MAXIMUM = "maximum";
@@ -33,6 +35,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
+  private static final String PROP_TEXT_LIMIT = "textLimit";
+
 
   public void preserveValues( final Widget widget ) {
     Spinner spinner = ( Spinner )widget;
@@ -80,6 +84,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.writeChanges( spinner );
     writeValues( spinner );
+    writeTextLimit( spinner );
     writeModifyListener( spinner );
     writeSelectionListener( spinner );
     WidgetLCAUtil.writeCustomVariant( spinner );
@@ -122,6 +127,23 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                  spinner.getPageIncrement(),
                  10 );
     writeSetInt( writer, PROP_SELECTION, "value", spinner.getSelection(), 0 );
+  }
+
+  private static void writeTextLimit( final Spinner spinner ) throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    Integer newValue = new Integer( spinner.getTextLimit() );
+    Integer defValue = DEFAULT_TEXT_LIMIT;
+    String prop = PROP_TEXT_LIMIT;
+    if( WidgetLCAUtil.hasChanged( spinner, prop, newValue, defValue ) )
+    {
+      // Negative values are treated as 'no limit' which is achieved by passing
+      // null to the client-side maxLength property
+      if( newValue.intValue() < 0 ) {
+        newValue = null;
+      }
+      writer.set( "maxLength", newValue );
+    }
   }
 
   private static void resetValues() throws IOException {
