@@ -1154,41 +1154,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "spinner-button" : {
+  "spinner-button-up" : {
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        width : 16,
-        backgroundColor : tv.getCssColor( "*", "background-color" )
-      };
-      if( states.rwt_FLAT ) {
-        result.border = "undefined";
-      } else if( states.pressed || states.checked || states.abandoned ) {
-        result.border = "inset";
-      } else {
-        result.border = "outset";
-      }
+      result.width = 16;
+      result.source = tv.getCssImage( "Spinner-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
+      result.backgroundColor = tv.getCssColor( "Spinner-UpButton", 
+                                               "background-color" );
       return result;
     }
   },
 
-  "spinner-button-up" : {
-    include : "spinner-button",
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        source : tv.getCssImage( "Spinner-UpButton", "background-image" )
-      };
-    }
-  },
-
   "spinner-button-down" : {
-    include : "spinner-button",
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        source : tv.getCssImage( "Spinner-DownButton", "background-image" )
-      };
+      result.width = 16;
+      result.source = tv.getCssImage( "Spinner-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
+      result.backgroundColor = tv.getCssColor( "Spinner-DownButton", 
+                                               "background-color" );
+      return result;
     }
   },
 
