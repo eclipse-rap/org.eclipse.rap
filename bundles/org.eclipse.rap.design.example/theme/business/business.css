@@ -196,7 +196,11 @@ List-Item, TableItem {
   background-color: transparent;
 }
 
-List-Item:even, TableItem:even {
+/*
+ disable alt row colors for Lists as they look weird inside examples' ExpandBar:
+ List-Item:even,
+ */
+TableItem:even {
   background-color: #f3f3f4;
 }
 

@@ -56,26 +56,28 @@ public class NavigationView extends ViewPart {
   private void createExpandBar( final Composite parent ) {
     expandBar = new ExpandBar( parent, SWT.V_SCROLL );
     expandBar.setSpacing( 2 );
-    expandBar.addExpandListener( new ExpandListener() {
-      
-      public void itemCollapsed( final ExpandEvent e ) {
-        ExpandItem item = ( ExpandItem )e.item;
-        List list = ( List )item.getControl();
-        list.deselectAll();
-      }
-      
-      public void itemExpanded( final ExpandEvent e ) {
-        ExpandItem[] items = expandBar.getItems();
-        for( int i = 0; i < items.length; i++ ) {
-          ExpandItem item = items[ i ];
-          if( item != e.item ) {
-            item.setExpanded( false );
-            List list = ( List )item.getControl();
-            list.deselectAll();
-          }
-        }
-      }
-    } );
+// TODO [rst] Auto-collapse mechanism, enable when there are more items
+//    expandBar.addExpandListener( new ExpandListener() {
+//      
+//      public void itemCollapsed( final ExpandEvent e ) {
+//        ExpandItem item = ( ExpandItem )e.item;
+//        List list = ( List )item.getControl();
+//        list.deselectAll();
+//      }
+//      
+//      public void itemExpanded( final ExpandEvent e ) {
+//        ExpandItem[] items = expandBar.getItems();
+//        for( int i = 0; i < items.length; i++ ) {
+//          ExpandItem item = items[ i ];
+//          if( item != e.item ) {
+//            item.setExpanded( false );
+//            List list = ( List )item.getControl();
+//            list.deselectAll();
+//          }
+//        }
+//      }
+//    } );
+    // workaround to apply TextSizeDetermination results
     parent.addControlListener( new ControlAdapter() {
 
       public void controlResized( ControlEvent e ) {
@@ -107,6 +109,23 @@ public class NavigationView extends ViewPart {
     List list = new List( expandBar, SWT.SINGLE );
     list.addSelectionListener( listSelectionListener );
     item.setControl( list );
+    // TODO [rst] Remove this block when auto-collapse is activated again
+    // ----
+    item.setExpanded( true );
+    list.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent e ) {
+        ExpandItem[] items = expandBar.getItems();
+        for( int i = 0; i < items.length; i++ ) {
+          ExpandItem item = items[ i ];
+          List list = ( List )item.getControl();
+          if( list != e.widget ) {
+            list.deselectAll();
+          }
+        }
+      }
+    } );
+    // ----
     return item;
   }
   
