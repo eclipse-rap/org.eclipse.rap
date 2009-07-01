@@ -17,8 +17,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 
 /*
@@ -467,6 +466,23 @@ public class Combo_Test extends TestCase {
 
     expected = new Point( 104, 104 );
     assertEquals( expected, combo.computeSize( 100, 100 ) );
+  }
+  
+  public void testSetTextAndSelection() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+        event.text = event.text + "2";
+      }
+    } );
+    combo.setText( "test" );
+    assertEquals( 2, combo.getSelectionIndex() );
   }
 
   protected void setUp() throws Exception {

@@ -131,6 +131,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( TableColumn_Test.class );
     suite.addTestSuite( TableItem_Test.class );
     suite.addTestSuite( CCombo_Test.class );
+    suite.addTestSuite( Combo_Test.class );
     suite.addTestSuite( List_Test.class );
     suite.addTestSuite( ToolBar_Test.class );
     suite.addTestSuite( CTabFolder_Test.class );

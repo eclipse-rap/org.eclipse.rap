@@ -749,7 +749,7 @@ public final class CCombo extends Composite {
       model.deselectAll();
       String[] items = model.getItems();
       for( int i = 0; i < items.length; i++ ) {
-        if( verifiedText == items[i] ) {
+        if( verifiedText.equals( items[i] ) ) {
           model.setSelection( i );
           break;
         }
