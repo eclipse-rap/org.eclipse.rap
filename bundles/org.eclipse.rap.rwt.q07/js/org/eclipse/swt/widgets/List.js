@@ -84,8 +84,11 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           this.add( item );
         }
       }
+      var child = null;
       while( this.getChildrenLength() > items.length ) {
-        this.removeAt( this.getChildrenLength() - 1 );
+        child = this.getLastChild();
+        this.remove( child );
+        child.dispose();
       }
       // restore previous selection and focusItem
       manager.setSelectedItems( oldSelection );
