@@ -162,7 +162,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       var pos = 0;
       var left = 0;
       var width = 0;
-      var height = this._parent.getItemHeight() - 1;
+      var height = this._parent.getItemHeight() - 1; // -1 is gridLine height
+      if( height < 0 ) {
+        height = 0;
+      }
       var columnCount = parent.getColumnCount();
       var drawColors = this._drawColors();
       if( columnCount == 0 ) {
@@ -206,7 +209,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           var node = this._getChildNode( element, pos );
           pos++;
           left = parent.getItemLeft( i );
-          width = parent.getItemWidth( i ) - 1;
+          width = parent.getItemWidth( i ) - 1; // -1 is gridLine height
           if( width < 0 ) {  // IE does not accept negative width (see bug 280731)
             width = 0;
           }

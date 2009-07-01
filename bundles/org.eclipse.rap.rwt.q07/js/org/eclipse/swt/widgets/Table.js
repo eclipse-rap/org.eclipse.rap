@@ -599,7 +599,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             this._clearSelection();
           }
           var selectionStart
-            = this._selectionStart !== - 1
+            = this._selectionStart !== -1
             ? this._selectionStart
             : this._focusIndex;
           if( selectionStart !== -1 ) {
