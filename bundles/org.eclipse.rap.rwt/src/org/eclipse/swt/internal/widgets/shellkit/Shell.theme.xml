@@ -31,6 +31,9 @@
     <style name="BORDER"
         description="Indicates that the shell should have a border." />
 
+    <style name="TOOL"
+        description="Indicates that the shell should behave like a tool window." />
+
     <style name="TITLE"
         description="Indicates that the shell should show it's title bar." />
 

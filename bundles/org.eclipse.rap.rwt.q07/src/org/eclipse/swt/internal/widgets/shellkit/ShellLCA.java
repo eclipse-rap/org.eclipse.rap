@@ -91,6 +91,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     if( ( style & SWT.TITLE ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_TITLE" } );
     }
+    if( ( style & SWT.TOOL ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_TOOL" } );
+    }
     writer.set( "showMinimize", ( style & SWT.MIN ) != 0 );
     writer.set( "allowMinimize", ( style & SWT.MIN ) != 0 );
     writer.set( "showMaximize", ( style & SWT.MAX ) != 0 );

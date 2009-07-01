@@ -1433,6 +1433,20 @@ public class SWT {
 
   // Shells
   /**
+   * Style constant for tool window behavior (value is 1&lt;&lt;2).
+   * <p>
+   * A tool window is a window intended to be used as a floating toolbar.
+   * It typically has a title bar that is shorter than a normal title bar,
+   * and the window title is typically drawn using a smaller font.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Decorations</code> and subclasses</li>
+   * </ul></p>
+   * @since 1.3
+   */
+  public static final int TOOL = 1 << 2; 
+
+  /**
    * Style constant to ensure no trimmings are used (value is 1&lt;&lt;3).
    * <br>Note that this overrides all other trim styles.
    * <p><b>Used By:</b><ul>
