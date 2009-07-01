@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.jface.action;
 
+
 import org.eclipse.jface.resource.ImageDescriptor;
-//import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -217,8 +218,7 @@ public abstract class Action extends AbstractAction implements IAction {
 	/**
 	 * An action's help listener, or <code>null</code> if none.
 	 */
-	// RAP [bm]: HelpListener
-//	private HelpListener helpListener;
+	private HelpListener helpListener;
 
 	/**
 	 * This action's hover image, or <code>null</code> if none.
@@ -361,10 +361,9 @@ public abstract class Action extends AbstractAction implements IAction {
 	/*
 	 * (non-Javadoc) Method declared on IAction.
 	 */
-	// RAP [bm]: HelpListener
-//	public HelpListener getHelpListener() {
-//		return helpListener;
-//	}
+	public HelpListener getHelpListener() {
+		return helpListener;
+	}
 
 	/*
 	 * (non-Javadoc) Method declared on IAction.
@@ -583,10 +582,9 @@ public abstract class Action extends AbstractAction implements IAction {
 	/*
 	 * (non-Javadoc) Method declared on IAction.
 	 */
-	// RAP [bm]: HelpListener
-//	public void setHelpListener(HelpListener listener) {
-//		helpListener = listener;
-//	}
+	public void setHelpListener(HelpListener listener) {
+		helpListener = listener;
+	}
 
 	/*
 	 * (non-Javadoc) Method declared on IAction.

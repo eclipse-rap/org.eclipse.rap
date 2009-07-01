@@ -94,7 +94,6 @@ public class ControlLCAUtil {
   static final int MAX_STATIC_ZORDER = 300;
 
 
-
   private ControlLCAUtil() {
     // prevent instance creation
   }
@@ -120,6 +119,7 @@ public class ControlLCAUtil {
    * <li>whether FocusListeners are registered</li>
    * <li>whether KeyListeners are registered</li>
    * <li>whether TraverseListeners are registered</li>
+   * <li>whether HelpListeners are registered</li>
    * </ul>
    *
    * @param control the control whose parameters to preserve
@@ -161,6 +161,7 @@ public class ControlLCAUtil {
                       Boolean.valueOf( KeyEvent.hasListener( control ) ) );
     adapter.preserve( PROP_TRAVERSE_LISTENER,
                       Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
+    WidgetLCAUtil.preserveHelpListener( control );
   }
 
   /**
@@ -322,6 +323,7 @@ public class ControlLCAUtil {
    * <li>whether FocusListeners are registered</li>
    * <li>whether KeyListeners are registered</li>
    * <li>whether TraverseListeners are registered</li>
+   * <li>whether HelpListeners are registered</li>
    * </ul>
    *
    * @param control the control whose properties to set
@@ -348,6 +350,7 @@ public class ControlLCAUtil {
     writeKeyListener( control );
     writeTraverseListener( control );
     writeKeyEventResponse( control );
+    WidgetLCAUtil.writeHelpListener( control );
   }
 
   /**
@@ -899,7 +902,7 @@ public class ControlLCAUtil {
     result &= control.getClass() != SashForm.class;
     return result;
   }
-
+  
   /////////////////////
   // Selection Listener
 

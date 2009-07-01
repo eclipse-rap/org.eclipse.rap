@@ -56,6 +56,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     processSelectionEvent( link );
     ControlLCAUtil.processMouseEvents( link );
     ControlLCAUtil.processKeyEvents( link );
+    WidgetLCAUtil.processHelp( link );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

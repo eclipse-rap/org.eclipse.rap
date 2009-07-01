@@ -211,11 +211,9 @@ public class ActionContributionItem extends ContributionItem {
 			b.addListener(SWT.Dispose, getButtonListener());
 			// Don't hook a dispose listener on the parent
 			b.addListener(SWT.Selection, getButtonListener());
-			// RAP [bm]: HelpListener
-//			if (action.getHelpListener() != null) {
-//				b.addHelpListener(action.getHelpListener());
-//			}
-			// RAPEND: [bm] 
+			if (action.getHelpListener() != null) {
+				b.addHelpListener(action.getHelpListener());
+			}
 			widget = b;
 
 			update(null);
@@ -268,11 +266,9 @@ public class ActionContributionItem extends ContributionItem {
 			mi.setData(this);
 			mi.addListener(SWT.Dispose, getMenuItemListener());
 			mi.addListener(SWT.Selection, getMenuItemListener());
-			// RAP [bm]: HelpListener
-//			if (action.getHelpListener() != null) {
-//				mi.addHelpListener(action.getHelpListener());
-//			}
-			// RAPEND: [bm] 
+			if (action.getHelpListener() != null) {
+				mi.addHelpListener(action.getHelpListener());
+			}
 
 			if (flags == SWT.CASCADE) {
 				// just create a proxy for now, if the user shows it then 

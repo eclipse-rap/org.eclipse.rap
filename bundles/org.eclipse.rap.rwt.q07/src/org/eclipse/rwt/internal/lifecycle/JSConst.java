@@ -56,6 +56,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDoubleClick";
   public static final String EVENT_KEY_DOWN
     = "org.eclipse.swt.events.keyDown";
+  public static final String EVENT_HELP
+    = "org.eclipse.swt.events.help";
 
 
   // Parameter names that specify further event details

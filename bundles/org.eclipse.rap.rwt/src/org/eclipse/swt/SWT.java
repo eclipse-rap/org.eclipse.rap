@@ -333,6 +333,23 @@ public class SWT {
   public static final int Deactivate = 27;
 
   /**
+   * The help event type (value is 28).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addHelpListener
+   * @see org.eclipse.swt.widgets.Menu#addHelpListener
+   * @see org.eclipse.swt.widgets.MenuItem#addHelpListener
+   * @see org.eclipse.swt.events.HelpListener#helpRequested
+   * @see org.eclipse.swt.events.HelpEvent
+   * 
+   *  @since 1.3
+   */
+  public static final int Help = 28;
+  
+  /**
    * The traverse event type (value is 31).
    * 
    * @see org.eclipse.swt.widgets.Widget#addListener

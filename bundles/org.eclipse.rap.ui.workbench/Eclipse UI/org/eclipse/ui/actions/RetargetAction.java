@@ -14,8 +14,8 @@ import org.eclipse.core.commands.IHandlerAttributes;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-//import org.eclipse.swt.events.HelpEvent;
-//import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
@@ -47,11 +47,10 @@ import org.eclipse.ui.internal.PartSite;
 public class RetargetAction extends PartEventAction implements
         ActionFactory.IWorkbenchAction {
 
-// RAP [rh] missing help events  
-//    /**
-//     * The help listener assigned to this action, or <code>null</code> if none.
-//     */
-//    private HelpListener localHelpListener;
+    /**
+     * The help listener assigned to this action, or <code>null</code> if none.
+     */
+    private HelpListener localHelpListener;
 
     private boolean enableAccelerator = true;
 
@@ -86,24 +85,23 @@ public class RetargetAction extends PartEventAction implements
         super(text, style);
         setId(actionID);
         setEnabled(false);
-// RAP [rh] missing help events        
-//        super.setHelpListener(new HelpListener() {
-//            public void helpRequested(HelpEvent e) {
-//                HelpListener listener = null;
-//                if (handler != null) {
-//                    // if we have a handler, see if it has a help listener
-//                    listener = handler.getHelpListener();
-//                    if (listener == null) {
-//						// use our own help listener
-//                        listener = localHelpListener;
-//					}
-//                }
-//                if (listener != null) {
-//					// pass on the event
-//                    listener.helpRequested(e);
-//				}
-//            }
-//        });
+        super.setHelpListener(new HelpListener() {
+            public void helpRequested(HelpEvent e) {
+                HelpListener listener = null;
+                if (handler != null) {
+                    // if we have a handler, see if it has a help listener
+                    listener = handler.getHelpListener();
+                    if (listener == null) {
+						// use our own help listener
+                        listener = localHelpListener;
+					}
+                }
+                if (listener != null) {
+					// pass on the event
+                    listener.helpRequested(e);
+				}
+            }
+        });
     }
 
     /**
@@ -296,15 +294,14 @@ public class RetargetAction extends PartEventAction implements
 		}
     }
 
-// RAP [rh] missing help events
-//    /** 
-//     * The <code>RetargetAction</code> implementation of this method declared on
-//     * <code>IAction</code> stores the help listener in a local field. The
-//     * supplied listener is only used if there is no hanlder.
-//     */
-//    public void setHelpListener(HelpListener listener) {
-//        localHelpListener = listener;
-//    }
+    /** 
+     * The <code>RetargetAction</code> implementation of this method declared on
+     * <code>IAction</code> stores the help listener in a local field. The
+     * supplied listener is only used if there is no hanlder.
+     */
+    public void setHelpListener(HelpListener listener) {
+        localHelpListener = listener;
+    }
 
 	/**
 	 * Returns a string representation of this action.

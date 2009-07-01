@@ -35,8 +35,10 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    ControlLCAUtil.processMouseEvents( ( ProgressBar )widget );
-    ControlLCAUtil.processKeyEvents( ( ProgressBar )widget );
+    ProgressBar progressBar = ( ProgressBar )widget;
+    ControlLCAUtil.processMouseEvents( progressBar );
+    ControlLCAUtil.processKeyEvents( progressBar );
+    WidgetLCAUtil.processHelp( progressBar );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

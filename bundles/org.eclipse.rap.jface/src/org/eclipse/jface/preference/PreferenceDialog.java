@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,8 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -719,15 +722,14 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			}
 		});
 		//Register help listener on the tree to use context sensitive help
-		// RAP [bm]: HelpListener
-//		viewer.getControl().addHelpListener(new HelpListener() {
-//			public void helpRequested(HelpEvent event) {
-//				// call perform help on the current page
-//				if (currentPage != null) {
-//					currentPage.performHelp();
-//				}
-//			}
-//		});
+		viewer.getControl().addHelpListener(new HelpListener() {
+			public void helpRequested(HelpEvent event) {
+				// call perform help on the current page
+				if (currentPage != null) {
+					currentPage.performHelp();
+				}
+			}
+		});
 	}
 
 	/**

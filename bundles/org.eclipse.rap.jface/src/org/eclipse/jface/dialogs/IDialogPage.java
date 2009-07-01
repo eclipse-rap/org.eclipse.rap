@@ -100,8 +100,7 @@ public interface IDialogPage {
     /**
      * Notifies that help has been requested for this dialog page.
      */
-    // RAP [bm]: 
-//    public void performHelp();
+    public void performHelp();
 
     /**
      * Sets this dialog page's description text.

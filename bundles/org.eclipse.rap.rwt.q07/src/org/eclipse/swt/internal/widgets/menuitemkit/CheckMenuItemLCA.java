@@ -40,6 +40,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
+    WidgetLCAUtil.preserveHelpListener( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -48,6 +49,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
       menuItem.setSelection( Boolean.valueOf( paramValue ).booleanValue() );
     }
     ControlLCAUtil.processSelection( menuItem, null, false );
+    WidgetLCAUtil.processHelp( menuItem );
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
@@ -68,6 +70,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
                 Boolean.FALSE );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
+    WidgetLCAUtil.writeHelpListener( menuItem );
   }
   
   void renderDispose( final MenuItem menuItem ) throws IOException {

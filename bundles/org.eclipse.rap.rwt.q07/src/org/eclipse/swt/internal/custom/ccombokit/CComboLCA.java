@@ -88,6 +88,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processSelection( ccombo, null, true );
     ControlLCAUtil.processMouseEvents( ccombo );
     ControlLCAUtil.processKeyEvents( ccombo );
+    WidgetLCAUtil.processHelp( ccombo );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

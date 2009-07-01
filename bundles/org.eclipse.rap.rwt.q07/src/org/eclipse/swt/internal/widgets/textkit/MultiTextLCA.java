@@ -36,6 +36,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.readTextAndSelection( text );
     ControlLCAUtil.processMouseEvents( text );
     ControlLCAUtil.processKeyEvents( text );
+    WidgetLCAUtil.processHelp( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {

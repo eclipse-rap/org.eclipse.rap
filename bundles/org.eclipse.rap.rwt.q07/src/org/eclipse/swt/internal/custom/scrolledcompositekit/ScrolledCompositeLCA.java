@@ -69,6 +69,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.processMouseEvents( composite );
     ControlLCAUtil.processKeyEvents( composite );
+    WidgetLCAUtil.processHelp( composite );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

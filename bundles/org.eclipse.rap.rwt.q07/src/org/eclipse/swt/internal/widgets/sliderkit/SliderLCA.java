@@ -67,6 +67,7 @@ public class SliderLCA extends AbstractWidgetLCA {
       slider.setSelection( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( slider, null, true );
+    WidgetLCAUtil.processHelp( slider );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

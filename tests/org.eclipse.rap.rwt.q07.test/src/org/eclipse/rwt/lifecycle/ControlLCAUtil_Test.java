@@ -203,15 +203,6 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.processSelection( button, null, true );
     assertEquals( WIDGET_SELECTED, log.toString() );
 
-    // TODO [fappel]: what is the difference to the previous case?
-    // Test that requestParams like '...events.widgetSelected=w3,0' cause the
-    // event to be fired
-    log.setLength( 0 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    ControlLCAUtil.processSelection( button, null, true );
-    assertEquals( WIDGET_SELECTED, log.toString() );
-
     // Test that if requestParam '...events.widgetSelected' is null, no event
     // gets fired
     log.setLength( 0 );
@@ -575,7 +566,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteBackgroundImage() throws IOException {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
 
     Fixture.fakeResponseWriter();
@@ -594,6 +585,24 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeBackgroundImage( control );
     expected = "w.resetBackgroundImage();";
     assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testProcessHelpEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Control control = new Shell( display, SWT.NONE );
+    control.addHelpListener( new HelpListener() {
+      public void helpRequested( final HelpEvent event ) {
+        log.add( event );
+      }
+    } );
+    Fixture.fakeRequestParam( JSConst.EVENT_HELP, WidgetUtil.getId( control ) );
+    WidgetLCAUtil.processHelp( control );
+    assertEquals( 1, log.size() );
+    HelpEvent event = ( HelpEvent )log.get( 0 );
+    assertSame( control, event.widget );
+    assertSame( display, event.display );
   }
 
   protected void setUp() throws Exception {

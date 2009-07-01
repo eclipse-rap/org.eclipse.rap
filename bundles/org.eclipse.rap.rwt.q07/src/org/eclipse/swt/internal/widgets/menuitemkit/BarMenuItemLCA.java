@@ -36,10 +36,12 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
                       Boolean.valueOf( hasListener ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
+    WidgetLCAUtil.preserveHelpListener( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
     ControlLCAUtil.processSelection( menuItem, null, false );
+    WidgetLCAUtil.processHelp( menuItem );
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
@@ -59,6 +61,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
                            SelectionEvent.hasListener( menuItem ) );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
+    WidgetLCAUtil.writeHelpListener( menuItem );
   }
 
   void renderDispose( final MenuItem menuItem ) throws IOException {

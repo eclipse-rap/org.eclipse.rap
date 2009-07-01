@@ -23,6 +23,7 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
@@ -54,6 +55,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_BACKGROUND_TRANSPARENCY = "backgroundTrans";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
+  private static final String PROP_HELP_LISTENER = "helpListener";
 
   private static final String JS_PROP_SPACE = "space";
   private static final String JS_PROP_CONTEXT_MENU = "contextMenu";
@@ -64,6 +66,11 @@ public final class WidgetLCAUtil {
     = Pattern.compile( "&|<|>|\\\"" );
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" );
+
+  private static final JSListenerInfo HELP_LISTENER_INFO
+    = new JSListenerInfo( "keydown",
+                          "org.eclipse.swt.EventUtil.helpRequested",
+                          JSListenerType.ACTION );
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -826,6 +833,53 @@ public final class WidgetLCAUtil {
     if( ( widget.getStyle() & style ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE,
                    new Object[] { "rwt_" + styleName } );
+    }
+  }
+
+  ////////////////
+  // Help listener
+  
+  /**
+   * Preserves whether the given <code>widget</code> has one or more 
+   * <code>HelpListener</code>s attached.
+   *
+   * @param widget the widget to preserve
+   * @since 1.3
+   */
+  public static void preserveHelpListener( final Widget widget ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_HELP_LISTENER,
+                      Boolean.valueOf( HelpEvent.hasListener( widget ) ) );
+  }
+
+  /**
+   * Adds or removes client-side help listeners for the the given 
+   * <code>widget</code> as necessary.
+   * 
+   * @param widget
+   * @since 1.3
+   */
+  public static void writeHelpListener( final Widget widget )
+    throws IOException
+  {
+    boolean hasListener = HelpEvent.hasListener( widget );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.updateListener( HELP_LISTENER_INFO,
+                           PROP_HELP_LISTENER,
+                           hasListener );
+  }
+  
+  /**
+   * Process a <code>HelpEvent</code> if the current request specifies that 
+   * there occured a help event for the given <code>widget</code>.  
+   *
+   * @param widget the widget to process
+   * @since 1.3
+   */
+  public static void processHelp( final Widget widget ) {
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_HELP ) ) {
+      HelpEvent event = new HelpEvent( widget );
+      event.processEvent();
     }
   }
 

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.jface.wizard;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -436,16 +439,14 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		// Register help listener on the shell
-		// RAP [bm]:
-//		newShell.addHelpListener(new HelpListener() {
-//			public void helpRequested(HelpEvent event) {
-//				// call perform help on the current page
-//				if (currentPage != null) {
-//					currentPage.performHelp();
-//				}
-//			}
-//		});
-		// RAPEND: [bm]
+		newShell.addHelpListener(new HelpListener() {
+			public void helpRequested(HelpEvent event) {
+				// call perform help on the current page
+				if (currentPage != null) {
+					currentPage.performHelp();
+				}
+			}
+		});
 
 	}
 

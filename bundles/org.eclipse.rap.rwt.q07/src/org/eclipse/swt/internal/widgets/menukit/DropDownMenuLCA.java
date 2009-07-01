@@ -33,10 +33,12 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.preserveMenuListener( menu );
     MenuLCAUtil.preserveWidth( menu );
     WidgetLCAUtil.preserveCustomVariant( menu );
+    WidgetLCAUtil.preserveHelpListener( menu );
   }
   
   void readData( final Menu menu ) {
     MenuLCAUtil.readMenuEvent( menu );
+    WidgetLCAUtil.processHelp( menu );
   }
   
   void renderInitialization( final Menu menu ) throws IOException {
@@ -60,6 +62,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeUnhideMenu( menu );
     MenuLCAUtil.writeWidth( menu );
     WidgetLCAUtil.writeCustomVariant( menu );
+    WidgetLCAUtil.writeHelpListener( menu );
   }
 
   /**

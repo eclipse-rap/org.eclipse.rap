@@ -36,10 +36,12 @@ final class MenuBarLCA extends MenuDelegateLCA {
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
     WidgetLCAUtil.preserveCustomVariant( menu );
+    WidgetLCAUtil.preserveHelpListener( menu );
   }
 
   void readData( final Menu menu ) {
     MenuLCAUtil.readMenuEvent( menu );
+    WidgetLCAUtil.processHelp( menu );
   }
 
   void renderInitialization( final Menu menu ) throws IOException {
@@ -57,6 +59,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
     WidgetLCAUtil.writeCustomVariant( menu );
+    WidgetLCAUtil.writeHelpListener( menu );
   }
 
   //////////////////////////////////////////////////

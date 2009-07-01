@@ -30,6 +30,7 @@ import org.eclipse.jface.menus.IMenuStateIds;
 import org.eclipse.jface.menus.TextState;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.Util;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.commands.ICommandService;
@@ -217,11 +218,10 @@ public final class CommandLegacyActionWrapper extends AbstractAction {
 				CommandImageManager.TYPE_DISABLED, style);
 	}
 
-	// RAP [bm]: Help
-//	public final HelpListener getHelpListener() {
-//		// TODO Help. Addressing help on commands.
-//		return null;
-//	}
+	public final HelpListener getHelpListener() {
+		// TODO Help. Addressing help on commands.
+		return null;
+	}
 
 	public final ImageDescriptor getHoverImageDescriptor() {
 		final String commandId = getActionDefinitionId();
@@ -459,11 +459,9 @@ public final class CommandLegacyActionWrapper extends AbstractAction {
 		}
 	}
 
-	// RAP [bm]: Help
-//	public final void setHelpListener(final HelpListener listener) {
-//		// TODO Help Haven't even started to look at help yet.
-//	}
-	// RAPEND: [bm] 
+	public final void setHelpListener(final HelpListener listener) {
+		// TODO Help Haven't even started to look at help yet.
+	}
 
 	public final void setHoverImageDescriptor(final ImageDescriptor newImage) {
 		final String commandId = getActionDefinitionId();

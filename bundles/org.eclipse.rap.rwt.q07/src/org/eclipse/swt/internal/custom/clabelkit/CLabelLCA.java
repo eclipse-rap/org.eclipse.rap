@@ -41,8 +41,10 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    ControlLCAUtil.processMouseEvents( ( CLabel )widget );
-    ControlLCAUtil.processKeyEvents( ( CLabel )widget );
+    CLabel label = ( CLabel )widget;
+    ControlLCAUtil.processMouseEvents( label );
+    ControlLCAUtil.processKeyEvents( label );
+    WidgetLCAUtil.processHelp( label );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

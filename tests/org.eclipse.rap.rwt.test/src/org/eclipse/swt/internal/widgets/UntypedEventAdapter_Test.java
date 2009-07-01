@@ -107,6 +107,9 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.addListener( SWT.KeyDown, listener );
     adapter.keyPressed( new KeyEvent( widget, 0 ) );
     assertEquals( SWT.KeyDown, eventType );
+    adapter.addListener( SWT.Help, listener );
+    adapter.helpRequested( new HelpEvent( widget ) );
+    assertEquals( SWT.Help, eventType );
   }
 
   public void testAdditionAndRemovalOfListener() throws Exception {

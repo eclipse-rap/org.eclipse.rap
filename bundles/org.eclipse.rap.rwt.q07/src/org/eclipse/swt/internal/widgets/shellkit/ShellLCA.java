@@ -73,6 +73,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     processActivate( shell );
     ControlLCAUtil.processMouseEvents( shell );
     ControlLCAUtil.processKeyEvents( shell );
+    WidgetLCAUtil.processHelp( shell );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

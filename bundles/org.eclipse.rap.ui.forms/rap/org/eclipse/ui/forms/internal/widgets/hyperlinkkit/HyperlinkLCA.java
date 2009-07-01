@@ -60,6 +60,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     ControlLCAUtil.processSelection( widget, null, false );
+    WidgetLCAUtil.processHelp( widget );
   }
 
   public void preserveValues( final Widget widget ) {

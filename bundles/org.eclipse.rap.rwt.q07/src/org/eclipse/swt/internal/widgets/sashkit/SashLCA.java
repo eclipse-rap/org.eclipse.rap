@@ -38,8 +38,10 @@ public final class SashLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     // TODO [rh] clarify whether bounds should be sent (last parameter)
     ControlLCAUtil.processSelection( widget, null, true );
-    ControlLCAUtil.processMouseEvents( ( Sash )widget );
-    ControlLCAUtil.processKeyEvents( ( Sash )widget );
+    Sash sash = ( Sash )widget;
+    ControlLCAUtil.processMouseEvents( sash );
+    ControlLCAUtil.processKeyEvents( sash );
+    WidgetLCAUtil.processHelp( sash );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

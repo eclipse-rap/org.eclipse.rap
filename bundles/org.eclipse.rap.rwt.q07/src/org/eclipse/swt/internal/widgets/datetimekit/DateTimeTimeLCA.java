@@ -60,6 +60,7 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
     ControlLCAUtil.processSelection( dateTime, null, true );
     ControlLCAUtil.processMouseEvents( dateTime );
     ControlLCAUtil.processKeyEvents( dateTime );
+    WidgetLCAUtil.processHelp( dateTime );
   }
 
   void renderInitialization( final DateTime dateTime )

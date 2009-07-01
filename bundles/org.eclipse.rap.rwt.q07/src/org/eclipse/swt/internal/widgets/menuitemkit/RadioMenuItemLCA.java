@@ -42,6 +42,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
+    WidgetLCAUtil.preserveHelpListener( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -54,6 +55,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
       menuItem.setSelection( selection );
     }
     ControlLCAUtil.processSelection( menuItem, null, false );
+    WidgetLCAUtil.processHelp( menuItem );
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
@@ -83,6 +85,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
                 Boolean.FALSE );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
+    WidgetLCAUtil.writeHelpListener( menuItem );
   }
 
   void renderDispose( final MenuItem menuItem ) throws IOException {
