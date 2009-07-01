@@ -423,7 +423,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     String text = tableAdapter.getToolTipText();
     if( text != null ) {
       JSWriter writer = JSWriter.getWriterFor( table );
-      text = text.replaceAll( "\n", "<br>" );
+      text = WidgetLCAUtil.escapeText( text, false );
+      text = WidgetLCAUtil.replaceNewLines( text, "<br>" );
       writer.call( "setCellToolTipText", new String[]{ text } );
     }
   }
