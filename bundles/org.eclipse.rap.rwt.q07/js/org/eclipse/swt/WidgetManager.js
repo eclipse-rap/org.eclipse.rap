@@ -31,7 +31,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     this._current = null;
     
     this._fontPool = new Object();
-    this._toolTipPool = new Array();
   },
 
   statics : {
@@ -292,45 +291,17 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * removes the tool tip of the widget.
      */
     setToolTip : function( widget, toolTipText ) {
-      // remove and dispose of an eventually existing tool tip
-      this._removeToolTipPopup( widget );
       if( toolTipText != null && toolTipText != "" ) {
-        var toolTip = this._createToolTipPopup( toolTipText );
-        widget.setToolTip( toolTip );
-      }
-    },
-
-    /**
-     * Fetches a recycled tool tip popup from the widget pool if available or
-     * creates one otherwise.
-     */
-    _createToolTipPopup : function( text ) {
-      var toolTip = this._toolTipPool.pop();
-      if( !toolTip ) {
-        toolTip = new qx.ui.popup.ToolTip();
-        var atom = toolTip.getAtom();
-        atom.setLabel( "(empty)" );
-        atom.getLabelObject().setMode( "html" );
-        atom.setLabel( text );
+        widget.setUserData( "toolTipText", toolTipText );
+        widget.setToolTip( org.eclipse.rwt.widgets.ToolTip.getInstance() );
       } else {
-        toolTip.getAtom().setLabel( text );
+        this._removeToolTipPopup( widget );
       }
-      return toolTip;
     },
-
-    /**
-     * Removes the tool tip that is assigned to the given widget and stores it
-     * in the widget pool.
-     * If the widget has no tool tip assigned, nothing is done.
-     */
+    
     _removeToolTipPopup : function( widget ) {
-      var toolTip = widget.getToolTip();
       widget.setToolTip( null );
-      if( toolTip ) {
-        // hide tooltip as disposing a visible one might cause app to hang
-        toolTip.hide();
-        this._toolTipPool.push( toolTip );
-      }
-    }
+      widget.setUserData( "toolTipText", null );
+   }
   }
 });
