@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -16,7 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -72,12 +72,6 @@ public class LabelTab extends ExampleTab {
     fixedSizeLabel = new Label( parent, style );
     fixedSizeLabel.setText(   "Fixed size Label with some very long text\n"
                               + "and another line" );
-    parent.addControlListener( new ControlAdapter() {
-      public void controlResized(ControlEvent e) {
-        Point size = fixedSizeLabel.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-        fixedSizeLabel.setLayoutData( new RowData( size.x, size.y * 2) );
-      }
-    } );
     fixedSizeLabel.setLayoutData( new RowData( 100, 100 ) );
     new Label( parent, SWT.NONE );
     varSizeLabel = new Label( parent, style );
