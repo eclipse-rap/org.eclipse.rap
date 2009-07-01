@@ -21,7 +21,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
@@ -36,8 +35,7 @@ public class ExamplesActionBarAdvisor extends ActionBarAdvisor {
 
   protected void makeActions( final IWorkbenchWindow window ) {
     ImageDescriptor helpActionImage
-      = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo",
-                                                    "icons/help.gif" );
+      = Activator.getImageDescriptor( "icons/help.gif" );
     aboutAction = new Action() {
       public void run() {
         Shell shell = window.getShell();
