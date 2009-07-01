@@ -307,26 +307,24 @@ ExpandItem-Button:expanded {
   background-image: url( /theme/business/icons/expanditem-collapse.gif );
 }
 
-/* Combo */
+/* Combo, Spinner */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-
 Combo {
   border: 1px solid #c1c1c1;
 }
 
-/*
+Combo-Button, Spinner-UpButton {
+  background-color: #d6d6d6;
+  border: 2px solid #d6d6d6; /* workaround for bug 282149 */
+}
 
-TODO: activate flat look on Combo and Spinner together
-      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=281770
-
-Combo-Button {
+Spinner-DownButton {
   background-color: #c1c1c1;
-  border: none;
+  border: 2px solid #c1c1c1; /* workaround for bug 282149 */
 }
 
-Combo-Button:hover {
-  background-color: #d2d2d2;
+Combo-Button:hover, Spinner-UpButton:pressed, Spinner-DownButton:pressed {
+  background-color: #e2e2e2;
+  border: 2px solid #e2e2e2; /* workaround for bug 282149 */
 }
-
-*/
