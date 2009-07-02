@@ -333,7 +333,7 @@ public class Shell extends Decorations {
    * @see SWT#SHELL_TRIM
    * @see SWT#DIALOG_TRIM
    * @see SWT#ON_TOP
-   * <!--@see SWT#TOOL-->
+   * @see SWT#TOOL
    * <!--@see SWT#MODELESS-->
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
