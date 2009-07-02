@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
@@ -69,9 +70,11 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     setExpanded : function( expanded ) {
       this._expanded = expanded;
       if( expanded ) { 
-        this._chevron.addState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );       
+        this._chevron.addState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );
+        this._header.addState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );
       } else { 
-        this._chevron.removeState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );       
+        this._chevron.removeState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );
+        this._header.removeState( org.eclipse.swt.widgets.ExpandItem.STATE_EXPANDED );
       }
     }, 
     
