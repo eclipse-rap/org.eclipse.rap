@@ -8151,9 +8151,7 @@ if(!(this._lastUpDownType[keyCode]=="keydown"&&type=="keydown")){this._idealKeyH
 charCode,
 type,
 domEvent);
-}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||
-keyCode==
-8||keyCode==9){this._idealKeyHandler(keyCode,
+}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||keyCode==8||keyCode==9){this._idealKeyHandler(keyCode,
 charCode,
 "keypress",
 domEvent);
@@ -10971,18 +10969,14 @@ defer:function(statics){statics.__init();
 /* ID: qx.bom.element.Overflow */
 qx.Class.define("qx.bom.element.Overflow",
 {statics:{_compile:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(prop,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(prop,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }return "overflow:"+value+";";
 }:
 function(prop,
 value){return prop+":"+value+";";
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(prop,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(prop,
 value){return "overflow:"+value+";";
 }:
 function(prop,
@@ -10998,9 +10992,7 @@ compileY:function(value){return this._compile("overflow-y",
 value);
 },
 getX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11014,9 +11006,7 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11035,18 +11025,14 @@ mode,
 false);
 }}),
 setX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowX=value;
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11056,15 +11042,11 @@ value){element.style.overflowX=value;
 value){element.style.overflowX=value;
 }}),
 resetX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowX="";
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11073,9 +11055,7 @@ value){element.style.overflowX="";
 "default":function(element){element.style.overflowX="";
 }}),
 getY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11089,9 +11069,7 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11110,18 +11088,14 @@ mode,
 false);
 }}),
 setY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 value){if(value==="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowY=value;
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11131,15 +11105,11 @@ value){element.style.overflowY=value;
 value){element.style.overflowY=value;
 }}),
 resetY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowY="";
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11511,9 +11481,7 @@ throw msg;
 },
 matchesKeyEvent:function(e){var key=this.__key||this.getKeyIdentifier();
 if(!key&&!this.getKeyCode()){return ;
-}if((this.__modifier.Shift&&!e.isShiftPressed())||
-(this.__modifier.Control&&!e.isCtrlPressed())||
-(this.__modifier.Alt&&!e.isAltPressed())){return false;
+}if((this.__modifier.Shift&&!e.isShiftPressed())||(this.__modifier.Control&&!e.isCtrlPressed())||(this.__modifier.Alt&&!e.isAltPressed())){return false;
 }
 if(key){if(key==e.getKeyIdentifier()){return true;
 }}else{if(this.getKeyCode()==e.getKeyCode()){return true;
@@ -16305,11 +16273,7 @@ if(vTarget&&vTarget.getMenu&&vTarget.getMenu()){continue;
 continue;
 }var isMouseDown=vEventName=="mousedown";
 var isMouseUp=vEventName=="mouseup";
-if(vMenu.getOpener()!==
-vTarget&&
-(vTarget&&
-(!vMenu.isSubElement(vTarget)&&isMouseDown)||
-(vMenu.isSubElement(vTarget,
+if(vMenu.getOpener()!==vTarget&&(vTarget&&(!vMenu.isSubElement(vTarget)&&isMouseDown)||(vMenu.isSubElement(vTarget,
 true)&&isMouseUp)||(!isMouseDown&&!isMouseUp))){vMenu.hide();
 continue;
 }}}}});
@@ -17207,12 +17171,14 @@ this.add(this._textfield);
 this._buttonlayout=new qx.ui.layout.VerticalBoxLayout;
 this._buttonlayout.setWidth("auto");
 this.add(this._buttonlayout);
-this._upbutton=new qx.ui.basic.Image;
+this._upbutton=new qx.ui.form.Button;
 this._upbutton.setAppearance("spinner-button-up");
+this._upbutton.setTabIndex(-1);
 this._upbutton.setHeight("1*");
 this._buttonlayout.add(this._upbutton);
-this._downbutton=new qx.ui.basic.Image;
+this._downbutton=new qx.ui.form.Button;
 this._downbutton.setAppearance("spinner-button-down");
+this._downbutton.setTabIndex(-1);
 this._downbutton.setHeight("1*");
 this._buttonlayout.add(this._downbutton);
 this._timer=new qx.client.Timer(this.getInterval());

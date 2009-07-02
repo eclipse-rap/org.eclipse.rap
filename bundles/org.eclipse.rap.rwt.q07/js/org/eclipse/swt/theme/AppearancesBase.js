@@ -1153,7 +1153,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.width = 16;
-      result.source = tv.getCssImage( "Spinner-UpButton", "background-image" );
+      result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
       result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
       result.backgroundColor = tv.getCssColor( "Spinner-UpButton", 
                                                "background-color" );
@@ -1166,7 +1166,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.width = 16;
-      result.source = tv.getCssImage( "Spinner-DownButton", "background-image" );
+      result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
       result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
       result.backgroundColor = tv.getCssColor( "Spinner-DownButton", 
                                                "background-color" );
