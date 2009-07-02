@@ -15,35 +15,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
 
   construct : function() {
     this.base( arguments );
-    this.rap_init();
+    this._isModified = false;
+    this._hasModifyListener = false;
+    this._hasSelectionListener = false;
+    this.setWrap( false );
+    // Hack to prevent the spinner text field to request the focus
+    this._textfield.setFocused = function() {};
+    this._textfield.addEventListener( "changeValue", this._onChangeValue, this );
+    this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
+    this._textfield.addEventListener( "blur", this._onChangeValue, this );
+    this._textfield.addEventListener( "keydown", this._onKeyDown, this );
+    this._textfield.setTabIndex( -1 );
+    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
   destruct : function() {
-    this.rap_reset();
+    this._textfield.removeEventListener( "changeValue", this._onChangeValue, this );
+    this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
+    this._textfield.removeEventListener( "blur", this._onChangeValue, this );
+    this._textfield.removeEventListener( "keydown", this._onKeyDown, this );
+    this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
   members : {
-    
-    rap_init : function() {
-      this._isModified = false;
-      this._hasModifyListener = false;
-      this._hasSelectionListener = false;
-      this.setWrap( false );
-      this._textfield.addEventListener( "changeValue", this._onChangeValue, this );
-      this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
-      this._textfield.addEventListener( "blur", this._onChangeValue, this );
-      this._textfield.addEventListener( "keydown", this._onKeyDown, this );
-      this._textfield.setTabIndex( -1 );
-      this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
-    },
-    
-    rap_reset : function() {
-      this._textfield.removeEventListener( "changeValue", this._onChangeValue, this );
-      this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
-      this._textfield.removeEventListener( "blur", this._onChangeValue, this );
-      this._textfield.removeEventListener( "keydown", this._onKeyDown, this );
-      this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
-    },
     
     setFont : function( value ) {
       this._textfield.setFont( value );
