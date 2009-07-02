@@ -11,10 +11,12 @@ Button[PUSH], Button[TOGGLE] {
   background-color: rgb( 247, 247, 251 );
   border: 1px outset;
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  padding: 5px 6px;
 }
 
 Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
   border: 1px black;
+  padding: 5px 6px;
 }
 
 Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
@@ -27,10 +29,12 @@ Button[PUSH]:hover, Button[TOGGLE]:hover {
 
 Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
   border: 1px inset;
+  padding: 4px 3px 2px 5px;
 }
 
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
   background-color: rgb( 225, 225, 230 );
+  padding: 5px 6px;
 }
 
 Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {

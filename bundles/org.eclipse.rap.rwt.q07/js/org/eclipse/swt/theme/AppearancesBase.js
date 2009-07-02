@@ -215,13 +215,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "Button", "background-image" );
       result.border = tv.getCssBorder( "Button", "border" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
-      // TODO [rst] enable generic padding
-      // result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      if( !states.rwt_FLAT && ( states.pressed || states.checked ) ) {
-        result.padding = [ 4, 3, 2, 5 ];
-      } else {
-        result.padding = [ 3, 4, 3, 4 ];
-      }
+      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       return result;
     }
   },
