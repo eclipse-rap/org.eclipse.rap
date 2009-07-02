@@ -218,6 +218,16 @@ Button-CheckIcon:grayed {
   background-image: url( /theme/business/icons/check-grayed.png );
 }
 
+/* Radio Buttons */
+
+Button-RadioIcon {
+  background-image: url( /theme/business/icons/radio-unselected.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( /theme/business/icons/radio-selected.png );
+}
+
 /* Menu */
 Menu {
   color: rgb( 0, 89, 165 );;
