@@ -50,19 +50,22 @@
           The size of the image should be 12 x 5 pixels.
         </description>
       </property>
-      
+
       <property name="background-color" type="color">
         <description>
           The background color of the Spinner up button.
         </description>
-      </property> 
+      </property>
 
       <property name="border" type="border">
         <description>
           The border of the Spinner up button.
         </description>
       </property>
-          
+
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
+
       <state name="pressed"
           description="Applies while a button is pressed." />
 
@@ -77,19 +80,22 @@
           The size of the image should be 12 x 5 pixels.
         </description>
       </property>
-      
+
       <property name="background-color" type="color">
         <description>
           The background color of the Spinner down button.
         </description>
-      </property> 
+      </property>
 
       <property name="border" type="border">
         <description>
           The border of the Spinner down button.
         </description>
       </property>
-          
+
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
+
       <state name="pressed"
           description="Applies while a button is pressed." />
 
