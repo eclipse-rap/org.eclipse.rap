@@ -1735,9 +1735,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
-      result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "DateTime", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.padding = 1;
       return result;
@@ -1748,9 +1748,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
-      result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "DateTime", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.padding = 1;
       return result;
@@ -1761,9 +1761,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
+      result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       return result;
     }

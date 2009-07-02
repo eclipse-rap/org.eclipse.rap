@@ -23,9 +23,22 @@
     <property name="background-color"
         type="color"
         description="Background color" />
+        
+    <property name="font" type="font">
+      <description>
+        Text font for DateTime. Not applied to DateTime Calendar.
+      </description>
+    </property>    
+        
+    <property name="border"
+        type="border"
+        description="DateTime border" />    
 
     <state name="disabled"
         description="Applies to disbled DateTime controls." />
+        
+    <style name="BORDER"
+        description="Style constant for bordered behavior." />
 
     <element name="DateTime-Field"
         description="Fields for date, month, year, hours, minutes, seconds">
