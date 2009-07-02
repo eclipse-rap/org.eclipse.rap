@@ -218,6 +218,18 @@ Button-CheckIcon:grayed {
   background-image: url( /theme/business/icons/check-grayed.png );
 }
 
+Button-CheckIcon:hover {
+  background-image: url( /theme/business/icons/check-unselected-hover.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( /theme/business/icons/check-selected-hover.png );
+}
+
+Button-CheckIcon:grayed:hover {
+  background-image: url( /theme/business/icons/check-grayed-hover.png );
+}
+
 /* Radio Buttons */
 
 Button-RadioIcon {
@@ -226,6 +238,14 @@ Button-RadioIcon {
 
 Button-RadioIcon:selected {
   background-image: url( /theme/business/icons/radio-selected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( /theme/business/icons/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( /theme/business/icons/radio-selected-hover.png );
 }
 
 /* Menu */
@@ -324,17 +344,15 @@ Combo {
   border: 1px solid #c1c1c1;
 }
 
-Combo-Button, Spinner-UpButton {
+Combo-Button, Spinner-UpButton, Spinner-DownButton {
   background-color: #d6d6d6;
-  border: 2px solid #d6d6d6; /* workaround for bug 282149 */
+  border: none;
 }
 
 Spinner-DownButton {
   background-color: #c1c1c1;
-  border: 2px solid #c1c1c1; /* workaround for bug 282149 */
 }
 
-Combo-Button:hover, Spinner-UpButton:pressed, Spinner-DownButton:pressed {
+Combo-Button:hover, Spinner-UpButton:hover, Spinner-DownButton:hover {
   background-color: #e2e2e2;
-  border: 2px solid #e2e2e2; /* workaround for bug 282149 */
 }
