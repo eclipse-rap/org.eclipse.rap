@@ -1917,4 +1917,7 @@ public abstract class Control extends Widget {
   public Accessible getAccessible () {
     return new Accessible();
   }
+
+  public void setParent( Widget limbo ) {
+  }
 }
