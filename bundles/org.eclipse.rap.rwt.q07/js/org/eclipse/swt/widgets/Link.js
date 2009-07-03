@@ -221,6 +221,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var index = target.id;
       this._currentLinkFocused = index;
       target.focus();
+      target.style.outline = "1px dotted";
       var leftBtnPressed = this._isLeftMouseButtonPressed( e );
       if( this.isEnabled() && leftBtnPressed ) {
         this._sendChanges( index );
@@ -266,6 +267,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
         if( linkElement ) {
           var hyperlinks = linkElement.getElementsByTagName( "span" );
           hyperlinks[ 0 ].focus();
+          hyperlinks[ 0 ].style.outline = "1px dotted";
           this._currentLinkFocused = 0;
         }
       }
@@ -283,7 +285,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
           evt.stopPropagation();
           evt.preventDefault();
           this._currentLinkFocused++;
-          this._focusLinkByID( this._currentLinkFocused );
+          this._focusLinkByID( this._currentLinkFocused, 
+                               this._currentLinkFocused - 1 );
         } else if(    !evt.isShiftPressed()
                    && this._currentLinkFocused == -1 )
         {
@@ -293,6 +296,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
           if( linkElement ) {
             var hyperlinks = linkElement.getElementsByTagName( "span" );
             hyperlinks[ 0 ].focus();
+            hyperlinks[ 0 ].style.outline = "1px dotted";
             this._currentLinkFocused = 0;
           }
         } else if(    evt.isShiftPressed()
@@ -302,16 +306,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
           evt.stopPropagation();
           evt.preventDefault();
           this._currentLinkFocused--;
-          this._focusLinkByID( this._currentLinkFocused );
+          this._focusLinkByID( this._currentLinkFocused, 
+                               this._currentLinkFocused + 1 );
         }    
       }
     },
     
-    _focusLinkByID : function( id ) {
+    _focusLinkByID : function( id, old ) {
       var linkElement = this.getElement();
       if( linkElement ) {
         var hyperlinks = linkElement.getElementsByTagName( "span" );
+        hyperlinks[ old ].blur();
+        hyperlinks[ old ].style.outline = "none";
         hyperlinks[ id ].focus();
+        hyperlinks[ id ].style.outline = "1px dotted";
       }
     },
     
@@ -321,6 +329,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
         var hyperlinks = linkElement.getElementsByTagName( "span" );
         if( this._currentLinkFocused >= 0 ) {
           hyperlinks[ this._currentLinkFocused ].blur();
+          hyperlinks[ this._currentLinkFocused ].style.outline = "none";
         }
       }
       this._currentLinkFocused = -1;
