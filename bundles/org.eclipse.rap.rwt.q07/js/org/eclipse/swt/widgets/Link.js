@@ -218,10 +218,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     
     _onMouseDown : function( e ) {
       var target = this._getEventTarget( e );
-      var index = target.id;
-      this._currentLinkFocused = index;
-      target.focus();
-      target.style.outline = "1px dotted";
+      var index = parseInt( target.id );
+      this._focusLinkByID( index );
       var leftBtnPressed = this._isLeftMouseButtonPressed( e );
       if( this.isEnabled() && leftBtnPressed ) {
         this._sendChanges( index );
@@ -263,13 +261,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     // Override of the _ontabfocus method from qx.ui.core.Widget 
     _ontabfocus : function() {
       if( this._currentLinkFocused == -1 && this._linksCount > 0 ) {
-        var linkElement = this.getElement();
-        if( linkElement ) {
-          var hyperlinks = linkElement.getElementsByTagName( "span" );
-          hyperlinks[ 0 ].focus();
-          hyperlinks[ 0 ].style.outline = "1px dotted";
-          this._currentLinkFocused = 0;
-        }
+        this._focusLinkByID( 0 );
       }
     },
     
@@ -280,59 +272,50 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       {
         if(    !evt.isShiftPressed()
             && this._currentLinkFocused >= 0
-            && this._currentLinkFocused < ( this._linksCount - 1 ) )
+            && this._currentLinkFocused < this._linksCount - 1 )
         {
           evt.stopPropagation();
           evt.preventDefault();
-          this._currentLinkFocused++;
-          this._focusLinkByID( this._currentLinkFocused, 
-                               this._currentLinkFocused - 1 );
+          this._focusLinkByID( this._currentLinkFocused + 1 );
         } else if(    !evt.isShiftPressed()
                    && this._currentLinkFocused == -1 )
         {
           evt.stopPropagation();
           evt.preventDefault();
-          var linkElement = this.getElement();
-          if( linkElement ) {
-            var hyperlinks = linkElement.getElementsByTagName( "span" );
-            hyperlinks[ 0 ].focus();
-            hyperlinks[ 0 ].style.outline = "1px dotted";
-            this._currentLinkFocused = 0;
-          }
+          this._focusLinkByID( 0 );
         } else if(    evt.isShiftPressed()
                    && this._currentLinkFocused > 0
-                   && this._currentLinkFocused <= ( this._linksCount - 1 ) )
+                   && this._currentLinkFocused <= this._linksCount - 1 )
         {
           evt.stopPropagation();
           evt.preventDefault();
-          this._currentLinkFocused--;
-          this._focusLinkByID( this._currentLinkFocused, 
-                               this._currentLinkFocused + 1 );
+          this._focusLinkByID( this._currentLinkFocused - 1 );
         }    
       }
     },
     
-    _focusLinkByID : function( id, old ) {
-      var linkElement = this.getElement();
-      if( linkElement ) {
-        var hyperlinks = linkElement.getElementsByTagName( "span" );
-        hyperlinks[ old ].blur();
-        hyperlinks[ old ].style.outline = "none";
-        hyperlinks[ id ].focus();
-        hyperlinks[ id ].style.outline = "1px dotted";
-      }
-    },
-    
-    _onFocusOut : function( evt ) {
+    _focusLinkByID : function( id ) {
       var linkElement = this.getElement();
       if( linkElement ) {
         var hyperlinks = linkElement.getElementsByTagName( "span" );
         if( this._currentLinkFocused >= 0 ) {
           hyperlinks[ this._currentLinkFocused ].blur();
-          hyperlinks[ this._currentLinkFocused ].style.outline = "none";
+          if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+            hyperlinks[ this._currentLinkFocused ].style.outline = "none";
+          }
+        }
+        this._currentLinkFocused = id;
+        if( this._currentLinkFocused >= 0 ) {
+          hyperlinks[ this._currentLinkFocused ].focus();
+          if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+            hyperlinks[ this._currentLinkFocused ].style.outline = "1px dotted";
+          }
         }
       }
-      this._currentLinkFocused = -1;
+    },
+    
+    _onFocusOut : function( evt ) {
+      this._focusLinkByID( -1 );
     },
     
     _sendChanges : function( index ) {
