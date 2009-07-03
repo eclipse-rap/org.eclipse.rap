@@ -6804,7 +6804,9 @@ if(qx.core.Variant.isSet("qx.client",
 for(var i in this._styleProperties){switch(i){case "zIndex":case "filter":case "display":break;
 default:cs[i]=this._styleProperties[i];
 es[i]="";
-}}
+}}if(qx.core.Variant.isSet("qx.client",
+"webkit")){es.outline="none";
+}
 for(var i in this._htmlProperties){switch(i){case "unselectable":cl.unselectable=this._htmlProperties[i];
 }}while(elem.firstChild){cl.appendChild(elem.firstChild);
 }elem.appendChild(cl);
