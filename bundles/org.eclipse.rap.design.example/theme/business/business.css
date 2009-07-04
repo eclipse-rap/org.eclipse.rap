@@ -349,10 +349,19 @@ Combo-Button, Spinner-UpButton, Spinner-DownButton {
   border: none;
 }
 
+Spinner-UpButton {
+  background-image: url( /theme/business/icons/chevron-up-small.png );
+}
+
 Spinner-DownButton {
+  background-image: url( /theme/business/icons/chevron-down-small.png );
   background-color: #c1c1c1;
 }
 
 Combo-Button:hover, Spinner-UpButton:hover, Spinner-DownButton:hover {
   background-color: #e2e2e2;
+}
+
+Combo-Button {
+  background-image: url( /theme/business/icons/chevron-down.png );
 }
