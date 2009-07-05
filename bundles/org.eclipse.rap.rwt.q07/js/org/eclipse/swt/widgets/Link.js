@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     this._hyperlinksHaveListeners = false;
     this._linkColor;
     // innerTab handling
-    this._currentLinkFocused = -1;
+    this._currentFocusedLink = -1;
     this._linksCount = 0;        
     //
     this._link = new qx.ui.embed.HtmlEmbed();
@@ -219,7 +219,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     _onMouseDown : function( e ) {
       var target = this._getEventTarget( e );
       var index = parseInt( target.id );
-      this._focusLinkByID( index );
+      this._setFocusedLink( index );
       var leftBtnPressed = this._isLeftMouseButtonPressed( e );
       if( this.isEnabled() && leftBtnPressed ) {
         this._sendChanges( index );
@@ -260,8 +260,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     
     // Override of the _ontabfocus method from qx.ui.core.Widget 
     _ontabfocus : function() {
-      if( this._currentLinkFocused == -1 && this._linksCount > 0 ) {
-        this._focusLinkByID( 0 );
+      if( this._currentFocusedLink == -1 && this._linksCount > 0 ) {
+        this._setFocusedLink( 0 );
       }
     },
     
@@ -271,51 +271,51 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
           && this._linksCount > 0 )
       {
         if(    !evt.isShiftPressed()
-            && this._currentLinkFocused >= 0
-            && this._currentLinkFocused < this._linksCount - 1 )
+            && this._currentFocusedLink >= 0
+            && this._currentFocusedLink < this._linksCount - 1 )
         {
           evt.stopPropagation();
           evt.preventDefault();
-          this._focusLinkByID( this._currentLinkFocused + 1 );
+          this._setFocusedLink( this._currentFocusedLink + 1 );
         } else if(    !evt.isShiftPressed()
-                   && this._currentLinkFocused == -1 )
+                   && this._currentFocusedLink == -1 )
         {
           evt.stopPropagation();
           evt.preventDefault();
-          this._focusLinkByID( 0 );
+          this._setFocusedLink( 0 );
         } else if(    evt.isShiftPressed()
-                   && this._currentLinkFocused > 0
-                   && this._currentLinkFocused <= this._linksCount - 1 )
+                   && this._currentFocusedLink > 0
+                   && this._currentFocusedLink <= this._linksCount - 1 )
         {
           evt.stopPropagation();
           evt.preventDefault();
-          this._focusLinkByID( this._currentLinkFocused - 1 );
+          this._setFocusedLink( this._currentFocusedLink - 1 );
         }    
       }
     },
     
-    _focusLinkByID : function( id ) {
+    _setFocusedLink : function( id ) {
       var linkElement = this.getElement();
       if( linkElement ) {
         var hyperlinks = linkElement.getElementsByTagName( "span" );
-        if( this._currentLinkFocused >= 0 ) {
-          hyperlinks[ this._currentLinkFocused ].blur();
+        if( this._currentFocusedLink >= 0 ) {
+          hyperlinks[ this._currentFocusedLink ].blur();
           if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-            hyperlinks[ this._currentLinkFocused ].style.outline = "none";
+            hyperlinks[ this._currentFocusedLink ].style.outline = "none";
           }
         }
-        this._currentLinkFocused = id;
-        if( this._currentLinkFocused >= 0 ) {
-          hyperlinks[ this._currentLinkFocused ].focus();
+        this._currentFocusedLink = id;
+        if( this._currentFocusedLink >= 0 ) {
+          hyperlinks[ this._currentFocusedLink ].focus();
           if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-            hyperlinks[ this._currentLinkFocused ].style.outline = "1px dotted";
+            hyperlinks[ this._currentFocusedLink ].style.outline = "1px dotted";
           }
         }
       }
     },
     
     _onFocusOut : function( evt ) {
-      this._focusLinkByID( -1 );
+      this._setFocusedLink( -1 );
     },
     
     _sendChanges : function( index ) {
