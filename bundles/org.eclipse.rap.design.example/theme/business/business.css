@@ -340,11 +340,11 @@ ExpandItem-Button:expanded {
 /* Combo, Spinner */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-Combo {
+Combo, CCombo[BORDER] {
   border: 1px solid #c1c1c1;
 }
 
-Combo-Button, Spinner-UpButton, Spinner-DownButton {
+Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton {
   background-color: #d6d6d6;
   border: none;
 }
@@ -358,10 +358,11 @@ Spinner-DownButton {
   background-color: #c1c1c1;
 }
 
-Combo-Button:hover, Spinner-UpButton:hover, Spinner-DownButton:hover {
+Combo-Button:hover, CCombo-Button:hover,
+Spinner-UpButton:hover, Spinner-DownButton:hover {
   background-color: #e2e2e2;
 }
 
-Combo-Button {
+Combo-Button, CCombo-Button {
   background-image: url( /theme/business/icons/chevron-down.png );
 }
