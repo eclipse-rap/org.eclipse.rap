@@ -307,16 +307,20 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.height = height + org.eclipse.swt.widgets.TableItem.PX;
       // set line height to enable vertical centering
       node.style.lineHeight = height + org.eclipse.swt.widgets.TableItem.PX;
-      if( font != "" ) {
-        node.style.font = font;
-      } else {
+      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         // Resetting style.font causes errors in IE with any of these syntaxes:
         // node.style.font = null | undefined | "inherit" | "";
-        node.style.fontFamily = "";
-        node.style.fontSize = "";
-        node.style.fontVariant = "";
-        node.style.fontStyle = "";
-        node.style.fontWeight = "";
+        if( font == "" || font == null ) { // can't be undefined or inherit
+          node.style.fontFamily = "";
+          node.style.fontSize = "";
+          node.style.fontVariant = "";
+          node.style.fontStyle = "";
+          node.style.fontWeight = "";
+        } else {
+          node.style.font = font;
+        }
+      } else {
+        node.style.font = font;
       }
       node.style.color = foreground;
       node.style.backgroundColor = "";
