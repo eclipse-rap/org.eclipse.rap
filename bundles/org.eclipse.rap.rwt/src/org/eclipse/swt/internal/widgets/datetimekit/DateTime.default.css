@@ -1,7 +1,13 @@
 /* DateTime default theme */
 
 DateTime {
+  border: none;
   background-color: white;
+  color: black;
+}
+
+DateTime[BORDER] {
+  border: 1px inset;
 }
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
