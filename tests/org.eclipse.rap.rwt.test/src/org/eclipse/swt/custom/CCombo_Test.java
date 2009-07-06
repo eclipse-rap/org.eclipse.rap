@@ -519,7 +519,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new CCombo( shell, SWT.BORDER );
-    expected = new Point( 68, 21 );
+    expected = new Point( 66, 19 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new CCombo( shell, SWT.FLAT );
