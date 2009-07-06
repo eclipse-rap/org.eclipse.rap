@@ -302,6 +302,56 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     _removeToolTipPopup : function( widget ) {
       widget.setToolTip( null );
       widget.setUserData( "toolTipText", null );
-   }
+    },
+   
+    ///////////////////////////////
+    // Background gradient handling
+    
+    /**
+     * Sets the background gradient for the given widget. A null colors or null
+     * percents removes the background gradient of the widget.
+     */
+    setBackgroundGradient : function( widget, gradientColor, percents ) {
+      var gradient = null;
+      if( gradientColor != null && percents != null ) {
+        gradient = new Array();
+        for( var i = 0; i < gradientColor.length; i++ ) {
+          gradient[ i ] = [ percents[ i ] / 100, gradientColor[ i ] ];
+        }
+      }
+      widget.setBackgroundGradient( gradient );
+    },
+    
+    //////////////////////////
+    // Rounded border handling
+
+    /**
+     * Sets the rounded border for the given widget. A zero border width, 
+     * null color or non positive radii removes the rounded border of the widget.
+     */
+    setRoundedBorder : function( widget,
+                                 width,
+                                 color,
+                                 topLeftRadius,
+                                 topRightRaduis,
+                                 bottomRightRaduis,
+                                 bottomLeftRaduis )
+    {
+      if(    width > 0
+          && color != null
+          && topLeftRadius >= 0
+          && topRightRaduis >= 0
+          && bottomRightRaduis >= 0
+          && bottomLeftRaduis >= 0 ) {
+        var border = new org.eclipse.rwt.RoundedBorder( width, color );
+        border.setRadii( [ topLeftRadius,
+                           topRightRaduis,
+                           bottomRightRaduis,
+                           bottomLeftRaduis ] );
+        widget.setBorder( border );
+      } else {
+        widget.resetBorder();
+      }
+    }
   }
 });

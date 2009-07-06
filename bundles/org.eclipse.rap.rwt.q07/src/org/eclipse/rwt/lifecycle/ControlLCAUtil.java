@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -144,8 +145,10 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveBackground( control,
                                       controlAdapter.getUserBackground(),
                                       controlAdapter.getBackgroundTransparency() );
+    preserveBackgroundGradient( control );
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
+    preserveRoundedBorder( control );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -340,8 +343,10 @@ public class ControlLCAUtil {
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );
+    writeBackgroundGradient( control );
     writeBackgroundImage( control );
     writeFont( control );
+    writeRoundedBorder( control );
     writeCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
@@ -821,6 +826,54 @@ public class ControlLCAUtil {
     Object adapter = control.getAdapter( IControlAdapter.class );
     IControlAdapter controlAdapter = ( IControlAdapter )adapter;
     return max - controlAdapter.getZIndex();
+  }
+
+  //////////////////////
+  // Background gradient
+
+  private static void preserveBackgroundGradient( final Control control ) {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    WidgetLCAUtil.preserveBackgroundGradient( control,
+                                              bgGradientColors,
+                                              bgGradientPercents );
+  }
+
+  private static void writeBackgroundGradient( final Control control )
+    throws IOException
+  {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    WidgetLCAUtil.writeBackgroundGradient( control,
+                                           bgGradientColors,
+                                           bgGradientPercents );
+  }
+
+  /////////////////
+  // Rounded border
+
+  private static void preserveRoundedBorder( final Control control ) {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = gfxAdapter.getRoundedBorderWidth();
+    Color color = gfxAdapter.getRoundedBorderColor();
+    Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+    WidgetLCAUtil.preserveRoundedBorder( control, width, color, radius );
+  }
+
+  private static void writeRoundedBorder( final Control control )
+    throws IOException
+  {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = gfxAdapter.getRoundedBorderWidth();
+    Color color = gfxAdapter.getRoundedBorderColor();
+    Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+    WidgetLCAUtil.writeRoundedBorder( control, width, color, radius );
   }
 
   ////////////

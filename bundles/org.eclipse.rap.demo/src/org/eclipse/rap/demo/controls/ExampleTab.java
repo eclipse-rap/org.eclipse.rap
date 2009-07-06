@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -22,6 +23,7 @@ import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -39,6 +41,7 @@ abstract class ExampleTab {
   private Font font;
   private int fgIndex;
   private int bgIndex;
+  private int rbIndex;
   private boolean showBgImage = false;
 
   private boolean visible = true;
@@ -58,6 +61,9 @@ abstract class ExampleTab {
   public static final Color FG_COLOR_RED = Graphics.getColor( 194, 0, 23 );
   public static final Color FG_COLOR_BLUE = Graphics.getColor( 28, 96, 141 );
   public static final Color FG_COLOR_ORANGE = Graphics.getColor( 249, 158, 0 );
+
+  public static final Color BGG_COLOR_GREEN = Graphics.getColor( 0, 255, 0 );
+  public static final Color BGG_COLOR_BLUE = Graphics.getColor( 0, 0, 255 );
 
   private static final String[] SWT_CURSORS = {
     "null",
@@ -328,6 +334,23 @@ abstract class ExampleTab {
   }
 
   /**
+   * Creates a button to change the background gradient of all registered
+   * controls.
+   *
+   * @return the created button
+   */
+  protected Button createBgGradientButton() {
+    final Button button = new Button( styleComp, SWT.TOGGLE );
+    button.setText( "Background Gradient" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        updateBgGradient( button.getSelection() );
+      }
+    } );
+    return button;
+  }
+
+  /**
    * Creates a checkbox that controls whether a background image is set on the
    * registered controls.
    *
@@ -406,7 +429,7 @@ abstract class ExampleTab {
   protected Combo createCursorCombo() {
     Composite group = new Composite( styleComp, SWT.NONE );
     group.setLayout( new GridLayout( 2, false ) );
-    new Label( group, SWT.NONE ).setText( "Cursor:" );
+    new Label( group, SWT.NONE ).setText( "Cursor" );
     final Combo combo = new Combo( group, SWT.READ_ONLY );
     combo.setItems( SWT_CURSORS );
     combo.select( 0 );
@@ -422,6 +445,62 @@ abstract class ExampleTab {
       }
     } );
     return combo;
+  }
+
+  /**
+   * Creates a text that controls whether a border radius is set on the
+   * registered controls.
+   */
+  protected void cteateRoundedBorderGroup() {
+    Group group = new Group( styleComp, SWT.NONE );
+    group.setText( "Rounded Border" );
+    group.setLayout( new GridLayout( 2, false ) );
+    new Label( group, SWT.NONE ).setText( "Width" );
+    final Text textWidth = new Text( group, SWT.SINGLE | SWT.BORDER );
+    textWidth.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    new Label( group, SWT.NONE ).setText( "Color" );
+    final Button buttonColor = new Button( group, SWT.PUSH );
+    buttonColor.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    buttonColor.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        rbIndex = ( rbIndex + 1 ) % bgColors.length;
+        buttonColor.setBackground( bgColors[ rbIndex ] );
+      }
+    } );
+    new Label( group, SWT.NONE ).setText( "Radius " );
+    Composite radiusGroup = new Composite( group, SWT.NONE );
+    radiusGroup.setLayout( new GridLayout( 4, false ) );
+    new Label( radiusGroup, SWT.NONE ).setText( "T-L" );
+    final Text textTopLeft = new Text( radiusGroup, SWT.SINGLE | SWT.BORDER );
+    textTopLeft.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    new Label( radiusGroup, SWT.NONE ).setText( "T-R" );
+    final Text textTopRight = new Text( radiusGroup, SWT.SINGLE | SWT.BORDER );
+    textTopRight.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    new Label( radiusGroup, SWT.NONE ).setText( "B-L" );
+    final Text textBottomLeft = new Text( radiusGroup, SWT.SINGLE | SWT.BORDER );
+    textBottomLeft.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    new Label( radiusGroup, SWT.NONE ).setText( "B-R" );
+    final Text textBottomRight = new Text( radiusGroup, SWT.SINGLE | SWT.BORDER );
+    textBottomRight.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    Button button = new Button( group, SWT.PUSH );
+    button.setText( "Set" );
+    button.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent e ) {
+        int width = parseInt( textWidth.getText() );
+        Color color = buttonColor.getBackground();
+        int topLeft = parseInt( textTopLeft.getText() );
+        int topRight = parseInt( textTopRight.getText() );
+        int bottomRight = parseInt( textBottomRight.getText() );
+        int bottomLeft = parseInt( textBottomLeft.getText() );
+        updateRoundedBorder( width,
+                             color,
+                             topLeft,
+                             topRight,
+                             bottomRight,
+                             bottomLeft );
+      }
+    } );
   }
 
   /**
@@ -501,6 +580,28 @@ abstract class ExampleTab {
     }
   }
 
+  private void updateBgGradient( final boolean gradient ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      if( gradient ) {
+        Color[] gradientColors = new Color[] {
+          BGG_COLOR_BLUE,
+          BGG_COLOR_GREEN,
+          BGG_COLOR_BLUE,
+          BGG_COLOR_GREEN,
+          BGG_COLOR_BLUE
+        };
+        int[] percents = new int[] { 0, 25, 50, 75, 100 };
+        gfxAdapter.setBackgroundGradient( gradientColors, percents );
+      } else {
+        gfxAdapter.setBackgroundGradient( null, null );
+      }
+    }
+  }
+
   private void updateBgImage() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
@@ -538,6 +639,36 @@ abstract class ExampleTab {
       Control control = ( Control )iter.next();
       control.setCursor( cursor );
     }
+  }
+
+  private void updateRoundedBorder( final int width,
+                                    final Color color,
+                                    final int topLeft,
+                                    final int topRight,
+                                    final int bottomRight,
+                                    final int bottomLeft ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      gfxAdapter.setRoundedBorder( width,
+                                   color,
+                                   topLeft,
+                                   topRight,
+                                   bottomRight,
+                                   bottomLeft );
+    }
+  }
+
+  private int parseInt( final String text ) {
+    int result;
+    try {
+      result = Integer.parseInt( text );
+    } catch( NumberFormatException e ) {
+      result = -1;
+    }
+    return result;
   }
 
   protected Shell getShell() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -14,7 +15,6 @@ import java.util.*;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.LexicalUnit;
-
 
 /**
  * Utility class to read values from LexicalUnits.
@@ -144,7 +144,10 @@ public final class PropertyResolver {
   public static String getType( final String property ) {
     // TODO [rst] respect properties declared in theme.xml files
     String result = null;
-    if( "padding".equals( property ) || "margin".equals( property ) ) {
+    if( "padding".equals( property )
+        || "margin".equals( property )
+        || "border-radius".equals( property ) )
+    {
       result = ThemeDefinitionReader.TYPE_BOXDIMENSIONS;
     } else if( "color".equals( property )
         || "background-color".equals( property )
@@ -456,6 +459,122 @@ public final class PropertyResolver {
       if( NONE.equals( value ) ) {
         result = QxImage.NONE;
       }
+    } else if( type == LexicalUnit.SAC_FUNCTION ) {
+      String function = unit.getFunctionName();
+      if( "gradient".equals( function ) ) {
+        result = readGradient( unit );
+      }
+    }
+    return result;
+  }
+
+  static QxImage readGradient( final LexicalUnit unit ) {
+    QxImage result = null;
+    TreeMap gradient = new TreeMap();
+    LexicalUnit parameters = unit.getParameters();
+    short type = parameters.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = parameters.getStringValue();
+      if( !"linear".equals( value ) ) {
+        String msg = "Invalid value for background-image gradient: " + value;
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    LexicalUnit x1 = parameters.getNextLexicalUnit().getNextLexicalUnit();
+    LexicalUnit y1 = x1.getNextLexicalUnit();
+    if(    x1.getLexicalUnitType() == LexicalUnit.SAC_IDENT
+        && y1.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
+      String x1value = x1.getStringValue();
+      String y1value = y1.getStringValue();
+      if( !( "left".equals( x1value ) && "top".equals( y1value ) ) ) {
+        String msg = "Invalid value for background-image gradient: "
+                   + x1value
+                   + " "
+                   + y1value;
+        throw new IllegalArgumentException( msg );
+      }
+    } else if(    x1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
+               && y1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
+      String msg = "Invalid value for background-image gradient: "
+                 + Integer.toString( x1.getIntegerValue() )
+                 + " "
+                 + Integer.toString( y1.getIntegerValue() );
+      throw new IllegalArgumentException( msg );
+    }
+    LexicalUnit x2 = y1.getNextLexicalUnit().getNextLexicalUnit();
+    LexicalUnit y2 = x2.getNextLexicalUnit();
+    if(    x2.getLexicalUnitType() == LexicalUnit.SAC_IDENT
+        && y2.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
+      String x2value = x2.getStringValue();
+      String y2value = y2.getStringValue();
+      if( !( "left".equals( x2value ) && "bottom".equals( y2value ) ) ) {
+        String msg = "Invalid value for background-image gradient: "
+                   + x2value
+                   + " "
+                   + y2value;
+        throw new IllegalArgumentException( msg );
+      }
+    } else if(    x2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
+               && y2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
+      String msg = "Invalid value for background-image gradient: "
+                 + Integer.toString( x2.getIntegerValue() )
+                 + " "
+                 + Integer.toString( y2.getIntegerValue() );
+      throw new IllegalArgumentException( msg );
+    }
+    LexicalUnit nextUnit = y2.getNextLexicalUnit();
+    while( nextUnit != null ) {
+      Float percent = null;
+      String color = null;
+      LexicalUnit colorFunction = nextUnit.getNextLexicalUnit();
+      if( colorFunction.getLexicalUnitType() == LexicalUnit.SAC_FUNCTION ) {
+        String function = colorFunction.getFunctionName();
+        if( "from".equals( function ) ) {
+          percent = new Float( 0f );
+          LexicalUnit colorUnit = colorFunction.getParameters();
+          color = readGradientColor( colorUnit );
+        } else if( "to".equals( function ) ) {
+          percent = new Float( 100f );
+          LexicalUnit colorUnit = colorFunction.getParameters();
+          color = readGradientColor( colorUnit );
+        } else if( "color-stop".equals( function ) ) {
+          LexicalUnit percentUnit = colorFunction.getParameters();
+          percent = readGradientPercent( percentUnit );
+          LexicalUnit colorUnit
+            = percentUnit.getNextLexicalUnit().getNextLexicalUnit();
+          color = readGradientColor( colorUnit );
+        } else {
+          String msg = "Invalid value for background-image gradient: "
+                     + function;
+          throw new IllegalArgumentException( msg );
+        }
+      }
+      if( percent != null && color != null ) {
+        gradient.put( percent, color );
+      }
+      nextUnit = colorFunction.getNextLexicalUnit();
+    }
+    if( gradient.size() > 0 ) {
+      gradient = normalizeGradientValue( gradient );
+      String[] gradientColors = getGradientColors( gradient );
+      float[] gradientPercents = getGradientPercents( gradient );
+      result = QxImage.createGradient( gradientColors, gradientPercents );
+    }
+    return result;
+  }
+
+  static String readGradientColor( final LexicalUnit unit ) {
+    QxColor result = readColor( unit );
+    return result != null ? result.toDefaultString() : null;
+  }
+
+  static Float readGradientPercent( final LexicalUnit unit ) {
+    Float result = null;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_PERCENTAGE ) {
+      result =  new Float( normalizePercentValue( unit.getFloatValue() ) );
+    } else if( type == LexicalUnit.SAC_REAL ) {
+      result =  new Float( normalizePercentValue( unit.getFloatValue() * 100 ) );
     }
     return result;
   }
@@ -504,6 +623,41 @@ public final class PropertyResolver {
       result = 0f;
     } else if( input > 100f ) {
       result = 100f;
+    }
+    return result;
+  }
+
+  private static TreeMap normalizeGradientValue( final TreeMap gradient ) {
+    TreeMap result = gradient;
+    if( gradient.size() > 0 ) {
+      Float zero = new Float( 0f );
+      Float hundred = new Float( 100f );
+      if( gradient.get( zero ) == null ) {
+        String firstColor = ( String )gradient.get( gradient.firstKey() );
+        result.put( zero, firstColor );
+      }
+      if( gradient.get( hundred ) == null ) {
+        String lastColor = ( String )gradient.get( gradient.lastKey() );
+        result.put( hundred, lastColor );
+      }
+    }
+    return result;
+  }
+
+  private static String[] getGradientColors( final TreeMap gradient ) {
+    Object[] values = gradient.values().toArray();
+    String[] result = new String[ values.length ];
+    for( int i = 0; i < values.length; i++ ) {
+      result[ i ] = ( String )values[ i ];
+    }
+    return result;
+  }
+
+  private static float[] getGradientPercents( final TreeMap gradient ) {
+    Object[] keys = gradient.keySet().toArray();
+    float[] result = new float[ keys.length ];
+    for( int i = 0; i < keys.length; i++ ) {
+      result[ i ] = ( ( Float )keys[ i ] ).floatValue();
     }
     return result;
   }

@@ -27,6 +27,8 @@ public class JsonArray_Test extends TestCase {
     assertEquals( "[ \"a\", 23, false ]", array.toString() );
     array.append( ( String )null );
     assertEquals( "[ \"a\", 23, false, null ]", array.toString() );
+    array.append( 10f );
+    assertEquals( "[ \"a\", 23, false, null, 10.0 ]", array.toString() );
   }
 
   public void testAppendArray() {
@@ -54,5 +56,12 @@ public class JsonArray_Test extends TestCase {
     expected.append( "B" );
     String[] array = new String[] { "A", "B" };
     assertEquals( expected.toString(), JsonArray.valueOf( array ).toString() );
+    expected = new JsonArray();
+    expected.append( 1f );
+    expected.append( 2f );
+    expected.append( 3f );
+    float[] floatArray = new float[] { 1f, 2f, 3f };
+    assertEquals( expected.toString(),
+                  JsonArray.valueOf( floatArray ).toString() );
   }
 }

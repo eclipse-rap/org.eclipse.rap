@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -47,6 +47,7 @@ public final class ThemeStoreWriter {
     JsonObject dimensionMap = new JsonObject();
     JsonObject boxDimensionMap = new JsonObject();
     JsonObject imageMap = new JsonObject();
+    JsonObject gradientMap = new JsonObject();
     JsonObject colorMap = new JsonObject();
     JsonObject fontMap = new JsonObject();
     JsonObject borderMap = new JsonObject();
@@ -69,6 +70,14 @@ public final class ThemeStoreWriter {
       } else if( value instanceof QxImage ) {
         QxImage image = ( QxImage )value;
         if( image.none ) {
+          if( image.gradientColors != null && image.gradientPercents != null ) {
+            JsonObject gradientObject = new JsonObject();
+            JsonArray percents = JsonArray.valueOf( image.gradientPercents );
+            gradientObject.append( "percents", percents );
+            JsonArray colors = JsonArray.valueOf( image.gradientColors );
+            gradientObject.append( "colors", colors );
+            gradientMap.append( key, gradientObject );
+          }
           imageMap.append( key, JsonValue.NULL );
         } else {
           imageMap.append( key, key );
@@ -96,6 +105,14 @@ public final class ThemeStoreWriter {
         borderObject.append( "width", border.width );
         borderObject.append( "style", border.style );
         borderObject.append( "color", border.color );
+        if( border.radius != null ) {
+          JsonArray boxArray = new JsonArray();
+          boxArray.append( border.radius.x );
+          boxArray.append( border.radius.y );
+          boxArray.append( border.radius.width );
+          boxArray.append( border.radius.height );
+          borderObject.append( "radius", boxArray );
+        }
         borderMap.append( key, borderObject );
       }
     }
@@ -103,6 +120,7 @@ public final class ThemeStoreWriter {
     valuesMap.append( "dimensions", dimensionMap );
     valuesMap.append( "boxdims", boxDimensionMap );
     valuesMap.append( "images", imageMap );
+    valuesMap.append( "gradients", gradientMap );
     valuesMap.append( "colors", colorMap );
     valuesMap.append( "fonts", fontMap );
     valuesMap.append( "borders", borderMap );

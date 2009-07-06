@@ -18,8 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ShowEvent;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -85,9 +84,103 @@ public abstract class Control extends Widget {
     }
   }
 
+  private final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
+
+    private WidgetGraphicsData data;
+
+    public Color[] getBackgroundGradientColors() {
+      Color[] result = null;
+      if( data != null ) {
+        if( data.backgroundGradientColors != null ) {
+          result = ( Color[] )data.backgroundGradientColors.clone();
+        }
+      }
+      return result;
+    }
+
+    public int[] getBackgroundGradientPercents() {
+      int[] result = null;
+      if( data != null ) {
+        if( data.backgroundGradientPercents != null ) {
+          result = ( int[] )data.backgroundGradientPercents.clone();
+        }
+      }
+      return result;
+    }
+
+    public void setBackgroundGradient( final Color[] gradientColors,
+                                       final int[] percents )
+    {
+      if( gradientColors != null && percents != null ) {
+        if( gradientColors.length != percents.length ) {
+          error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        for( int i = 0; i < gradientColors.length; i++ ) {
+          if( gradientColors[ i ] == null ) {
+            error( SWT.ERROR_INVALID_ARGUMENT );
+          }
+        }
+      }
+      if( data == null ) {
+        data = new WidgetGraphicsData();
+      }
+      data.backgroundGradientColors = null;
+      if( gradientColors != null ) {
+        data.backgroundGradientColors = ( Color[] )gradientColors.clone();
+      }
+      data.backgroundGradientPercents = null;
+      if( percents != null ) {
+        data.backgroundGradientPercents = ( int[] )percents.clone();
+      }
+    }
+
+    public int getRoundedBorderWidth() {
+      int result = 0;
+      if( data != null ) {
+        result = data.roundedBorderWidth;
+      }
+      return result;
+    }
+
+    public Color getRoundedBorderColor() {
+      Color result = null;
+      if( data != null ) {
+        result = data.roundedBorderColor;
+      }
+      return result;
+    }
+
+    public Rectangle getRoundedBorderRadius() {
+      Rectangle result = null;
+      if( data != null ) {
+        result = data.roundedBorderRadius;
+      }
+      return result;
+    }
+
+    public void setRoundedBorder( final int width,
+                                  final Color color,
+                                  final int topLeftRadius,
+                                  final int topRightRadius,
+                                  final int bottomRightRadius,
+                                  final int bottomLeftRadius ) {
+      if( data == null ) {
+        data = new WidgetGraphicsData();
+      }
+      data.roundedBorderWidth = width;
+      data.roundedBorderColor = color;
+      data.roundedBorderRadius = new Rectangle( topLeftRadius,
+                                                topRightRadius,
+                                                bottomRightRadius,
+                                                bottomLeftRadius );
+    }
+
+  }
+
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
   private final IControlAdapter controlAdapter;
+  private final IWidgetGraphicsAdapter widgetGraphicsAdapter;
   final Composite parent;
   Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
@@ -106,6 +199,7 @@ public abstract class Control extends Widget {
     // and its super-classes
     this.parent = parent;
     controlAdapter = new ControlAdapter();
+    widgetGraphicsAdapter = new WidgetGraphicsAdapter();
   }
 
   /**
@@ -141,6 +235,7 @@ public abstract class Control extends Widget {
     this.parent = parent;
     ControlHolder.addControl( parent, this );
     controlAdapter = new ControlAdapter();
+    widgetGraphicsAdapter = new WidgetGraphicsAdapter();
     createWidget();
   }
 
@@ -194,16 +289,16 @@ public abstract class Control extends Widget {
 
   /**
    * Returns the receiver's monitor.
-   * 
+   *
    * @return the receiver's monitor
-   * 
+   *
    * @since 1.2
    */
   public Monitor getMonitor() {
     checkWidget();
     return display.getPrimaryMonitor();
   }
-  
+
   //////////////
   // Visibility
 
@@ -244,7 +339,7 @@ public abstract class Control extends Widget {
       if( fixFocus ) {
         fixFocus( control );
       }
-    } 
+    }
   }
 
   /**
@@ -1408,6 +1503,8 @@ public abstract class Control extends Widget {
     Object result = null;
     if( adapter == IControlAdapter.class ) {
       result = controlAdapter;
+    } else if( adapter == IWidgetGraphicsAdapter.class ) {
+      result = widgetGraphicsAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -1531,8 +1628,8 @@ public abstract class Control extends Widget {
    * -->
    * <!-- RAP specific -->
    * <p>
-   * <strong>Note:</strong> the key events in RWT are not meant for 
-   * general purpose.  
+   * <strong>Note:</strong> the key events in RWT are not meant for
+   * general purpose.
    * </p>
    * @param listener the listener which should be notified
    *
@@ -1546,7 +1643,7 @@ public abstract class Control extends Widget {
    *
    * @see KeyListener
    * @see #removeKeyListener
-   * 
+   *
    * @since 1.2
    */
   public void addKeyListener( final KeyListener listener ) {
@@ -1570,14 +1667,14 @@ public abstract class Control extends Widget {
    *
    * @see KeyListener
    * @see #addKeyListener
-   * 
+   *
    * @since 1.2
    */
   public void removeKeyListener( final KeyListener listener ) {
     checkWidget();
     KeyEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when traversal events occur, by sending it
@@ -1596,14 +1693,14 @@ public abstract class Control extends Widget {
    *
    * @see TraverseListener
    * @see #removeTraverseListener
-   * 
+   *
    * @since 1.2
    */
   public void addTraverseListener( final TraverseListener listener ) {
     checkWidget();
     TraverseEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when traversal events occur.
@@ -1620,7 +1717,7 @@ public abstract class Control extends Widget {
    *
    * @see TraverseListener
    * @see #addTraverseListener
-   * 
+   *
    * @since 1.2
    */
   public void removeTraverseListener( final TraverseListener listener ) {

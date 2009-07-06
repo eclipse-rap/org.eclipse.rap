@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.swt.graphics.Rectangle;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
@@ -31,6 +33,8 @@ public final class StyleSheet {
 
   public StyleSheet( final StyleRule[] styleRules ) {
     this.styleRules = styleRules;
+    // TODO: [if] Find better solution for merging border and border-radius
+    mergeBorderRaduis();
     createSelectorWrappers();
   }
 
@@ -132,6 +136,23 @@ public final class StyleSheet {
       buffer.append( "\n" );
     }
     return buffer.toString();
+  }
+
+  private void mergeBorderRaduis() {
+    for( int i_rule = 0; i_rule < styleRules.length; i_rule++ ) {
+      StyleRule styleRule = styleRules[ i_rule ];
+      IStylePropertyMap properties = styleRule.getProperties();
+      QxBorder border = ( QxBorder )properties.getValue( "border" );
+      QxBoxDimensions radius
+        = ( QxBoxDimensions )properties.getValue( "border-radius" );
+      if( border != null && radius != null ) {
+        Rectangle borderRadius = new Rectangle( radius.top,
+                                                radius.right,
+                                                radius.bottom,
+                                                radius.left );
+        border.radius = borderRadius;
+      }
+    }
   }
 
   private void createSelectorWrappers() {

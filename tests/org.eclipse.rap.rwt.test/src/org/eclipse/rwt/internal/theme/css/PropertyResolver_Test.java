@@ -11,7 +11,6 @@
 package org.eclipse.rwt.internal.theme.css;
 
 import java.io.*;
-
 import junit.framework.TestCase;
 
 import org.apache.batik.css.parser.Parser;
@@ -266,6 +265,118 @@ public class PropertyResolver_Test extends TestCase {
     QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ),
                                                          dummyResourceLoader );
     assertNull( res4 );
+  }
+
+  public void testGradient() throws Exception {
+    String input1 = "gradient( linear, left top, left bottom, "
+                  + "from( #0000FF ), "
+                  + "color-stop( 50%, #00FF00 ), "
+                  + "to( #0000FF ) )";
+    QxImage res1 = PropertyResolver.readBackgroundImage( parseProperty( input1 ),
+                                                         dummyResourceLoader );
+    assertNotNull( res1 );
+    assertTrue( res1.none );
+    assertNull( res1.path );
+    assertNull( res1.loader );
+    assertNotNull( res1.gradientColors );
+    assertEquals( 3, res1.gradientColors.length );
+    assertEquals( "#0000ff", res1.gradientColors[ 0 ] );
+    assertEquals( "#00ff00", res1.gradientColors[ 1 ] );
+    assertEquals( "#0000ff", res1.gradientColors[ 2 ] );
+    assertNotNull( res1.gradientPercents );
+    assertEquals( 3, res1.gradientPercents.length );
+    assertEquals( 0f, res1.gradientPercents[ 0 ], 0 );
+    assertEquals( 50f, res1.gradientPercents[ 1 ], 0 );
+    assertEquals( 100f, res1.gradientPercents[ 2 ], 0 );
+    String input2 = "gradient( linear, left top, left bottom, "
+                  + "color-stop( 0%, #0000FF ), "
+                  + "color-stop( 50%, #00FF00 ), "
+                  + "color-stop( 100%, #0000FF ) )";
+    QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input2 ),
+                                                         dummyResourceLoader );
+    assertNotNull( res2 );
+    assertTrue( res2.none );
+    assertNull( res2.path );
+    assertNull( res2.loader );
+    assertNotNull( res2.gradientColors );
+    assertEquals( 3, res2.gradientColors.length );
+    assertEquals( "#0000ff", res2.gradientColors[ 0 ] );
+    assertEquals( "#00ff00", res2.gradientColors[ 1 ] );
+    assertEquals( "#0000ff", res2.gradientColors[ 2 ] );
+    assertNotNull( res2.gradientPercents );
+    assertEquals( 3, res2.gradientPercents.length );
+    assertEquals( 0f, res2.gradientPercents[ 0 ], 0 );
+    assertEquals( 50f, res2.gradientPercents[ 1 ], 0 );
+    assertEquals( 100f, res2.gradientPercents[ 2 ], 0 );
+    String input3 = "gradient( linear, left top, left bottom, "
+                  + "color-stop( 50%, #00FF00 ) )";
+    QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input3 ),
+                                                         dummyResourceLoader );
+    assertNotNull( res3 );
+    assertTrue( res3.none );
+    assertNull( res3.path );
+    assertNull( res3.loader );
+    assertNotNull( res3.gradientColors );
+    assertEquals( 3, res3.gradientColors.length );
+    assertEquals( "#00ff00", res3.gradientColors[ 0 ] );
+    assertEquals( "#00ff00", res3.gradientColors[ 1 ] );
+    assertEquals( "#00ff00", res3.gradientColors[ 2 ] );
+    assertNotNull( res3.gradientPercents );
+    assertEquals( 3, res3.gradientPercents.length );
+    assertEquals( 0f, res3.gradientPercents[ 0 ], 0 );
+    assertEquals( 50f, res3.gradientPercents[ 1 ], 0 );
+    assertEquals( 100f, res3.gradientPercents[ 2 ], 0 );
+    String input4 = "gradient( linear, left top, left bottom, "
+                  + "from( #0000FF ), "
+                  + "to( #00FF00 ) )";
+    QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ),
+                                                         dummyResourceLoader );
+    assertNotNull( res4 );
+    assertTrue( res4.none );
+    assertNull( res4.path );
+    assertNull( res4.loader );
+    assertNotNull( res4.gradientColors );
+    assertEquals( 2, res4.gradientColors.length );
+    assertEquals( "#0000ff", res4.gradientColors[ 0 ] );
+    assertEquals( "#00ff00", res4.gradientColors[ 1 ] );
+    assertNotNull( res4.gradientPercents );
+    assertEquals( 2, res4.gradientPercents.length );
+    assertEquals( 0f, res4.gradientPercents[ 0 ], 0 );
+    assertEquals( 100f, res4.gradientPercents[ 1 ], 0 );
+    String input5 = "gradient( radial, left top, left bottom, "
+                  + "from( #0000FF ), "
+                  + "to( #00FF00 ) )";
+    try {
+      PropertyResolver.readBackgroundImage( parseProperty( input5 ),
+                                            dummyResourceLoader );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    String input6 = "gradient( linear, 10 10, left bottom, "
+                  + "from( #0000FF ), "
+                  + "to( #00FF00 ) )";
+    try {
+      PropertyResolver.readBackgroundImage( parseProperty( input6 ),
+                                            dummyResourceLoader );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    String input7 = "gradient( linear, left top, 10 10, "
+                  + "from( #0000FF ), "
+                  + "to( #00FF00 ) )";
+    try {
+      PropertyResolver.readBackgroundImage( parseProperty( input7 ),
+                                            dummyResourceLoader );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    String input8 = "gradient( linear, left top, left bottom )";
+    QxImage res8 = PropertyResolver.readBackgroundImage( parseProperty( input8 ),
+                                                         dummyResourceLoader );
+    assertNull( res8 );
   }
 
   public void testGetType() throws Exception {

@@ -48,6 +48,18 @@ public class QxImage_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    try {
+      QxImage.createGradient( null, new float[] {} );
+      fail( "Must throw NPE" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    try {
+      QxImage.createGradient( new String[] {}, null );
+      fail( "Must throw NPE" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
   }
 
   public void testNone() {
@@ -57,6 +69,8 @@ public class QxImage_Test extends TestCase {
     assertTrue( QxImage.NONE.none );
     assertNull( QxImage.NONE.path );
     assertNull( QxImage.NONE.loader );
+    assertNull( QxImage.NONE.gradientColors );
+    assertNull( QxImage.NONE.gradientPercents );
   }
 
   public void testCreate() {
@@ -64,6 +78,17 @@ public class QxImage_Test extends TestCase {
     assertFalse( qxImage.none );
     assertEquals( "foo", qxImage.path );
     assertSame( dummyLoader, qxImage.loader );
+    assertNull( qxImage.gradientColors );
+    assertNull( qxImage.gradientPercents );
+
+    String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
+    float[] gradientPercents = new float[] { 0f, 50f, 100f };
+    qxImage = QxImage.createGradient( gradientColors, gradientPercents );
+    assertSame( gradientColors, qxImage.gradientColors );
+    assertSame( gradientPercents, qxImage.gradientPercents );
+    assertTrue( qxImage.none );
+    assertNull( qxImage.path );
+    assertNull( qxImage.loader );
   }
 
   public void testDefaultString() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme.css;
@@ -15,6 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.StyleSheet.SelectorWrapper;
+import org.eclipse.swt.graphics.Rectangle;
 
 
 public class StyleSheet_Test extends TestCase {
@@ -202,6 +204,15 @@ public class StyleSheet_Test extends TestCase {
                                                       "border" );
     assertNotNull( values );
     assertEquals( 5, values.length );
+  }
+
+  public void testMergeBorderRadius() throws Exception {
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
+    StylableElement composite = new StylableElement( "Composite" );
+    composite.setAttribute( "BORDER" );
+    QxBorder border = ( QxBorder )styleSheet.getValue( "border", composite );
+    assertNotNull( border );
+    assertEquals( new Rectangle( 5, 10, 5, 10), border.radius );
   }
 
   public void testNamespaces() {

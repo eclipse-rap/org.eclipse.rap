@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       dimensions : {},
       boxdims : {},
       images : {},
+      gradients : {},
       fonts : {},
       colors : {},
       borders : {}
@@ -98,6 +99,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       this._resolveFonts();
       this._resolveBorders();
+      this._resolveGradients();
     },
 
     _resolveFonts : function() {
@@ -141,12 +143,32 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
             }
           }
           if( border == null ) {
-            border = new qx.ui.core.Border( value.width, value.style );
+            if( value.radius ) {
+              border = new org.eclipse.rwt.RoundedBorder( value.width );
+              border.setRadii( value.radius );
+            } else {
+              border = new qx.ui.core.Border( value.width, value.style );
+            }
             if( value.color ) {
               border.setColor( value.color );
             }
           }
           this._values.borders[ key ] = border;
+        }
+      }
+    },
+    
+    _resolveGradients : function() {
+      for( var key in this._values.gradients ) {
+        var value = this._values.gradients[ key ];
+        // TODO [if] remove this check when values are rendered only once
+        if( value.colors && value.percents ) {
+          var gradient = new Array();
+          for( var i = 0; i < value.colors.length; i++ ) {
+            gradient[ i ] = [ value.percents[ i ] / 100, 
+                              value.colors[ i ] ];
+          }
+          this._values.gradients[ key ] = gradient;
         }
       }
     },

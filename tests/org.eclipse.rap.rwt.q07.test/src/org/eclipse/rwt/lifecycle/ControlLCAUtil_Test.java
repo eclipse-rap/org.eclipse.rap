@@ -23,11 +23,10 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -603,6 +602,95 @@ public class ControlLCAUtil_Test extends TestCase {
     HelpEvent event = ( HelpEvent )log.get( 0 );
     assertSame( control, event.widget );
     assertSame( display, event.display );
+  }
+
+  public void testWriteBackgroundGradient() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Control control = new Composite( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    RWTFixture.markInitialized( control );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    ControlLCAUtil.writeChanges( control );
+    String expected = "wm.setBackgroundGradient"
+      +	"( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], [0,100 ] );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1  );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    gradientColors = new Color[] {
+      Graphics.getColor( 255, 0, 0 ),
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    percents = new int[] { 0, 50, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    ControlLCAUtil.writeChanges( control );
+    expected = "wm.setBackgroundGradient"
+      + "( wm.findWidgetById( \"w2\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ], "
+      + "[0,50,100 ] );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1  );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.writeChanges( control );
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) == -1  );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    gfxAdapter.setBackgroundGradient( null, null );
+    ControlLCAUtil.writeChanges( control );
+    expected = "wm.setBackgroundGradient"
+      + "( wm.findWidgetById( \"w2\" ), null, null );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1  );
+  }
+
+  public void testWriteRoundedBorder() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Control control = new Composite( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    RWTFixture.markInitialized( control );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color color = Graphics.getColor( 0, 255, 0 );
+    gfxAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
+    ControlLCAUtil.writeChanges( control );
+    String expected = "wm.setRoundedBorder"
+      + "( wm.findWidgetById( \"w2\" ), 2, \"#00ff00\", 5, 6, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1  );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.writeChanges( control );
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) == -1  );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    gfxAdapter.setRoundedBorder( 4, color, 5, 6, 7, 8 );
+    ControlLCAUtil.writeChanges( control );
+    expected = "wm.setRoundedBorder"
+      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1  );
+
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( control );
+    gfxAdapter.setRoundedBorder( 4, color, 5, 4, 7, 8 );
+    ControlLCAUtil.writeChanges( control );
+    expected = "wm.setRoundedBorder"
+      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1  );
   }
 
   protected void setUp() throws Exception {

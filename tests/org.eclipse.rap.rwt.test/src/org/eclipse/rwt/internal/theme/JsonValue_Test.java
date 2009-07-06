@@ -43,6 +43,7 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "23", JsonValue.valueOf( 23 ).toString() );
     assertEquals( "0", JsonValue.valueOf( 0 ).toString() );
     assertEquals( "-1", JsonValue.valueOf( -1 ).toString() );
+    assertEquals( "10.0", JsonValue.valueOf( 10f ).toString() );
     assertEquals( "true", JsonValue.valueOf( true ).toString() );
     assertEquals( "false", JsonValue.valueOf( false ).toString() );
     assertEquals( "null", JsonValue.valueOf( null ).toString() );

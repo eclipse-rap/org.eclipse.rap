@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -22,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
 
@@ -35,7 +37,7 @@ public class Control_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
-  
+
   public void testStyle() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -431,7 +433,7 @@ public class Control_Test extends TestCase {
     assertEquals( true, control.getVisible() );
     assertEquals( false, control.isVisible() );
   }
-  
+
   public void testZOrder() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -561,7 +563,7 @@ public class Control_Test extends TestCase {
     shell.dispose();
     assertSame( null, display.getFocusControl() );
   }
-  
+
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=265634
   public void testNoFocusOutOnDispose() {
     final StringBuffer log = new StringBuffer();
@@ -577,7 +579,7 @@ public class Control_Test extends TestCase {
     control.dispose();
     assertEquals( "", log.toString() );
   }
-  
+
   public void testHideFocusedControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -586,7 +588,7 @@ public class Control_Test extends TestCase {
     Control control = new Button( composite, SWT.PUSH );
     shell.setSize( 100, 100 );
     shell.open();
-    
+
     // Hide control -> its parent (composite) must take focus
     control.setFocus();
     assertTrue( control.isFocusControl() );
@@ -594,8 +596,8 @@ public class Control_Test extends TestCase {
     assertFalse( control.isFocusControl() );
     assertTrue( composite.isFocusControl() );
     assertSame( composite, display.getFocusControl() );
-    
-    // Indirectly hide control -> shell must take focus  
+
+    // Indirectly hide control -> shell must take focus
     control.setVisible( true );
     control.setFocus();
     composite.setVisible( false );
@@ -605,8 +607,8 @@ public class Control_Test extends TestCase {
     assertTrue( shell.isFocusControl() );
     assertSame( shell, display.getFocusControl() );
 
-    // Indirectly hide control and leave no visible parent 
-    // no control must have focus  
+    // Indirectly hide control and leave no visible parent
+    // no control must have focus
     control.setVisible( true );
     control.setFocus();
     shell.setVisible( false );
@@ -671,7 +673,7 @@ public class Control_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
     }
   }
-  
+
   /**
    * each Control has to inherit the orientation from its parent (or sets the
    * orientation to SWT.LEFT_TO_RIGHT
@@ -685,7 +687,7 @@ public class Control_Test extends TestCase {
     assertTrue( "default orientation inherited: SWT.LEFT_TO_RIGHT",
                 ( childDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
   }
-  
+
   public void testShowEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
@@ -717,7 +719,7 @@ public class Control_Test extends TestCase {
     assertEquals( 1, log.size() );
     assertSame( control, ( ( Event )log.get( 0 ) ).widget );
   }
-  
+
   public void testShowEventDetails() {
     Listener ensureInvisible = new Listener() {
       public void handleEvent( final Event event ) {
@@ -729,7 +731,7 @@ public class Control_Test extends TestCase {
     shell.addListener( SWT.Show, ensureInvisible );
     shell.setVisible( true );
   }
-  
+
   public void testHideEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
@@ -749,12 +751,12 @@ public class Control_Test extends TestCase {
     control.setVisible( false );
     assertEquals( 1, log.size() );
     assertSame( control, ( ( Event )log.get( 0 ) ).widget );
-    
+
     log.clear();
     shell.setVisible( false );
     assertEquals( 1, log.size() );
     assertSame( shell, ( ( Event )log.get( 0 ) ).widget );
-    
+
     log.clear();
     shell.setVisible( true );
     control.setVisible( true );
@@ -777,7 +779,7 @@ public class Control_Test extends TestCase {
     control.setCursor( null );
     assertNull( control.getCursor() );
   }
-  
+
   public void testGetMonitor() throws Exception {
     Display display = new Display();
     Control control = new Shell( display );
@@ -785,5 +787,74 @@ public class Control_Test extends TestCase {
     assertNotNull( monitor );
     assertEquals( display.getPrimaryMonitor(), monitor );
   }
-  
+
+  public void testRoundedBorder() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Control control = new Composite( shell, SWT.NONE );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    assertEquals( 0, gfxAdapter.getRoundedBorderWidth() );
+    assertNull( gfxAdapter.getRoundedBorderColor() );
+    assertNull( gfxAdapter.getRoundedBorderRadius() );
+    Color blue = Graphics.getColor( 0, 0, 255 );
+    gfxAdapter.setRoundedBorder( 2, blue, 1, 2, 3, 4 );
+    assertEquals( 2, gfxAdapter.getRoundedBorderWidth() );
+    assertEquals( blue, gfxAdapter.getRoundedBorderColor() );
+    assertEquals( new Rectangle( 1, 2, 3, 4 ),
+                  gfxAdapter.getRoundedBorderRadius() );
+  }
+
+  public void testBackgroundGradient() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Control control = new Composite( shell, SWT.NONE );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    assertNull( gfxAdapter.getBackgroundGradientColors() );
+    assertNull( gfxAdapter.getBackgroundGradientPercents() );
+    Color blue = Graphics.getColor( 0, 0, 255 );
+    Color green = Graphics.getColor( 0, 255, 0 );
+    Color[] gradientColors = new Color[] { blue, green, blue };
+    int[] percents = new int[] { 0, 50, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    assertEquals( blue, gfxAdapter.getBackgroundGradientColors()[ 0 ] );
+    assertEquals( green, gfxAdapter.getBackgroundGradientColors()[ 1 ] );
+    assertEquals( blue, gfxAdapter.getBackgroundGradientColors()[ 2 ] );
+    assertEquals( 0, gfxAdapter.getBackgroundGradientPercents()[ 0 ] );
+    assertEquals( 50, gfxAdapter.getBackgroundGradientPercents()[ 1 ] );
+    assertEquals( 100, gfxAdapter.getBackgroundGradientPercents()[ 2 ] );
+
+    gfxAdapter.setBackgroundGradient( null, null );
+    assertNull( gfxAdapter.getBackgroundGradientColors() );
+    assertNull( gfxAdapter.getBackgroundGradientPercents() );
+
+    percents = new int[] { 0, 100 };
+    try {
+      gfxAdapter.setBackgroundGradient( gradientColors, percents );
+      fail( "No exception thrown for invalid arguments" );
+    } catch( IllegalArgumentException e ) {
+    }
+
+    gradientColors = new Color[] { blue, null, blue };
+    percents = new int[] { 0, 50, 100 };
+    try {
+      gfxAdapter.setBackgroundGradient( gradientColors, percents );
+      fail( "No exception thrown for invalid arguments" );
+    } catch( IllegalArgumentException e ) {
+    }
+  }
+
+  public void testBackgroundGradientSafeCopy() {
+    Display display = new Display();
+    Control shell = new Shell( display );
+    Object adapter = shell.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] colors = { Graphics.getColor( new RGB( 1, 2, 3 ) ) };
+    int[] percentages = { 1 };
+    graphicsAdapter.setBackgroundGradient( colors, percentages );
+    percentages[ 0 ] = 2;
+    assertEquals( 1, graphicsAdapter.getBackgroundGradientPercents()[ 0 ] );
+  }
+
 }

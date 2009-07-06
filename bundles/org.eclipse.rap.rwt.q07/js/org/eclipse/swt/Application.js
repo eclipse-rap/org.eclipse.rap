@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.Application", {
@@ -16,8 +17,10 @@ qx.Class.define( "org.eclipse.swt.Application", {
     this.base( arguments );
     this._exitConfirmation = null;
     this._startupTime = new Date().getTime();
-    qx.Class.patch( qx.event.handler.KeyEventHandler, 
-                    org.eclipse.rwt.KeyEventHandlerPatch ); 
+    qx.Class.patch( qx.event.handler.KeyEventHandler,
+                    org.eclipse.rwt.KeyEventHandlerPatch );
+    qx.Class.patch( qx.ui.basic.Terminator, org.eclipse.rwt.GfxMixin );
+    qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GfxMixin );    
   },
   
   destruct : function() {
@@ -90,7 +93,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
       qx.io.Alias.getInstance().add( "org.eclipse.swt", "./resource" );
       // Observe window size
       var doc = qx.ui.core.ClientDocument.getInstance();
-      doc.addEventListener( "windowresize", 
+      doc.addEventListener( "windowresize",
                             org.eclipse.swt.Application._onResize );
       doc.addEventListener( "keydown",
                             org.eclipse.swt.Application._onKeyDown );

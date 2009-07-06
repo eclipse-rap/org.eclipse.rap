@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 
@@ -97,6 +98,14 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
         // "undefined" lead to a js error for icon property
         result = "static/image/blank.gif";
       }
+      return result;
+    },
+    
+    getCssGradient : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues();
+      var result = values.gradients[ vkey ];
+      this.__checkDefined( result, element, key );
       return result;
     },
 

@@ -53,6 +53,13 @@ public final class WidgetLCAUtil {
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_TRANSPARENCY = "backgroundTrans";
+  private static final String PROP_BACKGROUND_GRADIENT_COLORS
+    = "backgroundGradientColors";
+  private static final String PROP_BACKGROUND_GRADIENT_PERCENTS
+    = "backgroundGradientPercents";
+  private static final String PROP_ROUNDED_BORDER_WIDTH = "roundedBorderWidth";
+  private static final String PROP_ROUNDED_BORDER_COLOR = "roundedBorderColor";
+  private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
   private static final String PROP_HELP_LISTENER = "helpListener";
@@ -61,6 +68,9 @@ public final class WidgetLCAUtil {
   private static final String JS_PROP_CONTEXT_MENU = "contextMenu";
 
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
+  private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
+  private static final String JS_FUNC_SET_BACKGROUND_GRADIENT
+    = "setBackgroundGradient";
 
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
@@ -161,6 +171,45 @@ public final class WidgetLCAUtil {
     adapter.preserve( PROP_BACKGROUND, background );
     adapter.preserve( PROP_BACKGROUND_TRANSPARENCY,
                       Boolean.valueOf( transparency ) );
+  }
+
+  /**
+   * Preserves the background gradient properties of the specified widget.
+   *
+   * @param widget the widget whose background gradient properties to preserve
+   * @param bgGradientColors the array with background gradient colors to
+   *        preserve
+   * @param bgGradientPercents the array with background gradient percents to
+   *        preserve
+   * @see #writeBackgroundGradient(Widget, Color[], int[])
+   */
+  public static void preserveBackgroundGradient( final Widget widget,
+                                                 final Color[] bgGradientColors,
+                                                 final int[] bgGradientPercents )
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS, bgGradientColors );
+    adapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS, bgGradientPercents );
+  }
+
+  /**
+   * Preserves the rounded border properties of the specified widget.
+   *
+   * @param widget the widget whose rounded border properties to preserve
+   * @param width the rounded border width to preserve
+   * @param color the rounded border color to preserve
+   * @param radius the rounded border radius to preserve
+   * @see #writeRoundedBorder(Widget, int, Color, Rectangle)
+   */
+  public static void preserveRoundedBorder( final Widget widget,
+                                            final int width,
+                                            final Color color,
+                                            final Rectangle radius )
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_ROUNDED_BORDER_WIDTH, new Integer( width ) );
+    adapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
+    adapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
   }
 
   /**
@@ -386,8 +435,8 @@ public final class WidgetLCAUtil {
       } else {
         // [rh] for performance reasons, use the set(Object,Object[]) method
         Integer[] args = new Integer[] {
-          new Integer( newBounds.x ), 
-          new Integer( newBounds.width ), 
+          new Integer( newBounds.x ),
+          new Integer( newBounds.width ),
           new Integer( newBounds.y ),
           new Integer( newBounds.height )
         };
@@ -738,6 +787,105 @@ public final class WidgetLCAUtil {
   }
 
   /**
+   * Determines whether the background gradient properties of the
+   * given widget has changed during the processing of the current request and
+   * if so, writes JavaScript code to the response that updates the client-side
+   * background gradient properties of the specified widget.
+   *
+   * @param widget the widget whose background gradient properties to set
+   * @param bgGradientColor the new array with background gradient colors
+   * @param bgGradientPercents the new array with background gradient percents
+   * @throws IOException
+   * @see {@link #preserveBackgroundGradient(Widget, Color[], int[])}
+   */
+  public static void writeBackgroundGradient( final Widget widget,
+                                              final Color[] bgGradientColor,
+                                              final int[] bgGradientPercents )
+    throws IOException
+  {
+    boolean changed = WidgetLCAUtil.hasChanged( widget,
+                                                PROP_BACKGROUND_GRADIENT_COLORS,
+                                                bgGradientColor,
+                                                null );
+    if( !changed ) {
+      changed = WidgetLCAUtil.hasChanged( widget,
+                                          PROP_BACKGROUND_GRADIENT_PERCENTS,
+                                          bgGradientPercents,
+                                          null );
+    }
+    if( changed ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Integer[] percents = null;
+      if( bgGradientPercents != null ) {
+        percents = new Integer[ bgGradientPercents.length ];
+        for( int i = 0; i < bgGradientPercents.length; i++ ) {
+          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
+        }
+      }
+      Object[] args = new Object[] {
+        widget,
+        bgGradientColor,
+        percents
+      };
+      writer.call( JSWriter.WIDGET_MANAGER_REF,
+                   JS_FUNC_SET_BACKGROUND_GRADIENT,
+                   args );
+    }
+  }
+
+  /**
+   * Determines whether the rounded border properties of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * JavaScript code to the response that updates the client-side rounded border
+   * of the specified widget.
+   *
+   * @param widget the widget whose rounded border properties to preserve
+   * @param width the rounded border width to preserve
+   * @param color the rounded border color to preserve
+   * @param radius the rounded border radius to preserve
+   * @throws IOException
+   * @see {@link #preserveRoundedBorder(Widget, int, Color, Rectangle)}
+   */
+  public static void writeRoundedBorder( final Widget widget,
+                                         final int width,
+                                         final Color color,
+                                         final Rectangle radius )
+    throws IOException
+  {
+    boolean changed = WidgetLCAUtil.hasChanged( widget,
+                                                PROP_ROUNDED_BORDER_WIDTH,
+                                                new Integer( width ),
+                                                new Integer( 0 ) );
+    if( !changed ) {
+      changed = WidgetLCAUtil.hasChanged( widget,
+                                          PROP_ROUNDED_BORDER_COLOR,
+                                          color,
+                                          null );
+    }
+    if( !changed ) {
+      changed = WidgetLCAUtil.hasChanged( widget,
+                                          PROP_ROUNDED_BORDER_RADIUS,
+                                          radius,
+                                          null );
+    }
+    if( changed && radius != null ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Object[] args = new Object[] {
+        widget,
+        new Integer( width ),
+        color,
+        new Integer( radius.x ),
+        new Integer( radius.y ),
+        new Integer( radius.width ),
+        new Integer( radius.height )
+      };
+      writer.call( JSWriter.WIDGET_MANAGER_REF,
+                   JS_FUNC_SET_ROUNDED_BORDER,
+                   args );
+    }
+  }
+
+  /**
    * Determines whether the property <code>enabled</code> of the given widget
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side enabled
@@ -818,7 +966,7 @@ public final class WidgetLCAUtil {
   /**
    * Checks whether a certain style flag is set on the specified widget and if
    * so, writes code to set the according state on the client-side widget.
-   * 
+   *
    * @param widget the widget whose style to write
    * @param style the SWT style flag in question
    * @param styleName the uppercase name of the style
@@ -838,9 +986,9 @@ public final class WidgetLCAUtil {
 
   ////////////////
   // Help listener
-  
+
   /**
-   * Preserves whether the given <code>widget</code> has one or more 
+   * Preserves whether the given <code>widget</code> has one or more
    * <code>HelpListener</code>s attached.
    *
    * @param widget the widget to preserve
@@ -853,9 +1001,9 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Adds or removes client-side help listeners for the the given 
+   * Adds or removes client-side help listeners for the the given
    * <code>widget</code> as necessary.
-   * 
+   *
    * @param widget
    * @since 1.3
    */
@@ -868,10 +1016,10 @@ public final class WidgetLCAUtil {
                            PROP_HELP_LISTENER,
                            hasListener );
   }
-  
+
   /**
-   * Process a <code>HelpEvent</code> if the current request specifies that 
-   * there occured a help event for the given <code>widget</code>.  
+   * Process a <code>HelpEvent</code> if the current request specifies that
+   * there occured a help event for the given <code>widget</code>.
    *
    * @param widget the widget to process
    * @since 1.3

@@ -39,6 +39,10 @@ final class QooxdooResourcesUtil {
 
   private static final String KEY_EVENT_HANDLER_PATCH
     = "org/eclipse/rwt/KeyEventHandlerPatch.js";
+  private static final String GFX_MIXIN_JS
+    = "org/eclipse/rwt/GfxMixin.js";
+  private static final String ROUNDED_BORDER_JS
+    = "org/eclipse/rwt/RoundedBorder.js";
   private static final String APPLICATION_JS
     = "org/eclipse/swt/Application.js";
   private static final String REQUEST_JS
@@ -178,6 +182,8 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_STYLE_JS, compress );
 
       register( KEY_EVENT_HANDLER_PATCH, compress );
+      register( GFX_MIXIN_JS, compress );
+      register( ROUNDED_BORDER_JS, compress );
       register( APPLICATION_JS, compress );
       register( REQUEST_JS, compress );
       register( WIDGET_MANAGER_JS, compress );
