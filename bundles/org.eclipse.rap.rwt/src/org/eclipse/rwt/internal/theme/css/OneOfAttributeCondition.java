@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import org.w3c.css.sac.AttributeCondition;
@@ -50,17 +50,8 @@ public class OneOfAttributeCondition implements AttributeCondition, ConditionExt
     return SAC_ONE_OF_ATTRIBUTE_CONDITION;
   }
 
-  public boolean matches( final Element element ) {
-    // currently not supported by RAP
-    return false;
-  }
-
   public int getSpecificity() {
     return ATTR_SPEC;
-  }
-
-  public String[] getClasses() {
-    return null;
   }
 
   public String[] getConstraints() {

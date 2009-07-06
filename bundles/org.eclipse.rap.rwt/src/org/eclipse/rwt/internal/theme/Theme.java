@@ -33,7 +33,7 @@ public final class Theme {
 
   private String jsId;
 
-  public Theme( String name, StyleSheet styleSheet ) {
+  public Theme( final String name, final StyleSheet styleSheet ) {
     checkName( name );
     this.name = name;
     this.styleSheet = styleSheet;

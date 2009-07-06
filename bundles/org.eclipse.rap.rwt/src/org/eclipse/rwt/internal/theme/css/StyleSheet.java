@@ -42,80 +42,27 @@ public final class StyleSheet {
     return styleRules;
   }
 
-  /**
-   * Returns all style rules that apply to elements of the given name, including
-   * wildcard and conditional rules.
-   */
-  public SelectorWrapper[] getMatchingStyleRules( final String elementName ) {
-    List buffer = new ArrayList();
-    for( int i = 0; i < selectorWrappers.length; i++ ) {
-      SelectorWrapper selectorWrapper = selectorWrappers[ i ];
-      String selectorElement = selectorWrapper.selectorExt.getElementName();
-      if( selectorElement == null || selectorElement.equals( elementName ) ) {
-        buffer.add( selectorWrapper );
-      }
-    }
-    SelectorWrapper[] result = new SelectorWrapper[ buffer.size() ];
-    buffer.toArray( result );
-    return result;
-  }
-
   public ConditionalValue[] getValues( final String elementName,
                                        final String propertyName )
   {
     List buffer = new ArrayList();
     for( int i = 0; i < selectorWrappers.length; i++ ) {
       SelectorWrapper selectorWrapper = selectorWrappers[ i ];
-      String selectorElement = selectorWrapper.selectorExt.getElementName();
+      String selectorElement
+        = ( ( SelectorExt )selectorWrapper.selector ).getElementName();
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
         QxType value = selectorWrapper.propertyMap.getValue( propertyName );
         if( value != null ) {
-          String[] constraints = selectorWrapper.selectorExt.getConstraints();
-          ConditionalValue condValue = new ConditionalValue( constraints, value );
+          String[] constraints
+            = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
+          ConditionalValue condValue
+            = new ConditionalValue( constraints, value );
           buffer.add( condValue );
         }
       }
     }
     ConditionalValue[] result = new ConditionalValue[ buffer.size() ];
     buffer.toArray( result );
-    return result;
-  }
-
-  public QxType getValue( final String cssProperty,
-                          final StylableElement element )
-  {
-    QxType result = null;
-    SelectorWrapper[] selectorWrappers = getMatchingSelectors( element );
-    for( int i = 0; i < selectorWrappers.length && result == null; i++ ) {
-      IStylePropertyMap properties = selectorWrappers[ i ].propertyMap;
-      QxType value = properties.getValue( cssProperty );
-      if( value != null ) {
-        result = value;
-      }
-    }
-    return result;
-  }
-
-  public String[] getVariants( final String elementName ) {
-    List classesList = new ArrayList();
-    for( int i = 0; i < selectorWrappers.length; i++ ) {
-      SelectorExt selectorExt = selectorWrappers[ i ].selectorExt;
-      if( selectorExt.getElementName() == null
-          || selectorExt.getElementName().equals( elementName ) )
-      {
-        String[] classes = selectorExt.getClasses();
-        if( classes != null ) {
-          for( int j = 0; j < classes.length; j++ ) {
-            String className = classes[ j ];
-            if( !classesList.contains( className ) ) {
-              classesList.add( className );
-            }
-          }
-        }
-      }
-    }
-    String[] result = new String[ classesList.size() ];
-    classesList.toArray( result  );
     return result;
   }
 
@@ -127,12 +74,16 @@ public final class StyleSheet {
       SelectorList selectors = styleRule.getSelectors();
       int length = selectors.getLength();
       for( int j = 0; j < length; j++ ) {
-        Selector selector = selectors.item( j );
-        buffer.append( selector );
-        buffer.append( "\n" );
+        if( j > 0 ) {
+          buffer.append( "," );
+        }
+        if( i > 0 ) {
+          buffer.append( "\n" );
+        }
+        buffer.append( selectors.item( j ) );
       }
-      IStylePropertyMap properties = styleRule.getProperties();
-      buffer.append( properties );
+      buffer.append( "\n" );
+      buffer.append( styleRule.getProperties() );
       buffer.append( "\n" );
     }
     return buffer.toString();
@@ -175,25 +126,9 @@ public final class StyleSheet {
     selectorWrappersList.toArray( selectorWrappers );
   }
 
-  private SelectorWrapper[] getMatchingSelectors( final StylableElement element )
-  {
-    List resultList = new ArrayList();
-    for( int i = 0; i < selectorWrappers.length; i++ ) {
-      SelectorWrapper selectorWrapper = selectorWrappers[ i ];
-      if( selectorWrapper.selectorExt.matches( element ) ) {
-        resultList.add( selectorWrapper );
-      }
-    }
-    SelectorWrapper[] result = new SelectorWrapper[ resultList.size() ];
-    resultList.toArray( result );
-    return result;
-  }
-
-  public static class SelectorWrapper {
+  static class SelectorWrapper {
 
     public final Selector selector;
-
-    public final SelectorExt selectorExt;
 
     public final IStylePropertyMap propertyMap;
 
@@ -204,7 +139,6 @@ public final class StyleSheet {
                             final int position )
     {
       this.selector = selector;
-      this.selectorExt = ( SelectorExt )selector;
       this.position = position;
       this.propertyMap = propertyMap;
     }
@@ -216,8 +150,10 @@ public final class StyleSheet {
       int result = 0;
       SelectorWrapper selectorWrapper1 = ( SelectorWrapper )object1;
       SelectorWrapper selectorWrapper2 = ( SelectorWrapper )object2;
-      int specificity1 = selectorWrapper1.selectorExt.getSpecificity();
-      int specificity2 = selectorWrapper2.selectorExt.getSpecificity();
+      int specificity1
+        = ( ( Specific )selectorWrapper1.selector ).getSpecificity();
+      int specificity2
+        = ( ( Specific )selectorWrapper2.selector ).getSpecificity();
       if( specificity1 > specificity2 ) {
         result = 1;
       } else if( specificity1 < specificity2 ) {
