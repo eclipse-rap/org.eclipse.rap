@@ -5,7 +5,7 @@ CCombo {
 }
 
 CCombo[BORDER] {
-  border: 2px inset;
+  border: 1px inset;
 }
 
 CCombo-Button {
