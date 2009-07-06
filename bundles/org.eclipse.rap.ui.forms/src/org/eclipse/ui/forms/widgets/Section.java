@@ -489,6 +489,13 @@ public class Section extends ExpandableComposite {
 	}
 
 // RAP [if] Title bar background gradient rendering
+	public void setTextClient( final Control textClient ) {
+      super.setTextClient( textClient );
+      if( textClient != null && titleBar != null ) {
+        titleBar.moveBelow( textClient );
+      }
+    }
+
 	private final void applyBackgroundGradient() {
 	  if( titleBar != null ) {
 	    // Code start - onPaint
