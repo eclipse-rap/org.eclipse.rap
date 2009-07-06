@@ -13,12 +13,11 @@
  * org.eclipse.swt.widgets.Button widget with SWT.CHECK style.
  */
 qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
-  extend : qx.ui.layout.HorizontalBoxLayout,
+  extend : qx.ui.layout.CanvasLayout,
 
   construct : function() {
     this.base( arguments );
     this.setAppearance( "check-box" );
-    this.setVerticalChildrenAlign( "middle" );
 
     // Default values
     this._selected = false;
@@ -35,9 +34,10 @@ qx.Class.define( "org.eclipse.swt.widgets.CheckBox", {
     // CheckButton content - image and text
     this._content = new qx.ui.basic.Atom( "(empty)", this._image );
     this._content.getLabelObject().setAppearance( "label-graytext" );
+    this._content.setLeft( 17 );
     this._content.setLabel( this._text );
     this._content.setHorizontalChildrenAlign( "center" );
-    this._content.setVerticalChildrenAlign( "middle" );
+    this._content.setVerticalChildrenAlign( "top" );
     this.add( this._content );
 
     // Add events listeners

@@ -41,10 +41,6 @@ Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
   border: 2px inset;
 }
 
-Button[CHECK], Button[RADIO] {
-  spacing: 4px;
-}
-
 Button-CheckIcon {
   background-image: url( resource/widget/rap/button/check-unselected.png );
 }

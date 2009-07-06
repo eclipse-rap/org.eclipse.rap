@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Button;
 public final class ButtonThemeAdapter extends ControlThemeAdapter {
 
   private static final Point CHECK_SIZE = new Point( 13, 13 );
+  private static final int CHECK_SPACING = 4;
 
   protected void configureMatcher( final WidgetMatcher matcher ) {
     super.configureMatcher( matcher );
@@ -42,5 +43,9 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
 
   public Point getCheckSize() {
     return CHECK_SIZE;
+  }
+
+  public int getCheckSpacing() {
+    return CHECK_SPACING;
   }
 }
