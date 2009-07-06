@@ -542,6 +542,7 @@ public class Section extends ExpandableComposite {
         };
         int[] percents = new int[] { 0, 100 };
         gfxAdapter.setBackgroundGradient( gradientColors, percents );
+        gfxAdapter.setRoundedBorder( 1, getBackground(), 8, 8, 0, 0 );
 	  }
 	}
 // ENDRAP [if]
