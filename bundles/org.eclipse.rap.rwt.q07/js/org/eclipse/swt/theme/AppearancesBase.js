@@ -232,6 +232,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         backgroundImage : tv.getCssImage( "Button", "background-image" ),
+        spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
     }
@@ -262,6 +263,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font : tv.getCssFont( "Button", "font" ),
         textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
+        spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
     }
