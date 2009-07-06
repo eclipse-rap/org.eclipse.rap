@@ -319,6 +319,12 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
               es[i] = "";
           }
         }
+        // [if] Fix for bug
+        // 279800: Some focused widgets look strange in webkit
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=279800
+        if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+          es.outline = "none";
+        }
 
         for (var i in this._htmlProperties) {
           switch( i ) {
