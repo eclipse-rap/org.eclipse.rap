@@ -35,7 +35,7 @@ public class ExamplesActionBarAdvisor extends ActionBarAdvisor {
 
   protected void makeActions( final IWorkbenchWindow window ) {
     ImageDescriptor helpActionImage
-      = Activator.getImageDescriptor( "icons/help.gif" );
+      = Activator.getImageDescriptor( "icons/help.png" );
     aboutAction = new Action() {
       public void run() {
         Shell shell = window.getShell();
