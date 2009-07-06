@@ -16,6 +16,7 @@ import java.util.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.LexicalUnit;
 
+
 /**
  * Utility class to read values from LexicalUnits.
  */
@@ -177,9 +178,12 @@ public final class PropertyResolver {
     QxColor result = null;
     short type = input.getLexicalUnitType();
     if( type == LexicalUnit.SAC_RGBCOLOR ) {
+      // The parser ensures that we have exactly three parameters for this type
       LexicalUnit redParam = input.getParameters();
-      LexicalUnit greenParam = redParam.getNextLexicalUnit().getNextLexicalUnit();
-      LexicalUnit blueParam = greenParam.getNextLexicalUnit().getNextLexicalUnit();
+      LexicalUnit greenParam
+        = redParam.getNextLexicalUnit().getNextLexicalUnit();
+      LexicalUnit blueParam
+        = greenParam.getNextLexicalUnit().getNextLexicalUnit();
       short valueType = redParam.getLexicalUnitType();
       if( greenParam.getLexicalUnitType() == valueType
           || blueParam.getLexicalUnitType() == valueType )
@@ -191,14 +195,20 @@ public final class PropertyResolver {
           result = QxColor.create( red, green, blue );
         } else if( valueType == LexicalUnit.SAC_PERCENTAGE ) {
           float redPercent = normalizePercentValue( redParam.getFloatValue() );
-          float greenPercent = normalizePercentValue( greenParam.getFloatValue() );
-          float bluePercent = normalizePercentValue( blueParam.getFloatValue() );
+          float greenPercent
+            = normalizePercentValue( greenParam.getFloatValue() );
+          float bluePercent
+            = normalizePercentValue( blueParam.getFloatValue() );
           int red = ( int )( 255 * redPercent / 100 );
           int green = ( int )( 255 * greenPercent / 100 );
           int blue = ( int )( 255 * bluePercent / 100 );
           result = QxColor.create( red, green, blue );
         }
       }
+    } else if( type == LexicalUnit.SAC_FUNCTION
+               && "rgb".equals( input.getFunctionName() ) )
+    {
+      throw new IllegalArgumentException( "Failed to parse rgb() function" );
     } else if( type == LexicalUnit.SAC_IDENT ) {
       String string = input.getStringValue();
       if( TRANSPARENT.equals( string ) ) {
