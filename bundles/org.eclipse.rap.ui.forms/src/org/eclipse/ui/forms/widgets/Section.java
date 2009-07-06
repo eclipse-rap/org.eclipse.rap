@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Michael Williamson (eclipse-bugs@magnaworks.com) - patch (see Bugzilla #92545) 
- *       
+ *     Michael Williamson (eclipse-bugs@magnaworks.com) - patch (see Bugzilla #92545)
+ *
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -20,8 +20,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 //import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-//import org.eclipse.swt.graphics.Point;
-//import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -47,7 +48,7 @@ import org.eclipse.ui.internal.forms.widgets.FormImages;
  * typical way to take advantage of the new method is to set an instance of
  * <code>FormText</code> to provide for hyperlinks and images in the
  * description area.
- * 
+ *
  * @since 1.0
  */
 public class Section extends ExpandableComposite {
@@ -62,6 +63,9 @@ public class Section extends ExpandableComposite {
 
 	private Hashtable titleColors;
 
+// RAP [if] Title bar background gradient rendering
+	private Composite titleBar;
+
 	private static final String COLOR_BG = "bg"; //$NON-NLS-1$
 
 	private static final String COLOR_GBG = "gbg"; //$NON-NLS-1$
@@ -70,7 +74,7 @@ public class Section extends ExpandableComposite {
 
 	/**
 	 * Creates a new section instance in the provided parent.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 * @param style
@@ -88,6 +92,9 @@ public class Section extends ExpandableComposite {
 			descriptionControl = new Text(this, SWT.READ_ONLY | SWT.WRAP | rtl);
 		}
 		if ((style & TITLE_BAR) != 0) {
+// RAP [if] Title bar background gradient rendering
+		    titleBar = new Composite( this, SWT.NONE );
+// ENDRAP [if]
 			Listener listener = new Listener() {
 				public void handleEvent(Event e) {
 					Image image = Section.super.getBackgroundImage();
@@ -95,6 +102,9 @@ public class Section extends ExpandableComposite {
 						FormImages.getInstance().markFinished(image);
 					}
 					Section.super.setBackgroundImage(null);
+// RAP [if] Title bar background gradient rendering
+					applyBackgroundGradient();
+// ENDRAP [if]
 				}
 			};
 			addListener(SWT.Dispose, listener);
@@ -152,7 +162,7 @@ public class Section extends ExpandableComposite {
 	/**
 	 * Sets the description text. Has no effect if DESCRIPTION style was not
 	 * used to create the control.
-	 * 
+	 *
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -162,7 +172,7 @@ public class Section extends ExpandableComposite {
 
 	/**
 	 * Returns the current description text.
-	 * 
+	 *
 	 * @return description text or <code>null</code> if DESCRIPTION style was
 	 *         not used to create the control.
 	 */
@@ -177,7 +187,7 @@ public class Section extends ExpandableComposite {
 	 * <samp>null </samp> and must be a direct child of this container. If
 	 * defined, separator will be placed below the title text and will remain
 	 * visible regardless of the expansion state.
-	 * 
+	 *
 	 * @param separator
 	 *            the separator that will be placed below the title text.
 	 */
@@ -189,7 +199,7 @@ public class Section extends ExpandableComposite {
 	/**
 	 * Returns the control that is used as a separator betweeen the title and
 	 * the client, or <samp>null </samp> if not set.
-	 * 
+	 *
 	 * @return separator control or <samp>null </samp> if not set.
 	 */
 	public Control getSeparatorControl() {
@@ -198,7 +208,7 @@ public class Section extends ExpandableComposite {
 
 	/**
 	 * Sets the background of the section.
-	 * 
+	 *
 	 * @param bg
 	 *            the new background
 	 */
@@ -207,11 +217,14 @@ public class Section extends ExpandableComposite {
 		if (descriptionControl != null
 				&& (getExpansionStyle() & DESCRIPTION) != 0)
 			descriptionControl.setBackground(bg);
+// RAP [if] Title bar background gradient rendering
+        applyBackgroundGradient();
+// ENDRAP [if]
 	}
 
 	/**
 	 * Sets the foreground of the section.
-	 * 
+	 *
 	 * @param fg
 	 *            the new foreground.
 	 */
@@ -225,7 +238,7 @@ public class Section extends ExpandableComposite {
 	/**
 	 * Returns the control used to render the description. In 3.1, this method
 	 * was promoted to public.
-	 * 
+	 *
 	 * @return description control or <code>null</code> if DESCRIPTION style
 	 *         was not used to create the control and description control was
 	 *         not set by the client.
@@ -244,7 +257,7 @@ public class Section extends ExpandableComposite {
 	 * This method and <code>DESCRIPTION</code> style are mutually exclusive.
 	 * Use the method only if you want to create the description control
 	 * yourself.
-	 * 
+	 *
 	 * @param descriptionControl
 	 *            the control that will be placed below the title text.
 	 */
@@ -257,7 +270,7 @@ public class Section extends ExpandableComposite {
 
 	/**
 	 * Sets the color of the title bar border when TITLE_BAR style is used.
-	 * 
+	 *
 	 * @param color
 	 *            the title bar border color
 	 */
@@ -268,19 +281,22 @@ public class Section extends ExpandableComposite {
 	/**
 	 * Sets the color of the title bar background when TITLE_BAR style is used.
 	 * This color is used as a starting color for the vertical gradient.
-	 * 
+	 *
 	 * @param color
 	 *            the title bar border background
 	 */
 	public void setTitleBarBackground(Color color) {
 		putTitleBarColor(COLOR_BG, color);
+// RAP [if] Title bar background gradient rendering
+		applyBackgroundGradient();
+// ENDRAP [if]
 	}
 
 	/**
 	 * Sets the color of the title bar gradient background when TITLE_BAR style
 	 * is used. This color is used at the height where title controls end
 	 * (toggle, tool bar).
-	 * 
+	 *
 	 * @param color
 	 *            the title bar gradient background
 	 */
@@ -290,7 +306,7 @@ public class Section extends ExpandableComposite {
 
 	/**
 	 * Returns the title bar border color when TITLE_BAR style is used.
-	 * 
+	 *
 	 * @return the title bar border color
 	 */
 	public Color getTitleBarBorderColor() {
@@ -302,7 +318,7 @@ public class Section extends ExpandableComposite {
 	/**
 	 * Returns the title bar gradient background color when TITLE_BAR style is
 	 * used.
-	 * 
+	 *
 	 * @return the title bar gradient background
 	 */
 	public Color getTitleBarGradientBackground() {
@@ -315,7 +331,7 @@ public class Section extends ExpandableComposite {
 
 	/**
 	 * Returns the title bar background when TITLE_BAR style is used.
-	 * 
+	 *
 	 * @return the title bar background
 	 */
 	public Color getTitleBarBackground() {
@@ -471,4 +487,55 @@ public class Section extends ExpandableComposite {
 	 */
 	public final void setBackgroundImage(Image image) {
 	}
+
+// RAP [if] Title bar background gradient rendering
+	private final void applyBackgroundGradient() {
+	  if( titleBar != null ) {
+	    // Code start - onPaint
+	    Color bg = null;
+  	    if (titleColors != null) {
+  	        bg = (Color) titleColors.get(COLOR_BG);
+  	    }
+  	    if (bg == null)
+  	        bg = getBackground();
+	    Rectangle bounds = getClientArea();
+	    int theight = 0;
+        int gradientheight = 0;
+        int tvmargin = IGAP;
+        Point tsize = null;
+        Point tcsize = null;
+        if (toggle != null)
+            tsize = toggle.getSize();
+        int twidth = bounds.width - marginWidth - marginWidth;
+        if (tsize != null)
+            twidth -= tsize.x + IGAP;
+        if (getTextClient() != null)
+            tcsize = getTextClient().getSize();
+        if (tcsize != null)
+            twidth -= tcsize.x + IGAP;
+        Point size = textLabel.getSize();
+        if (tsize != null)
+            theight += Math.max(theight, tsize.y);
+        gradientheight = theight;
+        if (tcsize != null) {
+            theight = Math.max(theight, tcsize.y);
+        }
+        theight = Math.max(theight, size.y);
+        gradientheight = Math.max(gradientheight, size.y);
+        theight += tvmargin + tvmargin;
+        gradientheight += tvmargin + tvmargin;
+        // Code end - onPaint
+
+	    titleBar.setBounds( 0, 0, bounds.width, gradientheight );
+	    Object adapter = titleBar.getAdapter( IWidgetGraphicsAdapter.class );
+        IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+        Color[] gradientColors = new Color[] {
+          bg,
+          getBackground()
+        };
+        int[] percents = new int[] { 0, 100 };
+        gfxAdapter.setBackgroundGradient( gradientColors, percents );
+	  }
+	}
+// ENDRAP [if]
 }

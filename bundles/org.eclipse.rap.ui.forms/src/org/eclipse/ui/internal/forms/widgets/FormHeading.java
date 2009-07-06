@@ -38,6 +38,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -864,7 +865,6 @@ public class FormHeading extends Canvas {
 //			titleRegion.setHoverState(TitleRegion.STATE_NORMAL);
 //	}
 
-// RAP [rh] updateGradientImage: empty implementation
 	private void updateGradientImage() {
 //		Rectangle rect = getBounds();
 //		if (gradientImage != null) {
@@ -883,6 +883,18 @@ public class FormHeading extends Canvas {
 //			gc.dispose();
 //		}
 //		setBackgroundImage(gradientImage);
+// RAP [if] Background gradient rendering
+	  if( gradientInfo != null ) {
+	    Object adapter = getAdapter( IWidgetGraphicsAdapter.class );
+        IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+        Color[] gradientColors = new Color[] {
+          gradientInfo.gradientColors[ 0 ],
+          gradientInfo.gradientColors[ 1 ]
+        };
+        int[] percents = new int[] { 0, 100 };
+        gfxAdapter.setBackgroundGradient( gradientColors, percents );
+	  }
+// RAPEND [if]
 	}
 
 	public boolean isSeparatorVisible() {
