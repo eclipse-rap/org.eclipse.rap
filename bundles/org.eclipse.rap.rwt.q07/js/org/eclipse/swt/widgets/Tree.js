@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -57,7 +58,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     this._tree.addEventListener( "contextmenu", this._onContextMenu, this );
     this._tree.addEventListener( "focus", this._onFocusIn, this );
     this._tree.addEventListener( "blur", this._onFocusOut, this );    
-    this._tree.addEventListener( "appear", this._updateLayout, this );    
+    this._tree.addEventListener( "appear", this._updateLayout, this );
+    // [if] Prevent expand/collapse with ENTER key.
+    this._tree.removeEventListener( "keypress", this._tree._onkeypress );
+    this._tree.addEventListener( "keypress", this._onKeyPress, this );
     // TODO [rst] Find out why this is not the default appearance
     this._tree.setAppearance( "tree" );
     
@@ -107,6 +111,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._tree.removeEventListener( "focus", this._onFocusIn, this );
       this._tree.removeEventListener( "blur", this._onFocusOut, this );
       this._tree.removeEventListener( "appear", this._updateLayout, this );
+      this._tree.removeEventListener( "keypress", this._onKeyPress, this );
       this._tree.removeEventListener( "changeElement", this._onTreeElementChange, this._tree );
       this._tree.dispose();
       this._tree = null;
@@ -430,6 +435,35 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     /////////////////
     // Event Listener
+    
+    _onKeyPress : function( evt ) {
+      switch( evt.getKeyIdentifier() ) {
+          case "Enter":
+            var item = this._tree.getManager().getLeadItem();
+            var selection = this._getSelectionIndices();
+            if( selection != "" ) {
+              this._sendWidgetDefaultSelected( item );
+            }            
+            break;
+          default:
+            this._tree._onkeypress( evt );
+        }
+    },
+    
+    _sendWidgetDefaultSelected : function( item ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        if( this._selectionListeners ) {
+          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          var id = wm.findIdByWidget( this );
+          var itemId = wm.findIdByWidget( item );
+          var req = org.eclipse.swt.Request.getInstance();
+          var eventName = "org.eclipse.swt.events.widgetDefaultSelected";
+          req.addEvent( eventName, id );
+          req.addParameter( eventName + ".item", itemId );
+          req.send();
+        }
+      }
+    },
 
     _onChangeSelection : function( evt ) {
       this._updateSelectedItemState();
@@ -445,8 +479,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           //      When first visible item is selected and arrow up is pressed the root
           //      item ( == this ) is selected which results in an invisible selection.
           if( item == this ) {
-          this._tree.getFirstVisibleChildOfFolder().setSelected( true );
-          this._tree.setSelected( false );
+            this._tree.getFirstVisibleChildOfFolder().setSelected( true );
+            this._tree.setSelected( false );
           } else {
             if ( this._selectionListeners ) {
               this._suspendClicks();
@@ -546,19 +580,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
      * Handle double click on tree item
      * called by org.eclipse.swt.widgets.TreeItem
      */
-    _notifyItemDblClick : function(item) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        if( this._selectionListeners ) {
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          var id = wm.findIdByWidget( this );
-          var itemId = wm.findIdByWidget( item );
-          var req = org.eclipse.swt.Request.getInstance();
-          var eventName = "org.eclipse.swt.events.widgetDefaultSelected";
-          req.addEvent( eventName, id );
-          req.addParameter( eventName + ".item", itemId );
-          req.send();
-        }
-      }
+    _notifyItemDblClick : function( item ) {
+      this._sendWidgetDefaultSelected( item );
     },
 
     /*
