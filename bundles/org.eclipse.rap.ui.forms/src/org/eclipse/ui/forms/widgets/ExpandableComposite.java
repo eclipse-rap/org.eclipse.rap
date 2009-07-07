@@ -54,10 +54,12 @@ import org.eclipse.ui.internal.forms.widgets.FormsResources;
  * The widget can be instantiated as-is, or subclassed to modify some aspects of
  * it. *
  * <p>
+ * <!-- RAP [rh] no key events
  * Since 3.1, left/right arrow keys can be used to control the expansion state.
  * If several expandable composites are created in the same parent, up/down
  * arrow keys can be used to traverse between them. Expandable text accepts
  * mnemonics and mnemonic activation will toggle the expansion state.
+ * -->
  *
  * <p>
  * While expandable composite recognize that different styles can be used to
