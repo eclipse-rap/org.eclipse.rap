@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,20 +7,22 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.branding;
 
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.*;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.*;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
-import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.osgi.framework.Bundle;
 
 public final class Branding extends AbstractBranding {
 
@@ -166,9 +168,10 @@ public final class Branding extends AbstractBranding {
   }
 
   public void registerResources() throws IOException {
-    if( favIcon != null && !"".equals( favIcon ) ) { //$NON-NLS-1$
-      URL url = Platform.getBundle( contributor ).getEntry( favIcon );
-      InputStream stream = url.openStream();
+    if( favIcon != null && !"".equals( favIcon ) ) {
+      Bundle bundle = Platform.getBundle( contributor );
+      Path file = new Path( favIcon );
+      InputStream stream = FileLocator.openStream( bundle, file, false );
       if( stream != null ) {
         try {
           ResourceManager.getInstance().register( favIcon, stream );
