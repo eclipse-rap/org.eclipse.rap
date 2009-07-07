@@ -63,9 +63,6 @@ public class Section extends ExpandableComposite {
 
 	private Hashtable titleColors;
 
-// RAP [if] Title bar background gradient rendering
-	private Composite titleBar;
-
 	private static final String COLOR_BG = "bg"; //$NON-NLS-1$
 
 	private static final String COLOR_GBG = "gbg"; //$NON-NLS-1$
@@ -92,9 +89,6 @@ public class Section extends ExpandableComposite {
 			descriptionControl = new Text(this, SWT.READ_ONLY | SWT.WRAP | rtl);
 		}
 		if ((style & TITLE_BAR) != 0) {
-// RAP [if] Title bar background gradient rendering
-		    titleBar = new Composite( this, SWT.NONE );
-// ENDRAP [if]
 			Listener listener = new Listener() {
 				public void handleEvent(Event e) {
 					Image image = Section.super.getBackgroundImage();
@@ -489,61 +483,56 @@ public class Section extends ExpandableComposite {
 	}
 
 // RAP [if] Title bar background gradient rendering
-	public void setTextClient( final Control textClient ) {
-      super.setTextClient( textClient );
-      if( textClient != null && titleBar != null ) {
-        titleBar.moveBelow( textClient );
-      }
-    }
-
 	private final void applyBackgroundGradient() {
-	  if( titleBar != null ) {
-	    // Code start - onPaint
-	    Color bg = null;
-  	    if (titleColors != null) {
-  	        bg = (Color) titleColors.get(COLOR_BG);
-  	    }
-  	    if (bg == null)
-  	        bg = getBackground();
-	    Rectangle bounds = getClientArea();
-	    int theight = 0;
-        int gradientheight = 0;
-        int tvmargin = IGAP;
-        Point tsize = null;
-        Point tcsize = null;
-        if (toggle != null)
-            tsize = toggle.getSize();
-        int twidth = bounds.width - marginWidth - marginWidth;
-        if (tsize != null)
-            twidth -= tsize.x + IGAP;
-        if (getTextClient() != null)
-            tcsize = getTextClient().getSize();
-        if (tcsize != null)
-            twidth -= tcsize.x + IGAP;
-        Point size = textLabel.getSize();
-        if (tsize != null)
-            theight += Math.max(theight, tsize.y);
-        gradientheight = theight;
-        if (tcsize != null) {
-            theight = Math.max(theight, tcsize.y);
-        }
-        theight = Math.max(theight, size.y);
-        gradientheight = Math.max(gradientheight, size.y);
-        theight += tvmargin + tvmargin;
-        gradientheight += tvmargin + tvmargin;
-        // Code end - onPaint
+	  // Code start - onPaint
+	  Color bg = null;
+  	  if (titleColors != null) {
+  	      bg = (Color) titleColors.get(COLOR_BG);
+  	  }
+  	  if (bg == null)
+  	      bg = getBackground();
+	  Rectangle bounds = getClientArea();
+	  int theight = 0;
+      int gradientheight = 0;
+      int tvmargin = IGAP;
+      Point tsize = null;
+      Point tcsize = null;
+      if (toggle != null)
+          tsize = toggle.getSize();
+      int twidth = bounds.width - marginWidth - marginWidth;
+      if (tsize != null)
+          twidth -= tsize.x + IGAP;
+      if (getTextClient() != null)
+          tcsize = getTextClient().getSize();
+      if (tcsize != null)
+          twidth -= tcsize.x + IGAP;
+      Point size = textLabel.getSize();
+      if (tsize != null)
+          theight += Math.max(theight, tsize.y);
+      gradientheight = theight;
+      if (tcsize != null) {
+          theight = Math.max(theight, tcsize.y);
+      }
+      theight = Math.max(theight, size.y);
+      gradientheight = Math.max(gradientheight, size.y);
+      theight += tvmargin + tvmargin;
+      gradientheight += tvmargin + tvmargin;
+      // Code end - onPaint
 
-	    titleBar.setBounds( 0, 0, bounds.width, gradientheight );
-	    Object adapter = titleBar.getAdapter( IWidgetGraphicsAdapter.class );
-        IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-        Color[] gradientColors = new Color[] {
-          bg,
-          getBackground()
-        };
-        int[] percents = new int[] { 0, 100 };
-        gfxAdapter.setBackgroundGradient( gradientColors, percents );
-        gfxAdapter.setRoundedBorder( 1, getBackground(), 8, 8, 0, 0 );
-	  }
+      Object adapter = getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] gradientColors = new Color[] {
+        bg,
+        getBackground(),
+        getBackground()
+      };
+      int gradientPercent = 0;
+      if( bounds.height != 0 ) {
+        gradientPercent = gradientheight * 100 / bounds.height;
+      }
+      int[] percents = new int[] { 0, gradientPercent, 100 };
+      gfxAdapter.setBackgroundGradient( gradientColors, percents );
+      gfxAdapter.setRoundedBorder( 1, getBackground(), 8, 8, 0, 0 );
 	}
 // ENDRAP [if]
 }
