@@ -78,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.addEventListener( "changeFont", this._onChangeFont, this );
     this.addEventListener( "changeTextColor", this._onChangeTextColor, this );
     this.addEventListener( "changeBackgroundColor",
-                           this._onChangeBackgoundColor, 
+                           this._onChangeBackgroundColor, 
                            this );
     this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
     // Mouse events
@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "changeFont", this._onChangeFont, this );
     this.removeEventListener( "changeTextColor", this._onChangeTextColor, this );
     this.removeEventListener( "changeBackgroundColor",
-                              this._onChangeBackgoundColor, 
+                              this._onChangeBackgroundColor, 
                               this );
     this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
@@ -135,6 +135,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
   },
 
   members : {
+
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._field.addState( state );
+        this._list.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._field.removeState( state );
+        this._list.removeState( state );
+      }
+    },
+
     _onChangeSize : function( evt ) {
       this._list.setWidth( this.getWidth() );
       this._setListLocation();
@@ -184,10 +201,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._list.setTextColor( value );
     },
 
-    _onChangeBackgoundColor : function( evt ) {
-      var value = evt.getValue();
-      this._field.setBackgroundColor( value );
-      this._list.setBackgroundColor( value );
+    _onChangeBackgroundColor : function( evt ) {
+      var color = evt.getValue();
+      this._field.setBackgroundColor( color );
+      // Ensure that the list is never transparent (see bug 282540)
+      if( color != null ) {
+        this._list.setBackgroundColor( color );
+      } else {
+        this._list.resetBackgroundColor();
+      }
     },
     
     _onChangeVisibility : function( evt ) {
