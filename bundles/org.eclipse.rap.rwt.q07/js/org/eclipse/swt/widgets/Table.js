@@ -887,8 +887,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( itemIndex === this._focusIndex ) {
         this._focusIndex = -1;
       }
-      this._adjustSelectedIndices( itemIndex );
       this._deselectItem( itemIndex, false );
+      this._adjustSelectedIndices( itemIndex );
       this._updateScrollHeight();
     },
 
@@ -924,12 +924,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _adjustSelectedIndices : function( itemIndex ) {
-      if( this._isItemSelected( itemIndex ) ) {
-        for( var i = 0; i < this._selected.length; i++ ) {
-          var index = this._selected[ i ];
-          if( itemIndex < index ) {
-            this._selected[ i ] = index - 1;
-          }
+      for( var i = 0; i < this._selected.length; i++ ) {
+        var index = this._selected[ i ];
+        if( itemIndex < index ) {
+          this._selected[ i ] = index - 1;
         }
       }
     },
