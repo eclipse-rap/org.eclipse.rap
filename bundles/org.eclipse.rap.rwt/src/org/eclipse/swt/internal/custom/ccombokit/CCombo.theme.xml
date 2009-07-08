@@ -70,6 +70,12 @@
         </description>
       </property>
       
+      <property name="width" type="dimension">
+        <description>
+          The width of the drop-down button of the CCombo.
+        </description>
+      </property>
+      
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent." />
 

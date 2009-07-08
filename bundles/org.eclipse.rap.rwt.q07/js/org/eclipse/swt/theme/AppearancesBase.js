@@ -710,11 +710,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.rwt_CCOMBO ) {
-        result.border = tv.getCssBorder( "CCombo", "border" );
-      } else {
-        result.border = tv.getCssBorder( "Combo", "border" );
-    }
+      result.border = tv.getCssBorder( "Combo", "border" );
       result.backgroundColor = tv.getCssColor( "Combo",
                                                "background-color" );
       result.textColor = tv.getCssColor( "Combo", "color" );
@@ -751,7 +747,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.width = null;
       result.height = null;
       result.left = 0;
-      result.right = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
+      result.right = tv.getCssDimension( "Combo-Button", "width" );
       result.top = 0;
       result.bottom = 0;
       result.textColor = states.disabled
@@ -767,12 +763,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.rwt_CCOMBO ) {
-        result.border = tv.getCssBorder( "CCombo-Button", "border" );
-      } else {
-        result.border = tv.getCssBorder( "Combo-Button", "border" );
-      }
-      result.width = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
+      result.border = tv.getCssBorder( "Combo-Button", "border" );
+      result.width = tv.getCssDimension( "Combo-Button", "width" );
       result.height = null;
       result.top = 0;
       result.bottom = 0;
@@ -780,6 +772,83 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.icon = tv.getCssImage( "Combo-Button", "background-image" );
         // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "Combo-Button", 
+                                               "background-color" );
+      return result;
+    }
+  },
+  
+  /*
+  ---------------------------------------------------------------------------
+    CCOMBO
+  ---------------------------------------------------------------------------
+  */
+
+  "ccombo" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "CCombo", "border" );
+      result.backgroundColor = tv.getCssColor( "CCombo",
+                                               "background-color" );
+      result.textColor = tv.getCssColor( "CCombo", "color" );
+      result.font = tv.getCssFont( "CCombo", "font" );
+      return result;
+    }
+  },
+
+  "ccombo-list" : {
+    include : "list",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "CCombo-List", "border" );
+      result.height = "auto";
+      result.overflow = "scrollY";
+      result.textColor = tv.getCssColor( "CCombo", "color" );
+      result.font = tv.getCssFont( "*", "font" );
+      result.backgroundColor = tv.getCssColor( "CCombo", 
+                                               "background-color" );
+      return result;
+    }
+  },
+
+  "ccombo-field" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.font = tv.getCssFont( "*", "font" );
+      // [if] Do not apply top/bottom paddings on the client
+      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      result.paddingRight = cssPadding[ 1 ];
+      result.paddingLeft = cssPadding[ 3 ];
+      result.width = null;
+      result.height = null;
+      result.left = 0;
+      result.right = tv.getCssDimension( "CCombo-Button", "width" );
+      result.top = 0;
+      result.bottom = 0;
+      result.textColor = states.disabled
+                         ? "widget.graytext"
+                         : tv.getCssColor( "CCombo", "color" );
+      result.backgroundColor = tv.getCssColor( "CCombo", 
+                                               "background-color" );
+      return result;
+    }
+  },
+
+  "ccombo-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "CCombo-Button", "border" );
+      result.width = tv.getCssDimension( "CCombo-Button", "width" );
+      result.height = null;
+      result.top = 0;
+      result.bottom = 0;
+      result.right = 0;
+      result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
+        // TODO [rst] rather use button.bgcolor?
+      result.backgroundColor = tv.getCssColor( "CCombo-Button", 
                                                "background-color" );
       return result;
     }

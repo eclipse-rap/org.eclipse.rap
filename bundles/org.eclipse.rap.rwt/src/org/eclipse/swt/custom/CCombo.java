@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
+import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -58,7 +59,6 @@ public final class CCombo extends Composite {
   
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
-  private static final int DROP_DOWN_BUTTON_WIDTH = 14;
   
   /**
    * The maximum number of characters that can be entered
@@ -835,8 +835,9 @@ public final class CCombo extends Composite {
       }
     }
     Rectangle padding = getPadding();
+    int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += padding.width + DROP_DOWN_BUTTON_WIDTH;
+      width += padding.width + buttonWidth;
     }
     if( height != 0 ) {
       height += padding.height;
@@ -1078,6 +1079,13 @@ public final class CCombo extends Composite {
     CComboThemeAdapter adapter
       = ( CComboThemeAdapter )manager.getThemeAdapter( CCombo.class );
     return adapter.getPadding( this );
+  }
+  
+  private int getButtonWidth() {
+    ThemeManager manager = ThemeManager.getInstance();
+    CComboThemeAdapter adapter
+      = ( CComboThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getButtonWidth( this );
   }
 
   private static int checkStyle( final int style ) {

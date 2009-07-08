@@ -530,7 +530,7 @@ public class CCombo_Test extends TestCase {
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 46, 17 );
+    expected = new Point( 47, 17 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 100, 100 );

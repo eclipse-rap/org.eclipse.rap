@@ -94,10 +94,9 @@ public final class CComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.widgets.Combo" );
+    writer.newWidget( "org.eclipse.swt.widgets.Combo", 
+                      new Object[] { "ccombo" } );
     ControlLCAUtil.writeStyleFlags( ccombo );
-    writer.call( JSConst.QX_FUNC_ADD_STATE, 
-                 new Object[] { "rwt_CCOMBO" } );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

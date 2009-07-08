@@ -67,6 +67,12 @@
           The border of the drop-down button of the Combo.
         </description>
       </property>
+      
+      <property name="width" type="dimension">
+        <description>
+          The width of the drop-down button of the Combo.
+        </description>
+      </property>
 
       <state name="hover"
           description="Applies while the user hovers over the combo button." />

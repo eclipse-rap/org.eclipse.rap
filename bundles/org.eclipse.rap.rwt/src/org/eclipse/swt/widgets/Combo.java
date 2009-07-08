@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -59,7 +60,6 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  */
 public class Combo extends Composite {
 
-  private static final int DROP_DOWN_BUTTON_WIDTH = 14;
   private final ListModel model;
   private String text = "";
   private int visibleCount = 5;
@@ -640,8 +640,9 @@ public class Combo extends Composite {
       }
     }
     Rectangle padding = getPadding();
+    int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += padding.width + DROP_DOWN_BUTTON_WIDTH;
+      width += padding.width + buttonWidth;
     }
     if( height != 0 ) {
       height += padding.height;
@@ -865,6 +866,13 @@ public class Combo extends Composite {
     ComboThemeAdapter adapter
       = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
+  }
+  
+  private int getButtonWidth() {
+    ThemeManager manager = ThemeManager.getInstance();
+    ComboThemeAdapter adapter
+      = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getButtonWidth( this );
   }
 
   private static int checkStyle( final int style ) {
