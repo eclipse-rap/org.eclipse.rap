@@ -5171,7 +5171,25 @@ var c=qx.html.Dimension.getScrollBarSizeRight(t);
 qx.ui.core.Widget.SCROLLBAR_SIZE=c?c:16;
 document.body.removeChild(t);
 },
-_idCounter:0},
+_idCounter:0,
+disableScrolling:function(widget){var el=widget._getTargetNode();
+if(el){qx.html.Scroll.disableScrolling(el);
+}else{widget.addEventListener("appear",
+this._blockScrollingOnAppear,
+this);
+}},
+enableScrolling:function(widget){var el=widget._getTargetNode();
+if(el){qx.html.Scroll.enableScrolling(el);
+}else{widget.removeEventListener("appear",
+this._blockScrollingOnAppear,
+this);
+}},
+_blockScrollingOnAppear:function(ev){var widget=ev.getTarget();
+widget.removeEventListener("appear",
+this._blockScrollingOnAppear,
+this);
+this.disableScrolling(widget);
+}},
 properties:{enabled:{init:"inherit",
 check:"Boolean",
 inheritable:true,
@@ -7161,6 +7179,40 @@ getBorderBottom:function(vElement){return qx.html.Style.getStyleProperty(vElemen
 "borderBottomStyle")=="none"?0:qx.html.Style.getStyleSize(vElement,
 "borderBottomWidth");
 }}});
+
+
+
+
+/* ID: qx.html.Scroll */
+qx.Class.define("qx.html.Scroll",
+{statics:{getLeftSum:function(el){var sum=0;
+var p=el.parentNode;
+while(p.nodeType==1){sum+=p.scrollLeft;
+p=p.parentNode;
+}return sum;
+},
+getTopSum:function(el){var sum=0;
+var p=el.parentNode;
+while(p.nodeType==1){sum+=p.scrollTop;
+p=p.parentNode;
+}return sum;
+},
+disableScrolling:function(el){this.enableScrolling(el);
+el.scrollLeft=0;
+el.scrollTop=0;
+qx.html.EventRegistration.addEventListener(el,
+"scroll",
+this._onscroll);
+},
+enableScrolling:function(el){;
+qx.html.EventRegistration.removeEventListener(el,
+"scroll",
+this._onscroll);
+},
+_onscroll:function(ev){var el=ev.target||ev.srcElement;
+if(ev.scrollLeft!=0||ev.scrollTop!=0){el.scrollLeft=0;
+el.scrollTop=0;
+}}}});
 
 
 
@@ -11803,24 +11855,6 @@ getScreenDocumentBottom:qx.core.Variant.select("qx.client",
 {"gecko":function(el){return qx.html.Location.getScreenOuterBottom(el.ownerDocument.body);
 },
 "default":function(el){}})}});
-
-
-
-
-/* ID: qx.html.Scroll */
-qx.Class.define("qx.html.Scroll",
-{statics:{getLeftSum:function(el){var sum=0;
-var p=el.parentNode;
-while(p.nodeType==1){sum+=p.scrollLeft;
-p=p.parentNode;
-}return sum;
-},
-getTopSum:function(el){var sum=0;
-var p=el.parentNode;
-while(p.nodeType==1){sum+=p.scrollTop;
-p=p.parentNode;
-}return sum;
-}}});
 
 
 
