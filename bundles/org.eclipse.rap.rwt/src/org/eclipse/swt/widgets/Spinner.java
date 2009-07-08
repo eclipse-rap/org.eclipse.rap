@@ -48,7 +48,6 @@ public class Spinner extends Composite {
   public static final int LIMIT = Integer.MAX_VALUE;
 
   private static final int UP_DOWN_MIN_HEIGHT = 18;
-  private static final int UP_DOWN_WIDTH = 16;
 
   private int digits = 0;
   private int increment = 1;
@@ -437,7 +436,8 @@ public class Spinner extends Composite {
       }
       Point textSize = TextSizeDetermination.stringExtent( getFont(), string );
       Rectangle padding = getPadding();
-      width = textSize.x + UP_DOWN_WIDTH + padding.width;
+      int buttonWidth = getButtonWidth();
+      width = textSize.x + buttonWidth + padding.width;
       height = textSize.y + padding.height;
     }
     if( width == 0 ) {
@@ -474,7 +474,8 @@ public class Spinner extends Composite {
       result.width += 2 * border;
       result.height += 2 * border;
     }
-    result.width += UP_DOWN_WIDTH;
+    int buttonWidth = getButtonWidth();
+    result.width += buttonWidth;
     return result;
   }
 
@@ -594,6 +595,13 @@ public class Spinner extends Composite {
     SpinnerThemeAdapter adapter
       = ( SpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
+  }
+  
+  private int getButtonWidth() {
+    ThemeManager manager = ThemeManager.getInstance();
+    SpinnerThemeAdapter adapter
+      = ( SpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getButtonWidth( this );
   }
 
   private static int checkStyle( final int style ) {

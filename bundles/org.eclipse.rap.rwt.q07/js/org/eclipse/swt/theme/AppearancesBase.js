@@ -1152,10 +1152,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.width = 16;
+      result.width = tv.getCssDimension( "Spinner-Buttons", "width" );
       result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
-      result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
-      result.backgroundColor = tv.getCssColor( "Spinner-UpButton", 
+      result.border = tv.getCssBorder( "Spinner-Buttons", "border" );
+      result.backgroundColor = tv.getCssColor( "Spinner-Buttons", 
                                                "background-color" );
       return result;
     }
@@ -1165,10 +1165,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.width = 16;
+      result.width = tv.getCssDimension( "Spinner-Buttons", "width" );
       result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
-      result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
-      result.backgroundColor = tv.getCssColor( "Spinner-DownButton", 
+      result.border = tv.getCssBorder( "Spinner-Buttons", "border" );
+      result.backgroundColor = tv.getCssColor( "Spinner-Buttons", 
                                                "background-color" );
       return result;
     }

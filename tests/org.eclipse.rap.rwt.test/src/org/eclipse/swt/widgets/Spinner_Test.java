@@ -139,18 +139,18 @@ public class Spinner_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Point expected = new Point( 54, 18 );
+    Point expected = new Point( 52, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setMaximum( 1000000 );
-    expected = new Point( 75, 18 );
+    expected = new Point( 73, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Point( 56, 20 );
+    expected = new Point( 54, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 118, 102 );
+    expected = new Point( 117, 102 );
     assertEquals( expected, spinner.computeSize( 100, 100 ) );
   }
 
@@ -159,11 +159,11 @@ public class Spinner_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Rectangle expected = new Rectangle( 0, 0, 116, 100 );
+    Rectangle expected = new Rectangle( 0, 0, 115, 100 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Rectangle( -1, -1, 118, 102 );
+    expected = new Rectangle( -1, -1, 117, 102 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
   
