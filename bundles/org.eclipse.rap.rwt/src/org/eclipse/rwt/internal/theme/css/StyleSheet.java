@@ -34,7 +34,7 @@ public final class StyleSheet {
   public StyleSheet( final StyleRule[] styleRules ) {
     this.styleRules = styleRules;
     // TODO: [if] Find better solution for merging border and border-radius
-    mergeBorderRaduis();
+    mergeBorderRadius();
     createSelectorWrappers();
   }
 
@@ -89,7 +89,7 @@ public final class StyleSheet {
     return buffer.toString();
   }
 
-  private void mergeBorderRaduis() {
+  private void mergeBorderRadius() {
     for( int i_rule = 0; i_rule < styleRules.length; i_rule++ ) {
       StyleRule styleRule = styleRules[ i_rule ];
       IStylePropertyMap properties = styleRule.getProperties();
