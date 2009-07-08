@@ -40,6 +40,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     }
   },
 
+  // no destruct - see dispose() override
+  
   statics : {
 
     PX : "px"
@@ -48,6 +50,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
 
   members : {
     
+    /* Need to override dispose() here because the call to parent._removeitem()
+     * has to happen immediately. The usual way (putting the code in destruct) 
+     * would be executed in the socalled "dispose-queue" somewhen later. */
     dispose : function() {
       this.base( arguments );
       // When changing this, re-check destructor of Table.js as well as TableLCA

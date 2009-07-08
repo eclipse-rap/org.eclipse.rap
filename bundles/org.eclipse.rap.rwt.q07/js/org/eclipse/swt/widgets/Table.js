@@ -887,6 +887,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( itemIndex === this._focusIndex ) {
         this._focusIndex = -1;
       }
+      // Order is crucial here: first deselect item then adjust indices
       this._deselectItem( itemIndex, false );
       this._adjustSelectedIndices( itemIndex );
       this._updateScrollHeight();
