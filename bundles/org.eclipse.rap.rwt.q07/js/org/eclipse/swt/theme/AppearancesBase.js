@@ -1808,6 +1808,32 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "datetime-button-up" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.width = tv.getCssDimension( "DateTime-Buttons", "width" );
+      result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "DateTime-Buttons", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-Buttons", 
+                                               "background-color" );
+      return result;
+    }
+  },
+
+  "datetime-button-down" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.width = tv.getCssDimension( "DateTime-Buttons", "width" );
+      result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "DateTime-Buttons", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-Buttons", 
+                                               "background-color" );
+      return result;
+    }
+  },
 
   // ------------------------------------------------------------------------
   // Calendar

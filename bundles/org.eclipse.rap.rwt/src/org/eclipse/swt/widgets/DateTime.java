@@ -15,12 +15,15 @@ import java.text.*;
 import java.util.*;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
+import org.eclipse.swt.internal.widgets.datetimekit.DateTimeThemeAdapter;
 
 /**
  * Instances of this class are selectable user interface objects that allow the
@@ -667,6 +670,7 @@ public class DateTime extends Composite {
       secondsTextFieldBounds.width = hoursTextFieldBounds.width;
       secondsTextFieldBounds.height = hoursTextFieldBounds.height;
       // The spinner bounds
+      int buttonWidth = getButtonWidth();
       spinnerBounds = new Rectangle( 0, 0, 0, 0 );
       spinnerBounds.x = minutesTextFieldBounds.x
                       + minutesTextFieldBounds.width;
@@ -674,7 +678,7 @@ public class DateTime extends Composite {
         spinnerBounds.x = secondsTextFieldBounds.x
                         + secondsTextFieldBounds.width;
       }
-      spinnerBounds.width = 17;
+      spinnerBounds.width = buttonWidth + 1;
       spinnerBounds.height = hoursTextFieldBounds.height;
       // Overall widget size
       width = spinnerBounds.x + spinnerBounds.width + PADDING * 2;
@@ -748,9 +752,10 @@ public class DateTime extends Composite {
       = TextSizeDetermination.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
+    int buttonWidth = getButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
     spinnerBounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width;
-    spinnerBounds.width = 17;
+    spinnerBounds.width = buttonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height;
     // Overall widget size
     int width = spinnerBounds.x + spinnerBounds.width;
@@ -823,9 +828,10 @@ public class DateTime extends Composite {
       = TextSizeDetermination.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
+    int buttonWidth = getButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
     spinnerBounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width;
-    spinnerBounds.width = 17;
+    spinnerBounds.width = buttonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height;
     // Overall widget size
     int width = spinnerBounds.x + spinnerBounds.width;
@@ -899,14 +905,22 @@ public class DateTime extends Composite {
 
     separator1Bounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
+    int buttonWidth = getButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
     spinnerBounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width;
-    spinnerBounds.width = 17;
+    spinnerBounds.width = buttonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height;
     // Overall widget size
     int width = spinnerBounds.x + spinnerBounds.width;
     int height = weekdayTextFieldBounds.height;
     return new Point( width, height );
+  }
+  
+  private int getButtonWidth() {
+    ThemeManager manager = ThemeManager.getInstance();
+    DateTimeThemeAdapter adapter
+      = ( DateTimeThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getButtonWidth( this );
   }
 
   private int getDaysInMonth( final int month, final int year ) {

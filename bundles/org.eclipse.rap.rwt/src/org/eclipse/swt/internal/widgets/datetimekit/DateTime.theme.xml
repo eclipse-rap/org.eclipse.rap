@@ -135,6 +135,69 @@
       </property>
 
     </element>
+    
+    <element name="DateTime-Buttons"
+        description="The DateTime Date/Time up and down buttons.">
+      
+      <property name="background-color" type="color">
+        <description>
+          The background color of the DateTime Date/Time up and down buttons.
+        </description>
+      </property>
+
+      <property name="border" type="border">
+        <description>
+          The border of the DateTime Date/Time up and down buttons.
+        </description>
+      </property>
+      
+      <property name="width" type="dimension">
+        <description>
+          The width of the DateTime Date/Time up and down buttons.
+        </description>
+      </property>
+
+      <state name="hover"
+          description="Applies while the user hovers over a button." />
+
+      <state name="pressed"
+          description="Applies while a button is pressed." />
+      
+      <element name="DateTime-UpButton"
+          description="The DateTime Date/Time up button">
+
+        <property name="background-image" type="image">
+          <description>
+            Background image (icon) for the DateTime Date/Time up button.
+          </description>
+        </property>
+
+        <state name="hover"
+            description="Applies while the user hovers over the button." />
+
+        <state name="pressed"
+            description="Applies while a button is pressed." />
+
+      </element>
+
+      <element name="DateTime-DownButton"
+          description="The DateTime down button">
+
+        <property name="background-image" type="image">
+          <description>
+            Background image (icon) for the DateTime Date/Time down button.
+          </description>
+        </property>
+
+        <state name="hover"
+          description="Applies while the user hovers over the button." />
+
+        <state name="pressed"
+            description="Applies while a button is pressed." />
+
+      </element>
+      
+    </element>
 
   </element>
 
