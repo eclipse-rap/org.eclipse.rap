@@ -454,34 +454,50 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         switch(evt.getKeyIdentifier()) {
           case "Left":
             dayIncrement = -1;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "Right":
             dayIncrement = 1;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "Up":
             dayIncrement = -7;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "Down":
             dayIncrement = 7;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "PageUp":
             monthIncrement = -1;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "PageDown":
             monthIncrement = 1;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "Escape":
             if (this.getDate() != null) {
               this.setDate(null);
+              evt.preventDefault();
+              evt.stopPropagation();
               return true;
             }
 
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "Enter":
@@ -490,6 +506,8 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
               this.createDispatchDataEvent("select", this.getDate());
             }
 
+            evt.preventDefault();
+            evt.stopPropagation();
             return;
         }
       }
@@ -497,10 +515,14 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         switch(evt.getKeyIdentifier()) {
           case "PageUp":
             yearIncrement = -1;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
 
           case "PageDown":
             yearIncrement = 1;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
         }
       }

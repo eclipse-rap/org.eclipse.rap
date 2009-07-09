@@ -330,6 +330,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                                 this._yearTextField );
               }
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Right":
             if( this._datePattern == "MDY") {
@@ -351,6 +353,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                                  this._yearTextField );
               }
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Up":
             if( this._focusedTextField === this._yearTextField ) {
@@ -362,6 +366,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             } else {
               this._spinner.setValue( value + 1 );
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Down":
             if( this._focusedTextField === this._yearTextField ) {
@@ -373,6 +379,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             } else {
               this._spinner.setValue( value - 1 );
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
         }
       }
@@ -470,14 +478,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                 this._checkAndApplyYearValue();
               }
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Home":
             var newValue = this._spinner.getMin();
             this._spinner.setValue( newValue );
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "End":
             var newValue = this._spinner.getMax();
             this._spinner.setValue( newValue );
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
         }
       }
