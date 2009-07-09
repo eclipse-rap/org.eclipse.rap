@@ -1882,10 +1882,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.width = tv.getCssDimension( "DateTime-Buttons", "width" );
+      result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
       result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
-      result.border = tv.getCssBorder( "DateTime-Buttons", "border" );
-      result.backgroundColor = tv.getCssColor( "DateTime-Buttons", 
+      result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-UpButton", 
                                                "background-color" );
       return result;
     }
@@ -1895,10 +1895,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.width = tv.getCssDimension( "DateTime-Buttons", "width" );
+      result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
       result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
-      result.border = tv.getCssBorder( "DateTime-Buttons", "border" );
-      result.backgroundColor = tv.getCssColor( "DateTime-Buttons", 
+      result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DownButton", 
                                                "background-color" );
       return result;
     }

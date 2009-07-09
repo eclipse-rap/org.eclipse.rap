@@ -15,7 +15,13 @@ import org.eclipse.swt.widgets.DateTime;
 
 public final class DateTimeThemeAdapter extends ControlThemeAdapter {
 
-  public int getButtonWidth( final DateTime datetime ) {
-    return getCssDimension( "DateTime-Buttons", "width", datetime );
+  public int getButtonWidth( final DateTime dateTime ) {
+    int upButtonWidth = getCssDimension( "DateTime-UpButton", 
+                                         "width", 
+                                         dateTime );
+    int downButtonWidth = getCssDimension( "DateTime-DownButton", 
+                                           "width", 
+                                           dateTime );
+    return Math.max( upButtonWidth, downButtonWidth );
   }
 }
