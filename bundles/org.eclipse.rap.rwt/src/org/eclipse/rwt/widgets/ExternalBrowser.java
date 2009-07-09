@@ -181,6 +181,8 @@ public final class ExternalBrowser {
     String result = id;
     result = result.replaceAll( "\\_", "\\_0" );
     result = result.replaceAll( "\\.", "\\_" );
+    // IE does not accept blanks in popup-window names
+    result = result.replaceAll( " ", "\\__" );
     return result;
   }
   

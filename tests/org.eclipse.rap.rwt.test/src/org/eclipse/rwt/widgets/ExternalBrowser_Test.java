@@ -75,6 +75,8 @@ public class ExternalBrowser_Test extends TestCase {
   public void testEscapeId() {
     String escapedId = ExternalBrowser.escapeId( "my.id" );
     assertEquals( -1, escapedId.indexOf( "." ) );
+    escapedId = ExternalBrowser.escapeId( "my id" );
+    assertEquals( -1, escapedId.indexOf( " " ) );
     
     String escapedId1 = ExternalBrowser.escapeId( "my_id" );
     String escapedId2 = ExternalBrowser.escapeId( "my.id" );
