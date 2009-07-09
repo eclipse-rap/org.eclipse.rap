@@ -41,59 +41,60 @@
     <state name="disabled"
         description="Applies to disabled Spinner controls." />
 
-    <element name="Spinner-Buttons"
-        description="The spinner buttons">
-      
+    <element name="Spinner-UpButton"
+        description="The spinner up button">
+
+      <property name="background-image" 
+          type="image"
+          description="Background image (icon) for spinner up button." />
+            
       <property name="background-color" 
           type="color"
-          description="Background color of spinner up and down buttons." />
+          description="Background color of spinner up button." />
       
       <property name="border"
           type="border"
-          description="Border for spinner up and down buttons." />
+          description="Border for spinner up button." />
       
       <property name="width" 
           type="dimension"
-          description="Width of the Spinner up and down buttons." />
-      
+          description="Width of the spinner up button." />
+
       <state name="hover"
-          description="Applies while the user hovers over a button." />
+          description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
 
-      <element name="Spinner-UpButton"
-          description="The spinner up button">
-
-        <property name="background-image" 
-            type="image"
-            description="Background image (icon) for spinner up button." />
-
-        <state name="hover"
-            description="Applies while the user hovers over the button." />
-
-        <state name="pressed"
-            description="Applies while a button is pressed." />
-
-      </element>
-
-      <element name="Spinner-DownButton"
-          description="The spinner down button">
-
-        <property name="background-image" 
-            type="image"
-            description="Background image (icon) for spinner down button." />
-
-        <state name="hover"
-            description="Applies while the user hovers over the button." />
-
-        <state name="pressed"
-            description="Applies while a button is pressed." />
-
-      </element>
-      
     </element>
 
+    <element name="Spinner-DownButton"
+        description="The spinner down button">
+
+      <property name="background-image" 
+          type="image"
+          description="Background image (icon) for spinner down button." />
+          
+      <property name="background-color" 
+          type="color"
+          description="Background color of spinner down button." />
+      
+      <property name="border"
+          type="border"
+          description="Border for spinner down button." />
+      
+      <property name="width" 
+          type="dimension"
+          description="Width of the spinner down button." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
+
+      <state name="pressed"
+          description="Applies while a button is pressed." />
+
+    </element>
+      
   </element>
 
 </theme>

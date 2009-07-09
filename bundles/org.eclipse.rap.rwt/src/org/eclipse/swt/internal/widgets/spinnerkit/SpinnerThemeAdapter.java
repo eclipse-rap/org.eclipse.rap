@@ -22,6 +22,12 @@ public final class SpinnerThemeAdapter extends ControlThemeAdapter {
   }
   
   public int getButtonWidth( final Spinner spinner ) {
-    return getCssDimension( "Spinner-Buttons", "width", spinner );
+    int upButtonWidth = getCssDimension( "Spinner-UpButton", 
+                                         "width", 
+                                         spinner );
+    int downButtonWidth = getCssDimension( "Spinner-DownButton", 
+                                           "width", 
+                                           spinner );
+    return Math.max( upButtonWidth, downButtonWidth );
   }
 }
