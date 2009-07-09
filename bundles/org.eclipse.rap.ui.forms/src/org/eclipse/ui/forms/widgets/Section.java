@@ -530,6 +530,7 @@ public class Section extends ExpandableComposite {
         int gradientPercent = 0;
         if( bounds.height != 0 ) {
           gradientPercent = gradientheight * 100 / bounds.height;
+          if( gradientPercent > 100 ) gradientPercent = 100;
         }
         int[] percents = new int[] { 0, gradientPercent, 100 };
         gfxAdapter.setBackgroundGradient( gradientColors, percents );
