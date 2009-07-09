@@ -19,6 +19,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
   statics : {
 
     // This factor must be in sync with server side Text#getLineHeight()
+    // and CCombo#getTextHeight()
     LINE_HEIGT_FACTOR : 1.2,
 
     // === Public methods ===
@@ -161,6 +162,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       org.eclipse.swt.TextUtil._updateLineHeight( this );
     },
 
+    // this function is also used by Combo.js
     _updateLineHeight : function( text ) {
       // TODO [rst] _inputElement can be undefined when text created invisible
       if( text._inputElement !== undefined ) {

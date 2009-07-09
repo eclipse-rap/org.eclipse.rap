@@ -165,6 +165,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
       this.getTopLevelWidget().add( this._list );
       this._setListLocation();
+      org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
     
     _onFocusIn : function( evt ) {
@@ -193,6 +194,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( value );
       }
+      org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
 
     _onChangeTextColor : function( evt ) {

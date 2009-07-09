@@ -14,12 +14,10 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
-import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -59,6 +57,9 @@ public final class CCombo extends Composite {
   
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
+  
+  //This factor must be kept in sync with TextUtil.js#_updateLineHeight
+  private static final double LINE_HEIGHT_FACTOR = 1.2;
   
   /**
    * The maximum number of characters that can be entered
@@ -292,6 +293,25 @@ public final class CCombo extends Composite {
   public int getTextLimit() {
     checkWidget();
     return textLimit;
+  }
+  
+  /**
+   * Returns the height of the receivers's text field.
+   *
+   * @return the text height
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public int getTextHeight() {
+    checkWidget();
+    Font font = getFont();
+    int fontSize = font.getFontData()[ 0 ].getHeight();
+    return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
   
   /**
