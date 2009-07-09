@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
       this._clientArea.setToolTip( this._cellToolTip );
     }
-    // Disable scrolling
+    // Disable scrolling (see bug 279460)
     qx.ui.core.Widget.disableScrolling( this );
   },
 
