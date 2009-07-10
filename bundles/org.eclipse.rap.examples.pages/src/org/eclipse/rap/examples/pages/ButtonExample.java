@@ -107,6 +107,7 @@ public class ButtonExample implements IExamplePage {
     radioComp.setLayout( radioLayout );
     final Button radio1 = new Button( radioComp, SWT.RADIO );
     radio1.setText( "Salami" );
+    radio1.setSelection( true );
     final Button radio2 = new Button( radioComp, SWT.RADIO );
     radio2.setText( "Funghi" );
     final Button radio3 = new Button( radioComp, SWT.RADIO );
@@ -123,5 +124,6 @@ public class ButtonExample implements IExamplePage {
     check2.setText( "Extra Hot" );
     Button check3 = new Button( checkComp, SWT.CHECK );
     check3.setText( "King Size" );
+    check3.setSelection( true );
   }
 }
