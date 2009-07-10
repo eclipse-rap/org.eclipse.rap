@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.theme.css;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.swt.graphics.Rectangle;
 
 
 public class StyleSheet_Test extends TestCase {
@@ -66,19 +65,6 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( QxColor.create( 157, 208, 234 ), values[ 4 ].value );
     assertEquals( "", join( values[ 5 ].constraints ) );
     assertEquals( QxColor.create( 192, 192, 192 ), values[ 5 ].value );
-  }
-
-  public void testMergeBorderRadius() throws Exception {
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
-    ConditionalValue[] values = styleSheet.getValues( "Composite", "border" );
-//    assertEquals( 1, values.length );
-    assertEquals( "[BORDER", join( values[ 0 ].constraints ) );
-    QxBorder expected = QxBorder.create( 2, "solid", "#1695d4" );
-    expected.radius = new Rectangle( 5, 10, 5, 10 );
-    assertEquals( expected, values[ 0 ].value );
-    values = styleSheet.getValues( "Composite", "border-radius" );
-    assertEquals( "[BORDER", join( values[ 0 ].constraints ) );
-    assertEquals( QxBoxDimensions.create( 5, 10, 5, 10 ), values[ 0 ].value );
   }
 
   private static String join( final String[] array ) {

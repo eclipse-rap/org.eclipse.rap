@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.swt.graphics.Rectangle;
-
 
 public class QxBorder implements QxType {
 
@@ -40,8 +38,6 @@ public class QxBorder implements QxType {
   // TODO [rst] Color is either a valid color string or a named color from the
   //            color theme. Check for valid colors.
   public final String color;
-
-  public Rectangle radius;
 
   private QxBorder( final int width, final String style, final String color ) {
     this.width = width;
@@ -145,10 +141,7 @@ public class QxBorder implements QxType {
                     : style.equals( other.style ) )
                && ( color == null
                     ? other.color == null
-                    : color.equals( other.color ) )
-               && ( radius == null
-                    ? other.radius == null
-                    : radius.equals( other.radius ) );
+                    : color.equals( other.color ) );
     }
     return result;
   }
@@ -164,16 +157,13 @@ public class QxBorder implements QxType {
     if( color != null ) {
       result += 37 * result + color.hashCode();
     }
-    if( radius != null ) {
-      result += 37 * result + radius.hashCode();
-    }
     return result;
   }
 
   public String toString() {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc.
     //            exist
-    return "QxBorder{ " + width + ", " + style + ", " + color + ", " + radius + " }";
+    return "QxBorder{ " + width + ", " + style + ", " + color + " }";
   }
 
   private static String parseStyle( final String part ) {

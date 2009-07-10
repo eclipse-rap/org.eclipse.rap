@@ -39,6 +39,16 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var values = this._store.getThemeValues();
       var result = values.borders[ vkey ];
       this.__checkDefined( result, element, key );
+      // construct rounded border if "border-radius" is set
+      vkey = this._store.getCssValue( element, this._states, "border-radius" );
+      var radius = values.boxdims[ vkey ];
+      if( radius != null && result instanceof qx.ui.core.Border ) {
+        var width = result.getWidthTop();
+        var color = result.getColorTop();
+        result = new org.eclipse.rwt.RoundedBorder( width );
+        result.setRadii( radius );
+        result.setColor( color );
+      }
       return result;
     },
 

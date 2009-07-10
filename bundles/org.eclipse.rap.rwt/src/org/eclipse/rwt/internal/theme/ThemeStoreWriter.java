@@ -105,14 +105,6 @@ public final class ThemeStoreWriter {
         borderObject.append( "width", border.width );
         borderObject.append( "style", border.style );
         borderObject.append( "color", border.color );
-        if( border.radius != null ) {
-          JsonArray boxArray = new JsonArray();
-          boxArray.append( border.radius.x );
-          boxArray.append( border.radius.y );
-          boxArray.append( border.radius.width );
-          boxArray.append( border.radius.height );
-          borderObject.append( "radius", boxArray );
-        }
         borderMap.append( key, borderObject );
       }
     }

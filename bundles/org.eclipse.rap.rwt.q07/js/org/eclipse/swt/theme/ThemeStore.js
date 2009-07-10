@@ -143,12 +143,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
             }
           }
           if( border == null ) {
-            if( value.radius ) {
-              border = new org.eclipse.rwt.RoundedBorder( value.width );
-              border.setRadii( value.radius );
-            } else {
-              border = new qx.ui.core.Border( value.width, value.style );
-            }
+            border = new qx.ui.core.Border( value.width, value.style );
             if( value.color ) {
               border.setColor( value.color );
             }
