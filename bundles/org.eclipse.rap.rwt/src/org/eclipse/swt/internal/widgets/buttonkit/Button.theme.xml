@@ -33,6 +33,10 @@
     <property name="border"
         type="border"
         description="Border for buttons." />
+        
+    <property name="border-radius"
+        type="boxdim"
+        description="Border radius for buttons." />
 
     <property name="padding"
         type="boxdim"
