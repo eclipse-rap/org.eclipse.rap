@@ -722,6 +722,9 @@ public class FormHeading extends Canvas {
 			gradientInfo.percents = percents;
 			gradientInfo.vertical = vertical;
 			setBackground(null);
+// RAP [if] Background gradient rendering
+	        normalizeGradientInfo();
+// RAPEND [if]
 			updateGradientImage();
 		} else {
 			// reset
@@ -887,15 +890,51 @@ public class FormHeading extends Canvas {
 	  if( gradientInfo != null ) {
 	    Object adapter = getAdapter( IWidgetGraphicsAdapter.class );
         IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-        Color[] gradientColors = new Color[] {
-          gradientInfo.gradientColors[ 0 ],
-          gradientInfo.gradientColors[ 1 ]
-        };
-        int[] percents = new int[] { 0, 100 };
-        gfxAdapter.setBackgroundGradient( gradientColors, percents );
+        gfxAdapter.setBackgroundGradient( gradientInfo.gradientColors,
+                                          gradientInfo.percents );
 	  }
 // RAPEND [if]
 	}
+
+// RAP [if] Background gradient rendering
+	private void normalizeGradientInfo() {
+	  if( gradientInfo != null ) {
+	    int[] percents = null;
+	    if(    gradientInfo.gradientColors != null
+	        && gradientInfo.percents != null )
+	    {
+  	      if( gradientInfo.gradientColors.length == 1 ) {
+            Color[] gradientColors = new Color[] {
+              gradientInfo.gradientColors[ 0 ],
+              gradientInfo.gradientColors[ 0 ]
+            };
+            percents = new int[] { 0, 100 };
+            gradientInfo.gradientColors = gradientColors;
+          } else if( gradientInfo.gradientColors.length == 2 ) {
+            percents = new int[] { 0, 100 };
+          } else if( gradientInfo.gradientColors.length > 2 ) {
+            percents = new int[ gradientInfo.gradientColors.length ];
+            percents[ 0 ] = 0;
+            percents[ percents.length - 1 ] = 100;
+            for( int i = 1; i < percents.length - 1; i++ ) {
+              if( i <= gradientInfo.percents.length ) {
+                if( gradientInfo.percents[ i - 1 ] > 100 ) {
+                  percents[ i ] = 100;
+                } else if( gradientInfo.percents[ i - 1 ] < 0 ) {
+                  percents[ i ] = 0;
+                } else {
+                  percents[ i ] = gradientInfo.percents[ i - 1 ];
+                }
+              } else {
+                percents[ i ] = 100;
+              }
+            }
+          }
+  	      gradientInfo.percents = percents;
+	    }
+	  }
+	}
+// RAPEND [if]
 
 	public boolean isSeparatorVisible() {
 		return (flags & SEPARATOR) != 0;
