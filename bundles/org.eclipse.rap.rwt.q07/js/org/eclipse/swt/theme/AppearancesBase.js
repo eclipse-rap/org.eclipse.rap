@@ -213,6 +213,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
       result.backgroundImage = tv.getCssImage( "Button", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Button", "background-image" );
       result.border = tv.getCssBorder( "Button", "border" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
