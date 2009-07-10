@@ -156,14 +156,16 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     _resolveGradients : function() {
       for( var key in this._values.gradients ) {
         var value = this._values.gradients[ key ];
-        // TODO [if] remove this check when values are rendered only once
-        if( value.colors && value.percents ) {
-          var gradient = new Array();
-          for( var i = 0; i < value.colors.length; i++ ) {
-            gradient[ i ] = [ value.percents[ i ] / 100, 
-                              value.colors[ i ] ];
+        if( value != null ) {
+          // TODO [if] remove this check when values are rendered only once
+          if( value.colors && value.percents ) {
+            var gradient = new Array();
+            for( var i = 0; i < value.colors.length; i++ ) {
+              gradient[ i ] = [ value.percents[ i ] / 100, 
+                                value.colors[ i ] ];
+            }
+            this._values.gradients[ key ] = gradient;
           }
-          this._values.gradients[ key ] = gradient;
         }
       }
     },

@@ -77,10 +77,13 @@ public final class ThemeStoreWriter {
             JsonArray colors = JsonArray.valueOf( image.gradientColors );
             gradientObject.append( "colors", colors );
             gradientMap.append( key, gradientObject );
+          } else {
+            gradientMap.append( key, JsonValue.NULL );
           }
           imageMap.append( key, JsonValue.NULL );
         } else {
           imageMap.append( key, key );
+          gradientMap.append( key, JsonValue.NULL );
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;

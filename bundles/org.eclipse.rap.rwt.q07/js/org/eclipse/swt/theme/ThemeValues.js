@@ -115,9 +115,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.gradients[ vkey ];
-      if( result === undefined ) {
-        result = null;
-      }
+      this.__checkDefined( result, element, key );
       return result;
     },
 
