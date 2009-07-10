@@ -11,20 +11,20 @@ Spinner[BORDER] {
   border: 1px inset;
 }
 
-Spinner-UpButton {
+Spinner-UpButton, Spinner-DownButton {
   background-color: rgb( 248, 248, 255 );
   border: 2px outset;
   width: 15px;
-  background-image: url( resource/widget/rap/spinner/up_button.gif );
-}
-
-Spinner-DownButton {
-  background-color: rgb( 248, 248, 255 );
-  border: 2px outset;
-  width: 15px;
-  background-image: url( resource/widget/rap/spinner/down_button.gif );
 }
 
 Spinner-UpButton:pressed, Spinner-DownButton:pressed {
   border: 2px inset;
+}
+
+Spinner-UpButton {
+  background-image: url( resource/widget/rap/spinner/up_button.gif );
+}
+
+Spinner-DownButton {
+  background-image: url( resource/widget/rap/spinner/down_button.gif );
 }
