@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
-//import org.eclipse.ui.forms.IFormColors;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -100,6 +100,10 @@ public class FormHeading extends Canvas {
 	private IMessageToolTipManager messageToolTipManager = new DefaultMessageToolTipManager();
 
 	private Control headClient;
+
+// RAP [if] Separator rendering
+	private Composite separator;
+// RAPEND [if]
 
 	private class DefaultMessageToolTipManager implements
 			IMessageToolTipManager {
@@ -601,6 +605,9 @@ public class FormHeading extends Canvas {
 				if (gradientInfo != null
 						|| (backgroundImage != null && !isBackgroundImageTiled()))
 					updateGradientImage();
+// RAP [if] Separator rendering
+			    updateSeparator();
+// RAPEND [if]
 			}
 		});
 // RAP [rh] MouseMove and MouseTrack events missing
@@ -945,7 +952,29 @@ public class FormHeading extends Canvas {
 			flags |= SEPARATOR;
 		else
 			flags &= ~SEPARATOR;
+// RAP [if] Separator rendering
+        updateSeparator();
+//RAPEND [if]
 	}
+
+// RAP [if] Separator rendering
+    private void updateSeparator() {
+      if( separator == null ) {
+        separator = new Composite( this, SWT.NONE );
+      }
+      Rectangle carea = getClientArea();
+      separator.setBounds( carea.x,
+                           carea.height - 1,
+                           carea.x + carea.width - 1,
+                           1 );
+      Color bottomColor = getForeground();
+      if( hasColor( IFormColors.H_BOTTOM_KEYLINE2 ) ) {
+        bottomColor = getColor( IFormColors.H_BOTTOM_KEYLINE2 );
+      }
+      separator.setBackground( bottomColor );
+      separator.setVisible( isSeparatorVisible() );
+    }
+//RAPEND [if]
 
 	public void setToolBarAlignment(int alignment) {
 		if (alignment == SWT.BOTTOM)
