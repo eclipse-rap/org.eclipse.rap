@@ -32,7 +32,14 @@
         
     <property name="border"
         type="border"
-        description="DateTime border" />    
+        description="DateTime border" />
+        
+    <property name="border-radius" type="boxdim">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+    </property>
 
     <state name="disabled"
         description="Applies to disbled DateTime controls." />
@@ -157,6 +164,13 @@
         </description>
       </property>
       
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
+      </property>
+      
       <property name="width" type="dimension">
         <description>
           The width of the DateTime Date/Time up button.
@@ -190,6 +204,13 @@
         <description>
           The border of the DateTime Date/Time down button.
         </description>
+      </property>
+      
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
       </property>
       
       <property name="width" type="dimension">

@@ -32,6 +32,13 @@
         type="border"
         description="Border for text fields. Also used for spinner widget." />
 
+    <property name="border-radius" type="boxdim">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+    </property>
+    
     <property name="padding"
         type="boxdim"
         description="Padding for single-line text fields. Also used for spinner." />

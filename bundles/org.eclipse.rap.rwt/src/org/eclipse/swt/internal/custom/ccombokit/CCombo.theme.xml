@@ -43,6 +43,13 @@
       </description>
     </property>
     
+    <property name="border-radius" type="boxdim">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+    </property>
+    
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 
@@ -68,6 +75,13 @@
         <description>
           The border of the drop-down button of the CCombo.
         </description>
+      </property>
+      
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
       </property>
       
       <property name="width" type="dimension">
@@ -109,6 +123,13 @@
         <description>
           The border of the list of the CCombo.
         </description>
+      </property>
+      
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
       </property>
       
       <style name="FLAT"

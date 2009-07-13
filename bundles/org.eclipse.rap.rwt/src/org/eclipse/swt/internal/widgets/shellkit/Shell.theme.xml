@@ -19,6 +19,13 @@
     <property name="border"
         type="border"
         description="Outer window border." />
+        
+    <property name="border-radius" type="boxdim">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+    </property>
 
     <property name="padding"
         type="boxdim"
@@ -90,6 +97,17 @@
 
       <state name="inactive"
           description="Applies for all shells except the active shell." />
+          
+      <property name="border"
+          type="border"
+          description="Shell titlebar border." />
+          
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
+      </property>
 
     </element>
 
