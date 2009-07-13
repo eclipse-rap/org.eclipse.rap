@@ -39,7 +39,7 @@
           Border radius. The border radius has no effect if an enhanced border,
           like "inset" or "outset" is used.
         </description>
-    </property>>    
+    </property>
 
     <property name="padding"
         type="boxdim"
