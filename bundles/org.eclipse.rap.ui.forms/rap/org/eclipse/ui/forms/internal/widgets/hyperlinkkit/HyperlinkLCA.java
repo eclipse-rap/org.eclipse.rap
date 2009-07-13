@@ -15,6 +15,7 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Widget;
@@ -86,7 +87,14 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
     JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    writer.newWidget( "org.eclipse.ui.forms.widgets.Hyperlink" ); //$NON-NLS-1$
+    String style = ""; //$NON-NLS-1$
+    if( ( hyperlink.getStyle() & SWT.WRAP ) != 0 ) {
+      style = "wrap"; //$NON-NLS-1$
+    }
+    Object[] args = new Object[]{
+      style
+    };
+    writer.newWidget( "org.eclipse.ui.forms.widgets.Hyperlink", args ); //$NON-NLS-1$
     WidgetLCAUtil.writeCustomVariant( widget );
   }
 

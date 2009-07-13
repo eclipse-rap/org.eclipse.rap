@@ -13,7 +13,7 @@
 qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
   extend : qx.ui.basic.Atom,
 
-  construct : function() {
+  construct : function( style ) {
     this.base( arguments );
     this.setAppearance( "hyperlink" );
     // TODO [rh] workaround for weird getLabelObject behavior
@@ -24,6 +24,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=455
     labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
     labelObject.setCursor( qx.constant.Style.CURSOR_HAND );
+    labelObject.setWrap( qx.lang.String.contains( style, "wrap" ) );
     // TODO [rh] workaoround for weird getLabelObject behavior
     this.setLabel( "" );
     // End of workaround
