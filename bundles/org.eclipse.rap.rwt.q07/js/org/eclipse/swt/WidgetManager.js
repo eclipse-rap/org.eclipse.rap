@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     /**
-     * Registeres the given widget under the given id at the WidgetManager.
+     * Registers the given widget under the given id at the WidgetManager.
      */
     add : function( widget, id, isControl ) {
       this._map[ id ] = widget;
@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     /**
-     * Unregisteres the given widget at the WidgetManager. Note that the widget is
+     * Unregisters the given widget at the WidgetManager. Note that the widget is
      * not disposed of.
      */
     remove : function( widget ) {
