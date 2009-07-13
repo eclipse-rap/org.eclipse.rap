@@ -3210,6 +3210,20 @@ public class SWT {
    * @since 3.1
    */
   public static final int ON = 1;
+
+  
+  /**
+   * The paint event type (value is 9).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addPaintListener
+   * @see org.eclipse.swt.events.PaintListener#paintControl
+   * @see org.eclipse.swt.events.PaintEvent
+   */
+  public static final int Paint = 9;
   
   // RAPEND
 }
