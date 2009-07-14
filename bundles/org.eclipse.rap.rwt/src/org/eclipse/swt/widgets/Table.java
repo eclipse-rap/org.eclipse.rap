@@ -699,11 +699,11 @@ public class Table extends Composite {
     if( itemArea.contains( point ) ) {
       int itemHeight = getItemHeight();
       int index = ( ( point.y - headerHeight ) / itemHeight ) - 1;
-      if( point.y == 0 || point.y % itemHeight != 0 ) {
+      if( point.y == headerHeight || point.y % itemHeight != 0 ) {
         index++;
       }
       index += topIndex;
-      if( index < itemCount ) {
+      if( index >= 0 && index < itemCount ) {
         result = _getItem( index );
       }
     }

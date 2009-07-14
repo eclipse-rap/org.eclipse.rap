@@ -1724,6 +1724,23 @@ public class Table_Test extends TestCase {
   }
   
   /*
+   * 283263: ArrayIndexOutOfBoundsException when clicking on the Pixel Row just 
+   *         below the Table Header.
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=283263
+   */
+  public void testGetItemBelowHeader() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setHeaderVisible( true );
+    table.setSize( 100, 100 );
+    new TableItem( table, SWT.NONE );
+    TableItem item = table.getItem( new Point( 10, table.getItemHeight() ) );
+    assertNotNull( item );
+    assertEquals( 0, table.indexOf( item ) );
+  }
+  
+  /*
    * Ensures that checkData calls with an invalid index are silently ignored.
    * This may happen, when the itemCount is reduced during a SetData event.
    * Queued SetData events may then have stale (out-of-bounds) indices.
