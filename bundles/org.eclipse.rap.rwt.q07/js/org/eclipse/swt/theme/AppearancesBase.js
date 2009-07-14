@@ -298,7 +298,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         overflow : "hidden",
         border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
         textColor : tv.getCssColor( "ToolBar", "color" ),
-        backgroundColor : tv.getCssColor( "ToolBar", "background-color" )
+        backgroundColor : tv.getCssColor( "ToolBar", "background-color" ),
+        backgroundGradient : tv.getCssGradient( "ToolBar", "background-image" )
       };
     }
   },
@@ -345,6 +346,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = states.checked && !states.over
                                ? "static/image/dotted_white.gif"
                                : null;
+      result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );                         
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
       return result;
