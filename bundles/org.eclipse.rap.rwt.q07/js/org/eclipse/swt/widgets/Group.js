@@ -36,7 +36,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.addEventListener( "changeFont",
                            this._onChangeFont,
                            this );
-    this._frameObject.setDimension( "100%", "100%" );
   },
 
   destruct : function() {
@@ -60,6 +59,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     _onChangeFont : function( evt ) {
       var newFont = evt.getValue();
       this.getLegendObject().setFont( newFont );
+    },
+    
+    _layoutPost : function( changes ) {
+      this.base( arguments, changes );
+      this._frameObject._layoutPost();
     }
   }
 });
