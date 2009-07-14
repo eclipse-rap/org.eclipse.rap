@@ -1682,6 +1682,13 @@ public class Table_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item;
+    // Illegal argument
+    try {
+      table.getItem( null );
+      fail( "Must not alow null-argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
     // test with empty table
     table.setSize( 100, 100 );
     item = table.getItem( new Point( 200, 200 ) );
@@ -1715,7 +1722,7 @@ public class Table_Test extends TestCase {
     item = table.getItem( new Point( 2, table.getHeaderHeight() + 3 ) );
     assertEquals( 0, item.getParent().indexOf( item ) );
   }
-
+  
   /*
    * Ensures that checkData calls with an invalid index are silently ignored.
    * This may happen, when the itemCount is reduced during a SetData event.

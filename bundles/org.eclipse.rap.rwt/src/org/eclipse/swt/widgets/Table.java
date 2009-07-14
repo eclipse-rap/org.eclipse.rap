@@ -689,6 +689,9 @@ public class Table extends Composite {
    */
   public TableItem getItem( final Point point ) {
     checkWidget();
+    if( point == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     TableItem result = null;
     int headerHeight = getHeaderHeight();
     Rectangle itemArea = getClientArea();
