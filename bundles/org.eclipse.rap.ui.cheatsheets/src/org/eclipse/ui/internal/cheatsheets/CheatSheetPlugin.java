@@ -48,14 +48,14 @@ import org.osgi.framework.BundleContext;
 
 public class CheatSheetPlugin extends AbstractUIPlugin {
 
-  public final static String PLUGIN_ID = "org.eclipse.help.base"; //$NON-NLS-1$
+    public final static String PLUGIN_ID = "org.eclipse.help.base"; //$NON-NLS-1$
 
-// RAP [rh] Identifier for the session singleton of the CheatSheet image registry 
+// RAP [rh] Identifier for the session singleton of the CheatSheet image registry
 	public final static class CheatSheetImageRegistry extends ImageRegistry {}
 
 	private static final String CHEAT_SHEET_REGISTRY_INITIALIZED
 	  = CheatSheetImageRegistry.class.getName() + "#initialized"; //$NON-NLS-1$
-	
+
 	//The shared instance of this plugin.
 	static CheatSheetPlugin plugin;
 
@@ -103,19 +103,19 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	 * @return the image, or <code>null</code> if none
 	 */
 	public Image getImage(String key) {
-    String attribute = CHEAT_SHEET_REGISTRY_INITIALIZED;
-    Boolean initialized = ( Boolean )RWT.getSessionStore().getAttribute( attribute );
-	  if( initialized != null ) {
-      initializeImageRegistry( getImageRegistry() );
-      RWT.getSessionStore().setAttribute( attribute, Boolean.TRUE );
-    }
-    Image image = getImageRegistry().get(key);
-    return image;
+      String attribute = CHEAT_SHEET_REGISTRY_INITIALIZED;
+      Boolean initialized = ( Boolean )RWT.getSessionStore().getAttribute( attribute );
+      if( initialized == null ) {
+        initializeImageRegistry( getImageRegistry() );
+        RWT.getSessionStore().setAttribute( attribute, Boolean.TRUE );
+      }
+      Image image = getImageRegistry().get(key);
+      return image;
 	}
 
-	 public ImageRegistry getImageRegistry() {
-	    return ( ImageRegistry )SessionSingletonBase.getInstance( CheatSheetImageRegistry.class );
-	  }
+	public ImageRegistry getImageRegistry() {
+	  return ( ImageRegistry )SessionSingletonBase.getInstance( CheatSheetImageRegistry.class );
+	}
 
 	/**
 	 * Returns the CheatSheetHistory
