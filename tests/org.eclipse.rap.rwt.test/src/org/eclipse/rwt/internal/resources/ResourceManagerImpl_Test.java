@@ -462,9 +462,28 @@ public class ResourceManagerImpl_Test extends TestCase {
     content.close();
     assertNull( manager.getRegisteredContent( "not-there" ) );
   }
+  
+  /*
+   * 280582: resource registration fails when using ImageDescriptor.createFromURL
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
+   */
+  public void testRegisterWithInvalidFilename() throws Exception {
+    ServiceContext context = new ServiceContext( new TestRequest(),
+                                                 new TestResponse() );
+    ContextProvider.setContext( context );
+    IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
+    InputStream inputStream = openStream( TEST_RESOURCE_2 );
+    String name = "http://host:port/path$1";
+    manager.register( name, inputStream );
+    inputStream.close();
+    String location = manager.getLocation( name );
+    assertEquals( "http://TestCase:4711/test/http$1//host$1port/path$$1", 
+                  location );
+  }
 
-  // ////////////////
+  ///////////////////
   // helping methods
+  
   private static int[] read( final InputStream input ) throws IOException {
     int[] result = null;
     try {
