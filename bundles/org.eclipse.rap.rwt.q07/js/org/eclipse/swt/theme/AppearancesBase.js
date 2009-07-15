@@ -1571,6 +1571,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
+      result.backgroundGradient = tv.getCssGradient( "CoolBar",
+                                                     "background-image" );
       return result;
     }
   },
