@@ -361,8 +361,8 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
         var style = this._innerStyle || this._innerStyleHidden;
         style.top = width[ 0 ] + "px";
         style.left = width[ 3 ] + "px";
-        style.width = ( rect[ 0 ] - width[ 3 ] - width[ 1 ] ) + "px";
-        style.height = ( rect[ 1 ] - width[ 0 ] - width[ 2 ] ) + "px";
+        style.width = Math.max( 0, rect[ 0 ] - width[ 3 ] - width[ 1 ] ) + "px";
+        style.height = Math.max( 0, rect[ 1 ] - width[ 0 ] - width[ 2 ] ) + "px";
       } else {
         if( this._innerStyleHidden ) {
           this._innerStyle = this._innerStyleHidden;
@@ -792,7 +792,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       var widths = this.getGfxProperty( "borderWidths" );
       if( widths && radius ) {
         var shape = this._gfxData.pathElement;
-        this._gfxNode.removeChild( shape );
+        //this._gfxNode.removeChild( shape );
         var maxWidth = this.getGfxProperty( "borderMaxWidth" );
         var rectDimension = this.getGfxProperty( "rectDimension" );
         this._enableVmlLayout( true );
@@ -804,11 +804,11 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
         );
         shape.path = path.shape;
         //shape.style.clip = path.clip;
-        this._gfxNode.appendChild( shape );
+        //this._gfxNode.appendChild( shape );        
       } else {
         this._enableVmlLayout( false );
       }
-      this._vmlRestoreColor();
+      //this._vmlRestoreColor();
     },
 
     _enableVmlLayout : function( value) {
