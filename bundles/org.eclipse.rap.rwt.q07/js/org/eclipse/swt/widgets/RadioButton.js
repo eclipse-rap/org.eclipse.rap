@@ -157,11 +157,15 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
         case "Up":
           this._setNextOrPrevious( "previous" );
           this._sendChanges();
+          evt.preventDefault();
+          evt.stopPropagation();
           break;
         case "Right":
         case "Down":
           this._setNextOrPrevious( "next" );
           this._sendChanges();
+          evt.preventDefault();
+          evt.stopPropagation();
           break;
       }
     },
