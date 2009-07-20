@@ -1229,7 +1229,7 @@ public abstract class ActionFactory {
     /**
      * Workbench action (id "resetPerspective"): Resets the current
      * perspective. This action maintains its enablement state.
-     * @since 1.1
+     * @since 1.3
      */
     public static final ActionFactory RESET_PERSPECTIVE = new ActionFactory(
             "resetPerspective") {//$NON-NLS-1$
