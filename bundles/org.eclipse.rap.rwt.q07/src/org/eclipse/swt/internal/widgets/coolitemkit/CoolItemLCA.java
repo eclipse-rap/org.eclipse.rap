@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
@@ -28,6 +29,9 @@ import org.eclipse.swt.widgets.*;
 
 public class CoolItemLCA extends AbstractWidgetLCA {
 
+  private static final String SET_CONTROL = "setControl";
+  private static final String PROP_CONTROL = "control";
+  
   /* (intentionally not JavaDoc'ed)
    * Unnecesary to call ItemLCAUtil.preserve, CoolItem does neither use text
    * nor image
@@ -61,7 +65,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object[] args = new Object[] { jsOrientation( coolItem ) };
     writer.newWidget( "org.eclipse.swt.widgets.CoolItem", args );
-    writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );    
+    writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );
     writer.set( "minWidth", 0 );
     writer.set( "minHeight", 0 );
   }
@@ -69,7 +73,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     CoolItem coolItem = ( CoolItem )widget;
     writeBounds( coolItem );
-    setJSParent( coolItem );
+    writeControl( coolItem );
     // TODO [rh] find a decent solution to place the ctrl contained in CoolItem
     Control control = coolItem.getControl();
     if( control != null ) {
@@ -120,12 +124,23 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void setJSParent( final CoolItem coolItem ) {
+  private static void writeControl( final CoolItem coolItem ) throws IOException {
     Control control = coolItem.getControl();
-    if( control != null ) {
-      WidgetAdapter controlAdapter
-        = ( WidgetAdapter )WidgetUtil.getAdapter( control );
-      controlAdapter.setJSParent( WidgetUtil.getId( coolItem ) );
+    if( WidgetLCAUtil.hasChanged( coolItem, PROP_CONTROL, control, null ) ) {
+      final JSWriter writer = JSWriter.getWriterFor( coolItem );
+      final Object[] args = new Object[] { control };
+      if( control != null ) {
+        // defer call since controls are rendered after items
+        WidgetAdapter adapter 
+          = ( WidgetAdapter )WidgetUtil.getAdapter( control );
+        adapter.setRenderRunnable( new IRenderRunnable() {
+          public void afterRender() throws IOException {
+            writer.call( SET_CONTROL, args );
+          }
+        } );
+      } else {
+        writer.call( SET_CONTROL, args );
+      }
     }
   }
 

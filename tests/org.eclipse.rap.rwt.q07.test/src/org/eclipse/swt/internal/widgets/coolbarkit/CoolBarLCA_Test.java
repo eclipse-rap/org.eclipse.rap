@@ -13,8 +13,12 @@ package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-//import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.browser.Ie6;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -155,8 +159,28 @@ public final class CoolBarLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     assertEquals( button, adapter.getPreserved( Props.CONTROL ) );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
+    item.setControl( null );
+    lca.preserveValues( item );
+    assertNull( adapter.getPreserved( Props.CONTROL ) );
     RWTFixture.clearPreserved();
     display.dispose();
+  }
+
+  public void testRenderControl() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CoolBar bar = new CoolBar( shell, SWT.FLAT );
+    CoolItem item = new CoolItem( bar, SWT.NONE );
+    Button button = new Button( bar, SWT.NONE );
+    RWTFixture.markInitialized( item );
+    item.setControl( button );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeBrowser( new Ie6( true, true ) );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    displayLCA.render( display );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setControl" ) != -1);
   }
 
   protected void setUp() throws Exception {
