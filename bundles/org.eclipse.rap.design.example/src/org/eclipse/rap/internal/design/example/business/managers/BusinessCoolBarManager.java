@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -686,12 +684,8 @@ public class BusinessCoolBarManager extends ContributionManager
       button.setImage( param.getIcon() );
       button.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent e ) {
-          try {
-            Command buttonCommand = ( Command ) button.getData();
-            buttonCommand.getHandler().execute( new ExecutionEvent() );
-          } catch( ExecutionException e1 ) {
-            e1.printStackTrace();
-          }
+          Command buttonCommand = ( Command ) button.getData();
+          CommandUtil.executeCommand( buttonCommand );
         };
       } );
       button.addDisposeListener( new DisposeListener() {      
@@ -701,8 +695,8 @@ public class BusinessCoolBarManager extends ContributionManager
       } );
       buttonItemMap.put( button, item );
     }          
-  }  
-  
+  }   
+
   private CommandParameter extractCommandInformation( 
     final CommandContributionItem item ) 
   {

@@ -11,8 +11,10 @@ package org.eclipse.rap.internal.design.example.business;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandManager;
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -20,6 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -27,6 +30,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.IMenuService;
 
@@ -105,13 +109,7 @@ public class CommandUtil {
     result = new Action( text, style ){
       public void run() {
         Command command = param.getCommand();
-        if( command != null ) {
-          try {
-            command.getHandler().execute( new ExecutionEvent() );
-          } catch( final ExecutionException e ) {
-            e.printStackTrace();
-          }
-        }
+        executeCommand( command );
       }
     };
     ImageDescriptor desc = new ImageDescriptor() {
@@ -180,5 +178,26 @@ public class CommandUtil {
     
     toolbar.dispose();
     return result;
+  }
+  
+  public static void executeCommand( final Command command ) {
+    if( command != null ) {
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      Object service = workbench.getService( IHandlerService.class );
+      if( service != null && service instanceof IHandlerService ) {
+        IHandlerService handlerService = ( IHandlerService ) service;
+        try {
+          handlerService.executeCommand( command.getId(), new Event() );
+        } catch( ExecutionException e ) {
+          e.printStackTrace();
+        } catch( NotDefinedException e ) {
+          e.printStackTrace();
+        } catch( NotEnabledException e ) {
+          e.printStackTrace();
+        } catch( NotHandledException e ) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 }
