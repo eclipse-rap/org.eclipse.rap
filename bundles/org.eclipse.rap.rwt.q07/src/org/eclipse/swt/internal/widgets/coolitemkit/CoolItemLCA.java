@@ -120,12 +120,16 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void setJSParent( final CoolItem coolItem ) {
+  private static void setJSParent( final CoolItem coolItem ) throws IOException {
     Control control = coolItem.getControl();
     if( control != null ) {
       WidgetAdapter controlAdapter
         = ( WidgetAdapter )WidgetUtil.getAdapter( control );
       controlAdapter.setJSParent( WidgetUtil.getId( coolItem ) );
+      if( controlAdapter.isInitialized() ) {
+        JSWriter writer = JSWriter.getWriterFor( control );
+        writer.setParent( controlAdapter.getJSParent() );
+      }
     }
   }
 
