@@ -117,26 +117,8 @@ public class BusinessViewToolBarManager extends ContributionManager
         break;
       }
       
-      Composite parent = control;
-      Menu menu = null;
-      // pulldown 
-      if( flags == SWT.DROP_DOWN && item instanceof CommandContributionItem ) {
-        CommandContributionItem commandItem = ( CommandContributionItem ) item;
-        CommandParameter param 
-          = CommandUtil.extractCommandInformation( commandItem, control );
-        if( param.getMenu() != null ) {
-          menu = param.getMenu();
-        }
-      } else if( action instanceof WWinPluginPulldown ) {
-        WWinPluginPulldown pulldown = ( WWinPluginPulldown ) action;
-        menu = pulldown.getMenuCreator().getMenu( control );              
-      } else if( action instanceof IMenuCreator ) {
-        IMenuCreator creator = ( IMenuCreator ) action;
-        menu = creator.getMenu( control );        
-      } else if( action instanceof IWorkbenchWindowPulldownDelegate ) {
-        System.out.println("pull");
-      }
-      if( menu != null ) {
+      Composite parent = control;      
+      if( flags == SWT.DROP_DOWN ) {
         final Composite pulldownParent = getPulldownParent();
         parent = pulldownParent;        
         flags = SWT.PUSH;
@@ -165,7 +147,7 @@ public class BusinessViewToolBarManager extends ContributionManager
         }
       } );
       // pulldown
-      if( menu != null ) {
+      if( action.getStyle() == SWT.DROP_DOWN ) {
         FormData fdButton = new FormData();
         button.setLayoutData( fdButton );
         fdButton.left = new FormAttachment( 0 );
@@ -180,18 +162,47 @@ public class BusinessViewToolBarManager extends ContributionManager
         Image image = builder.getImage( StackInitializer.VIEW_PULLDOWN );
         arrow.setImage( image );
         arrow.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
-        arrow.setMenu( menu );
         arrow.addSelectionListener( new SelectionAdapter() {
           public void widgetSelected( final SelectionEvent e ) {          
             Display display = arrow.getDisplay();
             Point newLoc = display.map( arrow, null, 0, 10 );
-            arrow.getMenu().setVisible( true );
-            arrow.getMenu().setLocation( newLoc );
+            Menu menu = getActionMenu( action, item );
+            if( menu != null ) {
+              menu.setVisible( true );
+              menu.setLocation( newLoc );
+            }
           };
         } ); 
       }
       itemList.add( item.getId() );
     }
+  }
+
+  private Menu getActionMenu( 
+    final Action action, 
+    final IContributionItem item ) 
+  {
+    Menu menu = null;
+    // pulldown 
+    if( item instanceof CommandContributionItem ) {
+      CommandContributionItem commandItem = ( CommandContributionItem ) item;
+      CommandParameter param 
+        = CommandUtil.extractCommandInformation( commandItem, control );
+      if( param.getMenu() != null ) {
+        menu = param.getMenu();
+      }
+    } else if( action instanceof WWinPluginPulldown ) {
+      WWinPluginPulldown pulldown = ( WWinPluginPulldown ) action;
+      menu = pulldown.getMenuCreator().getMenu( control );              
+    } else if( action instanceof IMenuCreator ) {
+      IMenuCreator creator = ( IMenuCreator ) action;
+      menu = creator.getMenu( control );        
+    } else if( action instanceof IWorkbenchWindowPulldownDelegate ) {
+      IWorkbenchWindowPulldownDelegate delegate 
+        = ( IWorkbenchWindowPulldownDelegate ) action;
+      menu = delegate.getMenu( control );
+    }
+    return menu;
   }
 
   private Composite getPulldownParent() {
