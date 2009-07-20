@@ -20,6 +20,7 @@ import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.IntroAction;
 import org.eclipse.ui.internal.NavigationHistoryAction;
 import org.eclipse.ui.internal.OpenPreferencesAction;
+import org.eclipse.ui.internal.ResetPerspectiveAction;
 import org.eclipse.ui.internal.SaveAction;
 import org.eclipse.ui.internal.SaveAllAction;
 import org.eclipse.ui.internal.SaveAsAction;
@@ -1225,27 +1226,26 @@ public abstract class ActionFactory {
         }
     };
 
-    // RAP [bm]: minor problems with the actionsets
-//    /**
-//     * Workbench action (id "resetPerspective"): Resets the current
-//     * perspective. This action maintains its enablement state.
-//     * @since 1.1
-//     */
-//    public static final ActionFactory RESET_PERSPECTIVE = new ActionFactory(
-//            "resetPerspective") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            IWorkbenchAction action = new ResetPerspectiveAction(window);
-//            action.setId(getId());
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "resetPerspective"): Resets the current
+     * perspective. This action maintains its enablement state.
+     * @since 1.1
+     */
+    public static final ActionFactory RESET_PERSPECTIVE = new ActionFactory(
+            "resetPerspective") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            IWorkbenchAction action = new ResetPerspectiveAction(window);
+            action.setId(getId());
+            return action;
+        }
+    };
 
     /**
      * Workbench action (id "revert"): Revert. This action is a
