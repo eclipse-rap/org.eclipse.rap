@@ -13,11 +13,12 @@
  * org.eclipse.swt.widgets.Button widget with SWT.RADIO style.
  */
 qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
-  extend : qx.ui.layout.CanvasLayout,
+  extend : qx.ui.layout.HorizontalBoxLayout,
 
   construct : function() {
     this.base( arguments );
     this.setAppearance( "radio-button" );
+    this.setVerticalChildrenAlign( "middle" );
     
     // Default values
     this._selection = false;
@@ -33,10 +34,9 @@ qx.Class.define( "org.eclipse.swt.widgets.RadioButton", {
     // RadioButton content - image and text
     this._content = new qx.ui.basic.Atom( "(empty)", this._image );
     this._content.getLabelObject().setAppearance( "label-graytext" );
-    this._content.setLeft( 17 );
     this._content.setLabel( this._text );
     this._content.setHorizontalChildrenAlign( "center" );
-    this._content.setVerticalChildrenAlign( "top" );
+    this._content.setVerticalChildrenAlign( "middle" );
     this.add( this._content );
 
     // Add events listeners

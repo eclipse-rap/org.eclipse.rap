@@ -41,11 +41,11 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
     return getCssDimension( "Button", "spacing", button );
   }
 
-  public Point getCheckSize() {
-    return CHECK_SIZE;
+  public int getCheckSpacing( final Button button ) {
+    return CHECK_SPACING;
   }
 
-  public int getCheckSpacing() {
-    return CHECK_SPACING;
+  public Point getCheckSize( final Button button ) {
+    return CHECK_SIZE;
   }
 }
