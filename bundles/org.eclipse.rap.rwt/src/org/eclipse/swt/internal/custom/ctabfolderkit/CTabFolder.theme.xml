@@ -38,6 +38,10 @@
           type="color"
           description="Background color for the item tabs." />
 
+      <property name="background-image"
+        type="image"
+        description="Background image or gradient for CTabItem." />
+
       <state name="selected"
           description="Applies to the selected item." />
 

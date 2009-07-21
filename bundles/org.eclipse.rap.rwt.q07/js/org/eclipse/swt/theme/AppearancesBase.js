@@ -140,6 +140,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
       result.textColor = tv.getCssColor( "Label", "color" );
       result.backgroundColor = tv.getCssColor( "Label", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Label", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
       result.border = tv.getCssBorder( "Label", "border" );
       result.cursor = "default";
       return result;
@@ -162,6 +164,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.border = tv.getCssBorder( "Label", "border" );
       }
+      result.backgroundImage = tv.getCssImage( "Label", "background-image" ); 
+      result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );           
       result.cursor = "default";
       return result;
     }
@@ -264,6 +268,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font : tv.getCssFont( "Button", "font" ),
         textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
+        backgroundImage : tv.getCssImage( "Button", "background-image" ),
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
         spacing : 4,
         padding : tv.getCssBoxDimensions( "Button", "padding" )
@@ -300,7 +305,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
         textColor : tv.getCssColor( "ToolBar", "color" ),
         backgroundColor : tv.getCssColor( "ToolBar", "background-color" ),
-        backgroundGradient : tv.getCssGradient( "ToolBar", "background-image" )
+        backgroundGradient : tv.getCssGradient( "ToolBar", "background-image" ),
+        backgroundImage : tv.getCssImage( "ToolBar", "background-image" )
       };
     }
   },
@@ -367,6 +373,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // padding is only applied on the server, since client area content is
       // positioned absolutely
       result.backgroundColor = tv.getCssColor( "Shell", "background-color" );
+      result.backgroundImage
+        = tv.getCssImage( "Shell", "background-image" );
+      result.backgroundGradient
+        = tv.getCssGradient( "Shell", "background-image" );
       result.border = tv.getCssBorder( "Shell", "border" );
       result.minWidth = states.rwt_TITLE ? 80 : 5;
       result.minHeight = states.rwt_TITLE ? 25 : 5;
@@ -974,6 +984,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = 2;
       result.textColor = states.disabled ? "widget.graytext" : "undefined";
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TreeColumn", 
+                                                     "background-image" );      
+      result.backgroundGradient = tv.getCssGradient( "TreeColumn", 
+                                                     "background-image" );      
       if( states.mouseover && !states.disabled ) {
         result.border = "tree.column.hover.border";
       } else {
@@ -1128,6 +1142,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         }
       }
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TabItem", 
+                                                     "background-image" );        
       result.textColor = states.disabled
                          ? "widget.graytext"
                          : "undefined";
@@ -1299,6 +1316,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         opacity : states.moving ? 0.6 : 1.0
       };
       result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TableColumn", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TableColumn", 
+                                                     "background-image" );
       // TODO [rst] borders hard coded in BordersBase.js
       if( states.mouseover && !states.disabled ) {
         result.border = "table.column.hover.border";
@@ -1495,6 +1515,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.selected ) {
         result.textColor = tv.getCssColor( "CTabItem", "color" );
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
+        result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
+        result.backgroundGradient = tv.getCssGradient( "CTabItem", 
+                                                     "background-image" );        
         if( states.barTop ) {
           result.border.setTop( 1, "solid", color );
         } else {
@@ -1503,6 +1526,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
+        result.backgroundImage = null;
+        result.backgroundGradient = null;
       }
       if( states.firstItem && states.rwt_BORDER ) {
         result.border.setLeft( 1, "solid", color );
@@ -1547,6 +1572,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "*", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
@@ -1574,6 +1601,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "*", "border" );
       result.backgroundGradient = tv.getCssGradient( "CoolBar",
                                                      "background-image" );
+      result.backgroundImage = tv.getCssImage( "CoolBar",
+                                               "background-image" );
       return result;
     }
   },

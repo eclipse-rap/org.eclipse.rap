@@ -58,6 +58,10 @@
           type="color"
           description="Background color for table column headers" />
 
+      <property name="background-image"
+        type="image"
+        description="Background image or gradient for TableColumn." />
+            
       <state name="hover"
           description="On mouse over" />
 

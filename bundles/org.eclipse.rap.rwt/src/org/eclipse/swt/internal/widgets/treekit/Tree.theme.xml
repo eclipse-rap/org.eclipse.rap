@@ -55,6 +55,10 @@
           type="color"
           description="Background color for tree column headers" />
 
+      <property name="background-image"
+        type="image"
+        description="Background image or gradient for TreeColumn." />
+
       <state name="hover"
           description="Mouse over state" />
 
