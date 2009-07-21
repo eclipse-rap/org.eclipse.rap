@@ -70,6 +70,7 @@ public class HeaderBuilder extends ElementBuilder {
 
   public void build() {
     getParent().setLayout( new FormLayout() );
+    getParent().setBackgroundMode( SWT.INHERIT_FORCE );
     
     // left border
     Label leftLabel = new Label( getParent(), SWT.NONE );
