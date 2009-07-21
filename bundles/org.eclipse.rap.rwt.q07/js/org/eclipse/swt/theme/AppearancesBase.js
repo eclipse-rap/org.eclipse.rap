@@ -208,7 +208,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
@@ -234,6 +233,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         backgroundImage : tv.getCssImage( "Button", "background-image" ),
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
+        spacing : 4,
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
     }
@@ -265,6 +265,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
+        spacing : 4,
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
     }
@@ -1819,7 +1820,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "DateTime", "font" );
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      result.padding = 1;
       return result;
     }
   },
@@ -1832,7 +1832,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "DateTime", "font" );
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      result.padding = 1;
       return result;
     }
   },
@@ -1855,7 +1854,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         cursor    : "default",
         textAlign : "center",
-        padding   : [ 2, 3 ]
+        padding   : [ 0, 3 ]
       };
       if( states.disabled ) {
         result.textColor = tv.getCssColor( "DateTime", "color" );
@@ -1875,8 +1874,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor     : "default",
-        paddingTop : 2
+        cursor     : "default"
       };
       if( states.disabled ) {
         result.textColor = tv.getCssColor( "DateTime", "color" );

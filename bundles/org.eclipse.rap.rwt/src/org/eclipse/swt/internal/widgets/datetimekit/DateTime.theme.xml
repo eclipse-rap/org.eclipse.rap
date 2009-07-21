@@ -40,6 +40,10 @@
           like "inset" or "outset" is used.
         </description>
     </property>
+    
+    <property name="padding"
+        type="boxdim"
+        description="Padding for DateTime Date/Time field part." />
 
     <state name="disabled"
         description="Applies to disbled DateTime controls." />

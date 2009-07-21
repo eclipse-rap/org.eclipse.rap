@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.DateTime;
 
@@ -23,5 +24,9 @@ public final class DateTimeThemeAdapter extends ControlThemeAdapter {
                                            "width", 
                                            dateTime );
     return Math.max( upButtonWidth, downButtonWidth );
+  }
+  
+  public Rectangle getPadding( final DateTime dateTime ) {
+    return getCssBoxDimensions( "DateTime", "padding", dateTime );
   }
 }
