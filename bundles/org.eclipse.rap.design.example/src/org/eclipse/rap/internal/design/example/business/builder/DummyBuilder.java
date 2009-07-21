@@ -10,6 +10,7 @@
 package org.eclipse.rap.internal.design.example.business.builder;
 
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
+import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -54,5 +55,13 @@ public class DummyBuilder extends ElementBuilder {
   public Point getSize() {
     
     return null;
+  }
+  
+  public Object getAdapter( Class adapter ) {
+    Object result = null;
+    if( adapter == LayoutSet.class ) {
+      result = getLayoutSet();
+    }
+    return result;
   }
 }

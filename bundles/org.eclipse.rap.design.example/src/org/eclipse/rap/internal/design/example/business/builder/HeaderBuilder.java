@@ -10,6 +10,7 @@
 package org.eclipse.rap.internal.design.example.business.builder;
 
 import org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer;
+import org.eclipse.rap.internal.design.example.business.layoutsets.LogoInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.swt.SWT;
@@ -45,13 +46,17 @@ public class HeaderBuilder extends ElementBuilder {
     LayoutSet set = getLayoutSet();
     // images
     left = createImage( set.getImagePath( HeaderInitializer.LEFT ) );
-    leftBg = createImage( set.getImagePath( HeaderInitializer.LEFT_BG ) );
-    logo = createImage( set.getImagePath( HeaderInitializer.LOGO ) );
+    leftBg = createImage( set.getImagePath( HeaderInitializer.LEFT_BG ) );    
     right = createImage( set.getImagePath( HeaderInitializer.RIGHT ) );
     rightBg = createImage( set.getImagePath( HeaderInitializer.RIGHT_BG ) );
     wave = createImage( set.getImagePath( HeaderInitializer.WAVE ) );
+    
+    // logo
+    ElementBuilder builder = new DummyBuilder( null, LogoInitializer.SET_ID );
+    logo = builder.getImage( LogoInitializer.LOGO );
     // positions
-    fdLogo = set.getPosition( HeaderInitializer.LOGO_POSITION );
+    LayoutSet layoutSet = ( LayoutSet ) builder.getAdapter( LayoutSet.class );
+    fdLogo = layoutSet.getPosition( LogoInitializer.LOGO_POSITION );
   }
 
   public void addControl( Control control, Object layoutData ) {

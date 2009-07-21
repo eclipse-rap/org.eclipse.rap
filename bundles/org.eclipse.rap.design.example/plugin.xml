@@ -33,6 +33,11 @@
             id="org.eclipse.rap.design.example.business.layout"
             name="Business Layout Blue">
          <layoutSet
+               class="org.eclipse.rap.internal.design.example.business.layoutsets.LogoInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.logo"
+               name="Logo">
+         </layoutSet>
+         <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer"
                id="org.eclipse.rap.design.example.business.layoutset.header"
                name="Header">
