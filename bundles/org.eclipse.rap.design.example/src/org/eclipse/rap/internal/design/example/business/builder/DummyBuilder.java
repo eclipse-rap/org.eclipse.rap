@@ -57,7 +57,7 @@ public class DummyBuilder extends ElementBuilder {
     return null;
   }
   
-  public Object getAdapter( Class adapter ) {
+  public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == LayoutSet.class ) {
       result = getLayoutSet();
