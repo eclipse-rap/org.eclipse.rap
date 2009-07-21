@@ -122,6 +122,9 @@
 
       <state name="checked"
         description="When table checkbox is checked" />
+      
+      <state name="hover"
+        description="Applies while the user hovers over a table check box." />
 
       <state name="disabled"
           description="Applies to the items of a disabled table." />

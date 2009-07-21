@@ -46,17 +46,25 @@ Table-GridLine {
 
 Table-Checkbox {
   width: 21px;
-  background-image: url( resource/widget/rap/table/check_white_off.gif );
+  background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 
-Table-Checkbox:grayed {
-  background-image: url( resource/widget/rap/table/check_gray_off.gif );
+Table-Checkbox:hover {
+  background-image: url( resource/widget/rap/button/check-unselected-hover.png );
 }
 
 Table-Checkbox:checked {
-  background-image: url( resource/widget/rap/table/check_white_on.gif );
+  background-image: url( resource/widget/rap/button/check-selected.png );
 }
 
-Table-Checkbox:checked:grayed {
-  background-image: url( resource/widget/rap/table/check_gray_on.gif );
+Table-Checkbox:checked:hover {
+  background-image: url( resource/widget/rap/button/check-selected-hover.png );
+}
+
+Table-Checkbox:grayed {
+  background-image: url( resource/widget/rap/button/check-grayed.png );
+}
+
+Table-Checkbox:grayed:hover {
+  background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }

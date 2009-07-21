@@ -545,6 +545,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var itemIndex = this._getItemIndexFromRowIndex( rowIndex );
       this._toggleCheckState( itemIndex );
     },
+    
+    _onCheckBoxOver : function( evt ) {
+      var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
+      var checkBox = this._checkBoxes[ rowIndex ];
+      checkBox.addState( "over" );
+    },
+    
+    _onCheckBoxOut : function( evt ) {
+      var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
+      var checkBox = this._checkBoxes[ rowIndex ];
+      checkBox.removeState( "over" );
+    },
 
     // Note: [rst] This function is wired with the mousedown event. Using the
     //             click event causes problems because click is issued on the
@@ -1094,6 +1106,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             if( this._checkBoxes != null ) {
               var checkBox = this._checkBoxes.shift();
               checkBox.removeEventListener( "changeChecked", this._onCheckBoxClick, this );
+              checkBox.removeEventListener( "mouseover", 
+                                            this._onCheckBoxOver, 
+                                            this );
+              checkBox.removeEventListener( "mouseout", 
+                                            this._onCheckBoxOut, 
+                                            this );
               checkBox.setParent( null );
               checkBox.dispose();
             }
@@ -1108,6 +1126,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               if( this._checkBoxes != null ) {
                 var checkBox = new qx.ui.basic.Image();
                 checkBox.addEventListener( "click", this._onCheckBoxClick, this );
+                checkBox.addEventListener( "mouseover", 
+                                           this._onCheckBoxOver, 
+                                           this );
+                checkBox.addEventListener( "mouseout", 
+                                           this._onCheckBoxOut, 
+                                           this );
                 checkBox.setAppearance( "table-check-box" );
                 this._clientArea.add( checkBox );
                 this._checkBoxes.push( checkBox );

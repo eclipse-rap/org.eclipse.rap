@@ -30,6 +30,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this._checkBox = new qx.ui.basic.Image();
       this._checkBox.setAppearance( "tree-check-box" );
       this._checkBox.addEventListener( "click", this._onCheckBoxClick, this );
+      this._checkBox.addEventListener( "mouseover", this._onCheckBoxOver, this );
+      this._checkBox.addEventListener( "mouseout", this._onCheckBoxOut, this );
       this._checkBox.addEventListener( "dblclick", this._onCheckBoxDblClick, this );
       this._row.addObject( this._checkBox, false );
     }
@@ -71,7 +73,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
   destruct : function() {
     if( this._checkBox != null ) {
-      this._checkBox.removeEventListener( "click", this._onChangeChecked, this );
+      this._checkBox.removeEventListener( "click", this._onCheckBoxClick, this );
+      this._checkBox.removeEventListener( "mouseover", this._onCheckBoxOver, this );
+      this._checkBox.removeEventListener( "mouseout", this._onCheckBoxOut, this );
       this._checkBox.removeEventListener( "dblclick", this._onCheckBoxDblClick, this );
       this._checkBox.dispose();
     }
@@ -209,6 +213,14 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         result = true;
       }
       return result;
+    },
+    
+    _onCheckBoxOver : function( evt ) {
+      this._checkBox.addState( "over" );
+    },
+    
+    _onCheckBoxOut : function( evt ) {
+      this._checkBox.removeState( "over" );
     },
 
     _onCheckBoxClick : function( evt ) {

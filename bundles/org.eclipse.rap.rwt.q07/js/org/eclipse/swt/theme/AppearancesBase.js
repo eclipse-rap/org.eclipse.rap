@@ -958,7 +958,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.height = 13;
       result.clipWidth = 13;
       result.clipHeight = 13;
-      result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
+      result.source = tv.getCssImage( "Tree-Checkbox", "background-image" );
       result.marginRight = 3;
       return result;
     }
