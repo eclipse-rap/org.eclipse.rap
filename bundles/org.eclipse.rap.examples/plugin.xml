@@ -53,13 +53,26 @@
             themeId="org.eclipse.rap.design.example.business.theme"
             title="RAP Examples">
          <presentationFactory
+               defaultLayoutId="org.eclipse.rap.design.example.business.layout"
                id="org.eclipse.rap.design.example.business.factory"
-               defaultLayoutId="org.eclipse.rap.design.example.business.layout">
+               viewactionsVisibile="true">
             <defaultStackPresentation
                   id="org.eclipse.rap.design.example.business.stack.view">
             </defaultStackPresentation>
          </presentationFactory>
       </branding>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.layouts">
+      <layout
+            id="org.eclipse.rap.design.example.business.layout"
+            name="Business Layout Blue">
+         <layoutSet
+               class="org.eclipse.rap.examples.internal.design.LogoInitializer"
+               id="org.eclipse.rap.design.example.business.layoutset.logo"
+               name="Logo">
+         </layoutSet>
+      </layout>
    </extension>
 
 </plugin>

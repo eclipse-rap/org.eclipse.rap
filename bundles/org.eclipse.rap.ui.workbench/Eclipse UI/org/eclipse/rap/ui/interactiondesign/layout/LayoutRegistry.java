@@ -216,7 +216,7 @@ public class LayoutRegistry {
     layoutSetToPluginId = new HashMap();
     layoutMap = new HashMap();
     IConfigurationElement[] elements = getLayoutExtensions();
-    for( int i = 0; i < elements.length; i++ ) {
+    for( int i = elements.length - 1; i >= 0; i-- ) {
       String id = elements[ i ].getAttribute( "id" );
       
       Layout layout = ( Layout ) layoutMap.get( id );
