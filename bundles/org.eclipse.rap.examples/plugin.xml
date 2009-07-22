@@ -54,8 +54,7 @@
             title="RAP Examples">
          <presentationFactory
                defaultLayoutId="org.eclipse.rap.design.example.business.layout"
-               id="org.eclipse.rap.design.example.business.factory"
-               viewactionsVisibile="true">
+               id="org.eclipse.rap.design.example.business.factory">
             <defaultStackPresentation
                   id="org.eclipse.rap.design.example.business.stack.view">
             </defaultStackPresentation>
