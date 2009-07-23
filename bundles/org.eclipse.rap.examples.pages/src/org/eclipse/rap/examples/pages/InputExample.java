@@ -67,6 +67,9 @@ public class InputExample implements IExamplePage {
     combo2.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     combo2.select( 0 );
 
+    new Label( formComp, SWT.NONE ).setText( "Date:" );
+    final DateTime dateTime = new DateTime( formComp, SWT.READ_ONLY | SWT.BORDER );
+
     new Label( formComp, SWT.NONE );
     final Button editableCheckbox = new Button( formComp, SWT.CHECK );
     editableCheckbox.setText( "Editable" );
@@ -81,6 +84,7 @@ public class InputExample implements IExamplePage {
         spinner.setEnabled( editable );
         combo.setEnabled( editable );
         combo2.setEnabled( editable );
+        dateTime.setEnabled( editable );
       }
     } );
   }
