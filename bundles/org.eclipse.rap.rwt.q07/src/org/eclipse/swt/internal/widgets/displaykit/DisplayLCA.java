@@ -329,7 +329,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
     for( int i = 0; i < shells.length; i++ ) {
       if( shells[ i ].getMaximized() ) {
-        shells[ i ].setBounds( display.getBounds() );
+        Object adapter = shells[ i ].getAdapter( IShellAdapter.class );
+        IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+        shellAdapter.setBounds( display.getBounds() );
       }
     }
   }

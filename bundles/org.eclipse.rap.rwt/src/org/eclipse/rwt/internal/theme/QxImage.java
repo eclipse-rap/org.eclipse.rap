@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,21 +7,28 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
+
+import java.util.Arrays;
 
 public final class QxImage implements QxType {
 
   private static final String NONE_INPUT = "none";
 
-  public static final QxImage NONE = new QxImage( true, null, null );
+  public static final QxImage NONE = new QxImage( true, null, null, null, null );
 
   public final boolean none;
 
   public final String path;
 
   public final ResourceLoader loader;
+
+  public final String[] gradientColors;
+
+  public final float[] gradientPercents;
 
   /**
    * Creates a new image from the given value.
@@ -30,14 +37,20 @@ public final class QxImage implements QxType {
    *            <code>none</code> or a path to an image
    * @param loader a resource loader which is able to load the image from the
    *            given path
+   * @param gradientColors an array with gradient colors
+   * @param gradientPercents an array with gradient percents
    */
   private QxImage( final boolean none,
                    final String path,
-                   final ResourceLoader loader )
+                   final ResourceLoader loader,
+                   final String[] gradientColors,
+                   final float[] gradientPercents )
   {
     this.none = none;
     this.path = path;
     this.loader = loader;
+    this.gradientColors = gradientColors;
+    this.gradientPercents = gradientPercents;
   }
 
   public static QxImage valueOf( final String input, final ResourceLoader loader )
@@ -52,8 +65,19 @@ public final class QxImage implements QxType {
       if( input.length() == 0 ) {
         throw new IllegalArgumentException( "Empty image path" );
       }
-      result = new QxImage( false, input, loader );
+      result = new QxImage( false, input, loader, null, null );
     }
+    return result;
+  }
+
+  public static QxImage createGradient( final String[] gradientColors,
+                                        final float[] gradientPercents )
+  {
+    QxImage result;
+    if( gradientColors == null || gradientPercents == null ) {
+      throw new NullPointerException( "null argument" );
+    }
+    result = new QxImage( true, null, null, gradientColors, gradientPercents );
     return result;
   }
 
@@ -69,16 +93,38 @@ public final class QxImage implements QxType {
       result = true;
     } else if( object instanceof QxImage ) {
       QxImage other = ( QxImage )object;
-      result = path != null
-               && path.equals( other.path )
-               && loader != null
-               && loader.equals( other.loader );
+      result =    ( path == null
+                    ? other.path == null
+                    : path.equals( other.path ) )
+               && ( loader == null
+                    ? other.loader == null
+                    : loader.equals( other.loader ) )
+               && ( gradientColors == null
+                    ? other.gradientColors == null
+                    : Arrays.equals( gradientColors, other.gradientColors ) )
+               && ( gradientPercents == null
+                    ? other.gradientPercents == null
+                    : Arrays.equals( gradientPercents, other.gradientPercents ) );
     }
     return result;
   }
 
   public int hashCode() {
-    return none ? -1 : path.hashCode();
+    int result = -1;
+    if( none ) {
+      if( gradientColors != null && gradientPercents != null ) {
+        result = 29;
+        for( int i = 0; i < gradientColors.length; i++ ) {
+          result += 31 * result + gradientColors[ i ].hashCode();
+        }
+        for( int i = 0; i < gradientPercents.length; i++ ) {
+          result += 31 * result + Float.floatToIntBits( gradientPercents[ i ] );
+        }
+      }
+    } else {
+      result = path.hashCode();
+    }
+    return result;
   }
 
   public String toString() {

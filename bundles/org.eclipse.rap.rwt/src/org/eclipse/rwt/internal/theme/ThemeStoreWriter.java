@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -47,6 +47,7 @@ public final class ThemeStoreWriter {
     JsonObject dimensionMap = new JsonObject();
     JsonObject boxDimensionMap = new JsonObject();
     JsonObject imageMap = new JsonObject();
+    JsonObject gradientMap = new JsonObject();
     JsonObject colorMap = new JsonObject();
     JsonObject fontMap = new JsonObject();
     JsonObject borderMap = new JsonObject();
@@ -69,9 +70,20 @@ public final class ThemeStoreWriter {
       } else if( value instanceof QxImage ) {
         QxImage image = ( QxImage )value;
         if( image.none ) {
+          if( image.gradientColors != null && image.gradientPercents != null ) {
+            JsonObject gradientObject = new JsonObject();
+            JsonArray percents = JsonArray.valueOf( image.gradientPercents );
+            gradientObject.append( "percents", percents );
+            JsonArray colors = JsonArray.valueOf( image.gradientColors );
+            gradientObject.append( "colors", colors );
+            gradientMap.append( key, gradientObject );
+          } else {
+            gradientMap.append( key, JsonValue.NULL );
+          }
           imageMap.append( key, JsonValue.NULL );
         } else {
           imageMap.append( key, key );
+          gradientMap.append( key, JsonValue.NULL );
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
@@ -103,6 +115,7 @@ public final class ThemeStoreWriter {
     valuesMap.append( "dimensions", dimensionMap );
     valuesMap.append( "boxdims", boxDimensionMap );
     valuesMap.append( "images", imageMap );
+    valuesMap.append( "gradients", gradientMap );
     valuesMap.append( "colors", colorMap );
     valuesMap.append( "fonts", fontMap );
     valuesMap.append( "borders", borderMap );
@@ -116,11 +129,10 @@ public final class ThemeStoreWriter {
       IThemeCssElement element = elements[ i ];
       String elementName = element.getName();
       JsonObject elementObj = new JsonObject();
-      IThemeCssProperty[] properties = element.getProperties();
+      String[] properties = element.getProperties();
       for( int j = 0; j < properties.length; j++ ) {
-        IThemeCssProperty property = properties[ j ];
+        String propertyName = properties[ j ];
         JsonArray valuesArray = new JsonArray();
-        String propertyName = property.getName();
         ConditionalValue[] values
           = valuesMap.getValues( elementName, propertyName );
         for( int k = 0; k < values.length; k++ ) {
@@ -130,7 +142,7 @@ public final class ThemeStoreWriter {
           array.append( Theme.createCssKey( conditionalValue.value ) );
           valuesArray.append( array );
         }
-        elementObj.append( property.getName(), valuesArray );
+        elementObj.append( propertyName, valuesArray );
       }
       mainObject.append( elementName, elementObj );
     }

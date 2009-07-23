@@ -63,7 +63,8 @@ public class TypedEvent extends Event {
     LocationEvent.class,
     ShellEvent.class,
     MenuEvent.class,
-    KeyEvent.class
+    KeyEvent.class,
+    HelpEvent.class
   };
 
   /**

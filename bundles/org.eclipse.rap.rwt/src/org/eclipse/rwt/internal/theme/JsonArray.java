@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -26,6 +27,10 @@ public final class JsonArray extends JsonValue {
   }
 
   public void append( final int value ) {
+    append( valueOf( value ) );
+  }
+
+  public void append( final float value ) {
     append( valueOf( value ) );
   }
 
@@ -51,6 +56,14 @@ public final class JsonArray extends JsonValue {
   }
 
   public static JsonArray valueOf( final String[] array ) {
+    JsonArray result = new JsonArray();
+    for( int i = 0; i < array.length; i++ ) {
+      result.append( array[ i ] );
+    }
+    return result;
+  }
+
+  public static JsonArray valueOf( final float[] array ) {
     JsonArray result = new JsonArray();
     for( int i = 0; i < array.length; i++ ) {
       result.append( array[ i ] );

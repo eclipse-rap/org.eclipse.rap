@@ -12,6 +12,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
@@ -152,6 +153,40 @@ public class Composite extends Scrollable {
   }
 
   /**
+   * If the argument is <code>true</code>, causes subsequent layout
+   * operations in the receiver or any of its children to be ignored.
+   * No layout of any kind can occur in the receiver or any of its
+   * children until the flag is set to false.
+   * Layout operations that occurred while the flag was
+   * <code>true</code> are remembered and when the flag is set to 
+   * <code>false</code>, the layout operations are performed in an
+   * optimized manner.  Nested calls to this method are stacked.
+   *
+   * @param defer the new defer state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #layout(boolean)
+   * @see #layout(Control[])
+   *
+   * @since 1.3
+   */
+  public void setLayoutDeferred( final boolean defer ) {
+    if( !defer ) {
+      if( --layoutCount == 0 ) {
+        if( ( state & LAYOUT_CHILD ) != 0 || ( state & LAYOUT_NEEDED ) != 0 ) {
+          updateLayout( true, true );
+        }
+      }
+    } else {
+      layoutCount++;
+    }
+  }
+
+  /**
    * Returns <code>true</code> if the receiver has deferred
    * the performing of layout, and <code>false</code> otherwise.
    *
@@ -162,7 +197,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * <!--@see #setLayoutDeferred(boolean)-->
+   * @see #setLayoutDeferred(boolean)
    * @see #isLayoutDeferred()
    */
   public boolean getLayoutDeferred() {
@@ -183,7 +218,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * <!--@see #setLayoutDeferred(boolean)-->
+   * @see #setLayoutDeferred(boolean)
    * @see #getLayoutDeferred()
    */
   public boolean isLayoutDeferred() {
@@ -759,9 +794,5 @@ public class Composite extends Scrollable {
       event.gc.dispose();
       setBackgroundImage( image );
     }
-  }
-  
-  // RAP [bm]: e4-enabling hacks
-  public void setLayoutDeferred (boolean defer) {
   }
 }

@@ -22,6 +22,10 @@
           type="color"
           description="Background color for tab folder headers." />
 
+      <property name="background-image"
+        type="image"
+        description="Background image or gradient for tab folder headers." />
+
       <property name="border-top-color" type="color">
           <description>
             The top border color.

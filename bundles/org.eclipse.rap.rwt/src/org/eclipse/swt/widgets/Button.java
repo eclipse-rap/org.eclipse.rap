@@ -399,8 +399,8 @@ public class Button extends Control {
       width += spacing;
     }
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      Point checkSize = themeAdapter.getCheckSize();
-      width += checkSize.x + themeAdapter.getCheckSpacing();
+      Point checkSize = themeAdapter.getCheckSize( this );
+      width += checkSize.x + themeAdapter.getCheckSpacing( this );
       height = Math.max( height, checkSize.y );
     }
     Rectangle padding = themeAdapter.getPadding( this );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -179,7 +179,9 @@ public class CTabItem extends Item {
     checkWidget();
     if( image != getImage() ) {
       super.setImage( image );
-      parent.updateItems();
+      if( !parent.updateTabHeight( false ) ) {
+        parent.updateItems();
+      }
     }
   }
 

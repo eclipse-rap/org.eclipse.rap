@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ public interface IResourceManager {
   }
   
   /** 
-   * <p>registers a resource which is located on the web-applications
+   * <p>Registers a resource which is located on the web-applications
    * classpath.</p> 
    * 
    * @param name filename which identifies the resource to register. The
@@ -106,7 +106,7 @@ public interface IResourceManager {
   void register( String name );
   
   /** 
-   * <p>registers a given resource for download with the given name relative
+   * <p>Registers a given resource for download with the given name relative
    * to the context root.</p>
    * 
    * @param name filename that represents the download path relative to
@@ -116,7 +116,7 @@ public interface IResourceManager {
   void register( String name, InputStream is );
   
   /** 
-   * <p>registers a text resource which is located on the web-applications
+   * <p>Registers a text resource which is located on the web-applications
    * classpath and encoded with the given <code>charset</code>.</p> 
    *  
    * @param name filename which identifies the resource to register. The
@@ -129,7 +129,7 @@ public interface IResourceManager {
   void register( String name, String charset );
 
   /** 
-   *  <p>registers a text resource which is located on the web-applications
+   *  <p>Registers a text resource which is located on the web-applications
    *  classpath and encoded with the given <code>charset</code>.</p>
    *  
    *  <p>By specifying an <code>option</code> other than <code>NONE</code>
@@ -151,7 +151,7 @@ public interface IResourceManager {
   void register( String name, String charset, RegisterOptions options );
   
   /**
-   * <p> registers a text resource that is encoded with the given
+   * <p>Registers a text resource that is encoded with the given
    * <code>charset</code> for download with the given name relative to the
    * context root.</p>
    * <p>By specifying an <code>option</code> other than <code>NONE</code> the
@@ -184,7 +184,7 @@ public interface IResourceManager {
   String getCharset( String name );
   
   /** 
-   * <p>returns whether the resource with the given name has already been
+   * <p>Returns whether the resource with the given name has already been
    * registered with this IResourceManager instance.</p>
    *  
    * @param name filename which identifies the registered resource. The
@@ -282,7 +282,7 @@ public interface IResourceManager {
   Enumeration getResources( String name ) throws IOException;
 
   /**
-   * If resources are not available for the w4toolkit context
+   * If resources are not available for the RAP context
    * classloader, it may be necessary to specify a classloader
    * before using one of the <code>registerXXX</code> or 
    * <code>getResourceXXX</code> methods. Note that in case of the

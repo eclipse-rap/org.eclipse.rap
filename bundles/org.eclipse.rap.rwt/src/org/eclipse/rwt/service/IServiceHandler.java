@@ -14,7 +14,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 
-// TODO: JavaDoc - revise this RAP/W4T
 /** 
  * <p>A service handler is responsible for taking a request and sending
  * an appropriate response by bypassing the standard lifecycle. Clients
@@ -30,19 +29,12 @@ import javax.servlet.ServletException;
  * }
  * </pre>
  * </li>
- * <li>Writing an XML file which assigns the service handler to a request 
- * parameter value. In order to be found, the XML file must be located at 
- * the root of the classpath and named <code>servicehandler.xml</code>.
+ * <li>Registering the service handler and associating it with a request parameter 
+ * value.
  * <pre>
- * &lt;?xml version="1.0" encoding="UTF-8"?&gt;
- * &lt;servicehandler&gt;
- *   &lt;handler 
- *     class="org.demo.MyServiceHandler" 
- *     requestparameter="myServiceHandler"/&gt;
- * &lt;/servicehandler&gt;
+ *     RWT.getServiceManager().registerServiceHandler( "myServiceHandler",
+ *                                                     new MyServiceHandler() );
  * </pre>
- * Each <code>servicehandler.xml</code> may contain any number of handler
- * entries.
  * <br /><br />
  *</li> 
  * <li>Constructing the URL to invoke the service handler. The URL must contain
@@ -51,7 +43,8 @@ import javax.servlet.ServletException;
  * The following example code snippet achieves this
  * <pre>
  * StringBuffer url = new StringBuffer();
- * url.append( URLHelper.getURLString( false ) );
+ * url.append( RWT.getRequest().getContextPath() );
+ * url.append( RWT.getRequest().getServletPath() );
  * url.append( "?" );
  * url.append( IServiceHandler.REQUEST_PARAM ); 
  * url.append( "=myServiceHandler" );

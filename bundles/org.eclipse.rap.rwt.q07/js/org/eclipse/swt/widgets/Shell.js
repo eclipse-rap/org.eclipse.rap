@@ -29,6 +29,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
+    this.getCaptionBar().setWidth( "100%" );
   },
 
   statics : {
@@ -36,10 +37,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     TOP_RIGHT : "topRight",
     BOTTOM_LEFT : "bottomLeft",
     BOTTOM_RIGHT : "bottomRight",
-    CORNER_NAMES : [ 
-      "topLeft", 
-      "topRight", 
-      "bottomLeft", 
+    CORNER_NAMES : [
+      "topLeft",
+      "topRight",
+      "bottomLeft",
       "bottomRight"
     ],
 
@@ -84,7 +85,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     /*
      * Compares two Shells regarding their desired z-order.
-     * 
+     *
      * Result is
      * - positive if sh1 is higher
      * - negative if sh2 is higher
@@ -112,7 +113,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var top2 = sh2.getTopLevelShell();
         result = top1.getZIndex() - top2.getZIndex();
       }
-      // compare by actual z-order      
+      // compare by actual z-order
       if( result == 0 ) {
         result = sh1.getZIndex() - sh2.getZIndex();
       }
@@ -145,7 +146,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
 
     getDefaultButton : function() {
-      return this._defaultButton;  
+      return this._defaultButton;
     },
 
     setParentShell : function( parentShell ) {
@@ -163,7 +164,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     setHasShellListener : function( hasListener ) {
       this._hasShellListener = hasListener;
     },
-    
+
     setActiveControl : function( control ) {
       this._activeControl = control;
     },
@@ -211,7 +212,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     /**
      * Overrides qx.ui.window.Window#close()
-     * 
+     *
      * Called when user tries to close the shell.
      */
     close : function() {
@@ -245,7 +246,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     /**
      * Adds a widget that has a server-side ActivateListener. If this widget or
-     * any of its children are activated, an org.eclipse.swt.events.controlActivated 
+     * any of its children are activated, an org.eclipse.swt.events.controlActivated
      * is fired.
      */
     addActivateListenerWidget : function( widget ) {
@@ -258,11 +259,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     _isRelevantActivateEvent : function( widget ) {
       var result = false;
-      for( var i = 0; !result && i < this._activateListenerWidgets.length; i++ ) 
+      for( var i = 0; !result && i < this._activateListenerWidgets.length; i++ )
       {
         var listeningWidget = this._activateListenerWidgets[ i ];
-        if(    !listeningWidget.contains( this._activeControl ) 
-            && listeningWidget.contains( widget ) ) 
+        if(    !listeningWidget.contains( this._activeControl )
+            && listeningWidget.contains( widget ) )
         {
           result = true;
         }
@@ -329,11 +330,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     _onKeydown : function( evt ) {
       var keyId = evt.getKeyIdentifier();
-      if(    keyId == "Enter" 
+      if(    keyId == "Enter"
           && !evt.isShiftPressed()
-          && !evt.isAltPressed() 
-          && !evt.isCtrlPressed() 
-          && !evt.isMetaPressed() ) 
+          && !evt.isAltPressed()
+          && !evt.isCtrlPressed()
+          && !evt.isMetaPressed() )
       {
         var defButton = this.getDefaultButton();
         if( defButton != null && defButton.isSeeable() ) {
@@ -357,7 +358,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
 
     /**
-     * Returns the parent Control for the given widget. If widget is a Control 
+     * Returns the parent Control for the given widget. If widget is a Control
      * itself, the widget is returned. Otherwise its parent is returned or null
      * if there is no parent
      */
@@ -429,8 +430,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       while( targetShell._parentShell != null ) {
         targetShell = targetShell._parentShell;
       }
-      this.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );      
-      targetShell.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );      
+      this.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );
+      targetShell.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );
       org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
     },
 

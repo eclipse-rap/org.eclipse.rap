@@ -140,6 +140,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
       result.textColor = tv.getCssColor( "Label", "color" );
       result.backgroundColor = tv.getCssColor( "Label", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Label", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
       result.border = tv.getCssBorder( "Label", "border" );
       result.cursor = "default";
       return result;
@@ -162,6 +164,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.border = tv.getCssBorder( "Label", "border" );
       }
+      result.backgroundImage = tv.getCssImage( "Label", "background-image" ); 
+      result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );           
       result.cursor = "default";
       return result;
     }
@@ -208,20 +212,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
       result.backgroundImage = tv.getCssImage( "Button", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Button", "background-image" );
       result.border = tv.getCssBorder( "Button", "border" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
-      // TODO [rst] enable generic padding
-      // result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      if( !states.rwt_FLAT && ( states.pressed || states.checked ) ) {
-        result.padding = [ 4, 3, 2, 5 ];
-      } else {
-        result.padding = [ 3, 4, 3, 4 ];
-      }
+      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       return result;
     }
   },
@@ -238,6 +236,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
         backgroundImage : tv.getCssImage( "Button", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
+        spacing : 4,
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
     }
@@ -268,6 +268,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font : tv.getCssFont( "Button", "font" ),
         textColor : tv.getCssColor( "Button", "color" ),
         backgroundColor : tv.getCssColor( "Button", "background-color" ),
+        backgroundImage : tv.getCssImage( "Button", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
+        spacing : 4,
         padding : tv.getCssBoxDimensions( "Button", "padding" )
       }
     }
@@ -301,7 +304,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         overflow : "hidden",
         border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
         textColor : tv.getCssColor( "ToolBar", "color" ),
-        backgroundColor : tv.getCssColor( "ToolBar", "background-color" )
+        backgroundColor : tv.getCssColor( "ToolBar", "background-color" ),
+        backgroundGradient : tv.getCssGradient( "ToolBar", "background-image" ),
+        backgroundImage : tv.getCssImage( "ToolBar", "background-image" )
       };
     }
   },
@@ -348,6 +353,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = states.checked && !states.over
                                ? "static/image/dotted_white.gif"
                                : null;
+      result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );                         
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
       return result;
@@ -367,6 +373,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // padding is only applied on the server, since client area content is
       // positioned absolutely
       result.backgroundColor = tv.getCssColor( "Shell", "background-color" );
+      result.backgroundImage
+        = tv.getCssImage( "Shell", "background-image" );
+      result.backgroundGradient
+        = tv.getCssGradient( "Shell", "background-image" );
       result.border = tv.getCssBorder( "Shell", "border" );
       result.minWidth = states.rwt_TITLE ? 80 : 5;
       result.minHeight = states.rwt_TITLE ? 25 : 5;
@@ -387,6 +397,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         = tv.getCssColor( "Shell-Titlebar", "background-color" );
       result.backgroundImage
         = tv.getCssImage( "Shell-Titlebar", "background-image" );
+      result.backgroundGradient
+        = tv.getCssGradient( "Shell-Titlebar", "background-image" );
+      result.border = tv.getCssBorder( "Shell-Titlebar", "border" );
       if( states.rwt_TITLE ) {
         result.minHeight = tv.getCssDimension( "Shell-Titlebar", "height" );
       } else {
@@ -716,11 +729,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.rwt_CCOMBO ) {
-        result.border = tv.getCssBorder( "CCombo", "border" );
-      } else {
-        result.border = tv.getCssBorder( "Combo", "border" );
-    }
+      result.border = tv.getCssBorder( "Combo", "border" );
       result.backgroundColor = tv.getCssColor( "Combo",
                                                "background-color" );
       result.textColor = tv.getCssColor( "Combo", "color" );
@@ -739,7 +748,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.overflow = "scrollY";
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "*", "font" );
-      result.backgroundColor = tv.getCssColor( "Combo", 
+      result.backgroundColor = tv.getCssColor( "Combo",
                                                "background-color" );
       return result;
     }
@@ -757,14 +766,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.width = null;
       result.height = null;
       result.left = 0;
-      result.right = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
+      result.right = tv.getCssDimension( "Combo-Button", "width" );
       result.top = 0;
       result.bottom = 0;
       result.textColor = states.disabled
                          ? "widget.graytext"
                          : tv.getCssColor( "Combo", "color" );
-      result.backgroundColor = tv.getCssColor( "Combo", 
-                                               "background-color" );
       return result;
     }
   },
@@ -773,19 +780,90 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      if( states.rwt_CCOMBO ) {
-        result.border = tv.getCssBorder( "CCombo-Button", "border" );
-      } else {
-        result.border = tv.getCssBorder( "Combo-Button", "border" );
-      }
-      result.width = org.eclipse.swt.widgets.Combo.BUTTON_WIDTH;
+      result.border = tv.getCssBorder( "Combo-Button", "border" );
+      result.width = tv.getCssDimension( "Combo-Button", "width" );
       result.height = null;
       result.top = 0;
       result.bottom = 0;
       result.right = 0;
       result.icon = tv.getCssImage( "Combo-Button", "background-image" );
         // TODO [rst] rather use button.bgcolor?
-      result.backgroundColor = tv.getCssColor( "Combo-Button", 
+      result.backgroundColor = tv.getCssColor( "Combo-Button",
+                                               "background-color" );
+      return result;
+    }
+  },
+
+  /*
+  ---------------------------------------------------------------------------
+    CCOMBO
+  ---------------------------------------------------------------------------
+  */
+
+  "ccombo" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "CCombo", "border" );
+      result.backgroundColor = tv.getCssColor( "CCombo",
+                                               "background-color" );
+      result.textColor = tv.getCssColor( "CCombo", "color" );
+      result.font = tv.getCssFont( "CCombo", "font" );
+      return result;
+    }
+  },
+
+  "ccombo-list" : {
+    include : "list",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "CCombo-List", "border" );
+      result.height = "auto";
+      result.overflow = "scrollY";
+      result.textColor = tv.getCssColor( "CCombo", "color" );
+      result.font = tv.getCssFont( "*", "font" );
+      result.backgroundColor = tv.getCssColor( "CCombo",
+                                               "background-color" );
+      return result;
+    }
+  },
+
+  "ccombo-field" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.font = tv.getCssFont( "*", "font" );
+      // [if] Do not apply top/bottom paddings on the client
+      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      result.paddingRight = cssPadding[ 1 ];
+      result.paddingLeft = cssPadding[ 3 ];
+      result.width = null;
+      result.height = null;
+      result.left = 0;
+      result.right = tv.getCssDimension( "CCombo-Button", "width" );
+      result.top = 0;
+      result.bottom = 0;
+      result.textColor = states.disabled
+                         ? "widget.graytext"
+                         : tv.getCssColor( "CCombo", "color" );
+      return result;
+    }
+  },
+
+  "ccombo-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "CCombo-Button", "border" );
+      result.width = tv.getCssDimension( "CCombo-Button", "width" );
+      result.height = null;
+      result.top = 0;
+      result.bottom = 0;
+      result.right = 0;
+      result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
+        // TODO [rst] rather use button.bgcolor?
+      result.backgroundColor = tv.getCssColor( "CCombo-Button",
                                                "background-color" );
       return result;
     }
@@ -890,7 +968,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.height = 13;
       result.clipWidth = 13;
       result.clipHeight = 13;
-      result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
+      result.source = tv.getCssImage( "Tree-Checkbox", "background-image" );
       result.marginRight = 3;
       return result;
     }
@@ -906,6 +984,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = 2;
       result.textColor = states.disabled ? "widget.graytext" : "undefined";
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TreeColumn", 
+                                                     "background-image" );      
+      result.backgroundGradient = tv.getCssGradient( "TreeColumn", 
+                                                     "background-image" );      
       if( states.mouseover && !states.disabled ) {
         result.border = "tree.column.hover.border";
       } else {
@@ -1060,6 +1142,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         }
       }
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TabItem", 
+                                                     "background-image" );        
       result.textColor = states.disabled
                          ? "widget.graytext"
                          : "undefined";
@@ -1154,41 +1239,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "spinner-button" : {
+  "spinner-button-up" : {
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        width : 16,
-        backgroundColor : tv.getCssColor( "*", "background-color" )
-      };
-      if( states.rwt_FLAT ) {
-        result.border = "undefined";
-      } else if( states.pressed || states.checked || states.abandoned ) {
-        result.border = "inset";
-      } else {
-        result.border = "outset";
-      }
+      result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
+      result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
+      result.backgroundColor = tv.getCssColor( "Spinner-UpButton",
+                                               "background-color" );
       return result;
     }
   },
 
-  "spinner-button-up" : {
-    include : "spinner-button",
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        source : tv.getCssImage( "Spinner-UpButton", "background-image" )
-      };
-    }
-  },
-
   "spinner-button-down" : {
-    include : "spinner-button",
     style : function( states ) {
+      var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        source : tv.getCssImage( "Spinner-DownButton", "background-image" )
-      };
+      result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
+      result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
+      result.backgroundColor = tv.getCssColor( "Spinner-DownButton",
+                                               "background-color" );
+      return result;
     }
   },
 
@@ -1243,6 +1316,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         opacity : states.moving ? 0.6 : 1.0
       };
       result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TableColumn", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TableColumn", 
+                                                     "background-image" );
       // TODO [rst] borders hard coded in BordersBase.js
       if( states.mouseover && !states.disabled ) {
         result.border = "table.column.hover.border";
@@ -1357,6 +1433,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.backgroundImage = tv.getCssImage( "Sash-Handle", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Sash-Handle", "background-image" );
       result.backgroundRepeat = "no-repeat";
       return result;
     }
@@ -1438,6 +1515,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.selected ) {
         result.textColor = tv.getCssColor( "CTabItem", "color" );
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
+        result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
+        result.backgroundGradient = tv.getCssGradient( "CTabItem", 
+                                                     "background-image" );        
         if( states.barTop ) {
           result.border.setTop( 1, "solid", color );
         } else {
@@ -1446,6 +1526,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
+        result.backgroundImage = null;
+        result.backgroundGradient = null;
       }
       if( states.firstItem && states.rwt_BORDER ) {
         result.border.setLeft( 1, "solid", color );
@@ -1490,6 +1572,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "*", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "*", "border" );
       return result;
     }
@@ -1515,6 +1599,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
+      result.backgroundGradient = tv.getCssGradient( "CoolBar",
+                                                     "background-image" );
+      result.backgroundImage = tv.getCssImage( "CoolBar",
+                                               "background-image" );
       return result;
     }
   },
@@ -1591,6 +1679,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         cursor: "default",
+        padding : 2,
         font : tv.getCssFont( "Link", "font" ),
         border : tv.getCssBorder( "Link", "border" ),
         textColor : tv.getCssColor( "*", "color" )
@@ -1602,19 +1691,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor : states.disabled ? "widget.graytext" : "undefined"
-      }
-    }
-  },
-
-  "link-href" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        cursor : states.disabled ? "default" : "pointer",
         textColor: states.disabled
                    ? "widget.graytext"
-                   : tv.getCssColor( "Link-Hyperlink", "color" )
+                   : "inherit"
       }
     }
   },
@@ -1631,6 +1710,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                "background-color" );
       result.backgroundImage = tv.getCssImage( "ProgressBar",
                                                "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ProgressBar",
+                                                     "background-image" );
       return result;
     }
   },
@@ -1643,6 +1724,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                "background-color" );
       result.backgroundImage = tv.getCssImage( "ProgressBar-Indicator",
                                                "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ProgressBar-Indicator",
+                                                     "background-image" );
       return result;
     }
   },
@@ -1762,11 +1845,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
-      result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "DateTime", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      result.padding = 1;
       return result;
     }
   },
@@ -1775,11 +1857,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
-      result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "DateTime", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      result.padding = 1;
       return result;
     }
   },
@@ -1788,9 +1869,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
+      result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "*", "font" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       return result;
     }
@@ -1802,7 +1883,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         cursor    : "default",
         textAlign : "center",
-        padding   : [ 2, 3 ]
+        padding   : [ 0, 3 ]
       };
       if( states.disabled ) {
         result.textColor = tv.getCssColor( "DateTime", "color" );
@@ -1822,8 +1903,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor     : "default",
-        paddingTop : 2
+        cursor     : "default"
       };
       if( states.disabled ) {
         result.textColor = tv.getCssColor( "DateTime", "color" );
@@ -1831,7 +1911,33 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
-      }      
+      }
+      return result;
+    }
+  },
+
+  "datetime-button-up" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
+      result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-UpButton",
+                                               "background-color" );
+      return result;
+    }
+  },
+
+  "datetime-button-down" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
+      result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DownButton",
+                                               "background-color" );
       return result;
     }
   },

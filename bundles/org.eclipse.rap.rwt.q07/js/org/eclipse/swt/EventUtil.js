@@ -270,6 +270,31 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           break;
       }
       return result;
+    },
+    
+    helpRequested : function( evt ) {
+      if( evt.getKeyIdentifier() === "F1" ) {
+        // stop further handling and default handling by the browser
+        evt.stopPropagation();
+        evt.preventDefault();
+        // send help request to server
+        var widget = evt.getTarget();
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( widget );
+        if( id === null ) {
+          // find parent control for the widget that received the event in case 
+          // it wasn't the control itself that received the event
+          while( widget != null && !widgetManager.isControl( widget ) ) {
+            widget = widget.getParent ? widget.getParent() : null;
+          }
+          id = widgetManager.findIdByWidget( widget );
+        }
+        if( id != null ) {
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addEvent( "org.eclipse.swt.events.help", id );
+          req.send();
+        }
+      }
     }
 
   }

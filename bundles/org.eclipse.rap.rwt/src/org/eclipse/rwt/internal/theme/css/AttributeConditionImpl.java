@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import org.w3c.css.sac.AttributeCondition;
@@ -50,24 +50,8 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt
     return SAC_ATTRIBUTE_CONDITION;
   }
 
-  public boolean matches( final Element element ) {
-    boolean result = false;
-    if( localName != null ) {
-      if( value != null ) {
-        result = element.hasAttributeValue( localName, value );
-      } else {
-        result = element.hasAttribute( localName );
-      }
-    }
-    return result;
-  }
-
   public int getSpecificity() {
     return ATTR_SPEC;
-  }
-
-  public String[] getClasses() {
-    return null;
   }
 
   public String[] getConstraints() {

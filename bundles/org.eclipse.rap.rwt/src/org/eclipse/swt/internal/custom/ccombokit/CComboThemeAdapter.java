@@ -24,4 +24,8 @@ public final class CComboThemeAdapter extends ControlThemeAdapter {
     result.height += 2;
     return result;
   }
+  
+  public int getButtonWidth( final Control control ) {
+    return getCssDimension( "CCombo-Button", "width", control );
+  }
 }

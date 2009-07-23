@@ -56,6 +56,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDoubleClick";
   public static final String EVENT_KEY_DOWN
     = "org.eclipse.swt.events.keyDown";
+  public static final String EVENT_HELP
+    = "org.eclipse.swt.events.help";
 
 
   // Parameter names that specify further event details
@@ -144,7 +146,6 @@ public final class JSConst {
   public static final String QX_FIELD_COLOR = "textColor";
   public static final String QX_FIELD_BG_COLOR = "backgroundColor";
   public static final String QX_FIELD_BG_IMAGE = "backgroundImage";
-  public static final String QX_FIELD_BG_GRADIENT = "backgroundGradient";
   public static final String QX_FIELD_ORIENTATION = "orientation";
   public static final String QX_FIELD_CAPTION = "caption";
   public static final String QX_FIELD_ENABLED = "enabled";

@@ -31,7 +31,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     this._current = null;
     
     this._fontPool = new Object();
-    this._toolTipPool = new Array();
   },
 
   statics : {
@@ -165,7 +164,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     /**
-     * Registeres the given widget under the given id at the WidgetManager.
+     * Registers the given widget under the given id at the WidgetManager.
      */
     add : function( widget, id, isControl ) {
       this._map[ id ] = widget;
@@ -176,7 +175,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     /**
-     * Unregisteres the given widget at the WidgetManager. Note that the widget is
+     * Unregisters the given widget at the WidgetManager. Note that the widget is
      * not disposed of.
      */
     remove : function( widget ) {
@@ -292,44 +291,66 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * removes the tool tip of the widget.
      */
     setToolTip : function( widget, toolTipText ) {
-      // remove and dispose of an eventually existing tool tip
-      this._removeToolTipPopup( widget );
       if( toolTipText != null && toolTipText != "" ) {
-        var toolTip = this._createToolTipPopup( toolTipText );
-        widget.setToolTip( toolTip );
-      }
-    },
-
-    /**
-     * Fetches a recycled tool tip popup from the widget pool if available or
-     * creates one otherwise.
-     */
-    _createToolTipPopup : function( text ) {
-      var toolTip = this._toolTipPool.pop();
-      if( !toolTip ) {
-        toolTip = new qx.ui.popup.ToolTip();
-        var atom = toolTip.getAtom();
-        atom.setLabel( "(empty)" );
-        atom.getLabelObject().setMode( "html" );
-        atom.setLabel( text );
+        widget.setUserData( "toolTipText", toolTipText );
+        widget.setToolTip( org.eclipse.rwt.widgets.ToolTip.getInstance() );
       } else {
-        toolTip.getAtom().setLabel( text );
+        this._removeToolTipPopup( widget );
       }
-      return toolTip;
     },
+    
+    _removeToolTipPopup : function( widget ) {
+      widget.setToolTip( null );
+      widget.setUserData( "toolTipText", null );
+    },
+   
+    ///////////////////////////////
+    // Background gradient handling
+    
+    /**
+     * Sets the background gradient for the given widget. A null colors or null
+     * percents removes the background gradient of the widget.
+     */
+    setBackgroundGradient : function( widget, gradientColor, percents ) {
+      var gradient = null;
+      if( gradientColor != null && percents != null ) {
+        gradient = new Array();
+        for( var i = 0; i < gradientColor.length; i++ ) {
+          gradient[ i ] = [ percents[ i ] / 100, gradientColor[ i ] ];
+        }
+      }
+      widget.setBackgroundGradient( gradient );
+    },
+    
+    //////////////////////////
+    // Rounded border handling
 
     /**
-     * Removes the tool tip that is assigned to the given widget and stores it
-     * in the widget pool.
-     * If the widget has no tool tip assigned, nothing is done.
+     * Sets the rounded border for the given widget. A zero border width, 
+     * null color or non positive radii removes the rounded border of the widget.
      */
-    _removeToolTipPopup : function( widget ) {
-      var toolTip = widget.getToolTip();
-      widget.setToolTip( null );
-      if( toolTip ) {
-        // hide tooltip as disposing a visible one might cause app to hang
-        toolTip.hide();
-        this._toolTipPool.push( toolTip );
+    setRoundedBorder : function( widget,
+                                 width,
+                                 color,
+                                 topLeftRadius,
+                                 topRightRaduis,
+                                 bottomRightRaduis,
+                                 bottomLeftRaduis )
+    {
+      if(    width > 0
+          && color != null
+          && topLeftRadius >= 0
+          && topRightRaduis >= 0
+          && bottomRightRaduis >= 0
+          && bottomLeftRaduis >= 0 ) {
+        var border = new org.eclipse.rwt.RoundedBorder( width, color );
+        border.setRadii( [ topLeftRadius,
+                           topRightRaduis,
+                           bottomRightRaduis,
+                           bottomLeftRaduis ] );
+        widget.setBorder( border );
+      } else {
+        widget.resetBorder();
       }
     }
   }

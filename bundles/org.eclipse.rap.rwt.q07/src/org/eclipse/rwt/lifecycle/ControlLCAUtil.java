@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -79,10 +80,6 @@ public class ControlLCAUtil {
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
-  private static final String PROP_BACKGROUND_GRADIENT = "backgroundGradient";
-
-  // Default values
-  private static final Color[] DEFAULT_BACKGROUND_GRADIENT = new Color[ 2 ];
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
@@ -96,7 +93,6 @@ public class ControlLCAUtil {
     = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().allowEvent";
 
   static final int MAX_STATIC_ZORDER = 300;
-
 
 
   private ControlLCAUtil() {
@@ -124,6 +120,7 @@ public class ControlLCAUtil {
    * <li>whether FocusListeners are registered</li>
    * <li>whether KeyListeners are registered</li>
    * <li>whether TraverseListeners are registered</li>
+   * <li>whether HelpListeners are registered</li>
    * </ul>
    *
    * @param control the control whose parameters to preserve
@@ -151,6 +148,7 @@ public class ControlLCAUtil {
     preserveBackgroundGradient( control );
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
+    preserveRoundedBorder( control );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -166,6 +164,7 @@ public class ControlLCAUtil {
                       Boolean.valueOf( KeyEvent.hasListener( control ) ) );
     adapter.preserve( PROP_TRAVERSE_LISTENER,
                       Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
+    WidgetLCAUtil.preserveHelpListener( control );
   }
 
   /**
@@ -327,6 +326,7 @@ public class ControlLCAUtil {
    * <li>whether FocusListeners are registered</li>
    * <li>whether KeyListeners are registered</li>
    * <li>whether TraverseListeners are registered</li>
+   * <li>whether HelpListeners are registered</li>
    * </ul>
    *
    * @param control the control whose properties to set
@@ -346,6 +346,7 @@ public class ControlLCAUtil {
     writeBackgroundGradient( control );
     writeBackgroundImage( control );
     writeFont( control );
+    writeRoundedBorder( control );
     writeCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
@@ -354,6 +355,7 @@ public class ControlLCAUtil {
     writeKeyListener( control );
     writeTraverseListener( control );
     writeKeyEventResponse( control );
+    WidgetLCAUtil.writeHelpListener( control );
   }
 
   /**
@@ -369,7 +371,6 @@ public class ControlLCAUtil {
    * <li>enabled</li>
    * <li>foreground</li>
    * <li>background</li>
-   * <li>background gradient</li>
    * <li>font</li>
    * <!--li>whether ControlListeners are registered</li>
    * <li>whether ActivateListeners are registered</li>
@@ -388,7 +389,6 @@ public class ControlLCAUtil {
     resetToolTip();
     resetFont();
     resetBackground();
-    resetBackgroundGradient();
     resetForeground();
     resetEnabled();
     resetVisible();
@@ -828,6 +828,54 @@ public class ControlLCAUtil {
     return max - controlAdapter.getZIndex();
   }
 
+  //////////////////////
+  // Background gradient
+
+  private static void preserveBackgroundGradient( final Control control ) {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    WidgetLCAUtil.preserveBackgroundGradient( control,
+                                              bgGradientColors,
+                                              bgGradientPercents );
+  }
+
+  private static void writeBackgroundGradient( final Control control )
+    throws IOException
+  {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    WidgetLCAUtil.writeBackgroundGradient( control,
+                                           bgGradientColors,
+                                           bgGradientPercents );
+  }
+
+  /////////////////
+  // Rounded border
+
+  private static void preserveRoundedBorder( final Control control ) {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = gfxAdapter.getRoundedBorderWidth();
+    Color color = gfxAdapter.getRoundedBorderColor();
+    Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+    WidgetLCAUtil.preserveRoundedBorder( control, width, color, radius );
+  }
+
+  private static void writeRoundedBorder( final Control control )
+    throws IOException
+  {
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = gfxAdapter.getRoundedBorderWidth();
+    Color color = gfxAdapter.getRoundedBorderColor();
+    Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+    WidgetLCAUtil.writeRoundedBorder( control, width, color, radius );
+  }
+
   ////////////
   // Tab index
 
@@ -853,34 +901,6 @@ public class ControlLCAUtil {
   private static void resetTabIndex() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JSConst.QX_FIELD_TAB_INDEX );
-  }
-
-  //////////////////////
-  // Background gradient
-
-  private static void preserveBackgroundGradient( final Control control ) {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
-     Color[] backgroundGradient = controlAdapter.getBackgroundGradient();
-     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-     adapter.preserve( PROP_BACKGROUND_GRADIENT, backgroundGradient );
-  }
-
-  private static void writeBackgroundGradient( final Control control )
-    throws IOException
-  {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
-    Color[] newValue = controlAdapter.getBackgroundGradient();
-    String prop = PROP_BACKGROUND_GRADIENT;
-    Color[] defValue = DEFAULT_BACKGROUND_GRADIENT;
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( prop, JSConst.QX_FIELD_BG_GRADIENT, newValue, defValue );
-  }
-
-  private static void resetBackgroundGradient() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_BG_GRADIENT );
   }
 
   /**
@@ -935,7 +955,7 @@ public class ControlLCAUtil {
     result &= control.getClass() != SashForm.class;
     return result;
   }
-
+  
   /////////////////////
   // Selection Listener
 

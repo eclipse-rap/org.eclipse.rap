@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.combokit;
@@ -25,5 +26,9 @@ public final class ComboThemeAdapter extends ControlThemeAdapter {
     result.y += 1;
     result.height += 2;
     return result;
+  }
+  
+  public int getButtonWidth( final Control control ) {
+    return getCssDimension( "Combo-Button", "width", control );
   }
 }

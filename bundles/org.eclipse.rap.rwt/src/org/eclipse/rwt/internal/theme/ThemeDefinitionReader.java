@@ -42,10 +42,6 @@ public class ThemeDefinitionReader {
   
   private static final String ATTR_NAME = "name";
 
-  private static final String ATTR_TYPE = "type";
-
-  private static final String ATTR_DESCRIPTION = "description";
-
   public static final String TYPE_BOOLEAN = "boolean";
 
   public static final String TYPE_BORDER = "border";
@@ -128,8 +124,6 @@ public class ThemeDefinitionReader {
     String name = getAttributeValue( node, ATTR_NAME );
     ThemeCssElement themeElement = new ThemeCssElement( name );
     cssElements.add( themeElement );
-    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
-    themeElement.setDescription( description );
     NodeList childNodes = node.getChildNodes();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
       Node childNode = childNodes.item( i );
@@ -137,55 +131,14 @@ public class ThemeDefinitionReader {
         if( ELEM_ELEMENT.equals( childNode.getNodeName() ) ) {
           readElement( childNode );
         } else if( ELEM_PROPERTY.equals( childNode.getNodeName() ) ) {
-          themeElement.addProperty( readProperty( childNode ) );
+          themeElement.addProperty( getAttributeValue( childNode, ATTR_NAME ) );
         } else if( ELEM_STYLE.equals( childNode.getNodeName() ) ) {
-          themeElement.addStyle( readStateOrStyle( childNode ) );
+          themeElement.addStyle( getAttributeValue( childNode, ATTR_NAME ) );
         } else if( ELEM_STATE.equals( childNode.getNodeName() ) ) {
-          themeElement.addState( readStateOrStyle( childNode ) );
+          themeElement.addState( getAttributeValue( childNode, ATTR_NAME ) );
         }
       }
     }
-  }
-
-  private IThemeCssProperty readProperty( final Node node ) {
-    String name = getAttributeValue( node, ATTR_NAME );
-    String type = getAttributeValue( node, ATTR_TYPE );
-    if( type == null ) {
-      if( "padding".equals( name ) || "margin".equals( name ) ) {
-        type = TYPE_BOXDIMENSIONS;
-      } else if( "color".equals( name ) || "background-color".equals( name ) ) {
-        type = TYPE_COLOR;
-      } else if( "font".equals( name ) ) {
-        type = TYPE_FONT;
-      } else if( "border".equals( name ) ) {
-        type = TYPE_BORDER;
-      } else if( "spacing".equals( name )
-                 || "width".equals( name )
-                 || "height".equals( name ) )
-      {
-        type = TYPE_DIMENSION;
-      } else if( "background-image".equals( name ) ) {
-        type = TYPE_IMAGE;
-      } else {
-        throw new IllegalArgumentException( "type unknown for property " + name );
-      }
-    }
-    ThemeCssProperty result = new ThemeCssProperty( name, type );
-    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
-    if( description != null ) {
-      result.setDescription( description );
-    }
-    return result;
-  }
-
-  private IThemeCssAttribute readStateOrStyle( final Node node ) {
-    String name = getAttributeValue( node, ATTR_NAME );
-    ThemeCssAttribute result = new ThemeCssAttribute( name );
-    String description = getElementOrAttributeValue( node, ATTR_DESCRIPTION );
-    if( description != null ) {
-      result.setDescription( description );
-    }
-    return result;
   }
 
   private Document parseThemeDefinition( final InputStream is )
@@ -226,25 +179,6 @@ public class ThemeDefinitionReader {
 //    } );
     builder.setErrorHandler( new ThemeDefinitionErrorHandler() );
     return builder.parse( is );
-  }
-  
-  private static String getElementOrAttributeValue( final Node node,
-                                                    final String name )
-  {
-    String result = null;
-    NodeList childNodes = node.getChildNodes();
-    int length = childNodes.getLength();
-    for( int i = 0; i < length && result == null; i++ ) {
-      Node child = childNodes.item( i );
-      if( name.equals( child.getNodeName() ) ) {
-        Node text = child.getFirstChild();
-        result = text.toString().trim();
-      }
-    }
-    if( result == null ) {
-      result = getAttributeValue( node, name );
-    }
-    return result;
   }
 
   private static String getAttributeValue( final Node node, final String name )

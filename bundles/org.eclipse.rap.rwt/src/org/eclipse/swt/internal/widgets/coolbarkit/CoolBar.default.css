@@ -1,5 +1,9 @@
 /* CoolBar default theme */
 
+CoolBar {
+  background-image: none;
+}
+
 CoolItem-Handle {
   border: 1px outset;
   width: 4px;

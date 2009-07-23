@@ -23,6 +23,10 @@
     <property name="background-color"
         type="color"
         description="Background color for tool bar" />
+        
+    <property name="background-image"
+        type="image"
+        description="Background image for tool bar" />
 
     <state name="disabled"
         description="Applies to disabled tool bars." />
@@ -37,6 +41,10 @@
       <property name="background-color"
           type="color"
           description="Background color for tool bar items" />
+          
+      <property name="background-image"
+          type="image"
+          description="Background image for tool bar items" />
 
       <property name="border"
           type="border"

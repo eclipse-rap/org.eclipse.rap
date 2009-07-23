@@ -31,6 +31,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     this.add( this._handle );
     // buffers zIndex and background during drag to be restored when dropped
     this._bufferedZIndex = null;
+    this._control = null;
   },
 
   destruct : function() {
@@ -50,6 +51,18 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
   members : {
     setLocked : function( value )  {
       this._handle.setDisplay( !value );
+    },
+
+    // reparenting to enable coolitem dragging
+    setControl : function( control ) {
+      if( control != null ) {
+        control.setParent( this );
+        control.setDisplay( true );
+      }
+      if( this._control != null ) {
+        this._control.setDisplay( false );
+      }
+      this._control = control;
     },
 
     updateHandleBounds : function() {

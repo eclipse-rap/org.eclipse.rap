@@ -18,8 +18,9 @@ import org.eclipse.swt.widgets.Control;
 public interface IShellAdapter {
   
   Control getActiveControl();
-  
   void setActiveControl( Control control );
   
   Rectangle getMenuBounds();
+  
+  void setBounds( Rectangle bounds );
 }

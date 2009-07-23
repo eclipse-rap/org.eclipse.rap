@@ -132,6 +132,39 @@ public class ToolBar extends Composite {
   }
 
   /**
+   * Returns the item at the given point in the receiver
+   * or null if no such item exists. The point is in the
+   * coordinate system of the receiver.
+   *
+   * @param point the point used to locate the item
+   * @return the item at the given point
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.3
+   */
+  public ToolItem getItem( final Point point ) {
+    checkWidget();
+    if( point == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    ToolItem result = null;
+    ToolItem[] items = getItems();
+    for( int i = 0; result == null && i < items.length; i++ ) {
+      Rectangle rect = items[ i ].getBounds();
+      if( rect.contains( point ) ) {
+        result = items[ i ];
+      }
+    }
+    return result;
+  }
+
+  /**
    * Returns the number of items contained in the receiver.
    *
    * @return the number of items

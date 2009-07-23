@@ -364,7 +364,8 @@ public class ResourceManagerImpl
       StringBuffer url = new StringBuffer();
       url.append( URLHelper.getContextURLString() );
       url.append( "/" );
-      url.append( versionedResourceName( newFileName, version ) );
+      String escapedFilename = escapeFilename( newFileName );
+      url.append( versionedResourceName( escapedFilename, version ) );
       result = url.toString();
     } else {
       StringBuffer url = new StringBuffer();
@@ -503,10 +504,17 @@ public class ResourceManagerImpl
     StringBuffer filename = new StringBuffer();
     filename.append( webAppRoot );
     filename.append( File.separator );
-    filename.append( versionedResourceName( name, version ) );
+    filename.append( versionedResourceName( escapeFilename( name ), version ) );
     return new File( filename.toString() );
   }
   
+  private static String escapeFilename( final String name ) {
+    String result = name;
+    result = name.replaceAll( "\\$", "\\$\\$" );
+    result = result.replaceAll( ":", "\\$1" );
+    return result;
+  }
+
   private static File getTempLocation( final String name, 
                                        final Integer version ) 
   {

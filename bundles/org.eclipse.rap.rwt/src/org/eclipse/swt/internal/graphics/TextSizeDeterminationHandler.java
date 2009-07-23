@@ -22,8 +22,10 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
@@ -73,7 +75,8 @@ final class TextSizeDeterminationHandler
           Shell[] shells = display.getShells();
           for( int i = 0; i < shells.length; i++ ) {
             // TODO [fappel]: Think about a lighter recalculation trigger.
-            Point buffer = shells[ i ].getSize();
+            Shell shell = shells[ i ];
+            Rectangle bufferedBounds = shell.getBounds();
             AllWidgetTreeVisitor clearLayout = new AllWidgetTreeVisitor() {
               public boolean doVisit( final Widget widget ) {
                 if( widget instanceof Composite ) {
@@ -124,12 +127,18 @@ final class TextSizeDeterminationHandler
                 return true;
               }
             };
-            WidgetTreeVisitor.accept( shells[ i ], saveSCOrigins );
-            WidgetTreeVisitor.accept( shells[ i ], clearLayout );
-            shells[ i ].setSize( buffer.x + 1000, buffer.y + 1000 );
-            WidgetTreeVisitor.accept( shells[ i ], clearLayout );
-            shells[ i ].setSize( buffer );
-            WidgetTreeVisitor.accept( shells[ i ], restoreSCOrigins );
+            WidgetTreeVisitor.accept( shell, saveSCOrigins );
+            WidgetTreeVisitor.accept( shell, clearLayout );
+            IShellAdapter shellAdapter
+              = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+            Rectangle bounds1000 = new Rectangle( bufferedBounds.x, 
+                                                  bufferedBounds.y, 
+                                                  bufferedBounds.width + 1000, 
+                                                  bufferedBounds.height + 1000 );
+            shellAdapter.setBounds( bounds1000 );
+            WidgetTreeVisitor.accept( shell, clearLayout );
+            shellAdapter.setBounds( bufferedBounds );
+            WidgetTreeVisitor.accept( shell, restoreSCOrigins );
           }
         }
         if( event.getPhaseId() == PhaseId.RENDER ) {

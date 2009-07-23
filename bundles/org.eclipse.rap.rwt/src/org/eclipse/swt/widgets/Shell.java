@@ -128,13 +128,13 @@ public class Shell extends Decorations {
 
   private Control lastActive;
   private IShellAdapter shellAdapter;
-  private String text = "";
+  private String text;
   private Image image;
-  private int alpha = 0xFF;
+  private int alpha;
   private Button defaultButton;
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
-  private int mode = MODE_NONE;
+  private int mode;
 
   private Shell( final Display display,
                  final Shell parent,
@@ -147,6 +147,9 @@ public class Shell extends Decorations {
     } else {
       this.display = Display.getCurrent();
     }
+    text = "";
+    alpha = 0xFF;
+    mode = MODE_NONE;
     this.style = checkStyle( style );
     state |= HIDDEN;
     this.display.addShell( this );
@@ -330,7 +333,7 @@ public class Shell extends Decorations {
    * @see SWT#SHELL_TRIM
    * @see SWT#DIALOG_TRIM
    * @see SWT#ON_TOP
-   * <!--@see SWT#TOOL-->
+   * @see SWT#TOOL
    * <!--@see SWT#MODELESS-->
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
@@ -527,6 +530,11 @@ public class Shell extends Decorations {
   Composite findDeferredControl() {
     return layoutCount > 0 ? this : null;
   }
+  
+  void updateMode() {
+    mode &= ~MODE_MAXIMIZED;
+    mode &= ~MODE_MINIMIZED;
+  }
 
   /////////////////////
   // Adaptable override
@@ -544,6 +552,9 @@ public class Shell extends Decorations {
           }
           public Rectangle getMenuBounds() {
             return Shell.this.getMenuBounds();
+          }
+          public void setBounds( final Rectangle bounds ) {
+            Shell.this.setBounds( bounds, false );
           }
         };
       }
@@ -652,10 +663,6 @@ public class Shell extends Decorations {
         event.processEvent();
         if( event.doit ) {
           Shell.this.dispose();
-          Shell[] dialogShells = getShells();
-          for( int i = 0; i < dialogShells.length; i++ ) {
-            dialogShells[ i ].dispose();
-          }
         }
       }
     } );
@@ -941,7 +948,15 @@ public class Shell extends Decorations {
   ///////////
   // Disposal
 
-  final void releaseParent() {
+  void releaseChildren() {
+    super.releaseChildren();
+    Shell[] dialogShells = getShells();
+    for( int i = 0; i < dialogShells.length; i++ ) {
+      dialogShells[ i ].dispose();
+    }
+  }
+  
+  void releaseParent() {
     // Do not call super.releaseParent()
     // This method would try to remove a child-shell from its ControlHolder
     // but shells are currently not added to the ControlHolder of its parent
@@ -1158,7 +1173,7 @@ public class Shell extends Decorations {
    * @see #setMaximized
    */
   public boolean getMaximized() {
-    return this.mode == MODE_MAXIMIZED;
+    return mode == MODE_MAXIMIZED;
   }
 
   ///////////////////

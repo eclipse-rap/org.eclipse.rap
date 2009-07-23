@@ -40,19 +40,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     }
   },
 
-  destruct : function() {
-    // When changing this, re-check destructor of Table.js as well as TableLCA
-    // and TableItemLCA
-    // [if] The qx.core.Object.inGlobalDispose() is used to skip table rendering
-    // on browser refresh. See bug:
-    // 272686: [Table] Javascript error during table disposal
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=272686
-    if( !this._parent.getDisposed() && !qx.core.Object.inGlobalDispose() ) {
-      this._parent._removeItem( this );
-    }
-    org.eclipse.swt.WidgetManager.getInstance().remove( this );
-  },
-
+  // no destruct - see dispose() override
+  
   statics : {
 
     PX : "px"
@@ -60,6 +49,23 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
 
   members : {
+    
+    /* Need to override dispose() here because the call to parent._removeitem()
+     * has to happen immediately. The usual way (putting the code in destruct) 
+     * would be executed in the socalled "dispose-queue" somewhen later. */
+    dispose : function() {
+      this.base( arguments );
+      // When changing this, re-check destructor of Table.js as well as TableLCA
+      // and TableItemLCA
+      // [if] The qx.core.Object.inGlobalDispose() is used to skip table rendering
+      // on browser refresh. See bug:
+      // 272686: [Table] Javascript error during table disposal
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=272686
+      if( !this._parent.getDisposed() && !qx.core.Object.inGlobalDispose() ) {
+        this._parent._removeItem( this );
+      }
+      org.eclipse.swt.WidgetManager.getInstance().remove( this );      
+    },
 
     getCached : function() {
       return this._cached;
@@ -162,7 +168,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       var pos = 0;
       var left = 0;
       var width = 0;
-      var height = this._parent.getItemHeight() - 1;
+      var height = this._parent.getItemHeight() - 1; // -1 is gridLine height
+      if( height < 0 ) {
+        height = 0;
+      }
       var columnCount = parent.getColumnCount();
       var drawColors = this._drawColors();
       if( columnCount == 0 ) {
@@ -206,7 +215,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           var node = this._getChildNode( element, pos );
           pos++;
           left = parent.getItemLeft( i );
-          width = parent.getItemWidth( i ) - 1;
+          width = parent.getItemWidth( i ) - 1; // -1 is gridLine height
+          if( width < 0 ) {  // IE does not accept negative width (see bug 280731)
+            width = 0;
+          }
           this._renderBackground( node, left, width, height, background );
         }
         // Create image div
@@ -301,16 +313,20 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.height = height + org.eclipse.swt.widgets.TableItem.PX;
       // set line height to enable vertical centering
       node.style.lineHeight = height + org.eclipse.swt.widgets.TableItem.PX;
-      if( font != "" ) {
-        node.style.font = font;
-      } else {
+      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         // Resetting style.font causes errors in IE with any of these syntaxes:
         // node.style.font = null | undefined | "inherit" | "";
-        node.style.fontFamily = "";
-        node.style.fontSize = "";
-        node.style.fontVariant = "";
-        node.style.fontStyle = "";
-        node.style.fontWeight = "";
+        if( font == "" || font == null ) { // can't be undefined or inherit
+          node.style.fontFamily = "";
+          node.style.fontSize = "";
+          node.style.fontVariant = "";
+          node.style.fontStyle = "";
+          node.style.fontWeight = "";
+        } else {
+          node.style.font = font;
+        }
+      } else {
+        node.style.font = font;
       }
       node.style.color = foreground;
       node.style.backgroundColor = "";

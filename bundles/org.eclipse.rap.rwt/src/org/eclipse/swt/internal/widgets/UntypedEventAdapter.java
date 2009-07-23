@@ -34,7 +34,8 @@ public final class UntypedEventAdapter
              KeyListener,
              TraverseListener,
              ShowListener,
-             ActivateListener
+             ActivateListener,
+             HelpListener
 {
 
   private class Entry {
@@ -214,6 +215,12 @@ public final class UntypedEventAdapter
 
   public void deactivated( final ActivateEvent typedEvent ) {
     Event event = createEvent( SWT.Deactivate, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+  }
+  
+  public void helpRequested( final HelpEvent typedEvent ) {
+    Event event = createEvent( SWT.Help, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }

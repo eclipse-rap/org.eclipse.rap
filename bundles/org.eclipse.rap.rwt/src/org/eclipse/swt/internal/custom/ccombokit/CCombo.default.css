@@ -1,15 +1,20 @@
 /* CCombo default theme */
 
 CCombo {
+  background-color: white;
+  color: black;
   border: none;
 }
 
 CCombo[BORDER] {
-  border: 2px inset;
+  border: 1px inset;
 }
 
 CCombo-Button {
+  background-image: url( resource/widget/rap/combo/down_button.gif );
+  background-color: rgb( 248, 248, 255 );
   border: 1px outset;
+  width: 15px;
 }
 
 CCombo-Button[FLAT] {
@@ -18,4 +23,8 @@ CCombo-Button[FLAT] {
 
 CCombo-Button[FLAT]:hover {
   border: 1px outset;
+}
+
+CCombo-List {
+  border: 1px rgb( 167, 166, 170 );
 }

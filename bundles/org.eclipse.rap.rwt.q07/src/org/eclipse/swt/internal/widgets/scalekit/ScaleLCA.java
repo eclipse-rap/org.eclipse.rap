@@ -64,6 +64,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.processSelection( scale, null, true );
     ControlLCAUtil.processKeyEvents( scale );
+    WidgetLCAUtil.processHelp( scale );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

@@ -17,7 +17,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
   construct : function( style ) {
     this.base( arguments );
-    this.setAppearance( "combo" );
+    // Get style
+    this._ccombo = false;
+    if( style ) {
+      this._ccombo = qx.lang.String.contains( style, "ccombo" );
+    }
     //
     this._hasSelectionListener = false;
     this._hasVerifyModifyListener = false;
@@ -32,19 +36,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._listItemHeight = "auto";
     // Text field
     this._field = new qx.ui.form.TextField();
-    this._field.setAppearance( "combo-field" );
     this._field.setTabIndex( -1 );
     this._field.setAllowStretchY( true );
     this.add( this._field );
     // Drop down button
     this._button = new qx.ui.form.Button();
-    this._button.setAppearance( "combo-button" );
     this._button.setTabIndex( -1 );
     this._button.setAllowStretchY( true );
     this.add( this._button );
     // List
     this._list = new qx.ui.form.List();
-    this._list.setAppearance( "combo-list" );
     this._list.setTabIndex( -1 );
     this._list.setDisplay( false );
     // List Manager
@@ -56,6 +57,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Add events listeners
     var cDocument = qx.ui.core.ClientDocument.getInstance();
     cDocument.addEventListener( "windowblur", this._onBlur, this );
+    // Set appearance
+    if( this._ccombo ) {
+      this.setAppearance( "ccombo" );
+      this._field.setAppearance( "ccombo-field" );
+      this._button.setAppearance( "ccombo-button" );
+      this._list.setAppearance( "ccombo-list" );
+    } else {
+      this.setAppearance( "combo" );
+      this._field.setAppearance( "combo-field" );
+      this._button.setAppearance( "combo-button" );
+      this._list.setAppearance( "combo-list" );
+    }
     // Init events
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "focusin", this._onFocusIn, this );
@@ -65,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.addEventListener( "changeFont", this._onChangeFont, this );
     this.addEventListener( "changeTextColor", this._onChangeTextColor, this );
     this.addEventListener( "changeBackgroundColor",
-                           this._onChangeBackgoundColor, 
+                           this._onChangeBackgroundColor, 
                            this );
     this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
     // Mouse events
@@ -95,7 +108,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "changeFont", this._onChangeFont, this );
     this.removeEventListener( "changeTextColor", this._onChangeTextColor, this );
     this.removeEventListener( "changeBackgroundColor",
-                              this._onChangeBackgoundColor, 
+                              this._onChangeBackgroundColor, 
                               this );
     this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
@@ -121,29 +134,38 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
                           "_selected" );
   },
 
-  statics : {
-    BUTTON_WIDTH : 14
-  },
-
   members : {
+
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._field.addState( state );
+        this._list.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._field.removeState( state );
+        this._list.removeState( state );
+      }
+    },
+
     _onChangeSize : function( evt ) {
       this._list.setWidth( this.getWidth() );
       this._setListLocation();
     },
 
     _onAppear : function( evt ) {
-      if( this.hasState( "rwt_CCOMBO" ) ) {
-        this._field.addState( "rwt_CCOMBO" );
-        this._button.addState( "rwt_CCOMBO" );
-        this._list.addState( "rwt_CCOMBO" );
-      }
-      if( this.hasState( "rwt_CCOMBO" ) && this.hasState( "rwt_FLAT" ) ) {
+      if( this._ccombo && this.hasState( "rwt_FLAT" ) ) {
         this._field.addState( "rwt_FLAT" );
         this._button.addState( "rwt_FLAT" );
         this._list.addState( "rwt_FLAT" );
       }
       this.getTopLevelWidget().add( this._list );
       this._setListLocation();
+      org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
     
     _onFocusIn : function( evt ) {
@@ -172,6 +194,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( value );
       }
+      org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
 
     _onChangeTextColor : function( evt ) {
@@ -180,10 +203,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._list.setTextColor( value );
     },
 
-    _onChangeBackgoundColor : function( evt ) {
-      var value = evt.getValue();
-      this._field.setBackgroundColor( value );
-      this._list.setBackgroundColor( value );
+    _onChangeBackgroundColor : function( evt ) {
+      var color = evt.getValue();
+      this._field.setBackgroundColor( color );
+      // Ensure that the list is never transparent (see bug 282540)
+      if( color != null ) {
+        this._list.setBackgroundColor( color );
+      } else {
+        this._list.resetBackgroundColor();
+      }
     },
     
     _onChangeVisibility : function( evt ) {

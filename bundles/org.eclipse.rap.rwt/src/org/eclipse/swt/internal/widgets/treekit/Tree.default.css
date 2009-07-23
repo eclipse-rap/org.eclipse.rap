@@ -22,6 +22,7 @@ TreeItem:selected:unfocused {
 
 TreeColumn {
   background-color: rgb( 248, 248, 255 );
+  background-image: none;
 }
 
 TreeColumn:hover {
@@ -38,4 +39,28 @@ TreeColumn-SortIndicator:up {
 
 TreeColumn-SortIndicator:down {
   background-image: url( resource/widget/rap/column/down.gif );
+}
+
+Tree-Checkbox {
+  background-image: url( resource/widget/rap/button/check-unselected.png );
+}
+
+Tree-Checkbox:hover {
+  background-image: url( resource/widget/rap/button/check-unselected-hover.png );
+}
+
+Tree-Checkbox:checked {
+  background-image: url( resource/widget/rap/button/check-selected.png );
+}
+
+Tree-Checkbox:checked:hover {
+  background-image: url( resource/widget/rap/button/check-selected-hover.png );
+}
+
+Tree-Checkbox:grayed {
+  background-image: url( resource/widget/rap/button/check-grayed.png );
+}
+
+Tree-Checkbox:grayed:hover {
+  background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }

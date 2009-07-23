@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme.css;
 
 import org.w3c.css.sac.ElementSelector;
@@ -28,15 +28,7 @@ public class NullElementSelector implements ElementSelector, SelectorExt {
     return SAC_ELEMENT_NODE_SELECTOR;
   }
 
-  public boolean matches( final Element element ) {
-    return false;
-  }
-
   public String getElementName() {
-    return null;
-  }
-
-  public String[] getClasses() {
     return null;
   }
 

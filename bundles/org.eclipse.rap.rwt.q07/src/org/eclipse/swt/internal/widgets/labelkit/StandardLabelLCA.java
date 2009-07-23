@@ -50,6 +50,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   void readData( final Label label ) {
     ControlLCAUtil.processMouseEvents( label );
     ControlLCAUtil.processKeyEvents( label );
+    WidgetLCAUtil.processHelp( label );
   }
 
   void renderInitialization( final Label label ) throws IOException {

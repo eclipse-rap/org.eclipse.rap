@@ -20,6 +20,17 @@
         type="border"
         description="Outer window border." />
 
+    <property name="border-radius" type="boxdim">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+    </property>
+
+    <property name="background-image"
+        type="image"
+        description="Background image or gradient." />
+
     <property name="padding"
         type="boxdim"
         description="Padding around the shell's client area." />
@@ -30,6 +41,9 @@
 
     <style name="BORDER"
         description="Indicates that the shell should have a border." />
+
+    <style name="TOOL"
+        description="Indicates that the shell should behave like a tool window." />
 
     <style name="TITLE"
         description="Indicates that the shell should show it's title bar." />
@@ -87,7 +101,18 @@
 
       <state name="inactive"
           description="Applies for all shells except the active shell." />
+          
+      <property name="border"
+          type="border"
+          description="Shell titlebar border." />
 
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
+      </property>
+    
     </element>
 
     <element name="Shell-MinButton">

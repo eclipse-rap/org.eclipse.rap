@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -35,6 +36,9 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
  * @since 1.0
  */
 public class Link extends Control {
+  
+  // Must be kept in sync with appearance value in AppearancesBase.js
+  private final static int PADDING = 2;
 
   private String text = "";
   private String displayText = "";
@@ -180,16 +184,23 @@ public class Link extends Control {
     SelectionEvent.removeListener( this, listener );
   }
 
-  public Point computeSize( final int wHint, final int hHint, final boolean changed ) {
+  public Point computeSize( final int wHint, 
+                            final int hHint, 
+                            final boolean changed )
+  {
     checkWidget();
     int width = 0;
     int height = 0;
     int border = getBorderWidth();
     if( ( displayText.length() > 0 ) ) {
-      // TODO [rst] change to textExtent when wrap supported
-      Point extent = TextSizeDetermination.stringExtent( getFont(), displayText );
+      // Replace '&' with '&&' to ensure proper size calculation with one '&',
+      // because the other will be escaped in 
+      // TextSizeDetermination#createMeasureString()
+      String string = escapeAmpersand( displayText );
+      Point extent
+        = TextSizeDetermination.textExtent( getFont(), string, wHint );
       width = extent.x;
-      height = extent.y + 2;
+      height = extent.y;
     }
     if( wHint != SWT.DEFAULT ) {
       width = wHint;
@@ -197,14 +208,21 @@ public class Link extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    width += border * 2;
-    height += border * 2;
+    width += border * 2 + PADDING * 2;
+    height += border * 2 + PADDING * 2;
     return new Point( width, height );
   }
-
-  public int getBorderWidth() {
-	// TODO: [rst] why overriding control#getBorderWidth
-    return ( ( style & SWT.BORDER ) != 0 ) ? 1 : 0;
+  
+  private static String escapeAmpersand( final String string ) {
+    StringBuffer result = new StringBuffer();
+    for( int i = 0; i < string.length(); i++ ) {
+      if( string.charAt( i ) == '&' ) {
+        result.append( "&&" );
+      } else {
+        result.append( string.charAt( i ) );
+      }
+    }
+    return result.toString();
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -229,7 +247,7 @@ public class Link extends Control {
     }
     return result;
   }
-
+  
   boolean isTabGroup() {
     return true;
   }

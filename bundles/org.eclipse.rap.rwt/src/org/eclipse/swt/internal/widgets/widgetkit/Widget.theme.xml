@@ -125,6 +125,8 @@
 
     <property name="background-color" type="color"/>
 
+    <property name="background-image" type="image"/>
+
     <property name="font" type="font"/>
 
     <property name="border" type="border"/>

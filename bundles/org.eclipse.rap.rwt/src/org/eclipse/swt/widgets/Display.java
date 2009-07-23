@@ -35,6 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
@@ -1017,6 +1018,48 @@ public class Display extends Device implements Adaptable {
       }
     }
     return result;
+  }
+
+  /**
+   * Returns the matching standard platform cursor for the given
+   * constant, which should be one of the cursor constants
+   * specified in class <code>SWT</code>. This cursor should
+   * not be free'd because it was allocated by the system,
+   * not the application.  A value of <code>null</code> will
+   * be returned if the supplied constant is not an SWT cursor
+   * constant. 
+   *
+   * @param id the SWT cursor constant
+   * @return the corresponding cursor or <code>null</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see SWT#CURSOR_ARROW
+   * @see SWT#CURSOR_WAIT
+   * @see SWT#CURSOR_CROSS
+   * @see SWT#CURSOR_HELP
+   * @see SWT#CURSOR_SIZEALL
+   * @see SWT#CURSOR_SIZENS
+   * @see SWT#CURSOR_SIZEWE
+   * @see SWT#CURSOR_SIZEN
+   * @see SWT#CURSOR_SIZES
+   * @see SWT#CURSOR_SIZEE
+   * @see SWT#CURSOR_SIZEW
+   * @see SWT#CURSOR_SIZENE
+   * @see SWT#CURSOR_SIZESE
+   * @see SWT#CURSOR_SIZESW
+   * @see SWT#CURSOR_SIZENW
+   * @see SWT#CURSOR_IBEAM
+   * @see SWT#CURSOR_HAND
+   * 
+   * @since 1.3
+   */
+  public Cursor getSystemCursor( final int id ) {
+    checkDevice();
+    return ResourceFactory.getCursor( id );
   }
 
   /**

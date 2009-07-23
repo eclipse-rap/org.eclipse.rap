@@ -84,6 +84,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     this._spinner._textfield.setTabIndex( -1 );
     // Hack to prevent the spinner text field to request the focus
     this._spinner._textfield.setFocused = function() {};
+    this._spinner._upbutton.setAppearance("datetime-button-up");
+    this._spinner._downbutton.setAppearance("datetime-button-down");
     this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
     this._spinner.removeEventListener("keydown", this._spinner._onkeydown, this._spinner);
     this._spinner.removeEventListener("keyup", this._spinner._onkeyup, this._spinner);
@@ -238,6 +240,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             } else if( this._focusedTextField === this._secondsTextField ) {
               this._setFocusedTextField( this._minutesTextField );
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Right":
             if( this._focusedTextField === this._hoursTextField ) {
@@ -251,6 +255,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             } else if( this._focusedTextField === this._secondsTextField ) {
               this._setFocusedTextField( this._hoursTextField );
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Up":
             var value = this._spinner.getValue();
@@ -259,6 +265,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             } else {
               this._spinner.setValue( value + 1 );
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Down":
             var value = this._spinner.getValue();
@@ -267,6 +275,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             } else {
               this._spinner.setValue( value - 1 );
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
         }
       }
@@ -297,14 +307,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
                 this._spinner.setValue( intValue );
               }
             }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Home":
             var newValue = this._spinner.getMin();
             this._spinner.setValue( newValue );
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "End":
             var newValue = this._spinner.getMax();
             this._spinner.setValue( newValue );
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
         }
       }

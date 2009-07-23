@@ -333,6 +333,23 @@ public class SWT {
   public static final int Deactivate = 27;
 
   /**
+   * The help event type (value is 28).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addHelpListener
+   * @see org.eclipse.swt.widgets.Menu#addHelpListener
+   * @see org.eclipse.swt.widgets.MenuItem#addHelpListener
+   * @see org.eclipse.swt.events.HelpListener#helpRequested
+   * @see org.eclipse.swt.events.HelpEvent
+   * 
+   *  @since 1.3
+   */
+  public static final int Help = 28;
+  
+  /**
    * The traverse event type (value is 31).
    * 
    * @see org.eclipse.swt.widgets.Widget#addListener
@@ -1415,6 +1432,20 @@ public class SWT {
 
 
   // Shells
+  /**
+   * Style constant for tool window behavior (value is 1&lt;&lt;2).
+   * <p>
+   * A tool window is a window intended to be used as a floating toolbar.
+   * It typically has a title bar that is shorter than a normal title bar,
+   * and the window title is typically drawn using a smaller font.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Decorations</code> and subclasses</li>
+   * </ul></p>
+   * @since 1.3
+   */
+  public static final int TOOL = 1 << 2; 
+
   /**
    * Style constant to ensure no trimmings are used (value is 1&lt;&lt;3).
    * <br>Note that this overrides all other trim styles.
@@ -2806,19 +2837,6 @@ public class SWT {
    * </ul></p>
    */
   public static final int SHADOW_ETCHED_OUT = 1 << 6;
-  
-  /**
-   * Style constant for tool window behavior (value is 1&lt;&lt;2).
-   * <p>
-   * A tool window is a window intended to be used as a floating toolbar.
-   * It typically has a title bar that is shorter than a normal title bar,
-   * and the window title is typically drawn using a smaller font.
-   * <br>Note that this is a <em>HINT</em>.
-   * </p><p><b>Used By:</b><ul>
-   * <li><code>Decorations</code> and subclasses</li>
-   * </ul></p>
-   */
-  public static final int TOOL = 1 << 2; 
   
   /**
    * Style constant for shell menu trim (value is 1&lt;&lt;6,

@@ -37,6 +37,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     ControlLCAUtil.processSelection( text, null, false );
     ControlLCAUtil.processMouseEvents( text );
     ControlLCAUtil.processKeyEvents( text );
+    WidgetLCAUtil.processHelp( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {
