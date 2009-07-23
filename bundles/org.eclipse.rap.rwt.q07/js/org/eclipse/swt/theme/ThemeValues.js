@@ -42,7 +42,13 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       // construct rounded border if "border-radius" is set
       vkey = this._store.getCssValue( element, this._states, "border-radius" );
       var radius = values.boxdims[ vkey ];
-      if( radius != null && result instanceof qx.ui.core.Border ) {
+      if(    radius != null 
+          && (    radius[ 0 ] > 0
+               || radius[ 1 ] > 0
+               || radius[ 2 ] > 0
+               || radius[ 3 ] > 0 )
+          && result instanceof qx.ui.core.Border )
+      {
         var width = result.getWidthTop();
         var color = result.getColorTop();
         result = new org.eclipse.rwt.RoundedBorder( width );
