@@ -62,10 +62,10 @@ Table-Checkbox:checked:hover {
   background-image: url( resource/widget/rap/button/check-selected-hover.png );
 }
 
-Table-Checkbox:grayed {
+Table-Checkbox:checked:grayed {
   background-image: url( resource/widget/rap/button/check-grayed.png );
 }
 
-Table-Checkbox:grayed:hover {
+Table-Checkbox:checked:grayed:hover {
   background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }

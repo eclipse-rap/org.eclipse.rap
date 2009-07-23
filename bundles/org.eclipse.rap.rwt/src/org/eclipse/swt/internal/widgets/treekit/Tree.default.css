@@ -57,10 +57,10 @@ Tree-Checkbox:checked:hover {
   background-image: url( resource/widget/rap/button/check-selected-hover.png );
 }
 
-Tree-Checkbox:grayed {
+Tree-Checkbox:checked:grayed {
   background-image: url( resource/widget/rap/button/check-grayed.png );
 }
 
-Tree-Checkbox:grayed:hover {
+Tree-Checkbox:checked:grayed:hover {
   background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }
