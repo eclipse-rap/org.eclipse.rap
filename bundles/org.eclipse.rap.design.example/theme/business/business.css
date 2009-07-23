@@ -22,14 +22,40 @@
   border: 1px solid #C1C1C1;
 }
 
+/* Button */
+
 Button[PUSH], Button[TOGGLE], Button[BORDER] {
-  background-color: #f5f6f6;
   border: 1px solid #A4A4A4;
+  border-radius: 3px;
   padding: 2px 5px;
+  /* background-color: #f5f6f6; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
 }
 
 Button[TOGGLE]:selected {
-  background-color: #d3d3d3;
+  /* background-color: #d3d3d3; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
 
 Button:hover {
@@ -38,7 +64,9 @@ Button:hover {
 
 Button.clearButton {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -46,6 +74,7 @@ Button.viewClose {
   background-color: transparent;
   background-image: url( /img/business/stack_tab_active_close_active.png );
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -57,7 +86,7 @@ Button.viewCloseInactive {
   background-color: transparent;
   background-image: url( /img/business/stack_tab_inactive_close_active.png );
   border: none;
-  padding: 2px;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */  padding: 2px;
 }
 
 Button.viewCloseInactive:hover {
@@ -68,6 +97,7 @@ Button.toolbarOverflowInactive {
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow.png );
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -79,6 +109,7 @@ Button.toolbarOverflowActive {
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow_active.png );
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -88,14 +119,18 @@ Button.toolbarOverflowActive:hover {
 
 Button.menuBar {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 0, 89, 165 );
   font: 13px Arial, Helvetica, sans-serif;
 }
 
 Button.coolBar {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   spacing: 6px;
   color: rgb( 255, 255, 255 );
   font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -107,7 +142,9 @@ Button.coolBar:hover {
 
 Button.coolBarPulldown {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 255, 255, 255 );
   font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
@@ -118,21 +155,27 @@ Button.coolBarPulldown:hover {
 
 Button.partActive {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 252, 252, 252 );
   font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
 
 Button.partInactive {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 102, 102, 102 );
   font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
 
 Button.inactivePerspective {
   background-color: transparent;
+  background-image: none;
   border: none;
+  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 0, 80, 145 );
 }
 
@@ -140,20 +183,29 @@ Button.inactivePerspective {
 
 Shell-Titlebar {
   color: white;
-  background-image: url( /theme/business/icons/shell-active-background.png );
+  /* background-image: url( /theme/business/icons/shell-active-background.png ); */
+  background-image: gradient( linear, left top, left bottom,
+                              from( #005fac ), to( #005092 ) );
   padding: 2px 5px 2px;
   margin: 0px;
   height: 27px;
   font: 14px "Trebuchet MS", Arial, Helvetica, sans-serif;
+  /* border: 0px solid black; https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
+  border: 1px solid #005fac;
+	border-radius: 5px 5px 0px 0px;
 }
 
 Shell-Titlebar:inactive {
   color: #aaaaaa;
-  background-image: url( /theme/business/icons/shell-inactive-background.png );
+  /* background-image: url( /theme/business/icons/shell-inactive-background.png ); */
+  background-image: gradient( linear, left top, left bottom,
+                              from( #595959 ), to( #4b4b4b ) );
 }
 
 Shell {
   background-color: white;
+  border: 1px solid #005092;
+  border-radius: 6px;
 }
 
 Shell-CloseButton {
@@ -337,32 +389,41 @@ ExpandItem-Button:expanded {
   background-image: url( /theme/business/icons/expanditem-collapse.gif );
 }
 
-/* Combo, Spinner */
+/* Text, Combo, Spinner, DateTime */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-Combo, CCombo[BORDER] {
+Text[BORDER], Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
   border: 1px solid #c1c1c1;
+  border-radius: 2px;
 }
 
-Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton {
-  background-color: #d6d6d6;
+Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpButton, DateTime-DownButton {
+  background-color: transparent;
   border: none;
 }
 
-Spinner-UpButton {
+Spinner-UpButton, DateTime-UpButton {
   background-image: url( /theme/business/icons/chevron-up-small.png );
 }
 
-Spinner-DownButton {
+Spinner-DownButton, DateTime-DownButton {
   background-image: url( /theme/business/icons/chevron-down-small.png );
-  background-color: #c1c1c1;
+  /* background-color: #c1c1c1; */
 }
 
 Combo-Button:hover, CCombo-Button:hover,
-Spinner-UpButton:hover, Spinner-DownButton:hover {
+Spinner-UpButton:hover, Spinner-DownButton:hover,
+DateTime-UpButton:hover, DateTime-DownButton:hover {
   background-color: #e2e2e2;
 }
 
 Combo-Button, CCombo-Button {
   background-image: url( /theme/business/icons/chevron-down.png );
+}
+
+/* Group */
+
+Group-Frame {
+  padding: 5px;
+  border-radius: 5px 5px 0px 0px;
 }
