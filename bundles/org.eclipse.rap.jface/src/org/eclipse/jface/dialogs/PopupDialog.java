@@ -234,20 +234,14 @@ public class PopupDialog extends Window {
 	 * Shell style appropriate for a simple hover popup that cannot get focus.
 	 * 
 	 */
-	// RAP [bm]: 
-//	public final static int HOVER_SHELLSTYLE = SWT.NO_FOCUS | SWT.ON_TOP
-//			| SWT.TOOL;
-	public final static int HOVER_SHELLSTYLE = SWT.NO_FOCUS | SWT.ON_TOP | SWT.NO_TRIM;
-	// RAPEND: [bm] 
+	public final static int HOVER_SHELLSTYLE = SWT.NO_FOCUS | SWT.ON_TOP
+			| SWT.TOOL;
 
 	
 	/**
 	 * Shell style appropriate for an info popup that can get focus.
 	 */
-	// RAP [bm]: 
-//	public final static int INFOPOPUP_SHELLSTYLE = SWT.TOOL;
-	public final static int INFOPOPUP_SHELLSTYLE = SWT.NO_TRIM;
-	// RAPEND: [bm] 
+	public final static int INFOPOPUP_SHELLSTYLE = SWT.TOOL;
 
 	/**
 	 * Shell style appropriate for a resizable info popup that can get focus.

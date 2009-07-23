@@ -15,7 +15,13 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Font;
 
 /**
- * Only used in RAP to avoid breaking API in Dialog class.
+ * Only used in RAP to avoid breaking API in Dialog class. *
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part of the JFace
+ * public API. It is marked public only so that it can be shared within the
+ * packages provided by JFace. It should never be accessed from application code.
+ * </p>
+ * 
  * @since 1.1
  */
 // RAP [rh] Substitues for methods in class Dialog

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.TableColumn;
 /**
  * ViewerColumn implementation for TableViewer to enable column-specific label
  * providers and editing support.
- * 
+ *
  * @since 1.0
  */
 public final class TableViewerColumn extends ViewerColumn {
@@ -28,7 +28,7 @@ public final class TableViewerColumn extends ViewerColumn {
 	 * Creates a new viewer column for the given {@link TableViewer} on a new
 	 * {@link TableColumn} with the given style bits. The column is added at the
 	 * end of the list of columns.
-	 * 
+	 *
 	 * @param viewer
 	 *            the table viewer to which this column belongs
 	 * @param style
@@ -44,7 +44,7 @@ public final class TableViewerColumn extends ViewerColumn {
 	 * Creates a new viewer column for the given {@link TableViewer} on a new
 	 * {@link TableColumn} with the given style bits. The column is inserted at
 	 * the given index into the list of columns.
-	 * 
+	 *
 	 * @param viewer
 	 *            the table viewer to which this column belongs
 	 * @param style
@@ -61,7 +61,7 @@ public final class TableViewerColumn extends ViewerColumn {
 	/**
 	 * Creates a new viewer column for the given {@link TableViewer} on the given
 	 * {@link TableColumn}.
-	 * 
+	 *
 	 * @param viewer
 	 *            the table viewer to which this column belongs
 	 * @param column
@@ -71,7 +71,7 @@ public final class TableViewerColumn extends ViewerColumn {
 		super(viewer, column);
 		this.column = column;
 	}
-	
+
 	private static TableColumn createColumn(Table table, int style, int index) {
 		if (index >= 0) {
 			return new TableColumn(table, style, index);
@@ -86,4 +86,11 @@ public final class TableViewerColumn extends ViewerColumn {
 	public TableColumn getColumn() {
 		return column;
 	}
+
+// RAP: [if] Table cell tooltips support
+	public void setLabelProvider( final CellLabelProvider labelProvider ) {
+      super.setLabelProvider( labelProvider );
+      CellToolTipProvider.attach( ( TableViewer )getViewer(), labelProvider );
+    }
+// RAPEND: [if]
 }

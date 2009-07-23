@@ -13,7 +13,7 @@ package org.eclipse.jface.action;
 import org.eclipse.core.commands.IHandlerAttributes;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-//import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 
 /**
@@ -197,8 +197,7 @@ public interface IAction {
      *
      * @return a help listener for this action
      */
-    // RAP [bm]: 
-//    public HelpListener getHelpListener();
+    public HelpListener getHelpListener();
 
     /**
      * Returns the hover image for this action as an image descriptor.
@@ -411,8 +410,7 @@ public interface IAction {
      *
      * @param listener a help listener for this action
      */
-    // RAP [bm]: 
-//    public void setHelpListener(HelpListener listener);
+    public void setHelpListener(HelpListener listener);
 
     /**
      * Sets the hover image for this action, as an image descriptor.

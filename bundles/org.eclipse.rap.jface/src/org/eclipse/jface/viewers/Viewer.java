@@ -13,8 +13,8 @@ package org.eclipse.jface.viewers;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.SafeRunnable;
-//import org.eclipse.swt.events.HelpEvent;
-//import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 
@@ -58,8 +58,7 @@ public abstract class Viewer implements IInputSelectionProvider {
      *
      * @see #handleHelpRequest
      */
-    // RAP [bm]: 
-//    private ListenerList helpListeners = new ListenerList();
+    private ListenerList helpListeners = new ListenerList();
 
     /**
      * The names of this viewer's properties.
@@ -81,14 +80,12 @@ public abstract class Viewer implements IInputSelectionProvider {
     /**
      * Remembers whether we've hooked the help listener on the control or not.
      */
-    // RAP [bm]: 
-//    private boolean helpHooked = false;
+    private boolean helpHooked = false;
 
     /**
      * Help listener for the control, created lazily when client's first help listener is added.
      */
-    // RAP [bm]: 
-//    private HelpListener helpListener = null;
+    private HelpListener helpListener = null;
 
     /**
      * Unique key for associating element data with widgets.
@@ -102,31 +99,29 @@ public abstract class Viewer implements IInputSelectionProvider {
     protected Viewer() {
     }
 
-    // RAP [bm]: 
-//    /**
-//     * Adds a listener for help requests in this viewer.
-//     * Has no effect if an identical listener is already registered.
-//     *
-//     * @param listener a help listener
-//     */
-//    public void addHelpListener(HelpListener listener) {
-//        helpListeners.add(listener);
-//        if (!helpHooked) {
-//            Control control = getControl();
-//            if (control != null && !control.isDisposed()) {
-//                if (this.helpListener == null) {
-//                    this.helpListener = new HelpListener() {
-//                        public void helpRequested(HelpEvent event) {
-//                            handleHelpRequest(event);
-//                        }
-//                    };
-//                }
-//                control.addHelpListener(this.helpListener);
-//                helpHooked = true;
-//            }
-//        }
-//    }
-// RAPEND: [bm] 
+    /**
+     * Adds a listener for help requests in this viewer.
+     * Has no effect if an identical listener is already registered.
+     *
+     * @param listener a help listener
+     */
+    public void addHelpListener(HelpListener listener) {
+        helpListeners.add(listener);
+        if (!helpHooked) {
+            Control control = getControl();
+            if (control != null && !control.isDisposed()) {
+                if (this.helpListener == null) {
+                    this.helpListener = new HelpListener() {
+                        public void helpRequested(HelpEvent event) {
+                            handleHelpRequest(event);
+                        }
+                    };
+                }
+                control.addHelpListener(this.helpListener);
+                helpHooked = true;
+            }
+        }
+    }
 
 
     /* (non-Javadoc)
@@ -136,21 +131,20 @@ public abstract class Viewer implements IInputSelectionProvider {
         selectionChangedListeners.add(listener);
     }
 
-    // RAP [bm]: 
-//    /**
-//     * Notifies any help listeners that help has been requested.
-//     * Only listeners registered at the time this method is called are notified.
-//     *
-//     * @param event a help event
-//     *
-//     * @see HelpListener#helpRequested(org.eclipse.swt.events.HelpEvent)
-//     */
-//    protected void fireHelpRequested(HelpEvent event) {
-//        Object[] listeners = helpListeners.getListeners();
-//        for (int i = 0; i < listeners.length; ++i) {
-//            ((HelpListener) listeners[i]).helpRequested(event);
-//        }
-//    }
+    /**
+     * Notifies any help listeners that help has been requested.
+     * Only listeners registered at the time this method is called are notified.
+     *
+     * @param event a help event
+     *
+     * @see HelpListener#helpRequested(org.eclipse.swt.events.HelpEvent)
+     */
+    protected void fireHelpRequested(HelpEvent event) {
+        Object[] listeners = helpListeners.getListeners();
+        for (int i = 0; i < listeners.length; ++i) {
+            ((HelpListener) listeners[i]).helpRequested(event);
+        }
+    }
 
     /**
      * Notifies any selection changed listeners that the viewer's selection has changed.
@@ -217,20 +211,19 @@ public abstract class Viewer implements IInputSelectionProvider {
      */
     public abstract ISelection getSelection();
 
-    // RAP [bm]: 
-//    /**
-//     * Handles a help request from the underlying SWT control.
-//     * The default behavior is to fire a help request,
-//     * with the event's data modified to hold this viewer.
-//     * @param event the event
-//     * 
-//     */
-//    protected void handleHelpRequest(HelpEvent event) {
-//        Object oldData = event.data;
-//        event.data = this;
-//        fireHelpRequested(event);
-//        event.data = oldData;
-//    }
+    /**
+     * Handles a help request from the underlying SWT control.
+     * The default behavior is to fire a help request,
+     * with the event's data modified to hold this viewer.
+     * @param event the event
+     * 
+     */
+    protected void handleHelpRequest(HelpEvent event) {
+        Object oldData = event.data;
+        event.data = this;
+        fireHelpRequested(event);
+        event.data = oldData;
+    }
 
     /**
      * Internal hook method called when the input to this viewer is
@@ -254,23 +247,22 @@ public abstract class Viewer implements IInputSelectionProvider {
      */
     public abstract void refresh();
 
-    // RAP [bm]: 
-//    /**
-//     * Removes the given help listener from this viewer.
-//     * Has no affect if an identical listener is not registered.
-//     *
-//     * @param listener a help listener
-//     */
-//    public void removeHelpListener(HelpListener listener) {
-//        helpListeners.remove(listener);
-//        if (helpListeners.size() == 0) {
-//            Control control = getControl();
-//            if (control != null && !control.isDisposed()) {
-//                control.removeHelpListener(this.helpListener);
-//                helpHooked = false;
-//            }
-//        }
-//    }
+    /**
+     * Removes the given help listener from this viewer.
+     * Has no affect if an identical listener is not registered.
+     *
+     * @param listener a help listener
+     */
+    public void removeHelpListener(HelpListener listener) {
+        helpListeners.remove(listener);
+        if (helpListeners.size() == 0) {
+            Control control = getControl();
+            if (control != null && !control.isDisposed()) {
+                control.removeHelpListener(this.helpListener);
+                helpHooked = false;
+            }
+        }
+    }
 
     /* (non-Javadoc)
      * Method declared on ISelectionProvider.

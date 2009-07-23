@@ -211,11 +211,9 @@ public class ActionContributionItem extends ContributionItem {
 			b.addListener(SWT.Dispose, getButtonListener());
 			// Don't hook a dispose listener on the parent
 			b.addListener(SWT.Selection, getButtonListener());
-			// RAP [bm]: HelpListener
-//			if (action.getHelpListener() != null) {
-//				b.addHelpListener(action.getHelpListener());
-//			}
-			// RAPEND: [bm] 
+			if (action.getHelpListener() != null) {
+				b.addHelpListener(action.getHelpListener());
+			}
 			widget = b;
 
 			update(null);
@@ -268,11 +266,9 @@ public class ActionContributionItem extends ContributionItem {
 			mi.setData(this);
 			mi.addListener(SWT.Dispose, getMenuItemListener());
 			mi.addListener(SWT.Selection, getMenuItemListener());
-			// RAP [bm]: HelpListener
-//			if (action.getHelpListener() != null) {
-//				mi.addHelpListener(action.getHelpListener());
-//			}
-			// RAPEND: [bm] 
+			if (action.getHelpListener() != null) {
+				mi.addHelpListener(action.getHelpListener());
+			}
 
 			if (flags == SWT.CASCADE) {
 				// just create a proxy for now, if the user shows it then 
@@ -1284,9 +1280,7 @@ public class ActionContributionItem extends ContributionItem {
 		
 		// we notify the real menu so it can populate itself if it was
 		// listening for SWT.Show
-		// RAP [bm]: not sure if this could be interesting for wb?
-//		realMenu.notifyListeners(SWT.Show, null);
-		// RAPEND: [bm] 
+		realMenu.notifyListeners(SWT.Show, null);
 
 		
 		final Listener passThrough = new Listener() {
@@ -1303,9 +1297,7 @@ public class ActionContributionItem extends ContributionItem {
 											.getSelection());
 						}
 						event.widget = realItem;
-						// RAP [bm]: not sure if this could be interesting for wb?
-//						realItem.notifyListeners(event.type, event);
-						// RAPEND: [bm] 
+						realItem.notifyListeners(event.type, event);
 					}
 				}
 			}
@@ -1367,9 +1359,7 @@ public class ActionContributionItem extends ContributionItem {
 					parentItem.setMenu(holdMenu);
 				}
 				if (holdMenu != null && !holdMenu.isDisposed()) {
-					// RAP [bm]: interesting for wb?
-//					holdMenu.notifyListeners(SWT.Hide, null);
-					// RAPEND: [bm] 
+					holdMenu.notifyListeners(SWT.Hide, null);
 
 				}
 				holdMenu = null;
