@@ -474,9 +474,7 @@ public final class PaneFolder {
         inLayout = true;
 		try {
 	        
-			// RAP [bm]: 
-//        	viewForm.setLayoutDeferred(true);
-			// RAPEND: [bm] 
+        	viewForm.setLayoutDeferred(true);
 
 	        tabFolder.setMinimizeVisible(showButtons && minimizeVisible);
 	        tabFolder.setMaximizeVisible(showButtons && maximizeVisible);
@@ -564,9 +562,7 @@ public final class PaneFolder {
 	        Rectangle newBounds = tabFolder.getClientArea();
 	        viewForm.setBounds(newBounds);
         } finally {
-        	// RAP [bm]: 
-//        	viewForm.setLayoutDeferred(false);
-        	// RAPEND: [bm] 
+        	viewForm.setLayoutDeferred(false);
 
         	inLayout = false;
         }
@@ -825,11 +821,9 @@ public final class PaneFolder {
         return tabFolder.getItems();
     }
 
-    // RAP [bm]: TabFolder#getItem(Point)
-//    public CTabItem getItem(Point toGet) {
-//        return tabFolder.getItem(toGet);
-//    }
-    // RAPEND: [bm] 
+    public CTabItem getItem(Point toGet) {
+        return tabFolder.getItem(toGet);
+    }
 
     public CTabItem getSelection() {
         return tabFolder.getSelection();
@@ -877,9 +871,7 @@ public final class PaneFolder {
      * @param b
      */
     public void setUnselectedImageVisible(boolean b) {
-    	// RAP [bm]: 
-//        tabFolder.setUnselectedImageVisible(b);
-    	// RAPEND: [bm] 
+        tabFolder.setUnselectedImageVisible(b);
     }
 
     /**

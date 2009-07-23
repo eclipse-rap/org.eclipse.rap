@@ -1876,10 +1876,7 @@ public class WorkbenchWindow extends ApplicationWindow implements
 
                 public void runWithException() {
                     if (!shellBounds.intersects(displayBounds[0])) {
-                        // RAP [bm]: Display#getClientArea
-//                      Rectangle clientArea = getShell().getDisplay().getClientArea();
-                        Rectangle clientArea = getShell().getDisplay().getBounds();
-                        // RAPEND: [bm] 
+                        Rectangle clientArea = getShell().getDisplay().getClientArea();
 
                         shellBounds.x = clientArea.x;
                         shellBounds.y = clientArea.y;
@@ -3070,12 +3067,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
         getMenuBarManager().update(false);
 
         // RAP [bm]: Composite#setLayoutDeferred
-//      try {
-//          getShell().setLayoutDeferred(true);
+      try {
+          getShell().setLayoutDeferred(true);
 //          getCoolBarManager2().update(false);
-//      } finally {
-//          getShell().setLayoutDeferred(false);
-//      }
+      } finally {
+          getShell().setLayoutDeferred(false);
+      }
         getCoolBarManager2().update(false);
         // RAPEND: [bm] 
 

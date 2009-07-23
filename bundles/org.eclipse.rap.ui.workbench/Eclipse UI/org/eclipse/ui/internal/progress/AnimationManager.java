@@ -31,7 +31,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * The AnimationManager is the class that keeps track of the animation items to
  * update.
  */
-//RAP {fappel]: AnimationManager needs to be session aware
+//RAP [fappel]: AnimationManager needs to be session aware
 public class AnimationManager extends SessionSingletonBase {
 //    private static AnimationManager singleton;
 

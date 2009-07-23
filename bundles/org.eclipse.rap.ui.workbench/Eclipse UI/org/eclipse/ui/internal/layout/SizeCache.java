@@ -23,6 +23,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Sash;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
@@ -295,19 +297,12 @@ public class SizeCache {
             return true;
         }
 
-        // RAP [bm]: Scale, Slider
-//        if (control instanceof Button || control instanceof ProgressBar
-//                || control instanceof Sash || control instanceof Scale
-//                || control instanceof Slider || control instanceof List
-//                || control instanceof Combo || control instanceof Tree) {
-//            return true;
-//        }
         if (control instanceof Button || control instanceof ProgressBar
-              || control instanceof Sash || control instanceof List
-              || control instanceof Combo || control instanceof Tree) {
-          return true;
-      }
-        // RAPEND: [bm] 
+                || control instanceof Sash || control instanceof Scale
+                || control instanceof Slider || control instanceof List
+                || control instanceof Combo || control instanceof Tree) {
+            return true;
+        }
 
         if (control instanceof Label || control instanceof Text) {
             return (control.getStyle() & SWT.WRAP) == 0;

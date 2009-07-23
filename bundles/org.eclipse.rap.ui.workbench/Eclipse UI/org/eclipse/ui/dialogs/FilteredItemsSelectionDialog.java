@@ -86,6 +86,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -941,11 +942,7 @@ public abstract class FilteredItemsSelectionDialog extends
 				} else {
 					refreshWithLastSelection = true;
 					list.getTable().setSelection(0);
-// RAP [rh] Widget#notifyListeners missing					
-//					list.getTable().notifyListeners(SWT.Selection, new Event());
-					SelectionEvent event
-					  = new SelectionEvent( list.getTable(), null, SelectionEvent.WIDGET_SELECTED );
-					event.processEvent();
+					list.getTable().notifyListeners(SWT.Selection, new Event());
 				}
 			} else {
 				list.setSelection(StructuredSelection.EMPTY);
@@ -1704,7 +1701,7 @@ public abstract class FilteredItemsSelectionDialog extends
 			cell.setForeground(getForeground(element));
 			cell.setBackground(getBackground(element));
 
-// RAP [rh] Obsolete becase of changed inheritance
+// RAP [rh] Obsolete because of changed inheritance
 //			super.update(cell);
 		}
 

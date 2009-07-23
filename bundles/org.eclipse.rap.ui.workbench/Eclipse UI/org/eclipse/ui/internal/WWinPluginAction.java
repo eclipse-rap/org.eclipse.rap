@@ -18,8 +18,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
-//import org.eclipse.swt.events.HelpEvent;
-//import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
@@ -42,8 +42,7 @@ public class WWinPluginAction extends PluginAction implements
     /**
      * The help listener assigned to this action, or <code>null</code> if none.
      */
-// RAP [rh] HelpListener missing  
-//    private HelpListener localHelpListener;
+    private HelpListener localHelpListener;
 
     private IWorkbenchWindow window;
 
@@ -123,23 +122,22 @@ public class WWinPluginAction extends PluginAction implements
         }
         addToActionList(this);
 
-// RAP [rh] HelpListener missing        
-//        super.setHelpListener(new HelpListener() {
-//            public void helpRequested(HelpEvent e) {
-//                HelpListener listener = null;
-//                if (retargetAction != null) {
-//					listener = retargetAction.getHelpListener();
-//				}
-//                if (listener == null) {
-//					// use our own help listener
-//                    listener = localHelpListener;
-//				}
-//                if (listener != null) {
-//					// pass on the event
-//                    listener.helpRequested(e);
-//				}
-//            }
-//        });
+        super.setHelpListener(new HelpListener() {
+            public void helpRequested(HelpEvent e) {
+                HelpListener listener = null;
+                if (retargetAction != null) {
+					listener = retargetAction.getHelpListener();
+				}
+                if (listener == null) {
+					// use our own help listener
+                    listener = localHelpListener;
+				}
+                if (listener != null) {
+					// pass on the event
+                    listener.helpRequested(e);
+				}
+            }
+        });
     }
 
     /**
@@ -246,16 +244,15 @@ public class WWinPluginAction extends PluginAction implements
         actionSetId = newActionSetId;
     }
 
-// RAP [rh] HelpListener missing    
-//    /** 
-//     * The <code>WWinPluginAction</code> implementation of this method
-//     * declared on <code>IAction</code> stores the help listener in
-//     * a local field. The supplied listener is only used if there is
-//     * no retarget action.
-//     */
-//    public void setHelpListener(HelpListener listener) {
-//        localHelpListener = listener;
-//    }
+    /** 
+     * The <code>WWinPluginAction</code> implementation of this method
+     * declared on <code>IAction</code> stores the help listener in
+     * a local field. The supplied listener is only used if there is
+     * no retarget action.
+     */
+    public void setHelpListener(HelpListener listener) {
+        localHelpListener = listener;
+    }
 
     /* (non-Javadoc)
      * Method declared on IAction.
