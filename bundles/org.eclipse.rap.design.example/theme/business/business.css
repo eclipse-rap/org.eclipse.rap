@@ -189,7 +189,7 @@ Shell-Titlebar {
   padding: 2px 5px 2px;
   margin: 0px;
   height: 27px;
-  font: 14px "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   /* border: 0px solid black; https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   border: 1px solid #005fac;
 	border-radius: 5px 5px 0px 0px;
@@ -204,12 +204,17 @@ Shell-Titlebar:inactive {
 
 Shell {
   background-color: white;
+}
+
+Shell[BORDER] {
   border: 1px solid #005092;
   border-radius: 6px;
+  padding: 5px;
 }
 
 Shell-CloseButton {
   background-image: url( "/theme/business/icons/shell-close-button.png" );
+  margin: 0px 5px 0px 0px;
 }
 
 Shell.shellGray {
