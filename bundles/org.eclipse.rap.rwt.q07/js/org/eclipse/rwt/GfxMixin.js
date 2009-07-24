@@ -577,7 +577,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       var color = this.getGfxProperty( "borderColor" );
       var shape = this._gfxData.currentShape;
       shape.setAttribute( "stroke-width", ( width ? width : "0" ) + "px");
-      shape.setAttribute( "stroke", ( color ? color : "none" ) );
+      shape.setAttribute( "stroke", ( color && width ? color : "none" ) );
     },
 
     _layoutSvgBorder : function() {

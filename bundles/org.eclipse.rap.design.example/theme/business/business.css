@@ -66,7 +66,6 @@ Button.clearButton {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -74,7 +73,6 @@ Button.viewClose {
   background-color: transparent;
   background-image: url( /img/business/stack_tab_active_close_active.png );
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -86,7 +84,6 @@ Button.viewCloseInactive {
   background-color: transparent;
   background-image: url( /img/business/stack_tab_inactive_close_active.png );
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */  padding: 2px;
 }
 
 Button.viewCloseInactive:hover {
@@ -97,7 +94,6 @@ Button.toolbarOverflowInactive {
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow.png );
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -109,7 +105,6 @@ Button.toolbarOverflowActive {
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow_active.png );
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   padding: 2px;
 }
 
@@ -121,7 +116,6 @@ Button.menuBar {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 0, 89, 165 );
   font: 13px Arial, Helvetica, sans-serif;
 }
@@ -130,7 +124,6 @@ Button.coolBar {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   spacing: 6px;
   color: rgb( 255, 255, 255 );
   font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -144,7 +137,6 @@ Button.coolBarPulldown {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 255, 255, 255 );
   font: 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
@@ -157,7 +149,6 @@ Button.partActive {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 252, 252, 252 );
   font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
@@ -166,7 +157,6 @@ Button.partInactive {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 102, 102, 102 );
   font: 11px "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
@@ -175,7 +165,6 @@ Button.inactivePerspective {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 0px; /* https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   color: rgb( 0, 80, 145 );
 }
 
@@ -190,7 +179,6 @@ Shell-Titlebar {
   margin: 0px;
   height: 27px;
   font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  /* border: 0px solid black; https://bugs.eclipse.org/bugs/show_bug.cgi?id=284417 */
   border: 1px solid #005fac;
 	border-radius: 5px 5px 0px 0px;
 }
