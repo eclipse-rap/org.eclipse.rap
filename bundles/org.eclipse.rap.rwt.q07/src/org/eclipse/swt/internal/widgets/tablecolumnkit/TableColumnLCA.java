@@ -272,15 +272,15 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       result = 0;
     } else {
       for( int i = 0; result == -1 && i < columns.length; i++ ) {
-        int left = getLeft( columns[ i ] );
-        int width = columns[ i ].getWidth();
+        int left = getLeft( columns[ columnOrder [ i ] ] );
+        int width = columns[ columnOrder [ i ] ].getWidth();
         if( newLeft >= left && newLeft <= left + width ) {
-          result = columnOrder[ i ];
+          result = i;
           if( newLeft >= left + width / 2 && result < columns.length ) {
             result++;
           }
         }
-      }
+      }      
     }
     // Column was moved right of the right-most column
     if( result == -1 ) {
