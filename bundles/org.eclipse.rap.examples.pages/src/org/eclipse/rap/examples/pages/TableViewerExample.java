@@ -15,8 +15,10 @@ import java.util.List;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.Elements.Element;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -38,19 +40,19 @@ public class TableViewerExample implements IExamplePage {
 
   private List elements;
 
-//  private static Color[] SERIES_COLORS = new Color[] {
-//    null,
-//    Graphics.getColor( 239, 41, 41 ),
-//    Graphics.getColor( 233, 185, 110 ),
-//    Graphics.getColor( 252, 233, 79 ),
-//    Graphics.getColor( 114, 159, 207 ),
-//    Graphics.getColor( 173, 127, 168 ),
-//    Graphics.getColor( 173, 127, 168 ),
-//    Graphics.getColor( 252, 175, 62 ),
-//    Graphics.getColor( 238, 238, 236 ),
-//    Graphics.getColor( 156, 159, 153 ),
-//    Graphics.getColor( 138, 226, 52 ),
-//  };
+  private static Color[] SERIES_COLORS = new Color[] {
+    null,
+    Graphics.getColor( 239, 41, 41 ),
+    Graphics.getColor( 233, 185, 110 ),
+    Graphics.getColor( 252, 233, 79 ),
+    Graphics.getColor( 114, 159, 207 ),
+    Graphics.getColor( 173, 127, 168 ),
+    Graphics.getColor( 173, 127, 168 ),
+    Graphics.getColor( 252, 175, 62 ),
+    Graphics.getColor( 238, 238, 236 ),
+    Graphics.getColor( 156, 159, 153 ),
+    Graphics.getColor( 138, 226, 52 ),
+  };
 
   public TableViewerExample() {
     viewerFilter = new ElementsFilter();
@@ -212,9 +214,7 @@ public class TableViewerExample implements IExamplePage {
           break;
         case SERIES:
           cell.setText( element.getSeriesName() );
-          // TODO [rst] Enable when bug 284662 is fixed
-          // https://bugs.eclipse.org/bugs/show_bug.cgi?id=284662
-          //cell.setBackground( SERIES_COLORS[ element.series ] );
+          cell.setBackground( SERIES_COLORS[ element.series ] );
           break;
       }
     }
