@@ -27,6 +27,9 @@ public class TableViewerExample implements IExamplePage {
   private static final int NUMBER = 0;
   private static final int SYMBOL = 1;
   private static final int NAME = 2;
+  private static final int SERIES = 3;
+  private static final int GROUP = 4;
+  private static final int PERIOD = 5;
 
   private TableViewer viewer;
   private Label lblSelection;
@@ -34,6 +37,20 @@ public class TableViewerExample implements IExamplePage {
   private final ElementsLabelProvider labelProvider;
 
   private List elements;
+
+//  private static Color[] SERIES_COLORS = new Color[] {
+//    null,
+//    Graphics.getColor( 239, 41, 41 ),
+//    Graphics.getColor( 233, 185, 110 ),
+//    Graphics.getColor( 252, 233, 79 ),
+//    Graphics.getColor( 114, 159, 207 ),
+//    Graphics.getColor( 173, 127, 168 ),
+//    Graphics.getColor( 173, 127, 168 ),
+//    Graphics.getColor( 252, 175, 62 ),
+//    Graphics.getColor( 238, 238, 236 ),
+//    Graphics.getColor( 156, 159, 153 ),
+//    Graphics.getColor( 138, 226, 52 ),
+//  };
 
   public TableViewerExample() {
     viewerFilter = new ElementsFilter();
@@ -60,7 +77,7 @@ public class TableViewerExample implements IExamplePage {
         viewer.refresh();
       }
     } );
-    elements = Elements.getInstance().getElements();
+    elements = Elements.getElements();
     viewer = new TableViewer( composite, SWT.BORDER );
     viewer.setUseHashlookup( true );
     viewer.setContentProvider( new ElementsContentProvider() );
@@ -68,6 +85,9 @@ public class TableViewerExample implements IExamplePage {
     createColumn( "Nr.", 50, NUMBER );
     createColumn( "Sym.", 50, SYMBOL );
     createColumn( "Name", 140, NAME );
+    createColumn( "Series", 180, SERIES );
+    createColumn( "Group", 50, GROUP );
+    createColumn( "Period", 50, PERIOD );
     viewer.setInput( elements );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
@@ -178,11 +198,23 @@ public class TableViewerExample implements IExamplePage {
         case NUMBER:
           cell.setText( String.valueOf( element.number ) );
           break;
+        case GROUP:
+          cell.setText( String.valueOf( element.group ) );
+          break;
+        case PERIOD:
+          cell.setText( String.valueOf( element.period ) );
+          break;
         case NAME:
           cell.setText( element.name );
           break;
         case SYMBOL:
           cell.setText( element.symbol );
+          break;
+        case SERIES:
+          cell.setText( element.getSeriesName() );
+          // TODO [rst] Enable when bug 284662 is fixed
+          // https://bugs.eclipse.org/bugs/show_bug.cgi?id=284662
+          //cell.setBackground( SERIES_COLORS[ element.series ] );
           break;
       }
     }
@@ -221,16 +253,30 @@ public class TableViewerExample implements IExamplePage {
       if( property == NAME ) {
         result = element1.name.compareTo( element2.name );
       } else if( property == NUMBER ) {
-        if( element1.number < element2.number ) {
-          result = -1;
-        } else if( element1.number > element2.number ) {
-          result = +1;
-        }
+        result = compare( element1.number, element2.number );
+      } else if( property == GROUP ) {
+        result = compare( element1.group, element2.group );
+      } else if( property == PERIOD ) {
+        result = compare( element1.period, element2.period );
       } else if( property == SYMBOL ) {
         result = element1.symbol.compareTo( element2.symbol );
+      } else if( property == SERIES ) {
+        result = compare( element1.series, element2.series );
       }
       if( !ascending ) {
         result = result * -1;
+      }
+      return result;
+    }
+
+    private int compare( final int number1, final int number2 ) {
+      int result;
+      if( number1 < number2 ) {
+        result = -1;
+      } else if( number1 > number2 ) {
+        result = +1;
+      } else {
+        result = 0;
       }
       return result;
     }
@@ -251,8 +297,17 @@ public class TableViewerExample implements IExamplePage {
       boolean result = true;
       Element chemElement = ( Element )element;
       if( text != null && text.length() > 0 ) {
-        String elementText = chemElement.name.toLowerCase();
-        result = elementText.indexOf( text.toLowerCase() ) != -1;
+        String lowerCaseText = text.toLowerCase();
+        String elementName = chemElement.name.toLowerCase();
+        result = elementName.indexOf( lowerCaseText ) != -1;
+        if( !result ) {
+          String elementSymbol = chemElement.symbol.toLowerCase();
+          result = elementSymbol.indexOf( lowerCaseText ) != -1;
+        }
+        if( !result ) {
+          String elementSeries = chemElement.getSeriesName().toLowerCase();
+          result = elementSeries.indexOf( lowerCaseText ) != -1;
+        }
       }
       return result;
     }

@@ -16,12 +16,38 @@ import java.util.List;
 
 public class Elements {
 
-  private static Elements INSTANCE;
+  private static String[] SERIES_NAMES = new String[] {
+    "Unknown",
+    "Alkali metal",
+    "Alkaline earth metal",
+    "Halogen",
+    "Noble gas",
+    "Lanthanide",
+    "Actinide",
+    "Transition metal",
+    "Poor metal",
+    "Metalloid",
+    "Nonmetal",
+  };
 
-  private List elements = new ArrayList();
+  private static String[] SERIES_IDS = new String[] {
+    "Unknown",
+    "AM",
+    "AEM",
+    "H",
+    "NG",
+    "L",
+    "A",
+    "TM",
+    "M",
+    "MO",
+    "NM",
+  };
+  
+  private static List elements = new ArrayList();
 
-  private Elements() {
-    ClassLoader classLoader = getClass().getClassLoader();
+  static {
+    ClassLoader classLoader = Elements.class.getClassLoader();
     String resourceFileName = "resources/elements.csv";
     InputStream stream = classLoader.getResourceAsStream( resourceFileName );
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
@@ -32,9 +58,13 @@ public class Elements {
         String[] parts = line.split( "\t" );
         if( parts.length > 0 ) {
           int number = Integer.parseInt( parts[ 0 ] );
-          String name = parts[ 1 ];
-          String symbol = parts[ 2 ];
-          Element element = new Element( number, name, symbol );
+          int group = Integer.parseInt( parts[ 1 ] );
+          int period = Integer.parseInt( parts[ 2 ] );
+          String symbol = parts[ 3 ];
+          String name = parts[ 4 ];
+          int series = readCategory( parts[ 5 ] );
+          Element element
+            = new Element( number, period, group, series, symbol, name );
           elements.add( element );
         }
       }
@@ -50,29 +80,45 @@ public class Elements {
     }
   }
 
-  public static Elements getInstance() {
-    if( INSTANCE == null ) {
-      INSTANCE = new Elements();
+  public static int readCategory( final String string ) {
+    int result = 0;
+    for( int i = 1; i < SERIES_IDS.length && result == 0; i++ ) {
+      if( SERIES_IDS[ i ].equals( string ) ) {
+        result = i;
+      }
     }
-    return INSTANCE;
+    return result;
   }
 
-  public List getElements() {
+  public static List getElements() {
     return new ArrayList( elements );
   }
 
   public static class Element {
     public final int number;
-    public final String name;
+    public final int period;
+    public final int group;
+    public final int series;
     public final String symbol;
+    public final String name;
 
-    public Element( final int number,
-                    final String name,
-                    final String symbol )
+    Element( final int number,
+             final int period,
+             final int group,
+             final int series,
+             final String symbol,
+             final String name )
     {
       this.number = number;
-      this.name = name;
+      this.period = period;
+      this.group = group;
+      this.series = series;
       this.symbol = symbol;
+      this.name = name;
+    }
+
+    public String getSeriesName() {
+      return SERIES_NAMES[ series ];
     }
   }
 }
