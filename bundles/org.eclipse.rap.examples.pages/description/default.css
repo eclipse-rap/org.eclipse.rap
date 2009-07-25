@@ -1,13 +1,14 @@
 body {
-	color: #336;
+	color: #4a4a4a;
 	padding: 12px;
-	font: 12px normal 'Lucida Sans Unicode', sans-serif;
+	font: 12px Verdana, 'Lucida Sans', sans-serif;
 }
 
-h1 {
+h1, h2, h3 {
+	color: #005599;
 	font-size: 16px;
 }
 
 pre {
-  font: 12px normal 'Courier, Monotype', sans-serif;
+  font: 12px Courier, monospace;
 }
