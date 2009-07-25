@@ -195,13 +195,13 @@ Shell {
 }
 
 Shell[BORDER], Shell[TITLE] {
-  border: 1px solid #005092;
+  border: 2px solid #005092;
   border-radius: 6px;
   padding: 5px;
 }
 
 Shell[BORDER]:inactive, Shell[TITLE]:inactive {
-  border: 1px solid #4b4b4b;
+  border: 2px solid #4b4b4b;
 }
 
 Shell-CloseButton {
