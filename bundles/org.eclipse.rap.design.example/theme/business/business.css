@@ -179,8 +179,8 @@ Shell-Titlebar {
   margin: 0px;
   height: 27px;
   font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border: 1px solid #005fac;
-	border-radius: 5px 5px 0px 0px;
+  border: none;
+  border-radius: 5px 5px 0px 0px;
 }
 
 Shell-Titlebar:inactive {
@@ -194,15 +194,41 @@ Shell {
   background-color: white;
 }
 
-Shell[BORDER] {
+Shell[BORDER], Shell[TITLE] {
   border: 1px solid #005092;
   border-radius: 6px;
   padding: 5px;
 }
 
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  border: 1px solid #4b4b4b;
+}
+
 Shell-CloseButton {
-  background-image: url( "/theme/business/icons/shell-close-button.png" );
+  background-image: url( "/theme/business/icons/shell-close.png" );
   margin: 0px 5px 0px 0px;
+}
+
+Shell-MaxButton {
+  background-image: url( "/theme/business/icons/shell-max.png" );
+  margin: 0px 6px 0px 0px;
+}
+
+Shell-MinButton {
+  background-image: url( "/theme/business/icons/shell-min.png" );
+  margin: 0px 6px 0px 0px;
+}
+
+Shell-CloseButton:hover {
+  background-image: url( "/theme/business/icons/shell-close-hover.png" );
+}
+
+Shell-MaxButton:hover {
+  background-image: url( "/theme/business/icons/shell-max-hover.png" );
+}
+
+Shell-MinButton:hover {
+  background-image: url( "/theme/business/icons/shell-min-hover.png" );
 }
 
 Shell.shellGray {
@@ -414,9 +440,36 @@ Combo-Button, CCombo-Button {
   background-image: url( /theme/business/icons/chevron-down.png );
 }
 
+DateTime-Field:selected, DateTime-Calendar-Day:selected {
+  background-color: #D2D2D2;
+  color: #4a4a4a;
+}
+
+DateTime-Calendar-Day:otherMonth {
+  background-color: transparent;
+  color: rgb( 128, 128, 128 );
+}
+
 /* Group */
 
 Group-Frame {
   padding: 5px;
   border-radius: 5px 5px 0px 0px;
+}
+
+/* Link */
+
+Link-Hyperlink {
+  color: #195d94;
+}
+
+/* Progress Bar */
+
+ProgressBar {
+  background-color: #ffffff;
+  border: 1px solid #747a81;
+}
+
+ProgressBar-Indicator {
+  background-color: #7bb0db;
 }
