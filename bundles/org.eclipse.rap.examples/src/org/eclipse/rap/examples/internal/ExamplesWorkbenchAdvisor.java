@@ -9,12 +9,11 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.activities.IMutableActivityManager;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.ui.application.*;
 
 
@@ -37,5 +36,31 @@ public class ExamplesWorkbenchAdvisor extends WorkbenchAdvisor {
     final IWorkbenchWindowConfigurer configurer )
   {
     return new ExamplesWorkbenchWindowAdvisor( configurer );
+  }
+
+  public void preStartup() {
+    RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
+
+      private static final long serialVersionUID = 1L;
+
+      public void beforePhase( final PhaseEvent event ) {
+      }
+
+      public void afterPhase( final PhaseEvent event ) {
+        String removeSplashJs
+          = "var splashDiv = document.getElementById( \"splash\" );\n"
+            + "    if( splashDiv != null ) {\n"
+            + "      splashDiv.parentNode.removeChild( splashDiv );\n"
+            + "    }\n";
+        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+        HtmlResponseWriter writer = stateInfo.getResponseWriter();
+        writer.append( removeSplashJs );
+        RWT.getLifeCycle().removePhaseListener( this );
+      }
+
+      public PhaseId getPhaseId() {
+        return PhaseId.RENDER;
+      }
+    } );
   }
 }

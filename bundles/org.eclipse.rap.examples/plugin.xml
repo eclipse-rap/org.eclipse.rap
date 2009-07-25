@@ -46,6 +46,7 @@
    <extension
          point="org.eclipse.rap.ui.branding">
       <branding
+            body="html/body.html"
             defaultEntrypointId="org.eclipse.rap.examples.entryPoint"
             favicon="icons/favicon.png"
             id="org.eclipse.rap.examples.branding"
@@ -72,6 +73,13 @@
                name="Logo">
          </layoutSet>
       </layout>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/loading.gif"
+            base-name="/html/loading.gif">
+      </resource>
    </extension>
 
 </plugin>
