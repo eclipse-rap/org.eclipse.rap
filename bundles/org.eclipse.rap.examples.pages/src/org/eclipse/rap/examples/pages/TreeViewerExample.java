@@ -14,11 +14,12 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.*;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
 
 
 public class TreeViewerExample implements IExamplePage {
@@ -127,21 +128,18 @@ public class TreeViewerExample implements IExamplePage {
 
   static final class ExampleLabelProvider extends CellLabelProvider {
 
+    Image image1 = Graphics.getImage( "resources/world.gif",
+                                      getClass().getClassLoader() );
+    Image image2 = Graphics.getImage( "resources/greendot.gif",
+                                      getClass().getClassLoader() );
+
     public void update( final ViewerCell cell ) {
       TreeObject object = ( TreeObject )cell.getElement();
       int columnIndex = cell.getColumnIndex();
-      IWorkbench workbench = PlatformUI.getWorkbench();
-      ISharedImages sharedImages = workbench.getSharedImages();
       switch( columnIndex ) {
         case 0:
           cell.setText( object.name );
-          Image image;
-          if( object.hasChildren() ) {
-            image = sharedImages.getImage( ISharedImages.IMG_OBJ_FOLDER );
-          } else {
-            image = sharedImages.getImage( ISharedImages.IMG_OBJ_FILE );
-          }
-          cell.setImage( image );
+          cell.setImage( object.hasChildren() ? image1 : image2 );
           break;
         case 1:
           if( object instanceof City ) {
