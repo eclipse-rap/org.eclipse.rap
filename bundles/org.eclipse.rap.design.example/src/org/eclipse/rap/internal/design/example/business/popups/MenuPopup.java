@@ -53,13 +53,13 @@ import org.eclipse.ui.internal.ShowViewMenu;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 
-public class MenuBarPopup extends PopupDialog {
+public class MenuPopup extends PopupDialog {
 
   private IContributionItem[] items;
   private LayoutSet layoutSet;
-  private MenuBarPopup parentPopup;
+  private MenuPopup parentPopup;
   private Listener closeListener = new Listener() {
-    public void handleEvent( Event event ) {
+    public void handleEvent( final Event event ) {
       if( getShell() != null ) {
         getShell().removeListener( SWT.Close, this );
         getShell().removeListener( SWT.Deactivate, this );
@@ -70,17 +70,18 @@ public class MenuBarPopup extends PopupDialog {
     }
   };
 
-  public MenuBarPopup( Shell parent,
-                       int shellStyle,
-                       boolean takeFocusOnOpen,
-                       boolean persistSize,
-                       boolean persistLocation,
-                       boolean showDialogMenu,
-                       boolean showPersistActions,
-                       String titleText,
-                       String infoText,
-                       MenuManager manager,
-                       MenuBarPopup parentPopup )
+  public MenuPopup( 
+    final Shell parent,
+    final int shellStyle,
+    final boolean takeFocusOnOpen,
+    final boolean persistSize,
+    final boolean persistLocation,
+    final boolean showDialogMenu,
+    final boolean showPersistActions,
+    final String titleText,
+    final String infoText,
+    final MenuManager manager,
+    final MenuPopup parentPopup )
   {
     super( parent,
            shellStyle,
@@ -222,7 +223,7 @@ public class MenuBarPopup extends PopupDialog {
     
     fdButton.right = new FormAttachment( expand, -5 );
     
-    final MenuBarPopup parentPopup = this;
+    final MenuPopup parentPopup = this;
     SelectionAdapter adapter = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         getShell().removeListener( SWT.Deactivate, closeListener );
@@ -231,7 +232,7 @@ public class MenuBarPopup extends PopupDialog {
         if( menuItems.length > 0 ) {
           IWorkbench workbench = PlatformUI.getWorkbench();
           Shell shell = workbench.getActiveWorkbenchWindow().getShell();
-          MenuBarPopup popup = new MenuBarPopup( 
+          MenuPopup popup = new MenuPopup( 
                                                shell,
                                                SWT.ON_TOP,
                                                false,

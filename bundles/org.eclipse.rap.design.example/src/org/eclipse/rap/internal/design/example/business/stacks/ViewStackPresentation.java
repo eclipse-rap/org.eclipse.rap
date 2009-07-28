@@ -41,6 +41,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISaveablePart;
@@ -54,12 +56,17 @@ import org.eclipse.ui.internal.PartPane;
 import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.presentations.IPartMenu;
 import org.eclipse.ui.presentations.IPresentablePart;
+import org.eclipse.ui.presentations.IStackPresentationSite;
 
 
 public class ViewStackPresentation extends ConfigurableStack {
   
+  private static final String VARIANT_PART_INACTIVE = "partInactive";
+  private static final String VARIANT_PART_ACTIVE = "partActive";
+  private static final int BUTTON_SPACING = 6;
   private static final String ID_CLOSE = "close";
   private static final String BUTTON_ID = "buttonId";
+  private static final int SIZE_SPACING = 65;
   private Control presentationControl;
   private IPresentablePart currentPart;
   private ElementBuilder stackBuilder;
@@ -67,7 +74,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Composite confArea;
   private Button confButton;
   private Label confCorner;
-  private Map buttonPartMap = new HashMap();
+  private Map partButtonMap = new HashMap();
   private List partList = new ArrayList();
   private List buttonList = new ArrayList();
   private Composite toolbarBg;
@@ -76,6 +83,9 @@ public class ViewStackPresentation extends ConfigurableStack {
   protected boolean deactivated;
   private Button viewMenuButton;
   private Map dirtyListenerMap = new HashMap();
+  private Button overflowButton;
+  private List overflowButtons = new ArrayList();
+  private Map buttonPartMap = new HashMap();
   
   private class DirtyListener implements IPropertyListener {
     
@@ -109,7 +119,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     
     private Button getPartButton( final IPresentablePart part ) {
       Button result = null;
-      Object object = buttonPartMap.get( part );
+      Object object = partButtonMap.get( part );
       if( object instanceof Composite ) {
         Control[] children = ( ( Composite ) object ).getChildren();
         if( children.length > 0 && children[ 0 ] instanceof Button ) {
@@ -307,12 +317,12 @@ public class ViewStackPresentation extends ConfigurableStack {
     buttonArea.setLayout( new FormLayout() );
     
     Button partButton = new Button( buttonArea, SWT.PUSH );
-    partButton.setData( WidgetUtil.CUSTOM_VARIANT, "partInactive" );
+    partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
     partButton.setText( part.getName() );
     FormData fdPartButton = new FormData();
     partButton.setLayoutData( fdPartButton );
     fdPartButton.left = new FormAttachment( 0 );
-    fdPartButton.top = new FormAttachment( 0 );
+    fdPartButton.top = new FormAttachment( 0, 4 );
     fdPartButton.bottom = new FormAttachment( 100 );
     partButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {    
@@ -320,7 +330,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           selectPart( part );
           layoutToolBar();
         }
-        activePart( part );
+        activatePart( part );
       };
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {    
@@ -345,15 +355,16 @@ public class ViewStackPresentation extends ConfigurableStack {
     fdCorner.width = cornerImage.getBounds().width;
     fdCorner.height = cornerImage.getBounds().height;
     fdPartButton.right = new FormAttachment( corner, -8 );
-    buttonPartMap.put( part, buttonArea );
+    partButtonMap.put( part, buttonArea );
+    buttonPartMap.put( buttonArea, part );
     buttonList.add( buttonArea );
   }
 
-  protected void activePart( final IPresentablePart part ) {
+  protected void activatePart( final IPresentablePart part ) {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     IWorkbenchPage activePage = window.getActivePage();
-    IWorkbenchPart workbenchPart = getReference( part ).getPart( false );
+    IWorkbenchPart workbenchPart = getReference( part ).getPart( true );
     if( workbenchPart != null ) {
       activePage.activate( workbenchPart );
     }
@@ -370,7 +381,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private void makePartButtonActive( final IPresentablePart part ) {
-    Object object = buttonPartMap.get( part );
+    Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
       checkHideSeparator( buttonArea );
@@ -384,8 +395,9 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( child instanceof Button ) {
           // Partbutton
           Button partButton = ( Button ) child;
-          partButton.setData( WidgetUtil.CUSTOM_VARIANT, "partActive" );
-          
+          partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_ACTIVE );
+          FormData fdButton = ( FormData ) partButton.getLayoutData();
+          fdButton.top = new FormAttachment( 0, 0 );
         } else if( child instanceof Composite ) {
           // Corner
           Composite corner = ( Composite ) child;
@@ -442,7 +454,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private void makePartButtonInactive( final IPresentablePart part ) {
-    Object object = buttonPartMap.get( part );
+    Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
       String bgDesc = StackInitializer.TAB_INACTIVE_BG_ACTIVE;
@@ -460,7 +472,9 @@ public class ViewStackPresentation extends ConfigurableStack {
             button.dispose();
           } else {
             // Part button
-            button.setData( WidgetUtil.CUSTOM_VARIANT, "partInactive" );
+            button.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
+            FormData fdButton = ( FormData ) button.getLayoutData();
+            fdButton.top = new FormAttachment( 0, 4 );            
           }
         } else if( child instanceof Composite ) {
           // Corner
@@ -472,6 +486,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           FormData fdCorner = ( FormData ) corner.getLayoutData();
           fdCorner.width = cornerImage.getBounds().width;
           fdCorner.height = cornerImage.getBounds().height;
+          fdCorner.top = new FormAttachment( 0, 6 );
         } 
       }
       buttonArea.getParent().layout();
@@ -503,14 +518,214 @@ public class ViewStackPresentation extends ConfigurableStack {
         layout.marginLeft = 0;
       } else {
         layout.marginHeight = 4;
-        layout.marginLeft = 6;
+        layout.marginLeft = BUTTON_SPACING;
       }
-      layout.marginRight = 0;
+      layout.marginRight = 16;
       layout.marginTop = 0;
       layout.marginWidth = 0;
-      layout.pack = true;
+      layout.wrap = false;
       tabBg.setLayout( layout );
+      // calculate overflow
+      presentationControl.addControlListener( new ControlAdapter() {
+        public void controlResized( final ControlEvent e ) {
+          manageOverflow();        
+        };
+      } );
     }
+  }
+
+  private void manageOverflow() {
+    int tabChildrenSize = getTabChildrenSize();
+    if( tabChildrenSize > tabBg.getBounds().width 
+        && moreThanOneChildVisible() ) 
+    {
+      hideLastVisibleButton();
+      manageOverflow();
+    } else {
+      showLastChildIfNecessary();
+    }
+    handleOverflowButton();
+  }
+
+  private boolean moreThanOneChildVisible() {
+    boolean result = false;
+    Control[] children = tabBg.getChildren();
+    int visibleChilds = 0;
+    for( int i = 0; i < children.length && !result; i++ ) {
+      if( children[ i ].isVisible() ) {
+        visibleChilds++;
+        if( visibleChilds > 1 ) {
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  private void handleOverflowButton() {
+    if( overflowButton == null ) {
+      overflowButton = new Button( tabBg.getParent(), SWT.PUSH );
+      FormData fdOverflowButton = new FormData();
+      overflowButton.setLayoutData( fdOverflowButton );
+      fdOverflowButton.top = new FormAttachment( 0, 5 );
+      fdOverflowButton.right = new FormAttachment( 100, -22 );      
+      Image icon 
+        = stackBuilder.getImage( StackInitializer.TAB_OVERFLOW_ACTIVE );
+      fdOverflowButton.height = icon.getBounds().height;
+      fdOverflowButton.width = icon.getBounds().width;
+      String inactiveVariant = "tabOverflowInactive";
+      overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, inactiveVariant );
+      overflowButton.moveAbove( tabBg );
+      overflowButton.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent e ) {
+          performOverflow();
+        };
+      } );
+    }
+    if( tabBgHasInvisibleButtons() ) {
+      overflowButton.setVisible( true );
+    } else {
+      overflowButton.setVisible( false );
+    }
+  }
+
+  private void performOverflow() {
+    activatePart( currentPart );
+    Menu overflowMenu = new Menu( overflowButton );
+    for( int i = 0; i < overflowButtons.size(); i++ ) {
+      Object obj = buttonPartMap.get( overflowButtons.get( i ) );
+      final IPresentablePart part = ( IPresentablePart ) obj;
+      MenuItem item = new MenuItem( overflowMenu, SWT.PUSH );
+      item.setText( part.getName() );
+      item.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent e ) {
+          activatePart( part );
+          showPartButton( part );
+        };
+      } );
+    }
+    // show popup
+    overflowButton.setMenu( overflowMenu );
+    overflowMenu.setVisible( true );
+    Display display = overflowButton.getDisplay();
+    Point newLocation = display.map( overflowButton, null, 0, 10 );
+    overflowMenu.setLocation( newLocation );    
+  }
+
+  private void showPartButton( final IPresentablePart part ) {
+    Control button = ( Control ) partButtonMap.get( part );
+    Control hiddenButton = hideLastVisibleButton();
+    button.setVisible( true );
+    overflowButtons.remove( button );
+    button.moveAbove( hiddenButton );
+    tabBg.layout( true, true );
+    manageOverflow();
+  }
+
+  private void showLastChildIfNecessary() {
+    Control childToShow = getLastInvisibleButton();
+    if( childToShow != null 
+        && futureTabChildrenSize( childToShow ) < tabBg.getBounds().width &&
+        tabBgHasInvisibleButtons() ) 
+    {
+      childToShow.setVisible( true );
+      IPresentablePart part 
+        = ( IPresentablePart ) buttonPartMap.get( childToShow );
+      makePartButtonInactive( part );
+      overflowButtons.remove( childToShow );
+      showLastChildIfNecessary();
+    }
+  }
+
+  private boolean tabBgHasInvisibleButtons() {
+    boolean result = false;
+    Control[] children = tabBg.getChildren();
+    for( int i = 0; i < children.length && !result; i++ ) {
+      if( !children[ i ].isVisible() ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  private int futureTabChildrenSize( final Control childToShow ) {
+    int result = 0;
+    result = getTabChildrenSize();
+    result += childToShow.getBounds().width;
+    return result;
+  }
+
+  private Control getLastInvisibleButton() {
+    Control result = null;
+    Control[] children = tabBg.getChildren();
+    boolean childShowedUp = false;
+    for( int i = children.length - 1; i >= 0 && !childShowedUp; i-- ) {
+      if( children[ i ].isVisible() ) {
+        if( children.length >= ( i + 2 ) ) {
+          result = children[ i + 1 ];
+        } else {
+          result = children[ i ];
+        }
+        childShowedUp = true;
+      }
+    }
+    return result;
+  }
+
+  /*
+   * Returns the control which was hide.
+   */
+  private Control hideLastVisibleButton() {
+    Control result = null;
+    Control[] children = tabBg.getChildren();
+    boolean lastChildHidden = false;
+    for( int i = children.length - 1; i >= 0 && !lastChildHidden; i-- ) {
+      if( children[ i ].isVisible() ) {
+        if( buttonIsActive( children[ i ] ) ) {
+          if( i > 0 ) {
+            children[ i - 1 ].setVisible( false );
+            result = children[ i - 1 ];
+            children[ i ].moveAbove( children[ i - 1 ] );
+            overflowButtons.add( children[ i - 1 ] );
+          }
+        } else {
+          children[ i ].setVisible( false );
+          result = children[ i ];
+          overflowButtons.add( children[ i ] );
+        }
+        lastChildHidden = true;
+        tabBg.layout( true, true );        
+      }
+    }
+    return result;
+  }
+
+  private boolean buttonIsActive( final Control control ) {
+    boolean result = false;
+    if( control instanceof Composite ) {
+      Composite buttonArea = ( Composite ) control;
+      Control[] children = buttonArea.getChildren();
+      for( int i = 0; i < children.length && !result; i++ ) {
+        if( children[ i ] instanceof Button ) {
+          Object data = children[ i ].getData( WidgetUtil.CUSTOM_VARIANT );
+          if( data.equals( VARIANT_PART_ACTIVE ) ) {
+            result = true;
+          }
+        }
+      }
+    }    
+    return result;
+  }
+
+  private int getTabChildrenSize() {
+    int result = 0;
+    Control[] children = tabBg.getChildren();
+    for( int i = 0; i < children.length; i++ ) {
+      if( children[ i ].isVisible() && !children[ i ].isDisposed() ) {
+        result += ( children[ i ].getSize().x + BUTTON_SPACING );
+      }
+    }
+    return result;
   }
 
   private void createConfArea( final FormData fdTabBg ) {
@@ -545,12 +760,12 @@ public class ViewStackPresentation extends ConfigurableStack {
       FormData fdConfButton = new FormData();
       confButton.setLayoutData( fdConfButton );
       fdConfButton.left = new FormAttachment( confCorner );
-      fdConfButton.top = new FormAttachment( 0 );
+      fdConfButton.top = new FormAttachment( 0, 1 );
       fdConfButton.right = new FormAttachment( 100, 0 );
       
       confButton.addSelectionListener( new SelectionAdapter(){
         public void widgetSelected( SelectionEvent e ) {
-          activePart( getSite().getSelectedPart() );
+          activatePart( getSite().getSelectedPart() );
           configAction.run();
         };
       } );
@@ -589,7 +804,8 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public void removePart( final IPresentablePart oldPart ) {
-    Object object = buttonPartMap.get( oldPart );
+    Object object = partButtonMap.get( oldPart );
+    buttonPartMap.remove( object );
     if( toolBarLayer != null ) {
       toolBarLayer.setVisible( false );
     }
@@ -598,7 +814,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( listener != null && listener instanceof IPropertyListener ) {
       oldPart.removePropertyListener( ( IPropertyListener ) listener ); 
     }
-    buttonPartMap.remove( oldPart );
+    partButtonMap.remove( oldPart );
     buttonList.remove( object );
     ( ( Composite ) object ).dispose(); 
     partList.remove( oldPart );
@@ -619,7 +835,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     makePartButtonInactive( currentPart );
     currentPart = toSelect;
     makePartButtonActive( currentPart );
-    activePart( currentPart );
+    activatePart( currentPart );
     layoutToolBar();
   }
 
@@ -628,7 +844,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Image confBg = null;
     Image cornerImage = null;
     Image confImage = null;
-    
+    String tabOverflow = "tabOverflowInactive";
     // create the necessary images
     if( newState == AS_ACTIVE_FOCUS ) {
       if( !isStandalone() ) {
@@ -638,6 +854,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       cornerImage 
         = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_RIGHT_ACTIVE );
       confImage = stackBuilder.getImage( StackInitializer.CONF_ACTIVE );
+      tabOverflow = "tabOverflowActive";
     } else {
       if( !isStandalone() ) {
         changeSelectedActiveButton( false );
@@ -663,6 +880,9 @@ public class ViewStackPresentation extends ConfigurableStack {
       }
       confArea.layout( true );
     }
+    if( overflowButton != null ) {
+      overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, tabOverflow );
+    }
     setBounds( presentationControl.getBounds() );
   }
 
@@ -684,7 +904,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_CORNER_ACTIVE );
       close = "viewCloseInactive";
     }
-    Object object = buttonPartMap.get( currentPart );
+    Object object = partButtonMap.get( currentPart );
     if( object != null && object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
       buttonArea.setBackgroundImage( buttonAreaBg );
@@ -741,7 +961,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       toolBarLayer.open();
       toolBarLayer.addListener( SWT.MouseDown, new Listener() {      
         public void handleEvent( final Event event ) {
-          activePart( currentPart );
+          activatePart( currentPart );
         }
       } );
     }
@@ -781,5 +1001,37 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public void showSystemMenu() {
+  }
+  
+  public int computePreferredSize( 
+    final boolean width,
+    final int availableParallel,
+    final int availablePerpendicular,
+    final int preferredResult )
+  {
+    int minSize = calculateMinimumSize();
+    int result = preferredResult;
+    if (getSite().getState() == IStackPresentationSite.STATE_MINIMIZED 
+        || preferredResult < minSize) 
+    {
+      result = minSize;
+    }    
+    return result;
+  }
+
+  /*
+   * Calculates the size of the biggest child
+   */
+  private int calculateMinimumSize() {
+    int result = 0;
+    if( tabBg != null ) {
+      Control[] children = tabBg.getChildren();
+      for( int i = 0; i < children.length; i++ ) {
+        if( children[ i ].getSize().x >= result ) {
+          result = children[ i ].getSize().x;
+        }
+      }    
+    }
+    return result + SIZE_SPACING;
   }
 }

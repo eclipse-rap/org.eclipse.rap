@@ -19,7 +19,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
-import org.eclipse.rap.internal.design.example.business.popups.MenuBarPopup;
+import org.eclipse.rap.internal.design.example.business.popups.MenuPopup;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
@@ -154,7 +154,7 @@ public class BusinessMenuBarManager extends MenuManager {
     if( items.length > 0 ) {
       IWorkbench workbench = PlatformUI.getWorkbench();
       Shell shell = workbench.getActiveWorkbenchWindow().getShell();
-      MenuBarPopup popup = new MenuBarPopup( 
+      MenuPopup popup = new MenuPopup( 
                                            shell,
                                            SWT.ON_TOP,
                                            false,

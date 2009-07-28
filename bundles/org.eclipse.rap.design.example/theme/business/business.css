@@ -168,6 +168,28 @@ Button.inactivePerspective {
   color: rgb( 0, 80, 145 );
 }
 
+Button.tabOverflowActive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( /img/business/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:hover {
+  background-image: url( /img/business/stack_tab_overflow_active_hover.png );
+}
+
+Button.tabOverflowInactive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( /img/business/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:hover {
+  background-image: url( /img/business/stack_tab_overflow_inactive_hover.png );
+}
+
 /* Shell */
 
 Shell-Titlebar {
