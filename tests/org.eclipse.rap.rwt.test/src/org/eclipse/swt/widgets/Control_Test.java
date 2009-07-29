@@ -770,10 +770,10 @@ public class Control_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Control control = new Button( shell, SWT.PUSH );
     assertNull( control.getCursor() );
-    Cursor handCursor = Graphics.getCursor( SWT.CURSOR_HAND );
+    Cursor handCursor = display.getSystemCursor( SWT.CURSOR_HAND );
     control.setCursor( handCursor );
     assertEquals( handCursor, control.getCursor() );
-    Cursor crossCursor = Graphics.getCursor( SWT.CURSOR_CROSS );
+    Cursor crossCursor = display.getSystemCursor( SWT.CURSOR_CROSS );
     control.setCursor( crossCursor );
     assertEquals( crossCursor, control.getCursor() );
     control.setCursor( null );

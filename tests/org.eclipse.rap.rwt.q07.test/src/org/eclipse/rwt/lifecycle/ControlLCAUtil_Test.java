@@ -244,7 +244,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Control control = new Button( shell, SWT.PUSH );
     AbstractWidgetLCA controlLCA = WidgetUtil.getLCA( control );
-    Cursor cursor = Graphics.getCursor( SWT.CURSOR_HAND );
+    Cursor cursor = display.getSystemCursor( SWT.CURSOR_HAND );
     RWTFixture.markInitialized( control );
     RWTFixture.preserveWidgets();
     control.setCursor( cursor );

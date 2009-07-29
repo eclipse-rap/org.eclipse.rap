@@ -11,7 +11,6 @@ package org.eclipse.swt.internal.custom.ccombokit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
