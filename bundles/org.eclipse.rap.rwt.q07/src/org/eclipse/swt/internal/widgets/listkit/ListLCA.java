@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.listkit;
@@ -18,8 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class ListLCA extends AbstractWidgetLCA {
@@ -30,11 +30,13 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION = "selection";
   static final String PROP_ITEMS = "items";
   static final String PROP_FOCUS_INDEX = "focusIndex";
+  static final String PROP_TOP_INDEX = "topIndex";
 
   private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
   private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_FOCUS_INDEX = new Integer( -1 );
+  private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
 
   public void preserveValues( final Widget widget ) {
     List list = ( List  )widget;
@@ -43,6 +45,7 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
     adapter.preserve( PROP_ITEMS, list.getItems() );
+    adapter.preserve( PROP_TOP_INDEX, new Integer( list.getTopIndex() ) );
     adapter.preserve( PROP_FOCUS_INDEX, new Integer( list.getFocusIndex() ) );
     preserveSelection( list );
     WidgetLCAUtil.preserveCustomVariant( list );
@@ -50,6 +53,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     List list = ( List )widget;
+    readTopIndex( list );
     readSelection( list );
     readFocusIndex( list );
     ControlLCAUtil.processSelection( list, null, true );
@@ -75,6 +79,7 @@ public class ListLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( list );
     writeItems( list );
     writeSelection( list );
+    writeTopIndex( list );
     writeFocusIndex( list );
     updateSelectionListeners( list );
     WidgetLCAUtil.writeCustomVariant( list );
@@ -161,6 +166,12 @@ public class ListLCA extends AbstractWidgetLCA {
       writer.call( "focusItem", new Object[] { newValue} );
     }
   }
+  
+  private static void writeTopIndex( final List list ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( list );
+    Integer newValue = new Integer( list.getTopIndex() );
+    writer.set( PROP_TOP_INDEX, "topIndex", newValue, DEFAULT_TOP_INDEX );
+  }
 
   private static void writeOverflow( final List list ) throws IOException {
     boolean scrollX = ( list.getStyle() & SWT.H_SCROLL ) != 0;
@@ -209,6 +220,13 @@ public class ListLCA extends AbstractWidgetLCA {
         indices[ i ] = Integer.parseInt( indiceStrings[ i ] );
       }
       list.setSelection( indices );
+    }
+  }
+  
+  private static void readTopIndex( final List list ) {
+    String value = WidgetLCAUtil.readPropertyValue( list, "topIndex" );
+    if( value != null ) {
+      list.setTopIndex( Integer.parseInt( value ) );
     }
   }
 

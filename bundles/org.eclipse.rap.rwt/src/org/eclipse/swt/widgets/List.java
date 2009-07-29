@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,12 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -36,10 +38,7 @@ import org.eclipse.swt.internal.widgets.ListModel;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  * <p>Not yet implemented:</p>
- * <ul><li>topIndex</li>
- * <li>itemHeight (may not be implemented at all)</li>
  * <li>showSelection</li>
- * <li>deselect methods</li>
  * </ul>
  * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or
  * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior
@@ -58,6 +57,7 @@ public class List extends Scrollable {
   private final ListModel model;
   private int focusIndex = -1;
   private IListAdapter listAdapter;
+  private int topIndex = 0;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -461,6 +461,47 @@ public class List extends Scrollable {
     }
     return result;
   }
+  
+  /**
+   * Sets the zero-relative index of the item which is currently
+   * at the top of the receiver. This index can change when items
+   * are scrolled or new items are added and removed.
+   *
+   * @param index the index of the top item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public void setTopIndex( final int topIndex ) {
+    checkWidget();
+    int count = model.getItemCount();
+    if( this.topIndex != topIndex && topIndex >= 0 && topIndex < count ) {
+      this.topIndex = topIndex;
+    }
+  }
+
+  /**
+   * Returns the zero-relative index of the item which is currently
+   * at the top of the receiver. This index can change when items are
+   * scrolled or new items are added or removed.
+   *
+   * @return the index of the top item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public int getTopIndex() {
+    checkWidget();
+    return topIndex;
+  }
 
   /**
    * Returns the zero-relative index of the item which currently
@@ -549,6 +590,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( index );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -571,6 +613,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( start, end );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -592,6 +635,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( indices );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -614,6 +658,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( string );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -628,6 +673,7 @@ public class List extends Scrollable {
     checkWidget();
     model.removeAll();
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -939,5 +985,14 @@ public class List extends Scrollable {
   private int getItemWidth( final String item ) {
     int margin = HORIZONTAL_ITEM_MARGIN * 2;
     return TextSizeDetermination.stringExtent( getFont(), item ).x + margin;
+  }
+  
+  private void adjustTopIndex() {
+    int count = model.getItemCount();
+    if( count == 0 ) {
+      topIndex = 0;
+    } else if( topIndex >= count - 1 ) {
+      topIndex = count - 1;
+    }
   }
 }

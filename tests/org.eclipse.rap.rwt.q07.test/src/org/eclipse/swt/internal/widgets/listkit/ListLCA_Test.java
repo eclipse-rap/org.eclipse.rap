@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.listkit;
@@ -70,12 +71,14 @@ public class ListLCA_Test extends TestCase {
     assertEquals( "item2", items[ 1 ] );
     assertEquals( "item3", items[ 2 ] );
     RWTFixture.clearPreserved();
-    // focus_index, selection
+    // focus_index, topIndex, selection
     list.setSelection( 2 );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     Object focusIndex = adapter.getPreserved( ListLCA.PROP_FOCUS_INDEX );
     assertEquals( new Integer( 2 ), focusIndex );
+    Object topIndex = adapter.getPreserved( ListLCA.PROP_TOP_INDEX );
+    assertEquals( new Integer( list.getTopIndex() ), topIndex );
     Object selection = adapter.getPreserved( Props.SELECTION_INDICES );
     assertEquals( new Integer( 2 ), selection );
     RWTFixture.clearPreserved();
@@ -341,6 +344,21 @@ public class ListLCA_Test extends TestCase {
     Object adapter = list.getAdapter( IListAdapter.class );
     IListAdapter listAdapter = ( IListAdapter )adapter;
     listAdapter.setFocusIndex( focusIndex );
+  }
+  
+  public void testReadTopIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.MULTI );
+    list.setSize( 100, 100 );
+    for( int i = 0; i < 6; i++ ) {
+      list.add( "Item " + i );
+    }
+    String listId = WidgetUtil.getId( list );
+    Fixture.fakeRequestParam( listId + ".topIndex", "5" );
+    ListLCA listLCA = new ListLCA();
+    listLCA.readData( list );
+    assertEquals( 5, list.getTopIndex() );
   }
 
   protected void setUp() throws Exception {

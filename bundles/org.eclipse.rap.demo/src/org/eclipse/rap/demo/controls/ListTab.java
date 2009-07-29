@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -58,6 +59,7 @@ public class ListTab extends ExampleTab {
   }
 
   private List list;
+  private List list2;
   private ListViewer listViewer;
 
   public ListTab( final CTabFolder topFolder ) {
@@ -78,6 +80,12 @@ public class ListTab extends ExampleTab {
     createFontChooser();
     createCursorCombo();
     createSelectionButton();
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Manipulate Right List" );
+    group.setLayout( new GridLayout() );
+    createAddItemsControls( group );
+    createSetTopIndexControls( group );
+    createGetTopIndexControls( group );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -104,10 +112,10 @@ public class ListTab extends ExampleTab {
     registerControl( list );
 
     // List 2
-    List list2 = new List( parent, style );
+    list2 = new List( parent, style );
+    list2.add( "Item 0" );
     list2.add( "Item 1" );
     list2.add( "Item 2" );
-    list2.add( "Item 3" );
     list2.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     registerControl( list2 );
     createPopupMenu( parent.getShell(), list2 );
@@ -167,6 +175,64 @@ public class ListTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
         listViewer.setSelection( new StructuredSelection( ELEMENTS.get( 0 ) ) );
+      }
+    } );
+  }
+  
+  private void createAddItemsControls( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblAddItem = new Label( composite, SWT.NONE );
+    lblAddItem.setText( "Add" );
+    final Text txtAddItem = new Text( composite, SWT.BORDER );
+    Button btnAddItem = new Button( composite, SWT.PUSH );
+    btnAddItem.setText( "Item(s)" );
+    btnAddItem.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int count = -1;
+        String[] listItems = list2.getItems();
+        int existingItems = listItems.length;
+        try {
+          count = Integer.parseInt( txtAddItem.getText() );
+        } catch( NumberFormatException e ) {
+          //
+        }
+        if( count < 0 ) {
+          String msg = "Invalid number of ListItems: " + txtAddItem.getText();
+          MessageDialog.openInformation( getShell(), "Information", msg );
+        } else {
+          for( int i = 0; i < count; i++ ) {
+            list2.add( "Item " + ( existingItems + i ) );
+          }
+        }
+      }
+    } );
+  }
+  
+  private void createSetTopIndexControls( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 2, false ) );
+    final Text txtTopIndex = new Text( composite, SWT.BORDER );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "setTopIndex" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        list2.setTopIndex( Integer.parseInt( txtTopIndex.getText() ) );
+      }
+    } );
+  }
+  
+  private void createGetTopIndexControls( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 2, false ) );
+    final Text txtTopIndex = new Text( composite, SWT.BORDER );
+    txtTopIndex.setEditable( false );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "getTopIndex" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int topIndex = list2.getTopIndex();
+        txtTopIndex.setText( String.valueOf( topIndex ) );
       }
     } );
   }

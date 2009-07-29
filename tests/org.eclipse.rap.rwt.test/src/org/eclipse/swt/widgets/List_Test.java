@@ -1012,6 +1012,39 @@ public class List_Test extends TestCase {
     list.deselectAll();
     assertEquals( -1, list.getFocusIndex() );
   }
+  
+  public void testTopIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    List list = new List( shell, SWT.NONE );
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.add( "item3" );
+    list.add( "item4" );
+    list.add( "item5" );
+
+    // Set a value which is out of bounds
+    int previousTopIndex = list.getTopIndex();
+    list.setTopIndex( 100 );
+    assertEquals( previousTopIndex, list.getTopIndex() );
+    list.setTopIndex( -1 );
+    assertEquals( previousTopIndex, list.getTopIndex() );
+
+    // Set topIndex to the last item
+    list.setTopIndex( 5 );
+    assertEquals( 5, list.getTopIndex() );
+
+    // Remove last item (whose index equals topIndex) -> must adjust topIndex
+    list.remove( 5 );
+    assertEquals( 4, list.getTopIndex() );
+
+    // Ensure that topIndex stays at least 0 even if all items are removed
+    list.removeAll();
+    list.add( "soleItem" );
+    list.remove( list.indexOf( "soleItem" ) );
+    assertEquals( 0, list.getTopIndex() );
+  }
 
   public void testDispose() {
     Display display = new Display();
