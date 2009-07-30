@@ -43,10 +43,10 @@ final class RequestParameterBuffer {
   }
 
   /**
-   * Merges perviously <code>store</code>d request parameters with those of 
+   * Merges previously <code>store</code>d request parameters with those of 
    * the current request. Parameters of the current request take precedence 
    * over the stored parameters.
-   * <p>If there are no stored no parameters, this method does nothing.</p>
+   * <p>If there are no stored parameters, this method does nothing.</p>
    * <p>After this method has completed, the buffered request parameters are
    * discarded.</p>
    */
