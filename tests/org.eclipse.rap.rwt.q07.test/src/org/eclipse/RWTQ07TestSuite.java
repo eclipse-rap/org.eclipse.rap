@@ -40,6 +40,7 @@ import org.eclipse.swt.internal.widgets.linkkit.LinkLCA_Test;
 import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA_Test;
 import org.eclipse.swt.internal.widgets.menukit.MenuLCA_Test;
+import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarLCA_Test;
 import org.eclipse.swt.internal.widgets.sashkit.SashLCA_Test;
 import org.eclipse.swt.internal.widgets.scalekit.ScaleLCA_Test;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA_Test;
@@ -133,6 +134,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( SliderLCA_Test.class );
     suite.addTestSuite( CComboLCA_Test.class );
     suite.addTestSuite( CLabelLCA_Test.class );
+    suite.addTestSuite( ProgressBarLCA_Test.class );
 
     return suite;
   }

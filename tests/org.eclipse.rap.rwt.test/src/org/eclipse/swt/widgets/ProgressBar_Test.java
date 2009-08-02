@@ -72,6 +72,20 @@ public class ProgressBar_Test extends TestCase {
     assertEquals( 10, progressBar.getSelection() );
   }
 
+  public void testState() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
+    assertEquals( SWT.NORMAL, progressBar.getState() );
+    progressBar.setState( SWT.PAUSED );
+    assertEquals( SWT.PAUSED, progressBar.getState() );
+    progressBar.setState( SWT.ERROR );
+    assertEquals( SWT.ERROR, progressBar.getState() );
+    // do not change state if parameter is not allowed
+    progressBar.setState( 1 << 3 );
+    assertEquals( SWT.ERROR, progressBar.getState() );
+  }
+
   public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();

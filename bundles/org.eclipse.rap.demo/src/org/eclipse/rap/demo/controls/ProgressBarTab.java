@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rwt.lifecycle.UICallBack;
@@ -20,9 +20,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public class ProgressBarTab extends ExampleTab {
 
   private static final int COUNT = 20;
+  private ProgressBar progressBar;
 //  private static final int COUNT = 2;
 
   public ProgressBarTab( final CTabFolder parent ) {
@@ -37,7 +39,7 @@ public class ProgressBarTab extends ExampleTab {
     int style = getStyle() == 0 ? SWT.HORIZONTAL : getStyle();
 
     parent.setLayout( new GridLayout() );
-    final ProgressBar progressBar = new ProgressBar( parent, style );
+    progressBar = new ProgressBar( parent, style );
     registerControl( progressBar );
     progressBar.setMaximum( COUNT );
 
@@ -69,6 +71,36 @@ public class ProgressBarTab extends ExampleTab {
       }
     } );
     parent.layout();
+  }
+
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
+    createStyleButton( "VERTICAL", SWT.VERTICAL, false );
+    createStyleButton( "INDETERMINATE", SWT.INDETERMINATE, false );
+    createVisibilityButton();
+    createEnablementButton();
+    createBgImageButton();
+    createBgColorButton();
+    createStateControl();
+  }
+
+  private void createStateControl() {
+    final Combo combo = new Combo( styleComp, SWT.BORDER );
+    combo.setItems( new String[] { "SWT.NORMAL", "SWT.PAUSED", "SWT.ERROR" } );
+    combo.select( 0 );
+    combo.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( final SelectionEvent event ) {
+        int index = combo.getSelectionIndex();
+        if( index == 2 ) {
+          progressBar.setState( SWT.ERROR );
+        } else if( index == 1 ) {
+          progressBar.setState( SWT.PAUSED );
+        } else {
+          progressBar.setState( SWT.NORMAL );
+        }
+      }
+    } );
   }
 
   private Runnable createRunnable( final ProgressBar progressBar,
@@ -108,15 +140,5 @@ public class ProgressBarTab extends ExampleTab {
       }
     };
     return result;
-  }
-
-  protected void createStyleControls( final Composite parent ) {
-    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
-    createStyleButton( "VERTICAL", SWT.VERTICAL, false );
-    createStyleButton( "INDETERMINATE", SWT.INDETERMINATE, false );
-    createVisibilityButton();
-    createEnablementButton();
-    createBgImageButton();
-    createBgColorButton();
   }
 }
