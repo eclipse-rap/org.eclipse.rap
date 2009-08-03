@@ -412,7 +412,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( part.isCloseable() ) {
             Button close = new Button( buttonArea, SWT.PUSH );
             close.setData( BUTTON_ID, ID_CLOSE );            
-            close.setData( WidgetUtil.CUSTOM_VARIANT, "viewClose" );
+            close.setData( WidgetUtil.CUSTOM_VARIANT, "viewCloseInactive" );
             close.addSelectionListener( new SelectionAdapter() {
               public void widgetSelected( SelectionEvent e ) {
                 getSite().close( new IPresentablePart[] { part } );
@@ -467,7 +467,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           Button button = ( Button ) child;
           // Partbutton
           if( button.getData( BUTTON_ID ) != null ) {
-            // close button
+            // close button            
             button.setVisible( false );
             button.dispose();
           } else {
@@ -835,7 +835,6 @@ public class ViewStackPresentation extends ConfigurableStack {
     makePartButtonInactive( currentPart );
     currentPart = toSelect;
     makePartButtonActive( currentPart );
-    activatePart( currentPart );
     layoutToolBar();
   }
 
