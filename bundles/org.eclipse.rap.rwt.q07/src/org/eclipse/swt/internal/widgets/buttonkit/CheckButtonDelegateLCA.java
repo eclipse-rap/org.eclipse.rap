@@ -15,27 +15,22 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
+
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
   static final String TYPE_POOL_ID
     = CheckButtonDelegateLCA.class.getName();
-  private static final String QX_TYPE = "org.eclipse.swt.widgets.CheckBox";
+  private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";
+  private static final Object[] PARAM_CHECK = new Object[] { "check" };
 
   static final String PROP_GRAYED = "grayed";
 
   void preserveValues( final Button button ) {
-    ControlLCAUtil.preserveValues( button );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    boolean hasListeners = SelectionEvent.hasListener( button );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListeners ) );
     adapter.preserve( PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
     ButtonLCAUtil.preserveValues( button );
-    WidgetLCAUtil.preserveCustomVariant( button );
   }
 
   void readData( final Button button ) {
@@ -50,7 +45,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.newWidget( QX_TYPE );
+    writer.newWidget( QX_TYPE, PARAM_CHECK );
     ControlLCAUtil.writeStyleFlags( button );
     WidgetLCAUtil.writeStyleFlag( button, SWT.CHECK, "CHECK" );
   }
@@ -59,14 +54,8 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
-    ControlLCAUtil.writeChanges( button );
-    ButtonLCAUtil.writeSelection( button );
-    ButtonLCAUtil.writeText( button );
-    ButtonLCAUtil.writeAlignment( button );
-    ButtonLCAUtil.writeImage( button );
+    ButtonLCAUtil.writeChanges( button );
     writeGrayed( button );
-    WidgetLCAUtil.writeCustomVariant( button );
-    writeListener( button );
   }
 
   void renderDispose( final Button button ) throws IOException {
@@ -94,16 +83,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( button );
       writer.set( prop, newValue );
-    }
-  }
-
-  private static void writeListener( final Button button ) throws IOException {
-    boolean hasListener = SelectionEvent.hasListener( button );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = Props.SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( "hasSelectionListener", newValue );
     }
   }
 }

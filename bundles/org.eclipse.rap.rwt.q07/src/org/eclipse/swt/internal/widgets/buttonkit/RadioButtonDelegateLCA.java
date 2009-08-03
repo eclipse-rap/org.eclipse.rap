@@ -17,7 +17,6 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 
 
@@ -25,15 +24,11 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   static final String TYPE_POOL_ID
     = RadioButtonDelegateLCA.class.getName();
+  private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";  
+  private static final Object[] PARAM_RADIO = new Object[] { "radio" };
 
   void preserveValues( final Button button ) {
-    ControlLCAUtil.preserveValues( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    boolean hasListeners = SelectionEvent.hasListener( button );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListeners ) );
     ButtonLCAUtil.preserveValues( button );
-    WidgetLCAUtil.preserveCustomVariant( button );
   }
 
   void readData( final Button button ) {
@@ -51,26 +46,20 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.newWidget( "org.eclipse.swt.widgets.RadioButton" );
+    writer.newWidget( QX_TYPE, PARAM_RADIO );
     ControlLCAUtil.writeStyleFlags( button );
     WidgetLCAUtil.writeStyleFlag( button, SWT.RADIO, "RADIO" );
   }
 
   void renderChanges( final Button button ) throws IOException {
-    ControlLCAUtil.writeChanges( button );
-    ButtonLCAUtil.writeSelection( button );
-    ButtonLCAUtil.writeText( button );
-    ButtonLCAUtil.writeImage( button );
-    ButtonLCAUtil.writeAlignment( button );
-    WidgetLCAUtil.writeCustomVariant( button );
-    writeListener( button );
+    ButtonLCAUtil.writeChanges( button );
   }
 
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.dispose();
   }
-
+     
   String getTypePoolId( final Button button ) {
 //    return TYPE_POOL_ID;
     return null;
@@ -90,22 +79,12 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  private static void writeListener( final Button button ) throws IOException {
-    boolean hasListener = SelectionEvent.hasListener( button );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = Props.SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( "hasSelectionListener", newValue );
-    }
-  }
-
   private static void processSelectionEvent( final Button button ) {
     if( SelectionEvent.hasListener( button ) ) {
       int type = SelectionEvent.WIDGET_SELECTED;
       SelectionEvent event;
       if( button.getSelection() ) {
-        event= new SelectionEvent( button, null, type );
+        event = new SelectionEvent( button, null, type );
       } else {
         event = new DeselectionEvent( button, null, type );
       }

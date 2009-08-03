@@ -13,11 +13,11 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
@@ -32,10 +32,10 @@ final class ButtonLCAUtil {
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_DEFAULT = "defaultButton";
+  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
 
   private static final String PARAM_SELECTION = "selection";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
-
 
   private ButtonLCAUtil() {
     // prevent instantiation
@@ -56,45 +56,50 @@ final class ButtonLCAUtil {
     adapter.preserve( Props.IMAGE, button.getImage() );
     adapter.preserve( PROP_SELECTION,
                       Boolean.valueOf( button.getSelection() ) );
-    adapter.preserve( Props.SELECTION_LISTENERS,
+    adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
     adapter.preserve( PROP_DEFAULT,
                       Boolean.valueOf( isDefaultButton( button ) ) );
+    boolean hasListeners = SelectionEvent.hasListener( button );
+    adapter.preserve( Props.SELECTION_LISTENERS,
+                      Boolean.valueOf( hasListeners ) );
+    WidgetLCAUtil.preserveCustomVariant( button );
   }
 
   static void writeText( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    String text = button.getText();
-    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, "" ) ) {
+    String text = button.getText();     
+    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, null ) ) {
       text = WidgetLCAUtil.escapeText( text, true );
-      writer.set( JSConst.QX_FIELD_LABEL, text );
+      writer.set( "text", text.equals( "" ) ? null : text );
     }
   }
 
   static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     // Note [fappel]: reset doesn't work, so use setting to empty string
-    writer.set( JSConst.QX_FIELD_LABEL, "" );
+    writer.set( "text", new Object[]{ null } );
   }
 
   static void writeImage( final Button button ) throws IOException {
     Image image = button.getImage();
     if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
-      String imagePath;
-      if( image == null ) {
-        imagePath = "";
-      } else {
-        imagePath = ResourceFactory.getImagePath( image );
-      }
+      String imagePath = ResourceFactory.getImagePath( image );
       JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( JSConst.QX_FIELD_ICON, imagePath );
+      Rectangle bounds = image != null ? image.getBounds() : null;
+      Object[] args = new Object[]{
+        imagePath,
+        new Integer( bounds != null ? bounds.width : 0 ),
+        new Integer( bounds != null ? bounds.height : 0 )
+      };
+      writer.set( "image", args );
     }
   }
 
   static void resetImage() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_ICON );
+    writer.set( "image", new Object[]{ null } );
   }
 
   static void writeAlignment( final Button button ) throws IOException {
@@ -140,9 +145,10 @@ final class ButtonLCAUtil {
     writer.set( JS_PROP_SELECTION, Boolean.FALSE );
   }
 
+  // TODO [rst] Can this be moved to ShellLCA ?
   static void writeDefault( final Button button ) throws IOException {
     boolean isDefault = isDefaultButton( button );
-    Boolean defValue = Boolean.valueOf( false );
+    Boolean defValue = Boolean.FALSE;
     Boolean actValue = Boolean.valueOf( isDefault );
     if( WidgetLCAUtil.hasChanged( button, PROP_DEFAULT, actValue, defValue ) ) {
       if( isDefault ) {
@@ -152,13 +158,27 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeLabelMode( final Button button ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( button );
-    writer.callStatic( "org.eclipse.swt.ButtonUtil.setLabelMode",
-                       new Object[] { button } );
+  static void writeSelectionListener( final Button button ) throws IOException {
+    boolean hasListener = SelectionEvent.hasListener( button );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = PROP_SELECTION_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( button );
+      writer.set( "hasSelectionListener", newValue );
+    }
   }
 
   static boolean isDefaultButton( final Button button ) {
     return button.getShell().getDefaultButton() == button;
+  }
+
+  static void writeChanges( final Button button ) throws IOException {
+    ControlLCAUtil.writeChanges( button );
+    writeText( button );
+    writeImage( button );
+    writeAlignment( button );
+    writeSelection( button );
+    writeSelectionListener( button );
+    WidgetLCAUtil.writeCustomVariant( button );
   }
 }

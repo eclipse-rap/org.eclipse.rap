@@ -31,6 +31,8 @@ import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
+
+// TODO [rst] Split into different test classes for button types
 public class ButtonLCA_Test extends TestCase {
 
   public void testPushPreserveValues() {
@@ -489,6 +491,55 @@ public class ButtonLCA_Test extends TestCase {
     assertSame( button2, event.widget );
     event = ( Event )log.get( 1 );
     assertSame( button1, event.widget );
+  }
+
+  public void testRenderTextAndImageForPushButton() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button button = new Button( shell, SWT.PUSH );
+    button.setText( "Test" );
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    RWTFixture.markInitialized( button );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
+    lca.renderChanges( button );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
+    String expected = "w.setImage( \"resources/images/image1.gif\", 58, 12 );";
+    assertTrue( allMarkup.indexOf( expected ) != -1 );
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( button );
+    button.setImage( null );
+    lca.renderChanges( button );
+    allMarkup = Fixture.getAllMarkup();
+    expected = "w.setImage( null, 0, 0 );";
+    assertTrue( allMarkup.indexOf( expected ) != -1 );
+  }
+
+  public void testRenderTextAndImageForCheckAndRadioButton() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button checkButton = new Button( shell, SWT.CHECK );
+    Button radioButton = new Button( shell, SWT.RADIO );
+    checkButton.setText( "Test" );
+    checkButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    radioButton.setText( "Test" );
+    radioButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    RWTFixture.markInitialized( radioButton );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    CheckButtonDelegateLCA checkLCA = new CheckButtonDelegateLCA();
+    RadioButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
+    checkLCA.renderChanges( checkButton );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
+    assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
+    Fixture.fakeResponseWriter();
+    radioLCA.renderChanges( radioButton );
+    allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
+    assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
   }
 
   protected void setUp() throws Exception {
