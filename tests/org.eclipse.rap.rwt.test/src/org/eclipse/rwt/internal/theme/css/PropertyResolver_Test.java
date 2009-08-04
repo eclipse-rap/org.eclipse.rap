@@ -15,20 +15,15 @@ import junit.framework.TestCase;
 
 import org.apache.batik.css.parser.Parser;
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.swt.RWTFixture;
 import org.w3c.css.sac.*;
 
 public class PropertyResolver_Test extends TestCase {
 
   private static Parser parser = new Parser();
 
-  private ResourceLoader dummyResourceLoader = new ResourceLoader() {
-
-    public InputStream getResourceAsStream( final String resourceName )
-      throws IOException
-    {
-      return null;
-    }
-  };
+  private static ResourceLoader RESOURCE_LOADER
+    = ThemeTestUtil.createResourceLoader( RWTFixture.class );
 
   public void testColor() throws Exception {
     QxColor transparent
@@ -249,21 +244,27 @@ public class PropertyResolver_Test extends TestCase {
   }
 
   public void testBackgroundImage() throws Exception {
-    String input1 = "none";
-    QxImage res1 = PropertyResolver.readBackgroundImage( parseProperty( input1 ),
-                                                         dummyResourceLoader );
+    // background-image: none;
+    String input = "none";
+    QxImage res1 = PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                                         RESOURCE_LOADER );
     assertEquals( QxImage.NONE, res1 );
-    String input2 = "url( \"sample.png\" )";
-    QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input2 ),
-                                                         dummyResourceLoader );
-    assertEquals( QxImage.valueOf( "sample.png", dummyResourceLoader  ), res2 );
-    String input3 = "url( sample.png )";
-    QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input3 ),
-                                                         dummyResourceLoader );
-    assertEquals( QxImage.valueOf( "sample.png", dummyResourceLoader  ), res3 );
-    String input4 = "'sample.png'";
-    QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ),
-                                                         dummyResourceLoader );
+    // background-image: url( "path" );
+    input = "url( \"" + RWTFixture.IMAGE_50x100 + "\" )";
+    QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                                         RESOURCE_LOADER );
+    QxImage expected = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+                                        RESOURCE_LOADER );
+    assertEquals( expected, res2 );
+    // background-image: url( path );
+    input = "url( " + RWTFixture.IMAGE_50x100 + " )";
+    QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                                         RESOURCE_LOADER );
+    assertEquals( expected, res3 );
+    // background-image: "path";
+    input = "\"" + RWTFixture.IMAGE_50x100 + "\"";
+    QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                                         RESOURCE_LOADER );
     assertNull( res4 );
   }
 
@@ -273,7 +274,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "color-stop( 50%, #00FF00 ), "
                   + "to( #0000FF ) )";
     QxImage res1 = PropertyResolver.readBackgroundImage( parseProperty( input1 ),
-                                                         dummyResourceLoader );
+                                                         RESOURCE_LOADER );
     assertNotNull( res1 );
     assertTrue( res1.none );
     assertNull( res1.path );
@@ -293,7 +294,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "color-stop( 50%, #00FF00 ), "
                   + "color-stop( 100%, #0000FF ) )";
     QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input2 ),
-                                                         dummyResourceLoader );
+                                                         RESOURCE_LOADER );
     assertNotNull( res2 );
     assertTrue( res2.none );
     assertNull( res2.path );
@@ -311,7 +312,7 @@ public class PropertyResolver_Test extends TestCase {
     String input3 = "gradient( linear, left top, left bottom, "
                   + "color-stop( 50%, #00FF00 ) )";
     QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input3 ),
-                                                         dummyResourceLoader );
+                                                         RESOURCE_LOADER );
     assertNotNull( res3 );
     assertTrue( res3.none );
     assertNull( res3.path );
@@ -330,7 +331,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "from( #0000FF ), "
                   + "to( #00FF00 ) )";
     QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ),
-                                                         dummyResourceLoader );
+                                                         RESOURCE_LOADER );
     assertNotNull( res4 );
     assertTrue( res4.none );
     assertNull( res4.path );
@@ -348,7 +349,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "to( #00FF00 ) )";
     try {
       PropertyResolver.readBackgroundImage( parseProperty( input5 ),
-                                            dummyResourceLoader );
+                                            RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -358,7 +359,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "to( #00FF00 ) )";
     try {
       PropertyResolver.readBackgroundImage( parseProperty( input6 ),
-                                            dummyResourceLoader );
+                                            RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -368,14 +369,14 @@ public class PropertyResolver_Test extends TestCase {
                   + "to( #00FF00 ) )";
     try {
       PropertyResolver.readBackgroundImage( parseProperty( input7 ),
-                                            dummyResourceLoader );
+                                            RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     String input8 = "gradient( linear, left top, left bottom )";
     QxImage res8 = PropertyResolver.readBackgroundImage( parseProperty( input8 ),
-                                                         dummyResourceLoader );
+                                                         RESOURCE_LOADER );
     assertNull( res8 );
   }
 

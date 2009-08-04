@@ -74,28 +74,30 @@ public final class ThemeTestUtil {
   }
 
   public static void registerCustomTheme( final String themeId,
-                                          final String cssCode )
+                                          final String cssCode,
+                                          final ResourceLoader loader )
     throws IOException
   {
     final String cssFileName = themeId + ".css";
-    ResourceLoader loader = new ResourceLoader() {
+    ResourceLoader wrappedLoader = new ResourceLoader() {
 
       public InputStream getResourceAsStream( final String resourceName )
         throws IOException
       {
-        InputStream result;
+        InputStream result = null;
         if( cssFileName.equals( resourceName ) ) {
           byte[] buf = cssCode.getBytes( "UTF-8" );
           result = new ByteArrayInputStream( buf );
         } else {
-          final ClassLoader classLoader = ThemeTestUtil.class.getClassLoader();
-          result = classLoader.getResourceAsStream( resourceName );
+          if( loader != null ) {
+            result = loader.getResourceAsStream( resourceName );
+          }
         }
         return result;
       }
     };
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
-    manager.registerTheme( themeId, "Custom Theme", cssFileName, loader );
+    manager.registerTheme( themeId, "Custom Theme", cssFileName, wrappedLoader );
   }
 }

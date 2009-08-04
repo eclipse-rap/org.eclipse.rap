@@ -260,7 +260,7 @@ public class Button_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
 
     String css = "Button {\nspacing: 10px;\n}";
-    ThemeTestUtil.registerCustomTheme( "custom", css );
+    ThemeTestUtil.registerCustomTheme( "custom", css, null );
     ThemeUtil.setCurrentThemeId( "custom" );
 
     // Text and image to use
