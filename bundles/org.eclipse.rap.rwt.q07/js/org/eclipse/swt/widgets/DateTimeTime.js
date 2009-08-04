@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
   construct : function( style ) {
     this.base( arguments );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setAppearance( "datetime-time" );
 
     // Get styles

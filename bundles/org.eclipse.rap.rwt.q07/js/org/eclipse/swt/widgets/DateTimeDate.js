@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                         datePattern )
   {
     this.base( arguments );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setAppearance( "datetime-date" );
 
     // Get styles

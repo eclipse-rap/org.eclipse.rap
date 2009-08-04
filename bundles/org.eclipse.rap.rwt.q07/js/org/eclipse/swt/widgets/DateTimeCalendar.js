@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
 
   construct : function( style, monthNames, weekdayNames ) {
     this.base( arguments );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setAppearance( "datetime-calendar" );
     
     // Has selection listener
