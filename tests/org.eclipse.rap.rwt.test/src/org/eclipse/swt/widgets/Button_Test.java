@@ -12,15 +12,18 @@
 
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+
 
 public class Button_Test extends TestCase {
 
@@ -153,7 +156,6 @@ public class Button_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
 
@@ -251,6 +253,37 @@ public class Button_Test extends TestCase {
     // fixed size
     expected = new Point( 104, 104 );
     assertEquals( expected, button.computeSize( 100, 100 ) );
+  }
+
+  public void testComputeSizeWithCustomTheme() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+
+    String css = "Button {\nspacing: 10px;\n}";
+    ThemeTestUtil.registerCustomTheme( "custom", css );
+    ThemeUtil.setCurrentThemeId( "custom" );
+
+    // Text and image to use
+    String text = "Click me!";
+    Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
+    assertEquals( new Point( 48, 13 ), extent );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    
+    // PUSH button
+    Button button = new Button( shell, SWT.PUSH );
+    button.setText( text );
+    button.setImage( image );
+    Point expected = new Point( 172, 62 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  
+    // CHECK button
+    button = new Button( shell, SWT.CHECK );
+    button.setText( text );
+    expected = new Point( 81, 21 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    button.setImage( image );
+    expected = new Point( 191, 58 );
+    assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   protected void setUp() throws Exception {

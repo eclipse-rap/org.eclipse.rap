@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-import org.eclipse.rwt.internal.theme.css.*;
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.w3c.css.sac.CSSException;
 
 
@@ -54,5 +54,31 @@ public final class ThemeTestUtil {
       }
     }
     return result;
+  }
+
+  public static void registerCustomTheme( final String themeId,
+                                          final String cssCode )
+    throws IOException
+  {
+    final String cssFileName = themeId + ".css";
+    ResourceLoader loader = new ResourceLoader() {
+
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        InputStream result;
+        if( cssFileName.equals( resourceName ) ) {
+          byte[] buf = cssCode.getBytes( "UTF-8" );
+          result = new ByteArrayInputStream( buf );
+        } else {
+          final ClassLoader classLoader = ThemeTestUtil.class.getClassLoader();
+          result = classLoader.getResourceAsStream( resourceName );
+        }
+        return result;
+      }
+    };
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    manager.registerTheme( themeId, "Custom Theme", cssFileName, loader );
   }
 }
