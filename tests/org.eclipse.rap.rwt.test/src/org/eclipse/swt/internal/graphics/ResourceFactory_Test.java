@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.graphics;
 
 import junit.framework.TestCase;
@@ -53,31 +53,35 @@ public class ResourceFactory_Test extends TestCase {
 
   public void testGetImage() throws Exception {
     assertEquals( 0, ResourceFactory.imagesCount() );
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE_50x100,
-                                      ResourceFactory_Test.class.getClassLoader() );
+    ClassLoader classLoader = ResourceFactory_Test.class.getClassLoader();
+    Image image1 = Graphics.getImage( RWTFixture.IMAGE_50x100, classLoader );
     assertNotNull( image1 );
     assertEquals( 1, ResourceFactory.imagesCount() );
-    Image image1a = Graphics.getImage( RWTFixture.IMAGE_50x100,
-                                       ResourceFactory_Test.class.getClassLoader() );
+    Image image1a = Graphics.getImage( RWTFixture.IMAGE_50x100, classLoader );
     assertSame( image1, image1a );
     assertEquals( 1, ResourceFactory.imagesCount() );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE_100x50,
-                                      ResourceFactory_Test.class.getClassLoader() );
+    Image image2 = Graphics.getImage( RWTFixture.IMAGE_100x50, classLoader );
     assertNotNull( image2 );
     assertEquals( 2, ResourceFactory.imagesCount() );
   }
-  
+
   public void testGetImageData() throws Exception {
-    Image image = Graphics.getImage( RWTFixture.IMAGE1,
-                                     ResourceFactory_Test.class.getClassLoader() );
+    ClassLoader classLoader = ResourceFactory_Test.class.getClassLoader();
+    Image image = Graphics.getImage( RWTFixture.IMAGE_50x100, classLoader );
     ImageData imageData = ResourceFactory.getImageData( image );
     assertNotNull( imageData );
-    assertTrue( imageData.width > 0 );
-    assertTrue( imageData.height > 0 );
+    assertEquals( 50, imageData.width );
+    assertEquals( 100, imageData.height );
     ImageData imageData2 = ResourceFactory.getImageData( image );
     assertNotNull( imageData2 );
     assertEquals( imageData.data.length, imageData2.data.length );
     assertNotSame( imageData, imageData2 );
+    Image blankImage = Graphics.getImage( RWTFixture.IMAGE_BLANK_PIXEL,
+                                          classLoader );
+    ImageData blankData = ResourceFactory.getImageData( blankImage );
+    assertNotNull( blankData );
+    assertEquals( 1, blankData.width );
+    assertEquals( 1, blankData.height );
   }
 
   protected void setUp() throws Exception {

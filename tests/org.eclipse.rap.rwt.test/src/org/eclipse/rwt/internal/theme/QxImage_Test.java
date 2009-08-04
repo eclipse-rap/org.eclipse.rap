@@ -9,25 +9,17 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import junit.framework.TestCase;
+
+import org.eclipse.swt.RWTFixture;
 
 
 public class QxImage_Test extends TestCase {
 
-  ResourceLoader dummyLoader = new ResourceLoader() {
-
-    public InputStream getResourceAsStream( final String resourceName )
-      throws IOException
-    {
-      return null;
-    }
-  };
+  private static final ResourceLoader RESOURCE_LOADER
+    = ThemeTestUtil.createResourceLoader( QxImage_Test.class );
 
   public void testIllegalArguments() {
     try {
@@ -43,7 +35,7 @@ public class QxImage_Test extends TestCase {
       // expected
     }
     try {
-      QxImage.valueOf( "", dummyLoader  );
+      QxImage.valueOf( "", RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -64,8 +56,8 @@ public class QxImage_Test extends TestCase {
 
   public void testNone() {
     assertSame( QxImage.NONE, QxImage.valueOf( "none", null ) );
-    assertSame( QxImage.NONE, QxImage.valueOf( "none", dummyLoader ) );
-    assertNotSame( QxImage.NONE, QxImage.valueOf( "None", dummyLoader ) );
+    assertSame( QxImage.NONE, QxImage.valueOf( "none", RESOURCE_LOADER ) );
+    assertNotSame( QxImage.NONE, QxImage.valueOf( "None", RESOURCE_LOADER ) );
     assertTrue( QxImage.NONE.none );
     assertNull( QxImage.NONE.path );
     assertNull( QxImage.NONE.loader );
@@ -74,10 +66,10 @@ public class QxImage_Test extends TestCase {
   }
 
   public void testCreate() {
-    QxImage qxImage = QxImage.valueOf( "foo", dummyLoader );
+    QxImage qxImage = QxImage.valueOf( "foo", RESOURCE_LOADER );
     assertFalse( qxImage.none );
     assertEquals( "foo", qxImage.path );
-    assertSame( dummyLoader, qxImage.loader );
+    assertSame( RESOURCE_LOADER, qxImage.loader );
     assertNull( qxImage.gradientColors );
     assertNull( qxImage.gradientPercents );
 
@@ -93,13 +85,23 @@ public class QxImage_Test extends TestCase {
 
   public void testDefaultString() {
     assertEquals( "none", QxImage.NONE.toDefaultString() );
-    assertEquals( "", QxImage.valueOf( "foo", dummyLoader ).toDefaultString() );
+    assertEquals( "", QxImage.valueOf( "foo", RESOURCE_LOADER ).toDefaultString() );
   }
 
   public void testHashCode() {
     assertEquals( -1, QxImage.NONE.hashCode() );
-    QxImage qxImage1 = QxImage.valueOf( "None", dummyLoader );
-    QxImage qxImage2 = QxImage.valueOf( "None", dummyLoader );
+    QxImage qxImage1 = QxImage.valueOf( "None", RESOURCE_LOADER );
+    QxImage qxImage2 = QxImage.valueOf( "None", RESOURCE_LOADER );
     assertEquals( qxImage1.hashCode(), qxImage2.hashCode() );
+  }
+
+  public void testSize() {
+    QxImage qxImage1 = QxImage.valueOf( "None", RESOURCE_LOADER );
+    assertEquals( 0, qxImage1.width );
+    assertEquals( 0, qxImage1.height );
+    QxImage qxImage2 = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+                                        RESOURCE_LOADER );
+    assertEquals( 50, qxImage2.width );
+    assertEquals( 100, qxImage2.height );
   }
 }

@@ -303,7 +303,14 @@ public final class ResourceFactory {
 
     BufferedInputStream bis = new BufferedInputStream( inputStream );
     bis.mark( Integer.MAX_VALUE );
-    Point size = readImageSize( bis );
+    Point size = null;
+    try {
+      size = readImageSize( bis );
+    } catch( Exception e ) {
+      // ImageReader also throws IllegalArgumentExceptions for some files
+      // TODO [rst] log exception
+      e.printStackTrace();
+    }
     if( size != null ) {
       result = createImageInstance( size.x, size.y );
     } else {
@@ -326,11 +333,15 @@ public final class ResourceFactory {
   }
 
   /**
-   * @return an array whose first element is the image <em>width</em> and
-   *         second is the <em>height</em>, <code>null</code> if the bounds
-   *         could not be read.
+   * @return an array whose first element is the image <em>width</em> and second
+   *         is the <em>height</em>, <code>null</code> if the bounds could not
+   *         be read.
+   * @throws IOException if an error occurs while reading the input stream
+   * @throws IllegalArgumentException if the image has an invalid format
    */
-  private static Point readImageSize( final InputStream input ) {
+  public static Point readImageSize( final InputStream input )
+    throws IOException
+  {
     Point result = null;
     boolean cacheBuffer = ImageIO.getUseCache();
     try {
@@ -349,10 +360,6 @@ public final class ResourceFactory {
         int height = image.getHeight();
         result = new Point( width, height );
       }
-    } catch( final Exception e ) {
-      // ImageReader throws IllegalArgumentExceptions for some files
-      // TODO [rst] log exception
-      e.printStackTrace();
     } finally {
       ImageIO.setUseCache( cacheBuffer );
     }

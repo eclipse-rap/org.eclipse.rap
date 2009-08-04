@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       // construct rounded border if "border-radius" is set
       vkey = this._store.getCssValue( element, this._states, "border-radius" );
       var radius = values.boxdims[ vkey ];
-      if(    radius != null 
+      if(    radius != null
           && (    radius[ 0 ] > 0
                || radius[ 1 ] > 0
                || radius[ 2 ] > 0
@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var result = values.images[ vkey ];
       this.__checkDefined( result, element, key );
       if( result != null ) {
-        result = "resource/themes/images/" + result;
+        result = "resource/themes/images/" + result[ 0 ];
       } else {
         // TODO [rst] Handle null values - currently, both null and the string
         // "undefined" lead to a js error for icon property
@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       }
       return result;
     },
-    
+
     getCssGradient : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();

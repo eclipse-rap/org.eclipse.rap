@@ -70,19 +70,22 @@ public final class ThemeStoreWriter {
       } else if( value instanceof QxImage ) {
         QxImage image = ( QxImage )value;
         if( image.none ) {
+          JsonObject gradientObject = null;
           if( image.gradientColors != null && image.gradientPercents != null ) {
-            JsonObject gradientObject = new JsonObject();
+            gradientObject = new JsonObject();
             JsonArray percents = JsonArray.valueOf( image.gradientPercents );
             gradientObject.append( "percents", percents );
             JsonArray colors = JsonArray.valueOf( image.gradientColors );
             gradientObject.append( "colors", colors );
-            gradientMap.append( key, gradientObject );
-          } else {
-            gradientMap.append( key, JsonValue.NULL );
           }
           imageMap.append( key, JsonValue.NULL );
+          gradientMap.append( key, gradientObject );
         } else {
-          imageMap.append( key, key );
+          JsonArray imageArray = new JsonArray();
+          imageArray.append( key );
+          imageArray.append( image.width );
+          imageArray.append( image.height );
+          imageMap.append( key, imageArray );
           gradientMap.append( key, JsonValue.NULL );
         }
       } else if( value instanceof QxColor ) {

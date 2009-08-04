@@ -56,6 +56,23 @@ public final class ThemeTestUtil {
     return result;
   }
 
+  public static StyleSheet createStyleSheet( final String css )
+    throws CSSException, IOException
+  {
+    StyleSheet result = null;
+    byte[] bytes = css.getBytes( "UTF-8" );
+    InputStream inStream = new ByteArrayInputStream( bytes );
+    if( inStream != null ) {
+      try {
+        CssFileReader reader = new CssFileReader();
+        result = reader.parse( inStream, "css", null );
+      } finally {
+        inStream.close();
+      }
+    }
+    return result;
+  }
+
   public static void registerCustomTheme( final String themeId,
                                           final String cssCode )
     throws IOException

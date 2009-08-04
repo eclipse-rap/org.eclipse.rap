@@ -145,6 +145,7 @@ public final class RWTFixture {
   public static final String IMAGE3 = "resources/images/image3.gif";
   public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
+  public static final String IMAGE_BLANK_PIXEL = "resources/images/blank.gif";
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private static WidgetAdapterFactory widgetAdapterFactory;
@@ -158,23 +159,23 @@ public final class RWTFixture {
   public static void setUp() {
     // standard setup
     Fixture.setUp();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
-    
+
     ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( currentPhaseListener );
 
     // registration of mockup resource manager
     registerResourceManager();
-    
+
     SettingStoreManager.register( new MemorySettingStoreFactory() );
   }
 
   public static void setUpWithoutResourceManager() {
     // standard setup
     Fixture.setUp();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
 
     // registration of adapter factories
@@ -201,14 +202,14 @@ public final class RWTFixture {
     // standard teardown
     Fixture.tearDown();
     System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
-    
+
     AbstractBranding[] all = BrandingManager.getAll();
     for( int i = 0; i < all.length; i++ ) {
       BrandingManager.deregister( all[ i ] );
     }
-    
+
     LifeCycleFactory.destroy();
-    
+
     PhaseListenerRegistry.clear();
   }
 
@@ -315,11 +316,11 @@ public final class RWTFixture {
   }
 
   public static void executeLifeCycleFromServerThread() {
-    final RWTLifeCycle lifeCycle 
+    final RWTLifeCycle lifeCycle
       = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final IUIThreadHolder threadHolder = new IUIThreadHolder() {
       private Thread thread = Thread.currentThread();
-      
+
       public void setServiceContext( ServiceContext serviceContext ) {
       }
       public void switchThread() throws InterruptedException {
@@ -341,11 +342,11 @@ public final class RWTFixture {
     };
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( RWTLifeCycle.UI_THREAD, threadHolder );
-    
+
     final ServiceContext context = ContextProvider.getContext();
     Thread serverThread = new Thread( new Runnable() {
       public void run() {
-        synchronized( threadHolder.getLock() ) {          
+        synchronized( threadHolder.getLock() ) {
           ContextProvider.setContext( context );
           try {
             try {
@@ -357,12 +358,12 @@ public final class RWTFixture {
             }
           } finally {
             ContextProvider.releaseContextHolder();
-            threadHolder.notifyAll();          
+            threadHolder.notifyAll();
           }
         }
       }
     }, "ServerThread" );
-    
+
     synchronized( threadHolder.getLock() ) {
       serverThread.start();
       try {
@@ -371,10 +372,10 @@ public final class RWTFixture {
         throw new RuntimeException( e );
       }
     }
-    
+
     while( RWTLifeCycle.getSessionDisplay().readAndDispatch() ) {
     }
-    
+
     lifeCycle.sleep();
   }
 }
