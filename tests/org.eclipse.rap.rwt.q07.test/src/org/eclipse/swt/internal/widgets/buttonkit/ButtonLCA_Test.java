@@ -506,7 +506,7 @@ public class ButtonLCA_Test extends TestCase {
     lca.renderChanges( button );
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
-    String expected = "w.setImage( \"resources/images/image1.gif\", 58, 12 );";
+    String expected = "w.setImage( \"" + RWTFixture.IMAGE1 + "\", 58, 12 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     lca.preserveValues( button );

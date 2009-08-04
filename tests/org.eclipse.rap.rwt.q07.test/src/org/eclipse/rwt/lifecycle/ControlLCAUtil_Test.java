@@ -573,9 +573,10 @@ public class ControlLCAUtil_Test extends TestCase {
     RWTFixture.markInitialized( control );
     control.setBackgroundImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     ControlLCAUtil.writeBackgroundImage( control );
-    String expected
-      =   "var w = wm.findWidgetById( \"w2\" );w.setBackgroundImage( "
-        + "\"resources/images/image1.gif\" );";
+    String expected =   "var w = wm.findWidgetById( \"w2\" );"
+                      + "w.setBackgroundImage( \""
+                      + RWTFixture.IMAGE1
+                      + "\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
