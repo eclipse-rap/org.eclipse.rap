@@ -66,6 +66,11 @@ public final class QxImage implements QxType {
     } else {
       try {
         Point size = readImageSize( path, loader );
+        if( size == null ) {
+          throw new IllegalArgumentException( "Failed to read image '"
+                                              + path
+                                              + "'" );
+        }
         width = size.x;
         height = size.y;
       } catch( IOException e ) {
@@ -152,7 +157,7 @@ public final class QxImage implements QxType {
   }
 
   public String toString() {
-    return "QxImage{ "
+    return   "QxImage{ "
            + ( none ? NONE_INPUT : path )
            + " }";
   }
@@ -161,7 +166,7 @@ public final class QxImage implements QxType {
                                       final ResourceLoader loader )
     throws IOException
   {
-    Point result;
+    Point result = null;
     InputStream inputStream = loader.getResourceAsStream( path );
     if( inputStream != null ) {
       try {
@@ -169,8 +174,6 @@ public final class QxImage implements QxType {
       } finally {
         inputStream.close();
       }
-    } else {
-      result = new Point( 0, 0 );
     }
     return result;
   }

@@ -19,7 +19,7 @@ import org.eclipse.swt.RWTFixture;
 public class QxImage_Test extends TestCase {
 
   private static final ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( QxImage_Test.class );
+    = ThemeTestUtil.createResourceLoader( RWTFixture.class );
 
   public void testIllegalArguments() {
     try {
@@ -54,54 +54,74 @@ public class QxImage_Test extends TestCase {
     }
   }
 
+  public void testNotExisting() {
+    try {
+      QxImage.valueOf( "not-existing.png", RESOURCE_LOADER );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
   public void testNone() {
     assertSame( QxImage.NONE, QxImage.valueOf( "none", null ) );
     assertSame( QxImage.NONE, QxImage.valueOf( "none", RESOURCE_LOADER ) );
-    assertNotSame( QxImage.NONE, QxImage.valueOf( "None", RESOURCE_LOADER ) );
     assertTrue( QxImage.NONE.none );
     assertNull( QxImage.NONE.path );
     assertNull( QxImage.NONE.loader );
     assertNull( QxImage.NONE.gradientColors );
     assertNull( QxImage.NONE.gradientPercents );
+    assertEquals( 0, QxImage.NONE.width );
+    assertEquals( 0, QxImage.NONE.height );
   }
 
-  public void testCreate() {
-    QxImage qxImage = QxImage.valueOf( "foo", RESOURCE_LOADER );
+  public void testCreateImage() {
+    QxImage qxImage = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+                                       RESOURCE_LOADER );
     assertFalse( qxImage.none );
-    assertEquals( "foo", qxImage.path );
+    assertEquals( RWTFixture.IMAGE_50x100, qxImage.path );
     assertSame( RESOURCE_LOADER, qxImage.loader );
     assertNull( qxImage.gradientColors );
     assertNull( qxImage.gradientPercents );
+    assertEquals( 50, qxImage.width );
+    assertEquals( 100, qxImage.height );
+  }
 
+  public void testCreateGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
-    qxImage = QxImage.createGradient( gradientColors, gradientPercents );
+    QxImage qxImage = QxImage.createGradient( gradientColors,
+                                              gradientPercents );
     assertSame( gradientColors, qxImage.gradientColors );
     assertSame( gradientPercents, qxImage.gradientPercents );
     assertTrue( qxImage.none );
     assertNull( qxImage.path );
     assertNull( qxImage.loader );
+    assertEquals( 0, qxImage.width );
+    assertEquals( 0, qxImage.height );
   }
 
   public void testDefaultString() {
     assertEquals( "none", QxImage.NONE.toDefaultString() );
-    assertEquals( "", QxImage.valueOf( "foo", RESOURCE_LOADER ).toDefaultString() );
+    assertEquals( "", QxImage.valueOf( RWTFixture.IMAGE_50x100,
+                                       RESOURCE_LOADER ).toDefaultString() );
   }
 
   public void testHashCode() {
     assertEquals( -1, QxImage.NONE.hashCode() );
-    QxImage qxImage1 = QxImage.valueOf( "None", RESOURCE_LOADER );
-    QxImage qxImage2 = QxImage.valueOf( "None", RESOURCE_LOADER );
-    assertEquals( qxImage1.hashCode(), qxImage2.hashCode() );
-  }
-
-  public void testSize() {
-    QxImage qxImage1 = QxImage.valueOf( "None", RESOURCE_LOADER );
-    assertEquals( 0, qxImage1.width );
-    assertEquals( 0, qxImage1.height );
+    QxImage qxImage1 = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+                                        RESOURCE_LOADER );
     QxImage qxImage2 = QxImage.valueOf( RWTFixture.IMAGE_50x100,
                                         RESOURCE_LOADER );
-    assertEquals( 50, qxImage2.width );
-    assertEquals( 100, qxImage2.height );
+    assertEquals( qxImage1, qxImage2 );
+    assertEquals( qxImage1.hashCode(), qxImage2.hashCode() );
+    String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
+    float[] gradientPercents = new float[] { 0f, 50f, 100f };
+    QxImage gradient1 = QxImage.createGradient( gradientColors,
+                                                gradientPercents );
+    QxImage gradient2 = QxImage.createGradient( gradientColors,
+                                                gradientPercents );
+    assertEquals( gradient1, gradient2 );
+    assertEquals( gradient1.hashCode(), gradient2.hashCode() );
   }
 }
