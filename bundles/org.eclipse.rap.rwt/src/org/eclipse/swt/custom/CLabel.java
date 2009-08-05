@@ -182,7 +182,7 @@ public class CLabel extends Canvas {
     }
 
     if ( text != null && text.length() > 0 ) {
-      Point e = TextSizeDetermination.stringExtent( getFont(), text );
+      Point e = TextSizeDetermination.textExtent( getFont(), text, 0 );
       size.x += e.x;
       size.y = Math.max( size.y, e.y );
       if ( image != null )

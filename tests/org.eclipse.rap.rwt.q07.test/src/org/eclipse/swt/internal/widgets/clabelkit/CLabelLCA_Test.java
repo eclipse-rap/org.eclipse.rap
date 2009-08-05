@@ -54,6 +54,17 @@ public class CLabelLCA_Test extends TestCase {
     // an exception - thus there is no assert
   }
 
+  public void testNewLines() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setText( "First line\nSecond Line\n" );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( label );
+    lca.renderChanges( label );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "First line<br/>Second Line<br/>" ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

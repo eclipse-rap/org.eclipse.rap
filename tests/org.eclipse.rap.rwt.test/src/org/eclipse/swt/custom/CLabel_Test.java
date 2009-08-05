@@ -79,7 +79,7 @@ public class CLabel_Test extends TestCase {
     Point expected = new Point( 6, 17 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setText( "bar" );
-    expected = new Point( 22, 19 );
+    expected = new Point( 22, 20 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
     expected = new Point( 127, 56 );

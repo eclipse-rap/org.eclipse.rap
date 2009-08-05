@@ -167,6 +167,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "Label", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
       result.cursor = "default";
+      result.padding = 3; // hardcoded in CLabel (#INDENT)
+      result.spacing = 5; // hardcoded in CLabel (#GAP)
       return result;
     }
   },

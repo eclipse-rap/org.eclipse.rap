@@ -92,6 +92,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
       }
       text = WidgetLCAUtil.escapeText( text, true );
       JSWriter writer = JSWriter.getWriterFor( label );
+      text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
       writer.set( JSConst.QX_FIELD_LABEL, text );
     }
   }

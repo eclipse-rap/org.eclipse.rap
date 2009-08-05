@@ -22,18 +22,11 @@ import org.eclipse.swt.widgets.Composite;
 
 public class CLabelTab extends ExampleTab {
 
-  private String text2;
-  private String text1;
-  private Image image2;
-  private Image image1;
+  private static final String IMAGE2 = "resources/newfile_wiz.gif";
+  private static final String IMAGE1 = "resources/button-image.gif";
 
   public CLabelTab( final CTabFolder parent ) {
     super( parent, "CLabel" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    image1 = Graphics.getImage( "resources/button-image.gif", classLoader );
-    image2 = Graphics.getImage( "resources/newfile_wiz.gif", classLoader );
-    text1 = "Some Text";
-    text2 = "Some Other Text";
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -56,12 +49,15 @@ public class CLabelTab extends ExampleTab {
     parent.setLayout( new GridLayout() );
     int style = getStyle();
     CLabel left = new CLabel( parent, style );
-    left.setText( text1 );
+    left.setText( "Some Text" );
+    ClassLoader classLoader = getClass().getClassLoader();
+    Image image1 = Graphics.getImage( IMAGE1, classLoader );
     left.setImage( image1 );
     CLabel center = new CLabel( parent, style );
-    center.setText( text2 );
+    center.setText( "First Line\nSecond Line\n" );
     CLabel right = new CLabel( parent, style );
     right.setText( "And more" );
+    Image image2 = Graphics.getImage( IMAGE2, classLoader );
     right.setImage( image2 );
     registerControl( left );
     registerControl( center );
