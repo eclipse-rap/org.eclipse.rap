@@ -633,7 +633,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       "default" : function( cell ) {
         var opacity = ( this.getEnabled() === false ) ? 0.3 : "";
         var style = this.getCellNode( cell ).style;
-        style.opacity = style.KhtlOpacity = style.MozOpacity = opacity;
+        style.opacity = style.KhtmlOpacity = style.MozOpacity = opacity;
       },
       "mshtml" : function( cell ) {
         var filter =
