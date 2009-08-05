@@ -128,6 +128,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this._spinner._textfield.setTabIndex( -1 );
     // Hack to prevent the spinner text field to request the focus
     this._spinner._textfield.setFocused = function() {};
+    // Solution for Bug 284021
+    this._spinner._textfield.setVisibility( false );
     this._spinner._upbutton.setAppearance("datetime-button-up");
     this._spinner._downbutton.setAppearance("datetime-button-down");
     this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
