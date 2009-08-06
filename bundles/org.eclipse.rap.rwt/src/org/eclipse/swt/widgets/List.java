@@ -37,9 +37,6 @@ import org.eclipse.swt.internal.widgets.ListModel;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * <p>Not yet implemented:</p>
- * <li>showSelection</li>
- * </ul>
  * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or
  * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior
  * (items are drawn outside list bounds). Setting none or both scroll style
@@ -501,6 +498,33 @@ public class List extends Scrollable {
   public int getTopIndex() {
     checkWidget();
     return topIndex;
+  }
+  
+  /**
+   * Shows the selection.  If the selection is already showing in the receiver,
+   * this method simply returns.  Otherwise, the items are scrolled until
+   * the selection is visible.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public void showSelection() {
+    checkWidget();
+    int index = getSelectionIndex();
+    if( index != -1 ) {
+      int itemCount = getVisibleItemCount();
+      if( index < topIndex ) {
+        // Show item as top item
+        setTopIndex( index );
+      } else if( itemCount > 0 && index >= topIndex + itemCount ) {
+        // Show item as last item
+        setTopIndex( index - itemCount + 1 );
+      }
+    }
   }
 
   /**
@@ -994,5 +1018,18 @@ public class List extends Scrollable {
     } else if( topIndex >= count - 1 ) {
       topIndex = count - 1;
     }
+  }
+  
+  final int getVisibleItemCount() {
+    int clientHeight = getBounds().height;
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      clientHeight -= SCROLL_SIZE;
+    }
+    int result = 0;
+    if( clientHeight >= 0 ) {
+      int itemHeight = getItemHeight();
+      result = clientHeight / itemHeight;
+    }
+    return result;
   }
 }

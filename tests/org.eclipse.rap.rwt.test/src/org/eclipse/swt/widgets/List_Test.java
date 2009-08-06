@@ -1093,7 +1093,56 @@ public class List_Test extends TestCase {
     expected = new Point( 102, 102 );
     assertEquals( expected, list.computeSize( 100, 100 ) );
   }
+  
+  public void testShowSelectionEmptyList() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    List list = new List( shell, SWT.NONE );
+    list.showSelection();
+    list.add( "1" );
+    list.add( "2" );
+    list.add( "3" );
+    list.setSelection( new int[]{
+      0, 1, 2
+    } );
+    list.showSelection();
+    list.removeAll();
+    list.showSelection();
+  }
 
+  public void testShowSelectionBottom() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    List list = new List( shell, SWT.NONE );
+    list.setSize( 100, 20 );
+    list.add( "1" );
+    list.add( "2" );
+    list.add( "3" );
+    assertEquals( 0, list.getTopIndex() );
+    list.setSelection( 2 );
+    list.showSelection();
+    assertEquals( 2, list.getTopIndex() );
+    list.removeAll();
+  }
+
+  public void testShowSelectionTop() throws Exception {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    List list = new List( shell, SWT.NONE );
+    list.setSize( 100, 20 );
+    list.add( "1" );
+    list.add( "2" );
+    list.add( "3" );
+    list.setSelection( 2 );
+    list.showSelection();
+    list.setSelection( 0 );
+    list.showSelection();
+    assertEquals( 0, list.getTopIndex() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

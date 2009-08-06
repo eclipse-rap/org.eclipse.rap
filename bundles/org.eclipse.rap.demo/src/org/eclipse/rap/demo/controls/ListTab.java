@@ -86,6 +86,7 @@ public class ListTab extends ExampleTab {
     createAddItemsControls( group );
     createSetTopIndexControls( group );
     createGetTopIndexControls( group );
+    createShowSelectionControls( group );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -233,6 +234,18 @@ public class ListTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         int topIndex = list2.getTopIndex();
         txtTopIndex.setText( String.valueOf( topIndex ) );
+      }
+    } );
+  }
+  
+  private void createShowSelectionControls( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 2, false ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "showSelection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        list2.showSelection();
       }
     } );
   }

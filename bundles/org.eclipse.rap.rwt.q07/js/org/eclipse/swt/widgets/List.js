@@ -45,6 +45,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       this.addEventListener( "blur", this._onFocusOut, this );
       this.addEventListener( "click", this._onClick, this );
       this.addEventListener( "dblclick", this._onDblClick, this );
+      this.addEventListener( "appear", this._onAppear, this );
       // Listen to send event of request to report topIndex
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSendRequest, this );
@@ -60,6 +61,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       this.removeEventListener( "blur", this._onFocusOut, this );
       this.removeEventListener( "click", this._onClick, this );
       this.removeEventListener( "dblclick", this._onDblClick, this );
+      this.removeEventListener( "appear", this._onAppear, this );
     },
     
     /** Sets the given array of items. */
@@ -165,12 +167,16 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
     
     setTopIndex : function( value ) {
+      this._topIndex = value;
+      this._applyTopIndex( value );
+    },
+    
+    _applyTopIndex : function( newIndex ) {
       var items = this.getManager().getItems();
-      if( items.length > 0 ) {
-        var itemHeight = this.getManager().getItemHeight( items[ 0 ] );        
+      if( items.length > 0 && items[ 0 ].isCreated() ) {
+        var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
         if( itemHeight > 0 ) {
-          this._topIndex = value;
-          this.setScrollTop( value * itemHeight );
+          this.setScrollTop( newIndex * itemHeight );
         }
       }
     },
@@ -186,6 +192,12 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         }
       }
       return topIndex;
+    },
+    
+    _onAppear : function( evt ) {
+      // [ad] Fix for Bug 277678 
+      // when #showSelection() is called for invisible widget
+      this._applyTopIndex( this._topIndex );
     },
     
     _onSendRequest : function( evt ) {
