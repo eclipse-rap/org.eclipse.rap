@@ -16,6 +16,7 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Combo;
@@ -28,17 +29,20 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
+  private static final Point DEFAULT_TEXT_SELECTION = new Point( 0, 0 );
 
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
 
   // Constants for JS functions names
   private static final String JS_FUNC_SELECT = "select";
+  private static final String JS_FUNC_SET_SELECTION_TEXT = "setTextSelection";
 
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";
   static final String PROP_TEXT = "text";
   static final String PROP_SELECTION = "selection";
+  static final String PROP_TEXT_SELECTION = "textSelection";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_MAX_LIST_HEIGHT = "maxListHeight";
@@ -52,6 +56,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ITEMS, items );
     Integer selection = new Integer( combo.getSelectionIndex() );
     adapter.preserve( PROP_SELECTION, selection );
+    adapter.preserve( PROP_TEXT_SELECTION, combo.getSelection() );
     adapter.preserve( PROP_MAX_LIST_HEIGHT,
                       new Integer( getMaxListHeight( combo ) ) );
     adapter.preserve( PROP_LIST_ITEM_HEIGHT,
@@ -74,7 +79,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( value != null ) {
       combo.select( Integer.parseInt( value ) );
     }
-    readText( combo );
+    readTextAndSelection( combo );
     ControlLCAUtil.processSelection( combo, null, true );
     ControlLCAUtil.processMouseEvents( combo );
     ControlLCAUtil.processKeyEvents( combo );
@@ -98,6 +103,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeMaxListHeight( combo );
     writeEditable( combo );
     writeText( combo );
+    writeTextSelection( combo );
     writeVerifyAndModifyListener( combo );
     WidgetLCAUtil.writeCustomVariant( combo );
   }
@@ -124,7 +130,8 @@ public class ComboLCA extends AbstractWidgetLCA {
   ///////////////////////////////////////
   // Helping methods to read client state
 
-  private static void readText( final Combo combo ) {
+  private static void readTextAndSelection( final Combo combo ) {
+    final Point selection = readSelection( combo );
     final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
     if( value != null ) {
       if( VerifyEvent.hasListener( combo ) ) {
@@ -138,12 +145,39 @@ public class ComboLCA extends AbstractWidgetLCA {
             // replaced
             IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
             adapter.preserve( PROP_TEXT, value );
+            if( selection != null ) {
+              combo.setSelection( selection );
+              adapter.preserve( PROP_TEXT_SELECTION, selection );
+            }
          }
         } );
       } else {
         combo.setText( value );
+        if( selection != null ) {
+          combo.setSelection( selection );
+        }
+      }
+    } else if( selection != null ) {
+      combo.setSelection( selection );
+    }
+  }
+  
+  private static Point readSelection( final Combo combo ) {
+    Point result = null;
+    String selStart = WidgetLCAUtil.readPropertyValue( combo,
+                                                       "selectionStart" );
+    String selLength = WidgetLCAUtil.readPropertyValue( combo,
+                                                        "selectionLength" );
+    if( selStart != null || selLength != null ) {
+      result = new Point( 0, 0 );
+      if( selStart != null ) {
+        result.x = Integer.parseInt( selStart );
+      }
+      if( selLength != null ) {
+        result.y = result.x + Integer.parseInt( selLength );
       }
     }
+    return result;
   }
 
   //////////////////////////////////////////////
@@ -180,6 +214,31 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( selectionChanged || textChanged ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
       writer.call( JS_FUNC_SELECT, new Object[] { newValue } );
+    }
+  }
+  
+  private static void writeTextSelection( final Combo combo )
+    throws IOException
+  {
+    Point newValue = combo.getSelection();
+    Point defValue = DEFAULT_TEXT_SELECTION;
+    Integer start = new Integer( newValue.x );
+    Integer end = new Integer( newValue.y );
+    Integer count = new Integer( end.intValue() - start.intValue() );
+    // TODO [rh] could be optimized: when text was changed and selection is 0,0
+    //      there is no need to write JavaScript since the client resets the
+    //      selection as well when the new text is set.
+    if( WidgetLCAUtil.hasChanged( combo,
+                                  PROP_TEXT_SELECTION,
+                                  newValue,
+                                  defValue ) ) {
+      // [rh] Workaround for bug 252462: Changing selection on a hidden text
+      // widget causes exception in FF
+      if( combo.isVisible() ) {
+        JSWriter writer = JSWriter.getWriterFor( combo );
+        writer.call( JS_FUNC_SET_SELECTION_TEXT,
+                     new Object[] { start, count } );
+      }
     }
   }
 

@@ -18,8 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class ComboTab extends ExampleTab {
@@ -90,6 +90,10 @@ public class ComboTab extends ExampleTab {
         createNew();
       }
     } );
+    Label selectionTitle = new Label( group, SWT.NONE );
+    selectionTitle.setText( "Text selection:" );
+    createSetSelectionControls( group );
+    createGetSelectionControls( group );
     Group grpManioulateCCombo = new Group( parent, SWT.NONE );
     grpManioulateCCombo.setText( "Manipulate CCombo" );
     grpManioulateCCombo.setLayout( new GridLayout() );
@@ -281,6 +285,63 @@ public class ComboTab extends ExampleTab {
         }
       }
     } );
+  }
+  
+  private void createSetSelectionControls( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 5, false ) );
+    Label lblSelectionFrom = new Label( composite, SWT.NONE );
+    lblSelectionFrom.setText( "From" );
+    final Text txtSelectionFrom = new Text( composite, SWT.BORDER | SWT.SINGLE );
+    txtSelectionFrom.setTextLimit( 2 );
+    txtSelectionFrom.setText( "0" );
+    txtSelectionFrom.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    Label lblSelectionTo = new Label( composite, SWT.NONE );
+    lblSelectionTo.setText( "to" );
+    final Text txtSelectionTo = new Text( composite, SWT.BORDER | SWT.SINGLE );
+    txtSelectionTo.setTextLimit( 2 );
+    txtSelectionTo.setText( "0" );
+    txtSelectionTo.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    Button btnSetSelection = new Button( composite, SWT.PUSH );
+    btnSetSelection.setText( "set" );
+    btnSetSelection.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int from = parseInt( txtSelectionFrom.getText() );
+        int to = parseInt( txtSelectionTo.getText() );
+        if( from >= 0 && to >= 0 ) {
+          firstCombo.setSelection( new Point( from, to ) );
+        } else {
+          String msg
+            = "Invalid Selection";
+          MessageDialog.openError( getShell(), "Error", msg );
+        }
+      }
+    } );
+  }
+  
+  private void createGetSelectionControls( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 2, false ) );
+    final Text outputSelection =  new Text( composite, SWT.BORDER );
+    outputSelection.setEditable( false );
+    Button btnGetSelection = new Button( composite, SWT.PUSH );
+    btnGetSelection.setText( "get" );
+    btnGetSelection.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Point selection = firstCombo.getSelection();
+        outputSelection.setText( selection.x + ", " + selection.y );
+      }
+    } );
+  }
+  
+  private int parseInt( final String text ) {
+    int result;
+    try {
+      result = Integer.parseInt( text );
+    } catch( NumberFormatException e ) {
+      result = -1;
+    }
+    return result;
   }
 
   private static GridData colSpan2() {

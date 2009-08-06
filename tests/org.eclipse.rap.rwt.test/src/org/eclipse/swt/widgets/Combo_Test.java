@@ -279,6 +279,27 @@ public class Combo_Test extends TestCase {
     combo.select( 1 );
     assertEquals( "test2", combo.getText() );
   }
+
+  public void testTextSelection() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    // test clearSelection
+    combo.setText( "abc" );
+    combo.setSelection( new Point( 1, 3 ) );
+    combo.clearSelection();
+    assertEquals( new Point( 0, 0 ), combo.getSelection() );
+    // test setSelection( a, b ), a < b
+    combo.clearSelection();
+    combo.setText( "test text" );
+    combo.setSelection( new Point( 3, 6 ) );
+    assertEquals( new Point( 3, 6 ), combo.getSelection() );
+    // test setSelection( a, b ), a > b
+    combo.clearSelection();
+    combo.setSelection( new Point( 5, 2 ) );
+    assertEquals( new Point( 2, 5 ), combo.getSelection() );
+  }
+
   public void testRemoveAll() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );

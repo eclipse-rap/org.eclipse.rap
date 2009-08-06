@@ -13,6 +13,7 @@
 package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -24,8 +25,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
@@ -53,6 +53,8 @@ public class ComboLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
+    assertEquals( new Point( 0, 0 ), 
+                  adapter.getPreserved( ComboLCA.PROP_TEXT_SELECTION ) );
     // Test preserving combo with items were one is selected
     RWTFixture.clearPreserved();
     combo.add( "item 1" );
@@ -234,6 +236,12 @@ public class ComboLCA_Test extends TestCase {
     WidgetUtil.getLCA( combo ).readData( combo );
     assertEquals( 0, combo.getSelectionIndex() );
     assertEquals( "widgetSelected", log.toString() );
+    // read changed selection
+    Fixture.fakeRequestParam( comboId + ".text", "abc" );
+    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( comboId + ".selectionLength", "1" );
+    WidgetUtil.getLCA( combo ).readData( combo );
+    assertEquals( new Point( 1, 2 ), combo.getSelection() );
   }
   
   public void testReadText() {
@@ -278,6 +286,91 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
     assertEquals( "verify me", combo.getText() );
     assertEquals( "verify me", log.toString() );
+  }
+  
+  public void testTextSelectionWithVerifyEvent() {
+    final java.util.List log = new ArrayList();
+    // register preserve-values phase-listener
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Combo combo = new Combo( shell, SWT.NONE );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    String comboId = WidgetUtil.getId( combo );
+    // ensure that selection is unchanged in case a verify-listener is 
+    // registered that does not change the text
+    VerifyListener emptyVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+      }
+    };
+    combo.addVerifyListener( emptyVerifyListener );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( combo );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
+    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+    RWTFixture.executeLifeCycleFromServerThread();
+    // ensure that an empty verify listener does not lead to sending the
+    // original text and selection values back to the client
+    String markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 1, 1 ), combo.getSelection() );
+    assertEquals( "verify me", combo.getText() );
+    combo.removeVerifyListener( emptyVerifyListener );
+    // ensure that selection is unchanged in case a verify-listener changes 
+    // the incoming text within the limits of the selection
+    combo.setText( "" );
+    VerifyListener alteringVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+        event.text = "verified";
+      }
+    };
+    combo.addVerifyListener( alteringVerifyListener );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
+    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 1, 1 ), combo.getSelection() );
+    assertEquals( "verified", combo.getText() );
+    combo.removeVerifyListener( alteringVerifyListener );
+    // ensure that selection is adjusted in case a verify-listener changes 
+    // the incoming text in a way that would result in an invalid selection
+    combo.setText( "" );
+    alteringVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+        event.text = "";
+      }
+    };
+    combo.addVerifyListener( alteringVerifyListener );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
+    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 0, 0 ), combo.getSelection() );
+    assertEquals( "", combo.getText() );
+    combo.removeVerifyListener( alteringVerifyListener );
   }
 
   public void testSelectionAfterRemoveAll() {

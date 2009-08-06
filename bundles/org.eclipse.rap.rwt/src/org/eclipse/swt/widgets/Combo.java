@@ -63,6 +63,7 @@ public class Combo extends Composite {
   private final ListModel model;
   private String text = "";
   private int visibleCount = 5;
+  private final Point selection;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -96,6 +97,7 @@ public class Combo extends Composite {
    */
   public Combo( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    selection = new Point( 0, 0 );
     model = new ListModel( true );
   }
 
@@ -182,26 +184,93 @@ public class Combo extends Composite {
     fireModifyEvent();
   }
 
-//  /**
-//   * Sets the selection in the receiver's text field to an empty
-//   * selection starting just before the first character. If the
-//   * text field is editable, this has the effect of placing the
-//   * i-beam at the start of the text.
-//   * <p>
-//   * Note: To clear the selected items in the receiver's list,
-//   * use <code>deselectAll()</code>.
-//   * </p>
-//   *
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   *
-//   * @see #deselectAll
-//   */
+  /**
+   * Sets the selection in the receiver's text field to the
+   * range specified by the argument whose x coordinate is the
+   * start of the selection and whose y coordinate is the end
+   * of the selection. 
+   *
+   * @param selection a point representing the new selection start and end
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public void setSelection( final Point selection ) {
+    checkWidget();
+    if( selection == null ) {
+      SWT.error ( SWT.ERROR_NULL_ARGUMENT );
+    }
+    int validatedStart = this.selection.x;
+    int validatedEnd = this.selection.y;
+    int start = selection.x;
+    int end = selection.y;
+    if( start >= 0 && end >= start ) {
+      validatedStart = Math.min( start, text.length() );
+      validatedEnd = Math.min( end, text.length() );
+    } else if ( end >= 0 && start > end ) {
+      validatedStart = Math.min( end, text.length() );
+      validatedEnd = Math.min( start, text.length() );
+    }
+    this.selection.x = validatedStart;
+    this.selection.y = validatedEnd;
+  }
+
+  /**
+   * Returns a <code>Point</code> whose x coordinate is the
+   * character position representing the start of the selection
+   * in the receiver's text field, and whose y coordinate is the
+   * character position representing the end of the selection.
+   * An "empty" selection is indicated by the x and y coordinates
+   * having the same value.
+   * <p>
+   * Indexing is zero based.  The range of a selection is from
+   * 0..N where N is the number of characters in the widget.
+   * </p>
+   *
+   * @return a point representing the selection start and end
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public Point getSelection() {
+    checkWidget();
+    return new Point( selection.x, selection.y );
+  }
+
+  /**
+   * Sets the selection in the receiver's text field to an empty
+   * selection starting just before the first character. If the
+   * text field is editable, this has the effect of placing the
+   * i-beam at the start of the text.
+   * <p>
+   * Note: To clear the selected items in the receiver's list,
+   * use <code>deselectAll()</code>.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #deselectAll
+   * 
+   * @since 1.3
+   */
   public void clearSelection() {
     checkWidget();
-    // TODO [rh] IMPLEMENTATION MISSING
+    selection.x = 0;
+    selection.y = 0;
   }
 
   ///////////////////////////////////////
