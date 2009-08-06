@@ -329,7 +329,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.backgroundImage = states.checked && !states.over
                                ? "static/image/dotted_white.gif"
-                               : null;
+                               : tv.getCssImage( "ToolItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
