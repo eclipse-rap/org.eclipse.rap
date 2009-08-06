@@ -190,8 +190,6 @@ public class GC extends Resource {
   {
     java.awt.Color fromColor = toAWTColor( foreground );
     java.awt.Color toColor = toAWTColor( background );
-    // GradientPaint gradientPaint
-    // = new GradientPaint( x, y, fromColor, width, height, toColor );
     LinearGradientPaint gradientPaint = new LinearGradientPaint( x,
                                                                  y,
                                                                  x + width,
@@ -584,10 +582,11 @@ public class GC extends Resource {
   }
 
   private static File getImageResourceLocation( final Image image ) {
-    String name = ResourceFactory.getImagePath( image );
     IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
     File serverContextDir = engineConfig.getServerContextDir();
-    return new File( serverContextDir, name );
+    String filename = "gen_" + image.hashCode();
+    ResourceFactory.images.put( filename, image );
+    return new File( serverContextDir, filename );
   }
 
   // /////////////////////////////
