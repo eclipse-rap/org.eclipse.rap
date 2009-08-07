@@ -3066,15 +3066,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
         // updateAll required in order to enable accelerators on pull-down menus
         getMenuBarManager().update(false);
 
-        // RAP [bm]: Composite#setLayoutDeferred
-      try {
-          getShell().setLayoutDeferred(true);
-//          getCoolBarManager2().update(false);
-      } finally {
-          getShell().setLayoutDeferred(false);
-      }
-        getCoolBarManager2().update(false);
-        // RAPEND: [bm] 
+        try {
+        	getShell().setLayoutDeferred(true);
+        	getCoolBarManager2().update(false);
+        } finally {
+        	getShell().setLayoutDeferred(false);
+        }
 
         getStatusLineManager().update(false);
     }
