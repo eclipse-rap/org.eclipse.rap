@@ -248,6 +248,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
     assertEquals( "", adapter.getPreserved( Props.TOOLTIP ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
+    assertEquals( null, adapter.getPreserved( Props.MENU ) );
     RWTFixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
@@ -255,6 +256,9 @@ public class ToolItemLCA_Test extends TestCase {
     item.setText( "some text" );
     item.setEnabled( false );
     item.setToolTipText( "tooltip text" );
+    ToolBar toolbar = item.getParent();
+    Menu contextMenu = new Menu( toolbar );
+    toolbar.setMenu( contextMenu );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
@@ -264,5 +268,6 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( "tooltip text", adapter.getPreserved( Props.TOOLTIP ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
+    assertEquals( contextMenu, adapter.getPreserved( Props.MENU ) );
   }
 }

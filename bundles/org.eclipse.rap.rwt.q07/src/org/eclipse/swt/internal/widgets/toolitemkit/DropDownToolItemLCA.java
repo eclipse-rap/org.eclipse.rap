@@ -85,7 +85,7 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
     ItemLCAUtil.writeText( toolItem, false );
     ToolItemLCAUtil.writeImages( toolItem );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
-    //      right-click on a toolbar item to the toolbar iteself if the toolbar
+    //      right-click on a toolbar item to the toolbar itself if the toolbar
     //      item does not have a context menu assigned
     WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send

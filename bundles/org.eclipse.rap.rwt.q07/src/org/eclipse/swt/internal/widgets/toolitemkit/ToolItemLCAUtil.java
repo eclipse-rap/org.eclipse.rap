@@ -45,7 +45,8 @@ final class ToolItemLCAUtil {
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( Props.BOUNDS, toolItem.getBounds() );
+    adapter.preserve( Props.BOUNDS, getItemBounds( toolItem ) );
+    adapter.preserve( Props.MENU, toolItem.getParent().getMenu() );
   }
 
   ////////////
@@ -110,12 +111,17 @@ final class ToolItemLCAUtil {
   // Bounds
 
   static void writeBounds( final ToolItem toolItem ) throws IOException {
+    Rectangle bounds = getItemBounds( toolItem );
+    WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
+  }
+
+  private static Rectangle getItemBounds( final ToolItem toolItem ) {
     Rectangle bounds = toolItem.getBounds();
     // [rst] Chevron-button is created as a separate widget on the client side
     if( ( toolItem.getStyle() & SWT.DROP_DOWN ) != 0 ) {
       bounds.width -= 15; // ToolItem#DROP_DOWN_ARROW_WIDTH
     }
-    WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
+    return bounds;
   }
 
   ////////
