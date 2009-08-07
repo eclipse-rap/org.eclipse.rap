@@ -30,6 +30,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     this.addToQueue( "createContent" );
     this.setOverflow( "hidden" );
     this.setTextColor( "black" ); // prevent invalid initial value
+    this.setCursor( "default" );
     this.initSelectable();
   },
 
