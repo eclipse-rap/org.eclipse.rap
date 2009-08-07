@@ -64,7 +64,7 @@ import org.eclipse.ui.internal.themes.IThemeRegistry;
 import org.eclipse.ui.internal.themes.ThemeRegistry;
 import org.eclipse.ui.internal.themes.ThemeRegistryReader;
 import org.eclipse.ui.internal.util.BundleUtility;
-import org.eclipse.ui.internal.util.SWTResourceUtil;
+//import org.eclipse.ui.internal.util.SWTResourceUtil;
 import org.eclipse.ui.internal.wizards.ExportWizardRegistry;
 import org.eclipse.ui.internal.wizards.ImportWizardRegistry;
 import org.eclipse.ui.internal.wizards.NewWizardRegistry;
@@ -254,8 +254,9 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     // Theme registry
 //    private ThemeRegistry themeRegistry;
 
+// RAP [bm] workingSetManager field unneeded, replaced by session-singleton    
     // Manager for working sets (IWorkingSet)
-    private WorkingSetManager workingSetManager;
+//    private WorkingSetManager workingSetManager;
 
 // RAP [rh] workingSetRegistry field unneeded, replaced by session-singleton    
     // Working set registry, stores working set dialogs
@@ -343,10 +344,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
 // RAP [rh] themeRegistry field unneeded, replaced by session-singleton    
 //        themeRegistry = null;
-        if (workingSetManager != null) {
-        	workingSetManager.dispose();
-        	workingSetManager = null;
-        }
+        
+// RAP [bm] workingSetManager field unneeded, replaced by session-singleton    
+//        if (workingSetManager != null) {
+//        	workingSetManager.dispose();
+//        	workingSetManager = null;
+//        }
+        
 // RAP [rh] workingSetRegistry field unneeded, replaced by session-singleton    
 //        workingSetRegistry = null;
 
@@ -1336,11 +1340,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     	// TODO normally super.stop(*) would be the last statement in this
     	// method
         super.stop(context);
-        if (workingSetManager != null) {
-        	workingSetManager.dispose();
-        	workingSetManager= null;
-        }       
-        SWTResourceUtil.shutdown();
+// RAP [bm] cleanup will be done in Workbench#ShutdownHandler
+//        if (workingSetManager != null) {
+//        	workingSetManager.dispose();
+//        	workingSetManager= null;
+//        }       
+//        SWTResourceUtil.shutdown();
+// RAPEND
     } 
     
     /**

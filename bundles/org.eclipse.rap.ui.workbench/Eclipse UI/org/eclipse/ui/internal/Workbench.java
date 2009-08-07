@@ -163,6 +163,7 @@ import org.eclipse.ui.internal.tweaklets.GrabFocus;
 import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
 import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.internal.util.SWTResourceUtil;
 import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.intro.IIntroManager;
@@ -217,6 +218,16 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	      if( Workbench.getInstance().started ) {
 	        Workbench.getInstance().sessionInvalidated = true;
 	        Workbench.getInstance().close();
+	        
+	        // RAP [bm]: copy from WorkbenchPlugin#stop
+	        // in the worst case we create a manager to dispose it afterwards
+	        IWorkingSetManager workingSetManager = WorkbenchPlugin.getDefault()
+	        	.getWorkingSetManager();
+			if (workingSetManager != null) {
+	        	workingSetManager.dispose();
+	        	workingSetManager = null;
+	        }
+	        SWTResourceUtil.shutdown();
 	      }
 	    }
 	  }
