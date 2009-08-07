@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Sash;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.ISizeProvider;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -279,15 +280,14 @@ public class FastViewPane {
                     return;
                 }
 
-                // RAP [bm]: 
-//                if (event.widget instanceof ToolBar) {
-//                    // Ignore mouse down on actual tool bar buttons
-//                    Point pt = new Point(event.x, event.y);
-//                    ToolBar toolBar = (ToolBar) event.widget;
-//                    if (toolBar.getItem(pt) != null) {
-//						return;
-//					}
-//                }
+                if (event.widget instanceof ToolBar) {
+                    // Ignore mouse down on actual tool bar buttons
+                    Point pt = new Point(event.x, event.y);
+                    ToolBar toolBar = (ToolBar) event.widget;
+                    if (toolBar.getItem(pt) != null) {
+						return;
+					}
+                }
 
                 Point loc = DragUtil.getEventLoc(event);
 

@@ -607,12 +607,9 @@ public class FastViewBar implements IWindowTrim {
      * @param position
      */
     private ToolItem getToolItem(Point position) {
-        // RAP [bm]: 
-//    	ToolBar toolbar = getToolBar();
-//        Point local = toolbar.toControl(position);
-//        return toolbar.getItem(local);
-        return null;
-        // RAPEND: [bm] 
+    	ToolBar toolbar = getToolBar();
+        Point local = toolbar.toControl(position);
+        return toolbar.getItem(local);
     }
 
     /**
