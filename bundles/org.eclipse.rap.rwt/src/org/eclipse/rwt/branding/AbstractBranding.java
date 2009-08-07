@@ -205,6 +205,8 @@ public abstract class AbstractBranding {
    * Clients may use this to register resources used by the branding such as
    * the {@link #getFavIcon() <code>favIcon</code>}.
    * <p>The default behavior is to do nothing.</p>
+   * 
+   * @throws IOException if an I/O error occurs
    */
   public void registerResources() throws IOException {
     // do nothing
