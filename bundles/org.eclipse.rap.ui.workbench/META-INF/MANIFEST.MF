@@ -97,8 +97,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.4.0,4.0.0)";visibili
  org.eclipse.rap.jface;bundle-version="[1.2.0,2.0.0)",
  org.eclipse.rap.rwt;bundle-version="[1.2.0,2.0.0)",
  org.eclipse.core.expressions;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.rap.jface.databinding;bundle-version="[1.2.0,2.0.0)",
- org.eclipse.core.databinding;bundle-version="[1.1.0,2.0.0)",
+ org.eclipse.rap.jface.databinding;bundle-version="[1.2.0,2.0.0)";resolution:=optional,
+ org.eclipse.core.databinding;bundle-version="[1.1.0,2.0.0)";resolution:=optional,
  org.eclipse.equinox.http.registry,
  org.eclipse.osgi.services
 Import-Package: com.ibm.icu.text;version="[3.4.0,4.2.0)",

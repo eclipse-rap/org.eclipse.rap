@@ -10,14 +10,15 @@ Bundle-Localization: plugin
 Export-Package: org.eclipse.jface.databinding.dialog,
  org.eclipse.jface.databinding.preference,
  org.eclipse.jface.databinding.swt,
+ org.eclipse.jface.databinding.util,
  org.eclipse.jface.databinding.viewers,
  org.eclipse.jface.databinding.wizard,
  org.eclipse.jface.internal.databinding.provisional.swt;x-internal:=true,
  org.eclipse.jface.internal.databinding.provisional.viewers;x-internal:=true,
+ org.eclipse.jface.internal.databinding.realmadapter;x-friends:="org.eclipse.rap.ui.workbench",
  org.eclipse.jface.internal.databinding.swt;x-internal:=true,
  org.eclipse.jface.internal.databinding.util;x-internal:=true,
- org.eclipse.jface.internal.databinding.viewers;x-internal:=true,
- org.eclipse.jface.databinding.util
+ org.eclipse.jface.internal.databinding.viewers;x-internal:=true
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[1.2.0,2.0.0)",
  org.eclipse.rap.jface;bundle-version="[1.2.0,2.0.0)",
  org.eclipse.equinox.common;bundle-version="[3.2.0,4.0.0)",
