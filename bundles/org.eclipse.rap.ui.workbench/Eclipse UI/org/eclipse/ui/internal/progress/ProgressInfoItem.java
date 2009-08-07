@@ -213,8 +213,7 @@ class ProgressInfoItem extends Composite {
 
 		actionBar = new ToolBar(this, SWT.FLAT);
 
-		//actionBar.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-		actionBar.setCursor(Graphics.getCursor( SWT.CURSOR_ARROW ));
+		actionBar.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 		// set
 		// cursor
 		// to
