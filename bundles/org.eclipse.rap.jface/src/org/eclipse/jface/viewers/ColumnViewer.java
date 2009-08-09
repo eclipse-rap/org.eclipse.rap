@@ -92,7 +92,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 				public void mouseUp( MouseEvent e ) {
 // XXX RAP [rh] hack to get TreeViewer editor support working
 // This was necessary since the Tree widget does not fire mouseDown events
-// The instance check is necessary to avoid that an editor is accidentially 
+// The instance check is necessary to avoid that an editor is accidentally 
 // activated twice on widgets that correctly fire mouseDown events. 
 // For instance, the CheckboxCellEditor uses its activation to toggle state.
 				  if( ColumnViewer.this instanceof TreeViewer ) {
