@@ -85,7 +85,7 @@ public class ProgressBarTab extends ExampleTab {
   }
 
   private void createStateControl() {
-    final Combo combo = new Combo( styleComp, SWT.BORDER );
+    final Combo combo = new Combo( styleComp, SWT.BORDER | SWT.READ_ONLY );
     combo.setItems( new String[] { "SWT.NORMAL", "SWT.PAUSED", "SWT.ERROR" } );
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
