@@ -452,6 +452,16 @@ public class Shell_Test extends TestCase {
     assertFalse( shell.getMinimized() );
     assertEquals( bounds, shell.getBounds() );
   }
+  
+  public void testModified() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    assertFalse( shell.getModified() );
+    shell.setModified( true );
+    assertTrue( shell.getModified() );
+    shell.setModified( false );
+    assertFalse( shell.getModified() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

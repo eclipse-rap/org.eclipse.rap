@@ -135,6 +135,7 @@ public class Shell extends Decorations {
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
   private int mode;
+  private boolean modified;
 
   private Shell( final Display display,
                  final Shell parent,
@@ -896,6 +897,40 @@ public class Shell extends Decorations {
   public int getAlpha() {
     checkWidget();
     return alpha;
+  }
+
+  /**
+   * Sets the receiver's modified state as specified by the argument.
+   *
+   * @param modified the new modified state for the receiver
+   *
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public void setModified ( final boolean modified ) {
+    checkWidget();
+    this.modified = modified;
+  }
+
+  /**
+   * Gets the receiver's modified state.
+   *
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public boolean getModified () {
+    checkWidget();
+    return modified;
   }
 
   // ///////////////////////////////////////////////
