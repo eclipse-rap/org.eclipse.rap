@@ -402,6 +402,18 @@ public final class UntypedEventAdapter
     }
   }
 
+  public Listener[] getListener( final int eventType ) {
+    Entry[] entries = getEntries();
+    java.util.List result = new ArrayList();
+    for( int i = 0; i < entries.length; i++ ) {
+      Entry entry = entries[ i ];
+      if( entry.eventType == eventType ) {
+        result.add( entry.listener );
+      }
+    }
+    return ( Listener[] )result.toArray( new Listener[0] );
+  }
+
   public static void notifyListeners( final int eventType, final Event event ) {
     TypedEvent typedEvent = null;
     switch( eventType ) {

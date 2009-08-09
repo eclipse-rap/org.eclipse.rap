@@ -323,4 +323,26 @@ public class Widget_Test extends TestCase {
     // no assertion: this test ensures that invalid event types are silently 
     // ignored 
   }
+  
+  public void testGetListeners() throws Exception {
+    final Display display = new Display();
+    final Widget widget = new Shell( display );
+    Listener[] listeners = widget.getListeners( 0 );
+    assertNotNull( listeners );
+    assertEquals( 0, listeners.length );
+    Listener dummyListener = new Listener() {
+      public void handleEvent( Event event ) {
+      }
+    };
+    Listener dummyListener2 = new Listener() {
+      public void handleEvent( Event event ) {
+      }
+    };
+    widget.addListener( SWT.Resize, dummyListener );
+    assertEquals( 0, widget.getListeners( SWT.Move ).length );
+    assertEquals( 1, widget.getListeners( SWT.Resize ).length );
+    assertSame( dummyListener, widget.getListeners( SWT.Resize )[0] );
+    widget.addListener( SWT.Resize, dummyListener2 );
+    assertEquals( 2, widget.getListeners( SWT.Resize ).length );
+  }
 }
