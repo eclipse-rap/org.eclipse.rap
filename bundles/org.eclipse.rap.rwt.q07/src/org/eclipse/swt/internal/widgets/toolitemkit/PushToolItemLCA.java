@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 final class PushToolItemLCA extends ToolItemDelegateLCA {
@@ -44,10 +45,12 @@ final class PushToolItemLCA extends ToolItemDelegateLCA {
 
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
+    ToolBar toolBar = toolItem.getParent();
     Object[] args = new Object[]{
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent(),
-      Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
+      toolBar,
+      new Integer( toolBar.indexOf( toolItem ) ),
+      Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT ) != 0 )
     };
     writer.callStatic( CREATE_PUSH, args );
   }

@@ -225,6 +225,28 @@ public class ToolItemLCA_Test extends TestCase {
     item.setDisabledImage( null );
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
   }
+  
+  public void testIndexOnInitialize() throws Exception {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.NONE );
+    final ToolItem item1 = new ToolItem( tb, SWT.PUSH );
+    final ToolItem item2 = new ToolItem( tb, SWT.PUSH );
+    shell.open();
+    ToolItemLCA itemLCA = new ToolItemLCA();
+    itemLCA.renderInitialization( item1 );
+    itemLCA.renderInitialization( item2 );
+    String parent = "wm.findWidgetById( \"" + WidgetUtil.getId( tb )+ "\" )";
+    String expected = "createPush( \"" + WidgetUtil.getId( item1 ) + "\", " + parent + ", 0, false );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    expected = "createPush( \"" + WidgetUtil.getId( item2 ) + "\", " + parent + ", 1, false );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    final ToolItem item0 = new ToolItem( tb, SWT.PUSH, 0 );
+    itemLCA.renderInitialization( item0 );
+    expected = "createPush( \"" + WidgetUtil.getId( item0 ) + "\", " + parent + ", 0, false );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

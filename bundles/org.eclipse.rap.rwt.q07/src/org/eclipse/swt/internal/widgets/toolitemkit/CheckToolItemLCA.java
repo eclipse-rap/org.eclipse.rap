@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 
@@ -52,13 +53,15 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
 
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
+    ToolBar toolBar = toolItem.getParent();
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent()
+      toolBar,
+      new Integer( toolBar.indexOf( toolItem ) )
     };
     writer.callStatic( CREATE_CHECK, args );
     writer.set( "checked", toolItem.getSelection() );
-    if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
+    if( ( toolBar.getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
   }

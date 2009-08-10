@@ -17,7 +17,7 @@
 qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
 
   statics : {
-    createSeparator : function( id, parent, isFlat ) {
+    createSeparator : function( id, parent, index, isFlat ) {
       var sep = new qx.ui.toolbar.Separator();
       var line = sep.getFirstChild();
       sep.setUserData( "line", line );
@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       }
       org.eclipse.swt.WidgetManager.getInstance().add( sep, id, false );
       sep.setParent( parent );
-      parent.add( sep );
+      parent.addAt( sep, index );
     },
 
     setControl : function( sep, control ) {
@@ -45,10 +45,10 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       }
     },
 
-    createRadio : function( id, parent, selected, neighbour ) {
+    createRadio : function( id, parent, index, selected, neighbour ) {
       var radio = new qx.ui.toolbar.RadioButton();
       radio.setDisableUncheck( true );
-      parent.add( radio );
+      parent.addAt( radio, index );
       if( neighbour ) {
         radio.radioManager = neighbour.radioManager;
       } else {
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       org.eclipse.swt.ToolItemUtil._registerMouseListeners( radio );
     },
 
-    createPush : function( id, parent, isFlat ) {
+    createPush : function( id, parent, index, isFlat ) {
       var push = new qx.ui.toolbar.Button();
       if( isFlat ) {
         push.addState( "rwt_FLAT" );
@@ -75,13 +75,13 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       push.setLabel( "(empty)" );
       push.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
       push.setLabel( "" );
-      parent.add( push );
+      parent.addAt( push, index );
       org.eclipse.swt.WidgetManager.getInstance().add( push, id, false );
       org.eclipse.swt.ToolItemUtil._registerMouseListeners( push );
     },
 
-    createDropDown : function( id, parent, isFlat ) {
-      org.eclipse.swt.ToolItemUtil.createPush( id, parent, isFlat );
+    createDropDown : function( id, parent, index, isFlat ) {
+      org.eclipse.swt.ToolItemUtil.createPush( id, parent, index, isFlat );
       var button 
         = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
       var dropDown = new qx.ui.toolbar.Button( "", "widget/arrows/down.gif" );
@@ -90,7 +90,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       if( isFlat ) {
         dropDown.addState( "rwt_FLAT" );
       }
-      parent.add( dropDown );
+      parent.addAfter( dropDown, button );
       var dropDownId = org.eclipse.swt.ToolItemUtil._getDropDownId( button );
       org.eclipse.swt.WidgetManager.getInstance().add( dropDown, dropDownId, false );
       // Register enable listener that keeps enabled state of dropDown in sync
@@ -139,9 +139,9 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       }
     },
 
-    createCheck : function( id, parent ) {
+    createCheck : function( id, parent, index ) {
       var button = new qx.ui.toolbar.CheckBox();
-      parent.add( button );
+      parent.addAt( button, index );
       org.eclipse.swt.WidgetManager.getInstance().add( button, id, false );
       org.eclipse.swt.ToolItemUtil._registerMouseListeners( button );
     },

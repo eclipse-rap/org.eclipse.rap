@@ -18,7 +18,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -44,6 +44,35 @@ public class ToolBarTab extends ExampleTab {
     createBgColorButton();
     createBgImageButton();
     createFontChooser();
+    createNewItemButton();
+  }
+
+  private void createNewItemButton() {
+    Group group = new Group( styleComp, SWT.NONE );
+    group.setLayout( new GridLayout( 2, false ) );
+    group.setText( "New Item" );
+    Label label = new Label( group, SWT.NONE );
+    label.setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, false, false ) );
+    label.setText( "Index:" );
+    final Text index = new Text( group, SWT.SINGLE | SWT.LEAD | SWT.BORDER );
+    index.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    index.setText( "0" );
+    Button addItemButton = new Button( group, SWT.PUSH );
+    GridData gridData = new GridData( SWT.BEGINNING,
+                                               SWT.CENTER,
+                                               false,
+                                               false );
+    gridData.horizontalSpan = 2;
+    addItemButton.setLayoutData( gridData );
+    addItemButton.setText( "Add Item" );
+    addItemButton.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( SelectionEvent e ) {
+        int newIndex = Integer.parseInt( index.getText() );
+        ToolItem toolItem = new ToolItem( toolBar, SWT.RADIO, newIndex );
+        toolItem.setText( "Item" );
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {

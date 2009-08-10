@@ -17,8 +17,7 @@ import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.*;
 
 final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
 
@@ -43,10 +42,12 @@ final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
   
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
+    ToolBar toolBar = toolItem.getParent();
     Object[] args = new Object[]{
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent(),
-      Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT  ) != 0 )
+      toolBar,
+      new Integer( toolBar.indexOf( toolItem ) ),
+      Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT  ) != 0 )
     };
     writer.callStatic( CREATE_SEPARATOR, args );    
   }

@@ -60,10 +60,10 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ToolBar bar = toolItem.getParent();
-    int myIndex = bar.indexOf( toolItem );
+    int itemIndex = bar.indexOf( toolItem );
     ToolItem neighbour = null;
-    if ( myIndex > 0 ) {
-      neighbour = bar.getItem( myIndex - 1 );
+    if ( itemIndex > 0 ) {
+      neighbour = bar.getItem( itemIndex - 1 );
       if( ( neighbour.getStyle() & SWT.RADIO ) == 0 ) {
         neighbour = null;
       }
@@ -71,6 +71,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent(),
+      new Integer( itemIndex ),
       toolItem.getSelection() ? "true" : null,
       neighbour
     };
