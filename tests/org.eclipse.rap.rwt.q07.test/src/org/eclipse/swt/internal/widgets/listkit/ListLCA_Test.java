@@ -360,6 +360,39 @@ public class ListLCA_Test extends TestCase {
     listLCA.readData( list );
     assertEquals( 5, list.getTopIndex() );
   }
+  
+  public void testRenderInitialize() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.NONE );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    Fixture.fakeResponseWriter();
+    AbstractWidgetLCA listLCA = WidgetUtil.getLCA( list );
+    listLCA.renderInitialization( list );
+    String parentId = WidgetUtil.getId( shell );
+    String expected = "var w = wm.newWidget( \""
+                      + WidgetUtil.getId( list )
+                      + "\", \""
+                      + parentId
+                      + "\", true, \"org.eclipse.swt.widgets.List\", "
+                      + "'false' );"
+                      + "w.setOverflow( \"hidden\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // multiselection
+    RWTFixture.fakeNewRequest();
+    list = new List( shell, SWT.MULTI );
+    listLCA.renderInitialization( list );
+    expected = "var w = wm.newWidget( \""
+               + WidgetUtil.getId( list )
+               + "\", \""
+               + parentId
+               + "\", true, \"org.eclipse.swt.widgets.List\","
+               + " 'true' );"
+               + "w.setOverflow( \"hidden\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

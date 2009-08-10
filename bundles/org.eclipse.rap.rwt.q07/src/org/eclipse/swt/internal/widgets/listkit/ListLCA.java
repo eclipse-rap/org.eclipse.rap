@@ -65,9 +65,8 @@ public class ListLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     List list = ( List )widget;
     JSWriter writer = JSWriter.getWriterFor( list );
-    writer.newWidget( QX_TYPE );
     Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
-    writer.call( "init", new Object[] { multiSelection } );    
+    writer.newWidget( QX_TYPE, new Object[] { multiSelection } );
     ControlLCAUtil.writeStyleFlags( list );
     writeOverflow( list );
   }

@@ -16,7 +16,7 @@
 qx.Class.define( "org.eclipse.swt.widgets.List", {
   extend : qx.ui.form.List,
 
-  construct : function() {
+  construct : function( multiSelection ) {
     this.base( arguments );
     this.setMarkLeadingItem( true );
     // Should changeSelection events passed to the server-side?
@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
+    selMgr.setMultiSelection( multiSelection );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
     this.addEventListener( "click", this._onClick, this );
@@ -50,12 +51,6 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
   },
 
   members : {
-    
-    // TODO [rst] Move parameter to constructor and delete this method
-    init : function( multiSelection ) {
-      var manager = this.getManager();
-      manager.setMultiSelection( multiSelection );
-    },
     
     /** Sets the given array of items. */
     setItems : function( items ) {
