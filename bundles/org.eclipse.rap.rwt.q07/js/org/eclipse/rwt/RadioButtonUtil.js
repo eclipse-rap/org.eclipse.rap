@@ -98,7 +98,37 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
           siblings[ i ].setSelection( false );
         }
       }
+    },
+    
+    // TODO [bm]: Method used by ToolItem with Radio style. They should be
+    //            removed once we have an own toolbar implementation
+    radioSelected : function( evt ) {
+      var radioManager = evt.getTarget();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var req = org.eclipse.swt.Request.getInstance();
+      var radioButtons = radioManager.getItems();
+      for( var i=0; i<radioButtons.length; i++ ) {
+        var selected = radioButtons[ i ] == radioManager.getSelected();
+        var id = widgetManager.findIdByWidget( radioButtons[ i ] );
+        req.addParameter( id + ".selection", selected );
+      }
+    },
+
+    // TODO [bm]: Method used by ToolItem with Radio style. They should be
+    //            removed once we have an own toolbar implementation
+    radioSelectedAction : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.rwt.RadioButtonUtil.radioSelected( evt );
+        var radioManager = evt.getTarget();
+        var radio = radioManager.getSelected();
+        if( radio != null ) {
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( radio );
+          org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+        }
+      }
     }
+
   }
 
 } );

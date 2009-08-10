@@ -29,7 +29,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     = "org.eclipse.swt.ToolItemUtil.createRadio";
   // radio functions as defined in org.eclipse.swt.ButtonUtil
   private static final String WIDGET_SELECTED
-    = "org.eclipse.swt.ButtonUtil.radioSelected";
+    = "org.eclipse.rwt.RadioButtonUtil.radioSelected";
 
   private final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,

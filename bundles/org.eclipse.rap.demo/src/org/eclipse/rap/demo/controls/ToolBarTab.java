@@ -79,13 +79,20 @@ public class ToolBarTab extends ExampleTab {
     item4.setImage( imageSearch );
     item4.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        log( "check changed" );
+        log( "check changed" + event );
       }
     } );
     ToolItem item5 = new ToolItem( toolBar, SWT.RADIO );
     item5.setImage( imageSearch );
     ToolItem item6 = new ToolItem( toolBar, SWT.RADIO );
+    SelectionAdapter radioSelectionListener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        log( "radio changed - " + event );
+      }
+    };
     item6.setImage( imageSearch );
+    item5.addSelectionListener( radioSelectionListener);
+    item6.addSelectionListener( radioSelectionListener);
     final Menu dropDownMenu = new Menu( toolBar.getShell(), SWT.POP_UP );
     for( int i = 0; i < 5; i++ ) {
       MenuItem item = new MenuItem( dropDownMenu, SWT.PUSH );
