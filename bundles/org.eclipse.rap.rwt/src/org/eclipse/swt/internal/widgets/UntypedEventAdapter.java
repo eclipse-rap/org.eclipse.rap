@@ -402,7 +402,7 @@ public final class UntypedEventAdapter
     }
   }
 
-  public Listener[] getListener( final int eventType ) {
+  public Listener[] getListeners( final int eventType ) {
     Entry[] entries = getEntries();
     java.util.List result = new ArrayList();
     for( int i = 0; i < entries.length; i++ ) {

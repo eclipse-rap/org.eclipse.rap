@@ -583,7 +583,7 @@ public abstract class Widget implements Adaptable {
     if( untypedAdapter == null ) {
       listeners = new Listener[0];
     } else {
-      listeners = untypedAdapter.getListener( eventType );
+      listeners = untypedAdapter.getListeners( eventType );
     }
     return listeners;
   }
