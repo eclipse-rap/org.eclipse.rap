@@ -188,6 +188,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     _onClick : function( evt ) {
       if( this._checkEventTarget( evt ) ) {
         this.getTree().getParent()._notifyItemClick( this );
+        // [if] Select item manually because of problems with the tree 
+        // SelectionManager with enabled multi selection.
+        if( !evt.isCtrlPressed() ) {
+          this.getTree().getManager().setItemSelected( this, true );
+        }
       }
     },
 
