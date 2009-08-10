@@ -11,11 +11,11 @@
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class LabelLCA extends AbstractWidgetLCA {
@@ -43,32 +43,6 @@ public class LabelLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     getDelegate( widget ).renderDispose( ( Label )widget );
-  }
-
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    getDelegate( typePoolId ).createResetHandlerCalls( typePoolId );
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // TODO [rh] disabled pooling, see bugs prefixed with [pooling]
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=199142
-//    return getDelegate( widget ).getTypePoolId( ( Label )widget );
-    return null;
-  }
-
-  private static AbstractLabelLCADelegate getDelegate( final String tpId ) {
-    AbstractLabelLCADelegate result;
-    if( tpId.startsWith( SeparatorLabelLCA.TYPE_POOL_ID) ) {
-      result = SEPARATOR_LCA;
-    } else if( tpId.startsWith( StandardLabelLCA.TYPE_POOL_ID ) ) {
-      result = LABEL_LCA;
-    } else {
-      String txt= "The typePoolId ''{0}'' is not supported.";
-      String msg = MessageFormat.format( txt, new Object[] { tpId } );
-      throw new IllegalArgumentException( msg );
-    }
-    return result;
   }
 
   private static AbstractLabelLCADelegate getDelegate( final Widget widget ) {

@@ -25,8 +25,6 @@ public final class SashLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Sash";
 
-//  private static final String TYPE_POOL_ID = SashLCA.class.getName();
-
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -67,16 +65,4 @@ public final class SashLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-//    return TYPE_POOL_ID;
-    // TODO [bm] disabled due to cursor problems
-    return null;
-  }
 }

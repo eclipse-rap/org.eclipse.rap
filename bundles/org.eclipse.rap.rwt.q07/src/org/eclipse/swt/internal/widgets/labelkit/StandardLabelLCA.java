@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Label;
 public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static final String QX_TYPE = "qx.ui.basic.Atom";
-  static final String TYPE_POOL_ID = StandardLabelLCA.class.getName();
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -77,18 +76,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     writer.dispose();
   }
 
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    resetAlignment();
-    resetText();
-    resetImage();
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  String getTypePoolId( final Label label ) {
-    return TYPE_POOL_ID;
-  }
-
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
@@ -101,12 +88,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       Object[] args = new Object[]{ label, text };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
     }
-  }
-
-  private static void resetText() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    Object[] args = new Object[]{ JSWriter.WIDGET_REF, null };
-    writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
   }
 
   private static void writeImage( final Label label ) throws IOException {
@@ -126,12 +107,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     }
   }
 
-  private static void resetImage() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    Object[] args = new Object[]{ JSWriter.WIDGET_REF, null };
-    writer.callStatic( JS_FUNC_LABEL_UTIL_SET_IMAGE, args );
-  }
-
   private static void writeAlignment( final Label label ) throws IOException {
     Integer alignment = new Integer( label.getAlignment() );
     Integer defValue = DEFAULT_ALIGNMENT;
@@ -143,12 +118,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_ALIGNMENT, args );
     }
-  }
-
-  private static void resetAlignment() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( "horizontalChildrenAlign" );
-    writer.reset( new String[] { "labelObject", "textAlign" } );
   }
 
   private static String getAlignment( final int alignment ) {

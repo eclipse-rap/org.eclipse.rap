@@ -41,8 +41,6 @@ public final class WidgetLCAUtil {
 
   private static final String JS_PROP_HEIGHT = "height";
   private static final String JS_PROP_WIDTH = "width";
-  private static final String JS_PROP_CLIP_WIDTH = "clipWidth";
-  private static final String JS_PROP_CLIP_HEIGHT = "clipHeight";
   private static final String PARAM_X = "bounds.x";
   private static final String PARAM_Y = "bounds.y";
   private static final String PARAM_WIDTH = "bounds.width";
@@ -446,21 +444,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the bounds of a widget.
-   * This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetBounds() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_CLIP_WIDTH );
-    writer.reset( JS_PROP_CLIP_HEIGHT );
-    writer.set( JS_PROP_SPACE, new int[] { 0, 0, 0, 0 } );
-  }
-
-
-  /**
    * Determines whether the property <code>menu</code> of the given widget has
    * changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side menu property
@@ -485,21 +468,6 @@ public final class WidgetLCAUtil {
                             JSConst.JS_CONTEXT_MENU );
       }
     }
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>menu</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetMenu() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_CONTEXT_MENU );
-    writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU,
-                           JSConst.JS_CONTEXT_MENU );
   }
 
   /**
@@ -529,25 +497,6 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_TOOL_TIP, args );
     }
   }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>toolTip</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetToolTip() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( JSWriter.WIDGET_MANAGER_REF,
-                 JS_FUNC_SET_TOOL_TIP,
-                 new Object[] { JSWriter.WIDGET_REF } );
-  }
-
-
-  /////////////////////////////////////////////////
-  // write-methods used by other ...LCAUtil classes
 
   /**
    * Determines whether the property <code>image</code> of the given widget
@@ -659,19 +608,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>font</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetFont() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_FONT );
-  }
-
-  /**
    * Determines whether the property <code>foreground</code> of the given
    * widget has changed during the processing of the current request and if so,
    * writes JavaScript code to the response that updates the client-side
@@ -696,21 +632,6 @@ public final class WidgetLCAUtil {
         writer.reset( JSConst.QX_FIELD_COLOR );
       }
     }
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>foreground</code> of a widget. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetForeground() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( "textColor" );
-    String listener = "org.eclipse.swt.WidgetManager._onAppearSetForeground";
-    writer.removeListener( "appear", listener );
   }
 
   /**
@@ -771,19 +692,6 @@ public final class WidgetLCAUtil {
         writer.reset( JSConst.QX_FIELD_BG_COLOR );
       }
     }
-  }
-
-  /**
-   * Writes JavaScript code to the response that reset the property
-   * <code>background</code> of a widget. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetBackground() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_BG_COLOR );
   }
 
   /**
@@ -906,20 +814,6 @@ public final class WidgetLCAUtil {
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>enabled</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetEnabled() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    // TODO [fappel]: check whether to use reset
-    writer.set( JSConst.QX_FIELD_ENABLED, true );
-  }
 
   /**
    * Replaces all newline characters in the specified input string with the
@@ -1177,5 +1071,99 @@ public final class WidgetLCAUtil {
       result = result.substring( 0, index );
     }
     return result;
+  }
+
+
+  /////////////////////////////////////
+  // deprecated pooling-related methods
+
+  /**
+   * Writes JavaScript code to the response that resets the bounds of a widget.
+   * This method is intended to be used by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetBounds() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>menu</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetMenu() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>toolTip</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   * 
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetToolTip() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>font</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetFont() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>foreground</code> of a widget. This method is intended to be used
+   * by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetForeground() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that reset the property
+   * <code>background</code> of a widget. This method is intended to be used
+   * by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetBackground() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>enabled</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetEnabled() throws IOException {
   }
 }

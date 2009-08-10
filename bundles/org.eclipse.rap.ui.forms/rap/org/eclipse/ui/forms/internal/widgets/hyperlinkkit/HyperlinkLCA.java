@@ -50,15 +50,6 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
                           "org.eclipse.ui.forms.widgets.Hyperlink.onClick", //$NON-NLS-1$
                           JSListenerType.ACTION );
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   public void readData( final Widget widget ) {
     ControlLCAUtil.processSelection( widget, null, false );
     WidgetLCAUtil.processHelp( widget );

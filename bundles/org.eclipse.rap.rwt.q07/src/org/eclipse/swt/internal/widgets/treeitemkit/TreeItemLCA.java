@@ -155,16 +155,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
-  // /////////////////////////////////
+  ////////////////////////////////////
   // Helping methods to write changes
   private void writeShowItem( final TreeItem item ) throws IOException {
     Tree tree = item.getParent();

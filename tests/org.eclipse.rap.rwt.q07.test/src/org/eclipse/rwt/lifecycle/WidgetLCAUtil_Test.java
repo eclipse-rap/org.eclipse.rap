@@ -129,7 +129,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
-  public void testEscapeText() throws Exception {
+  public void testEscapeText() {
     // Empty Parameter
     try {
       WidgetLCAUtil.escapeText( null, true );
@@ -177,7 +177,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( expected, WidgetLCAUtil.escapeText( "Test\\", false ) );
   }
 
-  public void testTruncateZeros() throws Exception {
+  public void testTruncateZeros() {
     assertEquals( ( char )0, "\000".charAt( 0 ) );
     assertEquals( "foo ", WidgetLCAUtil.escapeText( "foo \000 bar", false ) );
     assertEquals( "foo", WidgetLCAUtil.escapeText( "foo\000", false ) );
@@ -429,49 +429,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackground( control, red );
     assertEquals( "", Fixture.getAllMarkup() );
   }
-  
-  public void testResetCalls() throws IOException {
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetBounds();
-    String expected 
-      = "w.resetClipWidth();w.resetClipHeight();w.setSpace( 0, 0, 0, 0 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
 
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetMenu();
-    expected 
-      =   "w.resetContextMenu();w.removeEventListener( \"contextmenu\", "
-        + "org.eclipse.swt.MenuUtil.contextMenu );";
-    assertEquals( expected, Fixture.getAllMarkup() );
-
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetToolTip();
-    expected = "wm.setToolTip( w );";
-    assertEquals( expected, Fixture.getAllMarkup() );
-    
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetFont();
-    expected = "w.resetFont();";
-    assertEquals( expected, Fixture.getAllMarkup() );
-    
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetForeground();
-    expected 
-      =   "w.resetTextColor();w.removeEventListener( \"appear\", "
-        + "org.eclipse.swt.WidgetManager._onAppearSetForeground );";
-    assertEquals( expected, Fixture.getAllMarkup() );
-    
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetBackground();
-    expected = "w.resetBackgroundColor();";
-    assertEquals( expected, Fixture.getAllMarkup() );
-
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.resetEnabled();
-    expected = "w.setEnabled( true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
-  }
-  
   public void testWriteMenu() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );

@@ -102,16 +102,14 @@ public class JSWriter_Test extends TestCase {
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
-        + getTypePoolIdHash( shell.button )
-        + ", \"qx.ui.form.Button\" );";
+        + "\"qx.ui.form.Button\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that the WidgetManager, once initialized, is not initialized
     // twice
     writer = JSWriter.getWriterFor( shell.button );
     writer.newWidget( "qx.ui.form.Button" );
     expected +=   "var w = wm.newWidget( \"w2\", \"w3\", true, "
-                + getTypePoolIdHash( shell.button )
-                +  ", \"qx.ui.form.Button\" );";
+                +  "\"qx.ui.form.Button\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that obtaining the widget reference (var w =) is only rendered
     // once
@@ -119,11 +117,6 @@ public class JSWriter_Test extends TestCase {
     expected += "w.setWidth( 5 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
-  }
-
-  private String getTypePoolId( final Widget widget ) {
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
-    return lca.getTypePoolId( widget );
   }
 
   public void testNewWidget() throws Exception {
@@ -134,8 +127,7 @@ public class JSWriter_Test extends TestCase {
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
-        + getTypePoolIdHash( shell.button )
-        + ", \"qx.ui.form.Button\" );";
+        + "\"qx.ui.form.Button\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -143,56 +135,6 @@ public class JSWriter_Test extends TestCase {
     expected = "w.setText( \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
-  }
-  
-  public void testNewWidgetWithTypePoolId() throws IOException {
-    Display display = new Display();
-    TestShell shell = new TestShell( display );
-    Widget widget = new Widget( shell, SWT.NONE ) {
-      public Object getAdapter( final Class adapter ) {
-        Object result;
-        if( adapter == ILifeCycleAdapter.class ) {
-          result = new AbstractWidgetLCA() {
-
-            public void preserveValues( Widget widget ) {
-            }
-
-            public void renderChanges( Widget widget ) throws IOException {
-            }
-
-            public void renderDispose( Widget widget ) throws IOException {
-            }
-
-            public void renderInitialization( Widget widget )
-              throws IOException
-            {
-            }
-
-            public void readData( Widget widget ) {
-            }
-            public String getTypePoolId( Widget widget ) {
-              return "myWidgetPoolId";
-            }
-            
-          }; 
-        } else {
-          result = super.getAdapter( adapter );
-        }
-        return result;
-      }
-    };
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.widget" );
-    String expected
-      =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w2\", \"\", false, 767544711, "
-        + "\"qx.ui.widget\" );";
-    assertEquals( expected, Fixture.getAllMarkup() );
-  }
-
-  private String getTypePoolIdHash( final Widget widget ) {
-    String id = getTypePoolId( widget );
-    return id == null ? null : String.valueOf( id.hashCode() );
   }
 
   public void testNewWidgetWithParams() throws Exception {
@@ -207,8 +149,7 @@ public class JSWriter_Test extends TestCase {
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.newWidget( \"w2\", \"w3\", true, "
-        + getTypePoolIdHash( shell.button )
-        + ", \"qx.ui.form.Button\", '\"abc\", [\"#ff0000\" ]' );";
+        + "\"qx.ui.form.Button\", '\"abc\", [\"#ff0000\" ]' );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -222,23 +163,33 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "TreeItem", null );
     expected
       =   "var w = wm.newWidget( \"w4\", \"\", false, "
-        + getTypePoolIdHash( item )
-        + ", \"TreeItem\" );";
+        + "\"TreeItem\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testResetJSProperty() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    JSWriter writer = JSWriter.getWriterFor( shell );
     Fixture.fakeResponseWriter();
     writer.reset( "testProperty" );
-    assertEquals( "w.resetTestProperty();", Fixture.getAllMarkup() );
+    String expected = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+                      + "var w = wm.findWidgetById( \""
+                      + WidgetUtil.getId( shell )
+                      + "\" );w.resetTestProperty();";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testResetJSPropertyChain() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    JSWriter writer = JSWriter.getWriterFor( shell );
     Fixture.fakeResponseWriter();
     writer.reset( new String[] { "labelObject", "testProperty" } );
-    String expected = "w.getLabelObject().resetTestProperty();";
+    String expected = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+                      + "var w = wm.findWidgetById( \""
+                      + WidgetUtil.getId( shell )
+                      + "\" );w.getLabelObject().resetTestProperty();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

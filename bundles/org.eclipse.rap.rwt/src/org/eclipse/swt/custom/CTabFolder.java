@@ -1892,10 +1892,11 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
   void onDispose() {
     /*
-     * Usually when an item is disposed, destroyItem will change the size of the items array,
-     * reset the bounds of all the tabs and manage the widget associated with the tab.
-     * Since the whole folder is being disposed, this is not necessary.  For speed
-     * the inDispose flag is used to skip over this part of the item dispose.
+     * Usually when an item is disposed of, destroyItem will change the size of
+     * the items array, reset the bounds of all the tabs and manage the widget
+     * associated with the tab. Since the whole folder is being disposed, this
+     * is not necessary. For speed the inDispose flag is used to skip over this
+     * part of the item dispose.
      */
     inDispose = true;
     removeControlListener( resizeListener );

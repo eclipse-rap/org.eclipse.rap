@@ -99,15 +99,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   public void doRedrawFake( final Control control ) {
     int evtId = ControlEvent.CONTROL_RESIZED;
     ControlEvent evt = new ControlEvent( control, evtId );

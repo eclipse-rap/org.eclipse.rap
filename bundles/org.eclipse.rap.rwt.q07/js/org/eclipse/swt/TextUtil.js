@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      * Sets the selected text range of the given text widget.
      */
     setSelection : function( text, start, length ) {
-      if( text.isCreated() && !text.getUserData( "pooled" ) ) {
+      if( text.isCreated() ) {
         org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
       } else {
         text.setUserData( "onAppear.selectionStart", start );

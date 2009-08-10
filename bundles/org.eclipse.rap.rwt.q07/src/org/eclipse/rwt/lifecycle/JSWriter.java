@@ -103,11 +103,12 @@ public final class JSWriter {
   }
 
   /**
-   * Returns the {@link JSWriter} instance used to reset
-   * a widgets attributes in order to take part in the
-   * pooling mechanism.
-   *
+   * Returns the {@link JSWriter} instance used to reset a widgets attributes in
+   * order to take part in the pooling mechanism.
+   * 
    * @return the {@link JSWriter} instance
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method should not be used anymore.
    */
   public static JSWriter getWriterForResetHandler() {
     return new JSWriter( null );
@@ -148,7 +149,6 @@ public final class JSWriter {
     throws IOException
   {
     ensureWidgetManager();
-    String typePoolId = getTypePoolId( widget );
     StringBuffer buffer = new StringBuffer();
     buffer.append( "var w = wm.newWidget( \"" );
     buffer.append( WidgetUtil.getId( widget ) );
@@ -156,10 +156,6 @@ public final class JSWriter {
     buffer.append( getJSParentId( widget ) );
     buffer.append( "\", " );
     buffer.append( useSetParent() );
-    buffer.append( ", " );
-    Integer poolIdHashCode
-      = typePoolId == null ? null : new Integer( typePoolId.hashCode() );
-    buffer.append( poolIdHashCode );
     buffer.append( ", \"" );
     buffer.append( className );
     buffer.append( "\"" );
@@ -656,13 +652,9 @@ public final class JSWriter {
 
   /**
    * Dispose is used to dispose of the widget of this {@link JSWriter} on the
-   * client side. As todays browser have several memory issues this will only
-   * dispose of the widget if there are no pooling informations available.
+   * client side.
    *
    * @throws IOException if an I/O error occurs
-   *
-   * @see AbstractWidgetLCA#getTypePoolId(Widget)
-   * @see AbstractWidgetLCA#createResetHandlerCalls(String)
    */
   public void dispose() throws IOException {
     ensureWidgetManager();
@@ -751,11 +743,6 @@ public final class JSWriter {
     return   !( widget instanceof Shell ) && widget instanceof Control
            ? Boolean.TRUE
            : Boolean.FALSE;
-  }
-
-  private String getTypePoolId( final Widget widget ) {
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
-    return lca.getTypePoolId( widget );
   }
 
   private String getJSParentId( final Widget widget ) {

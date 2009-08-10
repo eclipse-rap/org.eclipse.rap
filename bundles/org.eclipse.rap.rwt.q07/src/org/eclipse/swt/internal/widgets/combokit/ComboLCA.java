@@ -113,20 +113,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( "removeAll", null );
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-//    TODO [rst] Enable pooling when re-parenting problems with
-//               qx.ui.form.ComboBox are solved
-//    return TYPE_POOL_ID;
-    return null;
-  }
-
   ///////////////////////////////////////
   // Helping methods to read client state
 

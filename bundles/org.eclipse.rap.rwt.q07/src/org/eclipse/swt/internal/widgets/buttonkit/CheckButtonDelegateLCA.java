@@ -20,8 +20,6 @@ import org.eclipse.swt.widgets.Button;
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
-  static final String TYPE_POOL_ID
-    = CheckButtonDelegateLCA.class.getName();
   private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";
   private static final Object[] PARAM_CHECK = new Object[] { "check" };
 
@@ -61,20 +59,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.dispose();
-  }
-
-  String getTypePoolId( final Button button ) {
-    // Disabled pooling, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226099
-//    return TYPE_POOL_ID;
-    return null;
-  }
-
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    ButtonLCAUtil.resetAlignment();
-    ButtonLCAUtil.resetText();
-    ButtonLCAUtil.resetSelection();
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
   }
 
   private static void writeGrayed( final Button button ) throws IOException {

@@ -20,8 +20,6 @@ import org.eclipse.swt.widgets.Button;
 
 final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
-  static final String TYPE_POOL_ID
-    = PushButtonDelegateLCA.class.getName();
   private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";
 
   private static final Object[] PARAM_PUSH = new Object[] { "push" };
@@ -58,12 +56,5 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.dispose();
-  }
-
-  String getTypePoolId( final Button button ) {
-    return null;
-  }
-
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
 }

@@ -22,8 +22,6 @@ import org.eclipse.swt.widgets.Button;
 
 final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
-  static final String TYPE_POOL_ID
-    = RadioButtonDelegateLCA.class.getName();
   private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";  
   private static final Object[] PARAM_RADIO = new Object[] { "radio" };
 
@@ -60,25 +58,6 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     writer.dispose();
   }
      
-  String getTypePoolId( final Button button ) {
-//    return TYPE_POOL_ID;
-    return null;
-  }
-
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
-// TODO [fappel]: check why removal of listener doesn't work. Seems as if
-//                manager is removed already (maybe dispose call?)...
-//    JSWriter writer = JSWriter.getWriterForResetHandler();
-//    writer.removeListener( JS_PROP_MANAGER,
-//                           JS_LISTENER_INFO.getEventType(),
-//                           JS_LISTENER_INFO.getJSListener() );
-    ButtonLCAUtil.resetAlignment();
-    ButtonLCAUtil.resetText();
-    ButtonLCAUtil.resetSelection();
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
-
   private static void processSelectionEvent( final Button button ) {
     if( SelectionEvent.hasListener( button ) ) {
       int type = SelectionEvent.WIDGET_SELECTED;

@@ -90,17 +90,6 @@ public class ListLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
-
   ////////////////////////////////////
   // Helping methods to preserve state
 

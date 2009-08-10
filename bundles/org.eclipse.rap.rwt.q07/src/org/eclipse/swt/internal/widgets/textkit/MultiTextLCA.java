@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.Text;
 
 final class MultiTextLCA extends AbstractTextDelegateLCA {
 
-  static final String TYPE_POOL_ID = MultiTextLCA.class.getName();
-
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
@@ -65,16 +63,4 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     writer.dispose();
   }
 
-  String getTypePoolId( final Text text ) {
-    return TYPE_POOL_ID;
-  }
-
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    TextLCAUtil.resetVerifyAndModifyListener();
-    TextLCAUtil.resetTextLimit();
-    TextLCAUtil.resetReadOnly();
-    TextLCAUtil.resetText();
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
 }

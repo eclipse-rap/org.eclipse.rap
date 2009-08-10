@@ -208,13 +208,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   public Rectangle adjustCoordinates( final Widget widget,
                                       final Rectangle bounds )
   {
@@ -230,16 +223,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-
-//  public Rectangle adjustCoordinates( final Rectangle bounds ) {
-//    int border = 1;
-//    int hTabBar = 23;
-//    return new Rectangle( bounds.x - border - 10,
-//                          bounds.y - hTabBar - border -10,
-//                          bounds.width,
-//                          bounds.height );
-//  }
-
 
   //////////////////////////////////////
   // Helping methods to write properties

@@ -24,8 +24,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     // Key: id (string), value: widget instanace (qx.ui.core.Widget)
     this._map = {};
     
-    // initialize widget pool
-    this._widgetPool = new Object();
     // this field is needed as Opera has some problems with
     // accessing local variables in eval expressions.
     this._current = null;
@@ -52,9 +50,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * removed from this WidgetManager (see remove).
      * No action is taken if there is no widget registered for the given id or 
      * the widget was already disposed of.
-     * In case of a widget type that supports pooling the widget is disconnected
-     * from its parent, its 'disposeHandler' that reinitializes the widget is
-     * called and it's added to the pool to be ready for reuse.
      */
     dispose : function( id ) {
       var widget = this.findWidgetById( id );
@@ -67,84 +62,26 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
           if( parent && parent.getChildren() ) {
             widget.setParent( null );
           }
-          // handle widgets that can be pooled
-          var typePoolId = widget.getUserData( "typePoolId" );
-          if( typePoolId != null ) {
-            var typePool = this._widgetPool[ typePoolId ];
-            typePool.resetHandler( widget );
-            widget.setUserData( "pooled", true );
-            // EXPERIMENTAL: If the widget has a reset method, call it
-            if( widget.rap_reset ) {
-              widget.rap_reset();
-            }
-            typePool.elements.push( widget );
-          // dispose of widgets that cannot be pooled
-          } else {
-            // [if] Replace dispose() with destroy()
-          	widget.destroy();
-          }
+          // [if] Replace dispose() with destroy()
+          widget.destroy();
         }
       }
     },
-
-    registerResetHandler : function( typePoolId, resetHandler ) {
-      this._createWidgetPool( typePoolId, resetHandler );
-    },
     
-    newWidget : function( widgetId,
-                          parentId,
-                          isControl,
-                          typePoolId,
-                          type,
-                          paramList )
-    {
+    newWidget : function( widgetId, parentId, isControl, type, paramList ) {
       // Note [fappel]: Do not remove the 'wm' declaration. This is needed
       //                for IE if the 'newExpression' has a reference to
       //                the variable defined in the script from the server.
       // TODO [fappel]: Think about improvement of the hardcoded expression... 
       var wm = this;
       
-      var result = null;
-      // if the widget type supports pooling get a widget from the pool -
-      // if available...
-      if( typePoolId != null && this._widgetPool[ typePoolId ] ) {
-        var typePool = this._widgetPool[ typePoolId ];
-        result = typePool.elements.pop();
-        if( result ) {
-          if( paramList != null ) {
-            // If paramList isn't empty we have to reinitialize the widget.
-            // Luckily only our own js widgets use this...
-            var expression =   "org.eclipse.swt.WidgetManager.getInstance()."
-                             + "_current.reInit("
-                             + paramList
-                             + ");";
-            // Assignment of the field _current is needed as Opera has some 
-            // problems with accessing local variables in eval expressions.
-            this._current = result;
-            window.eval( expression );
-            this._current = null;
-          }
-          // EXPERIMENTAL: If the widget has an init method, call it
-          if( result.rap_init ) {
-            result.rap_init();
-          }
-        }
-//        this.debug( "_____ recycled: " + result );
+      var newExpression;
+      if( paramList != null ) {
+        newExpression = "new " + type + "(" + paramList + ");";
+      } else {
+        newExpression = "new " + type + "();";
       }
-      
-      // ... otherwise create a new one
-      if( result == null ) {
-        var newExpression;
-        if( paramList != null ) {
-          newExpression = "new " + type + "(" + paramList + ");";
-        } else {
-          newExpression = "new " + type + "();";
-        }
-        result = window.eval( newExpression );
-        result.setUserData( "typePoolId", typePoolId );
-        result.setUserData( "pooled", false );
-//        this.debug( "_____ created: " + result );
-      }
+      var result = window.eval( newExpression );
       
       // map the widget to the server side widgetId
       if( result.classname == "org.eclipse.swt.widgets.Shell" ) {
@@ -247,16 +184,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
                                  org.eclipse.swt.WidgetManager._onAppearFocus, 
                                  widget );
       }
-    },
-
-    /**
-     * Creates a new caching pool for widgets with the given pooling id.
-     */
-    _createWidgetPool : function( typePoolId, resetHandler ) {
-      var typePool = new Object();
-      typePool.elements = new Array();
-      typePool.resetHandler = resetHandler;
-      this._widgetPool[ typePoolId ] = typePool;        
     },
 
     ////////////////

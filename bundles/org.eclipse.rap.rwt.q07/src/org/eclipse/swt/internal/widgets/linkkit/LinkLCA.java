@@ -79,18 +79,6 @@ public class LinkLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226651
-//    return TYPE_POOL_ID;
-    return null;
-  }
-
   private static void writeSelectionListener( final Link link )
     throws IOException
   {

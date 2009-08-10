@@ -116,20 +116,10 @@ final class TextLCAUtil {
     }
   }
 
-  static void resetText() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_VALUE );
-  }
-
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean newValue = Boolean.valueOf( !text.getEditable() );
     writer.set( PROP_READONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
-  }
-
-  static void resetReadOnly() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_READ_ONLY );
   }
 
   static void writeTextLimit( final Text text ) throws IOException {
@@ -145,11 +135,6 @@ final class TextLCAUtil {
       }
       writer.set( JS_PROP_MAX_LENGTH, newValue );
     }
-  }
-
-  static void resetTextLimit() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_MAX_LENGTH );
   }
 
   static void writeWrap( final Text text ) throws IOException {
@@ -175,10 +160,6 @@ final class TextLCAUtil {
                            new Object[] { text, start, count } );
       }
     }
-  }
-
-  static void resetSelection() {
-    // POOLING Implement if pooling is reactivated
   }
 
   static void writeAlignment( final Text text ) throws IOException {
@@ -207,10 +188,6 @@ final class TextLCAUtil {
     }
   }
 
-  static void resetSelectionListener() {
-    // POOLING Implement if pooling is reactivated
-  }
-
   static void preserveVerifyAndModifyListener( final Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
@@ -229,10 +206,6 @@ final class TextLCAUtil {
                            new Object[] { text, newValue } );
       }
     }
-  }
-
-  static void resetVerifyAndModifyListener() {
-    // POOLING Implement if pooling is reactivated
   }
 
   private static boolean hasSelectionListener( final Text text ) {

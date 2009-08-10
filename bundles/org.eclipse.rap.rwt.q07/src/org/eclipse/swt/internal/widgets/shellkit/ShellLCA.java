@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.*;
 public final class ShellLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Shell";
-//  private static final String TYPE_POOL_ID = ShellLCA.class.getName();
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -132,28 +131,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.call( "doClose", null );
     writer.dispose();
-  }
-
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( "removeState", new Object[]{ "rwt_TITLE" } );
-    // TODO [rst] If this is ever being reactivated, all Shell style-flag states
-    //            must be removed
-    writer.set( "parentShell", ( Object )null );
-    ControlLCAUtil.resetStyleFlags();
-    ControlLCAUtil.resetResizeNotificator();
-    ControlLCAUtil.resetMoveNotificator();
-    // TODO [rh] reset close listener when shell pooling is activated
-    ControlLCAUtil.resetBounds();
-    ControlLCAUtil.resetZIndex();
-    ControlLCAUtil.resetToolTip();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-//    return TYPE_POOL_ID;
-    return null;
   }
 
   //////////////////

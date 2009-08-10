@@ -55,11 +55,4 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
 }

@@ -14,7 +14,8 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,6 @@ import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
@@ -51,10 +51,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private final static String PATTERN_REQUEST_COUNTER
     =   "var req = org.eclipse.swt.Request.getInstance();"
       + "req.setRequestCounter( \"{0,number,#}\" );";
-  private static final String DISPOSE_HANDLER_REGISTRY
-    = "org.eclipse.rap.disposeHandlerRegistry";
-  private static final JSVar DISPOSE_HANDLER_START
-    = new JSVar( "function( " + JSWriter.WIDGET_REF + " ) {" );
 
   private static final String CLIENT_LOG_LEVEL
     = "org.eclipse.rwt.clientLogLevel";
@@ -368,6 +364,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();
+    // TODO [rst] since widget pooling is removed, the loop should be reverted
+    //            again
     // [fappel]: client side disposal order is crucial for the widget
     //           caching mechanism - we need to dispose of children first. This
     //           is reverse to the server side mechanism (which is analog to
@@ -375,38 +373,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
       Widget toDispose = disposedWidgets[ i ];
       AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
-
-      Set disposeHandler = getAlreadyRegisteredHandlers();
-      String key = lca.getTypePoolId( toDispose );
-      if( key != null && !disposeHandler.contains( key ) ) {
-        JSWriter writer = JSWriter.getWriterFor( toDispose );
-        Object[] params = new Object[] {
-          new Integer( key.hashCode() ),
-          DISPOSE_HANDLER_START
-        };
-        writer.startCall( JSWriter.WIDGET_MANAGER_REF,
-                          "registerResetHandler",
-                          params );
-        try {
-          lca.createResetHandlerCalls( key );
-        } finally {
-          writer.endCall( new Object[] { new JSVar( "}" ) } );
-          disposeHandler.add( key );
-        }
-      }
-
       lca.renderDispose( toDispose );
     }
-  }
-
-  private static Set getAlreadyRegisteredHandlers() {
-    ISessionStore session = ContextProvider.getSession();
-    Set result = ( Set )session.getAttribute( DISPOSE_HANDLER_REGISTRY );
-    if( result == null ) {
-      result = new HashSet();
-      session.setAttribute( DISPOSE_HANDLER_REGISTRY, result );
-    }
-    return result;
   }
 
   private static void writeScriptTag( final HtmlResponseWriter out,

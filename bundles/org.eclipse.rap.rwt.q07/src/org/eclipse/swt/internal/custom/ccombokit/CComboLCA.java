@@ -120,17 +120,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( "removeAll", null );
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   ///////////////////////////////////////
   // Helping methods to read client state
 

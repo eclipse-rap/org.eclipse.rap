@@ -46,19 +46,6 @@ public final class DateTimeLCA extends AbstractWidgetLCA {
     getDelegate( widget ).renderDispose( ( DateTime )widget );
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // TODO [rh] disabled pooling, see bugs prefixed with [pooling]
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=199142
-    // return getDelegate( widget ).getTypePoolId( ( DateTime )widget );
-    return null;
-  }
-
   private static AbstractDateTimeLCADelegate getDelegate( final Widget widget )
   {
     AbstractDateTimeLCADelegate result;

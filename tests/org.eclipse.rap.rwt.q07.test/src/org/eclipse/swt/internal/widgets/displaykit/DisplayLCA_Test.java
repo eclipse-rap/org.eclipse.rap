@@ -43,7 +43,6 @@ public class DisplayLCA_Test extends TestCase {
   private final List renderInitLog = new ArrayList();
   private final List renderChangesLog = new ArrayList();
   private final List renderDisposeLog = new ArrayList();
-  private final List renderDisposeHandlerRegistration = new ArrayList();
 
   private final class DisposeTestButton extends Button {
 
@@ -145,7 +144,7 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
   }
   
-  public void testRrenderChangedButDisposed() {
+  public void testRenderChangedButDisposed() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Button button = new DisposeTestButton( shell, SWT.PUSH );
@@ -173,14 +172,12 @@ public class DisplayLCA_Test extends TestCase {
     } );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     RWTFixture.executeLifeCycleFromServerThread( );
     
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button ) );
     assertTrue( renderDisposeLog.contains( button ) );
-    assertFalse( renderDisposeHandlerRegistration.isEmpty() );
 
     clearLogs();
     button2.addSelectionListener( new SelectionAdapter() {
@@ -198,7 +195,6 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button2 ) );
     assertTrue( renderDisposeLog.contains( button2 ) );
-    assertFalse( renderDisposeHandlerRegistration.contains( button2 ) );
 
     clearLogs();
     button3.addSelectionListener( new SelectionAdapter() {
@@ -216,7 +212,6 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button3 ) );
     assertTrue( renderDisposeLog.contains( button3 ) );
-    assertFalse( renderDisposeHandlerRegistration.isEmpty() );
   }
 
   public void testIsInitializedState() throws IOException {
@@ -341,16 +336,6 @@ public class DisplayLCA_Test extends TestCase {
             }
 
 
-            public String getTypePoolId( final Widget widget ) {
-              return getClass().getName() + "_" + widget.getStyle();
-            }
-
-            public void createResetHandlerCalls( final String typePoolId )
-              throws IOException
-            {
-              renderDisposeHandlerRegistration.add( typePoolId );
-            }
-
             public void renderDispose( final Widget widget ) throws IOException
             {
               renderDisposeLog.add( widget );
@@ -392,6 +377,5 @@ public class DisplayLCA_Test extends TestCase {
     renderInitLog.clear();
     renderChangesLog.clear();
     renderDisposeLog.clear();
-    renderDisposeHandlerRegistration.clear();
   }
 }

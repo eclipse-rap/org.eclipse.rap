@@ -24,31 +24,29 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     initialize : function( widget ) {
 
       widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
-      if( !widget.getUserData( "pooled" ) ) {
-        widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
-        widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
-        widget.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-        // TODO [rh] workaround for weird getLabelObject behaviour
-        widget.setLabel( "(empty)" );
-        // end workaround
-        var labelObject = widget.getLabelObject();
-        labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
-        labelObject.setTextOverflow( false );
-        labelObject.setAppearance( "label-graytext" );
-        // TODO [rh] workaround for weird getLabelObject behaviour
-        widget.setLabel( "" );
-        // end workaround
-        widget.setHideFocus( true );
-        // track DOM insertion state
-        widget.addEventListener( "beforeRemoveDom",
-                                 org.eclipse.swt.LabelUtil._onRemoveDom );
-        widget.addEventListener( "insertDom",
-                                 org.eclipse.swt.LabelUtil._onInsertDom );
-        widget.addEventListener( "mouseover",
-                                 org.eclipse.swt.LabelUtil._onMouseOver );
-        widget.addEventListener( "mouseout",
-                                 org.eclipse.swt.LabelUtil._onMouseOut );
-      }
+      widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
+      widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
+      widget.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+      // TODO [rh] workaround for weird getLabelObject behaviour
+      widget.setLabel( "(empty)" );
+      // end workaround
+      var labelObject = widget.getLabelObject();
+      labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
+      labelObject.setTextOverflow( false );
+      labelObject.setAppearance( "label-graytext" );
+      // TODO [rh] workaround for weird getLabelObject behaviour
+      widget.setLabel( "" );
+      // end workaround
+      widget.setHideFocus( true );
+      // track DOM insertion state
+      widget.addEventListener( "beforeRemoveDom",
+                               org.eclipse.swt.LabelUtil._onRemoveDom );
+      widget.addEventListener( "insertDom",
+                               org.eclipse.swt.LabelUtil._onInsertDom );
+      widget.addEventListener( "mouseover",
+                               org.eclipse.swt.LabelUtil._onMouseOver );
+      widget.addEventListener( "mouseout",
+                               org.eclipse.swt.LabelUtil._onMouseOut );
     },
     
     _onRemoveDom : function( evt ) {
@@ -75,12 +73,6 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.setUserData( "setText", text );
         widget.addEventListener( "appear",
                                  org.eclipse.swt.LabelUtil._setTextDelayed );
-      }
-      // workaround for pooling problems
-      else if( !widget._isInDOM && widget.getUserData( "pooled" ) ) {
-        widget.setUserData( "setText", text );
-        widget.addEventListener( "insertDom",
-                                 org.eclipse.swt.LabelUtil._setTextDelayed );
       } else {
         org.eclipse.swt.LabelUtil._doSetText( widget, text );
       }
@@ -90,10 +82,6 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       if( !widget.isCreated() ) {
         widget.setUserData( "setImage", imagePath );
         widget.addEventListener( "appear",
-                                 org.eclipse.swt.LabelUtil._setImageDelayed );
-      } else if( !widget._isInDOM && widget.getUserData( "pooled" ) ) {
-        widget.setUserData( "setImage", imagePath );
-        widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._setImageDelayed );
       } else {
         org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );

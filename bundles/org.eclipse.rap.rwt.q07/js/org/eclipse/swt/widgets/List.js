@@ -19,49 +19,42 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
   construct : function() {
     this.base( arguments );
     this.setMarkLeadingItem( true );
-    this.rap_init();
+    // Should changeSelection events passed to the server-side?
+    // state == no, action == yes
+    this._changeSelectionNotification = "state";
+    this._topIndex = 0;
+    var selMgr = this.getManager();
+    selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+    selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
+    this.addEventListener( "focus", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onFocusOut, this );
+    this.addEventListener( "click", this._onClick, this );
+    this.addEventListener( "dblclick", this._onDblClick, this );
+    this.addEventListener( "appear", this._onAppear, this );
+    // Listen to send event of request to report topIndex
+    var req = org.eclipse.swt.Request.getInstance();
+    req.addEventListener( "send", this._onSendRequest, this );
   },
   
   destruct : function() {
-    this.rap_reset();
+    var req = org.eclipse.swt.Request.getInstance();
+    req.removeEventListener( "send", this._onSendRequest, this );
+    var selMgr = this.getManager();
+    selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+    selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
+    this.removeEventListener( "focus", this._onFocusIn, this );
+    this.removeEventListener( "blur", this._onFocusOut, this );
+    this.removeEventListener( "click", this._onClick, this );
+    this.removeEventListener( "dblclick", this._onDblClick, this );
+    this.removeEventListener( "appear", this._onAppear, this );
   },
 
   members : {
     
+    // TODO [rst] Move parameter to constructor and delete this method
     init : function( multiSelection ) {
       var manager = this.getManager();
       manager.setMultiSelection( multiSelection );
-    },
-    
-    rap_init : function( multiSelection ) {
-      // Should changeSelection events passed to the server-side?
-      // state == no, action == yes
-      this._changeSelectionNotification = "state";
-      this._topIndex = 0;
-      var selMgr = this.getManager();
-      selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
-      selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
-      this.addEventListener( "focus", this._onFocusIn, this );
-      this.addEventListener( "blur", this._onFocusOut, this );
-      this.addEventListener( "click", this._onClick, this );
-      this.addEventListener( "dblclick", this._onDblClick, this );
-      this.addEventListener( "appear", this._onAppear, this );
-      // Listen to send event of request to report topIndex
-      var req = org.eclipse.swt.Request.getInstance();
-      req.addEventListener( "send", this._onSendRequest, this );
-    },
-    
-    rap_reset : function() {
-      var req = org.eclipse.swt.Request.getInstance();
-      req.removeEventListener( "send", this._onSendRequest, this );
-      var selMgr = this.getManager();
-      selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
-      selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
-      this.removeEventListener( "focus", this._onFocusIn, this );
-      this.removeEventListener( "blur", this._onFocusOut, this );
-      this.removeEventListener( "click", this._onClick, this );
-      this.removeEventListener( "dblclick", this._onDblClick, this );
-      this.removeEventListener( "appear", this._onAppear, this );
     },
     
     /** Sets the given array of items. */

@@ -76,12 +76,6 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void resetText() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    // Note [fappel]: reset doesn't work, so use setting to empty string
-    writer.set( "text", new Object[]{ null } );
-  }
-
   static void writeImage( final Button button ) throws IOException {
     Image image = button.getImage();
     if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
@@ -95,11 +89,6 @@ final class ButtonLCAUtil {
       };
       writer.set( "image", args );
     }
-  }
-
-  static void resetImage() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.set( "image", new Object[]{ null } );
   }
 
   static void writeAlignment( final Button button ) throws IOException {
@@ -129,20 +118,10 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void resetAlignment() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_HORIZONTAL_CHILDREN_ALIGN );
-  }
-
   static void writeSelection( final Button button ) throws IOException {
     Boolean newValue = Boolean.valueOf( button.getSelection() );
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
-  }
-
-  static void resetSelection() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.set( JS_PROP_SELECTION, Boolean.FALSE );
   }
 
   // TODO [rst] Can this be moved to ShellLCA ?
