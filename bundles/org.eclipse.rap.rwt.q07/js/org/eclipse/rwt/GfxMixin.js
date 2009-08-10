@@ -242,7 +242,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       // "this.base( arguments, changes );" is not called there
       this.base( arguments, changes );
       if( this._gfxLayoutEnabled ) {
-       this._layoutGfxBorder();
+        this._layoutGfxBorder();
       }
     },
 
