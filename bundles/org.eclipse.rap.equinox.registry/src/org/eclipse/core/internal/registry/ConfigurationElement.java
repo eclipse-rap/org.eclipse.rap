@@ -64,7 +64,14 @@ public class ConfigurationElement extends RegistryObject {
 	}
 
 	protected String getValue() {
-		return getValueAsIs();
+// TODO [bm]: We avoided translation at startup, since RAP needs
+//            request/session aware translation mechanism. So we are 
+//            doing translation now.
+//            Translation of raw values needed for bug 281650
+	  //return getValueAsIs();
+	  String symbolicName = getContributor().getName();
+	  String value = getValueAsIs();
+      return RegistryFactory.translate( value, symbolicName );
 	}
 
 	String getValueAsIs() {
@@ -77,9 +84,10 @@ public class ConfigurationElement extends RegistryObject {
 // TODO [fappel]: We avoided translation at startup, since RAP needs
 //		          request/session aware translation mechanism. So we are 
 //                doing translation now. 
-		String symbolicName = getContributor().getName();
-		String attribute = getAttributeAsIs( attrName );
-        return RegistryFactory.translate( attribute, symbolicName );
+	  //return getAttributeAsIs(attrName);
+      String symbolicName = getContributor().getName();
+      String attribute = getAttributeAsIs( attrName );
+      return RegistryFactory.translate( attribute, symbolicName );
 	}
 
   String getAttributeAsIs(String attrName) {
