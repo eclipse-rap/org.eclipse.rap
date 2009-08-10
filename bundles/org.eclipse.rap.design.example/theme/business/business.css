@@ -343,7 +343,7 @@ Button-RadioIcon:selected:hover {
 
 /* Menu */
 Menu {
-  color: rgb( 0, 89, 165 );;
+  color: rgb( 0, 89, 165 );
   background-color: white;
   border: 1px rgb( 0, 89, 165 );
 }
