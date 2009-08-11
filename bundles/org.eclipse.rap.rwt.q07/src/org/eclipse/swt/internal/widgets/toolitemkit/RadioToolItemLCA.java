@@ -61,13 +61,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ToolBar bar = toolItem.getParent();
     int itemIndex = bar.indexOf( toolItem );
-    ToolItem neighbour = null;
-    if ( itemIndex > 0 ) {
-      neighbour = bar.getItem( itemIndex - 1 );
-      if( ( neighbour.getStyle() & SWT.RADIO ) == 0 ) {
-        neighbour = null;
-      }
-    }
+    ToolItem neighbour = getRadioNeighbour( bar, itemIndex );
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent(),
@@ -79,6 +73,24 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
+  }
+
+  // [bm] we need to take both neighbours into account to find a possible
+  //      radio group
+  private static ToolItem getRadioNeighbour( ToolBar bar, int itemIndex ) {
+    ToolItem neighbour = null;
+    if( itemIndex > 0 ) {
+      neighbour = bar.getItem( itemIndex - 1 );
+    }
+    if( neighbour == null || ( neighbour.getStyle() & SWT.RADIO ) == 0 ) {
+      if( itemIndex < bar.getItemCount() - 1 ) {
+        ToolItem nextItem = bar.getItem( itemIndex + 1 );
+        if( ( nextItem.getStyle() & SWT.RADIO ) != 0 ) {
+          neighbour = nextItem;
+        }
+      }
+    }
+    return neighbour;
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

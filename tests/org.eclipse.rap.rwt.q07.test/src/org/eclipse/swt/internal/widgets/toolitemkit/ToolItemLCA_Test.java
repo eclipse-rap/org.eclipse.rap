@@ -238,14 +238,105 @@ public class ToolItemLCA_Test extends TestCase {
     itemLCA.renderInitialization( item1 );
     itemLCA.renderInitialization( item2 );
     String parent = "wm.findWidgetById( \"" + WidgetUtil.getId( tb )+ "\" )";
-    String expected = "createPush( \"" + WidgetUtil.getId( item1 ) + "\", " + parent + ", 0, false );";
+    String expected = "createPush( \""
+                      + WidgetUtil.getId( item1 )
+                      + "\", "
+                      + parent
+                      + ", 0, false );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    expected = "createPush( \"" + WidgetUtil.getId( item2 ) + "\", " + parent + ", 1, false );";
+    expected = "createPush( \""
+               + WidgetUtil.getId( item2 )
+               + "\", "
+               + parent
+               + ", 1, false );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     final ToolItem item0 = new ToolItem( tb, SWT.PUSH, 0 );
     itemLCA.renderInitialization( item0 );
-    expected = "createPush( \"" + WidgetUtil.getId( item0 ) + "\", " + parent + ", 0, false );";
+    expected = "createPush( \""
+               + WidgetUtil.getId( item0 )
+               + "\", "
+               + parent
+               + ", 0, false );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
+  public void testRadioGroupWithIndex() throws Exception {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.NONE );
+    final ToolItem item = new ToolItem( tb, SWT.RADIO );
+    shell.open();
+    ToolItemLCA itemLCA = new ToolItemLCA();
+    itemLCA.renderInitialization( item );
+    String parent = "wm.findWidgetById( \"" + WidgetUtil.getId( tb ) + "\" )";
+    String expected = "org.eclipse.swt.ToolItemUtil.createRadio( \""
+                      + WidgetUtil.getId( item )
+                      + "\", "
+                      + parent
+                      + ", 0, null, null );";    
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // second radio item, should be in the group with first item
+    RWTFixture.fakeNewRequest();
+    ToolItem item2 = new ToolItem( tb, SWT.RADIO );
+    itemLCA.renderInitialization( item2 );
+    String neighbour = "wm.findWidgetById( \""
+                       + WidgetUtil.getId( item )
+                       + "\" )";
+    expected = "org.eclipse.swt.ToolItemUtil.createRadio( \""
+               + WidgetUtil.getId( item2 )
+               + "\", "
+               + parent
+               + ", 1, null, "
+               + neighbour
+               + " );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // add third item to the left, should be in same radio group
+    RWTFixture.fakeNewRequest();
+    ToolItem item3 = new ToolItem( tb, SWT.RADIO, 0 );
+    itemLCA.renderInitialization( item3 );
+    neighbour = "wm.findWidgetById( \"" + WidgetUtil.getId( item ) + "\" )";
+    expected = "org.eclipse.swt.ToolItemUtil.createRadio( \""
+               + WidgetUtil.getId( item3 )
+               + "\", "
+               + parent
+               + ", 0, null, "
+               + neighbour
+               + " );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // add forth item to the right, should also be in the same group
+    RWTFixture.fakeNewRequest();
+    ToolItem item4 = new ToolItem( tb, SWT.RADIO, 3 );
+    itemLCA.renderInitialization( item4 );
+    neighbour = "wm.findWidgetById( \"" + WidgetUtil.getId( item2 ) + "\" )";
+    expected = "org.eclipse.swt.ToolItemUtil.createRadio( \""
+               + WidgetUtil.getId( item4 )
+               + "\", "
+               + parent
+               + ", 3, null, "
+               + neighbour
+               + " );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // add spacer item to check both directions
+    new ToolItem( tb, SWT.PUSH, 0 );
+    
+    // add fifth item, after push but left of button group, part of radio group
+    RWTFixture.fakeNewRequest();
+    ToolItem item5 = new ToolItem( tb, SWT.RADIO, 1 );
+    itemLCA.renderInitialization( item5 );
+    neighbour = "wm.findWidgetById( \"" + WidgetUtil.getId( item3 ) + "\" )";
+    expected = "org.eclipse.swt.ToolItemUtil.createRadio( \""
+               + WidgetUtil.getId( item5 )
+               + "\", "
+               + parent
+               + ", 1, null, "
+               + neighbour
+               + " );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   protected void setUp() throws Exception {
