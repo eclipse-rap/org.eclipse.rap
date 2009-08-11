@@ -713,6 +713,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _onClientAreaMouseWheel : function( evt ) {
       if( this._isRelevantEvent( evt ) ) {
+        evt.preventDefault();
+        evt.stopPropagation();
         var change = evt.getWheelDelta() * this._itemHeight * 2;
         this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
       }
@@ -773,6 +775,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                || keyIdentifier === "Home"
                || keyIdentifier === "End" ) )
       {
+        evt.preventDefault();
+        evt.stopPropagation();
         var gotoIndex = this._calcGotoIndex( this._focusIndex, keyIdentifier );
         if(    gotoIndex !== this._focusIndex
             && gotoIndex >= 0
