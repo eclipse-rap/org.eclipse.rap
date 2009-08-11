@@ -21,6 +21,7 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
     register : function( button ) {
       button.addEventListener( "execute", this._onSelection, this );
       button.addEventListener( "keypress", this._onKeypress, this );
+      button.addEventListener( "mousewheel", this._onMouseWheel, this );
     },
 
     _onKeypress : function( event ) {
@@ -40,7 +41,19 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
           event.preventDefault();
           event.stopPropagation();
           break;
+        case "Home":
+        case "End":
+        case "PageDown":
+        case "PageUp":
+          evt.preventDefault();
+          evt.stopPropagation();
+        break;
       }
+    },
+    
+    _onMouseWheel : function( event ) {
+      event.preventDefault();
+      event.stopPropagation();
     },
 
     _onSelection : function( event ) {
