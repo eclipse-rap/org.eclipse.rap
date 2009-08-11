@@ -424,6 +424,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onMouseWheel : function( evt ) {
       if( !this._dropped ) {
+        evt.preventDefault();
+        evt.stopPropagation();
         var toSelect;
         var isSelected = this._selected;
         if( evt.getWheelDelta() < 0 ) {
