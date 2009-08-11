@@ -449,7 +449,6 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       var dayIncrement = null;
       var monthIncrement = null;
       var yearIncrement = null;
-
       if (evt.getModifiers() == 0) {
         switch(evt.getKeyIdentifier()) {
           case "Left":
@@ -496,6 +495,12 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
               return true;
             }
 
+            evt.preventDefault();
+            evt.stopPropagation();
+            break;
+         
+          case "Home":
+          case "End":
             evt.preventDefault();
             evt.stopPropagation();
             break;

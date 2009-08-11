@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "keyup", this._onKeyUp, this );
+    this.addEventListener( "mousewheel", this._onmousewheel, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
@@ -101,6 +102,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "keyup", this._onKeyUp, this );
+    this.removeEventListener( "mousewheel", this._onmousewheel, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
@@ -281,6 +283,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             evt.preventDefault();
             evt.stopPropagation();
             break;
+          case "PageUp":
+          case "PageDown":
+          case "Home":
+          case "End":
+            evt.preventDefault();
+            evt.stopPropagation();
+            break;
         }
       }
     },
@@ -327,6 +336,11 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             break;
         }
       }
+    },
+    
+    _onmousewheel : function( evt ) {
+      evt.preventDefault();
+      evt.stopPropagation();
     },
 
     _addLeadingZero : function( value ) {
