@@ -255,7 +255,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void writeImage( final Shell shell ) throws IOException {
-    if( showImage( shell ) ) {
+    if( ( shell.getStyle() & ( SWT.TITLE ) ) != 0 ) {
       Image image = shell.getImage();
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
@@ -264,13 +264,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
       }
     }
   }
-
-  private static boolean showImage( final Shell shell ) {
-    return ( shell.getStyle() & ( SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0;
-  }
-
-  //////////////////
-  // Helping methods
 
   private static void readBounds( final Shell shell ) {
     Rectangle bounds = WidgetLCAUtil.readBounds( shell, shell.getBounds() );

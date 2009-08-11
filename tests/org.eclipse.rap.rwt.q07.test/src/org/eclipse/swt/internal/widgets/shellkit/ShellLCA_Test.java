@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -409,6 +410,41 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  public void testTitleImage() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.SHELL_TRIM );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+    // with caption bar
+    shell.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    lca.renderChanges( shell );
+    String expected = "w.setIcon( \""
+                      + ResourceFactory.getImagePath( shell.getImage() )
+                      + "\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    // without caption bar
+    RWTFixture.fakeNewRequest();
+    shell = new Shell( display, SWT.NO_TRIM );
+    shell.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    lca.renderChanges( shell );
+    expected = "w.setIcon( \""
+               + ResourceFactory.getImagePath( shell.getImage() )
+               + "\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) == -1 );
+    // with caption bar, without MIN, MAX, CLOSE
+    RWTFixture.fakeNewRequest();
+    shell = new Shell( display, SWT.TITLE );
+    shell.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    lca.renderChanges( shell );
+    expected = "w.setIcon( \""
+               + ResourceFactory.getImagePath( shell.getImage() )
+               + "\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
