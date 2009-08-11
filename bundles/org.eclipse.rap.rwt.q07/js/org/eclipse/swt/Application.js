@@ -19,8 +19,9 @@ qx.Class.define( "org.eclipse.swt.Application", {
     this._startupTime = new Date().getTime();
     qx.Class.patch( qx.event.handler.KeyEventHandler,
                     org.eclipse.rwt.KeyEventHandlerPatch );
-    qx.Class.patch( qx.ui.basic.Terminator, org.eclipse.rwt.GfxMixin );
-    qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GfxMixin );    
+    qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GfxMixin );
+    qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
+                    org.eclipse.rwt.GfxMixin );
   },
   
   destruct : function() {
