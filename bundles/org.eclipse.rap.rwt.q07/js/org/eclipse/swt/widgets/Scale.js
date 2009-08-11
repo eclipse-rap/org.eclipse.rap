@@ -172,43 +172,59 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         switch( keyIdentifier ) {
           case "Left":
             sel = this._selection - this._increment;
-            break
+            evt.preventDefault();
+            evt.stopPropagation();
+            break;
           case "Down":
             if( this._horizontal ) {
               sel = this._selection - this._increment;  
             } else {
               sel = this._selection + this._increment;
-            }                     
+            }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Right":
-            sel = this._selection + this._increment; 
+            sel = this._selection + this._increment;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "Up": 
             if( this._horizontal ) {
               sel = this._selection + this._increment;
             } else {
               sel = this._selection - this._increment;    
-            }                 
+            }
+            evt.preventDefault();
+            evt.stopPropagation();
             break; 
           case "Home":
             sel = this._minimum;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "End":
             sel = this._maximum;
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "PageDown":
             if( this._horizontal ) {
               sel = this._selection - this._pageIncrement;
             } else {
               sel = this._selection + this._pageIncrement;
-            }           
+            }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
           case "PageUp":
             if( this._horizontal ) {
               sel = this._selection + this._pageIncrement;
             } else {
               sel = this._selection - this._pageIncrement;   
-            }            
+            }
+            evt.preventDefault();
+            evt.stopPropagation();
             break;
         }
         
@@ -230,6 +246,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     },
     
     _onMouseWheel : function( evt ) {
+      evt.preventDefault();
+      evt.stopPropagation();
       var change = Math.round( evt.getWheelDelta() );
       var sel = this._selection - change;
       if( sel < this._minimum ) {
