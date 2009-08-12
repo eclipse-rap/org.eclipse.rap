@@ -48,9 +48,6 @@ public final class Assert {
   private static class AssertionFailedException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     
-    AssertionFailedException() {
-      super();
-    }
     AssertionFailedException( final String msg ) {
       super( msg );
     }

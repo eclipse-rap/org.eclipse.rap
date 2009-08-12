@@ -22,8 +22,9 @@ import org.eclipse.swt.widgets.Display;
 public class Cursor_Test extends TestCase {
 
   public void testCreate() {
-    Cursor arrow = Graphics.getCursor( SWT.CURSOR_ARROW );
-    Cursor cross = Graphics.getCursor( SWT.CURSOR_CROSS );
+    Display display = new Display();
+    Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
+    Cursor cross = display.getSystemCursor( SWT.CURSOR_CROSS );
     assertNotNull( arrow );
     assertNotNull( cross );
     assertNotSame( arrow, cross );
@@ -31,8 +32,9 @@ public class Cursor_Test extends TestCase {
   }
 
   public void testSame() {
-    Cursor arrow1 = Graphics.getCursor( SWT.CURSOR_ARROW );
-    Cursor arrow2 = Graphics.getCursor( SWT.CURSOR_ARROW );
+    Display display = new Display();
+    Cursor arrow1 = display.getSystemCursor( SWT.CURSOR_ARROW );
+    Cursor arrow2 = display.getSystemCursor( SWT.CURSOR_ARROW );
     assertSame( arrow1, arrow2 );
   }
 
