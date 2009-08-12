@@ -180,7 +180,9 @@ public class ProgressCanvasViewer extends AbstractProgressViewer {
 		ILabelProvider labelProvider = (ILabelProvider) getLabelProvider();
 		if (displayedItems.length > 0) {
 			canvas.setText(labelProvider.getText(displayedItems[0]));
-		}
+		} else {
+            canvas.setText("");
+        }
 	}
     // RAPEND: [bm]
 
