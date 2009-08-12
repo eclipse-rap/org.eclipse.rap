@@ -340,6 +340,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           sel = this._maximum - this._thumbWidth;
         }
         this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
 
@@ -366,6 +371,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           sel = this._maximum - this._thumbWidth;
         }
         this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
 
@@ -382,6 +392,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           sel = this._maximum - this._thumbWidth;
         }
         this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
 
@@ -542,13 +557,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       } else {
         this._thumb.setTop( pos );
       }
-      if( this._readyToSendChanges ) {
-        this._readyToSendChanges = false;
-        // Send changes
-        qx.client.Timer.once( this._sendChanges, this, 500 );
-        // Starting the auto repeat functionality after a 250 ms delay
-        qx.client.Timer.once( this._scrollTimerStart, this, 250 );
-      }
+      // Starting the auto repeat functionality after a 250 ms delay
+      qx.client.Timer.once( this._scrollTimerStart, this, 250 );
     },
 
     _updateLineSize : function() {
