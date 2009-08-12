@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     qx.Class.patch( qx.event.handler.KeyEventHandler,
                     org.eclipse.rwt.KeyEventHandlerPatch );
     qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GfxMixin );
+    qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GfxMixin );
     qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
                     org.eclipse.rwt.GfxMixin );
   },
