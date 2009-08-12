@@ -40,6 +40,7 @@ public class VariantsTab extends ExampleTab {
   private Combo variantsCombo;
 
   private Button myButton;
+  private Combo myCombo;
   private Label myLabel;
   private Link myLink;
   private Text myText;
@@ -77,13 +78,19 @@ public class VariantsTab extends ExampleTab {
     myButton.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
     registerControl( myButton );
 
+    // myCombo
+    myCombo = new Combo( parent, style );
+    myCombo.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    myCombo.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    registerControl( myCombo );
+
     // myLabel
     myLabel = new Label( parent, style );
     myLabel.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     myLabel.setText( "Customized Label" );
     myLabel.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
     registerControl( myLabel );
-    
+
     // myLink
     myLink = new Link( parent, style );
     myLink.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
@@ -157,6 +164,7 @@ public class VariantsTab extends ExampleTab {
 
   private void setCustomVariant( final String variant ) {
     myButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+    myCombo.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myLabel.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myLink.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     myText.setData( WidgetUtil.CUSTOM_VARIANT, variant );

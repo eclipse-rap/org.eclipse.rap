@@ -402,9 +402,17 @@ List-Item:selected:unfocused, TreeItem:selected:unfocused {
   background-color: #ffaaaa;
 }
 
+.special-red:disabled {
+  color: white;
+}
+
 .special-blue {
   color: blue;
   background-color: #aaaaff;
+}
+
+.special-blue:disabled {
+  color: white;
 }
 
 Shell.special-red {

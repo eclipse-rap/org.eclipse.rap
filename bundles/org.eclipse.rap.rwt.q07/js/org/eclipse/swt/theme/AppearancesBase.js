@@ -746,9 +746,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.right = tv.getCssDimension( "Combo-Button", "width" );
       result.top = 0;
       result.bottom = 0;
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "Combo", "color" );
+      result.textColor = tv.getCssColor( "Combo", "color" );
       return result;
     }
   },
@@ -821,9 +819,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.right = tv.getCssDimension( "CCombo-Button", "width" );
       result.top = 0;
       result.bottom = 0;
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "CCombo", "color" );
+      result.textColor = tv.getCssColor( "CCombo", "color" );
       return result;
     }
   },

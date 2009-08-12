@@ -51,6 +51,9 @@
         </description>
     </property>
     
+    <state name="disabled"
+        description="Applies to disabled Combos." />
+    
     <element name="Combo-Button">
       <description>
         The drop-down button of RWT Combo.
