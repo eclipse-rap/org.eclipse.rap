@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 
 public class HeaderBuilder extends ElementBuilder {
 
+  private static final int LOGOSPACING = 20;
   private Image left;
   private Image leftBg;
   private Image logo;
@@ -104,8 +105,7 @@ public class HeaderBuilder extends ElementBuilder {
     fdWaveArea.left = new FormAttachment( leftArea );
     fdWaveArea.top = new FormAttachment( 0, 0 );
     fdWaveArea.width = wave.getBounds().width;
-    fdWaveArea.height = wave.getBounds().height;
-    
+    fdWaveArea.height = wave.getBounds().height;   
     
     Label rightLabel = new Label( getParent(), SWT.NONE );
     rightLabel.setImage( right );
@@ -124,7 +124,7 @@ public class HeaderBuilder extends ElementBuilder {
     fdLogoArea.right = new FormAttachment( rightLabel );
     fdLogoArea.top = new FormAttachment( 0, 0 );
     fdLogoArea.height = rightBg.getBounds().height;
-    fdLogoArea.width = logo.getBounds().width + 220;
+    fdLogoArea.width = calculateLogoWidth( logo.getBounds().width );
     
     Label logoLabel = new Label( logoArea, SWT.NONE );
     logoLabel.setImage( logo ); 
@@ -132,7 +132,10 @@ public class HeaderBuilder extends ElementBuilder {
     fdLogo.height = logo.getBounds().height;
     fdLogo.width = logo.getBounds().width;
     fdLeftArea.right = new FormAttachment( logoArea );
+  }
 
+  private int calculateLogoWidth( final int logoWidth ) {
+    return logoWidth + ( wave.getBounds().width * 2 ) + LOGOSPACING;
   }
 
   public void dispose() {
