@@ -59,9 +59,17 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * @since 1.0
  */
 public class Combo extends Composite {
+  
+  /**
+   * The maximum number of characters that can be entered
+   * into a text widget.
+   * @since 1.3
+   */
+  public static final int LIMIT = Integer.MAX_VALUE;
 
   private final ListModel model;
   private String text = "";
+  private int textLimit;
   private int visibleCount = 5;
   private final Point selection;
 
@@ -97,6 +105,7 @@ public class Combo extends Composite {
    */
   public Combo( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    textLimit = LIMIT;
     selection = new Point( 0, 0 );
     model = new ListModel( true );
   }
@@ -684,6 +693,56 @@ public class Combo extends Composite {
       text = verifiedText;
       fireModifyEvent();
     }
+  }
+  
+  /**
+   * Returns the maximum number of characters that the receiver's
+   * text field is capable of holding. If this has not been changed
+   * by <code>setTextLimit()</code>, it will be the constant
+   * <code>Combo.LIMIT</code>.
+   * 
+   * @return the text limit
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #LIMIT
+   * @since 1.3
+   */
+  public int getTextLimit() {
+    checkWidget();
+    return textLimit;
+  }
+  
+  /**
+   * Sets the maximum number of characters that the receiver's
+   * text field is capable of holding to be the argument.
+   * <p>
+   * To reset this value to the default, use <code>setTextLimit(Combo.LIMIT)</code>.
+   * Specifying a limit value larger than <code>Combo.LIMIT</code> sets the
+   * receiver's limit to <code>Combo.LIMIT</code>.
+   * </p>
+   * @param limit new text limit
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_CANNOT_BE_ZERO - if the limit is zero</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #LIMIT
+   * @since 1.3
+   */
+  public void setTextLimit( final int limit ) {
+    checkWidget();
+    if( limit == 0 ) {
+      error( SWT.ERROR_CANNOT_BE_ZERO );
+    }
+    textLimit = limit;
   }
 
   // //////////////////

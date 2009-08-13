@@ -30,6 +30,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
   private static final Point DEFAULT_TEXT_SELECTION = new Point( 0, 0 );
+  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Combo.LIMIT );
 
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
@@ -43,6 +44,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   static final String PROP_TEXT = "text";
   static final String PROP_SELECTION = "selection";
   static final String PROP_TEXT_SELECTION = "textSelection";
+  static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_MAX_LIST_HEIGHT = "maxListHeight";
@@ -57,6 +59,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     Integer selection = new Integer( combo.getSelectionIndex() );
     adapter.preserve( PROP_SELECTION, selection );
     adapter.preserve( PROP_TEXT_SELECTION, combo.getSelection() );
+    adapter.preserve( PROP_TEXT_LIMIT,
+                      new Integer( combo.getTextLimit() ) );
     adapter.preserve( PROP_MAX_LIST_HEIGHT,
                       new Integer( getMaxListHeight( combo ) ) );
     adapter.preserve( PROP_LIST_ITEM_HEIGHT,
@@ -104,6 +108,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeEditable( combo );
     writeText( combo );
     writeTextSelection( combo );
+    writeTextLimit( combo );
     writeVerifyAndModifyListener( combo );
     WidgetLCAUtil.writeCustomVariant( combo );
   }
@@ -225,6 +230,26 @@ public class ComboLCA extends AbstractWidgetLCA {
         writer.call( JS_FUNC_SET_SELECTION_TEXT,
                      new Object[] { start, count } );
       }
+    }
+  }
+  
+  private static void writeTextLimit( final Combo combo )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( combo );
+    Integer newValue = new Integer( combo.getTextLimit() );
+    Integer defValue = DEFAULT_TEXT_LIMIT;
+    if( WidgetLCAUtil.hasChanged( combo,
+                                  PROP_TEXT_LIMIT,
+                                  newValue,
+                                  defValue ) )
+    {
+      // Negative values are treated as 'no limit' which is achieved by passing
+      // null to the client-side textLimit property
+      if( newValue.intValue() < 0 ) {
+        newValue = null;
+      }
+      writer.set( "textLimit", newValue );
     }
   }
 
