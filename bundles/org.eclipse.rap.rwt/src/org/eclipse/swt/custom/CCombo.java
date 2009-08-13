@@ -274,7 +274,9 @@ public final class CCombo extends Composite {
     if( limit == 0 ) {
       SWT.error ( SWT.ERROR_CANNOT_BE_ZERO );
     }
-    textLimit = limit;
+    if( limit > 0 ) {
+      textLimit = limit;
+    }
   }
   
   /**

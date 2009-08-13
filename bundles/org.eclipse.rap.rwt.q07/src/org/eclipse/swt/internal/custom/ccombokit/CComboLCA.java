@@ -17,14 +17,13 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
 public final class CComboLCA extends AbstractWidgetLCA {
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
-  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
+  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( CCombo.LIMIT );
   private static final Point DEFAULT_TEXT_SELECTION = new Point( 0, 0 );
 
   // Constants for JS functions names
@@ -254,9 +253,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
                                   newValue,
                                   defValue ) )
     {
-      // Negative values are treated as 'no limit' which is achieved by passing
-      // null to the client-side textLimit property
-      if( newValue.intValue() < 0 ) {
+      if( newValue.intValue() == CCombo.LIMIT ) {
         newValue = null;
       }
       writer.set( "textLimit", newValue );

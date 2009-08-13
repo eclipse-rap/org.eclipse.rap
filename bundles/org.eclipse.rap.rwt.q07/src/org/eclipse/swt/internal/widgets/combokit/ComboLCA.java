@@ -244,9 +244,7 @@ public class ComboLCA extends AbstractWidgetLCA {
                                   newValue,
                                   defValue ) )
     {
-      // Negative values are treated as 'no limit' which is achieved by passing
-      // null to the client-side textLimit property
-      if( newValue.intValue() < 0 ) {
+      if( newValue.intValue() == Combo.LIMIT ) {
         newValue = null;
       }
       writer.set( "textLimit", newValue );

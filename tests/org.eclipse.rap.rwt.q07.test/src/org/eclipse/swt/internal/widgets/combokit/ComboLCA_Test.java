@@ -47,7 +47,7 @@ public class ComboLCA_Test extends TestCase {
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
-    assertEquals( new Integer( Combo.LIMIT ), 
+    assertEquals( new Integer( Combo.LIMIT ),
                   adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
     Object height = adapter.getPreserved( ComboLCA.PROP_MAX_LIST_HEIGHT );
     assertEquals( new Integer( ComboLCA.getMaxListHeight( combo ) ), height );
@@ -55,7 +55,7 @@ public class ComboLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
-    assertEquals( new Point( 0, 0 ), 
+    assertEquals( new Point( 0, 0 ),
                   adapter.getPreserved( ComboLCA.PROP_TEXT_SELECTION ) );
     // Test preserving combo with items were one is selected
     RWTFixture.clearPreserved();
@@ -178,7 +178,7 @@ public class ComboLCA_Test extends TestCase {
     // textLimit
     combo.setTextLimit( 10 );
     RWTFixture.preserveWidgets();
-    Integer textLimit 
+    Integer textLimit
       = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 10 ), textLimit );
     display.dispose();
@@ -207,13 +207,6 @@ public class ComboLCA_Test extends TestCase {
     combo.select( 1 );
     comboLCA.renderChanges( combo );
     expected = "w.select( 1 );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
-    Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
-    combo.setTextLimit( 10 );
-    comboLCA.renderChanges( combo );
-    expected = "w.setTextLimit( 10 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -258,7 +251,7 @@ public class ComboLCA_Test extends TestCase {
     WidgetUtil.getLCA( combo ).readData( combo );
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
   }
-  
+
   public void testReadText() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
@@ -283,7 +276,7 @@ public class ComboLCA_Test extends TestCase {
     // test with verify listener
     final StringBuffer log = new StringBuffer();
     combo.addVerifyListener( new VerifyListener() {
-  
+
       public void verifyText( VerifyEvent event ) {
         assertEquals( combo, event.widget );
         assertEquals( "verify me", event.text );
@@ -302,7 +295,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "verify me", combo.getText() );
     assertEquals( "verify me", log.toString() );
   }
-  
+
   public void testTextSelectionWithVerifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener
@@ -314,7 +307,7 @@ public class ComboLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String comboId = WidgetUtil.getId( combo );
-    // ensure that selection is unchanged in case a verify-listener is 
+    // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
     VerifyListener emptyVerifyListener = new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
@@ -342,7 +335,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Point( 1, 1 ), combo.getSelection() );
     assertEquals( "verify me", combo.getText() );
     combo.removeVerifyListener( emptyVerifyListener );
-    // ensure that selection is unchanged in case a verify-listener changes 
+    // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
     combo.setText( "" );
     VerifyListener alteringVerifyListener = new VerifyListener() {
@@ -364,7 +357,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Point( 1, 1 ), combo.getSelection() );
     assertEquals( "verified", combo.getText() );
     combo.removeVerifyListener( alteringVerifyListener );
-    // ensure that selection is adjusted in case a verify-listener changes 
+    // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
     combo.setText( "" );
     alteringVerifyListener = new VerifyListener() {
@@ -412,13 +405,45 @@ public class ComboLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     RWTFixture.executeLifeCycleFromServerThread();
-    
-    // Simulate button click that executes widgetSelected 
+
+    // Simulate button click that executes widgetSelected
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     RWTFixture.executeLifeCycleFromServerThread();
     String expected = "w.select( 0 )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testTextLimit() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Combo combo = new Combo( shell, SWT.BORDER );
+    ComboLCA lca = new ComboLCA();
+    // run LCA one to dump the here uninteresting prolog
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( combo );
+    // Initially no textLimit must be rendered if the initial value is untouched
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( combo );
+    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setTextLimit" ) );
+    // Positive textLimit is written as setMaxLength( ... )
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( combo );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    combo.setTextLimit( 12 );
+    lca.renderChanges( combo );
+    String expected = "setTextLimit( 12 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    // textLimit = Combo.LIMIT is tread as 'no limit'
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( combo );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    combo.setTextLimit( Combo.LIMIT );
+    lca.renderChanges( combo );
+    expected = "setTextLimit( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

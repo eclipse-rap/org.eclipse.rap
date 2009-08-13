@@ -49,15 +49,15 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
     Object height = adapter.getPreserved( CComboLCA.PROP_MAX_LIST_HEIGHT );
     assertEquals( new Integer( CComboLCA.getMaxListHeight( ccombo ) ), height );
-    assertEquals( new Integer( Text.LIMIT ), 
+    assertEquals( new Integer( Text.LIMIT ),
                   adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
-    assertEquals( new Point( 0, 0 ), 
+    assertEquals( new Point( 0, 0 ),
                   adapter.getPreserved( CComboLCA.PROP_TEXT_SELECTION ) );
-    assertEquals( Boolean.FALSE, 
+    assertEquals( Boolean.FALSE,
                   adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, 
+    assertEquals( Boolean.FALSE,
                   adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
     // Test preserving CCombo with items, where one is selected
@@ -75,7 +75,7 @@ public class CComboLCA_Test extends TestCase {
       public void modifyText( final ModifyEvent event ) {
       }} );
     RWTFixture.preserveWidgets();
-    
+
     adapter = WidgetUtil.getAdapter( ccombo );
     items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 2, items.length );
@@ -85,9 +85,9 @@ public class CComboLCA_Test extends TestCase {
     height = adapter.getPreserved( CComboLCA.PROP_MAX_LIST_HEIGHT );
     assertEquals( new Integer( CComboLCA.getMaxListHeight( ccombo ) ), height );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( new Integer( 10 ), 
+    assertEquals( new Integer( 10 ),
                   adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
-    assertEquals( Boolean.TRUE, 
+    assertEquals( Boolean.TRUE,
                   adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
@@ -260,7 +260,7 @@ public class CComboLCA_Test extends TestCase {
     WidgetUtil.getLCA( ccombo ).readData( ccombo );
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
   }
-  
+
   public void testReadText() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
@@ -285,7 +285,7 @@ public class CComboLCA_Test extends TestCase {
     // test with verify listener
     final StringBuffer log = new StringBuffer();
     ccombo.addVerifyListener( new VerifyListener() {
-  
+
       public void verifyText( VerifyEvent event ) {
         assertEquals( ccombo, event.widget );
         assertEquals( "verify me", event.text );
@@ -304,7 +304,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( "verify me", ccombo.getText() );
     assertEquals( "verify me", log.toString() );
   }
-  
+
   public void testTextSelectionWithVerifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener
@@ -316,7 +316,7 @@ public class CComboLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String ccomboId = WidgetUtil.getId( ccombo );
-    // ensure that selection is unchanged in case a verify-listener is 
+    // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
     VerifyListener emptyVerifyListener = new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
@@ -344,7 +344,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
     assertEquals( "verify me", ccombo.getText() );
     ccombo.removeVerifyListener( emptyVerifyListener );
-    // ensure that selection is unchanged in case a verify-listener changes 
+    // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
     ccombo.setText( "" );
     VerifyListener alteringVerifyListener = new VerifyListener() {
@@ -366,7 +366,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
     assertEquals( "verified", ccombo.getText() );
     ccombo.removeVerifyListener( alteringVerifyListener );
-    // ensure that selection is adjusted in case a verify-listener changes 
+    // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
     ccombo.setText( "" );
     alteringVerifyListener = new VerifyListener() {
@@ -389,7 +389,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( "", ccombo.getText() );
     ccombo.removeVerifyListener( alteringVerifyListener );
   }
-  
+
   public void testTextLimit() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -411,12 +411,12 @@ public class CComboLCA_Test extends TestCase {
     lca.renderChanges( ccombo );
     String expected = "setTextLimit( 12 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // Negative textLimit is tread as 'no limit'
+    // textLimit = CCombo.LIMIT is tread as 'no limit'
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( ccombo );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    ccombo.setTextLimit( -1 );
+    ccombo.setTextLimit( CCombo.LIMIT );
     lca.renderChanges( ccombo );
     expected = "setTextLimit( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
@@ -446,8 +446,8 @@ public class CComboLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     RWTFixture.executeLifeCycleFromServerThread();
-    
-    // Simulate button click that executes widgetSelected 
+
+    // Simulate button click that executes widgetSelected
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );

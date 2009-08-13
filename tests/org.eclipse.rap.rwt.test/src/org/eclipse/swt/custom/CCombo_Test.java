@@ -79,11 +79,11 @@ public class CCombo_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setTextLimit( -1 );
-    assertEquals( -1, combo.getTextLimit() );
+    assertEquals( Combo.LIMIT, combo.getTextLimit() );
     combo.setTextLimit( -20 );
-    assertEquals( -20, combo.getTextLimit() );
+    assertEquals( Combo.LIMIT, combo.getTextLimit() );
     combo.setTextLimit( -12345 );
-    assertEquals( -12345, combo.getTextLimit() );
+    assertEquals( Combo.LIMIT, combo.getTextLimit() );
     combo.setTextLimit( 20 );
     assertEquals( 20, combo.getTextLimit() );
     try {
