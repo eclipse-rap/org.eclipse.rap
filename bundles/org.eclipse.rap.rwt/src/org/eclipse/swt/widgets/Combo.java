@@ -742,7 +742,9 @@ public class Combo extends Composite {
     if( limit == 0 ) {
       error( SWT.ERROR_CANNOT_BE_ZERO );
     }
-    textLimit = limit;
+    if( limit > 0 ) {
+      textLimit = limit;
+    }
   }
 
   // //////////////////

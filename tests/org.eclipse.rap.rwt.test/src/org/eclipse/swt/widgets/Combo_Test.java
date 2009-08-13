@@ -177,6 +177,24 @@ public class Combo_Test extends TestCase {
       assertTrue( ":c:" + i, combo.getText().equals( cases[ i ] ) );
     }
   }
+  
+  public void testTextLimit() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.DROP_DOWN );
+    assertEquals( Combo.LIMIT, combo.getTextLimit() );
+    try {
+      combo.setTextLimit( 0 );
+      fail( "No exception thrown for textLimit == 0" );
+    } catch( IllegalArgumentException e ) {
+    }
+    combo.setTextLimit( -7 );
+    assertEquals( Combo.LIMIT, combo.getTextLimit() );
+    combo.setTextLimit( 10 );
+    assertEquals( 10, combo.getTextLimit() );
+    combo.setTextLimit( -10 );
+    assertEquals( 10, combo.getTextLimit() );
+  }
 
   public void testSelection() {
     Display display = new Display();

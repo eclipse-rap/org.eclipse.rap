@@ -47,6 +47,8 @@ public class ComboLCA_Test extends TestCase {
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
+    assertEquals( new Integer( Combo.LIMIT ), 
+                  adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
     Object height = adapter.getPreserved( ComboLCA.PROP_MAX_LIST_HEIGHT );
     assertEquals( new Integer( ComboLCA.getMaxListHeight( combo ) ), height );
     Boolean hasListeners;
@@ -173,6 +175,12 @@ public class ComboLCA_Test extends TestCase {
      = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
+    // textLimit
+    combo.setTextLimit( 10 );
+    RWTFixture.preserveWidgets();
+    Integer textLimit 
+      = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
+    assertEquals( new Integer( 10 ), textLimit );
     display.dispose();
   }
 
@@ -199,6 +207,13 @@ public class ComboLCA_Test extends TestCase {
     combo.select( 1 );
     comboLCA.renderChanges( combo );
     expected = "w.select( 1 );";
+    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
+    Fixture.fakeResponseWriter();
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    combo.setTextLimit( 10 );
+    comboLCA.renderChanges( combo );
+    expected = "w.setTextLimit( 10 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
