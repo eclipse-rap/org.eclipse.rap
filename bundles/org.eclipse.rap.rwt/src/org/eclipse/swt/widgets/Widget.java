@@ -557,6 +557,28 @@ public abstract class Widget implements Adaptable {
   }
 
   /**
+   * Returns <code>true</code> if there are any listeners
+   * for the specified event type associated with the receiver,
+   * and <code>false</code> otherwise. The event type is one of
+   * the event constants defined in class <code>SWT</code>.
+   *
+   * @param eventType the type of event
+   * @return true if the event is hooked
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SWT
+   * @since 1.3
+   */
+  public boolean isListening( final int eventType ) {
+    checkWidget();
+    return getListeners( eventType ).length > 0;
+  }
+  
+  /**
    * Returns an array of listeners who will be notified when an event 
    * of the given type occurs. The event type is one of the event constants 
    * defined in class <code>SWT</code>.

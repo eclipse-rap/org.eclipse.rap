@@ -345,4 +345,18 @@ public class Widget_Test extends TestCase {
     widget.addListener( SWT.Resize, dummyListener2 );
     assertEquals( 2, widget.getListeners( SWT.Resize ).length );
   }
+
+  public void testIsListening() throws Exception {
+    final Display display = new Display();
+    final Widget widget = new Shell( display );
+    final Listener dummyListener = new Listener() {
+      public void handleEvent( Event event ) {
+      }
+    };
+    assertFalse( widget.isListening( SWT.Resize ) );
+    widget.addListener( SWT.Resize, dummyListener );
+    assertTrue( widget.isListening( SWT.Resize ) );
+    widget.removeListener( SWT.Resize, dummyListener );
+    assertFalse( widget.isListening( SWT.Resize ) );
+  }
 }
