@@ -121,14 +121,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.addEventListener( "blur", this._onFocusOut, this );
     // Keyboard navigation
     this._keyboardSelecionChanged = false;
-    // TODO [rh] key events in Safari not working properly, see
-    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
-    //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
-    if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-      this.addEventListener( "keydown", this._onKeyDown, this );
-      this.addEventListener( "keypress", this._onKeyPress, this );
-      this.addEventListener( "keyup", this._onKeyUp, this );
-    }
+    this.addEventListener( "keydown", this._onKeyDown, this );
+    this.addEventListener( "keypress", this._onKeyPress, this );
+    this.addEventListener( "keyup", this._onKeyUp, this );
     // Listen to send event of request to report current state
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
@@ -156,14 +151,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
-    // TODO [rh] key events in Safari not working properly, see
-    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
-    //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
-    if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-      this.removeEventListener( "keydown", this._onKeyDown, this );
-      this.removeEventListener( "keypress", this._onKeyPress, this );
-      this.removeEventListener( "keyup", this._onKeyUp, this );
-    }
+    this.removeEventListener( "keydown", this._onKeyDown, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
+    this.removeEventListener( "keyup", this._onKeyUp, this );
     this._virtualItem.dispose();
     this._emptyItem.dispose();
     // For performance reasons, when disposing a a Table, the server-side LCA
