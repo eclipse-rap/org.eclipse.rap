@@ -339,6 +339,51 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
+  // TODO [bm]: test for workaround for bug 286306
+  //            we need to count the DROP_DOWN twice for a proper index
+  //            as it consists of two
+  //            widgets on the client-side. This needs to be removed once we
+  //            a single-widget DROP_DOWN ToolItem in place
+  public void testIndexOnInitializeWithDropDown() throws Exception {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.NONE );
+    final ToolItem item1 = new ToolItem( tb, SWT.DROP_DOWN );
+    final ToolItem item2 = new ToolItem( tb, SWT.PUSH );
+    final ToolItem item3 = new ToolItem( tb, SWT.DROP_DOWN );
+    final ToolItem item4 = new ToolItem( tb, SWT.PUSH );
+    shell.open();
+    ToolItemLCA itemLCA = new ToolItemLCA();
+    itemLCA.renderInitialization( item1 );
+    itemLCA.renderInitialization( item2 );
+    itemLCA.renderInitialization( item3 );
+    itemLCA.renderInitialization( item4 );
+    String parent = "wm.findWidgetById( \"" + WidgetUtil.getId( tb )+ "\" )";
+    String expected1 = "org.eclipse.swt.ToolItemUtil.createDropDown( \""
+                      + WidgetUtil.getId( item1 )
+                      + "\", "
+                      + parent
+                      + ", 0, false );";
+    String expected2 = "org.eclipse.swt.ToolItemUtil.createPush( \""
+                       + WidgetUtil.getId( item2 )
+                       + "\", "
+                       + parent
+                       + ", 2, false );";
+    String expected3 = "org.eclipse.swt.ToolItemUtil.createDropDown( \""
+                       + WidgetUtil.getId( item3 )
+                       + "\", "
+                       + parent
+                       + ", 3, false );";
+    String expected4 = "org.eclipse.swt.ToolItemUtil.createPush( \""
+                       + WidgetUtil.getId( item4 )
+                       + "\", "
+                       + parent
+                       + ", 5, false );";
+    assertEquals( expected1 + expected2 + expected3 + expected4,
+                  Fixture.getAllMarkup() );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

@@ -65,7 +65,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent(),
-      new Integer( itemIndex ),
+      ToolItemLCAUtil.getClientSideIndex( toolItem ),
       toolItem.getSelection() ? "true" : null,
       neighbour
     };

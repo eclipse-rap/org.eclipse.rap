@@ -57,7 +57,7 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolBar,
-      new Integer( toolBar.indexOf( toolItem ) )
+      ToolItemLCAUtil.getClientSideIndex( toolItem )
     };
     writer.callStatic( CREATE_CHECK, args );
     writer.set( "checked", toolItem.getSelection() );

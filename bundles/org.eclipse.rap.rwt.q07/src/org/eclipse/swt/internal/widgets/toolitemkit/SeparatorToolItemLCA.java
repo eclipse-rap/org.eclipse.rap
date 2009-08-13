@@ -46,7 +46,7 @@ final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
     Object[] args = new Object[]{
       WidgetUtil.getId( toolItem ),
       toolBar,
-      new Integer( toolBar.indexOf( toolItem ) ),
+      ToolItemLCAUtil.getClientSideIndex( toolItem ),
       Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT  ) != 0 )
     };
     writer.callStatic( CREATE_SEPARATOR, args );    

@@ -21,8 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 final class ToolItemLCAUtil {
@@ -124,6 +123,23 @@ final class ToolItemLCAUtil {
     return bounds;
   }
 
+  // TODO [bm]: workaround for bug 286306
+  //            we need to count the DROP_DOWN twice as it consists of two
+  //            widgets on the client-side. This needs to be removed once we
+  //            a proper DROP_DOWN ToolItem in place
+  static Integer getClientSideIndex( final ToolItem toolItem ) {
+    ToolBar toolBar = toolItem.getParent();
+    int result = 0;
+    int toolItemIndex = toolBar.indexOf( toolItem );
+    for( int i = 0; i < toolItemIndex; i++ ) {
+      result++;
+      if( ( toolBar.getItem( i ).getStyle() & SWT.DROP_DOWN ) != 0 ) {
+        result++;
+      }
+    }
+    return new Integer( result );
+  }
+  
   ////////
   // Image
 
