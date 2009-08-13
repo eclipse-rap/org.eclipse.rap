@@ -59,7 +59,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * @since 1.0
  */
 public class Combo extends Composite {
-  
+
   /**
    * The maximum number of characters that can be entered
    * into a text widget.
@@ -197,7 +197,7 @@ public class Combo extends Composite {
    * Sets the selection in the receiver's text field to the
    * range specified by the argument whose x coordinate is the
    * start of the selection and whose y coordinate is the end
-   * of the selection. 
+   * of the selection.
    *
    * @param selection a point representing the new selection start and end
    *
@@ -208,7 +208,7 @@ public class Combo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public void setSelection( final Point selection ) {
@@ -249,7 +249,7 @@ public class Combo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Point getSelection() {
@@ -273,7 +273,7 @@ public class Combo extends Composite {
    * </ul>
    *
    * @see #deselectAll
-   * 
+   *
    * @since 1.3
    */
   public void clearSelection() {
@@ -694,15 +694,15 @@ public class Combo extends Composite {
       fireModifyEvent();
     }
   }
-  
+
   /**
    * Returns the maximum number of characters that the receiver's
    * text field is capable of holding. If this has not been changed
    * by <code>setTextLimit()</code>, it will be the constant
    * <code>Combo.LIMIT</code>.
-   * 
+   *
    * @return the text limit
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -715,7 +715,7 @@ public class Combo extends Composite {
     checkWidget();
     return textLimit;
   }
-  
+
   /**
    * Sets the maximum number of characters that the receiver's
    * text field is capable of holding to be the argument.
@@ -733,7 +733,7 @@ public class Combo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #LIMIT
    * @since 1.3
    */
@@ -744,6 +744,8 @@ public class Combo extends Composite {
     }
     if( limit > 0 ) {
       textLimit = limit;
+    } else {
+      textLimit = LIMIT;
     }
   }
 
@@ -985,7 +987,7 @@ public class Combo extends Composite {
       fireModifyEvent();
     }
   }
-  
+
   private void fireModifyEvent() {
     ModifyEvent modifyEvent = new ModifyEvent( this );
     modifyEvent.processEvent();
@@ -997,7 +999,7 @@ public class Combo extends Composite {
       = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
   }
-  
+
   private int getButtonWidth() {
     ThemeManager manager = ThemeManager.getInstance();
     ComboThemeAdapter adapter

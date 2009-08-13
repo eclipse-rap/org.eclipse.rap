@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Point;
  * They are covered in List_Test
  */
 public class Combo_Test extends TestCase {
-  
+
   protected boolean listenerCalled;
 
   public void testDeselect() {
@@ -177,7 +177,7 @@ public class Combo_Test extends TestCase {
       assertTrue( ":c:" + i, combo.getText().equals( cases[ i ] ) );
     }
   }
-  
+
   public void testTextLimit() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -193,7 +193,7 @@ public class Combo_Test extends TestCase {
     combo.setTextLimit( 10 );
     assertEquals( 10, combo.getTextLimit() );
     combo.setTextLimit( -10 );
-    assertEquals( 10, combo.getTextLimit() );
+    assertEquals( Combo.LIMIT, combo.getTextLimit() );
   }
 
   public void testSelection() {
@@ -405,7 +405,7 @@ public class Combo_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testAddModifyListenerReadOnly() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -506,7 +506,7 @@ public class Combo_Test extends TestCase {
     expected = new Point( 104, 104 );
     assertEquals( expected, combo.computeSize( 100, 100 ) );
   }
-  
+
   public void testSetTextAndSelection() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();

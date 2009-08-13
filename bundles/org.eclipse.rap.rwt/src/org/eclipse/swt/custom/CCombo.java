@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.*;
  * combo box. Specifically, on win32, the height of a CCombo can be set;
  * attempts to set the height of a Combo are ignored. CCombo can be used
  * anywhere that having the increased flexibility is more important than
- * getting native L&F, but the decision should not be taken lightly. 
+ * getting native L&F, but the decision should not be taken lightly.
  * There is no is no strict requirement that CCombo look or behave
  * the same as the native combo box.
  * </p>
@@ -54,13 +54,13 @@ public final class CCombo extends Composite {
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
-  
+
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
-  
+
   //This factor must be kept in sync with TextUtil.js#_updateLineHeight
   private static final double LINE_HEIGHT_FACTOR = 1.2;
-  
+
   /**
    * The maximum number of characters that can be entered
    * into a text widget.
@@ -70,7 +70,7 @@ public final class CCombo extends Composite {
    * </p>
    */
   public static final int LIMIT = Integer.MAX_VALUE;
-  
+
   private final ListModel model;
   private String text;
   private int textLimit;
@@ -78,14 +78,14 @@ public final class CCombo extends Composite {
   private int visibleCount;
   private boolean editable;
   private boolean dropped;
-	
+
   /**
    * Constructs a new instance of this class given its parent
    * and a style value describing its behavior and appearance.
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -117,7 +117,7 @@ public final class CCombo extends Composite {
   	editable = ( style & SWT.READ_ONLY ) != 0 ? false : true;
   	model = new ListModel( true );
   }
-  
+
   public int getStyle() {
     int result = super.getStyle();
     result &= ~SWT.READ_ONLY;
@@ -126,7 +126,7 @@ public final class CCombo extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Returns the zero-relative index of the item which is currently
    * selected in the receiver's list, or -1 if no item is selected.
@@ -142,9 +142,9 @@ public final class CCombo extends Composite {
     checkWidget();
     return model.getSelectionIndex();
   }
-  
+
   /**
-   * Selects the item at the given zero-relative index in the receiver's 
+   * Selects the item at the given zero-relative index in the receiver's
    * list.  If the item at the index was already selected, it remains
    * selected. Indices that are out of range are ignored.
    *
@@ -160,9 +160,9 @@ public final class CCombo extends Composite {
     model.setSelection( index );
     updateText();
   }
-  
+
   /**
-   * Deselects the item at the given zero-relative index in the receiver's 
+   * Deselects the item at the given zero-relative index in the receiver's
    * list.  If the item at the index was already deselected, it remains
    * deselected. Indices that are out of range are ignored.
    *
@@ -180,7 +180,7 @@ public final class CCombo extends Composite {
     }
     updateText();
   }
-  
+
   /**
    * Deselects all selected items in the receiver's list.
    * <p>
@@ -201,12 +201,12 @@ public final class CCombo extends Composite {
     model.deselectAll();
     updateText();
   }
-  
+
   /**
    * Sets the selection in the receiver's text field to the
    * range specified by the argument whose x coordinate is the
    * start of the selection and whose y coordinate is the end
-   * of the selection. 
+   * of the selection.
    *
    * @param selection a point representing the new selection start and end
    *
@@ -235,7 +235,7 @@ public final class CCombo extends Composite {
     this.selection.x = validatedStart;
     this.selection.y = validatedEnd;
   }
-  
+
   /**
    * Returns a <code>Point</code> whose x coordinate is the start
    * of the selection in the receiver's text field, and whose y
@@ -254,7 +254,7 @@ public final class CCombo extends Composite {
     checkWidget();
     return new Point( selection.x, selection.y );
   }
-  
+
   /**
    * Sets the maximum number of characters that the receiver's
    * text field is capable of holding to be the argument.
@@ -276,17 +276,19 @@ public final class CCombo extends Composite {
     }
     if( limit > 0 ) {
       textLimit = limit;
+    } else {
+      textLimit = LIMIT;
     }
   }
-  
+
   /**
    * Returns the maximum number of characters that the receiver's
    * text field is capable of holding. If this has not been changed
    * by <code>setTextLimit()</code>, it will be the constant
    * <code>Combo.LIMIT</code>.
-   * 
+   *
    * @return the text limit
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -296,7 +298,7 @@ public final class CCombo extends Composite {
     checkWidget();
     return textLimit;
   }
-  
+
   /**
    * Returns the height of the receivers's text field.
    *
@@ -306,7 +308,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public int getTextHeight() {
@@ -315,14 +317,14 @@ public final class CCombo extends Composite {
     int fontSize = font.getFontData()[ 0 ].getHeight();
     return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
-  
+
   /**
    * Sets the selection in the receiver's text field to an empty
    * selection starting just before the first character. If the
    * text field is editable, this has the effect of placing the
    * i-beam at the start of the text.
    * <p>
-   * Note: To clear the selected items in the receiver's list, 
+   * Note: To clear the selected items in the receiver's list,
    * use <code>deselectAll()</code>.
    * </p>
    *
@@ -338,7 +340,7 @@ public final class CCombo extends Composite {
     selection.x = 0;
     selection.y = 0;
   }
-  
+
   /**
    * Adds the argument to the end of the receiver's list.
    *
@@ -358,7 +360,7 @@ public final class CCombo extends Composite {
   	checkWidget();
   	model.add( string );
   }
-  
+
   /**
    * Adds the argument to the receiver's list at the given
    * zero-relative index.
@@ -386,7 +388,7 @@ public final class CCombo extends Composite {
   	checkWidget();
   	model.add( string, index );
   }
-  
+
   /**
    * Removes the item from the receiver's list at the given
    * zero-relative index.
@@ -409,10 +411,10 @@ public final class CCombo extends Composite {
     }
     model.remove( index );
   }
-  
+
   /**
    * Removes the items from the receiver's list which are
-   * between the given zero-relative start and end 
+   * between the given zero-relative start and end
    * indices (inclusive).
    *
    * @param start the start of the range
@@ -438,10 +440,10 @@ public final class CCombo extends Composite {
     }
     model.remove( start, end );
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * until an item is found that is equal to the argument, 
+   * until an item is found that is equal to the argument,
    * and removes that item from the list.
    *
    * @param string the item to remove
@@ -464,7 +466,7 @@ public final class CCombo extends Composite {
     }
     model.remove( string );
   }
-  
+
   /**
    * Removes all of the items from the receiver's list and clear the
    * contents of receiver's text field.
@@ -479,7 +481,7 @@ public final class CCombo extends Composite {
     deselectAll();
     model.removeAll();
   }
-  
+
   /**
    * Sets the text of the item in the receiver's list at the given
    * zero-relative index to the string argument. This is equivalent
@@ -502,7 +504,7 @@ public final class CCombo extends Composite {
     checkWidget();
     model.setItem( index, string );
   }
-  
+
   /**
    * Sets the receiver's list to be the given array of items.
    *
@@ -521,7 +523,7 @@ public final class CCombo extends Composite {
     checkWidget();
     model.setItems( items );
   }
-  
+
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver's list. Throws an exception if the index is out
@@ -542,7 +544,7 @@ public final class CCombo extends Composite {
     checkWidget();
     return model.getItem( index );
   }
-  
+
   /**
    * Returns the number of items contained in the receiver's list.
    *
@@ -557,7 +559,7 @@ public final class CCombo extends Composite {
     checkWidget();
     return model.getItemCount();
   }
-  
+
   /**
    * Returns the height of the area which would be used to
    * display <em>one</em> of the items in the receiver's list.
@@ -575,14 +577,14 @@ public final class CCombo extends Composite {
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
   }
-  
+
   /**
    * Returns an array of <code>String</code>s which are the items
-   * in the receiver's list. 
+   * in the receiver's list.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver's list
@@ -596,7 +598,7 @@ public final class CCombo extends Composite {
     checkWidget();
     return model.getItems();
   }
-  
+
   /**
    * Sets the number of items that are visible in the drop
    * down portion of the receiver's list.
@@ -607,7 +609,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    */
   public void setVisibleItemCount( final int count ) {
     checkWidget();
@@ -615,7 +617,7 @@ public final class CCombo extends Composite {
       visibleCount = count;
     }
   }
-  
+
   /**
    * Gets the number of items that are visible in the drop
    * down portion of the receiver's list.
@@ -626,13 +628,13 @@ public final class CCombo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    */
   public int getVisibleItemCount() {
     checkWidget();
     return visibleCount;
   }
-  
+
   /**
    * Marks the receiver's list as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise.
@@ -648,13 +650,13 @@ public final class CCombo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    */
   public void setListVisible( final boolean visible ) {
     checkWidget();
     dropped = visible;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver's list is visible,
    * and <code>false</code> otherwise.
@@ -671,16 +673,16 @@ public final class CCombo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    */
   public boolean getListVisible() {
     checkWidget();
     return dropped;
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -700,9 +702,9 @@ public final class CCombo extends Composite {
     if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     return indexOf( string, 0 );
   }
-  
+
   /**
-   * Searches the receiver's list starting at the given, 
+   * Searches the receiver's list starting at the given,
    * zero-relative index until an item is found that is equal
    * to the argument, and returns the index of that item. If
    * no item is found or the starting index is out of range,
@@ -731,7 +733,7 @@ public final class CCombo extends Composite {
     }
     return -1;
   }
-  
+
   /**
    * Sets the contents of the receiver's text field to the
    * given string.
@@ -739,7 +741,7 @@ public final class CCombo extends Composite {
    * Note: The text field in a <code>Combo</code> is typically
    * only capable of displaying a single line of text. Thus,
    * setting the text to a string containing line breaks or
-   * other special characters will probably cause it to 
+   * other special characters will probably cause it to
    * display incorrectly.
    * </p>
    *
@@ -780,7 +782,7 @@ public final class CCombo extends Composite {
       fireModifyEvent();
     }
   }
-  
+
   /**
    * Returns a string containing a copy of the contents of the
    * receiver's text field.
@@ -806,7 +808,7 @@ public final class CCombo extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Sets the editable state.
    *
@@ -816,31 +818,31 @@ public final class CCombo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    */
   public void setEditable( final boolean editable ) {
     checkWidget();
     this.editable = editable;
   }
-  
+
   /**
    * Gets the editable state.
    *
    * @return whether or not the receiver is editable
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    */
   public boolean getEditable() {
     checkWidget();
     return editable;
   }
-  
-  public Point computeSize( final int wHint, 
-                            final int hHint, 
+
+  public Point computeSize( final int wHint,
+                            final int hHint,
                             final boolean changed )
   {
     checkWidget();
@@ -881,7 +883,7 @@ public final class CCombo extends Composite {
     width += 2 * border;
     return new Point( width, height );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the user changes the receiver's selection, by sending
@@ -910,7 +912,7 @@ public final class CCombo extends Composite {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the user changes the receiver's selection.
@@ -932,7 +934,7 @@ public final class CCombo extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's text is modified, by sending
@@ -956,7 +958,7 @@ public final class CCombo extends Composite {
     checkWidget();
     ModifyEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the receiver's text is modified.
@@ -978,7 +980,7 @@ public final class CCombo extends Composite {
     checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's text is verified, by sending
@@ -997,12 +999,12 @@ public final class CCombo extends Composite {
    *
    * @see VerifyListener
    * @see #removeVerifyListener
-   * 
+   *
    */
   public void addVerifyListener( final VerifyListener verifyListener ) {
     VerifyEvent.addListener( this, verifyListener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the control is verified.
@@ -1019,17 +1021,17 @@ public final class CCombo extends Composite {
    *
    * @see VerifyListener
    * @see #addVerifyListener
-   * 
+   *
    */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
     VerifyEvent.removeListener( this, verifyListener );
   }
-  
+
   public Control[] getChildren() {
   	checkWidget();
   	return new Control[ 0 ];
   }
-  
+
   /**
    * Sets the layout which is associated with the receiver to be
    * the argument which may be null.
@@ -1049,7 +1051,7 @@ public final class CCombo extends Composite {
   	checkWidget();
   	return;
   }
-  
+
   //////////////////
   // Helping methods
 
@@ -1074,7 +1076,7 @@ public final class CCombo extends Composite {
     }
     return result;
   }
-  
+
   private void updateText() {
     int style = super.getStyle();
     if( ( style & SWT.READ_ONLY ) == 0 ) {
@@ -1089,12 +1091,12 @@ public final class CCombo extends Composite {
       fireModifyEvent();
     }
   }
-  
+
   private void fireModifyEvent() {
     ModifyEvent modifyEvent = new ModifyEvent( this );
     modifyEvent.processEvent();
   }
-  
+
   // Made in the same way as in Combo.java
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();
@@ -1102,7 +1104,7 @@ public final class CCombo extends Composite {
       = ( CComboThemeAdapter )manager.getThemeAdapter( CCombo.class );
     return adapter.getPadding( this );
   }
-  
+
   private int getButtonWidth() {
     ThemeManager manager = ThemeManager.getInstance();
     CComboThemeAdapter adapter
