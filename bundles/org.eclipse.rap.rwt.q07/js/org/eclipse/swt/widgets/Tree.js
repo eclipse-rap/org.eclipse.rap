@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     this._tree = new qx.ui.tree.Tree( trs );
     this._tree.setHideNode( true );
     this._tree.setRootOpenClose( true );
-    this._tree.setUseDoubleClick( false );  // true supresses dblclick events !
+    this._tree.setUseDoubleClick( true );
     this._tree.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
 
     // TODO [rh] this is only to make the tree focusable at all
