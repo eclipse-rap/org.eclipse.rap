@@ -180,6 +180,7 @@ public final class WidgetLCAUtil {
    * @param bgGradientPercents the array with background gradient percents to
    *        preserve
    * @see #writeBackgroundGradient(Widget, Color[], int[])
+   * @since 1.3
    */
   public static void preserveBackgroundGradient( final Widget widget,
                                                  final Color[] bgGradientColors,
@@ -198,6 +199,7 @@ public final class WidgetLCAUtil {
    * @param color the rounded border color to preserve
    * @param radius the rounded border radius to preserve
    * @see #writeRoundedBorder(Widget, int, Color, Rectangle)
+   * @since 1.3
    */
   public static void preserveRoundedBorder( final Widget widget,
                                             final int width,
@@ -705,6 +707,7 @@ public final class WidgetLCAUtil {
    * @param bgGradientPercents the new array with background gradient percents
    * @throws IOException
    * @see {@link #preserveBackgroundGradient(Widget, Color[], int[])}
+   * @since 1.3
    */
   public static void writeBackgroundGradient( final Widget widget,
                                               final Color[] bgGradientColor,
@@ -753,6 +756,7 @@ public final class WidgetLCAUtil {
    * @param radius the rounded border radius to preserve
    * @throws IOException
    * @see {@link #preserveRoundedBorder(Widget, int, Color, Rectangle)}
+   * @since 1.3
    */
   public static void writeRoundedBorder( final Widget widget,
                                          final int width,
@@ -1107,7 +1111,7 @@ public final class WidgetLCAUtil {
    * <code>toolTip</code> of a widget. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
