@@ -26,6 +26,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -175,41 +176,42 @@ public final class WidgetLCAUtil {
    * Preserves the background gradient properties of the specified widget.
    *
    * @param widget the widget whose background gradient properties to preserve
-   * @param bgGradientColors the array with background gradient colors to
-   *        preserve
-   * @param bgGradientPercents the array with background gradient percents to
-   *        preserve
-   * @see #writeBackgroundGradient(Widget, Color[], int[])
+   * @see #writeBackgroundGradient(Widget)
    * @since 1.3
    */
-  public static void preserveBackgroundGradient( final Widget widget,
-                                                 final Color[] bgGradientColors,
-                                                 final int[] bgGradientPercents )
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS, bgGradientColors );
-    adapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS, bgGradientPercents );
+  public static void preserveBackgroundGradient( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    if( adapter != null ) {
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+      int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS,
+                              bgGradientColors );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS,
+                              bgGradientPercents );
+    }
   }
 
   /**
    * Preserves the rounded border properties of the specified widget.
    *
    * @param widget the widget whose rounded border properties to preserve
-   * @param width the rounded border width to preserve
-   * @param color the rounded border color to preserve
-   * @param radius the rounded border radius to preserve
-   * @see #writeRoundedBorder(Widget, int, Color, Rectangle)
+   * @see #writeRoundedBorder(Widget)
    * @since 1.3
    */
-  public static void preserveRoundedBorder( final Widget widget,
-                                            final int width,
-                                            final Color color,
-                                            final Rectangle radius )
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_ROUNDED_BORDER_WIDTH, new Integer( width ) );
-    adapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
-    adapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
+  public static void preserveRoundedBorder( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    if( adapter != null ) {
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      int width = gfxAdapter.getRoundedBorderWidth();
+      Color color = gfxAdapter.getRoundedBorderColor();
+      Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_WIDTH, new Integer( width ) );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
+    }
   }
 
   /**
@@ -703,44 +705,46 @@ public final class WidgetLCAUtil {
    * background gradient properties of the specified widget.
    *
    * @param widget the widget whose background gradient properties to set
-   * @param bgGradientColor the new array with background gradient colors
-   * @param bgGradientPercents the new array with background gradient percents
    * @throws IOException
-   * @see {@link #preserveBackgroundGradient(Widget, Color[], int[])}
+   * @see {@link #preserveBackgroundGradient(Widget)}
    * @since 1.3
    */
-  public static void writeBackgroundGradient( final Widget widget,
-                                              final Color[] bgGradientColor,
-                                              final int[] bgGradientPercents )
+  public static void writeBackgroundGradient( final Widget widget )
     throws IOException
   {
-    boolean changed = WidgetLCAUtil.hasChanged( widget,
-                                                PROP_BACKGROUND_GRADIENT_COLORS,
-                                                bgGradientColor,
-                                                null );
-    if( !changed ) {
-      changed = WidgetLCAUtil.hasChanged( widget,
-                                          PROP_BACKGROUND_GRADIENT_PERCENTS,
-                                          bgGradientPercents,
-                                          null );
-    }
-    if( changed ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      Integer[] percents = null;
-      if( bgGradientPercents != null ) {
-        percents = new Integer[ bgGradientPercents.length ];
-        for( int i = 0; i < bgGradientPercents.length; i++ ) {
-          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
-        }
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    if( adapter != null ) {
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+      int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+      boolean changed = WidgetLCAUtil.hasChanged( widget,
+                                                  PROP_BACKGROUND_GRADIENT_COLORS,
+                                                  bgGradientColors,
+                                                  null );
+      if( !changed ) {
+        changed = WidgetLCAUtil.hasChanged( widget,
+                                            PROP_BACKGROUND_GRADIENT_PERCENTS,
+                                            bgGradientPercents,
+                                            null );
       }
-      Object[] args = new Object[] {
-        widget,
-        bgGradientColor,
-        percents
-      };
-      writer.call( JSWriter.WIDGET_MANAGER_REF,
-                   JS_FUNC_SET_BACKGROUND_GRADIENT,
-                   args );
+      if( changed ) {
+        JSWriter writer = JSWriter.getWriterFor( widget );
+        Integer[] percents = null;
+        if( bgGradientPercents != null ) {
+          percents = new Integer[ bgGradientPercents.length ];
+          for( int i = 0; i < bgGradientPercents.length; i++ ) {
+            percents[ i ] =  new Integer( bgGradientPercents[ i ] );
+          }
+        }
+        Object[] args = new Object[] {
+          widget,
+          bgGradientColors,
+          percents
+        };
+        writer.call( JSWriter.WIDGET_MANAGER_REF,
+                     JS_FUNC_SET_BACKGROUND_GRADIENT,
+                     args );
+      }
     }
   }
 
@@ -750,50 +754,51 @@ public final class WidgetLCAUtil {
    * JavaScript code to the response that updates the client-side rounded border
    * of the specified widget.
    *
-   * @param widget the widget whose rounded border properties to preserve
-   * @param width the rounded border width to preserve
-   * @param color the rounded border color to preserve
-   * @param radius the rounded border radius to preserve
+   * @param widget the widget whose rounded border properties to set
    * @throws IOException
-   * @see {@link #preserveRoundedBorder(Widget, int, Color, Rectangle)}
+   * @see {@link #preserveRoundedBorder(Widget)}
    * @since 1.3
    */
-  public static void writeRoundedBorder( final Widget widget,
-                                         final int width,
-                                         final Color color,
-                                         final Rectangle radius )
+  public static void writeRoundedBorder( final Widget widget )
     throws IOException
   {
-    boolean changed = WidgetLCAUtil.hasChanged( widget,
-                                                PROP_ROUNDED_BORDER_WIDTH,
-                                                new Integer( width ),
-                                                new Integer( 0 ) );
-    if( !changed ) {
-      changed = WidgetLCAUtil.hasChanged( widget,
-                                          PROP_ROUNDED_BORDER_COLOR,
-                                          color,
-                                          null );
-    }
-    if( !changed ) {
-      changed = WidgetLCAUtil.hasChanged( widget,
-                                          PROP_ROUNDED_BORDER_RADIUS,
-                                          radius,
-                                          null );
-    }
-    if( changed && radius != null ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      Object[] args = new Object[] {
-        widget,
-        new Integer( width ),
-        color,
-        new Integer( radius.x ),
-        new Integer( radius.y ),
-        new Integer( radius.width ),
-        new Integer( radius.height )
-      };
-      writer.call( JSWriter.WIDGET_MANAGER_REF,
-                   JS_FUNC_SET_ROUNDED_BORDER,
-                   args );
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    if( adapter != null ) {
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      int width = gfxAdapter.getRoundedBorderWidth();
+      Color color = gfxAdapter.getRoundedBorderColor();
+      Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+      boolean changed = WidgetLCAUtil.hasChanged( widget,
+                                                  PROP_ROUNDED_BORDER_WIDTH,
+                                                  new Integer( width ),
+                                                  new Integer( 0 ) );
+      if( !changed ) {
+        changed = WidgetLCAUtil.hasChanged( widget,
+                                            PROP_ROUNDED_BORDER_COLOR,
+                                            color,
+                                            null );
+      }
+      if( !changed ) {
+        changed = WidgetLCAUtil.hasChanged( widget,
+                                            PROP_ROUNDED_BORDER_RADIUS,
+                                            radius,
+                                            null );
+      }
+      if( changed && radius != null ) {
+        JSWriter writer = JSWriter.getWriterFor( widget );
+        Object[] args = new Object[] {
+          widget,
+          new Integer( width ),
+          color,
+          new Integer( radius.x ),
+          new Integer( radius.y ),
+          new Integer( radius.width ),
+          new Integer( radius.height )
+        };
+        writer.call( JSWriter.WIDGET_MANAGER_REF,
+                     JS_FUNC_SET_ROUNDED_BORDER,
+                     args );
+      }
     }
   }
 
