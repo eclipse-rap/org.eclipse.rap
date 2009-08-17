@@ -30,6 +30,9 @@ plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot
 # example design
 plugin@org.eclipse.rap.design.example=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.design.example
 
+# cheatsheets
+plugin@org.eclipse.rap.ui.cheatsheets=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.cheatsheets
+
 # tests
 feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.test-feature,org.eclipse.rap.test
 feature@org.eclipse.rap.pretest=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.pretest-feature,org.eclipse.rap.test
