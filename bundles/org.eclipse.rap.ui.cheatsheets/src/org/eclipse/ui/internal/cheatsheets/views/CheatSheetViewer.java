@@ -34,7 +34,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -118,7 +117,8 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	private Listener listener;
 
 	private ICheatSheetStateManager stateManager; // The state manager to use when saving
-	private ICheatSheetStateManager preTrayManager; // The state manager in use before a tray was opened
+	// RAP [bm] not needed
+//	private ICheatSheetStateManager preTrayManager; // The state manager in use before a tray was opened
 	private String restorePath;
 
 	private int dialogReturnCode;
@@ -640,10 +640,10 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 		showStartPage();
 
-// RAP [if]
-//		Display display = parent.getDisplay();
+		Display display = parent.getDisplay();
+// RAP [if] cursor ctor
 //		busyCursor = new Cursor(display, SWT.CURSOR_WAIT);
-		busyCursor = Graphics.getCursor( SWT.CURSOR_WAIT );
+		busyCursor = display.getSystemCursor( SWT.CURSOR_WAIT );
 
 		if(contentElement != null) {
 			initCheatSheetView();
@@ -944,20 +944,21 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		manager = null;
 	}
 
-	/**
-	 * Returns whether or not the cheat sheet viewer is currently active. This
-	 * means it is visible to the user and enabled.
-	 *
-	 * @return whether or not this viewer is active
-	 */
-	private boolean isActive() {
-		Control control = getControl();
-		if (control != null && !control.isDisposed()) {
-			Control parent = control.getParent();
-			return (parent != null && !parent.isDisposed() && parent.isVisible() && parent.isEnabled());
-		}
-		return false;
-	}
+	// RAP [bm]: not needed
+//	/**
+//	 * Returns whether or not the cheat sheet viewer is currently active. This
+//	 * means it is visible to the user and enabled.
+//	 *
+//	 * @return whether or not this viewer is active
+//	 */
+//	private boolean isActive() {
+//		Control control = getControl();
+//		if (control != null && !control.isDisposed()) {
+//			Control parent = control.getParent();
+//			return (parent != null && !parent.isDisposed() && parent.isVisible() && parent.isEnabled());
+//		}
+//		return false;
+//	}
 
 	/*
 	 * Show the collapse/expand button if we have access to the toolbar

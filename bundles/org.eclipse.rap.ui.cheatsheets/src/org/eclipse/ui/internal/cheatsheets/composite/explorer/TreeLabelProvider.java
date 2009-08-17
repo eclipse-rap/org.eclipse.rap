@@ -11,7 +11,7 @@
 
 package org.eclipse.ui.internal.cheatsheets.composite.explorer;
 
-import java.io.IOException;
+//import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,8 +21,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.SWT;
+//import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
 import org.eclipse.ui.internal.cheatsheets.composite.model.TaskStateUtilities;

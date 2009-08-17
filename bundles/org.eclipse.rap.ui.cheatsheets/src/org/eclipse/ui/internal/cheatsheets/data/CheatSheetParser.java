@@ -20,7 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
+//import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 //import org.eclipse.help.internal.UAElement;
 //import org.eclipse.help.internal.UAElementFactory;
@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.Status;
 //import org.eclipse.help.internal.dynamic.ProcessorHandler;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.cheatsheets.AbstractItemExtensionElement;
-import org.eclipse.ui.internal.cheatsheets.CheatSheetEvaluationContext;
+//import org.eclipse.ui.internal.cheatsheets.CheatSheetEvaluationContext;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
 import org.eclipse.ui.internal.cheatsheets.ICheatSheetResource;
 import org.eclipse.ui.internal.cheatsheets.Messages;
