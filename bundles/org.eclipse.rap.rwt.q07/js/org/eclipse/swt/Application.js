@@ -29,6 +29,10 @@ qx.Class.define( "org.eclipse.swt.Application", {
     var doc = qx.ui.core.ClientDocument.getInstance();
     doc.removeEventListener( "windowresize", 
                              org.eclipse.swt.Application._onResize );
+    doc.removeEventListener( "keydown",
+                             org.eclipse.swt.Application._onKeyDown );
+    var req = org.eclipse.swt.Request.getInstance();
+    req.removeEventListener( "send", this._onSend, this );
   },
 
   statics : {
@@ -41,12 +45,12 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.send();
     },
 
-    _onKeyDown : function( e ) {
-      if( e.getKeyIdentifier() == "Escape" ) {
-        e.preventDefault();
+    _onKeyDown : function( evt ) {
+      if( evt.getKeyIdentifier() == "Escape" ) {
+        evt.preventDefault();
       }
     },
-
+    
     _appendWindowSize : function() {
       var width = qx.html.Window.getInnerWidth( window );
       var height = qx.html.Window.getInnerHeight( window );
@@ -102,12 +106,24 @@ qx.Class.define( "org.eclipse.swt.Application", {
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
+      req.addEventListener( "send", this._onSend, this );
       req.send();
     },
     
     close : function( evt ) {
       this.base( arguments );
       return this._exitConfirmation;
+    },
+
+    _onSend : function( evt ) {
+      var pageX = qx.event.type.MouseEvent.getPageX();
+      var pageY = qx.event.type.MouseEvent.getPageY();
+      var req = org.eclipse.swt.Request.getInstance();
+      var id = req.getUIRootId();
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( id + ".cursorLocation.x", String( pageX ) );
+      req.addParameter( id + ".cursorLocation.y", String( pageY ) );
     }
+    
   }
 });

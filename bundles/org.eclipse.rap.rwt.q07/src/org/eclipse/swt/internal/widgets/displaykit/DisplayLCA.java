@@ -309,6 +309,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   public void readData( final Display display ) {
     readBounds( display );
+    readCursorLocation( display );
     readFocusControl( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -476,6 +477,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       = readIntPropertyValue( display, "bounds.height", oldBounds.height );
     Rectangle bounds = new Rectangle( 0, 0, width, height );
     getDisplayAdapter( display ).setBounds( bounds );
+  }
+
+  private static void readCursorLocation( final Display display ) {
+    int x = readIntPropertyValue( display, "cursorLocation.x", 0 );
+    int y = readIntPropertyValue( display, "cursorLocation.y", 0 );
+    getDisplayAdapter( display ).setCursorLocation( x, y );
   }
 
   static void readFocusControl( final Display display ) {

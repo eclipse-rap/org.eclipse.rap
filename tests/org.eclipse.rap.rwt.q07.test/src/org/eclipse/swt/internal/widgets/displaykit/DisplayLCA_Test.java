@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.displaykit;
@@ -30,6 +31,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -286,6 +288,21 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 800, 600 ), shell1.getBounds() );
     // shell2 is resized because it's maximized
     assertEquals( new Rectangle( 0, 0, 700, 500 ), shell2.getBounds() );
+  }
+
+  public void testCursorLocation() {
+    Display display = new Display();
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
+    
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".cursorLocation.x", "1" );
+    Fixture.fakeRequestParam( displayId + ".cursorLocation.y", "2" );
+    IDisplayLifeCycleAdapter lca = DisplayUtil.getLCA( display );
+    lca.readData( display );
+    assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
   protected void setUp() throws Exception {
