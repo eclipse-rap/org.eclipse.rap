@@ -16,13 +16,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 
 /**
  * Instances of this class represent a selectable user interface object
  * that represent a page in a notebook widget.
- * 
+ *
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>SWT.CLOSE</dd>
@@ -40,9 +41,9 @@ public class CTabItem extends Item {
   static final int LEFT_MARGIN = 4;
   static final int RIGHT_MARGIN = 4;
   static final int INTERNAL_SPACING = 4;
-  
-  static final String ELLIPSIS = "..."; 
-  
+
+  static final String ELLIPSIS = "...";
+
   private final IWidgetFontAdapter widgetFontAdapter;
   final CTabFolder parent;
   private Control control;
@@ -51,7 +52,7 @@ public class CTabItem extends Item {
   // TODO [rh] shortenedText is not yet calculated
   String shortenedText;
   int shortenedTextWidth;
-  
+
   boolean showing = false;
   final boolean showClose;
   int x;
@@ -59,7 +60,7 @@ public class CTabItem extends Item {
   int width;
   int height;
   Rectangle closeRect = new Rectangle( 0, 0, 0, 0 );
-  
+
   /**
    * Constructs a new instance of this class given its parent
    * (which must be a <code>CTabFolder</code>) and a style value
@@ -68,7 +69,7 @@ public class CTabItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -100,7 +101,7 @@ public class CTabItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -138,6 +139,8 @@ public class CTabItem extends Item {
     Object result;
     if( adapter == IWidgetFontAdapter.class ) {
       result = widgetFontAdapter;
+    } else if( adapter == IWidgetGraphicsAdapter.class ) {
+      result = parent.getSelectionGraphicsAdapter( this );
     } else {
       result = super.getAdapter( adapter );
     }
@@ -148,7 +151,7 @@ public class CTabItem extends Item {
    * Returns the receiver's parent, which must be a <code>CTabFolder</code>.
    *
    * @return the receiver's parent
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -158,10 +161,10 @@ public class CTabItem extends Item {
     checkWidget();
     return parent;
   }
-  
+
   /////////////////////////////////////////
   // Getter/setter for principal properties
-  
+
   public void setText( final String text ) {
     checkWidget();
     if( text == null ) {
@@ -174,7 +177,7 @@ public class CTabItem extends Item {
       parent.updateItems();
     }
   }
-  
+
   public void setImage( final Image image ) {
     checkWidget();
     if( image != getImage() ) {
@@ -189,19 +192,19 @@ public class CTabItem extends Item {
    * Sets the font that the receiver will use to paint textual information
    * for this item to the font specified by the argument, or to the default font
    * for that kind of control if the argument is null.
-   * 
+   *
    * <p>Changing font works, but tab size is not adjusted accordingly.</p>
    *
    * @param font the new font (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setFont( final Font font ) {
@@ -223,7 +226,7 @@ public class CTabItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    *  @since 1.0
    */
   public Font getFont() {
@@ -257,7 +260,7 @@ public class CTabItem extends Item {
    * @param control the new control (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
    * </ul>
    * @exception SWTException <ul>
@@ -289,7 +292,7 @@ public class CTabItem extends Item {
       }
     }
   }
-  
+
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -305,7 +308,7 @@ public class CTabItem extends Item {
     checkWidget();
     this.toolTipText = toolTipText;
   }
-  
+
   /**
    * Returns the receiver's tool tip text, or null if it has
    * not been set.
@@ -328,27 +331,27 @@ public class CTabItem extends Item {
     }
     return result;
   }
-  
+
   ////////////////////////
   // Bounds and visibility
-  
+
   /**
   * Returns <code>true</code> if the item will be rendered in the visible area of the CTabFolder. Returns false otherwise.
-  * 
+  *
   *  @return <code>true</code> if the item will be rendered in the visible area of the CTabFolder. Returns false otherwise.
-  * 
+  *
   *  @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
   * @since 1.0
   */
   public boolean isShowing() {
     checkWidget();
     return showing;
   }
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent.
@@ -364,7 +367,7 @@ public class CTabItem extends Item {
     checkWidget();
     return new Rectangle( x, y, width, height );
   }
-  
+
   ///////////////////
   // Widget overrides
 
@@ -373,9 +376,9 @@ public class CTabItem extends Item {
       // if (!isValidThread ()) error (SWT.ERROR_THREAD_INVALID_ACCESS);
       parent.destroyItem( this );
       super.dispose();
-    } 
+    }
   }
-  
+
   ///////////////////////////////////////////////////////////////////////
   // Helping methods used by CTabFolder to control item size and location
 
@@ -383,7 +386,7 @@ public class CTabItem extends Item {
     Image image = getImage();
     int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
-    // TODO [fappel]: check gc height calculation alternative 
+    // TODO [fappel]: check gc height calculation alternative
     if( font == null ) {
       Font parentFont = getParent().getFont();
       h = Math.max( h, TextSizeDetermination.textExtent( parentFont, text, 0 ).y );
@@ -392,7 +395,7 @@ public class CTabItem extends Item {
     }
     return h + TOP_MARGIN + BOTTOM_MARGIN;
   }
-  
+
   int preferredWidth( final boolean isSelected, final boolean minimum ) {
     // NOTE: preferred width does not include the "dead space" caused
     // by the curve.
@@ -449,8 +452,8 @@ public class CTabItem extends Item {
   }
 
   /* (intentionally non-JavaDoc'ed)
-   * Return whether the image (if any) should be shown or omitted if there is 
-   * not enough space. The code is copied from the drawSelected and 
+   * Return whether the image (if any) should be shown or omitted if there is
+   * not enough space. The code is copied from the drawSelected and
    * drawUnselected methods ins SWT.
    */
   boolean showImage() {
@@ -461,7 +464,7 @@ public class CTabItem extends Item {
       int xDraw = x + LEFT_MARGIN;
       if (parent.single && (parent.showClose || showClose)) {
         xDraw += CTabFolder.BUTTON_SIZE;
-      } 
+      }
       Image image = getImage();
       if (image != null) {
         Rectangle imageBounds = image.getBounds();
@@ -491,9 +494,9 @@ public class CTabItem extends Item {
     }
     return result;
   }
-  
+
   /* (intentionally non-JavaDoc'ed)
-   * The code of this methods is taken from SWT's CTabItem#drawSelected() and 
+   * The code of this methods is taken from SWT's CTabItem#drawSelected() and
    * modified to suit the specifics of RWT.
    */
   String getShortenedText() {
@@ -518,21 +521,21 @@ public class CTabItem extends Item {
     }
     return shortenedText == null ? "" : shortenedText;
   }
-  
+
   String shortenText( final Font font, final String text, final int width ) {
     return useEllipses()
       ? shortenText( font, text, width, ELLIPSIS )
       : shortenText( font, text, width, "" );
   }
 
-  static String shortenText( final Font font, 
-                             String text, 
-                             final int width, 
-                             final String ellipses ) 
+  static String shortenText( final Font font,
+                             String text,
+                             final int width,
+                             final String ellipses )
   {
     if( Graphics.stringExtent( font, text ).x <= width ) {
       return text;
-    } 
+    }
     int ellipseWidth = Graphics.stringExtent( font, ellipses ).x;
     int length = text.length();
     int end = length - 1;
@@ -546,10 +549,10 @@ public class CTabItem extends Item {
     }
     return text.substring( 0, 1 );
   }
-  
+
   //////////////////
   // Helping methods
-  
+
   private static CTabFolder checkNull( final CTabFolder parent ) {
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );

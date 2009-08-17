@@ -13,13 +13,13 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -75,6 +75,9 @@ public class CTabFolder extends Composite {
   static final int BUTTON_BORDER = SWT.COLOR_WIDGET_DARK_SHADOW;
   static final int BUTTON_FILL = SWT.COLOR_LIST_BACKGROUND;
 
+  private final static IWidgetGraphicsAdapter UNSELECTED_GRAPHICS_ADAPTER
+    = new WidgetGraphicsAdapter();
+
   /**
    * marginWidth specifies the number of pixels of horizontal margin
    * that will be placed along the left and right edges of the form.
@@ -91,7 +94,8 @@ public class CTabFolder extends Composite {
    */
   public int marginHeight = 0;
 
-  private final ICTabFolderAdapter tabFolderAdapter = new CTabFolderAdapter();
+  private final ICTabFolderAdapter tabFolderAdapter;
+  private final IWidgetGraphicsAdapter selectionGraphicsAdapter;
   private final ItemHolder itemHolder = new ItemHolder( CTabItem.class );
   private final ControlListener resizeListener;
   private FocusListener focusListener;
@@ -191,6 +195,8 @@ public class CTabFolder extends Composite {
     };
     addControlListener( resizeListener );
     registerDisposeListener();
+    tabFolderAdapter = new CTabFolderAdapter();
+    selectionGraphicsAdapter = new WidgetGraphicsAdapter();
   }
 
   //////////////////
@@ -906,30 +912,30 @@ public class CTabFolder extends Composite {
       updateItemsWithResizeEvent();
     }
   }
-  
+
   /**
-   * Returns <code>true</code> if an image appears 
+   * Returns <code>true</code> if an image appears
    * in unselected tabs.
-   * 
+   *
    * @return <code>true</code> if an image appears in unselected tabs
-   * 
+   *
    * @since 1.3
    */
   public boolean getUnselectedImageVisible() {
     checkWidget();
     return showUnselectedImage;
   }
-  
+
   /**
    * Specify whether the image appears on unselected tabs.
-   * 
+   *
    * @param visible <code>true</code> makes the image appear
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public void setUnselectedImageVisible( final boolean visible ) {
@@ -1051,6 +1057,111 @@ public class CTabFolder extends Composite {
       throw new IllegalStateException( "Transparent selection background color" );
     }
     return result;
+  }
+
+  /**
+   * Specify a gradient of colours to be draw in the background of the selected tab.
+   * For example to draw a gradient that varies from dark blue to blue and then to
+   * white, use the following call to setBackground:
+   * <pre>
+   *  cfolder.setBackground(new Color[]{display.getSystemColor(SWT.COLOR_DARK_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE)},
+   *                   new int[] {25, 50, 100});
+   * </pre>
+   *
+   * @param colors an array of Color that specifies the colors to appear in the gradient
+   *               in order of appearance left to right.  The value <code>null</code> clears the
+   *               background gradient.
+   * @param percents an array of integers between 0 and 100 specifying the percent of the width
+   *                 of the widget at which the color should change.  The size of the percents array must be one
+   *                 less than the size of the colors array.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   *  @since 1.3
+   */
+  // TODO: [if] Only vertical gradient is supported. The "vertical" parameter is not used.
+  public void setSelectionBackground( final Color[] colors,
+                                      final int[] percents )
+  {
+    setSelectionBackground( colors, percents, false );
+  }
+  /**
+   * Specify a gradient of colours to be draw in the background of the selected tab.
+   * For example to draw a vertical gradient that varies from dark blue to blue and then to
+   * white, use the following call to setBackground:
+   * <pre>
+   *  cfolder.setBackground(new Color[]{display.getSystemColor(SWT.COLOR_DARK_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE)},
+   *                      new int[] {25, 50, 100}, true);
+   * </pre>
+   *
+   * @param colors an array of Color that specifies the colors to appear in the gradient
+   *               in order of appearance top to bottom.  The value <code>null</code> clears the
+   *               background gradient.
+   * @param percents an array of integers between 0 and 100 specifying the percent of the width
+   *                 of the widget at which the color should change.  The size of the percents array must be one
+   *                 less than the size of the colors array.
+   *
+   * @param vertical indicate the direction of the gradient.  True is vertical and false is horizontal.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   *
+   * @since 1.3
+   */
+  // TODO: [if] Only vertical gradient is supported. The "vertical" parameter is not used.
+  public void setSelectionBackground( final Color[] colors,
+                                      final int[] percents,
+                                      final boolean vertical )
+  {
+    checkWidget();
+    if( colors != null ) {
+      if(    percents == null
+          || percents.length != colors.length - 1 ) {
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      for( int i = 0; i < percents.length; i++ ) {
+        if( percents[ i ] < 0 || percents[ i ] > 100 ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        if( i > 0 && percents[ i ] < percents[ i - 1 ] ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+      }
+    }
+
+    if( colors == null ) {
+      selectionGraphicsAdapter.setBackgroundGradient( null, null );
+      setSelectionBackground( null );
+    } else {
+      int[] gradientPercents = new int[ colors.length ];
+      if( colors.length > 0 ) {
+        gradientPercents[ 0 ] = 0;
+        for( int i = 1; i < gradientPercents.length; i++ ) {
+          gradientPercents[ i ] = percents[ i - 1 ];
+        }
+        selectionGraphicsAdapter.setBackgroundGradient( colors,
+                                                        gradientPercents );
+        setSelectionBackground( colors[ colors.length - 1 ] );
+      }
+    }
+  }
+
+  IWidgetGraphicsAdapter getSelectionGraphicsAdapter( final CTabItem item ) {
+    IWidgetGraphicsAdapter adapter = UNSELECTED_GRAPHICS_ADAPTER;
+    if( item == getSelection() ) {
+      adapter = selectionGraphicsAdapter;
+    }
+    return adapter;
   }
 
   /**

@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,7 +30,7 @@ public class CTabFolderTab extends ExampleTab {
 
   private static final String CTAB_IMAGE_PATH
     = "resources/newfolder_wiz.gif";
-  
+
   private Image ctabImage;
 
   private CTabFolder folder;
@@ -60,6 +61,7 @@ public class CTabFolderTab extends ExampleTab {
     createBgColorButton();
     createSelectionFgColorButton();
     createSelectionBgColorButton();
+    createSelectionBgGradientButton();
     createBgImageButton();
     createTabHeightControl( styleComp );
     createTopRightControl( styleComp );
@@ -249,6 +251,17 @@ public class CTabFolderTab extends ExampleTab {
     return button;
   }
 
+  private Button createSelectionBgGradientButton() {
+    final Button button = new Button( styleComp, SWT.TOGGLE );
+    button.setText( "Selection Background Gradient" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        updateSelBgGradient( button.getSelection() );
+      }
+    } );
+    return button;
+  }
+
   private void updateProperties() {
     CTabItem[] items = folder.getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -300,6 +313,28 @@ public class CTabFolderTab extends ExampleTab {
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
         folder.setSelectionBackground( bgColors[ selBgIndex ] );
+      }
+    }
+  }
+
+  private void updateSelBgGradient( final boolean gradient ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      if( control instanceof CTabFolder ) {
+        CTabFolder folder = ( CTabFolder )control;
+        if( gradient ) {
+          Color[] gradientColors = new Color[] {
+            BGG_COLOR_BLUE,
+            BGG_COLOR_GREEN,
+            BGG_COLOR_BLUE
+          };
+          int[] percents = new int[] { 50, 100 };
+          folder.setSelectionBackground( gradientColors, percents );
+        } else {
+          folder.setSelectionBackground( null, null );
+        }
+
       }
     }
   }

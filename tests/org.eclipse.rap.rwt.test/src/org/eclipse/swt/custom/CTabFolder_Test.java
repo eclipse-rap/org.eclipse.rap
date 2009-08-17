@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -395,6 +396,93 @@ public class CTabFolder_Test extends TestCase {
     assertNotNull( folder.getSelectionForeground() );
   }
 
+  public void testSelectionBackgroundGradient() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item1 = new CTabItem( folder, SWT.NONE );
+    CTabItem item2 = new CTabItem( folder, SWT.NONE );
+    folder.setSelection( item1 );
+
+    Color[] colors = new Color[] {
+      display.getSystemColor( SWT.COLOR_RED ),
+      display.getSystemColor( SWT.COLOR_WHITE ),
+      display.getSystemColor( SWT.COLOR_RED )
+    };
+    int[] percents = new int[] { 50, 100 };
+    folder.setSelectionBackground( colors, percents );
+    assertEquals( item1, folder.getSelection() );
+    IWidgetGraphicsAdapter gfxAdapter
+      = folder.getSelectionGraphicsAdapter( item1 );
+    Color[] gfxColors = gfxAdapter.getBackgroundGradientColors();
+    assertEquals( colors[ 0 ], gfxColors[ 0 ] );
+    assertEquals( colors[ 1 ], gfxColors[ 1 ] );
+    assertEquals( colors[ 2 ], gfxColors[ 2 ] );
+    assertEquals( colors[ 2 ], folder.getSelectionBackground() );
+    int[] gfxPercents = gfxAdapter.getBackgroundGradientPercents();
+    assertEquals( 0, gfxPercents[ 0 ] );
+    assertEquals( percents[ 0 ], gfxPercents[ 1 ] );
+    assertEquals( percents[ 1 ], gfxPercents[ 2 ] );
+
+    folder.setSelection( item2 );
+    gfxAdapter = folder.getSelectionGraphicsAdapter( item1 );
+    gfxColors = gfxAdapter.getBackgroundGradientColors();
+    gfxPercents = gfxAdapter.getBackgroundGradientPercents();
+    assertNull( gfxColors );
+    assertNull( gfxPercents );
+    gfxAdapter = folder.getSelectionGraphicsAdapter( item2 );
+    gfxColors = gfxAdapter.getBackgroundGradientColors();
+    assertEquals( colors[ 0 ], gfxColors[ 0 ] );
+    assertEquals( colors[ 1 ], gfxColors[ 1 ] );
+    assertEquals( colors[ 2 ], gfxColors[ 2 ] );
+    gfxPercents = gfxAdapter.getBackgroundGradientPercents();
+    assertEquals( 0, gfxPercents[ 0 ] );
+    assertEquals( percents[ 0 ], gfxPercents[ 1 ] );
+    assertEquals( percents[ 1 ], gfxPercents[ 2 ] );
+    folder.setSelectionBackground( null, null );
+    gfxAdapter = folder.getSelectionGraphicsAdapter( item2 );
+    gfxColors = gfxAdapter.getBackgroundGradientColors();
+    gfxPercents = gfxAdapter.getBackgroundGradientPercents();
+    assertNull( gfxColors );
+    assertNull( gfxPercents );
+
+    percents = new int[] { 0, 50, 100 };
+    try {
+      folder.setSelectionBackground( colors, percents );
+      fail( "Wrong gradient arrays length." );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    percents = new int[] { -50, 100 };
+    try {
+      folder.setSelectionBackground( colors, percents );
+      fail( "Wrong gradient percents value." );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    percents = new int[] { 100, 50 };
+    try {
+      folder.setSelectionBackground( colors, percents );
+      fail( "Wrong gradient percents value." );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    percents = new int[] { 50, 150 };
+    try {
+      folder.setSelectionBackground( colors, percents );
+      fail( "Wrong gradient percents value." );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    colors[ 1 ] = null;
+    try {
+      folder.setSelectionBackground( colors, percents );
+      fail( "Wrong gradient colors value." );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+  }
+
   public void testChevronVisibilityWithSingleStyle() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -530,7 +618,7 @@ public class CTabFolder_Test extends TestCase {
     expected = new Point( 304, 323 );
     assertEquals( expected, folder.computeSize( 300, 300 ) );
   }
-  
+
   public void testGetItem() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -538,7 +626,7 @@ public class CTabFolder_Test extends TestCase {
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     item1.setText( "abc" );
-    
+
     assertNull( folder.getItem( new Point( 1000, 80 ) ) );
     assertNull( folder.getItem( new Point( 10, 7 ) ) );
 
