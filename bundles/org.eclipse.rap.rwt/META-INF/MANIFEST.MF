@@ -9,7 +9,11 @@ Eclipse-ExtensibleAPI: true
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
 Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
- javax.servlet.http;version="[2.3.0,2.5.0]"
+ javax.servlet.http;version="[2.3.0,2.5.0]",
+ javax.xml.parsers,
+ javax.imageio,
+ org.w3c.dom,
+ org.xml.sax
 Export-Package: org.apache.batik.css.parser;x-internal:=true,
  org.apache.batik.util.io;x-internal:=true,
  org.eclipse.rwt,
