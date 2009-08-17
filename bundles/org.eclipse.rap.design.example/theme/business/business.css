@@ -395,7 +395,7 @@ Tree {
   background-color: rgb( 252, 252, 252 );
 }
 
-List, Text, Combo, Tree, Table {
+Text, Combo, Spinner, DateTime, List, Tree, Table {
   background-color: rgb( 252, 252, 252 );
 }
 
