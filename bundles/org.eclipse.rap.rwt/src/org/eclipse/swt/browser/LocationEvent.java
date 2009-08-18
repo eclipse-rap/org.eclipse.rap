@@ -83,7 +83,7 @@ public class LocationEvent extends TypedEvent {
   }
   
   protected boolean allowProcessing() {
-    // It is safe to always allow to firethis event as it is only generated
+    // It is safe to always allow to fire this event as it is only generated
     // server-side
     return true;
   }
