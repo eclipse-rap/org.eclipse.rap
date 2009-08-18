@@ -21,6 +21,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
 
@@ -59,6 +60,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_SELECTION_FG = "selectionFg";
   public static final String PROP_SELECTION_BG = "selectionBg";
   public static final String PROP_SELECTION_BG_IMAGE = "selectionBgImage";
+  public static final String PROP_SELECTION_BG_GRADIENT_COLORS
+    = "selectionBgGradientColors";
+  public static final String PROP_SELECTION_BG_GRADIENT_PERCENTS
+    = "selectionBgGradientPercents";
   public static final String PROP_TAB_POSITION = "tabPosition";
   private static final String PROP_BORDER_VISIBLE = "borderVisible";
 
@@ -102,6 +107,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       tabFolderAdapter.getUserSelectionBackground() );
     adapter.preserve( PROP_SELECTION_BG_IMAGE,
                       tabFolderAdapter.getUserSelectionBackgroundImage() );
+    preserveSelectionBgGradient( tabFolder );
     adapter.preserve( PROP_SELECTION_FG,
                       tabFolderAdapter.getUserSelectionForeground() );
     adapter.preserve( PROP_CHEVRON_VISIBLE,
@@ -204,6 +210,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writeChevron( tabFolder );
     writeColors( tabFolder );
     writeSelectionBgImage( tabFolder );
+    writeSelectionBgGradient( tabFolder );
     writeBorderVisible( tabFolder );
     WidgetLCAUtil.writeCustomVariant( tabFolder );
   }
@@ -227,6 +234,22 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       }
     }
     return result;
+  }
+
+  /////////////////////////////////////////
+  // Helping methods to preserve properties
+
+  public static void preserveSelectionBgGradient( final CTabFolder tabFolder ) {
+    ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
+    IWidgetGraphicsAdapter gfxAdapter
+      = adapter.getUserSelectionBackgroundGradient();
+    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( tabFolder );
+    widgetAdapter.preserve( PROP_SELECTION_BG_GRADIENT_COLORS,
+                            bgGradientColors );
+    widgetAdapter.preserve( PROP_SELECTION_BG_GRADIENT_PERCENTS,
+                            bgGradientPercents );
   }
 
   //////////////////////////////////////
@@ -422,6 +445,42 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                 "selectionBackgroundImage",
                 selBgImagePath,
                 null );
+  }
+
+  private static void writeSelectionBgGradient( final CTabFolder tabFolder )
+    throws IOException
+  {
+    ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
+    IWidgetGraphicsAdapter gfxAdapter
+      = adapter.getUserSelectionBackgroundGradient();
+    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    boolean changed
+      = WidgetLCAUtil.hasChanged( tabFolder,
+                                  PROP_SELECTION_BG_GRADIENT_COLORS,
+                                  bgGradientColors,
+                                  null );
+    if( !changed ) {
+      changed = WidgetLCAUtil.hasChanged( tabFolder,
+                                          PROP_SELECTION_BG_GRADIENT_PERCENTS,
+                                          bgGradientPercents,
+                                          null );
+    }
+    if( changed ) {
+      JSWriter writer = JSWriter.getWriterFor( tabFolder );
+      Integer[] percents = null;
+      if( bgGradientPercents != null ) {
+        percents = new Integer[ bgGradientPercents.length ];
+        for( int i = 0; i < bgGradientPercents.length; i++ ) {
+          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
+        }
+      }
+      Object[] args = new Object[] {
+        bgGradientColors,
+        percents
+      };
+      writer.call( "setSelectionBackgroundGradient", args );
+    }
   }
 
   private static void writeBorderVisible( final CTabFolder tabFolder )

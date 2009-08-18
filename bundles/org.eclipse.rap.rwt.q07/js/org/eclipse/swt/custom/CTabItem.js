@@ -33,6 +33,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._selectionBackground = parent.getSelectionBackground();
     this._selectionForeground = parent.getSelectionForeground();
     this._selectionBackgroundImage = parent.getSelectionBackgroundImage();
+    this._selectionBackgroundGradientColors
+      = parent.getSelectionBackgroundGradientColors();
+    this._selectionBackgroundGradientPercents
+      = parent.getSelectionBackgroundGradientPercents();
     this.setTabPosition( parent.getTabPosition() );
     // TODO [rst] change when a proper state inheritance concept exists
     if( parent.hasState( "rwt_BORDER" ) ) {
@@ -99,6 +103,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       }
       this._updateSelectionForeground();
       this._updateSelectionBackground();
+      this._updateSelectionBackgroundImage();
+      this._updateSelectionBackgroundGradient();
       this._updateCloseButton();
     },
 
@@ -127,6 +133,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._selectionBackgroundImage = image;
       this._updateSelectionBackgroundImage();
     },
+    
+    setSelectionBackgroundGradient : function( colors, percents ) {
+      this._selectionBackgroundGradientColors = colors;
+      this._selectionBackgroundGradientPercents = percents;
+      this._updateSelectionBackgroundGradient();
+    },
 
     _updateSelectionForeground : function() {
       if( this.isSelected() && this._selectionForeground != null ) {
@@ -149,6 +161,20 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
         this.setBackgroundImage( this._selectionBackgroundImage );
       } else {
         this.resetBackgroundImage();
+      }
+    },
+    
+    _updateSelectionBackgroundGradient : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      if(    this.isSelected()
+          && this._selectionBackgroundGradientColors != null
+          && this._selectionBackgroundGradientPercents != null )
+      {
+        widgetManager.setBackgroundGradient( this, 
+                                             this._selectionBackgroundGradientColors,
+                                             this._selectionBackgroundGradientPercents );
+      } else {
+        widgetManager.setBackgroundGradient( this, null, null );
       }
     },
 
