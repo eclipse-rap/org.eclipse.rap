@@ -239,7 +239,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////
   // Helping methods to preserve properties
 
-  public static void preserveSelectionBgGradient( final CTabFolder tabFolder ) {
+  private static void preserveSelectionBgGradient( final CTabFolder tabFolder ) {
     ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
     IWidgetGraphicsAdapter gfxAdapter
       = adapter.getUserSelectionBackgroundGradient();

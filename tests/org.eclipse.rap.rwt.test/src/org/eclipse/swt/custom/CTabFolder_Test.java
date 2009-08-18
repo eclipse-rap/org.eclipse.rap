@@ -401,9 +401,10 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
-    folder.setSelection( item1 );
 
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -412,9 +413,8 @@ public class CTabFolder_Test extends TestCase {
     };
     int[] percents = new int[] { 50, 100 };
     folder.setSelectionBackground( colors, percents );
-    assertEquals( item1, folder.getSelection() );
     IWidgetGraphicsAdapter gfxAdapter
-      = folder.getSelectionGraphicsAdapter( item1 );
+      = folderAdapter.getUserSelectionBackgroundGradient();
     Color[] gfxColors = gfxAdapter.getBackgroundGradientColors();
     assertEquals( colors[ 0 ], gfxColors[ 0 ] );
     assertEquals( colors[ 1 ], gfxColors[ 1 ] );
@@ -425,23 +425,8 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( percents[ 0 ], gfxPercents[ 1 ] );
     assertEquals( percents[ 1 ], gfxPercents[ 2 ] );
 
-    folder.setSelection( item2 );
-    gfxAdapter = folder.getSelectionGraphicsAdapter( item1 );
-    gfxColors = gfxAdapter.getBackgroundGradientColors();
-    gfxPercents = gfxAdapter.getBackgroundGradientPercents();
-    assertNull( gfxColors );
-    assertNull( gfxPercents );
-    gfxAdapter = folder.getSelectionGraphicsAdapter( item2 );
-    gfxColors = gfxAdapter.getBackgroundGradientColors();
-    assertEquals( colors[ 0 ], gfxColors[ 0 ] );
-    assertEquals( colors[ 1 ], gfxColors[ 1 ] );
-    assertEquals( colors[ 2 ], gfxColors[ 2 ] );
-    gfxPercents = gfxAdapter.getBackgroundGradientPercents();
-    assertEquals( 0, gfxPercents[ 0 ] );
-    assertEquals( percents[ 0 ], gfxPercents[ 1 ] );
-    assertEquals( percents[ 1 ], gfxPercents[ 2 ] );
     folder.setSelectionBackground( null, null );
-    gfxAdapter = folder.getSelectionGraphicsAdapter( item2 );
+    gfxAdapter = folderAdapter.getUserSelectionBackgroundGradient();
     gfxColors = gfxAdapter.getBackgroundGradientColors();
     gfxPercents = gfxAdapter.getBackgroundGradientPercents();
     assertNull( gfxColors );

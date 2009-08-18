@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 
@@ -139,8 +138,6 @@ public class CTabItem extends Item {
     Object result;
     if( adapter == IWidgetFontAdapter.class ) {
       result = widgetFontAdapter;
-    } else if( adapter == IWidgetGraphicsAdapter.class ) {
-      result = parent.getSelectionGraphicsAdapter( this );
     } else {
       result = super.getAdapter( adapter );
     }

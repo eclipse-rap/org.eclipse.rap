@@ -75,9 +75,6 @@ public class CTabFolder extends Composite {
   static final int BUTTON_BORDER = SWT.COLOR_WIDGET_DARK_SHADOW;
   static final int BUTTON_FILL = SWT.COLOR_LIST_BACKGROUND;
 
-  private final static IWidgetGraphicsAdapter UNSELECTED_GRAPHICS_ADAPTER
-    = new WidgetGraphicsAdapter();
-
   /**
    * marginWidth specifies the number of pixels of horizontal margin
    * that will be placed along the left and right edges of the form.
@@ -1155,14 +1152,6 @@ public class CTabFolder extends Composite {
         setSelectionBackground( colors[ colors.length - 1 ] );
       }
     }
-  }
-
-  IWidgetGraphicsAdapter getSelectionGraphicsAdapter( final CTabItem item ) {
-    IWidgetGraphicsAdapter adapter = UNSELECTED_GRAPHICS_ADAPTER;
-    if( item == getSelection() ) {
-      adapter = selectionGraphicsAdapter;
-    }
-    return adapter;
   }
 
   /**
@@ -2289,6 +2278,10 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
     public Image getUserSelectionBackgroundImage() {
       return selectionBgImage;
+    }
+
+    public IWidgetGraphicsAdapter getUserSelectionBackgroundGradient() {
+      return selectionGraphicsAdapter;
     }
   }
 }

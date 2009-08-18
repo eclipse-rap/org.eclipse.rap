@@ -57,7 +57,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_FIRST_ITEM,
                       Boolean.valueOf( item == item.getParent().getItem( 0 ) ) );
     preserveFont( item );
-    WidgetLCAUtil.preserveBackgroundGradient( item );
     WidgetLCAUtil.preserveCustomVariant( item );
   }
 
@@ -99,7 +98,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writeUnselectedCloseVisible( item );
     writeSelection( item );
     writeFirstItem( item );
-    WidgetLCAUtil.writeBackgroundGradient( item );
     WidgetLCAUtil.writeCustomVariant( item );
   }
 
