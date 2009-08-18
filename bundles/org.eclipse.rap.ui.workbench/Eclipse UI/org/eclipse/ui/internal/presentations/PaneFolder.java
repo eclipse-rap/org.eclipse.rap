@@ -779,7 +779,7 @@ public final class PaneFolder {
     	// RAP [bm]: TabFolder#setSelectionBackground
 //        tabFolder.setSelectionBackground(bgColors, percentages, vertical);
         if (bgColors == null) {
-			tabFolder.setSelectionBackground(null);
+			tabFolder.setSelectionBackground((Color)null);
 		} else {
 			tabFolder.setSelectionBackground(bgColors[0]);
 		}
