@@ -12,8 +12,7 @@
 package org.eclipse.swt.internal.custom;
 
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 
 
 public interface ICTabFolderAdapter {
@@ -33,4 +32,6 @@ public interface ICTabFolderAdapter {
   public Color getUserSelectionForeground();
 
   public Color getUserSelectionBackground();
+
+  public Image getUserSelectionBackgroundImage();
 }

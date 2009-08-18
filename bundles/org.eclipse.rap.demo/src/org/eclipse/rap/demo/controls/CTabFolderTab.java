@@ -62,22 +62,10 @@ public class CTabFolderTab extends ExampleTab {
     createSelectionFgColorButton();
     createSelectionBgColorButton();
     createSelectionBgGradientButton();
+    createSelectionBgImageButton();
     createBgImageButton();
     createTabHeightControl( styleComp );
     createTopRightControl( styleComp );
-    for( int i = 0; i < 3; i++ ) {
-      final int index = i;
-      String rbText = "Select " + folder.getItem( index ).getText();
-      Button rbSelectTab = createPropertyButton( rbText, SWT.RADIO );
-      rbSelectTab.addSelectionListener( new SelectionAdapter() {
-        public void widgetSelected( final SelectionEvent event ) {
-          Button radio = ( Button )event.getSource();
-          if( radio.getSelection() ) {
-            folder.setSelection( index );
-          }
-        }
-      } );
-    }
     final Button cbMin = createPropertyButton( "Minimize visible", SWT.CHECK );
     cbMin.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -92,6 +80,19 @@ public class CTabFolderTab extends ExampleTab {
         updateProperties();
       }
     } );
+    for( int i = 0; i < 3; i++ ) {
+      final int index = i;
+      String rbText = "Select " + folder.getItem( index ).getText();
+      Button rbSelectTab = createPropertyButton( rbText, SWT.RADIO );
+      rbSelectTab.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent event ) {
+          Button radio = ( Button )event.getSource();
+          if( radio.getSelection() ) {
+            folder.setSelection( index );
+          }
+        }
+      } );
+    }
     String text = "Set Image";
     Button cbSetImage = createPropertyButton( text, SWT.CHECK );
     cbSetImage.addSelectionListener( new SelectionAdapter() {
@@ -262,6 +263,17 @@ public class CTabFolderTab extends ExampleTab {
     return button;
   }
 
+  private Button createSelectionBgImageButton() {
+    final Button button = new Button( styleComp, SWT.TOGGLE );
+    button.setText( "Selection Background Image" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        updateSelBgImage( button.getSelection() );
+      }
+    } );
+    return button;
+  }
+
   private void updateProperties() {
     CTabItem[] items = folder.getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -334,7 +346,21 @@ public class CTabFolderTab extends ExampleTab {
         } else {
           folder.setSelectionBackground( null, null );
         }
+      }
+    }
+  }
 
+  private void updateSelBgImage( final boolean image ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      if( control instanceof CTabFolder ) {
+        CTabFolder folder = ( CTabFolder )control;
+        if( image ) {
+          folder.setSelectionBackground( BG_PATTERN_IMAGE );
+        } else {
+          folder.setSelectionBackground( ( Image )null );
+        }
       }
     }
   }

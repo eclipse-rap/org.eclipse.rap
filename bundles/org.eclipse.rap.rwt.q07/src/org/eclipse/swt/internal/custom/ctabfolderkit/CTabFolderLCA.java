@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.custom.ctabfolderkit;
@@ -17,9 +18,9 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
 
@@ -57,6 +58,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_CHEVRON_RECT = "chevronRect";
   public static final String PROP_SELECTION_FG = "selectionFg";
   public static final String PROP_SELECTION_BG = "selectionBg";
+  public static final String PROP_SELECTION_BG_IMAGE = "selectionBgImage";
   public static final String PROP_TAB_POSITION = "tabPosition";
   private static final String PROP_BORDER_VISIBLE = "borderVisible";
 
@@ -98,6 +100,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       new Integer( tabFolder.getTabPosition() ) );
     adapter.preserve( PROP_SELECTION_BG,
                       tabFolderAdapter.getUserSelectionBackground() );
+    adapter.preserve( PROP_SELECTION_BG_IMAGE,
+                      tabFolderAdapter.getUserSelectionBackgroundImage() );
     adapter.preserve( PROP_SELECTION_FG,
                       tabFolderAdapter.getUserSelectionForeground() );
     adapter.preserve( PROP_CHEVRON_VISIBLE,
@@ -175,7 +179,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );    
+    writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
     CTabFolder tabFolder = ( CTabFolder )widget;
     ControlLCAUtil.writeStyleFlags( tabFolder );
     String[] args = new String[] {
@@ -199,6 +203,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writeListener( tabFolder );
     writeChevron( tabFolder );
     writeColors( tabFolder );
+    writeSelectionBgImage( tabFolder );
     writeBorderVisible( tabFolder );
     WidgetLCAUtil.writeCustomVariant( tabFolder );
   }
@@ -396,12 +401,27 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
-    ICTabFolderAdapter adapter
-      = ( ICTabFolderAdapter )tabFolder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
     Color selFg = adapter.getUserSelectionForeground();
     writer.set( PROP_SELECTION_FG, "selectionForeground", selFg, null );
     Color selBg = adapter.getUserSelectionBackground();
     writer.set( PROP_SELECTION_BG, "selectionBackground", selBg, null );
+  }
+
+  private static void writeSelectionBgImage( final CTabFolder tabFolder )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+    ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
+    Image selBgImage = adapter.getUserSelectionBackgroundImage();
+    String selBgImagePath = null;
+    if( selBgImage != null ) {
+      selBgImagePath = ResourceFactory.getImagePath( selBgImage );
+    }
+    writer.set( PROP_SELECTION_BG_IMAGE,
+                "selectionBackgroundImage",
+                selBgImagePath,
+                null );
   }
 
   private static void writeBorderVisible( final CTabFolder tabFolder )

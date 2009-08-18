@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
@@ -31,6 +32,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._unselectedCloseVisible = true;
     this._selectionBackground = parent.getSelectionBackground();
     this._selectionForeground = parent.getSelectionForeground();
+    this._selectionBackgroundImage = parent.getSelectionBackgroundImage();
     this.setTabPosition( parent.getTabPosition() );
     // TODO [rst] change when a proper state inheritance concept exists
     if( parent.hasState( "rwt_BORDER" ) ) {
@@ -120,6 +122,11 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._selectionBackground = color;
       this._updateSelectionBackground();
     },
+    
+    setSelectionBackgroundImage : function( image ) {
+      this._selectionBackgroundImage = image;
+      this._updateSelectionBackgroundImage();
+    },
 
     _updateSelectionForeground : function() {
       if( this.isSelected() && this._selectionForeground != null ) {
@@ -134,6 +141,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
         this.setBackgroundColor( this._selectionBackground );
       } else {
         this.resetBackgroundColor();
+      }
+    },
+    
+    _updateSelectionBackgroundImage : function() {
+      if( this.isSelected() && this._selectionBackgroundImage != null ) {
+        this.setBackgroundImage( this._selectionBackgroundImage );
+      } else {
+        this.resetBackgroundImage();
       }
     },
 

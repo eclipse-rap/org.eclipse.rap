@@ -25,6 +25,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._tabHeight = 0;
     this._selectionForeground = null;
     this._selectionBackground = null;
+    this._selectionBackgroundImage = null;
     this._chevron = null;
     this._chevronMenu = null;
     // Minimize/maximize buttons, initially non-existing
@@ -156,6 +157,13 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._frame.resetBorder();
       }
     },
+    
+    setSelectionBackgroundImage : function( image ) {
+      this._selectionBackgroundImage = image;
+      this._mapItems( function( item ) {
+        item.setSelectionBackgroundImage( image );
+      } );
+    },
 
     setBorderVisible : function( visible ) {
       if( visible ) {
@@ -172,6 +180,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     getSelectionBackground : function() {
       return this._selectionBackground;
+    },
+    
+    getSelectionBackgroundImage : function() {
+      return this._selectionBackgroundImage;
     },
 
     _mapItems : function( func ) {

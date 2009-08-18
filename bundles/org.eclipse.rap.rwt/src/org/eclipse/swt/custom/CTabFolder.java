@@ -143,6 +143,7 @@ public class CTabFolder extends Composite {
   // Colors
   private Color selectionBackground = null;
   private Color selectionForeground = null;
+  private Image selectionBgImage = null;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -1141,7 +1142,7 @@ public class CTabFolder extends Composite {
 
     if( colors == null ) {
       selectionGraphicsAdapter.setBackgroundGradient( null, null );
-      setSelectionBackground( null );
+      setSelectionBackground( ( Color )null );
     } else {
       int[] gradientPercents = new int[ colors.length ];
       if( colors.length > 0 ) {
@@ -1162,6 +1163,23 @@ public class CTabFolder extends Composite {
       adapter = selectionGraphicsAdapter;
     }
     return adapter;
+  }
+
+  /**
+   * Set the image to be drawn in the background of the selected tab.  Image
+   * is stretched or compressed to cover entire selection tab area.
+   *
+   * @param image the image to be drawn in the background
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.3
+   */
+  public void setSelectionBackground( final Image image ) {
+    checkWidget();
+    selectionBgImage = image;
   }
 
   /**
@@ -2267,6 +2285,10 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
     public Color getUserSelectionBackground() {
       return selectionBackground;
+    }
+
+    public Image getUserSelectionBackgroundImage() {
+      return selectionBgImage;
     }
   }
 }

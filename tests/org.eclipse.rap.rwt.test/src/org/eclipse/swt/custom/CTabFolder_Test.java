@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -383,7 +384,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( red, folder.getSelectionBackground() );
 
     // Reset to background to default (pass null as parameter)
-    folder.setSelectionBackground( null );
+    folder.setSelectionBackground( ( Color )null );
     assertNotNull( folder.getSelectionBackground() );
 
     // Set some foreground color
@@ -481,6 +482,20 @@ public class CTabFolder_Test extends TestCase {
     } catch( final IllegalArgumentException iae ) {
       // expected
     }
+  }
+
+  public void testSelectionBackgroundImage() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    assertNull( folderAdapter.getUserSelectionBackgroundImage() );
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    folder.setSelectionBackground( image );
+    assertEquals( image, folderAdapter.getUserSelectionBackgroundImage() );
+    folder.setSelectionBackground( ( Image )null );
+    assertNull( folderAdapter.getUserSelectionBackgroundImage() );
   }
 
   public void testChevronVisibilityWithSingleStyle() {
