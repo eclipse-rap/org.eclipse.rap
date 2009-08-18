@@ -43,6 +43,8 @@ public class CTabFolderTab extends ExampleTab {
   private int selFgIndex;
   private int selBgIndex;
   private int tabHeight = -1;
+  private boolean showSelectionBgGradient = false;
+  private boolean showSelectionBgImage = false;
 
   public CTabFolderTab( final CTabFolder parent ) {
     super( parent, "CTabFolder" );
@@ -175,7 +177,9 @@ public class CTabFolderTab extends ExampleTab {
     updateTopRightControl();
     updateProperties();
     updateSelFgColor();
+    updateSelBgGradient();
     updateSelBgColor();
+    updateSelBgImage();
   }
 
   private void createTabItem( final int style ) {
@@ -253,22 +257,24 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private Button createSelectionBgGradientButton() {
-    final Button button = new Button( styleComp, SWT.TOGGLE );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Selection Background Gradient" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        updateSelBgGradient( button.getSelection() );
+        showSelectionBgGradient = button.getSelection();
+        updateSelBgGradient();
       }
     } );
     return button;
   }
 
   private Button createSelectionBgImageButton() {
-    final Button button = new Button( styleComp, SWT.TOGGLE );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Selection Background Image" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        updateSelBgImage( button.getSelection() );
+        showSelectionBgImage = button.getSelection();
+        updateSelBgImage();
       }
     } );
     return button;
@@ -329,13 +335,13 @@ public class CTabFolderTab extends ExampleTab {
     }
   }
 
-  private void updateSelBgGradient( final boolean gradient ) {
+  private void updateSelBgGradient() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
-        if( gradient ) {
+        if( showSelectionBgGradient ) {
           Color[] gradientColors = new Color[] {
             BGG_COLOR_BLUE,
             BGG_COLOR_GREEN,
@@ -350,13 +356,13 @@ public class CTabFolderTab extends ExampleTab {
     }
   }
 
-  private void updateSelBgImage( final boolean image ) {
+  private void updateSelBgImage() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
-        if( image ) {
+        if( showSelectionBgImage ) {
           folder.setSelectionBackground( BG_PATTERN_IMAGE );
         } else {
           folder.setSelectionBackground( ( Image )null );
