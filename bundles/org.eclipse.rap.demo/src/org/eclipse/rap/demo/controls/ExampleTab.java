@@ -43,6 +43,7 @@ abstract class ExampleTab {
   private int bgIndex;
   private int rbIndex;
   private boolean showBgImage = false;
+  private boolean showBgGradient = false;
 
   private boolean visible = true;
   private boolean enabled = true;
@@ -123,6 +124,7 @@ abstract class ExampleTab {
       updateBgColor();
     }
     updateBgImage();
+    updateBgGradient();
     if( fontChooser != null ) {
       // Control control = ( Control )controls.get( 0 );
       // font = control.getFont();
@@ -340,11 +342,12 @@ abstract class ExampleTab {
    * @return the created button
    */
   protected Button createBgGradientButton() {
-    final Button button = new Button( styleComp, SWT.TOGGLE );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Background Gradient" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        updateBgGradient( button.getSelection() );
+        showBgGradient = button.getSelection();
+        updateBgGradient();
       }
     } );
     return button;
@@ -580,13 +583,13 @@ abstract class ExampleTab {
     }
   }
 
-  private void updateBgGradient( final boolean gradient ) {
+  private void updateBgGradient() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
       Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
       IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-      if( gradient ) {
+      if( showBgGradient ) {
         Color[] gradientColors = new Color[] {
           BGG_COLOR_BLUE,
           BGG_COLOR_GREEN,
