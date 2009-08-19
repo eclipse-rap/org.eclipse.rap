@@ -14,19 +14,11 @@ import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.*;
 
 
 public class ExamplesWorkbenchAdvisor extends WorkbenchAdvisor {
-
-//  public void preStartup() {
-//    IWorkbench workbench = PlatformUI.getWorkbench();
-//    IMutableActivityManager activitySupport
-//      = workbench.getActivitySupport().createWorkingCopy();
-//    Set enabledActivityIds = new HashSet();
-//    enabledActivityIds.add( "org.eclipse.rap.examples" );
-//    activitySupport.setEnabledActivityIds( enabledActivityIds );
-//  }
 
   public String getInitialWindowPerspectiveId() {
     return ExamplePerspective.ID;
@@ -39,6 +31,7 @@ public class ExamplesWorkbenchAdvisor extends WorkbenchAdvisor {
   }
 
   public void preStartup() {
+    final Display display = Display.getCurrent();
     RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
 
       private static final long serialVersionUID = 1L;
@@ -47,15 +40,17 @@ public class ExamplesWorkbenchAdvisor extends WorkbenchAdvisor {
       }
 
       public void afterPhase( final PhaseEvent event ) {
-        String removeSplashJs
+        if( Display.getCurrent() == display ) {
+          String removeSplashJs
           = "var splashDiv = document.getElementById( \"splash\" );\n"
             + "    if( splashDiv != null ) {\n"
             + "      splashDiv.parentNode.removeChild( splashDiv );\n"
             + "    }\n";
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        HtmlResponseWriter writer = stateInfo.getResponseWriter();
-        writer.append( removeSplashJs );
-        RWT.getLifeCycle().removePhaseListener( this );
+          IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+          HtmlResponseWriter writer = stateInfo.getResponseWriter();
+          writer.append( removeSplashJs );
+          RWT.getLifeCycle().removePhaseListener( this );
+        }
       }
 
       public PhaseId getPhaseId() {
