@@ -34,6 +34,7 @@ public class CTabFolderTab extends ExampleTab {
   private Image ctabImage;
 
   private CTabFolder folder;
+  private boolean showClose;
   private boolean unselectedCloseVisible;
   private boolean setImage;
   private boolean unselectedImageVisible;
@@ -119,6 +120,15 @@ public class CTabFolderTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         Button button = ( Button )event.widget;
         unselectedCloseVisible = button.getSelection();
+        updateProperties();
+      }
+    } );
+    text = "showClose on Tab 2";
+    Button cbShowClose = createPropertyButton( text, SWT.CHECK );
+    cbShowClose.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Button button = ( Button )event.widget;
+        showClose = button.getSelection();
         updateProperties();
       }
     } );
@@ -290,6 +300,9 @@ public class CTabFolderTab extends ExampleTab {
       } else {
         items[ i ].setImage( null );
       }
+    }
+    if( items.length > 1 ) {
+      items[ 1 ].setShowClose( showClose );
     }
     folder.setMinimizeVisible( minVisible );
     folder.setMaximizeVisible( maxVisible );

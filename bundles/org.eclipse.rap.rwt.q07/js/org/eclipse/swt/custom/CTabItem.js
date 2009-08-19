@@ -29,6 +29,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.getLabelObject().setVerticalAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setLabel( "" );
     this._selected = false;
+    this._showClose = false;
+    this._canClose = canClose;
     this._unselectedCloseVisible = true;
     this._selectionBackground = parent.getSelectionBackground();
     this._selectionForeground = parent.getSelectionForeground();
@@ -42,21 +44,17 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     if( parent.hasState( "rwt_BORDER" ) ) {
       this.addState( "rwt_BORDER" );
     }
-    if( canClose ) {
-      this._closeButton = new qx.ui.basic.Image();
-      this._closeButton.setAppearance( "ctab-close-button" );
-      this._closeButton.setWidth( 20 );
-      // TODO [rh] center image vertically in tab item
-      this._closeButton.setHeight( "80%" );
-      this._closeButton.addEventListener( "click", this._onClose, this );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      wm.setToolTip( this._closeButton, 
-                     org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
-      this.add( this._closeButton );
-      this._updateCloseButton();
-    } else {
-      this._closeButton = null;
-    }
+    this._closeButton = new qx.ui.basic.Image();
+    this._closeButton.setAppearance( "ctab-close-button" );
+    this._closeButton.setWidth( 20 );
+    // TODO [rh] center image vertically in tab item
+    this._closeButton.setHeight( "80%" );
+    this._closeButton.addEventListener( "click", this._onClose, this );
+    var wm = org.eclipse.swt.WidgetManager.getInstance();
+    wm.setToolTip( this._closeButton,
+                   org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
+    this.add( this._closeButton );
+    this._updateCloseButton();
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "click", this._onClick, this );
@@ -67,14 +65,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "click", this._onClick, this );
-    this.removeEventListener( "dblclick", this._onDblClick, this );
-    if( this._closeButton != null ) {
-      this._closeButton.removeEventListener( "click", this._onClose, this );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      wm.setToolTip( this._closeButton, null );
-      this._closeButton.dispose();
-      this._closeButton = null;
-    }
+    this.removeEventListener( "dblclick", this._onDblClick, this );    
+    this._closeButton.removeEventListener( "click", this._onClose, this );
+    var wm = org.eclipse.swt.WidgetManager.getInstance();
+    wm.setToolTip( this._closeButton, null );
+    this._closeButton.dispose();
+    this._closeButton = null;
   },
 
   statics : {
@@ -110,6 +106,11 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
 
     isSelected : function() {
       return this._selected;
+    },
+    
+    setShowClose : function( value ) {
+      this._showClose = value;
+      this._updateCloseButton();
     },
 
     setUnselectedCloseVisible : function( value ) {
@@ -179,13 +180,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     _updateCloseButton : function() {
-      if( this._closeButton != null ) {
-        var visible 
-          =  this.isSelected() 
-          || ( this._unselectedCloseVisible 
-               && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );       
-        this._closeButton.setVisibility( visible );
+      var visible = false;
+      if( this._canClose || this._showClose ) {
+        visible
+          =  this.isSelected()
+          || ( this._unselectedCloseVisible
+               && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );
       }
+      this._closeButton.setVisibility( visible );
     },
 
     _onMouseOver : function( evt ) {

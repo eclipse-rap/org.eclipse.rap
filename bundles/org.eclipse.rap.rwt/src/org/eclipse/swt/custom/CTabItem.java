@@ -53,7 +53,7 @@ public class CTabItem extends Item {
   int shortenedTextWidth;
 
   boolean showing = false;
-  final boolean showClose;
+  boolean showClose;
   int x;
   int y;
   int width;
@@ -327,6 +327,47 @@ public class CTabItem extends Item {
       }
     }
     return result;
+  }
+
+  /**
+   * Sets to <code>true</code> to indicate that the receiver's close button should be shown.
+   * If the parent (CTabFolder) was created with SWT.CLOSE style, changing this value has
+   * no effect.
+   *
+   * @param close the new state of the close button
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setShowClose( final boolean close ) {
+    checkWidget();
+    if( ( parent.getStyle() & SWT.CLOSE )  == 0 && showClose != close ) {
+      showClose = close;
+      parent.updateItems();
+    }
+  }
+
+  /**
+   * Returns <code>true</code> to indicate that the receiver's close button should be shown.
+   * Otherwise return <code>false</code>. The initial value is defined by the style (SWT.CLOSE)
+   * that was used to create the receiver.
+   *
+   * @return <code>true</code> if the close button should be shown
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public boolean getShowClose() {
+    checkWidget();
+    return showClose;
   }
 
   ////////////////////////

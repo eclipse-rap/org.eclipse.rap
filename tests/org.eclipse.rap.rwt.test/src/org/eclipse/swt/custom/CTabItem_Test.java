@@ -32,7 +32,7 @@ public class CTabItem_Test extends TestCase {
     assertSame( folder, item.getParent() );
     assertSame( display, item.getDisplay() );
   }
-  
+
   public void testInitialState() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -44,24 +44,24 @@ public class CTabItem_Test extends TestCase {
     assertEquals( null, item.getControl() );
     assertEquals( null, item.getImage() );
   }
-  
+
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     assertEquals( SWT.NONE, item1.getStyle() );
-    
+
     CTabItem item2 = new CTabItem( folder, SWT.LEFT );
     assertEquals( SWT.NONE, item2.getStyle() );
-    
+
     // TODO [rh] Different from SWT: SWT doesn't return CLOSE even though it was
-    //      set in constructor. SWT currently relies on the behavior tested 
-    //      below to calulate the width of a CTabItem 
+    //      set in constructor. SWT currently relies on the behavior tested
+    //      below to calulate the width of a CTabItem
     CTabItem item3 = new CTabItem( folder, SWT.CLOSE );
     assertTrue( ( item3.getStyle() & SWT.CLOSE ) != 0 );
   }
-  
+
   public void testBounds() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -69,10 +69,10 @@ public class CTabItem_Test extends TestCase {
     folder.setSize( 150, 80 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     shell.layout();
-    
+
     assertTrue( item1.getBounds().width > 0 );
     assertTrue( item1.getBounds().height > 0 );
-    
+
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
     assertTrue( item1.getBounds().width > 0 );
     assertTrue( item1.getBounds().height > 0 );
@@ -81,7 +81,7 @@ public class CTabItem_Test extends TestCase {
     int item1Right = item1.getBounds().x + item1.getBounds().width;
     assertTrue( item2.getBounds().x >= item1Right );
   }
-  
+
   public void testDisplay() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -100,20 +100,20 @@ public class CTabItem_Test extends TestCase {
     Control item1Control = new Label( folder, SWT.NONE );
     item1Control.setSize( 1, 1 );
     shell.open();
-    
+
     // Set control for unselected item
     folder.setSelection( -1 );
     item1.setControl( item1Control );
     assertSame( item1Control, item1.getControl() );
     assertEquals( false, item1Control.getVisible() );
     assertEquals( new Point( 1, 1 ), item1Control.getSize() );
-    
+
     // Reset control: must set its visibility to false
     item1Control.setVisible( true );
     item1.setControl( null );
     assertEquals( null, item1.getControl() );
     assertEquals( false, item1Control.getVisible() );
-    
+
     // Set control for selected item
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
     Control item2Control = new Label( folder, SWT.NONE );
@@ -122,8 +122,8 @@ public class CTabItem_Test extends TestCase {
     assertSame( item2Control, item2.getControl() );
     assertEquals( true, item2Control.getVisible() );
     assertEquals( folder.getClientArea(), item2Control.getBounds() );
-    
-    // Try to set disposed of control 
+
+    // Try to set disposed of control
     try {
       Control control = new Label( folder, SWT.NONE );
       control.dispose();
@@ -134,19 +134,19 @@ public class CTabItem_Test extends TestCase {
       // expected
     }
 
-    // Try to set control with wrong parent 
+    // Try to set control with wrong parent
     try {
       Control control = new Label( shell, SWT.NONE );
       CTabItem item = new CTabItem( folder, SWT.NONE );
       item.setControl( control );
-      String msg 
+      String msg
         = "setControl must only accept controls whose parent is the folder";
       fail( msg );
     } catch( IllegalArgumentException e ) {
       // expected
     }
   }
-  
+
   public void testShowClose() {
     CTabFolder folder;
     CTabItem item;
@@ -155,22 +155,33 @@ public class CTabItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     // Test with folder that was created with SWT.CLOSE
     folder = new CTabFolder( shell, SWT.CLOSE );
-    adapter 
+    adapter
       = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
     item = new CTabItem( folder, SWT.NONE );
+    assertFalse( item.getShowClose() );
     assertTrue( adapter.showItemClose( item ) );
     item = new CTabItem( folder, SWT.CLOSE );
+    assertTrue( item.getShowClose() );
     assertTrue( adapter.showItemClose( item ) );
+
+    item.setShowClose( false );
+    assertTrue( item.getShowClose() );
+
     // Test with folder that was created without SWT.CLOSE
     folder = new CTabFolder( shell, SWT.NONE );
-    adapter 
+    adapter
       = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
     item = new CTabItem( folder, SWT.NONE );
+    assertFalse( item.getShowClose() );
     assertFalse( adapter.showItemClose( item ) );
     item = new CTabItem( folder, SWT.CLOSE );
+    assertTrue( item.getShowClose() );
     assertTrue( adapter.showItemClose( item ) );
+
+    item.setShowClose( false );
+    assertFalse( item.getShowClose() );
   }
-  
+
   public void testShowImage() {
     CTabItem item1, item2;
     Display display = new Display();
@@ -200,7 +211,7 @@ public class CTabItem_Test extends TestCase {
     assertTrue( adapter.showItemImage( item1 ) );
     assertFalse( adapter.showItemImage( item2 ) );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
