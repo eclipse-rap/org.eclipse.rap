@@ -270,6 +270,10 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
           }
         }
         this.prepareEnhancedBorder();
+        if (qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        	this.addToQueue( "width" );
+        	this.addToQueue( "height" );
+        }
 
         if( outline ) {
           this.setStyleProperty( "outline", outline );
