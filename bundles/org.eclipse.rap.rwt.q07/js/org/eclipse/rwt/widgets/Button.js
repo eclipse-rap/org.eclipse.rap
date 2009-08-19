@@ -56,12 +56,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
 
   },
 
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
   properties : {
 
     selectionIndicator : {
@@ -76,12 +70,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
       init : 1
     }
   },
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
 
   members : {
     _hasSelectionListener : false,
@@ -140,8 +128,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
 
     // Not using EventUtil since no event should be sent for radio
     _sendChanges : function() {
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend
-          && this._hasSelectionListener )
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && this._hasSelectionListener )
       {
         var req = org.eclipse.swt.Request.getInstance();
         if( this._sendEvent ) {
@@ -237,7 +224,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
         case "Home":
           event.preventDefault();
           event.stopPropagation();
-        default:
       }
 
     }
