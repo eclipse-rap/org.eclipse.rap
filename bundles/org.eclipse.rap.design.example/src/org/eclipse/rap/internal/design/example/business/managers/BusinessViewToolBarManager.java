@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rap.internal.design.example.business.CommandUtil;
 import org.eclipse.rap.internal.design.example.business.CommandUtil.CommandParameter;
 import org.eclipse.rap.internal.design.example.business.builder.DummyBuilder;
@@ -55,6 +56,7 @@ public class BusinessViewToolBarManager extends ContributionManager
 
   private Composite control;
   private List itemList = new ArrayList();
+  private List listeners;
   
   
   public BusinessViewToolBarManager() {
@@ -64,6 +66,113 @@ public class BusinessViewToolBarManager extends ContributionManager
   public void addPropertyChangeListener( 
     final IPropertyChangeListener listener )  
   {
+    if( listeners == null ) {
+      listeners = new ArrayList();
+    }
+    if( !listeners.contains( listener ) && listener != null ) {
+      listeners.add( listener );
+    }
+  }
+  
+  private void firePropertyChangeEvent( 
+    final String propertyName, 
+    final Object oldValue, 
+    final Object newValue ) 
+  {
+    PropertyChangeEvent event = new PropertyChangeEvent( this, 
+                                                         propertyName, 
+                                                         oldValue, 
+                                                         newValue );
+    if( listeners != null && listeners.size() > 0 ) {
+      for( int i = 0; i < listeners.size(); i++ ) {
+        IPropertyChangeListener listener 
+          = ( IPropertyChangeListener ) listeners.get( i );
+        listener.propertyChange( event );
+      }
+    }
+  }
+  
+  public void add( final IAction action ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.add( action );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );
+  }
+  
+  public void add( final IContributionItem item ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.add( item );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );
+  }
+  
+  public void insertAfter( final String ID, final IAction action ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.insertAfter( ID, action );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );    
+  }
+  
+  public void insertAfter( final String ID, final IContributionItem item ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.insertAfter( ID, item );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );
+  }
+  
+  public void insertBefore( final String ID, final IAction action ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.insertBefore( ID, action );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );    
+  }
+  
+  public void insertBefore( final String ID, final IContributionItem item ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.insertBefore( ID, item );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );
+  }
+  
+  public void insert( final int index, final IContributionItem item ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.insert( index, item );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );    
+  }
+  
+  public void appendToGroup( final String groupName, final IAction action ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.appendToGroup( groupName, action );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );     
+  }
+  
+  public void appendToGroup( 
+    final String groupName, 
+    final IContributionItem item ) 
+  {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.appendToGroup( groupName, item );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );
+  }
+  
+  public void prependToGroup( final String groupName, final IAction action ) {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.prependToGroup( groupName, action );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );    
+  }
+  
+  public void prependToGroup(
+    final String groupName, 
+    final IContributionItem item ) 
+  {
+    Integer newCount = new Integer( getItems().length );
+    Integer oldCount = newCount;
+    super.prependToGroup( groupName, item );
+    firePropertyChangeEvent( PROP_LAYOUT, oldCount, newCount );
   }
 
   public ToolBar createControl( final Composite parent ) {
@@ -225,6 +334,9 @@ public class BusinessViewToolBarManager extends ContributionManager
   public void removePropertyChangeListener( 
     final IPropertyChangeListener listener ) 
   {
+    if( listeners != null ) {
+      listeners.remove( listener );
+    }
   }
   
   public void update( final boolean force ) {

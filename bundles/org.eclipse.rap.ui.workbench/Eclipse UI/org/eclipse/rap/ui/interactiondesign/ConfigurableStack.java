@@ -9,18 +9,25 @@
 *******************************************************************************/ 
 package org.eclipse.rap.ui.interactiondesign;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rap.ui.interactiondesign.internal.ConfigurableStackProxy;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -38,7 +45,6 @@ import org.eclipse.ui.internal.PartPane;
 import org.eclipse.ui.internal.ViewPane;
 import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.internal.util.PrefUtil;
-import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -207,6 +213,8 @@ public abstract class ConfigurableStack extends StackPresentation {
   
   private String stackPresentationId;
 
+  private List managersWhoHasListeners;
+
   /**
    * Instantiate an object of this class by calling the super constructor with
    * a dummy <code>{@link IStackPresentationSite}</code>.
@@ -225,7 +233,7 @@ public abstract class ConfigurableStack extends StackPresentation {
     IStackPresentationSite site = getSite();
     int actionCount = 0;
     if( action != null && manager != null ) {
-      
+      addPropertyChangeListenerToToolBar( manager );
       IContributionItem[] items = manager.getItems();
       String paneId = getPaneId( site );
       
@@ -234,31 +242,16 @@ public abstract class ConfigurableStack extends StackPresentation {
       if( selectedPart instanceof PresentablePart ) {
         PresentablePart part = ( PresentablePart ) selectedPart;
         result = part.getPane().getToolBar();
-      }  
+      }        
       // set the correct visibility
       for( int i = 0; i < items.length; i++ ) {
-        if( items[ i ] instanceof ActionContributionItem ) {
-          // actions
-          ActionContributionItem actionItem 
-            = ( ActionContributionItem ) items[ i ];
-          String actionId = actionItem.getAction().getId();
+          IContributionItem item = items[ i ];
           boolean isVisible 
-            = action.isViewActionVisibile( paneId, actionId );
-          actionItem.setVisible( isVisible );
+            = action.isViewActionVisibile( paneId, item.getId() );
+          item.setVisible( isVisible );
           if( isVisible ) {     
             actionCount++;
           }
-        } else if( items[ i ] instanceof CommandContributionItem ) {
-          // commands
-          CommandContributionItem commandItem 
-            = ( CommandContributionItem ) items[ i ];
-          boolean isVisible 
-            = action.isViewActionVisibile( paneId, commandItem.getId() );
-          commandItem.setVisible( isVisible );
-          if( isVisible ) {     
-            actionCount++;
-          } 
-        }
       }
       
       // update the toolbar manager with the new visibility
@@ -275,6 +268,52 @@ public abstract class ConfigurableStack extends StackPresentation {
         result.setVisible( true );
       } 
     }    
+    return result;
+  }
+  
+  private void addPropertyChangeListenerToToolBar( 
+    final IToolBarManager manager ) 
+  {
+    if( manager instanceof IToolBarManager2 && !hasListener( manager ) ) {
+      final IToolBarManager2 manager2 = ( IToolBarManager2 ) manager;
+      final IPropertyChangeListener listener = new IPropertyChangeListener() {        
+        public void propertyChange( final PropertyChangeEvent event ) {
+          if( event.getProperty().equals( IToolBarManager2.PROP_LAYOUT ) ) {
+            if( configAction != null ) {
+              configAction.fireToolBarChange();
+            }
+          }
+        }
+      };
+      manager2.addPropertyChangeListener( listener );
+      final Control toolBar = manager2.getControl2();
+      if( toolBar != null ) {
+        // Remove all listeners from the manager and the manager from the list
+        // to prevent memory leaks
+        toolBar.addDisposeListener( new DisposeListener() {          
+          public void widgetDisposed( final DisposeEvent event ) {
+            toolBar.removeDisposeListener( this );
+            manager2.removePropertyChangeListener( listener );
+            if( managersWhoHasListeners != null ) {
+              managersWhoHasListeners.remove( manager );
+            }
+          }
+        } );
+      }
+    }
+    
+  }
+  
+  private boolean hasListener( final IToolBarManager manager ) {
+    boolean result = false;
+    if( managersWhoHasListeners == null ) {
+      managersWhoHasListeners = new ArrayList();
+    }
+    if( managersWhoHasListeners.contains( manager ) ) {
+      result = true;
+    } else {
+      managersWhoHasListeners.add( manager );
+    }
     return result;
   }
   

@@ -86,6 +86,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Button overflowButton;
   private List overflowButtons = new ArrayList();
   private Map buttonPartMap = new HashMap();
+  private IPresentablePart oldPart;
   
   private class DirtyListener implements IPropertyListener {
     
@@ -275,10 +276,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( viewMenu != null ) {
           point.x -= 20;
         }
-        toolBar.setLocation( point );
-        
-        toolBar.setVisible( true );
-        
+        toolBar.setLocation( point );        
         toolbarBg.moveBelow( toolBar );
         presentationControl.moveBelow( toolBar );  
         currentPart.getControl().moveBelow( toolBar );
@@ -328,7 +326,6 @@ public class ViewStackPresentation extends ConfigurableStack {
       public void widgetSelected( SelectionEvent e ) {    
         if( !currentPart.equals( part ) ) {
           selectPart( part );
-          layoutToolBar();
         }
         activatePart( part );
       };
@@ -366,6 +363,12 @@ public class ViewStackPresentation extends ConfigurableStack {
     IWorkbenchPage activePage = window.getActivePage();
     IWorkbenchPart workbenchPart = getReference( part ).getPart( true );
     if( workbenchPart != null ) {
+      if( oldPart != null ) {
+        Control toolBar = oldPart.getToolBar();
+        if( toolBar != null ) {
+          toolBar.setVisible( false );
+        }
+      }
       activePage.activate( workbenchPart );
     }
   }
@@ -827,6 +830,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       toSelect.setVisible( true );
     }
     if( currentPart != null  ) {
+      oldPart = currentPart;
       if( currentPart instanceof PresentablePart 
           && ( (PresentablePart) currentPart ).getPane() != null ) {
         currentPart.setVisible( false ); 
@@ -834,8 +838,9 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
     makePartButtonInactive( currentPart );
     currentPart = toSelect;
+    currentPart.getControl().moveAbove( null );
     makePartButtonActive( currentPart );
-    layoutToolBar();
+    setBounds( presentationControl.getBounds() );    
   }
 
   public void setActive( final int newState ) {
