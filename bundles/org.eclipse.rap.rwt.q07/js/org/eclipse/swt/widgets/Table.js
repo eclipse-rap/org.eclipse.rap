@@ -797,6 +797,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             } else if( topIndex > this._itemCount ) {
               topIndex = this._itemCount;
             }
+            // Fix for bug #282425:
+            // If gotoIndex points to one of the items of the last page and 
+            // PageDown is used, the top index is set so the last page to be 
+            // visible
+            var lastPageTopIndex
+              = this._itemCount - this._getFullyVisibleRowCount();
+            if(    gotoIndex > lastPageTopIndex
+                && gotoIndex < this._itemCount
+                && keyIdentifier === "PageDown" )
+            {
+              topIndex = lastPageTopIndex;
+            }
             this._internalSetTopIndex( topIndex, true );
           }
           this.setFocusIndex( gotoIndex );
