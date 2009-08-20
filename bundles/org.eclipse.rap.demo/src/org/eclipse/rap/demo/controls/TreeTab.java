@@ -84,13 +84,21 @@ public class TreeTab extends ExampleTab {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
     tree = new Tree( parent, style );
-    tree.setLayoutData( new RowData( 200, 200 ) );
+    tree.setLayoutData( new RowData( 350, 200 ) );
+    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+    col1.setText( "Col 1" );
+    col1.setWidth( 150 );
+    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
+    col2.setText( "Col 2" );
+    col2.setWidth( 150 );
     for( int i = 0; i < 4; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
-      item.setText( "Node_" + ( i + 1 ) );
+      item.setText( "Node_1." + ( i + 1 ) );
+      item.setText( 1, "Node_2." + ( i + 1 ) );
       if( i < 3 ) {
         TreeItem subitem = new TreeItem( item, SWT.NONE );
-        subitem.setText( "Subnode_" + ( i + 1 ) );
+        subitem.setText( "Subnode_1." + ( i + 1 ) );
+        subitem.setText( 1, "Subnode_2." + ( i + 1 ) );
       }
     }
     if( showImages ) {
@@ -155,12 +163,7 @@ public class TreeTab extends ExampleTab {
     } );
     tree.setSelection( tree.getItem( 0 ) );
     tree.setHeaderVisible( true );
-    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
-    col1.setText( "Col 1" );
-    col1.setWidth( 150 );
-    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
-    col2.setText( "Col 2" );
-    col2.setWidth( 50 );
+
     registerControl( tree );
   }
 

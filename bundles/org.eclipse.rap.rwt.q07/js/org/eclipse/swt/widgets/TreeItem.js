@@ -275,6 +275,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this._images = images;
       if( this.isCreated() ) {
         this.updateItem();
+        this.updateColumnsWidth();
       }
     },
 
