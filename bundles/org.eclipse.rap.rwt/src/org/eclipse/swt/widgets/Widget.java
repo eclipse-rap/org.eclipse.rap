@@ -20,8 +20,7 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -94,6 +93,7 @@ public abstract class Widget implements Adaptable {
   private WidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter;
+  private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
 
   Widget() {
@@ -167,6 +167,11 @@ public abstract class Widget implements Adaptable {
         widgetAdapter = new WidgetAdapter();
       }
       result = widgetAdapter;
+    } else if( adapter == IWidgetGraphicsAdapter.class ) {
+      if( widgetGraphicsAdapter == null ) {
+        widgetGraphicsAdapter = new WidgetGraphicsAdapter();
+      }
+      result = widgetGraphicsAdapter;
     } else {
       // TODO: [fappel] buffer the adapterManager for performance improvement.
       //                Note: this is still a matter of investigation since
@@ -175,7 +180,7 @@ public abstract class Widget implements Adaptable {
         adapterManager = AdapterManagerImpl.getInstance();
       }
       result = adapterManager.getAdapter( this, adapter );
-    }
+    } 
     return result;
   }
 

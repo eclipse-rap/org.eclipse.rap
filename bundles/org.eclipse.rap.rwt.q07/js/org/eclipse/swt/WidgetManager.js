@@ -269,7 +269,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
           && topLeftRadius >= 0
           && topRightRaduis >= 0
           && bottomRightRaduis >= 0
-          && bottomLeftRaduis >= 0 ) {
+          && bottomLeftRaduis >= 0 )
+      {
         var border = new org.eclipse.rwt.RoundedBorder( width, color );
         border.setRadii( [ topLeftRadius,
                            topRightRaduis,

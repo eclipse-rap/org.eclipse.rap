@@ -58,7 +58,8 @@ public final class WidgetLCAUtil {
     = "backgroundGradientPercents";
   private static final String PROP_ROUNDED_BORDER_WIDTH = "roundedBorderWidth";
   private static final String PROP_ROUNDED_BORDER_COLOR = "roundedBorderColor";
-  private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
+  private static final String PROP_ROUNDED_BORDER_RADIUS
+    = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
   private static final String PROP_HELP_LISTENER = "helpListener";
@@ -68,8 +69,6 @@ public final class WidgetLCAUtil {
 
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
   private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
-  private static final String JS_FUNC_SET_BACKGROUND_GRADIENT
-    = "setBackgroundGradient";
 
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
@@ -80,6 +79,9 @@ public final class WidgetLCAUtil {
     = new JSListenerInfo( "keydown",
                           "org.eclipse.swt.EventUtil.helpRequested",
                           JSListenerType.ACTION );
+
+  private static final Rectangle DEF_ROUNDED_BORDER_RADIUS
+    = new Rectangle( 0, 0, 0, 0 );
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -700,7 +702,7 @@ public final class WidgetLCAUtil {
 
   /**
    * Determines whether the background gradient properties of the
-   * given widget has changed during the processing of the current request and
+   * given widget have changed during the processing of the current request and
    * if so, writes JavaScript code to the response that updates the client-side
    * background gradient properties of the specified widget.
    *
@@ -712,40 +714,37 @@ public final class WidgetLCAUtil {
   public static void writeBackgroundGradient( final Widget widget )
     throws IOException
   {
-    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-    if( adapter != null ) {
-      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-      Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
-      int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
-      boolean changed = WidgetLCAUtil.hasChanged( widget,
-                                                  PROP_BACKGROUND_GRADIENT_COLORS,
-                                                  bgGradientColors,
-                                                  null );
-      if( !changed ) {
-        changed = WidgetLCAUtil.hasChanged( widget,
-                                            PROP_BACKGROUND_GRADIENT_PERCENTS,
-                                            bgGradientPercents,
-                                            null );
-      }
-      if( changed ) {
-        JSWriter writer = JSWriter.getWriterFor( widget );
-        Integer[] percents = null;
-        if( bgGradientPercents != null ) {
-          percents = new Integer[ bgGradientPercents.length ];
-          for( int i = 0; i < bgGradientPercents.length; i++ ) {
-            percents[ i ] =  new Integer( bgGradientPercents[ i ] );
-          }
+    if( hasBackgroundGradientChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = graphicAdapter.getBackgroundGradientColors();
+      int[] bgGradientPercents = graphicAdapter.getBackgroundGradientPercents();
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Integer[] percents = null;
+      if( bgGradientPercents != null ) {
+        percents = new Integer[ bgGradientPercents.length ];
+        for( int i = 0; i < bgGradientPercents.length; i++ ) {
+          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
         }
-        Object[] args = new Object[] {
-          widget,
-          bgGradientColors,
-          percents
-        };
-        writer.call( JSWriter.WIDGET_MANAGER_REF,
-                     JS_FUNC_SET_BACKGROUND_GRADIENT,
-                     args );
       }
+      Object[] args = new Object[] { widget, bgGradientColors, percents };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setBackgroundGradient", args );
     }
+  }
+
+  private static boolean hasBackgroundGradientChanged( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+    return    WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_COLORS,
+                                        bgGradientColors,
+                                        null )
+           || WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_PERCENTS,
+                                        bgGradientPercents,
+                                        null );
   }
 
   /**
@@ -762,44 +761,47 @@ public final class WidgetLCAUtil {
   public static void writeRoundedBorder( final Widget widget )
     throws IOException
   {
-    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-    if( adapter != null ) {
-      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-      int width = gfxAdapter.getRoundedBorderWidth();
-      Color color = gfxAdapter.getRoundedBorderColor();
-      Rectangle radius = gfxAdapter.getRoundedBorderRadius();
-      boolean changed = WidgetLCAUtil.hasChanged( widget,
-                                                  PROP_ROUNDED_BORDER_WIDTH,
-                                                  new Integer( width ),
-                                                  new Integer( 0 ) );
-      if( !changed ) {
-        changed = WidgetLCAUtil.hasChanged( widget,
-                                            PROP_ROUNDED_BORDER_COLOR,
-                                            color,
-                                            null );
-      }
-      if( !changed ) {
-        changed = WidgetLCAUtil.hasChanged( widget,
-                                            PROP_ROUNDED_BORDER_RADIUS,
-                                            radius,
-                                            null );
-      }
-      if( changed && radius != null ) {
-        JSWriter writer = JSWriter.getWriterFor( widget );
-        Object[] args = new Object[] {
-          widget,
-          new Integer( width ),
-          color,
-          new Integer( radius.x ),
-          new Integer( radius.y ),
-          new Integer( radius.width ),
-          new Integer( radius.height )
-        };
-        writer.call( JSWriter.WIDGET_MANAGER_REF,
-                     JS_FUNC_SET_ROUNDED_BORDER,
-                     args );
-      }
+    if( hasRoundedBorderChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
+      int width = graphicAdapter.getRoundedBorderWidth();
+      Rectangle radius = graphicAdapter.getRoundedBorderRadius();
+      Color color = graphicAdapter.getRoundedBorderColor();
+      Object[] args = new Object[] {
+        widget,
+        new Integer( width ),
+        color,
+        new Integer( radius.x ),
+        new Integer( radius.y ),
+        new Integer( radius.width ),
+        new Integer( radius.height )
+      };
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      writer.call( JSWriter.WIDGET_MANAGER_REF,
+                   JS_FUNC_SET_ROUNDED_BORDER,
+                   args );
     }
+  }
+
+  private static boolean hasRoundedBorderChanged( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = graphicsAdapter.getRoundedBorderWidth();
+    Color color = graphicsAdapter.getRoundedBorderColor();
+    Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
+    return 
+         WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_WIDTH,
+                                   new Integer( width ),
+                                   new Integer( 0 ) )
+      || WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_COLOR,
+                                   color,
+                                   null )
+      || WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_RADIUS,
+                                   radius,
+                                   DEF_ROUNDED_BORDER_RADIUS );
   }
 
   /**

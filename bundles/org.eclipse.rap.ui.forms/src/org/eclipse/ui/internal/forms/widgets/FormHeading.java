@@ -895,10 +895,10 @@ public class FormHeading extends Canvas {
 //		setBackgroundImage(gradientImage);
 // RAP [if] Background gradient rendering
 	  if( gradientInfo != null ) {
-	    Object adapter = getAdapter( IWidgetGraphicsAdapter.class );
-        IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-        gfxAdapter.setBackgroundGradient( gradientInfo.gradientColors,
-                                          gradientInfo.percents );
+	    IWidgetGraphicsAdapter adapter 
+	      = ( IWidgetGraphicsAdapter )getAdapter( IWidgetGraphicsAdapter.class );
+      adapter.setBackgroundGradient( gradientInfo.gradientColors,
+                                     gradientInfo.percents );
 	  }
 // RAPEND [if]
 	}

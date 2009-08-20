@@ -84,7 +84,6 @@ public class ControlLCAUtil {
     = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().cancelEvent";
   static final String JSFUNC_ALLOW_EVENT
     = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().allowEvent";
-
   static final int MAX_STATIC_ZORDER = 300;
 
 
@@ -138,10 +137,8 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveBackground( control,
                                       controlAdapter.getUserBackground(),
                                       controlAdapter.getBackgroundTransparency() );
-    WidgetLCAUtil.preserveBackgroundGradient( control );
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
-    WidgetLCAUtil.preserveRoundedBorder( control );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -287,10 +284,8 @@ public class ControlLCAUtil {
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );
-    WidgetLCAUtil.writeBackgroundGradient( control );
     writeBackgroundImage( control );
     writeFont( control );
-    WidgetLCAUtil.writeRoundedBorder( control );
     writeCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );

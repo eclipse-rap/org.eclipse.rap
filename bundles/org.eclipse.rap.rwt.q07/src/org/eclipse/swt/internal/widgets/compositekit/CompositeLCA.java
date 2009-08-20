@@ -25,6 +25,8 @@ public class CompositeLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
+    WidgetLCAUtil.preserveBackgroundGradient( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
   }
 
   public void readData( final Widget widget ) {
@@ -44,6 +46,8 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     ControlLCAUtil.writeChanges( ( Control )widget );
+    WidgetLCAUtil.writeBackgroundGradient( widget );
+    WidgetLCAUtil.writeRoundedBorder( widget );
     WidgetLCAUtil.writeCustomVariant( widget );
   }
 

@@ -87,7 +87,6 @@ public abstract class Control extends Widget {
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
   private final IControlAdapter controlAdapter;
-  private final IWidgetGraphicsAdapter widgetGraphicsAdapter;
   final Composite parent;
   Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
@@ -106,7 +105,6 @@ public abstract class Control extends Widget {
     // and its super-classes
     this.parent = parent;
     controlAdapter = new ControlAdapter();
-    widgetGraphicsAdapter = new WidgetGraphicsAdapter();
   }
 
   /**
@@ -142,7 +140,6 @@ public abstract class Control extends Widget {
     this.parent = parent;
     ControlHolder.addControl( parent, this );
     controlAdapter = new ControlAdapter();
-    widgetGraphicsAdapter = new WidgetGraphicsAdapter();
     createWidget();
   }
 
@@ -1410,8 +1407,6 @@ public abstract class Control extends Widget {
     Object result = null;
     if( adapter == IControlAdapter.class ) {
       result = controlAdapter;
-    } else if( adapter == IWidgetGraphicsAdapter.class ) {
-      result = widgetGraphicsAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

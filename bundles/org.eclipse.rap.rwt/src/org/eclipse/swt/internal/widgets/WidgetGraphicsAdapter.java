@@ -15,24 +15,29 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
 
-  private WidgetGraphicsData data;
+//  private static final class Data {
+//  }
+//  
+//  private Data data;
+
+  private int roundedBorderWidth;
+  private Color roundedBorderColor;
+  private Rectangle roundedBorderRadius;
+  private Color[] backgroundGradientColors;
+  private int[] backgroundGradientPercents;
 
   public Color[] getBackgroundGradientColors() {
     Color[] result = null;
-    if( data != null ) {
-      if( data.backgroundGradientColors != null ) {
-        result = ( Color[] )data.backgroundGradientColors.clone();
-      }
+    if( backgroundGradientColors != null ) {
+      result = ( Color[] )backgroundGradientColors.clone();
     }
     return result;
   }
 
   public int[] getBackgroundGradientPercents() {
     int[] result = null;
-    if( data != null ) {
-      if( data.backgroundGradientPercents != null ) {
-        result = ( int[] )data.backgroundGradientPercents.clone();
-      }
+    if( backgroundGradientPercents != null ) {
+      result = ( int[] )backgroundGradientPercents.clone();
     }
     return result;
   }
@@ -50,39 +55,33 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
         }
       }
     }
-    if( data == null ) {
-      data = new WidgetGraphicsData();
-    }
-    data.backgroundGradientColors = null;
+    backgroundGradientColors = null;
     if( gradientColors != null ) {
-      data.backgroundGradientColors = ( Color[] )gradientColors.clone();
+      backgroundGradientColors = ( Color[] )gradientColors.clone();
     }
-    data.backgroundGradientPercents = null;
+    backgroundGradientPercents = null;
     if( percents != null ) {
-      data.backgroundGradientPercents = ( int[] )percents.clone();
+      backgroundGradientPercents = ( int[] )percents.clone();
     }
   }
 
   public int getRoundedBorderWidth() {
-    int result = 0;
-    if( data != null ) {
-      result = data.roundedBorderWidth;
-    }
-    return result;
+    return roundedBorderWidth;
   }
 
   public Color getRoundedBorderColor() {
-    Color result = null;
-    if( data != null ) {
-      result = data.roundedBorderColor;
-    }
-    return result;
+    return roundedBorderColor;
   }
 
   public Rectangle getRoundedBorderRadius() {
-    Rectangle result = null;
-    if( data != null ) {
-      result = data.roundedBorderRadius;
+    Rectangle result;
+    if( roundedBorderRadius != null ) {
+      result = new Rectangle( roundedBorderRadius.x, 
+                              roundedBorderRadius.y, 
+                              roundedBorderRadius.width, 
+                              roundedBorderRadius.height );
+    } else {
+      result = new Rectangle( 0, 0, 0, 0 );
     }
     return result;
   }
@@ -93,14 +92,11 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
                                 final int topRightRadius,
                                 final int bottomRightRadius,
                                 final int bottomLeftRadius ) {
-    if( data == null ) {
-      data = new WidgetGraphicsData();
-    }
-    data.roundedBorderWidth = width;
-    data.roundedBorderColor = color;
-    data.roundedBorderRadius = new Rectangle( topLeftRadius,
-                                              topRightRadius,
-                                              bottomRightRadius,
-                                              bottomLeftRadius );
+    roundedBorderWidth = width;
+    roundedBorderColor = color;
+    roundedBorderRadius = new Rectangle( topLeftRadius,
+                                         topRightRadius,
+                                         bottomRightRadius,
+                                         bottomLeftRadius );
   }
 }

@@ -23,7 +23,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
-import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
 
@@ -787,74 +786,4 @@ public class Control_Test extends TestCase {
     assertNotNull( monitor );
     assertEquals( display.getPrimaryMonitor(), monitor );
   }
-
-  public void testRoundedBorder() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Control control = new Composite( shell, SWT.NONE );
-    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-    assertEquals( 0, gfxAdapter.getRoundedBorderWidth() );
-    assertNull( gfxAdapter.getRoundedBorderColor() );
-    assertNull( gfxAdapter.getRoundedBorderRadius() );
-    Color blue = Graphics.getColor( 0, 0, 255 );
-    gfxAdapter.setRoundedBorder( 2, blue, 1, 2, 3, 4 );
-    assertEquals( 2, gfxAdapter.getRoundedBorderWidth() );
-    assertEquals( blue, gfxAdapter.getRoundedBorderColor() );
-    assertEquals( new Rectangle( 1, 2, 3, 4 ),
-                  gfxAdapter.getRoundedBorderRadius() );
-  }
-
-  public void testBackgroundGradient() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Control control = new Composite( shell, SWT.NONE );
-    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-    assertNull( gfxAdapter.getBackgroundGradientColors() );
-    assertNull( gfxAdapter.getBackgroundGradientPercents() );
-    Color blue = Graphics.getColor( 0, 0, 255 );
-    Color green = Graphics.getColor( 0, 255, 0 );
-    Color[] gradientColors = new Color[] { blue, green, blue };
-    int[] percents = new int[] { 0, 50, 100 };
-    gfxAdapter.setBackgroundGradient( gradientColors, percents );
-    assertEquals( blue, gfxAdapter.getBackgroundGradientColors()[ 0 ] );
-    assertEquals( green, gfxAdapter.getBackgroundGradientColors()[ 1 ] );
-    assertEquals( blue, gfxAdapter.getBackgroundGradientColors()[ 2 ] );
-    assertEquals( 0, gfxAdapter.getBackgroundGradientPercents()[ 0 ] );
-    assertEquals( 50, gfxAdapter.getBackgroundGradientPercents()[ 1 ] );
-    assertEquals( 100, gfxAdapter.getBackgroundGradientPercents()[ 2 ] );
-
-    gfxAdapter.setBackgroundGradient( null, null );
-    assertNull( gfxAdapter.getBackgroundGradientColors() );
-    assertNull( gfxAdapter.getBackgroundGradientPercents() );
-
-    percents = new int[] { 0, 100 };
-    try {
-      gfxAdapter.setBackgroundGradient( gradientColors, percents );
-      fail( "No exception thrown for invalid arguments" );
-    } catch( IllegalArgumentException e ) {
-    }
-
-    gradientColors = new Color[] { blue, null, blue };
-    percents = new int[] { 0, 50, 100 };
-    try {
-      gfxAdapter.setBackgroundGradient( gradientColors, percents );
-      fail( "No exception thrown for invalid arguments" );
-    } catch( IllegalArgumentException e ) {
-    }
-  }
-
-  public void testBackgroundGradientSafeCopy() {
-    Display display = new Display();
-    Control shell = new Shell( display );
-    Object adapter = shell.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color[] colors = { Graphics.getColor( new RGB( 1, 2, 3 ) ) };
-    int[] percentages = { 1 };
-    graphicsAdapter.setBackgroundGradient( colors, percentages );
-    percentages[ 0 ] = 2;
-    assertEquals( 1, graphicsAdapter.getBackgroundGradientPercents()[ 0 ] );
-  }
-
 }

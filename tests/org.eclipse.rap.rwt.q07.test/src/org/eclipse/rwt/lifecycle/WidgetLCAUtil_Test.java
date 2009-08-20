@@ -23,7 +23,9 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -477,6 +479,104 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeStyleFlag( borderControl, SWT.BORDER, "BORDER" );
     String expected = "w.addState( \"rwt_BORDER\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteBackgroundGradient() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Control control = new Composite( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    CompositeLCA lca = new CompositeLCA();
+    lca.preserveValues( control );
+    RWTFixture.markInitialized( control );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    lca.renderChanges( control );
+    String expected
+      = "wm.setBackgroundGradient"
+      + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
+      + "[0,100 ] );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    gradientColors = new Color[] {
+      Graphics.getColor( 255, 0, 0 ),
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    percents = new int[] { 0, 50, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    lca.renderChanges( control );
+    expected
+      = "wm.setBackgroundGradient"
+      + "( wm.findWidgetById( \"w2\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ],"
+      + " [0,50,100 ] );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    lca.renderChanges( control );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    gfxAdapter.setBackgroundGradient( null, null );
+    lca.renderChanges( control );
+    expected 
+      = "wm.setBackgroundGradient"
+      + "( wm.findWidgetById( \"w2\" ), null, null );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteRoundedBorder() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Widget widget = new Composite( shell, SWT.NONE );
+
+    CompositeLCA lca = new CompositeLCA();
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( widget );
+    RWTFixture.markInitialized( widget );
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color color = Graphics.getColor( 0, 255, 0 );
+    graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
+    lca.renderChanges( widget );
+    String expected
+      = "wm.setRoundedBorder"
+      + "( wm.findWidgetById( \"w2\" ), 2, \"#00ff00\", 5, 6, 7, 8 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( widget );
+    lca.renderChanges( widget );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( widget );
+    graphicsAdapter.setRoundedBorder( 4, color, 5, 6, 7, 8 );
+    lca.renderChanges( widget );
+    expected 
+      = "wm.setRoundedBorder"
+      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( widget );
+    graphicsAdapter.setRoundedBorder( 4, color, 5, 4, 7, 8 );
+    lca.renderChanges( widget );
+    expected 
+      = "wm.setRoundedBorder"
+      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   protected void setUp() throws Exception {

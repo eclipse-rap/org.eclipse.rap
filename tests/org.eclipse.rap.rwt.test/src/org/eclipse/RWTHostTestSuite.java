@@ -170,6 +170,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeDetermination_Test.class );
     suite.addTestSuite( ResourceFactory_Test.class );
+    suite.addTestSuite( WidgetGraphicsAdapter_Test.class );
 
     // == Theming ==
     suite.addTestSuite( Theme_Test.class );
