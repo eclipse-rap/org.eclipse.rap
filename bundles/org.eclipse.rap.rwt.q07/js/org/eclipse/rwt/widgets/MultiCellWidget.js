@@ -587,7 +587,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     _getLabelHtml : function( cell ) {
       return   "<div style='position:absolute;border:0 none;overflow:hidden;"
              + this._htmlUtil._joinStyleProperties( [ this.__fontCache ] )
-             + "'>"
+             + "white-space:nowrap;'>"
              + this.getCellContent( cell )
              + "</div>";
     },
