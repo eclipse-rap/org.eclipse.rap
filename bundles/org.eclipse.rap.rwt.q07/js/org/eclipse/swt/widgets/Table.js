@@ -815,6 +815,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._keyboardSelecionChanged = true;
         }
       }
+      // Prevent Left and Right key events from bubbling
+      if(    this._isRelevantEvent( evt )
+          && org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
+          && (    keyIdentifier === "Left"
+               || keyIdentifier === "Right" ) )
+      {
+        evt.preventDefault();
+        evt.stopPropagation();
+      } 
     },
 
     _calcGotoIndex : function( currentIndex, keyIdentifier ) {
