@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
@@ -628,6 +628,43 @@ public class Tree extends Composite {
   }
 
   /**
+   * Selects an item in the receiver.  If the item was already
+   * selected, it remains selected.
+   *
+   * @param item the item to be selected
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void select( final TreeItem item ) {
+    checkWidget();
+    if( item == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( ( style & SWT.SINGLE ) != 0 ) {
+      setSelection( item );
+    } else {
+      final ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
+      if( !selItems.contains( item ) ) {
+        selItems.add( item );
+        selection = new TreeItem[ selItems.size() ];
+        selItems.toArray( selection );
+      }
+    }
+  }
+
+  /**
    * Selects all of the items in the receiver.
    * <p>
    * If the receiver is single-select, do nothing.
@@ -654,6 +691,39 @@ public class Tree extends Composite {
       } );
       selection = new TreeItem[ allItems.size() ];
       allItems.toArray( selection );
+    }
+  }
+
+  /**
+   * Deselects an item in the receiver.  If the item was already
+   * deselected, it remains deselected.
+   *
+   * @param item the item to be deselected
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void deselect( final TreeItem item ) {
+    checkWidget ();
+    if( item == null ) {
+      error (SWT.ERROR_NULL_ARGUMENT);
+    }
+    if( item.isDisposed() ) {
+      error (SWT.ERROR_INVALID_ARGUMENT);
+    }
+    final ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
+    if( selItems.contains( item ) ) {
+      selItems.remove( item );
+      selection = new TreeItem[ selItems.size() ];
+      selItems.toArray( selection );
     }
   }
 

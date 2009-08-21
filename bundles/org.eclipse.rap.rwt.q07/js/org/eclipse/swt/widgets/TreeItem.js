@@ -154,7 +154,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
     setSelection : function( value, focus ) {
       var manager = this.getTree().getManager();
-      manager.setItemSelected( this, value );
+      if( manager.getMultiSelection() || value ) {
+        manager.setItemSelected( this, value );
+      } else if( manager.getItemSelected( this ) ) {
+        // [if] Because of qx SelectionManager it is not possible to deselect
+        // the item in "single" selection mode with manager.setItemSelected
+        manager.deselectAll();
+      }
       if( focus ) {
         manager.setLeadItem( this );
       }

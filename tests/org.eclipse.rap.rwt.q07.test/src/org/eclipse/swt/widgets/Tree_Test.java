@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -406,6 +407,60 @@ public class Tree_Test extends TestCase {
     tree.deselectAll();
     assertEquals( 0, tree.getSelectionCount() );
     assertEquals( 0, tree.getSelection().length );
+  }
+
+  public void testSelectForSingle() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item1, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    tree.setSelection( item2 );
+    tree.select( item1 );
+    assertTrue( contains( tree.getSelection(), item1 ) );
+    assertFalse( contains( tree.getSelection(), item2 ) );
+  }
+
+  public void testSelectForMulti() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.MULTI );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    TreeItem item11 = new TreeItem( item1, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    tree.select( item1 );
+    tree.select( item2 );
+    assertTrue( contains( tree.getSelection(), item1 ) );
+    assertFalse( contains( tree.getSelection(), item11 ) );
+    assertTrue( contains( tree.getSelection(), item2 ) );
+  }
+
+  public void testDeselectForSingle() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item1, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    tree.select( item2 );
+    assertTrue( contains( tree.getSelection(), item2 ) );
+    tree.deselect( item2 );
+    assertFalse( contains( tree.getSelection(), item2 ) );
+  }
+
+  public void testDeselectForMulti() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.MULTI );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    TreeItem item11 = new TreeItem( item1, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    tree.selectAll();
+    tree.deselect( item11 );
+    assertTrue( contains( tree.getSelection(), item1 ) );
+    assertFalse( contains( tree.getSelection(), item11 ) );
+    assertTrue( contains( tree.getSelection(), item2 ) );
   }
 
   public void testRemoveAll() {

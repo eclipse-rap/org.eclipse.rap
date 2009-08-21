@@ -47,7 +47,11 @@ public class TreeTab extends ExampleTab {
     createImagesButton( parent );
     createAddNodeButton( parent );
     createDisposeNodeButton( parent );
-    createSelectNodeButton( parent );
+    createSelectAllButton( parent );
+    createDeselectAllButton( parent );
+    createSelectButton( parent );
+    createDeselectButton( parent );
+    createSetSelectionButton( parent );
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
@@ -84,21 +88,26 @@ public class TreeTab extends ExampleTab {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
     tree = new Tree( parent, style );
-    tree.setLayoutData( new RowData( 350, 200 ) );
+    tree.setLayoutData( new RowData( 450, 400 ) );
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
     col1.setText( "Col 1" );
     col1.setWidth( 150 );
     TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
     col2.setText( "Col 2" );
     col2.setWidth( 150 );
-    for( int i = 0; i < 4; i++ ) {
+    TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
+    col3.setText( "Col 3" );
+    col3.setWidth( 150 );
+    for( int i = 0; i < 10; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
-      item.setText( "Node_1." + ( i + 1 ) );
-      item.setText( 1, "Node_2." + ( i + 1 ) );
-      if( i < 3 ) {
+      item.setText( "Node_" + ( i + 1 ) + ".1" );
+      item.setText( 1, "Node_" + ( i + 1 ) + ".2" );
+      item.setText( 2, "Node_" + ( i + 1 ) + ".3" );
+      if( i % 2 == 0 ) {
         TreeItem subitem = new TreeItem( item, SWT.NONE );
-        subitem.setText( "Subnode_1." + ( i + 1 ) );
-        subitem.setText( 1, "Subnode_2." + ( i + 1 ) );
+        subitem.setText( "Subnode_" + ( i + 1 ) + ".1" );
+        subitem.setText( 1, "Subnode_" + ( i + 1 ) + ".2" );
+        subitem.setText( 2, "Subnode_" + ( i + 1 ) + ".3" );
       }
     }
     if( showImages ) {
@@ -215,9 +224,53 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createSelectNodeButton( final Composite parent ) {
+  private void createSelectAllButton( final Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
-    button.setText( "Select First Item" );
+    button.setText( "Select All" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        tree.selectAll();
+      }
+    } );
+  }
+
+  private void createDeselectAllButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Deselect All" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        tree.deselectAll();
+      }
+    } );
+  }
+
+  private void createSelectButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Select second node" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( tree.getItemCount() > 1 ) {
+          tree.select( tree.getItem( 1 ) );
+        }
+      }
+    } );
+  }
+
+  private void createDeselectButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Deselect second node" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( tree.getItemCount() > 1 ) {
+          tree.deselect( tree.getItem( 1 ) );
+        }
+      }
+    } );
+  }
+
+  private void createSetSelectionButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Set selection to first node" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         if( tree.getItemCount() > 0 ) {
