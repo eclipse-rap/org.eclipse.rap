@@ -209,15 +209,14 @@ public class BusinessWindowComposer implements IWindowComposer {
   }
 
   private void createPerspectiveBar( final Composite header ) {
-    // TODO [jb] This is the area on the top.
     Composite perspBar = new Composite( header, SWT.NONE );
     perspBar.setLayout( new FormLayout() );
     FormData fdPerspBar = new FormData();
     perspBar.setLayoutData( fdPerspBar );
     fdPerspBar.left = new FormAttachment( 0, 27 );
     fdPerspBar.right = new FormAttachment( 100, 0 );
-    fdPerspBar.top = new FormAttachment( 0, 2 );
-    fdPerspBar.height = 25;
+    fdPerspBar.top = new FormAttachment( 0, 0 );
+    fdPerspBar.height = 32;
     perspBar.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
     ElementBuilder perspBuilder 
       = new PerspectiveSwitcherBuilder( perspBar, 
@@ -226,7 +225,6 @@ public class BusinessWindowComposer implements IWindowComposer {
   }
 
   private void createCoolbarArea( final Composite header ) {
-    // TODO [jb] This is the blue area.
     ICoolBarManager manager = window.getCoolBarManager2();
     // If no Coolbar is needed, change this method call
     createCoolBar( manager, header );
