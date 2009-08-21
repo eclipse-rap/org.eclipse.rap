@@ -239,7 +239,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( toolbarBg == null && tabBg != null ) {
       createToolBarBg();       
     }    
-    if( currentPart != null ) {      
+    if( currentPart != null && getPartPane( currentPart ) != null ) {      
       Control toolBar = currentPart.getToolBar();
       final IPartMenu viewMenu = currentPart.getMenu();
       // viewmenu
@@ -879,7 +879,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         confButton.setImage( confImage );
       }
       confArea.getParent().layout( true );
-      if( currentPart != null ) {
+      if( currentPart != null && getPartPane( currentPart ) != null ) {        
         currentPart.setVisible( true );
       }
       confArea.layout( true );
@@ -890,6 +890,13 @@ public class ViewStackPresentation extends ConfigurableStack {
     setBounds( presentationControl.getBounds() );
   }
 
+  private PartPane getPartPane( IPresentablePart part ) {
+    PartPane result = null;
+    if( part instanceof PresentablePart ) {
+      result = ( ( PresentablePart ) part ).getPane();
+    }
+    return result;
+  }
 
   private void changeSelectedActiveButton( final boolean selected ) {
     Image buttonAreaBg = null;
@@ -932,7 +939,10 @@ public class ViewStackPresentation extends ConfigurableStack {
   public void setBounds( final Rectangle bounds ) {
     presentationControl.setBounds( bounds );
     Composite tabBar = getTabBar();
-    if( currentPart != null && tabBar != null ) {
+    if( currentPart != null 
+        && tabBar != null 
+        && getPartPane( currentPart ) != null ) 
+    {
       int newHeight = bounds.height - 16;
       int partBoundsY = bounds.y + 8;
       if( getTabBar().isVisible() ) {
@@ -986,7 +996,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public void setVisible( final boolean isVisible ) {
-    if( currentPart != null ) {
+    if( currentPart != null && getPartPane( currentPart ) != null ) {
       currentPart.setVisible( isVisible );
       // Toolbar Layer
       deactivated = !isVisible;
