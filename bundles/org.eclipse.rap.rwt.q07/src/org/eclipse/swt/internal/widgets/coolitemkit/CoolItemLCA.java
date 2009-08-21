@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
 import java.io.IOException;
@@ -20,11 +20,9 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
-
 
 
 public class CoolItemLCA extends AbstractWidgetLCA {
@@ -74,14 +72,6 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     CoolItem coolItem = ( CoolItem )widget;
     writeBounds( coolItem );
     writeControl( coolItem );
-    // TODO [rh] find a decent solution to place the ctrl contained in CoolItem
-    Control control = coolItem.getControl();
-    if( control != null ) {
-      Point location = control.getLocation();
-      location.x = 6; // TODO [rst] Use CoolItem.HANDLE_SIZE + margin;
-      location.y = 0;
-      control.setLocation( location );
-    }
     writeLocked( coolItem );
     WidgetLCAUtil.writeCustomVariant( coolItem );
   }

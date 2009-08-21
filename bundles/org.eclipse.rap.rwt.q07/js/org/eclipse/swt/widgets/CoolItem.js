@@ -31,6 +31,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     this.add( this._handle );
     // buffers zIndex and background during drag to be restored when dropped
     this._bufferedZIndex = null;
+    this._bufferedControlZIndex = null;
     this._control = null;
   },
 
@@ -45,7 +46,8 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
 
   statics : {
     // TODO [rh] move to a central place, e.g. qx.constant.Style or similar
-    DRAG_CURSOR : "w-resize"
+    DRAG_CURSOR : "w-resize",
+    CONTROL_OFFSET : 6
   },
 
   members : {
@@ -56,7 +58,10 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     // reparenting to enable coolitem dragging
     setControl : function( control ) {
       if( control != null ) {
-        control.setParent( this );
+        // TODO [tb] : Control positioning is already handled by server
+        control.setTop( 0 );
+        control.setLeft(   this.getLeft()
+                         + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET );
         control.setDisplay( true );
       }
       if( this._control != null ) {
@@ -79,27 +84,47 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       this._offsetX = evt.getPageX() - this.getLeft();
       this._offsetY = evt.getPageY() - this.getTop();
       this._bufferedZIndex = this.getZIndex();
-      // Infinity as zindex does not work anymore
-      this.setZIndex( 1e7 );
+      this.setZIndex( 1e7 - 1 );
+      if( this._control != null ) {
+	      this._bufferedControlZIndex = this._control.getZIndex();
+	      this._control.setZIndex( 1e7 );
+      }  
       // In some cases the coolItem appeare transparent when dragged around
       // To fix this, walk along the parent hierarchy and use the first explicitly
       // set background color.
       this.setBackgroundColor( this._findBackground() );
     },
+    
+    _applyLeft : function( newValue, oldValue ) {
+    	this.base( arguments, newValue, oldValue );
+    	if( this._control != null ) {
+    	  var left = newValue + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET; 
+        this._control.setLeft( left );
+    	}
+    },
+    
+    _applyWidth : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      if( this._control != null ) {
+        var width = newValue - org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET;
+        this._control.setWidth( width );
+      }    	
+    },
 
     _onHandleMouseMove : function( evt ) {
       if( this._handle.getCapture() ) {
         this.setLeft( evt.getPageX() - this._offsetX );
-        //this.setTop( evt.getPageY() - this._offsetY );
       }
     },
 
     _onHandleMouseUp : function( evt ) {
       this._handle.setCapture( false );
       this.setZIndex( this._bufferedZIndex );
+      if( this._control != null ) {      
+        this._control.setZIndex( this._bufferedControlZIndex );
+      }
       this.resetBackgroundColor();
       this.getTopLevelWidget().setGlobalCursor( null );
-
       // Send request that informs about dragged CoolItem
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
