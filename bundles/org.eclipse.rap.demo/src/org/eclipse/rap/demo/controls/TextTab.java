@@ -251,7 +251,7 @@ public class TextTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         int from = parseInt( txtSelectionFrom.getText() );
         int to = parseInt( txtSelectionTo.getText() );
-        if( to >= 0 && from <= to  ) {
+        if( to >= 0 && from >= 0  ) {
           text.setSelection( from, to );
         } else {
           String msg

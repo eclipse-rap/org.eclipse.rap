@@ -6,18 +6,17 @@
 <stringAttribute key="bootstrap" value=""/>
 <stringAttribute key="checked" value="[NONE]"/>
 <booleanAttribute key="clearConfig" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/RAP Workbench Demo"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Controls Demo"/>
 <booleanAttribute key="default_auto_start" value="true"/>
 <intAttribute key="default_start_level" value="4"/>
 <booleanAttribute key="includeOptional" value="true"/>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
-<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/SDK-1.6.0_04"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console -consolelog"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.noShutdown=true -Declipse.ignoreApp=true&#13;&#10;-Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=10"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.noShutdown=true -Declipse.ignoreApp=true&#13;&#10;-Dorg.eclipse.equinox.http.jetty.log.stderr.threshold=info"/>
 <stringAttribute key="org.eclipse.rap.launch.browserMode" value="INTERNAL"/>
-<stringAttribute key="org.eclipse.rap.launch.entryPoint" value="default"/>
-<stringAttribute key="org.eclipse.rap.launch.libraryVariant" value="STANDARD"/>
+<stringAttribute key="org.eclipse.rap.launch.entryPoint" value="controls"/>
+<stringAttribute key="org.eclipse.rap.launch.libraryVariant" value="DEBUG"/>
 <stringAttribute key="org.eclipse.rap.launch.logLevel" value="OFF"/>
 <booleanAttribute key="org.eclipse.rap.launch.openBrowser" value="true"/>
 <intAttribute key="org.eclipse.rap.launch.port" value="10080"/>

@@ -108,6 +108,9 @@ public class Text_Test extends TestCase {
     assertEquals( saveSelection, text.getSelection() );
     assertEquals( 0, text.getSelectionCount() );
     assertEquals( "", text.getSelectionText() );
+    text.setText( "abcdefg" );
+    text.setSelection( new Point( 5, 2 ) );
+    assertEquals( new Point( 2, 5 ), text.getSelection() );
 
     // test selection when changing text
     text.setText( "abcefg" );

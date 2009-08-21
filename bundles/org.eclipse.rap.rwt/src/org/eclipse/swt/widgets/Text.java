@@ -360,12 +360,17 @@ public class Text extends Scrollable {
    */
   public void setSelection( final int start, final int end ) {
     checkWidget();
+    int validatedStart = this.selection.x;
+    int validatedEnd = this.selection.y;
     if( start >= 0 && end >= start ) {
-      int validatedStart = Math.min( start, text.length() );
-      int validatedEnd = Math.min( end, text.length() );
-      selection.x = validatedStart;
-      selection.y = validatedEnd;
+      validatedStart = Math.min( start, text.length() );
+      validatedEnd = Math.min( end, text.length() );
+    } else if ( end >= 0 && start > end ) {
+      validatedStart = Math.min( end, text.length() );
+      validatedEnd = Math.min( start, text.length() );
     }
+    this.selection.x = validatedStart;
+    this.selection.y = validatedEnd;
   }
 
   /**
