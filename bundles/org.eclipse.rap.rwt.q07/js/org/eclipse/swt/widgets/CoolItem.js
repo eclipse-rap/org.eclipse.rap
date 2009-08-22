@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       if( control != null ) {
         // TODO [tb] : Control positioning is already handled by server
         control.setTop( 0 );
-        control.setLeft(   this.getLeft()
+        control.setLeft( this.getLeft()
                          + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET );
         control.setDisplay( true );
       }
@@ -86,29 +86,29 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       this._bufferedZIndex = this.getZIndex();
       this.setZIndex( 1e7 - 1 );
       if( this._control != null ) {
-	      this._bufferedControlZIndex = this._control.getZIndex();
-	      this._control.setZIndex( 1e7 );
+        this._bufferedControlZIndex = this._control.getZIndex();
+        this._control.setZIndex( 1e7 );
       }  
       // In some cases the coolItem appeare transparent when dragged around
       // To fix this, walk along the parent hierarchy and use the first explicitly
       // set background color.
       this.setBackgroundColor( this._findBackground() );
     },
-    
+
     _applyLeft : function( newValue, oldValue ) {
-    	this.base( arguments, newValue, oldValue );
-    	if( this._control != null ) {
-    	  var left = newValue + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET; 
+      this.base( arguments, newValue, oldValue );
+      if( this._control != null ) {
+        var left = newValue + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET; 
         this._control.setLeft( left );
-    	}
+      }
     },
-    
+
     _applyWidth : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       if( this._control != null ) {
         var width = newValue - org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET;
         this._control.setWidth( width );
-      }    	
+      }
     },
 
     _onHandleMouseMove : function( evt ) {
