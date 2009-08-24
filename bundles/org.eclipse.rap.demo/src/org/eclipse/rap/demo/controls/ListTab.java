@@ -87,6 +87,11 @@ public class ListTab extends ExampleTab {
     createSetTopIndexControls( group );
     createGetTopIndexControls( group );
     createShowSelectionControls( group );
+    createSelectAllButton( group );
+    createDeselectAllButton( group );
+    createSelectButton( group );
+    createDeselectButton( group );
+    createSetSelectionButton( group );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -179,7 +184,7 @@ public class ListTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createAddItemsControls( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
@@ -209,7 +214,7 @@ public class ListTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createSetTopIndexControls( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
@@ -222,7 +227,7 @@ public class ListTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createGetTopIndexControls( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
@@ -237,7 +242,7 @@ public class ListTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createShowSelectionControls( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
@@ -246,6 +251,62 @@ public class ListTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         list2.showSelection();
+      }
+    } );
+  }
+
+  private void createSelectAllButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Select All" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        list2.selectAll();
+      }
+    } );
+  }
+
+  private void createDeselectAllButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Deselect All" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        list2.deselectAll();
+      }
+    } );
+  }
+
+  private void createSelectButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Select second item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( list2.getItemCount() > 1 ) {
+          list2.select( 1 );
+        }
+      }
+    } );
+  }
+
+  private void createDeselectButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Deselect second item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( list2.getItemCount() > 1 ) {
+          list2.deselect( 1 );
+        }
+      }
+    } );
+  }
+
+  private void createSetSelectionButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Set selection to first item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( list2.getItemCount() > 0 ) {
+          list2.setSelection( new int[] { 0 } );
+        }
       }
     } );
   }

@@ -782,6 +782,40 @@ public class List_Test extends TestCase {
       list.remove( listSelection[ i ] );
     }
     assertEquals( 0, list.getSelectionCount() );
+
+    // Test deselect
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.select( new int[] { 0, 1 } );
+    listSelection = list.getSelection();
+    assertEquals( 2, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    list.deselect( 1 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+
+    list.selectAll();
+    assertEquals( 3, list.getSelectionCount() );
+    list.deselect( new int[] { 0, 2 } );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 1, list.getSelectionIndices()[ 0 ] );
+
+    list.selectAll();
+    assertEquals( 3, list.getSelectionCount() );
+    list.deselect( 0, 1 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 2, list.getSelectionIndices()[ 0 ] );
+
+    // invalid argument
+    try {
+      list.deselect( null );
+      fail( "Null argument not allowed" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testSetItem() {
@@ -1012,7 +1046,7 @@ public class List_Test extends TestCase {
     list.deselectAll();
     assertEquals( -1, list.getFocusIndex() );
   }
-  
+
   public void testTopIndex() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -1093,7 +1127,7 @@ public class List_Test extends TestCase {
     expected = new Point( 102, 102 );
     assertEquals( expected, list.computeSize( 100, 100 ) );
   }
-  
+
   public void testShowSelectionEmptyList() throws Exception {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1142,7 +1176,7 @@ public class List_Test extends TestCase {
     list.showSelection();
     assertEquals( 0, list.getTopIndex() );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
