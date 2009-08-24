@@ -712,12 +712,12 @@ public class Tree extends Composite {
    * @since 1.3
    */
   public void deselect( final TreeItem item ) {
-    checkWidget ();
+    checkWidget();
     if( item == null ) {
-      error (SWT.ERROR_NULL_ARGUMENT);
+      error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( item.isDisposed() ) {
-      error (SWT.ERROR_INVALID_ARGUMENT);
+      error( SWT.ERROR_INVALID_ARGUMENT );
     }
     final ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
     if( selItems.contains( item ) ) {
