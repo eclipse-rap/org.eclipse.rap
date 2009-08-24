@@ -1044,6 +1044,16 @@ public class Table_Test extends TestCase {
     table.setSelection( 1 );
     table.deselect( new int[] { 1, 777 } );
     assertEquals( 0, table.getSelectionCount() );
+
+    table = new Table( shell, SWT.MULTI );
+    new TableColumn( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+
+    table.selectAll();
+    table.deselect( new int[] { 0, 2 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 1 ) );
   }
 
   public void testDeselectAll() {
@@ -1722,9 +1732,9 @@ public class Table_Test extends TestCase {
     item = table.getItem( new Point( 2, table.getHeaderHeight() + 3 ) );
     assertEquals( 0, item.getParent().indexOf( item ) );
   }
-  
+
   /*
-   * 283263: ArrayIndexOutOfBoundsException when clicking on the Pixel Row just 
+   * 283263: ArrayIndexOutOfBoundsException when clicking on the Pixel Row just
    *         below the Table Header.
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=283263
    */
@@ -1739,7 +1749,7 @@ public class Table_Test extends TestCase {
     assertNotNull( item );
     assertEquals( 0, table.indexOf( item ) );
   }
-  
+
   /*
    * Ensures that checkData calls with an invalid index are silently ignored.
    * This may happen, when the itemCount is reduced during a SetData event.

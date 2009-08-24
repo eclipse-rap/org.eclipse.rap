@@ -1460,7 +1460,7 @@ public class Table extends Composite {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     for( int i = 0; i < indices.length; i++ ) {
-      removeFromSelection( i );
+      removeFromSelection( indices[ i ] );
     }
   }
 
