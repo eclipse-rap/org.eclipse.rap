@@ -68,6 +68,9 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           // TODO [rh] optimize this: context menu should be handled by the List
           //      itself for all its ListItems
           var item = new qx.ui.form.ListItem();
+          // [if] Omit the focused item outline border - see bug 286902
+          item.setStyleProperty( "outline", "0px none" );
+          item.handleStateChange = function() {};
           // prevent items from being drawn outside the list
           item.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
           item.setContextMenu( this.getContextMenu() );
