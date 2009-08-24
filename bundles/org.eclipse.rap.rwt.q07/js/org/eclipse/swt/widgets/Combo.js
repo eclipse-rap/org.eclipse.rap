@@ -692,6 +692,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._removeAll();
       for( var i = 0; i < items.length; i++ ) {
         var item = new qx.ui.form.ListItem();
+        // [if] Omit the focused item outline border - see bug 286902
+        item.setStyleProperty( "outline", "0px none" );
+        item.handleStateChange = function() {};
         item.setLabel( "(empty)" );
         item.getLabelObject().setMode( "html" );
         item.setLabel( items[ i ] );
