@@ -141,36 +141,32 @@ public class ProgressIndicator extends Composite {
         }
     }
 
-    // RAP [bm]: ProgressBar#setState
+    /**
+	 * Show the receiver as showing an error.
+	 * @since 1.3
+	 */
+	public void showError() {
+		determinateProgressBar.setState(SWT.ERROR);
+		indeterminateProgressBar.setState(SWT.ERROR);
+	}
+	
+	/**
+	 * Show the receiver as being paused.
+	 * @since 1.3
+	 */
+	public void showPaused() {
+		determinateProgressBar.setState(SWT.PAUSED);
+		indeterminateProgressBar.setState(SWT.PAUSED);
+	}
 
-//    /**
-//	 * Show the receiver as showing an error.
-//	 * @since 1.1
-//	 */
-//	public void showError() {
-//		determinateProgressBar.setState(SWT.ERROR);
-//		indeterminateProgressBar.setState(SWT.ERROR);
-//	}
-//	
-//	/**
-//	 * Show the receiver as being paused.
-//	 * @since 1.1
-//	 */
-//	public void showPaused() {
-//		determinateProgressBar.setState(SWT.PAUSED);
-//		indeterminateProgressBar.setState(SWT.PAUSED);
-//	}
-//
-//	/**
-//	 * Reset the progress bar to it's normal style.
-//	 * @since 1.1
-//	 */
-//	public void showNormal() {
-//		determinateProgressBar.setState(SWT.NORMAL);
-//		indeterminateProgressBar.setState(SWT.NORMAL);
-//		
-//	}
-    
-    // RAPEND: [bm] 
+	/**
+	 * Reset the progress bar to it's normal style.
+	 * @since 1.3
+	 */
+	public void showNormal() {
+		determinateProgressBar.setState(SWT.NORMAL);
+		indeterminateProgressBar.setState(SWT.NORMAL);
+		
+	}
 
 }
