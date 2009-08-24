@@ -719,7 +719,7 @@ public class Tree extends Composite {
     if( item.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    final ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
+    List selItems = new ArrayList( Arrays.asList( selection ) );
     if( selItems.contains( item ) ) {
       selItems.remove( item );
       selection = new TreeItem[ selItems.size() ];
