@@ -496,6 +496,29 @@ public class List_Test extends TestCase {
     list.addSelectionListener( listener );
     list.setSelection( 1 );
     list.removeSelectionListener( listener );
+
+    // Test deselect
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.select( 0 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    list.deselect( 0 );
+    assertEquals( 0, list.getSelectionCount() );
+
+    list.select( 1 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 1, list.getSelectionIndices()[ 0 ] );
+    list.deselect( new int[] { 0, 1 } );
+    assertEquals( 0, list.getSelectionCount() );
+
+    list.select( 1 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 1, list.getSelectionIndices()[ 0 ] );
+    list.deselect( 0, 2 );
+    assertEquals( 0, list.getSelectionCount() );
   }
 
   public void testSelectionForMulti() {
