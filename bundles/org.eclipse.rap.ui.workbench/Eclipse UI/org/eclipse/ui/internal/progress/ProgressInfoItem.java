@@ -40,7 +40,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -161,7 +160,7 @@ class ProgressInfoItem extends Composite {
 		// Mac has different Gamma value
 		int shift = "carbon".equals(SWT.getPlatform()) ? -25 : -10;//$NON-NLS-1$
 
-		Color lightColor = Display.getCurrent()
+		Color lightColor = PlatformUI.getWorkbench().getDisplay()
 				.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
 
 		// Determine a dark color by shifting the list color
@@ -214,8 +213,7 @@ class ProgressInfoItem extends Composite {
 
 		actionBar = new ToolBar(this, SWT.FLAT);
 
-		//actionBar.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-		actionBar.setCursor(Graphics.getCursor( SWT.CURSOR_ARROW ));
+		actionBar.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 		// set
 		// cursor
 		// to

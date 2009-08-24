@@ -959,17 +959,14 @@ public class WorkbenchWindow extends ApplicationWindow implements
 //      // we know from Window.create that the parent is a Shell.
 //      getWindowAdvisor().createWindowContents((Shell) parent);
 //      // the page composite must be set by createWindowContents
-//      Assert
+//      Assert         
 //              .isNotNull(pageComposite,
 //                      "createWindowContents must call configurer.createPageComposite"); //$NON-NLS-1$
 //      return pageComposite;
       // RAP [hs] patched for interactiondesign API
       if( getConfigurablePresentationFactory() != null ) {
-        defaultLayout = new TrimLayout();
-        
         Composite pageComp = createConfigurableDefaultContents( ( Shell ) parent );
         createPageComposite( pageComp );
-
       } else {
         // we know from Window.create that the parent is a Shell.
         getWindowAdvisor().createWindowContents((Shell) parent);
@@ -3066,15 +3063,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
         // updateAll required in order to enable accelerators on pull-down menus
         getMenuBarManager().update(false);
 
-        // RAP [bm]: Composite#setLayoutDeferred
-      try {
-          getShell().setLayoutDeferred(true);
-//          getCoolBarManager2().update(false);
-      } finally {
-          getShell().setLayoutDeferred(false);
-      }
-        getCoolBarManager2().update(false);
-        // RAPEND: [bm] 
+        try {
+        	getShell().setLayoutDeferred(true);
+        	getCoolBarManager2().update(false);
+        } finally {
+        	getShell().setLayoutDeferred(false);
+        }
 
         getStatusLineManager().update(false);
     }
