@@ -497,7 +497,7 @@ public class List extends Scrollable {
    * @since 1.3
    */
   public void deselect( final int [] indices ) {
-    checkWidget ();
+    checkWidget();
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
