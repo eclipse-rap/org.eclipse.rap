@@ -25,6 +25,8 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -218,7 +220,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
     // add the lsitener for the dirty state
     IPropertyListener listener = new DirtyListener( newPart );
-    dirtyListenerMap .put( newPart, listener );
+    dirtyListenerMap.put( newPart, listener );
     newPart.addPropertyListener( listener );
   }
   
@@ -314,9 +316,26 @@ public class ViewStackPresentation extends ConfigurableStack {
     buttonArea.setBackgroundMode( SWT.INHERIT_FORCE );
     buttonArea.setLayout( new FormLayout() );
     
-    Button partButton = new Button( buttonArea, SWT.PUSH );
+    final Button partButton = new Button( buttonArea, SWT.PUSH );
     partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
     partButton.setText( part.getName() );
+    partButton.setToolTipText( part.getTitleToolTip() );
+    final IPropertyListener nameListener = new IPropertyListener() {      
+      public void propertyChanged( final Object source, final int propId ) {
+        if( propId == IPresentablePart.PROP_PART_NAME ) {
+          partButton.setText( part.getName() );
+        } else if( propId == IPresentablePart.PROP_TITLE ) {
+          partButton.setToolTipText( part.getTitleToolTip() );
+        }
+      }
+    };
+    part.addPropertyListener( nameListener );
+    partButton.addDisposeListener( new DisposeListener() {      
+      public void widgetDisposed( final DisposeEvent event ) {
+        partButton.removeDisposeListener( this );
+        part.removePropertyListener( nameListener );
+      }
+    } );
     FormData fdPartButton = new FormData();
     partButton.setLayoutData( fdPartButton );
     fdPartButton.left = new FormAttachment( 0 );
