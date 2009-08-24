@@ -36,9 +36,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "*" : {
         "hover" : "over"
       },
-      "Button" : {
-        "selected" : "checked"
-      },
       "List-Item" : {
         "unfocused" : "parent_unfocused"
       },
@@ -202,8 +199,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         = this._getColor( "*", {}, "color", theme );
       ct.colors[ "widget.info.foreground" ]
         = this._getColor( "ToolTip", {}, "color", theme );
-      ct.colors[ "widget.graytext" ]
-        = this._getColor( "*", { "disabled" : true }, "color", theme );
     },
 
     _getColor : function( element, states, property, theme ) {

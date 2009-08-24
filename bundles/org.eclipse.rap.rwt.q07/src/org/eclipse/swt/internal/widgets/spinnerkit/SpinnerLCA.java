@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.*;
 public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Spinner";
-//  private static final String TYPE_POOL_ID = SpinnerLCA.class.getName();
 
   private static final Integer DEFAULT_TEXT_LIMIT
     = new Integer( Spinner.LIMIT );
@@ -95,20 +94,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    ControlLCAUtil.resetStyleFlags();
-    resetReadOnly();
-    resetValues();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226651
-//  return TYPE_POOL_ID;
-    return null;
-  }
-
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
@@ -146,16 +131,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void resetValues() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-//    TODO [rst] Missing resetters in QX_TYPE, discuss with qooxdoo
-//    writer.reset( "min" );
-//    writer.reset( "max" );
-    writer.reset( "incrementAmount" );
-    writer.reset( "pageIncrementAmount" );
-    writer.reset( "value" );
-  }
-
   private static void writeSetInt( final JSWriter writer,
                                    final String javaProperty,
                                    final String jsProperty,
@@ -174,11 +149,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     boolean readOnly = ( spinner.getStyle() & SWT.READ_ONLY ) != 0;
     JSWriter writer = JSWriter.getWriterFor( spinner );
     writer.set( JSConst.QX_FIELD_EDITABLE, !readOnly );
-  }
-
-  private static void resetReadOnly() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_EDITABLE );
   }
 
   private static void writeWrap( final Spinner spinner ) throws IOException {

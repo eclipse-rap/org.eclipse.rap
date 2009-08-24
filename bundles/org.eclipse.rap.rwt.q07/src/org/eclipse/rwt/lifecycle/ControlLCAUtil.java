@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
-import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -41,12 +40,6 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public class ControlLCAUtil {
-
-  private static final Object[] PARAM_STYLE_BORDER
-    = new Object[] { JSConst.JS_STYLE_FLAG_BORDER };
-
-  private static final Object[] PARAM_STYLE_FLAT
-    = new Object[] { JSConst.JS_STYLE_FLAG_FLAT };
 
   private static final JSListenerInfo FOCUS_GAINED_LISTENER_INFO
     = new JSListenerInfo( "focusin",
@@ -91,7 +84,6 @@ public class ControlLCAUtil {
     = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().cancelEvent";
   static final String JSFUNC_ALLOW_EVENT
     = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().allowEvent";
-
   static final int MAX_STATIC_ZORDER = 300;
 
 
@@ -145,10 +137,8 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveBackground( control,
                                       controlAdapter.getUserBackground(),
                                       controlAdapter.getBackgroundTransparency() );
-    preserveBackgroundGradient( control );
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
-    preserveRoundedBorder( control );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -196,17 +186,6 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the bounds of a control.
-   * This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetBounds() throws IOException {
-    WidgetLCAUtil.resetBounds();
-  }
-
-  /**
    * Determines whether the z-index of the given control has changed during the
    * processing of the current request and if so, writes JavaScript code to the
    * response that updates the client-side z-index.
@@ -222,18 +201,6 @@ public class ControlLCAUtil {
       Integer newValue = new Integer( getZIndex( control ) );
       writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
     }
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the z-index property of
-   * a control. This method is intended to be used by implementations of the
-   * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetZIndex() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_Z_INDEX );
   }
 
   /**
@@ -260,20 +227,6 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>visible</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetVisible() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    // TODO [fappel]: check whether to use reset
-    writer.set( JSConst.QX_FIELD_VISIBLE, true );
-  }
-
-  /**
    * Determines whether the property <code>enabled</code> of the given control
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side enabled
@@ -288,18 +241,6 @@ public class ControlLCAUtil {
     // Using isEnabled() would result in unnecessarily updating child widgets of
     // enabled/disabled controls.
     WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>enabled</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetEnabled() throws IOException {
-    WidgetLCAUtil.resetEnabled();
   }
 
   /**
@@ -343,10 +284,8 @@ public class ControlLCAUtil {
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );
-    writeBackgroundGradient( control );
     writeBackgroundImage( control );
     writeFont( control );
-    writeRoundedBorder( control );
     writeCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
@@ -356,45 +295,6 @@ public class ControlLCAUtil {
     writeTraverseListener( control );
     writeKeyEventResponse( control );
     WidgetLCAUtil.writeHelpListener( control );
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the following properties
-   * of a control.
-   * <ul>
-   * <li>bounds</li>
-   * <li>z-index (except for Shells)</li>
-   * <li>tab index</li>
-   * <li>tool tip text</li>
-   * <li>menu</li>
-   * <li>visible</li>
-   * <li>enabled</li>
-   * <li>foreground</li>
-   * <li>background</li>
-   * <li>font</li>
-   * <!--li>whether ControlListeners are registered</li>
-   * <li>whether ActivateListeners are registered</li>
-   * <li>whether FocusListeners are registered</li-->
-   * </ul>
-   * This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetChanges() throws IOException {
-    resetFocusListener();
-    // resetting Activation Listener is automatically done by JSWriter#dispose
-    // TODO [rst] What about resetting Control- and FocusListener? document this
-    resetMenu();
-    resetToolTip();
-    resetFont();
-    resetBackground();
-    resetForeground();
-    resetEnabled();
-    resetVisible();
-    resetTabIndex();
-    resetZIndex();
-    resetBounds();
   }
 
   /**
@@ -417,22 +317,6 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that removes the client-side resize
-   * notification listeners from a control.
-   *
-   * @throws IOException
-   */
-  public static void resetResizeNotificator()
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( JSConst.QX_EVENT_CHANGE_WIDTH,
-                           JSConst.JS_WIDGET_RESIZED );
-    writer.removeListener( JSConst.QX_EVENT_CHANGE_HEIGHT,
-                           JSConst.JS_WIDGET_RESIZED );
-  }
-
-  /**
    * Writes JavaScript code to the response that adds client-side move listeners
    * to a control. These listeners send notifications when the control is moved.
    * @param control the control to add move notification listeners to
@@ -451,22 +335,6 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that removes the client-side move
-   * notification listeners from a control.
-   *
-   * @throws IOException
-   */
-  public static void resetMoveNotificator()
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( JSConst.QX_EVENT_CHANGE_LOCATION_X,
-                           JSConst.JS_WIDGET_MOVED );
-    writer.removeListener( JSConst.QX_EVENT_CHANGE_LOCATION_Y,
-                           JSConst.JS_WIDGET_MOVED );
-  }
-
-  /**
    * Determines whether the property <code>menu</code> of the given control
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side menu
@@ -477,18 +345,6 @@ public class ControlLCAUtil {
    */
   public static void writeMenu( final Control control ) throws IOException {
     WidgetLCAUtil.writeMenu( control, control.getMenu() );
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>menu</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetMenu() throws IOException {
-    WidgetLCAUtil.resetMenu();
   }
 
   /**
@@ -503,17 +359,6 @@ public class ControlLCAUtil {
     throws IOException
   {
     WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the tool tip of a
-   * control. This method is intended to be used by implementations of the
-   * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetToolTip() throws IOException {
-    WidgetLCAUtil.resetToolTip();
   }
 
   /**
@@ -532,18 +377,6 @@ public class ControlLCAUtil {
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
     WidgetLCAUtil.writeForeground( control,
                                    controlAdapter.getUserForeground() );
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>foreground</code> of a control. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetForeground() throws IOException {
-    WidgetLCAUtil.resetForeground();
   }
 
   /**
@@ -606,18 +439,6 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>background</code> of a control. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetBackground() throws IOException {
-    WidgetLCAUtil.resetBackground();
-  }
-
-  /**
    * Checks the given control for common SWT style flags (e.g.
    * <code>SWT.BORDER</code>) and if present, writes code to pass the according
    * states to the client.
@@ -629,19 +450,6 @@ public class ControlLCAUtil {
   {
     WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
     WidgetLCAUtil.writeStyleFlag( control, SWT.FLAT, "FLAT" );
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the style flags.
-   * <p>This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.</p>
-   *
-   * @throws IOException
-   */
-  public static void resetStyleFlags() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( JSConst.QX_FUNC_REMOVE_STATE, PARAM_STYLE_BORDER );
-    writer.call( JSConst.QX_FUNC_REMOVE_STATE, PARAM_STYLE_FLAT );
   }
 
   /**
@@ -659,18 +467,6 @@ public class ControlLCAUtil {
     WidgetLCAUtil.writeFont( control, newValue );
   }
 
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>font</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetFont() throws IOException {
-    WidgetLCAUtil.resetFont();
-  }
-
   static void writeCursor( final Control control ) throws IOException {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
@@ -682,11 +478,6 @@ public class ControlLCAUtil {
         writer.set( JSConst.QX_FIELD_CURSOR, qxCursor );
       }
     }
-  }
-
-  static void resetCursor() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_CURSOR );
   }
 
   public static void writeActivateListener( final Control control )
@@ -743,14 +534,6 @@ public class ControlLCAUtil {
                              PROP_FOCUS_LISTENER,
                              hasListener );
     }
-  }
-
-  private static void resetFocusListener() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( FOCUS_GAINED_LISTENER_INFO.getEventType(),
-                           FOCUS_GAINED_LISTENER_INFO.getJSListener() );
-    writer.removeListener( FOCUS_LOST_LISTENER_INFO.getEventType(),
-                           FOCUS_LOST_LISTENER_INFO.getJSListener() );
   }
 
   private static void writeMouseListener( final Control control )
@@ -828,54 +611,6 @@ public class ControlLCAUtil {
     return max - controlAdapter.getZIndex();
   }
 
-  //////////////////////
-  // Background gradient
-
-  private static void preserveBackgroundGradient( final Control control ) {
-    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
-    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
-    WidgetLCAUtil.preserveBackgroundGradient( control,
-                                              bgGradientColors,
-                                              bgGradientPercents );
-  }
-
-  private static void writeBackgroundGradient( final Control control )
-    throws IOException
-  {
-    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
-    int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
-    WidgetLCAUtil.writeBackgroundGradient( control,
-                                           bgGradientColors,
-                                           bgGradientPercents );
-  }
-
-  /////////////////
-  // Rounded border
-
-  private static void preserveRoundedBorder( final Control control ) {
-    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-    int width = gfxAdapter.getRoundedBorderWidth();
-    Color color = gfxAdapter.getRoundedBorderColor();
-    Rectangle radius = gfxAdapter.getRoundedBorderRadius();
-    WidgetLCAUtil.preserveRoundedBorder( control, width, color, radius );
-  }
-
-  private static void writeRoundedBorder( final Control control )
-    throws IOException
-  {
-    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
-    int width = gfxAdapter.getRoundedBorderWidth();
-    Color color = gfxAdapter.getRoundedBorderColor();
-    Rectangle radius = gfxAdapter.getRoundedBorderRadius();
-    WidgetLCAUtil.writeRoundedBorder( control, width, color, radius );
-  }
-
   ////////////
   // Tab index
 
@@ -896,11 +631,6 @@ public class ControlLCAUtil {
       // there is no reliable default value for all controls
       writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
     }
-  }
-
-  private static void resetTabIndex() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_TAB_INDEX );
   }
 
   /**
@@ -955,7 +685,7 @@ public class ControlLCAUtil {
     result &= control.getClass() != SashForm.class;
     return result;
   }
-  
+
   /////////////////////
   // Selection Listener
 
@@ -1358,5 +1088,189 @@ public class ControlLCAUtil {
       }
     }
     return result;
+  }
+
+
+  /////////////////////////////////////
+  // deprecated pooling-related methods
+
+  /**
+   * Writes JavaScript code to the response that resets the bounds of a control.
+   * This method is intended to be used by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetBounds() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the z-index property of
+   * a control. This method is intended to be used by implementations of the
+   * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetZIndex() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>visible</code> of a control. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetVisible() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>enabled</code> of a control. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetEnabled() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the following properties
+   * of a control.
+   * <ul>
+   * <li>bounds</li>
+   * <li>z-index (except for Shells)</li>
+   * <li>tab index</li>
+   * <li>tool tip text</li>
+   * <li>menu</li>
+   * <li>visible</li>
+   * <li>enabled</li>
+   * <li>foreground</li>
+   * <li>background</li>
+   * <li>font</li>
+   * <!--li>whether ControlListeners are registered</li>
+   * <li>whether ActivateListeners are registered</li>
+   * <li>whether FocusListeners are registered</li-->
+   * </ul>
+   * This method is intended to be used by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetChanges() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that removes the client-side resize
+   * notification listeners from a control.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetResizeNotificator()
+    throws IOException
+  {
+  }
+
+  /**
+   * Writes JavaScript code to the response that removes the client-side move
+   * notification listeners from a control.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetMoveNotificator()
+    throws IOException
+  {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>menu</code> of a control. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetMenu() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the tool tip of a
+   * control. This method is intended to be used by implementations of the
+   * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetToolTip() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>foreground</code> of a control. This method is intended to be used
+   * by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetForeground() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>background</code> of a control. This method is intended to be used
+   * by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetBackground() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the style flags.
+   * <p>This method is intended to be used by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.</p>
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetStyleFlags() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>font</code> of a control. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetFont() throws IOException {
   }
 }

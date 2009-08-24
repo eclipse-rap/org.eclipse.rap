@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,12 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -35,12 +37,6 @@ import org.eclipse.swt.internal.widgets.ListModel;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * <p>Not yet implemented:</p>
- * <ul><li>topIndex</li>
- * <li>itemHeight (may not be implemented at all)</li>
- * <li>showSelection</li>
- * <li>deselect methods</li>
- * </ul>
  * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or
  * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior
  * (items are drawn outside list bounds). Setting none or both scroll style
@@ -58,6 +54,7 @@ public class List extends Scrollable {
   private final ListModel model;
   private int focusIndex = -1;
   private IListAdapter listAdapter;
+  private int topIndex = 0;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -433,6 +430,103 @@ public class List extends Scrollable {
   }
 
   /**
+   * Deselects the item at the given zero-relative index in the receiver.
+   * If the item at the index was already deselected, it remains
+   * deselected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to deselect
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void deselect( final int index ) {
+    checkWidget();
+    removeFromSelection( index );
+  }
+
+  /**
+   * Deselects the items at the given zero-relative indices in the receiver.
+   * If the item at the given zero-relative index in the receiver
+   * is selected, it is deselected.  If the item at the index
+   * was not selected, it remains deselected.  The range of the
+   * indices is inclusive. Indices that are out of range are ignored.
+   *
+   * @param start the start index of the items to deselect
+   * @param end the end index of the items to deselect
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void deselect( final int start, final int end ) {
+    checkWidget();
+    if( start == 0 && end == model.getItemCount() - 1 ) {
+      deselectAll();
+    } else {
+      int actualStart = Math.max( 0, start );
+      for( int i = actualStart; i <= end; i++ ) {
+        removeFromSelection( i );
+      }
+    }
+  }
+
+  /**
+   * Deselects the items at the given zero-relative indices in the receiver.
+   * If the item at the given zero-relative index in the receiver
+   * is selected, it is deselected.  If the item at the index
+   * was not selected, it remains deselected. Indices that are out
+   * of range and duplicate indices are ignored.
+   *
+   * @param indices the array of indices for the items to deselect
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the set of indices is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void deselect( final int [] indices ) {
+    checkWidget();
+    if( indices == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( int i = 0; i < indices.length; i++ ) {
+      removeFromSelection( indices[ i ] );
+    }
+  }
+
+  private void removeFromSelection( final int index ) {
+    if( index >= 0 && index < model.getItemCount() ) {
+      boolean found = false;
+      int selection[] = model.getSelectionIndices();
+      for( int i = 0; !found && i < selection.length; i++ ) {
+        if( index == selection[ i ] ) {
+          int length = selection.length;
+          int[] newSel = new int[ length - 1 ];
+          System.arraycopy( selection, 0, newSel, 0, i );
+          if( i < length - 1 ) {
+            System.arraycopy( selection, i + 1, newSel, i, length - i - 1 );
+          }
+          selection = newSel;
+          model.setSelection( selection );
+          found = true;
+        }
+      }
+    }
+  }
+
+  /**
    * Returns <code>true</code> if the item is selected,
    * and <code>false</code> otherwise.  Indices out of
    * range are ignored.
@@ -460,6 +554,74 @@ public class List extends Scrollable {
       }
     }
     return result;
+  }
+
+  /**
+   * Sets the zero-relative index of the item which is currently
+   * at the top of the receiver. This index can change when items
+   * are scrolled or new items are added and removed.
+   *
+   * @param index the index of the top item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setTopIndex( final int topIndex ) {
+    checkWidget();
+    int count = model.getItemCount();
+    if( this.topIndex != topIndex && topIndex >= 0 && topIndex < count ) {
+      this.topIndex = topIndex;
+    }
+  }
+
+  /**
+   * Returns the zero-relative index of the item which is currently
+   * at the top of the receiver. This index can change when items are
+   * scrolled or new items are added or removed.
+   *
+   * @return the index of the top item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public int getTopIndex() {
+    checkWidget();
+    return topIndex;
+  }
+
+  /**
+   * Shows the selection.  If the selection is already showing in the receiver,
+   * this method simply returns.  Otherwise, the items are scrolled until
+   * the selection is visible.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void showSelection() {
+    checkWidget();
+    int index = getSelectionIndex();
+    if( index != -1 ) {
+      int itemCount = getVisibleItemCount();
+      if( index < topIndex ) {
+        // Show item as top item
+        setTopIndex( index );
+      } else if( itemCount > 0 && index >= topIndex + itemCount ) {
+        // Show item as last item
+        setTopIndex( index - itemCount + 1 );
+      }
+    }
   }
 
   /**
@@ -549,6 +711,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( index );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -571,6 +734,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( start, end );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -592,6 +756,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( indices );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -614,6 +779,7 @@ public class List extends Scrollable {
     checkWidget();
     model.remove( string );
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -628,6 +794,7 @@ public class List extends Scrollable {
     checkWidget();
     model.removeAll();
     updateFocusIndexAfterItemChange();
+    adjustTopIndex();
   }
 
   /**
@@ -939,5 +1106,27 @@ public class List extends Scrollable {
   private int getItemWidth( final String item ) {
     int margin = HORIZONTAL_ITEM_MARGIN * 2;
     return TextSizeDetermination.stringExtent( getFont(), item ).x + margin;
+  }
+
+  private void adjustTopIndex() {
+    int count = model.getItemCount();
+    if( count == 0 ) {
+      topIndex = 0;
+    } else if( topIndex >= count - 1 ) {
+      topIndex = count - 1;
+    }
+  }
+
+  final int getVisibleItemCount() {
+    int clientHeight = getBounds().height;
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      clientHeight -= SCROLL_SIZE;
+    }
+    int result = 0;
+    if( clientHeight >= 0 ) {
+      int itemHeight = getItemHeight();
+      result = clientHeight / itemHeight;
+    }
+    return result;
   }
 }

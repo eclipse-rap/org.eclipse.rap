@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
 
   construct : function( style, monthNames, weekdayNames ) {
     this.base( arguments );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setAppearance( "datetime-calendar" );
     
     // Has selection listener
@@ -33,12 +34,14 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
+    this.addEventListener( "mousewheel", this._onmousewheel, this );
   },
 
   destruct : function() {
     this._calendar.removeEventListener( "changeDate", this._onChangeDate, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
+    this.removeEventListener( "mousewheel", this._onmousewheel, this );
     this._disposeObjects( "_calendar" );
   },
 
@@ -74,6 +77,11 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     
     _onKeyPress : function( evt ) {
       this._calendar._onkeypress( evt );
+    },
+    
+    _onmousewheel : function( evt ) {
+      evt.preventDefault();
+      evt.stopPropagation();
     },
     
     _sendChanges : function( date, month, year ) {

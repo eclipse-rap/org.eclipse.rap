@@ -166,6 +166,7 @@ public class Display extends Device implements Adaptable {
   private final Thread thread;
   private final ISessionStore session;
   private Rectangle bounds;
+  private final Point cursorLocation;
   private Shell activeShell;
   private List filters;
   private Control focusControl;
@@ -207,6 +208,7 @@ public class Display extends Device implements Adaptable {
     shells = new ArrayList();
     readInitialBounds();
     monitor = new Monitor( this );
+    cursorLocation = new Point( 0, 0 );
   }
 
   /**
@@ -1081,6 +1083,24 @@ public class Display extends Device implements Adaptable {
     return DOUBLE_CLICK_TIME;
   }
 
+  /**
+   * Returns the location of the on-screen pointer relative
+   * to the top left corner of the screen.
+   *
+   * @return the cursor location
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public Point getCursorLocation() {
+    checkDevice();
+    return new Point( cursorLocation.x, cursorLocation.y );
+  }
+
   //////////
   // Filters
 
@@ -1184,7 +1204,7 @@ public class Display extends Device implements Adaptable {
    * @param code the descriptive error code
    * @see SWT#error(int)
    */
-  void error( int code ) {
+  void error( final int code ) {
     SWT.error( code );
   }
 
@@ -1284,14 +1304,22 @@ public class Display extends Device implements Adaptable {
   // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
   public void setData( final String key, final Object value ) {
     checkDevice ();
-    if (key == null) error (SWT.ERROR_NULL_ARGUMENT);
+    if (key == null) {
+      error (SWT.ERROR_NULL_ARGUMENT);
+    }
 
     /* Remove the key/value pair */
     if (value == null) {
-      if (keys == null) return;
+      if (keys == null) {
+        return;
+      }
       int index = 0;
-      while (index < keys.length && !keys [index].equals (key)) index++;
-      if (index == keys.length) return;
+      while (index < keys.length && !keys [index].equals (key)) {
+        index++;
+      }
+      if (index == keys.length) {
+        return;
+      }
       if (keys.length == 1) {
         keys = null;
         values = null;
@@ -1364,9 +1392,13 @@ public class Display extends Device implements Adaptable {
     if( key == null ) {
       error (SWT.ERROR_NULL_ARGUMENT);
     }
-    if (keys == null) return null;
+    if (keys == null) {
+      return null;
+    }
     for (int i=0; i<keys.length; i++) {
-      if (keys [i].equals (key)) return values [i];
+      if (keys [i].equals (key)) {
+        return values [i];
+      }
     }
     return null;
   }
@@ -1416,10 +1448,10 @@ public class Display extends Device implements Adaptable {
     if( widthVal != null ) {
       width = Integer.parseInt( widthVal );
     }
-    String height_val = request.getParameter( RequestParams.AVAILABLE_HEIGHT );
+    String heightVal = request.getParameter( RequestParams.AVAILABLE_HEIGHT );
     int height = 768;
-    if( height_val != null ) {
-      height = Integer.parseInt( height_val );
+    if( heightVal != null ) {
+      height = Integer.parseInt( heightVal );
     }
     bounds = new Rectangle( 0, 0, width, height );
   }
@@ -1450,6 +1482,11 @@ public class Display extends Device implements Adaptable {
       }
       Display.this.bounds
         = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+    }
+
+    public void setCursorLocation( final int x, final int y ) {
+      Display.this.cursorLocation.x = x;
+      Display.this.cursorLocation.y = y;
     }
 
     public void setActiveShell( final Shell activeShell ) {

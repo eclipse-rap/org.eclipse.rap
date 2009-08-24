@@ -170,7 +170,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     
     _onFocusIn : function( evt ) {
       if(    this._field.isCreated()
-          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend )
       {
         this._handleSelectionChange();
@@ -333,9 +332,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._field.setValue( this._formatText( fieldValue ) );
         if( this._field.isCreated() ) {
           this._field.selectAll();
-          if(    this.hasState( "rwt_CCOMBO" )
-              && !org_eclipse_rap_rwt_EventUtil_suspend ) 
-          {
+          if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
             this._handleSelectionChange();
           }
         }
@@ -419,7 +416,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this.setCapture( false );
       }
       if(    evt.getTarget() == this._field
-          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
@@ -428,6 +424,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onMouseWheel : function( evt ) {
       if( !this._dropped ) {
+        evt.preventDefault();
+        evt.stopPropagation();
         var toSelect;
         var isSelected = this._selected;
         if( evt.getWheelDelta() < 0 ) {
@@ -500,7 +498,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           break;
       }
       if(    this._field.isCreated()
-          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
@@ -565,7 +562,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           }
       }
       if(    this._field.isCreated()
-          && this.hasState( "rwt_CCOMBO" )
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
@@ -696,6 +692,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._removeAll();
       for( var i = 0; i < items.length; i++ ) {
         var item = new qx.ui.form.ListItem();
+        // [if] Omit the focused item outline border - see bug 286902
+        item.setStyleProperty( "outline", "0px none" );
+        item.handleStateChange = function() {};
         item.setLabel( "(empty)" );
         item.getLabelObject().setMode( "html" );
         item.setLabel( items[ i ] );

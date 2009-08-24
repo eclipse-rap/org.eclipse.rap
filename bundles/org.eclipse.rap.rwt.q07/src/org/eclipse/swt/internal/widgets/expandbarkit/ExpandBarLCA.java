@@ -67,15 +67,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   public static IExpandBarAdapter getExpandBarAdapter( final ExpandBar bar ) {
     return ( IExpandBarAdapter )bar.getAdapter( IExpandBarAdapter.class );
   }

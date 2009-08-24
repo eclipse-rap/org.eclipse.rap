@@ -91,17 +91,17 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * code has been processed the client-side widget should be in a state that is
    * equivalent to a newly created widget.
    * </p>
-   *
    * <p>
    * Subclasses should override this method if pooling is supported by the
    * widget type this LCA belongs to. To activate pooling override
    * {@link #getTypePoolId(Widget)}.
    * </p>
-   *
+   * 
    * @see #getTypePoolId(Widget)
-   *
    * @param typePoolId the type pool id of the widget to reset
    * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method is not called anymore.
    */
   public void createResetHandlerCalls( final String typePoolId )
     throws IOException
@@ -123,18 +123,18 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * suffix. If this method returns <code>null</code>, the widget will not be
    * stored in the widget pool and cannot be reused.
    * </p>
-   *
    * <p>
    * Subclasses may override to activate pooling. In case pooling is activated
    * the method {@link #createResetHandlerCalls(String)} should also be
    * overridden.
    * </p>
-   *
+   * 
    * @see #createResetHandlerCalls(String)
-   *
    * @param widget the widget to store in the pool
    * @return the type pool id or <code>null</code> if the widget should not be
    *         pooled
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method is not called anymore.
    */
   public String getTypePoolId( final Widget widget ) {
     return null;

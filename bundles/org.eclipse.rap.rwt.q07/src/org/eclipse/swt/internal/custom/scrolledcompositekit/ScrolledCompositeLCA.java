@@ -25,9 +25,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final String QX_TYPE
     = "org.eclipse.swt.custom.ScrolledComposite";
 
-//  private static final String TYPE_POOL_ID
-//    = ScrolledCompositeLCA.class.getName();
-
   private static final Integer ZERO = new Integer( 0 );
 
   // Request parameter names
@@ -95,23 +92,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException 
-  {
-    ControlLCAUtil.resetChanges();
-    resetClipBounds();
-    resetScrollBars();
-    resetBarSelection();
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226651
-//  return TYPE_POOL_ID;
-  return null;
-  }
-
-
   ///////////////////////////////////
   // Helping methods to write changes
 
@@ -121,11 +101,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     String overflow = getOverflow( composite );
     JSWriter writer = JSWriter.getWriterFor( composite );
     writer.set( PROP_OVERFLOW, "overflow", overflow, null );
-  }
-
-  private static void resetScrollBars() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( "overflow" );
   }
 
   private static void writeBarSelection( final ScrolledComposite composite )
@@ -142,12 +117,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void resetBarSelection() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.set( "hBarSelection", 0 );
-    writer.set( "vBarSelection", 0 );
-  }
-
   private static void writeClipBounds( final ScrolledComposite composite )
     throws IOException
   {
@@ -157,12 +126,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       writer.set( "clipWidth", bounds.width );
       writer.set( "clipHeight", bounds.height );
     }
-  }
-
-  private static void resetClipBounds() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( "clipWidth" );
-    writer.reset( "clipHeight" );
   }
 
   private static String getOverflow( final ScrolledComposite composite ) {

@@ -39,6 +39,7 @@ public class ProgressBar extends Control {
   private int minimum;
   private int selection;
   private int maximum = 100;
+  private int state = SWT.NORMAL;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -229,5 +230,49 @@ public class ProgressBar extends Control {
     } else {
       this.selection = value;
     }
+  }
+
+  /**
+   * Sets the state of the receiver. The state must be one of these values:
+   * <ul>
+   * <li>{@link SWT#NORMAL}</li>
+   * <li>{@link SWT#ERROR}</li>
+   * <li>{@link SWT#PAUSED}</li>
+   * </ul>
+   * 
+   * @param state the new state
+   * @exception SWTException <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @since 1.3
+   */
+  public void setState( int state ) {
+    checkWidget();
+    if( state == SWT.NORMAL || state == SWT.PAUSED || state == SWT.ERROR ) {
+      this.state = state;
+    }
+  }
+
+  /**
+   * Returns the state of the receiver. The value will be one of:
+   * <ul>
+   * <li>{@link SWT#NORMAL}</li>
+   * <li>{@link SWT#ERROR}</li>
+   * <li>{@link SWT#PAUSED}</li>
+   * </ul>
+   * 
+   * @return the state
+   * @exception SWTException <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @since 1.3
+   */
+  public int getState() {
+    checkWidget();
+    return this.state;
   }
 }

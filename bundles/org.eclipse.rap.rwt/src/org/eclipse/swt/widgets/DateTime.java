@@ -602,9 +602,6 @@ public class DateTime extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();
-    width += border * 2;
-    height += border * 2;
     return new Point( width, height );
   }
 
@@ -613,16 +610,24 @@ public class DateTime extends Composite {
     // [if] Recalculate the sub widgets bounds
     // important for using it in FillLayout where the
     // DateTime#computeSize() is not call.
-    computeSubWidgetsBounds();
+    Point size = computeSubWidgetsBounds();
+    // [ad] Fix for bug 284409
+    Point computedSize = this.getSize();
+    if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
+      if( computedSize.x != size.x || computedSize.y != size.y ) {
+        recalculateSpinnerBounds( computedSize );
+      }
+    }
   }
 
   private Point computeSubWidgetsBounds() {
     Font font = getFont();
     int width = 0, height = 0;
     Rectangle padding = getPadding();
+    int border = getBorderWidth();
     if( ( style & SWT.CALENDAR ) != 0 ) {
-      width = 192;
-      height = 136;
+      width = 192 + border * 2;
+      height = 136 + border * 2;
     } else if( ( style & SWT.DATE ) != 0 ) {
       Point prefSize = new Point( 0, 0 );
       if( datePattern.equals( "MDY" ) ) {
@@ -636,9 +641,9 @@ public class DateTime extends Composite {
           prefSize = computeMDYBounds();
         }
       }
-      // Overall widget size
-      width = prefSize.x;
-      height = prefSize.y + padding.height;
+      // Overall default widget size
+      width = prefSize.x + border * 2;
+      height = prefSize.y + border * 2;
     } else if( ( style & SWT.TIME ) != 0 ) {
       // Hours text field
       hoursTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
@@ -681,9 +686,9 @@ public class DateTime extends Composite {
       }
       spinnerBounds.width = buttonWidth + 1;
       spinnerBounds.height = hoursTextFieldBounds.height + padding.height;
-      // Overall widget size
-      width = spinnerBounds.x + spinnerBounds.width;
-      height = hoursTextFieldBounds.height + padding.height;
+      // Overall default widget size
+      width = spinnerBounds.x + spinnerBounds.width + border * 2;
+      height = spinnerBounds.height + border * 2;
     }
     return new Point( width, height );
   }
@@ -761,9 +766,9 @@ public class DateTime extends Composite {
                       + padding.x;
     spinnerBounds.width = buttonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
-    // Overall widget size
+    // Overall default widget size
     int width = spinnerBounds.x + spinnerBounds.width;
-    int height = weekdayTextFieldBounds.height;
+    int height = spinnerBounds.height;
     return new Point( width, height );
   }
 
@@ -840,9 +845,9 @@ public class DateTime extends Composite {
                       + padding.x;
     spinnerBounds.width = buttonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
-    // Overall widget size
+    // Overall default widget size
     int width = spinnerBounds.x + spinnerBounds.width;
-    int height = weekdayTextFieldBounds.height;
+    int height = spinnerBounds.height;
     return new Point( width, height );
   }
 
@@ -920,12 +925,18 @@ public class DateTime extends Composite {
                       + padding.x;
     spinnerBounds.width = buttonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
-    // Overall widget size
+    // Overall default widget size
     int width = spinnerBounds.x + spinnerBounds.width;
-    int height = weekdayTextFieldBounds.height;
+    int height = spinnerBounds.height;
     return new Point( width, height );
   }
-  
+
+  private void recalculateSpinnerBounds( final Point size ) {
+    int border = getBorderWidth();
+    spinnerBounds.x = size.x - spinnerBounds.width - 2 * border;
+    spinnerBounds.height = size.y - 2 * border;
+  }
+
   private int getButtonWidth() {
     ThemeManager manager = ThemeManager.getInstance();
     DateTimeThemeAdapter adapter

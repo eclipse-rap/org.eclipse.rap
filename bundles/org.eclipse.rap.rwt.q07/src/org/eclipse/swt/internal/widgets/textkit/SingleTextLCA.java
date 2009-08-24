@@ -18,8 +18,6 @@ import org.eclipse.swt.widgets.Text;
 
 final class SingleTextLCA extends AbstractTextDelegateLCA {
 
-  static final String TYPE_POOL_ID = SingleTextLCA.class.getName();
-
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
@@ -65,18 +63,4 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     writer.dispose();
   }
 
-  String getTypePoolId( final Text text ) {
-    return TYPE_POOL_ID;
-  }
-
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    TextLCAUtil.resetSelection();
-    TextLCAUtil.resetVerifyAndModifyListener();
-    TextLCAUtil.resetSelectionListener();
-    TextLCAUtil.resetTextLimit();
-    TextLCAUtil.resetReadOnly();
-    TextLCAUtil.resetText();
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
 }

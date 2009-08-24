@@ -121,14 +121,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.addEventListener( "blur", this._onFocusOut, this );
     // Keyboard navigation
     this._keyboardSelecionChanged = false;
-    // TODO [rh] key events in Safari not working properly, see
-    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
-    //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
-    if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-      this.addEventListener( "keydown", this._onKeyDown, this );
-      this.addEventListener( "keypress", this._onKeyPress, this );
-      this.addEventListener( "keyup", this._onKeyUp, this );
-    }
+    this.addEventListener( "keydown", this._onKeyDown, this );
+    this.addEventListener( "keypress", this._onKeyPress, this );
+    this.addEventListener( "keyup", this._onKeyUp, this );
     // Listen to send event of request to report current state
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
@@ -156,14 +151,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
-    // TODO [rh] key events in Safari not working properly, see
-    //   https://bugs.eclipse.org/bugs/show_bug.cgi?id=235531
-    //   http://bugzilla.qooxdoo.org/show_bug.cgi?id=785
-    if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-      this.removeEventListener( "keydown", this._onKeyDown, this );
-      this.removeEventListener( "keypress", this._onKeyPress, this );
-      this.removeEventListener( "keyup", this._onKeyUp, this );
-    }
+    this.removeEventListener( "keydown", this._onKeyDown, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
+    this.removeEventListener( "keyup", this._onKeyUp, this );
     this._virtualItem.dispose();
     this._emptyItem.dispose();
     // For performance reasons, when disposing a a Table, the server-side LCA
@@ -713,6 +703,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _onClientAreaMouseWheel : function( evt ) {
       if( this._isRelevantEvent( evt ) ) {
+        evt.preventDefault();
+        evt.stopPropagation();
         var change = evt.getWheelDelta() * this._itemHeight * 2;
         this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
       }
@@ -773,6 +765,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                || keyIdentifier === "Home"
                || keyIdentifier === "End" ) )
       {
+        evt.preventDefault();
+        evt.stopPropagation();
         var gotoIndex = this._calcGotoIndex( this._focusIndex, keyIdentifier );
         if(    gotoIndex !== this._focusIndex
             && gotoIndex >= 0
@@ -803,12 +797,33 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             } else if( topIndex > this._itemCount ) {
               topIndex = this._itemCount;
             }
+            // Fix for bug #282425:
+            // If gotoIndex points to one of the items of the last page and 
+            // PageDown is used, the top index is set so the last page to be 
+            // visible
+            var lastPageTopIndex
+              = this._itemCount - this._getFullyVisibleRowCount();
+            if(    gotoIndex > lastPageTopIndex
+                && gotoIndex < this._itemCount
+                && keyIdentifier === "PageDown" )
+            {
+              topIndex = lastPageTopIndex;
+            }
             this._internalSetTopIndex( topIndex, true );
           }
           this.setFocusIndex( gotoIndex );
           this._keyboardSelecionChanged = true;
         }
       }
+      // Prevent Left and Right key events from bubbling
+      if(    this._isRelevantEvent( evt )
+          && org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
+          && (    keyIdentifier === "Left"
+               || keyIdentifier === "Right" ) )
+      {
+        evt.preventDefault();
+        evt.stopPropagation();
+      } 
     },
 
     _calcGotoIndex : function( currentIndex, keyIdentifier ) {

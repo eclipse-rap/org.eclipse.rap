@@ -126,16 +126,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
-
   //////////////////
   // ReadData helper
 

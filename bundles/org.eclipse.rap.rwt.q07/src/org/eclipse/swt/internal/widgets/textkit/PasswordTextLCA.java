@@ -17,8 +17,6 @@ import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
-  static final String TYPE_POOL_ID = PasswordTextLCA.class.getName();
-
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
@@ -62,18 +60,4 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     writer.dispose();
   }
 
-  String getTypePoolId( final Text text ) {
-    return TYPE_POOL_ID;
-  }
-
-  void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    TextLCAUtil.resetVerifyAndModifyListener();
-    TextLCAUtil.resetSelectionListener();
-    TextLCAUtil.resetSelection();
-    TextLCAUtil.resetTextLimit();
-    TextLCAUtil.resetReadOnly();
-    TextLCAUtil.resetText();
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
 }

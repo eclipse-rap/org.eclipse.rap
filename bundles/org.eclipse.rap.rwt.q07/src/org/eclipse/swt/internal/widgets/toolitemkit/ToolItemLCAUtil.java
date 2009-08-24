@@ -21,8 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 final class ToolItemLCAUtil {
@@ -45,7 +44,8 @@ final class ToolItemLCAUtil {
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( Props.BOUNDS, toolItem.getBounds() );
+    adapter.preserve( Props.BOUNDS, getItemBounds( toolItem ) );
+    adapter.preserve( Props.MENU, toolItem.getParent().getMenu() );
   }
 
   ////////////
@@ -110,14 +110,36 @@ final class ToolItemLCAUtil {
   // Bounds
 
   static void writeBounds( final ToolItem toolItem ) throws IOException {
+    Rectangle bounds = getItemBounds( toolItem );
+    WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
+  }
+
+  private static Rectangle getItemBounds( final ToolItem toolItem ) {
     Rectangle bounds = toolItem.getBounds();
     // [rst] Chevron-button is created as a separate widget on the client side
     if( ( toolItem.getStyle() & SWT.DROP_DOWN ) != 0 ) {
       bounds.width -= 15; // ToolItem#DROP_DOWN_ARROW_WIDTH
     }
-    WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
+    return bounds;
   }
 
+  // TODO [bm]: workaround for bug 286306
+  //            we need to count the DROP_DOWN twice as it consists of two
+  //            widgets on the client-side. This needs to be removed once we
+  //            a proper DROP_DOWN ToolItem in place
+  static Integer getClientSideIndex( final ToolItem toolItem ) {
+    ToolBar toolBar = toolItem.getParent();
+    int result = 0;
+    int toolItemIndex = toolBar.indexOf( toolItem );
+    for( int i = 0; i < toolItemIndex; i++ ) {
+      result++;
+      if( ( toolBar.getItem( i ).getStyle() & SWT.DROP_DOWN ) != 0 ) {
+        result++;
+      }
+    }
+    return new Integer( result );
+  }
+  
   ////////
   // Image
 

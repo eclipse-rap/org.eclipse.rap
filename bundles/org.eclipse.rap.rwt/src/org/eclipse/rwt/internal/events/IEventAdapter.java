@@ -16,7 +16,7 @@ package org.eclipse.rwt.internal.events;
  * event listeners.</p>
  * <p>This interface is not intended to be implemented by clients.</p>
  */
-// TODO:[fappel] describe event mechnanism in package.html
+// TODO:[fappel] describe event mechanism in package.html
 public interface IEventAdapter {
 
   /**

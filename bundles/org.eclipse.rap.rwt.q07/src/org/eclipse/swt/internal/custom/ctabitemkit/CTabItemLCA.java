@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.custom.ctabitemkit;
@@ -34,6 +35,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   private static final String PROP_BOUNDS = "bounds";
   private static final String PROP_SELECTED = "selected";
   private static final String PROP_SHOWING = "showing";
+  private static final String PROP_SHOW_CLOSE = "showClose";
   private static final String PROP_UNSELECTED_CLOSE_VISIBLE
     = "unselectedCloseVisible";
   private static final String PROP_FIRST_ITEM = "firstItem";
@@ -53,6 +55,8 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( closeVisible ) );
     adapter.preserve( PROP_SHOWING,
                       Boolean.valueOf( item.isShowing() ) );
+    adapter.preserve( PROP_SHOW_CLOSE,
+                      Boolean.valueOf( item.getShowClose() ) );
     adapter.preserve( PROP_FIRST_ITEM,
                       Boolean.valueOf( item == item.getParent().getItem( 0 ) ) );
     preserveFont( item );
@@ -94,6 +98,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writeFont( item );
     WidgetLCAUtil.writeToolTip( item, item.getToolTipText() );
     writeShowing( item );
+    writeShowClose( item );
     writeUnselectedCloseVisible( item );
     writeSelection( item );
     writeFirstItem( item );
@@ -104,16 +109,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
 
   ////////////////////////////////////////////
   // Helping methods to render JavaScript code
@@ -172,6 +167,15 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( JSConst.QX_FIELD_VISIBLE, newValue );
+    }
+  }
+
+  private static void writeShowClose( final CTabItem item ) throws IOException {
+    Boolean newValue = Boolean.valueOf( item.getShowClose() );
+    String prop = PROP_SHOW_CLOSE;
+    if( WidgetLCAUtil.hasChanged( item, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "showClose", newValue );
     }
   }
 

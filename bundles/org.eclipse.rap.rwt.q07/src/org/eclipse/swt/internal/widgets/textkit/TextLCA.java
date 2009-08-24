@@ -11,7 +11,6 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.JSWriter;
@@ -47,33 +46,6 @@ public final class TextLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
-  }
-
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-//    return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
-    // Disabled pooling, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=218466
-    // [Pooling] Text widgets occasionally don't accept keyboard entries
-    return null;
-  }
-
-  private static AbstractTextDelegateLCA getLCADelegate( final String tpId ) {
-    AbstractTextDelegateLCA result;
-    if( PasswordTextLCA.TYPE_POOL_ID.equals( tpId ) ) {
-      result = PASSWORD;
-    } else if( SingleTextLCA.TYPE_POOL_ID.equals( tpId ) ) {
-      result = SINGLE;
-    } else if( MultiTextLCA.TYPE_POOL_ID.equals( tpId ) ) {
-      result = MULTI;
-    } else {
-      String txt= "The typePoolId ''{0}'' is not supported.";
-      String msg = MessageFormat.format( txt, new Object[] { tpId } );
-      throw new IllegalArgumentException( msg );
-    }
-    return result;
   }
 
   private static AbstractTextDelegateLCA getLCADelegate( final Widget widget ) {

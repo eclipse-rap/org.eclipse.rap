@@ -21,11 +21,12 @@ import org.eclipse.swt.widgets.*;
 public class CompositeLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "qx.ui.layout.CanvasLayout";
-//  private static final String TYPE_POOL_ID = CompositeLCA.class.getName();
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
+    WidgetLCAUtil.preserveBackgroundGradient( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
   }
 
   public void readData( final Widget widget ) {
@@ -45,26 +46,13 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     ControlLCAUtil.writeChanges( ( Control )widget );
+    WidgetLCAUtil.writeBackgroundGradient( widget );
+    WidgetLCAUtil.writeRoundedBorder( widget );
     WidgetLCAUtil.writeCustomVariant( widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
-  }
-
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    ControlLCAUtil.resetChanges();
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // TODO [rh] disabled pooling, see
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=203499
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107
-//    return TYPE_POOL_ID;
-    return null;
   }
 }

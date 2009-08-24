@@ -19,8 +19,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -92,7 +91,8 @@ public class CTabFolder extends Composite {
    */
   public int marginHeight = 0;
 
-  private final ICTabFolderAdapter tabFolderAdapter = new CTabFolderAdapter();
+  private final ICTabFolderAdapter tabFolderAdapter;
+  private final IWidgetGraphicsAdapter selectionGraphicsAdapter;
   private final ItemHolder itemHolder = new ItemHolder( CTabItem.class );
   private final ControlListener resizeListener;
   private FocusListener focusListener;
@@ -140,6 +140,7 @@ public class CTabFolder extends Composite {
   // Colors
   private Color selectionBackground = null;
   private Color selectionForeground = null;
+  private Image selectionBgImage = null;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -192,6 +193,8 @@ public class CTabFolder extends Composite {
     };
     addControlListener( resizeListener );
     registerDisposeListener();
+    tabFolderAdapter = new CTabFolderAdapter();
+    selectionGraphicsAdapter = new WidgetGraphicsAdapter();
   }
 
   //////////////////
@@ -907,30 +910,30 @@ public class CTabFolder extends Composite {
       updateItemsWithResizeEvent();
     }
   }
-  
+
   /**
-   * Returns <code>true</code> if an image appears 
+   * Returns <code>true</code> if an image appears
    * in unselected tabs.
-   * 
+   *
    * @return <code>true</code> if an image appears in unselected tabs
-   * 
+   *
    * @since 1.3
    */
   public boolean getUnselectedImageVisible() {
     checkWidget();
     return showUnselectedImage;
   }
-  
+
   /**
    * Specify whether the image appears on unselected tabs.
-   * 
+   *
    * @param visible <code>true</code> makes the image appear
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public void setUnselectedImageVisible( final boolean visible ) {
@@ -1052,6 +1055,120 @@ public class CTabFolder extends Composite {
       throw new IllegalStateException( "Transparent selection background color" );
     }
     return result;
+  }
+
+  /**
+   * Specify a gradient of colours to be draw in the background of the selected tab.
+   * For example to draw a gradient that varies from dark blue to blue and then to
+   * white, use the following call to setBackground:
+   * <pre>
+   *  cfolder.setBackground(new Color[]{display.getSystemColor(SWT.COLOR_DARK_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE)},
+   *                   new int[] {25, 50, 100});
+   * </pre>
+   *
+   * @param colors an array of Color that specifies the colors to appear in the gradient
+   *               in order of appearance left to right.  The value <code>null</code> clears the
+   *               background gradient.
+   * @param percents an array of integers between 0 and 100 specifying the percent of the width
+   *                 of the widget at which the color should change.  The size of the percents array must be one
+   *                 less than the size of the colors array.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   *  @since 1.3
+   */
+  // TODO: [if] Only vertical gradient is supported. The "vertical" parameter is not used.
+  public void setSelectionBackground( final Color[] colors,
+                                      final int[] percents )
+  {
+    setSelectionBackground( colors, percents, false );
+  }
+  /**
+   * Specify a gradient of colours to be draw in the background of the selected tab.
+   * For example to draw a vertical gradient that varies from dark blue to blue and then to
+   * white, use the following call to setBackground:
+   * <pre>
+   *  cfolder.setBackground(new Color[]{display.getSystemColor(SWT.COLOR_DARK_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE)},
+   *                      new int[] {25, 50, 100}, true);
+   * </pre>
+   *
+   * @param colors an array of Color that specifies the colors to appear in the gradient
+   *               in order of appearance top to bottom.  The value <code>null</code> clears the
+   *               background gradient.
+   * @param percents an array of integers between 0 and 100 specifying the percent of the width
+   *                 of the widget at which the color should change.  The size of the percents array must be one
+   *                 less than the size of the colors array.
+   *
+   * @param vertical indicate the direction of the gradient.  True is vertical and false is horizontal.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   *
+   * @since 1.3
+   */
+  // TODO: [if] Only vertical gradient is supported. The "vertical" parameter is not used.
+  public void setSelectionBackground( final Color[] colors,
+                                      final int[] percents,
+                                      final boolean vertical )
+  {
+    checkWidget();
+    if( colors != null ) {
+      if(    percents == null
+          || percents.length != colors.length - 1 ) {
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      for( int i = 0; i < percents.length; i++ ) {
+        if( percents[ i ] < 0 || percents[ i ] > 100 ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        if( i > 0 && percents[ i ] < percents[ i - 1 ] ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+      }
+    }
+
+    if( colors == null ) {
+      selectionGraphicsAdapter.setBackgroundGradient( null, null );
+      setSelectionBackground( ( Color )null );
+    } else {
+      int[] gradientPercents = new int[ colors.length ];
+      if( colors.length > 0 ) {
+        gradientPercents[ 0 ] = 0;
+        for( int i = 1; i < gradientPercents.length; i++ ) {
+          gradientPercents[ i ] = percents[ i - 1 ];
+        }
+        selectionGraphicsAdapter.setBackgroundGradient( colors,
+                                                        gradientPercents );
+        setSelectionBackground( colors[ colors.length - 1 ] );
+      }
+    }
+  }
+
+  /**
+   * Set the image to be drawn in the background of the selected tab.  Image
+   * is stretched or compressed to cover entire selection tab area.
+   *
+   * @param image the image to be drawn in the background
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.3
+   */
+  public void setSelectionBackground( final Image image ) {
+    checkWidget();
+    selectionBgImage = image;
   }
 
   /**
@@ -1893,10 +2010,11 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
   void onDispose() {
     /*
-     * Usually when an item is disposed, destroyItem will change the size of the items array,
-     * reset the bounds of all the tabs and manage the widget associated with the tab.
-     * Since the whole folder is being disposed, this is not necessary.  For speed
-     * the inDispose flag is used to skip over this part of the item dispose.
+     * Usually when an item is disposed of, destroyItem will change the size of
+     * the items array, reset the bounds of all the tabs and manage the widget
+     * associated with the tab. Since the whole folder is being disposed, this
+     * is not necessary. For speed the inDispose flag is used to skip over this
+     * part of the item dispose.
      */
     inDispose = true;
     removeControlListener( resizeListener );
@@ -2157,25 +2275,22 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     public Color getUserSelectionBackground() {
       return selectionBackground;
     }
-  }
 
+    public Image getUserSelectionBackgroundImage() {
+      return selectionBgImage;
+    }
+
+    public IWidgetGraphicsAdapter getUserSelectionBackgroundGradient() {
+      return selectionGraphicsAdapter;
+    }
+  }
+  
   // RAP [bm]: e4-enabling hacks
-  public void setSelectionBackground( Image image ) {
+  public void setSimple( final boolean simple ) {
   }
-
-  // RAP [bm]: e4-enabling hacks
-  public void setSelectionBackground( Color[] swtColors,
-                                      int[] percents,
-                                      boolean b )
-  {
-  }
-
-  // RAP [bm]: e4-enabling hacks
-  public void setSimple( boolean isSimple ) {
-  }
-
+  
   // RAP [bm]: e4-enabling hacks
   public boolean getSimple() {
-    return true;
+    return false;
   }
 }

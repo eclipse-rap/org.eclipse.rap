@@ -28,8 +28,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static final String PARAM_EXECUTE_RESULT = "executeResult";
 
-//  private static final String TYPE_POOL_ID = BrowserLCA.class.getName();
-
   private static final String PROP_URL = "url";
   private static final String PROP_TEXT = "text";
 
@@ -73,21 +71,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
-  }
-
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( QX_FIELD_SOURCE );
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    // TODO [rh] Disabled pooling. In IE7, using Browser#setText() does not 
-    //      work when widget was pooled. The previous content is displayed.
-//    return TYPE_POOL_ID;
-    return null;
   }
 
   private static void writeUrl( final Browser browser ) 

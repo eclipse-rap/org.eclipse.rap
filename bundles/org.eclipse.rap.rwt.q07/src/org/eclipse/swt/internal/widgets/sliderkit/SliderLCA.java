@@ -105,15 +105,6 @@ public class SliderLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {    
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   //////////////////
   // Helping methods
   private void writeMaximum( final Slider slider ) throws IOException {

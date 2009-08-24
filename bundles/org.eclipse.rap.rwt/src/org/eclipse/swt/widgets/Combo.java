@@ -60,9 +60,18 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  */
 public class Combo extends Composite {
 
+  /**
+   * The maximum number of characters that can be entered
+   * into a text widget.
+   * @since 1.3
+   */
+  public static final int LIMIT = Integer.MAX_VALUE;
+
   private final ListModel model;
   private String text = "";
+  private int textLimit;
   private int visibleCount = 5;
+  private final Point selection;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -96,6 +105,8 @@ public class Combo extends Composite {
    */
   public Combo( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    textLimit = LIMIT;
+    selection = new Point( 0, 0 );
     model = new ListModel( true );
   }
 
@@ -182,26 +193,93 @@ public class Combo extends Composite {
     fireModifyEvent();
   }
 
-//  /**
-//   * Sets the selection in the receiver's text field to an empty
-//   * selection starting just before the first character. If the
-//   * text field is editable, this has the effect of placing the
-//   * i-beam at the start of the text.
-//   * <p>
-//   * Note: To clear the selected items in the receiver's list,
-//   * use <code>deselectAll()</code>.
-//   * </p>
-//   *
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   *
-//   * @see #deselectAll
-//   */
+  /**
+   * Sets the selection in the receiver's text field to the
+   * range specified by the argument whose x coordinate is the
+   * start of the selection and whose y coordinate is the end
+   * of the selection.
+   *
+   * @param selection a point representing the new selection start and end
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setSelection( final Point selection ) {
+    checkWidget();
+    if( selection == null ) {
+      SWT.error ( SWT.ERROR_NULL_ARGUMENT );
+    }
+    int validatedStart = this.selection.x;
+    int validatedEnd = this.selection.y;
+    int start = selection.x;
+    int end = selection.y;
+    if( start >= 0 && end >= start ) {
+      validatedStart = Math.min( start, text.length() );
+      validatedEnd = Math.min( end, text.length() );
+    } else if ( end >= 0 && start > end ) {
+      validatedStart = Math.min( end, text.length() );
+      validatedEnd = Math.min( start, text.length() );
+    }
+    this.selection.x = validatedStart;
+    this.selection.y = validatedEnd;
+  }
+
+  /**
+   * Returns a <code>Point</code> whose x coordinate is the
+   * character position representing the start of the selection
+   * in the receiver's text field, and whose y coordinate is the
+   * character position representing the end of the selection.
+   * An "empty" selection is indicated by the x and y coordinates
+   * having the same value.
+   * <p>
+   * Indexing is zero based.  The range of a selection is from
+   * 0..N where N is the number of characters in the widget.
+   * </p>
+   *
+   * @return a point representing the selection start and end
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public Point getSelection() {
+    checkWidget();
+    return new Point( selection.x, selection.y );
+  }
+
+  /**
+   * Sets the selection in the receiver's text field to an empty
+   * selection starting just before the first character. If the
+   * text field is editable, this has the effect of placing the
+   * i-beam at the start of the text.
+   * <p>
+   * Note: To clear the selected items in the receiver's list,
+   * use <code>deselectAll()</code>.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #deselectAll
+   *
+   * @since 1.3
+   */
   public void clearSelection() {
     checkWidget();
-    // TODO [rh] IMPLEMENTATION MISSING
+    selection.x = 0;
+    selection.y = 0;
   }
 
   ///////////////////////////////////////
@@ -617,6 +695,60 @@ public class Combo extends Composite {
     }
   }
 
+  /**
+   * Returns the maximum number of characters that the receiver's
+   * text field is capable of holding. If this has not been changed
+   * by <code>setTextLimit()</code>, it will be the constant
+   * <code>Combo.LIMIT</code>.
+   *
+   * @return the text limit
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #LIMIT
+   * @since 1.3
+   */
+  public int getTextLimit() {
+    checkWidget();
+    return textLimit;
+  }
+
+  /**
+   * Sets the maximum number of characters that the receiver's
+   * text field is capable of holding to be the argument.
+   * <p>
+   * To reset this value to the default, use <code>setTextLimit(Combo.LIMIT)</code>.
+   * Specifying a limit value larger than <code>Combo.LIMIT</code> sets the
+   * receiver's limit to <code>Combo.LIMIT</code>.
+   * </p>
+   * @param limit new text limit
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_CANNOT_BE_ZERO - if the limit is zero</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #LIMIT
+   * @since 1.3
+   */
+  public void setTextLimit( final int limit ) {
+    checkWidget();
+    if( limit == 0 ) {
+      error( SWT.ERROR_CANNOT_BE_ZERO );
+    }
+    if( limit > 0 ) {
+      textLimit = limit;
+    } else {
+      textLimit = LIMIT;
+    }
+  }
+
   // //////////////////
   // Widget dimensions
 
@@ -855,7 +987,7 @@ public class Combo extends Composite {
       fireModifyEvent();
     }
   }
-  
+
   private void fireModifyEvent() {
     ModifyEvent modifyEvent = new ModifyEvent( this );
     modifyEvent.processEvent();
@@ -867,7 +999,7 @@ public class Combo extends Composite {
       = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
   }
-  
+
   private int getButtonWidth() {
     ThemeManager manager = ThemeManager.getInstance();
     ComboThemeAdapter adapter

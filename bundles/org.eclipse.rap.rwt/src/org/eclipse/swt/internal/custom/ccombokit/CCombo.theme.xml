@@ -50,6 +50,9 @@
         </description>
     </property>
     
+    <state name="disabled"
+        description="Applies to disabled CCombos." />
+    
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 

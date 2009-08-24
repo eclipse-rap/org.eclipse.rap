@@ -58,14 +58,4 @@ public class GroupLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( "legend" );
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
 }

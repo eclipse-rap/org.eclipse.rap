@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.JSWriter;
@@ -51,32 +50,6 @@ public final class ButtonLCA extends AbstractWidgetLCA {
       writer.call( shell, "setDefaultButton", NULL_PARAMETER );
     }
     getLCADelegate( widget ).renderDispose( ( Button )widget );
-  }
-
-  public void createResetHandlerCalls( final String typePoolId ) 
-    throws IOException 
-  {
-    getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return getLCADelegate( widget ).getTypePoolId( ( Button )widget );
-  }
-
-  private static ButtonDelegateLCA getLCADelegate( final String tpId ) {
-    ButtonDelegateLCA result;
-    if( tpId.startsWith( CheckButtonDelegateLCA.TYPE_POOL_ID ) ) {
-      result = CHECK;
-    } else if( tpId.startsWith( PushButtonDelegateLCA.TYPE_POOL_ID ) ) {
-      result = PUSH;
-    } else if( tpId.startsWith( RadioButtonDelegateLCA.TYPE_POOL_ID ) ) {
-      result = RADIO;
-    } else {
-      String txt= "The typePoolId ''{0}'' is not supported.";
-      String msg = MessageFormat.format( txt, new Object[] { tpId } );
-      throw new IllegalArgumentException( msg );
-    }
-    return result;
   }
 
   private static ButtonDelegateLCA getLCADelegate( final Widget widget ) {

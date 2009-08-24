@@ -125,6 +125,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
+    this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
@@ -165,6 +166,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
+    this.removeEventListener( "mousewheel", this._onMouseWheel, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     if( this._scrollTimer != null ) {
       this._scrollTimer.stop();
@@ -293,6 +295,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         }
       }
     },
+    
+    _onMouseWheel : function( evt ) {
+      evt.preventDefault();
+      evt.stopPropagation();
+    },
 
     _onChangeEnabled : function( evt ) {
       this._thumb.setVisibility( evt.getValue() );
@@ -333,6 +340,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           sel = this._maximum - this._thumbWidth;
         }
         this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
 
@@ -359,6 +371,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           sel = this._maximum - this._thumbWidth;
         }
         this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
 
@@ -375,6 +392,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           sel = this._maximum - this._thumbWidth;
         }
         this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
 
@@ -535,13 +557,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       } else {
         this._thumb.setTop( pos );
       }
-      if( this._readyToSendChanges ) {
-        this._readyToSendChanges = false;
-        // Send changes
-        qx.client.Timer.once( this._sendChanges, this, 500 );
-        // Starting the auto repeat functionality after a 250 ms delay
-        qx.client.Timer.once( this._scrollTimerStart, this, 250 );
-      }
+      // Starting the auto repeat functionality after a 250 ms delay
+      qx.client.Timer.once( this._scrollTimerStart, this, 250 );
     },
 
     _updateLineSize : function() {

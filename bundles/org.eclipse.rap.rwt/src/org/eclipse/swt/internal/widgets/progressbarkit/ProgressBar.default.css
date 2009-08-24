@@ -10,3 +10,11 @@ ProgressBar-Indicator {
   background-color: rgb( 0, 128, 192 );
   background-image: none;
 }
+
+ProgressBar-Indicator:paused {
+  background-color: rgb( 255, 223, 33 );
+}
+
+ProgressBar-Indicator:error {
+  background-color: rgb( 203, 32, 32 );
+}

@@ -27,9 +27,9 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
   private static final String CREATE_RADIO
     = "org.eclipse.swt.ToolItemUtil.createRadio";
-  // radio functions as defined in org.eclipse.swt.ButtonUtil
+  // radio functions as defined in org.eclipse.swt.ToolItemUtil
   private static final String WIDGET_SELECTED
-    = "org.eclipse.swt.ButtonUtil.radioSelected";
+    = "org.eclipse.swt.ToolItemUtil.radioSelected";
 
   private final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
@@ -60,17 +60,12 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ToolBar bar = toolItem.getParent();
-    int myIndex = bar.indexOf( toolItem );
-    ToolItem neighbour = null;
-    if ( myIndex > 0 ) {
-      neighbour = bar.getItem( myIndex - 1 );
-      if( ( neighbour.getStyle() & SWT.RADIO ) == 0 ) {
-        neighbour = null;
-      }
-    }
+    int itemIndex = bar.indexOf( toolItem );
+    ToolItem neighbour = getRadioNeighbour( bar, itemIndex );
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent(),
+      ToolItemLCAUtil.getClientSideIndex( toolItem ),
       toolItem.getSelection() ? "true" : null,
       neighbour
     };
@@ -78,6 +73,24 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
+  }
+
+  // [bm] we need to take both neighbours into account to find a possible
+  //      radio group
+  private static ToolItem getRadioNeighbour( ToolBar bar, int itemIndex ) {
+    ToolItem neighbour = null;
+    if( itemIndex > 0 ) {
+      neighbour = bar.getItem( itemIndex - 1 );
+    }
+    if( neighbour == null || ( neighbour.getStyle() & SWT.RADIO ) == 0 ) {
+      if( itemIndex < bar.getItemCount() - 1 ) {
+        ToolItem nextItem = bar.getItem( itemIndex + 1 );
+        if( ( nextItem.getStyle() & SWT.RADIO ) != 0 ) {
+          neighbour = nextItem;
+        }
+      }
+    }
+    return neighbour;
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

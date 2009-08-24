@@ -1596,6 +1596,27 @@ public class SWT {
    */
   public static final int VIRTUAL = 1 << 28;
 
+  // ProgressBar State constants
+  /**
+   * Constant to indicate an error state (value is 1).
+   * <p><b>Used By:</b><ul>
+   * <li><code>ProgressBar</code></li>
+   * </ul></p>
+   * 
+   * @since 1.3
+   */
+  public static final int ERROR = 1;
+
+  /**
+   * Constant to a indicate a paused state (value is 4).
+   * <p><b>Used By:</b><ul>
+   * <li><code>ProgressBar</code></li>
+   * </ul></p>
+   * 
+   * @since 1.3
+   */
+  public static final int PAUSED = 1 << 2;
+
   // Font style constants
 
   /**

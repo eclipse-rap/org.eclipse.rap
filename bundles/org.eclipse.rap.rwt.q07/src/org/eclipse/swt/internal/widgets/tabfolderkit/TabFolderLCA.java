@@ -57,15 +57,6 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   public Rectangle adjustCoordinates( final Widget widget,
                                       final Rectangle newBounds )
   {

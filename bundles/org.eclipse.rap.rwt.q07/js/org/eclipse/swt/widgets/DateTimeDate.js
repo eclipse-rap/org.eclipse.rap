@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                         datePattern )
   {
     this.base( arguments );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setAppearance( "datetime-date" );
 
     // Get styles
@@ -45,6 +46,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
 
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "keyup", this._onKeyUp, this );
+    this.addEventListener( "mousewheel", this._onmousewheel, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
@@ -127,6 +129,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this._spinner._textfield.setTabIndex( -1 );
     // Hack to prevent the spinner text field to request the focus
     this._spinner._textfield.setFocused = function() {};
+    // Solution for Bug 284021
+    this._spinner._textfield.setVisibility( false );
     this._spinner._upbutton.setAppearance("datetime-button-up");
     this._spinner._downbutton.setAppearance("datetime-button-down");
     this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
@@ -143,6 +147,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "keyup", this._onKeyUp, this );
+    this.removeEventListener( "mousewheel", this._onmousewheel, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
@@ -382,6 +387,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             evt.preventDefault();
             evt.stopPropagation();
             break;
+          case "PageUp":
+          case "PageDown":
+          case "Home":
+          case "End":
+            evt.preventDefault();
+            evt.stopPropagation();
+            break;
         }
       }
     },
@@ -495,6 +507,11 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             break;
         }
       }
+    },
+    
+    _onmousewheel : function( evt ) {
+      evt.preventDefault();
+      evt.stopPropagation();
     },
 
     _getDaysInMonth : function() {

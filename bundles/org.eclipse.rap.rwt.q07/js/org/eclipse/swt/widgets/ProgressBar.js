@@ -19,10 +19,10 @@
     this.setOverflow( "hidden" );
     this.setAppearance( "progressbar" );
     
-    this._bar = new qx.ui.layout.CanvasLayout();
-    this._bar.setParent( this );
-    this._bar.setLeft( 0 );
-    this._bar.setAppearance( "progressbar-indicator" );
+    this._indicator = new qx.ui.layout.CanvasLayout();
+    this._indicator.setParent( this );
+    this._indicator.setLeft( 0 );
+    this._indicator.setAppearance( "progressbar-indicator" );
     
     this._minimum = 0;
     this._maximum = 100;
@@ -36,7 +36,7 @@
       this._timer.dispose();
     }
     this._timer = null;
-    this._bar.dispose();
+    this._indicator.dispose();
   },
 
   statics : {
@@ -60,20 +60,20 @@
       if( this._isUndetermined() ) {
         this._move();
       } else if( this._isVertical() ) {
-        this._bar.setWidth( this.getWidth() - 2 );
+        this._indicator.setWidth( this.getWidth() - 2 );
         var newHeight
           =  ( this._selection / this._maximum ) * ( this.getHeight() - 2 );
-        this._bar.setHeight( newHeight );
-        this._bar.setTop( this.getHeight() - newHeight - 2 );
+        this._indicator.setHeight( newHeight );
+        this._indicator.setTop( this.getHeight() - newHeight - 2 );
       } else {
-        this._bar.setTop( 0 );
-        this._bar.setHeight( this.getHeight() - 2 );
+        this._indicator.setTop( 0 );
+        this._indicator.setHeight( this.getHeight() - 2 );
         var newWidth
           =  ( this._selection / this._maximum ) * ( this.getWidth() - 2 );
-        this._bar.setWidth( newWidth );
+        this._indicator.setWidth( newWidth );
       }
     },
-    
+
     setFlag : function( flag ) {
       this._flag = flag;
       if( this._isUndetermined() ) {
@@ -86,15 +86,28 @@
         }        
       }
     },
-    
+
+    setState : function( state ) {
+      if( state == "error" ) {
+        this._indicator.removeState( "paused" );
+        this._indicator.addState( "error" );
+      } else if( state == "paused" ) {
+        this._indicator.removeState( "error" );
+        this._indicator.addState( "paused" );
+      } else {
+        this._indicator.removeState( "error" );
+        this._indicator.removeState( "paused" );
+      }
+    },
+
     _initIndeterminedHorizontal : function() {
-      this._bar.setTop( 0 );
-      this._bar.setLeft( 
+      this._indicator.setTop( 0 );
+      this._indicator.setLeft( 
        -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
-      this._bar.setWidth( 
+      this._indicator.setWidth( 
         org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
       if( this.getHeight() != null ) {
-        this._bar.setHeight( this.getHeight() - 2 );
+        this._indicator.setHeight( this.getHeight() - 2 );
       }   
       this._timer = new qx.client.Timer( 120 );
       this._timer.addEventListener( "interval", this._moveHorizontal, this );
@@ -102,11 +115,11 @@
     },
     
     _initIndeterminedVertical : function() {
-      this._bar.setTop(
+      this._indicator.setTop(
         -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
-      this._bar.setLeft( 0 ); 
-      this._bar.setWidth( this.getWidth() - 2 ); 
-      this._bar.setHeight(
+      this._indicator.setLeft( 0 ); 
+      this._indicator.setWidth( this.getWidth() - 2 ); 
+      this._indicator.setHeight(
         org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
       this._timer = new qx.client.Timer( 120 );
       this._timer.addEventListener( "interval", this._moveVertical, this );
@@ -124,23 +137,23 @@
     },
     
     _moveHorizontal : function() {
-      this._bar.setHeight( this.getHeight() - 2 );
-      if( this._bar.getLeft() >= this.getWidth() ) {
-        this._bar.setLeft( 
+      this._indicator.setHeight( this.getHeight() - 2 );
+      if( this._indicator.getLeft() >= this.getWidth() ) {
+        this._indicator.setLeft( 
           -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
       } else { 
-        this._bar.setLeft( this._bar.getLeft() + 2 );
+        this._indicator.setLeft( this._indicator.getLeft() + 2 );
       }
     },
     
     _moveVertical : function() {
-      this._bar.setWidth( this.getWidth() - 2 );
-      if(    this._bar.getTop() 
+      this._indicator.setWidth( this.getWidth() - 2 );
+      if(    this._indicator.getTop() 
           <= -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE ) 
       {
-        this._bar.setTop( this.getHeight() );
+        this._indicator.setTop( this.getHeight() );
       } else { 
-        this._bar.setTop( this._bar.getTop() - 2 );
+        this._indicator.setTop( this._indicator.getTop() - 2 );
       }
     },
     

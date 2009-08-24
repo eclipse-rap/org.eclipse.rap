@@ -59,15 +59,6 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
     getDelegateLCA( menuItem ).renderDispose( menuItem );
   }
   
-  public void createResetHandlerCalls( final String typePoolId ) 
-    throws IOException 
-  {
-  }
-  
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-  
   private static boolean isTopLevelMenuBarItem( final MenuItem menuItem ) {
     return ( menuItem.getParent().getStyle() & SWT.BAR ) != 0;
   }

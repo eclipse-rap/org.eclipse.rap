@@ -150,15 +150,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   public void doRedrawFake( final Control control ) {
     Table table = ( Table )control;
     Object adapter = table.getAdapter( ITableAdapter.class );

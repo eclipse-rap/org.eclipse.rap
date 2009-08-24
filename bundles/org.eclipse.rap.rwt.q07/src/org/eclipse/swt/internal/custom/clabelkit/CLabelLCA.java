@@ -75,15 +75,6 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-    return null;
-  }
-
   private static void writeText( final CLabel label ) throws IOException {
     String text = label.getText();
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, text, "" ) ) {
@@ -92,6 +83,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
       }
       text = WidgetLCAUtil.escapeText( text, true );
       JSWriter writer = JSWriter.getWriterFor( label );
+      text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
       writer.set( JSConst.QX_FIELD_LABEL, text );
     }
   }

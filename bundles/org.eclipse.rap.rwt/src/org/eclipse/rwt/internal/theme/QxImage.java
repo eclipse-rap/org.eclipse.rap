@@ -12,7 +12,12 @@
 
 package org.eclipse.rwt.internal.theme;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
+
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 public final class QxImage implements QxType {
 
@@ -29,6 +34,10 @@ public final class QxImage implements QxType {
   public final String[] gradientColors;
 
   public final float[] gradientPercents;
+
+  public final int width;
+
+  public final int height;
 
   /**
    * Creates a new image from the given value.
@@ -51,6 +60,26 @@ public final class QxImage implements QxType {
     this.loader = loader;
     this.gradientColors = gradientColors;
     this.gradientPercents = gradientPercents;
+    if( none ) {
+      width = 0;
+      height = 0;
+    } else {
+      try {
+        Point size = readImageSize( path, loader );
+        if( size == null ) {
+          throw new IllegalArgumentException( "Failed to read image '"
+                                              + path
+                                              + "'" );
+        }
+        width = size.x;
+        height = size.y;
+      } catch( IOException e ) {
+        throw new IllegalArgumentException( "Failed to read image "
+                                            + path
+                                            + ": "
+                                            + e.getMessage() );
+      }
+    }
   }
 
   public static QxImage valueOf( final String input, final ResourceLoader loader )
@@ -128,8 +157,24 @@ public final class QxImage implements QxType {
   }
 
   public String toString() {
-    return "QxImage{ "
+    return   "QxImage{ "
            + ( none ? NONE_INPUT : path )
            + " }";
+  }
+
+  private static Point readImageSize( final String path,
+                                      final ResourceLoader loader )
+    throws IOException
+  {
+    Point result = null;
+    InputStream inputStream = loader.getResourceAsStream( path );
+    if( inputStream != null ) {
+      try {
+        result = ResourceFactory.readImageSize( inputStream );
+      } finally {
+        inputStream.close();
+      }
+    }
+    return result;
   }
 }

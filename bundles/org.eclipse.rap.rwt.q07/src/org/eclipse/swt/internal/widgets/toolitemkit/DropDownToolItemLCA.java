@@ -23,9 +23,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Widget;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.*;
 
 final class DropDownToolItemLCA extends ToolItemDelegateLCA {
 
@@ -72,10 +70,12 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
 
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
+    ToolBar toolBar = toolItem.getParent();
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent(),
-      Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
+      toolBar,
+      ToolItemLCAUtil.getClientSideIndex( toolItem ),
+      Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT ) != 0 )
     };
     writer.callStatic( CREATE_DROP_DOWN, args );
   }
@@ -85,7 +85,7 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
     ItemLCAUtil.writeText( toolItem, false );
     ToolItemLCAUtil.writeImages( toolItem );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
-    //      right-click on a toolbar item to the toolbar iteself if the toolbar
+    //      right-click on a toolbar item to the toolbar itself if the toolbar
     //      item does not have a context menu assigned
     WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send

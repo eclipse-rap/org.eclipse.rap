@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -15,45 +16,41 @@
 qx.Class.define( "org.eclipse.swt.widgets.List", {
   extend : qx.ui.form.List,
 
-  construct : function() {
+  construct : function( multiSelection ) {
     this.base( arguments );
     this.setMarkLeadingItem( true );
-    this.rap_init();
+    // Should changeSelection events passed to the server-side?
+    // state == no, action == yes
+    this._changeSelectionNotification = "state";
+    this._topIndex = 0;
+    var selMgr = this.getManager();
+    selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+    selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
+    selMgr.setMultiSelection( multiSelection );
+    this.addEventListener( "focus", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onFocusOut, this );
+    this.addEventListener( "click", this._onClick, this );
+    this.addEventListener( "dblclick", this._onDblClick, this );
+    this.addEventListener( "appear", this._onAppear, this );
+    // Listen to send event of request to report topIndex
+    var req = org.eclipse.swt.Request.getInstance();
+    req.addEventListener( "send", this._onSendRequest, this );
   },
   
   destruct : function() {
-    this.rap_reset();
+    var req = org.eclipse.swt.Request.getInstance();
+    req.removeEventListener( "send", this._onSendRequest, this );
+    var selMgr = this.getManager();
+    selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+    selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
+    this.removeEventListener( "focus", this._onFocusIn, this );
+    this.removeEventListener( "blur", this._onFocusOut, this );
+    this.removeEventListener( "click", this._onClick, this );
+    this.removeEventListener( "dblclick", this._onDblClick, this );
+    this.removeEventListener( "appear", this._onAppear, this );
   },
 
   members : {
-    
-    init : function( multiSelection ) {
-      var manager = this.getManager();
-      manager.setMultiSelection( multiSelection );
-    },
-    
-    rap_init : function( multiSelection ) {
-      // Should changeSelection events passed to the server-side?
-      // state == no, action == yes
-      this._changeSelectionNotification = "state";
-      var selMgr = this.getManager();
-      selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
-      selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
-      this.addEventListener( "focus", this._onFocusIn, this );
-      this.addEventListener( "blur", this._onFocusOut, this );
-      this.addEventListener( "click", this._onClick, this );
-      this.addEventListener( "dblclick", this._onDblClick, this );
-    },
-    
-    rap_reset : function() {
-      var selMgr = this.getManager();
-      selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
-      selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
-      this.removeEventListener( "focus", this._onFocusIn, this );
-      this.removeEventListener( "blur", this._onFocusOut, this );
-      this.removeEventListener( "click", this._onClick, this );
-      this.removeEventListener( "dblclick", this._onDblClick, this );
-    },
     
     /** Sets the given array of items. */
     setItems : function( items ) {
@@ -71,6 +68,9 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           // TODO [rh] optimize this: context menu should be handled by the List
           //      itself for all its ListItems
           var item = new qx.ui.form.ListItem();
+          // [if] Omit the focused item outline border - see bug 286902
+          item.setStyleProperty( "outline", "0px none" );
+          item.handleStateChange = function() {};
           // prevent items from being drawn outside the list
           item.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
           item.setContextMenu( this.getContextMenu() );
@@ -155,6 +155,51 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
 
     setChangeSelectionNotification : function( value ) {
       this._changeSelectionNotification = value;
+    },
+    
+    setTopIndex : function( value ) {
+      this._topIndex = value;
+      this._applyTopIndex( value );
+    },
+    
+    _applyTopIndex : function( newIndex ) {
+      var items = this.getManager().getItems();
+      if( items.length > 0 && items[ 0 ].isCreated() ) {
+        var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
+        if( itemHeight > 0 ) {
+          this.setScrollTop( newIndex * itemHeight );
+        }
+      }
+    },
+    
+    _getTopIndex : function() {
+      var topIndex = 0;
+      var scrollTop = this.getScrollTop();
+      var items = this.getManager().getItems();
+      if( items.length > 0 ) {
+        var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
+        if( itemHeight > 0 ) {
+          topIndex = Math.round( scrollTop / itemHeight );
+        }
+      }
+      return topIndex;
+    },
+    
+    _onAppear : function( evt ) {
+      // [ad] Fix for Bug 277678 
+      // when #showSelection() is called for invisible widget
+      this._applyTopIndex( this._topIndex );
+    },
+    
+    _onSendRequest : function( evt ) {
+      var topIndex = this._getTopIndex();
+      if( this._topIndex != topIndex ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( id + ".topIndex", topIndex );
+        this._topIndex = topIndex;
+      }
     },
 
     _getSelectionIndices : function() {

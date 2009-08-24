@@ -25,6 +25,9 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._tabHeight = 0;
     this._selectionForeground = null;
     this._selectionBackground = null;
+    this._selectionBackgroundImage = null;
+    this._selectionBackgroundGradientColors = null;
+    this._selectionBackgroundGradientPercents = null;
     this._chevron = null;
     this._chevronMenu = null;
     // Minimize/maximize buttons, initially non-existing
@@ -156,6 +159,21 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._frame.resetBorder();
       }
     },
+    
+    setSelectionBackgroundImage : function( image ) {
+      this._selectionBackgroundImage = image;
+      this._mapItems( function( item ) {
+        item.setSelectionBackgroundImage( image );
+      } );
+    },
+    
+    setSelectionBackgroundGradient : function( colors, percents ) {
+      this._selectionBackgroundGradientColors = colors;
+      this._selectionBackgroundGradientPercents = percents;
+      this._mapItems( function( item ) {
+        item.setSelectionBackgroundGradient( colors, percents );
+      } );
+    },
 
     setBorderVisible : function( visible ) {
       if( visible ) {
@@ -172,6 +190,18 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     getSelectionBackground : function() {
       return this._selectionBackground;
+    },
+    
+    getSelectionBackgroundImage : function() {
+      return this._selectionBackgroundImage;
+    },
+    
+    getSelectionBackgroundGradientColors : function() {
+      return this._selectionBackgroundGradientColors;
+    },
+    
+    getSelectionBackgroundGradientPercents : function() {
+      return this._selectionBackgroundGradientPercents;
     },
 
     _mapItems : function( func ) {

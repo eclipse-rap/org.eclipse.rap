@@ -474,22 +474,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         var item = this._tree.getManager().getLeadItem();
         var selection = this._getSelectionIndices();
         if( selection != "" ) {
-          req.addParameter( id + ".selection", this._getSelectionIndices() );
-          // TODO [rst] Prevent selecting the root item.
-          //      When first visible item is selected and arrow up is pressed the root
-          //      item ( == this ) is selected which results in an invisible selection.
-          if( item == this ) {
-            this._tree.getFirstVisibleChildOfFolder().setSelected( true );
-            this._tree.setSelected( false );
-          } else {
-            if ( this._selectionListeners ) {
-              this._suspendClicks();
-              var itemId = wm.findIdByWidget( item );
-              var eventName = "org.eclipse.swt.events.widgetSelected";
-              req.addEvent( eventName, id );
-              req.addParameter( eventName + ".item", itemId );
-              req.send();
-            }
+          req.addParameter( id + ".selection", selection );
+          if(    this._selectionListeners 
+              && item instanceof org.eclipse.swt.widgets.TreeItem ) {
+            this._suspendClicks();
+            var itemId = wm.findIdByWidget( item );
+            var eventName = "org.eclipse.swt.events.widgetSelected";
+            req.addEvent( eventName, id );
+            req.addParameter( eventName + ".item", itemId );
+            req.send();
           }
         }
       }
@@ -607,22 +600,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     /*
      * Returns the current selection as comma separated string
      */
-    // TODO [rh] handle multi selection
     _getSelectionIndices : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var result = "";
       if( this._tree.getManager().getMultiSelection() ) {
         var selectedItems = this._tree.getManager().getSelectedItems();
         for( var i = 0; i < selectedItems.length; i++ ) {
-          var item = selectedItems[i];
-          if( item != this ) {
-            result += wm.findIdByWidget(item);
-            result += ",";
+          var item = selectedItems[ i ];
+          if( item instanceof org.eclipse.swt.widgets.TreeItem ) {
+            if( result !== "" ) {
+              result += ",";
+            }
+            result += wm.findIdByWidget( item );
           }
         }
       } else {
         var item = this._tree.getManager().getSelectedItem();
-        if( item != this ) {
+        if( item instanceof org.eclipse.swt.widgets.TreeItem ) {
           result = wm.findIdByWidget( item );
         }
       }

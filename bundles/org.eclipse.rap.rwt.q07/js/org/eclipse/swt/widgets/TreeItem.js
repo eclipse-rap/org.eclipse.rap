@@ -154,7 +154,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
     setSelection : function( value, focus ) {
       var manager = this.getTree().getManager();
-      manager.setItemSelected( this, value );
+      if( manager.getMultiSelection() || value ) {
+        manager.setItemSelected( this, value );
+      } else if( manager.getItemSelected( this ) ) {
+        // [if] Because of qx SelectionManager it is not possible to deselect
+        // the item in "single" selection mode with manager.setItemSelected
+        manager.deselectAll();
+      }
       if( focus ) {
         manager.setLeadItem( this );
       }
@@ -188,6 +194,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     _onClick : function( evt ) {
       if( this._checkEventTarget( evt ) ) {
         this.getTree().getParent()._notifyItemClick( this );
+        // [if] Select item manually because of problems with the tree 
+        // SelectionManager with enabled multi selection.
+        if( !evt.isCtrlPressed() ) {
+          this.getTree().getManager().setItemSelected( this, true );
+        }
       }
     },
 
@@ -270,6 +281,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this._images = images;
       if( this.isCreated() ) {
         this.updateItem();
+        this.updateColumnsWidth();
       }
     },
 

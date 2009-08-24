@@ -20,8 +20,7 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -94,6 +93,7 @@ public abstract class Widget implements Adaptable {
   private WidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter;
+  private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
 
   Widget() {
@@ -167,6 +167,11 @@ public abstract class Widget implements Adaptable {
         widgetAdapter = new WidgetAdapter();
       }
       result = widgetAdapter;
+    } else if( adapter == IWidgetGraphicsAdapter.class ) {
+      if( widgetGraphicsAdapter == null ) {
+        widgetGraphicsAdapter = new WidgetGraphicsAdapter();
+      }
+      result = widgetGraphicsAdapter;
     } else {
       // TODO: [fappel] buffer the adapterManager for performance improvement.
       //                Note: this is still a matter of investigation since
@@ -175,7 +180,7 @@ public abstract class Widget implements Adaptable {
         adapterManager = AdapterManagerImpl.getInstance();
       }
       result = adapterManager.getAdapter( this, adapter );
-    }
+    } 
     return result;
   }
 
@@ -555,7 +560,61 @@ public abstract class Widget implements Adaptable {
     newEvent.display = display;
     UntypedEventAdapter.notifyListeners( eventType, newEvent );
   }
+
+  /**
+   * Returns <code>true</code> if there are any listeners
+   * for the specified event type associated with the receiver,
+   * and <code>false</code> otherwise. The event type is one of
+   * the event constants defined in class <code>SWT</code>.
+   *
+   * @param eventType the type of event
+   * @return true if the event is hooked
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SWT
+   * @since 1.3
+   */
+  public boolean isListening( final int eventType ) {
+    checkWidget();
+    return getListeners( eventType ).length > 0;
+  }
   
+  /**
+   * Returns an array of listeners who will be notified when an event 
+   * of the given type occurs. The event type is one of the event constants 
+   * defined in class <code>SWT</code>.
+   *
+   * @param eventType the type of event to listen for
+   * @return an array of listeners that will be notified when the event occurs
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see SWT
+   * @see #addListener(int, Listener)
+   * @see #removeListener(int, Listener)
+   * @see #notifyListeners
+   * 
+   * @since 1.3
+   */
+  public Listener[] getListeners( final int eventType ) {
+    checkWidget();
+    Listener[] listeners;
+    if( untypedAdapter == null ) {
+      listeners = new Listener[0];
+    } else {
+      listeners = untypedAdapter.getListeners( eventType );
+    }
+    return listeners;
+  }
+
   ///////////////////////
   // toString and helpers
 

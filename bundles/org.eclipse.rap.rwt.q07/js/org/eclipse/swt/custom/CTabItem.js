@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
@@ -28,29 +29,32 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.getLabelObject().setVerticalAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setLabel( "" );
     this._selected = false;
+    this._showClose = false;
+    this._canClose = canClose;
     this._unselectedCloseVisible = true;
     this._selectionBackground = parent.getSelectionBackground();
     this._selectionForeground = parent.getSelectionForeground();
+    this._selectionBackgroundImage = parent.getSelectionBackgroundImage();
+    this._selectionBackgroundGradientColors
+      = parent.getSelectionBackgroundGradientColors();
+    this._selectionBackgroundGradientPercents
+      = parent.getSelectionBackgroundGradientPercents();
     this.setTabPosition( parent.getTabPosition() );
     // TODO [rst] change when a proper state inheritance concept exists
     if( parent.hasState( "rwt_BORDER" ) ) {
       this.addState( "rwt_BORDER" );
     }
-    if( canClose ) {
-      this._closeButton = new qx.ui.basic.Image();
-      this._closeButton.setAppearance( "ctab-close-button" );
-      this._closeButton.setWidth( 20 );
-      // TODO [rh] center image vertically in tab item
-      this._closeButton.setHeight( "80%" );
-      this._closeButton.addEventListener( "click", this._onClose, this );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      wm.setToolTip( this._closeButton, 
-                     org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
-      this.add( this._closeButton );
-      this._updateCloseButton();
-    } else {
-      this._closeButton = null;
-    }
+    this._closeButton = new qx.ui.basic.Image();
+    this._closeButton.setAppearance( "ctab-close-button" );
+    this._closeButton.setWidth( 20 );
+    // TODO [rh] center image vertically in tab item
+    this._closeButton.setHeight( "80%" );
+    this._closeButton.addEventListener( "click", this._onClose, this );
+    var wm = org.eclipse.swt.WidgetManager.getInstance();
+    wm.setToolTip( this._closeButton,
+                   org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
+    this.add( this._closeButton );
+    this._updateCloseButton();
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "click", this._onClick, this );
@@ -61,14 +65,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "click", this._onClick, this );
-    this.removeEventListener( "dblclick", this._onDblClick, this );
-    if( this._closeButton != null ) {
-      this._closeButton.removeEventListener( "click", this._onClose, this );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      wm.setToolTip( this._closeButton, null );
-      this._closeButton.dispose();
-      this._closeButton = null;
-    }
+    this.removeEventListener( "dblclick", this._onDblClick, this );    
+    this._closeButton.removeEventListener( "click", this._onClose, this );
+    var wm = org.eclipse.swt.WidgetManager.getInstance();
+    wm.setToolTip( this._closeButton, null );
+    this._closeButton.dispose();
+    this._closeButton = null;
   },
 
   statics : {
@@ -97,11 +99,18 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       }
       this._updateSelectionForeground();
       this._updateSelectionBackground();
+      this._updateSelectionBackgroundImage();
+      this._updateSelectionBackgroundGradient();
       this._updateCloseButton();
     },
 
     isSelected : function() {
       return this._selected;
+    },
+    
+    setShowClose : function( value ) {
+      this._showClose = value;
+      this._updateCloseButton();
     },
 
     setUnselectedCloseVisible : function( value ) {
@@ -120,6 +129,17 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._selectionBackground = color;
       this._updateSelectionBackground();
     },
+    
+    setSelectionBackgroundImage : function( image ) {
+      this._selectionBackgroundImage = image;
+      this._updateSelectionBackgroundImage();
+    },
+    
+    setSelectionBackgroundGradient : function( colors, percents ) {
+      this._selectionBackgroundGradientColors = colors;
+      this._selectionBackgroundGradientPercents = percents;
+      this._updateSelectionBackgroundGradient();
+    },
 
     _updateSelectionForeground : function() {
       if( this.isSelected() && this._selectionForeground != null ) {
@@ -136,15 +156,38 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
         this.resetBackgroundColor();
       }
     },
+    
+    _updateSelectionBackgroundImage : function() {
+      if( this.isSelected() && this._selectionBackgroundImage != null ) {
+        this.setBackgroundImage( this._selectionBackgroundImage );
+      } else {
+        this.resetBackgroundImage();
+      }
+    },
+    
+    _updateSelectionBackgroundGradient : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      if(    this.isSelected()
+          && this._selectionBackgroundGradientColors != null
+          && this._selectionBackgroundGradientPercents != null )
+      {
+        widgetManager.setBackgroundGradient( this, 
+                                             this._selectionBackgroundGradientColors,
+                                             this._selectionBackgroundGradientPercents );
+      } else {
+        widgetManager.setBackgroundGradient( this, null, null );
+      }
+    },
 
     _updateCloseButton : function() {
-      if( this._closeButton != null ) {
-        var visible 
-          =  this.isSelected() 
-          || ( this._unselectedCloseVisible 
-               && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );       
-        this._closeButton.setVisibility( visible );
+      var visible = false;
+      if( this._canClose || this._showClose ) {
+        visible
+          =  this.isSelected()
+          || ( this._unselectedCloseVisible
+               && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );
       }
+      this._closeButton.setVisibility( visible );
     },
 
     _onMouseOver : function( evt ) {

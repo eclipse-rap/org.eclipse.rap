@@ -26,6 +26,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -41,8 +42,6 @@ public final class WidgetLCAUtil {
 
   private static final String JS_PROP_HEIGHT = "height";
   private static final String JS_PROP_WIDTH = "width";
-  private static final String JS_PROP_CLIP_WIDTH = "clipWidth";
-  private static final String JS_PROP_CLIP_HEIGHT = "clipHeight";
   private static final String PARAM_X = "bounds.x";
   private static final String PARAM_Y = "bounds.y";
   private static final String PARAM_WIDTH = "bounds.width";
@@ -59,7 +58,8 @@ public final class WidgetLCAUtil {
     = "backgroundGradientPercents";
   private static final String PROP_ROUNDED_BORDER_WIDTH = "roundedBorderWidth";
   private static final String PROP_ROUNDED_BORDER_COLOR = "roundedBorderColor";
-  private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
+  private static final String PROP_ROUNDED_BORDER_RADIUS
+    = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
   private static final String PROP_HELP_LISTENER = "helpListener";
@@ -69,8 +69,6 @@ public final class WidgetLCAUtil {
 
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
   private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
-  private static final String JS_FUNC_SET_BACKGROUND_GRADIENT
-    = "setBackgroundGradient";
 
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
@@ -81,6 +79,9 @@ public final class WidgetLCAUtil {
     = new JSListenerInfo( "keydown",
                           "org.eclipse.swt.EventUtil.helpRequested",
                           JSListenerType.ACTION );
+
+  private static final Rectangle DEF_ROUNDED_BORDER_RADIUS
+    = new Rectangle( 0, 0, 0, 0 );
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -177,39 +178,42 @@ public final class WidgetLCAUtil {
    * Preserves the background gradient properties of the specified widget.
    *
    * @param widget the widget whose background gradient properties to preserve
-   * @param bgGradientColors the array with background gradient colors to
-   *        preserve
-   * @param bgGradientPercents the array with background gradient percents to
-   *        preserve
-   * @see #writeBackgroundGradient(Widget, Color[], int[])
+   * @see #writeBackgroundGradient(Widget)
+   * @since 1.3
    */
-  public static void preserveBackgroundGradient( final Widget widget,
-                                                 final Color[] bgGradientColors,
-                                                 final int[] bgGradientPercents )
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS, bgGradientColors );
-    adapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS, bgGradientPercents );
+  public static void preserveBackgroundGradient( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    if( adapter != null ) {
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
+      int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS,
+                              bgGradientColors );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS,
+                              bgGradientPercents );
+    }
   }
 
   /**
    * Preserves the rounded border properties of the specified widget.
    *
    * @param widget the widget whose rounded border properties to preserve
-   * @param width the rounded border width to preserve
-   * @param color the rounded border color to preserve
-   * @param radius the rounded border radius to preserve
-   * @see #writeRoundedBorder(Widget, int, Color, Rectangle)
+   * @see #writeRoundedBorder(Widget)
+   * @since 1.3
    */
-  public static void preserveRoundedBorder( final Widget widget,
-                                            final int width,
-                                            final Color color,
-                                            final Rectangle radius )
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_ROUNDED_BORDER_WIDTH, new Integer( width ) );
-    adapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
-    adapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
+  public static void preserveRoundedBorder( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    if( adapter != null ) {
+      IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+      int width = gfxAdapter.getRoundedBorderWidth();
+      Color color = gfxAdapter.getRoundedBorderColor();
+      Rectangle radius = gfxAdapter.getRoundedBorderRadius();
+      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_WIDTH, new Integer( width ) );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
+    }
   }
 
   /**
@@ -446,21 +450,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the bounds of a widget.
-   * This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetBounds() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_CLIP_WIDTH );
-    writer.reset( JS_PROP_CLIP_HEIGHT );
-    writer.set( JS_PROP_SPACE, new int[] { 0, 0, 0, 0 } );
-  }
-
-
-  /**
    * Determines whether the property <code>menu</code> of the given widget has
    * changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side menu property
@@ -485,21 +474,6 @@ public final class WidgetLCAUtil {
                             JSConst.JS_CONTEXT_MENU );
       }
     }
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>menu</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetMenu() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JS_PROP_CONTEXT_MENU );
-    writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU,
-                           JSConst.JS_CONTEXT_MENU );
   }
 
   /**
@@ -529,25 +503,6 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_TOOL_TIP, args );
     }
   }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>toolTip</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetToolTip() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( JSWriter.WIDGET_MANAGER_REF,
-                 JS_FUNC_SET_TOOL_TIP,
-                 new Object[] { JSWriter.WIDGET_REF } );
-  }
-
-
-  /////////////////////////////////////////////////
-  // write-methods used by other ...LCAUtil classes
 
   /**
    * Determines whether the property <code>image</code> of the given widget
@@ -659,19 +614,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>font</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetFont() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_FONT );
-  }
-
-  /**
    * Determines whether the property <code>foreground</code> of the given
    * widget has changed during the processing of the current request and if so,
    * writes JavaScript code to the response that updates the client-side
@@ -696,21 +638,6 @@ public final class WidgetLCAUtil {
         writer.reset( JSConst.QX_FIELD_COLOR );
       }
     }
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>foreground</code> of a widget. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetForeground() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( "textColor" );
-    String listener = "org.eclipse.swt.WidgetManager._onAppearSetForeground";
-    writer.removeListener( "appear", listener );
   }
 
   /**
@@ -774,46 +701,24 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that reset the property
-   * <code>background</code> of a widget. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetBackground() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( JSConst.QX_FIELD_BG_COLOR );
-  }
-
-  /**
    * Determines whether the background gradient properties of the
-   * given widget has changed during the processing of the current request and
+   * given widget have changed during the processing of the current request and
    * if so, writes JavaScript code to the response that updates the client-side
    * background gradient properties of the specified widget.
    *
    * @param widget the widget whose background gradient properties to set
-   * @param bgGradientColor the new array with background gradient colors
-   * @param bgGradientPercents the new array with background gradient percents
    * @throws IOException
-   * @see {@link #preserveBackgroundGradient(Widget, Color[], int[])}
+   * @see {@link #preserveBackgroundGradient(Widget)}
+   * @since 1.3
    */
-  public static void writeBackgroundGradient( final Widget widget,
-                                              final Color[] bgGradientColor,
-                                              final int[] bgGradientPercents )
+  public static void writeBackgroundGradient( final Widget widget )
     throws IOException
   {
-    boolean changed = WidgetLCAUtil.hasChanged( widget,
-                                                PROP_BACKGROUND_GRADIENT_COLORS,
-                                                bgGradientColor,
-                                                null );
-    if( !changed ) {
-      changed = WidgetLCAUtil.hasChanged( widget,
-                                          PROP_BACKGROUND_GRADIENT_PERCENTS,
-                                          bgGradientPercents,
-                                          null );
-    }
-    if( changed ) {
+    if( hasBackgroundGradientChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = graphicAdapter.getBackgroundGradientColors();
+      int[] bgGradientPercents = graphicAdapter.getBackgroundGradientPercents();
       JSWriter writer = JSWriter.getWriterFor( widget );
       Integer[] percents = null;
       if( bgGradientPercents != null ) {
@@ -822,15 +727,24 @@ public final class WidgetLCAUtil {
           percents[ i ] =  new Integer( bgGradientPercents[ i ] );
         }
       }
-      Object[] args = new Object[] {
-        widget,
-        bgGradientColor,
-        percents
-      };
-      writer.call( JSWriter.WIDGET_MANAGER_REF,
-                   JS_FUNC_SET_BACKGROUND_GRADIENT,
-                   args );
+      Object[] args = new Object[] { widget, bgGradientColors, percents };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setBackgroundGradient", args );
     }
+  }
+
+  private static boolean hasBackgroundGradientChanged( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+    return    WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_COLORS,
+                                        bgGradientColors,
+                                        null )
+           || WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_PERCENTS,
+                                        bgGradientPercents,
+                                        null );
   }
 
   /**
@@ -839,37 +753,20 @@ public final class WidgetLCAUtil {
    * JavaScript code to the response that updates the client-side rounded border
    * of the specified widget.
    *
-   * @param widget the widget whose rounded border properties to preserve
-   * @param width the rounded border width to preserve
-   * @param color the rounded border color to preserve
-   * @param radius the rounded border radius to preserve
+   * @param widget the widget whose rounded border properties to set
    * @throws IOException
-   * @see {@link #preserveRoundedBorder(Widget, int, Color, Rectangle)}
+   * @see {@link #preserveRoundedBorder(Widget)}
+   * @since 1.3
    */
-  public static void writeRoundedBorder( final Widget widget,
-                                         final int width,
-                                         final Color color,
-                                         final Rectangle radius )
+  public static void writeRoundedBorder( final Widget widget )
     throws IOException
   {
-    boolean changed = WidgetLCAUtil.hasChanged( widget,
-                                                PROP_ROUNDED_BORDER_WIDTH,
-                                                new Integer( width ),
-                                                new Integer( 0 ) );
-    if( !changed ) {
-      changed = WidgetLCAUtil.hasChanged( widget,
-                                          PROP_ROUNDED_BORDER_COLOR,
-                                          color,
-                                          null );
-    }
-    if( !changed ) {
-      changed = WidgetLCAUtil.hasChanged( widget,
-                                          PROP_ROUNDED_BORDER_RADIUS,
-                                          radius,
-                                          null );
-    }
-    if( changed && radius != null ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
+    if( hasRoundedBorderChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
+      int width = graphicAdapter.getRoundedBorderWidth();
+      Rectangle radius = graphicAdapter.getRoundedBorderRadius();
+      Color color = graphicAdapter.getRoundedBorderColor();
       Object[] args = new Object[] {
         widget,
         new Integer( width ),
@@ -879,10 +776,32 @@ public final class WidgetLCAUtil {
         new Integer( radius.width ),
         new Integer( radius.height )
       };
+      JSWriter writer = JSWriter.getWriterFor( widget );
       writer.call( JSWriter.WIDGET_MANAGER_REF,
                    JS_FUNC_SET_ROUNDED_BORDER,
                    args );
     }
+  }
+
+  private static boolean hasRoundedBorderChanged( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = graphicsAdapter.getRoundedBorderWidth();
+    Color color = graphicsAdapter.getRoundedBorderColor();
+    Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
+    return 
+         WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_WIDTH,
+                                   new Integer( width ),
+                                   new Integer( 0 ) )
+      || WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_COLOR,
+                                   color,
+                                   null )
+      || WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_RADIUS,
+                                   radius,
+                                   DEF_ROUNDED_BORDER_RADIUS );
   }
 
   /**
@@ -906,20 +825,6 @@ public final class WidgetLCAUtil {
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>enabled</code> of a widget. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   */
-  public static void resetEnabled() throws IOException {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    // TODO [fappel]: check whether to use reset
-    writer.set( JSConst.QX_FIELD_ENABLED, true );
-  }
 
   /**
    * Replaces all newline characters in the specified input string with the
@@ -1177,5 +1082,99 @@ public final class WidgetLCAUtil {
       result = result.substring( 0, index );
     }
     return result;
+  }
+
+
+  /////////////////////////////////////
+  // deprecated pooling-related methods
+
+  /**
+   * Writes JavaScript code to the response that resets the bounds of a widget.
+   * This method is intended to be used by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetBounds() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>menu</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetMenu() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>toolTip</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetToolTip() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>font</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetFont() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>foreground</code> of a widget. This method is intended to be used
+   * by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetForeground() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that reset the property
+   * <code>background</code> of a widget. This method is intended to be used
+   * by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetBackground() throws IOException {
+  }
+
+  /**
+   * Writes JavaScript code to the response that resets the property
+   * <code>enabled</code> of a widget. This method is intended to be used by
+   * implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   *
+   * @throws IOException
+   * @deprecated As of 1.3, server-side widget pooling is no longer required.
+   *             This method does nothing.
+   */
+  public static void resetEnabled() throws IOException {
   }
 }
