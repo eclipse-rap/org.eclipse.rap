@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
@@ -23,20 +22,15 @@ import org.eclipse.swt.widgets.MenuItem;
 
 final class CheckMenuItemLCA extends MenuItemDelegateLCA {
 
-  private static final String PROP_SELECTION = "selection";
+  private static final String ITEM_TYPE_CHECK = "check";
   
-  private static final JSListenerInfo JS_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE, 
-                          "org.eclipse.swt.MenuUtil.checkMenuItemSelected", 
-                          JSListenerType.STATE_AND_ACTION );
-
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     boolean hasListener = SelectionEvent.hasListener( menuItem );
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( PROP_SELECTION, 
+    adapter.preserve( MenuItemLCAUtil.PROP_SELECTION, 
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
@@ -53,21 +47,15 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.CheckBox", true );    
+    MenuItemLCAUtil.newItem( menuItem, 
+                             "org.eclipse.rwt.widgets.MenuItem", 
+                             ITEM_TYPE_CHECK );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    // TODO [rh] qooxdoo does not handle check menu items with images, should
-    //      we already ignore them when calling MenuItem#setImage()?
-    MenuItemLCAUtil.writeImageAndText( menuItem );
-    writer.updateListener( JS_LISTENER_INFO, 
-                           Props.SELECTION_LISTENERS, 
-                           SelectionEvent.hasListener( menuItem ) );
-    writer.set( PROP_SELECTION, 
-                "checked", 
-                Boolean.valueOf( menuItem.getSelection() ), 
-                Boolean.FALSE );
+    MenuItemLCAUtil.writeImageAndText( menuItem );    
+    MenuItemLCAUtil.writeSelectionListener( menuItem ); 
+    MenuItemLCAUtil.writeSelection( menuItem );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
     WidgetLCAUtil.writeHelpListener( menuItem );

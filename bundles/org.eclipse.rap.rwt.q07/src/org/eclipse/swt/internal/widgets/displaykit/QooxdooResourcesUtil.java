@@ -61,8 +61,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/TabUtil.js";
   private static final String TOOL_ITEM_JS
     = "org/eclipse/swt/ToolItemUtil.js";
-  private static final String MENU_UTIL_JS
-    = "org/eclipse/swt/MenuUtil.js";
   private static final String WIDGET_UTIL_JS
     = "org/eclipse/swt/WidgetUtil.js";
   private static final String CTAB_FOLDER_JS
@@ -151,6 +149,10 @@ final class QooxdooResourcesUtil {
   = "org/eclipse/rwt/widgets/MultiCellWidget.js";
   private static final String BUTTON
   = "org/eclipse/rwt/widgets/Button.js";
+  private static final String MENU
+  = "org/eclipse/rwt/widgets/Menu.js";
+  private static final String MENU_ITEM
+  = "org/eclipse/rwt/widgets/MenuItem.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -197,7 +199,6 @@ final class QooxdooResourcesUtil {
       register( SASH_JS, compress );
       register( TAB_UTIL_JS, compress );
       register( TOOL_ITEM_JS, compress );
-      register( MENU_UTIL_JS, compress );
       register( CTAB_ITEM_JS, compress );
       register( CTAB_FOLDER_JS, compress );
       register( COOL_ITEM_JS, compress );
@@ -237,6 +238,8 @@ final class QooxdooResourcesUtil {
       register( HTMLUTIL_JS, compress );
       register( MULTICELLWIDGET, compress );
       register( BUTTON, compress );
+      register( MENU, compress );
+      register( MENU_ITEM, compress );
       
       // register contributions
       registerContributions();

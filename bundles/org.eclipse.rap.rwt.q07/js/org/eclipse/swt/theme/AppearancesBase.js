@@ -512,68 +512,54 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-layout" : {
-    style : function( states ) {
-      return {
-        top    : 0,
-        right  : 0,
-        bottom : 0,
-        left   : 0
-      };
-    }
-  },
-
-  "menu-button" : {
+  "menu-item" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        minWidth : "auto",
         height : "auto",
         spacing : 2,
         padding : [ 2, 4 ],
-        cursor : "default",
-        verticalChildrenAlign : "middle",
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" )
       };
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "MenuItem", "color" );
+      if( states.disabled ) {
+        result.textColor = tv.getCssColor( "*", "color" );
+      } else {
+        result.textColor = tv.getCssColor( "MenuItem", "color" );
+      }
+      if( states.cascade ) {                
+        result.arrow = tv.getCssSizedImage( 
+          "MenuItem-CascadeIcon",
+          "background-image" );
+      } else {
+        result.arrow = null;        
+      }
+      if( states.selected ) {
+        if( states.check ) {
+           result.selectionIndicator = tv.getCssSizedImage( 
+            "MenuItem-CheckIcon", 
+            "background-image" );
+        } else if( states.radio ) {
+           result.selectionIndicator= tv.getCssSizedImage( 
+            "MenuItem-RadioIcon", 
+            "background-image" );
+        }
+      } else {
+        if( states.radio ) {
+          var radioWidth = tv.getCssSizedImage( 
+              "MenuItem-RadioIcon", 
+              "background-image" )[1];
+          result.selectionIndicator = [ null, radioWidth, 0 ];
+        } else if( states.check ) {
+          var checkWidth = tv.getCssSizedImage( 
+              "MenuItem-CheckIcon", 
+              "background-image" )[1];
+          result.selectionIndicator = [ null, checkWidth, 0 ];          
+        } else {
+          result.selectionIndicator = null;
+        }
+        
+      }
       return result;
-    }
-  },
-
-  "menu-button-arrow" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        source : tv.getCssImage( "MenuItem-CascadeIcon", "background-image" )
-      };
-    }
-  },
-
-  "menu-check-box" : {
-    include : "menu-button",
-
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        icon : states.checked
-               ? tv.getCssImage( "MenuItem-CheckIcon", "background-image" )
-               : "static/image/blank.gif"
-      };
-    }
-  },
-
-  "menu-radio-button" : {
-    include : "menu-button",
-
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        icon : states.checked
-               ? tv.getCssImage( "MenuItem-RadioIcon", "background-image" )
-               : "static/image/blank.gif"
-      };
     }
   },
 

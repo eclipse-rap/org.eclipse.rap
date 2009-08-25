@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -176,7 +177,8 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
-  public void testRadioItemSelected() {
+  public void testRadioSelectionEvent() {
+    final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
@@ -184,38 +186,114 @@ public class MenuItemLCA_Test extends TestCase {
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
     new MenuItem( menu, SWT.PUSH );
-    MenuItem radioItem1Group1 = new MenuItem( menu, SWT.RADIO );
-    MenuItem radioItem2Group1 = new MenuItem( menu, SWT.RADIO );
+    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
+    final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
     new MenuItem( menu, SWT.CHECK );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
-    String radioItem1Group1Id = WidgetUtil.getId( radioItem1Group1 );
-    radioItem2Group1.setSelection( true );
+    SelectionAdapter listener = new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        log.add( event );
+      }
+    };
+    radioItem1.addSelectionListener( listener );
+    radioItem2.addSelectionListener( listener );
+    radioItem3.addSelectionListener( listener );
+    String displayId = DisplayUtil.getId( display );
+    String radio1Id = WidgetUtil.getId( radioItem1 );
+    String radio2Id = WidgetUtil.getId( radioItem2 );
+    RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( radioItem1Group1Id + ".selection", "true" );
-    RWTFixture.executeLifeCycleFromServerThread( );
-    assertEquals( true, radioItem1Group1.getSelection() );
-    assertEquals( false, radioItem2Group1.getSelection() );
+    Fixture.fakeRequestParam( radio1Id + ".selection", "true" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    SelectionEvent event = ( SelectionEvent )log.get( 0 );
+    assertSame( radioItem1, event.widget );
+    assertTrue( radioItem1.getSelection() );
+    assertEquals( 1, log.size() );
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( radio1Id + ".selection", "false" );
+    Fixture.fakeRequestParam( radio2Id + ".selection", "true" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, log.size() );
+    event = ( SelectionEvent )log.get( 0 );
+    assertSame( radioItem1, event.widget );
+    assertFalse( radioItem1.getSelection() );
+    event = ( SelectionEvent )log.get( 1 );
+    assertSame( radioItem2, event.widget );
+    assertTrue( radioItem2.getSelection() );
   }
 
-  public void testRadioManagerReference() throws IOException {
+  public void testRadioTypedSelectionEventOrder() {
+    final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
-    new MenuItem( menu, SWT.PUSH );
-    new MenuItem( menu, SWT.CHECK );
-    MenuItem radio1 = new MenuItem( menu, SWT.RADIO );
-    MenuItem radio2 = new MenuItem( menu, SWT.RADIO );
-    Fixture.fakeResponseWriter();
-    MenuItemLCA lca = new MenuItemLCA();
-    lca.renderInitialization( radio2 );
-    String id = WidgetUtil.getId( radio1 );
-    String expected = "assignRadioManager( wm.findWidgetById( \"" + id + "\" )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    radioItem1.setText( "1" );
+    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
+    radioItem2.setText( "2" );    
+    SelectionAdapter listener = new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        log.add( event );
+      }
+    };
+    radioItem1.addSelectionListener( listener );
+    radioItem2.addSelectionListener( listener );
+    radioItem2.setSelection( true );
+    String displayId = DisplayUtil.getId( display );
+    String item1Id = WidgetUtil.getId( radioItem1 );
+    String item2Id = WidgetUtil.getId( radioItem2);
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( item1Id + ".selection", "true" );
+    Fixture.fakeRequestParam( item2Id + ".selection", "false" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, log.size() );
+    SelectionEvent event = ( SelectionEvent )log.get( 0 );
+    assertSame( radioItem2, event.widget );
+    event = ( SelectionEvent )log.get( 1 );
+    assertSame( radioItem1, event.widget );
   }
 
+  public void testRadioUntypedSelectionEventOrder() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Menu menuBar = new Menu( shell, SWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    radioItem1.setText( "1" );
+    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
+    radioItem2.setText( "2" );    
+    Listener listener = new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    };
+    radioItem1.addListener( SWT.Selection, listener );
+    radioItem2.addListener( SWT.Selection, listener );    
+    radioItem2.setSelection( true );
+    String displayId = DisplayUtil.getId( display );
+    String item1Id = WidgetUtil.getId( radioItem1 );
+    String item2Id = WidgetUtil.getId( radioItem2);
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( item1Id + ".selection", "true" );
+    Fixture.fakeRequestParam( item2Id + ".selection", "false" );
+    RWTFixture.executeLifeCycleFromServerThread();
+    assertEquals( 2, log.size() );
+    Event event = ( Event )log.get( 0 );
+    assertSame( radioItem2, event.widget );
+    event = ( Event )log.get( 1 );
+    assertSame( radioItem1, event.widget );
+  }
+    
   private void testPreserveSelectionListener( final MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     RWTFixture.preserveWidgets();

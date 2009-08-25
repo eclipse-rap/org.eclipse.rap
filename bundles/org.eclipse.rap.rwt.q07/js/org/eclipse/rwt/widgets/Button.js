@@ -47,7 +47,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
       this._isDeselectable = false;
       this._sendEvent = false;
       this.setAppearance( "radio-button" );
-      org.eclipse.rwt.RadioButtonUtil.register( this );
+      org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
+      org.eclipse.rwt.RadioButtonUtil.registerKeypress( this );
      break;
      default:
        throw( "Unkown button type " + buttonType );

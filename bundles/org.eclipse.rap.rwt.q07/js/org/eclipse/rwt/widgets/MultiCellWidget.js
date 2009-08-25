@@ -72,6 +72,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       init : false
     },
 
+    textColor : {
+      refine : true,
+      init : "#000000"
+    },
+
+    cursor : {
+      refine : true,
+      init : "default"
+    },
+
     allowStretchX : {
       refine : true,
       init : false
@@ -117,6 +127,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     __paddingCache : null,
     __fontCache : null,
     _htmlUtil : org.eclipse.rwt.HtmlUtil,
+
     _applyEnabled : function( value, old ) {
       this.base( arguments, value, old );
       this._styleAllImagesEnabled();
@@ -174,15 +185,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _applySpacing : function( value, old ) {
       this._invalidateTotalSpacing();
-      this.addToQueue( "layoutX" );
+      this._scheduleLayoutX();
     },
-
+    
     _applyHorizontalChildrenAlign : function( value, old ) {
-      this.addToQueue( "layoutX" );
+      this._scheduleLayoutX();
     },
-
+    
     _applyVerticalChildrenAlign : function( value, old ) {
-      this.addToLayoutChanges( "layoutY" );
+      this._scheduleLayoutY();
     },
 
     _applyPaddingTop : function( value, old ) {
@@ -214,40 +225,83 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       LAYOUT : public api
     ---------------------------------------------------------------------------
     */
-
-    // This is either the URL (image) or the text (label)
-    setCellContent : function( cell, value ) {
+    
+    /**
+     * This is either the URL (image) or the text (label)
+     */ 
+    setCellContent : function( cell, value ) { 
       this.__updateComputedCellDimension( cell );
       if( this._cellHasContent( cell ) != ( value != null ) ) {
         this._invalidateTotalSpacing();
-        this._invalidatePreferredInnerHeight();
         this.addToQueue( "createContent" );
       } else {
         this.addToQueue( "updateContent" );
       }
       this.__cellData[ cell ][ 1 ] = value;
     },
-
-    // The dimensions for the cell. Is mandatory for images (or 0x0 will
-    // be assumed), optional for labels. Set a dimension to "null" to use the
-    // computed value.
+     
+    /**
+     * The dimensions for the cell. Is mandatory for images (or 0x0 will
+     * be assumed), optional for labels. Set a dimension to "null" to use the
+     * computed value.
+     */ 
     setCellDimension : function( cell, width, height ) {
-      this._setCellWidth( cell, width );
-      this._setCellHeight( cell, height );
-    },
-
-    getCellDimension : function( cell ) {
-      var width = this._getCellWidth( cell );
-      var height = this._getCellHeight( cell );
-      return [ width, height ];
-    },
-
+      this.setCellWidth( cell, width );
+      this.setCellHeight( cell, height );
+    },    
+    
     getCellNode : function( cell ) {
       return this.__cellNodes[ cell ];
     },
-
+    
     getCellContent : function( cell ) {
       return this.__cellData[ cell ][ 1 ];
+    },
+    
+    setCellWidth : function( cell, width ) {
+      this._setCellWidth( cell, width );
+      this._invalidateTotalSpacing(); 
+      this._invalidatePreferredInnerWidth(); 
+      this._scheduleLayoutX(); 
+    },
+    
+    setCellHeight : function( cell, height ) {
+      this._setCellHeight( cell, height );
+      this._invalidateTotalSpacing(); 
+      this._invalidatePreferredInnerHeight();  
+      this._scheduleLayoutY();
+    },
+    
+    getCellDimension : function( cell ) { 
+      var width = this.getCellWidth( cell );
+      var height = this.getCellHeight( cell );
+      return [ width, height ];
+    },    
+    
+    /**
+     * Returns the user-set value for width if it exists, else the computed
+     */
+    getCellWidth : function( cell ) {
+      var cellEntry = this.__cellData[ cell ]; 
+      var width = ( cellEntry[ 2 ] != null ? cellEntry[ 2 ] : cellEntry[ 4 ] );
+      if( width == null ) {
+        var computed = this.__computeCellDimension( cellEntry );
+        width = computed[ 0 ];
+      }
+      return width;      
+    },
+    
+    /**
+     * Returns the user-set value for height if it exists, else the computed
+     */
+    getCellHeight : function( cell ) {
+      var cellEntry = this.__cellData[ cell ]; 
+      var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
+      if( height == null ) {
+        var computed = this.__computeCellDimension( cellEntry );
+        height = computed[ 1 ];
+      }
+      return height;      
     },
 
     /*
@@ -255,7 +309,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       LAYOUT : internals
     ---------------------------------------------------------------------------
     */
-
+    
+    _scheduleLayoutX : function() {
+      this.addToQueue( "layoutX" );
+      this._afterScheduleLayoutX();
+    },
+    
+    _scheduleLayoutY : function() {
+      this.addToQueue( "layoutY" );
+      this._afterScheduleLayoutY();
+    },
+    
+    _afterScheduleLayoutX : qx.lang.Function.returnTrue,
+    
+    _afterScheduleLayoutY : qx.lang.Function.returnTrue,    
+    
+    _beforeComputeInnerWidth : qx.lang.Function.returnTrue,
+    
+    _beforeComputeInnerHeight : qx.lang.Function.returnTrue,
+    
     _cellHasContent : function( cell ) {
       var content = this.__cellData[ cell ][ 1 ];
       return content != null;
@@ -273,38 +345,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _setCellWidth : function( cell, width ) {
       this.__cellData[ cell ][ 2 ] = width;
-      if( this._cellHasContent( cell ) ) {
-        this._invalidatePreferredInnerWidth();
-        this.addToQueue( "layoutX" );
-      }
     },
 
     _setCellHeight : function( cell, height ) {
       this.__cellData[ cell ][ 3 ] = height;
-      if( this._cellHasContent( cell ) ) {
-        this._invalidatePreferredInnerHeight();
-        this.addToQueue( "layoutY" );
-      }
-    },
-
-    _getCellWidth : function( cell ) {
-      var cellEntry = this.__cellData[ cell ];
-      var width = ( cellEntry[ 2 ] != null ? cellEntry[ 2 ] : cellEntry[ 4 ] );
-      if( width == null ) {
-        var computed = this.__computeCellDimension( cellEntry );
-        width = ( width != null ? width : computed[ 0 ] );
-      }
-      return width;
-    },
-
-    _getCellHeight : function( cell ) {
-      var cellEntry = this.__cellData[ cell ];
-      var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
-      if( height == null ) {
-        var computed = this.__computeCellDimension( cellEntry );
-        height = ( height != null ? height : computed[ 1 ] );
-      }
-      return height;
     },
 
     __setCellNode : function( cell, node ) {
@@ -328,49 +372,49 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     },
 
     __updateComputedCellDimension : function( cell ) {
-      var cellEntry = this.__cellData[ cell ];
+      var cellEntry = this.__cellData[ cell ]; 
+      cellEntry[ 4 ] = null; //delete computedWidth
+      cellEntry[ 5 ] = null; //delete computedHeight
       if( cellEntry[ 2 ] == null ) { //uses computed width
-        cellEntry[ 4 ] = null; //delete computedWidth
         this._invalidatePreferredInnerWidth();
-        this.addToQueue( "layoutX" );
+        this._scheduleLayoutX();
       }
       if( cellEntry[ 3 ] == null ) { //usses computedheight
-        cellEntry[ 4 ] = null; //delete computedHeight
         this._invalidatePreferredInnerHeight();
-        this.addToQueue( "layoutY" );
+        this._scheduleLayoutY();
       }
     },
 
     __computeCellDimension : function( cellEntry ) {
       var dimension;
-      if( cellEntry[ 0 ] == "label" ) {
+      if( cellEntry[ 0 ] == "label" && cellEntry[ 1 ] != null ) {
         dimension = this._computeTextDimensions( cellEntry[ 1 ] );
       } else {
         dimension = [ 0, 0 ];
       }
       cellEntry[ 4 ] = dimension[ 0 ];
-      cellEntry[ 5 ] = dimension[ 1 ];
+      cellEntry[ 5 ] = dimension[ 1 ];      
       return dimension;
     },
 
     _isWidthEssential : qx.lang.Function.returnTrue,
-    _isHeightEssential : qx.lang.Function.returnTrue,
+    _isHeightEssential : qx.lang.Function.returnTrue,    
 
     _computePreferredInnerWidth : function() {
+      this._beforeComputeInnerWidth();
       var space = this.getTotalSpacing();
       var content = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) { content += this._getCellWidth( i ); }
+        content += this.getCellWidth( i );
       }
       return space + content;
     },
 
     _computePreferredInnerHeight : function() {
+      this._beforeComputeInnerHeight();
       var maxHeight = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
-          maxHeight = Math.max( maxHeight, this._getCellHeight( i ) );
-        }
+        maxHeight = Math.max( maxHeight, this.getCellHeight( i ) );
       }
       return maxHeight;
     },
@@ -386,11 +430,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     getTotalVisibleCells : function() {
       var ret = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
+        if( this.cellIsVisible( i ) ) {
           ret++;
         }
       }
       return ret;
+    },
+
+    /**
+     * a cell is "visible" ( i.e. counts for the layout) if
+     * it either has a content set, or at least one dimension 
+     */      
+    cellIsVisible : function( cell ) {
+      return ( this.getCellWidth( cell ) > 0 );      
     },
 
     _invalidateTotalSpacing : function() {
@@ -449,14 +501,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       var width = null;
       var style = null;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
-          width = this._getCellWidth( i );
-          style = this.getCellNode( i ).style;
-          style.left = left;
-          style.width = width;
+        if( this.cellIsVisible( i ) ) {
+          width = this.getCellWidth( i );
+          if( this._cellHasContent( i ) ) {
+            style = this.getCellNode( i ).style;
+            style.left = left;
+            style.width = width;
+          }
           left += ( width + space );
         }
-      }
+      }      
     },
 
     _renderLayoutY : function() {
@@ -471,7 +525,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       var align = this.getVerticalChildrenAlign();
       var pad = this.__paddingCache;
       var inner = this.getInnerHeight();
-      var height = this._getCellHeight( cell );
+      var height = this.getCellHeight( cell );
       var top = null;
       switch( align ) {
         default:
@@ -479,7 +533,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           top = pad[ 0 ];
         break;
         case "middle":
-          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );
+          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
         break;
         case "bottom":
           top = pad[ 0 ] + inner - height;

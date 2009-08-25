@@ -15,28 +15,30 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
 
 final class MenuItemLCAUtil {
 
   static final String PROP_ENABLED = "enabled";
+  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  static final String PROP_SELECTION = "selection";  
+  static final String JS_PROP_SELECTION = "selection";
 
   static void newItem( final MenuItem menuItem, 
                        final String jsClass, 
-                       final boolean isQxAtom )
+                       final String type )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.newWidget( jsClass );
-    if( isQxAtom ) {
-      writer.callStatic( "org.eclipse.swt.MenuUtil.setLabelMode", 
-                         new Object[] { menuItem } );
-    }
+    JSWriter writer = JSWriter.getWriterFor( menuItem );    
+    writer.newWidget( jsClass, new String[]{ type } );
     int index = menuItem.getParent().indexOf( menuItem );
     writer.call( menuItem.getParent(), 
-                 "addAt", 
+                 "addMenuItemAt", 
                  new Object[]{ menuItem, new Integer( index ) } );
   }
 
@@ -54,7 +56,46 @@ final class MenuItemLCAUtil {
   }
 
   static void writeImageAndText( final MenuItem menuItem ) throws IOException {
-    ItemLCAUtil.writeText( menuItem, true );
-    ItemLCAUtil.writeImage( menuItem );
+    String text = menuItem.getText();
+    if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
+      JSWriter writer = JSWriter.getWriterFor( menuItem );
+      text = WidgetLCAUtil.escapeText( text, true );
+      writer.set( "text", text.equals( "" ) ? null : text );
+    }
+    writeImage( menuItem );
   }
+
+  static void writeImage( final MenuItem item ) throws IOException {
+    Image image = item.getImage();
+    if( WidgetLCAUtil.hasChanged( item, Props.IMAGE, image, null ) ) {
+      String imagePath = ResourceFactory.getImagePath( image );
+      JSWriter writer = JSWriter.getWriterFor( item );
+      Rectangle bounds = image != null ? image.getBounds() : null;
+      Object[] args = new Object[]{
+        imagePath,
+        new Integer( bounds != null ? bounds.width : 0 ),
+        new Integer( bounds != null ? bounds.height : 0 )
+      };
+      writer.set( "image", args );
+    }
+  }
+
+  static void writeSelectionListener( final MenuItem menuItem ) 
+  throws IOException {
+    boolean hasListener = SelectionEvent.hasListener( menuItem );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = PROP_SELECTION_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( menuItem, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( menuItem );
+      writer.set( "hasSelectionListener", newValue );
+    }
+  }
+  
+  static void writeSelection( final MenuItem menuItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( menuItem );
+    writer.set( PROP_SELECTION, 
+                JS_PROP_SELECTION, 
+                Boolean.valueOf( menuItem.getSelection() ), 
+                Boolean.FALSE );
+  }    
 }

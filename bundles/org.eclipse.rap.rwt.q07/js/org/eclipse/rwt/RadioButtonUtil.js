@@ -18,10 +18,13 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
 
   statics : {
 
-    register : function( button ) {
+    registerExecute : function( button ) {
       button.addEventListener( "execute", this._onSelection, this );
-      button.addEventListener( "keypress", this._onKeypress, this );
       button.addEventListener( "mousewheel", this._onMouseWheel, this );
+    },
+
+    registerKeypress : function( button ) {
+      button.addEventListener( "keypress", this._onKeypress, this );
     },
 
     _onKeypress : function( event ) {
@@ -59,23 +62,48 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
     _onSelection : function( event ) {
       this._unselectSiblings( event.getTarget() );
     },
+    
+    _isRadioElement : function( widget ) {
+      return widget.hasState( "radio" );
+    },
+    
+    _getRadioGroup: function( widget ) {
+      var group = [];
+      var siblings = widget.getParent().getChildren();
+      var length = siblings.length;
+      // For Radio-Buttons all Radio-items of the group count, 
+      // else the group is bounded by any non-radio items   
+      if( widget.classname == "org.eclipse.rwt.widgets.Button" ) {
+        for( var i = 0; i < length; i++ ) {
+          if( this._isRadioElement( siblings[ i ] ) ) {
+            group.push( siblings[ i ] );          
+          }
+        }
+      } else {
+        var isCurrentGroup = false;
+        var i = 0;
+        while(   i < length 
+              && (!isCurrentGroup || this._isRadioElement( siblings[ i ] ) ) ) 
+        {
+          if( !isCurrentGroup ) {
+            isCurrentGroup = siblings[ i ] == widget;
+          }
+          if( this._isRadioElement( siblings[ i ] ) ) {
+            group.push( siblings[ i ] );          
+          } else {
+            group = [];
+          }
+          i++;
+        };
+      }
+      return group;
+    },
 
     // Set the "checked" property and focus on the following (next or previous)
     // radio button of the same group, after a corresponding key press.
     _setNextOrPrevious : function( widget, command ) {
-      // array of all radio buttons from this group
-      var allRadioButtons = new Array();
-      // the index of the current radio button in allRadioButtons-array
+      var allRadioButtons = this._getRadioGroup( widget );
       var currentRbIndex;
-      // the index of the next selected radio button in allRadioButtons-array
-      var nextSelectedRbIndex;
-      var parent = widget.getParent();
-      var siblings = parent.getChildren();
-      for( var i = 0; i < siblings.length; i++ ) {
-        if( siblings[ i ].hasState( "rwt_RADIO" ) ) {
-          allRadioButtons.push( siblings[ i ] );
-        }
-      }
       for( var j = 0; j < allRadioButtons.length; j++ ) {
         if( allRadioButtons[ j ] == widget ) {
           currentRbIndex = j;
@@ -83,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
       }
       // assign a value to 'nextSelectedRbIndex',
       // in case the 'command' is unrecognizable
-      nextSelectedRbIndex = currentRbIndex;
+      var nextSelectedRbIndex = currentRbIndex;
       if ( command == "next" ) {
         nextSelectedRbIndex = currentRbIndex + 1;
         if( nextSelectedRbIndex >= allRadioButtons.length ) {
@@ -103,12 +131,10 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
     },
 
     _unselectSiblings : function( widget ) {
-      var siblings = widget.getParent().getChildren();
-      for( var i = 0; i < siblings.length; i++ ) {
-        if(    siblings[ i ] != widget
-            && siblings[ i ].hasState( "rwt_RADIO" ) )
-        {
-          siblings[ i ].setSelection( false );
+      var group = this._getRadioGroup( widget );
+      for( var i = 0; i < group.length; i++ ) {
+        if( group[ i ] != widget ) {
+          group[ i ].setSelection( false );
         }
       }
     }

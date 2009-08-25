@@ -450,7 +450,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     String expected 
       =   "var w = wm.findWidgetById( \"w2\" );w.setContextMenu( "
         + "wm.findWidgetById( \"w3\" ) );w.addEventListener( "
-        + "\"contextmenu\", org.eclipse.swt.MenuUtil.contextMenu );";
+        + "\"contextmenu\", org.eclipse.rwt.widgets.Menu.contextMenuHandler );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 
     // for an initialized control with change menu: render it
@@ -461,7 +461,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
     expected 
       =   "w.setContextMenu( null );w.removeEventListener( \"contextmenu\", "
-        + "org.eclipse.swt.MenuUtil.contextMenu );";
+        + "org.eclipse.rwt.widgets.Menu.contextMenuHandler );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

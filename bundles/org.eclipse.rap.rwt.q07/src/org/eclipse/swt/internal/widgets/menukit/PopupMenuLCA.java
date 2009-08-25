@@ -21,11 +21,8 @@ import org.eclipse.swt.widgets.Menu;
 
 final class PopupMenuLCA extends MenuDelegateLCA {
 
-  private static final String SHOW_MENU
-    = "org.eclipse.swt.MenuUtil.showMenu";
-
-  private static final String INITIALIZE
-    = "org.eclipse.swt.MenuUtil.initialize";
+//  private static final String SHOW_MENU
+//    = "org.eclipse.swt.MenuUtil.showMenu";
 
   void preserveValues( final Menu menu ) {
     MenuLCAUtil.preserveEnabled( menu );
@@ -42,10 +39,8 @@ final class PopupMenuLCA extends MenuDelegateLCA {
 
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.newWidget( "qx.ui.menu.Menu" );
-    writer.call( "addToDocument", null );
-    Object[] args = new Object[] { menu };
-    writer.callStatic( INITIALIZE, args  );
+    writer.newWidget( "org.eclipse.rwt.widgets.Menu" );
+    //writer.call( "addToDocument", null ); // TODO [tb] : do in constructor ?
   }
 
   void renderChanges( final Menu menu ) throws IOException {
@@ -53,7 +48,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
-    MenuLCAUtil.writeWidth( menu );
+    //MenuLCAUtil.writeWidth( menu );
     WidgetLCAUtil.writeCustomVariant( menu );
     WidgetLCAUtil.writeHelpListener( menu );
   }
@@ -69,7 +64,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
         new Integer( location.x ),
         new Integer( location.y )
       };
-      writer.callStatic( SHOW_MENU, args );
+      writer.call( "showMenu", args );
       menu.setVisible( false );
     }
   }

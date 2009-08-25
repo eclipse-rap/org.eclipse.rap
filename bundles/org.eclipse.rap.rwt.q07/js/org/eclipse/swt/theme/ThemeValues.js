@@ -117,6 +117,17 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return result;
     },
 
+    getCssSizedImage : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues();
+      var result = values.images[ vkey ];
+      this.__checkDefined( result, element, key );
+      // TODO [tb] : Revise hardcoded path
+      return result = [ "resource/themes/images/" + result[ 0 ], 
+                        result[ 1 ], 
+                        result[ 2 ] ];
+    },
+
     getCssGradient : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
