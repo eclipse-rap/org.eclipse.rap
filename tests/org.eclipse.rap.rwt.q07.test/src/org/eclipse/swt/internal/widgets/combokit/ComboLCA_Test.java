@@ -62,6 +62,7 @@ public class ComboLCA_Test extends TestCase {
     combo.add( "item 1" );
     combo.add( "item 2" );
     combo.select( 1 );
+    combo.setListVisible( true );
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     combo.addSelectionListener( selectionListener );
@@ -223,6 +224,10 @@ public class ComboLCA_Test extends TestCase {
     // init combo items
     combo.add( "item 1" );
     combo.add( "item 2" );
+    // read list visibility
+    Fixture.fakeRequestParam( comboId + ".listVisible", "true" );
+    WidgetUtil.getLCA( combo ).readData( combo );
+    assertEquals( true, combo.getListVisible() );
     // read changed selection
     Fixture.fakeRequestParam( comboId + ".selectedItem", "1" );
     WidgetUtil.getLCA( combo ).readData( combo );

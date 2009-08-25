@@ -45,6 +45,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   static final String PROP_SELECTION = "selection";
   static final String PROP_TEXT_SELECTION = "textSelection";
   static final String PROP_TEXT_LIMIT = "textLimit";
+  static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_MAX_LIST_HEIGHT = "maxListHeight";
@@ -68,6 +69,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, combo.getText() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
+    adapter.preserve( PROP_LIST_VISIBLE,
+                      new Boolean( combo.getListVisible() ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
     boolean hasVerifyListener = VerifyEvent.hasListener( combo );
     boolean hasModifyListener = ModifyEvent.hasListener( combo );
@@ -82,6 +85,11 @@ public class ComboLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
     if( value != null ) {
       combo.select( Integer.parseInt( value ) );
+    }
+    String listVisible
+      = WidgetLCAUtil.readPropertyValue( combo, "listVisible" );
+    if( listVisible != null ) {
+      combo.setListVisible( Boolean.valueOf( listVisible ).booleanValue() );
     }
     readTextAndSelection( combo );
     ControlLCAUtil.processSelection( combo, null, true );
@@ -108,6 +116,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeEditable( combo );
     writeText( combo );
     writeTextSelection( combo );
+    writeListVisible( combo );
     writeTextLimit( combo );
     writeVerifyAndModifyListener( combo );
     WidgetLCAUtil.writeCustomVariant( combo );
@@ -276,14 +285,20 @@ public class ComboLCA extends AbstractWidgetLCA {
       writer.set( PROP_MAX_LIST_HEIGHT, "maxListHeight", newValue );
     }
   }
+  
+  private static void writeListVisible( final Combo combo )
+    throws IOException
+  {
+    Boolean newValue = Boolean.valueOf( combo.getListVisible() );
+    JSWriter writer = JSWriter.getWriterFor( combo );
+    writer.set( PROP_LIST_VISIBLE, "listVisible", newValue, Boolean.FALSE );
+  }
 
   private static void writeEditable( final Combo combo ) throws IOException {
     boolean editable = isEditable( combo );
     Boolean newValue = Boolean.valueOf( editable );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_EDITABLE, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( combo );
-      writer.set( PROP_EDITABLE, "editable", newValue, null );
-    }
+    JSWriter writer = JSWriter.getWriterFor( combo );
+    writer.set( PROP_EDITABLE, "editable", newValue, Boolean.TRUE );
   }
 
   private static void writeText( final Combo combo ) throws IOException {

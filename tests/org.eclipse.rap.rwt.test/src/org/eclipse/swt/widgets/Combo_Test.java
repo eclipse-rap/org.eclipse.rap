@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -522,6 +523,28 @@ public class Combo_Test extends TestCase {
     } );
     combo.setText( "test" );
     assertEquals( 2, combo.getSelectionIndex() );
+  }
+  
+  public void testListVisible() {
+    Display display = new Display();
+    Composite shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setListVisible( true );
+    assertTrue( combo.getListVisible() );
+    combo.setListVisible( false );
+    assertFalse( combo.getListVisible() );
+  }
+  
+  public void testGetTextHeight() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.NONE );
+    // default theme font is 11px
+    assertEquals( 13, combo.getTextHeight() );
+    combo.setFont( Graphics.getFont( "Helvetica", 12, SWT.NORMAL ) );
+    assertEquals( 14, combo.getTextHeight() );
+    combo.setFont( null );
+    assertEquals( 13, combo.getTextHeight() );
   }
 
   protected void setUp() throws Exception {

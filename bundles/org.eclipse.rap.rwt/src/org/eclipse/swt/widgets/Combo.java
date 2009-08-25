@@ -14,9 +14,9 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
@@ -66,12 +66,19 @@ public class Combo extends Composite {
    * @since 1.3
    */
   public static final int LIMIT = Integer.MAX_VALUE;
+  
+  // Must be in sync with appearance "list-item"
+  private static final int LIST_ITEM_PADDING = 3;
+  
+  // This factor must be kept in sync with TextUtil.js#_updateLineHeight
+  private static final double LINE_HEIGHT_FACTOR = 1.2;
 
   private final ListModel model;
   private String text = "";
   private int textLimit;
   private int visibleCount = 5;
   private final Point selection;
+  private boolean dropped = false;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -524,6 +531,26 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItemCount();
   }
+  
+  /**
+   * Returns the height of the area which would be used to
+   * display <em>one</em> of the items in the receiver's list.
+   *
+   * @return the height of one item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public int getItemHeight() {
+    checkWidget();
+    int charHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int padding = 2 * LIST_ITEM_PADDING;
+    return charHeight + padding;
+  }
 
   /**
    * Sets the number of items that are visible in the drop
@@ -565,6 +592,53 @@ public class Combo extends Composite {
   public int getVisibleItemCount () {
     checkWidget();
     return visibleCount ;
+  }
+  
+  /**
+   * Marks the receiver's list as visible if the argument is <code>true</code>,
+   * and marks it invisible otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, marking
+   * it visible may not actually cause it to be displayed.
+   * </p>
+   *
+   * @param visible the new visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setListVisible( final boolean visible ) {
+    checkWidget();
+    dropped = visible;
+  }
+
+  /**
+   * Returns <code>true</code> if the receiver's list is visible,
+   * and <code>false</code> otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, this method
+   * may still indicate that it is considered visible even though
+   * it may not actually be showing.
+   * </p>
+   *
+   * @return the receiver's list's visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public boolean getListVisible() {
+    checkWidget();
+    return dropped;
   }
 
   /**
@@ -747,6 +821,25 @@ public class Combo extends Composite {
     } else {
       textLimit = LIMIT;
     }
+  }
+  
+  /**
+   * Returns the height of the receivers's text field.
+   *
+   * @return the text height
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public int getTextHeight() {
+    checkWidget();
+    Font font = getFont();
+    int fontSize = font.getFontData()[ 0 ].getHeight();
+    return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
 
   // //////////////////
