@@ -22,11 +22,15 @@ public class ConfigDialogInitializer implements ILayoutSetInitializer {
   public static final String CONFIG_WHITE = "CONFIG_WHITE";
   public static final String CONFIG_BLACK = "CONFIG_BLACK";
   public static final String DIALOG_CLOSE = "dialog.close";
+  public static final String DIALOG_ICON = "dialog.conf.icon";
   
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
     layoutSet.addColor( CONFIG_BLACK, Graphics.getColor( 0, 0, 0 ) );
     layoutSet.addColor( CONFIG_WHITE, Graphics.getColor( 255, 255, 255 ) );
     layoutSet.addImagePath( DIALOG_CLOSE, 
                             ILayoutSetConstants.IMAGE_PATH + "close.png" );
+    layoutSet.addImagePath( DIALOG_ICON, 
+                            ILayoutSetConstants.IMAGE_PATH 
+                            + "conf_dialog_icon.png" );
   }
 }

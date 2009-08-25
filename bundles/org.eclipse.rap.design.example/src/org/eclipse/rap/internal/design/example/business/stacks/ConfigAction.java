@@ -29,7 +29,8 @@ public class ConfigAction extends ConfigurationAction{
     Shell shell = workbench.getActiveWorkbenchWindow().getShell();
     ConfigurationDialog dialog 
       = new ConfigurationDialog( shell,
-                                 SWT.NO_TRIM | SWT.ON_TOP, 
+                                 SWT.ON_TOP | SWT.CLOSE | SWT.BORDER 
+                                 | SWT.APPLICATION_MODAL, 
                                  site,
                                  this );
     dialog.open();

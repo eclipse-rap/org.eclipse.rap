@@ -69,6 +69,13 @@ Button.clearButton {
   padding: 2px;
 }
 
+Button.configMenuButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 1px;
+}
+
 Button.clearButton:pressed {
   background-image: none;
 }
@@ -256,8 +263,8 @@ Shell-Titlebar {
                               from( #005fac ), to( #005092 ) );
   padding: 2px 5px 2px;
   margin: 0px;
-  height: 27px;
-  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  height: 22px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
   border-radius: 5px 5px 0px 0px;
 }

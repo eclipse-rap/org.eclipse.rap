@@ -105,10 +105,6 @@ public class BusinessCoolBarManager extends ContributionManager
     }
   };
   
- 
-  
-   
-  
   public BusinessCoolBarManager() {
     super();
     // initialize a dummy builder to get the coolbar images
