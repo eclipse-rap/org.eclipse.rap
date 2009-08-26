@@ -289,9 +289,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
         this._list.setDisplay( !this._dropped );
         this._dropped = !this._dropped;
+        this._updateListOverflow();
         if( this.hasState( "rwt_CCOMBO" ) ) {
           this._updateListVisibleRequestParam();
         }
+      }
+    },
+    
+    _updateListOverflow : function() {
+      if( this._dropped ) {
+        var overflow = "hidden";
+        var itemsHeight = this._list.getChildren().length * this._listItemHeight;
+        if( this._list.getMaxHeight() < itemsHeight ) {
+          overflow = "scrollY";
+        }
+        this._list.setOverflow( overflow );
       }
     },
     
