@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
  ******************************************************************************/
+
 package org.eclipse.rwt.internal.resources;
 
 import java.io.*;
@@ -50,7 +50,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   private static final int TEST_PORT = 4711;
   private static final String TEST_SERVER = "TestCase";
   private static final String TEST_SERVLET_PATH = "/W4TDelegate";
-  private static final String TEST_REQUEST_URI
+  private static final String TEST_REQUEST_URI 
     = TEST_CONTEXT + "/W4TDelegate?anyParam=true";
   private static final String TEST_CONTEXT_URL
     =   "http://"
@@ -84,7 +84,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       + RequestParams.RESOURCE_VERSION
       + "="
       + "1895582734";
-
+  
   /////////
   // fields
   private String webAppRoot;
@@ -181,7 +181,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testRegistrationServletTempDir() throws Exception {
-    IResourceManager manager
+    IResourceManager manager 
       = getManager( ResourceBase.DELIVER_BY_SERVLET_AND_TEMP_DIR );
     clearTempFile();
     // register only existing resources
@@ -451,7 +451,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       // expected
     }
   }
-
+  
   public void testGetRegisteredContent() throws Exception {
     IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
     InputStream is = openStream( TEST_RESOURCE_2 );
@@ -462,7 +462,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     content.close();
     assertNull( manager.getRegisteredContent( "not-there" ) );
   }
-
+  
   /*
    * 280582: resource registration fails when using ImageDescriptor.createFromURL
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
@@ -477,13 +477,13 @@ public class ResourceManagerImpl_Test extends TestCase {
     manager.register( name, inputStream );
     inputStream.close();
     String location = manager.getLocation( name );
-    assertEquals( "http://TestCase:4711/test/http$1//host$1port/path$$1",
+    assertEquals( "http://TestCase:4711/test/http$1//host$1port/path$$1", 
                   location );
   }
 
   ///////////////////
   // helping methods
-
+  
   private static int[] read( final InputStream input ) throws IOException {
     int[] result = null;
     try {
@@ -518,11 +518,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   private String getResourceCopyFile( final String resourceName ) {
-    return   webAppRoot
-           + File.separator
-           + "resources"
-           + File.separator
-           + resourceName;
+    return webAppRoot + File.separator + resourceName;
   }
 
   private String getResourceCopyInTempFile( final String resourceName ) {
@@ -577,15 +573,15 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public long getDateHeader( final String arg0 ) {
+    public long getDateHeader( String arg0 ) {
       return 0;
     }
 
-    public String getHeader( final String arg0 ) {
+    public String getHeader( String arg0 ) {
       return null;
     }
 
-    public Enumeration getHeaders( final String arg0 ) {
+    public Enumeration getHeaders( String arg0 ) {
       return null;
     }
 
@@ -593,7 +589,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public int getIntHeader( final String arg0 ) {
+    public int getIntHeader( String arg0 ) {
       return 0;
     }
 
@@ -621,7 +617,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public boolean isUserInRole( final String arg0 ) {
+    public boolean isUserInRole( String arg0 ) {
       return false;
     }
 
@@ -645,7 +641,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return TEST_SERVLET_PATH;
     }
 
-    public HttpSession getSession( final boolean arg0 ) {
+    public HttpSession getSession( boolean arg0 ) {
       return null;
     }
 
@@ -669,7 +665,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return false;
     }
 
-    public Object getAttribute( final String arg0 ) {
+    public Object getAttribute( String arg0 ) {
       return null;
     }
 
@@ -681,7 +677,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public void setCharacterEncoding( final String arg0 )
+    public void setCharacterEncoding( String arg0 )
       throws UnsupportedEncodingException
     {
     }
@@ -698,7 +694,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public String getParameter( final String arg0 ) {
+    public String getParameter( String arg0 ) {
       return null;
     }
 
@@ -706,7 +702,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public String[] getParameterValues( final String arg0 ) {
+    public String[] getParameterValues( String arg0 ) {
       return null;
     }
 
@@ -742,10 +738,10 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public void setAttribute( final String arg0, final Object arg1 ) {
+    public void setAttribute( String arg0, Object arg1 ) {
     }
 
-    public void removeAttribute( final String arg0 ) {
+    public void removeAttribute( String arg0 ) {
     }
 
     public Locale getLocale() {
@@ -760,11 +756,11 @@ public class ResourceManagerImpl_Test extends TestCase {
       return false;
     }
 
-    public RequestDispatcher getRequestDispatcher( final String arg0 ) {
+    public RequestDispatcher getRequestDispatcher( String arg0 ) {
       return null;
     }
 
-    public String getRealPath( final String arg0 ) {
+    public String getRealPath( String arg0 ) {
       return null;
     }
 
@@ -786,60 +782,60 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
   private class TestResponse implements HttpServletResponse {
 
-    public void addCookie( final Cookie arg0 ) {
+    public void addCookie( Cookie arg0 ) {
     }
 
-    public boolean containsHeader( final String arg0 ) {
+    public boolean containsHeader( String arg0 ) {
       return false;
     }
 
-    public String encodeURL( final String arg0 ) {
+    public String encodeURL( String arg0 ) {
       return arg0;
     }
 
-    public String encodeRedirectURL( final String arg0 ) {
+    public String encodeRedirectURL( String arg0 ) {
       return null;
     }
 
-    public String encodeUrl( final String arg0 ) {
+    public String encodeUrl( String arg0 ) {
       return arg0;
     }
 
-    public String encodeRedirectUrl( final String arg0 ) {
+    public String encodeRedirectUrl( String arg0 ) {
       return null;
     }
 
-    public void sendError( final int arg0, final String arg1 ) throws IOException {
+    public void sendError( int arg0, String arg1 ) throws IOException {
     }
 
-    public void sendError( final int arg0 ) throws IOException {
+    public void sendError( int arg0 ) throws IOException {
     }
 
-    public void sendRedirect( final String arg0 ) throws IOException {
+    public void sendRedirect( String arg0 ) throws IOException {
     }
 
-    public void setDateHeader( final String arg0, final long arg1 ) {
+    public void setDateHeader( String arg0, long arg1 ) {
     }
 
-    public void addDateHeader( final String arg0, final long arg1 ) {
+    public void addDateHeader( String arg0, long arg1 ) {
     }
 
-    public void setHeader( final String arg0, final String arg1 ) {
+    public void setHeader( String arg0, String arg1 ) {
     }
 
-    public void addHeader( final String arg0, final String arg1 ) {
+    public void addHeader( String arg0, String arg1 ) {
     }
 
-    public void setIntHeader( final String arg0, final int arg1 ) {
+    public void setIntHeader( String arg0, int arg1 ) {
     }
 
-    public void addIntHeader( final String arg0, final int arg1 ) {
+    public void addIntHeader( String arg0, int arg1 ) {
     }
 
-    public void setStatus( final int arg0 ) {
+    public void setStatus( int arg0 ) {
     }
 
-    public void setStatus( final int arg0, final String arg1 ) {
+    public void setStatus( int arg0, String arg1 ) {
     }
 
     public String getCharacterEncoding() {
@@ -854,13 +850,13 @@ public class ResourceManagerImpl_Test extends TestCase {
       return null;
     }
 
-    public void setContentLength( final int arg0 ) {
+    public void setContentLength( int arg0 ) {
     }
 
-    public void setContentType( final String arg0 ) {
+    public void setContentType( String arg0 ) {
     }
 
-    public void setBufferSize( final int arg0 ) {
+    public void setBufferSize( int arg0 ) {
     }
 
     public int getBufferSize() {
@@ -880,7 +876,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     public void reset() {
     }
 
-    public void setLocale( final Locale arg0 ) {
+    public void setLocale( Locale arg0 ) {
     }
 
     public Locale getLocale() {
@@ -891,7 +887,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       throw new UnsupportedOperationException();
     }
 
-    public void setCharacterEncoding( final String charset ) {
+    public void setCharacterEncoding( String charset ) {
       throw new UnsupportedOperationException();
     }
   }

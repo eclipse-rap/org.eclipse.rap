@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
  ******************************************************************************/
+
 package org.eclipse.swt.graphics;
 
 import java.io.*;
@@ -37,8 +37,8 @@ public class Image_Test extends TestCase {
 //    assertEquals( 0, Image.size() );
     Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
-    String contextPath = Fixture.CONTEXT_DIR.getPath() + "/resources/";
-    assertTrue( new File( contextPath + RWTFixture.IMAGE1 ).exists() );
+    String contextPath = Fixture.CONTEXT_DIR.getPath();
+    assertTrue( new File( contextPath + "/" + RWTFixture.IMAGE1 ).exists() );
 //    assertEquals( 1, Image.size() );
     Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );

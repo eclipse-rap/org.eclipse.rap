@@ -504,8 +504,6 @@ public class ResourceManagerImpl
     StringBuffer filename = new StringBuffer();
     filename.append( webAppRoot );
     filename.append( File.separator );
-    filename.append( "resources" );
-    filename.append( File.separator );
     filename.append( versionedResourceName( escapeFilename( name ), version ) );
     return new File( filename.toString() );
   }
