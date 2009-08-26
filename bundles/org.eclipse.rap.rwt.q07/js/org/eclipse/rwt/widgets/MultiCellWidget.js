@@ -552,17 +552,28 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _getImageHtml : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( cell ) {
-        return   '<div style="position:absolute;border:0 none;'
-               + 'filter:'
-               + " progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
-               + this.getCellContent( cell )
-               + "',sizingMethod='crop')" + '"></div>';
+        var content = this.getCellContent( cell );
+        var cssImageStr = "";
+        if( content ) {
+          cssImageStr
+            = "filter:progid:DXImageTransform.Microsoft"
+            + ".AlphaImageLoader(src='"
+            + content
+            + "',sizingMethod='crop')";           
+        }
+        return    '<div style="position:absolute;border:0 none;'
+                + cssImageStr 
+                + '"></div>';
       },
       "default" : function( cell ) {
+        var content = this.getCellContent( cell );
+        var cssImageStr = "";
+        if( content ) {
+          cssImageStr = "background-image:url(" + content + ")";
+        }
         return   "<div style='position:absolute;border:0 none;"
-               + "background-image:url("
-               + this.getCellContent( cell )
-               + ");background-repeat:no-repeat;' ></div>";
+               + cssImageStr 
+               + ";background-repeat:no-repeat;' ></div>";
       }
     } ),
 
@@ -570,38 +581,48 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       "mshtml" : function( cell ) {
         var version = qx.core.Client.getVersion();
         var node = this.getCellNode( cell );
+        var content = this.getCellContent( cell );
         if( version >= 8 ) {
-          node.style.filter
-            =   "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
-              + this.getCellContent( cell )
-              + "',sizingMethod='crop')";
-          if ( !this.getEnabled() ) {
+          if( content ) {
             node.style.filter
-              += "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
+              = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
+              + content
+              + "',sizingMethod='crop')";
+            if ( !this.getEnabled() ) {
+              node.style.filter
+                += "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
+            }
+          } else {
+            node.style.filter = "";
+            node.style.backgroundImage = "none";
           }
         } else {
-          if ( this.getEnabled() ) {
-            node.style.backgroundImage = "";
-            node.style.filter
-              =   "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
+          if( content ) {
+            if ( this.getEnabled() ) {
+              node.style.backgroundImage = "none";
+              node.style.filter
+                = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
                 + this.getCellContent( cell )
                 + "',sizingMethod='crop')";
+            } else {
+              node.style.backgroundImage
+                =   "URL("
+                  + this.getCellContent( cell )
+                  + ")";
+              node.style.backgroundRepeat = "no-repeat";
+              // removed Gray()
+              node.style.filter = this.getEnabled() ? "" : "Alpha(Opacity=30)";
+            }
           } else {
-            node.style.backgroundImage
-              =   "URL("
-                + this.getCellContent( cell )
-                + ")";
-            node.style.backgroundRepeat = "no-repeat";
-            // removed Gray()
-            node.style.filter = this.getEnabled() ? "" : "Alpha(Opacity=30)";
+            node.style.filter = "";
+            node.style.backgroundImage = "none";
           }
         }
       },
       "default" : function( cell ) {
-        this.getCellNode( cell ).style.backgroundImage
-          = "URL("
-          + this.getCellContent( cell )
-          + ")";
+        var content = this.getCellContent( cell );
+        var cssImageStr = content ? "URL(" + content + ")" : "none"; 
+        this.getCellNode( cell ).style.backgroundImage = cssImageStr;
       }
     }),
 
