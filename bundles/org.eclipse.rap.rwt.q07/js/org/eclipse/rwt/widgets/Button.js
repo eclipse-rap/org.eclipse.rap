@@ -23,6 +23,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
     this.addEventListener( "keyup", this._onkeyup );
     this.addEventListener( "keypress", this._onkeypress );
 
+    this.addState( buttonType );
     switch( buttonType ) {
      case "push" :
       this._isSelectable = false;
