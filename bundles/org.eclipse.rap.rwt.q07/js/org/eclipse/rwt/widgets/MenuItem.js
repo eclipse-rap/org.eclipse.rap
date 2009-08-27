@@ -123,7 +123,8 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
       var width = value ? value[ 1 ] : 0;
       var height = value ? value[ 2 ] : 0;
       if( url == null ) {
-        this.setCellContent( 0, "" );
+        var content = this._isSelectable ? "" : null;          
+        this.setCellContent( 0, content );
       } else {
         this.setCellContent( 0, url );
       }       

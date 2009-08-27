@@ -106,8 +106,10 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     _layoutPost : function( changes ) {
       this.base( arguments );
       if( changes.menuLayout ) {
-        this._menuLayoutScheduled = false;        
-        this._afterAppear(); // recomputes the location
+        this._menuLayoutScheduled = false;
+        if( this.isSeeable() ) {        
+          this._afterAppear(); // recomputes the location
+        }
       }
     },
        
