@@ -32,6 +32,7 @@ import org.w3c.css.sac.CSSException;
  */
 public final class ThemeManager {
 
+
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
@@ -48,12 +49,13 @@ public final class ThemeManager {
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
 
+  private static final String LOG_SYSTEM_PROPERTY
+    = System.getProperty( ThemeManager.class.getName() + ".log" );
   private static final boolean DEBUG
-    = "true".equals( System.getProperty( ThemeManager.class.getName() + ".log" ) );
+    = "true".equals( LOG_SYSTEM_PROPERTY );
 
   private static final String CLIENT_LIBRARY_VARIANT
     = "org.eclipse.rwt.clientLibraryVariant";
-
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
   /**
@@ -116,11 +118,9 @@ public final class ThemeManager {
 
   /** Destination path for theme resources */
   private static final String THEME_RESOURCE_DEST = "resource/themes";
-
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
 
   private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
-
   private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
@@ -152,25 +152,16 @@ public final class ThemeManager {
   };
 
   private static ThemeManager instance;
-
+  
   private final Set customAppearances;
-
   private final Map themes;
-
   private final Map adapters;
-
   private final Set registeredThemeFiles;
-
   private boolean initialized;
-
   private Theme predefinedTheme;
-
   private ThemeableWidgetHolder themeableWidgets;
-
   private StyleSheetBuilder defaultStyleSheetBuilder;
-
   private int themeCount;
-
   private CssElementHolder registeredCssElements;
 
   private ThemeManager() {
