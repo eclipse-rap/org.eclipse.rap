@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.rap.internal.design.example.business.builder.BusinessStackBuider;
 import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
@@ -300,12 +301,46 @@ public class ViewStackPresentation extends ConfigurableStack {
                                   );
             toolBarLayer.setVisible( true );
           }
-        }
+        }        
       } else {
         toolbarBg.setVisible( false );
       }
       toolbarBg.layout( true );       
-    }    
+    } 
+    handleConfigurationButton();
+  }
+
+  /*
+   * Deactivates the configuration button if the current part has nothing to
+   * configure.
+   */
+  private void handleConfigurationButton() {
+    boolean hasViewMenu = false;
+    if( currentPart != null ) {
+      if( currentPart instanceof PresentablePart ) {
+        PresentablePart part = ( PresentablePart ) currentPart;
+        hasViewMenu = part.getPane().hasViewMenu();
+      }
+      IToolBarManager manager = getPartToolBarManager();
+      boolean hasViewActions = manager != null && manager.getItems().length > 0;
+      if( hasViewActions || hasViewMenu ) {
+        if( confButton != null ) {
+          // enable conf button
+          confButton.setEnabled( true );
+          String toolTip = "Configure the actions and viwmenu from " 
+            + currentPart.getName();
+          confButton.setToolTipText( toolTip );
+        } 
+      } else {
+        if( confButton != null ) {
+          // disable conf button
+          confButton.setEnabled( false );
+          String toolTip =  currentPart.getName() +
+          		" has no actions or viewmenu to configure";
+          confButton.setToolTipText( toolTip );
+        }
+      }
+    }
   }
 
   private void createPartButton( final IPresentablePart part ) {
