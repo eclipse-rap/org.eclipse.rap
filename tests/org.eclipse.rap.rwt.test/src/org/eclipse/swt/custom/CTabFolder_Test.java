@@ -403,8 +403,8 @@ public class CTabFolder_Test extends TestCase {
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
-    CTabItem item1 = new CTabItem( folder, SWT.NONE );
-    CTabItem item2 = new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
 
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),

@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
