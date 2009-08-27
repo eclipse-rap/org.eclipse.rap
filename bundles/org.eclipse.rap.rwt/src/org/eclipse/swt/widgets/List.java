@@ -13,8 +13,8 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IListAdapter;
@@ -45,6 +45,12 @@ import org.eclipse.swt.internal.widgets.ListModel;
  */
 public class List extends Scrollable {
 
+  private final class ResizeListener extends ControlAdapter {
+    public void controlResized( final ControlEvent event ) {
+      List.this.updateScrollBars();
+    }
+  }
+
   // This values must be kept in sync with appearance of list items
   private static final int VERTICAL_ITEM_MARGIN = 3;
   private static final int HORIZONTAL_ITEM_MARGIN = 5;
@@ -54,7 +60,10 @@ public class List extends Scrollable {
   private final ListModel model;
   private int focusIndex = -1;
   private IListAdapter listAdapter;
+  private final ResizeListener resizeListener;
   private int topIndex = 0;
+  private boolean hasVScrollBar;
+  private boolean hasHScrollBar;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -88,6 +97,8 @@ public class List extends Scrollable {
   public List( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     model = new ListModel( ( style & SWT.SINGLE ) != 0 );
+    resizeListener = new ResizeListener();
+    addControlListener( resizeListener );
   }
 
   /////////////////////
@@ -100,6 +111,14 @@ public class List extends Scrollable {
         listAdapter = new IListAdapter() {
           public void setFocusIndex( final int focusIndex ) {
             List.this.setFocusIndex( focusIndex );
+          }
+
+          public boolean hasHScrollBar() {
+            return List.this.hasHScrollBar();
+          }
+
+          public boolean hasVScrollBar() {
+            return List.this.hasVScrollBar();
           }
         };
       }
@@ -662,6 +681,7 @@ public class List extends Scrollable {
     checkWidget();
     model.add( string );
     updateFocusIndexAfterItemChange();
+    updateScrollBars();
   }
 
   /**
@@ -691,6 +711,7 @@ public class List extends Scrollable {
     checkWidget();
     model.add( string, index );
     updateFocusIndexAfterItemChange();
+    updateScrollBars();
   }
 
   /**
@@ -712,6 +733,7 @@ public class List extends Scrollable {
     model.remove( index );
     updateFocusIndexAfterItemChange();
     adjustTopIndex();
+    updateScrollBars();
   }
 
   /**
@@ -735,6 +757,7 @@ public class List extends Scrollable {
     model.remove( start, end );
     updateFocusIndexAfterItemChange();
     adjustTopIndex();
+    updateScrollBars();
   }
 
   /**
@@ -757,6 +780,7 @@ public class List extends Scrollable {
     model.remove( indices );
     updateFocusIndexAfterItemChange();
     adjustTopIndex();
+    updateScrollBars();
   }
 
   /**
@@ -780,6 +804,7 @@ public class List extends Scrollable {
     model.remove( string );
     updateFocusIndexAfterItemChange();
     adjustTopIndex();
+    updateScrollBars();
   }
 
   /**
@@ -795,6 +820,7 @@ public class List extends Scrollable {
     model.removeAll();
     updateFocusIndexAfterItemChange();
     adjustTopIndex();
+    updateScrollBars();
   }
 
   /**
@@ -818,6 +844,7 @@ public class List extends Scrollable {
   public void setItem( final int index, final String string ) {
     checkWidget();
     model.setItem( index, string );
+    updateScrollBars();
   }
 
   /**
@@ -837,6 +864,7 @@ public class List extends Scrollable {
   public void setItems( final String[] items ) {
     checkWidget();
     model.setItems( items );
+    updateScrollBars();
   }
 
   /**
@@ -1024,6 +1052,11 @@ public class List extends Scrollable {
     SelectionEvent.removeListener( this, listener );
   }
 
+  public void setFont( final Font font ) {
+    super.setFont( font );
+    updateScrollBars();
+  }
+
   boolean isTabGroup() {
     return true;
   }
@@ -1128,5 +1161,60 @@ public class List extends Scrollable {
       result = clientHeight / itemHeight;
     }
     return result;
+  }
+
+  ///////////////////////////////////////
+  // Helping methods - dynamic scrollbars
+
+  boolean hasVScrollBar() {
+    return hasVScrollBar;
+  }
+
+  boolean hasHScrollBar() {
+    return hasHScrollBar;
+  }
+
+  int getVScrollBarWidth() {
+    int result = 0;
+    if( hasVScrollBar() ) {
+      result = ScrollBar.SCROLL_BAR_WIDTH;
+    }
+    return result;
+  }
+
+  int getHScrollBarHeight() {
+    int result = 0;
+    if( hasHScrollBar() ) {
+      result = ScrollBar.SCROLL_BAR_HEIGHT;
+    }
+    return result;
+  }
+
+  boolean needsVScrollBar() {
+    int availableHeight = getClientArea().height - getHScrollBarHeight();
+    int height = getItemCount() * getItemHeight();
+    return height > availableHeight;
+  }
+
+  boolean needsHScrollBar() {
+    int availableWidth = getClientArea().width - getVScrollBarWidth();
+    String[] items = getItems();
+    int width = 0;
+    for( int i = 0; i < items.length; i++ ) {
+      int itemWidth = getItemWidth( items[ i ] );
+      width = Math.max( width, itemWidth );
+    }
+    return width > availableWidth;
+  }
+
+  void updateScrollBars() {
+    hasVScrollBar = false;
+    hasHScrollBar = needsHScrollBar();
+    if( needsVScrollBar() ) {
+      hasVScrollBar = true;
+      hasHScrollBar = needsHScrollBar();
+    }
+    hasVScrollBar = ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
+    hasHScrollBar = ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
   }
 }

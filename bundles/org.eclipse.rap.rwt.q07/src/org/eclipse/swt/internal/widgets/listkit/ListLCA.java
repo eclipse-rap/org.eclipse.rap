@@ -17,8 +17,7 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.widgets.IListAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -31,6 +30,8 @@ public class ListLCA extends AbstractWidgetLCA {
   static final String PROP_ITEMS = "items";
   static final String PROP_FOCUS_INDEX = "focusIndex";
   static final String PROP_TOP_INDEX = "topIndex";
+  static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
+  static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
 
   private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
   private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
@@ -47,6 +48,8 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ITEMS, list.getItems() );
     adapter.preserve( PROP_TOP_INDEX, new Integer( list.getTopIndex() ) );
     adapter.preserve( PROP_FOCUS_INDEX, new Integer( list.getFocusIndex() ) );
+    adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( list ) );
+    adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( list ) );
     preserveSelection( list );
     WidgetLCAUtil.preserveCustomVariant( list );
   }
@@ -68,7 +71,6 @@ public class ListLCA extends AbstractWidgetLCA {
     Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
     writer.newWidget( QX_TYPE, new Object[] { multiSelection } );
     ControlLCAUtil.writeStyleFlags( list );
-    writeOverflow( list );
   }
 
   // TODO [rh] keep scroll position, even when exchanging items
@@ -80,6 +82,7 @@ public class ListLCA extends AbstractWidgetLCA {
     writeSelection( list );
     writeTopIndex( list );
     writeFocusIndex( list );
+    writeOverflow( list );
     updateSelectionListeners( list );
     WidgetLCAUtil.writeCustomVariant( list );
   }
@@ -154,7 +157,7 @@ public class ListLCA extends AbstractWidgetLCA {
       writer.call( "focusItem", new Object[] { newValue} );
     }
   }
-  
+
   private static void writeTopIndex( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     Integer newValue = new Integer( list.getTopIndex() );
@@ -162,20 +165,30 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   private static void writeOverflow( final List list ) throws IOException {
-    boolean scrollX = ( list.getStyle() & SWT.H_SCROLL ) != 0;
-    boolean scrollY = ( list.getStyle() & SWT.V_SCROLL ) != 0;
-    String overflow;
-    if( scrollX && scrollY ) {
-      overflow = "auto";
-    } else if( scrollX ) {
-      overflow = "scrollX";
-    } else if( scrollY ) {
-      overflow = "scrollY";
-    } else {
-      overflow = "hidden";
+    boolean hasHChanged = WidgetLCAUtil.hasChanged( list,
+                                                    PROP_HAS_H_SCROLL_BAR,
+                                                    hasHScrollBar( list ),
+                                                    Boolean.FALSE );
+    boolean hasVChanged = WidgetLCAUtil.hasChanged( list,
+                                                    PROP_HAS_V_SCROLL_BAR,
+                                                    hasVScrollBar( list ),
+                                                    Boolean.FALSE );
+    if( hasHChanged || hasVChanged ) {
+      boolean scrollX = hasHScrollBar( list ).booleanValue();
+      boolean scrollY = hasVScrollBar( list ).booleanValue();
+      String overflow;
+      if( scrollX && scrollY ) {
+        overflow = "auto";
+      } else if( scrollX ) {
+        overflow = "scrollX";
+      } else if( scrollY ) {
+        overflow = "scrollY";
+      } else {
+        overflow = "hidden";
+      }
+      JSWriter writer = JSWriter.getWriterFor( list );
+      writer.set( "overflow", overflow );
     }
-    JSWriter writer = JSWriter.getWriterFor( list );
-    writer.set( "overflow", overflow );
   }
 
   private static void updateSelectionListeners( final List list )
@@ -210,7 +223,7 @@ public class ListLCA extends AbstractWidgetLCA {
       list.setSelection( indices );
     }
   }
-  
+
   private static void readTopIndex( final List list ) {
     String value = WidgetLCAUtil.readPropertyValue( list, "topIndex" );
     if( value != null ) {
@@ -233,5 +246,17 @@ public class ListLCA extends AbstractWidgetLCA {
 
   private static boolean isSingle( final List list ) {
     return ( list.getStyle() & SWT.SINGLE ) != 0;
+  }
+
+  private static Boolean hasHScrollBar( final List list ) {
+    Object adapter = list.getAdapter( IListAdapter.class );
+    IListAdapter listAdapter = ( IListAdapter )adapter;
+    return Boolean.valueOf( listAdapter.hasHScrollBar() );
+  }
+
+  private static Boolean hasVScrollBar( final List list ) {
+    Object adapter = list.getAdapter( IListAdapter.class );
+    IListAdapter listAdapter = ( IListAdapter )adapter;
+    return Boolean.valueOf( listAdapter.hasVScrollBar() );
   }
 }

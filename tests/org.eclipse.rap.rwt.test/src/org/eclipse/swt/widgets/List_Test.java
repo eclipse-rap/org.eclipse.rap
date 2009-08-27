@@ -16,11 +16,12 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 
 
 public class List_Test extends TestCase {
@@ -1198,6 +1199,148 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.showSelection();
     assertEquals( 0, list.getTopIndex() );
+  }
+
+  public void testHasScrollBar() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.NONE );
+    list.setSize( 10, 10 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertFalse( list.hasVScrollBar() );
+    assertFalse( list.hasHScrollBar() );
+
+    list = new List( shell, SWT.V_SCROLL );
+    list.setSize( 10, 10 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertTrue( list.hasVScrollBar() );
+    assertFalse( list.hasHScrollBar() );
+
+    list = new List( shell, SWT.H_SCROLL );
+    list.setSize( 10, 10 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertFalse( list.hasVScrollBar() );
+    assertTrue( list.hasHScrollBar() );
+
+    list = new List( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    list.setSize( 200, 10 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertTrue( list.hasVScrollBar() );
+    assertFalse( list.hasHScrollBar() );
+
+    list = new List( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    list.setSize( 10, 200 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertFalse( list.hasVScrollBar() );
+    assertTrue( list.hasHScrollBar() );
+
+    list = new List( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    list.setSize( 200, 200 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertFalse( list.hasVScrollBar() );
+    assertFalse( list.hasHScrollBar() );
+  }
+
+  public void testGetScrollBarWidth() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    list.setSize( 10, 10 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertTrue( list.getVScrollBarWidth() > 0 );
+    assertTrue( list.getHScrollBarHeight() > 0 );
+    List noScrollList = new List( shell, SWT.NONE );
+    noScrollList.setSize( 200, 200 );
+    assertEquals( 0, noScrollList.getVScrollBarWidth() );
+    assertEquals( 0, noScrollList.getHScrollBarHeight() );
+  }
+
+  public void testUpdateScrollBarOnItemsChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    list.setSize( 200, 20 );
+    assertFalse( list.hasVScrollBar() );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertTrue( list.hasVScrollBar() );
+    list.removeAll();
+    assertFalse( list.hasVScrollBar() );
+    list.add( "Item 1" );
+    list.add( "Item 2" );
+    assertTrue( list.hasVScrollBar() );
+    list.remove( 0 );
+    assertFalse( list.hasVScrollBar() );
+    list.add( "Item 0", 0 );
+    assertTrue( list.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnResize() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    list.setSize( 20, 20 );
+    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
+    assertTrue( list.hasVScrollBar() );
+    assertTrue( list.hasHScrollBar() );
+    list.setSize( 100, 100 );
+    assertFalse( list.hasVScrollBar() );
+    assertFalse( list.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnItemWidthChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    list.setSize( 60, 60 );
+    list.add( "" );
+    assertFalse( list.hasHScrollBar() );
+    list.setItem( 0, "Very long long long long long long long long text" );
+    assertTrue( list.hasHScrollBar() );
+    list.setItem( 0, "" );
+    assertFalse( list.hasHScrollBar() );
+    // change font
+    list.setItem( 0, "short" );
+    assertFalse( list.hasHScrollBar() );
+    Font bigFont = Graphics.getFont( "Helvetica", 50, SWT.BOLD );
+    list.setFont( bigFont );
+    assertTrue( list.hasHScrollBar() );
+    list.setFont( null );
+    assertFalse( list.hasHScrollBar() );
+    list.setFont( bigFont );
+    assertTrue( list.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarWithInterDependencyHFirst() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    list.add( "" );
+    list.setSize( 30, list.getItemHeight() + 4 );
+    assertFalse( list.needsVScrollBar() );
+    assertFalse( list.needsHScrollBar() );
+    assertFalse( list.hasHScrollBar() );
+    assertFalse( list.hasVScrollBar() );
+    list.setItem( 0, "Item 1001" );
+    assertTrue( list.hasHScrollBar() );
+    assertTrue( list.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarWithInterDependencyVFirst() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    list.add( "123" );
+    list.setSize( 30, 30 );
+    assertFalse( list.hasHScrollBar() );
+    assertFalse( list.hasVScrollBar() );
+    for( int i = 0; i < 10; i++ ) {
+      list.add( "123" );
+    }
+    assertTrue( list.hasHScrollBar() );
+    assertTrue( list.hasVScrollBar() );
   }
 
   protected void setUp() throws Exception {

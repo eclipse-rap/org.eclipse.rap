@@ -82,6 +82,13 @@ public class ListLCA_Test extends TestCase {
     Object selection = adapter.getPreserved( Props.SELECTION_INDICES );
     assertEquals( new Integer( 2 ), selection );
     RWTFixture.clearPreserved();
+    // scroll bars
+    RWTFixture.preserveWidgets();
+    Object preserved = adapter.getPreserved( ListLCA.PROP_HAS_H_SCROLL_BAR );
+    assertTrue( preserved != null );
+    preserved = adapter.getPreserved( ListLCA.PROP_HAS_V_SCROLL_BAR );
+    assertTrue( preserved != null );
+    RWTFixture.clearPreserved();
     // control: enabled
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
@@ -124,19 +131,6 @@ public class ListLCA_Test extends TestCase {
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     RWTFixture.clearPreserved();
     // control_listeners
-    RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
-    list.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -345,7 +339,7 @@ public class ListLCA_Test extends TestCase {
     IListAdapter listAdapter = ( IListAdapter )adapter;
     listAdapter.setFocusIndex( focusIndex );
   }
-  
+
   public void testReadTopIndex() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -360,7 +354,7 @@ public class ListLCA_Test extends TestCase {
     listLCA.readData( list );
     assertEquals( 5, list.getTopIndex() );
   }
-  
+
   public void testRenderInitialize() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -376,10 +370,9 @@ public class ListLCA_Test extends TestCase {
                       + "\", \""
                       + parentId
                       + "\", true, \"org.eclipse.swt.widgets.List\", "
-                      + "'false' );"
-                      + "w.setOverflow( \"hidden\" );";
+                      + "'false' );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     // multiselection
     RWTFixture.fakeNewRequest();
     list = new List( shell, SWT.MULTI );
@@ -389,9 +382,21 @@ public class ListLCA_Test extends TestCase {
                + "\", \""
                + parentId
                + "\", true, \"org.eclipse.swt.widgets.List\","
-               + " 'true' );"
-               + "w.setOverflow( \"hidden\" );";
+               + " 'true' );";
     assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteOverflow() throws IOException {
+    RWTFixture.fakeNewRequest();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    list.add( "Item" );
+    ListLCA lca = new ListLCA();
+    lca.renderChanges( list );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setOverflow( \"auto\" );";
+    assertTrue( markup.indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {
