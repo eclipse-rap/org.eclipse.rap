@@ -139,7 +139,11 @@ public class Text extends Scrollable {
     }
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
-      this.text = verifiedText;
+      if( verifiedText.length() > textLimit ) {
+        this.text = verifiedText.substring( 0, textLimit );
+      } else {
+        this.text = verifiedText;
+      }
       selection.x = 0;
       selection.y = 0;
       ModifyEvent modifyEvent = new ModifyEvent( this );

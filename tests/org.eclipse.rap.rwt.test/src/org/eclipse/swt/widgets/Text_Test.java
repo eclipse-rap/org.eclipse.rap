@@ -62,6 +62,11 @@ public class Text_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // as expected
     }
+    text.setText( "Sample_text" );
+    text.setTextLimit( 6 );
+    assertEquals( "Sample_text", text.getText() );
+    text.setText( "Other_text" );
+    assertEquals( "Other_", text.getText() );
   }
 
   public void testGetLineHeight() {
@@ -225,6 +230,17 @@ public class Text_Test extends TestCase {
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
     text.setEditable( true );
+    
+    // Ensure that VerifyEvent#text denotes the text to be set
+    // and not the cut by textLimit one
+    text.setTextLimit( 5 );
+    String sampleText = "sample_text";
+    log.clear();
+    text.setText( sampleText );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    verifyEvent = ( VerifyEvent )log.get( 0 );
+    assertEquals( sampleText, verifyEvent.text );
   }
 
   // TODO [bm] extend testcase with newline chars and getLineCount

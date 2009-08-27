@@ -764,7 +764,11 @@ public class Combo extends Composite {
           break;
         }
       }
-      text = verifiedText;
+      if( verifiedText.length() > textLimit ) {
+        this.text = verifiedText.substring( 0, textLimit );
+      } else {
+        this.text = verifiedText;
+      }
       fireModifyEvent();
     }
   }

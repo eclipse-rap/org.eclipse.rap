@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.custom;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -92,6 +94,11 @@ public class CCombo_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // as expected
     }
+    combo.setText( "Sample_text" );
+    combo.setTextLimit( 6 );
+    assertEquals( "Sample_text", combo.getText() );
+    combo.setText( "Other_text" );
+    assertEquals( "Other_", combo.getText() );
   }
 
   public void testListVisible() {
@@ -493,6 +500,89 @@ public class CCombo_Test extends TestCase {
     } catch( NullPointerException e ) {
       // expected
     }
+  }
+  
+  public void testVerifyEvent() {
+    VerifyListener verifyListener;
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        log.add( event );
+      }
+    } );
+    combo.addVerifyListener( new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+      }
+    } );
+
+    // VerifyEvent is also sent when setting text to the already set value
+    log.clear();
+    combo.setText( "" );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+
+    // Test verifyListener that prevents (doit=false) change
+    combo.setText( "" );
+    log.clear();
+    verifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        event.doit = false;
+      }
+    };
+    combo.addVerifyListener( verifyListener );
+    combo.setText( "other" );
+    assertEquals( 1, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( "", combo.getText() );
+    combo.removeVerifyListener( verifyListener );
+
+    // Test verifyListener that manipulates text
+    combo.setText( "" );
+    log.clear();
+    verifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        event.text = "manipulated";
+      }
+    };
+    combo.addVerifyListener( verifyListener );
+    combo.setText( "other" );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+    assertEquals( "manipulated", combo.getText() );
+    combo.removeVerifyListener( verifyListener );
+
+    // Ensure that VerifyEvent#start and #end denote the positions of the old
+    // text and #text denotes the text to be set
+    String oldText = "old";
+    combo.setText( oldText );
+    log.clear();
+    String newText = oldText + "changed";
+    combo.setText( newText );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    VerifyEvent verifyEvent = ( VerifyEvent )log.get( 0 );
+    assertEquals( 0, verifyEvent.start );
+    assertEquals( oldText.length(), verifyEvent.end );
+    assertEquals( newText, verifyEvent.text );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+    
+    // Ensure that VerifyEvent#text denotes the text to be set
+    // and not the cut by textLimit one
+    combo.setTextLimit( 5 );
+    String sampleText = "sample_text";
+    log.clear();
+    combo.setText( sampleText );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    verifyEvent = ( VerifyEvent )log.get( 0 );
+    assertEquals( sampleText, verifyEvent.text );
   }
 
   public void testVisibleItemCount() {
