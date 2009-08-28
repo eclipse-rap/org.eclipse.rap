@@ -145,7 +145,6 @@ public final class JSConst {
   public static final String QX_FIELD_FONT = "font";
   public static final String QX_FIELD_COLOR = "textColor";
   public static final String QX_FIELD_BG_COLOR = "backgroundColor";
-  public static final String QX_FIELD_BG_IMAGE = "backgroundImage";
   public static final String QX_FIELD_ORIENTATION = "orientation";
   public static final String QX_FIELD_CAPTION = "caption";
   public static final String QX_FIELD_ENABLED = "enabled";

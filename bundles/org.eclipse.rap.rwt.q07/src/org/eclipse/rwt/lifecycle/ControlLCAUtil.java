@@ -431,9 +431,9 @@ public class ControlLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( control );
       if( image != null ) {
         String imagePath = ResourceFactory.getImagePath( image );
-        writer.set( JSConst.QX_FIELD_BG_IMAGE, imagePath );
+        writer.set( "backgroundImage", imagePath );
       } else {
-        writer.reset( JSConst.QX_FIELD_BG_IMAGE );
+        writer.reset( "backgroundImage" );
       }
     }
   }

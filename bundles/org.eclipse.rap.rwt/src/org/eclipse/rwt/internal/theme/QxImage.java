@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import java.io.IOException;
@@ -23,20 +22,15 @@ public final class QxImage implements QxType {
 
   private static final String NONE_INPUT = "none";
 
-  public static final QxImage NONE = new QxImage( true, null, null, null, null );
+  public static final QxImage NONE
+    = new QxImage( true, null, null, null, null );
 
   public final boolean none;
-
   public final String path;
-
   public final ResourceLoader loader;
-
   public final String[] gradientColors;
-
   public final float[] gradientPercents;
-
   public final int width;
-
   public final int height;
 
   /**
@@ -82,7 +76,8 @@ public final class QxImage implements QxType {
     }
   }
 
-  public static QxImage valueOf( final String input, final ResourceLoader loader )
+  public static QxImage valueOf( final String input, 
+                                 final ResourceLoader loader )
   {
     QxImage result;
     if( NONE_INPUT.equals( input ) ) {

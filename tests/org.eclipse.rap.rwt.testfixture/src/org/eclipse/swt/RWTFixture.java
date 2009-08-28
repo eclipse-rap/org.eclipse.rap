@@ -78,7 +78,7 @@ public final class RWTFixture {
     }
 
     public String getLocation( final String name ) {
-      return null;
+      return "resources/" + name;
     }
 
     public URL getResource( final String name ) {

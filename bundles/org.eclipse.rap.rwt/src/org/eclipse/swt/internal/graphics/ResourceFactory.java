@@ -174,15 +174,23 @@ public final class ResourceFactory {
     return result;
   }
 
-  public static synchronized String getImagePath( final Image image ) {
+  public static String getImagePath( final Image image ) {
+    String result = getImageName( image );
+    if( result != null ) {
+      result = ResourceManager.getInstance().getLocation( result );
+    }
+    return result;
+  }
+  
+  private static synchronized String getImageName( final Image image ) {
     String result = null;
     Iterator it = images.entrySet().iterator();
-    boolean next = true;
-    while( next && it.hasNext() ) {
+    boolean found = false;
+    while( !found && it.hasNext() ) {
       Map.Entry entry = ( Map.Entry )it.next();
       if( entry.getValue().equals( image ) ) {
         result = ( String )entry.getKey();
-        next = false;
+        found = true;
       }
     }
     return result;
@@ -192,7 +200,7 @@ public final class ResourceFactory {
     ImageData result = imageDataCache.getImageData( image );
     if( result == null ) {
       IResourceManager manager = ResourceManager.getInstance();
-      String imagePath = getImagePath( image );
+      String imagePath = getImageName( image );
       if( imagePath != null ) {
         try {
           InputStream inputStream = manager.getRegisteredContent( imagePath );

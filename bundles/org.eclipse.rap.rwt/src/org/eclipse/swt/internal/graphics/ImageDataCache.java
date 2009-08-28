@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
@@ -16,18 +17,15 @@ import java.util.Map;
 import org.eclipse.swt.graphics.Image;
 
 
-public class ImageDataCache {
+final class ImageDataCache {
 
   /** Maximum size of image data that is being cached */
   private static final int MAX_DATA_SIZE = 1024;
 
-  /** Maximum number of elements to hold in the image data cache */
-  private static final int MAX_FILL_SIZE = 100;
-
   private final Map cache;
 
-  public ImageDataCache() {
-    cache = new HashMap( MAX_FILL_SIZE / 4 );
+  ImageDataCache() {
+    cache = new HashMap( 25 );
   }
 
   /**
@@ -37,7 +35,7 @@ public class ImageDataCache {
    * @return a secure copy of the cached image data, or <code>null</code> if
    *         no image data have been cached for the given image
    */
-  public ImageData getImageData( final Image image ) {
+  ImageData getImageData( final Image image ) {
     if( image == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -54,18 +52,13 @@ public class ImageDataCache {
    * @param image the image whose image data to store
    * @param imageData the image data to be stored
    */
-  public synchronized void putImageData( final Image image,
-                                         final ImageData imageData )
-  {
+  void putImageData( final Image image, final ImageData imageData ) {
     if( image == null || imageData == null ) {
       throw new NullPointerException( "null argument" );
     }
     if( imageData.data.length <= MAX_DATA_SIZE ) {
+      // TODO [rst] Implement replacement strategy (LRU or LFU)
       synchronized( cache ) {
-        if( cache.size() > MAX_FILL_SIZE ) {
-          // TODO [rst] Implement replacement strategy (LRU or LFU)
-//          cache.remove( key );
-        }
         cache.put( image, imageData.clone() );
       }
     }

@@ -37,6 +37,8 @@ public class ResourceManagerImpl
   implements IResourceManager, Adaptable
 {
   
+  public static final String RESOURCES = "resources";
+
   /** <p>The singleton instance of ResourceManager.</p> */
   private static IResourceManager _instance;
   
@@ -364,6 +366,8 @@ public class ResourceManagerImpl
       StringBuffer url = new StringBuffer();
       url.append( URLHelper.getContextURLString() );
       url.append( "/" );
+      url.append( RESOURCES );
+      url.append( "/" );
       String escapedFilename = escapeFilename( newFileName );
       url.append( versionedResourceName( escapedFilename, version ) );
       result = url.toString();
@@ -503,6 +507,8 @@ public class ResourceManagerImpl
   private File getDiskLocation( final String name, final Integer version ) {
     StringBuffer filename = new StringBuffer();
     filename.append( webAppRoot );
+    filename.append( File.separator );
+    filename.append( RESOURCES );
     filename.append( File.separator );
     filename.append( versionedResourceName( escapeFilename( name ), version ) );
     return new File( filename.toString() );

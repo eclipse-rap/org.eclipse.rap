@@ -18,6 +18,7 @@ import java.util.*;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.css.*;
@@ -114,10 +115,10 @@ public final class ThemeManager {
   };
 
   /** Where to load the default non-themeable images from */
-  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap";
+  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap/";
 
   /** Destination path for theme resources */
-  private static final String THEME_RESOURCE_DEST = "resource/themes";
+  private static final String THEME_RESOURCE_DEST = "themes";
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
 
   private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
@@ -643,7 +644,7 @@ public final class ThemeManager {
     log( " == register non-themeable images for theme " + themeId );
     for( int i = 0; i < WIDGET_NOTHEME_RESOURCES.length; i++ ) {
       String imagePath = WIDGET_NOTHEME_RESOURCES[ i ];
-      String res = WIDGET_RESOURCES_SRC + "/" + imagePath;
+      String res = WIDGET_RESOURCES_SRC + imagePath;
       InputStream inputStream = classLoader.getResourceAsStream( res );
       if( inputStream == null ) {
         String mesg = "Resource not found: " + res;
@@ -767,7 +768,12 @@ public final class ThemeManager {
     }
     QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
     if( type == QxTheme.WIDGET || type == QxTheme.ICON ) {
-      qxTheme.appendUri( getWidgetDestPath( jsId ) );
+      // TODO [rh] remove hard-coded resource-manager-path-prefix 
+      String uri 
+        = ResourceManagerImpl.RESOURCES 
+        + "/" 
+        + getWidgetDestPath( jsId );
+      qxTheme.appendUri( uri );
     } else if( type == QxTheme.APPEARANCE ) {
       Iterator iterator = customAppearances.iterator();
       while( iterator.hasNext() ) {
