@@ -56,19 +56,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
       assertTrue( this.testUtil.getCssBackgroundImage( 
-        widget._getTargetNode().firstChild).search( "test.jpg" ) != -1 
-      );
+        widget._getTargetNode().firstChild).search( "test.jpg" ) != -1 );
       assertEquals( 
         "test text", 
-        widget._getTargetNode().lastChild.innerHTML 
-      );
+        widget._getTargetNode().lastChild.innerHTML );
       this.disposeWidget( widget );
     },
     
     testSpacing : function() {
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget(
-        [ "image", "label", "image", "label", "image" ] 
-      );
+        [ "image", "label", "image", "label", "image" ] );
       this._currentWidget = widget;
       widget.setSpacing( 10 );
       assertEquals( 0 , widget.getTotalSpacing() );
@@ -98,12 +95,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
         height : 100
       } );
       this.initWidget( widget );
+      var lastChild = widget._getTargetNode().lastChild; 
+      var firstChild = widget._getTargetNode().firstChild; 
       assertEquals( 
         "padding left is 23",
         23,
-        this.testUtil.getElementBounds( widget._getTargetNode().firstChild ).left
-      );
-      
+        this.testUtil.getElementBounds( firstChild ).left );      
       widget.set( {
         paddingRight : 11,
         horizontalChildrenAlign : "right"
@@ -112,9 +109,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( 
         "padding right is 11", 
         11,
-        this.testUtil.getElementBounds( widget._getTargetNode().lastChild ).right
-      );
-      
+        this.testUtil.getElementBounds( lastChild ).right );      
       widget.set( { 
         paddingTop : 7,
         verticalChildrenAlign : "top"
@@ -123,14 +118,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( 
         "padding top is 7", 
         7,
-        this.testUtil.getElementBounds( widget._getTargetNode().firstChild ).top
-      );
+        this.testUtil.getElementBounds( firstChild ).top );
       assertEquals(  
         "padding top is 7", 
         7,
-        this.testUtil.getElementBounds( widget._getTargetNode().lastChild ).top
-      );
-      
+        this.testUtil.getElementBounds( lastChild ).top );      
       widget.set( { 
         paddingBottom : 19,
         verticalChildrenAlign : "bottom"
@@ -139,13 +131,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( 
         "padding bottom is 10", 
         19,
-        this.testUtil.getElementBounds( widget._getTargetNode().firstChild ).bottom
-      );
+        this.testUtil.getElementBounds( firstChild ).bottom );
       assertEquals( 
         "padding bottom is 19", 
         19,
-        this.testUtil.getElementBounds( widget._getTargetNode().lastChild ).bottom
-      );
+        this.testUtil.getElementBounds( lastChild ).bottom );
       this.disposeWidget( widget );
     },
 
@@ -161,27 +151,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       } );
       
       this.initWidget( widget, true );
-      var cell0 = this.testUtil.getElementBounds( widget._getTargetNode().firstChild );
-      var cell1 = this.testUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var cell0 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().firstChild );
+      var cell1 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().lastChild );
       assertTrue(
         "1 - horizontal align", 
-        this.almostEqual( cell0.left, cell1.right )
-      );
+        this.almostEqual( cell0.left, cell1.right ) );
       assertTrue(
         "2 - vertical align cell0", 
-        this.almostEqual( cell0.top, cell0.bottom )
-      );
+        this.almostEqual( cell0.top, cell0.bottom ) );
       assertTrue(
         "3 - vertical align cell1", 
-        this.almostEqual( cell1.top, cell1.bottom )
-      );
+        this.almostEqual( cell1.top, cell1.bottom ) );
       this.disposeWidget( widget );      
     },
     
     testPreferredDimension : function() {
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget(
-        [ "image", "label", "image", "label", "image" ] 
-      );
+        [ "image", "label", "image", "label", "image" ] );
       widget.setCellContent( 0, "bla" );
       widget.setCellContent( 1, "bla" );
       widget.setCellContent( 3, "bla" );
@@ -202,8 +190,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setCellDimension( 0, 11, 12 );
       widget.setCellDimension( 1, 13, 14 );
       this.flush();
-      var cell0 = this.testUtil.getElementBounds( widget._getTargetNode().firstChild );
-      var cell1 = this.testUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var cell0 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().firstChild );
+      var cell1 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().lastChild );
       assertEquals( 11, cell0.width ); 
       assertEquals( 12, cell0.height ); 
       assertEquals( 13, cell1.width ); 
@@ -268,10 +258,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setEnabled( false );
       this.initWidget( widget, true );
       assertTrue( this.hasOpacity( widget._getTargetNode().firstChild ) );
-      assertTrue( this.hasOpacity( widget._getTargetNode().lastChild ) );
       widget.setEnabled( true );
       assertFalse( this.hasOpacity( widget._getTargetNode().firstChild ) );
-      assertFalse( this.hasOpacity( widget._getTargetNode().lastChild ) );
       this.disposeWidget( widget );
     },
 
@@ -279,8 +267,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       widget.setDimension( 100, 100 )      
       this.initWidget( widget, true );
-      var cell0 = this.testUtil.getElementBounds( widget._getTargetNode().firstChild );
-      var cell1 = this.testUtil.getElementBounds( widget._getTargetNode().lastChild );      
+      var cell0 = this.testUtil.getElementBounds(
+        widget._getTargetNode().firstChild );
+      var cell1 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().lastChild );
       assertFalse( cell0.left < 0 );
       assertFalse( cell1.right < 0 );
       assertFalse( cell0.top < 0 );
@@ -290,8 +280,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setCellContent( 1, "looooooooooooooooooooooooooooooooooooooong");
       widget.setCellDimension( 0, 16, 150 );
       this.flush();
-      cell0 = this.testUtil.getElementBounds( widget._getTargetNode().firstChild );
-      cell1 = this.testUtil.getElementBounds( widget._getTargetNode().lastChild );      
+      cell0 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().firstChild );
+      cell1 = this.testUtil.getElementBounds( 
+        widget._getTargetNode().lastChild );      
       assertTrue( cell0.left < 0 );
       assertTrue( cell1.right < 0 );
       assertTrue( cell0.top < 0 );
@@ -337,10 +329,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
         var widget = this.createDefaultWidget();
         this.initWidget( widget, true );
         var parentNode = widget._getTargetNode();
-        assertFalse( this.testUtil.getElementSelectable( widget._getTargetNode() ) );
-        //apparently user-select is inhertable      
-//        assertFalse( this.testUtil.getElementSelectable( widget._getTargetNode().firstChild ) );
-//        assertFalse( this.testUtil.getElementSelectable( widget._getTargetNode().lastChild ) );      
+        assertFalse( 
+          this.testUtil.getElementSelectable( widget._getTargetNode() ) );  
         this.disposeWidget( widget );
       } 
     } ),
@@ -350,8 +340,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
     createDefaultWidget : function() {
       return new org.eclipse.rwt.widgets.MultiCellWidget( 
-        [ "image", "label"] 
-      );
+        [ "image", "label"] );
     },
 
     disposeWidget : function( widget ) {

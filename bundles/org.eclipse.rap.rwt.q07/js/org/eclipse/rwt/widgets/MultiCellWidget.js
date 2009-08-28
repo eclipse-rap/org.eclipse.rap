@@ -131,7 +131,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     _applyEnabled : function( value, old ) {
       this.base( arguments, value, old );
       this._styleAllImagesEnabled();
-      this._styleAllLabelsEnabled();
     },
 
     /*
@@ -711,29 +710,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._isTextCell( i ) && this._cellHasContent( i ) ) {
           this._updateLabel( i );
-        }
-      }
-    },
-
-    _styleLabelEnabled : qx.core.Variant.select( "qx.client", {
-      "default" : function( cell ) {
-        var opacity = ( this.getEnabled() === false ) ? 0.3 : "";
-        var style = this.getCellNode( cell ).style;
-        style.opacity = style.KhtmlOpacity = style.MozOpacity = opacity;
-      },
-      "mshtml" : function( cell ) {
-        var filter =
-            this.getEnabled()
-          ? ""
-          : "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
-        this.getCellNode( cell ).style.filter = filter;
-      }
-    }),
-
-    _styleAllLabelsEnabled : function() {
-      for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._isTextCell( i ) && this.__cellHasNode( i ) ) {
-          this._styleLabelEnabled( i );
         }
       }
     },
