@@ -52,6 +52,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this.addEventListener( "changeHeight", this._updateLayout, this );
     // Add keypress listener to select items with left/right keys
     this.addEventListener( "keypress", this._onKeyPress, this );
+    this.addEventListener( "contextmenu", this._onContextMenu, this );
   },
 
   destruct : function() {
@@ -61,6 +62,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this.removeEventListener( "changeWidth", this._updateLayout, this );
     this.removeEventListener( "changeHeight", this._updateLayout, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
+    this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this._disposeObjects( "_frame", "_separator" );
     this._frameBorder.dispose();
   },
@@ -435,6 +437,16 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           // TODO [rh] implementatin missing: select tab item to the right
           evt.stopPropagation();
           break;
+      }
+    },
+    
+    _onContextMenu : function( evt ) {
+      var menu = this.getContextMenu();
+      if( menu != null ) {
+        menu.setLocation( evt.getPageX(), evt.getPageY() );
+        menu.setOpener( this );
+        menu.show();
+        evt.stopPropagation();
       }
     },
 

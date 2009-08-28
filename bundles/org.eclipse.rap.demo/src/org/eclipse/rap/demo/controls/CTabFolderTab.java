@@ -14,6 +14,7 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.Iterator;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.*;
 
 public class CTabFolderTab extends ExampleTab {
 
+  private static final String PROP_CONTEXT_MENU = "contextMenu";
   private static final String CTAB_IMAGE_PATH
     = "resources/newfolder_wiz.gif";
 
@@ -132,6 +134,7 @@ public class CTabFolderTab extends ExampleTab {
         updateProperties();
       }
     } );
+    createPropertyCheckbox( "Add Context Menu", PROP_CONTEXT_MENU );
     text = "Switch tabPosition";
     Button btnSwitchTabPosition = createPropertyButton( text, SWT.PUSH );
     btnSwitchTabPosition.addSelectionListener( new SelectionAdapter() {
@@ -184,6 +187,7 @@ public class CTabFolderTab extends ExampleTab {
     if( tabHeight >= 0 ) {
       folder.setTabHeight( tabHeight );
     }
+    updateContextMenu();
     updateTopRightControl();
     updateProperties();
     updateSelFgColor();
@@ -381,6 +385,24 @@ public class CTabFolderTab extends ExampleTab {
           folder.setSelectionBackground( ( Image )null );
         }
       }
+    }
+  }
+
+  private void updateContextMenu() {
+    if( hasCreateProperty( PROP_CONTEXT_MENU ) ) {
+      Menu folderMenu = new Menu( folder );
+      MenuItem folderMenuItem = new MenuItem( folderMenu, SWT.PUSH );
+      folderMenuItem.addSelectionListener( new SelectionAdapter() {
+
+        public void widgetSelected( final SelectionEvent event ) {
+          String message = "You requested a context menu for the CTabFolder";
+          MessageDialog.openInformation( folder.getShell(),
+                                         "Information",
+                                         message );
+        }
+      } );
+      folderMenuItem.setText( "CTabFolder context menu item" );
+      folder.setMenu( folderMenu );
     }
   }
 }
