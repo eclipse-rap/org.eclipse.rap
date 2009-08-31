@@ -88,4 +88,13 @@ public class LayoutRegistryTest extends RAPTestCase {
     registry.saveLayoutId( defaultString );
   }
   
+  public void testOverrideLayoutSet() {
+    registry.setActiveLayout( LAYOUT_ID, false );
+    Layout activeLayout = registry.getActiveLayout();
+    String setId = "org.eclipse.rap.ui.tests.overrides";
+    LayoutSet set = activeLayout.getLayoutSet( setId );
+    String imagePath = set.getImagePath( "aOverrideKey" );
+    assertEquals( imagePath, "/somepath2" );
+  }
+  
 }

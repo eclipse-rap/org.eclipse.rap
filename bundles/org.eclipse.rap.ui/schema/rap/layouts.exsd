@@ -2,9 +2,9 @@
 <!-- Schema file written by PDE -->
 <schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
-      <appinfo>
+      <appInfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="layouts" name="Layouts"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          This extension point is used to register a custom Layout. This means a grafical Layout not a Layout from the programmers point of view.&lt;br&gt;
 Every Layout can hold attributes called LayoutSets. A LayoutSet is a simple container for images, fonts, colors and position data. These sets are usually coupled to a &lt;code&gt;ElementBuilder&lt;/code&gt;.&lt;br&gt;
@@ -15,9 +15,9 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
 
    <element name="extension">
       <annotation>
-         <appinfo>
+         <appInfo>
             <meta.element />
-         </appinfo>
+         </appInfo>
       </annotation>
       <complexType>
          <sequence>
@@ -42,9 +42,9 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
                <documentation>
                   
                </documentation>
-               <appinfo>
+               <appInfo>
                   <meta.attribute translatable="true"/>
-               </appinfo>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -71,9 +71,19 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
                <documentation>
                   The definition of a LayoutSet. This is a class that has to implement the ILayoutSetInitializer interface.
                </documentation>
-               <appinfo>
+               <appInfo>
                   <meta.attribute kind="java" basedOn=":org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer"/>
-               </appinfo>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="overridesId" type="string">
+            <annotation>
+               <documentation>
+                  To replace a layoutSet you can define a a new one and set the overrides attribute to make clear that the new layoutSet will replace the one defined in this attribute.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.layouts/layout/layoutSet/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -102,18 +112,18 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
    </element>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="since"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          RAP 1.2
       </documentation>
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="examples"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          The following is an example of a Layout with three LayoutSets: 
 &lt;p&gt;
@@ -149,9 +159,9 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="apiinfo"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          Each LayoutSet in a Layout has to implement the &lt;code&gt;ILayoutSetInitializer&lt;/code&gt; interface. The method within is called during the plugin activation to initialize components like images or fonts for this LayoutSet. This implementation can look like this:
 
@@ -170,18 +180,18 @@ public class HeaderLayoutSet implements ILayoutSetInitializer {
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="implementation"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          A detailed implementation example can be found in the &lt;code&gt;org.eclipse.rap.presentation.example&lt;/code&gt; project. This project defines two Layouts and a bunch of LayoutSets. They look not pretty but they do their job.
       </documentation>
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="copyright"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          Copyright (c) 2008 EclipseSource and others. All rights reserved. This
 program and the accompanying materials are made available under the terms of

@@ -30,14 +30,20 @@ public class ElementBuilderTest extends RAPTestCase {
   private LayoutRegistry registry;
   
   protected void setUp() throws Exception {
-    if ( builder == null ) {
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-      Composite parent = new Composite( shell, SWT.NONE );
-      String layoutSetId 
-        = "org.eclipse.rap.ui.interactiondesign.test.layoutSet";
-      builder = new ElementBuilderImpl( parent, layoutSetId );
-    }
     registry = LayoutRegistry.getInstance();
+    registry.setActiveLayout( "org.eclipse.rap.ui.defaultlayout", false );
+    Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+    Composite parent = new Composite( shell, SWT.NONE );
+    String layoutSetId 
+      = "org.eclipse.rap.ui.interactiondesign.test.layoutSet";
+    builder = new ElementBuilderImpl( parent, layoutSetId );
+    
+  }
+ 
+  protected void tearDown() throws Exception {
+    registry = LayoutRegistry.getInstance();
+    String layoutId = "org.eclipse.rap.ui.interactiondesign.test.layout2";
+    registry.setActiveLayout( layoutId, false );
   }
   
   public void testBuilderCreation() {

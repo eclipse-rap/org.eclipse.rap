@@ -118,7 +118,7 @@ public class ConfigurableStackTest extends RAPTestCase {
     assertNull( partToolBar );
     IToolBarManager manager = stack.getPartToolBarManager();
     createToolbarItems( manager ); 
-    assertEquals( 5, manager.getItems().length );
+    assertEquals( 6, manager.getItems().length );
     stack.getConfigAction().saveViewActionVisibility( VIEW_ID, 
                                                       "org.eclipse.actionid3", 
                                                       true );

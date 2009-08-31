@@ -58,6 +58,7 @@ public class Layout {
     LayoutSet set = ( LayoutSet ) layoutSets.get( layoutSetId );
     if( set != null ) {
       layoutSets.remove( layoutSetId );
+      set = null;
     }
   }
   

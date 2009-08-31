@@ -9,6 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rap.interactiondesign.tests.impl;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
@@ -19,8 +21,22 @@ public class ViewPartImpl extends ViewPart {
   }
 
   public void createPartControl( Composite parent ) {
+    IToolBarManager toolBarManager 
+      = getViewSite().getActionBars().getToolBarManager();
+    toolBarManager.add( new Action() {
+      public void run() {
+        System.out.println("action pressed");
+      };
+      
+      public String getText() {
+        return "An action";
+      };
+    } );
   }
 
   public void setFocus() {
   }
+  
+
+  
 }

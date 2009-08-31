@@ -3921,6 +3921,11 @@
                id="org.eclipse.rap.ui.interactiondesign.test.layoutSet"
                name="TestLayoutSet">
          </layoutSet>
+         <layoutSet
+               class="org.eclipse.rap.interactiondesign.tests.impl.OverridesInitializer"
+               id="org.eclipse.rap.ui.tests.overrides"
+               name="Override Test">
+         </layoutSet>
       </layout>
       <layout
             id="org.eclipse.rap.ui.interactiondesign.test.layout2"
@@ -3929,6 +3934,16 @@
                class="org.eclipse.rap.interactiondesign.tests.impl.LayoutSetInitializerImpl2"
                id="org.eclipse.rap.ui.interactiondesign.test.layoutSet2"
                name="TestLayoutSet2">
+         </layoutSet>
+      </layout>
+      <layout
+            id="org.eclipse.rap.ui.defaultlayout"
+            name="Extended Default Layout">
+         <layoutSet
+               class="org.eclipse.rap.interactiondesign.tests.impl.OverridesInitializer2"
+               id="org.eclipse.rap.ui.tests.overrides2"
+               name="Overridden layoutset"
+               overridesId="org.eclipse.rap.ui.tests.overrides">
          </layoutSet>
       </layout>
    </extension>
