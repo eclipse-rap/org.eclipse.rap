@@ -85,6 +85,10 @@ document.write('\
 // - In the document, go to <body> -> <script>
 // - Copy all rows after "qx.Class.define("org.eclipse.swt.theme.ThemeValues"
 // - be careful not to copy the line-numbers with the code
+// - add the following lines: (without the "//")
+//  qx.io.Alias.getInstance().add( "static", "../org.eclipse.rap.rwt.q07/js/resource/static" );
+//  qx.io.Alias.getInstance().add( "org.eclipse.swt", "../org.eclipse.rap.rwt.q07/js/resource" );
+
 
 if( qxsettings["qx.theme"] == "org.eclipse.swt.theme.Default" ) {
   document.write('\
@@ -93,9 +97,5 @@ if( qxsettings["qx.theme"] == "org.eclipse.swt.theme.Default" ) {
     <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/theme/BordersBase.js" type="text/javascript"></script>\
     <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/theme/AppearancesBase.js" type="text/javascript"></script>\
     <script src="./js/resource/RAPThemeSupport.js" type="text/javascript"></script>\
-    <script type="text/javascript">\
-        qx.io.Alias.getInstance().add( "static", "../org.eclipse.rap.rwt.q07/js/resource/static" );\
-        qx.io.Alias.getInstance().add( "org.eclipse.swt", "../org.eclipse.rap.rwt.q07/js/resource" );\
-    </script>\
   ');
 }

@@ -48,7 +48,7 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
     },
     
     hasElementOpacity : function( node ) {
-      return node.style.cssText.search( "opacity" ) != -1;
+      return node.style.cssText.search( /opacity/i  ) != -1;
     },
     
     getCssBackgroundImage : function( node ) {

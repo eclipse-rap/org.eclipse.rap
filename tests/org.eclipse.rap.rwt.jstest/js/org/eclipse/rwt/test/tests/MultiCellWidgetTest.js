@@ -257,9 +257,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       widget.setEnabled( false );
       this.initWidget( widget, true );
-      assertTrue( this.hasOpacity( widget._getTargetNode().firstChild ) );
+      var node = widget._getTargetNode().firstChild;
+      assertTrue( this.testUtil.hasElementOpacity( node ) );
       widget.setEnabled( true );
-      assertFalse( this.hasOpacity( widget._getTargetNode().firstChild ) );
+      assertFalse( this.testUtil.hasElementOpacity( node ) );
       this.disposeWidget( widget );
     },
 
@@ -374,11 +375,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
         this.warn( "almostEqual: value2 is NaN" );
       }
       return Math.abs( value1 - value2 ) <= 1; 
-    },
-    
-    
-    hasOpacity : function( node ) {
-      return node.style.cssText.search( "opacity" ) != -1;
     }
+
   }
 } );
