@@ -16,7 +16,7 @@ import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 public class CoolbarOverflowInitializer implements ILayoutSetInitializer {
   
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.coolbaroverflow";
+    = "org.eclipse.rap.design.example.layoutset.coolbaroverflow";
   
   public static final String BG = "coolbar.layer.bg";
   public static final String RIGHT = "coolbar.layer.right";

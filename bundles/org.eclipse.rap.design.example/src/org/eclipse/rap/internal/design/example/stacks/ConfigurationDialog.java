@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.stacks;
+package org.eclipse.rap.internal.design.example.stacks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.rap.internal.design.example.business.builder.DummyBuilder;
+import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.internal.design.example.business.layoutsets.ConfigDialogInitializer;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;

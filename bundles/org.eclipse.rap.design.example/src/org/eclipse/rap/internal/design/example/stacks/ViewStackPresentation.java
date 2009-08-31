@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.stacks;
+package org.eclipse.rap.internal.design.example.stacks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.rap.internal.design.example.business.builder.BusinessStackBuider;
+import org.eclipse.rap.internal.design.example.builder.StackPresentationBuider;
 import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.ConfigurationAction;
@@ -197,7 +197,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     } );    
     
     parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
-    stackBuilder = new BusinessStackBuider( parent, StackInitializer.SET_ID );
+    stackBuilder = new StackPresentationBuider( parent, StackInitializer.SET_ID );
     stackBuilder.build();
     return parent;
   }

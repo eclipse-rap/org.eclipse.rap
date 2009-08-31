@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.managers;
+package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
-import org.eclipse.rap.internal.design.example.business.popups.MenuPopup;
+import org.eclipse.rap.internal.design.example.popups.MenuPopup;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
@@ -39,7 +39,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
-public class BusinessMenuBarManager extends MenuManager {
+public class MenuBarManager extends MenuManager {
   
   private static final String PLUGIN_ID = "org.eclipse.rap.design.example";
   private Composite menuParent;

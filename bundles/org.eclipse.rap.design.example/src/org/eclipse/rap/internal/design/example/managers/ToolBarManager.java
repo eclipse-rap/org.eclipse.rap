@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.managers;
+package org.eclipse.rap.internal.design.example.managers;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -19,13 +19,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 
 
-public class BusinessToolBarManager extends ToolBarManager2
+public class ToolBarManager extends ToolBarManager2
 {
 
   private ToolBar toolBar;
   
   
-  public BusinessToolBarManager() {
+  public ToolBarManager() {
     super();
   }
 

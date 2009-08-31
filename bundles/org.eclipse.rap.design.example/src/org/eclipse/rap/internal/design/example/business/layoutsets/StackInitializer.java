@@ -16,7 +16,7 @@ import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 public class StackInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.stack";
+    = "org.eclipse.rap.design.example.layoutset.stack";
   public static final String BORDER_TOP = "stack.border.top";
   public static final String BORDER_BOTTOM = "stack.border.bottom";
   public static final String BORDER_LEFT = "stack.border.left";

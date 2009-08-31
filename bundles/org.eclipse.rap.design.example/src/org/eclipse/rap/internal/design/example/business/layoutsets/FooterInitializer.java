@@ -16,7 +16,7 @@ import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 public class FooterInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.footer";
+    = "org.eclipse.rap.design.example.layoutset.footer";
   public static final String LEFT = "footer.left";
   public static final String BG = "footer";
   public static final String RIGHT = "footer.right";

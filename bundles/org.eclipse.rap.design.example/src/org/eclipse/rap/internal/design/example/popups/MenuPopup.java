@@ -7,15 +7,15 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.popups;
+package org.eclipse.rap.internal.design.example.popups;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.rap.internal.design.example.business.builder.DummyBuilder;
-import org.eclipse.rap.internal.design.example.business.builder.MenuBarPopupBilder;
+import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
+import org.eclipse.rap.internal.design.example.builder.MenuBarPopupBilder;
 import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;

@@ -13,13 +13,13 @@ import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.window.ApplicationWindow;
-import org.eclipse.rap.internal.design.example.business.builder.FooterBuilder;
-import org.eclipse.rap.internal.design.example.business.builder.HeaderBuilder;
-import org.eclipse.rap.internal.design.example.business.builder.PerspectiveSwitcherBuilder;
+import org.eclipse.rap.internal.design.example.builder.FooterBuilder;
+import org.eclipse.rap.internal.design.example.builder.HeaderBuilder;
+import org.eclipse.rap.internal.design.example.builder.PerspectiveSwitcherBuilder;
 import org.eclipse.rap.internal.design.example.business.layoutsets.FooterInitializer;
 import org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer;
 import org.eclipse.rap.internal.design.example.business.layoutsets.PerspectiveSwitcherInitializer;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessCoolBarManager;
+import org.eclipse.rap.internal.design.example.managers.CoolBarManager;
 import org.eclipse.rap.ui.interactiondesign.IWindowComposer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -250,9 +250,9 @@ public class BusinessWindowComposer implements IWindowComposer {
       if ( manager instanceof ICoolBarManager2 ) {
         ICoolBarManager2 coolbarManager2 = ( ICoolBarManager2 ) manager;
         coolbarManager2.createControl2( coolBar );
-        if( manager instanceof BusinessCoolBarManager ) {
-          BusinessCoolBarManager coolbarManager 
-            = ( BusinessCoolBarManager ) manager;
+        if( manager instanceof CoolBarManager ) {
+          CoolBarManager coolbarManager 
+            = ( CoolBarManager ) manager;
           coolbarManager.setOverflowParent( overflowParent );          
         }
       }

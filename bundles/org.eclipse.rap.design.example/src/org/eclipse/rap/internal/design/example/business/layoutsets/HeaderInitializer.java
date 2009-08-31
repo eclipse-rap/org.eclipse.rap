@@ -16,7 +16,7 @@ import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 public class HeaderInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.header";
+    = "org.eclipse.rap.design.example.layoutset.header";
   public static final String LEFT = "header.left";
   public static final String LEFT_BG = "header.left.bg";
   public static final String WAVE = "header.wave";

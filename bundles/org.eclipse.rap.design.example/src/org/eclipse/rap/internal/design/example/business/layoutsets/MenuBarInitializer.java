@@ -17,7 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 public class MenuBarInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.menubar";
+    = "org.eclipse.rap.design.example.layoutset.menubar";
   public static final String ARROW = "menubar.arrow";
   public static final String POPUP = "menubar.popup";
   public static final String POPUP_BUTTON = "menubar.popup.button";

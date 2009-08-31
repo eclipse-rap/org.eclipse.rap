@@ -17,7 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 public class ConfigDialogInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.confdialog";
+    = "org.eclipse.rap.design.example.layoutset.confdialog";
   
   public static final String CONFIG_WHITE = "CONFIG_WHITE";
   public static final String CONFIG_BLACK = "CONFIG_BLACK";

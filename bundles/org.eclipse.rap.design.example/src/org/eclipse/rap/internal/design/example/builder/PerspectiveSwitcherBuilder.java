@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.builder;
+package org.eclipse.rap.internal.design.example.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

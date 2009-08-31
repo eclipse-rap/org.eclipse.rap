@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.stacks;
+package org.eclipse.rap.internal.design.example.stacks;
 
 import java.util.ArrayList;
 import java.util.List;

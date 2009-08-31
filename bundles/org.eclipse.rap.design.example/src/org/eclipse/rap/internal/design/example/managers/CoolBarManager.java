@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.managers;
+package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +30,10 @@ import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rap.internal.design.example.business.CommandUtil;
-import org.eclipse.rap.internal.design.example.business.CommandUtil.CommandParameter;
-import org.eclipse.rap.internal.design.example.business.builder.CoolbarLayerBuilder;
-import org.eclipse.rap.internal.design.example.business.builder.DummyBuilder;
+import org.eclipse.rap.internal.design.example.CommandUtil;
+import org.eclipse.rap.internal.design.example.CommandUtil.CommandParameter;
+import org.eclipse.rap.internal.design.example.builder.CoolbarLayerBuilder;
+import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarInitializer;
 import org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarOverflowInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
@@ -72,7 +72,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 
-public class BusinessCoolBarManager extends ContributionManager 
+public class CoolBarManager extends ContributionManager 
   implements ICoolBarManager2 
 {
   
@@ -105,7 +105,7 @@ public class BusinessCoolBarManager extends ContributionManager
     }
   };
   
-  public BusinessCoolBarManager() {
+  public CoolBarManager() {
     super();
     // initialize a dummy builder to get the coolbar images
     dummyBuilder = new DummyBuilder( null, CoolbarInitializer.SET_ID );

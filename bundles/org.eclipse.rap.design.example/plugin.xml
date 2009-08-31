@@ -22,7 +22,7 @@
                id="org.eclipse.rap.design.example.business.factory"
                name="Business Presentation Factory">
             <defaultStackPresentation
-                  id="org.eclipse.rap.design.example.business.stack.view">
+                  id="org.eclipse.rap.design.example.stack.view">
             </defaultStackPresentation>
          </presentationFactory>
       </branding>
@@ -34,47 +34,47 @@
             name="Business Layout Blue">
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.LogoInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.logo"
+               id="org.eclipse.rap.design.example.layoutset.logo"
                name="Logo">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.header"
+               id="org.eclipse.rap.design.example.layoutset.header"
                name="Header">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.FooterInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.footer"
+               id="org.eclipse.rap.design.example.layoutset.footer"
                name="Footer">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.menubar"
+               id="org.eclipse.rap.design.example.layoutset.menubar"
                name="MenuBar">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.PerspectiveSwitcherInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.perspective"
+               id="org.eclipse.rap.design.example.layoutset.perspective"
                name="Perspective Switcher">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.stack"
+               id="org.eclipse.rap.design.example.layoutset.stack"
                name="Busniess Stack">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.ConfigDialogInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.confdialog"
+               id="org.eclipse.rap.design.example.layoutset.confdialog"
                name="Config Dialog">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.coolbar"
+               id="org.eclipse.rap.design.example.layoutset.coolbar"
                name="Coolbar">
          </layoutSet>
          <layoutSet
                class="org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarOverflowInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.coolbaroverflow"
+               id="org.eclipse.rap.design.example.layoutset.coolbaroverflow"
                name="Coolbar Overflow">
          </layoutSet>
       </layout>
@@ -90,10 +90,10 @@
    <extension
          point="org.eclipse.rap.ui.stackPresentations">
       <stackPresentation
-            actionClass="org.eclipse.rap.internal.design.example.business.stacks.ConfigAction"
-            class="org.eclipse.rap.internal.design.example.business.stacks.ViewStackPresentation"
-            id="org.eclipse.rap.design.example.business.stack.view"
-            name="Business"
+            actionClass="org.eclipse.rap.internal.design.example.stacks.ConfigAction"
+            class="org.eclipse.rap.internal.design.example.stacks.ViewStackPresentation"
+            id="org.eclipse.rap.design.example.stack.view"
+            name="Example Stack Presentation"
             type="view">
       </stackPresentation>
    </extension>

@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.managers;
+package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.internal.design.example.business.CommandUtil;
-import org.eclipse.rap.internal.design.example.business.CommandUtil.CommandParameter;
-import org.eclipse.rap.internal.design.example.business.builder.DummyBuilder;
+import org.eclipse.rap.internal.design.example.CommandUtil;
+import org.eclipse.rap.internal.design.example.CommandUtil.CommandParameter;
+import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -50,7 +50,7 @@ import org.eclipse.ui.internal.WWinPluginPulldown;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 
-public class BusinessViewToolBarManager extends ContributionManager 
+public class ViewToolBarManager extends ContributionManager 
   implements IToolBarManager2, IAdaptable 
 {
 
@@ -59,7 +59,7 @@ public class BusinessViewToolBarManager extends ContributionManager
   private List listeners;
   
   
-  public BusinessViewToolBarManager() {
+  public ViewToolBarManager() {
 //    
   }
   

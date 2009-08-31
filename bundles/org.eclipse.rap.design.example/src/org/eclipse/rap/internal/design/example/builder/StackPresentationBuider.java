@@ -7,10 +7,10 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.builder;
+package org.eclipse.rap.internal.design.example.builder;
 
 import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
-import org.eclipse.rap.internal.design.example.business.stacks.ViewStackPresentation;
+import org.eclipse.rap.internal.design.example.stacks.ViewStackPresentation;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 
-public class BusinessStackBuider extends ElementBuilder {
+public class StackPresentationBuider extends ElementBuilder {
 
 
   private Image tabInactiveBgActive;
@@ -37,7 +37,7 @@ public class BusinessStackBuider extends ElementBuilder {
   private Image borderRight;
   private Composite tabBar;
 
-  public BusinessStackBuider( Composite parent, String layoutSetId ) {
+  public StackPresentationBuider( Composite parent, String layoutSetId ) {
     super( parent, layoutSetId );
     init();
   }

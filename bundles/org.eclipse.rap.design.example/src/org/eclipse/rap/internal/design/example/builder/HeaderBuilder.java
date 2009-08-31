@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.builder;
+package org.eclipse.rap.internal.design.example.builder;
 
 import org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer;
 import org.eclipse.rap.internal.design.example.business.layoutsets.LogoInitializer;

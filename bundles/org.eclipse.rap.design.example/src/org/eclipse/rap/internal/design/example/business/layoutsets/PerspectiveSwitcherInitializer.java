@@ -16,7 +16,7 @@ import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 public class PerspectiveSwitcherInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.perspective";
+    = "org.eclipse.rap.design.example.layoutset.perspective";
   public static final String CLOSE = "perspective.close";
   public static final String LEFT_ACTIVE = "perspective.left.active";
   public static final String RIGHT_ACTIVE = "perspective.right.active";

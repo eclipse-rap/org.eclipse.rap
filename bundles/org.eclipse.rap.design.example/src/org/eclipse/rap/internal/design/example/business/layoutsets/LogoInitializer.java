@@ -18,7 +18,7 @@ import org.eclipse.swt.layout.FormData;
 public class LogoInitializer implements ILayoutSetInitializer {
   
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.logo";
+    = "org.eclipse.rap.design.example.layoutset.logo";
   
   public static final String LOGO = "header.logo";
   public static final String LOGO_POSITION = "header.logo.position";

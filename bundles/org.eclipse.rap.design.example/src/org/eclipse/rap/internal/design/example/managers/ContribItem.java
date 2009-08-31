@@ -7,19 +7,19 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.managers;
+package org.eclipse.rap.internal.design.example.managers;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.internal.provisional.action.ToolBarContributionItem2;
 
 
-public class BusinessContribItem extends ToolBarContributionItem2
+public class ContribItem extends ToolBarContributionItem2
 {
 
   private IToolBarManager toolBarManager;
 
-  public BusinessContribItem( 
+  public ContribItem( 
     final IToolBarManager toolBarManager, 
     final String id ) 
   {

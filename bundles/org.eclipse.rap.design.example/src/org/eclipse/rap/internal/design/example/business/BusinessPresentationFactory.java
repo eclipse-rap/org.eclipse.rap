@@ -14,12 +14,12 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessContribItem;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessCoolBarManager;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessMenuBarManager;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessPartMenuManager;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessToolBarManager;
-import org.eclipse.rap.internal.design.example.business.managers.BusinessViewToolBarManager;
+import org.eclipse.rap.internal.design.example.managers.ContribItem;
+import org.eclipse.rap.internal.design.example.managers.CoolBarManager;
+import org.eclipse.rap.internal.design.example.managers.MenuBarManager;
+import org.eclipse.rap.internal.design.example.managers.PartMenuManager;
+import org.eclipse.rap.internal.design.example.managers.ToolBarManager;
+import org.eclipse.rap.internal.design.example.managers.ViewToolBarManager;
 import org.eclipse.rap.ui.interactiondesign.IWindowComposer;
 import org.eclipse.rap.ui.interactiondesign.PresentationFactory;
 
@@ -28,30 +28,30 @@ public class BusinessPresentationFactory extends PresentationFactory {
 
 
   public ICoolBarManager2 createCoolBarManager() {
-    return new BusinessCoolBarManager();
+    return new CoolBarManager();
   }
 
   public MenuManager createMenuBarManager() {
-    return new BusinessMenuBarManager();
+    return new MenuBarManager();
   }
 
   public MenuManager createPartMenuManager() {
-    return new BusinessPartMenuManager();
+    return new PartMenuManager();
   }
 
   public IToolBarContributionItem createToolBarContributionItem( 
     final IToolBarManager toolBarManager,
     final String id )
   {
-    return new BusinessContribItem( toolBarManager, id );
+    return new ContribItem( toolBarManager, id );
   }
 
   public IToolBarManager2 createToolBarManager() {
-    return new BusinessToolBarManager();
+    return new ToolBarManager();
   }
 
   public IToolBarManager2 createViewToolBarManager() {
-    return new BusinessViewToolBarManager();
+    return new ViewToolBarManager();
   }
 
   public IWindowComposer createWindowComposer() {    

@@ -17,7 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 public class CoolbarInitializer implements ILayoutSetInitializer {
   
   public static final String SET_ID 
-    = "org.eclipse.rap.design.example.business.layoutset.coolbar";
+    = "org.eclipse.rap.design.example.layoutset.coolbar";
   
   public static final String OVERFLOW_INACTIVE = "coolbar.overflow.inactive";
   public static final String OVERFLOW_ACTIVE = "coolbar.overflow.active";

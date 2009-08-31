@@ -7,10 +7,10 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.managers;
+package org.eclipse.rap.internal.design.example.managers;
 
 import org.eclipse.jface.action.MenuManager;
 
 
-public class BusinessPartMenuManager extends MenuManager {
+public class PartMenuManager extends MenuManager {
 }

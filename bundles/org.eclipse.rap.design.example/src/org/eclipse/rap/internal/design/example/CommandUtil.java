@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business;
+package org.eclipse.rap.internal.design.example;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandManager;

@@ -7,7 +7,7 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.business.builder;
+package org.eclipse.rap.internal.design.example.builder;
 
 import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
