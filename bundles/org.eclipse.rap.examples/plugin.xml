@@ -57,7 +57,7 @@
                defaultLayoutId="org.eclipse.rap.design.example.business.layout"
                id="org.eclipse.rap.design.example.business.factory">
             <defaultStackPresentation
-                  id="org.eclipse.rap.design.example.business.stack.view">
+                  id="org.eclipse.rap.design.example.stack.view">
             </defaultStackPresentation>
          </presentationFactory>
       </branding>
@@ -66,11 +66,12 @@
          point="org.eclipse.rap.ui.layouts">
       <layout
             id="org.eclipse.rap.design.example.business.layout"
-            name="Business Layout Blue">
+            name="Business Layout Blue Extended">
          <layoutSet
                class="org.eclipse.rap.examples.internal.design.LogoInitializer"
-               id="org.eclipse.rap.design.example.business.layoutset.logo"
-               name="Logo">
+               id="org.eclipse.rap.design.example.layoutset.logo.extended"
+               name="Logo"
+               overridesId="org.eclipse.rap.design.example.layoutset.logo">
          </layoutSet>
       </layout>
    </extension>
