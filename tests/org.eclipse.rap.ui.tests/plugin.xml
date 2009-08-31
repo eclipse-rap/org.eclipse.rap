@@ -3911,6 +3911,7 @@
             restorable="true">
       </view>
    </extension>
+   <!-- RAP IAD START -->
    <extension
          point="org.eclipse.rap.ui.layouts">
       <layout
@@ -3947,4 +3948,5 @@
          </layoutSet>
       </layout>
    </extension>
+   <!-- RAP IAD END -->
 </plugin>            
