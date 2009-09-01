@@ -785,8 +785,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               // is fully visible
               topIndex = gotoIndex - this._getFullyVisibleRowCount() + 1;
             } else {
-              // Move topIndex the same distance as the selection was moved
-              topIndex = this._topIndex - oldFocusIndex + gotoIndex;
+              // Sets the topIndex so the selection to be visible at the
+              // bottom or on the top according to gotoIndex
+              topIndex = gotoIndex >= this._topIndex + this._getFullyVisibleRowCount()
+                       ? gotoIndex - this._getFullyVisibleRowCount() + 1
+                       : gotoIndex;
             }
             // Fix for bug #233964:
             // Ensure that the topIndex does not exceed the range of items
