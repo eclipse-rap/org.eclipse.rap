@@ -61,14 +61,16 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
        throw( "Unkown menuItem type " + menuItemType );
      break; 
     }
-    
     this._preferredCellWidths = [ 0, 0, 0, 13 ];
-    
     if( this._isSelectable ) {
       this.setCellContent( 0, "" ); 
     }
   },
 
+  destruct : function() {
+    this._disposeFields( "_parentMenu", "_subMenu" );     
+  },
+  
   properties : {
 
     selectionIndicator : {
@@ -243,6 +245,6 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     _onmouseup : function( event ) {      
       this.execute(); 
     }
-            
   }
+
 });

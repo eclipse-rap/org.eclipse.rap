@@ -12,7 +12,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
   extend : qx.ui.popup.Popup,
 
   construct : function() {
-    this.base(arguments);
+    this.base( arguments );
     this._layout = null;
     this._preItem = null;
     this._hasListener = false;
@@ -47,6 +47,29 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     this.addToDocument();    
   },
 
+  destruct : function() {
+    this._disposeObjects( "_openTimer", "_closeTimer", "_preItem" );
+    this._disposeFields( "_lastActive", 
+                         "_lastFocus", 
+                         "_layout", 
+                         "_opener", 
+                         "_hoverItem", 
+                         "_openItem" );
+  },
+  
+  statics : {
+    
+    contextMenuHandler : function( event ) {
+      var widget = event.getTarget();
+      var contextMenu = widget.getContextMenu();
+      if( contextMenu != null ) {
+        contextMenu.setLocation( event.getPageX(), event.getPageY() );
+        contextMenu.setOpener( this );
+        contextMenu.show();
+      }
+    }    
+  },
+  
   properties :  {
     appearance : {
       refine : true,
@@ -114,7 +137,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     },
        
     getMaxCellWidth : function( cell ) {
-      if( this._maxCellWidths[ cell ] == null) {
+      if( this._maxCellWidths[ cell ] == null ) {
         var max = 0;
         var children = this._layout.getChildren();
         var length = children.length;
@@ -531,21 +554,6 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
         menu.show();
       }
     }
-      
-  },
-  
-  statics : {
-    
-    contextMenuHandler : function( event ) {
-      var widget = event.getTarget();
-      var contextMenu = widget.getContextMenu();
-      if( contextMenu != null ) {
-        contextMenu.setLocation( event.getPageX(), event.getPageY() );
-        contextMenu.setOpener( this );
-        contextMenu.show();
-      }
-    }    
-    
   }
   
 });
