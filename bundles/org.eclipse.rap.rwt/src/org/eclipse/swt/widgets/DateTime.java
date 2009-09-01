@@ -1078,7 +1078,11 @@ public class DateTime extends Composite {
     int style = value;
     style &= ~( SWT.H_SCROLL | SWT.V_SCROLL );
     style = checkBits( style, SWT.DATE, SWT.TIME, SWT.CALENDAR, 0, 0, 0 );
-    return checkBits( style, SWT.MEDIUM, SWT.SHORT, SWT.LONG, 0, 0, 0 );
+    style = checkBits( style, SWT.MEDIUM, SWT.SHORT, SWT.LONG, 0, 0, 0 );
+    if( ( style & SWT.DATE ) == 0 ) {
+      style &= ~SWT.DROP_DOWN;
+    }
+    return style;
   }
 
   protected void checkSubclass() {

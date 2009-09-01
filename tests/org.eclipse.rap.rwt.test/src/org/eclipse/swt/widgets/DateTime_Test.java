@@ -188,6 +188,19 @@ public class DateTime_Test extends TestCase {
     assertTrue( ( dateTime.getStyle() & SWT.TIME ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
+    // Test SWT.DROP_DOWN
+    dateTime = new DateTime( shell, SWT.DATE
+                                  | SWT.MEDIUM
+                                  | SWT.DROP_DOWN );
+    assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) != 0 );
+    dateTime = new DateTime( shell, SWT.TIME
+                                  | SWT.MEDIUM
+                                  | SWT.DROP_DOWN );
+    assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) == 0 );
+    dateTime = new DateTime( shell, SWT.CALENDAR
+                                  | SWT.MEDIUM
+                                  | SWT.DROP_DOWN );
+    assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) == 0 );
   }
 
   public void testDispose() {
