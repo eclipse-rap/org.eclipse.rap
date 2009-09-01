@@ -30,7 +30,9 @@ public class DateTimeLCA_Test extends TestCase {
   public void testDateTimeDatePreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    DateTime dateTime = new DateTime( shell, SWT.DATE
+                                           | SWT.MEDIUM
+                                           | SWT.DROP_DOWN );
     dateTime.setDay( 1 );
     dateTime.setMonth( 1 );
     dateTime.setYear( 2008 );
@@ -82,6 +84,10 @@ public class DateTimeLCA_Test extends TestCase {
     propName = IDateTimeAdapter.SPINNER + "_BOUNDS";
     bounds = ( Rectangle )adapter.getPreserved( propName );
     assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SPINNER ),
+                  bounds );
+    propName = IDateTimeAdapter.DROP_DOWN_BUTTON + "_BOUNDS";
+    bounds = ( Rectangle )adapter.getPreserved( propName );
+    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DROP_DOWN_BUTTON ),
                   bounds );
     RWTFixture.clearPreserved();
     // Test preserved selection listeners
