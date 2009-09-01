@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
- 
+
  /**
   * This is a modified version of qooxdoo qx.ui.component.DateChooser component.
   */
@@ -66,26 +66,26 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     this._lastMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Previous month"));
     this._nextMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next month"));
     this._nextYearBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next year"));
-    
+
     lastYearBt.set({
       show    : 'icon',
       toolTip : this._lastYearBtToolTip,
       spacing : 0
     });
     lastYearBt.setUserData( "calendar-button", true );
-        
+
     lastMonthBt.set({
       show    : 'icon',
       toolTip : this._lastMonthBtToolTip
     });
     lastMonthBt.setUserData( "calendar-button", true );
-    
+
     nextMonthBt.set({
       show    : 'icon',
       toolTip : this._nextMonthBtToolTip
     });
     nextMonthBt.setUserData( "calendar-button", true );
-    
+
     nextYearBt.set({
       show    : 'icon',
       toolTip : this._nextYearBtToolTip
@@ -122,7 +122,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH * 8,
       height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT * 7
     });
-    
+
     // Create the weekdays
     // Add an empty label as spacer for the week numbers
     var label = new qx.ui.basic.Label;
@@ -177,7 +177,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
       datePane.add(label);
       this._weekLabelArr.push(label);
-      
+
       // Add the day labels
       for (var x=1; x<8; x++) {
         var label = new qx.ui.basic.Label;
@@ -327,7 +327,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         }
       }
     },
-    
+
     // property checker
     /**
      * TODOC
@@ -392,7 +392,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         case this._lastYearBt:
           year--;
           break;
-          
+
         case this._lastMonthBt:
           month--;
 
@@ -410,7 +410,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
             year++;
           }
           break;
-          
+
         case this._nextYearBt:
           year++;
           break;
@@ -503,7 +503,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
             evt.preventDefault();
             evt.stopPropagation();
             break;
-         
+
           case "Home":
           case "End":
             evt.preventDefault();
@@ -605,24 +605,24 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
       // Create a help date that points to the first of the current month
       var helpDate = new Date(this.getShownYear(), this.getShownMonth(), 1);
-      
-      var year = this.getShownYear();      
+
+      var year = this.getShownYear();
       var month = org.eclipse.swt.widgets.Calendar.MONTH_NAMES[ this.getShownMonth() ];
       this._monthYearLabel.setText( month + " " + year );
 
       // Show the day names
       var firstDayOfWeek = helpDate.getDay();
       var firstSundayInMonth = (1 + 7 - firstDayOfWeek) % 7;
-      
+
       for (var i=0; i<7; i++) {
         var day = (i + startOfWeek) % 7;
 
         var dayLabel = this._weekdayLabelArr[i];
 
         helpDate.setDate(firstSundayInMonth + day);
-        
+
         var weekdayName = org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES[ helpDate.getDay() + 1 ];
-                
+
         dayLabel.setText( weekdayName );
 
         if (this.__isWeekend(day)) {
@@ -639,7 +639,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
       for (var week=0; week<6; week++) {
         this._weekLabelArr[week].setText("" + this.__getWeekInYear(helpDate));
-        
+
         for (var i=0; i<7; i++) {
           var dayLabel = this._dayLabelArr[week * 7 + i];
 
@@ -677,7 +677,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         }
       }
     },
-    
+
     /**
      * Returns the thursday in the same week as the date.
      *
@@ -688,7 +688,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     __thursdayOfSameWeek : function(date) {
       return new Date(date.getTime() + (3 - ((date.getDay() + 6) % 7)) * 86400000);
     },
-    
+
     /**
      * Returns the week in year of a date.
      *
@@ -715,7 +715,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       // Calculate the calendar week
       return Math.floor(1.5 + (thursdayDate.getTime() - thursdayWeek1.getTime()) / 86400000 / 7);
     },
-    
+
     /**
      * Return the day the week starts with
      *
@@ -799,7 +799,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       // default is monday
       return weekStart[territory] != null ? weekStart[territory] : 1;
     },
-    
+
     /**
      * Return the day the weekend starts with
      *
@@ -897,7 +897,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         return ((day >= weekendStart) || (day <= weekendEnd));
       }
     },
-    
+
     /**
      * Extract the territory part from a locale
      *
@@ -924,7 +924,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
   destruct : function() {
     qx.locale.Manager.getInstance().removeEventListener("changeLocale", this._updateDatePane, this);
-    
+
     this._disposeObjects("_lastYearBtToolTip", "_lastMonthBtToolTip", "_nextMonthBtToolTip", "_nextYearBtToolTip");
     this._disposeObjects("_lastYearBt", "_lastMonthBt", "_nextMonthBt", "_nextYearBt", "_monthYearLabel");
 

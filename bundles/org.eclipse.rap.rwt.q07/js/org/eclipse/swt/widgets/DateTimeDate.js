@@ -154,15 +154,15 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton = new qx.ui.form.Button();
-      this._dropDownButton.setAppearance( "datetime-drop-down-button" );      
+      this._dropDownButton.setAppearance( "datetime-drop-down-button" );
       this._dropDownButton.setTabIndex( -1 );
       this._dropDownButton.setAllowStretchY( true );
       this.add( this._dropDownButton );
       // Get names of weekdays and months
-      org.eclipse.swt.widgets.Calendar.MONTH_NAMES = monthNames;    
+      org.eclipse.swt.widgets.Calendar.MONTH_NAMES = monthNames;
       org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES = weekdayShortNames;
       this._calendar = new org.eclipse.swt.widgets.Calendar();
-      this._calendar.setAppearance( "datetime-drop-down-calendar" );      
+      this._calendar.setAppearance( "datetime-drop-down-calendar" );
       this._calendar.setDate( new Date( 70, 0, 1 ) );
       this._calendar.setTabIndex( -1 );
       this._calendar.setVisibility( false );
@@ -267,7 +267,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _rwt_onChangeFont : function( evt ) {
       var value = evt.getValue();
       this._weekdayTextField.setFont( value );
@@ -379,7 +379,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             case "Up": case "Down":
             case "PageUp": case "PageDown":
               var date = this._calendar.getDate();
-              this._setDate( date );          
+              this._setDate( date );
               if( this._readyToSendChanges ) {
                 this._readyToSendChanges = false;
                 // Send changes
@@ -394,7 +394,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             break;
             case "PageUp": case "PageDown":
               var date = this._calendar.getDate();
-              this._setDate( date );          
+              this._setDate( date );
               if( this._readyToSendChanges ) {
                 this._readyToSendChanges = false;
                 // Send changes
@@ -403,7 +403,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             break;
           }
         }
-      } else {        
+      } else {
         if( org.eclipse.swt.widgets.DateTimeDate._isNoModifierPressed( evt ) ) {
           switch( keyIdentifier ) {
             case "Left":
@@ -602,7 +602,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _onmousewheel : function( evt ) {
       evt.preventDefault();
       evt.stopPropagation();
@@ -720,7 +720,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       // Set the weekday
       this._setWeekday();
     },
-    
+
     _setDate : function( date ) {
       this.setYear( date.getFullYear() );
       this.setMonth( date.getMonth() );
@@ -771,34 +771,34 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         });
       }
     },
-    
+
     //////////////////////////////////////
     // Drop-down calendar handling methods
-    
+
     _onAppear : function( evt ) {
       if( this._calendar != null ) {
         this.getTopLevelWidget().add( this._calendar );
         this._setCalendarLocation();
       }
     },
-    
+
     _onWindowBlur : function( evt ) {
       if( this._dropped ) {
         this._toggleCalendarVisibility();
       }
     },
-    
+
     _onChangeVisibility : function( evt ) {
       var value = evt.getValue();
       if( !value && this._dropped ) {
         this._toggleCalendarVisibility();
       }
     },
-    
-    _onMouseClick : function( evt ) {      
+
+    _onMouseClick : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
         var target = evt.getTarget();
-        if( target.getUserData( "calendar-day" ) ) {          
+        if( target.getUserData( "calendar-day" ) ) {
           this._calendar._onDayClicked( evt );
           var date = this._calendar.getDate();
           this._setDate( date );
@@ -808,7 +808,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             this._readyToSendChanges = false;
             // Send changes
             qx.client.Timer.once( this._sendChanges, this, 500 );
-          }          
+          }
         } else if( target.getUserData( "calendar-button" ) ) {
           this._calendar._onNavButtonClicked( evt );
         } else if( target === this._dropDownButton ) {
@@ -818,38 +818,38 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _onMouseOver : function( evt ) {
       if( evt.getTarget() == this._dropDownButton ) {
         this._dropDownButton.addState( "over" );
       }
     },
-    
+
     _onMouseOut : function( evt ) {
       if( evt.getTarget() == this._dropDownButton ) {
         this._dropDownButton.removeState( "over" );
       }
     },
-    
+
     _toggleCalendarVisibility : function() {
       if( this._calendar != null ) {
         this._dropped = !this._dropped;
         this._calendar.setVisibility( this._dropped );
         this.setCapture( this._dropped );
         if( this._dropped ) {
-          this._bringToFront();          
+          this._bringToFront();
           this._setCalendarLocation();
           var year = parseInt( this._yearTextField.getText(), 10 );
           var day = parseInt( this._dayTextField.getText(), 10 );
           var date = new Date( year, this._monthInt - 1, day );
           this._calendar.setDate( date );
-          this._focusedTextField.removeState( "selected" );          
+          this._focusedTextField.removeState( "selected" );
         } else {
           this._focusedTextField.addState( "selected" );
         }
       }
     },
-    
+
     _setCalendarLocation : function() {
       if( this.getElement() && this._calendar != null ){
         var elementPos = qx.bom.element.Location.get( this.getElement() );
@@ -857,7 +857,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                                     elementPos.top + this.getHeight() );
       }
     },
-    
+
     _bringToFront : function() {
       var allWidgets = this.getTopLevelWidget().getChildren();
       var topZIndex = this._calendar.getZIndex();
