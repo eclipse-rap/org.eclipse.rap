@@ -166,6 +166,12 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this._calendar.setDate( new Date( 70, 0, 1 ) );
       this._calendar.setTabIndex( -1 );
       this._calendar.setVisibility( false );
+      // TODO: [if] Calendar buttons tooltips have wrong z-index
+      // Remove tooltips for now.
+      this._calendar._lastYearBt.setToolTip( null );
+      this._calendar._lastMonthBt.setToolTip( null );
+      this._calendar._nextMonthBt.setToolTip( null );
+      this._calendar._nextYearBt.setToolTip( null );
     }
     // Set the default focused text field
     this._focusedTextField = this._monthTextField;
