@@ -1900,6 +1900,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "datetime-drop-down-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime-DropDownButton", "border" );      
+      result.icon = tv.getCssImage( "DateTime-DropDownButton",
+                                    "background-image" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DropDownButton",
+                                               "background-color" );
+      return result;
+    }
+  },
+  
+  "datetime-drop-down-calendar" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime-DropDownCalendar", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      return result;
+    }
+  },
 
   // ------------------------------------------------------------------------
   // Calendar

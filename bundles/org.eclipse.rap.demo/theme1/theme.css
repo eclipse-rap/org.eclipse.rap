@@ -88,13 +88,13 @@ Combo {
   border: 1px solid #1695d4;
 }
 
-Combo-Button {
+Combo-Button, DateTime-DropDownButton {
   background-image: url( "/theme1/icons/combo.down.gif" );
   background-color: #9dd0ea;
   border: none;
 }
 
-Combo-Button:hover {
+Combo-Button:hover, DateTime-DropDownButton:hover {
   background-color: #abe3ff;
 }
 

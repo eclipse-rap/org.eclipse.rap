@@ -40,6 +40,7 @@ class DateTimeTab extends ExampleTab {
     createStyleButton( group2, "SHORT", SWT.SHORT, SWT.RADIO, false );
     createStyleButton( group2, "MEDIUM", SWT.MEDIUM, SWT.RADIO, true );
     createStyleButton( group2, "LONG", SWT.LONG, SWT.RADIO, false );
+    createStyleButton( "DROP_DOWN", SWT.DROP_DOWN, false );
     createStyleButton( "BORDER", SWT.BORDER, true );
     createVisibilityButton();
     createEnablementButton();

@@ -72,21 +72,25 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       toolTip : this._lastYearBtToolTip,
       spacing : 0
     });
-    
+    lastYearBt.setUserData( "calendar-button", true );
+        
     lastMonthBt.set({
       show    : 'icon',
       toolTip : this._lastMonthBtToolTip
-    });    
+    });
+    lastMonthBt.setUserData( "calendar-button", true );
     
     nextMonthBt.set({
       show    : 'icon',
       toolTip : this._nextMonthBtToolTip
     });
+    nextMonthBt.setUserData( "calendar-button", true );
     
     nextYearBt.set({
       show    : 'icon',
       toolTip : this._nextYearBtToolTip
     });
+    nextYearBt.setUserData( "calendar-button", true );
 
     lastYearBt.setAppearance("calendar-toolbar-previous-year-button");
     lastMonthBt.setAppearance("calendar-toolbar-previous-month-button");
@@ -190,6 +194,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
         label.addEventListener("mousedown", this._onDayClicked, this);
         label.addEventListener("dblclick", this._onDayDblClicked, this);
+        label.setUserData( "calendar-day", true );
         datePane.add(label);
         this._dayLabelArr.push(label);
       }
@@ -383,7 +388,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       var year = this.getShownYear();
       var month = this.getShownMonth();
 
-      switch(evt.getCurrentTarget()) {
+      switch(evt.getTarget()) {
         case this._lastYearBt:
           year--;
           break;
@@ -423,7 +428,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      */
     _onDayClicked : function(evt) {
     	if( evt.isLeftButtonPressed() ) {
-        var time = evt.getCurrentTarget().dateTime;
+        var time = evt.getTarget().dateTime;
         this.setDate(new Date(time));
     	}
     },

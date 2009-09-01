@@ -33,13 +33,14 @@ import org.eclipse.swt.internal.widgets.datetimekit.DateTimeThemeAdapter;
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>DATE, TIME, CALENDAR, SHORT, MEDIUM, LONG</dd>
+ * <dd>DATE, TIME, CALENDAR, SHORT, MEDIUM, LONG, DROP_DOWN</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection</dd>
  * </dl>
  * <p>
  * Note: Only one of the styles DATE, TIME, or CALENDAR may be specified, and
  * only one of the styles SHORT, MEDIUM, or LONG may be specified.
+ * The DROP_DOWN style is a <em>HINT</em>, and it is only valid with the DATE style.
  * </p>
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
@@ -93,6 +94,9 @@ public class DateTime extends Composite {
         case MINUTES_SECONDS_SEPARATOR:
           result = separator4Bounds;
         break;
+        case DROP_DOWN_BUTTON:
+          result = dropDownButtonBounds;
+        break;
       }
       return result;
     }
@@ -145,6 +149,8 @@ public class DateTime extends Composite {
   private Rectangle secondsTextFieldBounds;
   private Rectangle separator3Bounds;
   private Rectangle separator4Bounds;
+  // Date drop down button
+  private Rectangle dropDownButtonBounds;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -615,7 +621,7 @@ public class DateTime extends Composite {
     Point computedSize = this.getSize();
     if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
       if( computedSize.x != size.x || computedSize.y != size.y ) {
-        recalculateSpinnerBounds( computedSize );
+        recalculateButtonsBounds( computedSize );
       }
     }
   }
@@ -674,7 +680,7 @@ public class DateTime extends Composite {
       secondsTextFieldBounds.width = hoursTextFieldBounds.width;
       secondsTextFieldBounds.height = hoursTextFieldBounds.height;
       // The spinner bounds
-      int buttonWidth = getButtonWidth();
+      int spinnerButtonWidth = getSpinnerButtonWidth();
       spinnerBounds = new Rectangle( 0, 0, 0, 0 );
       spinnerBounds.x = minutesTextFieldBounds.x
                       + minutesTextFieldBounds.width
@@ -684,7 +690,7 @@ public class DateTime extends Composite {
                         + secondsTextFieldBounds.width
                         + padding.x;
       }
-      spinnerBounds.width = buttonWidth + 1;
+      spinnerBounds.width = spinnerButtonWidth + 1;
       spinnerBounds.height = hoursTextFieldBounds.height + padding.height;
       // Overall default widget size
       width = spinnerBounds.x + spinnerBounds.width + border * 2;
@@ -759,16 +765,27 @@ public class DateTime extends Composite {
       = TextSizeDetermination.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
-    int buttonWidth = getButtonWidth();
+    int spinnerButtonWidth = getSpinnerButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-    spinnerBounds.x =   yearTextFieldBounds.x 
-                      + yearTextFieldBounds.width 
+    spinnerBounds.x =   yearTextFieldBounds.x
+                      + yearTextFieldBounds.width
                       + padding.x;
-    spinnerBounds.width = buttonWidth + 1;
+    spinnerBounds.width = spinnerButtonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
+    // The drop-down button bounds
+    int dropDownButtonWidth = getDropDownButtonWidth();
+    dropDownButtonBounds = new Rectangle( spinnerBounds.x,
+                                          spinnerBounds.y,
+                                          dropDownButtonWidth + 1,
+                                          spinnerBounds.height );
     // Overall default widget size
-    int width = spinnerBounds.x + spinnerBounds.width;
+    int width = spinnerBounds.x;
     int height = spinnerBounds.height;
+    if( ( style & SWT.DROP_DOWN ) == 0 ) {
+      width += spinnerBounds.width;
+    } else {
+      width += dropDownButtonBounds.width;
+    }
     return new Point( width, height );
   }
 
@@ -838,16 +855,27 @@ public class DateTime extends Composite {
       = TextSizeDetermination.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
-    int buttonWidth = getButtonWidth();
+    int spinnerButtonWidth = getSpinnerButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-    spinnerBounds.x =   yearTextFieldBounds.x 
-                      + yearTextFieldBounds.width 
+    spinnerBounds.x =   yearTextFieldBounds.x
+                      + yearTextFieldBounds.width
                       + padding.x;
-    spinnerBounds.width = buttonWidth + 1;
+    spinnerBounds.width = spinnerButtonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
+    // The drop-down button bounds
+    int dropDownButtonWidth = getDropDownButtonWidth();
+    dropDownButtonBounds = new Rectangle( spinnerBounds.x,
+                                          spinnerBounds.y,
+                                          dropDownButtonWidth + 1,
+                                          spinnerBounds.height );
     // Overall default widget size
-    int width = spinnerBounds.x + spinnerBounds.width;
+    int width = spinnerBounds.x;
     int height = spinnerBounds.height;
+    if( ( style & SWT.DROP_DOWN ) == 0 ) {
+      width += spinnerBounds.width;
+    } else {
+      width += dropDownButtonBounds.width;
+    }
     return new Point( width, height );
   }
 
@@ -918,32 +946,54 @@ public class DateTime extends Composite {
 
     separator1Bounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
-    int buttonWidth = getButtonWidth();
+    int spinnerButtonWidth = getSpinnerButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-    spinnerBounds.x =   dayTextFieldBounds.x 
-                      + dayTextFieldBounds.width 
+    spinnerBounds.x =   dayTextFieldBounds.x
+                      + dayTextFieldBounds.width
                       + padding.x;
-    spinnerBounds.width = buttonWidth + 1;
+    spinnerBounds.width = spinnerButtonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
+    // The drop-down button bounds
+    int dropDownButtonWidth = getDropDownButtonWidth();
+    dropDownButtonBounds = new Rectangle( spinnerBounds.x,
+                                          spinnerBounds.y,
+                                          dropDownButtonWidth + 1,
+                                          spinnerBounds.height );
     // Overall default widget size
-    int width = spinnerBounds.x + spinnerBounds.width;
+    int width = spinnerBounds.x;
     int height = spinnerBounds.height;
+    if( ( style & SWT.DROP_DOWN ) == 0 ) {
+      width += spinnerBounds.width;
+    } else {
+      width += dropDownButtonBounds.width;
+    }
     return new Point( width, height );
   }
 
-  private void recalculateSpinnerBounds( final Point size ) {
+  private void recalculateButtonsBounds( final Point size ) {
     int border = getBorderWidth();
     spinnerBounds.x = size.x - spinnerBounds.width - 2 * border;
     spinnerBounds.height = size.y - 2 * border;
+    if( ( style & SWT.DROP_DOWN ) != 0 ) {
+      dropDownButtonBounds.x = size.x - dropDownButtonBounds.width - 2 * border;
+      dropDownButtonBounds.height = size.y - 2 * border;
+    }
   }
 
-  private int getButtonWidth() {
+  private int getSpinnerButtonWidth() {
     ThemeManager manager = ThemeManager.getInstance();
     DateTimeThemeAdapter adapter
       = ( DateTimeThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getButtonWidth( this );
+    return adapter.getSpinnerButtonWidth( this );
   }
-  
+
+  private int getDropDownButtonWidth() {
+    ThemeManager manager = ThemeManager.getInstance();
+    DateTimeThemeAdapter adapter
+      = ( DateTimeThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getDropDownButtonWidth( this );
+  }
+
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();
     DateTimeThemeAdapter adapter
