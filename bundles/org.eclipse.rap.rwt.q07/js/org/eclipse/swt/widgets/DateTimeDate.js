@@ -391,6 +391,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                 // Send changes
                 qx.client.Timer.once( this._sendChanges, this, 500 );
               }
+              evt.preventDefault();
+              evt.stopPropagation();
             break;
           }
         } else if( evt.isShiftPressed() ) {
@@ -406,6 +408,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                 // Send changes
                 qx.client.Timer.once( this._sendChanges, this, 500 );
               }
+              evt.preventDefault();
+              evt.stopPropagation();
             break;
           }
         }
