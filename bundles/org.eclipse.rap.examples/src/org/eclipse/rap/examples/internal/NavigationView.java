@@ -29,11 +29,8 @@ public class NavigationView extends ViewPart {
     = "org.eclipse.rap.examples.navigationView";
   
   private ExpandBar expandBar;
-
   private Object selectedElement;
-
   private SelectionListener listSelectionListener = new ListSelectionListener();
-
   private SelectionProvider selectionProvider = new SelectionProvider();
 
   public void createPartControl( final Composite parent ) {
@@ -163,14 +160,14 @@ public class NavigationView extends ViewPart {
   
     private ListenerList selectionChangedListeners = new ListenerList();
   
-    public void addSelectionChangedListener( ISelectionChangedListener listener )
+    public void addSelectionChangedListener( ISelectionChangedListener lsnr )
     {
-      selectionChangedListeners.add( listener );
+      selectionChangedListeners.add( lsnr );
     }
     
-    public void removeSelectionChangedListener( ISelectionChangedListener listener )
+    public void removeSelectionChangedListener( ISelectionChangedListener lsnr )
     {
-      selectionChangedListeners.remove( listener );
+      selectionChangedListeners.remove( lsnr );
     }
 
     public ISelection getSelection() {
@@ -183,7 +180,7 @@ public class NavigationView extends ViewPart {
       return result;
     }
   
-    public void setSelection( ISelection selection ) {
+    public void setSelection( final ISelection selection ) {
       throw new UnsupportedOperationException();
     }
 
@@ -193,12 +190,11 @@ public class NavigationView extends ViewPart {
         = new SelectionChangedEvent( this, selection );
       Object[] listeners = selectionChangedListeners.getListeners();
       for( int i = 0; i < listeners.length; ++i ) {
-        final ISelectionChangedListener l
+        final ISelectionChangedListener listener
           = ( ISelectionChangedListener )listeners[ i ];
         SafeRunnable.run( new SafeRunnable() {
-
           public void run() {
-            l.selectionChanged( event );
+            listener.selectionChanged( event );
           }
         } );
       }
