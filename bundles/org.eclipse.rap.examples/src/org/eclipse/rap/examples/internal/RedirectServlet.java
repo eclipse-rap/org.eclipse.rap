@@ -16,7 +16,7 @@ import javax.servlet.http.*;
 
 
 /**
- * This servlet is registered for alias "/" and redirects all requests to the 
+ * This servlet is registered for alias "/" and redirects all requests to the
  * <code>examples</code> servlet.
  */
 public class RedirectServlet extends HttpServlet {
@@ -25,22 +25,22 @@ public class RedirectServlet extends HttpServlet {
 
   private static final String REDIRECT_URL = "examples";
 
-  protected void doGet( final HttpServletRequest req, 
+  protected void doGet( final HttpServletRequest req,
                         final HttpServletResponse resp )
     throws ServletException, IOException
   {
     redirect( resp );
   }
 
-  protected void doPost( final HttpServletRequest req, 
+  protected void doPost( final HttpServletRequest req,
                          final HttpServletResponse resp )
     throws ServletException, IOException
   {
     redirect( resp );
   }
 
-  private static void redirect( final HttpServletResponse response ) 
-    throws IOException 
+  private static void redirect( final HttpServletResponse response )
+    throws IOException
   {
     response.sendRedirect( response.encodeRedirectURL( REDIRECT_URL ) );
   }

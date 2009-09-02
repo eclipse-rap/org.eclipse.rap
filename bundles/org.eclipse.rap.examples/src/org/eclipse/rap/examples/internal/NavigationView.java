@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2008, 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -27,7 +27,7 @@ public class NavigationView extends ViewPart {
 
   public static final String ID
     = "org.eclipse.rap.examples.navigationView";
-  
+
   private ExpandBar expandBar;
   private Object selectedElement;
   private SelectionListener listSelectionListener = new ListSelectionListener();
@@ -55,13 +55,13 @@ public class NavigationView extends ViewPart {
     expandBar.setSpacing( 2 );
 // TODO [rst] Auto-collapse mechanism, enable when there are more items
 //    expandBar.addExpandListener( new ExpandListener() {
-//      
+//
 //      public void itemCollapsed( final ExpandEvent e ) {
 //        ExpandItem item = ( ExpandItem )e.item;
 //        List list = ( List )item.getControl();
 //        list.deselectAll();
 //      }
-//      
+//
 //      public void itemExpanded( final ExpandEvent e ) {
 //        ExpandItem[] items = expandBar.getItems();
 //        for( int i = 0; i < items.length; i++ ) {
@@ -76,8 +76,7 @@ public class NavigationView extends ViewPart {
 //    } );
     // workaround to apply TextSizeDetermination results
     parent.addControlListener( new ControlAdapter() {
-
-      public void controlResized( ControlEvent e ) {
+      public void controlResized( final ControlEvent e ) {
         ExpandItem[] items = expandBar.getItems();
         for( int i = 0; i < items.length; i++ ) {
           ExpandItem item = items[ i ];
@@ -125,7 +124,7 @@ public class NavigationView extends ViewPart {
     // ----
     return item;
   }
-  
+
   private void initSelection() {
     if( expandBar.getItemCount() > 0 ) {
       ExpandItem firstItem = expandBar.getItem( 0 );
@@ -157,15 +156,15 @@ public class NavigationView extends ViewPart {
   }
 
   private final class SelectionProvider implements ISelectionProvider {
-  
+
     private ListenerList selectionChangedListeners = new ListenerList();
-  
-    public void addSelectionChangedListener( ISelectionChangedListener lsnr )
+
+    public void addSelectionChangedListener( final ISelectionChangedListener lsnr )
     {
       selectionChangedListeners.add( lsnr );
     }
-    
-    public void removeSelectionChangedListener( ISelectionChangedListener lsnr )
+
+    public void removeSelectionChangedListener( final ISelectionChangedListener lsnr )
     {
       selectionChangedListeners.remove( lsnr );
     }
@@ -179,7 +178,7 @@ public class NavigationView extends ViewPart {
       }
       return result;
     }
-  
+
     public void setSelection( final ISelection selection ) {
       throw new UnsupportedOperationException();
     }

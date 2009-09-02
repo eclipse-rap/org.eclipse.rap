@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2008, 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -78,7 +78,7 @@ public class ExamplesModel extends SessionSingletonBase {
     return result;
   }
 
-  public IExamplePage getExample( String name ) {
+  public IExamplePage getExample( final String name ) {
     PageWrapper pageWrapper = getWrapper( name );
     return pageWrapper == null ? null : pageWrapper.page;
   }
@@ -92,7 +92,7 @@ public class ExamplesModel extends SessionSingletonBase {
     IExtensionRegistry reg = Platform.getExtensionRegistry();
     return reg.getConfigurationElementsFor( EXT_POINT );
   }
-  
+
   private void createCategories( final IConfigurationElement[] extensions ) {
     for( int i = 0; i < extensions.length; i++ ) {
       IConfigurationElement extension = extensions[ i ];
@@ -157,7 +157,7 @@ public class ExamplesModel extends SessionSingletonBase {
     public final String categoryId;
     public final String descriptionUrl;
     public final IExamplePage page;
-    
+
     public PageWrapper( final String name,
                         final String categoryId,
                         final String descriptionUrl,
