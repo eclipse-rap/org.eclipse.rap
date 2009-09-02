@@ -16893,8 +16893,8 @@ _visualizeFocus:function(){this.base(arguments);
 if(!qx.event.handler.FocusHandler.mouseFocus&&this.getEnableElementFocus()){try{this._inputElement.focus();
 }catch(ex){}}},
 _visualizeBlur:function(){this.base(arguments);
-try{this._inputElement.blur();
-}catch(ex){}},
+if(!qx.event.handler.FocusHandler.mouseFocus){try{this._inputElement.blur();
+}catch(ex){}}},
 getComputedValue:function(){if(this._inputElement){return this._inputElement.value;
 }return this.getValue();
 },
