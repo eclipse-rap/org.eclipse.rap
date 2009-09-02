@@ -858,6 +858,19 @@ public class Display_Test extends TestCase {
     assertNull( Display.getCurrent() );
   }
 
+  public void testSystemCursor() {
+    Display display = new Display();
+    Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
+    Cursor cross = display.getSystemCursor( SWT.CURSOR_CROSS );
+    assertNotNull( arrow );
+    assertNotNull( cross );
+    assertNotSame( arrow, cross );
+    assertFalse( arrow.equals( cross ) );
+    Cursor help1 = display.getSystemCursor( SWT.CURSOR_HELP );
+    Cursor help2 = display.getSystemCursor( SWT.CURSOR_HELP );
+    assertSame( help1, help2 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
