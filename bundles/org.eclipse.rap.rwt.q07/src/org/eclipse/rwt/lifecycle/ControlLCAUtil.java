@@ -81,9 +81,9 @@ public class ControlLCAUtil {
   private static final String ATT_ALLOW_KEY_EVENT
     = ControlLCAUtil.class.getName() + "#allowKeyEvent";
   static final String JSFUNC_CANCEL_EVENT
-    = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().cancelEvent";
+    = "org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent";
   static final String JSFUNC_ALLOW_EVENT
-    = "org.eclipse.rwt.AsyncKeyEventUtil.getInstance().allowEvent";
+    = "org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent";
   static final int MAX_STATIC_ZORDER = 300;
 
 

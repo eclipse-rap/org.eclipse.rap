@@ -51,6 +51,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/WidgetManager.js";
   private static final String EVENT_UTIL_JS
     = "org/eclipse/swt/EventUtil.js";
+  private static final String KEY_EVENT_UTIL_JS
+    = "org/eclipse/rwt/KeyEventUtil.js";
   private static final String ASYNC_KEY_EVENT_UTIL_JS
     = "org/eclipse/rwt/AsyncKeyEventUtil.js";
   private static final String SYNC_KEY_EVENT_UTIL_JS
@@ -192,6 +194,7 @@ final class QooxdooResourcesUtil {
       register( REQUEST_JS, compress );
       register( WIDGET_MANAGER_JS, compress );
       register( EVENT_UTIL_JS, compress );
+      register( KEY_EVENT_UTIL_JS, compress );
       register( ASYNC_KEY_EVENT_UTIL_JS, compress );
       register( SYNC_KEY_EVENT_UTIL_JS, compress );
       register( TOOLTIP_JS, compress );
@@ -240,7 +243,7 @@ final class QooxdooResourcesUtil {
       register( BUTTON, compress );
       register( MENU, compress );
       register( MENU_ITEM, compress );
-      
+
       // register contributions
       registerContributions();
     } finally {
