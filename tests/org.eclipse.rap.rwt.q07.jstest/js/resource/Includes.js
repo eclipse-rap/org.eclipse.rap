@@ -9,6 +9,7 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/Request.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/WidgetManager.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/EventUtil.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/KeyEventUtil.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/AsyncKeyEventUtil.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/SyncKeyEventUtil.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/TabUtil.js" type="text/javascript"></script>\
