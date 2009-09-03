@@ -10377,22 +10377,31 @@ qx.core.Setting.isSet("qx.staticUri")?qx.core.Setting.get("qx.staticUri"):qx.cor
 },
 _preprocess:function(value){var dynamics=this._dynamic;
 if(dynamics[value]===false){return value;
-}else if(dynamics[value]===undefined){if(value.charAt(0)==="/"||value.charAt(0)==="."||value.indexOf("http://")===0||value.indexOf("https://")===0||value.indexOf("file://")===0){dynamics[value]=false;
+}else if(dynamics[value]===undefined){if(value.indexOf("http://")===0||value.indexOf("https://")===0||value.indexOf("file://")===0){dynamics[value]=false;
 return value;
 }var alias=value.substring(0,
 value.indexOf("/"));
 var resolved=this._aliases[alias];
-if(resolved!==undefined){var urlPrefix="";
-if(qx.core.Variant.isSet("qx.client",
-"mshtml")){if(window.location.protocol==="https:"){if(resolved.match(/^\/\//)!=null){urlPrefix=window.location.protocol;
-}else if(resolved.match(/^\.\//)!=null&&qx.core.Setting.get("qx.isSource")){resolved="/"+value.substring(0,
-alias.length);
+if(resolved===undefined){if(qx.core.Variant.isSet("qx.client",
+"mshtml")){if(window.location.protocol==="https:"){var firstCharPointOrSlash=value.match(/^[\.\/]/);
+var firstCharAlphaNumeric=value.match(/^\w/);
+if(firstCharPointOrSlash!=null||firstCharAlphaNumeric!=null){if(firstCharAlphaNumeric!=null&&firstCharPointOrSlash==null){value="./"+value;
+}return this.__rewriteUrl(value);
+}}}return value;
+}else{if(qx.core.Variant.isSet("qx.client",
+"mshtml")){if(window.location.protocol==="https:"){resolved=this.__rewriteUrl(resolved);
+}}dynamics[value]=resolved+value.substring(alias.length);
+}}return value;
+},
+__rewriteUrl:function(value){var urlPrefix="";
+if(value.match(/^\/\//)!=null){urlPrefix=window.location.protocol;
+}else if(value.match(/^\.\//)!=null&&qx.core.Setting.get("qx.isSource")){value=value.substring(1);
 urlPrefix=document.URL.substring(0,
 document.URL.lastIndexOf("/"));
-}else{urlPrefix=window.location.href.substring(0,
+}else if(value.match(/^\//)){urlPrefix=window.location.protocol+"//"+window.location.host;
+}else if(value.match(/^http/)!=null){}else{urlPrefix=window.location.href.substring(0,
 window.location.href.lastIndexOf("/")+1);
-}}}dynamics[value]=urlPrefix+resolved+value.substring(alias.length);
-}}return value;
+}return urlPrefix+value;
 },
 add:function(alias,
 base){this._aliases[alias]=base;
