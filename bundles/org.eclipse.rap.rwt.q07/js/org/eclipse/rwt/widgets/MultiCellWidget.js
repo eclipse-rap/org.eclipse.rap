@@ -33,6 +33,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     this.initCursor();    
     this.initTextColor();        
   },
+  
+  destruct : function() {
+    this._disposeObjectDeep( "__cellData", 0 );
+    this._disposeObjectDeep( "__cellNodes", 0 );
+    this._disposeObjectDeep( "__paddingCache", 0 );
+    this._disposeObjectDeep( "_fontCache", 0 );
+  },
 
   /*
   *****************************************************************************
@@ -726,4 +733,5 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         return [ element.scrollWidth, element.scrollHeight ];
     }
   }
+  
 });
