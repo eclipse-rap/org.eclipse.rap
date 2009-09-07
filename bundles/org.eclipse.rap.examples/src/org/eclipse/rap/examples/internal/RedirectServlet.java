@@ -29,19 +29,24 @@ public class RedirectServlet extends HttpServlet {
                         final HttpServletResponse resp )
     throws ServletException, IOException
   {
-    redirect( resp );
+    redirect( req, resp );
   }
 
   protected void doPost( final HttpServletRequest req,
                          final HttpServletResponse resp )
     throws ServletException, IOException
   {
-    redirect( resp );
+    redirect( req, resp );
   }
 
-  private static void redirect( final HttpServletResponse response )
+  private static void redirect( final HttpServletRequest request, 
+                                final HttpServletResponse response )
     throws IOException
   {
-    response.sendRedirect( response.encodeRedirectURL( REDIRECT_URL ) );
+    if( request.getPathInfo().equals( "/" ) ) {
+      response.sendRedirect( response.encodeRedirectURL( REDIRECT_URL ) );
+    } else {
+      response.sendError( HttpServletResponse.SC_NOT_FOUND );
+    }
   }
 }
