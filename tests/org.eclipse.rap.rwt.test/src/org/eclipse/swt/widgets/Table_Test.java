@@ -2243,6 +2243,33 @@ public class Table_Test extends TestCase {
     table.remove( 5 );
   }
 
+  // 288634: [Table] TableItem images are not displayed if columns are created
+  // after setInput
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634
+  public void testUpdateColumnImageCount() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( new String[] { "col 1", "col 2", "col 3" } );
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    item.setImage( new Image[] { image, null, image } );
+    assertTrue( table.hasColumnImages( 0 ) );
+    TableColumn col1 = new TableColumn( table, SWT.NONE );
+    col1.setText( "header 1" );
+    col1.setWidth( 30 );
+    TableColumn col2 = new TableColumn( table, SWT.NONE );
+    col2.setText( "header 2" );
+    col2.setWidth( 30 );
+    TableColumn col3 = new TableColumn( table, SWT.NONE );
+    col3.setText( "header 3" );
+    col3.setWidth( 30 );
+    assertTrue( table.hasColumnImages( 0 ) );
+    assertFalse( table.hasColumnImages( 1 ) );
+    assertFalse( table.hasColumnImages( 2 ) );
+  }
+
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {

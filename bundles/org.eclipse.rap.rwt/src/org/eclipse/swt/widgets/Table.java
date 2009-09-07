@@ -1969,7 +1969,7 @@ public class Table extends Composite {
     }
     if( columnImageCount == null ) {
       columnImageCount = new int[] { 0 };
-    } else {
+    } else if( getColumnCount() > 1 ) {
       int length = columnImageCount.length;
       int[] newColumnImageCount = new int[ length + 1 ];
       System.arraycopy( columnImageCount, 0, newColumnImageCount, 0, index );
