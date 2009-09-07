@@ -2075,7 +2075,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textAlign       : "center",
         verticalAlign   : "middle"
       };
-      if( states.selected || states.otherMonth ) {
+      if( states.selected || states.otherMonth || states.over ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
                                                  "background-color" );

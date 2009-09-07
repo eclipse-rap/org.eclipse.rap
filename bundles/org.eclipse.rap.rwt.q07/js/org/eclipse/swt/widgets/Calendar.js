@@ -192,8 +192,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
           top    : (y + 1) * org.eclipse.swt.widgets.Calendar.CELL_HEIGHT
         });
 
-        label.addEventListener("mousedown", this._onDayClicked, this);
-        label.addEventListener("dblclick", this._onDayDblClicked, this);
+        label.addEventListener( "mousedown", this._onDayClicked, this );
+        label.addEventListener( "dblclick", this._onDayDblClicked, this );
+        label.addEventListener( "mouseover", this._onDayMouseOver, this );
+        label.addEventListener( "mouseout", this._onDayMouseOut, this );
         label.setUserData( "calendar-day", true );
         datePane.add(label);
         this._dayLabelArr.push(label);
@@ -441,6 +443,14 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      */
     _onDayDblClicked : function() {
       this.createDispatchDataEvent("select", this.getDate());
+    },
+    
+    _onDayMouseOver : function( evt ) {
+      evt.getTarget().addState( "over" );
+    },
+    
+    _onDayMouseOut : function( evt ) {
+      evt.getTarget().removeState( "over" );
     },
 
     /**

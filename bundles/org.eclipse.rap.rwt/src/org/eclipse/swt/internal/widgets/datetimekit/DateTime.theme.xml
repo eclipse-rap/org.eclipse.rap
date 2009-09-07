@@ -83,6 +83,9 @@
 
       <state name="otherMonth"
           description="Applies to the day that belongs to other month." />
+          
+      <state name="hover"
+          description="Applies while the user hovers over the calendar day." />
 
     </element>
 

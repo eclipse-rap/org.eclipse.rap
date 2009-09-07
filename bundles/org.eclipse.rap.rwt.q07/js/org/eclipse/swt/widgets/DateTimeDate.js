@@ -830,14 +830,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     },
 
     _onMouseOver : function( evt ) {
-      if( evt.getTarget() == this._dropDownButton ) {
+      var target = evt.getTarget();
+      if( target == this._dropDownButton ) {
         this._dropDownButton.addState( "over" );
+      } else if( target.getUserData( "calendar-day" ) ) {
+        this._calendar._onDayMouseOver( evt );
       }
     },
 
     _onMouseOut : function( evt ) {
-      if( evt.getTarget() == this._dropDownButton ) {
+      var target = evt.getTarget();
+      if( target == this._dropDownButton ) {
         this._dropDownButton.removeState( "over" );
+      } else if( target.getUserData( "calendar-day" ) ) {
+        this._calendar._onDayMouseOut( evt );
       }
     },
 

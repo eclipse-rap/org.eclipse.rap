@@ -11,7 +11,7 @@ DateTime[BORDER] {
   border: 1px inset;
 }
 
-DateTime-Field:selected, DateTime-Calendar-Day:selected {
+DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
   background-color: rgb( 49, 106, 197 );
   color: white;
 }
@@ -19,6 +19,10 @@ DateTime-Field:selected, DateTime-Calendar-Day:selected {
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
   color: rgb( 128, 128, 128 );
+}
+
+DateTime-Calendar-Day:hover {
+  background-color: rgb( 217, 227, 243 );
 }
 
 DateTime-Calendar-Navbar {
