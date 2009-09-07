@@ -74,7 +74,7 @@ public class ConfigurationReader_Test extends TestCase {
     boolean directMonitoringAccess = initialization.isDirectMonitoringAccess();
     assertEquals( true, directMonitoringAccess );
     boolean compression = initialization.isCompression();
-    assertEquals( true, compression );
+    assertEquals( false, compression );
     boolean processTime = initialization.isProcessTime();
     assertEquals( false, processTime );
     String nsSubmitters = initialization.getNoscriptSubmitters();

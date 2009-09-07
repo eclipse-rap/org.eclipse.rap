@@ -33,9 +33,9 @@ public class JSLibraryServiceHandler_Test extends TestCase {
   }
   
   public void testResponseEncoding() throws IOException, ServletException {
-    // as there is js concatenation in unit test mode is switched of
+    // as there is js concatenation in unit test mode switched of
     // we only test header settings...
-    
+    System.setProperty( "org.eclipse.rwt.compression", "true" );
     
     // test with encoding not allowed by browser
     TestResponse response = ( TestResponse )RWT.getResponse();
@@ -53,12 +53,13 @@ public class JSLibraryServiceHandler_Test extends TestCase {
     // test with encoding allowed by browser
     response.setOutputStream( new TestServletOutputStream() );
     TestRequest request = ( TestRequest )RWT.getRequest();
-    request.setHeader( HTML.ACCEPT_ENCODING,
-                       HTML.ENCODING_GZIP );
+    request.setHeader( HTML.ACCEPT_ENCODING, HTML.ENCODING_GZIP );
     handler.service();
     encoding = response.getHeader( HTML.CONTENT_ENCODING );
     assertNotNull( encoding );
     assertEquals( HTML.ENCODING_GZIP, encoding );
+    // clean up
+    System.getProperties().remove( "org.eclipse.rwt.compression" );
   }
   
   public void testRequestURLCreation() throws IOException {
