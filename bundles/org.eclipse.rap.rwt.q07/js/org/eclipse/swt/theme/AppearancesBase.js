@@ -70,9 +70,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font : tv.getCssFont( "*", "font" ),
         textColor : "black",
-        backgroundColor : "white",
-        // TODO [rst] Eliminate absolute references
-        backgroundImage : "./resources/resource/widget/rap/display/bg.gif"
+        backgroundColor : "white"
       };
     }
   },

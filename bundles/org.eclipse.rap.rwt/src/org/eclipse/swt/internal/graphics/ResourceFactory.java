@@ -157,13 +157,12 @@ public final class ResourceFactory {
     ImageLoader loader = new ImageLoader();
     loader.data = new ImageData[] { imageData };
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    int type = imageData.type != SWT.IMAGE_UNDEFINED
-                                                    ? imageData.type
-                                                    : SWT.IMAGE_PNG;
+    int type
+      = imageData.type != SWT.IMAGE_UNDEFINED ? imageData.type : SWT.IMAGE_PNG;
     loader.save( outputStream, type );
     byte[] byteArray = outputStream.toByteArray();
     InputStream inputStream = new ByteArrayInputStream( byteArray );
-    String path = "resources/generated/"
+    String path = "generated/"
                   + hashCode( byteArray )
                   + getImageFileExtension( type );
     if( images.containsKey( path ) ) {

@@ -37,7 +37,7 @@ public class Image_Test extends TestCase {
 //    assertEquals( 0, Image.size() );
     Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
-    String contextPath = Fixture.CONTEXT_DIR.getPath() + "/resources/";
+    String contextPath = Fixture.CONTEXT_DIR.getPath() + "/rwt-resources/";
     assertTrue( new File( contextPath + RWTFixture.IMAGE1 ).exists() );
 //    assertEquals( 1, Image.size() );
     Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );

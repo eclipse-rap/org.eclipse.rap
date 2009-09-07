@@ -95,8 +95,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
       qx.ui.basic.ScrollBar.EVENT_DELAY = 125;
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
-      qx.io.Alias.getInstance().add( "static", "./resources/resource/static" );
-      qx.io.Alias.getInstance().add( "org.eclipse.swt", "./resources/resource" );
+      qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
+      qx.io.Alias.getInstance().add( "org.eclipse.swt", "./rwt-resources/resource" );
       // Observe window size
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize",

@@ -25,8 +25,7 @@ import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.JsConcatenator;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
@@ -78,7 +77,7 @@ public final class RWTFixture {
     }
 
     public String getLocation( final String name ) {
-      return "resources/" + name;
+      return ResourceManagerImpl.RESOURCES + "/" + name;
     }
 
     public URL getResource( final String name ) {

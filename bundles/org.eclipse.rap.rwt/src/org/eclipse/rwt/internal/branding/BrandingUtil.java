@@ -89,10 +89,11 @@ public final class BrandingUtil {
         "type", 
         "href" 
       };
+      String favIconUrl = RWT.getResourceManager().getLocation( favIcon );
       String[] values = new String[] { 
         "shortcut icon", 
         "image/x-icon", 
-        favIcon 
+        favIconUrl
       };
       Header header = new Header( "link", names, values );
       appendHeaderMarkup( buffer, header );

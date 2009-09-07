@@ -37,7 +37,7 @@ public class ResourceManagerImpl
   implements IResourceManager, Adaptable
 {
   
-  public static final String RESOURCES = "resources";
+  public static final String RESOURCES = "rwt-resources";
 
   /** <p>The singleton instance of ResourceManager.</p> */
   private static IResourceManager _instance;

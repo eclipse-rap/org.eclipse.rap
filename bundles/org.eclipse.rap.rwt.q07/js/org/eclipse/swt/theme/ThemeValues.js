@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       if( result != null ) {
         // TODO [rh] remove hard-coded path (first segment is defined by 
         //      resource-manager)
-        result = "resources/themes/images/" + result[ 0 ];
+        result = "rwt-resources/themes/images/" + result[ 0 ];
       } else {
         // TODO [rst] Handle null values - currently, both null and the string
         // "undefined" lead to a js error for icon property
@@ -124,7 +124,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var result = this._store.getThemeValues().images[ vkey ];
       this.__checkDefined( result, element, key );
       // TODO [tb] : Revise hardcoded path
-      return [ "resources/themes/images/" + result[ 0 ], 
+      return [ "rwt-resources/themes/images/" + result[ 0 ], 
                result[ 1 ], 
                result[ 2 ] ];
     },
