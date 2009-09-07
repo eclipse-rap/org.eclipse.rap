@@ -13,7 +13,9 @@ import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.internal.Activator;
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 
 /**
@@ -22,7 +24,7 @@ import org.eclipse.rwt.SessionSingletonBase;
  * Scans the org.eclipse.rap.examples.widgets extensions and builds a
  * categorized list of examples names and a list of IExamplePage instances.
  */
-public class ExamplesModel extends SessionSingletonBase {
+public final class ExamplesModel {
 
   private final static String EXT_POINT = "org.eclipse.rap.examples.pages";
   private static final String ELEM_CATEGORY = "category";
@@ -33,17 +35,21 @@ public class ExamplesModel extends SessionSingletonBase {
   private final static String EXT_ATTR_DESCRIPTION = "description";
   private final static String EXT_ATTR_CLASS = "class";
 
-  private List categories = new ArrayList();
-  private List pages = new ArrayList();
+  private final List categories;
+  private final List pages;
 
   private ExamplesModel() {
+    categories = new ArrayList();
+    pages = new ArrayList();
     IConfigurationElement[] extensions = readRegistry();
     createCategories( extensions );
     createPages( extensions );
   }
 
   public static ExamplesModel getInstance() {
-    return ( ExamplesModel )getInstance( ExamplesModel.class );
+    // TODO [rh] this instance should have application scope
+    Object instance = SessionSingletonBase.getInstance( ExamplesModel.class );
+    return ( ExamplesModel )instance;
   }
 
   /**
@@ -89,8 +95,8 @@ public class ExamplesModel extends SessionSingletonBase {
   }
 
   private static IConfigurationElement[] readRegistry() {
-    IExtensionRegistry reg = Platform.getExtensionRegistry();
-    return reg.getConfigurationElementsFor( EXT_POINT );
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    return registry.getConfigurationElementsFor( EXT_POINT );
   }
 
   private void createCategories( final IConfigurationElement[] extensions ) {
@@ -112,11 +118,11 @@ public class ExamplesModel extends SessionSingletonBase {
         String categoryId = extension.getAttribute( EXT_ATTR_CATEGORY );
         IExamplePage page = null;
         try {
-          Object instance = extension.createExecutableExtension( EXT_ATTR_CLASS );
+          Object instance
+            = extension.createExecutableExtension( EXT_ATTR_CLASS );
           page = ( IExamplePage )instance;
         } catch( CoreException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          StatusManager.getManager().handle( e, Activator.PLUGIN_ID );
         }
         String descriptionUrl = getDescriptionUrl( extension );
         pages.add( new PageWrapper( name, categoryId, descriptionUrl, page ) );
@@ -152,7 +158,7 @@ public class ExamplesModel extends SessionSingletonBase {
     return result;
   }
 
-  private static class PageWrapper {
+  private static final class PageWrapper {
     public final String name;
     public final String categoryId;
     public final String descriptionUrl;
