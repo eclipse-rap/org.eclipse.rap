@@ -262,6 +262,13 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       }
     },
     
+    // Fix for bug# 288344
+    _onkeyinput : function( evt ) {
+      if( !evt.isAltPressed() && !evt.isCtrlPressed() ) {
+        this.base( arguments, evt );
+      } 
+    },
+    
     _onSelectionChange : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();

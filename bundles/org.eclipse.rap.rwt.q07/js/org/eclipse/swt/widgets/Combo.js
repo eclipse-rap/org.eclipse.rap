@@ -580,8 +580,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
 
+    // Additional check for ALT and CTRL keys is added to fix bug 288344
     _onKeyInput : function( evt ) {
-      if( this._dropped ) {
+      if( this._dropped && !evt.isAltPressed() && !evt.isCtrlPressed() ) {
         this._list._onkeyinput( evt );
         var selected = this._manager.getSelectedItem();
         this._setSelected( selected );
