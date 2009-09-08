@@ -62,6 +62,7 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/AbstractButton.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/Button.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/ToolItem.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/ToolTip.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/Menu.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/MenuItem.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/RadioButtonUtil.js" type="text/javascript"></script>\
