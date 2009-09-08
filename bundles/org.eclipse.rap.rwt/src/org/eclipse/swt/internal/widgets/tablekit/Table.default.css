@@ -10,9 +10,13 @@ TableItem {
   background-color: transparent;
 }
 
-TableItem:selected {
+TableItem:selected, TableItem:selected:hover {
   color: white;
   background-color: rgb( 49, 106, 197 );
+}
+
+TableItem:hover {
+  background-color: rgb( 217, 227, 243 );
 }
 
 TableItem:selected:unfocused {
