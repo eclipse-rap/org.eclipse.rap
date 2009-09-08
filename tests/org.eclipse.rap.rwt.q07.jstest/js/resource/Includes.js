@@ -57,7 +57,6 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/Slider.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/CheckBox.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/RadioButton.js" type="text/javascript"></script>\
-<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/HtmlUtil.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/MultiCellWidget.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/AbstractButton.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/Button.js" type="text/javascript"></script>\

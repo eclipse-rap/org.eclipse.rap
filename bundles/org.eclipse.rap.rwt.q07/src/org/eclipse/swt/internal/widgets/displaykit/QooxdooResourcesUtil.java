@@ -142,19 +142,17 @@ final class QooxdooResourcesUtil {
   private static final String SLIDER_JS
     = "org/eclipse/swt/widgets/Slider.js";
   private static final String RADIOBUTTONUTIL_JS
-  = "org/eclipse/rwt/RadioButtonUtil.js";
+    = "org/eclipse/rwt/RadioButtonUtil.js";
   private static final String LINK_JS
     = "org/eclipse/swt/widgets/Link.js";
-  private static final String HTMLUTIL_JS
-  = "org/eclipse/rwt/HtmlUtil.js";
   private static final String MULTICELLWIDGET
-  = "org/eclipse/rwt/widgets/MultiCellWidget.js";
+    = "org/eclipse/rwt/widgets/MultiCellWidget.js";
   private static final String BUTTON
-  = "org/eclipse/rwt/widgets/Button.js";
+    = "org/eclipse/rwt/widgets/Button.js";
   private static final String MENU
-  = "org/eclipse/rwt/widgets/Menu.js";
+    = "org/eclipse/rwt/widgets/Menu.js";
   private static final String MENU_ITEM
-  = "org/eclipse/rwt/widgets/MenuItem.js";
+    = "org/eclipse/rwt/widgets/MenuItem.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -238,7 +236,6 @@ final class QooxdooResourcesUtil {
       register( SLIDER_JS, compress );
       register( RADIOBUTTONUTIL_JS, compress );
       register( LINK_JS, compress );
-      register( HTMLUTIL_JS, compress );
       register( MULTICELLWIDGET, compress );
       register( BUTTON, compress );
       register( MENU, compress );

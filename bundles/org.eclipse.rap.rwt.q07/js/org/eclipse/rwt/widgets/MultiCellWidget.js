@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     __computedTotalSpacing : null,
     __paddingCache : null,
     __fontCache : null,
-    _htmlUtil : org.eclipse.rwt.HtmlUtil,
+    __styleRegExp : /([a-z])([A-Z])/g,
 
     _applyEnabled : function( value, old ) {
       this.base( arguments, value, old );
@@ -667,12 +667,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _getLabelHtml : function( cell ) {
       return   "<div style='position:absolute;border:0 none;overflow:hidden;"
-             + this._htmlUtil._joinStyleProperties( [ this.__fontCache ] )
+             + this._joinStyleProperties( this.__fontCache )
              + "white-space:nowrap;'>"
              + this.getCellContent( cell )
              + "</div>";
     },
-
+    
+   _joinStyleProperties : function( map ) {
+      var str = [];      
+      var value = null;
+      for( var attribute in map ) {
+        var value = map[ attribute ];
+        if( value ) {
+          str.push( attribute, ':', map[ attribute ], ';' );
+        }
+      }
+      var ret = str.join( "" );
+      return ret.replace( this.__styleRegExp, "$1-$2" ).toLowerCase();
+    },
+    
     _applyFont : function( value, old ) {
       qx.theme.manager.Font.getInstance().connect(
        this._styleFont,
