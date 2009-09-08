@@ -6570,10 +6570,6 @@ _applyTabIndex:qx.core.Variant.select("qx.client",
 old){this.setHtmlProperty("tabIndex",
 value<0?-1:1);
 },
-"gecko":function(value,
-old){this.setStyleProperty("MozUserFocus",
-(value<0?"ignore":"normal"));
-},
 "default":function(value,
 old){this.setStyleProperty("userFocus",
 (value<0?"ignore":"normal"));
