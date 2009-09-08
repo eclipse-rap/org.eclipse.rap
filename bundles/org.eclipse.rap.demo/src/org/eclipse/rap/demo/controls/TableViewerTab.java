@@ -467,7 +467,7 @@ public class TableViewerTab extends ExampleTab {
       }
     } );
     viewer.getTable().setHeaderVisible( true );
-    viewer.getTable().setData( Table.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    ColumnViewerToolTipSupport.enableFor( viewer );
     gridDataFactory = GridDataFactory.swtDefaults();
     gridDataFactory.grab( true, true );
     gridDataFactory.align( SWT.FILL, SWT.FILL );
