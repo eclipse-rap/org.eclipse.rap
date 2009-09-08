@@ -68,6 +68,8 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           // TODO [rh] optimize this: context menu should be handled by the List
           //      itself for all its ListItems
           var item = new qx.ui.form.ListItem();
+          item.addEventListener( "mouseover", this._onListItemMouseOver, this );
+          item.addEventListener( "mouseout", this._onListItemMouseOut, this );
           // [if] Omit the focused item outline border - see bug 286902
           item.setStyleProperty( "outline", "0px none" );
           item.handleStateChange = function() {};
@@ -88,6 +90,8 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       while( this.getChildrenLength() > items.length ) {
         child = this.getLastChild();
         this.remove( child );
+        child.removeEventListener( "mouseover", this._onListItemMouseOver, this );
+        child.removeEventListener( "mouseout", this._onListItemMouseOut, this );
         child.dispose();
       }
       // restore previous selection and focusItem
@@ -304,6 +308,14 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
 
     _onFocusOut : function( evt ) {
       this._updateSelectedItemState();
+    },
+    
+    _onListItemMouseOver : function( evt ) {
+      evt.getTarget().addState( "over" );
+    },
+    
+    _onListItemMouseOut : function( evt ) {
+      evt.getTarget().removeState( "over" );
     },
 
     _updateSelectedItemState : function() {

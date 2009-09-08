@@ -121,7 +121,7 @@ DateTime-Calendar-Day:otherMonth {
 }
 
 DateTime-Calendar-Day:hover {
-  background-color: #c0c0c0;
+  background-color: #abe3ff;
 }
 
 DateTime-Calendar-Navbar {
@@ -390,13 +390,20 @@ List-Item:even, TableItem:even {
 
 /* Selected Items */
 
-List-Item:selected, TableItem:selected, TreeItem:selected {
+List-Item:selected, List-Item:selected:hover,
+TableItem:selected, TableItem:selected:hover,
+TreeItem:selected, TreeItem:selected:hover {
   color: white;
   background-color: #56a0ea;
 }
 
 List-Item:selected:unfocused, TreeItem:selected:unfocused {
   background-color: #c0c0c0;
+}
+
+/* Hovered Items */
+List-Item:hover, TableItem:hover, TreeItem:hover {
+  background-color: #abe3ff;
 }
 
 /* Custom variants */
