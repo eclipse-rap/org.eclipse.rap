@@ -2075,13 +2075,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textAlign       : "center",
         verticalAlign   : "middle"
       };
-      if( states.selected || states.otherMonth || states.over ) {
+      if( states.disabled ) {
+        result.textColor = tv.getCssColor( "DateTime", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      } else if( states.selected || states.otherMonth || states.over ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
                                                  "background-color" );
-      } else if( states.disabled ) {
-        result.textColor = tv.getCssColor( "DateTime", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
