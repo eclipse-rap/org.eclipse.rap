@@ -15,13 +15,9 @@ List-Item {
   color: black;
 }
 
-List-Item:selected, List-Item:selected:hover {
+List-Item:selected {
   background-color: rgb( 49, 106, 197 );
   color: white;
-}
-
-List-Item:hover {
-  background-color: rgb( 217, 227, 243 );
 }
 
 List-Item:selected:unfocused {
