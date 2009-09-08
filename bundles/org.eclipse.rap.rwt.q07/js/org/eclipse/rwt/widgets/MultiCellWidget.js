@@ -675,22 +675,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     
    _joinStyleProperties : function( map ) {
       var str = [];      
-      var value = null;
+      var value;
       for( var attribute in map ) {
-        var value = map[ attribute ];
+        value = map[ attribute ];
         if( value ) {
-          str.push( attribute, ':', map[ attribute ], ';' );
+          str.push( attribute, ":", value, ";" );
         }
       }
-      var ret = str.join( "" );
-      return ret.replace( this.__styleRegExp, "$1-$2" ).toLowerCase();
+      var joinedCss = str.join( "" );
+      return joinedCss.replace( this.__styleRegExp, "$1-$2" ).toLowerCase();
     },
     
     _applyFont : function( value, old ) {
       qx.theme.manager.Font.getInstance().connect(
-       this._styleFont,
-       this,
-       value
+        this._styleFont,
+        this,
+        value
       );
     },
 
