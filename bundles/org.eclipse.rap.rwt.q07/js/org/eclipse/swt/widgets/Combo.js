@@ -358,9 +358,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       } else {
         this._resetListSelection();
       }
-      if( !this._dropped ) {
-        this._sendWidgetSelected();
-      }
+      this._sendWidgetSelected();
     },
     
     _formatText : function( value ) {
@@ -440,17 +438,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         evt.stopPropagation();
         var toSelect;
         var isSelected = this._selected;
-        if( evt.getWheelDelta() < 0 ) {
-          toSelect =   isSelected
-                     ? this._manager.getNext( isSelected )
-                     : this._manager.getFirst();
-        } else {
-          toSelect =   isSelected
-                     ? this._manager.getPrevious( isSelected )
-                     : this._manager.getLast();
-        }
-        if( toSelect ) {
-          this._setSelected( toSelect );
+        if( isSelected ) {
+          if( evt.getWheelDelta() < 0 ) {
+            toSelect = this._manager.getNext( isSelected );
+          } else {
+            toSelect = this._manager.getPrevious( isSelected );
+          }
+          if( toSelect ) {
+            this._setSelected( toSelect );
+          }
+        } else if( this._list.getChildrenLength() ) {
+          this._setSelected( this._list.getChildren()[0] );
         }
       }
     },
@@ -496,7 +494,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         case "Escape":
           if( this._dropped ) {
             this._toggleListVisibility();
-            this._setSelected( this._manager.getSelectedItem() );
           } 
           this.setFocused( true );
           evt.stopPropagation();
@@ -550,9 +547,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         case "Down":
         case "PageUp":
         case "PageDown":
-          this._list._onkeypress( evt );
-          var selected = this._manager.getSelectedItem();
-          this._setSelected( selected );
+          if( this._selected ) {
+            this._list._onkeypress( evt );
+            var selected = this._manager.getSelectedItem();
+            this._setSelected( selected );
+          } else if( this._list.getChildrenLength() ) {
+            this._setSelected( this._list.getChildren()[0] );
+          }
           break;
         default:
           charCode = evt.getCharCode();
