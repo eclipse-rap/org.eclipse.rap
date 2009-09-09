@@ -184,6 +184,9 @@ public final class UICallBackManager
     if( runnable != null ) {
       try {
         runnable.run();
+      } catch( ThreadDeath t ) {
+        // Don't trap ThreadDeath, see bug 284202
+        throw t;
       } catch( Throwable t ) {
         SWT.error( SWT.ERROR_FAILED_EXEC, t );
       }

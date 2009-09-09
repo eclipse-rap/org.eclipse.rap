@@ -773,6 +773,18 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( expected, log.toString() );
     assertFalse( uiThread[ 0 ].isAlive() );
   }
+  
+  public void testSwitchThreadOnEndingThread() throws InterruptedException {
+    UIThread uiThread = new UIThread( new Runnable() {
+      public void run() {
+        log.append( "run" );
+      }
+    } );
+    uiThread.start();
+    uiThread.join();
+    uiThread.switchThread();
+    assertEquals( "run", log.toString() );
+  }
 
   public void testGetSetPhaseOrder() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
