@@ -301,7 +301,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
 
     _renderText : function( node, left, width, height, text, align, font, foreground ) {
-      node.innerHTML = text;
+      // Fix for bug#288807: only assign text to innerHTML it has changed
+      if( node.innerHTML != text ) {
+        node.innerHTML = text;
+      }
       node.style.position = "absolute";
       node.style.overflow = "hidden";
       node.style.top = "0px";
