@@ -2270,6 +2270,26 @@ public class Table_Test extends TestCase {
     assertFalse( table.hasColumnImages( 2 ) );
   }
 
+  // 239024: {TableViewer] Missing text due to TableViewerColumn
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=239024
+  public void testGetItemsPreferredWidth() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    assertEquals( 12, table.getItemsPreferredWidth( 0 ) );
+    assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
+
+    table = new Table( shell, SWT.CHECK );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    // 33 = 21 ( check width ) + 12
+    assertEquals( 33, table.getItemsPreferredWidth( 0 ) );
+    assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
+  }
+
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
