@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -37,7 +37,6 @@ public class TableViewerExample implements IExamplePage {
   private Label lblSelection;
   private final ElementsFilter viewerFilter;
   private final ElementsLabelProvider labelProvider;
-
   private List elements;
 
   private static Color[] SERIES_COLORS = new Color[] {
@@ -60,7 +59,6 @@ public class TableViewerExample implements IExamplePage {
   }
 
   public void createControl( final Composite parent ) {
-
     parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
 
     Composite composite = new Composite( parent, SWT.NONE );
@@ -72,7 +70,6 @@ public class TableViewerExample implements IExamplePage {
     Text txtFilter = new Text( composite, SWT.BORDER );
     txtFilter.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     txtFilter.addModifyListener( new ModifyListener() {
-
       public void modifyText( final ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
@@ -81,6 +78,7 @@ public class TableViewerExample implements IExamplePage {
     } );
     elements = Elements.getElements();
     viewer = new TableViewer( composite, SWT.BORDER );
+    ColumnViewerToolTipSupport.enableFor( viewer );
     viewer.setUseHashlookup( true );
     viewer.setContentProvider( new ElementsContentProvider() );
     viewer.setLabelProvider( new ElementsLabelProvider() );
@@ -93,7 +91,6 @@ public class TableViewerExample implements IExamplePage {
     viewer.setInput( elements );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-
       public void selectionChanged( final SelectionChangedEvent event ) {
         StructuredSelection sel = (StructuredSelection) event.getSelection();
         Element firstElement = ( Element )sel.getFirstElement();
@@ -218,6 +215,16 @@ public class TableViewerExample implements IExamplePage {
           break;
       }
     }
+
+    public String getToolTipText( final Object object ) {
+      Element element = ( Element )object;
+      return 
+          element.symbol 
+        + ": " 
+        + element.name 
+        + ", " 
+        + element.getSeriesName();
+    }
   }
 
   private static final class ElementComparator
@@ -226,26 +233,26 @@ public class TableViewerExample implements IExamplePage {
   {
 
     private final boolean ascending;
-    
+
     private final int property;
-    
+
     public ElementComparator( final int property, final boolean ascending ) {
       this.property = property;
       this.ascending = ascending;
     }
-    
+
     public int compare( final Viewer viewer,
                         final Object object1,
                         final Object object2 )
     {
       return compare( object1, object2 );
     }
-    
+
     public boolean isSorterProperty( final Object elem, final String property )
     {
       return true;
     }
-    
+
     public int compare( final Object object1, final Object object2 ) {
       Element element1 = ( Element )object1;
       Element element2 = ( Element )object2;
