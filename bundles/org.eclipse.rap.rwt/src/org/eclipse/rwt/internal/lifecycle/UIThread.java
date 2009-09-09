@@ -108,9 +108,12 @@ final class UIThread
 
   public void processShutdown() {
     updateServiceContext();
-    // Simulate PROCESS_ACTION phase if the session times out
-    CurrentPhase.set( PhaseId.PROCESS_ACTION );
-    shutdownCallback.run();
-    ContextProvider.disposeContext();
+    try {
+      // Simulate PROCESS_ACTION phase if the session times out
+      CurrentPhase.set( PhaseId.PROCESS_ACTION );
+      shutdownCallback.run();
+    } finally {
+      ContextProvider.disposeContext();
+    }
   }
 }
