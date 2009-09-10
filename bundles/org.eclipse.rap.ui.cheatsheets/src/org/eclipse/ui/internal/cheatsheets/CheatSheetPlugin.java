@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-//import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.util.SafeRunnable;
@@ -144,9 +144,7 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 		if(documentBuilder == null) {
 			try {
 				documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-// RAP [if] Help system not supported
-//				documentBuilder.setEntityResolver(new LocalEntityResolver());
-				documentBuilder.setEntityResolver(null);
+				documentBuilder.setEntityResolver(new LocalEntityResolver());
 			} catch (Exception e) {
 				IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.get().ERROR_CREATING_DOCUMENT_BUILDER, e);
 				CheatSheetPlugin.getPlugin().getLog().log(status);

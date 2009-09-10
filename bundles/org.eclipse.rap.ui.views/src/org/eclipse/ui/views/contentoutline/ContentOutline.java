@@ -108,9 +108,8 @@ public class ContentOutline extends PageBookView implements ISelectionProvider,
      */
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-// RAP [fappel]: helpsystem not yet support by RAP
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(getPageBook(),
-//                CONTENT_OUTLINE_VIEW_HELP_CONTEXT_ID);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getPageBook(),
+                CONTENT_OUTLINE_VIEW_HELP_CONTEXT_ID);
     }
 
     /* (non-Javadoc)

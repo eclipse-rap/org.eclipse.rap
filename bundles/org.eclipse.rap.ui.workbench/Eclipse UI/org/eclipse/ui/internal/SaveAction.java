@@ -32,9 +32,8 @@ public class SaveAction extends BaseSaveAction implements IBackgroundSaveListene
         setText(WorkbenchMessages.get().SaveAction_text); 
         setToolTipText(WorkbenchMessages.get().SaveAction_toolTip);
         setId("save"); //$NON-NLS-1$
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.SAVE_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.SAVE_ACTION);
         setImageDescriptor(WorkbenchImages
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT));
         setDisabledImageDescriptor(WorkbenchImages

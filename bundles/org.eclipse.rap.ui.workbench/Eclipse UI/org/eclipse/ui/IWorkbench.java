@@ -23,6 +23,7 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
@@ -505,13 +506,13 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 	 */
 	public IIntroManager getIntroManager();
 
-	// RAP [bm]: 
-//	/**
-//	 * Return the help system for this workbench.
-//	 * 
-//	 * @return the help system
-//	 */
-//	public IWorkbenchHelpSystem getHelpSystem();
+	/**
+	 * Return the help system for this workbench.
+	 * 
+	 * @return the help system
+     * @since 1.3
+	 */
+	public IWorkbenchHelpSystem getHelpSystem();
 
 	/**
 	 * Return the browser support for this workbench.

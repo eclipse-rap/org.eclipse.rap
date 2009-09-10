@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 
 /**
  * The DetailedProgressViewer is a viewer that shows the details of all in
@@ -110,9 +112,8 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 			}
 		});
 
-// RAP [fappel]: help system not available
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(control,
-//				IWorkbenchHelpContextIds.RESPONSIVE_UI);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(control,
+				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 
 		scrolled.setContent(control);
 		hookControl(control);
@@ -129,9 +130,8 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 		noEntryLabel.setEditable(false);
 
 		
-// RAP [fappel]: help system not available
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(noEntryLabel,
-//				IWorkbenchHelpContextIds.RESPONSIVE_UI);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(noEntryLabel,
+				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 
 	}
 

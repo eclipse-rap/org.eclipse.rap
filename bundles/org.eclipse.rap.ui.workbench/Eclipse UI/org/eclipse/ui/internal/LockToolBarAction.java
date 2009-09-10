@@ -52,9 +52,8 @@ public class LockToolBarAction extends Action implements
                 }
             }
         });
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.LOCK_TOOLBAR_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.LOCK_TOOLBAR_ACTION);
     }
 
     /* (non-Javadoc)

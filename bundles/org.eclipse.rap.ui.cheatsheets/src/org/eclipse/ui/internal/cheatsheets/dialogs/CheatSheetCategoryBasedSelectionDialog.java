@@ -80,8 +80,8 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends SelectionDialog
 		implements ISelectionChangedListener {
-// RAP [if] Not in use
-//	private static final String CHEAT_SHEET_SELECTION_HELP_ID = "org.eclipse.ui.cheatsheets.cheatSheetSelection"; //$NON-NLS-1$
+
+	private static final String CHEAT_SHEET_SELECTION_HELP_ID = "org.eclipse.ui.cheatsheets.cheatSheetSelection"; //$NON-NLS-1$
 
 	private IDialogSettings settings;
 
@@ -260,8 +260,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 		// top level group
 		Composite outerContainer = (Composite) super.createDialogArea(parent);
-// RAP [if] Help system not supported
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, CHEAT_SHEET_SELECTION_HELP_ID);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, CHEAT_SHEET_SELECTION_HELP_ID);
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		gridLayout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);

@@ -43,6 +43,7 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.QuickMenuCreator;
 import org.eclipse.ui.dialogs.IWorkingSetNewWizard;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 
@@ -72,10 +73,8 @@ public class ModifyWorkingSetDelegate extends
 								.getDisplay().getActiveShell(), wizard);
 		
 			dialog.create();
-			// RAP [bm]: HelpSystem
-//			PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
-//					IWorkbenchHelpContextIds.WORKING_SET_NEW_WIZARD);
-			// RAPEND: [bm] 
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
+					IWorkbenchHelpContextIds.WORKING_SET_NEW_WIZARD);
 
 			if (dialog.open() == Window.OK) {
 				IWorkingSet workingSet = wizard.getSelection();

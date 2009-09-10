@@ -11,6 +11,8 @@
 
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.ui.PlatformUI;
+
 
 /**
  * This action hides or shows expert properties in the <code>PropertySheetViewer</code>.
@@ -25,9 +27,8 @@ package org.eclipse.ui.views.properties;
      */
     public FilterAction(PropertySheetViewer viewer, String name) {
         super(viewer, name);
-// RAP [fappel]: helpsystem not supported
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-//				IPropertiesHelpContextIds.FILTER_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+				IPropertiesHelpContextIds.FILTER_ACTION);
     }
 
     /**

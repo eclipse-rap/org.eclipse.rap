@@ -10,28 +10,25 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.cheatsheets.views;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.help.HelpSystem;
+import org.eclipse.help.IContext;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.util.URLHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.browser.IWebBrowser;
-import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.cheatsheets.AbstractItemExtensionElement;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -154,14 +151,13 @@ public abstract class ViewItem {
 			ImageHyperlink helpButton = createButton(titleComposite, CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_HELP), this, itemColor, Messages.get().HELP_BUTTON_TOOLTIP);
 			helpButton.addHyperlinkListener(new HyperlinkAdapter() {
 				public void linkActivated(HyperlinkEvent e) {
-// RAP [if] Help system not supported
-//					// If we have a context id, handle this first and ignore an hrefs
-//					if(item.getContextId() != null) {
-//						openInfopop(e.widget);
-//					} else {
-//						// We only have an href, so let's open it in the help system
+					// If we have a context id, handle this first and ignore an hrefs
+					if(item.getContextId() != null) {
+						openInfopop(e.widget);
+					} else {
+						// We only have an href, so let's open it in the help system
 						openHelpTopic();
-//					}
+					}
 				}
 			});
 		}
@@ -383,52 +379,26 @@ public abstract class ViewItem {
 		if (item == null || item.getHref() == null) {
 			return;
 		}
-// RAP [if] Help system not available
-//		PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(item.getHref());
-// RAP [if] Use external browser to display the help
-		String href = null;
-		if(    item.getHref().startsWith( "http://" ) //$NON-NLS-1$
-		    || item.getHref().startsWith( "https://" ) ) //$NON-NLS-1$
-		{
-		  href = item.getHref();
-		} else if( item.getHref().startsWith( "/" ) ) { //$NON-NLS-1$
-// TODO [if] Make this path configurable
-		  href = URLHelper.getContextURLString() + "/topic" + item.getHref(); //$NON-NLS-1$
-		}
-		if( href != null ) {
-  		  IWorkbench workbench = PlatformUI.getWorkbench();
-  	      IWorkbenchBrowserSupport browserSupport = workbench.getBrowserSupport();
-  	      try {
-  	        IWebBrowser browser = browserSupport.createBrowser( "helpBrowser" ); //$NON-NLS-1$
-  	        URL url = new URL( href );
-  	        browser.openURL( url );
-  	      } catch( PartInitException e ) {
-  	        throw new RuntimeException( e );
-  	      } catch( MalformedURLException e ) {
-  	        throw new RuntimeException( e );
-          }
-		}
-	    //RAPEND [if]
+		PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(item.getHref());
 	}
 
-// RAP [if] Help system not available
-//	/**
-//	 * Open an infopop
-//	 */
-//	private void openInfopop(Widget widget) {
-//		if (item == null || item.getContextId() == null) {
-//			return;
-//		}
-//		IContext context = HelpSystem.getContext(item.getContextId());
-//
-//		if (context != null) {
-//			// determine a location in the upper right corner of the widget
-//			Point point = widget.getDisplay().getCursorLocation();
-//			point = new Point(point.x + 15, point.y);
-//			// display the help
-//            PlatformUI.getWorkbench().getHelpSystem().displayContext(context, point.x, point.y);
-//		}
-//	}
+	/**
+	 * Open an infopop
+	 */
+	private void openInfopop(Widget widget) {
+		if (item == null || item.getContextId() == null) {
+			return;
+		}
+		IContext context = HelpSystem.getContext(item.getContextId());
+
+		if (context != null) {
+			// determine a location in the upper right corner of the widget
+			Point point = widget.getDisplay().getCursorLocation();
+			point = new Point(point.x + 15, point.y);
+			// display the help
+            PlatformUI.getWorkbench().getHelpSystem().displayContext(context, point.x, point.y);
+		}
+	}
 
 	public void setAsCurrentActiveItem() {
 		setColorAsCurrent(true);

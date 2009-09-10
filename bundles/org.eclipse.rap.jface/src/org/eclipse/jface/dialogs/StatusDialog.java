@@ -242,22 +242,18 @@ public abstract class StatusDialog extends TrayDialog {
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		// RAP [bm]: 
-//		if (!fStatusLineAboveButtons && isHelpAvailable()) {
-//			createHelpControl(composite);
-//		}
-		// RAPEND: [bm] 
+		if (!fStatusLineAboveButtons && isHelpAvailable()) {
+			createHelpControl(composite);
+		}
 
 		fStatusLine = new MessageLine(composite);
 		fStatusLine.setAlignment(SWT.LEFT);
 		GridData statusData = new GridData(GridData.FILL_HORIZONTAL);
 		fStatusLine.setErrorStatus(null);
-		// RAP [bm]: 
-//		if (fStatusLineAboveButtons && isHelpAvailable()) {
-//			statusData.horizontalSpan = 2;
-//			createHelpControl(composite);
-//		}
-		// RAPEND: [bm] 
+		if (fStatusLineAboveButtons && isHelpAvailable()) {
+			statusData.horizontalSpan = 2;
+			createHelpControl(composite);
+		}
 
 		fStatusLine.setLayoutData(statusData);
 		applyDialogFont(composite);

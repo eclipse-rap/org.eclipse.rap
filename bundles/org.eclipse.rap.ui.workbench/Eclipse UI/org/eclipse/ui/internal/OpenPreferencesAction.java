@@ -49,9 +49,8 @@ public class OpenPreferencesAction extends Action implements ActionFactory.IWork
 		this.workbenchWindow = window;
 		// @issue action id not set
 		setToolTipText(WorkbenchMessages.get().OpenPreferences_toolTip); 
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//		window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.OPEN_PREFERENCES_ACTION);
+		window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.OPEN_PREFERENCES_ACTION);
 	}
 
 	/* (non-Javadoc)

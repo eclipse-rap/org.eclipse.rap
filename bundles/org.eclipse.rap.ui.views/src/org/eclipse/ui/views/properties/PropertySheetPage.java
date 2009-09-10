@@ -13,10 +13,15 @@
 package org.eclipse.ui.views.properties;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.help.IContext;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
+import org.eclipse.ui.help.IContextComputer;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.eclipse.ui.internal.views.ViewsPlugin;
 import org.eclipse.ui.internal.views.properties.PropertiesMessages;
 import org.eclipse.ui.part.CellEditorActionHandler;
@@ -160,55 +165,54 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
         viewer.getControl().setMenu(menu);
 
         // Set help on the viewer 
-// RAP [fappel]: Helpsystem not supported        
-//        viewer.getControl().addHelpListener(new HelpListener() {
-//            /*
-//             * @see HelpListener#helpRequested(HelpEvent)
-//             */
-//            public void helpRequested(HelpEvent e) {
-//                // Get the context for the selected item
-//                IStructuredSelection selection = (IStructuredSelection) viewer
-//                        .getSelection();
-//                if (!selection.isEmpty()) {
-//                    IPropertySheetEntry entry = (IPropertySheetEntry) selection
-//                            .getFirstElement();
-//                    Object helpContextId = entry.getHelpContextIds();
-//                    if (helpContextId != null) {
-//                        if (helpContextId instanceof String) {
-//                            PlatformUI.getWorkbench()
-//									.getHelpSystem().displayHelp(
-//											(String) helpContextId);
-//                            return;
-//                        }
-//
-//                        // Since 2.0 the only valid type for helpContextIds
-//                        // is a String (a single id).
-//                        // However for backward compatibility we have to handle
-//                        // and array of contexts (Strings and/or IContexts) 
-//                        // or a context computer.
-//                        Object[] contexts = null;
-//                        if (helpContextId instanceof IContextComputer) {
-//                            // get local contexts
-//                            contexts = ((IContextComputer) helpContextId)
-//                                    .getLocalContexts(e);
-//                        } else {
-//                            contexts = (Object[]) helpContextId;
-//                        }
-//                        IWorkbenchHelpSystem help = PlatformUI.getWorkbench().getHelpSystem();
-//                        // Ignore all but the first element in the array
-//                        if (contexts[0] instanceof IContext) {
-//							help.displayHelp((IContext) contexts[0]);
-//						} else {
-//							help.displayHelp((String) contexts[0]);
-//						}
-//                        return;
-//                    }
-//                }
-//
-//                // No help for the selection so show page help
-//                PlatformUI.getWorkbench().getHelpSystem().displayHelp(HELP_CONTEXT_PROPERTY_SHEET_PAGE);
-//            }
-//        });
+        viewer.getControl().addHelpListener(new HelpListener() {
+            /*
+             * @see HelpListener#helpRequested(HelpEvent)
+             */
+            public void helpRequested(HelpEvent e) {
+                // Get the context for the selected item
+                IStructuredSelection selection = (IStructuredSelection) viewer
+                        .getSelection();
+                if (!selection.isEmpty()) {
+                    IPropertySheetEntry entry = (IPropertySheetEntry) selection
+                            .getFirstElement();
+                    Object helpContextId = entry.getHelpContextIds();
+                    if (helpContextId != null) {
+                        if (helpContextId instanceof String) {
+                            PlatformUI.getWorkbench()
+									.getHelpSystem().displayHelp(
+											(String) helpContextId);
+                            return;
+                        }
+
+                        // Since 2.0 the only valid type for helpContextIds
+                        // is a String (a single id).
+                        // However for backward compatibility we have to handle
+                        // and array of contexts (Strings and/or IContexts) 
+                        // or a context computer.
+                        Object[] contexts = null;
+                        if (helpContextId instanceof IContextComputer) {
+                            // get local contexts
+                            contexts = ((IContextComputer) helpContextId)
+                                    .getLocalContexts(e);
+                        } else {
+                            contexts = (Object[]) helpContextId;
+                        }
+                        IWorkbenchHelpSystem help = PlatformUI.getWorkbench().getHelpSystem();
+                        // Ignore all but the first element in the array
+                        if (contexts[0] instanceof IContext) {
+							help.displayHelp((IContext) contexts[0]);
+						} else {
+							help.displayHelp((String) contexts[0]);
+						}
+                        return;
+                    }
+                }
+
+                // No help for the selection so show page help
+                PlatformUI.getWorkbench().getHelpSystem().displayHelp(HELP_CONTEXT_PROPERTY_SHEET_PAGE);
+            }
+        });
     }
 
     /**

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.ui.PlatformUI;
+
 
 /**
  * This action hides or shows categories in the <code>PropertySheetViewer</code>.
@@ -23,9 +25,8 @@ package org.eclipse.ui.views.properties;
      */
     public CategoriesAction(PropertySheetViewer viewer, String name) {
         super(viewer, name);
-// RAP [fappel]: helpsystem not yet support by RAP
-//        PlatformUI.getWorkbench().getHelpSystem()
-//                .setHelp(this, IPropertiesHelpContextIds.CATEGORIES_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(this, IPropertiesHelpContextIds.CATEGORIES_ACTION);
     }
 
     /**

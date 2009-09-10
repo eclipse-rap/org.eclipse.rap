@@ -15,6 +15,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.ChangeToPerspectiveMenu;
 import org.eclipse.ui.internal.ReopenEditorMenu;
 import org.eclipse.ui.internal.ShowViewMenu;
+import org.eclipse.ui.internal.actions.HelpSearchContributionItem;
 
 /**
  * Access to standard contribution items provided by the workbench.
@@ -215,21 +216,20 @@ public abstract class ContributionItemFactory {
         }
     };
 
-// RAP [rh] HELP_SEARCH contribution item: help system not supported    
-//    /**
-//     * Workbench contribution item (id "helpSearch"): An editable field
-//     * for entering help search queries.
-//     * @since 3.1
-//     */
-//    public static final ContributionItemFactory HELP_SEARCH = new ContributionItemFactory(
-//            "helpSearch") {//$NON-NLS-1$
-//        public IContributionItem create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            return new HelpSearchContributionItem(window, getId());
-//        }
-//    };
+    /**
+     * Workbench contribution item (id "helpSearch"): An editable field
+     * for entering help search queries.
+     * @since 1.3
+     */
+    public static final ContributionItemFactory HELP_SEARCH = new ContributionItemFactory(
+            "helpSearch") {//$NON-NLS-1$
+        public IContributionItem create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            return new HelpSearchContributionItem(window, getId());
+        }
+    };
 
     
 }

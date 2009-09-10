@@ -97,10 +97,9 @@ public class PropertySheet extends PageBookView implements ISelectionListener {
      */
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-// RAP [fappel]: helpsystem not supported
-//        getSite().getPage().getWorkbenchWindow().getWorkbench().getHelpSystem()
-//				.setHelp(getPageBook(),
-//						IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW);
+        getSite().getPage().getWorkbenchWindow().getWorkbench().getHelpSystem()
+				.setHelp(getPageBook(),
+						IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW);
     }
 
     /* (non-Javadoc)

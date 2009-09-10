@@ -22,17 +22,18 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 //import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-//import org.eclipse.help.internal.UAElement;
-//import org.eclipse.help.internal.UAElementFactory;
-//import org.eclipse.help.internal.dynamic.DocumentProcessor;
-//import org.eclipse.help.internal.dynamic.DocumentReader;
-//import org.eclipse.help.internal.dynamic.ExtensionHandler;
-//import org.eclipse.help.internal.dynamic.FilterHandler;
-//import org.eclipse.help.internal.dynamic.IncludeHandler;
-//import org.eclipse.help.internal.dynamic.ProcessorHandler;
+import org.eclipse.help.internal.UAElement;
+import org.eclipse.help.internal.UAElementFactory;
+import org.eclipse.help.internal.dynamic.DocumentProcessor;
+import org.eclipse.help.internal.dynamic.DocumentReader;
+import org.eclipse.help.internal.dynamic.ExtensionHandler;
+import org.eclipse.help.internal.dynamic.FilterHandler;
+import org.eclipse.help.internal.dynamic.IncludeHandler;
+import org.eclipse.help.internal.dynamic.ProcessorHandler;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.RWT;
 import org.eclipse.ui.cheatsheets.AbstractItemExtensionElement;
-//import org.eclipse.ui.internal.cheatsheets.CheatSheetEvaluationContext;
+import org.eclipse.ui.internal.cheatsheets.CheatSheetEvaluationContext;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
 import org.eclipse.ui.internal.cheatsheets.ICheatSheetResource;
 import org.eclipse.ui.internal.cheatsheets.Messages;
@@ -66,8 +67,7 @@ public class CheatSheetParser implements IStatusContainer {
 	private static final String TRUE_STRING = "true"; //$NON-NLS-1$
 
 	private DocumentBuilder documentBuilder;
-// RAP [if] Help system not supported
-//	private DocumentProcessor processor;
+	private DocumentProcessor processor;
 	private ArrayList itemExtensionContainerList;
 
 	// Cheatsheet kinds that can be parsed
@@ -935,22 +935,25 @@ public class CheatSheetParser implements IStatusContainer {
 			}
 		}
 
-// RAP [if] Help system not supported
-//		// process dynamic content, normalize paths
-//		if (processor == null) {
-//			DocumentReader reader = new DocumentReader();
-//			processor = new DocumentProcessor(new ProcessorHandler[] {
-//				new FilterHandler(CheatSheetEvaluationContext.getContext()),
-//				new NormalizeHandler(),
+		// process dynamic content, normalize paths
+		if (processor == null) {
+			DocumentReader reader = new DocumentReader();
+			processor = new DocumentProcessor(new ProcessorHandler[] {
+				new FilterHandler(CheatSheetEvaluationContext.getContext()),
+				new NormalizeHandler(),
+				// RAP [bm]: replaced with correct NL for RAP
 //				new IncludeHandler(reader, Platform.getNL()),
 //				new ExtensionHandler(reader, Platform.getNL())
-//			});
-//		}
-//		String documentPath = null;
-//		if (input.getPluginId() != null) {
-//			documentPath = '/' + input.getPluginId() + input.getUrl().getPath();
-//		}
-//		processor.process(UAElementFactory.newElement(document.getDocumentElement()), documentPath);
+				new IncludeHandler(reader, RWT.getLocale().getLanguage()),
+				new ExtensionHandler(reader, RWT.getLocale().getLanguage())
+				// RAPEND: [bm]
+			});
+		}
+		String documentPath = null;
+		if (input.getPluginId() != null) {
+			documentPath = '/' + input.getPluginId() + input.getUrl().getPath();
+		}
+		processor.process(UAElementFactory.newElement(document.getDocumentElement()), documentPath);
 
 		if ( cheatSheetKind == COMPOSITE_ONLY  ||  (cheatSheetKind == ANY && isComposite(document))) {
 			CompositeCheatSheetParser compositeParser = new CompositeCheatSheetParser();
@@ -1040,37 +1043,36 @@ public class CheatSheetParser implements IStatusContainer {
 		throw new CheatSheetParserException(Messages.get().ERROR_PARSING_CHEATSHEET_CONTENTS);
 	}
 
-// RAP [if] Help system not supported
-//	/*
-//	 * Normalizes composite cheat sheet-relative paths to simple cheat sheets into fully
-//	 * qualified paths, e.g. for the path "tasks/mySimpleCheatSheet.xml" in composite cheat
-//	 * sheet "/my.plugin/cheatsheets/myCompositeCheatSheet.xml", this normalizes to
-//	 * "/my.plugin/cheatsheets/tasks/mySimpleCheatSheet.xml".
-//	 *
-//	 * This is necessary because with dynamic content we are pulling in tasks from other
-//	 * plug-ins and those tasks have relative paths. It also only applies for cheat sheets
-//	 * located in running plug-ins.
-//	 */
-//	private class NormalizeHandler extends ProcessorHandler {
-//
-//		private static final String ELEMENT_PARAM = "param"; //$NON-NLS-1$
-//		private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
-//		private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
-//		private static final String NAME_PATH = "path"; //$NON-NLS-1$
-//
-//		public short handle(UAElement element, String id) {
-//			if (id != null && ELEMENT_PARAM.equals(element.getElementName())) {
-//				String name = element.getAttribute(ATTRIBUTE_NAME);
-//				if (NAME_PATH.equals(name)) {
-//					String value = element.getAttribute(ATTRIBUTE_VALUE);
-//					if (value != null) {
-//						int index = id.lastIndexOf('/');
-//						element.setAttribute(ATTRIBUTE_VALUE, id.substring(0, index + 1) + value);
-//					}
-//				}
-//				return HANDLED_CONTINUE;
-//			}
-//			return UNHANDLED;
-//		}
-//	}
+	/*
+	 * Normalizes composite cheat sheet-relative paths to simple cheat sheets into fully
+	 * qualified paths, e.g. for the path "tasks/mySimpleCheatSheet.xml" in composite cheat
+	 * sheet "/my.plugin/cheatsheets/myCompositeCheatSheet.xml", this normalizes to
+	 * "/my.plugin/cheatsheets/tasks/mySimpleCheatSheet.xml".
+	 *
+	 * This is necessary because with dynamic content we are pulling in tasks from other
+	 * plug-ins and those tasks have relative paths. It also only applies for cheat sheets
+	 * located in running plug-ins.
+	 */
+	private class NormalizeHandler extends ProcessorHandler {
+
+		private static final String ELEMENT_PARAM = "param"; //$NON-NLS-1$
+		private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+		private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
+		private static final String NAME_PATH = "path"; //$NON-NLS-1$
+
+		public short handle(UAElement element, String id) {
+			if (id != null && ELEMENT_PARAM.equals(element.getElementName())) {
+				String name = element.getAttribute(ATTRIBUTE_NAME);
+				if (NAME_PATH.equals(name)) {
+					String value = element.getAttribute(ATTRIBUTE_VALUE);
+					if (value != null) {
+						int index = id.lastIndexOf('/');
+						element.setAttribute(ATTRIBUTE_VALUE, id.substring(0, index + 1) + value);
+					}
+				}
+				return HANDLED_CONTINUE;
+			}
+			return UNHANDLED;
+		}
+	}
 }

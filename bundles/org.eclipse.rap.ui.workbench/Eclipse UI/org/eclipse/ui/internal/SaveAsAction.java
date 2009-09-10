@@ -31,9 +31,8 @@ public class SaveAsAction extends BaseSaveAction {
         setText(WorkbenchMessages.get().SaveAs_text); 
         setToolTipText(WorkbenchMessages.get().SaveAs_toolTip); 
         setId("saveAs"); //$NON-NLS-1$
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.SAVE_AS_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.SAVE_AS_ACTION);
         setImageDescriptor(WorkbenchImages
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
         setDisabledImageDescriptor(WorkbenchImages

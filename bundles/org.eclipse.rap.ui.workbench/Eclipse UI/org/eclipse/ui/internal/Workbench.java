@@ -56,6 +56,7 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.actions.CommandAction;
 import org.eclipse.ui.internal.activities.ws.WorkbenchActivitySupport;
@@ -63,6 +64,7 @@ import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
 import org.eclipse.ui.internal.commands.*;
 import org.eclipse.ui.internal.contexts.*;
 import org.eclipse.ui.internal.dialogs.PropertyPageContributorManager;
+import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
 import org.eclipse.ui.internal.intro.IIntroRegistry;
 import org.eclipse.ui.internal.intro.IntroDescriptor;
 import org.eclipse.ui.internal.keys.BindingService;
@@ -2754,8 +2756,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         serviceLocator.dispose();
 
         workbenchActivitySupport.dispose();
-// RAP [rh] WorkbenchHelpSystem disabled
-//      WorkbenchHelpSystem.disposeIfNecessary();
+        WorkbenchHelpSystem.disposeIfNecessary();
 
         // shutdown the rest of the workbench
         WorkbenchColors.shutdown();
@@ -3262,11 +3263,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
      * 
      * @see org.eclipse.ui.IWorkbench#getHelpSystem()
      */
-    // RAP [bm]: 
-//  public IWorkbenchHelpSystem getHelpSystem() {
-//      return WorkbenchHelpSystem.getInstance();
-//  }
-    // RAPEND: [bm] 
+    public IWorkbenchHelpSystem getHelpSystem() {
+    	return WorkbenchHelpSystem.getInstance();
+    }
 
     /*
      * (non-Javadoc)

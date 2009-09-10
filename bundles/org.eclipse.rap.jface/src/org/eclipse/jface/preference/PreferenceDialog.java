@@ -238,11 +238,10 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			cancelPressed();
 			return;
 		}
-		// RAP [bm]: 
-//		case IDialogConstants.HELP_ID: {
-//			helpPressed();
-//			return;
-//		}
+		case IDialogConstants.HELP_ID: {
+			helpPressed();
+			return;
+		}
 		}
 	}
 
@@ -868,12 +867,11 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * <code>performHelp</code> on the currently active page.
 	 * </p>
 	 */
-	// RAP [bm]: 
-//	protected void helpPressed() {
-//		if (currentPage != null) {
-//			currentPage.performHelp();
-//		}
-//	}
+	protected void helpPressed() {
+		if (currentPage != null) {
+			currentPage.performHelp();
+		}
+	}
 
 	/**
 	 * Returns whether the current page is valid.

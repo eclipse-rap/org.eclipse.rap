@@ -45,9 +45,7 @@
    <!-- RAP [bm] deprecated
    <extension-point id="org.eclipse.ui.fontDefinitions" name="%ExtPoint.fontDefinitions" schema="schema/fontDefinitions.exsd"/>
    -->
-   <!-- RAP [bm] help
    <extension-point id="org.eclipse.ui.helpSupport" name="%ExtPoint.helpSupport" schema="schema/helpSupport.exsd"/>
-   -->
    <extension-point id="org.eclipse.ui.importWizards" name="%ExtPoint.importWizards" schema="schema/importWizards.exsd"/>
    <extension-point id="org.eclipse.ui.intro" name="%ExtPoint.intro" schema="schema/intro.exsd"/>
    <extension-point id="org.eclipse.ui.keywords" name="%ExtPoint.keywords" schema="schema/keywords.exsd"/>
@@ -1110,7 +1108,6 @@
               optional="true">
         </commandParameter>
       </command>
-      <!-- RAP [bm] HelpSystem
       <command
             defaultHandler="org.eclipse.ui.internal.handlers.DisplayHelpHandler"
             description="%command.displayHelp.description"
@@ -1122,7 +1119,6 @@
                name="%command.displayHelp.hrefParameter"
                optional="true"/>
       </command>
-      -->
       <command
             categoryId="org.eclipse.ui.category.file"
             description="%command.closeOthers.description"

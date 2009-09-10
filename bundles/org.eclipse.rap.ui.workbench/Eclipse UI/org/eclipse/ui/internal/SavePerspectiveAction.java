@@ -35,9 +35,8 @@ public class SavePerspectiveAction extends PerspectiveAction {
         setActionDefinitionId("org.eclipse.ui.window.savePerspective"); //$NON-NLS-1$
         // @issue missing action id
         setToolTipText(WorkbenchMessages.get().SavePerspective_toolTip); 
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
     }
 
     /* (non-Javadoc)

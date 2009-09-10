@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,9 +25,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * A <code>TrayDialog</code> is a specialized <code>Dialog</code> that can contain
@@ -151,11 +159,10 @@ public abstract class TrayDialog extends Dialog {
     	composite.setFont(parent.getFont());
 
 		// create help control if needed
-    	// RAP [bm]: 
-//        if (isHelpAvailable()) {
-//        	Control helpControl = createHelpControl(composite);
-//        	((GridData) helpControl.getLayoutData()).horizontalIndent = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-//		}
+        if (isHelpAvailable()) {
+        	Control helpControl = createHelpControl(composite);
+        	((GridData) helpControl.getLayoutData()).horizontalIndent = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		}
         Control buttonSection = super.createButtonBar(composite);
         ((GridData) buttonSection.getLayoutData()).grabExcessHorizontalSpace = true;
         return composite;
@@ -173,62 +180,63 @@ public abstract class TrayDialog extends Dialog {
 	 * 
 	 * @param parent the parent composite
 	 * @return the help control
+     * @since 1.3
 	 */
-	// RAP [bm]: 
-//    protected Control createHelpControl(Composite parent) {
-//		Image helpImage = JFaceResources.getImage(DLG_IMG_HELP);
-//		if (helpImage != null) {
-//			return createHelpImageButton(parent, helpImage);
-//		}
-//		return createHelpLink(parent);
-//    }
+    protected Control createHelpControl(Composite parent) {
+		Image helpImage = JFaceResources.getImage(DLG_IMG_HELP);
+		if (helpImage != null) {
+			return createHelpImageButton(parent, helpImage);
+		}
+		return createHelpLink(parent);
+    }
     
     /*
      * Creates a button with a help image. This is only used if there
      * is an image available.
      */
-	// RAP [bm]: 
-//	private ToolBar createHelpImageButton(Composite parent, Image image) {
-//        ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.NO_FOCUS);
-//        ((GridLayout) parent.getLayout()).numColumns++;
-//		toolBar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+	private ToolBar createHelpImageButton(Composite parent, Image image) {
+        ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.NO_FOCUS);
+        ((GridLayout) parent.getLayout()).numColumns++;
+		toolBar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+		// RAP [bm]: Cursor ctor
 //		final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-//		toolBar.setCursor(cursor);
+		final Cursor cursor = parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND);
+		toolBar.setCursor(cursor);
+		// RAP [bm]: Cursor#dispose
 //		toolBar.addDisposeListener(new DisposeListener() {
 //			public void widgetDisposed(DisposeEvent e) {
 //				cursor.dispose();
 //			}
 //		});		
-//
-//        ToolItem item = new ToolItem(toolBar, SWT.NONE);
-//		item.setImage(image);
-//		item.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$
-//		item.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent e) {
-//				helpPressed();
-//            }
-//        });
-//		return toolBar;
-//	}
+
+        ToolItem item = new ToolItem(toolBar, SWT.NONE);
+		item.setImage(image);
+		item.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$
+		item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+				helpPressed();
+            }
+        });
+		return toolBar;
+	}
 
 	/*
 	 * Creates a help link. This is used when there is no help image
 	 * available.
 	 */
-	// RAP [bm]: 
-//	private Link createHelpLink(Composite parent) {
-//		Link link = new Link(parent, SWT.WRAP | SWT.NO_FOCUS);
-//        ((GridLayout) parent.getLayout()).numColumns++;
-//		link.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-//		link.setText("<a>"+IDialogConstants.get().HELP_LABEL+"</a>"); //$NON-NLS-1$ //$NON-NLS-2$
-//		link.setToolTipText(IDialogConstants.get().HELP_LABEL);
-//		link.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent e) {
-//				helpPressed();
-//            }
-//        });
-//		return link;
-//	}	
+	private Link createHelpLink(Composite parent) {
+		Link link = new Link(parent, SWT.WRAP | SWT.NO_FOCUS);
+        ((GridLayout) parent.getLayout()).numColumns++;
+		link.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+		link.setText("<a>"+IDialogConstants.get().HELP_LABEL+"</a>"); //$NON-NLS-1$ //$NON-NLS-2$
+		link.setToolTipText(IDialogConstants.get().HELP_LABEL);
+		link.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+				helpPressed();
+            }
+        });
+		return link;
+	}	
 	
 	/*
 	 * Returns whether or not the given layout can support the addition of a tray.
@@ -290,19 +298,18 @@ public abstract class TrayDialog extends Dialog {
 	 * tree upward until it finds a widget that has a help listener on it,
 	 * then invokes a help event on that widget.
 	 */
-	// RAP [bm]: 
-//	private void helpPressed() {
-//    	if (getShell() != null) {
-//	    	Control c = getShell().getDisplay().getFocusControl();
-//	    	while (c != null) {
-//	    		if (c.isListening(SWT.Help)) {
-//	    			c.notifyListeners(SWT.Help, new Event());
-//	    			break;
-//	    		}
-//	    		c = c.getParent();
-//	    	}
-//    	}
-//	}
+	private void helpPressed() {
+    	if (getShell() != null) {
+	    	Control c = getShell().getDisplay().getFocusControl();
+	    	while (c != null) {
+	    		if (c.isListening(SWT.Help)) {
+	    			c.notifyListeners(SWT.Help, new Event());
+	    			break;
+	    		}
+	    		c = c.getParent();
+	    	}
+    	}
+	}
 	
 	/**
 	 * Constructs the tray's widgets and displays the tray in this dialog. The

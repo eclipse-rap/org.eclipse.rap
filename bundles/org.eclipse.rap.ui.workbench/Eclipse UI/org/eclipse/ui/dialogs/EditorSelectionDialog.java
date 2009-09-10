@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
-//import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -29,15 +27,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-//import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorDescriptor;
-//import org.eclipse.ui.PlatformUI;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.EditorDescriptor;
@@ -144,9 +141,8 @@ public final class EditorSelectionDialog extends Dialog {
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(WorkbenchMessages.get().EditorSelection_title);
-// RAP [rh] IWorkbench#getHelpSystem not implemented
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-//				IWorkbenchHelpContextIds.EDITOR_SELECTION_DIALOG);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+				IWorkbenchHelpContextIds.EDITOR_SELECTION_DIALOG);
 	}
 
 	/**

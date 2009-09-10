@@ -11,6 +11,8 @@
 
 package org.eclipse.ui.views.properties;
 
+import org.eclipse.ui.PlatformUI;
+
 
 /**
  * This action resets the <code>PropertySheetViewer</code> values back
@@ -28,9 +30,8 @@ package org.eclipse.ui.views.properties;
      */
     public DefaultsAction(PropertySheetViewer viewer, String name) {
         super(viewer, name);
-// RAP [fappel]: helpsystem not supported
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-//				IPropertiesHelpContextIds.DEFAULTS_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+				IPropertiesHelpContextIds.DEFAULTS_ACTION);
     }
 
     /**

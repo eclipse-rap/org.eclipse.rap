@@ -373,17 +373,17 @@ public interface IHandlerService extends IServiceWithSources {
 	 */
 	public void readRegistry();
 
-	// RAP [bm]: Help
-//	/**
-//	 * Sets the help context identifier to associate with a particular handler.
-//	 * 
-//	 * @param handler
-//	 *            The handler with which to register a help context identifier;
-//	 *            must not be <code>null</code>.
-//	 * @param helpContextId
-//	 *            The help context identifier to register; may be
-//	 *            <code>null</code> if the help context identifier should be
-//	 *            removed.
-//	 */
-//	public void setHelpContextId(IHandler handler, String helpContextId);
+	/**
+	 * Sets the help context identifier to associate with a particular handler.
+	 * 
+	 * @param handler
+	 *            The handler with which to register a help context identifier;
+	 *            must not be <code>null</code>.
+	 * @param helpContextId
+	 *            The help context identifier to register; may be
+	 *            <code>null</code> if the help context identifier should be
+	 *            removed.
+     * @since 1.3
+	 */
+	public void setHelpContextId(IHandler handler, String helpContextId);
 }

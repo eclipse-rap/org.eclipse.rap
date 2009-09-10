@@ -55,9 +55,8 @@ public class IntroAction extends Action implements
             throw new IllegalArgumentException();
         }
         this.workbenchWindow = window;
-        // RAP [bm]: helpsystem
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.INTRO_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.INTRO_ACTION);
         
         IntroDescriptor introDescriptor = ((Workbench) workbenchWindow
                 .getWorkbench()).getIntroDescriptor();

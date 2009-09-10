@@ -1317,9 +1317,9 @@ public class ActionContributionItem extends ContributionItem {
 
 			// pass through any events
 			proxyItem.addListener(SWT.Selection, passThrough);
-			// RAP [bm]: 
+			// RAP [bm]: SWT.Arm missing
 //			proxyItem.addListener(SWT.Arm, passThrough);
-//			proxyItem.addListener(SWT.Help, passThrough);
+			proxyItem.addListener(SWT.Help, passThrough);
 
 			final Menu itemMenu = realItem.getMenu();
 			if (itemMenu != null) {
@@ -1335,8 +1335,7 @@ public class ActionContributionItem extends ContributionItem {
 						}
 					}
 				});
-				// RAP [bm]: 
-//				subMenu.addListener(SWT.Help, passThrough);
+				subMenu.addListener(SWT.Help, passThrough);
 				subMenu.addListener(SWT.Hide, passThrough);
 			}
 		}

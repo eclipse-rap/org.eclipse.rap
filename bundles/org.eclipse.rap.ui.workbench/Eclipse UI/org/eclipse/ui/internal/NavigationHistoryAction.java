@@ -112,9 +112,8 @@ public class NavigationHistoryAction extends PageEventAction {
             setText(WorkbenchMessages.get().NavigationHistoryAction_forward_text);
             setToolTipText(WorkbenchMessages.get().NavigationHistoryAction_forward_toolTip);
             // @issue missing action id
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//            window.getWorkbench().getHelpSystem().setHelp(this,
-//					IWorkbenchHelpContextIds.NAVIGATION_HISTORY_FORWARD);
+            window.getWorkbench().getHelpSystem().setHelp(this,
+					IWorkbenchHelpContextIds.NAVIGATION_HISTORY_FORWARD);
             setImageDescriptor(sharedImages
                     .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
             setDisabledImageDescriptor(sharedImages
@@ -124,9 +123,8 @@ public class NavigationHistoryAction extends PageEventAction {
             setText(WorkbenchMessages.get().NavigationHistoryAction_backward_text); 
             setToolTipText(WorkbenchMessages.get().NavigationHistoryAction_backward_toolTip);
             // @issue missing action id
-// RAP [rh] DynamicHelpAction: help support left aside for now
-//            window.getWorkbench().getHelpSystem().setHelp(this,
-//					IWorkbenchHelpContextIds.NAVIGATION_HISTORY_BACKWARD);
+            window.getWorkbench().getHelpSystem().setHelp(this,
+					IWorkbenchHelpContextIds.NAVIGATION_HISTORY_BACKWARD);
             setImageDescriptor(sharedImages
                     .getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
             setDisabledImageDescriptor(sharedImages

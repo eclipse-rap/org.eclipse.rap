@@ -292,38 +292,41 @@ public interface IWorkbenchPreferenceConstants {
 	 */
 	public static String SHOW_OTHER_IN_PERSPECTIVE_MENU = "SHOW_OTHER_IN_PERSPECTIVE_MENU"; //$NON-NLS-1$
 
-	// RAP [bm]: help
-//	/**
-//	 * A named preference for the text of the Help Contents action.
-//	 * 
-//	 * String-valued. If not specified, <code>"&Help Contents"</code> is used.
-//	 * <p>
-//	 * The default value for this preference is: <code>null</code>
-//	 * </p>
-//	 * 
-//	 * @since 3.0
-//	 */
-//	public static String HELP_CONTENTS_ACTION_TEXT = "helpContentsActionText"; //$NON-NLS-1$
-//
-//	/**
-//	 * A named preference for the text of the Help Search action.
-//	 * 
-//	 * String-valued. If not specified, <code>"S&earch"</code> is used.
-//	 * <p>
-//	 * The default value for this preference is: <code>null</code>
-//	 * </p>
-//	 */
-//	public static String HELP_SEARCH_ACTION_TEXT = "helpSearchActionText"; //$NON-NLS-1$
-//
-//	/**
-//	 * A named preference for the text of the Dynamic Help action.
-//	 * 
-//	 * String-valued. If not specified, <code>"&Dynamic Help"</code> is used.
-//	 * <p>
-//	 * The default value for this preference is: <code>null</code>
-//	 * </p>
-//	 */
-//	public static String DYNAMIC_HELP_ACTION_TEXT = "dynamicHelpActionText"; //$NON-NLS-1$
+	/**
+	 * A named preference for the text of the Help Contents action.
+	 * 
+	 * String-valued. If not specified, <code>"&Help Contents"</code> is used.
+	 * <p>
+	 * The default value for this preference is: <code>null</code>
+	 * </p>
+	 * 
+	 * @since 1.3
+	 */
+	public static String HELP_CONTENTS_ACTION_TEXT = "helpContentsActionText"; //$NON-NLS-1$
+
+	/**
+	 * A named preference for the text of the Help Search action.
+	 * 
+	 * String-valued. If not specified, <code>"S&earch"</code> is used.
+	 * <p>
+	 * The default value for this preference is: <code>null</code>
+	 * </p>
+	 * 
+	 * @since 1.3
+	 */
+	public static String HELP_SEARCH_ACTION_TEXT = "helpSearchActionText"; //$NON-NLS-1$
+
+	/**
+	 * A named preference for the text of the Dynamic Help action.
+	 * 
+	 * String-valued. If not specified, <code>"&Dynamic Help"</code> is used.
+	 * <p>
+	 * The default value for this preference is: <code>null</code>
+	 * </p>
+	 * 
+	 * @since 1.3
+	 */
+	public static String DYNAMIC_HELP_ACTION_TEXT = "dynamicHelpActionText"; //$NON-NLS-1$
 
 	// RAP [bm]: no animations
 //	/**

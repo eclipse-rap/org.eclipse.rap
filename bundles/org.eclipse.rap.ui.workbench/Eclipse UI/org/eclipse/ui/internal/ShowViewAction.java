@@ -44,9 +44,8 @@ public class ShowViewAction extends Action implements IPluginContribution {
         setText(accel == null ? label : label + "@" + accel); //$NON-NLS-1$
         setImageDescriptor(desc.getImageDescriptor());
         setToolTipText(label);
-// RAP [rh] Workbench#getHelpSystem() missing            
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.SHOW_VIEW_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.SHOW_VIEW_ACTION);
         this.window = window;
         this.desc = desc;
         this.makeFast = makeFast;

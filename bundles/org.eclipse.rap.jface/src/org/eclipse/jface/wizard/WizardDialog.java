@@ -807,8 +807,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 */
 	protected void helpPressed() {
 		if (currentPage != null) {
-			// RAP [bm]: Help
-//			currentPage.performHelp();
+			currentPage.performHelp();
 		}
 	}
 

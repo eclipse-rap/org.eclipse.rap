@@ -18,11 +18,11 @@ The &lt;code&gt;org.eclipse.ui.commands&lt;/code&gt; extension point is used to 
             <element ref="category" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="command" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="commandParameterType" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="keyBinding" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="keyConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+            <!--element ref="keyBinding" minOccurs="0" maxOccurs="unbounded"/ -->
+            <!--<element ref="keyConfiguration" minOccurs="0" maxOccurs="unbounded"/-->
             <element ref="context" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="scope" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="activeKeyConfiguration" minOccurs="0" maxOccurs="1"/>
+            <!--<element ref="activeKeyConfiguration" minOccurs="0" maxOccurs="1"/-->
          </sequence>
          <attribute name="id" type="string">
             <annotation>

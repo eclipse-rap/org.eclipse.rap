@@ -38,7 +38,7 @@ import org.eclipse.ui.dialogs.IWorkingSetEditWizard;
 import org.eclipse.ui.dialogs.IWorkingSetNewWizard;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.WorkingSet;
@@ -228,9 +228,8 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 			editedWorkingSets.remove(editWorkingSet);
 		}
 		dialog.create();
-// RAP [rh] IWorkbench#getHelpSystem not implemented		
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
-//				IWorkbenchHelpContextIds.WORKING_SET_EDIT_WIZARD);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
+				IWorkbenchHelpContextIds.WORKING_SET_EDIT_WIZARD);
 		if (dialog.open() == Window.OK) {
 			editWorkingSet = wizard.getSelection();
 			availableWorkingSetsChanged();
@@ -259,9 +258,8 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 		WizardDialog dialog = new WizardDialog(getShell(), wizard);
 
 		dialog.create();
-// RAP [rh] IWorkbench#getHelpSystem not implemented
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
-//				IWorkbenchHelpContextIds.WORKING_SET_NEW_WIZARD);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
+				IWorkbenchHelpContextIds.WORKING_SET_NEW_WIZARD);
 		if (dialog.open() == Window.OK) {
 			IWorkingSet workingSet = wizard.getSelection();
 			manager.addWorkingSet(workingSet);
