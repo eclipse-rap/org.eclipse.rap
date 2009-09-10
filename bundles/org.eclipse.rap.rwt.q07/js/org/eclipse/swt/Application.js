@@ -36,9 +36,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
   },
 
   statics : {
-    // TODO [rh] causes JavaScript error
-    //  var doc = qx.ui.core.ClientDocument.getInstance();
-    //  doc.removeEventListener( "windowresize", this._onResize );
     _onResize : function( evt ) {
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
@@ -46,7 +43,15 @@ qx.Class.define( "org.eclipse.swt.Application", {
     },
 
     _onKeyDown : function( evt ) {
-      if( evt.getKeyIdentifier() == "Escape" ) {
+      // prevent document from scrolling (see bug 193703)
+      if(    evt.getKeyIdentifier() == "Escape"
+          || evt.getKeyIdentifier() == "Up"
+          || evt.getKeyIdentifier() == "Down"
+          || evt.getKeyIdentifier() == "Left"
+          || evt.getKeyIdentifier() == "Right"
+          || evt.getKeyIdentifier() == "PageUp"
+          || evt.getKeyIdentifier() == "PageDown" )
+      { 
         evt.preventDefault();
       }
     },
