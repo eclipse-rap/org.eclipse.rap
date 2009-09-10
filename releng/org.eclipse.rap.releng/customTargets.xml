@@ -118,6 +118,8 @@
       <include name="org.eclipse.equinox.preferences.source_*" />
       <include name="org.eclipse.equinox.registry_*" />
       <include name="org.eclipse.equinox.registry.source_*" />
+      <include name="org.eclipse.help_*" />
+      <include name="org.eclipse.help.source_*" />
       <include name="org.eclipse.jdt.junit.runtime*" />
       <include name="org.eclipse.osgi_*" />
       <include name="org.eclipse.osgi.services_*" />

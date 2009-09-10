@@ -33,7 +33,6 @@ plugin@org.eclipse.rap.design.example=HEAD,:pserver:anonymous@dev.eclipse.org:/c
 
 # help
 plugin@org.eclipse.rap.ui.cheatsheets=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.cheatsheets
-plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.help
 
 # tests
 feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.test-feature,org.eclipse.rap.test
