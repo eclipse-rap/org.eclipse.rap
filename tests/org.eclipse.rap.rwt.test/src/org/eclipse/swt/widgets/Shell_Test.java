@@ -194,7 +194,7 @@ public class Shell_Test extends TestCase {
     shell.setVisible( false );
     assertEquals( "", log.toString() );
   }
-  
+
   public void testCloseChildShells() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -349,11 +349,11 @@ public class Shell_Test extends TestCase {
     shell.setActive();
     assertEquals( 0, log.size() );
   }
-  
-  
+
+
   /* test case to simulate the scenario reported in this bug:
    * 278996: [Shell] Stackoverflow when closing child shell
-   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996 
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996
    */
   public void testCloseOnDeactivate() {
     Display display = new Display();
@@ -367,7 +367,7 @@ public class Shell_Test extends TestCase {
     shell.setActive();
     // no assert: test case is to ensure that no stack overflow occurs
   }
-  
+
   public void testMaximized() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -382,7 +382,7 @@ public class Shell_Test extends TestCase {
     Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
-    Rectangle bounds = new Rectangle( 10, 10, 10, 10 );
+    Rectangle bounds = new Rectangle( 10, 10, 100, 100 );
     shell.setBounds( bounds );
     assertFalse( shell.getMaximized() );
     assertEquals( bounds, shell.getBounds() );
@@ -447,12 +447,12 @@ public class Shell_Test extends TestCase {
     Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMinimized( true );
-    Rectangle bounds = new Rectangle( 10, 10, 10, 10 );
+    Rectangle bounds = new Rectangle( 10, 10, 100, 100 );
     shell.setBounds( bounds );
     assertFalse( shell.getMinimized() );
     assertEquals( bounds, shell.getBounds() );
   }
-  
+
   public void testModified() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -461,6 +461,32 @@ public class Shell_Test extends TestCase {
     assertTrue( shell.getModified() );
     shell.setModified( false );
     assertFalse( shell.getModified() );
+  }
+
+  public void testMinimumSize() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    assertEquals( new Point( 80, 23 ), shell.getMinimumSize() );
+    shell.setSize( 10, 10 );
+    assertEquals( new Point( 80, 23 ), shell.getSize() );
+    shell.setSize( 100, 100 );
+    assertEquals( new Point( 100, 100 ), shell.getSize() );
+    shell.setMinimumSize( 150, 150 );
+    assertEquals( new Point( 150, 150 ), shell.getMinimumSize() );
+    assertEquals( new Point( 150, 150 ), shell.getSize() );
+    shell.setMinimumSize( 10, 10 );
+    assertEquals( new Point( 80, 23 ), shell.getMinimumSize() );
+    shell.setMinimumSize( new Point( 150, 150 ) );
+    assertEquals( new Point( 150, 150 ), shell.getMinimumSize() );
+    shell.setBounds( 10, 10, 100, 100 );
+    assertEquals( new Point( 150, 150 ), shell.getSize() );
+    assertEquals( new Rectangle( 10, 10, 150, 150 ), shell.getBounds() );
+    try {
+      shell.setMinimumSize( null );
+      fail( "Must not allow null value" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   protected void setUp() throws Exception {

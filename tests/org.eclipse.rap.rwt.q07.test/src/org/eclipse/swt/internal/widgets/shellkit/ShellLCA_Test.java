@@ -47,6 +47,8 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_CONTROL ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_SHELL ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_MODE ) );
+    assertEquals( new Point( 80, 2 ),
+                  adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
     RWTFixture.clearPreserved();
     shell.setText( "some text" );
     shell.open();
@@ -68,6 +70,7 @@ public class ShellLCA_Test extends TestCase {
     shell.setMaximized( true );
     Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     shell.setImage( image );
+    shell.setMinimumSize( 100, 100 );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( ShellLCA.PROP_SHELL_LISTENER );
@@ -77,6 +80,8 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( button, adapter.getPreserved( ShellLCA.PROP_ACTIVE_CONTROL ) );
     assertEquals( shell, adapter.getPreserved( ShellLCA.PROP_ACTIVE_SHELL ) );
     assertEquals( "maximized", adapter.getPreserved( ShellLCA.PROP_MODE ) );
+    assertEquals( new Point( 100, 100 ),
+                  adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
     RWTFixture.clearPreserved();
     //control: enabled
     RWTFixture.preserveWidgets();
@@ -112,7 +117,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     RWTFixture.clearPreserved();
     //bound
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
+    Rectangle rectangle = new Rectangle( 10, 10, 100, 150 );
     shell.setBounds( rectangle );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
@@ -397,6 +402,19 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
   }
 
+  public void testWriteMinimumSize() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+    shell.setMinimumSize( 100, 100 );
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+    lca.renderChanges( shell );
+    String expected = "w.setMinWidth( 100 );w.setMinHeight( 100 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
   public void testWriteStyleFlags() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
@@ -444,7 +462,7 @@ public class ShellLCA_Test extends TestCase {
                + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

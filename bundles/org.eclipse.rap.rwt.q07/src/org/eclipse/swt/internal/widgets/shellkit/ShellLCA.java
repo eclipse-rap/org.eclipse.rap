@@ -21,8 +21,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
@@ -39,6 +38,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_ACTIVE_CONTROL = "activeControl";
   static final String PROP_ACTIVE_SHELL = "activeShell";
   static final String PROP_MODE = "mode";
+  static final String PROP_MINIMUM_SIZE = "minimumSize";
   static final String PROP_SHELL_LISTENER = "shellListener";
   private static final String PROP_SHELL_MENU  = "menuBar";
   private static final String PROP_SHELL_MENU_BOUNDS  = "menuBarShellClientArea";
@@ -56,6 +56,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
     adapter.preserve( PROP_SHELL_MENU, shell.getMenuBar() );
+    adapter.preserve( PROP_MINIMUM_SIZE, shell.getMinimumSize() );
     WidgetLCAUtil.preserveCustomVariant( shell );
   }
 
@@ -124,6 +125,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeActiveShell( shell );
     writeMode( shell );
     writeCloseListener( shell );
+    writeMinimumSize( shell );
     WidgetLCAUtil.writeCustomVariant( shell );
   }
 
@@ -167,6 +169,15 @@ public final class ShellLCA extends AbstractWidgetLCA {
     {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.call( "open", null );
+    }
+  }
+
+  private static void writeMinimumSize( final Shell shell ) throws IOException {
+    Point newValue = shell.getMinimumSize();
+    if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.set( "minWidth", new Integer( newValue.x ) );
+      writer.set( "minHeight", new Integer( newValue.y ) );
     }
   }
 

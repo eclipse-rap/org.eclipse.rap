@@ -41,7 +41,7 @@ public class Layout_Test extends TestCase {
     assertFalse( empty.equals( shell.getBounds() ) );
     assertEquals( empty, composite.getBounds() );
     assertEquals( empty, control.getBounds() );
-    Rectangle shellBounds = new Rectangle( 40, 50, 60, 70 );
+    Rectangle shellBounds = new Rectangle( 40, 50, 100, 70 );
     shell.setBounds( shellBounds );
     assertEquals( shellBounds, shell.getBounds() );
     assertEquals( empty, composite.getBounds() );
