@@ -464,14 +464,22 @@ public class Shell_Test extends TestCase {
   }
 
   public void testMinimumSize() {
+    final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
+    shell.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent event ) {
+        log.add( event );
+      }
+    } );
     assertEquals( new Point( 80, 23 ), shell.getMinimumSize() );
     shell.setSize( 10, 10 );
     assertEquals( new Point( 80, 23 ), shell.getSize() );
     shell.setSize( 100, 100 );
+    log.clear();
     assertEquals( new Point( 100, 100 ), shell.getSize() );
     shell.setMinimumSize( 150, 150 );
+    assertEquals( 1, log.size() );
     assertEquals( new Point( 150, 150 ), shell.getMinimumSize() );
     assertEquals( new Point( 150, 150 ), shell.getSize() );
     shell.setMinimumSize( 10, 10 );
