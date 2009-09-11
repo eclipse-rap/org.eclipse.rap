@@ -21,7 +21,6 @@ final class UIThread
   implements IUIThreadHolder, ISessionShutdownAdapter
 {
 
-  private boolean threadEnding;
   private ServiceContext serviceContext;
   private ISessionStore sessionStore;
   private Runnable shutdownCallback;
@@ -48,22 +47,7 @@ final class UIThread
     Object lock = getLock();
     synchronized( lock ) {
       lock.notifyAll();
-      if( !threadEnding ) {
-        // Only wait on this thread if it's not ending
-        lock.wait();
-      }
-    }
-  }
-  
-  public void run() {
-    try {
-      super.run();
-    } finally {
-      Object lock = getLock();
-      synchronized( lock ) {
-        threadEnding = true;
-        lock.notifyAll();
-      }
+      lock.wait();
     }
   }
 
