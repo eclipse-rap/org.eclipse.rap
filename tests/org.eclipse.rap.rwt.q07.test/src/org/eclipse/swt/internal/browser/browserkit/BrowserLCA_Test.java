@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -78,6 +79,7 @@ public class BrowserLCA_Test extends TestCase {
                         RWTLifeCycle.class.getName() );
     Fixture.setUp();
     RWTFixture.registerAdapterFactories();
+    ThemeManager.getInstance().initialize();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
