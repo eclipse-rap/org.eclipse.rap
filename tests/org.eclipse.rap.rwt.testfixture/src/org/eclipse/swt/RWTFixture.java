@@ -187,8 +187,8 @@ public final class RWTFixture {
 
     // deregistration of adapter factories
     deregisterAdapterFactories();
-// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
-//    ThemeManager.getInstance().deregisterAll();
+    
+    // Keep the ThemeManager initialized to speed up the TestSuite
 
     // clear Graphics resources
     ResourceFactory.clear();
