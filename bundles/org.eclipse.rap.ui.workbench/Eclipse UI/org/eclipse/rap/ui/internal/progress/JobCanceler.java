@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.ui.internal.progress;
+package org.eclipse.rap.ui.internal.progress;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 //               thread management.
 //               Note that this is still under investigation.
 //               See comment in JobManagerAdapter
-final class JobCanceler implements IJobChangeListener {
+public final class JobCanceler implements IJobChangeListener {
 
   public void aboutToRun( IJobChangeEvent event ) {
     event.getJob().cancel();

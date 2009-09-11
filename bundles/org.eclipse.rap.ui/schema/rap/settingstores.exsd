@@ -111,7 +111,7 @@ org.eclipse.rwt.settingStoreFactory=file
   &lt;extension
          point=&quot;org.eclipse.rap.ui.settingstores&quot;&gt;
       &lt;factory
-            class=&quot;org.eclipse.ui.internal.preferences.WorkbenchFileSettingStoreFactory&quot;
+            class=&quot;org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory&quot;
             id=&quot;file&quot;&gt;
       &lt;/factory&gt;
       &lt;factory

@@ -37,6 +37,8 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.*;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rap.ui.internal.RealmAdapterHook;
+import org.eclipse.rap.ui.internal.SessionSingletonEventManager;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;

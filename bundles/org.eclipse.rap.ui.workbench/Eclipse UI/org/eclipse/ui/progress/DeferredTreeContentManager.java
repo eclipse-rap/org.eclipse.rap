@@ -15,11 +15,11 @@ import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.internal.progress.ProgressMessages;
-import org.eclipse.ui.internal.progress.ProgressUtil;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 

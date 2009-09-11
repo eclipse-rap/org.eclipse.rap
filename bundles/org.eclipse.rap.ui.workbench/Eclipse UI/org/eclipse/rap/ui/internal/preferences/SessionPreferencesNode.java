@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal.preferences;
+package org.eclipse.rap.ui.internal.preferences;
 
 import java.util.*;
 
@@ -19,6 +19,7 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.rwt.service.SettingStoreException;
+import org.eclipse.ui.internal.preferences.Base64;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 

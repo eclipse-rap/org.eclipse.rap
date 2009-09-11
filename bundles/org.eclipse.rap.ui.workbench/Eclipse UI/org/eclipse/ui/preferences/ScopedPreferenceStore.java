@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.rap.ui.internal.preferences.SessionScope;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.ui.internal.preferences.SessionScope;
 
 /**
  * The ScopedPreferenceStore is an IPreferenceStore that uses the scopes

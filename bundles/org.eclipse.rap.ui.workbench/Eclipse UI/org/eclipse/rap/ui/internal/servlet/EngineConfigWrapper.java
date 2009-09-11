@@ -17,6 +17,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -30,7 +31,6 @@ import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.osgi.framework.Bundle;
 
 

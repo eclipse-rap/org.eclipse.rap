@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.*;
+import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
@@ -98,7 +99,8 @@ public class ProgressManager extends ProgressProvider implements
 
 	final Object listenersKey = new Object();
 
-	IJobChangeListener changeListener;
+	// RAP [bm]: made public to access in org.eclipse.rap.ui.*
+	public IJobChangeListener changeListener;
 
 	static final String PROGRESS_VIEW_NAME = "org.eclipse.ui.views.ProgressView"; //$NON-NLS-1$
 
@@ -360,7 +362,8 @@ public class ProgressManager extends ProgressProvider implements
 	/**
 	 * Create a new instance of the receiver.
 	 */
-	ProgressManager() {
+	// RAP [bm]: made public to access in org.eclipse.rap.ui.*
+	public ProgressManager() {
 // RAP [fappel]:	  
 //		Job.getJobManager().setProgressProvider(this);
 //		Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());

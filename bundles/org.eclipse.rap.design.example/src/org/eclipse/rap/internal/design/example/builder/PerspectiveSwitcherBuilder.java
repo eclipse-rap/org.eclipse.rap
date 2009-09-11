@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.rap.internal.design.example.business.layoutsets.PerspectiveSwitcherInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
+import org.eclipse.rap.ui.internal.preferences.SessionScope;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -44,7 +45,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.internal.preferences.SessionScope;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal.progress;
+package org.eclipse.rap.ui.internal.progress;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.internal.progress.ProgressManager;
 
 // RAP [fappel]:
 public class JobManagerAdapter
