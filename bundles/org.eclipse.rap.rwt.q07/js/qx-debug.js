@@ -7204,8 +7204,11 @@ qx.html.EventRegistration.removeEventListener(el,
 "scroll",
 this._onscroll);
 },
-_onscroll:function(ev){var el=ev.target||ev.srcElement;
-if(ev.scrollLeft!=0||ev.scrollTop!=0){el.scrollLeft=0;
+_onscroll:function(ev){var el=null;
+if(ev.target){el=(ev.target==ev.currentTarget)?ev.target:null;
+}else if(ev.srcElement){el=ev.srcElement;
+}
+if(el&&(ev.scrollLeft!=0||ev.scrollTop!=0)){el.scrollLeft=0;
 el.scrollTop=0;
 }}}});
 
