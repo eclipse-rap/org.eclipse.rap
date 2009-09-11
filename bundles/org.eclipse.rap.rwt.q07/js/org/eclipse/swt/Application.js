@@ -29,8 +29,10 @@ qx.Class.define( "org.eclipse.swt.Application", {
     var doc = qx.ui.core.ClientDocument.getInstance();
     doc.removeEventListener( "windowresize", 
                              org.eclipse.swt.Application._onResize );
-    doc.removeEventListener( "keydown",
-                             org.eclipse.swt.Application._onKeyDown );
+    doc.removeEventListener( "keypress",
+                             org.eclipse.swt.Application._onKeyPress );
+    doc.removeEventListener( "mousewheel",
+                             org.eclipse.swt.Application._onMouseWheel );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
   },
@@ -42,7 +44,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.send();
     },
 
-    _onKeyDown : function( evt ) {
+    _onKeyPress : function( evt ) {
       // prevent document from scrolling (see bug 193703)
       if(    evt.getKeyIdentifier() == "Escape"
           || evt.getKeyIdentifier() == "Up"
@@ -50,10 +52,14 @@ qx.Class.define( "org.eclipse.swt.Application", {
           || evt.getKeyIdentifier() == "Left"
           || evt.getKeyIdentifier() == "Right"
           || evt.getKeyIdentifier() == "PageUp"
-          || evt.getKeyIdentifier() == "PageDown" )
-      { 
+          || evt.getKeyIdentifier() == "PageDown" ) 
+      {
         evt.preventDefault();
       }
+    },
+    
+    _onMouseWheel : function( evt ) {
+      evt.preventDefault();
     },
     
     _appendWindowSize : function() {
@@ -106,8 +112,10 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize",
                             org.eclipse.swt.Application._onResize );
-      doc.addEventListener( "keydown",
-                            org.eclipse.swt.Application._onKeyDown );
+      doc.addEventListener( "keypress",
+                            org.eclipse.swt.Application._onKeyPress );
+      doc.addEventListener( "mousewheel",
+                            org.eclipse.swt.Application._onMouseWheel );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
