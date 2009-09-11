@@ -14,7 +14,6 @@ package org.eclipse.swt.widgets;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -26,11 +25,11 @@ import org.eclipse.swt.events.*;
 public class Widget_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    RWTFixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    RWTFixture.tearDown();
   }
 
   public void testGetAdapter() {
