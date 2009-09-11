@@ -159,7 +159,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onFontChange : function( event ) {
-      org.eclipse.swt.TextUtil._updateLineHeight( this );
+      var text = event.getTarget();
+      org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
 
     // this function is also used by Combo.js
