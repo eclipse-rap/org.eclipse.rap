@@ -425,13 +425,10 @@ public class ProgressManager extends ProgressProvider implements
 			 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 			 */
 			public void done(IJobChangeEvent event) {
-// RAP [fappel]: use session aware approach
+// RAP [rh] run regardless of a running workbench (see bug 283595)
 //				if (!PlatformUI.isWorkbenchRunning()) {
 //					return;
 //				}
-			    if (!ProgressUtil.isWorkbenchRunning(display)) {
-                  return;
-                }
 				Iterator startListeners = busyListenersForJob(event.getJob())
 						.iterator();
 				while (startListeners.hasNext()) {

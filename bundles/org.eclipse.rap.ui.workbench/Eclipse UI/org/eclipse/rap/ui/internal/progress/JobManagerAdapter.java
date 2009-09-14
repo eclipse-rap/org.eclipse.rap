@@ -125,8 +125,10 @@ public class JobManagerAdapter
           manager[ 0 ].changeListener.done( event );
         }
       } );
-//    } else {
-//      manager[ 0 ].changeListener.done( event );      
+    } else {
+      // RAP [rh] fixes bug 283595
+      event.getJob().cancel();
+      manager[ 0 ].changeListener.done( event );      
     }
   }
 
