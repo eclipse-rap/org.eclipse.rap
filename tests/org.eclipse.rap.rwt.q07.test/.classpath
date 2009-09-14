@@ -5,6 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.rwt.testfixture"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.rwt.q07"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.rwt.test"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
