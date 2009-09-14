@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -24,12 +25,12 @@ import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.service.IServiceHandler;
 
 public abstract class AbstractServiceHandler implements IServiceHandler {
-  
+
   private static final int TIMEOUT = 600000;
   private static final String EXPIRATION_TIME_FORMAT
     = "EEE, dd MMM yyyy HH:mm:ss zzz";
   private static final SimpleDateFormat FORMATTER
-    = new SimpleDateFormat( EXPIRATION_TIME_FORMAT, Locale.US );  
+    = new SimpleDateFormat( EXPIRATION_TIME_FORMAT, Locale.US );
   private static final String EXPIRES = "Expires";
   private static final String ACCEPT_ENCODING = "Accept-Encoding";
   private static final String CONTENT_ENCODING = "Content-Encoding";
@@ -46,20 +47,18 @@ public abstract class AbstractServiceHandler implements IServiceHandler {
   }
 
   static PrintWriter getOutputWriter() throws IOException {
-    PrintWriter result;
+    OutputStreamWriter utf8Writer;
+    OutputStream out = getResponse().getOutputStream();
     if( isAcceptEncoding() && getInitProps().isCompression() ) {
-      OutputStream out = getResponse().getOutputStream();
       GZIPOutputStream zipStream = new GZIPOutputStream( out );
-      OutputStreamWriter utf8Writer 
-        = new OutputStreamWriter( zipStream, HTML.CHARSET_NAME_UTF_8 );
-      result = new PrintWriter( utf8Writer, false );
+      utf8Writer = new OutputStreamWriter( zipStream, HTML.CHARSET_NAME_UTF_8 );
       getResponse().setHeader( CONTENT_ENCODING, ENCODING_GZIP );
     } else {
-      result = getResponse().getWriter();
+      utf8Writer = new OutputStreamWriter( out, HTML.CHARSET_NAME_UTF_8 );
     }
-    return result;
+    return new PrintWriter( utf8Writer, false );
   }
-  
+
   protected void setExpirationHeader() {
     // set an expiration date for the js-library to avoid reloading it
     // on every page request!
@@ -74,11 +73,11 @@ public abstract class AbstractServiceHandler implements IServiceHandler {
     IConfiguration configuration = ConfigurationReader.getConfiguration();
     return configuration.getInitialization();
   }
-  
+
   protected static HttpServletRequest getRequest() {
     return ContextProvider.getRequest();
   }
-  
+
   protected static HttpServletResponse getResponse() {
     return ContextProvider.getResponse();
   }
