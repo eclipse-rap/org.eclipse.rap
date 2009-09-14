@@ -1,9 +1,10 @@
-package org.eclipse;
+package org.eclipse.rwt.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.RWTHostTestSuite;
+import org.eclipse.RWTQ07TestSuite;
 
 public class RWTAllTestSuite {
 
