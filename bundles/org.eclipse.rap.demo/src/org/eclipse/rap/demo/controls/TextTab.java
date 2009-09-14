@@ -106,6 +106,7 @@ public class TextTab extends ExampleTab {
     text = new Text( textComposite, getStyle() );
     text.setText( "Lorem ipsum dolor sit amet" );
     text.setSelection( 0, 5 );
+    text.setFocus();
     // button bar
     Composite buttonBar = new Composite( parent, SWT.NONE );
     buttonBar.setLayoutData( new GridData( SWT.FILL, SWT.DEFAULT, true, false ) );

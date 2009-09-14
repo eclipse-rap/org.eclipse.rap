@@ -36,6 +36,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
       text.setLiveUpdate( true );
       text.setSpellCheck( false );
+      text.setUserData( "selectionStart", 0 );
+      text.setUserData( "selectionLength", 0 );      
     },
 
     /*
@@ -76,7 +78,17 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      * Sets the selected text range of the given text widget.
      */
     setSelection : function( text, start, length ) {
-      org.eclipse.swt.TextUtil._doSetSelection( text, start, length );      
+      // [if] The selection is applied on the TextField when it gains the focus.
+      text.setUserData( "selectionStart", start );
+      text.setUserData( "selectionLength", length );
+      if( text.getFocused() ) {
+        org.eclipse.swt.TextUtil._doSetSelection( text );
+      }
+    },
+    
+    _doSetSelection : function( text ) {
+      text.setSelectionStart( text.getUserData( "selectionStart" ) );
+      text.setSelectionLength( text.getUserData( "selectionLength" ) );
     },
 
     // === Private methods ===
@@ -160,8 +172,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     
     _onFocus : function( event ) {      
       var text = event.getTarget();
-      text.setSelectionStart( text.getUserData( "selectionStart" ) );
-      text.setSelectionLength( text.getUserData( "selectionLength" ) );
+      org.eclipse.swt.TextUtil._doSetSelection( text );
     },
     
     _onBlur : function( event ) {
@@ -299,12 +310,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                                                        length );
         }
       }
-    },
-
-    _doSetSelection : function( text, start, length ) {
-      // [if] The selection is applied on the TextField when it gains the focus.
-      text.setUserData( "selectionStart", start );
-      text.setUserData( "selectionLength", length );
     }
 
   }
