@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.regex.Matcher;
@@ -52,6 +51,8 @@ public final class CommonPatterns {
    * Replacement string that is used for all leading and trailing spaces.
    */
   private static final String LEADING_TRAILING_SPACES_REPLACEMENT = "&nbsp;";
+
+  private static final String SPACES_REPLACEMENT = "&nbsp;";
 
   /**
    * Escapes all double quote and backslash characters in the given input
@@ -117,5 +118,37 @@ public final class CommonPatterns {
                                         final String replacement )
   {
     return NEWLINE_PATTERN.matcher( input  ).replaceAll( replacement );
+  }
+  
+  /**
+   * Replaces white spaces in the specified input string with &amp;nbsp;.
+   * For correct word wrapping, the last white space in a sequence of white 
+   * spaces is not replaced, if there is a different character following.
+   * A single white space between words is not replaced whereas a single 
+   * leading white space is replaced.
+   *
+   * @param input the string to process
+   * @return a copy of the input string with white spaces replaced
+   */
+  public static String replaceWhiteSpaces( final String input ) {
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < input.length(); i++ ) {
+      if( input.charAt( i ) == ' ' ) {
+        buffer.append( SPACES_REPLACEMENT );
+      } else {
+        // Index should be greater then 1 for the case when the string begin
+        // with single white space.
+        if( i > 1 ){
+          // Replaces back with ' ' the single white space between words
+          // or the last white space in a white spaces sequence.
+          if( input.charAt( i - 1 ) == ' ' ) {
+            int start = buffer.length() - SPACES_REPLACEMENT.length();
+            buffer.replace( start, buffer.length(), " " );
+          }
+        }
+        buffer.append( input.charAt( i ) );
+      }      
+    }
+    return buffer.toString();
   }
 }

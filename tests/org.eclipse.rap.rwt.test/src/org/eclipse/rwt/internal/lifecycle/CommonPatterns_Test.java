@@ -84,4 +84,30 @@ public class CommonPatterns_Test extends TestCase {
     result = CommonPatterns.escapeLeadingTrailingSpaces( stringToEscape );
     assertEquals( expected, result );
   }
+  public void testReplaceWhiteSpaces() {
+    String stringToEscape = "test1 test2";
+    String expected = "test1 test2";
+    String result = CommonPatterns.replaceWhiteSpaces( stringToEscape );
+    assertEquals( expected, result );
+
+    stringToEscape = "test1  test2";
+    expected = "test1&nbsp; test2";
+    result = CommonPatterns.replaceWhiteSpaces( stringToEscape );
+    assertEquals( expected, result );
+
+    stringToEscape = "test1   test2";
+    expected = "test1&nbsp;&nbsp; test2";
+    result = CommonPatterns.replaceWhiteSpaces( stringToEscape );
+    assertEquals( expected, result );
+
+    stringToEscape = " test";
+    expected = "&nbsp;test";
+    result = CommonPatterns.replaceWhiteSpaces( stringToEscape );
+    assertEquals( expected, result );
+
+    stringToEscape = "  test  ";
+    expected = "&nbsp; test&nbsp;&nbsp;";
+    result = CommonPatterns.replaceWhiteSpaces( stringToEscape );
+    assertEquals( expected, result );
+  }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -84,6 +86,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       // Order is important here: escapeText, replace line breaks
       String text = WidgetLCAUtil.escapeText( label.getText(), true );
       text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
+      text = CommonPatterns.replaceWhiteSpaces( text ); // fixes bug 192634
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, text };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
