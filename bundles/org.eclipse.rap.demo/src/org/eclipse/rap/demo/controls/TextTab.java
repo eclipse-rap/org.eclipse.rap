@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -253,6 +254,7 @@ public class TextTab extends ExampleTab {
         int to = parseInt( txtSelectionTo.getText() );
         if( to >= 0 && from >= 0  ) {
           text.setSelection( from, to );
+          text.setFocus();
         } else {
           String msg
             = "Invalid Selection: "
@@ -269,6 +271,7 @@ public class TextTab extends ExampleTab {
 
       public void widgetSelected( SelectionEvent e ) {
         text.selectAll();
+        text.setFocus();
       }
     } );
   }
