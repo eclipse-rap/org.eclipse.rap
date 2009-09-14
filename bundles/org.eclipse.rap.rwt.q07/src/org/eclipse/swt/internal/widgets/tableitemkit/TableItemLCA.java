@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -177,6 +178,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
         // TODO [rh] for some reason doesn't work with escapeText
 //        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
         texts[ i ] = encodeHTML( item.getText( i ) );
+        texts[ i ] = CommonPatterns.replaceWhiteSpaces( texts[ i ] );
       }
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "texts", new Object[] { texts } );
