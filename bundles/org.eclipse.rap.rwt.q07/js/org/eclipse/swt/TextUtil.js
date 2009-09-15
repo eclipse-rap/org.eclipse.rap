@@ -83,13 +83,13 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         org.eclipse.swt.TextUtil._doSetSelection( text );
       }
     },
-    
+
     _doSetSelection : function( text ) {
       var start = text.getUserData( "selectionStart" );
       var length = text.getUserData( "selectionLength" );
       if( start != null && length != null ) {
         text.setSelectionStart( start );
-        text.setSelectionLength( length);
+        text.setSelectionLength( length );
       }
     },
 
@@ -134,7 +134,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             && !event.isAltPressed()
             && !event.isCtrlPressed()
             && !event.isMetaPressed() )
-        {          
+        {
           if( text.hasState( "rwt_MULTI" ) ) {
             event.stopPropagation();
           }
@@ -171,15 +171,15 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var text = event.getTarget();
       org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
-    
-    _onFocus : function( event ) {      
+
+    _onFocus : function( event ) {
       var text = event.getTarget();
       org.eclipse.swt.TextUtil._doSetSelection( text );
     },
-    
+
     _onBlur : function( event ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var text = event.getTarget();        
+        var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
