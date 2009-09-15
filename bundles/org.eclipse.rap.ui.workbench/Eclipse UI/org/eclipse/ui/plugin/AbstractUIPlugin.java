@@ -30,6 +30,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.rap.ui.internal.preferences.SessionScope;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Display;
@@ -133,11 +134,12 @@ public abstract class AbstractUIPlugin extends Plugin {
      */
     private ScopedPreferenceStore preferenceStore;
 
-    /**
-     * The registry for all graphic images; <code>null</code> if not yet
-     * initialized.
-     */
-    private ImageRegistry imageRegistry = null;
+    // RAP [bm]: replaced with session-specific one
+//    /**
+//     * The registry for all graphic images; <code>null</code> if not yet
+//     * initialized.
+//     */
+//    private ImageRegistry imageRegistry = null;
 
     /**
      * The bundle listener used for kicking off refreshPluginActions().
@@ -255,11 +257,21 @@ public abstract class AbstractUIPlugin extends Plugin {
      * @return the image registry
      */
     public ImageRegistry getImageRegistry() {
-        if (imageRegistry == null) {
-            imageRegistry = createImageRegistry();
-            initializeImageRegistry(imageRegistry);
+		// RAP [bm]: needs session scope
+//        if (imageRegistry == null) {
+//            imageRegistry = createImageRegistry();
+//            initializeImageRegistry(imageRegistry);
+//        }
+//        return imageRegistry;
+    	String IMAGE_REGISTRY = AbstractUIPlugin.class.getName() + ".imageRegistry";
+        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY  );
+        if( imageRegistry == null ) {
+          imageRegistry = createImageRegistry();
+          initializeImageRegistry( imageRegistry );
+          RWT.getSessionStore().setAttribute( IMAGE_REGISTRY, imageRegistry );
         }
         return imageRegistry;
+        // RAPEND: [bm]
     }
 
     /**
@@ -639,9 +651,11 @@ public abstract class AbstractUIPlugin extends Plugin {
             saveDialogSettings();
             savePreferenceStore();
             preferenceStore = null;
-            if (imageRegistry != null)
-            	imageRegistry.dispose();
-            imageRegistry = null;
+            // RAP [bm]: replaced by session scoped one
+//            if (imageRegistry != null)
+//            	imageRegistry.dispose();
+//            imageRegistry = null;
+            // RAPEND: [bm]
         } finally {
             super.stop(context);
         }
