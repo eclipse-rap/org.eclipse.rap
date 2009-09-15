@@ -88,8 +88,12 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var start = text.getUserData( "selectionStart" );
       var length = text.getUserData( "selectionLength" );
       if( start != null && length != null ) {
-        text.setSelectionStart( start );
-        text.setSelectionLength( length );
+        // TODO: [if] Find better solution for initial text selection
+        // (without timer)
+        qx.client.Timer.once( function() {
+          text.setSelectionStart( start );
+          text.setSelectionLength( length );
+        }, text, 100 );
       }
     },
 
