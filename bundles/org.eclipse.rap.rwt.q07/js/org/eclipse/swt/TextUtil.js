@@ -36,8 +36,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
       text.setLiveUpdate( true );
       text.setSpellCheck( false );
-      text.setUserData( "selectionStart", 0 );
-      text.setUserData( "selectionLength", 0 );      
     },
 
     /*
@@ -87,8 +85,12 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
     
     _doSetSelection : function( text ) {
-      text.setSelectionStart( text.getUserData( "selectionStart" ) );
-      text.setSelectionLength( text.getUserData( "selectionLength" ) );
+      var start = text.getUserData( "selectionStart" );
+      var length = text.getUserData( "selectionLength" );
+      if( start != null && length != null ) {
+        text.setSelectionStart( start );
+        text.setSelectionLength( length);
+      }
     },
 
     // === Private methods ===
