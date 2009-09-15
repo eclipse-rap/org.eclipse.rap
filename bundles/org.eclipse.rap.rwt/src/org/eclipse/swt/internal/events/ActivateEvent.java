@@ -35,7 +35,7 @@ public final class ActivateEvent extends TypedEvent {
   
   private static final Class LISTENER = ActivateListener.class;
 
-  public ActivateEvent( Event event ) {
+  public ActivateEvent( final Event event ) {
     this( ( Control )event.widget, event.type );
   }
   
