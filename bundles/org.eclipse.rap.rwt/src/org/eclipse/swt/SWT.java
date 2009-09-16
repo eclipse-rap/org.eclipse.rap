@@ -46,11 +46,11 @@ public class SWT {
 
   /**
    * The key down event type (value is 1).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * <!-- @see org.eclipse.swt.widgets.Display#addFilter -->
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addKeyListener
    * <!-- @see org.eclipse.swt.widgets.Tracker#addKeyListener -->
    * @see org.eclipse.swt.events.KeyListener#keyPressed
@@ -59,23 +59,23 @@ public class SWT {
    * @since 1.2
    */
   public static final int KeyDown = 1;
-  
+
   /**
    * The key up event type (value is 2).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addKeyListener
    * @see org.eclipse.swt.widgets.Tracker#addKeyListener
    * @see org.eclipse.swt.events.KeyListener#keyReleased
    * @see org.eclipse.swt.events.KeyEvent
-   * 
+   *
    * @since 1.2
    */
   public static final int KeyUp = 2;
-  
+
   /**
    * The mouse down event type (value is 3).
    *
@@ -334,36 +334,36 @@ public class SWT {
 
   /**
    * The help event type (value is 28).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addHelpListener
    * @see org.eclipse.swt.widgets.Menu#addHelpListener
    * @see org.eclipse.swt.widgets.MenuItem#addHelpListener
    * @see org.eclipse.swt.events.HelpListener#helpRequested
    * @see org.eclipse.swt.events.HelpEvent
-   * 
+   *
    *  @since 1.3
    */
   public static final int Help = 28;
-  
+
   /**
    * The traverse event type (value is 31).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Control#addTraverseListener
    * @see org.eclipse.swt.events.TraverseListener#keyTraversed
    * @see org.eclipse.swt.events.TraverseEvent
-   * 
+   *
    * @since 1.2
    */
   public static final int Traverse = 31;
-  
+
   /**
    * The set data event type (value is 36).
    *
@@ -376,20 +376,20 @@ public class SWT {
   public static final int SetData = 36;
 
   /**
-   * Traversal event detail field value indicating that no 
+   * Traversal event detail field value indicating that no
    * traversal action should be taken
    * (value is 0).
-   * 
+   *
    * @since 1.2
    */
   public static final int TRAVERSE_NONE = 0;
-  
+
   /**
-   * Traversal event detail field value indicating that the 
+   * Traversal event detail field value indicating that the
    * key which designates that a dialog should be cancelled was
    * pressed; typically, this is the ESC key
    * (value is 1&lt;&lt;1).
-   * 
+   *
    * @since 1.2
    */
   public static final int TRAVERSE_ESCAPE = 1 << 1;
@@ -399,82 +399,82 @@ public class SWT {
    * key which activates the default button in a dialog was
    * pressed; typically, this is the ENTER key
    * (value is 1&lt;&lt;2).
-   * 
+   *
    * @since 1.2
    */
   public static final int TRAVERSE_RETURN = 1 << 2;
 
   /**
-   * Traversal event detail field value indicating that the 
+   * Traversal event detail field value indicating that the
    * key which designates that focus should be given to the
    * previous tab group was pressed; typically, this is the
    * SHIFT-TAB key sequence
    * (value is 1&lt;&lt;3).
-   * 
+   *
    * @since 1.2
    */
   public static final int TRAVERSE_TAB_PREVIOUS = 1 << 3;
 
   /**
-   * Traversal event detail field value indicating that the 
+   * Traversal event detail field value indicating that the
    * key which designates that focus should be given to the
    * next tab group was pressed; typically, this is the
    * TAB key
    * (value is 1&lt;&lt;4).
-   * 
+   *
    * @since 1.2
    */
   public static final int TRAVERSE_TAB_NEXT = 1 << 4;
 
 //  /**
-//   * Traversal event detail field value indicating that the 
+//   * Traversal event detail field value indicating that the
 //   * key which designates that focus should be given to the
 //   * previous tab item was pressed; typically, this is either
 //   * the LEFT-ARROW or UP-ARROW keys
 //   * (value is 1&lt;&lt;5).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int TRAVERSE_ARROW_PREVIOUS = 1 << 5;
 //
 //  /**
-//   * Traversal event detail field value indicating that the 
+//   * Traversal event detail field value indicating that the
 //   * key which designates that focus should be given to the
 //   * previous tab item was pressed; typically, this is either
 //   * the RIGHT-ARROW or DOWN-ARROW keys
 //   * (value is 1&lt;&lt;6).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int TRAVERSE_ARROW_NEXT = 1 << 6;
 
 //  /**
-//   * Traversal event detail field value indicating that a 
+//   * Traversal event detail field value indicating that a
 //   * mnemonic key sequence was pressed
 //   * (value is 1&lt;&lt;7).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int TRAVERSE_MNEMONIC = 1 << 7;
 
 //  /**
-//   * Traversal event detail field value indicating that the 
+//   * Traversal event detail field value indicating that the
 //   * key which designates that the previous page of a multi-page
 //   * window should be shown was pressed; typically, this
 //   * is the CTRL-PAGEUP key sequence
 //   * (value is 1&lt;&lt;8).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int TRAVERSE_PAGE_PREVIOUS = 1 << 8;
-//  
+//
 //  /**
-//   * Traversal event detail field value indicating that the 
+//   * Traversal event detail field value indicating that the
 //   * key which designates that the next page of a multi-page
 //   * window should be shown was pressed; typically, this
 //   * is the CTRL-PAGEDOWN key sequence
 //   * (value is 1&lt;&lt;9).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int TRAVERSE_PAGE_NEXT = 1 << 9;
@@ -644,11 +644,11 @@ public class SWT {
   /**
    * ASCII character convenience constant for the delete character
    * (value is the <code>char</code> with value 127).
-   * 
+   *
    * @since 1.2
    */
   public static final char DEL = 0x7F;
- 
+
   /**
    * ASCII character convenience constant for the escape character
    * (value is the <code>char</code> with value 27).
@@ -693,7 +693,7 @@ public class SWT {
    * keyboard and/or mouse event mask indicating that the ALT key
    * was pushed on the keyboard when the event was generated
    * (value is 1&lt;&lt;16).
-   * 
+   *
    * @since 1.1
    */
   public static final int ALT = 1 << 16;
@@ -702,7 +702,7 @@ public class SWT {
    * Keyboard and/or mouse event mask indicating that the SHIFT key
    * was pushed on the keyboard when the event was generated
    * (value is 1&lt;&lt;17).
-   *    
+   *
    * @since 1.1
    */
   public static final int SHIFT = 1 << 17;
@@ -711,7 +711,7 @@ public class SWT {
    * Keyboard and/or mouse event mask indicating that the CTRL key
    * was pushed on the keyboard when the event was generated
    * (value is 1&lt;&lt;18).
-   * 
+   *
    * @since 1.1
    */
   public static final int CTRL = 1 << 18;
@@ -720,7 +720,7 @@ public class SWT {
    * Keyboard and/or mouse event mask indicating that the CTRL key
    * was pushed on the keyboard when the event was generated. This
    * is a synonym for CTRL (value is 1&lt;&lt;18).
-   * 
+   *
    * @since 1.1
    */
   public static final int CONTROL = CTRL;
@@ -729,7 +729,7 @@ public class SWT {
    * Keyboard and/or mouse event mask indicating that the COMMAND key
    * was pushed on the keyboard when the event was generated
    * (value is 1&lt;&lt;22).
-   * 
+   *
    * @since 1.1
    */
   public static final int COMMAND = 1 << 22;
@@ -737,19 +737,19 @@ public class SWT {
   /**
    * Keyboard and/or mouse event mask indicating all possible
    * keyboard modifiers.
-   * 
-   * To allow for the future, this mask  is intended to be used in 
-   * place of code that references  each individual keyboard mask. 
-   *  For example, the following expression will determine whether 
-   * any modifier is pressed and will continue to work as new modifier 
+   *
+   * To allow for the future, this mask  is intended to be used in
+   * place of code that references  each individual keyboard mask.
+   *  For example, the following expression will determine whether
+   * any modifier is pressed and will continue to work as new modifier
    * masks are added.
-   * 
+   *
    * <code>(stateMask & SWT.MODIFIER_MASK) != 0</code>.
-   * 
+   *
    * @since 1.2
    */
   public static final int MODIFIER_MASK;
-  
+
   /**
    * Accelerator constant used to differentiate a key code from a
    * unicode character.
@@ -776,19 +776,19 @@ public class SWT {
   /**
    * Accelerator constant used to extract the key stroke portion of
    * an accelerator.
-   * 
+   *
    * The key stroke may be a key code or a unicode
    * value.  If the key stroke is a key code <code>KEYCODE_BIT</code>
    * will be set.
-   * 
+   *
    * @since 1.2
-   */ 
+   */
   public static final int KEY_MASK = KEYCODE_BIT + 0xFFFF;
-  
+
   /**
    * Keyboard event constant representing the UP ARROW key
    * (value is (1&lt;&lt;24)+1).
-   * 
+   *
    * @since 1.2
    */
   public static final int ARROW_UP = KEYCODE_BIT + 1;
@@ -796,7 +796,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the DOWN ARROW key
    * (value is (1&lt;&lt;24)+2).
-   * 
+   *
    * @since 1.2
    */
   public static final int ARROW_DOWN = KEYCODE_BIT + 2;
@@ -804,7 +804,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the LEFT ARROW key
    * (value is (1&lt;&lt;24)+3).
-   * 
+   *
    * @since 1.2
    */
   public static final int ARROW_LEFT = KEYCODE_BIT + 3;
@@ -812,7 +812,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the RIGHT ARROW key
    * (value is (1&lt;&lt;24)+4).
-   * 
+   *
    * @since 1.2
    */
   public static final int ARROW_RIGHT = KEYCODE_BIT + 4;
@@ -820,7 +820,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the PAGE UP key
    * (value is (1&lt;&lt;24)+5).
-   * 
+   *
    * @since 1.2
    */
   public static final int PAGE_UP = KEYCODE_BIT + 5;
@@ -828,7 +828,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the PAGE DOWN key
    * (value is (1&lt;&lt;24)+6).
-   * 
+   *
    * @since 1.2
    */
   public static final int PAGE_DOWN = KEYCODE_BIT + 6;
@@ -836,7 +836,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the HOME key
    * (value is (1&lt;&lt;24)+7).
-   * 
+   *
    * @since 1.2
    */
   public static final int HOME = KEYCODE_BIT + 7;
@@ -844,7 +844,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the END key
    * (value is (1&lt;&lt;24)+8).
-   * 
+   *
    * @since 1.1
    */
   public static final int END = KEYCODE_BIT + 8;
@@ -852,7 +852,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the INSERT key
    * (value is (1&lt;&lt;24)+9).
-   * 
+   *
    * @since 1.2
    */
   public static final int INSERT = KEYCODE_BIT + 9;
@@ -860,144 +860,144 @@ public class SWT {
   /**
    * Keyboard event constant representing the F1 key
    * (value is (1&lt;&lt;24)+10).
-   * 
+   *
    * @since 1.2
    */
   public static final int F1 = KEYCODE_BIT + 10;
-  
+
   /**
    * Keyboard event constant representing the F2 key
    * (value is (1&lt;&lt;24)+11).
-   * 
+   *
    * @since 1.2
    */
   public static final int F2 = KEYCODE_BIT + 11;
-  
+
   /**
    * Keyboard event constant representing the F3 key
    * (value is (1&lt;&lt;24)+12).
-   * 
+   *
    * @since 1.2
    */
   public static final int F3 = KEYCODE_BIT + 12;
-  
+
   /**
    * Keyboard event constant representing the F4 key
    * (value is (1&lt;&lt;24)+13).
-   * 
+   *
    * @since 1.2
    */
   public static final int F4 = KEYCODE_BIT + 13;
-  
+
   /**
    * Keyboard event constant representing the F5 key
    * (value is (1&lt;&lt;24)+14).
-   * 
+   *
    * @since 1.2
    */
   public static final int F5 = KEYCODE_BIT + 14;
-  
+
   /**
    * Keyboard event constant representing the F6 key
    * (value is (1&lt;&lt;24)+15).
-   * 
+   *
    * @since 1.2
    */
   public static final int F6 = KEYCODE_BIT + 15;
-  
+
   /**
    * Keyboard event constant representing the F7 key
    * (value is (1&lt;&lt;24)+16).
-   * 
+   *
    * @since 1.2
    */
   public static final int F7 = KEYCODE_BIT + 16;
-  
+
   /**
    * Keyboard event constant representing the F8 key
    * (value is (1&lt;&lt;24)+17).
-   * 
+   *
    * @since 1.2
    */
   public static final int F8 = KEYCODE_BIT + 17;
-  
+
   /**
    * Keyboard event constant representing the F9 key
    * (value is (1&lt;&lt;24)+18).
-   * 
+   *
    * @since 1.2
    */
   public static final int F9 = KEYCODE_BIT + 18;
-  
+
   /**
    * Keyboard event constant representing the F10 key
    * (value is (1&lt;&lt;24)+19).
-   * 
+   *
    * @since 1.2
    */
   public static final int F10 = KEYCODE_BIT + 19;
-  
+
   /**
    * Keyboard event constant representing the F11 key
    * (value is (1&lt;&lt;24)+20).
-   * 
+   *
    * @since 1.2
    */
   public static final int F11 = KEYCODE_BIT + 20;
-  
+
   /**
    * Keyboard event constant representing the F12 key
    * (value is (1&lt;&lt;24)+21).
-   * 
+   *
    * @since 1.2
    */
   public static final int F12 = KEYCODE_BIT + 21;
 
-// TODO [rh] find out how what client-side the key codes are for F13 - F15  
+// TODO [rh] find out how what client-side the key codes are for F13 - F15
 //  /**
 //   * Keyboard event constant representing the F13 key
 //   * (value is (1&lt;&lt;24)+22).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int F13 = KEYCODE_BIT + 22;
-//  
+//
 //  /**
 //   * Keyboard event constant representing the F14 key
 //   * (value is (1&lt;&lt;24)+23).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int F14 = KEYCODE_BIT + 23;
-//  
+//
 //  /**
 //   * Keyboard event constant representing the F15 key
 //   * (value is (1&lt;&lt;24)+24).
-//   * 
+//   *
 //   * @since 1.2
 //   */
 //  public static final int F15 = KEYCODE_BIT + 24;
-//  
+//
   /**
    * Keyboard event constant representing the numeric key
    * pad multiply key (value is (1&lt;&lt;24)+42).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_MULTIPLY = KEYCODE_BIT + 42;
-  
+
   /**
    * Keyboard event constant representing the numeric key
    * pad add key (value is (1&lt;&lt;24)+43).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_ADD = KEYCODE_BIT + 43;
-  
+
   /**
    * Keyboard event constant representing the numeric key
    * pad subtract key (value is (1&lt;&lt;24)+45).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_SUBTRACT = KEYCODE_BIT + 45;
@@ -1005,7 +1005,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad decimal key (value is (1&lt;&lt;24)+46).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_DECIMAL = KEYCODE_BIT + 46;
@@ -1013,7 +1013,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad divide key (value is (1&lt;&lt;24)+47).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_DIVIDE = KEYCODE_BIT + 47;
@@ -1021,7 +1021,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad zero key (value is (1&lt;&lt;24)+48).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_0 = KEYCODE_BIT + 48;
@@ -1029,7 +1029,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad one key (value is (1&lt;&lt;24)+49).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_1 = KEYCODE_BIT + 49;
@@ -1037,7 +1037,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad two key (value is (1&lt;&lt;24)+50).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_2 = KEYCODE_BIT + 50;
@@ -1045,7 +1045,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad three key (value is (1&lt;&lt;24)+51).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_3 = KEYCODE_BIT + 51;
@@ -1053,23 +1053,23 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad four key (value is (1&lt;&lt;24)+52).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_4 = KEYCODE_BIT + 52;
-  
+
   /**
    * Keyboard event constant representing the numeric key
    * pad five key (value is (1&lt;&lt;24)+53).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_5 = KEYCODE_BIT + 53;
-  
+
   /**
    * Keyboard event constant representing the numeric key
    * pad six key (value is (1&lt;&lt;24)+54).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_6 = KEYCODE_BIT + 54;
@@ -1077,7 +1077,7 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad seven key (value is (1&lt;&lt;24)+55).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_7 = KEYCODE_BIT + 55;
@@ -1085,15 +1085,15 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad eight key (value is (1&lt;&lt;24)+56).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_8 = KEYCODE_BIT + 56;
-  
+
   /**
    * Keyboard event constant representing the numeric key
    * pad nine key (value is (1&lt;&lt;24)+57).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_9 = KEYCODE_BIT + 57;
@@ -1101,82 +1101,82 @@ public class SWT {
   /**
    * Keyboard event constant representing the numeric key
    * pad equal key (value is (1&lt;&lt;24)+61).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_EQUAL = KEYCODE_BIT + 61;
-  
+
   /**
    * Keyboard event constant representing the numeric key
    * pad enter key (value is (1&lt;&lt;24)+80).
-   * 
+   *
    * @since 1.2
    */
   public static final int KEYPAD_CR = KEYCODE_BIT + 80;
-  
+
   /**
    * Keyboard event constant representing the help
    * key (value is (1&lt;&lt;24)+81).
-   * 
+   *
    * NOTE: The HELP key maps to the key labeled "help",
    * not "F1". If your keyboard does not have a HELP key,
    * you will never see this key press.  To listen for
    * help on a control, use SWT.Help.
-   * 
+   *
    * @since 1.2
-   * 
+   *
    * @see SWT#Help
    */
   public static final int HELP = KEYCODE_BIT + 81;
-  
+
   /**
    * Keyboard event constant representing the caps
    * lock key (value is (1&lt;&lt;24)+82).
-   * 
+   *
    * @since 1.2
    */
   public static final int CAPS_LOCK = KEYCODE_BIT + 82;
-  
+
   /**
    * Keyboard event constant representing the num
    * lock key (value is (1&lt;&lt;24)+83).
-   * 
+   *
    * @since 1.2
    */
   public static final int NUM_LOCK = KEYCODE_BIT + 83;
-  
+
   /**
    * Keyboard event constant representing the scroll
    * lock key (value is (1&lt;&lt;24)+84).
-   * 
+   *
    * @since 1.2
    */
   public static final int SCROLL_LOCK = KEYCODE_BIT + 84;
-  
+
   /**
    * Keyboard event constant representing the pause
    * key (value is (1&lt;&lt;24)+85).
-   * 
+   *
    * @since 1.2
    */
   public static final int PAUSE = KEYCODE_BIT + 85;
-  
+
   /**
    * Keyboard event constant representing the break
    * key (value is (1&lt;&lt;24)+86).
-   * 
+   *
    * @since 1.2
    */
   public static final int BREAK = KEYCODE_BIT + 86;
-  
+
   /**
    * Keyboard event constant representing the print screen
    * key (value is (1&lt;&lt;24)+87).
-   * 
+   *
    * @since 1.2
    */
   public static final int PRINT_SCREEN = KEYCODE_BIT + 87;
-  
+
   /**
    * Style constant for line separator behavior (value is 1&lt;&lt;1).
    * <p><b>Used By:</b><ul>
@@ -1290,13 +1290,13 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Control</code></li>
    * <li><code>Menu</code></li>
-   * <li><code>GC</code></li> 
+   * <li><code>GC</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.2
    */
-  public static final int LEFT_TO_RIGHT = 1 << 25; 
-  
+  public static final int LEFT_TO_RIGHT = 1 << 25;
+
   /**
    * Style constant for horizontal scrollbar behavior (value is 1&lt;&lt;8).
    * <p><b>Used By:</b><ul>
@@ -1320,7 +1320,7 @@ public class SWT {
    * are free to create the default scroll bars for the control.
    * Using NO_SCROLL overrides the default and forces the control
    * to have no scroll bars.
-   * 
+   *
    * <b>Used By:</b><ul>
    * <!--li><code>Tree</code></li-->
    * <li><code>Table</code></li>
@@ -1444,7 +1444,7 @@ public class SWT {
    * </ul></p>
    * @since 1.3
    */
-  public static final int TOOL = 1 << 2; 
+  public static final int TOOL = 1 << 2;
 
   /**
    * Style constant to ensure no trimmings are used (value is 1&lt;&lt;3).
@@ -1505,6 +1505,22 @@ public class SWT {
    * </ul></p>
    */
   public static final int ON_TOP = 1 << 14;
+
+  /**
+   * Style constant for sheet window behavior (value is 1&lt;&lt;28).
+   * <p>
+   * A sheet window is a window intended to be used as a temporary modal
+   * dialog that is attached to a parent window. It is typically used to
+   * prompt the user before proceeding. The window trim, positioning and
+   * general look of a sheet window is platform specific.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Shell</code> and subclasses</li>
+   * </ul></p>
+   *
+   * @since 1.3
+   */
+  public static final int SHEET = 1 << 28;
 
   /**
    * Trim style convenience constant for the most common top level shell appearance
@@ -1602,7 +1618,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>ProgressBar</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.3
    */
   public static final int ERROR = 1;
@@ -1612,7 +1628,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>ProgressBar</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.3
    */
   public static final int PAUSED = 1 << 2;
@@ -2523,7 +2539,7 @@ public class SWT {
 //    BUTTON_MASK = BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4 | BUTTON5;
     MODIFIER_MASK = ALT | SHIFT | CTRL | COMMAND;
   }
-  
+
   /**
    * Throws an appropriate exception based on the passed in error code.
    *

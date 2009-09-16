@@ -86,7 +86,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
  * downgraded to <code>APPLICATION_MODAL</code>.
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>BORDER, CLOSE, MIN, MAX, NO_TRIM, RESIZE, TITLE, ON_TOP, TOOL</dd>
+ * <dd>BORDER, CLOSE, MIN, MAX, NO_TRIM, RESIZE, TITLE, ON_TOP, TOOL, SHEET</dd>
  * <dd>APPLICATION_MODAL, MODELESS, PRIMARY_MODAL, SYSTEM_MODAL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Activate, Close, Deactivate, Deiconify, Iconify</dd>
@@ -196,6 +196,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
+   * @see SWT#SHEET
    */
   public Shell( final int style ) {
     this( ( Display )null, style );
@@ -266,6 +267,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
+   * @see SWT#SHEET
    */
   public Shell( final Display display, final int style ) {
     this( display, null, style, 0 );
@@ -339,6 +341,7 @@ public class Shell extends Decorations {
    * @see SWT#DIALOG_TRIM
    * @see SWT#ON_TOP
    * @see SWT#TOOL
+   * @see SWT#SHEET
    * <!--@see SWT#MODELESS-->
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
