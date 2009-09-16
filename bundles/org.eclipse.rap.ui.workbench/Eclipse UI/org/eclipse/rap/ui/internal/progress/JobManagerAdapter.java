@@ -71,16 +71,24 @@ public class JobManagerAdapter
   // ProgressProvider
 
   public IProgressMonitor createMonitor( final Job job ) {
-    ProgressManager manager = findProgressManager( job );
-    return manager.createMonitor( job );
+    IProgressMonitor result = null;
+    ProgressManager manager = findSessionProgressManager( job );
+    if( manager != null ) {
+      result = manager.createMonitor( job );
+    }
+    return result;
   }
 
   public IProgressMonitor createMonitor( final Job job,
                                          final IProgressMonitor group,
                                          final int ticks )
   {
-    ProgressManager manager = findProgressManager( job );
-    return manager.createMonitor( job, group, ticks );
+    IProgressMonitor result = null;
+    ProgressManager manager = findSessionProgressManager( job );
+    if( manager != null ) {
+      result = manager.createMonitor( job, group, ticks );
+    }
+    return result;
   }
 
   public IProgressMonitor createProgressGroup() {
@@ -169,6 +177,15 @@ public class JobManagerAdapter
   // helping methods
 
   private ProgressManager findProgressManager( final Job job ) {
+    ProgressManager result = findSessionProgressManager( job );
+    if( result == null ) {
+      result = defaultProgressManager;
+    }
+    return result;
+  }
+
+
+  private ProgressManager findSessionProgressManager( final Job job ) {
     synchronized( lock ) {
       final ProgressManager result[] = new ProgressManager[ 1 ];
       Display display = ( Display )jobs.get( job );
@@ -183,7 +200,7 @@ public class JobManagerAdapter
           throw new IllegalStateException( msg );
         }
       } else {
-        result[ 0 ] = defaultProgressManager;
+        result[ 0 ] = null;
       }
       return result[ 0 ];
     }
