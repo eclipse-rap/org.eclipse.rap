@@ -180,8 +180,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onFocus : function( event ) {
-      var text = event.getTarget();
-      org.eclipse.swt.TextUtil._doSetSelection( text );
+      if( !qx.event.handler.FocusHandler.mouseFocus ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._doSetSelection( text );
+      }
     },
 
     // this function is also used by Combo.js
