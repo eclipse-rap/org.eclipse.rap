@@ -37,7 +37,9 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.setLiveUpdate( true );
       text.setSpellCheck( false );
       // [if] Prevent selection of all text on tab focus
-      text._ontabfocus = function() {};
+      text._ontabfocus = function() {
+        text.setSelectionLength( 0 );
+      };
     },
 
     /*
@@ -95,7 +97,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         qx.client.Timer.once( function() {
           text.setSelectionStart( start );
           text.setSelectionLength( length );
-        }, text, 100 );
+        }, text, 50 );
       }
     },
 
