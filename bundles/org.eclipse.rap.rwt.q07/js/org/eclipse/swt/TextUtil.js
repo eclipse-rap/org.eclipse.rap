@@ -118,7 +118,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
       text.addEventListener( "changeFont", org.eclipse.swt.TextUtil._onFontChange, text );
       text.addEventListener( "focus", org.eclipse.swt.TextUtil._onFocus, text );
-      text.addEventListener( "blur", org.eclipse.swt.TextUtil._onBlur, text );
       org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
 
@@ -181,13 +180,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     _onFocus : function( event ) {
       var text = event.getTarget();
       org.eclipse.swt.TextUtil._doSetSelection( text );
-    },
-
-    _onBlur : function( event ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var text = event.getTarget();
-        org.eclipse.swt.TextUtil._handleSelectionChange( text );
-      }
     },
 
     // this function is also used by Combo.js
