@@ -298,7 +298,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public int getCharCount() {
@@ -477,8 +477,7 @@ public class Text extends Scrollable {
    */
   public void clearSelection() {
     checkWidget();
-    selection.x = 0;
-    selection.y = 0;
+    selection.x = selection.y;
   }
 
   /**
@@ -493,6 +492,25 @@ public class Text extends Scrollable {
     checkWidget();
     selection.x = 0;
     selection.y = text.length();
+  }
+
+  /**
+   * Returns the character position of the caret.
+   * <p>
+   * Indexing is zero based.
+   * </p>
+   *
+   * @return the position of the caret
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.3
+   */
+  public int getCaretPosition() {
+    checkWidget();
+    return selection.x;
   }
 
   ///////////

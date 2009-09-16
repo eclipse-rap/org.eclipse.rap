@@ -230,7 +230,7 @@ public class Text_Test extends TestCase {
     assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
     text.setEditable( true );
-    
+
     // Ensure that VerifyEvent#text denotes the text to be set
     // and not the cut by textLimit one
     text.setTextLimit( 5 );
@@ -405,5 +405,25 @@ public class Text_Test extends TestCase {
     expected = new Rectangle( -1, -1, 3, 2 );
     assertEquals( 1, text.getBorderWidth() );
     assertEquals( expected, text.computeTrim( 0, 0, 1, 0 ) );
+  }
+
+  public void textGetCaretPossition() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.SINGLE );
+    text.setText( "Sample text" );
+    assertEquals( 0, text.getCaretPosition() );
+    text.setSelection( 5 );
+    assertEquals( 5, text.getCaretPosition() );
+    text.setSelection( 3, 8 );
+    assertEquals( 3, text.getCaretPosition() );
+    text.setSelection( 8, 5 );
+    assertEquals( 5, text.getCaretPosition() );
+    text.setText( "New text" );
+    assertEquals( 0, text.getCaretPosition() );
+    text.setSelection( 3, 8 );
+    text.clearSelection();
+    assertEquals( new Point( 8, 8 ), text.getSelection() );
+    assertEquals( 8, text.getCaretPosition() );
   }
 }
