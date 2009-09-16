@@ -268,8 +268,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _setListLocation : function() {
       if( this.getElement() ){
         var elementPos = qx.bom.element.Location.get( this.getElement() );
-        this._list.setLocation( elementPos.left,
-                                elementPos.top + this.getHeight() );
+        var listLeft = elementPos.left;
+        var comboTop = elementPos.top;
+        var listTop = comboTop + this.getHeight();
+        var browserHeight = qx.html.Window.getInnerHeight( window );
+        var itemsHeight = this._list.getChildren().length * this._listItemHeight;
+        var listHeight = Math.min( this._list.getMaxHeight(), itemsHeight );
+        if(    browserHeight < listTop + listHeight 
+            && comboTop > browserHeight - listTop ) 
+        {
+          listTop = elementPos.top - listHeight;
+        }
+        this._list.setLocation( listLeft, listTop );
       }
     },
     
