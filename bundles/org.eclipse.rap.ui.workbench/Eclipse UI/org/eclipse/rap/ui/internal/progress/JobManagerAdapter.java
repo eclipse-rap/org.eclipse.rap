@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.progress;
 
@@ -25,13 +26,14 @@ import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.internal.progress.ProgressManager;
+import org.eclipse.ui.progress.UIJob;
 
 // RAP [fappel]:
 public class JobManagerAdapter
   extends ProgressProvider
   implements IJobChangeListener
 {
-  
+
   private static JobManagerAdapter _instance;
   private final Map jobs;
   private final ProgressManager defaultProgressManager;
@@ -43,8 +45,8 @@ public class JobManagerAdapter
     }
     return _instance;
   }
-  
-  
+
+
   private JobManagerAdapter() {
     // To avoid deadlocks we have to use the same synchronisation lock.
     // If anyone has a better idea - you're welcome.
@@ -63,16 +65,16 @@ public class JobManagerAdapter
     Job.getJobManager().setProgressProvider( this );
     Job.getJobManager().addJobChangeListener( this );
   }
-  
-  
+
+
   ///////////////////////////////
   // ProgressProvider
-  
+
   public IProgressMonitor createMonitor( final Job job ) {
     ProgressManager manager = findProgressManager( job );
     return manager.createMonitor( job );
   }
-  
+
   public IProgressMonitor createMonitor( final Job job,
                                          final IProgressMonitor group,
                                          final int ticks )
@@ -80,15 +82,15 @@ public class JobManagerAdapter
     ProgressManager manager = findProgressManager( job );
     return manager.createMonitor( job, group, ticks );
   }
-  
+
   public IProgressMonitor createProgressGroup() {
     return defaultProgressManager.createProgressGroup();
   }
-  
-  
+
+
   ///////////////////////////////
   // interface IJobChangeListener
-  
+
   public void aboutToRun( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
     manager.changeListener.aboutToRun( event );
@@ -128,7 +130,7 @@ public class JobManagerAdapter
     } else {
       // RAP [rh] fixes bug 283595
       event.getJob().cancel();
-      manager[ 0 ].changeListener.done( event );      
+      manager[ 0 ].changeListener.done( event );
     }
   }
 
@@ -139,27 +141,33 @@ public class JobManagerAdapter
 
   public void scheduled( final IJobChangeEvent event ) {
     ProgressManager manager;
+    Display display = findDisplay( event.getJob() );
     synchronized( lock ) {
-      if( ContextProvider.hasContext() ) {
-        jobs.put( event.getJob(), RWTLifeCycle.getSessionDisplay() );
-        bindToSession( event.getJob() );
-        String id = String.valueOf( event.getJob().hashCode() );
-        UICallBack.activate( id );
+      if( display != null ) {
+        jobs.put( event.getJob(), display );
+        Runnable runnable = new Runnable() {
+          public void run() {
+            bindToSession( event.getJob() );
+            String id = String.valueOf( event.getJob().hashCode() );
+            UICallBack.activate( id );
+          }
+        };
+        UICallBack.runNonUIThreadWithFakeContext( display, runnable );
       }
       manager = findProgressManager( event.getJob() );
     }
     manager.changeListener.scheduled( event );
   }
 
+
   public void sleeping( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
     manager.changeListener.sleeping( event );
   }
 
-  
   //////////////////
   // helping methods
-  
+
   private ProgressManager findProgressManager( final Job job ) {
     synchronized( lock ) {
       final ProgressManager result[] = new ProgressManager[ 1 ];
@@ -180,7 +188,27 @@ public class JobManagerAdapter
       return result[ 0 ];
     }
   }
-  
+
+  private static Display findDisplay( final Job job ) {
+    Display result = null;
+    if( ContextProvider.hasContext() ) {
+      result = RWTLifeCycle.getSessionDisplay();
+    } else {
+      if( job instanceof UIJob ) {
+        UIJob uiJob = ( UIJob )job;
+        result = uiJob.getDisplay();
+        if( result == null ) {
+          String msg 
+            = "UIJob "
+            + uiJob.getName()  
+            + " cannot be scheduled without an associated display.";
+          throw new IllegalStateException( msg );
+        }
+      }
+    }
+    return result;
+  }
+
   private void bindToSession( final Object keyToRemove ) {
     ISessionStore session = RWT.getSessionStore();
     HttpSessionBindingListener watchDog = new HttpSessionBindingListener() {
