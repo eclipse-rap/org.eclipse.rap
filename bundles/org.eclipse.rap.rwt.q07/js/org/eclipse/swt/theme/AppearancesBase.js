@@ -1529,10 +1529,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.backgroundColor = tv.getCssColor( "*", "background-color" );
-      result.backgroundGradient = tv.getCssGradient( "*",
+      result.backgroundColor = tv.getCssColor( "Composite", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Composite", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Composite",
                                                      "background-image" );
-      result.border = tv.getCssBorder( "*", "border" );
+      result.border = tv.getCssBorder( "Composite", "border" );
       return result;
     }
   },

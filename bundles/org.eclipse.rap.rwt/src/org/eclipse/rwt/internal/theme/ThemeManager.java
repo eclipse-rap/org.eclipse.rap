@@ -127,6 +127,7 @@ public final class ThemeManager {
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Widget.class,
     org.eclipse.swt.widgets.Control.class,
+    org.eclipse.swt.widgets.Composite.class,
     org.eclipse.swt.widgets.Button.class,
     org.eclipse.swt.widgets.Combo.class,
     org.eclipse.swt.widgets.CoolBar.class,
@@ -153,7 +154,7 @@ public final class ThemeManager {
   };
 
   private static ThemeManager instance;
-  
+
   private final Set customAppearances;
   private final Map themes;
   private final Map adapters;
@@ -237,7 +238,7 @@ public final class ThemeManager {
   /**
    * Adds a custom widget to the list of themeable widgets. Note that this
    * method must be called <em>before</em> initializing the ThemeManager.
-   * 
+   *
    * @param widget the themeable widget to add, must not be <code>null</code>
    * @param loader the resource loader used to load theme resources like theme
    *          definitions etc. The resources to load follow a naming convention
@@ -271,7 +272,7 @@ public final class ThemeManager {
   /**
    * Registers a theme from an input stream. Note that <code>initialize()</code>
    * must be called first.
-   * 
+   *
    * @param id an id that identifies the theme in the Java code. Note that this
    *          id is not valid on the client-side. To get the id that is used on
    *          the client, see method <code>getJsThemeId</code>
@@ -408,7 +409,7 @@ public final class ThemeManager {
 
   /**
    * Returns the theme adapter to use for controls of the specified type.
-   * 
+   *
    * @param widgetClass
    * @return the theme adapter
    * @throws IllegalStateException if not initialized
@@ -768,10 +769,10 @@ public final class ThemeManager {
     }
     QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
     if( type == QxTheme.WIDGET || type == QxTheme.ICON ) {
-      // TODO [rh] remove hard-coded resource-manager-path-prefix 
-      String uri 
-        = ResourceManagerImpl.RESOURCES 
-        + "/" 
+      // TODO [rh] remove hard-coded resource-manager-path-prefix
+      String uri
+        = ResourceManagerImpl.RESOURCES
+        + "/"
         + getWidgetDestPath( jsId );
       qxTheme.appendUri( uri );
     } else if( type == QxTheme.APPEARANCE ) {
