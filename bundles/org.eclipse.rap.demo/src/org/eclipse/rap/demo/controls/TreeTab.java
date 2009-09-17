@@ -21,8 +21,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class TreeTab extends ExampleTab {
@@ -85,10 +84,10 @@ public class TreeTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
+    parent.setLayout( new GridLayout( 1, false ) );
     int style = getStyle();
     tree = new Tree( parent, style );
-    tree.setLayoutData( new RowData( 450, 400 ) );
+    tree.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
     col1.setText( "Col 1" );
     col1.setWidth( 150 );
@@ -114,7 +113,6 @@ public class TreeTab extends ExampleTab {
       changeImage( tree, treeImage );
     }
     final Label lblTreeEvent = new Label( parent, SWT.NONE );
-    lblTreeEvent.setLayoutData( new RowData( 200, 22 ) );
     Menu treeMenu = new Menu( tree );
     MenuItem treeMenuItem = new MenuItem( treeMenu, SWT.PUSH );
     treeMenuItem.addSelectionListener( new SelectionAdapter() {
