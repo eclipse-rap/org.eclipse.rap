@@ -38,6 +38,10 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   );
 }
 
+Button[PUSH]:disabled, Button[TOGGLE]:disabled, Button[BORDER]:disabled {
+  color: #a4a4a4;
+}
+
 Button[PUSH]:pressed, Button[TOGGLE]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
