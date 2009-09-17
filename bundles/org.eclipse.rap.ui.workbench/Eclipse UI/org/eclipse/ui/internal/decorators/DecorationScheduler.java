@@ -333,7 +333,6 @@ public class DecorationScheduler {
         }
 
         while (updatesPending()) {
-System.out.println("Update Pending:");
           try {
             Thread.sleep(100);
           } catch (InterruptedException e) {
