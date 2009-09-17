@@ -82,12 +82,12 @@
             base-name="/html/loading.gif">
       </resource>
    </extension>
-   <!--extension
+   <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/"
             class="org.eclipse.rap.examples.internal.RedirectServlet">
       </servlet>
-   </extension-->
+   </extension>
 
 </plugin>
