@@ -44,6 +44,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -286,6 +289,12 @@ public class DecoratorManager implements ILabelProviderListener,
 				.createExtensionPointFilter(getExtensionPointFilter()));
 
 		resourceManager = null;
+		// RAP [rh] shut down decoration manager when session is invalidated (see bug 280363)
+		RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( final SessionStoreEvent event ) {
+        shutdown();
+      }
+    } );
 	}
 
 	/**
