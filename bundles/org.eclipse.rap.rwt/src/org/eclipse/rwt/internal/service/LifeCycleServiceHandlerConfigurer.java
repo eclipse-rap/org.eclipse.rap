@@ -84,8 +84,9 @@ public final class LifeCycleServiceHandlerConfigurer
     //      web app (hit return in location bar), the browser used a cached
     //      version of the index.html *without* sending a request to ask
     //      whether the cached page can be used.
+    //      fix for bug 220733: append no-store to the Cache-Control header
     response.addHeader( "Cache-Control", 
-                        "max-age=0, no-cache, must-revalidate" );
+                        "max-age=0, no-cache, must-revalidate, no-store" );
     long dateHeader = request.getDateHeader( "If-Modified-Since" );
     // Because browser store the date in format with seconds as smallest unit
     // add one second to avoid rounding problems...
