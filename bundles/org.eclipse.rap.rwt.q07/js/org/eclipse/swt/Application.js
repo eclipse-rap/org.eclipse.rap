@@ -31,8 +31,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
                              org.eclipse.swt.Application._onResize );
     doc.removeEventListener( "keypress",
                              org.eclipse.swt.Application._onKeyPress );
-    doc.removeEventListener( "mousewheel",
-                             org.eclipse.swt.Application._onMouseWheel );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
   },
@@ -56,10 +54,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       {
         evt.preventDefault();
       }
-    },
-    
-    _onMouseWheel : function( evt ) {
-      evt.preventDefault();
     },
     
     _appendWindowSize : function() {
@@ -114,8 +108,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
                             org.eclipse.swt.Application._onResize );
       doc.addEventListener( "keypress",
                             org.eclipse.swt.Application._onKeyPress );
-      doc.addEventListener( "mousewheel",
-                            org.eclipse.swt.Application._onMouseWheel );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
