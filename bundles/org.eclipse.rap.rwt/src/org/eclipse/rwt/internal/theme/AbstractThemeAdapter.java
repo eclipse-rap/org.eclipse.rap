@@ -101,4 +101,15 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
       = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
+  
+  protected Point getCssImageDimension( final String cssElement,
+                                        final String cssProperty,
+                                        final Widget widget )
+  {
+    QxImage image = ( QxImage ) ThemeUtil.getCssValue( cssElement,
+                                                       cssProperty, 
+                                                       matcher, 
+                                                       widget );
+    return new Point( image.width, image.height );
+  }
 }

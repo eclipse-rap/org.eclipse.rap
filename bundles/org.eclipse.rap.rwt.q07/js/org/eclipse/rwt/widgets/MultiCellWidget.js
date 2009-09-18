@@ -334,6 +334,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     
     _beforeComputeInnerHeight : qx.lang.Function.returnTrue,
     
+    _beforeRenderLayout : qx.lang.Function.returnTrue,
+    
     _cellHasContent : function( cell ) {
       var content = this.__cellData[ cell ][ 1 ];
       return content != null;
@@ -467,18 +469,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         this._updateAllImages();
         this._updateAllLabels();
       }
-      if (    changes.width
-           || changes.layoutX
-           || changes.frameWidth
-           || changes.initial )
-      {
+      changes.layoutX =    changes.width
+                        || changes.layoutX
+                        || changes.frameWidth
+                        || changes.initial;
+      changes.layoutY =    changes.height
+                        || changes.layoutY
+                        || changes.frameHeight
+                        || changes.initial;
+      this._beforeRenderLayout( changes );
+      if ( changes.layoutX ) {
         this._renderLayoutX();
       }
-      if (    changes.height
-           || changes.layoutY
-           || changes.frameHeight
-           || changes.initial )
-      {
+      if ( changes.layoutY ) {
         this._renderLayoutY();
       }
       this.base( arguments, changes );
@@ -539,7 +542,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           top = pad[ 0 ];
         break;
         case "middle":
-          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
+          top = Math.floor( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
         break;
         case "bottom":
           top = pad[ 0 ] + inner - height;

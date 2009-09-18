@@ -291,49 +291,61 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "toolbar-separator" : {
     style : function( states ) {
-      return {
-        width : 8
-      };
+      return {};
     }
   },
 
   "toolbar-separator-line" : {
     style : function( states ) {
-      return {
-        top    : 2,
-        left   : 3,
-        width  : 2,
-        bottom : 2,
-        border : states.rwt_FLAT ? "horizontalDivider" : "undefined"
-      };
+      var result = null;
+      if( states.vertical ) {
+        result = {
+          left   : 2,
+          height : 2,
+          right  : 2,
+          border : "verticalDivider"
+        };        
+      } else {
+        result = {
+          top    : 2,
+          width  : 2,
+          bottom : 2,
+          border : "horizontalDivider"
+        };                
+      }
+      return result;
     }
   },
 
   "toolbar-button" : {
     style : function( states ) {
-      if( states.pressed || states.checked ) {
-        states.selected = true;
-      } else if( states.selected ) {
-        delete states.selected;
-      }
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         overflow : "hidden",
-        spacing : 4,
         width : "auto",
         verticalChildrenAlign : "middle"
       };
+      result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
       result.textColor = states.disabled
                          ? tv.getCssColor( "*", "color" )
                          : tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
-      result.backgroundImage = states.checked && !states.over
+      result.backgroundImage = states.selected && !states.over  // TODO [tb] : no longer needed?
                                ? "static/image/dotted_white.gif"
                                : tv.getCssImage( "ToolItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
+      if( states.dropDown ) {
+        result.dropDownArrow = tv.getCssSizedImage( "ToolItem-DropDownIcon",
+                                                    "background-image" );
+        result.separatorBorder = tv.getCssBorder( "ToolItem-DropDownIcon", 
+                                                  "border" );
+      } else {
+        result.dropDownArrow = null;
+        result.separatorBorder = null; 
+      }
       return result;
     }
   },

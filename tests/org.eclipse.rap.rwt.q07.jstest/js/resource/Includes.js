@@ -60,7 +60,9 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/MultiCellWidget.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/AbstractButton.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/Button.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/ToolBar.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/ToolItem.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/ToolSeparator.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/ToolTip.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/Menu.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/MenuItem.js" type="text/javascript"></script>\
@@ -80,11 +82,11 @@ document.write('\
 ');
 
 // How to generate the RAPThemeSupport.js:
-// - Start an RAP-application in debug-mode
+// - Start an RAP-application
 // - Open the application in an Firefox with Firebug 
 // - In Firebug, go to "Html"
 // - In the document, go to <body> -> <script>
-// - Copy all rows after "qx.Class.define("org.eclipse.swt.theme.ThemeValues"
+// - Copy everything after call "qx.Class.define("org.eclipse.swt.theme.ThemeValues"
 // - be careful not to copy the line-numbers with the code
 // - add the following lines: (without the "//")
 //  qx.io.Alias.getInstance().add( "static", "../org.eclipse.rap.rwt.q07/js/resource/static" );

@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -30,7 +29,7 @@ public class ToolBar_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
-  public void testToolBarCreation() {
+  public void testCreation() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
@@ -69,7 +68,54 @@ public class ToolBar_Test extends TestCase {
     assertNull( item3.getImage() );
   }
 
-  public void testToolBarDispose() {
+  public void testHorizontal() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
+    ToolItem toolItem1 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem toolItem2 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem toolItem3 = new ToolItem( toolBar, SWT.PUSH );
+    toolBar.pack();
+    assertEquals( toolItem1.getBounds().y, toolItem2.getBounds().y );
+    assertEquals( toolItem1.getBounds().y, toolItem3.getBounds().y );
+    assertEquals( toolItem1.getBounds().height, toolItem2.getBounds().height );
+    assertEquals( toolItem1.getBounds().height, toolItem3.getBounds().height );    
+    int offsetItem2 = toolItem1.getBounds().x + toolItem1.getBounds().width; 
+    assertTrue( offsetItem2 <= toolItem2.getBounds().x );
+    int offsetItem3 = toolItem2.getBounds().x + toolItem2.getBounds().width;
+    assertTrue( offsetItem3 <= toolItem3.getBounds().x );
+    int minBarWidth = toolItem3.getBounds().x + toolItem3.getBounds().width;
+    assertTrue( toolBar.getBounds().width >=  minBarWidth );
+  }
+  
+  public void testVertical() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem toolItem1 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem toolItem2 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem toolItem3 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem toolItem4 = new ToolItem( toolBar, SWT.SEPARATOR );
+    toolBar.pack();
+    // Separators are NOT respected when synchronizing width:  
+    toolItem4.setWidth( toolItem1.getWidth() + 100 );
+    // TODO [tb] : this is not SWT-behaviour 
+//    assertTrue( toolItem1.getWidth() < toolItem4.getWidth() ); 
+    assertEquals( toolItem1.getBounds().width, toolItem2.getBounds().width );
+    assertEquals( toolItem1.getBounds().width, toolItem3.getBounds().width );
+    assertEquals( toolItem1.getBounds().height, toolItem2.getBounds().height );
+    assertEquals( toolItem1.getBounds().height, toolItem3.getBounds().height );    
+    assertEquals( toolItem1.getBounds().x, toolItem2.getBounds().x );
+    assertEquals( toolItem1.getBounds().x, toolItem3.getBounds().x );
+    int offsetItem2 = toolItem1.getBounds().y + toolItem1.getBounds().height; 
+    assertTrue( offsetItem2 <= toolItem2.getBounds().y );
+    int offsetItem3 = toolItem2.getBounds().y + toolItem2.getBounds().height;
+    assertTrue( offsetItem3 <= toolItem3.getBounds().y );
+    int minBarHeight = toolItem3.getBounds().y + toolItem3.getBounds().height; 
+    assertTrue( toolBar.getBounds().height >=  minBarHeight );    
+  }
+
+  public void testDispose() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
@@ -106,110 +152,6 @@ public class ToolBar_Test extends TestCase {
     }
   }
 
-  public void testToolItemTexts() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
-    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
-    String text0 = "text0";
-    String text1 = "text1";
-
-    // Test 'normal' tool item
-    item.setText( text0 );
-    assertEquals( text0, item.getText() );
-    item.setText( text1 );
-    assertEquals( text1, item.getText() );
-    // Test separator tool item
-    assertEquals( "", separator.getText() );
-    separator.setText( text1 );
-    assertEquals( "", separator.getText() );
-  }
-
-  public void testToolItemImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
-    item.setImage( null );
-    assertEquals( null, item.getImage() );
-  }
-
-  public void testToolItemEnabled() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
-    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
-    separator.setControl( new Text( toolbar, SWT.NONE ) );
-
-    // ToolItem must be enabled initially
-    assertEquals( true, item.getEnabled() );
-
-    // Test enabled ToolItem on disabled ToolBar
-    toolbar.setEnabled( false );
-    item.setEnabled( true );
-    assertEquals( true, item.getEnabled() );
-    assertEquals( false, item.isEnabled() );
-
-    // Test disabled ToolItem on disabled ToolBar
-    toolbar.setEnabled( false );
-    item.setEnabled( false );
-    assertEquals( false, item.getEnabled() );
-    assertEquals( false, item.isEnabled() );
-
-    // Test SEPARATOR ToolItem
-    separator.setEnabled( false );
-    assertEquals( true, separator.getControl().getEnabled() );
-  }
-
-  public void testToolItemControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
-    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
-    separator.setControl( new Text( toolbar, SWT.NONE ) );
-
-    // Using control property on ToolItem without SEPARATOR style has no effect
-    item.setControl( new Text( toolbar, SWT.NONE ) );
-    assertEquals( null, item.getControl() );
-
-    // Setting a valid control on a SEPARATOR ToolItem
-    Text control = new Text( toolbar, SWT.NONE );
-    separator.setControl( control );
-    assertSame( control, separator.getControl() );
-    separator.setControl( null );
-    assertEquals( null, separator.getControl() );
-
-    // Illegal values for setControl
-    Control currentControl = new Text( toolbar, SWT.NONE );
-    try {
-      separator.setControl( currentControl );
-      Control diposedControl = new Text( toolbar, SWT.NONE );
-      diposedControl.dispose();
-      separator.setControl( diposedControl );
-      fail( "Must not allow to set diposed control in setControl" );
-    } catch( IllegalArgumentException e ) {
-      assertSame( currentControl, separator.getControl() );
-    }
-    try {
-      separator.setControl( currentControl );
-      Control shellControl = new Text( shell, SWT.NONE );
-      shellControl.dispose();
-      separator.setControl( shellControl );
-      fail( "Must not allow to set control with other parent than ToolItem" );
-    } catch( IllegalArgumentException e ) {
-      assertSame( currentControl, separator.getControl() );
-    }
-
-    // Dispose of control that is currently set on the SEPARATOR
-    Control tempControl = new Text( toolbar, SWT.NONE );
-    separator.setControl( tempControl );
-    tempControl.dispose();
-    assertEquals( null, separator.getControl() );
-  }
-
   public void testComputeSize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -228,9 +170,9 @@ public class ToolBar_Test extends TestCase {
     separator.setControl( new Text( toolbar, SWT.NONE ) );
     ToolItem toolItem3 = new ToolItem( toolbar, SWT.DROP_DOWN );
     toolItem3.setText( "Item 3" );
-    assertEquals( new Point( 161, 22 ),
+    assertEquals( new Point( 152, 22 ),
                   toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );
   }
-}
+} 

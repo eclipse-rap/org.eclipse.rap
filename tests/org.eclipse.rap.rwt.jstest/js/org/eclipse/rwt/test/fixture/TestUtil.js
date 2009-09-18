@@ -138,12 +138,18 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
       this.mouseMove( to );
     },
     
-    fakeMouseEvent : function( widget, type ) {
+    fakeMouseClick : function( widget, left, top ) {
+      this.fakeMouseEvent( widget, "mousedown", left, top );
+      this.fakeMouseEvent( widget, "mouseup", left, top );
+      this.fakeMouseEvent( widget, "click", left, top );
+    },
+    
+    fakeMouseEvent : function( widget, type, left, top ) {
       if( !widget._isCreated ) {
         throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
       }
-      var left = widget.getLeftValue();
-      var top = widget.getTopValue();
+      var left = left ? left : 0;
+      var top = top ? top : 0; 
       var domEv = {
         "type" : type,
         screenX : left,
@@ -151,7 +157,7 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
         clientX : left,
         clientY : top,
         pageX : left,
-        pageY : top            
+        pageY : top
       };
       var ev = new qx.event.type.MouseEvent(
         type, 
@@ -159,7 +165,7 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
         widget._getTargetNode(), 
         widget, 
         widget, 
-        null 
+        null
       );
       ev.setButton( qx.event.type.MouseEvent.C_BUTTON_LEFT ); 
       widget.dispatchEvent( ev );

@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
 
 /**
  * Instances of this class support the layout of selectable
@@ -230,7 +232,6 @@ public class ToolBar extends Composite {
   ////////////////////
   // Size computations
 
-  // TODO [rh] decent size computation for VERTICAL alignment missing
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -238,12 +239,28 @@ public class ToolBar extends Composite {
     checkWidget();
     int width = 0;
     int height = 0;
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      ToolItem item = ( ToolItem )itemHolder.getItem( i );
-      Rectangle itemBounds = item.getBounds();
-      height = Math.max( height, itemBounds.height );
-      width += itemBounds.width;
+    if( ( style & SWT.VERTICAL ) != 0 ) {
+      for( int i = 0; i < itemHolder.size(); i++ ) {
+        ToolItem item = ( ToolItem )itemHolder.getItem( i );
+        Rectangle itemBounds = item.getBounds();
+        width = Math.max( width, itemBounds.width );
+        if( i == itemHolder.size() - 1 ) {
+          height += itemBounds.height + itemBounds.y;
+        }      
+      }
+    } else {
+      for( int i = 0; i < itemHolder.size(); i++ ) {
+        ToolItem item = ( ToolItem )itemHolder.getItem( i );
+        Rectangle itemBounds = item.getBounds();
+        height = Math.max( height, itemBounds.height );
+        if( i == itemHolder.size() - 1 ) {
+          width += itemBounds.width + itemBounds.x;
+        }
+        
+      }      
     }
+    width += getToolBarPadding().width;
+    height += getToolBarPadding().height;
     if( width == 0 ) {
       width = DEFAULT_TOOLBAR_WIDTH;
     }
@@ -256,6 +273,10 @@ public class ToolBar extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
+    for( int i = 0; i < itemHolder.size(); i++ ) {
+      ToolItem item = ( ToolItem )itemHolder.getItem( i );
+      item.resizeControl();
+    }
     Rectangle trim = computeTrim( 0, 0, width, height );
     width = trim.width;
     height = trim.height;
@@ -265,7 +286,17 @@ public class ToolBar extends Composite {
   public int getBorderWidth() {
     return ( style & SWT.BORDER ) != 0 ? 1 : 0;
   }
-
+  
+  Rectangle getToolBarPadding() { 
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getToolBarPadding( this );
+  }
+  
+  private ToolBarThemeAdapter getToolBarThemeAdapter() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    return ( ToolBarThemeAdapter )themeMgr.getThemeAdapter( ToolBar.class );
+  }  
+  
   /**
    * Returns the number of rows in the receiver. When
    * the receiver has the <code>WRAP</code> style, the

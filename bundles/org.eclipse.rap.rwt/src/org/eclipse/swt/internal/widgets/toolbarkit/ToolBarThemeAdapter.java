@@ -11,6 +11,7 @@ package org.eclipse.swt.internal.widgets.toolbarkit;
 
 import org.eclipse.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -30,4 +31,26 @@ public class ToolBarThemeAdapter extends ControlThemeAdapter {
   public Rectangle getItemPadding( final Control control ) {
     return getCssBoxDimensions( "ToolItem", "padding", control );
   }
+  
+  public Rectangle getToolBarPadding( final Control control ) {
+    return getCssBoxDimensions( "ToolBar", "padding", control );
+  }
+  
+  public int getToolBarSpacing( final Control control ) {
+    return getCssDimension( "ToolBar", "spacing", control );
+  }
+  
+  public int getItemSpacing( final Control control ) {
+    return getCssDimension( "ToolItem", "spacing", control );
+  }  
+  
+  public int getSeparatorWidth( final Control control ) {
+    return getCssDimension( "ToolItem-Separator", "width", control );
+  }  
+  
+  public Point getDropDownImageDimension( final Control control ) {
+    return getCssImageDimension( 
+      "ToolItem-DropDownIcon", "background-image", control );
+  }
+  
 }

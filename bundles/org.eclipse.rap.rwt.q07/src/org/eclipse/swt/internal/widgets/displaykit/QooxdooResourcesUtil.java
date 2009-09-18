@@ -61,8 +61,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/widgets/ToolTip.js";
   private static final String TAB_UTIL_JS
     = "org/eclipse/swt/TabUtil.js";
-  private static final String TOOL_ITEM_JS
-    = "org/eclipse/swt/ToolItemUtil.js";
   private static final String WIDGET_UTIL_JS
     = "org/eclipse/swt/WidgetUtil.js";
   private static final String CTAB_FOLDER_JS
@@ -149,10 +147,18 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/widgets/MultiCellWidget.js";
   private static final String BUTTON
     = "org/eclipse/rwt/widgets/Button.js";
+  private static final String ABSTRACTBUTTON
+    = "org/eclipse/rwt/widgets/AbstractButton.js";
   private static final String MENU
     = "org/eclipse/rwt/widgets/Menu.js";
   private static final String MENU_ITEM
     = "org/eclipse/rwt/widgets/MenuItem.js";
+  private static final String TOOL_ITEM
+    = "org/eclipse/rwt/widgets/ToolItem.js";  
+  private static final String TOOLSEPARATOR
+    = "org/eclipse/rwt/widgets/ToolSeparator.js";  
+  private static final String TOOLBAR
+    = "org/eclipse/rwt/widgets/ToolBar.js";  
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -199,7 +205,6 @@ final class QooxdooResourcesUtil {
       register( WIDGET_UTIL_JS, compress );
       register( SASH_JS, compress );
       register( TAB_UTIL_JS, compress );
-      register( TOOL_ITEM_JS, compress );
       register( CTAB_ITEM_JS, compress );
       register( CTAB_FOLDER_JS, compress );
       register( COOL_ITEM_JS, compress );
@@ -237,9 +242,13 @@ final class QooxdooResourcesUtil {
       register( RADIOBUTTONUTIL_JS, compress );
       register( LINK_JS, compress );
       register( MULTICELLWIDGET, compress );
+      register( ABSTRACTBUTTON, compress );
       register( BUTTON, compress );
       register( MENU, compress );
       register( MENU_ITEM, compress );
+      register( TOOLBAR, compress );
+      register( TOOL_ITEM, compress );
+      register( TOOLSEPARATOR, compress );
 
       // register contributions
       registerContributions();

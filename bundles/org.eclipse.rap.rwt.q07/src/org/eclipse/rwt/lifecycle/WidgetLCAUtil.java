@@ -428,12 +428,7 @@ public final class WidgetLCAUtil {
       //            coordinates as the content of SCs is scrolled automatically
       //            by the client according to the position of the scroll bars.
       //            Setting negative values breaks the layout on the client.
-      // Note [rst] Children of ToolBars must not not render their x and y
-      //            coordinates as this is interpreted as offset from the left
-      //            neighbor on the client. I guess the reason is that the
-      //            client-side ToolBar has a layout set already which
-      //            interferes with setting positions.
-      if( parent instanceof ScrolledComposite || parent instanceof ToolBar ) {
+      if( parent instanceof ScrolledComposite ) {
         writer.set( JS_PROP_WIDTH, newBounds.width );
         writer.set( JS_PROP_HEIGHT, newBounds.height );
       } else {

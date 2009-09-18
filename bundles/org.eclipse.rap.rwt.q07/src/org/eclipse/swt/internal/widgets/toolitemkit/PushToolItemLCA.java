@@ -13,30 +13,15 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 final class PushToolItemLCA extends ToolItemDelegateLCA {
 
-  // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String CREATE_PUSH
-    = "org.eclipse.swt.ToolItemUtil.createPush";
-
-  private final static JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
-                          JSConst.JS_WIDGET_SELECTED,
-                          JSListenerType.ACTION );
+  private static final String PARAM_PUSH = "push";
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
     ToolItemLCAUtil.preserveImages( toolItem );
-    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
   void readData( final ToolItem toolItem ) {
@@ -44,35 +29,10 @@ final class PushToolItemLCA extends ToolItemDelegateLCA {
   }
 
   void renderInitialization( final ToolItem toolItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ToolBar toolBar = toolItem.getParent();
-    Object[] args = new Object[]{
-      WidgetUtil.getId( toolItem ),
-      toolBar,
-      ToolItemLCAUtil.getClientSideIndex( toolItem ),
-      Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT ) != 0 )
-    };
-    writer.callStatic( CREATE_PUSH, args );
+    ToolItemLCAUtil.renderInitialization( toolItem, PARAM_PUSH );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ItemLCAUtil.writeText( toolItem, true );
-    ToolItemLCAUtil.writeImages( toolItem );
-    // TODO [rh] could be optimized in that way, that qooxdoo forwards the
-    //      right-click on a toolbar item to the toolbar iteself if the toolbar
-    //      item does not have a context menu assigned
-    WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
-    // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
-    // bounds of the widget that was clicked -> In the SelectionEvent
-    // for Button the bounds are undefined
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( toolItem ) );
-    WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
-    ToolItemLCAUtil.writeVisible( toolItem );
-    ToolItemLCAUtil.writeBounds( toolItem );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    ToolItemLCAUtil.renderChanges( toolItem );
   }
 }

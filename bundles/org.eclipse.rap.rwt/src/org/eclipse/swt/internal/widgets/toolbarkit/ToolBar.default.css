@@ -2,6 +2,8 @@
 
 ToolBar {
   color: black;
+  padding: 0px;
+  spacing: 0px;
   background-color: rgb( 248, 248, 255 );
   background-image: none;
 }
@@ -12,6 +14,7 @@ ToolItem {
   background-image: none;
   border: 1px outset;
   padding: 2px 3px;
+  spacing: 4px;
 }
 
 ToolItem[FLAT] {
@@ -28,4 +31,17 @@ ToolItem:hover {
 ToolItem:pressed, ToolItem:selected {
   border: 1px inset;
   padding: 3px 2px 1px 4px;
+}
+
+ToolItem-DropDownIcon {
+  background-image: url( resource/widget/rap/arrows/down.gif );
+  border: none;
+}
+
+ToolItem-DropDownIcon:hover {
+  border: 1px inset;
+}
+
+ToolItem-Separator {
+  width: 4px;
 }

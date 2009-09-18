@@ -334,7 +334,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static boolean writeVariant( TableItem item ) throws IOException {
+  private static boolean writeVariant( final TableItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     String variant = WidgetUtil.getVariant( item );
     boolean result
