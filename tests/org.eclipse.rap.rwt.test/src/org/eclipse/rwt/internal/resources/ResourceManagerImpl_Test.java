@@ -59,12 +59,10 @@ public class ResourceManagerImpl_Test extends TestCase {
       + TEST_PORT
       + TEST_CONTEXT;
   private static final String TEST_LOCATION_DISK
-    =   TEST_CONTEXT_URL
-      + "/rwt-resources/"
+    =   "rwt-resources/"
       + TEST_RESOURCE_1;
   private static final String TEST_LOCATION_VERSIONED_DISK
-    =   TEST_CONTEXT_URL
-      + "/rwt-resources/"
+    =   "rwt-resources/"
       + TEST_RESOURCE_1_VERSIONED;
   private static final String TEST_LOCATION_SERVLET
     =   TEST_CONTEXT_URL
@@ -478,7 +476,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     inputStream.close();
     String location = manager.getLocation( name );
     String expected
-      = "http://TestCase:4711/test/rwt-resources/http$1//host$1port/path$$1";
+      = "rwt-resources/http$1//host$1port/path$$1";
     assertEquals( expected, location );
   }
 

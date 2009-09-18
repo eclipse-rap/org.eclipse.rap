@@ -364,8 +364,6 @@ public class ResourceManagerImpl
     String newFileName = fileName.replace( '\\', '/' );
     if( isDeliveryMode( DELIVER_FROM_DISK ) ) {
       StringBuffer url = new StringBuffer();
-      url.append( URLHelper.getContextURLString() );
-      url.append( "/" );
       url.append( RESOURCES );
       url.append( "/" );
       String escapedFilename = escapeFilename( newFileName );
