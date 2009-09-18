@@ -353,8 +353,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var fieldValue = value.getLabel().toString();
         this._field.setValue( this._formatText( fieldValue ) );
         if( this._field.isCreated() ) {
-          this._field.selectAll();
           if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+            this._field.selectAll();
             this._handleSelectionChange();
           }
         }
