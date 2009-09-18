@@ -295,7 +295,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       // set line height to enable vertical centering
       node.style.lineHeight = height + org.eclipse.swt.widgets.TableItem.PX;
       node.style.backgroundColor = "";
-      node.style.backgroundImage = "url(" + image + ")";
+      // [if] Fix for bug 289822: [Table] Unsecure content warning in IE using 
+      // SSL when setting item image on invisible table
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=289822
+      var url = qx.io.Alias.getInstance().resolve( image );
+      node.style.backgroundImage = "url(" + url+ ")";
       node.style.backgroundRepeat = "no-repeat";
       node.style.backgroundPosition = "center";
     },
