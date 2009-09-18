@@ -407,7 +407,7 @@ public class Text_Test extends TestCase {
     assertEquals( expected, text.computeTrim( 0, 0, 1, 0 ) );
   }
 
-  public void testGetCaretPossition() {
+  public void testGetCaretPosition() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );
