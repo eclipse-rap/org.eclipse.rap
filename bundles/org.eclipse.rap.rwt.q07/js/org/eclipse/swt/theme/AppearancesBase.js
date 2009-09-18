@@ -184,10 +184,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = "info";
-      result.padding = [ 1, 3, 2, 3 ];
-      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.border = tv.getCssBorder( "ToolTip", "border" );
+      result.padding = tv.getCssBoxDimensions( "ToolTip", "padding" );
       result.textColor = tv.getCssColor( "ToolTip", "color" );
+      result.font = tv.getCssFont( "ToolTip", "font" );
+      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.backgroundImage = tv.getCssImage( "ToolTip", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
       return result;
     }
   },
