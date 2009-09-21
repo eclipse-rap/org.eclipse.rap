@@ -130,12 +130,13 @@
       <include name="org.mortbay.jetty.server.source_*/" />
       <include name="org.mortbay.jetty.util_*" />
       <include name="org.mortbay.jetty.util.source_*/" />
-    </fileset-->
+    </fileset>
 
-    <!-- copy all the needed plugins + source -->
+    <! copy all the needed plugins + source 
     <copy todir="${targetLocation}/eclipse/plugins">
       <fileset refid="basePlugins" />
     </copy>
+-->
 
     <!-- zip target -->
     <zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
