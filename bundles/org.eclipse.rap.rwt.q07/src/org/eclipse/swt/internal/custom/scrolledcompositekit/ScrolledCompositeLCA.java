@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
@@ -15,9 +16,11 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.*;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
@@ -50,20 +53,28 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                       getBarSelection( composite.getHorizontalBar() ) );
     adapter.preserve( PROP_V_BAR_SELECTION,
                       getBarSelection( composite.getVerticalBar() ) );
+    adapter.preserve( Props.SELECTION_LISTENERS,
+                      Boolean.valueOf( hasSelectionListener( composite ) ) );
     WidgetLCAUtil.preserveCustomVariant( composite );
   }
 
   public void readData( final Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
+    Point origin = composite.getOrigin();
     String value
       = WidgetLCAUtil.readPropertyValue( widget, PARAM_H_BAR_SELECTION );
-    if( value != null && composite.getHorizontalBar() != null ) {
-      composite.getHorizontalBar().setSelection( Integer.parseInt( value ) );
+    ScrollBar hScroll = composite.getHorizontalBar();
+    if( value != null && hScroll != null ) {
+      origin.x = Integer.parseInt( value );
+      processSelection( hScroll );
     }
     value = WidgetLCAUtil.readPropertyValue( widget, PARAM_V_BAR_SELECTION );
-    if( value != null && composite.getVerticalBar() != null ) {
-      composite.getVerticalBar().setSelection( Integer.parseInt( value ) );
+    ScrollBar vScroll = composite.getVerticalBar();
+    if( value != null && vScroll != null ) {
+      origin.y = Integer.parseInt( value );
+      processSelection( vScroll );
     }
+    composite.setOrigin( origin );
     ControlLCAUtil.processMouseEvents( composite );
     ControlLCAUtil.processKeyEvents( composite );
     WidgetLCAUtil.processHelp( composite );
@@ -83,6 +94,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     writeScrollBars( composite );
     // TODO [rh] initial positioning of the client-side scroll bar does not work
     writeBarSelection( composite );
+    writeSelectionListener( composite );
     WidgetLCAUtil.writeCustomVariant( composite );
   }
 
@@ -126,6 +138,18 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       writer.set( "clipWidth", bounds.width );
       writer.set( "clipHeight", bounds.height );
     }
+  }  
+  
+  private static void writeSelectionListener( final ScrolledComposite composite )
+    throws IOException
+  {
+    boolean hasListener = hasSelectionListener( composite );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = Props.SELECTION_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( composite, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( composite );
+      writer.set( "hasSelectionListener", newValue );
+    }
   }
 
   private static String getOverflow( final ScrolledComposite composite ) {
@@ -146,7 +170,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////
   // Helping methods to obtain scroll bar properties
 
   private static Integer getBarSelection( final ScrollBar scrollBar ) {
@@ -157,5 +181,25 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       result = null;
     }
     return result;
+  }
+  
+  private static boolean hasSelectionListener( final ScrolledComposite composite )
+  {
+    boolean result = false;
+    ScrollBar horizontalBar = composite.getHorizontalBar();
+    if( horizontalBar != null ) {
+      result = result || SelectionEvent.hasListener( horizontalBar );
+    }
+    ScrollBar verticalBar = composite.getVerticalBar();
+    if( verticalBar != null ) {
+      result = result || SelectionEvent.hasListener( verticalBar );
+    }
+    return result;
+  }
+  
+  private static void processSelection( final ScrollBar scrollBar ) {
+    SelectionEvent evt
+      = new SelectionEvent( scrollBar, null, SelectionEvent.WIDGET_SELECTED );
+    evt.processEvent();
   }
 }

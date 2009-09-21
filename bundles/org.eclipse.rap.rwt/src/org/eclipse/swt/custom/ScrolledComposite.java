@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.custom;
@@ -82,7 +83,6 @@ public class ScrolledComposite extends Composite {
     super( parent, checkStyle( style ) );
     super.setLayout( new ScrolledCompositeLayout() );
     createScrollBars( style );
-    registerScrollListeners();
     contentListener = new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         layout();
@@ -590,26 +590,6 @@ public class ScrolledComposite extends Composite {
     }
     return false;
   }
-  
-  void hScroll() {
-    if( content == null ) {
-      return;
-    }
-    Point location = content.getLocation();
-    ScrollBar hBar = getHorizontalBar();
-    int hSelection = hBar.getSelection();
-    content.setLocation( -hSelection, location.y );
-  }
-
-  void vScroll() {
-    if( content == null ) {
-      return;
-    }
-    Point location = content.getLocation();
-    ScrollBar vBar = getVerticalBar();
-    int vSelection = vBar.getSelection();
-    content.setLocation( location.x, -vSelection );
-  }
 
   // ////////////////
   // Helping methods
@@ -618,30 +598,11 @@ public class ScrolledComposite extends Composite {
     // TODO [rh] move ScrollBar creation to Scrollable as in SWT
     if( ( style & SWT.H_SCROLL ) != 0 ) {
       horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
+      horizontalBar.setVisible( false );
     }
     if( ( style & SWT.V_SCROLL ) != 0 ) {
       verticalBar = new ScrollBar( this, SWT.V_SCROLL );
-    }
-  }
-
-  private void registerScrollListeners() {
-    ScrollBar hBar = getHorizontalBar();
-    if( hBar != null ) {
-      hBar.setVisible( false );
-      hBar.addSelectionListener( new SelectionAdapter() {
-        public void widgetSelected( final SelectionEvent event ) {
-          hScroll();
-        }
-      } );
-    }
-    ScrollBar vBar = getVerticalBar();
-    if( vBar != null ) {
-      vBar.setVisible( false );
-      vBar.addSelectionListener( new SelectionAdapter() {
-        public void widgetSelected( final SelectionEvent event ) {
-          vScroll();
-        }
-      } );
+      verticalBar.setVisible( false );
     }
   }
   

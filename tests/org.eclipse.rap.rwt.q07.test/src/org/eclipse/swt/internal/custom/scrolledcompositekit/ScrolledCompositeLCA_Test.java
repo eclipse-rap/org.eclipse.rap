@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,12 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
+
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -111,11 +114,36 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     RWTFixture.clearPreserved();
+    // selection listeners
+    RWTFixture.preserveWidgets();
+    Boolean hasListeners
+      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();
+    SelectionListener listener = new SelectionListener() {
+
+      public void widgetDefaultSelected( final SelectionEvent e ) {
+      }
+
+      public void widgetSelected( final SelectionEvent e ) {
+      }      
+    };
+    sc.getVerticalBar().addSelectionListener( listener );
+    RWTFixture.preserveWidgets();
+    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    sc.getVerticalBar().removeSelectionListener( listener );
+    RWTFixture.clearPreserved();
+    sc.getHorizontalBar().addSelectionListener( listener );
+    RWTFixture.preserveWidgets();
+    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    sc.getHorizontalBar().removeSelectionListener( listener );
+    RWTFixture.clearPreserved();
     // control_listeners
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
-    Boolean hasListeners
-     = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     sc.addControlListener( new ControlListener() {
@@ -208,5 +236,49 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     ButtonLCA lca = new ButtonLCA();
     lca.renderChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) == -1 );
+  }
+  
+  public void testReadData() {
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
+    ScrolledComposite sc = new ScrolledComposite( shell, scStyle );    
+    sc.setContent( new Composite( sc, SWT.NONE ) );
+    SelectionListener selectionListener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {        
+        log.add( "widgetSelected" );
+      }
+    };
+    sc.getHorizontalBar().addSelectionListener( selectionListener );
+    sc.getVerticalBar().addSelectionListener( selectionListener );
+    String scId = WidgetUtil.getId( sc );
+    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", "10" );
+    Fixture.fakeRequestParam( scId + ".verticalBar.selection", "10" );
+    RWTFixture.readDataAndProcessAction( sc );
+    assertEquals( 2, log.size() );
+    assertEquals( new Point( 10, 10 ), sc.getOrigin() );
+    assertEquals( 10, sc.getHorizontalBar().getSelection() );
+    assertEquals( 10, sc.getVerticalBar().getSelection() );
+    log.clear();
+    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", null );
+    Fixture.fakeRequestParam( scId + ".verticalBar.selection", "20" );
+    RWTFixture.readDataAndProcessAction( sc );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 10, 20 ), sc.getOrigin() );
+    assertEquals( 10, sc.getHorizontalBar().getSelection() );
+    assertEquals( 20, sc.getVerticalBar().getSelection() );
+    log.clear();
+    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", "20" );
+    Fixture.fakeRequestParam( scId + ".verticalBar.selection", null );
+    RWTFixture.readDataAndProcessAction( sc );
+    assertEquals( 1, log.size() );
+    assertEquals( new Point( 20, 20 ), sc.getOrigin() );
+    assertEquals( 20, sc.getHorizontalBar().getSelection() );
+    assertEquals( 20, sc.getVerticalBar().getSelection() );
+    log.clear();
+    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", null );
+    Fixture.fakeRequestParam( scId + ".verticalBar.selection", null );
+    assertEquals( 0, log.size() );
   }
 }
