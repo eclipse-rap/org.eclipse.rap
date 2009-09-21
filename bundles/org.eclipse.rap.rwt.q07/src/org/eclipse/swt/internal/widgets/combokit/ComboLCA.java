@@ -316,7 +316,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     String prop = Props.SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( combo, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      writer.set( "hasSelectionListener", combo );
+      writer.set( "hasSelectionListener", newValue );
     }
   }
 
@@ -330,7 +330,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     String prop = PROP_VERIFY_MODIFY_LISTENER;
     if( WidgetLCAUtil.hasChanged( combo, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      writer.set( "hasVerifyModifyListener", combo );
+      writer.set( "hasVerifyModifyListener", newValue );
     }
   }
   
