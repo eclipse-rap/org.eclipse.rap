@@ -30,7 +30,7 @@
 	<!-- Add one target for each root element and each configuration           -->
 	<!-- Replace element.id with the id of the top level element being built   -->
 	<!-- ===================================================================== -->
-	<target name="assemble.org.eclipse.rap">
+	<target name="assemble.org.eclipse.rap.runtime.sdk">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.org.eclipse.rap.pretest">
