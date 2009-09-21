@@ -125,7 +125,7 @@
       <include name="org.eclipse.osgi.services_*" />
       <include name="org.eclipse.osgi.services.source_*" />
       <include name="org.eclipse.osgi.source_*" />
-      <include name="org.junit_3*" />
+      <!--include name="org.junit_3*" /-->
       <include name="org.junit.source_3*/" />
       <include name="org.mortbay.jetty.server_*" />
       <include name="org.mortbay.jetty.server.source_*/" />
@@ -138,13 +138,14 @@
       <fileset refid="basePlugins" />
     </copy>
 
-    <!-- jar org.junit -->
+    <!-- jar org.junit
     <dirset dir="${targetLocation}/eclipse/plugins" id="junit.dirs">
       <include name="org.junit_3*"/>
     </dirset>
     <pathconvert property="junit.dir" refid="junit.dirs"/>
     <jar destfile="${junit.dir}.jar" basedir="${junit.dir}"/>
     <delete dir="${junit.dir}"/>
+    -->
 
     <!-- zip target -->
     <zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
