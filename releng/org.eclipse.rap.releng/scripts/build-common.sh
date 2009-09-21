@@ -53,15 +53,20 @@ done
 # resolve relative paths
 runtimeDir=`readlink -f $runtimeDir`
 basePlatformDir=`readlink -f $basePlatformDir`
-workDir=`readlink -f $workDir`
-outputDir=`readlink -f $outputDir`
+workDir=`readlink -f "$workDir"`
+outputDir=`readlink -f "$outputDir"`
 if [ -n "$rapTarget" ]; then
   rapTarget=`readlink -f "$rapTarget"`
 fi
 
 # Create base working directory
-if [ ! -d $workDir ]; then
-  mkdir $workDir
+if [ ! -d "$workDir" ]; then
+  mkdir "$workDir"
+fi
+
+# Create output directory
+if [ ! -d "$outputDir" ]; then
+  mkdir "$outputDir"
 fi
 
 # Show informations
@@ -81,12 +86,13 @@ echo ""
 # Checkout releng project
 echo "Checking out Builder from CVS <$cvsTag>..."
 bufferedDir=`pwd`
-cd $workDir
+cd "$workDir"
 
 cvs -Q -f -d:pserver:anonymous@dev.eclipse.org:/cvsroot/rt checkout -d ./builder -r $cvsTag $builderCvsPath
 
-builderDir=$workDir/builder/
-cd $bufferedDir
+builderDir="$workDir"/builder/
+
+cd "$bufferedDir"
 
 # search pde build
 pdeBuild=`ls -1 $runtimeDir/plugins | grep pde.build_ | tail -n 1`
@@ -96,8 +102,9 @@ echo "Using the following PDE Build: $pdeBuild"
 launcher=$runtimeDir/plugins/`ls -1 $runtimeDir/plugins | grep launcher_ | tail -n 1`
 echo "Using the following Equinox launcher: $launcher"
 
-if [ -n "$rapTarget" ]; then
-  rapTargetArg="-DrapTarget=$rapTarget"
+if [ -z "$rapTarget" ]; then
+#  rapTargetArg="\"-DrapTarget=$rapTarget\""
+  rapTarget=none
 fi
 
 java -cp $launcher org.eclipse.core.launcher.Main \
@@ -111,10 +118,14 @@ java -cp $launcher org.eclipse.core.launcher.Main \
   -DmapsCheckoutTag=$cvsTag \
   -DfetchTag=$cvsTag \
   -DbaseLocation="$basePlatformDir" \
-  $rapTargetArg
+  -DrapTarget="$rapTarget" \
+  -Dfile.encoding=ISO-8859-1
   
 if test $? = 0
 then
-    echo "Cleaning up workspace"
-    rm -rf $workDir/builder
+  echo "Cleaning up workspace"
+  rm -rf "$workDir"/builder
+else
+  exit $?
 fi
+
