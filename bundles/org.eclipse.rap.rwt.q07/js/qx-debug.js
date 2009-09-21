@@ -7833,7 +7833,10 @@ apply:"_applyCaptureWidget"},
 focusRoot:{check:"qx.ui.core.Parent",
 nullable:true,
 apply:"_applyFocusRoot"}},
-members:{_lastMouseEventType:null,
+members:{_allowContextMenu:qx.lang.Function.returnFalse,
+setAllowContextMenu:function(fun){this._allowContextMenu=fun;
+},
+_lastMouseEventType:null,
 _lastMouseDown:false,
 _lastMouseEventDate:0,
 _applyCaptureWidget:function(value,
@@ -8003,7 +8006,8 @@ if(qx.core.Variant.isSet("qx.client",
 "gecko")){vFixClick=this._onmouseevent_click_fix(vDomTarget,
 vType,
 vDispatchTarget);
-}if(vType=="contextmenu"&&!this.getAllowClientContextMenu()){qx.event.handler.EventHandler.stopDomEvent(vDomEvent);
+}if(vType=="contextmenu"&&!this._allowContextMenu(vOriginalTarget,
+vDomTarget)){qx.event.handler.EventHandler.stopDomEvent(vDomEvent);
 }if(vTargetIsEnabled&&vType=="mousedown"){qx.event.handler.FocusHandler.mouseFocus=true;
 var vRoot=vTarget.getFocusRoot();
 if(vRoot){this.setFocusRoot(vRoot);

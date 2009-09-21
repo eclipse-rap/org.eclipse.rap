@@ -67,7 +67,28 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
         contextMenu.setOpener( this );
         contextMenu.show();
       }
-    }    
+    },
+    
+    getAllowContextMenu : function( target, domTarget ) {
+      var result = false;
+      switch( target.classname ) {
+        case "qx.ui.form.TextField":
+        case "qx.ui.form.TextArea":
+        case "qx.ui.form.PasswordField":
+          // NOTE: "enabled" can be "inherit", so it is not always a boolean
+          if( target.getEnabled() != false && !target.getReadOnly() ) {
+            var tagName =   typeof domTarget.tagName == "string" 
+                          ? domTarget.tagName 
+                          : "";
+            if( tagName.toUpperCase() != "DIV" ) {
+              result = target.getContextMenu() == null;
+            }
+          }
+        break;
+      }
+      return result;
+    }
+    
   },
   
   properties :  {
