@@ -19,6 +19,11 @@ are appended to the initial definition.
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="perspectiveExtension" minOccurs="0" maxOccurs="unbounded"/>
@@ -165,7 +170,7 @@ are appended to the initial definition.
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="relative" type="string">
+         <attribute name="relative">
             <annotation>
                <documentation>
                   the unique identifier of a view which already exists in the perspective.  This will be used as a reference point for placement of the view.  The relationship between these two views is defined by &lt;samp&gt;relationship&lt;/samp&gt;.  Ignored if relationship is &quot;fast&quot;.
@@ -174,6 +179,12 @@ are appended to the initial definition.
                   <meta.attribute kind="identifier" basedOn="org.eclipse.ui.views/view/@id"/>
                </appinfo>
             </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="org.eclipse.ui.editorss">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
          <attribute name="relationship" use="required">
             <annotation>
@@ -307,7 +318,6 @@ added beside the Resource Navigator.
          The items defined within the perspective extension are contributed to the initial contents of the target perspective.  Following this, the user may remove any contribution or add others to a perspective from within the workbench user interface.
       </documentation>
    </annotation>
-
 
 
 
