@@ -1430,6 +1430,23 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return monitor;
   }
+  
+  /**
+   * Forces all outstanding paint requests for the display
+   * to be processed before this method returns.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @see Control#update()
+   * 
+   * @since 1.3
+   */
+  public void update() {
+    checkDevice();
+  }
 
   //////////////////
   // Helping methods

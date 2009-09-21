@@ -840,8 +840,7 @@ public abstract class Window implements IShellProvider {
 				exceptionHandler.handleException(e);
 			}
 		}
-		// RAP [bm]: Display#update
-//		display.update();
+		display.update();
 	}
 
 	/**

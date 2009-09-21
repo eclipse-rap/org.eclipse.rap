@@ -237,11 +237,9 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 				fSubTask = name;
 			}
 			subTaskLabel.setText(shortenText(fSubTask, subTaskLabel));
-			// RAP [bm]:
-//			if (!forked) {
-//				subTaskLabel.update();
-//			}
-			// RAPEND: [bm]
+			if (!forked) {
+				subTaskLabel.update();
+			}
 
 		}
 
@@ -651,12 +649,10 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Update the message label. Required if the monitor is forked.
 	 */
 	private void update() {
-		// RAP [bm]:
-//		if (messageLabel == null || messageLabel.isDisposed()) {
-//			return;
-//		}
-//		messageLabel.update();
-		// RAPEND: [bm]
+		if (messageLabel == null || messageLabel.isDisposed()) {
+			return;
+		}
+		messageLabel.update();
 	}
 
 	/*

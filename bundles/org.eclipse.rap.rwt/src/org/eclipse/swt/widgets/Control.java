@@ -1773,6 +1773,27 @@ public abstract class Control extends Widget {
     checkWidget();
     setRedraw( true );
   }
+  
+  /**
+   * Forces all outstanding paint requests for the widget
+   * to be processed before this method returns. If there
+   * are no outstanding paint request, this method does
+   * nothing.
+   * <p>
+   * Note: This method does not cause a redraw.
+   * </p>
+   *
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void update() {
+    checkWidget();
+  }
 
   ////////////
   // Disposal

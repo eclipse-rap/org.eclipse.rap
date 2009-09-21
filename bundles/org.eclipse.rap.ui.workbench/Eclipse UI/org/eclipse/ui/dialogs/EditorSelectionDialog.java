@@ -225,8 +225,7 @@ public final class EditorSelectionDialog extends Dialog {
 
 	protected void fillEditorTable() {
 		editorTable.removeAll();
-// RAP [rh] Control#update() missing
-//		editorTable.update();
+		editorTable.update();
 		editorTable.redraw();
 		IEditorDescriptor[] editors;
 		Image[] images;

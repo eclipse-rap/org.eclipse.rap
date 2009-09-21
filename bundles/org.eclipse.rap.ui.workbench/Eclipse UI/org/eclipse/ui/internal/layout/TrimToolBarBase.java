@@ -275,8 +275,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 		ci.setPreferredSize (ps);
 		ci.setSize(ps);
 		cb.pack();
-		// RAP [bm]: Control#update
-//		cb.update();
+		cb.update();
 		LayoutUtil.resize(getControl());
 	}
 

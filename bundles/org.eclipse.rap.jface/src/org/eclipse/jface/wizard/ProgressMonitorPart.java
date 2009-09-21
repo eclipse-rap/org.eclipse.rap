@@ -267,8 +267,7 @@ public class ProgressMonitorPart extends Composite implements
 		}
 
         //Force an update as we are in the UI Thread
-        System.err.println("update - needed?"); //$NON-NLS-1$
-//        fLabel.update();
+        fLabel.update();
     }
 
     /**
