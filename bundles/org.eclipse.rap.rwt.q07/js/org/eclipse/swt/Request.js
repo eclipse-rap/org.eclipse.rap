@@ -296,7 +296,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var errorOccured = false;
         try {
           if( text && text.length > 0 ) {
+            org.eclipse.swt.EventUtil.suspendEventHandling();
             window.eval( text );
+            qx.ui.core.Widget.flushGlobalQueues();
+            org.eclipse.swt.EventUtil.resumeEventHandling();
           }
           this._runningRequestCount--;
           this._hideWaitHint();

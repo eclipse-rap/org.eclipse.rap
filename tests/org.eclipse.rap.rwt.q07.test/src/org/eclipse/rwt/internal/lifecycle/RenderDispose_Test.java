@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
@@ -61,15 +60,10 @@ public class RenderDispose_Test extends TestCase {
     } );
     RWTFixture.executeLifeCycleFromServerThread( );
     String expectedStart
-      =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
-        + "var req = org.eclipse.swt.Request.getInstance();"
+      =   "var req = org.eclipse.swt.Request.getInstance();"
         + "req.setRequestCounter(";
-    String expectedEnd
-      =   ");qx.ui.core.Widget.flushGlobalQueues();"
-        + "org.eclipse.swt.EventUtil.resumeEventHandling();";
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.startsWith( expectedStart ) );
-    assertTrue( allMarkup.endsWith( expectedEnd ) );
   }
 
   protected void setUp() throws Exception {
