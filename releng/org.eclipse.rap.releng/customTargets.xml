@@ -139,7 +139,7 @@
     </copy>
 
     <!-- jar org.junit -->
-    <dirset dir="." id="junit.dirs">
+    <dirset dir="${targetLocation}/eclipse/plugins" id="junit.dirs">
       <include name="org.junit_3*"/>
     </dirset>
     <pathconvert property="junit.dir" refid="junit.dirs"/>
