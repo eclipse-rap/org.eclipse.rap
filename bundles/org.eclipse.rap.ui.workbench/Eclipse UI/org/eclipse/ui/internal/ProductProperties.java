@@ -38,7 +38,7 @@ public class ProductProperties extends BrandingProperties implements
 
     private final IProduct product;
 
-    // RAP [bm]: 
+    // RAP [bm]: Display#setAppName
 //    private String appName;
 
     private String aboutText;
@@ -129,7 +129,7 @@ public class ProductProperties extends BrandingProperties implements
         this.product = product;
     }
 
-    // RAP [bm]: 
+    // RAP [bm]: Display#setAppName
 //    /**
 //     * The application name, used to initialize the SWT Display.  This
 //     * value is distinct from the string displayed in the application

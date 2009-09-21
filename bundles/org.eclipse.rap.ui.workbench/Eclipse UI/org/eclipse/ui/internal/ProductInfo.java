@@ -49,7 +49,7 @@ public class ProductInfo {
         return productName;
     }
 
-    // RAP [bm]: 
+    // RAP [bm]: Display#setAppName
 //    /**
 //     * Returns the application name or <code>null</code>. Note this is never
 //     * shown to the user.  It is used to initialize the SWT Display.
