@@ -68,7 +68,7 @@
 
   <target name="assembleTarget">
     <property name="targetLocation" value="${buildDirectory}/${buildLabel}/target" />
-    <property name="rap-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap-${buildId}.zip" />
+    <property name="rap-feature" value="${buildDirectory}/${buildLabel}/org.eclipse.rap.runtime.sdk-${buildId}.zip" />
 
     <unzip src="${rap-feature}" dest="${targetLocation}" />
 
