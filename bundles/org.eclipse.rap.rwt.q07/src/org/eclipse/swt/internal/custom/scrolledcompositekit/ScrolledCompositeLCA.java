@@ -176,7 +176,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   private static Integer getBarSelection( final ScrollBar scrollBar ) {
     Integer result;
-    if( scrollBar != null && scrollBar.getVisible() ) {
+    if( scrollBar != null ) {
       result = new Integer( scrollBar.getSelection() );
     } else {
       result = null;
