@@ -93,9 +93,9 @@ public class ProductInfo {
      *         <code>null</code> if none
      */
     public ImageDescriptor[] getWindowImages() {
-        if (windowImages == null && product != null) {
-			windowImages = ProductProperties.getWindowImages(product);
-		}
+//        if (windowImages == null && product != null) {
+//			windowImages = ProductProperties.getWindowImages(product);
+//		}
         return windowImages;
     }
 

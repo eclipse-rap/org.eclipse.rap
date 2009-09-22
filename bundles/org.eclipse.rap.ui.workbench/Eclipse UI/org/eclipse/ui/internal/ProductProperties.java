@@ -56,7 +56,7 @@ public class ProductProperties extends BrandingProperties implements
     private static final String ABOUT_MAPPINGS = "$nl$/about.mappings"; //$NON-NLS-1$
 
     private static String[] systemPropertiesKeys = new String[0];
-    private static String[] mappings = loadMappings();
+//    private static String[] mappings = loadMappings();
 
     private static String[] loadMappings() {
         IProduct product = Platform.getProduct();
@@ -263,6 +263,7 @@ public class ProductProperties extends BrandingProperties implements
      * </p>
      */
     public static String getAboutText(IProduct product) {
+    	String[] mappings = loadMappings();
         String property = product.getProperty(ABOUT_TEXT);
         if (property == null) {
 			return ""; //$NON-NLS-1$
@@ -270,7 +271,7 @@ public class ProductProperties extends BrandingProperties implements
         if (property.indexOf('{') == -1) {
 			return property;
 		}
-        property = MessageFormat.format(property, mappings);
+		property = MessageFormat.format(property, mappings);
         
         /*
          * If there is still a "{" character, check if there are

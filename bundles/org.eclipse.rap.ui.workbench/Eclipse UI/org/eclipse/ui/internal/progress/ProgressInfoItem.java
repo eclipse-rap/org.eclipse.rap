@@ -40,6 +40,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -160,9 +161,11 @@ class ProgressInfoItem extends Composite {
 		// Mac has different Gamma value
 		int shift = "carbon".equals(SWT.getPlatform()) ? -25 : -10;//$NON-NLS-1$
 
-		Color lightColor = PlatformUI.getWorkbench().getDisplay()
-				.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-
+		// RAP [bm] we don't have an old workbench instance with e4 but need jobs
+//		Color lightColor = PlatformUI.getWorkbench().getDisplay()
+//				.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+		Color lightColor = Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+		
 		// Determine a dark color by shifting the list color
 		RGB darkRGB = new RGB(Math.max(0, lightColor.getRed() + shift), Math.max(0,
 						lightColor.getGreen() + shift), Math.max(0, lightColor
