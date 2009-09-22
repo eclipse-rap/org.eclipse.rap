@@ -61,9 +61,8 @@ public class ToggleEditorsVisibilityAction extends PerspectiveAction implements
         setActionDefinitionId("org.eclipse.ui.window.hideShowEditors"); //$NON-NLS-1$
         // @issue missing action id
         setToolTipText(WorkbenchMessages.get().ToggleEditor_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem() missing        
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//                IWorkbenchHelpContextIds.TOGGLE_EDITORS_VISIBILITY_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+                IWorkbenchHelpContextIds.TOGGLE_EDITORS_VISIBILITY_ACTION);
         window.addPerspectiveListener(this);
     }
 

@@ -48,6 +48,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
@@ -128,7 +129,8 @@ public class ProgressManager extends ProgressProvider implements
 
 	final Object listenersKey = new Object();
 
-	IJobChangeListener changeListener;
+	// RAP [bm]: made public to access in org.eclipse.rap.ui.*
+	public IJobChangeListener changeListener;
 
 	static final String PROGRESS_VIEW_NAME = "org.eclipse.ui.views.ProgressView"; //$NON-NLS-1$
 
@@ -390,7 +392,8 @@ public class ProgressManager extends ProgressProvider implements
 	/**
 	 * Create a new instance of the receiver.
 	 */
-	ProgressManager() {
+	// RAP [bm]: made public to access in org.eclipse.rap.ui.*
+	public ProgressManager() {
 // RAP [fappel]:	  
 //		Job.getJobManager().setProgressProvider(this);
 //		Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
@@ -452,13 +455,10 @@ public class ProgressManager extends ProgressProvider implements
 			 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 			 */
 			public void done(IJobChangeEvent event) {
-// RAP [fappel]: use session aware approach
+// RAP [rh] run regardless of a running workbench (see bug 283595)
 //				if (!PlatformUI.isWorkbenchRunning()) {
 //					return;
 //				}
-			    if (!ProgressUtil.isWorkbenchRunning(display)) {
-                  return;
-                }
 				Iterator startListeners = busyListenersForJob(event.getJob())
 						.iterator();
 				while (startListeners.hasNext()) {

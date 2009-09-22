@@ -44,6 +44,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.rap.ui.internal.SessionSingletonEventManager;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
@@ -62,7 +63,6 @@ import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.editorsupport.ComponentSupport;
-import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.internal.util.Util;
 
 import com.ibm.icu.text.Collator;

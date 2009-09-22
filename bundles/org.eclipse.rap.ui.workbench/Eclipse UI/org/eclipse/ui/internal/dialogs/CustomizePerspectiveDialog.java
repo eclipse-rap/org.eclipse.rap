@@ -86,7 +86,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.internal.ActionSetActionBars;
 import org.eclipse.ui.internal.ActionSetContributionItem;
 import org.eclipse.ui.internal.ActionSetMenuManager;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.Perspective;
 import org.eclipse.ui.internal.PluginActionContributionItem;
 import org.eclipse.ui.internal.PluginActionCoolBarContributionItem;
@@ -1032,9 +1032,8 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         
         title = NLS.bind(WorkbenchMessages.get().ActionSetSelection_customize,title);
         shell.setText(title);
-// RAP [rh] IWorkbench#getHelpSystem not implemented        
-//        window.getWorkbench().getHelpSystem().setHelp(shell,
-//				IWorkbenchHelpContextIds.ACTION_SET_SELECTION_DIALOG);
+        window.getWorkbench().getHelpSystem().setHelp(shell,
+				IWorkbenchHelpContextIds.ACTION_SET_SELECTION_DIALOG);
     }
 
     boolean containsActionSet(MenuManager mgr, String actionSetId) {
@@ -1174,7 +1173,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         sashComposite.setWeights(new int[] { 30, 70 });
 
         // Use F2... label
-        // RAP [bm]: 
+        // RAP [bm]: text reads "Use F2 to display the description for a selected command item."
 //        label = new Label(actionSetsComposite, SWT.WRAP);
 //        label.setText(WorkbenchMessages.get().ActionSetSelection_selectActionSetsHelp);
 //        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));

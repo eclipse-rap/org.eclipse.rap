@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rap.ui.internal.progress.JobCanceler;
+import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;

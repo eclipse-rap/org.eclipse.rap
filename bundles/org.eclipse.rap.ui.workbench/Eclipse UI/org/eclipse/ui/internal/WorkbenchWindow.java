@@ -909,10 +909,9 @@ public class WorkbenchWindow extends ApplicationWindow implements
             shell.setText(TextProcessor.process(title, TEXT_DELIMITERS)); 
         }
 
-// RAP [rh] IWorkbench#getHelpSystem() not implemented 
-//      final IWorkbench workbench = getWorkbench();
-//      workbench.getHelpSystem().setHelp(shell,
-//              IWorkbenchHelpContextIds.WORKBENCH_WINDOW);
+      final IWorkbench workbench = getWorkbench();
+      workbench.getHelpSystem().setHelp(shell,
+              IWorkbenchHelpContextIds.WORKBENCH_WINDOW);
 
 //      initializeDefaultServices();
         final IContextService contextService = (IContextService) getWorkbench().getService(IContextService.class);

@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.ui.internal.util;
+package org.eclipse.rap.ui.internal;
 
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.rwt.SessionSingletonBase;

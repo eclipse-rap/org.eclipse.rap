@@ -40,9 +40,8 @@ public class ResetPerspectiveAction extends PerspectiveAction {
         setActionDefinitionId("org.eclipse.ui.window.resetPerspective"); //$NON-NLS-1$
         // @issue missing action id
         setToolTipText(WorkbenchMessages.get().ResetPerspective_toolTip);
-// RAP [rh] WorkbenchHelpSystem: help support left aside for now
-//        window.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
+        window.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
     }
 
     /* (non-Javadoc)

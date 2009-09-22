@@ -13,8 +13,8 @@ package org.eclipse.ui.progress;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.internal.progress.ProgressUtil;
 
 /**
  * WorkbenchJob is a type of job that implements a done listener

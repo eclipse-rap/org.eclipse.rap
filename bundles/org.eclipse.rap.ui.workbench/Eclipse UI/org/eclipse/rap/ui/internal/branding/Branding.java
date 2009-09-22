@@ -14,14 +14,18 @@ package org.eclipse.rap.ui.internal.branding;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.osgi.framework.Bundle;
 
 public final class Branding extends AbstractBranding {
@@ -174,7 +178,7 @@ public final class Branding extends AbstractBranding {
       InputStream stream = FileLocator.openStream( bundle, file, false );
       if( stream != null ) {
         try {
-          ResourceManager.getInstance().register( favIcon, stream );
+          RWT.getResourceManager().register( favIcon, stream );
         } finally {
           stream.close();
         }

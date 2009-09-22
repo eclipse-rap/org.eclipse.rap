@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 
 /**
  * The ProgressAnimationProcessor is the processor for the animation using the

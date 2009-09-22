@@ -48,7 +48,7 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.internal.AggregateWorkingSet;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.util.Util;
@@ -141,9 +141,8 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-// RAP [rh] IWorkbench#getHelpSystem not implemented        
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-//				IWorkbenchHelpContextIds.WORKING_SET_SELECTION_DIALOG);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+				IWorkbenchHelpContextIds.WORKING_SET_SELECTION_DIALOG);
     }
 
     /**

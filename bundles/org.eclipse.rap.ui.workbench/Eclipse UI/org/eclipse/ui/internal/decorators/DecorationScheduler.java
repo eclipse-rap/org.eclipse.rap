@@ -333,7 +333,6 @@ public class DecorationScheduler {
         }
 
         while (updatesPending()) {
-
           try {
             Thread.sleep(100);
           } catch (InterruptedException e) {
@@ -478,6 +477,10 @@ public class DecorationScheduler {
 	 * @return <code>true</code> if there are updates waiting to be served
 	 */
 	protected boolean updatesPending() {
+	  // RAP [rh] stop updating when session is invalidated (see bug 280363) 
+	  if( shutdown )
+	    return false;
+	  // RAP END
 		if (updateJob != null && updateJob.getState() != Job.NONE) {
 			return true;
 		}
@@ -550,7 +553,6 @@ public class DecorationScheduler {
 			ILabelProviderListener[] listeners;
 
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-
 				synchronized (DecorationScheduler.this) {
 					if (shutdown) {
 						return Status.CANCEL_STATUS;

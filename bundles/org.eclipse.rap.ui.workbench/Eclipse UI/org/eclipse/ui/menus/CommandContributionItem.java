@@ -38,12 +38,14 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementReference;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.services.IServiceLocator;
 
@@ -127,11 +129,9 @@ public final class CommandContributionItem extends ContributionItem {
 
 	private String dropDownMenuOverride;
 
-	// RAP [bm]: Helpsystem
-//	private IWorkbenchHelpSystem workbenchHelpSystem;
+	private IWorkbenchHelpSystem workbenchHelpSystem;
 
-//	private String helpContextId;
-	// RAPEND: [bm] 
+	private String helpContextId;
 
 	private int mode = 0;
 
@@ -160,8 +160,7 @@ public final class CommandContributionItem extends ContributionItem {
 		this.mnemonic = contributionParameters.mnemonic;
 		this.tooltip = contributionParameters.tooltip;
 		this.style = contributionParameters.style;
-		// RAP [bm]: 
-//		this.helpContextId = contributionParameters.helpContextId;
+		this.helpContextId = contributionParameters.helpContextId;
 		this.visibleEnabled = contributionParameters.visibleEnabled;
 		this.mode = contributionParameters.mode;
 
@@ -216,21 +215,19 @@ public final class CommandContributionItem extends ContributionItem {
 				setImages(contributionParameters.serviceLocator,
 						contributionParameters.iconStyle);
 
-				// RAP [bm]: HelpSystem
-//				if (contributionParameters.helpContextId == null) {
-//					try {
-//						this.helpContextId = commandService
-//						.getHelpContextId(contributionParameters.commandId);
-//					} catch (NotDefinedException e) {
-//						// it's OK to not have a helpContextId
-//					}
-//				}
-//				IWorkbench workbench = (IWorkbench) contributionParameters.serviceLocator
-//						.getService(IWorkbench.class);
-//				if (workbench != null && helpContextId != null) {
-//					this.workbenchHelpSystem = workbench.getHelpSystem();
-//				}
-				// RAPEND: [bm] 
+				if (contributionParameters.helpContextId == null) {
+					try {
+						this.helpContextId = commandService
+						.getHelpContextId(contributionParameters.commandId);
+					} catch (NotDefinedException e) {
+						// it's OK to not have a helpContextId
+					}
+				}
+				IWorkbench workbench = (IWorkbench) contributionParameters.serviceLocator
+						.getService(IWorkbench.class);
+				if (workbench != null && helpContextId != null) {
+					this.workbenchHelpSystem = workbench.getHelpSystem();
+				}
 			} catch (NotDefinedException e) {
 				WorkbenchPlugin
 						.log("Unable to register menu item \"" + getId() //$NON-NLS-1$
@@ -388,11 +385,9 @@ public final class CommandContributionItem extends ContributionItem {
 			item = new MenuItem(parent, tmpStyle);
 		}
 		item.setData(this);
-		// RAP [bm]: HelpSystem
-//		if (workbenchHelpSystem != null) {
-//			workbenchHelpSystem.setHelp(item, helpContextId);
-//		}
-		// RAPEND: [bm] 
+		if (workbenchHelpSystem != null) {
+			workbenchHelpSystem.setHelp(item, helpContextId);
+		}
 
 		item.addListener(SWT.Dispose, getItemListener());
 		item.addListener(SWT.Selection, getItemListener());
@@ -656,11 +651,9 @@ public final class CommandContributionItem extends ContributionItem {
 
 					final MenuManager menuManager = new MenuManager();
 					Menu menu = menuManager.createContextMenu(ti.getParent());
-					// RAP [bm]: HelpSystem
-//					if (workbenchHelpSystem != null) {
-//						workbenchHelpSystem.setHelp(menu, helpContextId);
-//					}
-					// RAPEND: [bm] 
+					if (workbenchHelpSystem != null) {
+						workbenchHelpSystem.setHelp(menu, helpContextId);
+					}
 
 					menuManager.addMenuListener(new IMenuListener() {
 						public void menuAboutToShow(IMenuManager manager) {

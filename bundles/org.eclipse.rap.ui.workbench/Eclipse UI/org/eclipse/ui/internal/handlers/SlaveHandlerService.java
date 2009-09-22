@@ -264,11 +264,10 @@ public class SlaveHandlerService implements IHandlerService {
 		parent.removeSourceProvider(provider);
 	}
 
-	// RAP [bm]: Help
-//	public final void setHelpContextId(final IHandler handler,
-//			final String helpContextId) {
-//		parent.setHelpContextId(handler, helpContextId);
-//	}
+	public final void setHelpContextId(final IHandler handler,
+			final String helpContextId) {
+		parent.setHelpContextId(handler, helpContextId);
+	}
 
 	Expression getDefaultExpression() {
 		return defaultExpression;

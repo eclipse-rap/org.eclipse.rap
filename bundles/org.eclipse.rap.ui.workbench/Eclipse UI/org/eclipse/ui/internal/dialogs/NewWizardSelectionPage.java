@@ -16,7 +16,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.activities.ws.WorkbenchTriggerPoints;
 import org.eclipse.ui.wizards.IWizardCategory;
@@ -86,9 +86,8 @@ class NewWizardSelectionPage extends WorkbenchWizardSelectionPage {
         newResourcePage.setDialogSettings(settings);
 
         Control control = newResourcePage.createControl(parent);
-// RAP [rh] IWorkbench#getHelpSystem not implemented        
-//        getWorkbench().getHelpSystem().setHelp(control,
-//				IWorkbenchHelpContextIds.NEW_WIZARD_SELECTION_WIZARD_PAGE);
+        getWorkbench().getHelpSystem().setHelp(control,
+				IWorkbenchHelpContextIds.NEW_WIZARD_SELECTION_WIZARD_PAGE);
         setControl(control);
     }
 

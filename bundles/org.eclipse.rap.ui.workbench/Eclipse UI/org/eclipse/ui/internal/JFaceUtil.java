@@ -24,6 +24,9 @@ import org.eclipse.jface.util.ILogger;
 import org.eclipse.jface.util.ISafeRunnableRunner;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 
@@ -83,10 +86,11 @@ final class JFaceUtil {
 	 * as soon as the workbench preference store becomes available.
 	 */
 	public static void initializeJFacePreferences() {
-		IEclipsePreferences rootNode = (IEclipsePreferences) Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE);
+		final IEclipsePreferences rootNode = (IEclipsePreferences) Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE);
 		final String workbenchName = WorkbenchPlugin.getDefault().getBundle().getSymbolicName();
 		
-		rootNode.addNodeChangeListener(new IEclipsePreferences.INodeChangeListener() {
+		final IEclipsePreferences.INodeChangeListener listener = new IEclipsePreferences.INodeChangeListener() {
+		  
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -108,7 +112,14 @@ final class JFaceUtil {
 				// Nothing to do here
 
 			}
-		});
+		};
+    rootNode.addNodeChangeListener(listener);
+// RAP [rh] remove listener from application-scoped root preference node (see bug 285980)    
+    RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( final SessionStoreEvent event ) {
+        rootNode.removeNodeChangeListener( listener );
+      }
+    } );
 		
 		JFacePreferences.setPreferenceStore(WorkbenchPlugin.getDefault().getPreferenceStore());
 	}

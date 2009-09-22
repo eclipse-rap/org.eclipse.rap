@@ -542,12 +542,10 @@ public final class LegacyActionPersistence extends RegistryPersistence {
 				enabledWhenExpression, viewId);
 
 		// Read the help context id.
-		// RAP [bm]: Help
-//		final String helpContextId = readOptional(element, ATT_HELP_CONTEXT_ID);
-//		if (helpContextId != null) {
-//			commandService.setHelpContextId(handler, helpContextId);
-//		}
-		// RAPEND: [bm] 
+		final String helpContextId = readOptional(element, ATT_HELP_CONTEXT_ID);
+		if (helpContextId != null) {
+			commandService.setHelpContextId(handler, helpContextId);
+		}
 
 		// Activate the handler.
 		final String commandId = command.getId();

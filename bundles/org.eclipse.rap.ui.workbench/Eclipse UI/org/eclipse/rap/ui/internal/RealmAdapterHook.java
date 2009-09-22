@@ -7,7 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ui.internal;
+package org.eclipse.rap.ui.internal;
 
 import java.lang.reflect.Constructor;
 

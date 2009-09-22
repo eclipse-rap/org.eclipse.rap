@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.ui.internal.progress;
+package org.eclipse.rap.ui.internal.progress;
 
 // RAP [fappel]: This is a helper class used to avoid a memory leak due to 
 //               thread management.

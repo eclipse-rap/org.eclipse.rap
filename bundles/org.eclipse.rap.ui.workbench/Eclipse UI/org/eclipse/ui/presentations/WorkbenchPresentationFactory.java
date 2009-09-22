@@ -12,10 +12,9 @@
 package org.eclipse.ui.presentations;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
@@ -88,14 +87,11 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
         if( !Workbench.getInstance().isClosing() ) {
           final DefaultMultiTabListener defaultMultiTabListener = new DefaultMultiTabListener(workbenchPreferences,
   				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, folder);
-  
-          RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
-  
-            public void beforeDestroy(SessionStoreEvent event) {
-                defaultMultiTabListener.attach(null, IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, true);
+          result.getControl().addDisposeListener( new DisposeListener() {
+            public void widgetDisposed( DisposeEvent event ) {
+              defaultMultiTabListener.attach(null, IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, true);
             }
-  			
-          });
+          } );
         }
 		// RAPEND: [bm] 
 		

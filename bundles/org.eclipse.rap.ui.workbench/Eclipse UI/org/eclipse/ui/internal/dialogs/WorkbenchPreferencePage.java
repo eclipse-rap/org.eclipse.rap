@@ -28,7 +28,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.util.PrefUtil;
@@ -68,9 +70,8 @@ public class WorkbenchPreferencePage extends PreferencePage implements
 
         // @issue if the product subclasses this page, then it should provide
         // the help content
-// RAP [rh] IWorkbench#getHelpSystem not implemented      
-//    	PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-//				IWorkbenchHelpContextIds.WORKBENCH_PREFERENCE_PAGE);
+    	PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+				IWorkbenchHelpContextIds.WORKBENCH_PREFERENCE_PAGE);
 
         Composite composite = createComposite(parent);
 

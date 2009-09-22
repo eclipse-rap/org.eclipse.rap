@@ -15,7 +15,9 @@ package org.eclipse.ui.internal.preferences;
  * from base 64 encoded Strings.
  *
  */
-class Base64 {
+// RAP [bm]: made public to allow access from org.eclipse.rap.ui
+//class Base64 {
+public class Base64 {
 
 	private static final byte equalSign = (byte) '=';
 

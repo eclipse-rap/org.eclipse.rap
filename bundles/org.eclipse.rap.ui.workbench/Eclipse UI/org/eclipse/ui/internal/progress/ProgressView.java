@@ -10,13 +10,24 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.preferences.ViewPreferencesAction;
@@ -48,9 +59,8 @@ public class ProgressView extends ViewPart implements IViewPart {
 //		viewer.getControl().setLayoutData(
 //				new GridData(SWT.FILL, SWT.FILL, true, true));
 
-// RAP [fappel]: help system not supported
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-//				IWorkbenchHelpContextIds.RESPONSIVE_UI);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 		
 		initContentProvider();
 		createClearAllAction();

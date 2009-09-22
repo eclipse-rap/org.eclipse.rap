@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 
 /**
@@ -104,10 +104,9 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 				dialog.setSelectedNode(preferencePageId);
 			}
 			dialog.create();
-// RAP [rh] IWorkbench#getHelpSystem not implemented			
-//			PlatformUI.getWorkbench().getHelpSystem().setHelp(
-//					dialog.getShell(),
-//					IWorkbenchHelpContextIds.PREFERENCE_DIALOG);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(
+					dialog.getShell(),
+					IWorkbenchHelpContextIds.PREFERENCE_DIALOG);
 
 		} else {
 			/*

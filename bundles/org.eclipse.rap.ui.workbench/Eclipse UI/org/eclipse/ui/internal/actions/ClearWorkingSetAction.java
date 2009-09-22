@@ -13,7 +13,9 @@ package org.eclipse.ui.internal.actions;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 
 /**
@@ -32,10 +34,8 @@ public class ClearWorkingSetAction extends Action {
         Assert.isNotNull(actionGroup);
         setToolTipText(WorkbenchMessages.get().ClearWorkingSetAction_toolTip);
         setEnabled(actionGroup.getWorkingSet() != null);
-        // RAP [bm]: HelpSystem
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-//				IWorkbenchHelpContextIds.CLEAR_WORKING_SET_ACTION);
-        // RAPEND: [bm] 
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+				IWorkbenchHelpContextIds.CLEAR_WORKING_SET_ACTION);
         this.actionGroup = actionGroup;
     }
 

@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletException;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
@@ -26,7 +24,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class HttpServiceTracker extends ServiceTracker {
@@ -35,7 +32,6 @@ public class HttpServiceTracker extends ServiceTracker {
 
   private HttpService httpService;
   private final List servletAliases = new ArrayList();
-  private HttpContext rapContext;
 
   public HttpServiceTracker( final BundleContext context ) {
     super( context, HttpService.class.getName(), null );
@@ -49,13 +45,7 @@ public class HttpServiceTracker extends ServiceTracker {
     	// register default servlet
       servletAliases.add( DEFAULT_SERVLET );
     }
-    registerServlets(rapContext);
-    return httpService;
-  }
-
-private void registerServlets(HttpContext rapContext) {
-	this.rapContext = rapContext;
-	for( Iterator it = servletAliases.iterator(); it.hasNext(); ) {
+    for( Iterator it = servletAliases.iterator(); it.hasNext(); ) {
       String name = ( String )it.next();
       try {
         RequestHandler handler = new RequestHandler();
@@ -72,7 +62,8 @@ private void registerServlets(HttpContext rapContext) {
         WorkbenchPlugin.getDefault().getLog().log( status );
       }
     }
-}
+    return httpService;
+  }
 
   private HttpContext getRAPHttpContext( final ServiceReference reference ) {
     String name = HttpContextExtensionService.class.getName();
@@ -94,17 +85,5 @@ private void registerServlets(HttpContext rapContext) {
 
   public void addServletAlias(final String name) {
     servletAliases.add( name );
-    // TODO [bm] quick hack to get add new servlets when we are already started
-    if(httpService != null) {
-    	RequestHandler handler = new RequestHandler();
-    	try {
-    		httpService.registerServlet( "/" + name, handler, null, rapContext );
-    	} catch (ServletException e) {
-    		e.printStackTrace();
-    	} catch (NamespaceException e) {
-    		e.printStackTrace();
-    	}
-    	
-    }
   }
 }

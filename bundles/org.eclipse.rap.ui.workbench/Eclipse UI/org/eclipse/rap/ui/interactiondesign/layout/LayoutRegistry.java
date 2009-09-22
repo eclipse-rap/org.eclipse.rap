@@ -51,6 +51,7 @@ public class LayoutRegistry {
   
   private static Map layoutMap;
   private static Map layoutSetToPluginId; 
+  private static List overridenLayoutSets;
   
   static {
     init();
@@ -89,7 +90,7 @@ public class LayoutRegistry {
   
   /**
    * Sets the active <code>Layout</code> to the one, which belongs to the 
-   * id in the paramter and save the new id if necessary.
+   * id in the parameter and save the new id if necessary.
    * 
    * @param id the new <code>Layout</code> id.
    * @param save if <code>true</code> then the new <code>Layout</code> will be
@@ -121,34 +122,17 @@ public class LayoutRegistry {
   }
   
   /**
-   * Returns the active <code>Layout</code>. If the active <code>Layout</code>
-   * is not the default <code>Layout</code> then a hybrid <code>Layout</code>
-   * is created. This contains the default <code>Layout</code> and the active
-   * <code>Layout</code>. 
-   * <p>
-   * This is necessary because a active layout can override
-   * single <code>LayoutSet</code>s of a <code>Layout</code> but their can also
-   * be <code>LayoutSet</code>s, which the active <code>Layout</code> doesn't 
-   * override.
-   * </p>
+   * Returns the active <code>Layout</code>. 
    *  
-   * @return the active layout containing default <code>LayoutSet</code>s if the
-   * active <code>Layout</code> doesn't override all default <code>LayoutSet
-   * </code>s.
-   * 
-   * @see LayoutSet
+   * @return the active layout 
    * @see Layout
    */
   public Layout getActiveLayout() {
     Layout result = activeLayout;
-    if( activeLayoutId.equals( DEFAULT_LAYOUT_ID ) ) {
-      if( result == null ) {
-        result =  ( Layout ) layoutMap.get( activeLayoutId );
-        activeLayout = result;
-      }      
-    } else {
-      result = createHybridLayout();
-    }    
+    if( result == null ) {
+      result =  ( Layout ) layoutMap.get( activeLayoutId );
+      activeLayout = result;
+    }         
     return result;
   }
 
@@ -208,15 +192,14 @@ public class LayoutRegistry {
 
   /**
    * Initialize the <code>{@link LayoutSet}</code> contributed to the
-   * <code>org.eclipse.rap.ui.layouts</code> extension point. 
-   * Additional it sets the active <code>Layout</code> to 
-   * <code>{#DEFAULT_LAYOUT_ID}</code>.
+   * <code>org.eclipse.rap.ui.layouts</code> extension point.
    */
   private static void init() {
     layoutSetToPluginId = new HashMap();
     layoutMap = new HashMap();
+    overridenLayoutSets = new ArrayList();
     IConfigurationElement[] elements = getLayoutExtensions();
-    for( int i = elements.length - 1; i >= 0; i-- ) {
+    for( int i = 0; i < elements.length; i++ ) {
       String id = elements[ i ].getAttribute( "id" );
       
       Layout layout = ( Layout ) layoutMap.get( id );
@@ -240,8 +223,9 @@ public class LayoutRegistry {
     return result;
   }
 
-  private static void createLayoutSets( final IConfigurationElement[] layoutSets, 
-                                        final Layout layout ) 
+  private static void createLayoutSets( 
+    final IConfigurationElement[] layoutSets, 
+    final Layout layout ) 
   {
     if( layoutSets != null && layoutSets.length > 0 ) {
       for( int i = 0; i < layoutSets.length; i++ ) {
@@ -249,55 +233,48 @@ public class LayoutRegistry {
 
         String pluginId = layoutSetElement.getContributor().getName();
         String layoutSetId = layoutSetElement.getAttribute( "id" );
-
-        layout.clearLayoutSet( layoutSetId );
-        LayoutSet layoutSet = layout.getLayoutSet( layoutSetId );
-        layoutSetToPluginId.put( layoutSetId, pluginId );
-
-        try {
-          Object initializer 
-            = layoutSetElement.createExecutableExtension( "class" );
-          if( initializer instanceof ILayoutSetInitializer ) {
-            ILayoutSetInitializer layoutInitializer 
-              = ( ILayoutSetInitializer ) initializer;
-            layoutInitializer.initializeLayoutSet( layoutSet );
+        String overrides = layoutSetElement.getAttribute( "overridesId" );
+        if( overrides != null ) {
+          // clear the old layoutset if it exists and create it with the new 
+          // content. Additional create a new layoutset with the new id if 
+          // someone want to override it again.
+          layout.clearLayoutSet( overrides );
+          LayoutSet layoutSet = layout.getLayoutSet( overrides );
+          layoutSetToPluginId.remove( overrides );
+          layoutSetToPluginId.put( overrides, pluginId );
+          initializeLayoutSet( layoutSetElement, layoutSet );
+          LayoutSet overridingLayoutSet = layout.getLayoutSet( layoutSetId );
+          layoutSetToPluginId.put( layoutSetId, pluginId );
+          initializeLayoutSet( layoutSetElement, overridingLayoutSet );
+          overridenLayoutSets.add( overrides );
+        } else {          
+          if( !overridenLayoutSets.contains( layoutSetId ) ) {
+            // a new layoutset will only created if it's not already overridden.
+            layout.clearLayoutSet( layoutSetId );
+            LayoutSet layoutSet = layout.getLayoutSet( layoutSetId );
+            layoutSetToPluginId.put( layoutSetId, pluginId );  
+            initializeLayoutSet( layoutSetElement, layoutSet );
           }
-        } catch( CoreException e ) {
-          e.printStackTrace();
         }
       }      
     }
   }
 
-  private void combineLayoutSets( final Layout layout,
-                                  final Layout defaultLayout,
-                                  final Layout activeLayout )
+  private static void initializeLayoutSet( 
+    final IConfigurationElement layoutSetElement,
+    final LayoutSet layoutSet )
   {
-    if( defaultLayout != null ) {
-      Map defaultLayoutSets = defaultLayout.getLayoutSets();
-      createLayoutSetFromLayout( layout, defaultLayoutSets );
+    try {
+      Object initializer 
+        = layoutSetElement.createExecutableExtension( "class" );
+      if( initializer instanceof ILayoutSetInitializer ) {
+        ILayoutSetInitializer layoutInitializer 
+          = ( ILayoutSetInitializer ) initializer;
+        layoutInitializer.initializeLayoutSet( layoutSet );
+      }
+    } catch( CoreException e ) {
+      e.printStackTrace();
     }
-    Map activeLayoutSets = activeLayout.getLayoutSets();
-    createLayoutSetFromLayout( layout, activeLayoutSets );
   }
 
-  private Layout createHybridLayout() {
-    // TODO [hs] think about cache for hybrid Layouts
-    Layout result = new Layout( activeLayoutId );    
-    Layout defaultLayout = ( Layout )layoutMap.get( DEFAULT_LAYOUT_ID );
-    combineLayoutSets( result, defaultLayout, activeLayout );    
-    return result;
-  }
-  
-  private void createLayoutSetFromLayout( final Layout layout,
-                                          final Map layoutSets )
-  {
-    Object[] keys = layoutSets.keySet().toArray();
-    for( int i = 0; i < keys.length; i++ ) {
-      String key = ( String )keys[ i ];
-      LayoutSet set = ( LayoutSet )layoutSets.get( key );
-      layout.clearLayoutSet( key );
-      layout.addLayoutSet( set );
-    }
-  }
 }

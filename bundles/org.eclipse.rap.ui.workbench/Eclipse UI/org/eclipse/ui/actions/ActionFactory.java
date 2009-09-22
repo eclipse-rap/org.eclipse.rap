@@ -17,6 +17,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.CloseAllSavedAction;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.IntroAction;
 import org.eclipse.ui.internal.NavigationHistoryAction;
 import org.eclipse.ui.internal.OpenPreferencesAction;
@@ -28,6 +29,9 @@ import org.eclipse.ui.internal.ToggleEditorsVisibilityAction;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.actions.CommandAction;
+import org.eclipse.ui.internal.actions.DynamicHelpAction;
+import org.eclipse.ui.internal.actions.HelpContentsAction;
+import org.eclipse.ui.internal.actions.HelpSearchAction;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
@@ -270,8 +274,7 @@ public abstract class ActionFactory {
             action.setId(getId());
             action.setText(WorkbenchMessages.get().CloseAllPerspectivesAction_text);
             action.setToolTipText(WorkbenchMessages.get().CloseAllPerspectivesAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action, IWorkbenchHelpContextIds.CLOSE_ALL_PAGES_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action, IWorkbenchHelpContextIds.CLOSE_ALL_PAGES_ACTION);
             
             return action;
         }
@@ -321,9 +324,8 @@ public abstract class ActionFactory {
     				ClosePerspectiveAction_text);
     		action.setToolTipText(WorkbenchMessages.get().
     				ClosePerspectiveAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//    		window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
+    		window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
     		return action;
     	}
     };
@@ -422,9 +424,8 @@ public abstract class ActionFactory {
             window.getPartService().addPartListener(action);
             action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
             action.enableAccelerator(false);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//                    IWorkbenchHelpContextIds.DELETE_RETARGET_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+                    IWorkbenchHelpContextIds.DELETE_RETARGET_ACTION);
             ISharedImages sharedImages = window.getWorkbench()
                     .getSharedImages();
             action.setImageDescriptor(sharedImages
@@ -455,9 +456,8 @@ public abstract class ActionFactory {
             action.setId(getId());
             action.setText(WorkbenchMessages.get().EditActionSetsAction_text);
             action.setToolTipText(WorkbenchMessages.get().EditActionSetsAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.EDIT_ACTION_SETS_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.EDIT_ACTION_SETS_ACTION);
             
             return action;
         }
@@ -481,9 +481,8 @@ public abstract class ActionFactory {
             action.setId(getId());
             action.setText(WorkbenchMessages.get().ExportResourcesAction_text);
             action.setToolTipText(WorkbenchMessages.get().ExportResourcesAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.EXPORT_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.EXPORT_ACTION);
             action.setImageDescriptor(WorkbenchImages
                     .getImageDescriptor(IWorkbenchGraphicConstants.IMG_ETOOL_EXPORT_WIZ));
             return action;
@@ -603,9 +602,8 @@ public abstract class ActionFactory {
             action.setId(getId());
             action.setText(WorkbenchMessages.get().ImportResourcesAction_text);
             action.setToolTipText(WorkbenchMessages.get().ImportResourcesAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.IMPORT_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.IMPORT_ACTION);
             action.setImageDescriptor(WorkbenchImages
                     .getImageDescriptor(IWorkbenchGraphicConstants.IMG_ETOOL_IMPORT_WIZ));            
             return action;
@@ -652,9 +650,8 @@ public abstract class ActionFactory {
 					"org.eclipse.ui.window.maximizePart", window); //$NON-NLS-1$
             action.setId(getId());
             action.setToolTipText(WorkbenchMessages.get().MaximizePartAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.MAXIMIZE_PART_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.MAXIMIZE_PART_ACTION);
             
             return action;
         }
@@ -678,9 +675,8 @@ public abstract class ActionFactory {
 					"org.eclipse.ui.window.minimizePart", window); //$NON-NLS-1$
 			action.setId(getId());
 			action.setToolTipText(WorkbenchMessages.get().MinimizePartAction_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//			window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.MINIMIZE_PART_ACTION);
+			window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.MINIMIZE_PART_ACTION);
 			return action;
         }
     };
@@ -731,9 +727,8 @@ public abstract class ActionFactory {
                     .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD_DISABLED));
             action.setText(WorkbenchMessages.get().NewWizardAction_text);
             action.setToolTipText(WorkbenchMessages.get().NewWizardAction_toolTip); 
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.NEW_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.NEW_ACTION);
             return action;
         }
     };
@@ -811,9 +806,8 @@ public abstract class ActionFactory {
 			action.setText(WorkbenchMessages.get().CycleEditorAction_next_text); 
 			action.setToolTipText(WorkbenchMessages.get().CycleEditorAction_next_toolTip); 
             // @issue missing action ids
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//			window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.CYCLE_EDITOR_FORWARD_ACTION);
+			window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.CYCLE_EDITOR_FORWARD_ACTION);
             
 			return action;
 		}
@@ -843,9 +837,8 @@ public abstract class ActionFactory {
             action.setText(WorkbenchMessages.get().CyclePartAction_next_text);
 			action.setToolTipText(WorkbenchMessages.get().CyclePartAction_next_toolTip);
 			// @issue missing action ids
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//			window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.CYCLE_PART_FORWARD_ACTION);
+			window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.CYCLE_PART_FORWARD_ACTION);
             return action;
         }
     };
@@ -875,9 +868,8 @@ public abstract class ActionFactory {
             action.setText(WorkbenchMessages.get().CyclePerspectiveAction_next_text);
             action.setToolTipText(WorkbenchMessages.get().CyclePerspectiveAction_next_toolTip);
             // @issue missing action ids
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.CYCLE_PERSPECTIVE_FORWARD_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.CYCLE_PERSPECTIVE_FORWARD_ACTION);
             return action;
         }
     };
@@ -1002,9 +994,8 @@ public abstract class ActionFactory {
             action.setText(WorkbenchMessages.get().CycleEditorAction_prev_text);
             action.setToolTipText(WorkbenchMessages.get().CycleEditorAction_prev_toolTip); 
             // @issue missing action ids
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.CYCLE_EDITOR_BACKWARD_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.CYCLE_EDITOR_BACKWARD_ACTION);
 
             return action;
         }
@@ -1035,9 +1026,8 @@ public abstract class ActionFactory {
 			action.setText(WorkbenchMessages.get().CyclePartAction_prev_text);
 			action.setToolTipText(WorkbenchMessages.get().CyclePartAction_prev_toolTip);
 			// @issue missing action ids
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//			window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.CYCLE_PART_BACKWARD_ACTION);
+			window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.CYCLE_PART_BACKWARD_ACTION);
             return action;
         }
     };
@@ -1067,9 +1057,8 @@ public abstract class ActionFactory {
             action.setText(WorkbenchMessages.get().CyclePerspectiveAction_prev_text); 
             action.setToolTipText(WorkbenchMessages.get().CyclePerspectiveAction_prev_toolTip); 
             // @issue missing action ids
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//					IWorkbenchHelpContextIds.CYCLE_PERSPECTIVE_BACKWARD_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+					IWorkbenchHelpContextIds.CYCLE_PERSPECTIVE_BACKWARD_ACTION);
             return action;
         }
     };
@@ -1144,9 +1133,8 @@ public abstract class ActionFactory {
             action.setId(getId());
             action.setText(WorkbenchMessages.get().Exit_text); 
             action.setToolTipText(WorkbenchMessages.get().Exit_toolTip);
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.QUIT_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.QUIT_ACTION);
             return action;
         }
     };
@@ -1414,9 +1402,8 @@ public abstract class ActionFactory {
             action.setId(getId());
             action.setText(WorkbenchMessages.get().WorkbenchEditorsAction_label);
             // @issue missing action id
-// RAP [rh] IWorkbench#getHelpSystem not implemented            
-//            window.getWorkbench().getHelpSystem().setHelp(action,
-//    				IWorkbenchHelpContextIds.WORKBENCH_EDITORS_ACTION);
+            window.getWorkbench().getHelpSystem().setHelp(action,
+    				IWorkbenchHelpContextIds.WORKBENCH_EDITORS_ACTION);
             return action;
         }
     };
@@ -1567,72 +1554,71 @@ public abstract class ActionFactory {
         }
     };
 
-// RAP [rh] HELP_CONTENTS action: help support disabled    
-//    /**
-//     * Workbench action (id "helpContents"): Open the help contents. This action
-//     * is always enabled.
-//     */
-//    public static final ActionFactory HELP_CONTENTS = new ActionFactory(
-//            "helpContents") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            IWorkbenchAction action = new HelpContentsAction(window);
-//            action.setId(getId());
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "helpContents"): Open the help contents. This action
+     * is always enabled.
+     * 
+     * @since 1.3
+     */
+    public static final ActionFactory HELP_CONTENTS = new ActionFactory(
+            "helpContents") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            IWorkbenchAction action = new HelpContentsAction(window);
+            action.setId(getId());
+            return action;
+        }
+    };
     
-// RAP [rh] HELP_SEARCH action: help support disabled    
-//    /**
-//     * Workbench action (id "helpSearch"): Open the help search. This action
-//     * is always enabled.
-//     *  
-//     * @since 3.1  
-//     */
-//    public static final ActionFactory HELP_SEARCH = new ActionFactory(
-//            "helpSearch") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            IWorkbenchAction action = new HelpSearchAction(window);
-//            action.setId(getId());
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "helpSearch"): Open the help search. This action
+     * is always enabled.
+     *  
+     * @since 1.3
+     */
+    public static final ActionFactory HELP_SEARCH = new ActionFactory(
+            "helpSearch") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            IWorkbenchAction action = new HelpSearchAction(window);
+            action.setId(getId());
+            return action;
+        }
+    };
 
-// RAP [rh] DYNAMIC_HELP action: help system disabled    
-//    /**
-//     * Workbench action (id "dynamicHelp"): Open the dynamic help. This action
-//     * is always enabled.
-//     *
-//     * @since 3.1
-//     */
-//    public static final ActionFactory DYNAMIC_HELP = new ActionFactory(
-//            "dynamicHelp") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            IWorkbenchAction action = new DynamicHelpAction(window);
-//            action.setId(getId());
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "dynamicHelp"): Open the dynamic help. This action
+     * is always enabled.
+     *
+     * @since 1.3
+     */
+    public static final ActionFactory DYNAMIC_HELP = new ActionFactory(
+            "dynamicHelp") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            IWorkbenchAction action = new DynamicHelpAction(window);
+            action.setId(getId());
+            return action;
+        }
+    };
     
     /**
      * Workbench action (id "openPerspectiveDialog"): Open the Open Perspective dialog. This action

@@ -35,7 +35,7 @@ import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.ITriggerPoint;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.activities.ws.ActivityMessages;
 import org.eclipse.ui.internal.activities.ws.ActivityViewerFilter;
@@ -94,9 +94,8 @@ public class SelectPerspectiveDialog extends Dialog implements
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         shell.setText(WorkbenchMessages.get().SelectPerspective_shellTitle);
-// RAP [rh] IWorkbench#getHelpSystem not implemented        
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-//				IWorkbenchHelpContextIds.SELECT_PERSPECTIVE_DIALOG);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+				IWorkbenchHelpContextIds.SELECT_PERSPECTIVE_DIALOG);
     }
 
     /**

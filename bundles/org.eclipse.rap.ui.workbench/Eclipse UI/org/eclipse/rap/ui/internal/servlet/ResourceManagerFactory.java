@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
@@ -65,7 +66,6 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
     
     public boolean handleSecurity( final HttpServletRequest request,
                                    final HttpServletResponse response )
-      throws IOException
     {
       return true;
     }
@@ -158,15 +158,27 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
     }
 
     private void registerAtHttpService( final String name ) {
-      String contextRoot = ContextProvider.getWebAppBase();
-      IPath path = new Path( name ).removeLastSegments( 1 );
-      IPath location = new Path( contextRoot ).append( path );
       HttpService httpService = getHttpService();
       if( httpService != null ) {
         HttpContext httpContext = getHttpContext();
         HttpContext wrapper = new HttpContextWrapper( httpContext );
+        StringBuffer alias = new StringBuffer();
+        alias.append( "/" );
+        alias.append( ResourceManagerImpl.RESOURCES );
+        String contextRoot = ContextProvider.getWebAppBase();
+        StringBuffer location 
+          = new StringBuffer( ( new Path( contextRoot ) ).toString() );
+        location.append( "/" );
+        location.append( ResourceManagerImpl.RESOURCES );
+        IPath path = new Path( name ).removeLastSegments( 1 );
+        if( !path.isEmpty() ) {
+          alias.append( "/" );
+          alias.append( path.toString() );
+          location.append( "/" );
+          location.append( path.toString() );
+        }
         try {
-          httpService.registerResources( "/" + path.toString(),
+          httpService.registerResources( alias.toString(),
                                          location.toString(),
                                          wrapper );
         } catch( final NamespaceException ignore ) {

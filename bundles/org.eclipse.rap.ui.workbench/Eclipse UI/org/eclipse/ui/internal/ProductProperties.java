@@ -38,7 +38,7 @@ public class ProductProperties extends BrandingProperties implements
 
     private final IProduct product;
 
-    // RAP [bm]: 
+    // RAP [bm]: Display#setAppName
 //    private String appName;
 
     private String aboutText;
@@ -56,7 +56,7 @@ public class ProductProperties extends BrandingProperties implements
     private static final String ABOUT_MAPPINGS = "$nl$/about.mappings"; //$NON-NLS-1$
 
     private static String[] systemPropertiesKeys = new String[0];
-//    private static String[] mappings = loadMappings();
+    private static String[] mappings = loadMappings();
 
     private static String[] loadMappings() {
         IProduct product = Platform.getProduct();
@@ -129,7 +129,7 @@ public class ProductProperties extends BrandingProperties implements
         this.product = product;
     }
 
-    // RAP [bm]: 
+    // RAP [bm]: Display#setAppName
 //    /**
 //     * The application name, used to initialize the SWT Display.  This
 //     * value is distinct from the string displayed in the application
@@ -263,7 +263,6 @@ public class ProductProperties extends BrandingProperties implements
      * </p>
      */
     public static String getAboutText(IProduct product) {
-    	String[] mappings = loadMappings();
         String property = product.getProperty(ABOUT_TEXT);
         if (property == null) {
 			return ""; //$NON-NLS-1$
@@ -271,7 +270,7 @@ public class ProductProperties extends BrandingProperties implements
         if (property.indexOf('{') == -1) {
 			return property;
 		}
-		property = MessageFormat.format(property, mappings);
+        property = MessageFormat.format(property, mappings);
         
         /*
          * If there is still a "{" character, check if there are

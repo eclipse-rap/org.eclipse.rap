@@ -31,8 +31,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPerspectiveDescriptor;
-//import org.eclipse.ui.PlatformUI;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.activities.ws.ActivityViewerFilter;
 import org.eclipse.ui.internal.registry.PerspectiveRegistry;
@@ -85,9 +85,8 @@ public class SavePerspectiveDialog extends org.eclipse.jface.dialogs.Dialog
         super.configureShell(shell);
         shell
                 .setText(WorkbenchMessages.get().SavePerspective_shellTitle);
-// RAP [rh] IWorkbench#getHelpSystem not implemented        
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-//				IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_DIALOG);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+				IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_DIALOG);
     }
 
     /**

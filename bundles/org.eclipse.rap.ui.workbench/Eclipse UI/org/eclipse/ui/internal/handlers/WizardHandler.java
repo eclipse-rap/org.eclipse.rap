@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.LegacyResourceSupport;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.dialogs.ImportExportWizard;
@@ -89,10 +90,8 @@ public abstract class WizardHandler extends AbstractHandler {
 			dialog.getShell().setSize(
 					Math.max(SIZING_WIZARD_WIDTH, dialog.getShell()
 							.getSize().x), SIZING_WIZARD_HEIGHT);
-			// RAP [bm]: HelpSystem
-//			activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
-//					dialog.getShell(), IWorkbenchHelpContextIds.EXPORT_WIZARD);
-			// RAPEND: [bm] 
+			activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
+					dialog.getShell(), IWorkbenchHelpContextIds.EXPORT_WIZARD);
 			dialog.open();
 		}
 
@@ -140,10 +139,8 @@ public abstract class WizardHandler extends AbstractHandler {
 	        dialog.getShell().setSize(
 	                Math.max(SIZING_WIZARD_WIDTH, dialog.getShell().getSize().x),
 	                SIZING_WIZARD_HEIGHT);
-	        // RAP [bm]: HelpSystem
-//	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
-//					dialog.getShell(), IWorkbenchHelpContextIds.IMPORT_WIZARD);
-	        // RAPEND: [bm] 
+	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
+					dialog.getShell(), IWorkbenchHelpContextIds.IMPORT_WIZARD);
 
 	        dialog.open();
 		}
@@ -250,10 +247,8 @@ public abstract class WizardHandler extends AbstractHandler {
 	        dialog.getShell().setSize(
 	                Math.max(SIZING_WIZARD_WIDTH, dialog.getShell().getSize().x),
 	                SIZING_WIZARD_HEIGHT);
-	        // RAP [bm]: 
-//	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
-//					dialog.getShell(), IWorkbenchHelpContextIds.NEW_WIZARD);
-	        // RAPEND: [bm] 
+	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
+					dialog.getShell(), IWorkbenchHelpContextIds.NEW_WIZARD);
 
 	        dialog.open();
 		}

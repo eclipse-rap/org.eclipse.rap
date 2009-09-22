@@ -21,6 +21,7 @@ import org.eclipse.core.commands.ParameterType;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.SerializationException;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.menus.UIElement;
 import org.eclipse.ui.services.IDisposable;
 
@@ -256,19 +257,19 @@ public interface ICommandService extends IDisposable {
 	 */
 	public void removeExecutionListener(IExecutionListener listener);
 
-	// RAP [bm]: Help
-//	/**
-//	 * Sets the help context identifier to associate with a particular handler.
-//	 * 
-//	 * @param handler
-//	 *            The handler with which to register a help context identifier;
-//	 *            must not be <code>null</code>.
-//	 * @param helpContextId
-//	 *            The help context identifier to register; may be
-//	 *            <code>null</code> if the help context identifier should be
-//	 *            removed.
-//	 */
-//	public void setHelpContextId(IHandler handler, String helpContextId);
+	/**
+	 * Sets the help context identifier to associate with a particular handler.
+	 * 
+	 * @param handler
+	 *            The handler with which to register a help context identifier;
+	 *            must not be <code>null</code>.
+	 * @param helpContextId
+	 *            The help context identifier to register; may be
+	 *            <code>null</code> if the help context identifier should be
+	 *            removed.
+     * @since 1.3
+	 */
+	public void setHelpContextId(IHandler handler, String helpContextId);
 
 	/**
 	 * Register that this element accepts callbacks for this parameterized

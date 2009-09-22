@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.core.commands.Category;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IExecutionListener;
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.ParameterType;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.SerializationException;
@@ -247,11 +248,10 @@ public class SlaveCommandService implements ICommandService {
 		fParentService.removeExecutionListener(listener);
 	}
 
-	// RAP [bm]: Help
-//	public final void setHelpContextId(final IHandler handler,
-//			final String helpContextId) {
-//		fParentService.setHelpContextId(handler, helpContextId);
-//	}
+	public final void setHelpContextId(final IHandler handler,
+			final String helpContextId) {
+		fParentService.setHelpContextId(handler, helpContextId);
+	}
 
 	/*
 	 * (non-Javadoc)

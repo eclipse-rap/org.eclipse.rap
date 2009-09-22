@@ -33,9 +33,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-//import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -93,9 +93,8 @@ public class WorkingSetTypePage extends WizardPage {
         composite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         setControl(composite);
 
-// RAP [rh] IWorkbench#getHelpSystem not implemented
-//        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite,
-//				IWorkbenchHelpContextIds.WORKING_SET_TYPE_PAGE);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite,
+				IWorkbenchHelpContextIds.WORKING_SET_TYPE_PAGE);
         Label typesLabel = new Label(composite, SWT.NONE);
         typesLabel.setText(WorkbenchMessages.get().WorkingSetTypePage_typesLabel);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
