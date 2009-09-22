@@ -71,11 +71,7 @@ public class TextContentAdapter implements IControlContentAdapter,
 	 * @see org.eclipse.jface.fieldassist.IControlContentAdapter#getCursorPosition(org.eclipse.swt.widgets.Control)
 	 */
 	public int getCursorPosition(Control control) {
-		// RAP [bm]: Text#getCarePosition
-//		return ((Text) control).getCaretPosition();
-		return ((Text) control).getSelection().x;
-		// RAPEND: [bm] 
-
+		return ((Text) control).getCaretPosition();
 	}
 
 	/*
