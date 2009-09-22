@@ -372,8 +372,7 @@ public abstract class Window implements IShellProvider {
 			} else {
 				Image[] array = new Image[nonDisposedImages.size()];
 				nonDisposedImages.toArray(array);
-				// RAP [bm]: Shell#setImages
-//				newShell.setImages(array);
+				newShell.setImages(array);
 			}
 		}
 
@@ -537,13 +536,12 @@ public abstract class Window implements IShellProvider {
 				: defaultImages[0];
 	}
 
-	// RAP [bm]: Decorations#setImages
 	/**
 	 * Returns the array of default images to use for newly opened windows. It
 	 * is expected that the array will contain the same icon rendered at
 	 * different resolutions.
 	 * 
-	 * <!-- @see org.eclipse.swt.widgets.Decorations#setImages(org.eclipse.swt.graphics.Image[]) -->
+	 * @see org.eclipse.swt.widgets.Decorations#setImages(org.eclipse.swt.graphics.Image[])
 	 * 
 	 * @return the array of images to be used when a new window is opened
 	 * @see #setDefaultImages
@@ -868,13 +866,12 @@ public abstract class Window implements IShellProvider {
 		defaultImages = image == null ? null : new Image[] { image };
 	}
 
-	// RAP [bm]: Decorations#setImages
 	/**
 	 * Sets the array of default images to use for newly opened windows. It is
 	 * expected that the array will contain the same icon rendered at different
 	 * resolutions.
 	 * 
-	 * <!-- @see org.eclipse.swt.widgets.Decorations#setImages(org.eclipse.swt.graphics.Image[]) -->
+	 * @see org.eclipse.swt.widgets.Decorations#setImages(org.eclipse.swt.graphics.Image[])
 	 * 
 	 * @param images
 	 *            the array of images to be used when this window is opened

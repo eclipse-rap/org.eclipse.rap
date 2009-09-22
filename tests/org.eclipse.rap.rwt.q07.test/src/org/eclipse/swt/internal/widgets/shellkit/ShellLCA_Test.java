@@ -461,6 +461,15 @@ public class ShellLCA_Test extends TestCase {
                + ResourceFactory.getImagePath( shell.getImage() )
                + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    // with multiple images
+    RWTFixture.fakeNewRequest();
+    shell = new Shell( display, SWT.TITLE );
+    shell.setImages( new Image[] { Graphics.getImage( RWTFixture.IMAGE1 ) } );
+    lca.renderChanges( shell );
+    expected = "w.setIcon( \""
+               + ResourceFactory.getImagePath( shell.getImages()[0] )
+               + "\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {

@@ -129,7 +129,6 @@ public class Shell extends Decorations {
   private Control lastActive;
   private IShellAdapter shellAdapter;
   private String text;
-  private Image image;
   private int alpha;
   private Button defaultButton;
   private Button saveDefault;
@@ -727,56 +726,6 @@ public class Shell extends Decorations {
   public String getText() {
     checkWidget();
     return text;
-  }
-
-  /**
-   * Sets the receiver's image to the argument, which may
-   * be null. The image is typically displayed by the window
-   * manager when the instance is marked as iconified, and
-   * may also be displayed somewhere in the trim when the
-   * instance is in normal or maximized states.
-   *
-   * @param image the new image (or null)
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
-   * </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  /* TODO [rst] move to Decorations as soon as it exists */
-  public void setImage( final Image image ) {
-    checkWidget();
-    this.image = image;
-  }
-
-  /**
-   * Returns the receiver's image if it had previously been
-   * set using <code>setImage()</code>. The image is typically
-   * displayed by the window manager when the instance is
-   * marked as iconified, and may also be displayed somewhere
-   * in the trim when the instance is in normal or maximized
-   * states.
-   * <p>
-   * Note: This method will return null if called before
-   * <code>setImage()</code> is called. It does not provide
-   * access to a window manager provided, "default" image
-   * even if one exists.
-   * </p>
-   *
-   * @return the image
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  /* TODO [rst] move to Decorations as soon as it exists */
-  public Image getImage() {
-    checkWidget();
-    return image;
   }
 
   //////////////////////////////

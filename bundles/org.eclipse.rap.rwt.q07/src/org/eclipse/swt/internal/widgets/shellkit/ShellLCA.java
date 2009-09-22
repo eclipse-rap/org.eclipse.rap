@@ -271,6 +271,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void writeImage( final Shell shell ) throws IOException {
     if( ( shell.getStyle() & ( SWT.TITLE ) ) != 0 ) {
       Image image = shell.getImage();
+      if( image == null ) {
+        Image[] defaultImages = shell.getImages();
+        if( defaultImages.length > 0 ) {
+          image = defaultImages[0];
+        }
+      }
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
         writer.set( JSConst.QX_FIELD_ICON,
