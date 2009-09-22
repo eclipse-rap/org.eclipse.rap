@@ -169,6 +169,46 @@ public class ScrolledComposite_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 84, 84), sc.getClientArea() );
   }
   
+  public void testNeedHScroll() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    sc.setSize( 100, 100 );
+    assertFalse( sc.needHScroll( new Rectangle( 0, 0, 90, 90 ), false ) );
+    assertTrue( sc.needHScroll( new Rectangle( 0, 0, 90, 90 ), true ) );
+    sc.setExpandHorizontal( true );
+    sc.setMinWidth( 90 );
+    assertFalse( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
+    assertTrue( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
+    sc.setMinWidth( 50 );
+    assertFalse( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
+    assertFalse( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
+    sc.setMinWidth( 150 );
+    assertTrue( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
+    assertTrue( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
+  }
+  
+  public void testNeedVScroll() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    sc.setSize( 100, 100 );
+    assertFalse( sc.needVScroll( new Rectangle( 0, 0, 90, 90 ), false ) );
+    assertTrue( sc.needVScroll( new Rectangle( 0, 0, 90, 90 ), true ) );
+    sc.setExpandVertical( true );
+    sc.setMinHeight( 90 );
+    assertFalse( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
+    assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
+    sc.setMinHeight( 50 );
+    assertFalse( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
+    assertFalse( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
+    sc.setMinHeight( 150 );
+    assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
+    assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
