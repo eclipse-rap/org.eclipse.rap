@@ -174,15 +174,23 @@ public final class ResourceFactory {
     return result;
   }
 
-  public static synchronized String getImagePath( final Image image ) {
+  public static String getImagePath( final Image image ) {
+    String result = getImageName( image );
+    if( result != null ) {
+      result = ResourceManager.getInstance().getLocation( result );
+    }
+    return result;
+  }
+  
+  private static synchronized String getImageName( final Image image ) {
     String result = null;
     Iterator it = images.entrySet().iterator();
-    boolean next = true;
-    while( next && it.hasNext() ) {
+    boolean found = false;
+    while( !found && it.hasNext() ) {
       Map.Entry entry = ( Map.Entry )it.next();
       if( entry.getValue().equals( image ) ) {
         result = ( String )entry.getKey();
-        next = false;
+        found = true;
       }
     }
     return result;
@@ -192,7 +200,7 @@ public final class ResourceFactory {
     ImageData result = imageDataCache.getImageData( image );
     if( result == null ) {
       IResourceManager manager = ResourceManager.getInstance();
-      String imagePath = getImagePath( image );
+      String imagePath = getImageName( image );
       if( imagePath != null ) {
         try {
           InputStream inputStream = manager.getRegisteredContent( imagePath );
@@ -215,7 +223,7 @@ public final class ResourceFactory {
     return result;
   }
 
-  ////////
+  ///////////
   // Cursors
 
   public static Cursor getCursor( final int style ) {
@@ -301,10 +309,16 @@ public final class ResourceFactory {
     //                It would be nice to find a solution without reading the
     //                stream twice.
 
-    IResourceManager manager = ResourceManager.getInstance();
     BufferedInputStream bis = new BufferedInputStream( inputStream );
     bis.mark( Integer.MAX_VALUE );
-    Point size = readImageSize( bis );
+    Point size = null;
+    try {
+      size = readImageSize( bis );
+    } catch( Exception e ) {
+      // ImageReader also throws IllegalArgumentExceptions for some files
+      // TODO [rst] log exception
+      e.printStackTrace();
+    }
     if( size != null ) {
       result = createImageInstance( size.x, size.y );
     } else {
@@ -317,6 +331,7 @@ public final class ResourceFactory {
       String msg = MessageFormat.format( txt, new Object[] { path } );
       throw new RuntimeException( msg, shouldNotHappen );
     }
+    IResourceManager manager = ResourceManager.getInstance();
     manager.register( path, bis );
 
     ////////////////////////////////////////////////////////////////////////////
@@ -326,12 +341,15 @@ public final class ResourceFactory {
   }
 
   /**
-   * @return an array whose first element is the image <em>width</em> and
-   *         second is the <em>height</em>, <code>null</code> if the bounds
-   *         could not be read.
+   * @return an array whose first element is the image <em>width</em> and second
+   *         is the <em>height</em>, <code>null</code> if the bounds could not
+   *         be read.
+   * @throws IOException if an error occurs while reading the input stream
+   * @throws IllegalArgumentException if the image has an invalid format
    */
-  // RAP [bm]: e4-enabling hacks
-  public static Point readImageSize( final InputStream input ) {
+  public static Point readImageSize( final InputStream input )
+    throws IOException
+  {
     Point result = null;
     boolean cacheBuffer = ImageIO.getUseCache();
     try {
@@ -350,10 +368,6 @@ public final class ResourceFactory {
         int height = image.getHeight();
         result = new Point( width, height );
       }
-    } catch( final Exception e ) {
-      // ImageReader throws IllegalArgumentExceptions for some files
-      // TODO [rst] log exception
-      e.printStackTrace();
     } finally {
       ImageIO.setUseCache( cacheBuffer );
     }
@@ -384,7 +398,7 @@ public final class ResourceFactory {
     return result;
   }
 
-  // RAP [bm]: e4-enabling hacks
+  // RAP [bm] e4 hack
   public static String getImageFileExtension( final int type ) {
     String result;
     switch( type ) {
@@ -464,9 +478,9 @@ public final class ResourceFactory {
   {
     Image result = null;
     try {
-      Class fontClass = Image.class;
+      Class imageClass = Image.class;
       Class[] paramList = new Class[] { int.class, int.class };
-      Constructor constr = fontClass.getDeclaredConstructor( paramList );
+      Constructor constr = imageClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
       result = ( Image )constr.newInstance( new Object[] {
         new Integer( width ), new Integer( height )

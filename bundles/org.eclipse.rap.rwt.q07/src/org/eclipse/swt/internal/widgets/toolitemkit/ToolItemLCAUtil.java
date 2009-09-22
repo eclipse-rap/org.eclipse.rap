@@ -30,6 +30,8 @@ final class ToolItemLCAUtil {
   private static final String PROP_IMAGE = "image";
   private static final String PROP_HOT_IMAGE = "hotImage";
   private static final String PROP_SELECTION = "selection";
+  private static final String JS_PROP_SELECTION = "selection";
+  private static final String QX_TYPE = "org.eclipse.rwt.widgets.ToolItem";
 
   private ToolItemLCAUtil() {
     // prevent instantiation
@@ -39,17 +41,60 @@ final class ToolItemLCAUtil {
     ItemLCAUtil.preserve( toolItem );
     WidgetLCAUtil.preserveEnabled( toolItem, toolItem.getEnabled() );
     WidgetLCAUtil.preserveToolTipText( toolItem, toolItem.getToolTipText() );
+    WidgetLCAUtil.preserveCustomVariant( toolItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
     adapter.preserve( PROP_VISIBLE, Boolean.valueOf( isVisible( toolItem ) ) );
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( Props.BOUNDS, getItemBounds( toolItem ) );
+    adapter.preserve( Props.BOUNDS, toolItem.getBounds() );
     adapter.preserve( Props.MENU, toolItem.getParent().getMenu() );
+  }
+
+  static void renderInitialization( final ToolItem toolItem,
+                                    final String param )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
+    ToolBar toolBar = toolItem.getParent();
+    Integer index = new Integer( toolBar.indexOf( toolItem ) );
+    // TODO [tb] For the index, it is currently ignored that controls
+    //           attached to a ToolItem use an index-slot of their own on
+    //           the client, while they don't on the server. In theory,
+    //           this could lead to an incorrect order of the items on the
+    //           client, which is problematic with the keyboard-control
+    //           and radio-groups.
+    Boolean flat = Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT ) != 0 );
+    writer.newWidget( QX_TYPE, new Object[]{ param, flat } );
+    writer.call( toolBar, "addAt", new Object[]{ toolItem, index } );
+    WidgetLCAUtil.writeStyleFlag( toolItem, SWT.FLAT, "FLAT" );
+  }
+
+  static void renderChanges( final ToolItem toolItem ) throws IOException {
+    writeText( toolItem );
+    writeImages( toolItem );
+    writeVisible( toolItem );
+    writeBounds( toolItem );
+    writeSelectionListener( toolItem );
+    WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 
   ////////////
   // Selection
+
+  static void writeSelectionListener( final ToolItem toolItem )
+    throws IOException
+  {
+    boolean hasListener = SelectionEvent.hasListener( toolItem );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = Props.SELECTION_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( toolItem, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( toolItem );
+      writer.set( "hasSelectionListener", newValue );
+    }
+  }
 
   static void preserveSelection( final ToolItem toolItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
@@ -57,13 +102,10 @@ final class ToolItemLCAUtil {
                       Boolean.valueOf( toolItem.getSelection() ) );
   }
 
-  static void writeSelection( final ToolItem toolItem, final boolean selection )
-    throws IOException
-  {
+  static void writeSelection( final ToolItem toolItem ) throws IOException {
+    Boolean newValue = Boolean.valueOf( toolItem.getSelection() );
     JSWriter writer = JSWriter.getWriterFor( toolItem );
-    Boolean newValue = Boolean.valueOf( selection );
-    Boolean defValue = Boolean.FALSE;
-    writer.set( PROP_SELECTION, "checked", newValue, defValue );
+    writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
   }
 
   static void processSelection( final ToolItem toolItem ) {
@@ -110,36 +152,22 @@ final class ToolItemLCAUtil {
   // Bounds
 
   static void writeBounds( final ToolItem toolItem ) throws IOException {
-    Rectangle bounds = getItemBounds( toolItem );
+    Rectangle bounds = toolItem.getBounds();
     WidgetLCAUtil.writeBounds( toolItem, toolItem.getParent(), bounds );
   }
 
-  private static Rectangle getItemBounds( final ToolItem toolItem ) {
-    Rectangle bounds = toolItem.getBounds();
-    // [rst] Chevron-button is created as a separate widget on the client side
-    if( ( toolItem.getStyle() & SWT.DROP_DOWN ) != 0 ) {
-      bounds.width -= 15; // ToolItem#DROP_DOWN_ARROW_WIDTH
+  ////////
+  // Text
+
+  static void writeText( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
+    String text = toolItem.getText();
+    if( WidgetLCAUtil.hasChanged( toolItem, Props.TEXT, text, null ) ) {
+      text = WidgetLCAUtil.escapeText( text, true );
+      writer.set( "text", text.equals( "" ) ? null : text );
     }
-    return bounds;
   }
 
-  // TODO [bm]: workaround for bug 286306
-  //            we need to count the DROP_DOWN twice as it consists of two
-  //            widgets on the client-side. This needs to be removed once we
-  //            a proper DROP_DOWN ToolItem in place
-  static Integer getClientSideIndex( final ToolItem toolItem ) {
-    ToolBar toolBar = toolItem.getParent();
-    int result = 0;
-    int toolItemIndex = toolBar.indexOf( toolItem );
-    for( int i = 0; i < toolItemIndex; i++ ) {
-      result++;
-      if( ( toolBar.getItem( i ).getStyle() & SWT.DROP_DOWN ) != 0 ) {
-        result++;
-      }
-    }
-    return new Integer( result );
-  }
-  
   ////////
   // Image
 
@@ -152,16 +180,27 @@ final class ToolItemLCAUtil {
   static void writeImages( final ToolItem toolItem ) throws IOException {
     Image image = getImage( toolItem );
     if( WidgetLCAUtil.hasChanged( toolItem, PROP_IMAGE, image, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( toolItem );
-      Object[] args = new Object[] { toolItem, getImagePath( image ) };
-      writer.callStatic( "org.eclipse.swt.ToolItemUtil.setImage", args );
+      writeImage( toolItem, "image", image );
     }
     Image hotImage = toolItem.getHotImage();
     if( WidgetLCAUtil.hasChanged( toolItem, PROP_HOT_IMAGE, hotImage, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( toolItem );
-      Object[] args = new Object[] { toolItem, getImagePath( hotImage ) };
-      writer.callStatic( "org.eclipse.swt.ToolItemUtil.setHotImage", args );
+      writeImage( toolItem, "hotImage", hotImage );
     }
+  }
+
+  private static void writeImage( final ToolItem toolItem,
+                                  final String jsProperty,
+                                  final Image image )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
+    Rectangle bounds = image != null ? image.getBounds() : null;
+    Object[] args = new Object[] {
+      getImagePath( image ),
+      new Integer( bounds != null ? bounds.width : 0 ),
+      new Integer( bounds != null ? bounds.height : 0 )
+    };
+    writer.set( jsProperty, args );
   }
 
   static Image getImage( final ToolItem toolItem ) {

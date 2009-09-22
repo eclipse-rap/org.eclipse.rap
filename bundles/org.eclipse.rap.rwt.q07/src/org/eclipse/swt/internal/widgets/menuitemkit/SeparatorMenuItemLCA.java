@@ -29,7 +29,7 @@ final class SeparatorMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Separator", false );    
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Separator", null );    
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {

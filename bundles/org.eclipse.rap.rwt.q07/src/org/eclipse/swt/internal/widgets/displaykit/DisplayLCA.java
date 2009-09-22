@@ -135,7 +135,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeClientDocument( display );
     } else {
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
-      out.write( "org.eclipse.swt.EventUtil.suspendEventHandling();" );
       out.write( getRequestCounter() );
       disposeWidgets();
       writeTheme( display );
@@ -150,8 +149,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
       writeActiveControls( display );
       writeFocus( display );
-      out.write( "qx.ui.core.Widget.flushGlobalQueues();" );
-      out.write( "org.eclipse.swt.EventUtil.resumeEventHandling();" );
       markInitialized( display );
     }
   }

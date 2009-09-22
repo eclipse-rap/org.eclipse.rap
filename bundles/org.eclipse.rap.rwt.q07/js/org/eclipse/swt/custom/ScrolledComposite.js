@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,28 +7,44 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
  
 qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
-  extend : qx.ui.layout.CanvasLayout,
+  extend : qx.ui.basic.ScrollArea,
 
   construct : function() {
     this.base( arguments );
     this.setAppearance( "scrolledcomposite" );
+    this._hasSelectionListener = false;
+    // Flag indicates that the next request can be sent
+    this._readyToSendChanges = true;
     this._initialScrollTop = null;
     this._initialScrollLeft = null;
     this._lastScrollLeft = 0;
     this._lastScrollTop = 0;
-    var req = org.eclipse.swt.Request.getInstance();
-    req.addEventListener( "send", this._onRequestSend, this );
+    this.addEventListener( "appear", this._onAppear, this );
   },
-
+  
   destruct : function() {
-    var req = org.eclipse.swt.Request.getInstance();
-    req.removeEventListener( "send", this._onRequestSend, this );
+    this.removeEventListener( "appear", this._onAppear, this );
   },
   
   members : {
+    
+    _onAppear : function( evt ) {
+      this.setScrollTop( this._lastScrollTop );
+      this.setScrollLeft( this._lastScrollLeft );
+    },
+    
+    _onscroll : function( evt ) {
+      this.base( arguments, evt );
+      if( this._readyToSendChanges ) {
+        this._readyToSendChanges = false;
+        // Send changes
+        qx.client.Timer.once( this._sendChanges, this, 500 );
+      }
+    },
 
     setHBarSelection : function( value ) {
       if( !this.isCreated() ) {
@@ -73,26 +89,33 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
       }
       this.removeEventListener( "create", this._setVBarSelectionOnCreate, this );
     },
-
-    /**
-     * Creates request parameters that denote the current scroll position just 
-     * before a request is sent.
-     * This is a workaround, it seems that there is no 'scroll event'.
-     */
-    _onRequestSend : function( evt ) {
-      if( this.isCreated() ) {
+    
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
+    },
+    
+    _sendChanges : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && this.isCreated() ) {
+        var hasChanges = false;
         var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
         var id = wm.findIdByWidget( this );
         var scrollX = this.getScrollLeft();
         if( scrollX != this._lastScrollLeft ) {
-          evt.getTarget().addParameter( id + ".horizontalBar.selection", scrollX );
+          req.addParameter( id + ".horizontalBar.selection", scrollX );
           this._lastScrollLeft = scrollX;
+          hasChanges = true;
         }
         var scrollY = this.getScrollTop();
         if( scrollY != this._lastScrollTop ) {
-          evt.getTarget().addParameter( id + ".verticalBar.selection", scrollY );
+          req.addParameter( id + ".verticalBar.selection", scrollY );
           this._lastScrollTop = scrollY;
+          hasChanges = true;
         }
+        if( this._hasSelectionListener && hasChanges ) {
+          req.send();
+        }
+        this._readyToSendChanges = true;
       }
     }
   }

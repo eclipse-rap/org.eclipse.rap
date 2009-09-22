@@ -13,27 +13,18 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
 
-  private static final String PROP_CONTROL = "control";
+  private static final String QX_TYPE = "org.eclipse.rwt.widgets.ToolSeparator";
   
-  // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String CREATE_SEPARATOR = 
-    "org.eclipse.swt.ToolItemUtil.createSeparator";
-  private static final String SET_CONTROL = 
-    "org.eclipse.swt.ToolItemUtil.setControl";
-
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
-    adapter.preserve( PROP_CONTROL, toolItem.getControl() );
-    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
   
   void readData( final ToolItem toolItem ) {
@@ -43,40 +34,17 @@ final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
   void renderInitialization( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ToolBar toolBar = toolItem.getParent();
-    Object[] args = new Object[]{
-      WidgetUtil.getId( toolItem ),
-      toolBar,
-      ToolItemLCAUtil.getClientSideIndex( toolItem ),
-      Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT  ) != 0 )
-    };
-    writer.callStatic( CREATE_SEPARATOR, args );    
+    Boolean flat = Boolean.valueOf( ( toolBar.getStyle() & SWT.FLAT  ) != 0 );
+    Boolean vertical 
+      = Boolean.valueOf( ( toolBar.getStyle() & SWT.VERTICAL  ) != 0 );
+    writer.newWidget( QX_TYPE, new Object[]{ flat, vertical } );
+    writer.call( toolBar, "add", new Object[]{ toolItem } );        
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     ToolItemLCAUtil.writeBounds( toolItem );
-    writeControl( toolItem );
     WidgetLCAUtil.writeCustomVariant( toolItem );
-  }
-
-  private void writeControl( final ToolItem toolItem ) throws IOException {
-    final JSWriter writer = JSWriter.getWriterFor( toolItem );
-    Control control = toolItem.getControl();
-    if( WidgetLCAUtil.hasChanged( toolItem, PROP_CONTROL, control, null ) ) {
-      final Object[] args = new Object[] { toolItem, control };
-      if( control != null ) {
-        // defer call since controls are rendered after items
-        WidgetAdapter adapter 
-          = ( WidgetAdapter )WidgetUtil.getAdapter( control );
-        adapter.setRenderRunnable( new IRenderRunnable() {
-          public void afterRender() throws IOException {
-            writer.callStatic( SET_CONTROL, args );
-          }
-        } );
-      } else {
-        writer.callStatic( SET_CONTROL, args );        
-      }
-    }
   }
 }

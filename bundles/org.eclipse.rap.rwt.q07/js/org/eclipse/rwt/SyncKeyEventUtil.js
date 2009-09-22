@@ -17,42 +17,35 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
   
   construct : function() {
     this.base( arguments );
-    this._pendingEvent = null;
+    this._cancelEvent = false;
   },
   
   members : {
     intercept : function( eventType, keyCode, charCode, domEvent ) {
-      var result = false;
       var relevantEvent = this._isRelevantEvent( eventType, keyCode );
       if( !org_eclipse_rap_rwt_EventUtil_suspend && relevantEvent ) {
         var control = this._getTargetControl();
         var hasKeyListener = this._hasKeyListener( control );
         var hasTraverseListener = this._hasTraverseListener( control );
         if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
-          this._pendingEvent = domEvent;
+          // [if] Don't keep and modify the pending event object outside the
+          // "intercept" method. Such approach does not work in IE.
+          this._cancelEvent = false;
           this._sendKeyDown( control, keyCode, charCode, domEvent );
-          result = this._isDomEventCanceled( domEvent );
+          if( this._cancelEvent ) {
+            this._cancelDomEvent( domEvent );
+          }
         } 
       }
-      return result;
+      return this._cancelEvent;
     },
     
     cancelEvent : function() {
-      this._cancelDomEvent( this._pendingEvent );
+      this._cancelEvent = true;
     },
     
     allowEvent : function() {
       // do nothing
-    },
-    
-    _isDomEventCanceled : function( domEvent ) {
-      var result;
-      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        result = domEvent.returnValue === false;
-      } else {
-        result = domEvent.__isCanceled && domEvent.__isCanceled === true;
-      }
-      return result; 
     },
     
     _isRelevantEvent : function( eventType, keyCode ) {

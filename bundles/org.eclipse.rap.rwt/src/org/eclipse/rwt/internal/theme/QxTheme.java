@@ -19,22 +19,6 @@ package org.eclipse.rwt.internal.theme;
  */
 public class QxTheme {
 
-  private final String id;
-
-  private final String title;
-
-  private final int type;
-
-  private final String base;
-
-  private final StringBuffer code;
-
-  private boolean headWritten;
-
-  private boolean tailWritten;
-
-  private boolean valueWritten;
-
   /** Type for qooxdoo meta themes */
   public static final int META = 1;
 
@@ -55,6 +39,15 @@ public class QxTheme {
 
   /** Type for qooxdoo apearance themes */
   public static final int APPEARANCE = 7;
+
+  private final String id;
+  private final String title;
+  private final int type;
+  private final String base;
+  private final StringBuffer code;
+  private boolean headWritten;
+  private boolean tailWritten;
+  private boolean valueWritten;
 
   /**
    * Creates a new qooxdoo theme with the given, id, name, and type.
@@ -182,7 +175,7 @@ public class QxTheme {
   }
 
   private int checkType( final int type ) {
-    if( type != META
+    if(    type != META
         && type != FONT
         && type != COLOR
         && type != BORDER

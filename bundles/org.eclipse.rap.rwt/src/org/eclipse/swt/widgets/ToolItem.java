@@ -42,17 +42,11 @@ public class ToolItem extends Item {
 
   private static final int DEFAULT_WIDTH = 24;
   private static final int DEFAULT_HEIGHT = 22;
-
-  // TODO [rst] Read these values from ThemeAdapter as soon as ToolItem is
-  //            themeable
-  private static final int DROP_DOWN_ARROW_WIDTH = 9;
-  private static final int SEPARATOR_WIDTH = 8;
-  private static final int SPACING = 4;
-
   private final ToolBar parent;
   private boolean selected;
   private Control control;
   private int width;
+  private boolean computedWidth = true;
   private String toolTipText;
   private boolean visible;
   private Image disabledImage;
@@ -324,9 +318,15 @@ public class ToolItem extends Item {
       }
     }
     if( ( style & SWT.SEPARATOR ) != 0 ) {
+      if( this.control != null && !this.control.isDisposed() ) {
+        this.control.setVisible( false );
+      }
       this.control = control;
+      if( this.control != null ) {
+        this.control.setVisible( true );
+      }
+      resizeControl();
     }
-    resizeControl();
   }
 
   /**
@@ -459,85 +459,156 @@ public class ToolItem extends Item {
    *    created the receiver</li>
    * </ul>
    */
-  // TODO [rh] decent implementation for VERTICAL adlignment missing
   public Rectangle getBounds() {
     checkWidget();
     Rectangle clientArea = parent.getClientArea();
     int left = clientArea.x;
     int top = clientArea.y;
     int index = parent.indexOf( this );
-
-    ////////////////////////////////////////////////////////////////////////////
-    // RAP [fappel]: Implementation for performance reason done like suggested:
-    //               https://bugs.eclipse.org/bugs/show_bug.cgi?id=231308
-    if( index > 0 ) {
-      Rectangle leftBrotherBounds = parent.getItem( index - 1 ).getBounds();
-      left += leftBrotherBounds.x + leftBrotherBounds.width;
+    if( ( parent.style & SWT.VERTICAL ) != 0 ) {
+      if( index > 0 ) {
+        Rectangle upperSiblingBounds = parent.getItem( index - 1 ).getBounds();
+        top += upperSiblingBounds.y + upperSiblingBounds.height;
+        top += getToolBarSpacing();
+      } else {
+        top += parent.getToolBarPadding().y;
+      }      
+      left += parent.getToolBarPadding().x;
+    } else {
+      if( index > 0 ) {
+        Rectangle leftSiblingBounds = parent.getItem( index - 1 ).getBounds();
+        left += leftSiblingBounds.x + leftSiblingBounds.width;
+        left += getToolBarSpacing();
+      } else {
+        left += parent.getToolBarPadding().x;
+      }      
+      top += parent.getToolBarPadding().y;
     }
-    ////////////////////////////////////////////////////////////////////////////
-
+    return new Rectangle( left, top, getWidth(), getHeight() );
+  }
+  
+   // TODO [tb] : if needed, cache dimensions to optimize performance
+   private int getHeight() {
+     int height;
+     if(    ( parent.style & SWT.VERTICAL ) != 0
+         && ( style & SWT.SEPARATOR ) != 0 
+         && getControl() == null ) 
+     {     
+       height = getSeparatorWidth();
+     } else {
+       height = 0; 
+       ToolItem[] siblings = getParent().getItems();
+       for( int i = 0; i < siblings.length; i++ ) {
+         if( ( siblings[ i ].style & SWT.SEPARATOR ) == 0 ) {
+           height = Math.max(  height, siblings[ i ].getPreferredHeight() );
+         }
+       }
+     }
+     return height;
+   }
+   
+   /**
+    * Gets the width of the receiver.
+    *
+    * @return the width
+    *
+    * @exception SWTException <ul>
+    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+    *    created the receiver</li>
+    * </ul>
+    */
+   public int getWidth() {
+     checkWidget();
+     int result;
+     boolean isVertical = ( parent.style & SWT.VERTICAL ) != 0;
+     if( ( style & SWT.SEPARATOR ) != 0 && ( !isVertical || !computedWidth ) ) {
+       result = width;
+     } else {
+       if( isVertical ) {         
+         result = 0;
+         ToolItem[] siblings = getParent().getItems();
+         for( int i = 0; i < siblings.length; i++ ) {
+           if( ( siblings[ i ].style & SWT.SEPARATOR ) == 0 ) {
+             result = Math.max(  result, siblings[ i ].getPreferredWidth() );             
+           }
+         }
+       } else {
+         result = getPreferredWidth();               
+       }
+     }
+     return result;
+   }
+   
+  int getPreferredHeight() { 
     int height = DEFAULT_HEIGHT;
+    int frameHeight = getPadding().height + ( getBorderWidth() * 2 );       
     if( !"".equals( getText() ) ) {
       int charHeight = TextSizeDetermination.getCharHeight( parent.getFont() );
-      height = Math.max( DEFAULT_HEIGHT, charHeight );
-      if( getImage() != null ) {
-        height = Math.max( height, getImage().getBounds().y );
-      }
+      height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
     }
-    return new Rectangle( left, top, getWidth(), height );
+    if( getImage() != null ) {
+      int imageHeight = getImage().getBounds().height;
+      height = Math.max( height, imageHeight + frameHeight );
+    }
+    return height;
   }
-
-  /**
-   * Gets the width of the receiver.
-   *
-   * @return the width
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
-   *    created the receiver</li>
-   * </ul>
-   */
-  public int getWidth() {
-    checkWidget();
-    int result;
-    if( ( style & SWT.SEPARATOR ) != 0 ) {
-      result = width;
-    } else {
-      result = 0;
-      boolean hasImage = image != null;
-      boolean hasText = !"".equals( text );
-      if( hasImage ) {
-        result += image.getBounds().width;
-      }
-      if( hasText ) {
-        Font font = parent.getFont();
-        result += TextSizeDetermination.stringExtent( font, text ).x;
-      }
-      if( hasText && hasImage ) {
-        result += SPACING;
-      }
-      int paddingWidth = getPadding();
-      int borderWidth = getBorderWidth() * 2;
-      if( ( style & SWT.DROP_DOWN ) != 0 ) {
-        result += DROP_DOWN_ARROW_WIDTH;
-        result += paddingWidth + borderWidth;
-      }
-      result += paddingWidth + borderWidth;
+  
+  int getPreferredWidth() { 
+    int result = 0;
+    boolean hasImage = image != null;
+    boolean hasText = !"".equals( text );
+    if( hasImage ) {
+      result += image.getBounds().width;
     }
+    if( hasText ) {
+      Font font = parent.getFont();
+      result += TextSizeDetermination.stringExtent( font, text ).x;
+    }
+    if( hasText && hasImage ) {
+      result += getSpacing();
+    }
+    int paddingWidth = getPadding().width;
+    int borderWidth = getBorderWidth() * 2;
+    if( ( style & SWT.DROP_DOWN ) != 0 ) {
+      result += getSpacing() * 2;
+      result += 1; // the separator-line
+      result += getDropDownImageDimension().x;
+    }
+    result += paddingWidth + borderWidth;
     return result;
   }
 
   private int getBorderWidth() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getItemBorderWidth( parent );
+    return adapter.getItemBorderWidth( parent ); 
   }
-
-  private int getPadding() {
+  
+  private Point getDropDownImageDimension() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getItemPadding( parent ).width;
+    return adapter.getDropDownImageDimension( parent );
   }
 
+  private Rectangle getPadding() { 
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getItemPadding( parent );
+  }
+  
+  private int getToolBarSpacing() { 
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getToolBarSpacing( parent );
+  }
+
+  private int getSpacing() { 
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getItemSpacing( parent );
+  }
+  
+  int getSeparatorWidth() { 
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getSeparatorWidth( parent );
+  }
+  
   private ToolBarThemeAdapter getToolBarThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( ToolBarThemeAdapter )themeMgr.getThemeAdapter( ToolBar.class );
@@ -556,6 +627,7 @@ public class ToolItem extends Item {
   public void setWidth( final int width ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) != 0 && width >= 0 ) {
+      computedWidth = false;
       this.width = width;
       resizeControl();
     }
@@ -688,25 +760,19 @@ public class ToolItem extends Item {
     return result;
   }
 
-  private void resizeControl() {
+  void resizeControl() {
     if( control != null && !control.isDisposed() ) {
-      Rectangle itemRect = getBounds();
-      control.setSize( itemRect.width, itemRect.height );
-      // In contrast to SWT, placement is relative to the toolitem.
-      Rectangle rect = control.getBounds();
-      int xoff = ( itemRect.width - rect.width ) / 2;
-      int yoff = ( itemRect.height - rect.height ) / 2;
-      control.setLocation( xoff, yoff );
+      control.setBounds( getBounds() );
     }
   }
 
   private void computeInitialWidth() {
     if( ( style & SWT.SEPARATOR ) != 0 ) {
-      width = SEPARATOR_WIDTH;
+      width = getSeparatorWidth();
     } else {
       width = DEFAULT_WIDTH;
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
-        width += DROP_DOWN_ARROW_WIDTH;
+        width += getDropDownImageDimension().x;
       }
     }
   }

@@ -12,9 +12,7 @@ package org.eclipse.swt.internal.widgets.toolbarkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -41,11 +39,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     ToolBar toolBar = ( ToolBar )widget;
     JSWriter writer = JSWriter.getWriterFor( toolBar );
-    writer.newWidget( "qx.ui.toolbar.ToolBar" );
-    if( ( toolBar.getStyle() & SWT.VERTICAL ) != 0 ){
-      writer.set( JSConst.QX_FIELD_ORIENTATION, 
-                  JSConst.QX_CONST_VERTICAL_ORIENTATION );
-    }    
+    writer.newWidget( "org.eclipse.rwt.widgets.ToolBar" );
     ControlLCAUtil.writeStyleFlags( toolBar );
   }
   

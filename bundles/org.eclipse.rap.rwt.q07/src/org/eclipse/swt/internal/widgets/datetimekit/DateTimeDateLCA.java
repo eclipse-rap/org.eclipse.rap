@@ -77,10 +77,14 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     } else if( ( dateTime.getStyle() & SWT.LONG ) != 0 ) {
       style = "long";
     }
+    if( ( dateTime.getStyle() & SWT.DROP_DOWN ) != 0 ) {
+      style += "drop_down";
+    }
     Object[] args = new Object[]{
       style,
       dateTimeAdapter.getMonthNames(),
       dateTimeAdapter.getWeekdayNames(),
+      dateTimeAdapter.getWeekdayShortNames(),
       dateTimeAdapter.getDateSeparator(),
       dateTimeAdapter.getDatePattern()
     };
@@ -157,6 +161,9 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     // The spinner bounds
     DateTimeLCAUtil.writeSubWidgetBounds( dateTime,
                     IDateTimeAdapter.SPINNER );
+    // The drop-down button bounds
+    DateTimeLCAUtil.writeSubWidgetBounds( dateTime,
+                    IDateTimeAdapter.DROP_DOWN_BUTTON );
   }
 
   private void preserveSubWidgetsBounds( final DateTime dateTime ) {
@@ -184,5 +191,8 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     // The spinner bounds
     DateTimeLCAUtil.preserveSubWidgetBounds( dateTime,
                     IDateTimeAdapter.SPINNER );
+    // The drop-down button bounds
+    DateTimeLCAUtil.preserveSubWidgetBounds( dateTime,
+                    IDateTimeAdapter.DROP_DOWN_BUTTON );
   }
 }

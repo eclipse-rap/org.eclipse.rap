@@ -23,30 +23,39 @@ qx.Class.define( "org.eclipse.swt.Application", {
     qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GfxMixin );
     qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
                     org.eclipse.rwt.GfxMixin );
+    var eventHandler = qx.event.handler.EventHandler.getInstance();
+    eventHandler.setAllowContextMenu(
+      org.eclipse.rwt.widgets.Menu.getAllowContextMenu
+    );
   },
   
   destruct : function() {
     var doc = qx.ui.core.ClientDocument.getInstance();
     doc.removeEventListener( "windowresize", 
                              org.eclipse.swt.Application._onResize );
-    doc.removeEventListener( "keydown",
-                             org.eclipse.swt.Application._onKeyDown );
+    doc.removeEventListener( "keypress",
+                             org.eclipse.swt.Application._onKeyPress );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
   },
 
   statics : {
-    // TODO [rh] causes JavaScript error
-    //  var doc = qx.ui.core.ClientDocument.getInstance();
-    //  doc.removeEventListener( "windowresize", this._onResize );
     _onResize : function( evt ) {
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
       req.send();
     },
 
-    _onKeyDown : function( evt ) {
-      if( evt.getKeyIdentifier() == "Escape" ) {
+    _onKeyPress : function( evt ) {
+      // prevent document from scrolling (see bug 193703)
+      if(    evt.getKeyIdentifier() == "Escape"
+          || evt.getKeyIdentifier() == "Up"
+          || evt.getKeyIdentifier() == "Down"
+          || evt.getKeyIdentifier() == "Left"
+          || evt.getKeyIdentifier() == "Right"
+          || evt.getKeyIdentifier() == "PageUp"
+          || evt.getKeyIdentifier() == "PageDown" ) 
+      {
         evt.preventDefault();
       }
     },
@@ -95,14 +104,14 @@ qx.Class.define( "org.eclipse.swt.Application", {
       qx.ui.basic.ScrollBar.EVENT_DELAY = 125;
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
-      qx.io.Alias.getInstance().add( "static", "./resource/static" );
-      qx.io.Alias.getInstance().add( "org.eclipse.swt", "./resource" );
+      qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
+      qx.io.Alias.getInstance().add( "org.eclipse.swt", "./rwt-resources/resource" );
       // Observe window size
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize",
                             org.eclipse.swt.Application._onResize );
-      doc.addEventListener( "keydown",
-                            org.eclipse.swt.Application._onKeyDown );
+      doc.addEventListener( "keypress",
+                            org.eclipse.swt.Application._onKeyPress );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();

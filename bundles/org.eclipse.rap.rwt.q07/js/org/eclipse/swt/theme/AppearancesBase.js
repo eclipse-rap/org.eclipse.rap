@@ -70,9 +70,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font : tv.getCssFont( "*", "font" ),
         textColor : "black",
-        backgroundColor : "white",
-        // TODO [rst] Eliminate absolute references
-        backgroundImage : "./resource/widget/rap/display/bg.gif"
+        backgroundColor : "white"
       };
     }
   },
@@ -186,10 +184,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = "info";
-      result.padding = [ 1, 3, 2, 3 ];
-      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.border = tv.getCssBorder( "ToolTip", "border" );
+      result.padding = tv.getCssBoxDimensions( "ToolTip", "padding" );
       result.textColor = tv.getCssColor( "ToolTip", "color" );
+      result.font = tv.getCssFont( "ToolTip", "font" );
+      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.backgroundImage = tv.getCssImage( "ToolTip", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
       return result;
     }
   },
@@ -290,49 +291,61 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "toolbar-separator" : {
     style : function( states ) {
-      return {
-        width : 8
-      };
+      return {};
     }
   },
 
   "toolbar-separator-line" : {
     style : function( states ) {
-      return {
-        top    : 2,
-        left   : 3,
-        width  : 2,
-        bottom : 2,
-        border : states.rwt_FLAT ? "horizontalDivider" : "undefined"
-      };
+      var result = null;
+      if( states.vertical ) {
+        result = {
+          left   : 2,
+          height : 2,
+          right  : 2,
+          border : "verticalDivider"
+        };        
+      } else {
+        result = {
+          top    : 2,
+          width  : 2,
+          bottom : 2,
+          border : "horizontalDivider"
+        };                
+      }
+      return result;
     }
   },
 
   "toolbar-button" : {
     style : function( states ) {
-      if( states.pressed || states.checked ) {
-        states.selected = true;
-      } else if( states.selected ) {
-        delete states.selected;
-      }
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         overflow : "hidden",
-        spacing : 4,
         width : "auto",
         verticalChildrenAlign : "middle"
       };
+      result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
       result.textColor = states.disabled
                          ? tv.getCssColor( "*", "color" )
                          : tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
-      result.backgroundImage = states.checked && !states.over
+      result.backgroundImage = states.selected && !states.over  // TODO [tb] : no longer needed?
                                ? "static/image/dotted_white.gif"
                                : tv.getCssImage( "ToolItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
+      if( states.dropDown ) {
+        result.dropDownArrow = tv.getCssSizedImage( "ToolItem-DropDownIcon",
+                                                    "background-image" );
+        result.separatorBorder = tv.getCssBorder( "ToolItem-DropDownIcon", 
+                                                  "border" );
+      } else {
+        result.dropDownArrow = null;
+        result.separatorBorder = null; 
+      }
       return result;
     }
   },
@@ -512,68 +525,54 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "menu-layout" : {
-    style : function( states ) {
-      return {
-        top    : 0,
-        right  : 0,
-        bottom : 0,
-        left   : 0
-      };
-    }
-  },
-
-  "menu-button" : {
+  "menu-item" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        minWidth : "auto",
         height : "auto",
         spacing : 2,
         padding : [ 2, 4 ],
-        cursor : "default",
-        verticalChildrenAlign : "middle",
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" )
       };
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "MenuItem", "color" );
+      if( states.disabled ) {
+        result.textColor = tv.getCssColor( "*", "color" );
+      } else {
+        result.textColor = tv.getCssColor( "MenuItem", "color" );
+      }
+      if( states.cascade ) {                
+        result.arrow = tv.getCssSizedImage( 
+          "MenuItem-CascadeIcon",
+          "background-image" );
+      } else {
+        result.arrow = null;        
+      }
+      if( states.selected ) {
+        if( states.check ) {
+           result.selectionIndicator = tv.getCssSizedImage( 
+            "MenuItem-CheckIcon", 
+            "background-image" );
+        } else if( states.radio ) {
+           result.selectionIndicator= tv.getCssSizedImage( 
+            "MenuItem-RadioIcon", 
+            "background-image" );
+        }
+      } else {
+        if( states.radio ) {
+          var radioWidth = tv.getCssSizedImage( 
+              "MenuItem-RadioIcon", 
+              "background-image" )[1];
+          result.selectionIndicator = [ null, radioWidth, 0 ];
+        } else if( states.check ) {
+          var checkWidth = tv.getCssSizedImage( 
+              "MenuItem-CheckIcon", 
+              "background-image" )[1];
+          result.selectionIndicator = [ null, checkWidth, 0 ];          
+        } else {
+          result.selectionIndicator = null;
+        }
+        
+      }
       return result;
-    }
-  },
-
-  "menu-button-arrow" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        source : tv.getCssImage( "MenuItem-CascadeIcon", "background-image" )
-      };
-    }
-  },
-
-  "menu-check-box" : {
-    include : "menu-button",
-
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        icon : states.checked
-               ? tv.getCssImage( "MenuItem-CheckIcon", "background-image" )
-               : "static/image/blank.gif"
-      };
-    }
-  },
-
-  "menu-radio-button" : {
-    include : "menu-button",
-
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        icon : states.checked
-               ? tv.getCssImage( "MenuItem-RadioIcon", "background-image" )
-               : "static/image/blank.gif"
-      };
     }
   },
 
@@ -1354,9 +1353,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.width = 13;
+      result.paddingLeft = 4;
+      result.width = 21;
       result.height = 13;
-      result.clipWidth = 13;
+      result.clipWidth = 21;
       result.clipHeight = 13;
       result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
       return result;
@@ -1544,10 +1544,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.backgroundColor = tv.getCssColor( "*", "background-color" );
-      result.backgroundGradient = tv.getCssGradient( "*",
+      result.backgroundColor = tv.getCssColor( "Composite", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Composite", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Composite",
                                                      "background-image" );
-      result.border = tv.getCssBorder( "*", "border" );
+      result.border = tv.getCssBorder( "Composite", "border" );
       return result;
     }
   },
@@ -1914,6 +1915,29 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "datetime-drop-down-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime-DropDownButton", "border" );      
+      result.icon = tv.getCssImage( "DateTime-DropDownButton",
+                                    "background-image" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DropDownButton",
+                                               "background-color" );
+      return result;
+    }
+  },
+  
+  "datetime-drop-down-calendar" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime-DropDownCalendar", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      return result;
+    }
+  },
 
   // ------------------------------------------------------------------------
   // Calendar
@@ -2067,13 +2091,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textAlign       : "center",
         verticalAlign   : "middle"
       };
-      if( states.selected || states.otherMonth ) {
+      if( states.disabled ) {
+        result.textColor = tv.getCssColor( "DateTime", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      } else if( states.selected || states.otherMonth || states.over ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
                                                  "background-color" );
-      } else if( states.disabled ) {
-        result.textColor = tv.getCssColor( "DateTime", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";

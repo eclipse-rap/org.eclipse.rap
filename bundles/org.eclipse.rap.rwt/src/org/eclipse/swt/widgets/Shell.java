@@ -16,8 +16,7 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
@@ -87,7 +86,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
  * downgraded to <code>APPLICATION_MODAL</code>.
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>BORDER, CLOSE, MIN, MAX, NO_TRIM, RESIZE, TITLE, ON_TOP, TOOL</dd>
+ * <dd>BORDER, CLOSE, MIN, MAX, NO_TRIM, RESIZE, TITLE, ON_TOP, TOOL, SHEET</dd>
  * <dd>APPLICATION_MODAL, MODELESS, PRIMARY_MODAL, SYSTEM_MODAL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Activate, Close, Deactivate, Deiconify, Iconify</dd>
@@ -125,17 +124,19 @@ public class Shell extends Decorations {
   private static final int MODE_MINIMIZED = 2;
 
   private static final int INITIAL_SIZE_PERCENT = 60;
+  private static final int MIN_WIDTH_LIMIT = 80;
 
   private Control lastActive;
   private IShellAdapter shellAdapter;
   private String text;
-  private Image image;
   private int alpha;
   private Button defaultButton;
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
   private int mode;
   private boolean modified;
+  private int minWidth;
+  private int minHeight;
 
   private Shell( final Display display,
                  final Shell parent,
@@ -153,6 +154,8 @@ public class Shell extends Decorations {
     mode = MODE_NONE;
     this.style = checkStyle( style );
     state |= HIDDEN;
+    minWidth = MIN_WIDTH_LIMIT;
+    minHeight = getMinHeightLimit();
     this.display.addShell( this );
     createWidget();
     setInitialSize();
@@ -192,6 +195,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
+   * @see SWT#SHEET
    */
   public Shell( final int style ) {
     this( ( Display )null, style );
@@ -262,6 +266,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
+   * @see SWT#SHEET
    */
   public Shell( final Display display, final int style ) {
     this( display, null, style, 0 );
@@ -335,6 +340,7 @@ public class Shell extends Decorations {
    * @see SWT#DIALOG_TRIM
    * @see SWT#ON_TOP
    * @see SWT#TOOL
+   * @see SWT#SHEET
    * <!--@see SWT#MODELESS-->
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
@@ -484,6 +490,13 @@ public class Shell extends Decorations {
     bounds = new Rectangle( 0, 0, width, height );
   }
 
+  private int getMinHeightLimit() {
+    int minHeightLimit = getTitleBarMargin().height;
+    minHeightLimit += getTitleBarHeight();
+    minHeightLimit += 2 * getBorderWidth();
+    return minHeightLimit;
+  }
+
   private Rectangle getMenuBounds() {
     Rectangle result = null;
     if( getMenuBar() != null ) {
@@ -531,7 +544,7 @@ public class Shell extends Decorations {
   Composite findDeferredControl() {
     return layoutCount > 0 ? this : null;
   }
-  
+
   void updateMode() {
     mode &= ~MODE_MAXIMIZED;
     mode &= ~MODE_MINIMIZED;
@@ -715,56 +728,6 @@ public class Shell extends Decorations {
     return text;
   }
 
-  /**
-   * Sets the receiver's image to the argument, which may
-   * be null. The image is typically displayed by the window
-   * manager when the instance is marked as iconified, and
-   * may also be displayed somewhere in the trim when the
-   * instance is in normal or maximized states.
-   *
-   * @param image the new image (or null)
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
-   * </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  /* TODO [rst] move to Decorations as soon as it exists */
-  public void setImage( final Image image ) {
-    checkWidget();
-    this.image = image;
-  }
-
-  /**
-   * Returns the receiver's image if it had previously been
-   * set using <code>setImage()</code>. The image is typically
-   * displayed by the window manager when the instance is
-   * marked as iconified, and may also be displayed somewhere
-   * in the trim when the instance is in normal or maximized
-   * states.
-   * <p>
-   * Note: This method will return null if called before
-   * <code>setImage()</code> is called. It does not provide
-   * access to a window manager provided, "default" image
-   * even if one exists.
-   * </p>
-   *
-   * @return the image
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  /* TODO [rst] move to Decorations as soon as it exists */
-  public Image getImage() {
-    checkWidget();
-    return image;
-  }
-
   //////////////////////////////
   // Methods for default button
 
@@ -909,7 +872,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public void setModified ( final boolean modified ) {
@@ -925,12 +888,90 @@ public class Shell extends Decorations {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public boolean getModified () {
     checkWidget();
     return modified;
+  }
+
+  /**
+   * Sets the receiver's minimum size to the size specified by the arguments.
+   * If the new minimum size is larger than the current size of the receiver,
+   * the receiver is resized to the new minimum size.
+   *
+   * @param width the new minimum width for the receiver
+   * @param height the new minimum height for the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setMinimumSize( final int width, final int height ) {
+    checkWidget();
+    minWidth = Math.max( MIN_WIDTH_LIMIT, width );
+    minHeight = Math.max( getMinHeightLimit(), height );
+    Point size = getSize();
+    int newWidth = Math.max( size.x, minWidth );
+    int newHeight = Math.max( size.y, minHeight );
+    if( newWidth != size.x || newHeight != size.y ) {
+      setSize( newWidth, newHeight );
+    }
+  }
+
+  /**
+   * Sets the receiver's minimum size to the size specified by the argument.
+   * If the new minimum size is larger than the current size of the receiver,
+   * the receiver is resized to the new minimum size.
+   *
+   * @param size the new minimum size for the receiver
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setMinimumSize( final Point size ) {
+    checkWidget();
+    if( size == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setMinimumSize( size.x, size.y );
+  }
+
+  /**
+   * Returns a point describing the minimum receiver's size. The
+   * x coordinate of the result is the minimum width of the receiver.
+   * The y coordinate of the result is the minimum height of the
+   * receiver.
+   *
+   * @return the receiver's size
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public Point getMinimumSize() {
+    checkWidget();
+    return new Point( minWidth,  minHeight );
+  }
+
+  public void setBounds( final Rectangle bounds ) {
+    int newWidth = Math.max( bounds.width, minWidth );
+    int newHeight = Math.max( bounds.height, minHeight );
+    super.setBounds( new Rectangle( bounds.x, bounds.y, newWidth, newHeight ) );
   }
 
   // ///////////////////////////////////////////////
@@ -990,7 +1031,7 @@ public class Shell extends Decorations {
       dialogShells[ i ].dispose();
     }
   }
-  
+
   void releaseParent() {
     // Do not call super.releaseParent()
     // This method would try to remove a child-shell from its ControlHolder
@@ -1049,7 +1090,7 @@ public class Shell extends Decorations {
   final void setSavedFocus( final Control control ) {
     savedFocus = control;
   }
-  
+
   // TODO [rh] move to Decorations as soon as exists
   final Control getSavedFocus() {
     return savedFocus;

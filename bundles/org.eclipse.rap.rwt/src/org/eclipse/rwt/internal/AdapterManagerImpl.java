@@ -28,7 +28,7 @@ public class AdapterManagerImpl
   /** <p>the internal datastructure of <code>AdapterManagerImpl</code></p>*/
   private final Map registry;
   private final Map factoryCache;
-  private final NullFactory nullFactory = new NullFactory();
+  private final AdapterFactory nullFactory;
   
   private static class NullFactory implements AdapterFactory {
     private static final Class[] EMPTY = new Class[ 0 ];
@@ -44,6 +44,7 @@ public class AdapterManagerImpl
   private AdapterManagerImpl() {
     registry = new HashMap();
     factoryCache = new HashMap();
+    nullFactory = new NullFactory();
   }
   
   /** <p>returns the singleton instance of this

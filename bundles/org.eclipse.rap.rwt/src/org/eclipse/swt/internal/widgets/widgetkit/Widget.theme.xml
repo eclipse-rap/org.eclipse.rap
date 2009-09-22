@@ -115,6 +115,29 @@
     <property name="background-color"
         type="color"
         description="Background color for tooltips." />
+        
+    <property name="border"
+        type="border"
+        description="Outer border for tooltips." />
+
+    <property name="border-radius" type="boxdim">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+    </property>
+
+    <property name="background-image"
+        type="image"
+        description="Background image or gradient for tooltips." />
+
+    <property name="padding"
+        type="boxdim"
+        description="Padding around the tooltips text." />
+        
+    <property name="font"
+        type="font"
+        description="Text font for tooltips." />
 
   </element>
 

@@ -12,12 +12,10 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.internal.events.DeselectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
@@ -25,12 +23,9 @@ import org.eclipse.swt.widgets.MenuItem;
 
 final class RadioMenuItemLCA extends MenuItemDelegateLCA {
 
+  private static final String ITEM_TYPE_RADIO = "radio";
   private static final String PROP_SELECTION = "selection";
-
-  private static final JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
-                          "org.eclipse.swt.MenuUtil.radioMenuItemSelected",
-                          JSListenerType.STATE_AND_ACTION );
+  private static final String PARAM_SELECTION = "selection";
 
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
@@ -46,43 +41,24 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void readData( final MenuItem menuItem ) {
-    String paramValue = WidgetLCAUtil.readPropertyValue( menuItem, "selection" );
-    if( paramValue != null ) {
-      boolean selection = Boolean.valueOf( paramValue ).booleanValue();
-      if( selection ) {
-        deselectRadioItems( menuItem );
-      }
-      menuItem.setSelection( selection );
+    if( readSelection( menuItem ) ) {
+      processSelectionEvent( menuItem );
     }
     ControlLCAUtil.processSelection( menuItem, null, false );
     WidgetLCAUtil.processHelp( menuItem );
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.RadioButton", true );
-    MenuItem firstSiblingItem = getFirstSiblingRadioItem( menuItem );
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    if( firstSiblingItem == menuItem ) {
-      writer.callStatic( "org.eclipse.swt.MenuUtil.createRadioManager",
-                         new Object[] { menuItem } );
-    } else {
-      writer.callStatic( "org.eclipse.swt.MenuUtil.assignRadioManager",
-                         new Object[] { firstSiblingItem, menuItem } );
-    }    
+    MenuItemLCAUtil.newItem( menuItem, 
+                             "org.eclipse.rwt.widgets.MenuItem", 
+                             ITEM_TYPE_RADIO );
   }
 
+  // TODO [tb] : to MenuItemLCAUtil ?
   void renderChanges( final MenuItem menuItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    // TODO [rh] qooxdoo does not handle radio menu items with images, should
-    //      we already ignore them when calling MenuItem#setImage()?
     MenuItemLCAUtil.writeImageAndText( menuItem );
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( menuItem ) );
-    writer.set( PROP_SELECTION,
-                "checked",
-                Boolean.valueOf( menuItem.getSelection() ),
-                Boolean.FALSE );
+    MenuItemLCAUtil.writeSelectionListener( menuItem ); 
+    MenuItemLCAUtil.writeSelection( menuItem );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
     WidgetLCAUtil.writeHelpListener( menuItem );
@@ -90,63 +66,34 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
 
   void renderDispose( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.callStatic( "org.eclipse.swt.MenuUtil.disposeRadioMenuItem",
-                       new Object[] { menuItem } );
+//    writer.callStatic( "org.eclipse.swt.MenuUtil.disposeRadioMenuItem",
+//                       new Object[] { menuItem } );
+    writer.dispose();
   }
 
   /////////////////////////////////////////////
   // Helping methods to select radio menu items
 
-  private static void deselectRadioItems( final MenuItem menuItem ) {
-    MenuItem[] items = getSiblingRadioItems( menuItem );
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].setSelection( false );
+  private boolean readSelection( final MenuItem item ) {
+    String value = WidgetLCAUtil.readPropertyValue( item, PARAM_SELECTION );
+    if( value != null ) {
+      item.setSelection( Boolean.valueOf( value ).booleanValue() );
     }
+    return value != null;
   }
-
-  private static MenuItem[] getSiblingRadioItems( final MenuItem menuItem ) {
-    java.util.List radioItems = new ArrayList();
-    MenuItem[] siblingMenuItems = menuItem.getParent().getItems();
-    int index = menuItem.getParent().indexOf( menuItem ) - 1;
-    boolean isRadioItem = true;
-    while( index >= 0 && isRadioItem ) {
-      MenuItem item = siblingMenuItems[ index ];
-      if( ( item.getStyle() & SWT.RADIO ) != 0 ) {
-        radioItems.add( item );
+  
+  private static void processSelectionEvent( final MenuItem item ) {
+    if( SelectionEvent.hasListener( item ) ) {
+      int type = SelectionEvent.WIDGET_SELECTED;
+      SelectionEvent event;
+      if( item.getSelection() ) {
+        event = new SelectionEvent( item, null, type );
       } else {
-        isRadioItem = false;
+        event = new DeselectionEvent( item, null, type );
       }
-      index--;
+      event.processEvent();
     }
-    index = menuItem.getParent().indexOf( menuItem ) + 1;
-    isRadioItem = true;
-    while( index < siblingMenuItems.length && isRadioItem ) {
-      MenuItem item = siblingMenuItems[ index ];
-      if( ( item.getStyle() & SWT.RADIO ) != 0 ) {
-        radioItems.add( item );
-      } else {
-        isRadioItem = false;
-      }
-      index++;
-    }
-    MenuItem[] result = new MenuItem[ radioItems.size() ];
-    radioItems.toArray( result );
-    return result;
   }
+  
 
-  /////////////////////////////////////////////////////////
-  // Helping methods to control client-side RadioManager(s)
-
-  private static MenuItem getFirstSiblingRadioItem( final MenuItem menuItem ) {
-    MenuItem result = menuItem;
-    MenuItem[] siblingMenuItems = menuItem.getParent().getItems();
-    int index = menuItem.getParent().indexOf( menuItem ) - 1;
-    while( index >= 0 ) {
-      if( ( siblingMenuItems[ index ].getStyle() & SWT.RADIO ) != 0 ) {
-        result = siblingMenuItems[ index ];
-      }
-      index--;
-    }
-    return result;
-  }
 }

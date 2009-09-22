@@ -36,6 +36,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
       text.setLiveUpdate( true );
       text.setSpellCheck( false );
+      // [if] Prevent selection of all text on tab focus
+      text._ontabfocus = function() {
+        text.setSelectionLength( 0 );
+      };
     },
 
     /*
@@ -76,13 +80,24 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      * Sets the selected text range of the given text widget.
      */
     setSelection : function( text, start, length ) {
-      if( text.isCreated() ) {
-        org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
-      } else {
-        text.setUserData( "onAppear.selectionStart", start );
-        text.setUserData( "onAppear.selectionLength", length );
-        text.addEventListener( "appear",
-                               org.eclipse.swt.TextUtil._onAppearSetSelection );
+      // [if] The selection is applied on the TextField when it gains the focus.
+      text.setUserData( "selectionStart", start );
+      text.setUserData( "selectionLength", length );
+      if( text.getFocused() ) {
+        org.eclipse.swt.TextUtil._doSetSelection( text );
+      }
+    },
+
+    _doSetSelection : function( text ) {
+      var start = text.getUserData( "selectionStart" );
+      var length = text.getUserData( "selectionLength" );
+      if( start != null && length != null ) {
+        // TODO: [if] Find better solution for initial text selection
+        // (without timer)
+        qx.client.Timer.once( function() {
+          text.setSelectionStart( start );
+          text.setSelectionLength( length );
+        }, text, 50 );
       }
     },
 
@@ -104,6 +119,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.addEventListener( "keypress", org.eclipse.swt.TextUtil._onKeyPress );
       text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
       text.addEventListener( "changeFont", org.eclipse.swt.TextUtil._onFontChange, text );
+      text.addEventListener( "focus", org.eclipse.swt.TextUtil._onFocus, text );
       org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
 
@@ -125,7 +141,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             && !event.isAltPressed()
             && !event.isCtrlPressed()
             && !event.isMetaPressed() )
-        {          
+        {
           if( text.hasState( "rwt_MULTI" ) ) {
             event.stopPropagation();
           }
@@ -159,7 +175,15 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onFontChange : function( event ) {
-      org.eclipse.swt.TextUtil._updateLineHeight( this );
+      var text = event.getTarget();
+      org.eclipse.swt.TextUtil._updateLineHeight( text );
+    },
+
+    _onFocus : function( event ) {
+      if( !qx.event.handler.FocusHandler.mouseFocus ) {
+        var text = event.getTarget();
+        org.eclipse.swt.TextUtil._doSetSelection( text );
+      }
     },
 
     // this function is also used by Combo.js
@@ -289,34 +313,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                                                        "selectionLength",
                                                        length );
         }
-      }
-    },
-
-    _onAppearSetSelection : function( event ) {
-      var text = event.getTarget();
-      var start = text.getUserData( "onAppear.selectionStart" );
-      var length = text.getUserData( "onAppear.selectionLength" );
-      org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
-      text.removeEventListener( "appear",
-                                org.eclipse.swt.TextUtil._onAppearSetSelection );
-    },
-
-    _doSetSelection : function( text, start, length ) {
-      text.setUserData( "selectionStart", start );
-      text.setUserData( "selectionLength", length );
-      // [if] Workaround for bug
-      // 262908: Focus jump when setting text in focusLost event
-      if( start == 0 && length == 0 ) {
-        // [if] Clear the selection by setting the text again. 
-        // This way the text field does not gain the focus.
-        if( text._inputElement !== undefined ) {
-          var value = text.getValue();
-          text._inputElement.value = "";
-          text._inputElement.value = value;
-        }
-      } else {  
-        text.setSelectionStart( start );
-        text.setSelectionLength( length );
       }
     }
 

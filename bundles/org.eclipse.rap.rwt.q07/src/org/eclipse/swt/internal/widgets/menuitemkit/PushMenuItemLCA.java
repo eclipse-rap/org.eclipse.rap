@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
@@ -23,6 +24,8 @@ import org.eclipse.swt.widgets.MenuItem;
 
 final class PushMenuItemLCA extends MenuItemDelegateLCA {
 
+  private static final String ITEM_TYPE_PUSH = "push";
+  private static final String ITEM_TYPE_CASCADE ="cascade";
   private static final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE, 
                           JSConst.JS_WIDGET_SELECTED, 
@@ -45,7 +48,12 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Button", true );    
+    String type = ( menuItem.getStyle() & SWT.CASCADE ) != 0 
+                   ? ITEM_TYPE_CASCADE
+                   : ITEM_TYPE_PUSH;
+    MenuItemLCAUtil.newItem( menuItem, 
+                             "org.eclipse.rwt.widgets.MenuItem", 
+                             type );    
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {

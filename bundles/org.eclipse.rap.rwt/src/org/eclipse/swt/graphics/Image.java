@@ -110,7 +110,12 @@ public final class Image extends Resource implements Drawable {
     IResourceManager manager = ResourceManager.getInstance();
     BufferedInputStream bis = new BufferedInputStream( in );
     bis.mark( Integer.MAX_VALUE );
-    Point size = ResourceFactory.readImageSize( bis );
+    Point size = null;
+    try {
+      size = ResourceFactory.readImageSize( bis );
+    } catch( IOException e ) {
+      e.printStackTrace();
+    }
     this.width = size.x;
     this.height = size.y;
     try {

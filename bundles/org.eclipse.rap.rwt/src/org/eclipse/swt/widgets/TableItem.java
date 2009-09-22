@@ -1048,16 +1048,7 @@ public class TableItem extends Item {
   }
 
   final int getCheckWidth( final int index ) {
-    int result = 0;
-    if( index == 0 && parent.getColumnCount() == 0 ) {
-      result = parent.getCheckWidth();
-    } else {
-      int[] columnOrder = parent.getColumnOrder();
-      if( columnOrder[ 0 ] == index ) {
-        result = parent.getCheckWidth();
-      }
-    }
-    return result;
+    return parent.getCheckWidth( index );
   }
 
   private int getImageWidth( final int index ) {

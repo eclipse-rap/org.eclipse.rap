@@ -323,7 +323,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     String prop = Props.SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( ccombo, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( "hasSelectionListener", ccombo );
+      writer.set( "hasSelectionListener", newValue );
     }
   }
 
@@ -337,7 +337,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     String prop = PROP_VERIFY_MODIFY_LISTENER;
     if( WidgetLCAUtil.hasChanged( ccombo, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( "hasVerifyModifyListener", ccombo );
+      writer.set( "hasVerifyModifyListener", newValue );
     }
   }
 

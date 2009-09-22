@@ -35,11 +35,6 @@ final class MenuLCAUtil {
   static final String PROP_WIDTH = "width";
   static final String PROP_MENU_LISTENER = "menuListener";
 
-  private static final String SET_MENU_LISTENER
-    = "org.eclipse.swt.MenuUtil.setMenuListener";
-  private static final String UNHIDE_MENU
-    = "org.eclipse.swt.MenuUtil.unhideMenu";
-
   public static void preserveEnabled( final Menu menu ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_ENABLED, Boolean.valueOf( menu.getEnabled() ) );
@@ -57,15 +52,15 @@ final class MenuLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_MENU_LISTENER, hasListener );
   }
-
+  
   public static void writeMenuListener( final Menu menu ) throws IOException {
     String prop = PROP_MENU_LISTENER;
     Boolean newValue = Boolean.valueOf( MenuEvent.hasListener( menu ) );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( menu, prop, newValue, defValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
-      Object[] args = new Object[]{ menu, newValue };
-      writer.callStatic( SET_MENU_LISTENER, args );
+      Object[] args = new Object[]{ newValue };
+      writer.call( "setHasMenuListener", args );
     }
   }
 
@@ -89,8 +84,8 @@ final class MenuLCAUtil {
     if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
       Boolean reveal = Boolean.valueOf( menu.getItemCount() > 0 );
-      Object[] args = new Object[]{ menu, reveal };
-      writer.callStatic( UNHIDE_MENU, args );
+      Object[] args = new Object[]{ reveal };
+      writer.call( "unhideItems", args );
     }
   }
 

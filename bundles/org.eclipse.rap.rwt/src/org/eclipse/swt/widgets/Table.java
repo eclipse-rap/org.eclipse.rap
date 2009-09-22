@@ -1927,7 +1927,8 @@ public class Table extends Composite {
   }
 
   final int getItemsPreferredWidth( final int columnIndex ) {
-    int width = 0;
+    // Mimic Windows behaviour that has a minimal width
+    int width = getCheckWidth( columnIndex ) + 12;
     // dont't access virtual items, they would get resolved unintentionally
     TableItem[] items = getCachedItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -1937,10 +1938,6 @@ public class Table extends Composite {
       if( itemWidth > width ) {
         width = itemWidth;
       }
-    }
-    // Mimic Windows behaviour that has a minimal width
-    if( width < 12 ) {
-      width = 12;
     }
     return width;
   }
@@ -1969,7 +1966,7 @@ public class Table extends Composite {
     }
     if( columnImageCount == null ) {
       columnImageCount = new int[] { 0 };
-    } else {
+    } else if( getColumnCount() > 1 ) {
       int length = columnImageCount.length;
       int[] newColumnImageCount = new int[ length + 1 ];
       System.arraycopy( columnImageCount, 0, newColumnImageCount, 0, index );
@@ -2316,6 +2313,19 @@ public class Table extends Composite {
     if( ( style & SWT.CHECK ) != 0 ) {
       // TODO [rh] read from theme
       result = 21;
+    }
+    return result;
+  }
+
+  final int getCheckWidth( final int index ) {
+    int result = 0;
+    if( index == 0 && getColumnCount() == 0 ) {
+      result = getCheckWidth();
+    } else {
+      int[] columnOrder = getColumnOrder();
+      if( columnOrder[ 0 ] == index ) {
+        result = getCheckWidth();
+      }
     }
     return result;
   }

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.resources.JsConcatenator;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.util.HTML;
@@ -28,10 +29,10 @@ import org.eclipse.rwt.service.IServiceHandler;
 /**
  *  <p>This class is used to deliver the concatenated javascript libraries that
  *  are needed to run RWT on the client site in one request.</p>
- *  <p>Depending on the 'Accept-Encoding' header of the request the content
- *  is either sent uncompressed or compressed. The latter should be the normal
- *  case, since this reduces the size of the content that has to
- *  be sent over the wire.</p>
+ *  <p>Depending on the 'Accept-Encoding' header of the request and the 
+ *  configuration settings the content is either sent uncompressed or compressed. 
+ *  The latter should be the normal case, since this reduces the size of the 
+ *  content that has to be sent over the wire.</p>
  *  <p>As the filename of the delivered javascript has a version postfix the
  *  browser is informed to store the javascript in its cache.</p>
  */
@@ -62,7 +63,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     HttpServletResponse response = RWT.getResponse();
     response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT );
     response.setHeader( HTML.EXPIRES, EXPIRES_NEVER );
-    if( isAcceptEncoding() ) {
+    if( isAcceptEncoding() && getInitProps().isCompression()) {
       writeCompressedOutput();
     } else {
       writeUnCompressedOutput();
@@ -114,6 +115,11 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   private static boolean isAcceptEncoding() {
     String encodings = RWT.getRequest().getHeader( HTML.ACCEPT_ENCODING );
     return encodings != null && encodings.indexOf( HTML.ENCODING_GZIP ) != -1;
+  }
+  
+  private static IInitialization getInitProps() {
+    IConfiguration configuration = ConfigurationReader.getConfiguration();
+    return configuration.getInitialization();
   }
   
   private static JsConcatenator getJsConcatenator() {

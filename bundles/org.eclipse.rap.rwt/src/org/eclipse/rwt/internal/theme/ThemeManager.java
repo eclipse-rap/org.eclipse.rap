@@ -18,6 +18,7 @@ import java.util.*;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.css.*;
@@ -31,6 +32,7 @@ import org.w3c.css.sac.CSSException;
  * installed themes.
  */
 public final class ThemeManager {
+
 
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
@@ -48,12 +50,13 @@ public final class ThemeManager {
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
 
+  private static final String LOG_SYSTEM_PROPERTY
+    = System.getProperty( ThemeManager.class.getName() + ".log" );
   private static final boolean DEBUG
-    = "true".equals( System.getProperty( ThemeManager.class.getName() + ".log" ) );
+    = "true".equals( LOG_SYSTEM_PROPERTY );
 
   private static final String CLIENT_LIBRARY_VARIANT
     = "org.eclipse.rwt.clientLibraryVariant";
-
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
   /**
@@ -112,20 +115,19 @@ public final class ThemeManager {
   };
 
   /** Where to load the default non-themeable images from */
-  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap";
+  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap/";
 
   /** Destination path for theme resources */
-  private static final String THEME_RESOURCE_DEST = "resource/themes";
-
+  private static final String THEME_RESOURCE_DEST = "themes";
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
 
   private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
-
   private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Widget.class,
     org.eclipse.swt.widgets.Control.class,
+    org.eclipse.swt.widgets.Composite.class,
     org.eclipse.swt.widgets.Button.class,
     org.eclipse.swt.widgets.Combo.class,
     org.eclipse.swt.widgets.CoolBar.class,
@@ -154,23 +156,14 @@ public final class ThemeManager {
   private static ThemeManager instance;
 
   private final Set customAppearances;
-
   private final Map themes;
-
   private final Map adapters;
-
   private final Set registeredThemeFiles;
-
   private boolean initialized;
-
   private Theme predefinedTheme;
-
   private ThemeableWidgetHolder themeableWidgets;
-
   private StyleSheetBuilder defaultStyleSheetBuilder;
-
   private int themeCount;
-
   private CssElementHolder registeredCssElements;
 
   private ThemeManager() {
@@ -245,7 +238,7 @@ public final class ThemeManager {
   /**
    * Adds a custom widget to the list of themeable widgets. Note that this
    * method must be called <em>before</em> initializing the ThemeManager.
-   * 
+   *
    * @param widget the themeable widget to add, must not be <code>null</code>
    * @param loader the resource loader used to load theme resources like theme
    *          definitions etc. The resources to load follow a naming convention
@@ -279,7 +272,7 @@ public final class ThemeManager {
   /**
    * Registers a theme from an input stream. Note that <code>initialize()</code>
    * must be called first.
-   * 
+   *
    * @param id an id that identifies the theme in the Java code. Note that this
    *          id is not valid on the client-side. To get the id that is used on
    *          the client, see method <code>getJsThemeId</code>
@@ -416,7 +409,7 @@ public final class ThemeManager {
 
   /**
    * Returns the theme adapter to use for controls of the specified type.
-   * 
+   *
    * @param widgetClass
    * @return the theme adapter
    * @throws IllegalStateException if not initialized
@@ -652,7 +645,7 @@ public final class ThemeManager {
     log( " == register non-themeable images for theme " + themeId );
     for( int i = 0; i < WIDGET_NOTHEME_RESOURCES.length; i++ ) {
       String imagePath = WIDGET_NOTHEME_RESOURCES[ i ];
-      String res = WIDGET_RESOURCES_SRC + "/" + imagePath;
+      String res = WIDGET_RESOURCES_SRC + imagePath;
       InputStream inputStream = classLoader.getResourceAsStream( res );
       if( inputStream == null ) {
         String mesg = "Resource not found: " + res;
@@ -776,7 +769,12 @@ public final class ThemeManager {
     }
     QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
     if( type == QxTheme.WIDGET || type == QxTheme.ICON ) {
-      qxTheme.appendUri( getWidgetDestPath( jsId ) );
+      // TODO [rh] remove hard-coded resource-manager-path-prefix
+      String uri
+        = ResourceManagerImpl.RESOURCES
+        + "/"
+        + getWidgetDestPath( jsId );
+      qxTheme.appendUri( uri );
     } else if( type == QxTheme.APPEARANCE ) {
       Iterator iterator = customAppearances.iterator();
       while( iterator.hasNext() ) {

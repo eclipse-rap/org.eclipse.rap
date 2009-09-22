@@ -220,7 +220,14 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     setToolTip : function( widget, toolTipText ) {
       if( toolTipText != null && toolTipText != "" ) {
         widget.setUserData( "toolTipText", toolTipText );
-        widget.setToolTip( org.eclipse.rwt.widgets.ToolTip.getInstance() );
+        var toolTip = org.eclipse.rwt.widgets.ToolTip.getInstance()
+        widget.setToolTip( toolTip );
+        // make sure "boundToWidget" is initialized:
+        if( toolTip.getParent() != null ) {  
+          if( toolTip.getBoundToWidget() == widget ) {
+            toolTip.updateText( widget );
+          }
+        }
       } else {
         this._removeToolTipPopup( widget );
       }

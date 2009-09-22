@@ -45,8 +45,12 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menubar.Button", true );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
+    writer.newWidget( "qx.ui.menubar.Button" );
+    int index = menuItem.getParent().indexOf( menuItem );
+    writer.call( menuItem.getParent(), 
+                 "addAt", 
+                 new Object[]{ menuItem, new Integer( index ) } );
     // Note: qx.ui.menubar.Button extends qx.ui.toolbar.Button
     writer.set( JSConst.QX_FIELD_APPEARANCE, "menubar-button" );    
   }

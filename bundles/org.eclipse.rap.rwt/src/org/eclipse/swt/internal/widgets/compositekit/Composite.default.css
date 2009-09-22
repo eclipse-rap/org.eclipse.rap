@@ -1,0 +1,7 @@
+/* Default theme for all composites */
+
+Composite {
+  border: none;
+  background-image: none;
+  background-color: transparent;
+}

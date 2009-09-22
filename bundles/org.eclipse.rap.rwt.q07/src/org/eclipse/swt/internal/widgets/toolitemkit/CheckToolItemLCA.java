@@ -14,33 +14,18 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.ToolItem;
 
 
 final class CheckToolItemLCA extends ToolItemDelegateLCA {
 
-  // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String WIDGET_SELECTED
-    = "org.eclipse.swt.ToolItemUtil.checkSelected";
-  private static final String CREATE_CHECK
-    = "org.eclipse.swt.ToolItemUtil.createCheck";
-
-  private final JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
-                          WIDGET_SELECTED,
-                          JSListenerType.STATE_AND_ACTION );
+  private static final String PARAM_CHECK = "check";
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
     ToolItemLCAUtil.preserveImages( toolItem );
     ToolItemLCAUtil.preserveSelection( toolItem );
-    WidgetLCAUtil.preserveCustomVariant( toolItem );
   }
 
   void readData( final ToolItem toolItem ) {
@@ -52,39 +37,10 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
   }
 
   void renderInitialization( final ToolItem toolItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ToolBar toolBar = toolItem.getParent();
-    Object[] args = new Object[] {
-      WidgetUtil.getId( toolItem ),
-      toolBar,
-      ToolItemLCAUtil.getClientSideIndex( toolItem )
-    };
-    writer.callStatic( CREATE_CHECK, args );
-    writer.set( "checked", toolItem.getSelection() );
-    if( ( toolBar.getStyle() & SWT.FLAT ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
-    }
-  }
+    ToolItemLCAUtil.renderInitialization( toolItem, PARAM_CHECK );  }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolItem );
-    ItemLCAUtil.writeText( toolItem, false );
-    ToolItemLCAUtil.writeImages( toolItem );
-    // TODO [rh] could be optimized in that way, that qooxdoo forwards the
-    //      right-click on a toolbar item to the toolbar iteself if the toolbar
-    //      item does not have a context menu assigned
-    WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
-    // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
-    // bounds of the widget that was clicked -> In the SelectionEvent
-    // for ToolItem the bounds are undefined
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( toolItem ) );
-    WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
-    ToolItemLCAUtil.writeVisible( toolItem );
-    ToolItemLCAUtil.writeBounds( toolItem );
-    ToolItemLCAUtil.writeSelection( toolItem, toolItem.getSelection() );
-    WidgetLCAUtil.writeCustomVariant( toolItem );
+    ToolItemLCAUtil.renderChanges( toolItem );
+    ToolItemLCAUtil.writeSelection( toolItem );
   }
 }

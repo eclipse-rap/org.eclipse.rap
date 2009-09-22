@@ -28,8 +28,16 @@
         type="image"
         description="Background image for tool bar" />
 
+    <property name="padding"
+        type="boxdim"
+        description="Padding (inner distance) for tool bar" />
+
+    <property name="spacing"
+        type="dimension"
+        description="Spacing between the tool items" />
+
     <state name="disabled"
-        description="Applies to disabled tool bars." />
+        description="Applies to disabled tool bars" />
 
     <element name="ToolItem"
         description="Items of ToolBar controls">
@@ -49,6 +57,10 @@
       <property name="border"
           type="border"
           description="Border for tool bar items" />
+          
+      <property name="spacing"
+          type="dimension"
+          description="Spacing between the text and icon" />
 
       <property name="padding"
           type="boxdim"
@@ -57,6 +69,40 @@
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent ToolBar." />
 
+      <state name="hover"
+          description="Applies on mouse over." />
+
+      <state name="pressed"
+          description="Applies while the ToolItem is pressed." />
+
+      <state name="selected"
+          description="Applies while the ToolItem is selected (CHECK of RADIO style)." />
+
+      <state name="disabled"
+          description="Applies to disabled tool items." />
+
+    </element>
+    
+    <element name="ToolItem-Separator" 
+        description="ToolItems with SEPARATOR style">
+
+      <property name="width"
+          type="dimension"
+          description="The width of the Separator" />
+          
+    </element>
+    
+    <element name="ToolItem-DropDownIcon" 
+        description="The icon displayed on ToolItem with DROPDOWN style">
+
+      <property name="background-image"
+          type="image"
+          description="The icon" />
+
+      <property name="border"
+          type="border"
+          description="Border for the line separating the dropDown-icon" />
+          
       <state name="hover"
           description="Applies on mouse over." />
 

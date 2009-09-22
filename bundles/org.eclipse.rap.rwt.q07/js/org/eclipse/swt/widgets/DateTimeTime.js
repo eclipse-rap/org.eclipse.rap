@@ -198,17 +198,17 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
         this._spinner.setMin( 0 );
         this._spinner.setMax( 23 );
         tmpValue = this._removeLeadingZero( this._hoursTextField.getText() );
-        this._spinner.setValue( parseInt( tmpValue ) );
+        this._spinner.setValue( parseInt( tmpValue, 10 ) );
       } else if( textField === this._minutesTextField ) {
         this._spinner.setMin( 0 );
         this._spinner.setMax( 59 );
         tmpValue = this._removeLeadingZero( this._minutesTextField.getText() );
-        this._spinner.setValue( parseInt( tmpValue ) );
+        this._spinner.setValue( parseInt( tmpValue, 10 ) );
       } else if( textField === this._secondsTextField ) {
         this._spinner.setMin( 0 );
         this._spinner.setMax( 59 );
         tmpValue = this._removeLeadingZero( this._secondsTextField.getText() );
-        this._spinner.setValue( parseInt( tmpValue ) );
+        this._spinner.setValue( parseInt( tmpValue, 10 ) );
       }
       // Set focused text field
       this._focusedTextField = textField;
@@ -307,13 +307,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
             if( value.length < maxChars ) {
               newValue = value + keypress;
             }
-            var intValue = parseInt( this._removeLeadingZero( newValue ) );
+            var intValue = parseInt( newValue, 10 );
             if( intValue >= this._spinner.getMin() &&
                 intValue <= this._spinner.getMax() ) {
               this._spinner.setValue( intValue );
             } else {
               newValue = keypress;
-              intValue = parseInt( newValue );
+              intValue = parseInt( newValue, 10 );
               if( intValue >= this._spinner.getMin() &&
                   intValue <= this._spinner.getMax() ) {
                 this._spinner.setValue( intValue );

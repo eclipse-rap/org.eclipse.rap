@@ -51,6 +51,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/WidgetManager.js";
   private static final String EVENT_UTIL_JS
     = "org/eclipse/swt/EventUtil.js";
+  private static final String KEY_EVENT_UTIL_JS
+    = "org/eclipse/rwt/KeyEventUtil.js";
   private static final String ASYNC_KEY_EVENT_UTIL_JS
     = "org/eclipse/rwt/AsyncKeyEventUtil.js";
   private static final String SYNC_KEY_EVENT_UTIL_JS
@@ -59,10 +61,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/widgets/ToolTip.js";
   private static final String TAB_UTIL_JS
     = "org/eclipse/swt/TabUtil.js";
-  private static final String TOOL_ITEM_JS
-    = "org/eclipse/swt/ToolItemUtil.js";
-  private static final String MENU_UTIL_JS
-    = "org/eclipse/swt/MenuUtil.js";
   private static final String WIDGET_UTIL_JS
     = "org/eclipse/swt/WidgetUtil.js";
   private static final String CTAB_FOLDER_JS
@@ -142,15 +140,25 @@ final class QooxdooResourcesUtil {
   private static final String SLIDER_JS
     = "org/eclipse/swt/widgets/Slider.js";
   private static final String RADIOBUTTONUTIL_JS
-  = "org/eclipse/rwt/RadioButtonUtil.js";
+    = "org/eclipse/rwt/RadioButtonUtil.js";
   private static final String LINK_JS
     = "org/eclipse/swt/widgets/Link.js";
-  private static final String HTMLUTIL_JS
-  = "org/eclipse/rwt/HtmlUtil.js";
   private static final String MULTICELLWIDGET
-  = "org/eclipse/rwt/widgets/MultiCellWidget.js";
+    = "org/eclipse/rwt/widgets/MultiCellWidget.js";
   private static final String BUTTON
-  = "org/eclipse/rwt/widgets/Button.js";
+    = "org/eclipse/rwt/widgets/Button.js";
+  private static final String ABSTRACTBUTTON
+    = "org/eclipse/rwt/widgets/AbstractButton.js";
+  private static final String MENU
+    = "org/eclipse/rwt/widgets/Menu.js";
+  private static final String MENU_ITEM
+    = "org/eclipse/rwt/widgets/MenuItem.js";
+  private static final String TOOL_ITEM
+    = "org/eclipse/rwt/widgets/ToolItem.js";  
+  private static final String TOOLSEPARATOR
+    = "org/eclipse/rwt/widgets/ToolSeparator.js";  
+  private static final String TOOLBAR
+    = "org/eclipse/rwt/widgets/ToolBar.js";  
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -190,14 +198,13 @@ final class QooxdooResourcesUtil {
       register( REQUEST_JS, compress );
       register( WIDGET_MANAGER_JS, compress );
       register( EVENT_UTIL_JS, compress );
+      register( KEY_EVENT_UTIL_JS, compress );
       register( ASYNC_KEY_EVENT_UTIL_JS, compress );
       register( SYNC_KEY_EVENT_UTIL_JS, compress );
       register( TOOLTIP_JS, compress );
       register( WIDGET_UTIL_JS, compress );
       register( SASH_JS, compress );
       register( TAB_UTIL_JS, compress );
-      register( TOOL_ITEM_JS, compress );
-      register( MENU_UTIL_JS, compress );
       register( CTAB_ITEM_JS, compress );
       register( CTAB_FOLDER_JS, compress );
       register( COOL_ITEM_JS, compress );
@@ -234,10 +241,15 @@ final class QooxdooResourcesUtil {
       register( SLIDER_JS, compress );
       register( RADIOBUTTONUTIL_JS, compress );
       register( LINK_JS, compress );
-      register( HTMLUTIL_JS, compress );
       register( MULTICELLWIDGET, compress );
+      register( ABSTRACTBUTTON, compress );
       register( BUTTON, compress );
-      
+      register( MENU, compress );
+      register( MENU_ITEM, compress );
+      register( TOOLBAR, compress );
+      register( TOOL_ITEM, compress );
+      register( TOOLSEPARATOR, compress );
+
       // register contributions
       registerContributions();
     } finally {

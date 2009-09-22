@@ -124,14 +124,12 @@ public class RWTLifeCycle extends LifeCycle {
           setShutdownAdapter( null );
         }
       } catch( final UIThreadTerminatedError e ) {
-        e.printStackTrace();
         ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
       } catch( final Throwable thr ) {
         // TODO [rh] preliminary fix for 
         //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=232289
         //      For a decent solution, see these ideas
         //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
-        thr.printStackTrace();
         setShutdownAdapter( null );
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         stateInfo.setAttribute( UI_THREAD_THROWABLE, thr );

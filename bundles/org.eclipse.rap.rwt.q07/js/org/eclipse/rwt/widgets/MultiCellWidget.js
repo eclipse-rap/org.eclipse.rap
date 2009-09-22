@@ -33,6 +33,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     this.initCursor();    
     this.initTextColor();        
   },
+  
+  destruct : function() {
+    this._disposeObjectDeep( "__cellData", 0 );
+    this._disposeObjectDeep( "__cellNodes", 0 );
+    this._disposeObjectDeep( "__paddingCache", 0 );
+    this._disposeObjectDeep( "_fontCache", 0 );
+  },
 
   /*
   *****************************************************************************
@@ -70,6 +77,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     selectable : {
       refine : true,
       init : false
+    },
+
+    textColor : {
+      refine : true,
+      init : "#000000"
+    },
+
+    cursor : {
+      refine : true,
+      init : "default"
     },
 
     allowStretchX : {
@@ -116,11 +133,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     __computedTotalSpacing : null,
     __paddingCache : null,
     __fontCache : null,
-    _htmlUtil : org.eclipse.rwt.HtmlUtil,
+    __styleRegExp : /([a-z])([A-Z])/g,
+
     _applyEnabled : function( value, old ) {
       this.base( arguments, value, old );
       this._styleAllImagesEnabled();
-      this._styleAllLabelsEnabled();
     },
 
     /*
@@ -174,15 +191,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _applySpacing : function( value, old ) {
       this._invalidateTotalSpacing();
-      this.addToQueue( "layoutX" );
+      this._scheduleLayoutX();
     },
-
+    
     _applyHorizontalChildrenAlign : function( value, old ) {
-      this.addToQueue( "layoutX" );
+      this._scheduleLayoutX();
     },
-
+    
     _applyVerticalChildrenAlign : function( value, old ) {
-      this.addToLayoutChanges( "layoutY" );
+      this._scheduleLayoutY();
     },
 
     _applyPaddingTop : function( value, old ) {
@@ -214,40 +231,83 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       LAYOUT : public api
     ---------------------------------------------------------------------------
     */
-
-    // This is either the URL (image) or the text (label)
-    setCellContent : function( cell, value ) {
+    
+    /**
+     * This is either the URL (image) or the text (label)
+     */ 
+    setCellContent : function( cell, value ) { 
       this.__updateComputedCellDimension( cell );
       if( this._cellHasContent( cell ) != ( value != null ) ) {
         this._invalidateTotalSpacing();
-        this._invalidatePreferredInnerHeight();
         this.addToQueue( "createContent" );
       } else {
         this.addToQueue( "updateContent" );
       }
       this.__cellData[ cell ][ 1 ] = value;
     },
-
-    // The dimensions for the cell. Is mandatory for images (or 0x0 will
-    // be assumed), optional for labels. Set a dimension to "null" to use the
-    // computed value.
+     
+    /**
+     * The dimensions for the cell. Is mandatory for images (or 0x0 will
+     * be assumed), optional for labels. Set a dimension to "null" to use the
+     * computed value.
+     */ 
     setCellDimension : function( cell, width, height ) {
-      this._setCellWidth( cell, width );
-      this._setCellHeight( cell, height );
-    },
-
-    getCellDimension : function( cell ) {
-      var width = this._getCellWidth( cell );
-      var height = this._getCellHeight( cell );
-      return [ width, height ];
-    },
-
+      this.setCellWidth( cell, width );
+      this.setCellHeight( cell, height );
+    },    
+    
     getCellNode : function( cell ) {
       return this.__cellNodes[ cell ];
     },
-
+    
     getCellContent : function( cell ) {
       return this.__cellData[ cell ][ 1 ];
+    },
+    
+    setCellWidth : function( cell, width ) {
+      this._setCellWidth( cell, width );
+      this._invalidateTotalSpacing(); 
+      this._invalidatePreferredInnerWidth(); 
+      this._scheduleLayoutX(); 
+    },
+    
+    setCellHeight : function( cell, height ) {
+      this._setCellHeight( cell, height );
+      this._invalidateTotalSpacing(); 
+      this._invalidatePreferredInnerHeight();  
+      this._scheduleLayoutY();
+    },
+    
+    getCellDimension : function( cell ) { 
+      var width = this.getCellWidth( cell );
+      var height = this.getCellHeight( cell );
+      return [ width, height ];
+    },    
+    
+    /**
+     * Returns the user-set value for width if it exists, else the computed
+     */
+    getCellWidth : function( cell ) {
+      var cellEntry = this.__cellData[ cell ]; 
+      var width = ( cellEntry[ 2 ] != null ? cellEntry[ 2 ] : cellEntry[ 4 ] );
+      if( width == null ) {
+        var computed = this.__computeCellDimension( cellEntry );
+        width = computed[ 0 ];
+      }
+      return width;      
+    },
+    
+    /**
+     * Returns the user-set value for height if it exists, else the computed
+     */
+    getCellHeight : function( cell ) {
+      var cellEntry = this.__cellData[ cell ]; 
+      var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
+      if( height == null ) {
+        var computed = this.__computeCellDimension( cellEntry );
+        height = computed[ 1 ];
+      }
+      return height;      
     },
 
     /*
@@ -255,7 +315,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       LAYOUT : internals
     ---------------------------------------------------------------------------
     */
-
+    
+    _scheduleLayoutX : function() {
+      this.addToQueue( "layoutX" );
+      this._afterScheduleLayoutX();
+    },
+    
+    _scheduleLayoutY : function() {
+      this.addToQueue( "layoutY" );
+      this._afterScheduleLayoutY();
+    },
+    
+    _afterScheduleLayoutX : qx.lang.Function.returnTrue,
+    
+    _afterScheduleLayoutY : qx.lang.Function.returnTrue,    
+    
+    _beforeComputeInnerWidth : qx.lang.Function.returnTrue,
+    
+    _beforeComputeInnerHeight : qx.lang.Function.returnTrue,
+    
+    _beforeRenderLayout : qx.lang.Function.returnTrue,
+    
     _cellHasContent : function( cell ) {
       var content = this.__cellData[ cell ][ 1 ];
       return content != null;
@@ -273,38 +353,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _setCellWidth : function( cell, width ) {
       this.__cellData[ cell ][ 2 ] = width;
-      if( this._cellHasContent( cell ) ) {
-        this._invalidatePreferredInnerWidth();
-        this.addToQueue( "layoutX" );
-      }
     },
 
     _setCellHeight : function( cell, height ) {
       this.__cellData[ cell ][ 3 ] = height;
-      if( this._cellHasContent( cell ) ) {
-        this._invalidatePreferredInnerHeight();
-        this.addToQueue( "layoutY" );
-      }
-    },
-
-    _getCellWidth : function( cell ) {
-      var cellEntry = this.__cellData[ cell ];
-      var width = ( cellEntry[ 2 ] != null ? cellEntry[ 2 ] : cellEntry[ 4 ] );
-      if( width == null ) {
-        var computed = this.__computeCellDimension( cellEntry );
-        width = ( width != null ? width : computed[ 0 ] );
-      }
-      return width;
-    },
-
-    _getCellHeight : function( cell ) {
-      var cellEntry = this.__cellData[ cell ];
-      var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
-      if( height == null ) {
-        var computed = this.__computeCellDimension( cellEntry );
-        height = ( height != null ? height : computed[ 1 ] );
-      }
-      return height;
     },
 
     __setCellNode : function( cell, node ) {
@@ -328,49 +380,49 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     },
 
     __updateComputedCellDimension : function( cell ) {
-      var cellEntry = this.__cellData[ cell ];
+      var cellEntry = this.__cellData[ cell ]; 
+      cellEntry[ 4 ] = null; //delete computedWidth
+      cellEntry[ 5 ] = null; //delete computedHeight
       if( cellEntry[ 2 ] == null ) { //uses computed width
-        cellEntry[ 4 ] = null; //delete computedWidth
         this._invalidatePreferredInnerWidth();
-        this.addToQueue( "layoutX" );
+        this._scheduleLayoutX();
       }
       if( cellEntry[ 3 ] == null ) { //usses computedheight
-        cellEntry[ 4 ] = null; //delete computedHeight
         this._invalidatePreferredInnerHeight();
-        this.addToQueue( "layoutY" );
+        this._scheduleLayoutY();
       }
     },
 
     __computeCellDimension : function( cellEntry ) {
       var dimension;
-      if( cellEntry[ 0 ] == "label" ) {
+      if( cellEntry[ 0 ] == "label" && cellEntry[ 1 ] != null ) {
         dimension = this._computeTextDimensions( cellEntry[ 1 ] );
       } else {
         dimension = [ 0, 0 ];
       }
       cellEntry[ 4 ] = dimension[ 0 ];
-      cellEntry[ 5 ] = dimension[ 1 ];
+      cellEntry[ 5 ] = dimension[ 1 ];      
       return dimension;
     },
 
     _isWidthEssential : qx.lang.Function.returnTrue,
-    _isHeightEssential : qx.lang.Function.returnTrue,
+    _isHeightEssential : qx.lang.Function.returnTrue,    
 
     _computePreferredInnerWidth : function() {
+      this._beforeComputeInnerWidth();
       var space = this.getTotalSpacing();
       var content = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) { content += this._getCellWidth( i ); }
+        content += this.getCellWidth( i );
       }
       return space + content;
     },
 
     _computePreferredInnerHeight : function() {
+      this._beforeComputeInnerHeight();
       var maxHeight = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
-          maxHeight = Math.max( maxHeight, this._getCellHeight( i ) );
-        }
+        maxHeight = Math.max( maxHeight, this.getCellHeight( i ) );
       }
       return maxHeight;
     },
@@ -386,11 +438,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     getTotalVisibleCells : function() {
       var ret = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
+        if( this.cellIsVisible( i ) ) {
           ret++;
         }
       }
       return ret;
+    },
+
+    /**
+     * a cell is "visible" ( i.e. counts for the layout) if
+     * it either has a content set, or at least one dimension 
+     */      
+    cellIsVisible : function( cell ) {
+      return ( this.getCellWidth( cell ) > 0 );      
     },
 
     _invalidateTotalSpacing : function() {
@@ -409,18 +469,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         this._updateAllImages();
         this._updateAllLabels();
       }
-      if (    changes.width
-           || changes.layoutX
-           || changes.frameWidth
-           || changes.initial )
-      {
+      changes.layoutX =    changes.width
+                        || changes.layoutX
+                        || changes.frameWidth
+                        || changes.initial;
+      changes.layoutY =    changes.height
+                        || changes.layoutY
+                        || changes.frameHeight
+                        || changes.initial;
+      this._beforeRenderLayout( changes );
+      if ( changes.layoutX ) {
         this._renderLayoutX();
       }
-      if (    changes.height
-           || changes.layoutY
-           || changes.frameHeight
-           || changes.initial )
-      {
+      if ( changes.layoutY ) {
         this._renderLayoutY();
       }
       this.base( arguments, changes );
@@ -449,14 +510,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       var width = null;
       var style = null;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
-          width = this._getCellWidth( i );
-          style = this.getCellNode( i ).style;
-          style.left = left;
-          style.width = width;
+        if( this.cellIsVisible( i ) ) {
+          width = this.getCellWidth( i );
+          if( this._cellHasContent( i ) ) {
+            style = this.getCellNode( i ).style;
+            style.left = left;
+            style.width = width;
+          }
           left += ( width + space );
         }
-      }
+      }      
     },
 
     _renderLayoutY : function() {
@@ -471,7 +534,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       var align = this.getVerticalChildrenAlign();
       var pad = this.__paddingCache;
       var inner = this.getInnerHeight();
-      var height = this._getCellHeight( cell );
+      var height = this.getCellHeight( cell );
       var top = null;
       switch( align ) {
         default:
@@ -479,7 +542,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           top = pad[ 0 ];
         break;
         case "middle":
-          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );
+          top = Math.floor( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
         break;
         case "bottom":
           top = pad[ 0 ] + inner - height;
@@ -498,17 +561,28 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _getImageHtml : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( cell ) {
-        return   '<div style="position:absolute;border:0 none;'
-               + 'filter:'
-               + " progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
-               + this.getCellContent( cell )
-               + "',sizingMethod='crop')" + '"></div>';
+        var content = this.getCellContent( cell );
+        var cssImageStr = "";
+        if( content ) {
+          cssImageStr
+            = "filter:progid:DXImageTransform.Microsoft"
+            + ".AlphaImageLoader(src='"
+            + content
+            + "',sizingMethod='crop')";           
+        }
+        return    '<div style="position:absolute;border:0 none;'
+                + cssImageStr 
+                + '"></div>';
       },
       "default" : function( cell ) {
+        var content = this.getCellContent( cell );
+        var cssImageStr = "";
+        if( content ) {
+          cssImageStr = "background-image:url(" + content + ")";
+        }
         return   "<div style='position:absolute;border:0 none;"
-               + "background-image:url("
-               + this.getCellContent( cell )
-               + ");background-repeat:no-repeat;' ></div>";
+               + cssImageStr 
+               + ";background-repeat:no-repeat;' ></div>";
       }
     } ),
 
@@ -516,38 +590,48 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       "mshtml" : function( cell ) {
         var version = qx.core.Client.getVersion();
         var node = this.getCellNode( cell );
+        var content = this.getCellContent( cell );
         if( version >= 8 ) {
-          node.style.filter
-            =   "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
-              + this.getCellContent( cell )
-              + "',sizingMethod='crop')";
-          if ( !this.getEnabled() ) {
+          if( content ) {
             node.style.filter
-              += "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
+              = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
+              + content
+              + "',sizingMethod='crop')";
+            if ( !this.getEnabled() ) {
+              node.style.filter
+                += "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
+            }
+          } else {
+            node.style.filter = "";
+            node.style.backgroundImage = "none";
           }
         } else {
-          if ( this.getEnabled() ) {
-            node.style.backgroundImage = "";
-            node.style.filter
-              =   "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
+          if( content ) {
+            if ( this.getEnabled() ) {
+              node.style.backgroundImage = "none";
+              node.style.filter
+                = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
                 + this.getCellContent( cell )
                 + "',sizingMethod='crop')";
+            } else {
+              node.style.backgroundImage
+                =   "URL("
+                  + this.getCellContent( cell )
+                  + ")";
+              node.style.backgroundRepeat = "no-repeat";
+              // removed Gray()
+              node.style.filter = this.getEnabled() ? "" : "Alpha(Opacity=30)";
+            }
           } else {
-            node.style.backgroundImage
-              =   "URL("
-                + this.getCellContent( cell )
-                + ")";
-            node.style.backgroundRepeat = "no-repeat";
-            // removed Gray()
-            node.style.filter = this.getEnabled() ? "" : "Alpha(Opacity=30)";
+            node.style.filter = "";
+            node.style.backgroundImage = "none";
           }
         }
       },
       "default" : function( cell ) {
-        this.getCellNode( cell ).style.backgroundImage
-          = "URL("
-          + this.getCellContent( cell )
-          + ")";
+        var content = this.getCellContent( cell );
+        var cssImageStr = content ? "URL(" + content + ")" : "none"; 
+        this.getCellNode( cell ).style.backgroundImage = cssImageStr;
       }
     }),
 
@@ -586,17 +670,30 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _getLabelHtml : function( cell ) {
       return   "<div style='position:absolute;border:0 none;overflow:hidden;"
-             + this._htmlUtil._joinStyleProperties( [ this.__fontCache ] )
+             + this._joinStyleProperties( this.__fontCache )
              + "white-space:nowrap;'>"
              + this.getCellContent( cell )
              + "</div>";
     },
-
+    
+   _joinStyleProperties : function( map ) {
+      var str = [];      
+      var value;
+      for( var attribute in map ) {
+        value = map[ attribute ];
+        if( value ) {
+          str.push( attribute, ":", value, ";" );
+        }
+      }
+      var joinedCss = str.join( "" );
+      return joinedCss.replace( this.__styleRegExp, "$1-$2" ).toLowerCase();
+    },
+    
     _applyFont : function( value, old ) {
       qx.theme.manager.Font.getInstance().connect(
-       this._styleFont,
-       this,
-       value
+        this._styleFont,
+        this,
+        value
       );
     },
 
@@ -640,29 +737,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       }
     },
 
-    _styleLabelEnabled : qx.core.Variant.select( "qx.client", {
-      "default" : function( cell ) {
-        var opacity = ( this.getEnabled() === false ) ? 0.3 : "";
-        var style = this.getCellNode( cell ).style;
-        style.opacity = style.KhtmlOpacity = style.MozOpacity = opacity;
-      },
-      "mshtml" : function( cell ) {
-        var filter =
-            this.getEnabled()
-          ? ""
-          : "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
-        this.getCellNode( cell ).style.filter = filter;
-      }
-    }),
-
-    _styleAllLabelsEnabled : function() {
-      for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._isTextCell( i ) && this.__cellHasNode( i ) ) {
-          this._styleLabelEnabled( i );
-        }
-      }
-    },
-
     _computeTextDimensions : function( text ) {
         var element = qx.ui.basic.Label._getMeasureNode();
         var style = element.style;
@@ -675,4 +749,5 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         return [ element.scrollWidth, element.scrollHeight ];
     }
   }
+  
 });

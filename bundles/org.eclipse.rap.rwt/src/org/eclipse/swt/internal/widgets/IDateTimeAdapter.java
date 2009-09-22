@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.swt.graphics.Rectangle;
 
 public interface IDateTimeAdapter {
-  
+
   // Date
   int WEEKDAY_TEXTFIELD = 0;
   int DAY_TEXTFIELD = 1;
@@ -29,6 +29,8 @@ public interface IDateTimeAdapter {
   int SECONDS_TEXTFIELD = 10;
   int HOURS_MINUTES_SEPARATOR = 11;
   int MINUTES_SECONDS_SEPARATOR = 12;
+  // Date - drop down button
+  int DROP_DOWN_BUTTON = 13;
 
   Rectangle getBounds( int widget );
 

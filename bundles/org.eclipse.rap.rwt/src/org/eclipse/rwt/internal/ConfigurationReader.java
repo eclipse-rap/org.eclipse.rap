@@ -117,7 +117,7 @@ public class ConfigurationReader {
     }
 
     public boolean isCompression() {
-      String value = getConfigValue( "compression", "true" );
+      String value = getConfigValue( "org.eclipse.rwt.compression", "false" );
       return Boolean.valueOf( value ).booleanValue();
     }
 

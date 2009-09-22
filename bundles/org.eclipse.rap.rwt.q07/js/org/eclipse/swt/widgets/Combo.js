@@ -268,8 +268,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _setListLocation : function() {
       if( this.getElement() ){
         var elementPos = qx.bom.element.Location.get( this.getElement() );
-        this._list.setLocation( elementPos.left,
-                                elementPos.top + this.getHeight() );
+        var listLeft = elementPos.left;
+        var comboTop = elementPos.top;
+        var listTop = comboTop + this.getHeight();
+        var browserHeight = qx.html.Window.getInnerHeight( window );
+        var itemsHeight = this._list.getChildren().length * this._listItemHeight;
+        var listHeight = Math.min( this._list.getMaxHeight(), itemsHeight );
+        if(    browserHeight < listTop + listHeight 
+            && comboTop > browserHeight - listTop ) 
+        {
+          listTop = elementPos.top - listHeight;
+        }
+        this._list.setLocation( listLeft, listTop );
       }
     },
     
@@ -289,9 +299,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
         this._list.setDisplay( !this._dropped );
         this._dropped = !this._dropped;
+        this._updateListOverflow();
         if( this.hasState( "rwt_CCOMBO" ) ) {
           this._updateListVisibleRequestParam();
         }
+      }
+    },
+    
+    _updateListOverflow : function() {
+      if( this._dropped ) {
+        var overflow = "hidden";
+        var itemsHeight = this._list.getChildren().length * this._listItemHeight;
+        if( this._list.getMaxHeight() < itemsHeight ) {
+          overflow = "scrollY";
+        }
+        this._list.setOverflow( overflow );
       }
     },
     
@@ -331,8 +353,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var fieldValue = value.getLabel().toString();
         this._field.setValue( this._formatText( fieldValue ) );
         if( this._field.isCreated() ) {
-          this._field.selectAll();
           if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+            this._field.selectAll();
             this._handleSelectionChange();
           }
         }
@@ -346,9 +368,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       } else {
         this._resetListSelection();
       }
-      if( !this._dropped ) {
-        this._sendWidgetSelected();
-      }
+      this._sendWidgetSelected();
     },
     
     _formatText : function( value ) {
@@ -428,17 +448,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         evt.stopPropagation();
         var toSelect;
         var isSelected = this._selected;
-        if( evt.getWheelDelta() < 0 ) {
-          toSelect =   isSelected
-                     ? this._manager.getNext( isSelected )
-                     : this._manager.getFirst();
-        } else {
-          toSelect =   isSelected
-                     ? this._manager.getPrevious( isSelected )
-                     : this._manager.getLast();
-        }
-        if( toSelect ) {
-          this._setSelected( toSelect );
+        if( isSelected ) {
+          if( evt.getWheelDelta() < 0 ) {
+            toSelect = this._manager.getNext( isSelected );
+          } else {
+            toSelect = this._manager.getPrevious( isSelected );
+          }
+          if( toSelect ) {
+            this._setSelected( toSelect );
+          }
+        } else if( this._list.getChildrenLength() ) {
+          this._setSelected( this._list.getChildren()[0] );
         }
       }
     },
@@ -484,7 +504,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         case "Escape":
           if( this._dropped ) {
             this._toggleListVisibility();
-            this._setSelected( this._manager.getSelectedItem() );
           } 
           this.setFocused( true );
           evt.stopPropagation();
@@ -538,9 +557,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         case "Down":
         case "PageUp":
         case "PageDown":
-          this._list._onkeypress( evt );
-          var selected = this._manager.getSelectedItem();
-          this._setSelected( selected );
+          if( this._selected ) {
+            this._list._onkeypress( evt );
+            var selected = this._manager.getSelectedItem();
+            this._setSelected( selected );
+          } else if( this._list.getChildrenLength() ) {
+            this._setSelected( this._list.getChildren()[0] );
+          }
           break;
         default:
           charCode = evt.getCharCode();
@@ -568,8 +591,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
 
+    // Additional check for ALT and CTRL keys is added to fix bug 288344
     _onKeyInput : function( evt ) {
-      if( this._dropped ) {
+      if( this._dropped && !evt.isAltPressed() && !evt.isCtrlPressed() ) {
         this._list._onkeyinput( evt );
         var selected = this._manager.getSelectedItem();
         this._setSelected( selected );

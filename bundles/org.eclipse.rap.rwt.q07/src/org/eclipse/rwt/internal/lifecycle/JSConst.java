@@ -115,7 +115,7 @@ public final class JSConst {
   public static final String JS_TREE_SELECTED
     = "org.eclipse.swt.TreeUtil.widgetSelected";
   public static final String JS_CONTEXT_MENU
-    = "org.eclipse.swt.MenuUtil.contextMenu";
+    = "org.eclipse.rwt.widgets.Menu.contextMenuHandler";
 
   // states that represent SWT style flags
   public static final String JS_STYLE_FLAG_BORDER = "rwt_BORDER";
@@ -145,7 +145,6 @@ public final class JSConst {
   public static final String QX_FIELD_FONT = "font";
   public static final String QX_FIELD_COLOR = "textColor";
   public static final String QX_FIELD_BG_COLOR = "backgroundColor";
-  public static final String QX_FIELD_BG_IMAGE = "backgroundImage";
   public static final String QX_FIELD_ORIENTATION = "orientation";
   public static final String QX_FIELD_CAPTION = "caption";
   public static final String QX_FIELD_ENABLED = "enabled";

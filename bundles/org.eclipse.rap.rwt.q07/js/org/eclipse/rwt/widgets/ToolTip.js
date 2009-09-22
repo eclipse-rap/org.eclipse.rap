@@ -23,9 +23,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolTip", {
     
     _applyBoundToWidget : function( value, old ) {
       this.base( arguments, value, old );
-      this._atom.setLabel( value.getUserData( "toolTipText" ) );
+      this.updateText( value );
       var manager = qx.ui.popup.ToolTipManager.getInstance();
-      manager.setCurrentToolTip( null );
+      manager.setCurrentToolTip( null );      
+    },
+    
+    updateText : function( widget ) {
+      this._atom.setLabel( widget.getUserData( "toolTipText" ) );
     }
     
   }
