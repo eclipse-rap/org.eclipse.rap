@@ -164,7 +164,7 @@ public class ScrolledComposite extends Composite {
    */
   public void setOrigin( final int left, final int top ) {
     checkWidget();
-    if( content != null ) {
+    if( content != null && left >= 0 && top >= 0 ) {
       int x = left;
       int y = top;
       ScrollBar hBar = getHorizontalBar();

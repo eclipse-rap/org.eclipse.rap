@@ -158,6 +158,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ColorDialog_Test.class );
     suite.addTestSuite( Scrollable_Test.class );
     suite.addTestSuite( Decorations_Test.class );
+    suite.addTestSuite( ScrolledComposite_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );
