@@ -13,6 +13,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -36,6 +37,18 @@ public class ScrolledComposite_Test extends TestCase {
     sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertNotNull( sc.getHorizontalBar() );
     assertNotNull( sc.getVerticalBar() );
+  }
+  
+  public void testDispose() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    Composite content = new Composite( sc, SWT.NONE );
+    sc.setContent( content );
+    sc.dispose();
+    assertTrue( sc.isDisposed() );
+    assertTrue( content.isDisposed() );
   }
   
   public void testContent() {
@@ -103,6 +116,57 @@ public class ScrolledComposite_Test extends TestCase {
     // test ignore layout
     sc.setLayout( new GridLayout() );
     assertFalse( sc.getLayout() instanceof GridLayout );
+  }
+  
+  public void testMinSize() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    assertEquals( 0, sc.getMinWidth() );
+    assertEquals( 0, sc.getMinHeight() );
+    sc.setMinHeight( 10 );
+    assertEquals( 0, sc.getMinWidth() );
+    assertEquals( 10, sc.getMinHeight() );
+    sc.setMinWidth( 10 );
+    assertEquals( 10, sc.getMinWidth() );
+    assertEquals( 10, sc.getMinHeight() );
+    sc.setMinSize( 20, 20 );
+    assertEquals( 20, sc.getMinWidth() );
+    assertEquals( 20, sc.getMinHeight() );
+    sc.setMinSize( new Point( 30, 30 ) );
+    assertEquals( 30, sc.getMinWidth() );
+    assertEquals( 30, sc.getMinHeight() );
+    sc.setMinSize( null );
+    assertEquals( 0, sc.getMinWidth() );
+    assertEquals( 0, sc.getMinHeight() );
+    sc.setMinSize( -20, -20 );
+    assertEquals( 0, sc.getMinWidth() );
+    assertEquals( 0, sc.getMinHeight() );
+  }
+  
+  public void testExpand() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    assertFalse( sc.getExpandHorizontal() );
+    assertFalse( sc.getExpandVertical() );
+    sc.setExpandHorizontal( true );
+    sc.setExpandVertical( true );
+    assertTrue( sc.getExpandHorizontal() );
+    assertTrue( sc.getExpandVertical() );
+  }
+  
+  public void testClientArea() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    sc.setSize( 100, 100 );
+    assertEquals( new Rectangle( 0, 0, 100, 100), sc.getClientArea() );
+    sc.setAlwaysShowScrollBars( true );
+    assertEquals( new Rectangle( 0, 0, 84, 84), sc.getClientArea() );
   }
   
   protected void setUp() throws Exception {
