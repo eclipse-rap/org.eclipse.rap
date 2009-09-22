@@ -91,9 +91,10 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     ControlLCAUtil.writeChanges( composite );
     writeClipBounds( composite );
-    writeScrollBars( composite );
     // TODO [rh] initial positioning of the client-side scroll bar does not work
     writeBarSelection( composite );
+    // [if] Order is important: writeScrollBars after writeBarSelection
+    writeScrollBars( composite );
     writeSelectionListener( composite );
     WidgetLCAUtil.writeCustomVariant( composite );
   }
