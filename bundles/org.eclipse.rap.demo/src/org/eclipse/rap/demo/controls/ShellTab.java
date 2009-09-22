@@ -65,6 +65,7 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "CLOSE", SWT.CLOSE );
     createStyleButton( "RESIZE", SWT.RESIZE );
     createStyleButton( "TOOL", SWT.TOOL );
+    createStyleButton( "SHEET", SWT.SHEET );
     createStyleButton( "ON_TOP", SWT.ON_TOP );
     createInvisibleButton = createPropertyButton( "Create invisible" );
     createAsDialogButton = createPropertyButton( "Create as dialog" );
