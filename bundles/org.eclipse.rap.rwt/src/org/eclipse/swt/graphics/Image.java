@@ -97,7 +97,7 @@ public final class Image extends Resource implements Drawable {
   public Image( Display display, int x, int y ) {
     this.width = x;
     this.height = y;
-    ResourceFactory.images.put( "resources/generated/image_" + Math.random(), this );
+    ResourceFactory.images.put( "generated_" + this.hashCode(), this );
   }
 
   // RAP [bm]: e4-enabling hacks

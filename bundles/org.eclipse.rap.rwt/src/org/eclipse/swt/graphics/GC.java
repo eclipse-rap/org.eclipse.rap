@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
 import org.eclipse.rwt.internal.resources.ResourceManager;
@@ -567,6 +568,11 @@ public class GC extends Resource {
     } finally {
       writer.dispose();
     }
+    try {
+      RWT.getResourceManager().register( "generated_" + image.hashCode(), new FileInputStream( location ) );
+    } catch( FileNotFoundException e ) {
+      e.printStackTrace();
+    }
   }
 
   private static ImageWriter getImageWriter() {
@@ -584,8 +590,7 @@ public class GC extends Resource {
   private static File getImageResourceLocation( final Image image ) {
     IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
     File serverContextDir = engineConfig.getServerContextDir();
-    String filename = "gen_" + image.hashCode();
-    ResourceFactory.images.put( filename, image );
+    String filename = "rwt-resources/resources/generated/image_" + image.hashCode();
     return new File( serverContextDir, filename );
   }
 
