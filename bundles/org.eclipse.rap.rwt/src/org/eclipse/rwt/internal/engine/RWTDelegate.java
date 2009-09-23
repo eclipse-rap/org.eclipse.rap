@@ -50,15 +50,19 @@ public class RWTDelegate extends HttpServlet {
     throws ServletException, IOException 
   {
     request.setCharacterEncoding( "UTF-8" );
-    HttpServletRequest wrappedRequest = getWrappedRequest( request );
-    try {
-      ServiceContext context = new ServiceContext( wrappedRequest, response );
-      ContextProvider.setContext( context );
-      createSessionStore();
-      ServiceManager.getHandler().service( );
-    } finally {
-      ContextProvider.disposeContext();
-    }                                                         
+    if( request.getPathInfo() == null ) {
+      HttpServletRequest wrappedRequest = getWrappedRequest( request );
+      try {
+        ServiceContext context = new ServiceContext( wrappedRequest, response );
+        ContextProvider.setContext( context );
+        createSessionStore();
+        ServiceManager.getHandler().service( );
+      } finally {
+        ContextProvider.disposeContext();
+      }                                                         
+    } else {
+      handleInvalidRequest( request, response );
+    }
   }
 
   public String getServletInfo() {
@@ -104,5 +108,24 @@ public class RWTDelegate extends HttpServlet {
     synchronized( this ) {
       ContextProvider.getSession();
     }
+  }
+
+  private static void handleInvalidRequest( final HttpServletRequest request,
+                                            final HttpServletResponse response )  
+    throws IOException
+  {
+    if( "/".equals( request.getPathInfo() ) ) {
+      // In case of "http://example.com/webapp/servlet/" redirect to
+      // "http://example.com/webapp/servlet" (same URL without trailing slash)
+      String redirectURL = request.getContextPath() + request.getServletPath();
+      response.sendRedirect( response.encodeRedirectURL( redirectURL ) );
+    } else {
+      // Otherwise send 404 - not found
+      response.sendError( HttpServletResponse.SC_NOT_FOUND );
+    }
+  }
+
+  private static String createRedirectURL( final HttpServletRequest request ) {
+    return request.getContextPath() + request.getServletPath();
   }
 }
