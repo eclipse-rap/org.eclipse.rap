@@ -51,6 +51,7 @@ public class ScrolledComposite extends Composite {
   boolean expandHorizontal;
   boolean expandVertical;
   boolean alwaysShowScroll;
+  boolean showFocusedControl;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -532,6 +533,114 @@ public class ScrolledComposite extends Composite {
   public Control getContent() {
     //checkWidget();  // <- commented in SWT
     return content;
+  }
+  
+  /**
+   * Configure the receiver to automatically scroll to a focused child control
+   * to make it visible.
+   * 
+   * If show is <code>false</code>, show a focused control is off.  
+   * By default, show a focused control is off.
+   * 
+   * @param show <code>true</code> to show a focused control.
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public void setShowFocusedControl( final boolean show ) {
+    checkWidget();
+    if( showFocusedControl != show ) {
+      showFocusedControl = show;
+      if( showFocusedControl ) {
+        Control control = getDisplay().getFocusControl();
+        if( contains( control ) ) {
+          showControl( control );
+        }
+      }
+    }
+  }
+  
+  /**
+   * Returns <code>true</code> if the receiver automatically scrolls to a focused child control 
+   * to make it visible. Otherwise, returns <code>false</code>.
+   * 
+   * @return a boolean indicating whether focused child controls are automatically scrolled into the viewport
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public boolean getShowFocusedControl() {
+    checkWidget();
+    return showFocusedControl;
+  }
+  
+  /**
+   * Scrolls the content of the receiver so that the control is visible.
+   *
+   * @param control the control to be shown
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the control is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void showControl( final Control control ) {
+    checkWidget();
+    if( control == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( control.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( !contains( control ) ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }    
+    Rectangle itemRect = getDisplay().map( control.getParent(),
+                                           this,
+                                           control.getBounds() );
+    Rectangle area = getClientArea();
+    Point origin = getOrigin();
+    if( itemRect.x < 0 ) {
+      origin.x = Math.max( 0, origin.x + itemRect.x );
+    } else if( area.width < itemRect.x + itemRect.width ) {
+      int minWidth = Math.min( itemRect.width, area.width );
+      origin.x = Math.max( 0, origin.x + itemRect.x + minWidth - area.width );      
+    }
+    if( itemRect.y < 0 ) {
+      origin.y = Math.max( 0, origin.y + itemRect.y );
+    } else if( area.height < itemRect.y + itemRect.height ) {
+      int minHeight = Math.min( itemRect.height, area.height );
+      origin.y = Math.max( 0, origin.y + itemRect.y + minHeight - area.height );
+    }
+    setOrigin( origin );
+  }
+  
+  boolean contains( final Control control ) {
+    boolean result = false;
+    if( control != null && !control.isDisposed() ) {
+      Composite parent = control.getParent();
+      while( parent != null && !( parent instanceof Shell ) && !result ) {
+        if( this == parent ) {
+          result = true;
+        }
+        parent = parent.getParent();
+      }
+    }
+    return result;
   }
 
   ///////////

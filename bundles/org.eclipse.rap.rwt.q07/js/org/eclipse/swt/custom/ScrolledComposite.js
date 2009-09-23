@@ -19,15 +19,22 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this._hasSelectionListener = false;
     // Flag indicates that the next request can be sent
     this._readyToSendChanges = true;
+    this._showFocusedControl = false;
+    this._blockScrolling = false;
     this._initialScrollTop = null;
     this._initialScrollLeft = null;
     this._lastScrollLeft = 0;
     this._lastScrollTop = 0;
     this.addEventListener( "appear", this._onAppear, this );
+    this.addEventListener( "changeParent", this._onChangeParent, this );
   },
   
   destruct : function() {
     this.removeEventListener( "appear", this._onAppear, this );
+    this.removeEventListener( "changeParent", this._onChangeParent, this );
+    this.getFocusRoot().removeEventListener( "changeFocusedChild",
+                                             this._onChangeFocusedChild,
+                                             this );
   },
   
   members : {
@@ -35,15 +42,50 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     _onAppear : function( evt ) {
       this.setScrollTop( this._lastScrollTop );
       this.setScrollLeft( this._lastScrollLeft );
+      
+    },
+    
+    _onChangeParent : function( evt ) {
+      this.getFocusRoot().addEventListener( "changeFocusedChild",
+                                            this._onChangeFocusedChild,
+                                            this );
     },
     
     _onscroll : function( evt ) {
       this.base( arguments, evt );
-      if( this._readyToSendChanges ) {
+      if( this._blockScrolling ) {
+        this._blockScrolling = false;
+        this.setScrollTop( this._lastScrollTop );
+        this.setScrollLeft( this._lastScrollLeft );        
+      } else if( this._readyToSendChanges ) {
         this._readyToSendChanges = false;
         // Send changes
         qx.client.Timer.once( this._sendChanges, this, 500 );
       }
+    },
+    
+    _onChangeFocusedChild : function( evt ) {
+      var focusedChild = this.getFocusRoot().getFocusedChild();
+      if( !this._showFocusedControl && focusedChild !== this ) {
+        this._blockScrolling = this._contains( focusedChild );
+      }
+    },
+    
+    _contains : function( widget ) {
+      var result = false;
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      if( widget != null && widgetManager.isControl( widget ) ) {
+        var parent = widget.getParent();
+        while(    parent != null
+               && !( parent instanceof org.eclipse.swt.widgets.Shell )
+               && !result ) {
+          if( this === parent ) {
+            result = true;
+          }
+          parent = parent.getParent();
+        }
+      }
+      return result;
     },
 
     setHBarSelection : function( value ) {
@@ -88,6 +130,10 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         this._lastScrollTop = this._initialScrollTop;
       }
       this.removeEventListener( "create", this._setVBarSelectionOnCreate, this );
+    },
+    
+    setShowFocusedControl : function( value ) {
+      this._showFocusedControl = value;
     },
     
     setHasSelectionListener : function( value ) {

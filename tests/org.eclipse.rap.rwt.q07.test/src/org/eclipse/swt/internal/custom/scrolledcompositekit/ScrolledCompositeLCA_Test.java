@@ -36,6 +36,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
 
   private static final String PROP_V_BAR_SELECTION = "vBarSelection";
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
+  private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
@@ -53,8 +54,10 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, adapter.getPreserved( PROP_H_BAR_SELECTION ) );
     assertEquals( null, adapter.getPreserved( PROP_V_BAR_SELECTION ) );
+    assertEquals( null, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
     sc.getHorizontalBar().setSelection( 23 );
     sc.getVerticalBar().setSelection( 42 );
+    sc.setShowFocusedControl( true );
     assertEquals( 23, sc.getHorizontalBar().getSelection() );
     assertEquals( 42, sc.getVerticalBar().getSelection() );
     sc.getHorizontalBar().setVisible( true );
@@ -67,6 +70,8 @@ public class ScrolledCompositeLCA_Test extends TestCase {
                   adapter.getPreserved( PROP_H_BAR_SELECTION ) );
     assertEquals( new Integer( 42 ),
                   adapter.getPreserved( PROP_V_BAR_SELECTION ) );
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
     Object bounds = adapter.getPreserved( ScrolledCompositeLCA.PROP_BOUNDS );
     assertEquals( rectangle, bounds );
     Object overflow = adapter.getPreserved( ScrolledCompositeLCA.PROP_OVERFLOW );

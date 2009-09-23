@@ -41,6 +41,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   static final String PROP_OVERFLOW = "overflow";
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
   private static final String PROP_V_BAR_SELECTION = "vBarSelection";
+  private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
 
 
   public void preserveValues( final Widget widget ) {
@@ -55,6 +56,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                       getBarSelection( composite.getVerticalBar() ) );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasSelectionListener( composite ) ) );
+    adapter.preserve( PROP_SHOW_FOCUSED_CONTROL,
+                      Boolean.valueOf( composite.getShowFocusedControl() ) );
     WidgetLCAUtil.preserveCustomVariant( composite );
   }
 
@@ -96,6 +99,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     // [if] Order is important: writeScrollBars after writeBarSelection
     writeScrollBars( composite );
     writeSelectionListener( composite );
+    writeShowFocusedControl( composite );
     WidgetLCAUtil.writeCustomVariant( composite );
   }
 
@@ -150,6 +154,17 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( composite, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( composite );
       writer.set( "hasSelectionListener", newValue );
+    }
+  }
+  
+  private static void writeShowFocusedControl( final ScrolledComposite composite )
+    throws IOException
+  {
+    Boolean newValue = Boolean.valueOf( composite.getShowFocusedControl() );
+    String prop = PROP_SHOW_FOCUSED_CONTROL;
+    if( WidgetLCAUtil.hasChanged( composite, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( composite );
+      writer.set( "showFocusedControl", newValue );
     }
   }
 

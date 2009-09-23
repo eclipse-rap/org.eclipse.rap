@@ -209,6 +209,46 @@ public class ScrolledComposite_Test extends TestCase {
     assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
   }
   
+  public void testShowFocusedControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    assertFalse( sc.getShowFocusedControl() );
+    sc.setShowFocusedControl( true );
+    assertTrue( sc.getShowFocusedControl() );
+  }
+  
+  public void testShowControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ScrolledComposite sc = new ScrolledComposite( shell, 
+                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    Composite content = new Composite( sc, SWT.NONE );
+    Button button = new Button( shell, SWT.PUSH );
+    sc.setContent( content );
+    try {
+      sc.showControl( null );
+      fail( "Null value is not allowed" );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    Button disposedControl = new Button( shell, SWT.PUSH );
+    disposedControl.dispose();
+    try {
+      sc.showControl( disposedControl );
+      fail( "Disposed control is not allowed" );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    try {
+      sc.showControl( button );
+      fail( "Control that is not a child of the composite is not allowed" );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
