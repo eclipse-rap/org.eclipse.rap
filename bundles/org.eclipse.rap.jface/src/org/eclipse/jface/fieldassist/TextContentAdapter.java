@@ -82,19 +82,18 @@ public class TextContentAdapter implements IControlContentAdapter,
 	public Rectangle getInsertionBounds(Control control) {
 		Text text = (Text) control;
 		
-		// RAP [bm]: Text#getCarePosition
+		// RAP [bm]: Text#getCaretLocation
 //		Point caretOrigin = text.getCaretLocation();
-		Point caretOrigin = text.getSelection();
+		float avgCharWidth = Graphics.getAvgCharWidth( text.getFont() );
+		int x = (int) ( text.getCaretPosition()*avgCharWidth );
+		int y = 0;
+		Point caretOrigin = new Point( x, y );
 		// RAPEND: [bm] 
 
 		// We fudge the y pixels due to problems with getCaretLocation
 		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=52520
-		// RAP [bm]: 
-//		return new Rectangle(caretOrigin.x + text.getClientArea().x,
-//				caretOrigin.y + text.getClientArea().y + 3, 1, text.getLineHeight());
-		int lineHeight = Graphics.getCharHeight(text.getFont());
 		return new Rectangle(caretOrigin.x + text.getClientArea().x,
-				caretOrigin.y + text.getClientArea().y + 3, 1, lineHeight);
+				caretOrigin.y + text.getClientArea().y + 3, 1, text.getLineHeight());
 	}
 
 	/*
