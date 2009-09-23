@@ -26,6 +26,7 @@ public class InputExample implements IExamplePage {
   }
 
   private void createForm( final Composite parent ) {
+    GridData gridData;
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Simple Form" );
     group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
@@ -36,54 +37,62 @@ public class InputExample implements IExamplePage {
 
     new Label( formComp, SWT.NONE ).setText( "First Name:" );
     final Text firstNameText = new Text( formComp, SWT.SINGLE | SWT.BORDER );
-    GridData firstGridData = new GridData( SWT.FILL, SWT.TOP, true, false );
-    firstGridData.minimumWidth = 250;
-    firstNameText.setLayoutData( firstGridData );
+    gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
+    gridData.minimumWidth = 250;
+    firstNameText.setLayoutData( gridData );
 
     new Label( formComp, SWT.NONE ).setText( "Last Name:" );
     final Text lastNameText = new Text( formComp, SWT.SINGLE | SWT.BORDER );
-    lastNameText.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
+    lastNameText.setLayoutData( gridData );
 
     new Label( formComp, SWT.NONE ).setText( "Passphrase:" );
     final Text passwordText
       = new Text( formComp, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER );
-    passwordText.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
+    passwordText.setLayoutData( gridData );
     passwordText.setText( "Password" );
 
     new Label( formComp, SWT.NONE ).setText( "Age:" );
     final Spinner spinner = new Spinner( formComp, SWT.BORDER );
-    spinner.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
+    spinner.setLayoutData( gridData );
     spinner.setSelection( 23 );
 
     new Label( formComp, SWT.NONE ).setText( "Country:" );
-    final Combo combo = new Combo( formComp, SWT.BORDER );
-    combo.setItems( new String[] { "Germany", "Canada", "USA", "Bulgaria" } );
-    combo.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    combo.select( 0 );
+    final Combo countryCombo = new Combo( formComp, SWT.BORDER );
+    String[] countries
+      = new String[] { "Germany", "Canada", "USA", "Bulgaria" };
+    countryCombo.setItems( countries );
+    gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
+    countryCombo.setLayoutData( gridData );
+    countryCombo.select( 0 );
 
     new Label( formComp, SWT.NONE ).setText( "Class:" );
-    final Combo combo2 = new Combo( formComp, SWT.READ_ONLY | SWT.BORDER );
-    combo2.setItems( new String[] { "Business", "Economy", "Economy Plus" } );
-    combo2.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    combo2.select( 0 );
+    final Combo classCombo = new Combo( formComp, SWT.READ_ONLY | SWT.BORDER );
+    String[] classes = new String[] { "Business", "Economy", "Economy Plus" };
+    classCombo.setItems( classes );
+    gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
+    classCombo.setLayoutData( gridData );
+    classCombo.select( 0 );
 
     new Label( formComp, SWT.NONE ).setText( "Date:" );
-    final DateTime dateTime = new DateTime( formComp, SWT.READ_ONLY | SWT.BORDER );
+    int dateTimeStyle = SWT.READ_ONLY | SWT.BORDER;
+    final DateTime dateTime = new DateTime( formComp, dateTimeStyle );
 
     new Label( formComp, SWT.NONE );
     final Button editableCheckbox = new Button( formComp, SWT.CHECK );
     editableCheckbox.setText( "Editable" );
     editableCheckbox.setSelection( true );
     editableCheckbox.addSelectionListener( new SelectionAdapter() {
-      
       public void widgetSelected( final SelectionEvent e ) {
         boolean editable = editableCheckbox.getSelection();
         firstNameText.setEditable( editable );
         lastNameText.setEditable( editable );
         passwordText.setEditable( editable );
         spinner.setEnabled( editable );
-        combo.setEnabled( editable );
-        combo2.setEnabled( editable );
+        countryCombo.setEnabled( editable );
+        classCombo.setEnabled( editable );
         dateTime.setEnabled( editable );
       }
     } );
