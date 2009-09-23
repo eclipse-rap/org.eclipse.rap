@@ -24,7 +24,6 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     this.initTabIndex();
     this.set( {
       width : "auto", 
-      height : "auto",
       paddingTop : 2, 
       paddingBottom : 2,
       paddingLeft : 4,
@@ -36,6 +35,11 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     this.addEventListener( "changeFont", this._onFontChange );
     this.addState( menuItemType );
     switch( menuItemType ){
+     case "bar" : 
+      this._isSelectable = false;
+      this._isDeselectable = false;
+      this._sendEvent = false;
+     break;
      case "push" : 
       this._isSelectable = false;
       this._isDeselectable = false;
@@ -154,7 +158,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
 
     setImage : function( value, width, height ) {
       this.setCellContent( 1, value );     
-      this.setCellHeight( 1, height );
+      this.setCellDimension( 1, width, height );
       this._setPreferredCellWidth( 1, width ); 
     },
     
@@ -179,16 +183,20 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     },
     
     _beforeComputeInnerWidth : function() {
-      this._invalidateTotalSpacing();      
-      for( var i = 0; i < 4; i++ ) {
-        this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) )
+      if( this._parentMenu ) {
+        this._invalidateTotalSpacing();      
+        for( var i = 0; i < 4; i++ ) {
+          this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) )
+        }
       }
     },
     
     _beforeAppear : function() {
       this.base( arguments );
-      this._parentMenu.invalidateAllMaxCellWidths();
-      this._parentMenu.scheduleMenuLayout();
+      if( this._parentMenu ) {
+        this._parentMenu.invalidateAllMaxCellWidths();
+        this._parentMenu.scheduleMenuLayout();
+      }
     },            
 
     setHasSelectionListener : function( value ) {

@@ -222,7 +222,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     showChevron : function( left, top, width, height ) {
       if( this._chevron == null ) {
         // Create chevron button
-        this._chevron = new qx.ui.toolbar.Button();
+        this._chevron = new qx.ui.form.Button();
         this._chevron.setAppearance( "ctabfolder-button" );
         this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
@@ -288,7 +288,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     showMaxButton : function( left, top, width, height ) {
       if( this._maxButton == null ) {
-        this._maxButton = new qx.ui.toolbar.Button();
+        this._maxButton = new qx.ui.form.Button();
         this._maxButton.setAppearance( "ctabfolder-button" );
         this._maxButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
@@ -317,7 +317,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     showMinButton : function( left, top, width, height ) {
       if( this._minButton == null ) {
-        this._minButton = new qx.ui.toolbar.Button();
+        this._minButton = new qx.ui.form.Button();
         this._minButton.setAppearance( "ctabfolder-button" );
         this._minButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state

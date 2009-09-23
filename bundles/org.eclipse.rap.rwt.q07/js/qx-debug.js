@@ -16077,345 +16077,6 @@ if(value){vBar.moveSelfToBegin();
 
 
 
-/* ID: qx.ui.toolbar.Button */
-qx.Class.define("qx.ui.toolbar.Button",
-{extend:qx.ui.form.Button,
-properties:{tabIndex:{refine:true,
-init:-1},
-appearance:{refine:true,
-init:"toolbar-button"},
-show:{refine:true,
-init:"inherit"},
-height:{refine:true,
-init:null},
-allowStretchY:{refine:true,
-init:true}},
-members:{_onkeydown:qx.lang.Function.returnTrue,
-_onkeyup:qx.lang.Function.returnTrue}});
-
-
-
-
-/* ID: qx.ui.toolbar.CheckBox */
-qx.Class.define("qx.ui.toolbar.CheckBox",
-{extend:qx.ui.toolbar.Button,
-construct:function(vText,
-vIcon,
-vChecked){this.base(arguments,
-vText,
-vIcon);
-if(vChecked!=null){this.setChecked(vChecked);
-}},
-properties:{checked:{check:"Boolean",
-init:false,
-apply:"_applyChecked",
-event:"changeChecked"}},
-members:{_applyChecked:function(value,
-old){value?this.addState("checked"):this.removeState("checked");
-},
-_onmouseup:function(e){this.setCapture(false);
-if(!this.hasState("abandoned")){this.addState("over");
-this.setChecked(!this.getChecked());
-this.execute();
-}this.removeState("abandoned");
-this.removeState("pressed");
-}}});
-
-
-
-
-/* ID: qx.ui.toolbar.MenuButton */
-qx.Class.define("qx.ui.toolbar.MenuButton",
-{extend:qx.ui.toolbar.Button,
-construct:function(vText,
-vMenu,
-vIcon,
-vIconWidth,
-vIconHeight,
-vFlash){this.base(arguments,
-vText,
-vIcon,
-vIconWidth,
-vIconHeight,
-vFlash);
-if(vMenu!=null){this.setMenu(vMenu);
-}},
-properties:{menu:{nullable:true,
-apply:"_applyMenu",
-event:"changeMenu"},
-direction:{check:["up",
-"down"],
-init:"down",
-event:"changeDirection"}},
-members:{getParentToolBar:function(){var vParent=this.getParent();
-if(vParent instanceof qx.ui.toolbar.Part){vParent=vParent.getParent();
-}return vParent instanceof qx.ui.toolbar.ToolBar?vParent:null;
-},
-_showMenu:function(vFromKeyEvent){var vMenu=this.getMenu();
-if(vMenu){var vButtonElement=this.getElement();
-var buttonPos=qx.bom.element.Location.get(vButtonElement);
-vMenu.setLeft(buttonPos.left);
-switch(this.getDirection()){case "up":vMenu.setBottom(buttonPos.top);
-vMenu.setTop(null);
-break;
-case "down":vMenu.setTop(buttonPos.bottom);
-vMenu.setBottom(null);
-break;
-}this.addState("pressed");
-if(vFromKeyEvent){vMenu.setHoverItem(vMenu.getFirstActiveChild());
-}vMenu.show();
-}},
-_hideMenu:function(){var vMenu=this.getMenu();
-if(vMenu){vMenu.hide();
-}},
-_applyMenu:function(value,
-old){if(old){old.setOpener(null);
-old.removeEventListener("appear",
-this._onmenuappear,
-this);
-old.removeEventListener("disappear",
-this._onmenudisappear,
-this);
-}
-if(value){value.setOpener(this);
-value.addEventListener("appear",
-this._onmenuappear,
-this);
-value.addEventListener("disappear",
-this._onmenudisappear,
-this);
-}},
-_onmousedown:function(e){if(e.getTarget()!=this||!e.isLeftButtonPressed()){return;
-}this.hasState("pressed")?this._hideMenu():this._showMenu();
-},
-_onmouseup:function(e){},
-_onmouseout:function(e){if(e.getTarget()!=this){return;
-}this.removeState("over");
-},
-_onmouseover:function(e){var vToolBar=this.getParentToolBar();
-if(vToolBar){var vMenu=this.getMenu();
-switch(vToolBar.getOpenMenu()){case null:case vMenu:break;
-default:qx.ui.menu.Manager.getInstance().update();
-this._showMenu();
-}}return this.base(arguments,
-e);
-},
-_onmenuappear:function(e){var vToolBar=this.getParentToolBar();
-if(!vToolBar){return;
-}var vMenu=this.getMenu();
-vToolBar.setOpenMenu(vMenu);
-},
-_onmenudisappear:function(e){var vToolBar=this.getParentToolBar();
-if(!vToolBar){return;
-}var vMenu=this.getMenu();
-if(vToolBar.getOpenMenu()==vMenu){vToolBar.setOpenMenu(null);
-}}}});
-
-
-
-
-/* ID: qx.ui.toolbar.Part */
-qx.Class.define("qx.ui.toolbar.Part",
-{extend:qx.ui.layout.HorizontalBoxLayout,
-construct:function(){this.base(arguments);
-this._handle=new qx.ui.toolbar.PartHandle;
-this.add(this._handle);
-this.initWidth();
-},
-properties:{appearance:{refine:true,
-init:"toolbar-part"},
-width:{refine:true,
-init:"auto"},
-show:{init:"inherit",
-check:["both",
-"label",
-"icon",
-"none"],
-nullable:true,
-inheritable:true,
-event:"changeShow"}},
-destruct:function(){this._disposeObjects("_handle");
-}});
-
-
-
-
-/* ID: qx.ui.toolbar.PartHandle */
-qx.Class.define("qx.ui.toolbar.PartHandle",
-{extend:qx.ui.layout.CanvasLayout,
-construct:function(){this.base(arguments);
-var l=new qx.ui.basic.Terminator;
-l.setAppearance("toolbar-part-handle-line");
-this.setStyleProperty("fontSize",
-"0px");
-this.setStyleProperty("lineHeight",
-"0px");
-this.add(l);
-},
-properties:{appearance:{refine:true,
-init:"toolbar-part-handle"}}});
-
-
-
-
-/* ID: qx.ui.toolbar.ToolBar */
-qx.Class.define("qx.ui.toolbar.ToolBar",
-{extend:qx.ui.layout.HorizontalBoxLayout,
-construct:function(){this.base(arguments);
-this.addEventListener("keypress",
-this._onkeypress);
-this.initHeight();
-},
-properties:{appearance:{refine:true,
-init:"toolbar"},
-height:{refine:true,
-init:"auto"},
-openMenu:{event:"changeOpenMenu",
-nullable:true},
-show:{init:"both",
-check:["both",
-"label",
-"icon",
-"none"],
-nullable:true,
-inheritable:true,
-event:"changeShow"}},
-members:{getAllButtons:function(){var vChildren=this.getChildren();
-var vLength=vChildren.length;
-var vDeepChildren=[];
-var vCurrent;
-for(var i=0;i<vLength;i++){vCurrent=vChildren[i];
-if(vCurrent instanceof qx.ui.toolbar.MenuButton){vDeepChildren.push(vCurrent);
-}else if(vCurrent instanceof qx.ui.toolbar.Part){vDeepChildren=vDeepChildren.concat(vCurrent.getChildren());
-}}return vDeepChildren;
-},
-_onkeypress:function(e){switch(e.getKeyIdentifier()){case "Left":return this._onkeypress_left();
-case "Right":return this._onkeypress_right();
-}},
-_onkeypress_left:function(){var vMenu=this.getOpenMenu();
-if(!vMenu){return;
-}var vOpener=vMenu.getOpener();
-if(!vOpener){return;
-}var vChildren=this.getAllButtons();
-var vChildrenLength=vChildren.length;
-var vIndex=vChildren.indexOf(vOpener);
-var vCurrent;
-var vPrevButton=null;
-for(var i=vIndex-1;i>=0;i--){vCurrent=vChildren[i];
-if(vCurrent instanceof qx.ui.toolbar.MenuButton&&vCurrent.getEnabled()){vPrevButton=vCurrent;
-break;
-}}if(!vPrevButton){for(var i=vChildrenLength-1;i>vIndex;i--){vCurrent=vChildren[i];
-if(vCurrent instanceof qx.ui.toolbar.MenuButton&&vCurrent.getEnabled()){vPrevButton=vCurrent;
-break;
-}}}
-if(vPrevButton){qx.ui.menu.Manager.getInstance().update();
-vPrevButton._showMenu(true);
-}},
-_onkeypress_right:function(){var vMenu=this.getOpenMenu();
-if(!vMenu){return;
-}var vOpener=vMenu.getOpener();
-if(!vOpener){return;
-}var vChildren=this.getAllButtons();
-var vChildrenLength=vChildren.length;
-var vIndex=vChildren.indexOf(vOpener);
-var vCurrent;
-var vNextButton=null;
-for(var i=vIndex+1;i<vChildrenLength;i++){vCurrent=vChildren[i];
-if(vCurrent instanceof qx.ui.toolbar.MenuButton&&vCurrent.getEnabled()){vNextButton=vCurrent;
-break;
-}}if(!vNextButton){for(var i=0;i<vIndex;i++){vCurrent=vChildren[i];
-if(vCurrent instanceof qx.ui.toolbar.MenuButton&&vCurrent.getEnabled()){vNextButton=vCurrent;
-break;
-}}}
-if(vNextButton){qx.ui.menu.Manager.getInstance().update();
-vNextButton._showMenu(true);
-}}}});
-
-
-
-
-/* ID: qx.ui.menu.Manager */
-qx.Class.define("qx.ui.menu.Manager",
-{type:"singleton",
-extend:qx.util.manager.Object,
-construct:function(){this.base(arguments);
-},
-members:{update:function(vTarget,
-vEventName){var vMenu,
-vHashCode;
-var vAll=this.getAll();
-for(vHashCode in vAll){vMenu=vAll[vHashCode];
-if(!vMenu.getAutoHide()){continue;
-}
-if(vTarget&&vTarget.getMenu&&vTarget.getMenu()){continue;
-}if(!vTarget){vMenu.hide();
-continue;
-}var isMouseDown=vEventName=="mousedown";
-var isMouseUp=vEventName=="mouseup";
-if(vMenu.getOpener()!==
-vTarget&&
-(vTarget&&
-(!vMenu.isSubElement(vTarget)&&isMouseDown)||
-(vMenu.isSubElement(vTarget,
-true)&&isMouseUp)||(!isMouseDown&&!isMouseUp))){vMenu.hide();
-continue;
-}}}}});
-
-
-
-
-/* ID: qx.ui.toolbar.RadioButton */
-qx.Class.define("qx.ui.toolbar.RadioButton",
-{extend:qx.ui.toolbar.CheckBox,
-properties:{manager:{check:"qx.ui.selection.RadioManager",
-apply:"_applyManager",
-nullable:true},
-name:{check:"String",
-event:"changeName"},
-disableUncheck:{check:"Boolean",
-init:false}},
-members:{_applyChecked:function(value,
-old){this.base(arguments,
-value,
-old);
-var vManager=this.getManager();
-if(vManager){vManager.handleItemChecked(this,
-value);
-}},
-_applyManager:function(value,
-old){if(old){old.remove(this);
-}
-if(value){value.add(this);
-}},
-_onmouseup:function(e){this.setCapture(false);
-if(!this.hasState("abandoned")){this.addState("over");
-this.setChecked(this.getDisableUncheck()||!this.getChecked());
-this.execute();
-}this.removeState("abandoned");
-this.removeState("pressed");
-}}});
-
-
-
-
-/* ID: qx.ui.toolbar.Separator */
-qx.Class.define("qx.ui.toolbar.Separator",
-{extend:qx.ui.layout.CanvasLayout,
-construct:function(){this.base(arguments);
-var l=new qx.ui.basic.Terminator;
-l.setAppearance("toolbar-separator-line");
-this.setStyleProperty("fontSize",
-"0px");
-this.setStyleProperty("lineHeight",
-"0px");
-this.add(l);
-},
-properties:{appearance:{refine:true,
-init:"toolbar-separator"}}});
-
-
-
-
 /* ID: qx.ui.form.CheckBox */
 qx.Class.define("qx.ui.form.CheckBox",
 {extend:qx.ui.basic.Atom,
@@ -17703,6 +17364,36 @@ destruct:function(){this._disposeObjects("_legendObject",
 
 
 
+/* ID: qx.ui.menu.Manager */
+qx.Class.define("qx.ui.menu.Manager",
+{type:"singleton",
+extend:qx.util.manager.Object,
+construct:function(){this.base(arguments);
+},
+members:{update:function(vTarget,
+vEventName){var vMenu,
+vHashCode;
+var vAll=this.getAll();
+for(vHashCode in vAll){vMenu=vAll[vHashCode];
+if(!vMenu.getAutoHide()){continue;
+}
+if(vTarget&&vTarget.getMenu&&vTarget.getMenu()){continue;
+}if(!vTarget){vMenu.hide();
+continue;
+}var isMouseDown=vEventName=="mousedown";
+var isMouseUp=vEventName=="mouseup";
+if(vMenu.getOpener()!==
+vTarget&&
+(vTarget&&
+(!vMenu.isSubElement(vTarget)&&isMouseDown)||
+(vMenu.isSubElement(vTarget,
+true)&&isMouseUp)||(!isMouseDown&&!isMouseUp))){vMenu.hide();
+continue;
+}}}}});
+
+
+
+
 /* ID: qx.ui.menu.Separator */
 qx.Class.define("qx.ui.menu.Separator",
 {extend:qx.ui.layout.CanvasLayout,
@@ -17731,20 +17422,6 @@ _onmousedown:function(e){e.stopPropagation();
 }},
 destruct:function(){this._disposeObjects("_line");
 }});
-
-
-
-
-/* ID: qx.ui.menubar.Button */
-qx.Class.define("qx.ui.menubar.Button",
-{extend:qx.ui.toolbar.MenuButton});
-
-
-
-
-/* ID: qx.ui.menubar.MenuBar */
-qx.Class.define("qx.ui.menubar.MenuBar",
-{extend:qx.ui.toolbar.ToolBar});
 
 
 

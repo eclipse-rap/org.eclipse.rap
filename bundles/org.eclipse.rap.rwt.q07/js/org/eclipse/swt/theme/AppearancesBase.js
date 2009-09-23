@@ -529,10 +529,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        height : "auto",
         spacing : 2,
-        padding : [ 2, 4 ],
-        backgroundColor : tv.getCssColor( "MenuItem", "background-color" )
+        padding : [ 2, 4 ],        
+        backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
+        height : states.bar ? "100%" : "auto"         
       };
       if( states.disabled ) {
         result.textColor = tv.getCssColor( "*", "color" );
@@ -596,31 +596,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         height : 0,
         border : "verticalDivider"
       };
-    }
-  },
-
-  "menubar-button" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        cursor : "default",
-        overflow : "hidden",
-        spacing : 4,
-        width : "auto",
-        padding : [ 3, 4 ],
-        verticalChildrenAlign : "middle",
-        backgroundImage : states.checked && !states.over
-                          ? "static/image/dotted_white.gif"
-                          : null
-      };
-      if( states.disabled ) {
-        result.backgroundColor = tv.getCssColor( "ToolBar", "background-color" );
-        result.textColor = tv.getCssColor( "*", "color" );
-      } else {
-        result.backgroundColor = tv.getCssColor( "MenuItem", "background-color" );
-        result.textColor = tv.getCssColor( "MenuItem", "color" );
-      }
-      return result;
     }
   },
 

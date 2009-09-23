@@ -159,6 +159,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/widgets/ToolSeparator.js";  
   private static final String TOOLBAR
     = "org/eclipse/rwt/widgets/ToolBar.js";  
+  private static final String MENUBAR
+  = "org/eclipse/rwt/widgets/MenuBar.js";  
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -249,6 +251,7 @@ final class QooxdooResourcesUtil {
       register( TOOLBAR, compress );
       register( TOOL_ITEM, compress );
       register( TOOLSEPARATOR, compress );
+      register( MENUBAR, compress );
 
       // register contributions
       registerContributions();

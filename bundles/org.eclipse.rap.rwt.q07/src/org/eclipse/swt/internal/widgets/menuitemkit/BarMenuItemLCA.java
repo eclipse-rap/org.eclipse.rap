@@ -14,8 +14,8 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
@@ -23,46 +23,34 @@ import org.eclipse.swt.widgets.MenuItem;
 
 final class BarMenuItemLCA extends MenuItemDelegateLCA {
 
-  private static final JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
-                          JSConst.JS_WIDGET_SELECTED,
-                          JSListenerType.ACTION );
-
+  private static final String ITEM_TYPE_BAR = "bar";
+  
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListener ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
     WidgetLCAUtil.preserveHelpListener( menuItem );
   }
 
   void readData( final MenuItem menuItem ) {
-    ControlLCAUtil.processSelection( menuItem, null, false );
     WidgetLCAUtil.processHelp( menuItem );
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.newWidget( "qx.ui.menubar.Button" );
-    int index = menuItem.getParent().indexOf( menuItem );
-    writer.call( menuItem.getParent(), 
-                 "addAt", 
-                 new Object[]{ menuItem, new Integer( index ) } );
-    // Note: qx.ui.menubar.Button extends qx.ui.toolbar.Button
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "menubar-button" );    
+    MenuItemLCAUtil.newItem( menuItem, 
+                             "org.eclipse.rwt.widgets.MenuItem", 
+                             ITEM_TYPE_BAR );
   }
 
-  // TODO [rh] qooxdoo does not handle bar menu items with images, should
-  //      we already ignore them when calling MenuItem#setImage()?
+  // TODO [tb] the client-side menuItem supports images, but the menubar 
+  //           ignores them in its layout, so it is currently not rendered  
   void renderChanges( final MenuItem menuItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    ItemLCAUtil.writeText( menuItem, true );
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( menuItem ) );
+    String text = menuItem.getText();
+    if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
+      JSWriter writer = JSWriter.getWriterFor( menuItem );
+      text = WidgetLCAUtil.escapeText( text, true );
+      writer.set( "text", text );
+    }
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
     WidgetLCAUtil.writeHelpListener( menuItem );

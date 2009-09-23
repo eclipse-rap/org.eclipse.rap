@@ -542,7 +542,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           top = pad[ 0 ];
         break;
         case "middle":
-          top = Math.floor( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
+          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
         break;
         case "bottom":
           top = pad[ 0 ] + inner - height;

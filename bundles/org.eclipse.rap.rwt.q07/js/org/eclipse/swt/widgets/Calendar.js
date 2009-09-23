@@ -56,11 +56,11 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
       spacing : 1
     });
 
-    var lastYearBt = new qx.ui.toolbar.Button;
-    var lastMonthBt = new qx.ui.toolbar.Button;
+    var lastYearBt = new qx.ui.form.Button;
+    var lastMonthBt = new qx.ui.form.Button;
     var monthYearLabel = new qx.ui.basic.Label;
-    var nextMonthBt = new qx.ui.toolbar.Button;
-    var nextYearBt = new qx.ui.toolbar.Button;
+    var nextMonthBt = new qx.ui.form.Button;
+    var nextYearBt = new qx.ui.form.Button;
 
     this._lastYearBtToolTip = new qx.ui.popup.ToolTip(this.tr("Previous year"));
     this._lastMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Previous month"));

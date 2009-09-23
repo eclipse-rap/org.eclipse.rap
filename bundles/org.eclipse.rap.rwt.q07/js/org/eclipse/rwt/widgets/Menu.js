@@ -455,7 +455,8 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     
     _handleKeyLeft : function( event ) {      
       if(    this._opener 
-          && this._opener.classname == "org.eclipse.rwt.widgets.MenuItem" )
+          && this._opener.classname == "org.eclipse.rwt.widgets.MenuItem" 
+          && this._opener.getParentMenu() != null )
       {
         var parentMenu = this._opener.getParentMenu();
         var hover = this._opener; 
