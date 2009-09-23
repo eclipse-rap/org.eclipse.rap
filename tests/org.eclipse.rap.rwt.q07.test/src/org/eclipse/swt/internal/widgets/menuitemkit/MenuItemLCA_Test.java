@@ -46,7 +46,6 @@ public class MenuItemLCA_Test extends TestCase {
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.BAR );
     RWTFixture.markInitialized( display );
-    testPreserveSelectionListener( menuItem );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
     display.dispose();
@@ -121,11 +120,10 @@ public class MenuItemLCA_Test extends TestCase {
     final boolean[] wasEventFired = { false };
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    Menu menu = new Menu( shell, SWT.BAR );
-    shell.setMenuBar( menu );
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    shell.setMenu( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
