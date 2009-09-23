@@ -10,7 +10,7 @@
 
 INPUT_ARCHIVE=
 ZIP_DOWNLOAD_PATH=
-UPDATE_SITE_PATH=
+REPOSITORY_PATH=
 
 DOWNLOAD_LOCATION=/home/data/httpd/download.eclipse.org/rt/rap
 SIGNING_LOCATION=/opt/public/download-staging.priv/rt/rap
@@ -18,23 +18,26 @@ SIGNING_LOCATION=/opt/public/download-staging.priv/rt/rap
 function printUsage() {
   cat <<EOT
 Usage: $0 [options]"
-  -a, --input-archive       input zip file
-  -u, --update-site-path    path to remote update site to merge with (relative)
-  -d, --download-location   path to zip download directory (relative)
-  -e, --eclipse-home        path to eclipse runtime installation
+  -i, --input-archive       input zip file to publish
+  -r, --repository-path     path to remote p2 repository to publish (relative to rap home)
+  -z, --zip-download-path   path to remote zip download directory (relative to rap home)
+  -u, --build-user          username to log into build and download server (overrides \$BUILD_USER)
+  -e, --eclipse-home        path to eclipse runtime installation (overrides \$ECLIPSE_HOME)
   -j, --java-home           path to java home (overrides \$JAVA_HOME)
 
-Example:
-  $0 -a rap-tooling-1.2.0-M-qualifier.zip -u "1.2/update" -e /opt/Eclipse-N-Builds/M7/
+Examples:
+  $0 -i rap-tooling-1.3.0-N-20090921-1835.zip -r "1.3/tooling" -e /opt/Eclipse-N-Builds/M7/
+  $0 -i rap-runtime-1.3.0-N-20090921-1741.zip -r "1.3/runtime" -z "1.3" -e /opt/Eclipse-N-Builds/M7/
 EOT
 }
 
 function parseArguments() {
   while [ $# -gt 0 ]; do
     case "$1" in
-      -a|--input-archive) shift; INPUT_ARCHIVE=$1 ;;
-      -u|--update-site-path) shift; UPDATE_SITE_PATH=$1 ;;
-      -d|--download-location) shift; ZIP_DOWNLOAD_PATH=$1 ;;
+      -i|--input-archive) shift; INPUT_ARCHIVE=$1 ;;
+      -r|--repository-path) shift; REPOSITORY_PATH=$1 ;;
+      -z|--zip-download-path) shift; ZIP_DOWNLOAD_PATH=$1 ;;
+      -u|--build-user) shift; BUILD_USER=$1 ;;
       -e|--eclipse-home) shift; ECLIPSE_HOME=$1 ;;
       -j|--java-home) shift; JAVA_HOME=$1 ;;
       -h|--help) printUsage; exit 0 ;;
@@ -43,7 +46,7 @@ function parseArguments() {
     shift
   done
   if [ -z "$INPUT_ARCHIVE" ]; then
-    echo "Input zip archive missing (provide parameter -a)"
+    echo "Input zip archive missing (provide parameter -i)"
     printUsage
     exit 1
   fi
@@ -71,6 +74,16 @@ function parseArguments() {
     echo "Invalid Eclipse home, set ECLIPSE_HOME or specify -e"
     printUsage
     exit 1
+  fi
+  if [ -z "$BUILD_USER" ]; then
+    echo "Username for build and download server missing, set BUILD_USER or specify -u"
+    printUsage
+    exit 1
+  fi
+  if [ -z "$ZIP_DOWNLOAD_PATH" -a -z "$REPOSITORY_PATH" ]; then
+    echo "Nothing to do. Specify -r or -z."
+    printUsage
+    exit 0
   fi
 }
 
@@ -174,7 +187,7 @@ function packBuild() {
     echo "Incorrect Java version. 1.5.0 needed for pack200."
     return 1
   fi
-  mkdir -p .packed && rm -f .packed/* || return 1
+  mkdir -p .packed && rm -rf .packed/* || return 1
   if [ "$mode" == "normalize" ]; then
     $JAVA_HOME/bin/java \
       -Dorg.eclipse.update.jarprocessor.pack200=@jre \
@@ -213,42 +226,49 @@ function generateMetadata() {
   # remove exiting metadata
   rm -f "$inputDir/artifacts.jar" && rm -f "$inputDir/content.jar" || return 1
   # create new metadata
-  if [ -e "$inputDir/site.xml" ]; then
-    $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
-      -application org.eclipse.equinox.p2.publisher.UpdateSitePublisher \
-      -metadataRepository file://$inputDir \
-      -artifactRepository file://$inputDir \
-      -metadataRepositoryName "RAP Update Site" \
-      -artifactRepositoryName "RAP Artifacts" \
-      -source $inputDir \
-      -configs gtk.linux.x86 \
-      -reusePackedFiles \
-      -compress \
-      -publishArtifacts
-  else
-    $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
-      -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher \
-      -metadataRepository file://$inputDir \
-      -artifactRepository file://$inputDir \
-      -metadataRepositoryName "RAP Runtime SDK Repository" \
-      -artifactRepositoryName "RAP Runtime SDK Repository" \
-      -source $inputDir \
-      -configs gtk.linux.x86 \
-      -reusePackedFiles \
-      -compress \
-      -publishArtifacts
-  fi
-  test $? -eq 0 || return 1
+  $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
+    -consolelog -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher \
+    -metadataRepository file:$inputDir \
+    -artifactRepository file:$inputDir \
+    -metadataRepositoryName "RAP Runtime SDK Repository" \
+    -artifactRepositoryName "RAP Runtime SDK Repository" \
+    -source $inputDir \
+    -configs gtk.linux.x86 \
+    -reusePackedFiles \
+    -compress \
+    -publishArtifacts || return 1
   echo ok
 }
 
-function getUsername() {
-  if [ -z "$BUILD_USER" ]; then
-    echo -n "Enter username for build.eclipse.org: "
-    read BUILD_USER
-    echo
+# Generates p2 category metadata for a given directory.
+#
+# Parameter: inputDir
+#
+function generateCategory() {
+  if [ $# -ne 1 ]; then
+    echo "Usage: generateCategory <directory>"
+    return 1
   fi
-  test "$BUILD_USER" || return 1
+  # Canonicalize path, the p2 generator needs absolute paths to work correctly.
+  local inputDir=`readlink -mn "$1"`
+  if [ ! -d "$inputDir" ]; then
+    echo "No such directory: $inputDir"
+    return 1
+  fi
+  # generate category.xml
+  echo '<?xml version="1.0" encoding="UTF-8"?>' > category.xml
+  echo '<site>' >> category.xml
+  echo '<category-def name="org.eclipse.rap.category" label="Rich Ajax Platform (RAP)"/>' >> category.xml
+  ls -1 $inputDir/features/*.jar | sed 's/^.*\/\([^_]*\)_\(.*\)\.jar$/<feature url="features\/\1_\2.jar" id="\1" version="\2">\n<category name="org.eclipse.rap.category"\/>\n<\/feature>/' >> category.xml
+  echo '</site>' >> category.xml
+  local categoryXml=`readlink -mn category.xml`
+  $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
+   -consolelog -application org.eclipse.equinox.p2.publisher.CategoryPublisher \
+   -metadataRepository file:$inputDir \
+   -categoryDefinition file:$categoryXml \
+   -compress || return 1
+  rm category.xml
+  echo ok
 }
 
 function findLauncher() {
@@ -269,90 +289,64 @@ fi
 
 parseArguments "$@"
 findLauncher
-getUsername || exit 1
 
-if [ -n "$ZIP_DOWNLOAD_PATH" -o -n "$UPDATE_SITE_PATH" ]; then
+# exclude icu.base bundles from packing and signing
+ICU_BUNDLES=`zipinfo -1 "$INPUT_ARCHIVE" | grep com.ibm.icu`
+echo "pack.excludes: `echo $ICU_BUNDLES | sed 's/ /, /'`" > pack.properties
+echo "sign.excludes: `echo $ICU_BUNDLES | sed 's/ /, /'`" >> pack.properties
+zip "$INPUT_ARCHIVE" pack.properties && rm pack.properties || exit 1
 
-  # pack200 - normalize
-  echo "=== normalize (pack200) $INPUT_ARCHIVE"
-  packBuild normalize "$INPUT_ARCHIVE" normalized-$INPUT_ARCHIVE_NAME || exit 1
+# pack200 - normalize
+echo "=== normalize (pack200) $INPUT_ARCHIVE"
+packBuild normalize "$INPUT_ARCHIVE" normalized-$INPUT_ARCHIVE_NAME || exit 1
 
-  # sign
-  echo "=== sign normalized $INPUT_ARCHIVE"
-  signBuild normalized-$INPUT_ARCHIVE_NAME signed-normalized-$INPUT_ARCHIVE_NAME || exit 1
-
-fi
+# sign
+echo "=== sign normalized $INPUT_ARCHIVE"
+signBuild normalized-$INPUT_ARCHIVE_NAME signed-normalized-$INPUT_ARCHIVE_NAME || exit 1
 
 if [ -n "$ZIP_DOWNLOAD_PATH" ]; then
-
+  # create a copy without pack.properties
+  cp signed-normalized-$INPUT_ARCHIVE_NAME upload-$INPUT_ARCHIVE_NAME
+  zip -d upload-$INPUT_ARCHIVE_NAME pack.properties
   # upload zip
-  echo "=== upload zip file to $DOWNLOAD_LOCATION/$ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME"
+  echo "=== upload zip file to $ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME"
+  echo check local file before uploading: upload-$INPUT_ARCHIVE_NAME
+  echo -n "press ok to upload "
+  read c
   rsync -v --progress \
-    signed-normalized-$INPUT_ARCHIVE_NAME \
+    upload-$INPUT_ARCHIVE_NAME \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME
-
 fi
 
-if [ -n "$UPDATE_SITE_PATH" ]; then
-
+if [ -n "$REPOSITORY_PATH" ]; then
   # pack200 - pack
   echo "=== pack200 signed $INPUT_ARCHIVE_NAME"
   packBuild pack signed-normalized-$INPUT_ARCHIVE_NAME packed-signed-normalized-$INPUT_ARCHIVE_NAME || exit 1
-  rm -rf newSite && unzip packed-signed-normalized-$INPUT_ARCHIVE_NAME -d newSite || exit 1
-  if [ -d newSite/eclipse ]; then
-    mv newSite/eclipse _eclipse_ && rm -rf newSite && mv _eclipse_ newSite || exit 1
-  fi
 
-  # TODO manual processing necessary here:
-  if [ "${INPUT_ARCHIVE_NAME:0:11}" == "rap-runtime" ]; then
-    echo "--- manual processing needed here ---"
-    echo "replace folders with jars: both features and org.junit plug-in"
-    echo -n "press ok when finished "
-    read c
-  fi
-
-  # download old site
-  echo "=== merge repository dev.eclipse.org:$DOWNLOAD_LOCATION/$UPDATE_SITE_PATH/"
+  # download old repo
+  echo "=== merge repository dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/"
   echo "update local copy of repository..."
-  mkdir -p sites
-  copySite=sites/${UPDATE_SITE_PATH/\//_}
+  mkdir -p mirror
+  localCopy=mirror/${REPOSITORY_PATH/\//_}
   rsync -av --delete --progress \
-    $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$UPDATE_SITE_PATH/ \
-    $copySite/ || return 1
+    $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ \
+    $localCopy/ || return 1
 
-  # merge (update manager)
-  echo "merge repository..."
-  rsync -av --exclude site.xml newSite/ $copySite/ || exit 1
-  if [ -e newSite/site.xml ]; then
-    cat $copySite/site.xml >> newSite/site.xml \
-      && mv newSite/site.xml $copySite/site.xml \
-      && vi $copySite/site.xml || exit 1
-  fi
+  echo "merge new content into local copy of repository"
+  rm -rf newSite && unzip packed-signed-normalized-$INPUT_ARCHIVE_NAME -d newSite || exit 1
+  rsync -rv newSite/eclipse/ $localCopy/ || exit 1
+  rm -rf newSite
 
   # metadata
-  generateMetadata $copySite || exit 1
-
-  # TODO generate category metadata
-  if [ "${INPUT_ARCHIVE_NAME:0:11}" == "rap-runtime" ]; then
-    echo update category.xml
-    echo generate category.xml like this:
-    echo $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
-     -console -consolelog -application org.eclipse.equinox.p2.publisher.CategoryPublisher \
-     -metadataRepository file:///home/ralf/proj/RAP/build/$copySite \
-     -categoryDefinition file:///home/ralf/proj/RAP/build/category.xml \
-     -categoryQualifier \
-     -compress
-    echo -n "press ok to proceed "
-    read c
-  fi
+  generateMetadata $localCopy || exit 1
+  generateCategory $localCopy || exit 1
 
   # upload
-  echo "=== upload repository"
-  echo check local repository before uploading: $copySite
+  echo "=== upload repository $REPOSITORY_PATH"
+  echo check local repository before uploading: $localCopy
   echo -n "press ok to upload "
   read c
   rsync -av --progress \
-    $copySite/ \
-    $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$UPDATE_SITE_PATH/ || exit 1
-
+    $localCopy/ \
+    $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ || exit 1
 fi

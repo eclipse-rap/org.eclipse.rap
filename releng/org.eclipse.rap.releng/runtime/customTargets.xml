@@ -81,63 +81,6 @@
     </pathconvert>
     <fail unless="icuBaseAvailable" message="ICU base is not available in base platform." />
 
-    <!--fileset dir="${baseLocation}/plugins" id="basePlugins">
-      <include name="com.ibm.icu.base_*" />
-      <include name="com.ibm.icu.base.source_*/" />
-      <include name="org.apache.commons.logging_*" />
-      <include name="org.apache.commons.logging.source_*" />
-      <include name="org.eclipse.core.commands_*" />
-      <include name="org.eclipse.core.commands.source_*" />
-      <include name="org.eclipse.core.contenttype_*" />
-      <include name="org.eclipse.core.contenttype.source_*" />
-      <include name="org.eclipse.core.databinding_*" />
-      <include name="org.eclipse.core.databinding.source_*" />
-      <include name="org.eclipse.core.databinding.beans_*" />
-      <include name="org.eclipse.core.databinding.beans.source_*" />
-      <include name="org.eclipse.core.databinding.observable_*" />
-      <include name="org.eclipse.core.databinding.observable.source_*" />
-      <include name="org.eclipse.core.databinding.property_*" />
-      <include name="org.eclipse.core.databinding.property.source_*" />
-      <include name="org.eclipse.core.expressions_*" />
-      <include name="org.eclipse.core.expressions.source_*" />
-      <include name="org.eclipse.core.jobs_*" />
-      <include name="org.eclipse.core.jobs.source_*" />
-      <include name="org.eclipse.core.runtime_*" />
-      <include name="org.eclipse.core.runtime.source_*" />
-      <include name="org.eclipse.equinox.app_*" />
-      <include name="org.eclipse.equinox.app.source_*" />
-      <include name="org.eclipse.equinox.common_*" />
-      <include name="org.eclipse.equinox.common.source_*" />
-      <include name="org.eclipse.equinox.http.jetty_*" />
-      <include name="org.eclipse.equinox.http.jetty.source_*" />
-      <include name="org.eclipse.equinox.http.registry_*" />
-      <include name="org.eclipse.equinox.http.registry.source_*" />
-      <include name="org.eclipse.equinox.http.servlet_*" />
-      <include name="org.eclipse.equinox.http.servlet.source_*" />
-      <include name="org.eclipse.equinox.preferences_*" />
-      <include name="org.eclipse.equinox.preferences.source_*" />
-      <include name="org.eclipse.equinox.registry_*" />
-      <include name="org.eclipse.equinox.registry.source_*" />
-      <include name="org.eclipse.help_*" />
-      <include name="org.eclipse.help.source_*" />
-      <include name="org.eclipse.jdt.junit.runtime*" />
-      <include name="org.eclipse.osgi_*" />
-      <include name="org.eclipse.osgi.services_*" />
-      <include name="org.eclipse.osgi.services.source_*" />
-      <include name="org.eclipse.osgi.source_*" />
-      <include name="org.junit.source_3*/" />
-      <include name="org.mortbay.jetty.server_*" />
-      <include name="org.mortbay.jetty.server.source_*/" />
-      <include name="org.mortbay.jetty.util_*" />
-      <include name="org.mortbay.jetty.util.source_*/" />
-    </fileset>
-
-    <! copy all the needed plugins + source 
-    <copy todir="${targetLocation}/eclipse/plugins">
-      <fileset refid="basePlugins" />
-    </copy>
--->
-
     <!-- zip target -->
     <zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
       <fileset dir="${targetLocation}">

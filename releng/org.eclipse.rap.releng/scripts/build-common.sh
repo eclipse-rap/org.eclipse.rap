@@ -12,12 +12,12 @@ rapTarget=
 # print usage info
 print_usage() {
   echo "Usage: $0 [args]"
-  echo "  --cvs-tag TAG, defaults to $cvsTag" 
+  echo "  --cvs-tag TAG, defaults to $cvsTag"
   echo "  --builder cvs repository location of builder"
   echo "  --build-type N/I/M/R, defaults to $buildType"
   echo "  --runtime path to runtime eclipse install"
   echo "  --base-platform path to base platform to build against"
-  echo "  --work temporary working directory, defaults to $workDir" 
+  echo "  --work temporary working directory, defaults to $workDir"
   echo "  --output path to place output in, defaults to $outputDir"
   echo "  --rap-target path to a zipped rap target platform, only applicable in tooling build"
 }
@@ -120,7 +120,7 @@ java -cp $launcher org.eclipse.core.launcher.Main \
   -DbaseLocation="$basePlatformDir" \
   -DrapTarget="$rapTarget" \
   -Dfile.encoding=ISO-8859-1
-  
+
 if test $? = 0
 then
   echo "Cleaning up workspace"
@@ -128,4 +128,3 @@ then
 else
   exit $?
 fi
-

@@ -16,4 +16,4 @@ runtimeDir=/projects/rapbuild/build-runtime/3.4.1/
   --work "$WORKSPACE" \
   --runtime "$runtimeDir" \
   --base-platform "$PLATFORM_DIR" \
-  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng"
+  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/runtime"

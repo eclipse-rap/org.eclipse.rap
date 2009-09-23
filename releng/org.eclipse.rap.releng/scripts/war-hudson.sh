@@ -16,7 +16,7 @@ $scriptsDir/build-common.sh \
   --work "$WORKSPACE" \
   --runtime "$runtimeDir" \
   --base-platform "$PLATFORM_DIR" \
-  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng.warbuild"
+  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/warbuild"
 
 if [ $? = 0 ]; then
   oldDeployment=`stat -c %Y $tomcatDir/work/Catalina/localhost/rapdemo/`

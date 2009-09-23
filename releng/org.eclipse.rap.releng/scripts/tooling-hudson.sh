@@ -23,5 +23,5 @@ $scriptsDir/build-common.sh \
   --work "$WORKSPACE" \
   --runtime "$runtimeDir" \
   --base-platform "$PLATFORM_DIR" \
-  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng.tooling" \
+  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/tooling" \
   --rap-target "$latestTarget"
