@@ -33,7 +33,7 @@ package org.eclipse.jface.dialogs;
  * </ul>
  * </p>
  */
-import org.eclipse.rwt.RWT;
+import org.eclipse.jface.resource.JFaceResources;
 
 /**
  * IDialogConstants is the interface for common dialog strings and ids
@@ -350,8 +350,27 @@ public class IDialogConstants {
      * @return an <code>IDialogConstants</code> implementation for the current locale
      */
     public static IDialogConstants get() {
-      String id = "org.eclipse.jface.dialogmessages"; //$NON-NLS-1$
-      Class clazz = IDialogConstants.class;
-      return ( IDialogConstants )RWT.NLS.getISO8859_1Encoded( id, clazz );
+      IDialogConstants dialogConstants = new IDialogConstants(); 
+      dialogConstants.OK_LABEL = JFaceResources.getString("ok"); //$NON-NLS-1$
+      dialogConstants.CANCEL_LABEL = JFaceResources.getString("cancel"); //$NON-NLS-1$
+      dialogConstants.YES_LABEL = JFaceResources.getString("yes"); //$NON-NLS-1$
+      dialogConstants.NO_LABEL = JFaceResources.getString("no"); //$NON-NLS-1$
+      dialogConstants.NO_TO_ALL_LABEL = JFaceResources.getString("notoall"); //$NON-NLS-1$
+      dialogConstants.YES_TO_ALL_LABEL = JFaceResources.getString("yestoall"); //$NON-NLS-1$
+      dialogConstants.SKIP_LABEL = JFaceResources.getString("skip"); //$NON-NLS-1$
+      dialogConstants.STOP_LABEL = JFaceResources.getString("stop"); //$NON-NLS-1$
+      dialogConstants.ABORT_LABEL = JFaceResources.getString("abort"); //$NON-NLS-1$
+      dialogConstants.RETRY_LABEL = JFaceResources.getString("retry"); //$NON-NLS-1$
+      dialogConstants.IGNORE_LABEL = JFaceResources.getString("ignore"); //$NON-NLS-1$
+      dialogConstants.PROCEED_LABEL = JFaceResources.getString("proceed"); //$NON-NLS-1$
+      dialogConstants.OPEN_LABEL = JFaceResources.getString("open"); //$NON-NLS-1$
+      dialogConstants.CLOSE_LABEL = JFaceResources.getString("close"); //$NON-NLS-1$
+      dialogConstants.SHOW_DETAILS_LABEL = JFaceResources.getString("showDetails"); //$NON-NLS-1$
+      dialogConstants.HIDE_DETAILS_LABEL = JFaceResources.getString("hideDetails"); //$NON-NLS-1$
+      dialogConstants.BACK_LABEL = JFaceResources.getString("backButton"); //$NON-NLS-1$
+      dialogConstants.NEXT_LABEL = JFaceResources.getString("nextButton"); //$NON-NLS-1$
+      dialogConstants.FINISH_LABEL = JFaceResources.getString("finish"); //$NON-NLS-1$
+      dialogConstants.HELP_LABEL = JFaceResources.getString("help"); //$NON-NLS-1$
+      return dialogConstants;
     }
 }
