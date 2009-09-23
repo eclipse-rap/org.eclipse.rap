@@ -54,12 +54,7 @@ public class RWTDelegate extends HttpServlet {
     try {
       ServiceContext context = new ServiceContext( wrappedRequest, response );
       ContextProvider.setContext( context );
-      // TODO [fappel]: move this into a method ContextProvider#ensureSession().
-      //                Ensure that there is exactly one ISessionStore per 
-      //                session created
-      synchronized( this ) {
-        ContextProvider.getSession();
-      }
+      createSessionStore();
       ServiceManager.getHandler().service( );
     } finally {
       ContextProvider.disposeContext();
@@ -102,5 +97,12 @@ public class RWTDelegate extends HttpServlet {
   private File getWebAppBase() {
     IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
     return engineConfig.getServerContextDir();
+  }
+
+  private void createSessionStore() {
+    // Ensure that there is exactly one ISessionStore per session created
+    synchronized( this ) {
+      ContextProvider.getSession();
+    }
   }
 }
