@@ -27,11 +27,13 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this._lastScrollTop = 0;
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeParent", this._onChangeParent, this );
+    this.addEventListener( "mousewheel", this._onMouseWheel, this );
   },
   
   destruct : function() {
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "changeParent", this._onChangeParent, this );
+    this.removeEventListener( "mousewheel", this._onMouseWheel, this );
     this.getFocusRoot().removeEventListener( "changeFocusedChild",
                                              this._onChangeFocusedChild,
                                              this );
@@ -51,6 +53,10 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
                                             this );
     },
     
+    _onMouseWheel : function( evt ) {
+      this._blockScrolling = false;
+    },
+    
     _onscroll : function( evt ) {
       this.base( arguments, evt );
       if( this._blockScrolling ) {
@@ -66,6 +72,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     
     _onChangeFocusedChild : function( evt ) {
       var focusedChild = this.getFocusRoot().getFocusedChild();
+      this._blockScrolling = false;
       if( !this._showFocusedControl && focusedChild !== this ) {
         this._blockScrolling = this._contains( focusedChild );
       }
