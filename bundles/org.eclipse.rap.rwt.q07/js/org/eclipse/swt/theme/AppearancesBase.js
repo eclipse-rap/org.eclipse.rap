@@ -932,7 +932,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : "undefined";
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TreeColumn",
-                                                     "background-image" );
+                                               "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TreeColumn",
                                                      "background-image" );
       if( states.mouseover && !states.disabled ) {

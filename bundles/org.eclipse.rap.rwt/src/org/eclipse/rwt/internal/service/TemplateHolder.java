@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 public final class TemplateHolder {
   
   private static final int[] EMPTY_INDICES = new int[ 0 ];
+  private final static String TOKEN_BACKGROUND_IMAGE = "backgroundImage";
   private final static String TOKEN_LIBRARIES = "libraries";
   private final static String TOKEN_APPSCRIPT = "appScript";
   private final static String TOKEN_SERVLET = "servlet";
@@ -30,6 +31,8 @@ public final class TemplateHolder {
   private final static String TOKEN_STARTUP = "startup";
   private final static String TOKEN_EXIT_CONFIRMATION = "exitConfirmation";
 
+  public final static Variable VAR_BACKGROUND_IMAGE
+    = new Variable( TOKEN_BACKGROUND_IMAGE );
   public final static Variable VAR_LIBRARIES
     = new Variable( TOKEN_LIBRARIES );
   public final static Variable VAR_APPSCRIPT
@@ -103,7 +106,8 @@ public final class TemplateHolder {
   }
 
   private boolean isVariableToken( final String nextToken ) {
-    return    nextToken.equals( TOKEN_LIBRARIES.toString() )
+    return    nextToken.equals( TOKEN_BACKGROUND_IMAGE.toString() )
+           || nextToken.equals( TOKEN_LIBRARIES.toString() )
            || nextToken.equals( TOKEN_APPSCRIPT.toString() )
            || nextToken.equals( TOKEN_SERVLET.toString() )
            || nextToken.equals( TOKEN_FALLBACK_URL.toString() )

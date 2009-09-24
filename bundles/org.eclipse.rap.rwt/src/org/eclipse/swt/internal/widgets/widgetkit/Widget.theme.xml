@@ -101,6 +101,12 @@
       </description>
     </property>
 
+    <property name="background-image" type="image">
+      <description>
+      Background image for the display (client area of the browser window).
+      </description>
+    </property>
+
   </element>
 
   <element name="ToolTip">

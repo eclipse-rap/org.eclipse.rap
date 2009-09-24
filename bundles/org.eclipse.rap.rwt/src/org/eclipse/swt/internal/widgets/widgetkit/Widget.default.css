@@ -31,4 +31,6 @@ Display {
   rwt-warning-image: url( resource/widget/rap/dialog/information.png );
   rwt-question-image: url( resource/widget/rap/dialog/question.png );
   rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
+  
+  background-image: url( xyzresource/widget/rap/display/bg.gif );
 }

@@ -16,11 +16,12 @@ import java.text.MessageFormat;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
 
 
@@ -64,6 +65,21 @@ public final class BrowserSurvey {
     }
   }
 
+  private static String getBgImage() {
+    String result = "";
+    QxType cssValue = ThemeUtil.getCssValue( "Display", 
+                                             "background-image", 
+                                             SimpleSelector.DEFAULT );
+    if( cssValue != null && cssValue instanceof QxImage ) {
+      QxImage image = ( QxImage )cssValue;
+      // path is null if non-existing image was specified in css file
+      if( image.path != null ) {
+        result = RWT.getResourceManager().getLocation( image.path );
+      }
+    }
+    return result;
+  }
+
   public static String getSerlvetName() {
     String result = ContextProvider.getRequest().getServletPath();
     if( result.startsWith( "/" ) ) {
@@ -88,6 +104,7 @@ public final class BrowserSurvey {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
     TemplateHolder template
       = LifeCycleServiceHandler.configurer.getTemplateOfStartupPage();
+    template.replace( TemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
     template.replace( TemplateHolder.VAR_SERVLET, getSerlvetName() );
