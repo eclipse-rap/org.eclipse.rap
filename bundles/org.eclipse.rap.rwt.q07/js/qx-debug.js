@@ -17314,7 +17314,9 @@ this._inputElement.setAttribute('wrap',
 wrapValue);
 this._inputElement.style.overflow=styleValue;
 }},
-"default":function(){if(this._inputElement){this._inputElement.style.whiteSpace=this.getWrap()?"normal":"nowrap";
+"default":function(){if(this._inputElement){var wrapValue=this.getWrap()?"soft":"off";
+this._inputElement.setAttribute('wrap',
+wrapValue);
 }}}),
 _computePreferredInnerHeight:function(){return 60;
 }}});
