@@ -238,8 +238,7 @@ public class PerspectiveHelper {
 				this.detachable = false;
 			} else {
 				Composite testChild = new Composite(client, SWT.NONE);
-// RAP [rh] Control#isReparentable() not implemented				
-//				this.detachable = testChild.isReparentable();
+				this.detachable = testChild.isReparentable();
 				this.detachable = false;
 				testChild.dispose();
 			}

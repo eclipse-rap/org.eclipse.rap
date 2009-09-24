@@ -214,24 +214,23 @@ abstract public class LayoutPart implements ISizeProvider {
      * Reparent a part.
      */
     public void reparent(Composite newParent) {
-// RAP [rh] Control#isReparentable not implemented        
-//        Control control = getControl();
-//        if ((control == null) || (control.getParent() == newParent)) {
-//            return;
-//        }
-//
-//        if (control.isReparentable()) {
-//            // make control small in case it is not resized with other controls
-//            //control.setBounds(0, 0, 0, 0);
-//            // By setting the control to disabled before moving it,
-//            // we ensure that the focus goes away from the control and its children
-//            // and moves somewhere else
-//            boolean enabled = control.getEnabled();
-//            control.setEnabled(false);
-//            control.setParent(newParent);
-//            control.setEnabled(enabled);
-//            control.moveAbove(null);
-//        }
+        Control control = getControl();
+        if ((control == null) || (control.getParent() == newParent)) {
+            return;
+        }
+
+        if (control.isReparentable()) {
+            // make control small in case it is not resized with other controls
+            //control.setBounds(0, 0, 0, 0);
+            // By setting the control to disabled before moving it,
+            // we ensure that the focus goes away from the control and its children
+            // and moves somewhere else
+            boolean enabled = control.getEnabled();
+            control.setEnabled(false);
+            control.setParent(newParent);
+            control.setEnabled(enabled);
+            control.moveAbove(null);
+        }
     }
 
     /**

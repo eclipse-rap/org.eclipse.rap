@@ -15,10 +15,12 @@ import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ShowEvent;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 
 /**
@@ -1721,8 +1723,7 @@ public abstract class Control extends Widget {
 
   ////////////////
   // drawing (Note that we can't really force a redraw. This is just a
-  // fake to for event notifications that come on OS systems
-  // with redraws)
+  // fake for event notifications that come on OS systems with redraws)
 
   /**
    * If the argument is <code>false</code>, causes subsequent drawing
@@ -1793,6 +1794,48 @@ public abstract class Control extends Widget {
    */
   public void update() {
     checkWidget();
+  }
+  
+  /**
+   * Changes the parent of the widget to be the one provided if
+   * the underlying operating system supports this feature.
+   * Returns <code>true</code> if the parent is successfully changed.
+   *
+   * @param parent the new parent for the control.
+   * @return <code>true</code> if the parent is changed and <code>false</code> otherwise.
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is <code>null</code></li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *  </ul>
+   *  
+   *  @since 1.3
+   */
+  public boolean setParent( final Composite parent ) {
+    checkWidget();
+    return false;
+  }
+  
+  /**
+   * Returns <code>true</code> if the underlying operating
+   * system supports this reparenting, otherwise <code>false</code>
+   *
+   * @return <code>true</code> if the widget can be reparented, otherwise <code>false</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public boolean isReparentable() {
+    checkWidget();
+    return false;
   }
 
   ////////////

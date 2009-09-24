@@ -895,8 +895,7 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
     public void reparent(Composite newParent) {
 
         Control control = getControl();
-// RAP [rh] Control#isReparentable not implemented
-        if ((control == null) || (control.getParent() == newParent) /* || !control.isReparentable() */) {
+        if ((control == null) || (control.getParent() == newParent) || !control.isReparentable()) {
 			return;
 		}
 

@@ -518,8 +518,7 @@ public class ViewPane extends PartPane {
         if (isvToolBarMgr != null) {
             Control bar = isvToolBarMgr.getControl2();
             if (bar != null) {
-// RAP [rh] Control.setParent() missing              
-//                bar.setParent(newParent);
+                bar.setParent(newParent);
                 bar.moveAbove(control);
             }
         }
