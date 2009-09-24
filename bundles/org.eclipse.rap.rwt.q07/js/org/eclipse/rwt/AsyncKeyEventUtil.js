@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
           isTraverseKey = this._isTraverseKey( keyCode );
         }
         if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
-          if( !this._isUntrustedKey( control, keyCode ) ) {
+          if( !this._isUntrustedKey( control, keyCode, domEvent ) ) {
             if( this._keyEventRequestRunning || this._bufferedEvents.length > 0 )
             {
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
@@ -158,14 +158,20 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       return result;
     },
 
-    _isUntrustedKey : function( control, keyCode ) {
+    _isUntrustedKey : function( control, keyCode, domEvent  ) {
       var result = false;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        if( control instanceof qx.ui.form.TextField ) {
-          for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ ) {
-          	if( this._untrustedKeyCodes[ i ] === keyCode ) {
-          	  result = true;
-          	}
+        // Check for CTRL key fixes bug 282837
+        if( domEvent.ctrlKey ) {
+          result = true;
+        } else {
+          if( control instanceof qx.ui.form.TextField ) {
+            for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ )
+            {
+              if( this._untrustedKeyCodes[ i ] === keyCode ) {
+                result = true;
+              }
+            }
           }
         }
       }
@@ -195,10 +201,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
 
     _isTraverseKey : function( keyCode ) {
       var result = false;
-      if(    keyCode === 27
-          || keyCode === 13
-          || keyCode === 9 )
-      {
+      if( keyCode === 27 || keyCode === 13 || keyCode === 9 ) {
         result = true;
       }
       return result;
