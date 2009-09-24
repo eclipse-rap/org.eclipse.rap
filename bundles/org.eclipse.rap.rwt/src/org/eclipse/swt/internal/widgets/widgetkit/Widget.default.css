@@ -32,5 +32,5 @@ Display {
   rwt-question-image: url( resource/widget/rap/dialog/question.png );
   rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
   
-  background-image: url( xyzresource/widget/rap/display/bg.gif );
+  background-image: url( resource/widget/rap/display/bg.gif );
 }
