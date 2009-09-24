@@ -117,15 +117,11 @@ public class RWTDelegate extends HttpServlet {
     if( "/".equals( request.getPathInfo() ) ) {
       // In case of "http://example.com/webapp/servlet/" redirect to
       // "http://example.com/webapp/servlet" (same URL without trailing slash)
-      String redirectURL = request.getContextPath() + request.getServletPath();
-      response.sendRedirect( response.encodeRedirectURL( redirectURL ) );
+      String redirectUrl = request.getContextPath() + request.getServletPath();
+      response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
     } else {
       // Otherwise send 404 - not found
       response.sendError( HttpServletResponse.SC_NOT_FOUND );
     }
-  }
-
-  private static String createRedirectURL( final HttpServletRequest request ) {
-    return request.getContextPath() + request.getServletPath();
   }
 }
