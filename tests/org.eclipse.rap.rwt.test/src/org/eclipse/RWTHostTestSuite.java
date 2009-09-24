@@ -19,8 +19,7 @@ import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager_Test;
 import org.eclipse.rwt.internal.branding.BrandingUtil_Test;
 import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
-import org.eclipse.rwt.internal.engine.PhaseListenerRegistry_Test;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener_Test;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.events.EventAdapter_Test;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
@@ -88,6 +87,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( RWTServletContextListener_Test.class );
     suite.addTestSuite( AdapterFactoryRegistry_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
+    suite.addTestSuite( RWTDelegate_Test.class );
     suite.addTestSuite( ResourceRegistry_Test.class );
     suite.addTestSuite( RWTRequestVersionControl_Test.class );
     suite.addTestSuite( ResourceManager_Test.class );

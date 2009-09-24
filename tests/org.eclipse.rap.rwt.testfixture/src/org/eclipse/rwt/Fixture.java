@@ -136,6 +136,7 @@ public class Fixture {
     private String requestURI = "/fooapp/W4TDelegate";
     private final StringBuffer requestURL = new StringBuffer();
     private String servletPath = "/W4TDelegate";
+    private String pathInfo;
     private Map parameters = new HashMap();
     private Map headers = new HashMap();
     private Map attributes = new HashMap();
@@ -191,7 +192,11 @@ public class Fixture {
     }
     
     public String getPathInfo() {
-      return null;
+      return pathInfo;
+    }
+    
+    public void setPathInfo( final String pathInfo ) {
+      this.pathInfo = pathInfo;
     }
     
     public String getPathTranslated() {
@@ -222,42 +227,22 @@ public class Fixture {
       return null;
     }
     
-    /**
-     * @return  Returns the requestURI.
-     * @uml.property  name="requestURI"
-     */
     public String getRequestURI() {
       return requestURI;
     }
     
-    /**
-     * @param requestURI  The requestURI to set.
-     * @uml.property  name="requestURI"
-     */
     public void setRequestURI( final String requestURI ) {
       this.requestURI = requestURI;
     }
     
-    /**
-     * @return  Returns the requestURL.
-     * @uml.property  name="requestURL"
-     */
     public StringBuffer getRequestURL() {
       return requestURL;
     }
     
-    /**
-     * @return  Returns the servletPath.
-     * @uml.property  name="servletPath"
-     */
     public String getServletPath() {
       return servletPath;
     }
     
-    /**
-     * @param servletPath  The servletPath to set.
-     * @uml.property  name="servletPath"
-     */
     public void setServletPath( final String servletPath ) {
       this.servletPath = servletPath;
     }
@@ -483,6 +468,8 @@ public class Fixture {
     private String contentType;
     private Map cookies = new HashMap();
     private Map headers = new HashMap();
+    private int errorStatus;
+    private String redirect;
 
     public void addCookie( final Cookie arg0 ) {
       cookies.put( arg0.getName(), arg0 );
@@ -513,14 +500,25 @@ public class Fixture {
     }
     
     public void sendError( final int arg0, final String arg1 )
-    throws IOException
+      throws IOException
     {
+      errorStatus = arg0;
     }
     
     public void sendError( final int arg0 ) throws IOException {
+      errorStatus = arg0;
+    }
+    
+    public int getErrorStatus() {
+      return errorStatus;
     }
     
     public void sendRedirect( final String arg0 ) throws IOException {
+      redirect = arg0;
+    }
+    
+    public String getRedirect() {
+      return redirect;
     }
     
     public void setDateHeader( final String arg0, final long arg1 ) {

@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.engine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -110,18 +111,38 @@ public class RWTDelegate extends HttpServlet {
     }
   }
 
-  private static void handleInvalidRequest( final HttpServletRequest request,
-                                            final HttpServletResponse response )  
+  static void handleInvalidRequest( final HttpServletRequest request,
+                                    final HttpServletResponse response )  
     throws IOException
   {
     if( "/".equals( request.getPathInfo() ) ) {
       // In case of "http://example.com/webapp/servlet/" redirect to
       // "http://example.com/webapp/servlet" (same URL without trailing slash)
-      String redirectUrl = request.getContextPath() + request.getServletPath();
+      String redirectUrl = createRedirectUrl( request );
       response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
     } else {
       // Otherwise send 404 - not found
       response.sendError( HttpServletResponse.SC_NOT_FOUND );
     }
+  }
+
+  static String createRedirectUrl( final HttpServletRequest request ) {
+    String result = request.getContextPath() + request.getServletPath();
+    Enumeration parameterNames = request.getParameterNames();
+    if( parameterNames.hasMoreElements() ) {
+      result += "?";
+      boolean first = true;
+      while( parameterNames.hasMoreElements() ) {
+        String parameterName = ( String )parameterNames.nextElement();
+        if( !first ) {
+          result += "&";
+        }
+        result += parameterName;
+        result += "=";
+        result += request.getParameter( parameterName );
+        first = false;
+      }
+    }
+    return result;
   }
 }
