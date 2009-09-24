@@ -36,14 +36,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertEquals( 1, this.testUtil.getRequestsSend() );
       var msg = this.testUtil.getMessage();
       assertContains( "widgetSelected=w1",  msg );
-      assertContainsNot( "widgetSelected=w1_dropDown",  msg );
+      assertContainsNot( "detail=arrow", msg );
       this.testUtil.clearRequestLog();
       this.testUtil.fakeMouseClick( item,  
                                     103 + parseInt( lineStyle.left ), 
                                     103 );
       assertEquals( 1, this.testUtil.getRequestsSend() );
       var msg = this.testUtil.getMessage();
-      assertContains( "widgetSelected=w1_dropDown", msg );
+      assertContains( "detail=arrow", msg );
       this.testUtil.clearRequestLog();
       item.destroy();
       this.item = null;

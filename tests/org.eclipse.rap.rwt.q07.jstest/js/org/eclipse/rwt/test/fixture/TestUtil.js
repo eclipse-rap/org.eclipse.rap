@@ -268,6 +268,12 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
     
     getDocument : function() {
       return qx.ui.core.ClientDocument.getInstance();
+    },
+    
+    preventFlushs : function( value ) {
+      // this only works if the TestRunner-function"_disableAutoFlush" 
+      // has been called previously. (Happens in TestRunner.run)
+      qx.ui.core.Widget.__allowFlushs = !value;
     }
      
   }

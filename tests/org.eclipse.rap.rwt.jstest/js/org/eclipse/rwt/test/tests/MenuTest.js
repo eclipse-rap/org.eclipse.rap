@@ -15,8 +15,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     this.base( arguments );
     this._menuClass = org.eclipse.rwt.widgets.Menu;
     this._menuItemClass = org.eclipse.rwt.widgets.MenuItem;
-    this._menuBarClass = qx.ui.menubar.MenuBar;
-    this._menuBarItemClass = qx.ui.menubar.Button;
+    this._menuBarClass = org.eclipse.rwt.widgets.MenuBar;
+    this._menuBarItemClass = org.eclipse.rwt.widgets.MenuItem;
     this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;
   },  
   
@@ -185,6 +185,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.testUtil.click( this.testUtil.getDocument() );      
       this.testUtil.flush();
       assertFalse( this.menu.isSeeable() );
+      this.testUtil.click( barItem );
+      this.testUtil.flush();
+      assertTrue( this.menu.isSeeable() );
+      this.testUtil.click( this.testUtil.getDocument() );      
+      this.testUtil.flush();
+      assertFalse( this.menu.isSeeable() );      
       this.disposeMenuBar();
     },
     
@@ -583,9 +589,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem = new this._menuItemClass( type );
       this.menuItem.setText( "bla" );
       this.menu.addMenuItemAt( this.menuItem, 0 );
-      this.menuBarItem = new this._menuBarItemClass( "test", this.menu );
+      this.menuBarItem = new this._menuBarItemClass( "bar" );
       this.menuBarItem.setMenu( this.menu );
-      this.menuBar.add( this.menuBarItem );      
+      this.menuBar.addMenuItemAt( this.menuBarItem, 0 );
     },
     
     disposeMenu : function() {

@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.wiedgets.MenuBar", {
+qx.Class.define("org.eclipse.rwt.widgets.MenuBar", {
   extend : qx.ui.layout.HorizontalBoxLayout,
 
   construct : function() {
@@ -34,6 +34,7 @@ qx.Class.define("org.eclipse.rwt.wiedgets.MenuBar", {
   members : {
     
     addMenuItemAt : function( menuItem, index ) {
+      menuItem.setParentMenu( this );
       this.addAt( menuItem, index );
     },
     
@@ -92,6 +93,10 @@ qx.Class.define("org.eclipse.rwt.wiedgets.MenuBar", {
       } else {
         this._openItem = null;
       }
+    },
+    
+    getOpenItem : function() {
+      return this._openItem;
     }
     
   }

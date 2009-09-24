@@ -46,7 +46,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
 
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.newWidget( "org.eclipse.rwt.wiedgets.MenuBar" );
+    writer.newWidget( "org.eclipse.rwt.widgets.MenuBar" );
   }
 
   void renderChanges( final Menu menu ) throws IOException {

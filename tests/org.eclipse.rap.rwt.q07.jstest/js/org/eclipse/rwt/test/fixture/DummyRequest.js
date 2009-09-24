@@ -277,12 +277,24 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.DummyRequest", {
         org.eclipse.rwt.test.fixture.DummyRequest._sendSync( request );
       }
     },
+    
+    // TODO [tb] : For practicability-reasons, this actually works synchronous.
+    //             That may lead to some difficulies when there is code that
+    //             is assumed to have been executed between the "send"-call
+    //             and the response. If this is the case, the
+    //             "Could not execute javascript:"-error from 
+    //             from "org.eclipse.swt.Request" will occur.
+    //             Asynchronous communication could be simulated with  
+    //             some time and effort.
   
     _sendAsync : function() {
       if( org.eclipse.rwt.test.fixture.DummyRequest._queue.length == 1 ) {
+        // prevent the flush of Request.js
+        org.eclipse.rwt.test.fixture.TestUtil.preventFlushs( true );
         var request = org.eclipse.rwt.test.fixture.DummyRequest._queue[ 0 ];
         request._onsending( new qx.event.type.Event( "sending" ) );
         org.eclipse.rwt.test.fixture.RAPServer.getInstance().receive( request );
+        org.eclipse.rwt.test.fixture.TestUtil.preventFlushs( false );
       }
     },
     

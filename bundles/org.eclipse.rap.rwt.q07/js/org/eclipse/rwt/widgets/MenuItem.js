@@ -140,14 +140,14 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     
     _setPreferredCellWidth : function( cell, width ) {
       this._preferredCellWidths[ cell ] = width;
-      if( this._parentMenu ) {        
+      if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         this._parentMenu.invalidateMaxCellWidth( cell );
       }
       this._scheduleLayoutX();
     },
         
     _afterScheduleLayoutX : function() {      
-      if( this._parentMenu ) {        
+      if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         this._parentMenu.scheduleMenuLayout();
       }
     },    
@@ -158,7 +158,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
 
     setImage : function( value, width, height ) {
       this.setCellContent( 1, value );     
-      this.setCellDimension( 1, width, height );
+      this.setCellHeight( 1, height );
       this._setPreferredCellWidth( 1, width ); 
     },
     
@@ -183,8 +183,8 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     },
     
     _beforeComputeInnerWidth : function() {
-      if( this._parentMenu ) {
-        this._invalidateTotalSpacing();      
+      if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
+        this._invalidateTotalSpacing();
         for( var i = 0; i < 4; i++ ) {
           this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) )
         }
@@ -193,7 +193,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     
     _beforeAppear : function() {
       this.base( arguments );
-      if( this._parentMenu ) {
+      if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         this._parentMenu.invalidateAllMaxCellWidths();
         this._parentMenu.scheduleMenuLayout();
       }

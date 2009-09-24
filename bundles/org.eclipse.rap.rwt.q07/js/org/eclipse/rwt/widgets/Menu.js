@@ -335,10 +335,15 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
         this._makeInactive();
       }
       this.setOpenItem( null );
-      this.setHoverItem( null );   
-      if( this._opener ) {
-        // needed for qx menuBar
-        this._opener.removeState( "pressed" );
+      this.setHoverItem( null );
+      if( this._opener instanceof org.eclipse.rwt.widgets.MenuItem ) {   
+        var parentMenu = this._opener.getParentMenu();
+        if( parentMenu instanceof org.eclipse.rwt.widgets.MenuBar ) {
+          this._opener.removeState( "pressed" );
+          if( parentMenu.getOpenItem() == this._opener ) {
+            parentMenu.setOpenItem( null );
+          }        
+        }
       }   
       this._menuHidden();
     },
@@ -453,12 +458,9 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
       event.stopPropagation();
     },
     
-    _handleKeyLeft : function( event ) {      
-      if(    this._opener 
-          && this._opener.classname == "org.eclipse.rwt.widgets.MenuItem" 
-          && this._opener.getParentMenu() != null )
-      {
-        var parentMenu = this._opener.getParentMenu();
+    _handleKeyLeft : function( event ) {
+      var parentMenu = this._opener ? this._opener.getParentMenu() : null;
+      if( parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         var hover = this._opener; 
         parentMenu.setOpenItem( null );
         parentMenu.setHoverItem( hover, true );
