@@ -154,13 +154,21 @@ final class QooxdooResourcesUtil {
   private static final String MENU_ITEM
     = "org/eclipse/rwt/widgets/MenuItem.js";
   private static final String TOOL_ITEM
-    = "org/eclipse/rwt/widgets/ToolItem.js";  
+    = "org/eclipse/rwt/widgets/ToolItem.js";
   private static final String TOOLSEPARATOR
-    = "org/eclipse/rwt/widgets/ToolSeparator.js";  
+    = "org/eclipse/rwt/widgets/ToolSeparator.js";
   private static final String TOOLBAR
-    = "org/eclipse/rwt/widgets/ToolBar.js";  
+    = "org/eclipse/rwt/widgets/ToolBar.js";
   private static final String MENUBAR
-  = "org/eclipse/rwt/widgets/MenuBar.js";  
+    = "org/eclipse/rwt/widgets/MenuBar.js";
+  private static final String APPEARANCES_BASE
+    = "org/eclipse/swt/theme/AppearancesBase.js";
+  private static final String THEME_VALUES
+    = "org/eclipse/swt/theme/ThemeValues.js";
+  private static final String THEME_STORE
+    = "org/eclipse/swt/theme/ThemeStore.js";
+  private static final String THEME_BORDERS_BASE
+    = "org/eclipse/swt/theme/BordersBase.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -252,6 +260,10 @@ final class QooxdooResourcesUtil {
       register( TOOL_ITEM, compress );
       register( TOOLSEPARATOR, compress );
       register( MENUBAR, compress );
+      register( APPEARANCES_BASE, compress );
+      register( THEME_BORDERS_BASE, compress );
+      register( THEME_STORE, compress );
+      register( THEME_VALUES, compress );
 
       // register contributions
       registerContributions();

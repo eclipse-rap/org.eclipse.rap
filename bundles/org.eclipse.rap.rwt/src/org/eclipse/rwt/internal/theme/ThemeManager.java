@@ -368,10 +368,6 @@ public final class ThemeManager {
     log( "ThemeManager registers resources" );
     String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
     boolean compress = !DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
-    registerJsLibrary( "org/eclipse/swt/theme/AppearancesBase.js", compress );
-    registerJsLibrary( "org/eclipse/swt/theme/BordersBase.js", compress );
-    registerJsLibrary( "org/eclipse/swt/theme/ThemeStore.js", compress );
-    registerJsLibrary( "org/eclipse/swt/theme/ThemeValues.js", compress );
     Iterator iterator = themes.keySet().iterator();
     while( iterator.hasNext() ) {
       String themeId = ( String )iterator.next();
@@ -715,12 +711,6 @@ public final class ThemeManager {
         }
       }
     }
-  }
-
-  private static void registerJsLibrary( final String name,
-                                         final boolean compress )
-  {
-    registerJsLibrary( name, null, compress );
   }
 
   private static void registerJsLibrary( final String name,
