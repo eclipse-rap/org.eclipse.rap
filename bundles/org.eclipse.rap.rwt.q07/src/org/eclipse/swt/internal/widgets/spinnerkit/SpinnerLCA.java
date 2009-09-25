@@ -51,6 +51,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
     adapter.preserve( PROP_SELECTION_LISTENER,
                       Boolean.valueOf( SelectionEvent.hasListener( spinner ) ) );
+    adapter.preserve( PROP_TEXT_LIMIT, new Integer( spinner.getTextLimit() ) );
     WidgetLCAUtil.preserveCustomVariant( spinner );
   }
 
