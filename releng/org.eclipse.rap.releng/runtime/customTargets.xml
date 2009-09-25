@@ -129,7 +129,7 @@
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${forms.tests}">
-                  <include name="**/*_Test.class" />
+          <include name="**/*_Test.class" />
         </fileset>
       </batchtest>
     </junit>
