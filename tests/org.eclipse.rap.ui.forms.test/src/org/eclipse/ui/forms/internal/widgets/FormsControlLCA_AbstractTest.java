@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-public class FormsControlLCA_Test extends TestCase {
+public abstract class FormsControlLCA_AbstractTest extends TestCase {
 
   protected void testPreserveControlProperties( final Control control ) {
     // bound

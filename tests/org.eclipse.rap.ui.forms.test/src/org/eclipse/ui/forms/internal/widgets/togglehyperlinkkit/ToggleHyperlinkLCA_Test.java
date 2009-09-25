@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_Test;
+import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.ToggleHyperlink;
 import org.eclipse.ui.forms.widgets.Twistie;
 
-public class ToggleHyperlinkLCA_Test extends FormsControlLCA_Test {
+public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
   public void testPreserveValues() {
     Display display = new Display();

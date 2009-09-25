@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.HyperlinkSettings;
-import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_Test;
+import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
-public class HyperlinkLCA_Test extends FormsControlLCA_Test {
+public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
   public void testPreserveValues() {
     Display display = new Display();

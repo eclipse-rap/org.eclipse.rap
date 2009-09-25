@@ -17,12 +17,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.HyperlinkSettings;
-import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_Test;
+import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IFormTextAdapter;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.internal.forms.widgets.Paragraph;
 
-public class FormTextLCA_Test extends FormsControlLCA_Test {
+public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
   public void testPreserveValues() {
     Display display = new Display();
