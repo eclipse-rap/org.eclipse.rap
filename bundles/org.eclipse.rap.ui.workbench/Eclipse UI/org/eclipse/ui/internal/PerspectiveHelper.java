@@ -239,7 +239,6 @@ public class PerspectiveHelper {
 			} else {
 				Composite testChild = new Composite(client, SWT.NONE);
 				this.detachable = testChild.isReparentable();
-				this.detachable = false;
 				testChild.dispose();
 			}
 		}
