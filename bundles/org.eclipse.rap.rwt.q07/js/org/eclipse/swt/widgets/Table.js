@@ -446,6 +446,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._topIndexChanging = false;
       }
     },
+    
+    /** Only called by server-side */
+    setLeftOffset : function( value ) {
+      this._horzScrollBar.setValue( value );
+      this._leftOffsetChanged = false;
+    },
 
     setBorderWidth : function( value ) {
       this._borderWidth = value;

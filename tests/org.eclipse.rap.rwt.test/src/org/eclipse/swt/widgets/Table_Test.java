@@ -2242,6 +2242,52 @@ public class Table_Test extends TestCase {
     // ensure that updating null-items does not throw NPE
     table.remove( 5 );
   }
+  
+  public void testShowColumn() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 800, 600 );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 300, 100 );
+    for( int i = 0; i < 10; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    assertEquals( 0, adapter.getLeftOffset() );
+    table.showColumn( table.getColumn( 8 ) );
+    assertEquals( 166, adapter.getLeftOffset() );
+    table.showColumn( table.getColumn( 1 ) );
+    assertEquals( 50, adapter.getLeftOffset() );
+    table.showColumn( table.getColumn( 3 ) );
+    assertEquals( 50, adapter.getLeftOffset() );
+    try {
+      table.showColumn( null );
+      fail( "Null argument not allowed" );
+    } catch( IllegalArgumentException e ) {
+    }
+    TableColumn column = table.getColumn( 3 );
+    column.dispose();
+    try {
+      table.showColumn( column );
+      fail( "Disposed column not allowed as argument" );
+    } catch( IllegalArgumentException e ) {
+    }
+    Table table1 = new Table( shell, SWT.NONE );
+    column = new TableColumn( table1, SWT.NONE );
+    table.showColumn( column );
+    assertEquals( 50, adapter.getLeftOffset() );
+    table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
+    table.showColumn( table.getColumn( 8 ) );
+    assertEquals( 0, adapter.getLeftOffset() );
+    table.showColumn( table.getColumn( 5 ) );
+    assertEquals( 116, adapter.getLeftOffset() );
+  }
 
   // 288634: [Table] TableItem images are not displayed if columns are created
   // after setInput

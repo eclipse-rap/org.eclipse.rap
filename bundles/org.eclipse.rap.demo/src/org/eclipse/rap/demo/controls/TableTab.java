@@ -78,6 +78,7 @@ public class TableTab extends ExampleTab {
     createChangeCheckButton();
     createChangeGrayButton();
     createChangeColumnsControl();
+    createShowColumnControl();
     createRevertColumnOrderButton();
     createPackColumnsButton();
     createChangeItemControl();
@@ -416,6 +417,29 @@ public class TableTab extends ExampleTab {
         }
         text.setText( String.valueOf( columns ) );
         createNew();
+      }
+    } );
+  }
+  
+  private void createShowColumnControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Column" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( label, text );
+    text.setText( String.valueOf( columns - 1 ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Show" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          int index = Integer.parseInt( text.getText() );
+          TableColumn column = table.getColumn( index );
+          table.showColumn( column );
+        } catch( Exception e ) {
+          // ignore invalid column
+        }
       }
     } );
   }

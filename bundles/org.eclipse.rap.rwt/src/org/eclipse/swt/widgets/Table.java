@@ -131,6 +131,10 @@ public class Table extends Composite {
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
+    
+    public int getLeftOffset() {
+      return Table.this.leftOffset;
+    }
 
     public void setLeftOffset( final int leftOffset ) {
       Table.this.leftOffset = leftOffset;
@@ -1553,6 +1557,55 @@ public class Table extends Composite {
     } else if( itemCount > 0 && itemIndex >= topIndex + itemCount ) {
       // Show item as last item
       setTopIndex( itemIndex - itemCount + 1 );
+    }
+  }
+  
+  /**
+   * Shows the column.  If the column is already showing in the receiver,
+   * this method simply returns.  Otherwise, the columns are scrolled until
+   * the column is visible.
+   *
+   * @param column the column to be shown
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the column is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the column has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void showColumn( final TableColumn column ) {
+    checkWidget();
+    if( column == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( column.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( column.getParent() == this ) {
+      int index = indexOf( column );
+      if( 0 <= index && index < getColumnCount() ) {
+        int leftColumnsWidth = 0;
+        int columnWidth = column.getWidth();
+        int clientWidth = getClientArea().width - getVScrollBarWidth();
+        int[] columnOrder = getColumnOrder();
+        boolean found = false;
+        for( int i = 0; i < columnOrder.length && !found; i++ ) {
+          found = index == columnOrder[ i ];
+          if( !found ) {
+            leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
+          }
+        }
+        if( leftOffset > leftColumnsWidth ) {
+          leftOffset = leftColumnsWidth;
+        } else if( leftOffset < leftColumnsWidth + columnWidth - clientWidth ) {
+          leftOffset = leftColumnsWidth + columnWidth - clientWidth;
+        }
+      }
     }
   }
 

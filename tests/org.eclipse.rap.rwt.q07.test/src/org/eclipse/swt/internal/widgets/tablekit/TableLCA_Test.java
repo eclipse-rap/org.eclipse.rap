@@ -73,6 +73,8 @@ public class TableLCA_Test extends TestCase {
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( TableLCA.PROP_HIDE_SELECTION ) );
+    assertEquals( new Integer( 0 ),
+                  adapter.getPreserved( TableLCA.PROP_LEFT_OFFSET ) );
     RWTFixture.clearPreserved();
     TableColumn tc1 = new TableColumn( table, SWT.CENTER );
     tc1.setText( "column1" );
