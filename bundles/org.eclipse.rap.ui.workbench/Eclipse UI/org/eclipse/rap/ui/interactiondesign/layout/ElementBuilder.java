@@ -220,6 +220,23 @@ public abstract class ElementBuilder implements IAdaptable {
   public Color getColor( final String colorId ) {
     return layoutSet.getColor( colorId );
   }
+  
+  /**
+   * Returns a <code>FormData</code> object by it's id defines in the
+   * <code>LayoutSet</code>
+   * 
+   * @param positionKey the key for the FormData
+   * 
+   * @return the created <code>FormData</code> object.
+   * 
+   * @see LayoutSet#addPosition(String, FormData)
+   * @see LayoutSet#getPosition(String)
+   * 
+   * @since 1.3
+   */
+  public FormData getPosition( final String positionKey ) {
+    return layoutSet.getPosition( positionKey );
+  }
 
   /**
    * Subclasses should implement this method to return the component,
