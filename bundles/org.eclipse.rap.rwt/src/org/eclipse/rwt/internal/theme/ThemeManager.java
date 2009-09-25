@@ -119,6 +119,8 @@ public final class ThemeManager {
 
   /** Destination path for theme resources */
   private static final String THEME_RESOURCE_DEST = "themes";
+  static final String IMAGE_DEST_PATH = THEME_RESOURCE_DEST + "/images";
+
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
 
   private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
@@ -697,7 +699,7 @@ public final class ThemeManager {
             throw new IllegalArgumentException( mesg );
           }
           try {
-            String widgetDestPath = getImageDestPath();
+            String widgetDestPath = IMAGE_DEST_PATH;
             String registerPath = widgetDestPath + "/" + key;
             IResourceManager resMgr = ResourceManager.getInstance();
             resMgr.register( registerPath, inputStream );
@@ -803,10 +805,6 @@ public final class ThemeManager {
     int end = jsThemeId.length();
     String jsThemeName = jsThemeId.substring( start, end );
     return THEME_RESOURCE_DEST + "/" + jsThemeName + "/widgets";
-  }
-
-  private String getImageDestPath() {
-    return THEME_RESOURCE_DEST + "/images";
   }
 
   private void checkId( final String id ) {

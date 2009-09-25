@@ -10,16 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 public final class BrandingManager {
@@ -65,16 +62,6 @@ public final class BrandingManager {
     }
     public String getTitle() {
       return "RAP Startup Page";
-    }
-    public void registerResources() throws IOException {
-      IResourceManager manager = ResourceManager.getInstance();
-      ClassLoader buffer = manager.getContextLoader();
-      manager.setContextLoader( getClass().getClassLoader() );
-      try {
-        manager.register( "resource/widget/rap/display/bg.gif" );
-      } finally {
-        manager.setContextLoader( buffer );
-      }
     }
   };
   

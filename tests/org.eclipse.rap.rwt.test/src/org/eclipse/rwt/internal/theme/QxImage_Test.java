@@ -124,4 +124,11 @@ public class QxImage_Test extends TestCase {
     assertEquals( gradient1, gradient2 );
     assertEquals( gradient1.hashCode(), gradient2.hashCode() );
   }
+  
+  public void testGetResourceName() {
+    QxImage image = QxImage.NONE;
+    assertNull( image.getResourceName() );
+    image = QxImage.valueOf( RWTFixture.IMAGE_50x100, RESOURCE_LOADER );
+    assertEquals( "themes/images/cd56ce7d", image.getResourceName() );
+  }
 }

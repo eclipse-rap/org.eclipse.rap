@@ -15,9 +15,7 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.RWTFixture;
 
 
@@ -25,14 +23,10 @@ public class BrowserSurvey_Test extends TestCase {
   private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
 
   protected void setUp() throws Exception {
-    RWTFixture.setUpWithoutResourceManager();
-    Fixture.createContext( false );
-    ResourceManager.register( new DefaultResourceManagerFactory() );
-    ThemeManager.getInstance().initialize();
+    RWTFixture.setUp();
     bufferedConfigurer = LifeCycleServiceHandler.configurer; 
     LifeCycleServiceHandler.configurer
       = new LifeCycleServiceHandlerConfigurer();
-    ResourceUtil.startJsConcatenation();
   }
   
   protected void tearDown() throws Exception {

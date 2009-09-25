@@ -70,11 +70,12 @@ public final class BrowserSurvey {
     QxType cssValue = ThemeUtil.getCssValue( "Display", 
                                              "background-image", 
                                              SimpleSelector.DEFAULT );
-    if( cssValue != null && cssValue instanceof QxImage ) {
+    if( cssValue instanceof QxImage ) {
       QxImage image = ( QxImage )cssValue;
       // path is null if non-existing image was specified in css file
-      if( image.path != null ) {
-        result = RWT.getResourceManager().getLocation( image.path );
+      String resourceName = image.getResourceName();
+      if( resourceName != null ) {
+        result = RWT.getResourceManager().getLocation( resourceName );
       }
     }
     return result;

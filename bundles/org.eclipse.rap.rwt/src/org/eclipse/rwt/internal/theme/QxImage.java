@@ -76,7 +76,7 @@ public final class QxImage implements QxType {
     }
   }
 
-  public static QxImage valueOf( final String input, 
+  public static QxImage valueOf( final String input,
                                  final ResourceLoader loader )
   {
     QxImage result;
@@ -102,6 +102,14 @@ public final class QxImage implements QxType {
       throw new NullPointerException( "null argument" );
     }
     result = new QxImage( true, null, null, gradientColors, gradientPercents );
+    return result;
+  }
+
+  public String getResourceName() {
+    String result = null;
+    if( path != null ) {
+      result = ThemeManager.IMAGE_DEST_PATH + "/" + Theme.createCssKey( this );
+    }
     return result;
   }
 
