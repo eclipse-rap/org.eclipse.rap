@@ -1244,11 +1244,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
-        paddingLeft : 2,
-        paddingRight : 2,
         spacing : 2,
         opacity : states.moving ? 0.6 : 1.0
       };
+      result.padding = tv.getCssBoxDimensions( "TableColumn", "padding" );
       result.textColor = tv.getCssColor( "*", "color" );
       result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TableColumn", "background-image" );

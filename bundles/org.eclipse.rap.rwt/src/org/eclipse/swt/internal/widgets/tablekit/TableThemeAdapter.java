@@ -30,4 +30,12 @@ public final class TableThemeAdapter extends ControlThemeAdapter {
   public int getCellSpacing( final Control control ) {
     return Math.max( 0, getCssDimension( "Table-Cell", "spacing", control ) );
   }
+
+  public int getHeaderBorderBottomWidth( final Control control ) {
+    return getCssBorderWidth( "TableColumn", "border-bottom", control );
+  }
+
+  public Rectangle getHeaderPadding( final Control control ) {
+    return getCssBoxDimensions( "TableColumn", "padding", control );
+  }
 }

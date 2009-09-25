@@ -62,12 +62,16 @@
           description="Background color for table column headers" />
 
       <property name="background-image"
-        type="image"
-        description="Background image or gradient for TableColumn." />
+          type="image"
+          description="Background image or gradient for TableColumn." />
 
       <property name="border-bottom"
-        type="border"
-        description="Border for TableColumn bottom line." />
+          type="border"
+          description="Border for TableColumn bottom line." />
+
+      <property name="padding"
+          type="boxdim"
+          description="Padding for table columns." />
 
       <state name="hover"
           description="On mouse over" />

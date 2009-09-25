@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
 /**
@@ -38,7 +40,6 @@ public class TableColumn extends Item {
   //      be moved to theme adapter or similar
   private static final int SORT_INDICATOR_WIDTH = 10;
   private static final int SPACING = 2;
-  private static final int PADDING = 2;
 
   private final Table parent;
   private int width;
@@ -466,7 +467,10 @@ public class TableColumn extends Item {
       {
         width += SORT_INDICATOR_WIDTH + SPACING;
       }
-      width += 2 * PADDING;
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      width += adapter.getHeaderPadding( parent ).width;
     }
     // Mimic Windows behaviour that forces first item to resolve
     if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {

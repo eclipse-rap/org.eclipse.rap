@@ -1798,8 +1798,12 @@ public class Table extends Composite {
           imageHeight = height;
         }
       }
-      // TODO [rh] obtain 4 from theme (top + bottom margin/padding)
-      result = Math.max( textHeight, imageHeight ) + 4;
+      result = Math.max( textHeight, imageHeight );
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      result += adapter.getHeaderBorderBottomWidth( this );
+      result += adapter.getHeaderPadding( this ).height;
     }
     return result;
   }
