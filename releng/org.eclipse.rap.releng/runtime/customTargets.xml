@@ -128,6 +128,9 @@
         <fileset dir="${fragment.tests}">
           <include name="**/*_Test.class" />
         </fileset>
+        <fileset dir="${forms.tests}">
+                  <include name="**/*_Test.class" />
+        </fileset>
       </batchtest>
     </junit>
 
