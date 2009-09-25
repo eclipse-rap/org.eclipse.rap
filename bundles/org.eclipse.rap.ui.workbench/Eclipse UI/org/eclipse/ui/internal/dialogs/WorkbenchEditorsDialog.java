@@ -507,15 +507,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
      */
     private void updateItem(TableItem item, Adapter editor) {
         item.setData(editor);
-// RAP [rh] workaround for missing TableItem#setText(String[])        
-//        item.setText(editor.getText());
-        String[] strings = editor.getText();
-        for( int i = 0; i < strings.length; i++ ) {
-          String string = strings[ i ];
-          if( string != null )
-            item.setText( i, string );
-        }
-// RAP [rh] end workaround         
+        item.setText(editor.getText());
         Image images[] = editor.getImage();
         for (int i = 0; i < images.length; i++) {
             if (images[i] != null) {
