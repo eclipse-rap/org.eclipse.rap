@@ -1745,7 +1745,7 @@ public class Table_Test extends TestCase {
     table.setHeaderVisible( true );
     table.setSize( 100, 100 );
     new TableItem( table, SWT.NONE );
-    TableItem item = table.getItem( new Point( 10, table.getItemHeight() ) );
+    TableItem item = table.getItem( new Point( 10, table.getHeaderHeight() ) );
     assertNotNull( item );
     assertEquals( 0, table.indexOf( item ) );
   }
