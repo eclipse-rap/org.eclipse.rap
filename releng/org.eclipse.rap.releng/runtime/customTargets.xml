@@ -96,11 +96,13 @@
     <property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
     <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
     <property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
+    <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
     <property name="reports.tests" value="${buildDirectory}/tests" />
     <mkdir dir="${reports.tests}" />
     <path id="cp">
       <pathelement location="${host.tests}" />
       <pathelement location="${fragment.tests}" />
+      <pathelement location="${forms.tests}" />
       <fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
         <include name="**/*.jar"/>
       </fileset>
@@ -112,6 +114,7 @@
       <fileset dir="${baseLocation}/plugins">
           <include name="org.junit_3*/junit.jar"/>
       </fileset>
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.ui.forms/@dot" />
     </path>
     <!-- run rwt tests -->
     <junit printsummary="yes" haltonfailure="yes" fork="yes" forkmode="perTest">

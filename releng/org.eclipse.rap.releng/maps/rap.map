@@ -27,6 +27,7 @@ plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org
 
 # forms
 plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.forms
+plugin@org.eclipse.rap.ui.forms.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui.test/org.eclipse.rap.ui.forms.test
 
 # example design
 plugin@org.eclipse.rap.design.example=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.design.example
