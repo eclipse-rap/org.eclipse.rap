@@ -1239,16 +1239,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "table-column-area" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        backgroundColor : tv.getCssColor( "TableColumn", "background-color" )
-      };
-      return result;
-    }
-  },
-
   "table-column" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -1257,21 +1247,23 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         paddingLeft : 2,
         paddingRight : 2,
         spacing : 2,
-        textColor : states.disabled
-                    ? tv.getCssColor( "*", "color" )
-                    : tv.getCssColor( "*", "color" ),
         opacity : states.moving ? 0.6 : 1.0
       };
+      result.textColor = tv.getCssColor( "*", "color" );
       result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TableColumn", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TableColumn",
                                                      "background-image" );
-      // TODO [rst] borders hard coded in BordersBase.js
-      if( states.mouseover && !states.disabled ) {
-        result.border = "table.column.hover.border";
-      } else {
-        result.border = "table.column.border";
+      var border = new qx.ui.core.Border( 0 );
+      if( !states.dummy ) {
+        border.setColorRight( tv.getCssColor( "Table-GridLine", "color" ) );
+        border.setWidthRight( 1 );
       }
+      var borderBottom = tv.getCssBorder( "TableColumn", "border-bottom" );
+      border.setWidthBottom( borderBottom.getWidthBottom() );
+      border.setStyleBottom( borderBottom.getStyleBottom() );
+      border.setColorBottom( borderBottom.getColorBottom() );
+      result.border = border;
       return result;
     }
   },

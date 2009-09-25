@@ -88,7 +88,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._columnArea.setTop( 0 );
     this._columnArea.setLeft( 0 );
     this._columnArea.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    this._columnArea.setAppearance( "table-column-area" );
+    // Create a dummy column header that is placed after the last column
+    // The dummy column is always the first child in _columnArea
+    var dummyColumn = new qx.ui.basic.Atom();
+    // set invisible label (otherwise border is not rendered in IE)
+    dummyColumn.setLabel( "&nbsp;" );
+    dummyColumn.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
+    dummyColumn.setAppearance( "table-column" );
+    dummyColumn.addState( "dummy" );
+    this._columnArea.add( dummyColumn );
     this.add( this._columnArea );
     // Construct client area in which the table items will live
     this._clientArea = new qx.ui.layout.CanvasLayout();
@@ -444,21 +452,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     getColumn : function( index ) {
-      return this._columnArea.getChildren()[ index ];
+      return this._columnArea.getChildren()[ index + 1 ];
     },
 
     getColumnCount : function() {
-      return this._columnArea.getChildrenLength();
+      return this._columnArea.getChildrenLength() - 1;
     },
 
     getColumns : function() {
-      return this._columnArea.getChildren();
+      return this._columnArea.getChildren().slice( 1 );
     },
 
     getColumnsWidth : function() {
       var result = 0;
       var columns = this._columnArea.getChildren();
-      for( var i = 0; i < columns.length; i++ ) {
+      for( var i = 1; i < columns.length; i++ ) {
         result += columns[ i ].getWidth();
       }
       return result;
@@ -1067,8 +1075,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         width = this.getColumnsWidth();
       }
       this._horzScrollBar.setMaximum( width );
-      this._columnArea.setWidth( width );
+      this._updateColumnHeader();
       this._updateGridLines();
+    },
+
+    _updateColumnHeader : function() {
+      var clientWidth = this.getWidth() - 2 * this._borderWidth;
+      var dummyColumn = this._columnArea.getChildren()[ 0 ];
+      var vertScrollBarWidth = this._vertScrollBar.getVisibility()
+                               ? this._vertScrollBar.getWidth()
+                               : 0;
+      var headerWidth;
+      if( this.getColumnCount() === 0 ) {
+        var columnsWidth = this.getDefaultColumnWidth();
+        headerWidth = Math.max( columnsWidth + vertScrollBarWidth, clientWidth );
+        dummyColumn.setLeft( 0 );
+        dummyColumn.setWidth( headerWidth );
+      } else {
+        var columnsWidth = this.getColumnsWidth();
+        headerWidth = Math.max( columnsWidth + vertScrollBarWidth, clientWidth );
+        dummyColumn.setLeft( columnsWidth );
+        dummyColumn.setWidth( Math.max( headerWidth - columnsWidth, 0 ) );
+      }
+      this._columnArea.setWidth( headerWidth );
     },
 
     _updateClientAreaSize : function() {
@@ -1096,6 +1125,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea.setTop( top );
       this._clientArea.setHeight( clientHeight );
       this._clientArea.setWidth( clientWidth );
+      this._updateColumnHeader();
       this._updateGridLines();
       // Adjust number of rows and update rows if necessary
       if( this._updateRowCount() ) {
@@ -1401,7 +1431,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
      */
     _updateGridLines : function() {
       if( this.getLinesVisible() ) {
-        var columns = this._columnArea.getChildren();
+        var columns = this.getColumns();
         this._showGridLines( columns.length );
         var height = this._clientArea.getHeight();
         var offset = this._columnArea.getLeft();

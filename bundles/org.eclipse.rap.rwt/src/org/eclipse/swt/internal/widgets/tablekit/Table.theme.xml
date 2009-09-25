@@ -64,7 +64,11 @@
       <property name="background-image"
         type="image"
         description="Background image or gradient for TableColumn." />
-            
+
+      <property name="border-bottom"
+        type="border"
+        description="Border for TableColumn bottom line." />
+
       <state name="hover"
           description="On mouse over" />
 
@@ -116,7 +120,7 @@
       <property name="width"
           type="dimension"
           description="Width of check boxes" />
-            
+
       <property name="background-image" type="image">
         <description>
           Background image for the table checkbox.
@@ -129,7 +133,7 @@
 
       <state name="checked"
         description="When table checkbox is checked" />
-      
+
       <state name="hover"
         description="Applies while the user hovers over a table check box." />
 

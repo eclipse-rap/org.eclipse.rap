@@ -145,28 +145,27 @@ public final class PropertyResolver {
   public static String getType( final String property ) {
     // TODO [rst] respect properties declared in theme.xml files
     String result = null;
-    if( "padding".equals( property )
+    if(    "padding".equals( property )
         || "margin".equals( property )
         || "border-radius".equals( property ) )
     {
       result = ThemeDefinitionReader.TYPE_BOXDIMENSIONS;
-    } else if( "color".equals( property )
-        || "background-color".equals( property )
-        || property.endsWith( "-color" ) )
+    } else if(    "color".equals( property )
+               || property.endsWith( "-color" ) )
     {
       result = ThemeDefinitionReader.TYPE_COLOR;
     } else if( "font".equals( property ) ) {
       result = ThemeDefinitionReader.TYPE_FONT;
-    } else if( "border".equals( property ) ) {
+    } else if(    "border".equals( property )
+               || "border-bottom".equals( property ) )
+    {
       result = ThemeDefinitionReader.TYPE_BORDER;
-    } else if( "spacing".equals( property )
-        || "width".equals( property )
-        || "height".equals( property ) )
+    } else if(    "spacing".equals( property )
+               || "width".equals( property )
+               || "height".equals( property ) )
     {
       result = ThemeDefinitionReader.TYPE_DIMENSION;
-    } else if( "background-image".equals( property )
-               || property.endsWith( "-image" ) )
-    {
+    } else if( property.endsWith( "-image" ) ) {
       result = ThemeDefinitionReader.TYPE_IMAGE;
     } else if( "text-decoration".equals( property ) ) {
       result = ThemeDefinitionReader.TYPE_TEXT_DECORATION;

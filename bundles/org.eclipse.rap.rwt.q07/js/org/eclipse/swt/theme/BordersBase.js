@@ -96,25 +96,6 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
       width : 0
     },
 
-    // -- table --
-
-    "table.column.border" : {
-      width : [ 0, 1, 2, 0 ],
-      color : [ "widget.thinborder", "widget.thinborder" ]
-    },
-
-    "table.column.hover.border" : {
-      width : [ 0, 1, 2, 0 ],
-      color : [ "widget.selection-marker", "widget.thinborder" ]
-    },
-
-//    "table.row.horizontalLine" : {
-//      widthTop : 1,
-//      widthBottom : 1,
-//      colorTop : "table.row.line",
-//      colorBottom : "table.row.line"
-//    },
-
     // -- tree --
     "tree.column.border" : {
       width : [ 0, 1, 2, 0 ],
