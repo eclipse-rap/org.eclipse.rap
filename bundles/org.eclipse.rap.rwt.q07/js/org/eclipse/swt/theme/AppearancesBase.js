@@ -926,25 +926,25 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.cursor = "default";
-      result.paddingLeft = 2;
-      result.paddingRight = 2;
       result.spacing = 2;
-      result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : "undefined";
+      result.textColor = tv.getCssColor( "*", "color" );
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TreeColumn",
                                                "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TreeColumn",
                                                      "background-image" );
-      if( states.mouseover && !states.disabled ) {
-        result.border = "tree.column.hover.border";
-      } else {
-        result.border = "tree.column.border";
+      result.opacity = states.moving ? 0.6 : 1.0;
+      result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
+      var border = new qx.ui.core.Border( 0 );
+      if( !states.dummy ) {
+        border.setColorRight( tv.getCssColor( "Table-GridLine", "color" ) );
+        border.setWidthRight( 1 );
       }
-      if( states.moving ) {
-        result.opacity = 0.6;
-      } else {
-        result.opacity = 1.0;
-      }
+      var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );
+      border.setWidthBottom( borderBottom.getWidthBottom() );
+      border.setStyleBottom( borderBottom.getStyleBottom() );
+      border.setColorBottom( borderBottom.getColorBottom() );
+      result.border = border;
       return result;
     }
   },

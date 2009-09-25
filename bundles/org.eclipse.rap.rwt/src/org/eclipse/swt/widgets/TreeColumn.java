@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
 /**
@@ -44,7 +46,6 @@ public class TreeColumn extends Item {
   String toolTipText;
   static final int SORT_INDICATOR_WIDTH = 10;
   static final int MARGIN_IMAGE = 3;
-  static final int PADDING = 2;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -251,7 +252,10 @@ public class TreeColumn extends Item {
         contentWidth += MARGIN_IMAGE;
       }
     }
-    contentWidth += 2 * PADDING;
+    ThemeManager themeManager = ThemeManager.getInstance();
+    TableThemeAdapter adapter
+      = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+    contentWidth += adapter.getHeaderPadding( parent ).width;
     return contentWidth;
   }
 

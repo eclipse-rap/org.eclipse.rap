@@ -56,8 +56,16 @@
           description="Background color for tree column headers" />
 
       <property name="background-image"
-        type="image"
-        description="Background image or gradient for TreeColumn." />
+          type="image"
+          description="Background image or gradient for tree column headers." />
+
+      <property name="border-bottom"
+          type="border"
+          description="Border for the bottom line of tree columns headers." />
+
+      <property name="padding"
+          type="boxdim"
+          description="Padding for the content of tree columns headers." />
 
       <state name="hover"
           description="Mouse over state" />
