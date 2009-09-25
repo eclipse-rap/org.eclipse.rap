@@ -39,7 +39,7 @@ public class SpinnerLCA_Test extends TestCase {
     RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( spinner );
-    Object selection = adapter.getPreserved( Props.SELECTION_INDICES );
+    Object selection = adapter.getPreserved( SpinnerLCA.PROP_SELECTION );
     assertEquals( new Integer( 0 ), selection );
     Object minimum = adapter.getPreserved( SpinnerLCA.PROP_MINIMUM );
     assertEquals( new Integer( 0 ), minimum );
@@ -50,6 +50,8 @@ public class SpinnerLCA_Test extends TestCase {
     Object pageIncrement
       = adapter.getPreserved( SpinnerLCA.PROP_PAGE_INCREMENT );
     assertEquals( new Integer( 10 ), pageIncrement );
+    Object textLimit = adapter.getPreserved( SpinnerLCA.PROP_TEXT_LIMIT );
+    assertEquals( new Integer( Spinner.LIMIT ), textLimit );
     hasListeners
       = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
@@ -62,6 +64,7 @@ public class SpinnerLCA_Test extends TestCase {
     spinner.setMaximum( 200 );
     spinner.setIncrement( 2 );
     spinner.setPageIncrement( 9 );
+    spinner.setTextLimit( 10 );
     spinner.addModifyListener( new ModifyListener() {
 
       public void modifyText( final ModifyEvent event ) {
@@ -70,16 +73,18 @@ public class SpinnerLCA_Test extends TestCase {
     spinner.addSelectionListener( new SelectionAdapter() {} );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
-    selection = adapter.getPreserved( Props.SELECTION_INDICES );
+    selection = adapter.getPreserved( SpinnerLCA.PROP_SELECTION );
     minimum = adapter.getPreserved( SpinnerLCA.PROP_MINIMUM );
     maximum = adapter.getPreserved( SpinnerLCA.PROP_MAXIMUM );
     increment = adapter.getPreserved( SpinnerLCA.PROP_INCREMENT );
     pageIncrement = adapter.getPreserved( SpinnerLCA.PROP_PAGE_INCREMENT );
+    textLimit = adapter.getPreserved( SpinnerLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 5 ), selection );
     assertEquals( new Integer( 3 ), minimum );
     assertEquals( new Integer( 200 ), maximum );
     assertEquals( new Integer( 2 ), increment );
     assertEquals( new Integer( 9 ), pageIncrement );
+    assertEquals( new Integer( 10 ), textLimit );
     hasListeners
       = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );

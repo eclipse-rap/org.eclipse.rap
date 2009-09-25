@@ -27,14 +27,14 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_TEXT_LIMIT
     = new Integer( Spinner.LIMIT );
   
-  private static final String PROP_SELECTION = "selection";
+  static final String PROP_SELECTION = "selection";
   static final String PROP_MAXIMUM = "maximum";
   static final String PROP_MINIMUM = "minimum";
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
-  private static final String PROP_TEXT_LIMIT = "textLimit";
+  static final String PROP_TEXT_LIMIT = "textLimit";
 
 
   public void preserveValues( final Widget widget ) {
