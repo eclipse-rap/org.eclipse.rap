@@ -26,7 +26,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
   private Button alwaysShowScrollBars;
 
   public ScrolledCompositeTab( final CTabFolder topFolder ) {
-    super( topFolder, "Scrolled Composite" );
+    super( topFolder, "ScrolledComposite" );
     setDefaultStyle( SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL );
   }
 
