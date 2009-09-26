@@ -81,6 +81,7 @@ public class ControlsDemo implements IEntryPoint {
       new BrowserTab( topFolder ),
       new ScaleTab( topFolder ),
       new SliderTab( topFolder ),
+      new ScrolledCompositeTab( topFolder ),
       new ContainmentTab( topFolder ),
       new ZOrderTab( topFolder ),
       new FocusTab( topFolder ),
