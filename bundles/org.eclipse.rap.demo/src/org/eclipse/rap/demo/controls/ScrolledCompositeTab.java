@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009 Innoopract Informationssysteme GmbH.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *   EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -14,7 +13,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -70,13 +68,14 @@ public final class ScrolledCompositeTab extends ExampleTab {
     if( showFocusedControl != null ) {
       composite.setShowFocusedControl( showFocusedControl.getSelection() );
     }
+    composite.setMinSize( content.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     composite.addControlListener( new ControlAdapter() {
 
       public void controlResized( ControlEvent e ) {
-        Point size = content.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
-        composite.setMinSize( size );
+        composite.setMinSize( content.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
       }
     } );
+    composite.setOrigin( 50, 50 );
     registerControl( composite );
   }
 
