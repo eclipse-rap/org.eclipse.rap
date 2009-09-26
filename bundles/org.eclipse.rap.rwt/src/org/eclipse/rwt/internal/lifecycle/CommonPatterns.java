@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -25,27 +25,9 @@ public final class CommonPatterns {
   }
 
   /**
-   * Pattern that matches line feeds on Windows, UNIX, and MacOS platform.
-   */
-  public static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
-
-  /**
    * String to replace line feed matches with <code>\n</code>.
    */
-  private static final String NEWLINE_REPLACEMENT = "\\\\n";
-
-  /**
-   * Pattern for escaping double quoted strings, matches <code>&quot;</code>
-   * and <code>\</code>.
-   */
-  private static final Pattern DOUBLE_QUOTE_PATTERN
-    = Pattern.compile( "(\"|\\\\)" );
-
-  /**
-   * Replacement string that prepends all matches with <code>\</code>.
-   */
-  private static final String DOUBLE_QUOTE_REPLACEMENT = "\\\\$1";
+  private static final String NEWLINE_REPLACEMENT = "\\n";
 
   /**
    * Replacement string that is used for all leading and trailing spaces.
@@ -63,8 +45,16 @@ public final class CommonPatterns {
    *         replaced
    */
   public static String escapeDoubleQuoted( final String input ) {
-    Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
-    return matcher.replaceAll( DOUBLE_QUOTE_REPLACEMENT );
+    StringBuffer resultBuffer = new StringBuffer();
+    int length = input.length();
+    for( int i = 0; i < length; i++ ) {
+      char ch = input.charAt( i );
+      if( ch == '"' || ch == '\\' ) {
+        resultBuffer.append( '\\' );
+      }
+      resultBuffer.append( ch );
+    }
+    return resultBuffer.toString();
   }
 
   /**
@@ -117,14 +107,34 @@ public final class CommonPatterns {
   public static String replaceNewLines( final String input,
                                         final String replacement )
   {
-    return NEWLINE_PATTERN.matcher( input  ).replaceAll( replacement );
+    StringBuffer resultBuffer = new StringBuffer();
+    int length = input.length();
+    int i = 0;
+    while( i < length ) {
+      char ch = input.charAt( i );
+      if( ch == '\n' ) {
+        resultBuffer.append( replacement );
+      } else if( ch == '\r' ) {
+        if( i + 1 < length ) {
+          char next = input.charAt( i + 1 );
+          if( ch == '\r' && next == '\n' ) {
+            i++;
+          }
+        }
+        resultBuffer.append( replacement );
+      } else {
+        resultBuffer.append( ch );
+      }
+      i++;
+    }
+    return resultBuffer.toString();
   }
-  
+
   /**
    * Replaces white spaces in the specified input string with &amp;nbsp;.
-   * For correct word wrapping, the last white space in a sequence of white 
+   * For correct word wrapping, the last white space in a sequence of white
    * spaces is not replaced, if there is a different character following.
-   * A single white space between words is not replaced whereas a single 
+   * A single white space between words is not replaced whereas a single
    * leading white space is replaced.
    *
    * @param input the string to process
@@ -147,8 +157,32 @@ public final class CommonPatterns {
           }
         }
         buffer.append( input.charAt( i ) );
-      }      
+      }
     }
     return buffer.toString();
+  }
+
+  public static String[] splitNewLines( String input ) {
+    int length = input.length();
+    List resultList = new ArrayList();
+    int start = 0;
+    char last = 0;
+    for( int i = 0; i < length; i++ ) {
+      char ch = input.charAt( i );
+      if( ch == '\n' ) {
+        if( last != '\r' ) {
+          resultList.add( input.substring( start, i ) );
+        }
+        start = i + 1;
+      } else if( ch == '\r' ) {
+        resultList.add( input.substring( start, i ) );
+        start = i + 1;
+      }
+      last = ch;
+    }
+    resultList.add( input.substring( start, length ) );
+    String[] result = new String[ resultList.size() ];
+    resultList.toArray( result );
+    return result;
   }
 }

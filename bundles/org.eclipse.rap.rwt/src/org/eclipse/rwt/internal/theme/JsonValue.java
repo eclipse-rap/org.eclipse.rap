@@ -11,17 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import java.util.regex.Pattern;
 
 /**
  * Simple generator for JSON values.
  */
 public abstract class JsonValue {
-
-  private static final Pattern PATTERN_BS = Pattern.compile( "\\\\" );
-  private static final String REPL_BS = "\\\\\\\\";
-  private static final Pattern PATTERN_QUOTE = Pattern.compile( "\"" );
-  private static final String REPL_QUOTE = "\\\\\\\"";
 
   public static final JsonValue NULL = new JsonPrimitive( "null" );
   public static final JsonValue TRUE = new JsonPrimitive( "true" );
@@ -50,10 +44,18 @@ public abstract class JsonValue {
   }
 
   public static String quoteString( final String string ) {
-    String replaced = string;
-    replaced = PATTERN_BS.matcher( replaced ).replaceAll( REPL_BS );
-    replaced = PATTERN_QUOTE.matcher( replaced ).replaceAll( REPL_QUOTE );
-    return "\"" + replaced + "\"";
+    StringBuffer resultBuffer = new StringBuffer();
+    resultBuffer.append( '"' );
+    int length = string.length();
+    for( int i = 0; i < length; i++ ) {
+      char ch = string.charAt( i );
+      if( ch == '"' || ch == '\\' ) {
+        resultBuffer.append( '\\' );
+      }
+      resultBuffer.append( ch );
+    }
+    resultBuffer.append( '"' );
+    return resultBuffer.toString();
   }
 
   private static class JsonPrimitive extends JsonValue {

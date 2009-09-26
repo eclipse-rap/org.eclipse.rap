@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 public class CommonPatterns_Test extends TestCase {
@@ -46,6 +48,31 @@ public class CommonPatterns_Test extends TestCase {
     expected = "First line. Second line. Third line.";
     result = CommonPatterns.replaceNewLines( stringToReplace, " " );
     assertEquals( expected, result );
+  }
+
+  public void testSplitNewlines() {
+    String input = "";
+    String[] expected = new String[] { "" };
+    String[] result = CommonPatterns.splitNewLines( input );
+    assertTrue( Arrays.equals( expected, result ) );
+
+    input = "First line.\nSecond line.\nThird line.";
+    expected = new String[] { "First line.", "Second line.", "Third line." };
+    result = CommonPatterns.splitNewLines( input );
+    assertTrue( Arrays.equals( expected, result ) );
+
+    input = "First line.\rSecond line.\rThird line.";
+    result = CommonPatterns.splitNewLines( input );
+    assertTrue( Arrays.equals( expected, result ) );
+
+    input = "First line.\r\nSecond line.\r\nThird line.";
+    result = CommonPatterns.splitNewLines( input );
+    assertTrue( Arrays.equals( expected, result ) );
+
+    input = "First line.\r\nSecond line.\r\nThird line.\r\n";
+    expected = new String[] { "First line.", "Second line.", "Third line.", "" };
+    result = CommonPatterns.splitNewLines( input );
+    assertTrue( Arrays.equals( expected, result ) );
   }
 
   public void testEscapeLeadingTrailingSpaces() {
