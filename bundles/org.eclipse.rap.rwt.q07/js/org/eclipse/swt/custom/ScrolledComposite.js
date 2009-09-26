@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     // Flag indicates that the next request can be sent
     this._readyToSendChanges = true;
     this._showFocusedControl = false;
+    this._focusRoot = null;
     this._blockScrolling = false;
     this._initialScrollTop = null;
     this._initialScrollLeft = null;
@@ -34,9 +35,6 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "changeParent", this._onChangeParent, this );
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
-    this.getFocusRoot().removeEventListener( "changeFocusedChild",
-                                             this._onChangeFocusedChild,
-                                             this );
   },
   
   members : {
@@ -44,13 +42,20 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     _onAppear : function( evt ) {
       this.setScrollTop( this._lastScrollTop );
       this.setScrollLeft( this._lastScrollLeft );
-      
     },
     
     _onChangeParent : function( evt ) {
-      this.getFocusRoot().addEventListener( "changeFocusedChild",
-                                            this._onChangeFocusedChild,
-                                            this );
+      if( this._focusRoot != null ) {
+        this._focusRoot.removeEventListener( "changeFocusedChild",
+                                             this._onChangeFocusedChild,
+                                             this );
+      }
+      this._focusRoot = this.getFocusRoot();
+      if( this._focusRoot != null ) {
+        this._focusRoot.addEventListener( "changeFocusedChild",
+                                          this._onChangeFocusedChild,
+                                          this );
+      }
     },
     
     _onMouseWheel : function( evt ) {
