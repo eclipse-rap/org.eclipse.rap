@@ -9,99 +9,94 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
+import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 
 
 public class StackInitializer implements ILayoutSetInitializer {
 
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.stack";
-  public static final String BORDER_TOP = "stack.border.top";
-  public static final String BORDER_BOTTOM = "stack.border.bottom";
-  public static final String BORDER_LEFT = "stack.border.left";
-  public static final String BORDER_RIGHT = "stack.border.right";
-  public static final String MAX_ACTIVE = "stack.max.active";
-  public static final String MAX_INACTIVE = "stack.max.inactive";
-  public static final String MIN_ACTIVE = "stack.min.active";
-  public static final String MIN_INACTIVE = "stack.min.inactive";
-  public static final String SEPARATOR_ACTIVE = "stack.conf.sep.active";
-  public static final String SEPARATOR_INACTIVE = "stack.conf.sep.inactive";
-  public static final String TAB_ACTIVE_BG_ACTIVE = "stack.tab.active.bg.act";
-  public static final String TAB_ACTIVE_CLOSE_ACTIVE 
-    = "stack.tab.active.close.active";
-  public static final String TAB_ACTIVE_RIGHT_ACTIVE 
-    = "stack.tab.active.right.active";
-  public static final String CONF_ACTIVE = "stack.conf.active";
-  public static final String CONF_INACTIVE = "stack.conf.inactive";
-  public static final String CONF_BG_ACTIVE = "stack.conf.bg.active";
-  public static final String TAB_INACTIVE_BG_ACTIVE 
-    = "stack.tab.inactive.bg.act";
-  public static final String CONF_BG_INACTIVE = "stack.conf.bg.inactive";
-  public static final String TAB_INACTIVE_RIGHT_ACTIVE 
-    = "stack.tab.inactive.right.active";
-  public static final String TAB_INACTIVE_SEPARATOR_ACTIVE 
-    = "stack.tab.inactive.separator.active";
-  public static final String TAB_OVERFLOW_ACTIVE = "stack.tab.overflow.active";
-  public static final String INACTIVE_CORNER = "stack.corner.inactive";
-  public static final String TAB_INACTIVE_CORNER_ACTIVE 
-    = "stack.inactive.corner.inactive";
-  public static final String TAB_INACTIVE_CLOSE_ACTIVE 
-    = "stack.inactive.close.active";
-  public static final String VIEW_TOOLBAR_BG = "stack.viewtoolbar.bg";
-  public static final String VIEW_TOOLBAR_LAYER = "stack.viewtoolbar.layer";
-  public static final String VIEW_MENU_ICON = "stack.viewmenu.icon";
-  public static final String VIEW_PULLDOWN = "stack.view.pulldown.arrow";
-  
-
-  public void initializeLayoutSet( LayoutSet layoutSet ) {
-    String path = ILayoutSetConstants.IMAGE_PATH;
-    layoutSet.addImagePath( MAX_ACTIVE, 
-                            path + "stack_confarea_max_active.png" );
-    layoutSet.addImagePath( MAX_INACTIVE, 
-                            path + "stack_confarea_max_inactive.png" );
-    layoutSet.addImagePath( MIN_ACTIVE, 
-                            path + "stack_confarea_min_active.png" );
-    layoutSet.addImagePath( MIN_INACTIVE, 
-                            path + "stack_confarea_min_inactive.png" );
-    layoutSet.addImagePath( SEPARATOR_ACTIVE, 
-                            path + "stack_confarea_separator_active.png" );
-    layoutSet.addImagePath( SEPARATOR_INACTIVE, 
-                            path + "stack_confarea_separator_inactive.png" );
-    layoutSet.addImagePath( TAB_ACTIVE_BG_ACTIVE, 
-                            path + "stack_tab_active_bg_active.png" );
-    layoutSet.addImagePath( TAB_ACTIVE_CLOSE_ACTIVE, 
-                            path + "stack_tab_active_close_active.png" );
-    layoutSet.addImagePath( TAB_ACTIVE_RIGHT_ACTIVE, 
-                            path + "stack_tab_active_right_active.png" );
-    layoutSet.addImagePath( CONF_ACTIVE, path + "stack_tab_conf_active.png" );
-    layoutSet.addImagePath( CONF_INACTIVE, 
+  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_CONF_ACTIVE, 
+                            path + "stack_tab_conf_active.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_CONF_INACTIVE, 
                             path + "stack_tab_conf_inactive.png" );
-    layoutSet.addImagePath( CONF_BG_ACTIVE, 
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_CONF_BG_ACTIVE, 
                             path + "stack_tab_active_confarea_bg.png" );
-    layoutSet.addImagePath( TAB_INACTIVE_BG_ACTIVE, 
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TAB_INACTIVE_BG_ACTIVE, 
                             path + "stack_tab_inactive_bg_active.png" );
-    layoutSet.addImagePath( CONF_BG_INACTIVE, 
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_CONF_BG_INACTIVE, 
                             path + "stack_tab_inactive_confarea_bg.png" );
-    layoutSet.addImagePath( TAB_INACTIVE_RIGHT_ACTIVE, 
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TAB_INACTIVE_RIGHT_ACTIVE, 
                             path + "stack_tab_inactive_right_active.png" );
-    layoutSet.addImagePath( TAB_INACTIVE_SEPARATOR_ACTIVE, 
+    String separatorActive 
+      = ILayoutSetConstants.STACK_TAB_INACTIVE_SEPARATOR_ACTIVE;
+    layoutSet.addImagePath( separatorActive, 
                             path + "stack_tab_inactive_separator_active.png" );
-    layoutSet.addImagePath( TAB_OVERFLOW_ACTIVE, 
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TAB_OVERFLOW_ACTIVE, 
                             path + "stack_tab_overflow_active.png" );
-    layoutSet.addImagePath( BORDER_LEFT, path + "stack_border_left.png" );
-    layoutSet.addImagePath( BORDER_RIGHT, path + "stack_border_right.png" );
-    layoutSet.addImagePath( BORDER_TOP, path + "stack_border_top.png" );
-    layoutSet.addImagePath( BORDER_BOTTOM, path + "stack_border_bottom.png" );
-    layoutSet.addImagePath( INACTIVE_CORNER, 
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_LEFT, 
+                            path + "stack_border_left.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_RIGHT, 
+                            path + "stack_border_right.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_TOP, 
+                            path + "stack_border_top.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_BOTTOM, 
+                            path + "stack_border_bottom.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_LEFT_ACTIVE, 
+                            path + "stack_border_left.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_RIGHT_AVTIVE, 
+                            path + "stack_border_right.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_BORDER_BOTTOM_ACTIVE, 
+                            path + "stack_border_bottom.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_INACTIVE_CORNER, 
                             path + "stack_inactive_corner.png" );
-    layoutSet.addImagePath( TAB_INACTIVE_CORNER_ACTIVE, 
+    String cornerActive = ILayoutSetConstants.STACK_TAB_INACTIVE_CORNER_ACTIVE;
+    layoutSet.addImagePath( cornerActive, 
                             path + "stack_inactive_corner_active.png" );
-    layoutSet.addImagePath( TAB_INACTIVE_CLOSE_ACTIVE, 
-                            path + "stack_tab_inactive_close_active.png" );
-    layoutSet.addImagePath( VIEW_TOOLBAR_BG, path + "viewtoolbar_bg.png" );
-    layoutSet.addImagePath( VIEW_TOOLBAR_LAYER, path + "viewToolBarLayer.gif" );
-    layoutSet.addImagePath( VIEW_MENU_ICON, path + "viewMenu.png" );
-    layoutSet.addImagePath( VIEW_PULLDOWN, path + "viewPulldown.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_VIEW_TOOLBAR_BG, 
+                            path + "viewtoolbar_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_VIEW_MENU_ICON, 
+                            path + "viewMenu.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_VIEW_PULLDOWN, 
+                            path + "viewPulldown.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TAB_BG_ACTIVE,
+                            path + "stack_tab_bg_active.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TABBAR_LEFT_ACTIVE, 
+                            path + "trans.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TABBAR_RIGHT_ACTIVE, 
+                            path + "trans.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TABBAR_LEFT_INACTIVE, 
+                            path + "trans.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TABBAR_RIGHT_INACTIVE, 
+                            path + "trans.png" );
+    FormData fdConfButton = new FormData();
+    fdConfButton.top = new FormAttachment( 0, 1 );
+    fdConfButton.right = new FormAttachment( 100, 0 ); 
+    layoutSet.addPosition( ILayoutSetConstants.STACK_CONF_POSITION, 
+                           fdConfButton );
+    FormData fdOverflow = new FormData();
+    fdOverflow.top = new FormAttachment( 0, 5 );
+    fdOverflow.right = new FormAttachment( 100, -22 );
+    layoutSet.addPosition( ILayoutSetConstants.STACK_OVERFLOW_POSITION,
+                           fdOverflow );
+    layoutSet.addColor( ILayoutSetConstants.STACK_BUTTON_ACTIVE, 
+                        Graphics.getColor( 0, 88, 159 ) );
+    layoutSet.addColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE, 
+                        Graphics.getColor( 148, 148, 148 ) );
+    FormData fdTabBg = new FormData();
+    fdTabBg.width = 0;
+    fdTabBg.height = 0;
+    layoutSet.addPosition( ILayoutSetConstants.STACK_TABBG_POS, fdTabBg );
+    FormData fdButton = new FormData();
+    fdButton.top = new FormAttachment( 0, -2 );
+    layoutSet.addPosition( ILayoutSetConstants.STACK_BUTTON_TOP, fdButton );
+    FormData fdConfPos = new FormData();
+    fdConfPos.right = new FormAttachment( 100 );
+    layoutSet.addPosition( ILayoutSetConstants.STACK_CONF_POS, fdConfPos );
   }
 }

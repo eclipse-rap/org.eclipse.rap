@@ -9,23 +9,20 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 
 
 public class FooterInitializer implements ILayoutSetInitializer {
 
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.footer";
-  public static final String LEFT = "footer.left";
-  public static final String BG = "footer";
-  public static final String RIGHT = "footer.right";
-  
-
-  public void initializeLayoutSet( LayoutSet layoutSet ) {
-    String path = ILayoutSetConstants.IMAGE_PATH;
-    layoutSet.addImagePath( LEFT, path + "footer_left.png" );
-    layoutSet.addImagePath( BG, path + "footer_bg.png" );
-    layoutSet.addImagePath( RIGHT, path + "footer_right.png" );
+  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.FOOTER_LEFT, 
+                            path + "footer_left.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.FOOTER_BG, 
+                            path + "footer_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.FOOTER_RIGHT, 
+                            path + "footer_right.png" );
   }
 }

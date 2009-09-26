@@ -18,7 +18,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.popups.MenuPopup;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
@@ -46,13 +46,7 @@ public class MenuBarManager extends MenuManager {
   private List buttonList = new ArrayList();
 
   public void fill( final Composite parent ) {
-    menuParent = parent;
-    RowLayout layout = new RowLayout();
-    layout.marginLeft = 0; 
-    layout.marginRight = 0;
-    layout.marginTop = 5;
-    parent.setLayout( layout );
-    
+    menuParent = parent;    
     update( false, false );
   }
   
@@ -128,8 +122,9 @@ public class MenuBarManager extends MenuManager {
     iconButton.setData( WidgetUtil.CUSTOM_VARIANT, "menuBar" );
     LayoutRegistry registry = LayoutRegistry.getInstance();
     Layout activeLayout = registry.getActiveLayout();
-    LayoutSet set = activeLayout.getLayoutSet( MenuBarInitializer.SET_ID );
-    String path = set.getImagePath( MenuBarInitializer.ARROW );
+    LayoutSet set 
+      = activeLayout.getLayoutSet( ILayoutSetConstants.SET_ID_MENUBAR );
+    String path = set.getImagePath( ILayoutSetConstants.MENUBAR_ARROW );
     ImageDescriptor imgDesc 
       = AbstractUIPlugin.imageDescriptorFromPlugin( PLUGIN_ID, path );
     iconButton.setImage( imgDesc.createImage() );   

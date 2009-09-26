@@ -23,9 +23,9 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rap.internal.design.example.CommandUtil;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.CommandUtil.CommandParameter;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
-import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -267,8 +267,8 @@ public class ViewToolBarManager extends ContributionManager
         fdArrow.left = new FormAttachment( button, 0 );
         fdArrow.top = new FormAttachment( 0, 7 );
         ElementBuilder builder 
-          = new DummyBuilder( null, StackInitializer.SET_ID );
-        Image image = builder.getImage( StackInitializer.VIEW_PULLDOWN );
+          = new DummyBuilder( null, ILayoutSetConstants.SET_ID_STACKPRESENTATION );
+        Image image = builder.getImage( ILayoutSetConstants.STACK_VIEW_PULLDOWN );
         arrow.setImage( image );
         arrow.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
         arrow.addSelectionListener( new SelectionAdapter() {

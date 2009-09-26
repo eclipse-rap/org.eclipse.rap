@@ -70,7 +70,7 @@
          <layoutSet
                class="org.eclipse.rap.examples.internal.design.LogoInitializer"
                id="org.eclipse.rap.design.example.layoutset.logo.extended"
-               name="Logo"
+               name="Logo Overridding"
                overridesId="org.eclipse.rap.design.example.layoutset.logo">
          </layoutSet>
       </layout>

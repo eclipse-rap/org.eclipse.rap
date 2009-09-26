@@ -9,28 +9,30 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 
 
 public class CoolbarOverflowInitializer implements ILayoutSetInitializer {
-  
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.coolbaroverflow";
-  
-  public static final String BG = "coolbar.layer.bg";
-  public static final String RIGHT = "coolbar.layer.right";
-  public static final String WAVE = "coolbar.layer.wave";
-  public static final String ARROW = "coolbar.layer.arrow";
 
-  public CoolbarOverflowInitializer() {
-  }
-
-  public void initializeLayoutSet( LayoutSet layoutSet ) {
-    String path = ILayoutSetConstants.IMAGE_PATH;
-    layoutSet.addImagePath( BG, path + "toolbar_overflow_layer_bg.png" );
-    layoutSet.addImagePath( RIGHT, path + "toolbar_overflow_layer_right.png" );
-    layoutSet.addImagePath( WAVE, path + "header_wave_layer.png" );
-    layoutSet.addImagePath( ARROW, path + "toolbar_overflow_arrow.png" );
+  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.OVERFLOW_BG, 
+                            path + "toolbar_overflow_layer_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.OVERFLOW_RIGHT, 
+                            path + "toolbar_overflow_layer_right.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.OVERFLOW_WAVE, 
+                            path + "header_wave_layer.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.OVERFLOW_ARROW, 
+                            path + "toolbar_overflow_arrow.png" );
+    FormData fdItemTable = new FormData();
+    fdItemTable.top = new FormAttachment( 0, 4 );
+    fdItemTable.left = new FormAttachment( 0, 93 );
+    fdItemTable.bottom = new FormAttachment( 100, -2 );
+    fdItemTable.right = new FormAttachment( 100 ); 
+    layoutSet.addPosition( ILayoutSetConstants.OVERFLOW_POS, fdItemTable );
   }
 }

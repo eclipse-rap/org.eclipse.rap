@@ -9,6 +9,7 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.graphics.Graphics;
@@ -16,32 +17,28 @@ import org.eclipse.rwt.graphics.Graphics;
 
 public class MenuBarInitializer implements ILayoutSetInitializer {
 
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.menubar";
-  public static final String ARROW = "menubar.arrow";
-  public static final String POPUP = "menubar.popup";
-  public static final String POPUP_BUTTON = "menubar.popup.button";
-  public static final String TOP_BG = "menubar.popup.top";
-  public static final String BOTTOM_BG = "menubar.popup.bottom";
-  public static final String LEFT_BG = "menubar.popup.left";
-  public static final String RIGHT_BG = "menubar.popup.right";
-  public static final String CORNER_LEFT = "menubar.popup.corner.left";
-  public static final String CORNER_RIGHT = "menubar.popup.corner.right";
-  public static final String SECOND_LAYER_CHEFRON = "menubar.popup.secondlayer";
-
-  public void initializeLayoutSet( LayoutSet layoutSet ) {
-    String path = ILayoutSetConstants.IMAGE_PATH;
-    layoutSet.addImagePath( ARROW, path + "menu_arrow.png" );
-    layoutSet.addImagePath( TOP_BG, path + "popup_top_bg.png" );
-    layoutSet.addImagePath( BOTTOM_BG, path + "popup_bottom_bg.png" );
-    layoutSet.addImagePath( LEFT_BG, path + "popup_left_bg.png" );
-    layoutSet.addImagePath( RIGHT_BG, path + "popup_right_bg.png" );
-    layoutSet.addImagePath( CORNER_LEFT, path + "popup_corner_left.png" );
-    layoutSet.addImagePath( CORNER_RIGHT, path + "popup_corner_right.png" );
-    layoutSet.addImagePath( SECOND_LAYER_CHEFRON, 
+  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_ARROW, 
+                            path + "menu_arrow.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_TOP_BG, 
+                            path + "popup_top_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_BOTTOM_BG, 
+                            path + "popup_bottom_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_LEFT_BG, 
+                            path + "popup_left_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_RIGHT_BG, 
+                            path + "popup_right_bg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_CORNER_LEFT, 
+                            path + "popup_corner_left.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_CORNER_RIGHT, 
+                            path + "popup_corner_right.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_SECOND_LAYER_CHEFRON, 
                             path + "popup_secondLayer.png" );
     
-    layoutSet.addColor( POPUP, Graphics.getColor( 244, 244, 244 ) );
-    layoutSet.addColor( POPUP_BUTTON, Graphics.getColor( 0, 89, 165 ) );
+    layoutSet.addColor( ILayoutSetConstants.MENUBAR_POPUP, 
+                        Graphics.getColor( 244, 244, 244 ) );
+    layoutSet.addColor( ILayoutSetConstants.MENUBAR_POPUP_BUTTON, 
+                        Graphics.getColor( 0, 89, 165 ) );
   }
 }

@@ -212,12 +212,32 @@ Button.partInactive:pressed {
   background-image: none;
 }
 
+Button.partInActiveActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 252, 252, 252 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactiveActive:pressed {
+  background-image: none;
+}
+
 Button.perspective {
   background-color: transparent;
   background-image: none;
   border: none;
   color: rgb( 0, 80, 145 );
   font: 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+}
+
+Button.perspectiveActive {
+  color: rgb( 0, 80, 145 );
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
 }
 
 Button.perspective:hover {
@@ -566,4 +586,26 @@ ProgressBar {
 
 ProgressBar-Indicator {
   background-color: #7bb0db;
+}
+
+/* Composite */
+
+Composite.tabActive {
+  border: 1px solid #00589f;
+  border-radius: 0px 7px 0px 0px;
+}
+
+Composite.tabInactive {
+  border: 1px solid #949494;
+  border-radius: 0px 7px 0px 0px;
+}
+
+Composite.inactiveButton {
+  background-color: transparent;
+  border: none;
+}
+
+Composite.partBackgroundTrans {
+  background-color: transparent;
+  border: none;
 }

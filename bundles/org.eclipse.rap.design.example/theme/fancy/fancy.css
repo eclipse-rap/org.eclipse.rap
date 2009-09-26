@@ -1,0 +1,616 @@
+/******************************************************************************* 
+* Copyright (c) 2009 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/ 
+
+* {
+  color: #4a4a4a;
+  background-color: white;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+*:disabled {
+  color: #CFCFCF;
+}
+
+*[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
+/* Button */
+
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  border: 1px solid #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  /* background-color: #f5f6f6; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
+}
+
+Button[TOGGLE]:selected {
+  /* background-color: #d3d3d3; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button:hover {
+  background-color: white;
+}
+
+Button.clearButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 2px;
+}
+
+Button.configMenuButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 1px;
+}
+
+Button.clearButton:pressed {
+  background-image: none;
+}
+
+Button.viewClose {
+  background-color: transparent;
+  background-image: url( /img/fancy/stack_tab_active_close_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.viewClose:pressed {
+  background-image: url( /img/fancy/stack_tab_active_close_active.png );
+}
+
+Button.viewClose:hover {
+  background-image: url( /img/fancy/stack_tab_active_close_active_hover.png );
+}
+
+Button.viewCloseInactive {
+  background-color: transparent;
+  background-image: url( /img/fancy/stack_tab_inactive_close_active.png );
+  border: none;
+}
+
+Button.viewCloseInactive:pressed {
+  background-image: url( /img/fancy/stack_tab_inactive_close_active.png );
+}
+
+Button.viewCloseInactive:hover {
+  background-image: url( /img/fancy/stack_tab_inactive_close_active_hover.png );
+}
+
+Button.toolbarOverflowInactive {
+  background-color: transparent;
+  background-image: url( /img/fancy/toolbar_overflow.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowInactive:pressed {
+  background-image: url( /img/fancy/toolbar_overflow.png );
+}
+
+Button.toolbarOverflowInactive:hover {
+  background-image: url( /img/fancy/toolbar_overflow_hover.png );
+}
+
+Button.toolbarOverflowActive {
+  background-color: transparent;
+  background-image: url( /img/fancy/toolbar_overflow_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowActive:pressed {
+  background-image: url( /img/fancy/toolbar_overflow_active.png );
+}
+
+Button.toolbarOverflowActive:hover {
+  background-image: url( /img/fancy/toolbar_overflow_hover_active.png );
+}
+
+Button.menuBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 101, 101, 101 );
+  font: 13px Arial, Helvetica, sans-serif;
+}
+
+Button.menuBar:pressed {
+  background-image: none;
+}
+
+Button.coolBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  spacing: 6px;
+  color: rgb( 255, 255, 255 );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.coolBar:hover {
+  background-image: url( /img/fancy/toolbarButtonBg.png );
+}
+
+Button.coolBar:pressed {
+  background-image: url( /img/fancy/toolbarButtonBg.png );
+}
+
+Button.coolBarPulldown {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 255, 255, 255 );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.coolBarPulldown:hover {
+  background-image: url( /img/fancy/toolbarButtonBg.png );
+}
+
+Button.coolBarPulldown:pressed {
+  background-image: none;
+}
+
+Button.partActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 62, 64, 66 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partActive:pressed {
+  background-image: none;
+}
+
+Button.partInActiveActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 73, 95, 21 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactiveActive:pressed {
+  background-image: none;
+}
+
+Button.partInactive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 255, 255, 255 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactive:pressed {
+  background-image: none;
+}
+
+Button.perspective {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 204, 204, 204 );
+  font: 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+}
+
+Button.perspectiveActive {
+  color: rgb( 112, 198, 243 );
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  font: 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+}
+
+Button.perspective:hover {
+  font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+}
+
+Button.perspective:pressed {
+  background-image: none;
+}
+
+Button.tabOverflowActive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( /img/fancy/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:pressed {
+  background-image: url( /img/fancy/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:hover {
+  background-image: url( /img/fancy/stack_tab_overflow_active_hover.png );
+}
+
+Button.tabOverflowInactive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( /img/fancy/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:pressed {
+  background-image: url( /img/fancy/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:hover {
+  background-image: url( /img/fancy/stack_tab_overflow_inactive_hover.png );
+}
+
+/* Shell */
+
+Shell-Titlebar {
+  color: white;
+  /* background-image: url( /theme/fancy/icons/shell-active-background.png ); */
+  background-image: gradient( linear, left top, left bottom,
+                              from( #a8dd32 ), to( #87b127 ) );
+  padding: 2px 5px 2px;
+  margin: 0px;
+  height: 22px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border: none;
+  border-radius: 5px 5px 0px 0px;
+}
+
+Shell-Titlebar:inactive {
+  color: #aaaaaa;
+  /* background-image: url( /theme/fancy/icons/shell-inactive-background.png ); */
+  background-image: gradient( linear, left top, left bottom,
+                              from( #595959 ), to( #4b4b4b ) );
+}
+
+Shell {
+  background-color: white;
+}
+
+Shell[BORDER], Shell[TITLE] {
+  border: 2px solid #99c92c;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  border: 2px solid #4b4b4b;
+}
+
+Shell-CloseButton {
+  background-image: url( "/theme/fancy/icons/shell-close.png" );
+  margin: 0px 5px 0px 0px;
+}
+
+Shell-MaxButton {
+  background-image: url( "/theme/fancy/icons/shell-max.png" );
+  margin: 0px 6px 0px 0px;
+}
+
+Shell-MinButton {
+  background-image: url( "/theme/fancy/icons/shell-min.png" );
+  margin: 0px 6px 0px 0px;
+}
+
+Shell-CloseButton:hover {
+  background-image: url( "/theme/fancy/icons/shell-close-hover.png" );
+}
+
+Shell-MaxButton:hover {
+  background-image: url( "/theme/fancy/icons/shell-max-hover.png" );
+}
+
+Shell-MinButton:hover {
+  background-image: url( "/theme/fancy/icons/shell-min-hover.png" );
+}
+
+.shellGray {
+  background-color: rgb( 255, 255, 255 );
+}
+
+Shell.toolbarLayer {
+  background-color: rgb( 255, 255, 255 );
+  border: none;
+}
+
+/* Table */
+
+Table.overflow {
+  color: rgb( 255, 255, 255 );
+}
+
+Table-Column.overflow {
+  background-color: transparent;
+}
+
+TableItem.overflow {
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
+}
+
+TableItem.overflow:even {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
+Table-Column {
+  background-color: #f3f3f4;
+}
+
+Table-Cell {
+  spacing: 3px;
+  padding: 5px;
+}
+
+List-Item, TableItem {
+  background-color: transparent;
+}
+
+/*
+ disable alt row colors for Lists as they look weird inside examples' ExpandBar:
+ List-Item:even,
+ */
+TableItem:even {
+  background-color: #f3f3f4;
+}
+
+/* Check Buttons */
+
+Button-CheckIcon {
+  background-image: url( /theme/fancy/icons/check-unselected.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( /theme/fancy/icons/check-selected.png );
+}
+
+Button-CheckIcon:grayed {
+  background-image: url( /theme/fancy/icons/check-grayed.png );
+}
+
+Button-CheckIcon:hover {
+  background-image: url( /theme/fancy/icons/check-unselected-hover.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( /theme/fancy/icons/check-selected-hover.png );
+}
+
+Button-CheckIcon:grayed:hover {
+  background-image: url( /theme/fancy/icons/check-grayed-hover.png );
+}
+
+/* Radio Buttons */
+
+Button-RadioIcon {
+  background-image: url( /theme/fancy/icons/radio-unselected.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( /theme/fancy/icons/radio-selected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( /theme/fancy/icons/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( /theme/fancy/icons/radio-selected-hover.png );
+}
+
+/* Menu */
+Menu {
+  color: rgb( 0, 89, 165 );
+  background-color: white;
+  border: 1px rgb( 0, 89, 165 );
+}
+
+/* Selection color */
+
+List-Item:selected, TableItem:selected, TreeItem:selected {
+  background-color: #D2D2D2;
+  color: #4a4a4a;
+}
+
+.menuBarPopup {
+  border: none;
+}
+
+Label.menuBorder {
+  background-color: rgb( 221, 221, 221 );
+}
+
+Label.stackBorder {
+  background-color: rgb( 235, 235, 235 );
+}
+
+Label.standaloneView {
+  background-color: transparent;
+  border: none;
+  color: rgb( 102, 102, 102 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Tree {
+  border: none;
+}
+
+Composite.compGray {
+  background-color: rgb( 255, 255, 255 );
+}
+
+.compTrans {
+  background-color: transparent;
+}
+
+.partBorder {
+  border: rgb( 235, 0, 0 );
+}
+
+.compTransNoBorder {
+  border: none;
+  background-color: rgb( 252, 252, 252 );
+}
+
+Text, Combo, Spinner, DateTime, List, Tree, Table {
+  background-color: rgb( 255, 255, 255 );
+  border: none;
+}
+
+.formKey {
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: gray;
+}
+
+.formValue {
+  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+/* Expand Bar */
+
+ExpandBar {
+  color: white;
+}
+
+ExpandItem-Header {
+  background-color: #005397;
+}
+
+ExpandItem-Button {
+  background-image: url( /theme/fancy/icons/expanditem-expand.gif );
+}
+
+ExpandItem-Button:hover {
+  background-image: url( /theme/fancy/icons/expanditem-expand-hover.png );
+}
+
+ExpandItem-Button:expanded {
+  background-image: url( /theme/fancy/icons/expanditem-collapse.gif );
+}
+
+/* Text, Combo, Spinner, DateTime */
+
+/* Combo always shows a border, the BORDER style flag is ignored by SWT */
+Text[BORDER], Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
+  border: 1px solid #c1c1c1;
+  border-radius: 2px;
+}
+
+Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpButton, DateTime-DownButton {
+  background-color: transparent;
+  border: none;
+}
+
+Spinner-UpButton, DateTime-UpButton {
+  background-image: url( /theme/fancy/icons/chevron-up-small.png );
+}
+
+Spinner-DownButton, DateTime-DownButton {
+  background-image: url( /theme/fancy/icons/chevron-down-small.png );
+  /* background-color: #c1c1c1; */
+}
+
+Combo-Button:hover, CCombo-Button:hover,
+Spinner-UpButton:hover, Spinner-DownButton:hover,
+DateTime-UpButton:hover, DateTime-DownButton:hover {
+  background-color: #e2e2e2;
+}
+
+Combo-Button, CCombo-Button {
+  background-image: url( /theme/fancy/icons/chevron-down.png );
+}
+
+DateTime-Field:selected, DateTime-Calendar-Day:selected {
+  background-color: #D2D2D2;
+  color: #4a4a4a;
+}
+
+DateTime-Calendar-Day:otherMonth {
+  background-color: transparent;
+  color: rgb( 128, 128, 128 );
+}
+
+/* Group */
+
+Group-Frame {
+  padding: 5px;
+  border-radius: 5px 5px 0px 0px;
+}
+
+/* Link */
+
+Link-Hyperlink {
+  color: #195d94;
+}
+
+/* Progress Bar */
+
+ProgressBar {
+  background-color: #ffffff;
+  border: 1px solid #747a81;
+}
+
+ProgressBar-Indicator {
+  background-color: #7bb0db;
+}
+
+/* Composite */
+
+Composite.tabActive {
+  border: 1px solid #ffffff;
+  border-radius: 5px 5px 0px 0px;
+  background-color: rgb( 255, 255, 255 );
+}
+
+Composite.tabInactive {
+  border: 1px solid #ffffff;
+  border-radius: 5px 5px 0px 0px;
+  background-color: rgb( 255, 255, 255 );
+}
+
+Composite.inactiveButton {
+  background-color: transparent;
+  border: none;
+}
+
+Composite.partBackgroundTrans {
+  background-color: transparent;
+  border: none;
+}
+
+Composite {
+  border: none;
+}

@@ -18,8 +18,8 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.PopupDialog;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
-import org.eclipse.rap.internal.design.example.business.layoutsets.ConfigDialogInitializer;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -92,7 +92,7 @@ public class ConfigurationDialog extends PopupDialog {
     this.action = action;
     hookResizeListener( parent );
     builder = new DummyBuilder( parent,  
-                                ConfigDialogInitializer.SET_ID );
+                                ILayoutSetConstants.SET_ID_CONFIG_DIALOG );
     viewMenuVisChanged = false;
   }
   
@@ -134,7 +134,7 @@ public class ConfigurationDialog extends PopupDialog {
   protected Control createDialogArea( final Composite parent ) {        
     Composite background = new Composite( parent, SWT.NONE );
     background.setLayout( new FormLayout() );
-    Color white = builder.getColor( ConfigDialogInitializer.CONFIG_WHITE );
+    Color white = builder.getColor( ILayoutSetConstants.CONFIG_WHITE );
         
     Composite configComposite = new Composite( background, SWT.NONE );
     FormData fdConfigComposite = new FormData();
@@ -316,7 +316,7 @@ public class ConfigurationDialog extends PopupDialog {
     Shell shell = getShell();
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     shell.setText( "Configuration for " + site.getSelectedPart().getName() );
-    shell.setImage( builder.getImage( ConfigDialogInitializer.DIALOG_ICON ) );
+    shell.setImage( builder.getImage( ILayoutSetConstants.CONFIG_DIALOG_ICON ) );
     shell.setActive();
     shell.setFocus();  
     action.fireToolBarChange();

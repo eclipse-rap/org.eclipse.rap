@@ -9,7 +9,7 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.builder;
 
-import org.eclipse.rap.internal.design.example.business.layoutsets.FooterInitializer;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.swt.SWT;
@@ -37,9 +37,9 @@ public class FooterBuilder extends ElementBuilder {
 
   private void initLayoutData() {
     LayoutSet set = getLayoutSet();
-    left = createImage( set.getImagePath( FooterInitializer.LEFT ) );
-    bg = createImage( set.getImagePath( FooterInitializer.BG ) );
-    right = createImage( set.getImagePath( FooterInitializer.RIGHT ) );
+    left = createImage( set.getImagePath( ILayoutSetConstants.FOOTER_LEFT ) );
+    bg = createImage( set.getImagePath( ILayoutSetConstants.FOOTER_BG ) );
+    right = createImage( set.getImagePath( ILayoutSetConstants.FOOTER_RIGHT ) );
   }
 
   public void addControl( Control control, Object layoutData ) {

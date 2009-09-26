@@ -9,7 +9,10 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.builder;
 
-import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.stacks.ViewStackPresentation;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
@@ -29,6 +32,11 @@ import org.eclipse.swt.widgets.Label;
 public class StackPresentationBuider extends ElementBuilder {
 
 
+  public static final String BOTTOM_BORDER = "bottomBorder";
+  public static final String RIGHT_BORDER = "rightBorder";
+  public static final String LEFT_BORDER = "leftBorder";
+  public static final String RIGHT = "right";
+  public static final String LEFT = "left";
   private Image tabInactiveBgActive;
   private Composite content;
   private Image borderBottom;
@@ -36,20 +44,29 @@ public class StackPresentationBuider extends ElementBuilder {
   private Image borderLeft;
   private Image borderRight;
   private Composite tabBar;
+  private Image leftCorner;
+  private Image rightCorner;
+  private Label leftCornerLabel;
+  private Label rightCornerLabel;
+  private Map labelMap;
 
   public StackPresentationBuider( Composite parent, String layoutSetId ) {
     super( parent, layoutSetId );
+    labelMap = new HashMap();
     init();
   }
 
   private void init() {
     tabInactiveBgActive 
-      = createImageById( StackInitializer.TAB_INACTIVE_BG_ACTIVE );
-    borderBottom = createImageById( StackInitializer.BORDER_BOTTOM );
-    borderTop = createImageById( StackInitializer.BORDER_TOP );
-    borderLeft = createImageById( StackInitializer.BORDER_LEFT );
-    borderRight = createImageById( StackInitializer.BORDER_RIGHT );
-    
+      = createImageById( ILayoutSetConstants.STACK_TAB_INACTIVE_BG_ACTIVE );
+    borderBottom = createImageById( ILayoutSetConstants.STACK_BORDER_BOTTOM );
+    borderTop = createImageById( ILayoutSetConstants.STACK_BORDER_TOP );
+    borderLeft = createImageById( ILayoutSetConstants.STACK_BORDER_LEFT );
+    borderRight = createImageById( ILayoutSetConstants.STACK_BORDER_RIGHT );
+    leftCorner 
+      = createImageById( ILayoutSetConstants.STACK_TABBAR_LEFT_ACTIVE );
+    rightCorner 
+      = createImageById( ILayoutSetConstants.STACK_TABBAR_RIGHT_ACTIVE );
   }
   
   private Image createImageById( final String id ) {
@@ -84,21 +101,40 @@ public class StackPresentationBuider extends ElementBuilder {
     fdTabBar.right = new FormAttachment( 100 );
     fdTabBar.height = tabInactiveBgActive.getBounds().height;
     
+    if( rightCorner != null && leftCorner != null ) {
+      leftCornerLabel = new Label( stack.getParent(), SWT.NONE );
+      leftCornerLabel.setImage( leftCorner );
+      FormData fdLeftCorner = new FormData();
+      leftCornerLabel.setLayoutData( fdLeftCorner );
+      fdLeftCorner.left = new FormAttachment( 0, 3 );
+      fdLeftCorner.top = new FormAttachment( 0, 7 );
+      
+      rightCornerLabel = new Label( stack.getParent(), SWT.NONE );
+      rightCornerLabel.setImage( rightCorner );
+      FormData fdRightCorner = new FormData();
+      rightCornerLabel.setLayoutData( fdRightCorner );
+      fdRightCorner.right = new FormAttachment( 100, -3 );
+      fdRightCorner.top = new FormAttachment( 0, 7 );
+      rightCornerLabel.moveAbove( null );
+      leftCornerLabel.moveAbove( null );      
+      labelMap.put( LEFT, leftCornerLabel );
+      labelMap.put( RIGHT, rightCornerLabel );
+    }
+    
     content = new Composite( stack, SWT.NONE );
     FormData fdContent = new FormData();
     content.setLayoutData( fdContent );
     fdContent.top = new FormAttachment( tabBar );
     fdContent.left = new FormAttachment( 0 );
     fdContent.right = new FormAttachment( 100 );
-    fdContent.bottom = new FormAttachment( 100 );
-
-    
+    fdContent.bottom = new FormAttachment( 100 );    
   }
 
   private Composite createFrame() {
     Composite frameComp = new Composite( getParent(), SWT.NONE );
     frameComp.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
     frameComp.setLayout( new FormLayout() );
+    frameComp.setBackgroundMode( SWT.INHERIT_FORCE );
     
     Label left = new Label( frameComp, SWT.NONE );
     left.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
@@ -110,6 +146,7 @@ public class StackPresentationBuider extends ElementBuilder {
       = new FormAttachment( 100, - borderBottom.getBounds().height + 1 );
     fdLeft.left = new FormAttachment( 0 );
     fdLeft.width = borderLeft.getBounds().width;
+    labelMap.put( LEFT_BORDER, left );
     
     Label right = new Label( frameComp, SWT.NONE );
     right.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
@@ -121,6 +158,7 @@ public class StackPresentationBuider extends ElementBuilder {
       = new FormAttachment( 100, - borderBottom.getBounds().height + 1 );
     fdRight.right = new FormAttachment( 100 );
     fdRight.width = borderRight.getBounds().width;
+    labelMap.put( RIGHT_BORDER, right );
     
     Label top = new Label( frameComp, SWT.NONE );
     top.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
@@ -141,6 +179,7 @@ public class StackPresentationBuider extends ElementBuilder {
     fdBottom.left = new FormAttachment( left );
     fdBottom.right = new FormAttachment( right );
     fdBottom.height = borderBottom.getBounds().height;
+    labelMap.put( BOTTOM_BORDER, bottom );
     
     Composite result = new Composite( frameComp, SWT.NONE );
     result.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
@@ -169,11 +208,13 @@ public class StackPresentationBuider extends ElementBuilder {
     return result;
   }
   
-  public Object getAdapter( Class adapter ) {
+  public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == ViewStackPresentation.class ) {
       result = tabBar;
-    }
+    } else if( adapter == Map.class ) {
+      result = labelMap;
+    } 
     return result;
   }
 }

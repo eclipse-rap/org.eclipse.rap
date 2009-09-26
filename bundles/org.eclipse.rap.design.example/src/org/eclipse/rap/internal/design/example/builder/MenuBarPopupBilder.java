@@ -9,7 +9,7 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.builder;
 
-import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.graphics.Graphics;
@@ -41,14 +41,14 @@ public class MenuBarPopupBilder extends ElementBuilder {
 
   private void init() {
     LayoutSet set = getLayoutSet();
-    bottom = createImage( set.getImagePath( MenuBarInitializer.BOTTOM_BG ) );
+    bottom = createImage( set.getImagePath( ILayoutSetConstants.MENUBAR_BOTTOM_BG ) );
     cornerLeft 
-      = createImage( set.getImagePath( MenuBarInitializer.CORNER_LEFT ) );
+      = createImage( set.getImagePath( ILayoutSetConstants.MENUBAR_CORNER_LEFT ) );
     cornerRight 
-      = createImage( set.getImagePath( MenuBarInitializer.CORNER_RIGHT ) );
-    left = createImage( set.getImagePath( MenuBarInitializer.LEFT_BG ) );
-    right = createImage( set.getImagePath( MenuBarInitializer.RIGHT_BG ) );
-    top = createImage( set.getImagePath( MenuBarInitializer.TOP_BG ) );
+      = createImage( set.getImagePath( ILayoutSetConstants.MENUBAR_CORNER_RIGHT ) );
+    left = createImage( set.getImagePath( ILayoutSetConstants.MENUBAR_LEFT_BG ) );
+    right = createImage( set.getImagePath( ILayoutSetConstants.MENUBAR_RIGHT_BG ) );
+    top = createImage( set.getImagePath( ILayoutSetConstants.MENUBAR_TOP_BG ) );
   }
 
   public void addControl( Control control, Object layoutData ) {

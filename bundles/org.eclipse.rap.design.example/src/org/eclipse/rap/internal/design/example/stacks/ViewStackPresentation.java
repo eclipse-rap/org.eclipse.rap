@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.builder.StackPresentationBuider;
-import org.eclipse.rap.internal.design.example.business.layoutsets.StackInitializer;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.ConfigurationAction;
 import org.eclipse.rap.ui.interactiondesign.IConfigurationChangeListener;
@@ -30,6 +30,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -176,7 +177,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Composite tabBar = getTabBar();
     toolbarBg = new Composite( tabBar.getParent(), SWT.NONE );
     toolbarBg.setLayout( new FormLayout() );
-    Image bg = stackBuilder.getImage( StackInitializer.VIEW_TOOLBAR_BG );
+    Image bg = stackBuilder.getImage( ILayoutSetConstants.STACK_VIEW_TOOLBAR_BG );
     toolbarBg.setBackgroundImage( bg );
     FormData fdToolBar = new FormData();
     toolbarBg.setLayoutData( fdToolBar );
@@ -197,7 +198,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     } );    
     
     parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
-    stackBuilder = new StackPresentationBuider( parent, StackInitializer.SET_ID );
+    String setID = ILayoutSetConstants.SET_ID_STACKPRESENTATION;
+    stackBuilder = new StackPresentationBuider( parent, setID );
     stackBuilder.build();
     return parent;
   }
@@ -250,7 +252,8 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( viewMenuButton == null ) {
           viewMenuButton = new Button( toolbarBg, SWT.PUSH );
           viewMenuButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
-          Image icon = stackBuilder.getImage( StackInitializer.VIEW_MENU_ICON );
+          Image icon 
+            = stackBuilder.getImage( ILayoutSetConstants.STACK_VIEW_MENU_ICON );
           viewMenuButton.setImage( icon );
           FormData fdViewMenuButton = new FormData();
           viewMenuButton.setLayoutData( fdViewMenuButton );
@@ -345,14 +348,13 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private void createPartButton( final IPresentablePart part ) {
     Composite buttonArea = new Composite( tabBg, SWT.NONE );
-    buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
-    Image bg = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_BG_ACTIVE );
-    buttonArea.setBackgroundImage( bg );
-    buttonArea.setBackgroundMode( SWT.INHERIT_FORCE );
+    buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, 
+                        "inactiveButton" );        
     buttonArea.setLayout( new FormLayout() );
     
     final Button partButton = new Button( buttonArea, SWT.PUSH );
-    partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
+    partButton.setData( WidgetUtil.CUSTOM_VARIANT, 
+                        VARIANT_PART_INACTIVE );
     partButton.setText( part.getName() );
     partButton.setToolTipText( part.getTitleToolTip() );
     final IPropertyListener nameListener = new IPropertyListener() {      
@@ -382,6 +384,9 @@ public class ViewStackPresentation extends ConfigurableStack {
           selectPart( part );
         }
         activatePart( part );
+        if( toolBarLayer != null ) {
+          toolBarLayer.setVisible( false );
+        }
       };
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {    
@@ -390,21 +395,25 @@ public class ViewStackPresentation extends ConfigurableStack {
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
         page.toggleZoom( getReference( part ) );
+        if( toolBarLayer != null ) {
+          toolBarLayer.setVisible( false );
+        }
       }
     } );
     
     Composite corner = new Composite( buttonArea, SWT.NONE );
     corner.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
     corner.setLayout( new FormLayout() );
-    Image cornerImage 
-      = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_SEPARATOR_ACTIVE );
-    corner.setBackgroundImage( cornerImage );
+    String separatorActive 
+      = ILayoutSetConstants.STACK_TAB_INACTIVE_SEPARATOR_ACTIVE;
+    Image cornerImage = stackBuilder.getImage( separatorActive );
     FormData fdCorner = new FormData();
     corner.setLayoutData( fdCorner );
     fdCorner.right = new FormAttachment( 100 );
     fdCorner.bottom = new FormAttachment( 100 );
     fdCorner.width = cornerImage.getBounds().width;
     fdCorner.height = cornerImage.getBounds().height;
+    fdPartButton.height = cornerImage.getBounds().height;
     fdPartButton.right = new FormAttachment( corner, -8 );
     partButtonMap.put( part, buttonArea );
     buttonPartMap.put( buttonArea, part );
@@ -441,9 +450,10 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
+      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "tabInactive" );      
       checkHideSeparator( buttonArea );
-      Image bg = stackBuilder.getImage( StackInitializer.CONF_BG_INACTIVE );
-      buttonArea.setBackgroundImage( bg );
+      Color bg = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
+      buttonArea.setBackground( bg );
       Control[] children = buttonArea.getChildren();
       buttonArea.setLayout( new FormLayout() );
       
@@ -454,14 +464,16 @@ public class ViewStackPresentation extends ConfigurableStack {
           Button partButton = ( Button ) child;
           partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_ACTIVE );
           FormData fdButton = ( FormData ) partButton.getLayoutData();
-          fdButton.top = new FormAttachment( 0, 0 );
+          FormData pos 
+            = stackBuilder.getPosition( ILayoutSetConstants.STACK_BUTTON_TOP );
+          fdButton.top = pos.top;
         } else if( child instanceof Composite ) {
           // Corner
           Composite corner = ( Composite ) child;
           corner.setVisible( true );
-          String cornerDesc = StackInitializer.TAB_INACTIVE_CORNER_ACTIVE;
+          String cornerDesc = ILayoutSetConstants.STACK_TAB_INACTIVE_CORNER_ACTIVE;
           Image cornerImage = stackBuilder.getImage( cornerDesc );
-          corner.setBackgroundImage( cornerImage );
+          corner.setBackgroundImage( null );
           FormData fdCorner = ( FormData ) corner.getLayoutData();
           fdCorner.top = new FormAttachment( 0 );
           fdCorner.width = cornerImage.getBounds().width;
@@ -497,8 +509,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Composite area = ( Composite ) buttonList.get( i );
       Control[] children = area.getChildren();
       for( int j = 0; j < children.length; j++ ) {
-        if( children[ j ] instanceof Composite ) {
-          
+        if( children[ j ] instanceof Composite ) {          
           if( i == indexOf || ( i == indexOf - 1 ) ) {
             ( ( Composite ) children[ j ] ).setVisible( false );
           } else {
@@ -514,9 +525,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      String bgDesc = StackInitializer.TAB_INACTIVE_BG_ACTIVE;
-      Image bg = stackBuilder.getImage( bgDesc );
-      buttonArea.setBackgroundImage( bg );
+      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "inactiveButton" );
+      buttonArea.setBackground( null );
       Control[] children = buttonArea.getChildren();
       for( int i = 0; i < children.length; i++ ) {
         Control child = children[ i ];
@@ -531,13 +541,14 @@ public class ViewStackPresentation extends ConfigurableStack {
             // Part button
             button.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
             FormData fdButton = ( FormData ) button.getLayoutData();
-            fdButton.top = new FormAttachment( 0, 4 );            
+            fdButton.top = new FormAttachment( 0, 0 );            
           }
         } else if( child instanceof Composite ) {
           // Corner
           Composite corner = ( Composite ) child;
           corner.setVisible( true );
-          String sepConst = StackInitializer.TAB_INACTIVE_SEPARATOR_ACTIVE;
+          String sepConst 
+            = ILayoutSetConstants.STACK_TAB_INACTIVE_SEPARATOR_ACTIVE;
           Image cornerImage = stackBuilder.getImage( sepConst );
           corner.setBackgroundImage( cornerImage );
           FormData fdCorner = ( FormData ) corner.getLayoutData();
@@ -556,29 +567,30 @@ public class ViewStackPresentation extends ConfigurableStack {
    */
   private void checkTabBg() {
     Composite tabBar = getTabBar();
-    if( tabBg == null && tabBar != null ) {
+    if( tabBg == null && tabBar != null ) {      
       tabBg = new Composite( tabBar, SWT.NONE );
-      tabBg.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
+      tabBg.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );       
       FormData fdTabBg = new FormData();
       tabBg.setLayoutData( fdTabBg );
       fdTabBg.left = new FormAttachment( 0 );
       fdTabBg.top = new FormAttachment( 0 );
       fdTabBg.bottom = new FormAttachment( 100 );
-      
       createConfArea( fdTabBg );
-
+      
+      FormData fdLayout 
+        = stackBuilder.getPosition( ILayoutSetConstants.STACK_TABBG_POS );
       RowLayout layout = new RowLayout( SWT.HORIZONTAL );
       layout.spacing = 0;
       layout.marginBottom = 0;
       if( !isStandalone() ) {
         layout.marginHeight = 0;
-        layout.marginLeft = 0;
+        layout.marginLeft = fdLayout.width;
       } else {
         layout.marginHeight = 4;
         layout.marginLeft = BUTTON_SPACING;
       }
       layout.marginRight = 16;
-      layout.marginTop = 0;
+      layout.marginTop = fdLayout.height;
       layout.marginWidth = 0;
       layout.wrap = false;
       tabBg.setLayout( layout );
@@ -622,16 +634,19 @@ public class ViewStackPresentation extends ConfigurableStack {
   private void handleOverflowButton() {
     if( overflowButton == null ) {
       overflowButton = new Button( tabBg.getParent(), SWT.PUSH );
-      FormData fdOverflowButton = new FormData();
-      overflowButton.setLayoutData( fdOverflowButton );
-      fdOverflowButton.top = new FormAttachment( 0, 5 );
-      fdOverflowButton.right = new FormAttachment( 100, -22 );      
+      String stackOverflowPosition = ILayoutSetConstants.STACK_OVERFLOW_POSITION;
+      FormData fdOverflowButton 
+        = stackBuilder.getPosition( stackOverflowPosition );
+      overflowButton.setLayoutData( fdOverflowButton );  
       Image icon 
-        = stackBuilder.getImage( StackInitializer.TAB_OVERFLOW_ACTIVE );
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_TAB_OVERFLOW_ACTIVE );
       fdOverflowButton.height = icon.getBounds().height;
-      fdOverflowButton.width = icon.getBounds().width;
-      String inactiveVariant = "tabOverflowInactive";
-      overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, inactiveVariant );
+      fdOverflowButton.width = icon.getBounds().width;      
+      String variant = "tabOverflowInactive";
+      if( state == AS_ACTIVE_FOCUS ) {
+        variant = "tabOverflowActive";
+      }
+      overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
       overflowButton.moveAbove( tabBg );
       overflowButton.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent e ) {
@@ -790,19 +805,22 @@ public class ViewStackPresentation extends ConfigurableStack {
     
     if( configAction != null ) {
       confArea = new Composite( getTabBar(), SWT.NONE );
-      Image confBg = stackBuilder.getImage( StackInitializer.CONF_BG_INACTIVE );
+      Image confBg 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_BG_INACTIVE );
       confArea.setBackgroundImage( confBg );
       confArea.setLayout( new FormLayout() );
+      confArea.setBackgroundMode( SWT.INHERIT_FORCE );
       FormData fdConfArea = new FormData();
       confArea.setLayoutData( fdConfArea );
       fdConfArea.top = new FormAttachment( 0 );
       fdConfArea.bottom = new FormAttachment( 100 );
-      fdConfArea.right = new FormAttachment( 100 );    
+      fdConfArea.right = new FormAttachment( 100 );
+      fdConfArea.width = 28;
       fdTabBg.right = new FormAttachment( confArea );
       
       confCorner = new Label( confArea, SWT.NONE );
       Image cornerImage 
-        = stackBuilder.getImage( StackInitializer.INACTIVE_CORNER );
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_INACTIVE_CORNER );
       confCorner.setImage( cornerImage );
       FormData fdCorner = new FormData();
       confCorner.setLayoutData( fdCorner );
@@ -811,22 +829,22 @@ public class ViewStackPresentation extends ConfigurableStack {
       fdCorner.bottom = new FormAttachment( 100 );
       
       confButton = new Button( confArea, SWT.PUSH );
-      Image confImage = stackBuilder.getImage( StackInitializer.CONF_INACTIVE );
+      Image confImage 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_INACTIVE );
       confButton.setImage( confImage );
       confButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
-      FormData fdConfButton = new FormData();
+      FormData fdConfButton 
+        = stackBuilder.getPosition( ILayoutSetConstants.STACK_CONF_POSITION );
       confButton.setLayoutData( fdConfButton );
-      fdConfButton.left = new FormAttachment( confCorner );
-      fdConfButton.top = new FormAttachment( 0, 1 );
-      fdConfButton.right = new FormAttachment( 100, 0 );
-      
+      FormData fdConfPos 
+        = stackBuilder.getPosition( ILayoutSetConstants.STACK_CONF_POS );
+      fdConfButton.right = fdConfPos.right;      
       confButton.addSelectionListener( new SelectionAdapter(){
         public void widgetSelected( SelectionEvent e ) {
           activatePart( getSite().getSelectedPart() );
           configAction.run();
         };
       } );
-      
     } else {
       // make tabarea full width if no confarea exist.
       fdTabBg.right = new FormAttachment( 100 );
@@ -902,28 +920,45 @@ public class ViewStackPresentation extends ConfigurableStack {
     Image confBg = null;
     Image cornerImage = null;
     Image confImage = null;
+    Image tabBgImage = null;
     String tabOverflow = "tabOverflowInactive";
     // create the necessary images
     if( newState == AS_ACTIVE_FOCUS ) {
       if( !isStandalone() ) {
         changeSelectedActiveButton( true );
       }
-      confBg = stackBuilder.getImage( StackInitializer.CONF_BG_ACTIVE );
+      confBg 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_BG_ACTIVE );
+      String rightActive = ILayoutSetConstants.STACK_TAB_INACTIVE_RIGHT_ACTIVE;
       cornerImage 
-        = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_RIGHT_ACTIVE );
-      confImage = stackBuilder.getImage( StackInitializer.CONF_ACTIVE );
+        = stackBuilder.getImage( rightActive );
+      confImage 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_ACTIVE );
       tabOverflow = "tabOverflowActive";
+      tabBgImage 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_TAB_BG_ACTIVE );
+      changeStack( true );
     } else {
       if( !isStandalone() ) {
         changeSelectedActiveButton( false );
       }
-      confBg = stackBuilder.getImage( StackInitializer.CONF_BG_INACTIVE );
+      confBg 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_BG_INACTIVE );
       cornerImage 
-        = stackBuilder.getImage( StackInitializer.INACTIVE_CORNER );
-      confImage = stackBuilder.getImage( StackInitializer.CONF_INACTIVE );
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_INACTIVE_CORNER );
+      confImage 
+        = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_INACTIVE );
+      String stackTabInactiveBgActive 
+        = ILayoutSetConstants.STACK_TAB_INACTIVE_BG_ACTIVE;
+      tabBgImage 
+        = stackBuilder.getImage( stackTabInactiveBgActive );
+      changeStack( false );
     }
     
     // set the images
+    if( tabBg != null ) {
+      tabBg.getParent().setBackgroundImage( tabBgImage );
+    }
     if( confArea != null ) {
       confArea.setBackgroundImage( confBg );
       if( confCorner != null ) {
@@ -944,6 +979,56 @@ public class ViewStackPresentation extends ConfigurableStack {
     setBounds( presentationControl.getBounds() );
   }
 
+  private void changeStack( boolean active ) {
+    Object adapter = stackBuilder.getAdapter( Map.class );
+    if( adapter != null && adapter instanceof Map ) {
+      Map labelMap = ( Map ) adapter;
+      Label leftLabel = ( Label ) labelMap.get( StackPresentationBuider.LEFT );
+      Label rightLabel 
+        = ( Label ) labelMap.get( StackPresentationBuider.RIGHT );
+      Label leftBorder 
+        = ( Label ) labelMap.get( StackPresentationBuider.LEFT_BORDER );
+      Label rightBorder 
+        = ( Label ) labelMap.get( StackPresentationBuider.RIGHT_BORDER );
+      Label bottomBorder 
+        = ( Label ) labelMap.get( StackPresentationBuider.BOTTOM_BORDER );
+      Image left;
+      Image right;
+      Image leftBorderImg;
+      Image rightBorderImg;
+      Image bottomBorderImg;
+      if( active ) {
+        String leftActive = ILayoutSetConstants.STACK_TABBAR_LEFT_ACTIVE;
+        left = stackBuilder.getImage( leftActive );
+        String rightActive = ILayoutSetConstants.STACK_TABBAR_RIGHT_ACTIVE;
+        right = stackBuilder.getImage( rightActive );
+        String bottomActive = ILayoutSetConstants.STACK_BORDER_BOTTOM_ACTIVE;
+        bottomBorderImg = stackBuilder.getImage( bottomActive );
+        String leftBorderActive = ILayoutSetConstants.STACK_BORDER_LEFT_ACTIVE;
+        leftBorderImg = stackBuilder.getImage( leftBorderActive );
+        String rightBorderActive 
+          = ILayoutSetConstants.STACK_BORDER_RIGHT_AVTIVE;
+        rightBorderImg = stackBuilder.getImage( rightBorderActive );
+      } else {
+        String leftInactive = ILayoutSetConstants.STACK_TABBAR_LEFT_INACTIVE;
+        left = stackBuilder.getImage( leftInactive );
+        String rightInactive = ILayoutSetConstants.STACK_TABBAR_RIGHT_INACTIVE;
+        right = stackBuilder.getImage( rightInactive );        
+        bottomBorderImg 
+          = stackBuilder.getImage( ILayoutSetConstants.STACK_BORDER_BOTTOM );
+        leftBorderImg 
+          = stackBuilder.getImage( ILayoutSetConstants.STACK_BORDER_LEFT );
+        rightBorderImg 
+          = stackBuilder.getImage( ILayoutSetConstants.STACK_BORDER_RIGHT );
+      }
+      leftLabel.setImage( left );
+      rightLabel.setImage( right );
+      leftBorder.setBackgroundImage( leftBorderImg );
+      rightBorder.setBackgroundImage( rightBorderImg );
+      bottomBorder.setBackgroundImage( bottomBorderImg );
+    }
+  }
+
   private PartPane getPartPane( IPresentablePart part ) {
     PartPane result = null;
     if( part instanceof PresentablePart ) {
@@ -953,37 +1038,37 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private void changeSelectedActiveButton( final boolean selected ) {
-    Image buttonAreaBg = null;
-    Image corner = null;
     String close = "";
+    Color buttonAreaBg;
+    String font = "";
+    String tab = "";
     if( selected ) {
       buttonAreaBg 
-        = stackBuilder.getImage( StackInitializer.TAB_ACTIVE_BG_ACTIVE );
-      corner = 
-        stackBuilder.getImage( StackInitializer.TAB_ACTIVE_RIGHT_ACTIVE );
+        = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_ACTIVE );
       close = "viewClose";
-      
+      font = "partInActiveActive";
+      tab = "tabActive";
     } else {
-      buttonAreaBg = stackBuilder.getImage( StackInitializer.CONF_BG_INACTIVE );
-      corner 
-        = stackBuilder.getImage( StackInitializer.TAB_INACTIVE_CORNER_ACTIVE );
+      buttonAreaBg 
+        = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );      
       close = "viewCloseInactive";
+      font ="partActive";
+      tab = "tabInactive";
     }
     Object object = partButtonMap.get( currentPart );
     if( object != null && object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      buttonArea.setBackgroundImage( buttonAreaBg );
-      Control[] children = buttonArea.getChildren();
+      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, tab );      
+      buttonArea.setBackground( buttonAreaBg );
+      Control[] children = buttonArea.getChildren();      
       for( int i = 0; i < children.length; i++ ) {
         Control child = children[ i ];
-        if( child instanceof Composite ) {
-          // Corner
-          Composite cornerComp = ( Composite ) child;
-          cornerComp.setBackgroundImage( corner );          
-        } else if( child instanceof Button ) {
+        if( child instanceof Button ) {
           Button button = ( Button ) child;
           if( button.getData( BUTTON_ID ) != null ) {
             button.setData( WidgetUtil.CUSTOM_VARIANT, close );
+          } else {
+            button.setData( WidgetUtil.CUSTOM_VARIANT, font );
           }
         }
       }
@@ -1015,6 +1100,10 @@ public class ViewStackPresentation extends ConfigurableStack {
                                             partBoundsY, 
                                             bounds.width - 16, 
                                             newHeight );
+//      Rectangle partBounds = new Rectangle( bounds.x + 5, 
+//                                            partBoundsY - 1, 
+//                                            bounds.width - 10, 
+//                                            newHeight + 3);
       currentPart.setBounds( partBounds );
     }
     layoutToolBar();

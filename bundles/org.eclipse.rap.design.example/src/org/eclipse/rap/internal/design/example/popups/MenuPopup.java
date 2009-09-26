@@ -14,9 +14,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.PopupDialog;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.internal.design.example.builder.MenuBarPopupBilder;
-import org.eclipse.rap.internal.design.example.business.layoutsets.MenuBarInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
@@ -96,7 +96,7 @@ public class MenuPopup extends PopupDialog {
     this.parentPopup = parentPopup;
     LayoutRegistry registry = LayoutRegistry.getInstance();
     Layout activeLayout = registry.getActiveLayout();
-    layoutSet = activeLayout.getLayoutSet( MenuBarInitializer.SET_ID ); 
+    layoutSet = activeLayout.getLayoutSet( ILayoutSetConstants.SET_ID_MENUBAR ); 
   }
   
   protected Control createDialogArea( final Composite parent ) {
@@ -104,7 +104,7 @@ public class MenuPopup extends PopupDialog {
     getShell().setAlpha( 210 );
     addListeners();
     ElementBuilder popupBuilder 
-      = new MenuBarPopupBilder( parent, MenuBarInitializer.SET_ID );
+      = new MenuBarPopupBilder( parent, ILayoutSetConstants.SET_ID_MENUBAR );
     popupBuilder.build();
     
     Composite content = ( Composite ) popupBuilder.getControl();
@@ -211,7 +211,7 @@ public class MenuPopup extends PopupDialog {
     final Button expand = new Button( buttonArea, SWT.PUSH | SWT.FLAT );
     expand.setData( WidgetUtil.CUSTOM_VARIANT, "menuBar" );
     ElementBuilder dummy = new DummyBuilder( buttonArea, layoutSet.getId() );
-    String imageID = MenuBarInitializer.SECOND_LAYER_CHEFRON;
+    String imageID = ILayoutSetConstants.MENUBAR_SECOND_LAYER_CHEFRON;
     Image expandImage = dummy.getImage( imageID );
     expand.setImage( expandImage );
     FormData fdExpand = new FormData();
@@ -311,11 +311,11 @@ public class MenuPopup extends PopupDialog {
   }
   
   protected Color getBackground() {
-    return layoutSet.getColor( MenuBarInitializer.POPUP );
+    return layoutSet.getColor( ILayoutSetConstants.MENUBAR_POPUP );
   }
   
   protected Color getForeground() {
-    return layoutSet.getColor( MenuBarInitializer.POPUP_BUTTON );
+    return layoutSet.getColor( ILayoutSetConstants.MENUBAR_POPUP_BUTTON );
   }
   
   public boolean close() {

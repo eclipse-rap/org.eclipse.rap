@@ -9,7 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.builder;
 
-import org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarOverflowInitializer;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
+import org.eclipse.rap.internal.design.example.managers.CoolBarManager;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -27,12 +28,14 @@ public class CoolbarLayerBuilder extends ElementBuilder {
   
   private Image bg;
   private Image right;
+  private Image left;
   private Composite layer;
 
   public CoolbarLayerBuilder( Composite parent, String layoutSetId ) {
     super( parent, layoutSetId );
-    bg = getImage( CoolbarOverflowInitializer.BG );
-    right = getImage( CoolbarOverflowInitializer.RIGHT );
+    bg = getImage( ILayoutSetConstants.OVERFLOW_BG);
+    right = getImage( ILayoutSetConstants.OVERFLOW_RIGHT );
+    left = getImage( ILayoutSetConstants.OVERFLOW_LEFT );
   }
 
   public void addControl( Control control, Object layoutData ) {
@@ -48,7 +51,11 @@ public class CoolbarLayerBuilder extends ElementBuilder {
   }
 
   public void build() {
-    Composite layerParent = new Composite( getParent(), SWT.NONE );
+    Composite parent = getParent();
+    if( left != null ) {
+      parent = getParent().getParent();
+    }
+    Composite layerParent = new Composite( parent, SWT.NONE );
     layerParent.setBackgroundMode( SWT.INHERIT_FORCE );
     layerParent.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
     layerParent.setLayout( new FormLayout() );
@@ -70,11 +77,24 @@ public class CoolbarLayerBuilder extends ElementBuilder {
     layer.setLayout( new FormLayout() );
     layer.setBackgroundImage( bg );
     FormData fdLayer = new FormData();
-    layer.setLayoutData( fdLayer );
-    fdLayer.left = new FormAttachment( 0 );
+    layer.setLayoutData( fdLayer );    
     fdLayer.top = new FormAttachment( 0 );
     fdLayer.right = new FormAttachment( rightLabel );
     fdLayer.height = bg.getBounds().height;  
+    
+    if( left != null ) {
+      Label leftLabel = new Label( layerParent, SWT.NONE );
+      leftLabel.setImage( left );
+      FormData fdLeftLabel = new FormData();
+      leftLabel.setLayoutData( fdLeftLabel );
+      fdLeftLabel.left = new FormAttachment( 0 );
+      fdLeftLabel.top = new FormAttachment( 0 );
+      fdLeftLabel.height = left.getBounds().height;
+      fdLeftLabel.width = left.getBounds().width;
+      fdLayer.left = new FormAttachment( leftLabel );
+    } else {
+      fdLayer.left = new FormAttachment( 0 );
+    }
     
   }
 
@@ -87,5 +107,13 @@ public class CoolbarLayerBuilder extends ElementBuilder {
 
   public Point getSize() {
     return layer.getSize();
+  }
+  
+  public Object getAdapter( final Class adapter ) {
+    Object result = null;
+    if( adapter == CoolBarManager.class ) {
+      result = left;
+    }
+    return result;
   }
 }

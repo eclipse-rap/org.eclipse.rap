@@ -9,28 +9,23 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.graphics.Graphics;
 
 
-public class ConfigDialogInitializer implements ILayoutSetInitializer {
-
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.confdialog";
-  
-  public static final String CONFIG_WHITE = "CONFIG_WHITE";
-  public static final String CONFIG_BLACK = "CONFIG_BLACK";
-  public static final String DIALOG_CLOSE = "dialog.close";
-  public static final String DIALOG_ICON = "dialog.conf.icon";
+public class ConfigDialogInitializer implements ILayoutSetInitializer { 
   
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
-    layoutSet.addColor( CONFIG_BLACK, Graphics.getColor( 0, 0, 0 ) );
-    layoutSet.addColor( CONFIG_WHITE, Graphics.getColor( 255, 255, 255 ) );
-    layoutSet.addImagePath( DIALOG_CLOSE, 
-                            ILayoutSetConstants.IMAGE_PATH + "close.png" );
-    layoutSet.addImagePath( DIALOG_ICON, 
-                            ILayoutSetConstants.IMAGE_PATH 
-                            + "conf_dialog_icon.png" );
+    layoutSet.addColor( ILayoutSetConstants.CONFIG_BLACK, 
+                        Graphics.getColor( 0, 0, 0 ) );
+    layoutSet.addColor( ILayoutSetConstants.CONFIG_WHITE, 
+                        Graphics.getColor( 255, 255, 255 ) );
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.CONFIG_DIALOG_CLOSE, 
+                            path + "close.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.CONFIG_DIALOG_ICON, 
+                            path + "conf_dialog_icon.png" );
   }
 }

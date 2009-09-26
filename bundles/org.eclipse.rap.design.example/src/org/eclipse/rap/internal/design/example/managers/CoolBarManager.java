@@ -31,11 +31,10 @@ import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.rap.internal.design.example.CommandUtil;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.CommandUtil.CommandParameter;
 import org.eclipse.rap.internal.design.example.builder.CoolbarLayerBuilder;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
-import org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarInitializer;
-import org.eclipse.rap.internal.design.example.business.layoutsets.CoolbarOverflowInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -108,7 +107,7 @@ public class CoolBarManager extends ContributionManager
   public CoolBarManager() {
     super();
     // initialize a dummy builder to get the coolbar images
-    dummyBuilder = new DummyBuilder( null, CoolbarInitializer.SET_ID );
+    dummyBuilder = new DummyBuilder( null, ILayoutSetConstants.SET_ID_COOLBAR );
   }
 
   public Control createControl2( final Composite parent ) {
@@ -120,7 +119,7 @@ public class CoolBarManager extends ContributionManager
     layout.wrap = false;
     layout.marginRight = 0;
     coolBar.setLayout( layout );   
-    coolBar.addControlListener( new ControlAdapter() {
+    coolBar.getParent().getParent().addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent e ) {
         // close the overflow and update the coolbar if the browser has resized
         if( openMenu != null ) {
@@ -150,13 +149,14 @@ public class CoolBarManager extends ContributionManager
   }
 
   public void refresh() {
+    update( true );
   }
 
   public void resetItemOrder() {
+    update( true );
   }
 
   public void setItems( final IContributionItem[] newItems ) {
-    
   }
 
   public void add( final IToolBarManager toolBarManager ) {
@@ -179,7 +179,7 @@ public class CoolBarManager extends ContributionManager
   public void setContextMenuManager( final IMenuManager menuManager ) {
   }
 
-  public void setLockLayout( final boolean value ) {    
+  public void setLockLayout( final boolean value ) {  
   }
 
   public void add( final IAction action ) {    
@@ -210,7 +210,7 @@ public class CoolBarManager extends ContributionManager
   }
 
   public IContributionManagerOverrides getOverrides() {
-    return null;
+    return super.getOverrides();
   }
 
   public void insertAfter( final String id, final IAction action ) {
@@ -230,14 +230,15 @@ public class CoolBarManager extends ContributionManager
   }
 
   public boolean isDirty() {
-    return false;
+    return super.isDirty();
   }
 
   public boolean isEmpty() {
-    return false;
+    return super.isEmpty();
   }
 
   public void markDirty() {
+    super.markDirty();
   }
 
   public void prependToGroup( final String groupName, final IAction action ) {
@@ -314,19 +315,19 @@ public class CoolBarManager extends ContributionManager
         
       }
       coolBar.pack();
-      coolBar.layout( true ); 
-      manageOverflow( );
+      coolBar.layout( true, true );
+      manageOverflow();
     }
   }
-  
+
   /*
    * This mathod manages the items which can not be shown in the coolbar because
    * it is to small. So an overflow will be shown including these items.
    */
-  private void manageOverflow() {    
-    int coolbarWidth = coolBar.getParent().getSize().x;    
+  private void manageOverflow() {        
+    int coolbarWidth = coolBar.getParent().getSize().x; 
     for( int childrenSize = getChildrenSize( coolBar ); 
-         childrenSize > coolbarWidth; 
+         childrenSize > coolbarWidth - 20; 
          childrenSize = getChildrenSize( coolBar ) ) 
     {
       // remove last children (button)
@@ -338,7 +339,7 @@ public class CoolBarManager extends ContributionManager
       activeOverflowOpenButton();
       buttonItemMap.remove( child );
       child.dispose();
-      child = null;       
+      child = null; 
     }
 
     // check if the overflow button should be activated or not
@@ -378,11 +379,12 @@ public class CoolBarManager extends ContributionManager
    * This method calculates the size of all children of the coolbar. This is
    * necessary to compare the correct sizes for the overflow.
    */
-  private int getChildrenSize( final Composite comp ) {
+  private int getChildrenSize( final Composite comp ) {    
     int result = 0;
     Control[] children = comp.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       if( !children[ i ].isDisposed() ) {
+        children[ i ].pack( true );
         result += ( children[ i ].getSize().x + SPACING );
       }
     }
@@ -418,32 +420,43 @@ public class CoolBarManager extends ContributionManager
   }
   
   private FormData getOverflowButtonLayoutData() {
-    String imageId = CoolbarInitializer.OVERFLOW_ACTIVE;
+    String imageId = ILayoutSetConstants.COOLBAR_OVERFLOW_ACTIVE;
     Image image = dummyBuilder.getImage( imageId );
-    FormData fdOverFlowButton = new FormData();
-    fdOverFlowButton.left = new FormAttachment( 10 );
-    fdOverFlowButton.top = new FormAttachment( 58 );
+    FormData fdOverFlowButton 
+      = dummyBuilder.getPosition( ILayoutSetConstants.COOLBAR_BUTTON_POS );
     if( image != null ) {
       fdOverFlowButton.width = image.getBounds().width;
       fdOverFlowButton.height = image.getBounds().height;
-    }
+    }    
     return fdOverFlowButton;
   }
 
   private void createOverflowLayer() {
-    if( overflowLayer == null ) {
-      ElementBuilder layerBuilder 
-        = new CoolbarLayerBuilder( overflowParent.getParent(), 
-                                   CoolbarOverflowInitializer.SET_ID );
+    ElementBuilder layerBuilder 
+    = new CoolbarLayerBuilder( overflowParent.getParent(), 
+                               ILayoutSetConstants.SET_ID_OVERFLOW );
+    if( overflowLayer == null ) {      
       layerBuilder.build();
       overflowLayer = ( Composite ) layerBuilder.getControl();   
       overflowLayer.addFocusListener( focusListener );
-      newWave = layerBuilder.getImage( CoolbarOverflowInitializer.WAVE );
+      newWave = layerBuilder.getImage( ILayoutSetConstants.OVERFLOW_WAVE );      
     }
 
-    FormData fdParent = ( FormData ) overflowParent.getLayoutData();
-    FormData fdLayer = ( FormData ) overflowLayer.getParent().getLayoutData();
-    fdLayer.left = fdParent.left;
+    Object adapter = layerBuilder.getAdapter( CoolBarManager.class );
+    if( adapter != null ) {
+      // position the layer
+      FormData fdLayer = ( FormData ) overflowLayer.getParent().getLayoutData();
+      Display display = overflowLayer.getDisplay();
+      Point location = display.map( overflowOpenButton, null, 20, 0 );
+      fdLayer.left = new FormAttachment( 0, location.x);
+      fdLayer.top = new FormAttachment( 0, 37 );
+      overflowParent.getParent().getParent().layout( true );
+    } else {
+      FormData fdParent = ( FormData ) overflowParent.getLayoutData();
+      FormData fdLayer = ( FormData ) overflowLayer.getParent().getLayoutData();
+      fdLayer.left = fdParent.left;
+    }
+    
     update( true );
     fillOverflowTable();
     
@@ -456,13 +469,11 @@ public class CoolBarManager extends ContributionManager
     if( overflowTable == null ) {
       overflowTable = new Table( overflowLayer, SWT.SINGLE | SWT.NO_SCROLL );
       overflowTable.setBackgroundMode( SWT.INHERIT_FORCE );
-      FormData fdItemTable = new FormData();
-      overflowTable.setLayoutData( fdItemTable );
-      overflowTable.setData( WidgetUtil.CUSTOM_VARIANT, "overflow" );
-      fdItemTable.top = new FormAttachment( 0, 4 );
-      fdItemTable.left = new FormAttachment( 0, 93 );
-      fdItemTable.bottom = new FormAttachment( 100, -2 );
-      fdItemTable.right = new FormAttachment( 100 );  
+      DummyBuilder builder 
+        = new DummyBuilder( null, ILayoutSetConstants.SET_ID_OVERFLOW );
+      FormData pos = builder.getPosition( ILayoutSetConstants.OVERFLOW_POS ); 
+      overflowTable.setLayoutData( pos );
+      overflowTable.setData( WidgetUtil.CUSTOM_VARIANT, "overflow" ); 
       overflowTable.setBackgroundMode( SWT.INHERIT_FORCE );
       overflowTable.setHeaderVisible( false );
       overflowTable.setLinesVisible( false );
@@ -531,9 +542,9 @@ public class CoolBarManager extends ContributionManager
     
     // fill the table
     clearCommandItems();
-    String key = CoolbarOverflowInitializer.ARROW;
+    String key = ILayoutSetConstants.OVERFLOW_ARROW;
     ElementBuilder dummy 
-      = new DummyBuilder( null, CoolbarOverflowInitializer.SET_ID );
+      = new DummyBuilder( null, ILayoutSetConstants.SET_ID_OVERFLOW );
     Image arrowIcon = dummy.getImage( key );
     for( int i = 0; i < overflowItems.size(); i++ ) {
       ContributionItem contrib = ( ContributionItem ) overflowItems.get( i );
@@ -577,7 +588,8 @@ public class CoolBarManager extends ContributionManager
     overflowTable.getColumn( indexOfText ).pack();
     overflowTable.getColumn( indexOfPulldown ).pack();
     overflowTable.pack();   
-    overflowLayer.layout( true, true );
+    overflowLayer.getParent().layout( true, true );
+    overflowLayer.getParent().pack( true );
     overflowTable.setFocus();
   }
 
@@ -622,7 +634,8 @@ public class CoolBarManager extends ContributionManager
   }
 
   private void setTableItemStyle( final TableItem tableItem ) {
-    Color color = dummyBuilder.getColor( CoolbarInitializer.OVERFLOW_COLOR );
+    Color color 
+      = dummyBuilder.getColor( ILayoutSetConstants.COOLBAR_OVERFLOW_COLOR );
     tableItem.setForeground( color );
   }
 
@@ -718,7 +731,8 @@ public class CoolBarManager extends ContributionManager
    * Calculates the coolbar button bounds
    */
   private void adjustButtonBounds( final Button button ) {
-    Image image = dummyBuilder.getImage( CoolbarInitializer.BUTTON_BG );
+    Image image 
+      = dummyBuilder.getImage( ILayoutSetConstants.COOLBAR_BUTTON_BG );
     int height = image.getBounds().height;
     button.setSize( button.getSize().x, height );
   }
@@ -770,7 +784,9 @@ public class CoolBarManager extends ContributionManager
     // create the pulldown arrow
     final Button arrow = new Button( buttonParent, SWT.PUSH );   
     arrow.setData( WidgetUtil.CUSTOM_VARIANT, "coolBarPulldown" );
-    arrow.setImage( dummyBuilder.getImage( CoolbarInitializer.ARROW ) );
+    Image arrowIcon 
+      = dummyBuilder.getImage( ILayoutSetConstants.COOLBAR_ARROW );
+    arrow.setImage( arrowIcon );
     final Menu menu = getItemMenu( item, action, button );
     arrow.setText( " " );
     arrow.addSelectionListener( new SelectionAdapter() {

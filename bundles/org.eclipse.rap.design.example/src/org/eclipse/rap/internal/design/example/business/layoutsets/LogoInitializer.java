@@ -9,30 +9,23 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 
 
-public class LogoInitializer implements ILayoutSetInitializer {
-  
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.logo";
-  
-  public static final String LOGO = "header.logo";
-  public static final String LOGO_POSITION = "header.logo.position";
+public class LogoInitializer implements ILayoutSetInitializer {   
 
-  public LogoInitializer() {
-  }
-
-  public void initializeLayoutSet( LayoutSet layoutSet ) {
-    layoutSet.addImagePath( LOGO, ILayoutSetConstants.IMAGE_PATH + "logo.png" );
+  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.LOGO, path + "logo.png" );
     
     // positions
     FormData fdLogo = new FormData();
     fdLogo.right = new FormAttachment( 100, -75 );
     fdLogo.top = new FormAttachment( 0, 32 );
-    layoutSet.addPosition( LOGO_POSITION, fdLogo );
+    layoutSet.addPosition( ILayoutSetConstants.LOGO_POSITION, fdLogo );
   }
 }

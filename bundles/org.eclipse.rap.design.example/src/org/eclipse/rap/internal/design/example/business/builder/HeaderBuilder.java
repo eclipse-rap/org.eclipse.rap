@@ -7,10 +7,10 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/ 
-package org.eclipse.rap.internal.design.example.builder;
+package org.eclipse.rap.internal.design.example.business.builder;
 
-import org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer;
-import org.eclipse.rap.internal.design.example.business.layoutsets.LogoInitializer;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
+import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.swt.SWT;
@@ -46,18 +46,19 @@ public class HeaderBuilder extends ElementBuilder {
   private void initLayoutData() {
     LayoutSet set = getLayoutSet();
     // images
-    left = createImage( set.getImagePath( HeaderInitializer.LEFT ) );
-    leftBg = createImage( set.getImagePath( HeaderInitializer.LEFT_BG ) );    
-    right = createImage( set.getImagePath( HeaderInitializer.RIGHT ) );
-    rightBg = createImage( set.getImagePath( HeaderInitializer.RIGHT_BG ) );
-    wave = createImage( set.getImagePath( HeaderInitializer.WAVE ) );
+    left = createImage( set.getImagePath( ILayoutSetConstants.HEADER_LEFT ) );
+    leftBg = createImage( set.getImagePath( ILayoutSetConstants.HEADER_LEFT_BG ) );    
+    right = createImage( set.getImagePath( ILayoutSetConstants.HEADER_RIGHT ) );
+    rightBg = createImage( set.getImagePath( ILayoutSetConstants.HEADER_RIGHT_BG ) );
+    wave = createImage( set.getImagePath( ILayoutSetConstants.HEADER_WAVE ) );
     
     // logo
-    ElementBuilder builder = new DummyBuilder( null, LogoInitializer.SET_ID );
-    logo = builder.getImage( LogoInitializer.LOGO );
+    ElementBuilder builder 
+      = new DummyBuilder( null, ILayoutSetConstants.SET_ID_LOGO );
+    logo = builder.getImage( ILayoutSetConstants.LOGO );
     // positions
     LayoutSet layoutSet = ( LayoutSet ) builder.getAdapter( LayoutSet.class );
-    fdLogo = layoutSet.getPosition( LogoInitializer.LOGO_POSITION );
+    fdLogo = layoutSet.getPosition( ILayoutSetConstants.LOGO_POSITION );
   }
 
   public void addControl( Control control, Object layoutData ) {
@@ -94,20 +95,23 @@ public class HeaderBuilder extends ElementBuilder {
     FormData fdLeftArea = new FormData();
     leftArea.setLayoutData( fdLeftArea );
     fdLeftArea.left = new FormAttachment( leftLabel );
-    fdLeftArea.top = new FormAttachment( 0, 0 );
+    fdLeftArea.top = new FormAttachment( 0, 0 );    
     fdLeftArea.height = leftBg.getBounds().height;
+    
     
     waveArea = new Composite( getParent(), SWT.NONE );
     waveArea.setLayout( new FormLayout() );
     waveArea.setBackgroundImage( wave );
-    FormData fdWaveArea = new FormData();
+    final FormData fdWaveArea = new FormData();
     waveArea.setLayoutData( fdWaveArea );
     fdWaveArea.left = new FormAttachment( leftArea );
     fdWaveArea.top = new FormAttachment( 0, 0 );
     fdWaveArea.width = wave.getBounds().width;
     fdWaveArea.height = wave.getBounds().height;   
     
-    Label rightLabel = new Label( getParent(), SWT.NONE );
+
+
+    final Label rightLabel = new Label( getParent(), SWT.NONE );
     rightLabel.setImage( right );
     FormData fdRightLabel = new FormData();
     rightLabel.setLayoutData( fdRightLabel );
@@ -116,7 +120,7 @@ public class HeaderBuilder extends ElementBuilder {
     fdRightLabel.width = right.getBounds().width;
     fdRightLabel.height = right.getBounds().height;
     
-    Composite logoArea = new Composite( getParent(), SWT.NONE );
+    final Composite logoArea = new Composite( getParent(), SWT.NONE );
     logoArea.setLayout( new FormLayout() );
     logoArea.setBackgroundImage( rightBg );
     FormData fdLogoArea = new FormData();
@@ -125,6 +129,7 @@ public class HeaderBuilder extends ElementBuilder {
     fdLogoArea.top = new FormAttachment( 0, 0 );
     fdLogoArea.height = rightBg.getBounds().height;
     fdLogoArea.width = calculateLogoWidth( logo.getBounds().width );
+    //fdLogoArea.left = new FormAttachment( waveArea );
     
     Label logoLabel = new Label( logoArea, SWT.NONE );
     logoLabel.setImage( logo ); 
@@ -135,7 +140,8 @@ public class HeaderBuilder extends ElementBuilder {
   }
 
   private int calculateLogoWidth( final int logoWidth ) {
-    return logoWidth + ( wave.getBounds().width * 2 ) + LOGOSPACING;
+    int width = logoWidth + ( wave.getBounds().width * 2 ) + LOGOSPACING;
+    return width;
   }
 
   public void dispose() {

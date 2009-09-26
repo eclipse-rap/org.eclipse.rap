@@ -9,33 +9,31 @@
 *******************************************************************************/ 
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 
 
 public class CoolbarInitializer implements ILayoutSetInitializer {
-  
-  public static final String SET_ID 
-    = "org.eclipse.rap.design.example.layoutset.coolbar";
-  
-  public static final String OVERFLOW_INACTIVE = "coolbar.overflow.inactive";
-  public static final String OVERFLOW_ACTIVE = "coolbar.overflow.active";
-  public static final String BUTTON_BG = "coolbar.button.bg";
-  public static final String OVERFLOW_COLOR = "coolbar.overflow.color";
-  public static final String ARROW = "coolbar.arrow";
 
-  public CoolbarInitializer() {
-  }
-
-  public void initializeLayoutSet( LayoutSet layoutSet ) {
-    String path = ILayoutSetConstants.IMAGE_PATH;
-    layoutSet.addImagePath( OVERFLOW_INACTIVE, 
+  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+    String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
+    layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_OVERFLOW_INACTIVE, 
                             path + "toolbar_overflow_hover.png" );
-    layoutSet.addImagePath( OVERFLOW_ACTIVE, 
+    layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_OVERFLOW_ACTIVE, 
                             path + "toolbar_overflow_hover_active.png" );
-    layoutSet.addImagePath( BUTTON_BG, path + "toolbarButtonBg.png" );
-    layoutSet.addImagePath( ARROW, path + "toolbar_arrow.png" );
-    layoutSet.addColor( OVERFLOW_COLOR, Graphics.getColor( 0, 81, 148 ) );
+    layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_BUTTON_BG, 
+                            path + "toolbarButtonBg.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_ARROW, 
+                            path + "toolbar_arrow.png" );
+    layoutSet.addColor( ILayoutSetConstants.COOLBAR_OVERFLOW_COLOR, 
+                        Graphics.getColor( 0, 81, 148 ) );
+    FormData fdButton = new FormData();
+    fdButton.left = new FormAttachment( 10 );
+    fdButton.top = new FormAttachment( 58 );
+    layoutSet.addPosition( ILayoutSetConstants.COOLBAR_BUTTON_POS, fdButton );
   }
 }

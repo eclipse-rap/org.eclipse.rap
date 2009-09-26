@@ -13,12 +13,10 @@ import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.builder.FooterBuilder;
-import org.eclipse.rap.internal.design.example.builder.HeaderBuilder;
 import org.eclipse.rap.internal.design.example.builder.PerspectiveSwitcherBuilder;
-import org.eclipse.rap.internal.design.example.business.layoutsets.FooterInitializer;
-import org.eclipse.rap.internal.design.example.business.layoutsets.HeaderInitializer;
-import org.eclipse.rap.internal.design.example.business.layoutsets.PerspectiveSwitcherInitializer;
+import org.eclipse.rap.internal.design.example.business.builder.HeaderBuilder;
 import org.eclipse.rap.internal.design.example.managers.CoolBarManager;
 import org.eclipse.rap.ui.interactiondesign.IWindowComposer;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
@@ -30,6 +28,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -158,8 +157,13 @@ public class BusinessWindowComposer implements IWindowComposer {
     }
   }
 
-  void createMenuBar( Composite menuBarComp ) {
+  void createMenuBar( final Composite menuBarComp ) {
     MenuManager manager = window.getMenuBarManager();
+    RowLayout layout = new RowLayout();
+    layout.marginLeft = 0; 
+    layout.marginRight = 0;
+    layout.marginTop = 5;
+    menuBarComp.setLayout( layout );
     manager.fill( menuBarComp );
   }
 
@@ -174,7 +178,7 @@ public class BusinessWindowComposer implements IWindowComposer {
       fdFooter.right = new FormAttachment( 100, 0 );  
       
       ElementBuilder footerBuilder = 
-        new FooterBuilder( footer, FooterInitializer.SET_ID );
+        new FooterBuilder( footer, ILayoutSetConstants.SET_ID_FOOTER );
       footerBuilder.build();
       Composite statusLineParent = ( Composite ) footerBuilder.getControl();
       int offset = statusLineParent.getSize().y + 13;
@@ -193,7 +197,7 @@ public class BusinessWindowComposer implements IWindowComposer {
     fdHeaderArea.right = new FormAttachment( 100, 0 );
     
     ElementBuilder headerBuilder 
-      = new HeaderBuilder( headerArea, HeaderInitializer.SET_ID );
+      = new HeaderBuilder( headerArea, ILayoutSetConstants.SET_ID_HEADER );
     headerBuilder.build();  
     overflowParent = ( Composite ) headerBuilder.getAdapter( Composite.class );
         
@@ -220,7 +224,7 @@ public class BusinessWindowComposer implements IWindowComposer {
     perspBar.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
     ElementBuilder perspBuilder 
       = new PerspectiveSwitcherBuilder( perspBar, 
-                                        PerspectiveSwitcherInitializer.SET_ID );
+                                        ILayoutSetConstants.SET_ID_PERSP );
     perspBuilder.build();
   }
 
