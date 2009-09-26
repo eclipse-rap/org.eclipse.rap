@@ -141,7 +141,6 @@ public final class ScrolledCompositeTab extends ExampleTab {
     btnSelect.setText( "OK" );
     btnSelect.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        System.out.println(composite.getOrigin());
         try {
           int x = Integer.parseInt( txtX.getText() );
           int y = Integer.parseInt( txtY.getText() );
