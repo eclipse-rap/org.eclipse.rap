@@ -15,10 +15,8 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 public final class ScrolledCompositeTab extends ExampleTab {
 
@@ -44,6 +42,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
     showFocusedControl = createShowFocusedControlButton();
     createShowControlButton();
     createFocusControlButton();
+    createOriginControl();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -123,5 +122,34 @@ public final class ScrolledCompositeTab extends ExampleTab {
       }
     } );
     return button;
+  }
+  
+  private void createOriginControl() {
+    Composite comp = new Composite( styleComp, SWT.NONE );
+    comp.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    Label lblX = new Label( comp, SWT.NONE );
+    lblX.setText( "Scroll to X:" );
+    final Text txtX = new Text( comp, SWT.BORDER );
+    txtX.setText( "0" );
+    Util.textSizeAdjustment( lblX, txtX );
+    Label lblY = new Label( comp, SWT.NONE );
+    lblY.setText( "Y:" );
+    final Text txtY = new Text( comp, SWT.BORDER );
+    txtY.setText( "0" );
+    Util.textSizeAdjustment( lblY, txtY );
+    Button btnSelect = new Button( comp, SWT.PUSH );
+    btnSelect.setText( "OK" );
+    btnSelect.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        System.out.println(composite.getOrigin());
+        try {
+          int x = Integer.parseInt( txtX.getText() );
+          int y = Integer.parseInt( txtY.getText() );
+          composite.setOrigin( x, y );
+        } catch( Exception e ) {
+          // ignore invalid values
+        }
+      }
+    } );
   }
 }
