@@ -77,27 +77,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     
     _onChangeFocusedChild : function( evt ) {
       var focusedChild = this.getFocusRoot().getFocusedChild();
-      this._blockScrolling = false;
-      if( !this._showFocusedControl && focusedChild !== this ) {
-        this._blockScrolling = this._contains( focusedChild );
-      }
-    },
-    
-    _contains : function( widget ) {
-      var result = false;
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      if( widget != null && widgetManager.isControl( widget ) ) {
-        var parent = widget.getParent();
-        while(    parent != null
-               && !( parent instanceof org.eclipse.swt.widgets.Shell )
-               && !result ) {
-          if( this === parent ) {
-            result = true;
-          }
-          parent = parent.getParent();
-        }
-      }
-      return result;
+      this._blockScrolling = !this._showFocusedControl && focusedChild !== this;
     },
 
     setHBarSelection : function( value ) {
