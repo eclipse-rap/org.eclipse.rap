@@ -65,7 +65,6 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     _onscroll : function( evt ) {
       this.base( arguments, evt );
       if( this._blockScrolling ) {
-        this._blockScrolling = false;
         this.setScrollTop( this._lastScrollTop );
         this.setScrollLeft( this._lastScrollLeft );        
       } else if( this._readyToSendChanges ) {
@@ -85,8 +84,8 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         this._initialScrollLeft = value;
         this.addEventListener( "create", this._setHBarSelectionOnCreate, this );
       } else {
-        this.setScrollLeft( value );
         this._lastScrollLeft = value;
+        this.setScrollLeft( this._lastScrollLeft );
       }
     },
 
@@ -95,8 +94,8 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         this._initialScrollTop = value;
         this.addEventListener( "create", this._setVBarSelectionOnCreate, this );
       } else {
-        this.setScrollTop( value );
         this._lastScrollTop = value;
+        this.setScrollTop( this._lastScrollTop );
       }
     },
 
