@@ -281,7 +281,9 @@ public class TreeTab extends ExampleTab {
 
   private void createShowColumnControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
-    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    RowLayout layout = new RowLayout(  SWT.HORIZONTAL );
+    layout.center = true;
+    composite.setLayout( layout );
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Column" );
     final Text text = new Text( composite, SWT.BORDER );

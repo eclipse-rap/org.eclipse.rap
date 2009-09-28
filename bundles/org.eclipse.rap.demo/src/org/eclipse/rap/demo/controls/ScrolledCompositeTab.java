@@ -89,7 +89,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createFocusControlButton() {
     Button btnA = new Button( styleComp, SWT.PUSH );
     btnA.setText( "Focus Button 89" );
@@ -100,7 +100,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
       }
     } );
   }
-  
+
   private Button createAlwaysShowScrollBarsButton() {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Always Show ScrollBars" );
@@ -111,7 +111,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
     } );
     return button;
   }
-  
+
   private Button createShowFocusedControlButton() {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Show Focused Control" );
@@ -122,10 +122,12 @@ public final class ScrolledCompositeTab extends ExampleTab {
     } );
     return button;
   }
-  
+
   private void createOriginControl() {
     Composite comp = new Composite( styleComp, SWT.NONE );
-    comp.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    RowLayout layout = new RowLayout(  SWT.HORIZONTAL );
+    layout.center = true;
+    comp.setLayout( layout );
     Label lblX = new Label( comp, SWT.NONE );
     lblX.setText( "Scroll to X:" );
     final Text txtX = new Text( comp, SWT.BORDER );

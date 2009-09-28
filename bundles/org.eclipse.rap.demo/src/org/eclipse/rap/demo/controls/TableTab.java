@@ -400,7 +400,9 @@ public class TableTab extends ExampleTab {
 
   private void createChangeColumnsControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
-    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    RowLayout layout = new RowLayout(  SWT.HORIZONTAL );
+    layout.center = true;
+    composite.setLayout( layout );
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Columns" );
     final Text text = new Text( composite, SWT.BORDER );
@@ -420,10 +422,12 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createShowColumnControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
-    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    RowLayout layout = new RowLayout(  SWT.HORIZONTAL );
+    layout.center = true;
+    composite.setLayout( layout );
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Column" );
     final Text text = new Text( composite, SWT.BORDER );
@@ -642,15 +646,19 @@ public class TableTab extends ExampleTab {
 
   private void createSelectAtPointControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
-    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    RowLayout layout = new RowLayout(  SWT.HORIZONTAL );
+    layout.center = true;
+    composite.setLayout( layout );
     Label lblSelectAt = new Label( composite, SWT.NONE );
     lblSelectAt.setText( "Select at X" );
     final Text txtX = new Text( composite, SWT.BORDER );
     txtX.setText( "0" );
+    Util.textSizeAdjustment( lblSelectAt, txtX );
     Label lblY = new Label( composite, SWT.NONE );
     lblY.setText( "Y" );
     final Text txtY = new Text( composite, SWT.BORDER );
     txtY.setText( "0" );
+    Util.textSizeAdjustment( lblY, txtY );
     Button btnSelect = new Button( composite, SWT.PUSH );
     btnSelect.setText( "OK" );
     btnSelect.addSelectionListener( new SelectionAdapter() {
