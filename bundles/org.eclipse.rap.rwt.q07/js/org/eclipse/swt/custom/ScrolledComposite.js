@@ -65,16 +65,18 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
     
     _onKeyPress : function( evt ) {
-      if(    evt.getKeyIdentifier() == "Up"
-          || evt.getKeyIdentifier() == "Down"
-          || evt.getKeyIdentifier() == "Left"
-          || evt.getKeyIdentifier() == "Right"
-          || evt.getKeyIdentifier() == "PageUp"
-          || evt.getKeyIdentifier() == "PageDown"
-          || evt.getKeyIdentifier() == "Home"
-          || evt.getKeyIdentifier() == "End" )
-      {
-        this._blockScrolling = false;
+      switch( evt.getKeyIdentifier() ) {
+        case "Left":
+        case "Up":
+        case "Right":
+        case "Down":
+        case "PageUp":
+        case "PageDown":
+        case "End":
+        case "Home":
+          this._blockScrolling = false;
+          evt.preventDefault();
+          evt.stopPropagation();
       }
     },
     
