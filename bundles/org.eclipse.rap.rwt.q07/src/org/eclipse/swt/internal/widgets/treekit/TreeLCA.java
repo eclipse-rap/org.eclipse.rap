@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
@@ -31,6 +32,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
   static final String PROP_HEADER_HEIGHT = "headerHeight";
   static final String PROP_HEADER_VISIBLE = "headerVisible";
   static final String PROP_COLUMN_ORDER = "columnOrder";
+  static final String PROP_SCROLL_LEFT = "scrollLeft";
+
+  private static final Integer DEFAULT_SCROLL_LEFT = new Integer( 0 );
 
   public void preserveValues( final Widget widget ) {
     Tree tree = ( Tree )widget;
@@ -50,6 +54,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       columnOrder[ i ] = new Integer( values[ i ] );
     }
     adapter.preserve( PROP_COLUMN_ORDER, columnOrder );
+    adapter.preserve( PROP_SCROLL_LEFT, getScrollLeft( tree ) );
     WidgetLCAUtil.preserveCustomVariant( tree );
   }
 
@@ -91,6 +96,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeColumnOrder( tree );
+    writeScrollLeft( tree );
     WidgetLCAUtil.writeCustomVariant( tree );
   }
 
@@ -232,6 +238,20 @@ public final class TreeLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Boolean newValue = Boolean.valueOf( tree.getHeaderVisible() );
     writer.set( PROP_HEADER_VISIBLE, "headerVisible", newValue, Boolean.FALSE );
+  }
+
+  private void writeScrollLeft( final Tree tree ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( tree );
+    String prop = PROP_SCROLL_LEFT;
+    Integer newValue = getScrollLeft( tree );
+    Integer defValue = DEFAULT_SCROLL_LEFT;
+    writer.set( prop, "scrollLeft", newValue, defValue );
+  }
+
+  private Integer getScrollLeft( final Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    return new Integer( treeAdapter.getScrollLeft() );
   }
 
   private static void updateSelectionListener( final Tree tree )

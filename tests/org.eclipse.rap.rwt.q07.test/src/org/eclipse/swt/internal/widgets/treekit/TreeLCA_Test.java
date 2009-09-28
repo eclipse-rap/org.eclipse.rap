@@ -95,9 +95,19 @@ public class TreeLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     int[] columnOrder1 = tree.getColumnOrder();
-    Integer[] columnOrder2 = ( Integer[] )adapter.getPreserved( TreeLCA.PROP_COLUMN_ORDER );
+    Integer[] columnOrder2
+      = ( Integer[] )adapter.getPreserved( TreeLCA.PROP_COLUMN_ORDER );
     assertEquals( new Integer( columnOrder1[ 0 ] ), columnOrder2[ 0 ] );
     assertEquals( new Integer( columnOrder1[ 1 ] ), columnOrder2[ 1 ] );
+    RWTFixture.clearPreserved();
+    // scroll left
+    ITreeAdapter treeAdapter
+      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    treeAdapter.setScrollLeft( 50 );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( tree );
+    assertEquals( new Integer( 50 ),
+                  adapter.getPreserved( TreeLCA.PROP_SCROLL_LEFT ) );
     RWTFixture.clearPreserved();
     // control: enabled
     RWTFixture.preserveWidgets();

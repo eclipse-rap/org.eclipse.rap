@@ -94,7 +94,6 @@ public class Tree extends Composite {
   // This values must be kept in sync with appearance of list items
   private static final int CHECK_HEIGHT = 13;
   private static final int VERTICAL_ITEM_MARGIN = 3;
-  private static final int SCROLL_SIZE = 16;
 
   /* package */final ItemHolder itemHolder;
   /* package */final ItemHolder columnHolder;
@@ -473,6 +472,59 @@ public class Tree extends Composite {
       parent = parent.getParentItem();
     }
     showItem = item;
+  }
+
+  /**
+   * Shows the column.  If the column is already showing in the receiver,
+   * this method simply returns.  Otherwise, the columns are scrolled until
+   * the column is visible.
+   *
+   * @param column the column to be shown
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the column is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the column has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void showColumn( final TreeColumn column ) {
+    checkWidget();
+    if( column == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( column.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( column.getParent() == this ) {
+      int index = indexOf( column );
+      if( 0 <= index && index < getColumnCount() ) {
+        int leftColumnsWidth = 0;
+        int columnWidth = column.getWidth();
+        int clientWidth = getClientArea().width - getVScrollBarWidth();
+        int[] columnOrder = getColumnOrder();
+        boolean found = false;
+        for( int i = 0; i < columnOrder.length && !found; i++ ) {
+          found = index == columnOrder[ i ];
+          if( !found ) {
+            leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
+          }
+        }
+        if( scrollLeft > leftColumnsWidth ) {
+          scrollLeft = leftColumnsWidth;
+        } else if( scrollLeft < leftColumnsWidth + columnWidth - clientWidth ) {
+          scrollLeft = leftColumnsWidth + columnWidth - clientWidth;
+        }
+      }
+    }
+  }
+
+  private int getVScrollBarWidth() {
+    return ( style & SWT.V_SCROLL ) != 0 ? ScrollBar.SCROLL_BAR_WIDTH : 0;
   }
 
   /**
@@ -1566,10 +1618,10 @@ public class Tree extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += SCROLL_SIZE;
+      width += ScrollBar.SCROLL_BAR_WIDTH;
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += SCROLL_SIZE;
+      height += ScrollBar.SCROLL_BAR_HEIGHT;
     }
     return new Point( width, height );
   }

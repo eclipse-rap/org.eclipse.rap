@@ -26,6 +26,9 @@ import org.eclipse.swt.widgets.*;
 
 public class TreeTab extends ExampleTab {
 
+  private final static int INITIAL_COLUMNS = 5;
+  private static final int INITIAL_ITEMS = 15;
+
   private Tree tree;
   private boolean showImages;
   private final Image treeImage;
@@ -51,6 +54,7 @@ public class TreeTab extends ExampleTab {
     createSelectButton( parent );
     createDeselectButton( parent );
     createSetSelectionButton( parent );
+    createShowColumnControl();
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
@@ -88,25 +92,21 @@ public class TreeTab extends ExampleTab {
     int style = getStyle();
     tree = new Tree( parent, style );
     tree.setLayoutData( new GridData( GridData.FILL_BOTH ) );
-    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
-    col1.setText( "Col 1" );
-    col1.setWidth( 150 );
-    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
-    col2.setText( "Col 2" );
-    col2.setWidth( 150 );
-    TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
-    col3.setText( "Col 3" );
-    col3.setWidth( 150 );
-    for( int i = 0; i < 10; i++ ) {
+    for( int i = 0; i < INITIAL_COLUMNS; i++ ) {
+      TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+      col1.setText( "Col " + i );
+      col1.setWidth( 150 );
+    }
+    for( int i = 0; i < INITIAL_ITEMS; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
-      item.setText( "Node_" + ( i + 1 ) + ".1" );
-      item.setText( 1, "Node_" + ( i + 1 ) + ".2" );
-      item.setText( 2, "Node_" + ( i + 1 ) + ".3" );
+      for( int j = 0; j < INITIAL_COLUMNS; j++ ) {
+        item.setText( j, "Node_" + ( i + 1 ) + "." + j );
+      }
       if( i % 2 == 0 ) {
         TreeItem subitem = new TreeItem( item, SWT.NONE );
-        subitem.setText( "Subnode_" + ( i + 1 ) + ".1" );
-        subitem.setText( 1, "Subnode_" + ( i + 1 ) + ".2" );
-        subitem.setText( 2, "Subnode_" + ( i + 1 ) + ".3" );
+        for( int j = 0; j < INITIAL_COLUMNS; j++ ) {
+          subitem.setText( j, "Subnode_" + ( i + 1 ) + "." + j );
+        }
       }
     }
     if( showImages ) {
@@ -274,6 +274,29 @@ public class TreeTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         if( tree.getItemCount() > 0 ) {
           tree.setSelection( tree.getItem( 0 ) );
+        }
+      }
+    } );
+  }
+
+  private void createShowColumnControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Column" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( label, text );
+    text.setText( String.valueOf( tree.getColumnCount() - 1 ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Show" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          int index = Integer.parseInt( text.getText() );
+          TreeColumn column = tree.getColumn( index );
+          tree.showColumn( column );
+        } catch( Exception e ) {
+          // ignore invalid column
         }
       }
     } );

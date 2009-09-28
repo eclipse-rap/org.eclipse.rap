@@ -364,6 +364,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       item.scrollIntoView();
     },
     
+    /** Only called by server-side */
+    setScrollLeft : function( value ) {
+      this._tree.setScrollLeft( value );
+    },
+    
     _updateLayout : function() {
       if( !this._tree.isCreated() ) {
         this._tree.addEventListener( "appear",

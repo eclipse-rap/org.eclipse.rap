@@ -891,6 +891,52 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
 
+  public void testShowColumn() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 800, 600 );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 300, 100 );
+    for( int i = 0; i < 10; i++ ) {
+      TreeColumn column = new TreeColumn( tree, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE );
+    }
+    ITreeAdapter adapter
+      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    assertEquals( 0, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 8 ) );
+    assertEquals( 166, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 1 ) );
+    assertEquals( 50, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 3 ) );
+    assertEquals( 50, adapter.getScrollLeft() );
+    try {
+      tree.showColumn( null );
+      fail( "Null argument not allowed" );
+    } catch( IllegalArgumentException e ) {
+    }
+    TreeColumn column = tree.getColumn( 3 );
+    column.dispose();
+    try {
+      tree.showColumn( column );
+      fail( "Disposed column not allowed as argument" );
+    } catch( IllegalArgumentException e ) {
+    }
+    Tree tree1 = new Tree( shell, SWT.NONE );
+    column = new TreeColumn( tree1, SWT.NONE );
+    tree.showColumn( column );
+    assertEquals( 50, adapter.getScrollLeft() );
+    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
+    tree.showColumn( tree.getColumn( 8 ) );
+    assertEquals( 0, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 5 ) );
+    assertEquals( 116, adapter.getScrollLeft() );
+  }
+
   private static boolean contains( final TreeItem[] items, final TreeItem item )
   {
     boolean result = false;
