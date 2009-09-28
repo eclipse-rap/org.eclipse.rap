@@ -29,12 +29,14 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeParent", this._onChangeParent, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
+    this.addEventListener( "keypress", this._onKeyPress, this );
   },
   
   destruct : function() {
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "changeParent", this._onChangeParent, this );
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
   },
   
   members : {
@@ -60,6 +62,20 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     
     _onMouseWheel : function( evt ) {
       this._blockScrolling = false;
+    },
+    
+    _onKeyPress : function( evt ) {
+      if(    evt.getKeyIdentifier() == "Up"
+          || evt.getKeyIdentifier() == "Down"
+          || evt.getKeyIdentifier() == "Left"
+          || evt.getKeyIdentifier() == "Right"
+          || evt.getKeyIdentifier() == "PageUp"
+          || evt.getKeyIdentifier() == "PageDown"
+          || evt.getKeyIdentifier() == "Home"
+          || evt.getKeyIdentifier() == "End" )
+      {
+        this._blockScrolling = false;
+      }
     },
     
     _onscroll : function( evt ) {
