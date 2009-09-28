@@ -242,10 +242,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private void writeScrollLeft( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
-    String prop = PROP_SCROLL_LEFT;
     Integer newValue = getScrollLeft( tree );
-    Integer defValue = DEFAULT_SCROLL_LEFT;
-    writer.set( prop, "scrollLeft", newValue, defValue );
+    writer.set( PROP_SCROLL_LEFT, "scrollLeft", newValue, DEFAULT_SCROLL_LEFT );
   }
 
   private Integer getScrollLeft( final Tree tree ) {
