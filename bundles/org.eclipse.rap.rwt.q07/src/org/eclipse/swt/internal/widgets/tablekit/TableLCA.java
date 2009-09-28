@@ -414,10 +414,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   
   private void writeLeftOffset( final Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
-    String prop = PROP_LEFT_OFFSET;
     Integer newValue = getLeftOffset( table );
-    Integer defValue = DEFAULT_LEFT_OFFSET;
-    writer.set( prop, "leftOffset", newValue, defValue );    
+    writer.set( PROP_LEFT_OFFSET, "leftOffset", newValue, DEFAULT_LEFT_OFFSET );    
   }
 
   private void writeCellToolTipText( final Table table ) throws IOException {
