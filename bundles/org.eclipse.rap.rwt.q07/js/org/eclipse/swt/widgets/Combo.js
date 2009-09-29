@@ -48,6 +48,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._list = new qx.ui.form.List();
     this._list.setTabIndex( -1 );
     this._list.setDisplay( false );
+    this._list.setWidth( "auto" );
     // List Manager
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
@@ -153,8 +154,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _onChangeSize : function( evt ) {
-      this._list.setWidth( this.getWidth() );
-      this._setListLocation();
+      this._list.setMinWidth( this.getWidth() );
+      this._setListBounds();
     },
 
     _onAppear : function( evt ) {
@@ -164,7 +165,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.addState( "rwt_FLAT" );
       }
       this.getTopLevelWidget().add( this._list );
-      this._setListLocation();
+      this._setListBounds();
       org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
     
@@ -265,13 +266,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     ///////////////////////////////////////
     // List and list-items handling methods
 
-    _setListLocation : function() {
+    _setListBounds : function() {
       if( this.getElement() ){
         var elementPos = qx.bom.element.Location.get( this.getElement() );
         var listLeft = elementPos.left;
         var comboTop = elementPos.top;
         var listTop = comboTop + this.getHeight();
         var browserHeight = qx.html.Window.getInnerHeight( window );
+        var browserWidth = qx.html.Window.getInnerWidth( window );
         var itemsHeight = this._list.getChildren().length * this._listItemHeight;
         var listHeight = Math.min( this._list.getMaxHeight(), itemsHeight );
         if(    browserHeight < listTop + listHeight 
@@ -280,6 +282,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           listTop = elementPos.top - listHeight;
         }
         this._list.setLocation( listLeft, listTop );
+        this._list.setMaxWidth( Math.max( browserWidth - listLeft, 
+                                          this.getWidth() ) );
       }
     },
     
@@ -293,7 +297,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           // Brings this widget on top of the others with same parent.
           this._bringToFront();
           this.setCapture( true );
-          this._setListLocation();
+          this._setListBounds();
         } else {
           this.setCapture( false );
         }
