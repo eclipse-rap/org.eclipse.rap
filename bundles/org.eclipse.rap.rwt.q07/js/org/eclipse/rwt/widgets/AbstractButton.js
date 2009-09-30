@@ -17,7 +17,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     this.base( arguments, [ "image", "image", "label", "label", "image" ] );
     this._hasSelectionListener = false;
     this._selected = false;
-    this._isDropDownClick = false;
     this._image = [ null, null, null ] ;
     this._hotImage = [ null, null, null ];
     this.addEventListener( "mouseover", this._onMouseOver );
@@ -30,7 +29,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     this.addState( buttonType );
     switch( buttonType ) {
      case "push":
-     case "dropDown":
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = true;
@@ -47,9 +45,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
       this._sendEvent = false;
       org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
       org.eclipse.rwt.RadioButtonUtil.registerKeypress( this );
-     break;
-     default:
-       throw( "Unkown button type " + buttonType );
      break;
     }
 
@@ -144,17 +139,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
-          if( this._isDropDownClick ) {
-            req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", 
-                          "arrow" );
-            this._isDropDownClick = false;
-          }
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
         }
         req.send();
       }
     },
-
+    
     _onMouseOver : function( event ) {
       if ( event.getTarget() == this ) {
         if( this.hasState( "abandoned" ) ) {
@@ -181,19 +171,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     _onMouseDown : function( event ) {
       if ( event.getTarget() == this && event.isLeftButtonPressed() ) {
         this.removeState( "abandoned" );
-        if( this._isDropdownClick( event ) ) {
-          this._isDropDownClick = true;
-          this.execute();
-        } else {
-          this.addState( "pressed" );
-        }        
+        this.addState( "pressed" );
       }
     },
     
-    _isDropdownClick : function( event ) {
-      return false;
-    },
-
     _onMouseUp : function( event ) {
       this.setCapture( false );
       var hasPressed = this.hasState( "pressed" );
@@ -251,7 +232,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
           event.preventDefault();
           event.stopPropagation();
       }
-
     }
+    
   }
 });

@@ -14,15 +14,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
 
   construct : function( itemType, flat ) {
     this.base( arguments, itemType );
+    this._isDropDown = false;
+    if( itemType == "dropDown" ) {
+      this._isDropDown = true;
+      this._isSelectable = false;
+      this._isDeselectable = false;
+      this._sendEvent = true;
+      this.setCellDimension( 3, 1, 0 );
+      this.setCellContent( 3, "" );
+    }
     this._separatorBorder = null;
     this.setAppearance( "toolbar-button" );
     if( flat ) {
       this.addState( "rwt_FLAT" );
-    }
-    this._isDropDown = itemType == "dropDown"; 
-    if( this._isDropDown ) {    
-      this.setCellDimension( 3, 1, 0 );
-      this.setCellContent( 3, "" );
     }
   },
   
@@ -55,7 +59,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     ////////////////////
     // Dropdown-support
 
-    // overwritten:
+    // overwritten: 
+    _onMouseDown : function( event ) {
+      if ( event.getTarget() == this && event.isLeftButtonPressed() ) {
+        this.removeState( "abandoned" );
+        if( this._isDropdownClick( event ) ) {
+          this._onDropDownClick();
+          this._sendChanges();
+        } else {
+          this.addState( "pressed" );
+        }        
+      }
+    },
+
     _isDropdownClick : function( event ) {
       var result = false;
       var node = this.getCellNode( 3 );
@@ -66,7 +82,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
       }
       return result;
     },
-    
+
+    _onDropDownClick : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && this._hasSelectionListener )
+      {
+        var req = org.eclipse.swt.Request.getInstance();
+        if( this._sendEvent ) {
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( this );
+          req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", 
+                        "arrow" );
+        }
+      }
+    },
+        
     _applyDropDownArrow : function( value, oldValue ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
