@@ -54,8 +54,6 @@ public class List extends Scrollable {
   private static final int VERTICAL_ITEM_MARGIN = 3;
   private static final int HORIZONTAL_ITEM_MARGIN = 5;
 
-  private static final int SCROLL_SIZE = 16;
-
   private final ListModel model;
   private int focusIndex = -1;
   private IListAdapter listAdapter;
@@ -1091,10 +1089,10 @@ public class List extends Scrollable {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += SCROLL_SIZE;
+      width += getScrollBarSize();
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += SCROLL_SIZE;
+      height += getScrollBarSize();
     }
     return new Point( width, height );
   }
@@ -1152,7 +1150,7 @@ public class List extends Scrollable {
   final int getVisibleItemCount() {
     int clientHeight = getBounds().height;
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      clientHeight -= SCROLL_SIZE;
+      clientHeight -= getScrollBarSize();
     }
     int result = 0;
     if( clientHeight >= 0 ) {
