@@ -1246,7 +1246,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         checkBoxWidth = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
         checkImageHeight = org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT;
       }
-      var width = this.getColumnsWidth() - checkBoxWidth;
+      var width;
+      if( this.getColumnCount() === 0 ) {
+        width = this.getItemWidth( 0 ); // see bug 290565
+      } else {
+        width = this.getColumnsWidth() - checkBoxWidth;
+      }
       if( this._clientArea.getWidth() > width ) {
         width = this._clientArea.getWidth();
       }
