@@ -1077,6 +1077,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var width;
       if( this.getColumnCount() === 0 ) {
         width = this.getDefaultColumnWidth();
+        if( this._checkBoxes !== null ) {
+          width += org.eclipse.swt.widgets.Table.CHECK_WIDTH;
+        }
       } else {
         width = this.getColumnsWidth();
       }
@@ -1094,6 +1097,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var headerWidth;
       if( this.getColumnCount() === 0 ) {
         var columnsWidth = this.getDefaultColumnWidth();
+        if( this._checkBoxes !== null ) {
+          columnsWidth += org.eclipse.swt.widgets.Table.CHECK_WIDTH;
+        }
         headerWidth = Math.max( columnsWidth + vertScrollBarWidth, clientWidth );
         dummyColumn.setLeft( 0 );
         dummyColumn.setWidth( headerWidth );
@@ -1248,7 +1254,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       var width;
       if( this.getColumnCount() === 0 ) {
-        width = this.getItemWidth( 0 ); // see bug 290565
+        // see bug 290565 and bug 290879
+        width = this.getDefaultColumnWidth() + checkBoxWidth;
       } else {
         width = this.getColumnsWidth() - checkBoxWidth;
       }
