@@ -1901,7 +1901,7 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     int itemHeight = table.getItemHeight();
-    int scrollBarHeight = ScrollBar.SCROLL_BAR_HEIGHT;
+    int scrollBarHeight = 16;
     table.setSize( 100, 5 * itemHeight + scrollBarHeight );
     assertEquals( 5, table.getVisibleItemCount( true ) );
     assertEquals( 5, table.getVisibleItemCount( false ) );
@@ -2242,7 +2242,7 @@ public class Table_Test extends TestCase {
     // ensure that updating null-items does not throw NPE
     table.remove( 5 );
   }
-  
+
   public void testShowColumn() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();

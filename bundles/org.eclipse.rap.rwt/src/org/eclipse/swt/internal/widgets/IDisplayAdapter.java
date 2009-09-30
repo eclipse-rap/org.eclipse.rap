@@ -17,14 +17,14 @@ import org.eclipse.swt.widgets.*;
 
 
 public interface IDisplayAdapter {
-  
+
   final static IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
-  
+
   interface IFilterEntry {
     int getType();
     Listener getListener();
   }
-  
+
   void setBounds( Rectangle bounds );
   void setCursorLocation( int x, int y );
   void setActiveShell( Shell shell );
@@ -33,4 +33,7 @@ public interface IDisplayAdapter {
   boolean isFocusInvalidated();
   ISessionStore getSession();
   IFilterEntry[] getFilters();
+
+  int getScrollBarSize();
+  void setScrollBarSize( int size );
 }

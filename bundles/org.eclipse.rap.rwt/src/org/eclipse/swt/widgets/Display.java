@@ -167,6 +167,7 @@ public class Display extends Device implements Adaptable {
   private final ISessionStore session;
   private Rectangle bounds;
   private final Point cursorLocation;
+  private int scrollBarSize;
   private Shell activeShell;
   private List filters;
   private Control focusControl;
@@ -207,6 +208,7 @@ public class Display extends Device implements Adaptable {
     RWTLifeCycle.setSessionDisplay( this );
     shells = new ArrayList();
     readInitialBounds();
+    readScrollBarSize();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
   }
@@ -1029,7 +1031,7 @@ public class Display extends Device implements Adaptable {
    * not be free'd because it was allocated by the system,
    * not the application.  A value of <code>null</code> will
    * be returned if the supplied constant is not an SWT cursor
-   * constant. 
+   * constant.
    *
    * @param id the SWT cursor constant
    * @return the corresponding cursor or <code>null</code>
@@ -1056,7 +1058,7 @@ public class Display extends Device implements Adaptable {
    * @see SWT#CURSOR_SIZENW
    * @see SWT#CURSOR_IBEAM
    * @see SWT#CURSOR_HAND
-   * 
+   *
    * @since 1.3
    */
   public Cursor getSystemCursor( final int id ) {
@@ -1093,7 +1095,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Point getCursorLocation() {
@@ -1430,7 +1432,7 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return monitor;
   }
-  
+
   /**
    * Forces all outstanding paint requests for the display
    * to be processed before this method returns.
@@ -1439,9 +1441,9 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @see Control#update()
-   * 
+   *
    * @since 1.3
    */
   public void update() {
@@ -1471,6 +1473,19 @@ public class Display extends Device implements Adaptable {
       height = Integer.parseInt( heightVal );
     }
     bounds = new Rectangle( 0, 0, width, height );
+  }
+
+  private void readScrollBarSize() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    StringBuffer key = new StringBuffer();
+    key.append( DisplayUtil.getId( this ) );
+    key.append( "." );
+    key.append( "scrollbar.size" );
+    String sizeVal = request.getParameter( key.toString() );
+    scrollBarSize = 16;
+    if( sizeVal != null ) {
+      scrollBarSize = Integer.parseInt( sizeVal );
+    }
   }
 
   private IFilterEntry[] getFilterEntries() {
@@ -1530,6 +1545,14 @@ public class Display extends Device implements Adaptable {
 
     public IFilterEntry[] getFilters() {
       return getFilterEntries();
+    }
+
+    public void setScrollBarSize( final int size ) {
+      Display.this.scrollBarSize = size;
+    }
+
+    public int getScrollBarSize() {
+      return Display.this.scrollBarSize;
     }
   }
 }

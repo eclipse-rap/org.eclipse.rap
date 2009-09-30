@@ -60,6 +60,14 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var id = req.getUIRootId();
       req.addParameter( id + ".bounds.width", String( width ) );
       req.addParameter( id + ".bounds.height", String( height ) );
+    },
+    
+    _appendScrollBarSize : function() {
+      var size = qx.ui.core.Widget.SCROLLBAR_SIZE;
+      // Append scrollbar size to request
+      var req = org.eclipse.swt.Request.getInstance();
+      var id = req.getUIRootId();
+      req.addParameter( id + ".scrollbar.size", String( size ) );
     }
   },
 
@@ -106,6 +114,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
                             org.eclipse.swt.Application._onKeyPress );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
+      org.eclipse.swt.Application._appendScrollBarSize();
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSend, this );
       req.send();

@@ -17,8 +17,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.IListAdapter;
-import org.eclipse.swt.internal.widgets.ListModel;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -1177,7 +1176,7 @@ public class List extends Scrollable {
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = ScrollBar.SCROLL_BAR_WIDTH;
+      result = getScrollBarSize();
     }
     return result;
   }
@@ -1185,7 +1184,7 @@ public class List extends Scrollable {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = ScrollBar.SCROLL_BAR_HEIGHT;
+      result = getScrollBarSize();
     }
     return result;
   }
@@ -1216,5 +1215,11 @@ public class List extends Scrollable {
     }
     hasVScrollBar = ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
     hasHScrollBar = ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
+  }
+
+  private int getScrollBarSize() {
+    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = ( IDisplayAdapter )object;
+    return adapter.getScrollBarSize();
   }
 }

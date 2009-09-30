@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 /**
  * Instances of this class are selectable user interface
@@ -86,16 +87,11 @@ import org.eclipse.swt.graphics.Point;
  * <li>size (width when V_SCROLL, height when H_SCROLL) is hard-coded and may
  * not match what the browser actually shows</li>
  * </ul>
- * 
+ *
  * @since 1.0
  */
 // TODO [rh] include ScrollBar in widget hierarchy (child of Scrollable)?
 public class ScrollBar extends Widget {
-
-  // TODO [rh] scroll bar size could be determined in index.html and be held
-  //      individually per session
-  static final int SCROLL_BAR_WIDTH = 16;
-  static final int SCROLL_BAR_HEIGHT = 16;
 
   private final Scrollable parent;
   private int thumb;
@@ -109,7 +105,7 @@ public class ScrollBar extends Widget {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -129,10 +125,10 @@ public class ScrollBar extends Widget {
    *
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
-   * 
+   *
    * @see SWT#HORIZONTAL
    * @see SWT#VERTICAL
    * @see Widget#checkSubclass
@@ -309,9 +305,9 @@ public class ScrollBar extends Widget {
   public Point getSize() {
     Point result = parent.getSize();
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
-      result.y = SCROLL_BAR_WIDTH;
+      result.y = getScrollBarSize();
     } else {
-      result.x = SCROLL_BAR_HEIGHT;
+      result.x = getScrollBarSize();
     }
     return result;
   }
@@ -520,5 +516,11 @@ public class ScrollBar extends Widget {
 
   private static int checkStyle( final int style ) {
     return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
+  }
+
+  private int getScrollBarSize() {
+    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = ( IDisplayAdapter )object;
+    return adapter.getScrollBarSize();
   }
 }

@@ -131,7 +131,7 @@ public class Table extends Composite {
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
-    
+
     public int getLeftOffset() {
       return Table.this.leftOffset;
     }
@@ -1559,7 +1559,7 @@ public class Table extends Composite {
       setTopIndex( itemIndex - itemCount + 1 );
     }
   }
-  
+
   /**
    * Shows the column.  If the column is already showing in the receiver,
    * this method simply returns.  Otherwise, the columns are scrolled until
@@ -1975,10 +1975,10 @@ public class Table extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += ScrollBar.SCROLL_BAR_WIDTH;
+      width += getScrollBarSize();
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += ScrollBar.SCROLL_BAR_HEIGHT;
+      height += getScrollBarSize();
     }
     return new Point( width, height );
   }
@@ -2338,7 +2338,7 @@ public class Table extends Composite {
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = ScrollBar.SCROLL_BAR_WIDTH;
+      result = getScrollBarSize();
     }
     return result;
   }
@@ -2346,7 +2346,7 @@ public class Table extends Composite {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = ScrollBar.SCROLL_BAR_HEIGHT;
+      result = getScrollBarSize();
     }
     return result;
   }
@@ -2360,6 +2360,12 @@ public class Table extends Composite {
         hasHScrollBar = needsHScrollBar();
       }
     }
+  }
+
+  private int getScrollBarSize() {
+    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = ( IDisplayAdapter )object;
+    return adapter.getScrollBarSize();
   }
 
   ////////////////////////////
