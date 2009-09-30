@@ -8,8 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
-package org.eclipse.ui.internal;
+package org.eclipse.rap.ui.internal;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +23,8 @@ import org.osgi.service.http.HttpContext;
 // NOTE: This was added to org.eclipse.rap.ui to avoid starting
 //       the workbench bundle before the context is established. The latter
 //       uses the context already on startup
-public class RAPHttpContext implements HttpContext {
+public final class RAPHttpContext implements HttpContext {
+  
   private final Bundle bundle;
 
   public RAPHttpContext() {

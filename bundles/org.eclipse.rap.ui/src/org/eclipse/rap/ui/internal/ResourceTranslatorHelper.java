@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,9 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
-package org.eclipse.ui.internal;
+package org.eclipse.rap.ui.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,21 +32,20 @@ import org.osgi.framework.ServiceReference;
  * <code>{@link RWT#getLocale()}</code>.
  * 
  * <p>Note that this functionality only takes effect if the
- * 'org.eclipse.rap.equinox.registry' fragment is available.</p>
+ * <code>org.eclipse.rap.equinox.registry<code> fragment is available.</p>
  */
-class ResourceTranslatorHelper {
+public final class ResourceTranslatorHelper {
+  
   private static final Class[] PARAM_TYPE_ALGORITHM
     = new Class[] { Runnable.class };
   private static final String METHOD_SET_TRANSLATOR_ALGORITHM
     = "setTranslatorAlgorithm"; //$NON-NLS-1$
-  private static final String METHOD_GET_BUNDLE_CONTEXT
-    = "getBundleContext"; //$NON-NLS-1$
 	private static final String FIELD_ALGORITHM_IO = "algorithmIO"; //$NON-NLS-1$
-  private static Class CLASS_REGISTRY_FACTORY = RegistryFactory.class;
+  private static final Class CLASS_REGISTRY_FACTORY = RegistryFactory.class;
   
   
   /**
-   * Plugable runnable that handles translation of externalized labels 
+   * Pluggable runnable that handles translation of externalized labels 
    * of extension declarations.
    */
   private static final class TranslatorAlgorithm implements Runnable {
@@ -54,19 +53,8 @@ class ResourceTranslatorHelper {
     public void run() {
       String result = getKey();
       ResourceBundle bundle = null;
-      try {
-        if( ContextProvider.hasContext() ) {
-          bundle = getResourceBundle();
-        }
-      } catch( final Exception shouldNotHappen ) {
-        // TODO [fappel]: I use reflection to get the bundle context since this
-        //                is not available in 3.2. We do not support the 
-        //                NLS patch fragment in 3.2 but unfortunately our build
-        //                process for 3.2 fails. As we will skip support for
-        //                3.2 soon, this seems to be the easiest solution.
-        //                Remove reflection usage after 3.2 support has been
-        //                skipped.
-        shouldNotHappen.printStackTrace();
+      if( ContextProvider.hasContext() ) {
+        bundle = getResourceBundle();
       }
       if( bundle != null ) {
         result = ResourceTranslator.getResourceString( null, getKey(), bundle );
@@ -74,28 +62,14 @@ class ResourceTranslatorHelper {
       getIOHandle().set( result );
     }
 
-    private ResourceBundle getResourceBundle()
-      throws NoSuchMethodException,
-             IllegalAccessException,
-             InvocationTargetException
-    {
+    private ResourceBundle getResourceBundle() {
       Bundle bundle = Platform.getBundle( getSymbolicName() );
-      BundleContext bundleContext = getBundleContext( bundle );
+      BundleContext bundleContext = bundle.getBundleContext();
       String id = BundleLocalization.class.getName();
       ServiceReference reference = bundleContext.getServiceReference( id );
       BundleLocalization localization
         = ( BundleLocalization )bundleContext.getService( reference );
       return localization.getLocalization( bundle, RWT.getLocale().toString() );
-    }
-
-    private BundleContext getBundleContext( final Bundle bundle )
-      throws NoSuchMethodException,
-             IllegalAccessException,
-             InvocationTargetException
-    {
-      Method getBundleContext
-        = Bundle.class.getDeclaredMethod( METHOD_GET_BUNDLE_CONTEXT, null );
-      return ( BundleContext )getBundleContext.invoke( bundle, null );
     }
 
     private String getKey() {
@@ -120,14 +94,11 @@ class ResourceTranslatorHelper {
   }
 
   
-  static void registerAlgorithm() {
+  public static void registerAlgorithm() {
     if( isRWTLocalSpecificTranslationAllowed() ) {
       try {
-        Object[] param = new Object[] {
-          new TranslatorAlgorithm()
-        };
+        Object[] param = new Object[] { new TranslatorAlgorithm() };
         getAlgorithmSetter().invoke( null, param );
-        
       } catch( final Exception shouldNotHappen ) {
         shouldNotHappen.printStackTrace();
       }

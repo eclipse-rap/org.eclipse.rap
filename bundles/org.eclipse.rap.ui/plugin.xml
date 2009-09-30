@@ -2206,7 +2206,7 @@
    <extension
         point="org.eclipse.equinox.http.registry.httpcontexts">
      <httpcontext
-           class="org.eclipse.ui.internal.RAPHttpContext"
+           class="org.eclipse.rap.ui.internal.RAPHttpContext"
            id="org.eclipse.rap.httpcontext">
      </httpcontext>
   </extension>
