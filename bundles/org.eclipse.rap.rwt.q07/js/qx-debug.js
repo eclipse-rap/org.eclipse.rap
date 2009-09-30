@@ -8078,7 +8078,7 @@ while(target){if(target.getSelectable()!=null){if(!target.getSelectable()){qx.ev
 }target=target.getParent();
 }},
 _focused:false,
-_onwindowblur:function(e){if(!this._focused||this._ignoreWindowBlur){return;
+_onwindowblur:function(e){if(!this._focused||this._ignoreWindowBlur||e.originalTarget!=window){return;
 }this._focused=false;
 this.setCaptureWidget(null);
 if(qx.Class.isDefined("qx.ui.popup.PopupManager")){qx.ui.popup.PopupManager.getInstance().update();
