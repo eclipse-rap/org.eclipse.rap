@@ -1476,15 +1476,12 @@ public class Display extends Device implements Adaptable {
   }
 
   private void readScrollBarSize() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer key = new StringBuffer();
-    key.append( DisplayUtil.getId( this ) );
-    key.append( "." );
-    key.append( "scrollbar.size" );
-    String sizeVal = request.getParameter( key.toString() );
     scrollBarSize = 16;
-    if( sizeVal != null ) {
-      scrollBarSize = Integer.parseInt( sizeVal );
+    HttpServletRequest request = ContextProvider.getRequest();
+    String parameterName = DisplayUtil.getId( this ) + ".scrollbar.size" ;
+    String value = request.getParameter( parameterName );
+    if( value != null ) {
+      scrollBarSize = Integer.parseInt( value );
     }
   }
 

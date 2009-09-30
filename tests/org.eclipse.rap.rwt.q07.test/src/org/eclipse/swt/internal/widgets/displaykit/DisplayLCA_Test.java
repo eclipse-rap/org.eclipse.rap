@@ -304,6 +304,14 @@ public class DisplayLCA_Test extends TestCase {
     lca.readData( display );
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
+  
+  public void testScrollBarSize() {
+    Fixture.fakeRequestParam( "w1.scrollbar.size", "99" );
+    Display display = new Display();
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    assertEquals( 99, displayAdapter.getScrollBarSize() );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
