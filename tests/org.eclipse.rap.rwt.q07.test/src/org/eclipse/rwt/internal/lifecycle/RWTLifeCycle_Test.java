@@ -99,6 +99,20 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
+  public static class TestPhasesEntryPoint implements IEntryPoint {
+    public int createUI() {
+      new Display();
+      return 0;
+    }
+  }
+  
+  public static class TestErrorInLifeCycleEntryPoint implements IEntryPoint {
+    public int createUI() {
+      new Display();
+      return 0;
+    }
+  }
+
   public static class TestEntryPointWithLog implements IEntryPoint {
     public int createUI() {
       new Display();
@@ -206,7 +220,6 @@ public class RWTLifeCycle_Test extends TestCase {
     EntryPointManager.register( MY_ENTRY_POINT, TestEntryPointWithLog.class );
     lifeCycle.execute();
     assertEquals( DISPLAY_CREATED, log.toString() );
-    EntryPointManager.deregister( MY_ENTRY_POINT );
   }
 
   public void testParamOfNonExistingEntryPoint() throws IOException {
@@ -222,7 +235,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testPhases() throws IOException {
     EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestEntryPoint.class );
+                                TestPhasesEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     PhaseListener listener = new PhaseListener() {
 
@@ -311,15 +324,21 @@ public class RWTLifeCycle_Test extends TestCase {
                + PhaseId.PREPARE_UI_ROOT
                + "|";
     assertEquals( expected, log.toString() );
+  }
+  
+  public void testErrorInLifeCycle() throws IOException {
+    EntryPointManager.register( EntryPointManager.DEFAULT,
+                                TestEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.execute();
     Fixture.fakeRequestParam( RequestParams.STARTUP,
                               EntryPointManager.DEFAULT );
     try {
       lifeCycle.execute();
-      fail();
+      fail(); // SWTError: Not implemented [multiple displays]
     } catch( final SWTError e ) {
       // expected
     }
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
   public void testExceptionInPhaseListener() throws IOException {
@@ -342,7 +361,6 @@ public class RWTLifeCycle_Test extends TestCase {
                       + PhaseId.PREPARE_UI_ROOT
                       + "|";
     assertEquals( expected, log.toString() );
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
   public void testRender() throws IOException {
@@ -351,7 +369,6 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
     assertTrue( Fixture.getAllMarkup().length() > 0 );
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
   public void testPhaseListenerRegistration() throws IOException {
@@ -384,7 +401,6 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle2.execute();
     assertSame( listener, callbackHandler[ 0 ] );
     PhaseListenerRegistry.clear();
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
   public void testContinueLifeCycle() {
@@ -657,7 +673,6 @@ public class RWTLifeCycle_Test extends TestCase {
                     + "after"
                     + PhaseId.PREPARE_UI_ROOT;
     assertEquals( expected, log.toString() );
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
   public void testSleep() throws Throwable {
