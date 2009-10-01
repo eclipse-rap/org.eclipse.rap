@@ -44,6 +44,7 @@ public class TreeTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "CHECK", SWT.CHECK );
     createStyleButton( "MULTI", SWT.MULTI );
+    createStyleButton( "NO_SCROLL", SWT.NO_SCROLL );
     createVisibilityButton();
     createEnablementButton();
     createImagesButton( parent );

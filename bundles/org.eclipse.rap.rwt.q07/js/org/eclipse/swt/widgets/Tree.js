@@ -74,7 +74,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
 
     this._rwtStyle = style;
     this._selectionListeners = false;
-    this._treeListeners = false;
     this._hasFocus = false;
 
     this.addEventListener( "changeWidth", this._onChangeSize, this );
@@ -209,7 +208,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
               // check if we need to "redraw" by checking all items in viewpart
              var vItems = self._tree.getItems(true, false);
              var redraw = false;
-             for( var index=0; index<vItems.length; index++ ) {
+             for( var index = 0; index < vItems.length; index++ ) {
                if( !vItems[ index ].isMaterialized() ) {
                  redraw = true;
                  break;
@@ -260,8 +259,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     getItemsHeight : function() {
       // TODO: [bm] do we really need to calc this ourselves???
       // TODO: [bm] review this when images are in place
-      var visibleItems = this._tree.getItems(true, false);
-      var itemsHeight = (visibleItems.length-1)*16;
+      var visibleItems = this._tree.getItems( true, false );
+      var itemsHeight = ( visibleItems.length - 1 ) * 16;
       return itemsHeight;
     },
     
@@ -276,7 +275,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     getColumnsWidth : function() {
       var width = 0;
       if( this._columns.length > 0 ) {
-      for(var i=0; i<this._columns.length; i++) {
+      for( var i = 0; i < this._columns.length; i++ ) {
         width += this._columns[ i ].getWidth();
       }
       } else {
@@ -352,7 +351,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     showItem : function( itemOrEvent ) {
       var item;
-      if(!(itemOrEvent instanceof org.eclipse.swt.widgets.TreeItem )) {
+      if( !( itemOrEvent instanceof org.eclipse.swt.widgets.TreeItem ) ) {
         item = itemOrEvent.getTarget();
       } else {
         item = itemOrEvent;
@@ -367,6 +366,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     /** Only called by server-side */
     setScrollLeft : function( value ) {
       this._tree.setScrollLeft( value );
+    },
+    
+    /** Only called by server-side */
+    setTreeOverflow : function( value ) {
+      this._tree.setOverflow( value );
     },
     
     _updateLayout : function() {
@@ -408,14 +412,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
      */
     setSelectionListeners : function( value ) {
       this._selectionListeners = value;
-    },
-
-    /**
-     * Are there any server-side TreeListeners attached? If so, expanding/collapsing
-     * an item causes a request to be sent that informs the server-side listeners.
-     */
-    setTreeListeners : function( value ) {
-      this._treeListeners = value;
     },
 
     getRWTStyle : function() {
@@ -498,11 +494,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var treeItemId = wm.findIdByWidget( evt.getData() );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( treeItemId + ".state", "expanded" );
-        if( this._treeListeners ) {
-          req.addEvent( "org.eclipse.swt.events.treeExpanded", treeItemId );
-          req.send();
-        }
+        req.addEvent( "org.eclipse.swt.events.treeExpanded", treeItemId );
+        req.send();
       }
     },
 
@@ -511,11 +504,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var treeItemId = wm.findIdByWidget( evt.getData() );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( treeItemId + ".state", "collapsed" );
-        if( this._treeListeners ) {
-          req.addEvent( "org.eclipse.swt.events.treeCollapsed", treeItemId );
-          req.send();
-        }
+        req.addEvent( "org.eclipse.swt.events.treeCollapsed", treeItemId );
+        req.send();
       }
     },
 

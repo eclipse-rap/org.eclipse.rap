@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
@@ -51,26 +52,6 @@ public class TreeLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     RWTFixture.clearPreserved();
-    // Tree_Listeners
-    RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( TreeLCA.PROP_TREE_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
-    TreeListener treeListener = new TreeListener() {
-
-      public void treeCollapsed( final TreeEvent e ) {
-      }
-
-      public void treeExpanded( final TreeEvent e ) {
-      }
-    };
-    tree.addTreeListener( treeListener );
-    RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( TreeLCA.PROP_TREE_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
     // HeaderHight,HeaderVisible
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
@@ -108,6 +89,13 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( new Integer( 50 ),
                   adapter.getPreserved( TreeLCA.PROP_SCROLL_LEFT ) );
+    RWTFixture.clearPreserved();
+    // scroll bars
+    RWTFixture.preserveWidgets();
+    Object preserved = adapter.getPreserved( TreeLCA.PROP_HAS_H_SCROLL_BAR );
+    assertTrue( preserved != null );
+    preserved = adapter.getPreserved( TreeLCA.PROP_HAS_V_SCROLL_BAR );
+    assertTrue( preserved != null );
     RWTFixture.clearPreserved();
     // control: enabled
     RWTFixture.preserveWidgets();
@@ -150,19 +138,6 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     RWTFixture.clearPreserved();
     // control_listeners
-    RWTFixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
-    tree.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );

@@ -73,7 +73,7 @@ import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
  * <p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>SINGLE, MULTI, CHECK<!--, FULL_SELECTION-->, VIRTUAL</dd>
+ * <dd>SINGLE, MULTI, CHECK<!--, FULL_SELECTION-->, VIRTUAL, NO_SCROLL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection, Collapse, Expand, SetData<!--, MeasureItem,
  * EraseItem, PaintItem--></dd>
@@ -109,6 +109,8 @@ public class Tree extends Composite {
   private TreeItem currentItem;
   private final ITreeAdapter treeAdapter;
   /* package */int scrollTop, scrollLeft;
+  private boolean hasVScrollBar;
+  private boolean hasHScrollBar;
 
   private final class CompositeItemHolder implements IItemHolderAdapter {
 
@@ -178,11 +180,23 @@ public class Tree extends Composite {
     public void checkAllData( final Tree tree ) {
       Tree.checkAllData( tree );
     }
+
+    public boolean hasHScrollBar() {
+      return Tree.this.hasHScrollBar();
+    }
+
+    public boolean hasVScrollBar() {
+      return Tree.this.hasVScrollBar();
+    }
   }
 
   private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
-      checkAllData( ( Tree )event.widget );
+      Tree tree = ( Tree )event.widget;
+      if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
+        checkAllData( tree );
+      }
+      tree.updateScrollBars();
     }
   }
 
@@ -229,6 +243,7 @@ public class Tree extends Composite {
    * @see SWT#SINGLE
    * @see SWT#MULTI
    * @see SWT#CHECK
+   * @see SWT#NO_SCROLL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
@@ -238,13 +253,12 @@ public class Tree extends Composite {
     columnHolder = new ItemHolder( TreeColumn.class );
     treeAdapter = new InternalTreeAdapter();
     selection = EMPTY_SELECTION;
+    resizeListener = new ResizeListener();
+    addControlListener( resizeListener );
     if( ( this.style & SWT.VIRTUAL ) != 0 ) {
-      resizeListener = new ResizeListener();
-      addControlListener( resizeListener );
       expandListener = new ExpandListener();
       addTreeListener( expandListener );
     } else {
-      resizeListener = null;
       expandListener = null;
     }
   }
@@ -313,6 +327,7 @@ public class Tree extends Composite {
           new TreeItem( parent, SWT.NONE, i );
         }
       }
+      updateScrollBars();
     }
   }
 
@@ -521,10 +536,6 @@ public class Tree extends Composite {
         }
       }
     }
-  }
-
-  private int getVScrollBarWidth() {
-    return ( style & SWT.V_SCROLL ) != 0 ? getScrollBarSize() : 0;
   }
 
   /**
@@ -1033,6 +1044,7 @@ public class Tree extends Composite {
       TreeItem child = ( TreeItem )itemHolder.getItem( i );
       child.addColumn( column );
     }
+    updateScrollBars();
   }
 
   final void destroyColumn( final TreeColumn column ) {
@@ -1064,6 +1076,7 @@ public class Tree extends Composite {
       }
     }
     columnOrder = newColumnOrder;
+    updateScrollBars();
   }
 
   /**
@@ -1121,6 +1134,7 @@ public class Tree extends Composite {
       return; /* no change */
     }
     headerVisible = value;
+    updateScrollBars();
   }
 
   /**
@@ -1589,7 +1603,8 @@ public class Tree extends Composite {
           int itemWidth = item.getPreferredWidth( 0, false );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
-            // TODO: [if] Recursively get the max inner item width
+            int innerWidth = item.getMaxInnerWidth( item.getItems(), 1 );
+            width = Math.max( width, innerWidth );
           }
         }
       }
@@ -1740,8 +1755,91 @@ public class Tree extends Composite {
   }
 
   private static int checkStyle( final int style ) {
-    int result = style | SWT.H_SCROLL | SWT.V_SCROLL;
+    int result = style;
+    if( ( style & SWT.NO_SCROLL ) == 0 ) {
+      result |= SWT.H_SCROLL | SWT.V_SCROLL;
+    }
     return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
+  }
+
+  ///////////////////////////////////////
+  // Helping methods - dynamic scrollbars
+
+  boolean hasVScrollBar() {
+    return hasVScrollBar;
+  }
+
+  boolean hasHScrollBar() {
+    return hasHScrollBar;
+  }
+
+  int getVScrollBarWidth() {
+    int result = 0;
+    if( hasVScrollBar() ) {
+      result = getScrollBarSize();
+    }
+    return result;
+  }
+
+  int getHScrollBarHeight() {
+    int result = 0;
+    if( hasHScrollBar() ) {
+      result = getScrollBarSize();
+    }
+    return result;
+  }
+
+  boolean needsVScrollBar() {
+    int availableHeight = getClientArea().height - getHScrollBarHeight();
+    int height = getHeaderHeight();
+    height += getItemCount() * getItemHeight();
+    for( int i = 0; i < getItemCount(); i++ ) {
+      TreeItem item = getItem( i );
+      if( item.getExpanded() ) {
+        height += item.getInnerHeight();
+      }
+    }
+    return height > availableHeight;
+  }
+
+  boolean needsHScrollBar() {
+    boolean result = false;
+    int availableWidth = getClientArea().width - getVScrollBarWidth();
+    int columnCount = getColumnCount();
+    if( columnCount > 0 ) {
+      int totalWidth = 0;
+      for( int i = 0; i < columnCount; i++ ) {
+        TreeColumn column = getColumn( i );
+        totalWidth += column.getWidth();
+      }
+      result = totalWidth > availableWidth;
+    } else {
+      int maxWidth = 0;
+      for( int i = 0; i < getItemCount(); i++ ) {
+        TreeItem item = getItem( i );
+        if( item != null && item.isCached() ) {
+          int itemWidth = item.getPreferredWidth( 0, false );
+          maxWidth = Math.max( maxWidth, itemWidth );
+          if( item.getExpanded() ) {
+            int innerWidth = item.getMaxInnerWidth( item.getItems(), 1 );
+            maxWidth = Math.max( maxWidth, innerWidth );
+          }
+        }
+      }
+      result = maxWidth > availableWidth;
+    }
+    return result;
+  }
+
+  void updateScrollBars() {
+    hasVScrollBar = false;
+    hasHScrollBar = needsHScrollBar();
+    if( needsVScrollBar() ) {
+      hasVScrollBar = true;
+      hasHScrollBar = needsHScrollBar();
+    }
+    hasVScrollBar = ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
+    hasHScrollBar = ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
   }
 
   private int getScrollBarSize() {

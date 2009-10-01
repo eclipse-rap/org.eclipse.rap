@@ -18,12 +18,15 @@ public interface ITreeAdapter {
 
   TreeItem getShowItem();
   void clearShowItem();
-  
+
   void setScrollTop( final int top );
   void setScrollLeft( final int left );
   int getScrollTop();
   int getScrollLeft();
-  
+
+  boolean hasHScrollBar();
+  boolean hasVScrollBar();
+
   boolean isCached( final TreeItem item );
   void checkAllData( Tree tree );
 }

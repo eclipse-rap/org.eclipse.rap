@@ -267,6 +267,7 @@ public class TreeItem extends Item {
     texts = new String[ columnCount ];
     images = new Image[ columnCount ];
     parent.updateFlatIndices();
+    parent.updateScrollBars();
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -336,6 +337,7 @@ public class TreeItem extends Item {
     if( !expanded || getItemCount() > 0 ) {
       this.expanded = expanded;
       parent.updateFlatIndices();
+      parent.updateScrollBars();
     }
   }
 
@@ -1028,6 +1030,9 @@ public class TreeItem extends Item {
     } else {
       texts[ columnIndex ] = value;
     }
+    if( parent.getColumnCount() == 0 ) {
+      parent.updateScrollBars();
+    }
     // if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
@@ -1043,7 +1048,8 @@ public class TreeItem extends Item {
    *              </ul>
    */
   public void setText( final String text ) {
-    super.setText( text );
+    checkWidget();
+    setText( 0, text );
     // if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
@@ -1169,6 +1175,7 @@ public class TreeItem extends Item {
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = false;
     }
+    parent.updateScrollBars();
   }
 
   /**
@@ -1253,6 +1260,11 @@ public class TreeItem extends Item {
     }
   }
 
+  public void setImage( final Image image ) {
+    checkWidget();
+    setImage( 0, image );
+  }
+
   /**
    * Sets the receiver's image at a column.
    *
@@ -1290,6 +1302,9 @@ public class TreeItem extends Item {
     }
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = true;
+    }
+    if( parent.getColumnCount() == 0 ) {
+      parent.updateScrollBars();
     }
   }
 
@@ -1510,6 +1525,7 @@ public class TreeItem extends Item {
       ItemHolder.removeItem( parent, this );
     }
     parent.removeFromSelection( this );
+    parent.updateScrollBars();
     super.releaseParent();
   }
 
@@ -1517,15 +1533,29 @@ public class TreeItem extends Item {
   // helping methods
 
   /* package */int getInnerHeight() {
-    int innerHeight = 0;
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      TreeItem item = ( TreeItem )itemHolder.getItem( i );
+    int innerHeight = getItemCount() * 16;
+    for( int i = 0; i < getItemCount(); i++ ) {
+      TreeItem item = getItem( i );
       if( item.getExpanded() ) {
-        innerHeight = item.getInnerHeight();
+        innerHeight += item.getInnerHeight();
       }
     }
-    innerHeight += getItemCount() * 16;
     return innerHeight;
+  }
+
+  /* package */int getMaxInnerWidth( final TreeItem[] items, final int level ) {
+    int maxInnerWidth = 0;
+    for( int i = 0; i < items.length; i++ ) {
+      if( items[ i ] != null && items[ i ].isCached() ) {
+        int itemWidth = items[ i ].getPreferredWidth( 0, false ) + level * 19;
+        maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
+        if( items[ i ].getExpanded() ) {
+          int innerWidth = getMaxInnerWidth( items[ i ].getItems(), level + 1 );
+          maxInnerWidth = Math.max( maxInnerWidth, innerWidth );
+        }
+      }
+    }
+    return maxInnerWidth;
   }
 
   final int getCheckWidth( final int index ) {

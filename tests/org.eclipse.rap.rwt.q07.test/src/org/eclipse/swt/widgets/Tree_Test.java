@@ -24,7 +24,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 
 public class Tree_Test extends TestCase {
@@ -935,6 +935,170 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getScrollLeft() );
     tree.showColumn( tree.getColumn( 5 ) );
     assertEquals( 116, adapter.getScrollLeft() );
+  }
+
+  public void testUpdateScrollBarOnColumnChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 20, 20 );
+    assertFalse( tree.hasHScrollBar() );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 25 );
+    assertTrue( tree.hasHScrollBar() );
+    column.pack();
+    assertFalse( tree.hasHScrollBar() );
+    column.setWidth( 25 );
+    assertTrue( tree.hasHScrollBar() );
+    column.dispose();
+    assertFalse( tree.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnItemsChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 20, 20 );
+    assertFalse( tree.hasVScrollBar() );
+    for( int i = 0; i < 20; i++ ) {
+      new TreeItem( tree, SWT.NONE );
+    }
+    assertTrue( tree.hasVScrollBar() );
+    tree.removeAll();
+    assertFalse( tree.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnItemExpand() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 50, 20 );
+    assertFalse( tree.hasVScrollBar() );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item, SWT.NONE );
+    assertFalse( tree.hasVScrollBar() );
+    item.setExpanded( true );
+    assertTrue( tree.hasVScrollBar() );
+    item.setExpanded( false );
+    assertFalse( tree.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnResize() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 20, 20 );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 25 );
+    assertTrue( tree.hasHScrollBar() );
+    tree.setSize( 30, 30 );
+    assertFalse( tree.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnItemWidthChange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 60, 60 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    assertFalse( tree.hasHScrollBar() );
+    item.setText( "Very long long long long long long long long text" );
+    assertTrue( tree.hasHScrollBar() );
+    item.setText( "" );
+    assertFalse( tree.hasHScrollBar() );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    item.setImage( image );
+    assertTrue( tree.hasHScrollBar() );
+    item.setImage( ( Image )null );
+    assertFalse( tree.hasHScrollBar() );
+    item.setText( "Very long long long long long long long long text" );
+    item.setImage( image );
+    tree.clearAll( true );
+    assertFalse( tree.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnHeaderVisibleChange() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    int itemCount = 5;
+    for( int i = 0; i < itemCount ; i++ ) {
+      TreeItem item = new TreeItem( tree, SWT.NONE );
+      item.setText( "Item" );
+    }
+    int itemHeight = 16;
+    tree.setSize( 100, itemCount * itemHeight + 4 );
+    assertFalse( tree.hasVScrollBar() );
+    tree.setHeaderVisible( true );
+    assertTrue( tree.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarOnVirtualItemCountChange() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    int itemCount = 5;
+    int itemHeight = 16;
+    tree.setSize( 100, itemCount * itemHeight + 4 );
+    tree.setItemCount( itemCount );
+    assertFalse( tree.hasVScrollBar() );
+    tree.setItemCount( itemCount * 2 );
+    assertTrue( tree.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarItemWidthChangeWithColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 20, 20 );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 10 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    assertFalse( tree.hasHScrollBar() );
+    item.setText( "Very long long long long long long long long text" );
+    assertFalse( tree.hasHScrollBar() );
+    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    item.setImage( image );
+    assertFalse( tree.hasHScrollBar() );
+  }
+
+  public void testUpdateScrollBarWithInterDependencyHFirst() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 20 );
+    new TreeItem( tree, SWT.NONE );
+    int itemHeight = 16;
+    tree.setSize( 30, itemHeight + 4 );
+    assertFalse( tree.needsVScrollBar() );
+    assertFalse( tree.needsHScrollBar() );
+    assertFalse( tree.hasHScrollBar() );
+    assertFalse( tree.hasVScrollBar() );
+    column.setWidth( 40 );
+    assertTrue( tree.hasHScrollBar() );
+    assertTrue( tree.hasVScrollBar() );
+  }
+
+  public void testUpdateScrollBarWithInterDependencyVFirst() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 26 );
+    tree.setSize( 30, 30 );
+    assertFalse( tree.hasHScrollBar() );
+    assertFalse( tree.hasVScrollBar() );
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE );
+    }
+    assertTrue( tree.hasHScrollBar() );
+    assertTrue( tree.hasVScrollBar() );
   }
 
   private static boolean contains( final TreeItem[] items, final TreeItem item )

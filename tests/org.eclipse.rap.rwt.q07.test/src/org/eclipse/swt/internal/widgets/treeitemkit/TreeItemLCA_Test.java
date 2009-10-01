@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
@@ -210,13 +211,11 @@ public class TreeItemLCA_Test extends TestCase {
     };
     tree.addTreeListener( listener );
     String treeItemId = WidgetUtil.getId( treeItem );
-    Fixture.fakeRequestParam( treeItemId + ".state", "expanded" );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
     RWTFixture.readDataAndProcessAction( treeItem );
     assertEquals( "expanded", log.toString() );
     log.setLength( 0 );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, null );
-    Fixture.fakeRequestParam( treeItemId + ".state", "collapsed" );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
     RWTFixture.readDataAndProcessAction( treeItem );
     assertEquals( "collapsed", log.toString() );
@@ -229,13 +228,12 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( treeItem );
     String treeItemId = WidgetUtil.getId( treeItem );
-    Fixture.fakeRequestParam( treeItemId + ".state", "expanded" );
-    lca.readData( treeItem );
+    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
+    RWTFixture.readDataAndProcessAction( treeItem );
     assertEquals( true, treeItem.getExpanded() );
-    Fixture.fakeRequestParam( treeItemId + ".state", "collapsed" );
-    lca.readData( treeItem );
+    Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
+    RWTFixture.readDataAndProcessAction( treeItem );
     assertEquals( false, treeItem.getExpanded() );
   }
 

@@ -28,11 +28,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   // Property names used by preserve mechanism
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
-  static final String PROP_TREE_LISTENERS = "treeListeners";
   static final String PROP_HEADER_HEIGHT = "headerHeight";
   static final String PROP_HEADER_VISIBLE = "headerVisible";
   static final String PROP_COLUMN_ORDER = "columnOrder";
   static final String PROP_SCROLL_LEFT = "scrollLeft";
+  static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
+  static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
 
   private static final Integer DEFAULT_SCROLL_LEFT = new Integer( 0 );
 
@@ -42,8 +43,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( tree ) ) );
-    adapter.preserve( PROP_TREE_LISTENERS,
-                      Boolean.valueOf( TreeEvent.hasListener( tree ) ) );
     adapter.preserve( PROP_HEADER_HEIGHT,
                       new Integer( tree.getHeaderHeight() ) );
     adapter.preserve( PROP_HEADER_VISIBLE,
@@ -55,6 +54,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
     adapter.preserve( PROP_COLUMN_ORDER, columnOrder );
     adapter.preserve( PROP_SCROLL_LEFT, getScrollLeft( tree ) );
+    adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( tree ) );
+    adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( tree ) );
     WidgetLCAUtil.preserveCustomVariant( tree );
   }
 
@@ -92,11 +93,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.writeChanges( tree );
     updateSelectionListener( tree );
-    updateTreeListener( tree );
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeColumnOrder( tree );
     writeScrollLeft( tree );
+    writeOverflow( tree );
     WidgetLCAUtil.writeCustomVariant( tree );
   }
 
@@ -246,6 +247,33 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.set( PROP_SCROLL_LEFT, "scrollLeft", newValue, DEFAULT_SCROLL_LEFT );
   }
 
+  private static void writeOverflow( final Tree tree ) throws IOException {
+    boolean hasHChanged = WidgetLCAUtil.hasChanged( tree,
+                                                    PROP_HAS_H_SCROLL_BAR,
+                                                    hasHScrollBar( tree ),
+                                                    Boolean.TRUE );
+    boolean hasVChanged = WidgetLCAUtil.hasChanged( tree,
+                                                    PROP_HAS_V_SCROLL_BAR,
+                                                    hasVScrollBar( tree ),
+                                                    Boolean.TRUE );
+    if( hasHChanged || hasVChanged ) {
+      boolean scrollX = hasHScrollBar( tree ).booleanValue();
+      boolean scrollY = hasVScrollBar( tree ).booleanValue();
+      String overflow;
+      if( scrollX && scrollY ) {
+        overflow = "scroll";
+      } else if( scrollX ) {
+        overflow = "scrollX";
+      } else if( scrollY ) {
+        overflow = "scrollY";
+      } else {
+        overflow = "hidden";
+      }
+      JSWriter writer = JSWriter.getWriterFor( tree );
+      writer.set( "treeOverflow", overflow );
+    }
+  }
+
   private Integer getScrollLeft( final Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
@@ -263,12 +291,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void updateTreeListener( final Tree tree ) throws IOException {
-    Boolean newValue = Boolean.valueOf( TreeEvent.hasListener( tree ) );
-    String prop = PROP_TREE_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( tree );
-      writer.set( "treeListeners", newValue );
-    }
+  //////////////////
+  // Helping methods
+
+  private static Boolean hasHScrollBar( final Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    return Boolean.valueOf( treeAdapter.hasHScrollBar() );
+  }
+
+  private static Boolean hasVScrollBar( final Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    return Boolean.valueOf( treeAdapter.hasVScrollBar() );
   }
 }
