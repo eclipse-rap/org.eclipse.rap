@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.service.*;
@@ -358,28 +359,30 @@ public class RWTLifeCycle_Test extends TestCase {
                                 TestEntryPoint.class );
     final PhaseListener[] callbackHandler = new PhaseListener[ 1 ];
     PhaseListener listener = new PhaseListener() {
-
       private static final long serialVersionUID = 1L;
-
       public void beforePhase( PhaseEvent event ) {
         callbackHandler[ 0 ] = this;
       }
-
       public void afterPhase( final PhaseEvent event ) {
       }
-
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
     };
     PhaseListenerRegistry.add( listener );
+    // Run lifecycle in session one
     RWTLifeCycle lifeCycle1 = new RWTLifeCycle();
     lifeCycle1.execute();
-    assertSame( callbackHandler[ 0 ], listener );
+    assertSame( listener, callbackHandler[ 0 ] );
+    // Simulate new session and run lifecycle 
+    newSession();
+    Fixture.fakeBrowser( new Ie6up( true, true ) );
+    Fixture.fakeResponseWriter();
+    RWTFixture.registerAdapterFactories();
     callbackHandler[ 0 ] = null;
     RWTLifeCycle lifeCycle2 = new RWTLifeCycle();
     lifeCycle2.execute();
-    assertSame( callbackHandler[ 0 ], listener );
+    assertSame( listener, callbackHandler[ 0 ] );
     PhaseListenerRegistry.clear();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
@@ -910,12 +913,19 @@ public class RWTLifeCycle_Test extends TestCase {
     result.setStateInfo( new ServiceStateInfo() );
     return result;
   }
+  
+  private static void newSession() {
+    ContextProvider.disposeContext();
+    TestResponse response = new TestResponse();
+    TestRequest request = new TestRequest();
+    request.setSession( new TestSession() );
+    Fixture.fakeContextProvider( response, request );
+  }
 
   private static UIThread getUIThread() {
     ISessionStore session = ContextProvider.getSession();
     return ( UIThread )session.getAttribute( RWTLifeCycle.UI_THREAD );
   }
-
 
   protected void setUp() throws Exception {
     bufferedSystemErr = System.err;
