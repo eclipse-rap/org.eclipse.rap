@@ -88,7 +88,7 @@
 
       <property name="background-image"
           type="image"
-          description="Icon image of the check box. The size of the image should be 13 x 13 pixels." />
+          description="Icon image of the check box." />
 
       <state name="selected"
           description="Applies for checked check boxes." />
@@ -109,7 +109,7 @@
 
       <property name="background-image"
           type="image"
-          description="Icon image of the radio button. The size of the image should be 13 x 13 pixels." />
+          description="Icon image of the radio button." />
           
       <state name="selected"
           description="Applies for selected radio buttons." />

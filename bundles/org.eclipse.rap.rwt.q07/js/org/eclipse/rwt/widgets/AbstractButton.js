@@ -53,7 +53,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
   properties : {
 
     selectionIndicator : {
-      check : "String",
       apply : "_applySelectionIndicator",
       nullable : true,
       themeable : true
@@ -90,8 +89,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     },
 
     _applySelectionIndicator : function( value, old ) {
-      this.setCellContent( 0, value );
-      this.setCellDimension( 0, 13, 13 ); // TODO [tb] : make themeable
+      var url = value ? value[ 0 ] : null;
+      var width = value ? value[ 1 ] : 0;
+      var height = value ? value[ 2 ] : 0;      
+      this.setCellContent( 0, url );
+      this.setCellDimension( 0, width, height ); 
     },
 
     setHasSelectionListener : function( value ) {

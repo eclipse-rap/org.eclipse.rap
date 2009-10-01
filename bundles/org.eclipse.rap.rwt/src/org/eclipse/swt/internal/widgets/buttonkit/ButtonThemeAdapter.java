@@ -21,8 +21,6 @@ import org.eclipse.swt.widgets.Button;
 
 public final class ButtonThemeAdapter extends ControlThemeAdapter {
 
-  private static final Point CHECK_SIZE = new Point( 13, 13 );
-
   protected void configureMatcher( final WidgetMatcher matcher ) {
     super.configureMatcher( matcher );
     matcher.addStyle( "FLAT", SWT.FLAT );
@@ -45,6 +43,17 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
   }
 
   public Point getCheckSize( final Button button ) {
-    return CHECK_SIZE;
+    Point result = null;
+    if( ( button.getStyle() & SWT.RADIO ) != 0) {
+      result = getCssImageDimension( "Button-RadioIcon", 
+                                     "background-image", 
+                                     button );
+    } else if( ( button.getStyle() & SWT.CHECK ) != 0) {
+      result = getCssImageDimension( "Button-CheckIcon", 
+                                     "background-image", 
+                                     button );      
+    }    
+    return result;
   }
+  
 }

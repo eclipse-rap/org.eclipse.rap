@@ -242,7 +242,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
         spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
-        selectionIndicator : tv.getCssImage( "Button-CheckIcon", "background-image" )
+        selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", 
+                                                  "background-image" )
       }
     }
   },
@@ -263,7 +264,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
         spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
-        selectionIndicator : tv.getCssImage( "Button-RadioIcon", "background-image" )
+        selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", 
+                                                  "background-image" )
       }
     }
   },
