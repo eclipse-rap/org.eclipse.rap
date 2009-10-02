@@ -28,7 +28,7 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   border: 1px solid #A4A4A4;
   border-radius: 3px;
   padding: 2px 5px;
-  /* background-color: #f5f6f6; */
+  color: #464a4e;
   background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
@@ -483,7 +483,7 @@ Tree {
   background-color: rgb( 252, 252, 252 );
 }
 
-Text, Combo, Spinner, DateTime, List, Tree, Table {
+Combo, DateTime, List, Tree, Table {
   background-color: rgb( 252, 252, 252 );
 }
 
@@ -525,7 +525,7 @@ ExpandItem-Button:expanded:hover {
 /* Text, Combo, Spinner, DateTime */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-Text[BORDER], Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
+Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
 }
@@ -538,6 +538,8 @@ Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpBu
 Spinner {
   border: 1px solid #a4a4a4;
   padding: 1px 2px;
+  color: 464a4e;
+  background-color: rgb( 252, 252, 252 );
 }
 
 Spinner-DownButton {
@@ -586,6 +588,11 @@ DateTime-Field:selected, DateTime-Calendar-Day:selected {
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
   color: rgb( 128, 128, 128 );
+}
+
+Text {
+  border: 1px solid #a4a4a4;
+  color: #464a4e;
 }
 
 /* Group */
