@@ -117,6 +117,9 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
 
     </element>
 
@@ -129,6 +132,9 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
 
     </element>
 
@@ -141,6 +147,9 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
 
     </element>
 
@@ -153,6 +162,9 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
 
     </element>
     
