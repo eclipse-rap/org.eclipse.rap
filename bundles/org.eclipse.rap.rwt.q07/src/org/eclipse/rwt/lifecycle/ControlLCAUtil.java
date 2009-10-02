@@ -617,6 +617,7 @@ public class ControlLCAUtil {
   private static void writeTabIndex( final Control control ) throws IOException
   {
     if( control instanceof Shell ) {
+      resetTabIndices( ( Shell )control );
       // tabIndex must be a positive value
       computeTabIndices( ( Shell )control, 1 );
     }
@@ -639,13 +640,6 @@ public class ControlLCAUtil {
    */
   private static int computeTabIndices( final Composite comp, final int index )
   {
-    Control[] children = comp.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      Control control = children[ i ];
-      Object adapter = control.getAdapter( IControlAdapter.class );
-      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-      controlAdapter.setTabIndex( -1 );
-    }
     Control[] tabList = comp.getTabList();
     int nextIndex = index;
     for( int i = 0; i < tabList.length; i++ ) {
@@ -664,6 +658,19 @@ public class ControlLCAUtil {
       }
     }
     return nextIndex;
+  }
+
+  private static void resetTabIndices( final Composite comp ) {
+    Control[] children = comp.getChildren();
+    for( int i = 0; i < children.length; i++ ) {
+      Control control = children[ i ];
+      Object adapter = control.getAdapter( IControlAdapter.class );
+      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+      controlAdapter.setTabIndex( -1 );
+      if( control instanceof Composite ) {
+        resetTabIndices( ( Composite )control );
+      }
+    }
   }
 
   private static int getTabIndex( final Control control ) {
