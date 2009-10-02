@@ -1990,10 +1990,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "calendar-monthyear" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var boldFont
-        = qx.ui.core.Font.fromString( "11 bold Tahoma, 'Lucida Sans Unicode', sans-serif" );
       return {
-        font          : boldFont,
+        font          : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
         textAlign     : "center",
         textColor     : states.disabled
                         ? tv.getCssColor( "DateTime", "color" )

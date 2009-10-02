@@ -99,6 +99,12 @@
       <property name="background-color"
           type="color"
           description="Background color" />
+          
+      <property name="font" type="font">
+        <description>
+          Text font for the Calendar navigation bar.
+        </description>
+      </property>
 
     </element>
 
