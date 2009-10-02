@@ -483,7 +483,7 @@ Tree {
   background-color: rgb( 252, 252, 252 );
 }
 
-Combo, DateTime, List, Tree, Table {
+Combo, List, Tree, Table {
   background-color: rgb( 252, 252, 252 );
 }
 
@@ -525,7 +525,7 @@ ExpandItem-Button:expanded:hover {
 /* Text, Combo, Spinner, DateTime */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
+Combo, CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
 }
@@ -538,7 +538,7 @@ Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpBu
 Spinner {
   border: 1px solid #a4a4a4;
   padding: 1px 2px;
-  color: 464a4e;
+  color: #464a4e;
   background-color: rgb( 252, 252, 252 );
 }
 
@@ -562,13 +562,85 @@ Spinner-UpButton:hover {
   background-image: url( /theme/business/icons/spinner-up-hover.png );
 }
 
+DateTime {
+  border: 1px solid #a4a4a4;
+  padding: 1px 2px;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-radius: 2px 2px 2px 2px;
+}
+
+DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
+  background-color: #00569c;
+  color: white;
+}
+
+DateTime-Calendar-Day:otherMonth {
+  background-color: transparent;
+  color: #464a4e;
+}
+
+DateTime-Calendar-Day:hover {
+  background-color: rgb( 217, 227, 243 );
+}
+
+DateTime-Calendar-Navbar {
+  background-color: #00569c;
+  color: white;
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+DateTime-Calendar-PreviousMonthButton {
+  background-image: url( /theme/business/icons/lastMonth.png );
+}
+
+DateTime-Calendar-PreviousMonthButton:hover {
+  background-image: url( /theme/business/icons/lastMonth-hover.png );
+}
+
+DateTime-Calendar-NextMonthButton {
+  background-image: url( /theme/business/icons/nextMonth.png );
+}
+
+DateTime-Calendar-NextMonthButton:hover {
+  background-image: url( /theme/business/icons/nextMonth-hover.png );
+}
+
+DateTime-Calendar-PreviousYearButton {
+  background-image: url( /theme/business/icons/lastYear.png );
+}
+
+DateTime-Calendar-PreviousYearButton:hover {
+  background-image: url( /theme/business/icons/lastYear-hover.png );
+}
+
+DateTime-Calendar-NextYearButton {
+  background-image: url( /theme/business/icons/nextYear.png );
+}
+
+DateTime-Calendar-NextYearButton:hover {
+  background-image: url( /theme/business/icons/nextYear-hover.png );
+}
+
 DateTime-DownButton {
-  background-image: url( /theme/business/icons/chevron-down-small.png );
+  background-image: url( /theme/business/icons/spinner-down.png );
+  width: 18px;
+  border: 1px solid #a4a4a4;
+}
+
+DateTime-DownButton:hover {
+  background-image: url( /theme/business/icons/spinner-down-hover.png );
 }
 
 DateTime-UpButton {
-  background-image: url( /theme/business/icons/chevron-up-small.png );
+  background-image: url( /theme/business/icons/spinner-up.png );
+  width: 18px;
+  border: 1px solid #a4a4a4;
 }
+
+DateTime-UpButton:hover {
+  background-image: url( /theme/business/icons/spinner-up-hover.png );
+}
+
 
 Combo-Button:hover, CCombo-Button:hover,
 Spinner-UpButton:hover, Spinner-DownButton:hover,
@@ -592,6 +664,7 @@ DateTime-Calendar-Day:otherMonth {
 
 Text {
   border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
   color: #464a4e;
 }
 
