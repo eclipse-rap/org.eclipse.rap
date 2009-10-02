@@ -535,13 +535,37 @@ Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpBu
   border: none;
 }
 
-Spinner-UpButton, DateTime-UpButton {
-  background-image: url( /theme/business/icons/chevron-up-small.png );
+Spinner {
+  border: 1px solid #a4a4a4;
+  padding: 1px 2px;
 }
 
-Spinner-DownButton, DateTime-DownButton {
+Spinner-DownButton {
+  background-image: url( /theme/business/icons/spinner-down.png );
+  width: 18px;
+  border: 1px solid #a4a4a4;
+}
+
+Spinner-DownButton:hover {
+  background-image: url( /theme/business/icons/spinner-down-hover.png );
+}
+
+Spinner-UpButton {
+  background-image: url( /theme/business/icons/spinner-up.png );
+  width: 18px;
+  border: 1px solid #a4a4a4;
+}
+
+Spinner-UpButton:hover {
+  background-image: url( /theme/business/icons/spinner-up-hover.png );
+}
+
+DateTime-DownButton {
   background-image: url( /theme/business/icons/chevron-down-small.png );
-  /* background-color: #c1c1c1; */
+}
+
+DateTime-UpButton {
+  background-image: url( /theme/business/icons/chevron-up-small.png );
 }
 
 Combo-Button:hover, CCombo-Button:hover,
