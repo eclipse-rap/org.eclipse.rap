@@ -2040,7 +2040,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var border = qx.ui.core.Border.fromConfig({
         bottom : [ 1, "solid", "gray" ]
       });
+      // FIXME: [if] Bigger font size leads to text cutoff 
+      var font = tv.getCssFont( "*", "font" );
+      font.setSize( 11 );
       return {
+        font            : font,
         border          : border,
         textAlign       : "center",
         textColor       : states.disabled
