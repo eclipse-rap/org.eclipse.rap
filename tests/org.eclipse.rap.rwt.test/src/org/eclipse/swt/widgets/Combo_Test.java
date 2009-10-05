@@ -359,7 +359,7 @@ public class Combo_Test extends TestCase {
     try {
       combo.addModifyListener( null );
       fail( "removeModifyListener must not allow null listener" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     // test whether all content modifying API methods send a Modify event
@@ -409,7 +409,7 @@ public class Combo_Test extends TestCase {
     try {
       combo.removeModifyListener( null );
       fail( "removeModifyListener must not allow null listener" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
@@ -428,7 +428,7 @@ public class Combo_Test extends TestCase {
     try {
       combo.addModifyListener( null );
       fail( "removeModifyListener must not allow null listener" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     // test whether all content modifying API methods send a Modify event
@@ -475,7 +475,7 @@ public class Combo_Test extends TestCase {
     try {
       combo.removeModifyListener( null );
       fail( "removeModifyListener must not allow null listener" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

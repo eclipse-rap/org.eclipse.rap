@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.events;
 import java.util.*;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.swt.SWT;
 
 public class EventAdapter implements IEventAdapter {
 
@@ -108,8 +109,12 @@ public class EventAdapter implements IEventAdapter {
   public void addListener( final Class listenerType, 
                            final Object listener ) 
   {
-    ParamCheck.notNull( listenerType, "listenerType" );
-    ParamCheck.notNull( listener, "listener" );
+    if( listenerType == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     checkTypeCompatibility( listenerType, listener );
     getListenerSet( listenerType ).add( listener );
   }
@@ -117,8 +122,12 @@ public class EventAdapter implements IEventAdapter {
   public void removeListener( final Class listenerType, 
                               final Object listener )
   {
-    ParamCheck.notNull( listenerType, "listenerType" );
-    ParamCheck.notNull( listener, "listener" );
+    if( listenerType == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     checkTypeCompatibility( listenerType, listener );
     if( hasListener( listenerType ) ) {
       getListenerSet( listenerType ).remove( listener );

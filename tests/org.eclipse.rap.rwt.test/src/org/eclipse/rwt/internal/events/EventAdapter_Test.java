@@ -62,12 +62,33 @@ public class EventAdapter_Test extends TestCase {
     assertSame( actionListener, listener[ 0 ] );
     eventAdapter.removeListener( SelectionListener.class, actionListener );
     assertFalse( eventAdapter.hasListener( SelectionListener.class ) );
+  }
+  
+  public void testAddListenerWithIllegalArguments() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    IEventAdapter eventAdapter
+      = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
     try {
       eventAdapter.addListener( SelectionListener.class, new Object() );
       fail();
     } catch( final IllegalArgumentException iae ) {
     }
-    listener = eventAdapter.getListener( SelectionListener.class );
-    assertEquals( 0, listener.length );
+    try {
+      eventAdapter.addListener( SelectionListener.class, null );
+      fail();
+    } catch( final IllegalArgumentException iae ) {
+    }
+    try {
+      SelectionListener validListener = new SelectionAdapter() {
+      }; 
+      eventAdapter.addListener( null, validListener );
+      fail();
+    } catch( final IllegalArgumentException iae ) {
+    }
+    Object[] listeners = eventAdapter.getListener( SelectionListener.class );
+    assertEquals( 0, listeners.length );
+    
   }
 }
