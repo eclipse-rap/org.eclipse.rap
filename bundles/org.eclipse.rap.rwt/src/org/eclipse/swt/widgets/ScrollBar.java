@@ -84,8 +84,6 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * <ul>
  * <li>minimum, maximum, thumb, increment and pageIncrement properties are not
  * rendered (no corresponding client-side property)</li>
- * <li>size (width when V_SCROLL, height when H_SCROLL) is hard-coded and may
- * not match what the browser actually shows</li>
  * </ul>
  *
  * @since 1.0
