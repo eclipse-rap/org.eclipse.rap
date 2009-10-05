@@ -622,16 +622,10 @@ public class ControlLCAUtil {
       computeTabIndices( ( Shell )control, 1 );
     }
     int tabIndex = getTabIndex( control );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    // Don't write tabIndex when it is -1 initially
-    // With this we assume that every client-side widget has a proper initial
-    // tabIndex setting
-    if( tabIndex > -1 || adapter.isInitialized() ) {
-      Integer newValue = new Integer( tabIndex );
-      JSWriter writer = JSWriter.getWriterFor( control );
-      // there is no reliable default value for all controls
-      writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
-    }
+    Integer newValue = new Integer( tabIndex );
+    JSWriter writer = JSWriter.getWriterFor( control );
+    // there is no reliable default value for all controls
+    writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
   }
 
   /**
@@ -688,7 +682,6 @@ public class ControlLCAUtil {
     boolean result = true;
     result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
     result &= control.getClass() != Composite.class;
-    result &= control.getClass() != ToolBar.class;
     result &= control.getClass() != SashForm.class;
     return result;
   }
