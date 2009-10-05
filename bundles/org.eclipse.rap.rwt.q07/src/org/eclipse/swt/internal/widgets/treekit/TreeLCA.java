@@ -274,12 +274,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private Integer getScrollLeft( final Tree tree ) {
-    Object adapter = tree.getAdapter( ITreeAdapter.class );
-    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
-    return new Integer( treeAdapter.getScrollLeft() );
-  }
-
   private static void updateSelectionListener( final Tree tree )
     throws IOException
   {
@@ -293,6 +287,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static Integer getScrollLeft( final Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    return new Integer( treeAdapter.getScrollLeft() );
+  }
 
   private static Boolean hasHScrollBar( final Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );

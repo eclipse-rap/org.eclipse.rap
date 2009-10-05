@@ -632,10 +632,11 @@ public class ControlLCAUtil {
    * Recursively computes the tab indices for all child controls of a given
    * composite and stores the resulting values in the control adapters.
    */
-  private static int computeTabIndices( final Composite comp, final int index )
+  private static int computeTabIndices( final Composite composite, 
+                                        final int startIndex )
   {
-    Control[] tabList = comp.getTabList();
-    int nextIndex = index;
+    Control[] tabList = composite.getTabList();
+    int nextIndex = startIndex;
     for( int i = 0; i < tabList.length; i++ ) {
       Control control = tabList[ i ];
       Object adapter = control.getAdapter( IControlAdapter.class );
