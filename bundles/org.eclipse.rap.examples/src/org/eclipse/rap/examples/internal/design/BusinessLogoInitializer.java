@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 
 
-public class LogoInitializer implements ILayoutSetInitializer {
+public class BusinessLogoInitializer implements ILayoutSetInitializer {
 
   public static final String SET_ID
     = "org.eclipse.rap.design.example.business.layoutset.logo";

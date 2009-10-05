@@ -66,9 +66,19 @@
          point="org.eclipse.rap.ui.layouts">
       <layout
             id="org.eclipse.rap.design.example.business.layout"
-            name="Business Layout Blue Extended">
+            name="Business Layout Extended">
          <layoutSet
-               class="org.eclipse.rap.examples.internal.design.LogoInitializer"
+               class="org.eclipse.rap.examples.internal.design.BusinessLogoInitializer"
+               id="org.eclipse.rap.design.example.layoutset.logo.extended"
+               name="Logo Overridding"
+               overridesId="org.eclipse.rap.design.example.layoutset.logo">
+         </layoutSet>
+      </layout>
+      <layout
+            id="org.eclipse.rap.design.example.fancy.layout"
+            name="Fancy Layout Extended">
+         <layoutSet
+               class="org.eclipse.rap.examples.internal.design.FancyLogoInitializer"
                id="org.eclipse.rap.design.example.layoutset.logo.extended"
                name="Logo Overridding"
                overridesId="org.eclipse.rap.design.example.layoutset.logo">
@@ -88,6 +98,9 @@
             alias="/"
             class="org.eclipse.rap.examples.internal.RedirectServlet">
       </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.layouts">
    </extension>
 
 </plugin>
