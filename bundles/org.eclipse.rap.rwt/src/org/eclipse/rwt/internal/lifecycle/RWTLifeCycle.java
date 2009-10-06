@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Display;
  * <p></p>
  */
 public class RWTLifeCycle extends LifeCycle {
-  
-  public static final String UI_THREAD 
+
+  public static final String UI_THREAD
     = RWTLifeCycle.class.getName() + ".uiThread";
   private static final Integer ZERO = new Integer( 0 );
-  
+
   private static final String ATTR_SESSION_DISPLAY
     = RWTLifeCycle.class.getName() + "#sessionDisplay";
   private static final String ATTR_REDRAW_CONTROLS
@@ -48,7 +48,7 @@ public class RWTLifeCycle extends LifeCycle {
     = RWTLifeCycle.class.getName() + "Initialized";
   private static final String CURRENT_PHASE
     = RWTLifeCycle.class.getName() + ".currentPhase";
-  private static final String PHASE_ORDER 
+  private static final String PHASE_ORDER
     = RWTLifeCycle.class.getName() + ".phaseOrder";
   private final static Logger LOGGER
     = Logger.getLogger( RWTLifeCycle.class.getName() );
@@ -61,7 +61,7 @@ public class RWTLifeCycle extends LifeCycle {
     new ProcessAction(),
     new Render()
   };
-  
+
   private static final IPhase[] PHASE_ORDER_STARTUP = new IPhase[] {
     new IInterruptible() {
       public PhaseId execute() throws IOException {
@@ -70,7 +70,7 @@ public class RWTLifeCycle extends LifeCycle {
       public PhaseId getPhaseID() {
         return PhaseId.PREPARE_UI_ROOT;
       }
-    }, 
+    },
     new Render()
   };
 
@@ -82,8 +82,8 @@ public class RWTLifeCycle extends LifeCycle {
       public PhaseId getPhaseID() {
         return PhaseId.PREPARE_UI_ROOT;
       }
-    }, 
-    new ReadData(), 
+    },
+    new ReadData(),
     new IInterruptible() {
       public PhaseId execute() throws IOException {
         new ProcessAction().execute();
@@ -99,10 +99,10 @@ public class RWTLifeCycle extends LifeCycle {
   private static final class UIThreadTerminatedError extends ThreadDeath {
     private static final long serialVersionUID = 1L;
   }
-  
+
   private static final class PhaseExecutionError extends ThreadDeath {
     private static final long serialVersionUID = 1L;
-    public PhaseExecutionError( Throwable cause ) {
+    public PhaseExecutionError( final Throwable cause ) {
       initCause( cause );
     }
   }
@@ -111,28 +111,27 @@ public class RWTLifeCycle extends LifeCycle {
     public void run() {
       IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
       try {
-        // TODO [rh] consider taking thread from session attribute
-        synchronized( uiThread.getLock() ) {          
-          uiThread.updateServiceContext();
-          UICallBackManager.getInstance().notifyUIThreadStart();
-          continueLifeCycle();
-          createUI();
-          continueLifeCycle();
-          UICallBackManager.getInstance().notifyUIThreadEnd();
-          // TODO [rh] preliminary solution: see 
-          //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
-          setShutdownAdapter( null );
+        try {
+          synchronized( uiThread.getLock() ) {
+            uiThread.updateServiceContext();
+            UICallBackManager.getInstance().notifyUIThreadStart();
+            continueLifeCycle();
+            createUI();
+            continueLifeCycle();
+            UICallBackManager.getInstance().notifyUIThreadEnd();
+          }
+        } catch( UIThreadTerminatedError thr ) {
+          throw thr;
+        } catch( Throwable thr ) {
+          IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+          stateInfo.setAttribute( UI_THREAD_THROWABLE, thr );
         }
-      } catch( final UIThreadTerminatedError e ) {
+        // In any case: wait for the thread to be terminated by session timeout
+        switchThread( uiThread );
+      } catch( UIThreadTerminatedError e ) {
+        // If we get here, the session is being invalidated, see
+        // UIThread#terminateThread()
         ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
-      } catch( final Throwable thr ) {
-        // TODO [rh] preliminary fix for 
-        //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=232289
-        //      For a decent solution, see these ideas
-        //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
-        setShutdownAdapter( null );
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        stateInfo.setAttribute( UI_THREAD_THROWABLE, thr );
       }
     }
   }
@@ -189,7 +188,7 @@ public class RWTLifeCycle extends LifeCycle {
       if( currentPhase != null ) {
         int phaseIndex = currentPhase.intValue();
         // A non-null currentPhase indicates that an IInterruptible phase
-        // was executed before. In this case we now need to execute the 
+        // was executed before. In this case we now need to execute the
         // AfterPhase events
         afterPhaseExecution( phaseOrder[ phaseIndex ].getPhaseID() );
         start = currentPhase.intValue() + 1;
@@ -229,15 +228,15 @@ public class RWTLifeCycle extends LifeCycle {
       if( startup != null ) {
         TextSizeDetermination.readStartupProbes();
         result = EntryPointManager.createUI( startup );
-      } 
+      }
     }
     return result;
   }
 
   public static boolean readAndDispatch() {
     boolean result = false;
-    if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
-        || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
+    if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() )
+        || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) )
     {
       result = ProcessActionRunner.executeNext();
       if( !result ) {
@@ -302,11 +301,7 @@ public class RWTLifeCycle extends LifeCycle {
     continueLifeCycle();
     IUIThreadHolder uiThread = getUIThreadHolder();
     UICallBackManager.getInstance().notifyUIThreadEnd();
-    try {
-      uiThread.switchThread();
-    } catch( InterruptedException e ) {
-      throw new UIThreadTerminatedError();
-    }
+    switchThread( uiThread );
     uiThread.updateServiceContext();
     UICallBackManager.getInstance().notifyUIThreadStart();
     continueLifeCycle();
@@ -322,16 +317,26 @@ public class RWTLifeCycle extends LifeCycle {
     return result;
   }
 
-  private static IUIThreadHolder getUIThreadHolder() {
+  static IUIThreadHolder getUIThreadHolder() {
     ISessionStore session = ContextProvider.getSession();
     return ( IUIThreadHolder )session.getAttribute( UI_THREAD );
   }
-  
+
+  private static void switchThread( final IUIThreadHolder uiThread )
+    throws UIThreadTerminatedError
+  {
+    try {
+      uiThread.switchThread();
+    } catch( InterruptedException e ) {
+      throw new UIThreadTerminatedError();
+    }
+  }
+
   private static Integer getCurrentPhase() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return ( Integer )stateInfo.getAttribute( CURRENT_PHASE );
   }
-  
+
   private static String getEntryPoint() {
     String result = null;
     HttpServletRequest request = ContextProvider.getRequest();
@@ -344,8 +349,8 @@ public class RWTLifeCycle extends LifeCycle {
     return result;
   }
 
-  private static void setShutdownAdapter( 
-    final ISessionShutdownAdapter adapter ) 
+  private static void setShutdownAdapter(
+    final ISessionShutdownAdapter adapter )
   {
     ISessionStore sessionStore = ContextProvider.getSession();
     SessionStoreImpl sessionStoreImpl = ( SessionStoreImpl )sessionStore;
@@ -403,7 +408,7 @@ public class RWTLifeCycle extends LifeCycle {
       // TODO [rh] consider removing processNextRunnableInUIThread() here
       //      as it is called in Display#readAndDispatch()
       //      One side-effect would be, that asyncExec-runnables that are added
-      //      in an after-PROCESS_ACTION-listener would not be processed in the 
+      //      in an after-PROCESS_ACTION-listener would not be processed in the
       //      same request
       while( UICallBackManager.getInstance().processNextRunnableInUIThread() ) {
         // do nothing - while loop is only there to process all runnables

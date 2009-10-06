@@ -27,7 +27,6 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWTError;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
@@ -101,15 +100,20 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public static class TestPhasesEntryPoint implements IEntryPoint {
     public int createUI() {
-      new Display();
+      Display display = new Display();
+      while( !display.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
       return 0;
     }
   }
   
   public static class TestErrorInLifeCycleEntryPoint implements IEntryPoint {
     public int createUI() {
-      new Display();
-      return 0;
+      String msg = TestErrorInLifeCycleEntryPoint.class.getName();
+      throw new RuntimeException( msg );
     }
   }
 
@@ -328,16 +332,17 @@ public class RWTLifeCycle_Test extends TestCase {
   
   public void testErrorInLifeCycle() throws IOException {
     EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestEntryPoint.class );
+                                TestErrorInLifeCycleEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
-    lifeCycle.execute();
     Fixture.fakeRequestParam( RequestParams.STARTUP,
                               EntryPointManager.DEFAULT );
     try {
       lifeCycle.execute();
-      fail(); // SWTError: Not implemented [multiple displays]
-    } catch( final SWTError e ) {
-      // expected
+      fail();
+    } catch( final RuntimeException e ) {
+      String msg = TestErrorInLifeCycleEntryPoint.class.getName();
+      assertEquals( msg, e.getMessage() );
+      assertTrue( RWTLifeCycle.getUIThreadHolder().getThread().isAlive() );
     }
   }
 
@@ -649,8 +654,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testUIRunnable() throws InterruptedException {
     EntryPointManager.register( EntryPointManager.DEFAULT, MainStartup.class );
-    final RWTLifeCycle lifeCycle
-      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
         public PhaseId execute() throws IOException {
@@ -665,8 +669,9 @@ public class RWTLifeCycle_Test extends TestCase {
     UIThread thread = new UIThread( lifeCycle.uiRunnable );
     thread.setServiceContext( ContextProvider.getContext() );
     thread.start();
-    thread.join();
-
+    // TODO [rh] Find more failsafe solution
+    Thread.sleep( 200 );
+    
     String expected = "before"
                     + PhaseId.PREPARE_UI_ROOT
                     + "createUI"
@@ -860,54 +865,54 @@ public class RWTLifeCycle_Test extends TestCase {
     try {
       lifeCycle.execute();
       // wait for UI thread to terminate
-      synchronized( getUIThread().getLock() ) {
-        getUIThread().join( 5000 );
-      }
+//      synchronized( getUIThread().getLock() ) {
+//        getUIThread().join( 5000 );
+//      }
       fail( "Exception in render must be re-thrown by life cycle" );
     } catch( Throwable e ) {
-      assertEquals( e.getMessage(), EXCEPTION_IN_RENDER );
+      assertEquals( EXCEPTION_IN_RENDER, e.getMessage() );
     }
   }
 
   // TODO [rh] bring back to life, once bug #219465 is closed
   //      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
-//  public void testSessionInvalidateWithoutRunningEventLoop() throws Exception {
-//    final ISessionStore session = ContextProvider.getSession();
-//    final String[] uiThreadName = { "unknown-ui-thread" };
-//    final String[] invalidateThreadName = { "unkown-invalidate-thread" };
-//    final boolean hasContext[] = new boolean[]{ false };
-//    final IServiceStateInfo stateInfo[] =  { null };
-//    session.addSessionStoreListener( new SessionStoreListener() {
-//      public void beforeDestroy( final SessionStoreEvent event ) {
-//        invalidateThreadName[ 0 ] = Thread.currentThread().getName();
-//        hasContext[ 0 ] = ContextProvider.hasContext();
-//        stateInfo[ 0 ] = ContextProvider.getStateInfo();
-//      }
-//    } );
-//    // Register and 'run' entry point with readAndDispatch/sleep loop
-//    Class entryPointClass = SessionInvalidateWithoutEventLoopEntryPoint.class;
-//    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
-//    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
-//    lifeCycle.addPhaseListener( new PhaseListener() {
-//      private static final long serialVersionUID = 1L;
-//      public void beforePhase( final PhaseEvent event ) {
-//        uiThreadName[ 0 ] = Thread.currentThread().getName();
-//      }
-//      public void afterPhase( final PhaseEvent event ) {
-//      }
-//      public PhaseId getPhaseId() {
-//        return PhaseId.PREPARE_UI_ROOT;
-//      }
-//    } );
-//    lifeCycle.execute();
-//    // Invalidate session
-//    invalidateSession( session );
-//    //
-//    assertFalse( session.isBound() );
-//    assertEquals( uiThreadName[ 0 ], invalidateThreadName[ 0 ] );
-//    assertTrue( hasContext[ 0 ] );
-//    assertNotNull( stateInfo[ 0 ] );
-//  }
+  public void testSessionInvalidateWithoutRunningEventLoop() throws Exception {
+    final ISessionStore session = ContextProvider.getSession();
+    final String[] uiThreadName = { "unknown-ui-thread" };
+    final String[] invalidateThreadName = { "unkown-invalidate-thread" };
+    final boolean hasContext[] = new boolean[]{ false };
+    final IServiceStateInfo stateInfo[] =  { null };
+    session.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( final SessionStoreEvent event ) {
+        invalidateThreadName[ 0 ] = Thread.currentThread().getName();
+        hasContext[ 0 ] = ContextProvider.hasContext();
+        stateInfo[ 0 ] = ContextProvider.getStateInfo();
+      }
+    } );
+    // Register and 'run' entry point with readAndDispatch/sleep loop
+    Class entryPointClass = SessionInvalidateWithoutEventLoopEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public void beforePhase( final PhaseEvent event ) {
+        uiThreadName[ 0 ] = Thread.currentThread().getName();
+      }
+      public void afterPhase( final PhaseEvent event ) {
+      }
+      public PhaseId getPhaseId() {
+        return PhaseId.PREPARE_UI_ROOT;
+      }
+    } );
+    lifeCycle.execute();
+    // Invalidate session
+    invalidateSession( session );
+    //
+    assertFalse( session.isBound() );
+    assertEquals( uiThreadName[ 0 ], invalidateThreadName[ 0 ] );
+    assertTrue( hasContext[ 0 ] );
+    assertNotNull( stateInfo[ 0 ] );
+  }
   
   private static void invalidateSession( final ISessionStore session ) 
     throws InterruptedException 
