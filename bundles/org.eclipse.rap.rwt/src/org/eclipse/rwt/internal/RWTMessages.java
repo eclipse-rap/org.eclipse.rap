@@ -14,6 +14,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.service.ServletLog;
 
 public final class RWTMessages {
 
@@ -53,8 +54,7 @@ public final class RWTMessages {
     } catch( final RuntimeException re ) {
       String msg = "Warning: could not retrieve resource bundle "
                  + "- loading system default";
-      System.err.println( msg );
-      re.printStackTrace();
+      ServletLog.log( msg, re );
       result = ResourceBundle.getBundle( baseName );
     }
     return result;

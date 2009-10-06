@@ -14,8 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,8 +48,6 @@ public class RWTLifeCycle extends LifeCycle {
     = RWTLifeCycle.class.getName() + ".currentPhase";
   private static final String PHASE_ORDER
     = RWTLifeCycle.class.getName() + ".phaseOrder";
-  private final static Logger LOGGER
-    = Logger.getLogger( RWTLifeCycle.class.getName() );
   private static final String UI_THREAD_THROWABLE
     = UIThreadController.class.getName() + "#UIThreadThrowable";
 
@@ -155,7 +151,8 @@ public class RWTLifeCycle extends LifeCycle {
     try {
       executeUIThread();
     } catch( InterruptedException e ) {
-      e.printStackTrace();
+      String msg = "Received InterruptedException while executing life cycle";
+      ServletLog.log( msg, e );
     }
   }
 
@@ -380,8 +377,7 @@ public class RWTLifeCycle extends LifeCycle {
           String text
             = "Could not execute PhaseListener before phase ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { current } );
-          // TODO [rh] write to servlet context log instead of logger
-          LOGGER.log( Level.SEVERE, msg, thr );
+          ServletLog.log( msg, thr );
         }
       }
     }
@@ -399,8 +395,7 @@ public class RWTLifeCycle extends LifeCycle {
           String text
             = "Could not execute PhaseListener after phase ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { current } );
-          // TODO [rh] write to servlet context log instead of logger
-          LOGGER.log( Level.SEVERE, msg, thr );
+          ServletLog.log( msg, thr );
         }
       }
     }

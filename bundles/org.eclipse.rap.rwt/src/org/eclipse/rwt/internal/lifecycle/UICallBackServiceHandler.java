@@ -516,8 +516,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
           try {
             writer.write( jsEnableUICallBack() );
           } catch( IOException e ) {
-            // TODO [rh] exception handling
-            e.printStackTrace();
+            ServletLog.log( "", e );
           }
         }
       }

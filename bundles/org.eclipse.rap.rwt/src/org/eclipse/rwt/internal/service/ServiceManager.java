@@ -76,8 +76,7 @@ public final class ServiceManager {
         }
       }
     } catch( final Throwable thr ) {
-      System.err.println( "Could not load custom service handlers." );
-      thr.printStackTrace();
+      ServletLog.log( "Could not load custom service handlers.", thr );
     }
   }
   

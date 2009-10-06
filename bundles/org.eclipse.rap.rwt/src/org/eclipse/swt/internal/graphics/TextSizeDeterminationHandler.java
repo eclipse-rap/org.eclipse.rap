@@ -18,6 +18,7 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -148,8 +149,7 @@ final class TextSizeDeterminationHandler
           renderDone = true;
         }
       } catch( final IOException e ) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        ServletLog.log( "", e );
       } finally {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
           LifeCycleFactory.getLifeCycle().removePhaseListener( this );

@@ -56,7 +56,7 @@ final class UIThread
           + Thread.currentThread()
           + "' is waiting for already terminated UIThread";
         Exception e = new RuntimeException( msg );
-        e.printStackTrace();
+        ServletLog.log( "", e );
       }
       lock.notifyAll();
       lock.wait();
@@ -80,8 +80,8 @@ final class UIThread
     try {
       join();
     } catch( InterruptedException e ) {
-      // TODO [rh] log exception to server-log
-      e.printStackTrace();
+      String msg = "Received InterruptedException while terminating UIThread";
+      ServletLog.log( msg, e );
     }
   }
 

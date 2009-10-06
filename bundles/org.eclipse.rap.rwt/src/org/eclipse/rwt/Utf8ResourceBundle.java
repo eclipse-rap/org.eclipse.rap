@@ -65,8 +65,7 @@ final class Utf8ResourceBundle {
           result = new String( result.getBytes( "ISO-8859-1" ), "UTF-8" );
         }
       } catch( final UnsupportedEncodingException uee ) {
-        // Shouldn't fail
-        uee.printStackTrace();
+        // ignore
       }
       return result;
     }

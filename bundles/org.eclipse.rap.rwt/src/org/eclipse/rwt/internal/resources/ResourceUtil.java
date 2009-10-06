@@ -99,8 +99,7 @@ public final class ResourceUtil {
     try {
       result = jsConcatenationBuffer.toString( HTML.CHARSET_NAME_UTF_8 );
     } catch( UnsupportedEncodingException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      // ignore
     }
     jsConcatenationBuffer = null;
     return result;

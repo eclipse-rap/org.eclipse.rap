@@ -176,7 +176,7 @@ public final class SessionStoreImpl
         String txt = "Could not execute {0}.beforeDestroy(SessionStoreEvent).";
         Object[] param = new Object[] { lsnrs[ i ].getClass().getName() };
         String msg = MessageFormat.format( txt, param );
-        logProblem( msg, re );
+        ServletLog.log( msg, re );
       }
     }
     Object[] names;
@@ -204,7 +204,7 @@ public final class SessionStoreImpl
             = "Could not execute {0}.valueUnbound(HttpSessionBindingEvent).";
           Object[] param = new Object[] { attribute.getClass().getName() };
           String msg = MessageFormat.format( txt, param );
-          logProblem( msg, re );
+          ServletLog.log( msg, re );
         }
       }
     } finally {
@@ -221,16 +221,6 @@ public final class SessionStoreImpl
     aboutUnbound = false;
   }
 
-  private void logProblem( final String msg, final Throwable thr ) {
-    try {
-      session.getServletContext().log( msg, thr );
-    } catch( final RuntimeException re ) {
-      // in case the servlet context is not available
-      System.err.println( msg );
-      thr.printStackTrace();
-    }
-  }
-  
   private Object removeAttributeInternal( final String name ) {
     Object result;
     synchronized( attributes ) {      

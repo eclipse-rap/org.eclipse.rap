@@ -20,6 +20,7 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -313,10 +314,9 @@ public final class ResourceFactory {
     Point size = null;
     try {
       size = readImageSize( bis );
-    } catch( Exception e ) {
+    } catch( IOException e ) {
       // ImageReader also throws IllegalArgumentExceptions for some files
-      // TODO [rst] log exception
-      e.printStackTrace();
+      ServletLog.log( "Failed to determine size for image: " + path, e );
     }
     if( size != null ) {
       result = createImageInstance( size.x, size.y );

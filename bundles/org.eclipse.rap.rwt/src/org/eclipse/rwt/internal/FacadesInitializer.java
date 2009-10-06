@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal;
 
 import java.text.MessageFormat;
 
-public class FacadesInitializer {
+public final class FacadesInitializer {
 
   public static Object load( final Class facade ) {
     String name = facade.getName();
