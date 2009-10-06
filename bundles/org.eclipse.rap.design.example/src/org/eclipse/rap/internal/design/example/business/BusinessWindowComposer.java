@@ -269,11 +269,7 @@ public class BusinessWindowComposer implements IWindowComposer {
   }
 
   public void preWindowOpen( final IWorkbenchWindowConfigurer configurer ) {  
-    configurer.setShowCoolBar( true );
-    configurer.setShowPerspectiveBar( true );
     configurer.setShellStyle( SWT.NO_TRIM  ); 
-    configurer.setShowMenuBar( true );
-    configurer.setShowStatusLine( true );
   }
   
   private void styleButtons( final Control[] buttons ) {
