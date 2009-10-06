@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.widgets.Display;
 
 
 final class UIThread
@@ -114,6 +115,13 @@ final class UIThread
     try {
       // Simulate PROCESS_ACTION phase if the session times out
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
+      
+      // TODO [rh] find a cleaner way to dispose of the display      
+      Display display = RWTLifeCycle.getSessionDisplay();
+      if( display != null ) {
+        display.dispose();
+      }
+
       shutdownCallback.run();
     } finally {
       ContextProvider.disposeContext();

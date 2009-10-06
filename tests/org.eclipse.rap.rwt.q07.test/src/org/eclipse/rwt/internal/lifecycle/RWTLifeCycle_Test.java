@@ -27,6 +27,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.RWTFixture;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
@@ -121,6 +122,20 @@ public class RWTLifeCycle_Test extends TestCase {
     public int createUI() {
       new Display();
       log.append( DISPLAY_CREATED );
+      return 0;
+    }
+  }
+
+  public static class DisposeDisplayOnSessionTimeoutEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      display.addListener( SWT.Dispose, new Listener() {
+        public void handleEvent(Event event) {
+          log.append( "display disposed" );
+        }
+      } );
       return 0;
     }
   }
@@ -912,6 +927,16 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( uiThreadName[ 0 ], invalidateThreadName[ 0 ] );
     assertTrue( hasContext[ 0 ] );
     assertNotNull( stateInfo[ 0 ] );
+  }
+
+  public void testDisposeDisplayOnSessionTimeout() throws Exception {
+    final ISessionStore session = ContextProvider.getSession();
+    Class clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, clazz );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.execute();
+    invalidateSession( session );
+    assertEquals( "display disposed", log.toString() );
   }
   
   private static void invalidateSession( final ISessionStore session ) 

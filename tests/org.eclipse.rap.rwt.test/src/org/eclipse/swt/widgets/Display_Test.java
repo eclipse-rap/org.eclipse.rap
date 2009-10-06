@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -24,6 +25,8 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
@@ -50,7 +53,7 @@ public class Display_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testGetCurrent() throws InterruptedException {
     assertNull( Display.getCurrent() );
     final Display display = new Display();
@@ -300,41 +303,41 @@ public class Display_Test extends TestCase {
       button2.setBounds(200,100,100,100);
       shell.setBounds(0,0,400,400);
       shell.open();
-      
+
       Point shellOffset = shell.getLocation();
       // [rst] Shell offset includes 1px border in RAP
       shellOffset.x += 1;
       shellOffset.y += 1;
       Point result;
-      
+
       result = display.map(button1, button2, 0, 0);
       assertEquals(new Point(-200,-100), result);
       result = display.map(button1, button2, -10, -20);
       assertEquals(new Point(-210,-120), result);
       result = display.map(button1, button2, 30, 40);
       assertEquals(new Point(-170,-60), result);
-      
+
       result = display.map(button2, button1, 0, 0);
       assertEquals(new Point(200,100), result);
       result = display.map(button2, button1, -5, -15);
       assertEquals(new Point(195,85), result);
       result = display.map(button2, button1, 25, 35);
       assertEquals(new Point(225,135), result);
-      
+
       result = display.map(null, button2, 0, 0);
       assertEquals(new Point(-200 - shellOffset.x,-100 - shellOffset.y), result);
       result = display.map(null, button2, -2, -4);
       assertEquals(new Point(-202 - shellOffset.x,-104 - shellOffset.y), result);
       result = display.map(null, button2, 6, 8);
       assertEquals(new Point(-194 - shellOffset.x,-92 - shellOffset.y), result);
-      
+
       result = display.map(button2, null, 0, 0);
       assertEquals(new Point(shellOffset.x + 200,shellOffset.y + 100), result);
       result = display.map(button2, null, -3, -6);
       assertEquals(new Point(shellOffset.x + 197,shellOffset.y + 94), result);
       result = display.map(button2, null, 9, 12);
       assertEquals(new Point(shellOffset.x + 209,shellOffset.y + 112), result);
-      
+
 //      button1.dispose();
 //      try {
 //        result = display.map(button1, button2, 0, 0);
@@ -348,7 +351,7 @@ public class Display_Test extends TestCase {
 //      } catch (IllegalArgumentException e) {
 //        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
 //      }
-      
+
       shell.dispose();
     } finally {
       display.dispose();
@@ -368,41 +371,41 @@ public class Display_Test extends TestCase {
       button2.setBounds(200,100,100,100);
       shell.setBounds(0,0,400,400);
       shell.open();
-      
+
       Point shellOffset = shell.getLocation();
       // [rst] Shell offset includes 1px border in RAP
       shellOffset.x += 1;
       shellOffset.y += 1;
       Rectangle result;
-      
+
       result = display.map(button1, button2, 0, 0, 100, 100);
       assertEquals(new Rectangle(-200,-100,100,100), result);
       result = display.map(button1, button2, -10, -20, 130, 140);
       assertEquals(new Rectangle(-210,-120,130,140), result);
       result = display.map(button1, button2, 50, 60, 170, 180);
       assertEquals(new Rectangle(-150,-40,170,180), result);
-      
+
       result = display.map(button2, button1, 0, 0, 100, 100);
       assertEquals(new Rectangle(200,100,100,100), result);
       result = display.map(button2, button1, -5, -15, 125, 135);
       assertEquals(new Rectangle(195,85,125,135), result);
       result = display.map(button2, button1, 45, 55, 165, 175);
       assertEquals(new Rectangle(245,155,165,175), result);
-      
+
       result = display.map(null, button2, 0, 0, 100, 100);
       assertEquals(new Rectangle(-200 - shellOffset.x,-100 - shellOffset.y,100,100), result);
       result = display.map(null, button2, -2, -4, 106, 108);
       assertEquals(new Rectangle(-202 - shellOffset.x,-104 - shellOffset.y,106,108), result);
       result = display.map(null, button2, 10, 12, 114, 116);
       assertEquals(new Rectangle(-190 - shellOffset.x,-88 - shellOffset.y,114,116), result);
-      
+
       result = display.map(button2, null, 0, 0, 100, 100);
       assertEquals(new Rectangle(shellOffset.x + 200,shellOffset.y + 100,100,100), result);
       result = display.map(button2, null, -3, -6, 109, 112);
       assertEquals(new Rectangle(shellOffset.x + 197,shellOffset.y + 94,109,112), result);
       result = display.map(button2, null, 15, 18, 121, 124);
       assertEquals(new Rectangle(shellOffset.x + 215,shellOffset.y + 118,121,124), result);
-      
+
 //      button1.dispose();
 //      try {
 //        result = display.map(button1, button2, 0, 0, 100, 100);
@@ -416,7 +419,7 @@ public class Display_Test extends TestCase {
 //      } catch (IllegalArgumentException e) {
 //        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
 //      }
-      
+
       shell.dispose();
     } finally {
       display.dispose();
@@ -436,7 +439,7 @@ public class Display_Test extends TestCase {
       button2.setBounds(200,100,100,100);
       shell.setBounds(0,0,400,400);
       shell.open();
-      
+
       Point result;
       Point point = new Point(0,0);
       Point shellOffset = shell.getLocation();
@@ -444,35 +447,35 @@ public class Display_Test extends TestCase {
       shellOffset.x += 1;
       shellOffset.y += 1;
 
-      
+
       result = display.map(button1, button2, point);
       assertEquals(new Point(-200,-100), result);
       result = display.map(button1, button2, new Point(-10,-20));
       assertEquals(new Point(-210,-120), result);
       result = display.map(button1, button2, new Point(30,40));
       assertEquals(new Point(-170,-60), result);
-      
+
       result = display.map(button2, button1, point);
       assertEquals(new Point(200,100), result);
       result = display.map(button2, button1, new Point(-5,-15));
       assertEquals(new Point(195,85), result);
       result = display.map(button2, button1, new Point(25,35));
       assertEquals(new Point(225,135), result);
-      
+
       result = display.map(null, button2, point);
       assertEquals(new Point(-200 - shellOffset.x,-100 - shellOffset.y), result);
       result = display.map(null, button2, new Point(-2,-4));
       assertEquals(new Point(-202 - shellOffset.x,-104 - shellOffset.y), result);
       result = display.map(null, button2, new Point(6,8));
       assertEquals(new Point(-194 - shellOffset.x,-92 - shellOffset.y), result);
-      
+
       result = display.map(button2, null, point);
       assertEquals(new Point(shellOffset.x + 200,shellOffset.y + 100), result);
       result = display.map(button2, null, new Point(-3,-6));
       assertEquals(new Point(shellOffset.x + 197,shellOffset.y + 94), result);
       result = display.map(button2, null, new Point(9,12));
       assertEquals(new Point(shellOffset.x + 209,shellOffset.y + 112), result);
-      
+
 //      button1.dispose();
 //      try {
 //        result = display.map(button1, button2, point);
@@ -486,7 +489,7 @@ public class Display_Test extends TestCase {
 //      } catch (IllegalArgumentException e) {
 //        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
 //      }
-//      
+//
 //      try {
 //        result = display.map(button2, button1, (Point) null);
 //        fail("No exception thrown for null point");
@@ -513,43 +516,43 @@ public class Display_Test extends TestCase {
       button2.setBounds(200,100,100,100);
       shell.setBounds(0,0,400,400);
       shell.open();
-      
+
       Rectangle result;
       Rectangle rect = new Rectangle(0,0,100,100);
       Point shellOffset = shell.getLocation();
       // [rst] Shell offset includes 1px border in RAP
       shellOffset.x += 1;
       shellOffset.y += 1;
-      
+
       result = display.map(button1, button2, rect);
       assertEquals(new Rectangle(-200,-100,100,100), result);
       result = display.map(button1, button2, new Rectangle(-10, -20, 130, 140));
       assertEquals(new Rectangle(-210,-120,130,140), result);
       result = display.map(button1, button2, new Rectangle(50, 60, 170, 180));
       assertEquals(new Rectangle(-150,-40,170,180), result);
-      
+
       result = display.map(button2, button1, rect);
       assertEquals(new Rectangle(200,100,100,100), result);
       result = display.map(button2, button1, new Rectangle(-5, -15, 125, 135));
       assertEquals(new Rectangle(195,85,125,135), result);
       result = display.map(button2, button1, new Rectangle(45, 55, 165, 175));
       assertEquals(new Rectangle(245,155,165,175), result);
-      
+
       result = display.map(null, button2, rect);
       assertEquals(new Rectangle(-200 - shellOffset.x,-100 - shellOffset.y,100,100), result);
       result = display.map(null, button2, new Rectangle(-2, -4, 106, 108));
       assertEquals(new Rectangle(-202 - shellOffset.x,-104 - shellOffset.y,106,108), result);
       result = display.map(null, button2, new Rectangle(10, 12, 114, 116));
       assertEquals(new Rectangle(-190 - shellOffset.x,-88 - shellOffset.y,114,116), result);
-      
+
       result = display.map(button2, null, rect);
       assertEquals(new Rectangle(shellOffset.x + 200,shellOffset.y + 100,100,100), result);
       result = display.map(button2, null, new Rectangle(-3, -6, 109, 112));
       assertEquals(new Rectangle(shellOffset.x + 197,shellOffset.y + 94,109,112), result);
       result = display.map(button2, null, new Rectangle(15, 18, 121, 124));
       assertEquals(new Rectangle(shellOffset.x + 215,shellOffset.y + 118,121,124), result);
-      
-    
+
+
 //      button1.dispose();
 //      try {
 //        result = display.map(button1, button2, rect);
@@ -563,14 +566,14 @@ public class Display_Test extends TestCase {
 //      } catch (IllegalArgumentException e) {
 //        assertEquals("Incorrect exception thrown for map to control being disposed", SWT.ERROR_INVALID_ARGUMENT, e);
 //      }
-//      
+//
 //      try {
 //        result = display.map(button2, button1, (Rectangle) null);
 //        fail("No exception thrown for null point");
 //      } catch (IllegalArgumentException e) {
 //        assertEquals("Incorrect exception thrown for rectangle being null", SWT.ERROR_NULL_ARGUMENT, e);
 //      }
-      
+
       shell.dispose();
     } finally {
       display.dispose();
@@ -850,6 +853,13 @@ public class Display_Test extends TestCase {
     // Further monitor tests can be found in Monitor_Test
   }
   
+  public void testDisposeExecWithNullArgument() {
+    Display display = new Display();
+    display.disposeExec( null );
+    display.dispose();
+    assertTrue( display.isDisposed() );
+  }
+
   public void testDispose() {
     Display display = new Display();
     assertFalse( display.isDisposed() );
@@ -858,6 +868,63 @@ public class Display_Test extends TestCase {
     assertNull( Display.getCurrent() );
   }
 
+  public void testDisposeNotificationsOrder() {
+    // 1. display dispose listener
+    // 2. shell dispose listeners
+    // 3. disposeRunnable(s)
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        log.add( event );
+      }
+    } );
+    display.addListener( SWT.Dispose, new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    } );
+    display.disposeExec( new Runnable() {
+      public void run() {
+        log.add( "disposeRunnable" );
+      }
+    } );
+    display.dispose();
+    assertEquals( 3, log.size() );
+    Event displayDisposeEvent = ( Event )log.get( 0 );
+    assertSame( display, displayDisposeEvent.display );
+    DisposeEvent shellDisposeEvent = ( DisposeEvent )log.get( 1 );
+    assertSame( shell, shellDisposeEvent.widget );
+    String disposeExecRunnable = ( String )log.get( 2 );
+    assertEquals( "disposeRunnable", disposeExecRunnable );
+    assertTrue( display.isDisposed() );
+  }
+
+  public void testDisposeWithExceptionsInListeners() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+    display.addListener( SWT.Dispose, new Listener() {
+      public void handleEvent( final Event event ) {
+        throw new RuntimeException();
+      }
+    } );
+    display.disposeExec( new Runnable() {
+      public void run() {
+        throw new RuntimeException();
+      }
+    } );
+    display.dispose();
+    assertTrue( display.isDisposed() );
+  }
+  
   public void testSystemCursor() {
     Display display = new Display();
     Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
@@ -869,6 +936,54 @@ public class Display_Test extends TestCase {
     Cursor help1 = display.getSystemCursor( SWT.CURSOR_HELP );
     Cursor help2 = display.getSystemCursor( SWT.CURSOR_HELP );
     assertSame( help1, help2 );
+  }
+
+  public void testCloseWithoutListeners() {
+    Display display = new Display();
+    display.close();
+    assertTrue( display.isDisposed() );
+  }
+
+  public void testCloseWithListener() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    display.addListener( SWT.Close, new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    } );
+    display.close();
+    assertTrue( display.isDisposed() );
+    assertEquals( 1, log.size() );
+    Event event = ( Event )log.get( 0 );
+    assertSame( display, event.display );
+  }
+
+  public void testCloseWithExceptionInListener() {
+    final String exceptionMessage = "exception in close event";
+    Display display = new Display();
+    display.addListener( SWT.Close, new Listener() {
+      public void handleEvent( final Event event ) {
+        throw new RuntimeException( exceptionMessage );
+      }
+    } );
+    try {
+      display.close();
+      fail( "Exception in close-listener must interrupt close operation" );
+    } catch( RuntimeException e ) {
+      assertEquals( exceptionMessage, e.getMessage() );
+    }
+  }
+
+  public void testCloseWithVetoingListener() {
+    Display display = new Display();
+    display.addListener( SWT.Close, new Listener() {
+      public void handleEvent( final Event event ) {
+        event.doit = false;
+      }
+    } );
+    display.close();
+    assertFalse( display.isDisposed() );
   }
 
   protected void setUp() throws Exception {

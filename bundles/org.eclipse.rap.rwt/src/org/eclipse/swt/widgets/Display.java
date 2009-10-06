@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,14 +24,14 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.*;
@@ -115,11 +115,10 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  *
  * @see #readAndDispatch
  * @see #sleep
- * <!--@see Device#dispose-->
+ * @see Device#dispose
  *
  * @since 1.0
  */
-// TODO: [doc] Update display javadoc
 public class Display extends Device implements Adaptable {
 
   private static final String ATTR_INVALIDATE_FOCUS
@@ -171,9 +170,12 @@ public class Display extends Device implements Adaptable {
   private Shell activeShell;
   private List filters;
   private Control focusControl;
+  private final Monitor monitor;
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
-  private final Monitor monitor;
+  private Set closeListeners;
+  private Set disposeListeners;
+  private Runnable[] disposeList;
 
   /* Display Data */
   private Object data;
@@ -498,15 +500,206 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
+  
+  ///////////
+  // Listener
+  
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when an event of the given type occurs. The event
+   * type is one of the event constants defined in class <code>SWT</code>.
+   * When the event does occur in the display, the listener is notified by
+   * sending it the <code>handleEvent()</code> message.
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should be notified when the event occurs
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see SWT
+   * @see #removeListener
+   * 
+   * @since 1.3 
+   */
+  public void addListener( final int eventType, final Listener listener ) {
+    checkDevice();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( eventType == SWT.Close ) {
+      if( closeListeners == null ) {
+        closeListeners = new HashSet();
+      }
+      closeListeners.add( listener );
+    } else if( eventType == SWT.Dispose ) {
+      if( disposeListeners == null ) {
+        disposeListeners = new HashSet();
+        disposeListeners.add( listener );
+      }
+    }
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when an event of the given type occurs. The event type
+   * is one of the event constants defined in class <code>SWT</code>.
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see SWT
+   * @see #addListener
+   * 
+   * @since 1.3
+   */
+  public void removeListener( final int eventType, final Listener listener ) {
+    checkDevice();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( eventType == SWT.Close && closeListeners != null ) {
+      closeListeners.remove( listener );
+      if( closeListeners.size() == 0 ) {
+        closeListeners = null;
+      }
+    } else if ( eventType == SWT.Dispose && disposeListeners != null ) {
+      disposeListeners.remove( listener );
+      if( disposeListeners.size() == 0 ) {
+        disposeListeners = null;
+      }
+    }
+  }
 
   //////////
   // Dispose
+  
+  /**
+   * Causes the <code>run()</code> method of the runnable to
+   * be invoked by the user-interface thread just before the
+   * receiver is disposed.  Specifying a <code>null</code> runnable
+   * is ignored.
+   *
+   * @param runnable code to run at dispose time.
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void disposeExec( final Runnable runnable ) {
+    checkDevice();
+    if (disposeList == null) disposeList = new Runnable [4];
+    for (int i=0; i<disposeList.length; i++) {
+      if (disposeList [i] == null) {
+        disposeList [i] = runnable;
+        return;
+      }
+    }
+    Runnable [] newDisposeList = new Runnable [disposeList.length + 4];
+    System.arraycopy (disposeList, 0, newDisposeList, 0, disposeList.length);
+    newDisposeList [disposeList.length] = runnable;
+    disposeList = newDisposeList;
+  }
 
-  public void release() {
+  /**
+   * Requests that the connection between SWT and the underlying
+   * operating system be closed.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see Device#dispose
+   * 
+   * @since 1.3
+   */
+  public void close() {
+    checkDevice();
+    Event event = new Event();
+    event.display = this;
+    if( closeListeners != null ) {
+      Listener[] listeners = new Listener[ closeListeners.size() ];
+      closeListeners.toArray( listeners );
+      for( int i = 0; i < listeners.length; i++ ) {
+        listeners[ i ].handleEvent( event );
+      }
+    }
+    if( event.doit ) {
+      dispose();
+    }
+  }
+  
+  protected void release() {
+    sendDisposeEvent();
+    disposeShells();
+    runDisposeExecs();
     RWTLifeCycle.setSessionDisplay( null );
     // TODO [rh] zero fields
   }
 
+  private void sendDisposeEvent() {
+    if( disposeListeners != null ) {
+      Event event = new Event();
+      event.display = this;
+      event.type = SWT.Dispose;
+      Listener[] listeners = new Listener[ disposeListeners.size() ];
+      disposeListeners.toArray( listeners );
+      for( int i = 0; i < listeners.length; i++ ) {
+        try {
+          listeners[ i ].handleEvent( event );
+        } catch( Throwable thr ) {
+          String msg = "Exception while executing listener.";
+          ServletLog.log( msg, thr );
+        }
+      }
+    }
+  }
+
+  private void disposeShells() {
+    Shell[] shells = getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      Shell shell = shells[ i ];
+      try {
+        shell.dispose();
+      } catch( Throwable thr ) {
+        ServletLog.log( "Exception while executing listener.", thr );
+      }
+    }
+    // TODO [rh] consider dispatching pending messages (e.g. asyncExec)
+    //      while( readAndDispatch() ) {}
+  }
+
+  private void runDisposeExecs() {
+    if( disposeList != null ) {
+      for( int i = 0; i < disposeList.length; i++ ) {
+        if( disposeList[ i ] != null )
+          try {
+            disposeList[ i ].run();
+          } catch( Throwable thr ) {
+            String msg = "Exception while executing dispose-runnable.";
+            ServletLog.log( msg, thr );
+          }
+      }
+    }
+  }
+  
   /////////////////////
   // Adaptable override
 
