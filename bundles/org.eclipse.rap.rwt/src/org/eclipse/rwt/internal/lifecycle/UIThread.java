@@ -21,7 +21,6 @@ final class UIThread
   implements IUIThreadHolder, ISessionShutdownAdapter
 {
 
-  private boolean threadTerminated;
   private ServiceContext serviceContext;
   private ISessionStore sessionStore;
   private Runnable shutdownCallback;
@@ -50,7 +49,7 @@ final class UIThread
       // [rh] While working on bug 284202, there was the suspicion that a
       // request thread might wait infinitley on an already terminated UIThread.
       // To investigate this problem, we print to sys-err if this happens.
-      if( threadTerminated ) {
+      if( !getThread().isAlive() ) {
         String msg
           = "Thread '"
           + Thread.currentThread()
@@ -67,11 +66,7 @@ final class UIThread
     try {
       super.run();
     } finally {
-      Object lock = getLock();
-      synchronized( lock ) {
-        threadTerminated = true;
-        // TODO [rh] call lock.notifyAll()?
-      }
+      // TODO [rh] call lock.notifyAll()?
     }
   }
 
