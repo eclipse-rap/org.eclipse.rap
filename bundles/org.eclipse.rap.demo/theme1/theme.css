@@ -397,7 +397,8 @@ TreeItem:selected, TreeItem:selected:hover {
   background-color: #56a0ea;
 }
 
-List-Item:selected:unfocused, TreeItem:selected:unfocused {
+List-Item:selected:unfocused, TreeItem:selected:unfocused,
+DateTime-Calendar-Day:selected:unfocused {
   background-color: #c0c0c0;
 }
 
