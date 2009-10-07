@@ -39,6 +39,8 @@ public class DemoWorkbench implements IEntryPoint {
     }
 
     Display display = PlatformUI.createDisplay();
-    return PlatformUI.createAndRunWorkbench( display, worbenchAdvisor );
+    int result = PlatformUI.createAndRunWorkbench( display, worbenchAdvisor );
+    display.dispose();
+    return result;
   }
 }

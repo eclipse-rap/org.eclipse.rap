@@ -221,6 +221,17 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     Fixture.removeContext();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
+  
+  public void testClearPreservedWithDisposedDisplay() {
+    RWTFixture.fakePhase( PhaseId.RENDER );
+    Display display = new Display();
+    display.dispose();
+    try {
+      PreserveWidgetsPhaseListener.clearPreserved( display );
+    } catch( Exception e ) {
+      fail( "Preserve-phase-listener must succed event with disposed display" );
+    }
+  }
 
   private static void fakeUIRootRequestParam( final Display display ) {
     Object adapter = display.getAdapter( IWidgetAdapter.class );

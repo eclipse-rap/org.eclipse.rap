@@ -31,6 +31,7 @@ public interface IDisplayAdapter {
   void setFocusControl( Control control );
   void invalidateFocus();
   boolean isFocusInvalidated();
+  Shell[] getShells();
   ISessionStore getSession();
   IFilterEntry[] getFilters();
 

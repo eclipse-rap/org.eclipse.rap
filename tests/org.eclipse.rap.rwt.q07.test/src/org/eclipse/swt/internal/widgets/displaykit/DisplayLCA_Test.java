@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
@@ -21,6 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.browser.Default;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -46,8 +46,32 @@ public class DisplayLCA_Test extends TestCase {
   private final List renderChangesLog = new ArrayList();
   private final List renderDisposeLog = new ArrayList();
 
-  private final class DisposeTestButton extends Button {
+  public static final class TestRenderInitiallyDisposedEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      display.dispose();
+      return 0;
+    }
+  }
 
+  public static final class TestRenderDisposedEntryPoint implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new Shell( display );
+      while( !shell.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
+      display.dispose();
+      return 0;
+    }
+  }
+
+  private final class DisposeTestButton extends Button {
     public DisposeTestButton( final Composite parent, final int style ) {
       super( parent, style );
     }
@@ -62,12 +86,13 @@ public class DisplayLCA_Test extends TestCase {
     shell.open();
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
-    Object currTheme = adapter.getPreserved( DisplayLCA.PROP_CURR_THEME );
-    assertEquals( ThemeUtil.getCurrentThemeId(), currTheme );
-    Object exitConf = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
-    assertNull( exitConf );
-    display.dispose();
+    assertEquals( shell,
+                  adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
+    Object currentTheme = adapter.getPreserved( DisplayLCA.PROP_CURR_THEME );
+    assertEquals( ThemeUtil.getCurrentThemeId(), currentTheme );
+    Object exitConfirmation
+      = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
+    assertNull( exitConfirmation );
   }
 
   public void testStartup() throws IOException {
@@ -145,7 +170,7 @@ public class DisplayLCA_Test extends TestCase {
     lca.readData( display );
     assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
   }
-  
+
   public void testRenderChangedButDisposed() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -162,7 +187,7 @@ public class DisplayLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     RWTFixture.executeLifeCycleFromServerThread( );
-    
+
     // Run the actual test request: the button is clicked
     // It changes its text and disposes itself
     clearLogs();
@@ -176,7 +201,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     RWTFixture.executeLifeCycleFromServerThread( );
-    
+
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button ) );
     assertTrue( renderDisposeLog.contains( button ) );
@@ -243,7 +268,53 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA.render( display );
     assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
   }
-  
+
+  public void testRenderInitiallyDisposed() throws Exception {
+    Fixture.fakeBrowser( new Default( true ) );
+    Fixture.fakeResponseWriter();
+    EntryPointManager.register( EntryPointManager.DEFAULT,
+                                TestRenderInitiallyDisposedEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    Fixture.fakeRequestParam( RequestParams.STARTUP,
+                              EntryPointManager.DEFAULT );
+    // ensure that life cycle execution succeeds with disposed display
+    try {
+      lifeCycle.execute();
+    } catch( Throwable e ) {
+      fail( "Life cycle execution must succeed even with a disposed display" );
+    }
+  }
+
+  public void testRenderDisposed() throws Exception {
+    Fixture.fakeBrowser( new Default( true ) );
+    Fixture.fakeResponseWriter();
+    EntryPointManager.register( EntryPointManager.DEFAULT,
+                                TestRenderDisposedEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    Fixture.fakeRequestParam( RequestParams.STARTUP,
+                              EntryPointManager.DEFAULT );
+    lifeCycle.execute();
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.STARTUP, null );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    lifeCycle.execute();
+    Fixture.fakeResponseWriter();
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public PhaseId getPhaseId() {
+        return PhaseId.PROCESS_ACTION;
+      }
+      public void beforePhase( final PhaseEvent event ) {
+        Display.getCurrent().getShells()[ 0 ].dispose();
+      }
+      public void afterPhase( final PhaseEvent event ) {
+      }
+    } );
+    lifeCycle.execute();
+    String expected = "req.setRequestCounter( \"0\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != - 1 );
+  }
+
   public void testFocusControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -295,7 +366,7 @@ public class DisplayLCA_Test extends TestCase {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
-    
+
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".cursorLocation.x", "1" );
@@ -304,7 +375,7 @@ public class DisplayLCA_Test extends TestCase {
     lca.readData( display );
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
-  
+
   public void testScrollBarSize() {
     Fixture.fakeRequestParam( "w1.scrollbar.size", "99" );
     Display display = new Display();
@@ -315,7 +386,7 @@ public class DisplayLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
     AdapterManager manager = AdapterManagerImpl.getInstance();
@@ -386,14 +457,16 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
-//    ThemeManager.getInstance().deregisterAll();
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );
     manager.deregisterAdapters( widgetAdapterFactory, Display.class );
     manager.deregisterAdapters( widgetAdapterFactory, Widget.class );
     RWTFixture.deregisterResourceManager();
+    String[] entryPoints = EntryPointManager.getEntryPoints();
+    for( int i = 0; i < entryPoints.length; i++ ) {
+      EntryPointManager.deregister( entryPoints[ i ] );
+    }
     Fixture.tearDown();
   }
 

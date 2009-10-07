@@ -26,8 +26,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
-import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
 
@@ -73,7 +72,9 @@ final class TextSizeDeterminationHandler
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
           readProbedFonts( probes );
           readMeasuredStrings();
-          Shell[] shells = display.getShells();
+          Object adapter = display.getAdapter( IDisplayAdapter.class );
+          IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+          Shell[] shells = displayAdapter.getShells();
           for( int i = 0; i < shells.length; i++ ) {
             // TODO [fappel]: Think about a lighter recalculation trigger.
             Shell shell = shells[ i ];

@@ -141,7 +141,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeErrorPages( display );
       writeExitConfirmation( display );
       RenderVisitor visitor = new RenderVisitor();
-      Composite[] shells = display.getShells();
+      Composite[] shells = getShells( display );
       for( int i = 0; i < shells.length; i++ ) {
         Composite shell = shells[ i ];
         WidgetTreeVisitor.accept( shell, visitor );
@@ -153,7 +153,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private String getRequestCounter() {
+  private static String getRequestCounter() {
     Object[] param = new Object[] { RWTRequestVersionControl.nextRequestId() };
     return MessageFormat.format( PATTERN_REQUEST_COUNTER, param );
   }
@@ -315,12 +315,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         return true;
       }
     };
-    Shell[] shells = display.getShells();
+    Shell[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
       Composite shell = shells[ i ];
       WidgetTreeVisitor.accept( shell, visitor );
     }
-
     for( int i = 0; i < shells.length; i++ ) {
       if( shells[ i ].getMaximized() ) {
         Object adapter = shells[ i ].getAdapter( IShellAdapter.class );
@@ -410,24 +409,26 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeFocus( final Display display ) throws IOException {
-    IDisplayAdapter displayAdapter = getDisplayAdapter( display );
-    IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
-    Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
-    if(    !widgetAdapter.isInitialized()
-        || oldValue != display.getFocusControl()
-        || displayAdapter.isFocusInvalidated() )
-    {
-      // TODO [rst] Added null check as a NPE occurred in some rare cases
-      Control focusControl = display.getFocusControl();
-      if( focusControl != null ) {
-        // TODO [rh] use JSWriter to output focus JavaScript
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        HtmlResponseWriter out = stateInfo.getResponseWriter();
-        String id = WidgetUtil.getId( display.getFocusControl() );
-        out.write( "org.eclipse.swt.WidgetManager.getInstance()." );
-        out.write( "focus( \"" );
-        out.write( id );
-        out.write( "\" );" );
+    if( !display.isDisposed() ) {
+      IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+      IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
+      Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
+      if(    !widgetAdapter.isInitialized()
+          || oldValue != display.getFocusControl()
+          || displayAdapter.isFocusInvalidated() )
+      {
+        // TODO [rst] Added null check as a NPE occurred in some rare cases
+        Control focusControl = display.getFocusControl();
+        if( focusControl != null ) {
+          // TODO [rh] use JSWriter to output focus JavaScript
+          IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+          HtmlResponseWriter out = stateInfo.getResponseWriter();
+          String id = WidgetUtil.getId( display.getFocusControl() );
+          out.write( "org.eclipse.swt.WidgetManager.getInstance()." );
+          out.write( "focus( \"" );
+          out.write( id );
+          out.write( "\" );" );
+        }
       }
     }
   }
@@ -439,7 +440,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static void writeActiveControls( final Display display )
     throws IOException
   {
-    Shell[] shells = display.getShells();
+    Shell[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
       ShellLCA.writeActiveControl( shells[ i ] );
     }
@@ -496,7 +497,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       // the client may send 'null' to indicate that no control on the active
       // shell currently has the input focus.
       if( !"null".equals(  id ) ) {
-        Shell[] shells = display.getShells();
+        Shell[] shells = getDisplayAdapter( display ).getShells();
         for( int i = 0; focusControl == null && i < shells.length; i++ ) {
           Widget widget = WidgetUtil.find( shells[ i ], id );
           if( widget instanceof Control ) {
@@ -538,5 +539,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
+  }
+
+  private static Shell[] getShells( final Display display ) {
+    return getDisplayAdapter( display ).getShells();
   }
 }

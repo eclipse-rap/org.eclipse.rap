@@ -140,8 +140,11 @@ public class Display extends Device implements Adaptable {
    */
   public static Display getCurrent() {
     Display result = RWTLifeCycle.getSessionDisplay();
-    if( result != null && result.getThread() != Thread.currentThread() ) {
-      result = null;
+    if(    result != null ) {
+      if( result.getThread() != Thread.currentThread() || result.isDisposed() )
+      {
+        result = null;
+      }
     }
     return result;
   }
@@ -204,7 +207,7 @@ public class Display extends Device implements Adaptable {
   public Display() {
     thread = Thread.currentThread();
     session = ContextProvider.getSession();
-    if( RWTLifeCycle.getSessionDisplay() != null ) {
+    if( getCurrent() != null ) {
       SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
     RWTLifeCycle.setSessionDisplay( this );
@@ -650,7 +653,6 @@ public class Display extends Device implements Adaptable {
     sendDisposeEvent();
     disposeShells();
     runDisposeExecs();
-    RWTLifeCycle.setSessionDisplay( null );
     // TODO [rh] zero fields
   }
 
@@ -1718,7 +1720,7 @@ public class Display extends Device implements Adaptable {
     public void setFocusControl( final Control focusControl ) {
       Display.this.setFocusControl( focusControl );
     }
-
+    
     public void invalidateFocus() {
       RWT.getServiceStore().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
     }
@@ -1727,6 +1729,12 @@ public class Display extends Device implements Adaptable {
       IServiceStore serviceStore = RWT.getServiceStore();
       Object value = serviceStore.getAttribute( ATTR_INVALIDATE_FOCUS );
       return value != null;
+    }
+
+    public Shell[] getShells() {
+      Shell[] result = new Shell[ Display.this.shells.size() ];
+      Display.this.shells.toArray( result );
+      return result;
     }
 
     public ISessionStore getSession() {

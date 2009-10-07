@@ -12,8 +12,7 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
 
@@ -50,7 +49,9 @@ public final class PreserveWidgetsPhaseListener implements PhaseListener {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     if( adapter.isInitialized() ) {
       displayLCA.preserveValues( display );
-      Composite[] shells = display.getShells();
+      IDisplayAdapter displayAdapter
+        = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+      Composite[] shells = displayAdapter.getShells();
       for( int i = 0; i < shells.length; i++ ) {
         WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
           public boolean doVisit( final Widget widget ) {
@@ -63,11 +64,13 @@ public final class PreserveWidgetsPhaseListener implements PhaseListener {
     }
   }
   
-  private static void clearPreserved( final Display display ) {
-    WidgetAdapter displayAdapter 
+  static void clearPreserved( final Display display ) {
+    WidgetAdapter widgetAdapter 
       = ( WidgetAdapter )DisplayUtil.getAdapter( display );
-    displayAdapter.clearPreserved();
-    Composite[] shells = display.getShells();
+    widgetAdapter.clearPreserved();
+    IDisplayAdapter displayAdapter
+      = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    Composite[] shells = displayAdapter.getShells();
     for( int i = 0; i < shells.length; i++ ) {
       WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
         public boolean doVisit( final Widget widget ) {

@@ -40,6 +40,7 @@ public class ControlsDemo implements IEntryPoint {
         display.sleep();
       }
     }
+    display.dispose();
     return 0;
   }
 

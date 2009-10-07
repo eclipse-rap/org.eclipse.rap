@@ -52,6 +52,9 @@ public class Display_Test extends TestCase {
     } catch( SWTError e ) {
       // expected
     }
+    display.dispose();
+    Device secondDisplay = new Display();
+    assertEquals( Display.getCurrent(), secondDisplay );
   }
 
   public void testGetCurrent() throws InterruptedException {
