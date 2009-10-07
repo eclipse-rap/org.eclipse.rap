@@ -70,25 +70,29 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     lastYearBt.set({
       show    : 'icon',
       toolTip : this._lastYearBtToolTip,
-      spacing : 0
+      spacing : 0,
+      tabIndex: -1
     });
     lastYearBt.setUserData( "calendar-button", true );
 
     lastMonthBt.set({
       show    : 'icon',
-      toolTip : this._lastMonthBtToolTip
+      toolTip : this._lastMonthBtToolTip,
+      tabIndex: -1
     });
     lastMonthBt.setUserData( "calendar-button", true );
 
     nextMonthBt.set({
       show    : 'icon',
-      toolTip : this._nextMonthBtToolTip
+      toolTip : this._nextMonthBtToolTip,
+      tabIndex: -1
     });
     nextMonthBt.setUserData( "calendar-button", true );
 
     nextYearBt.set({
       show    : 'icon',
-      toolTip : this._nextYearBtToolTip
+      toolTip : this._nextYearBtToolTip,
+      tabIndex: -1
     });
     nextYearBt.setUserData( "calendar-button", true );
 

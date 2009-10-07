@@ -16,6 +16,10 @@ DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:s
   color: white;
 }
 
+DateTime-Calendar-Day:selected:unfocused {
+  background-color: rgb( 192, 192, 192 );
+}
+
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
   color: rgb( 128, 128, 128 );

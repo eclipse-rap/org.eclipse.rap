@@ -80,6 +80,9 @@
 
       <state name="selected"
           description="Applies to selected day." />
+          
+      <state name="unfocused"
+          description="Applies to the day on unfocused calendar." />
 
       <state name="otherMonth"
           description="Applies to the day that belongs to other month." />

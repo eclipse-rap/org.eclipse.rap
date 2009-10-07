@@ -35,6 +35,10 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "mousewheel", this._onmousewheel, this );
+    this.addEventListener( "focus", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onFocusOut, this );
+    
+    this._updateSelectedDayState();
   },
 
   destruct : function() {
@@ -42,6 +46,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "mousewheel", this._onmousewheel, this );
+    this.removeEventListener( "focus", this._onFocusIn, this );
+    this.removeEventListener( "blur", this._onFocusOut, this );
     this._disposeObjects( "_calendar" );
   },
 
@@ -82,6 +88,24 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     _onmousewheel : function( evt ) {
       evt.preventDefault();
       evt.stopPropagation();
+    },
+    
+    _onFocusIn : function( evt ) {
+      this._updateSelectedDayState();
+    },
+
+    _onFocusOut : function( evt ) {
+      this._updateSelectedDayState();
+    },
+    
+    _updateSelectedDayState : function() {
+      for( var i = 0; i < 6 * 7; i++ ) {
+        if( this.getFocused() ) {
+          this._calendar._dayLabelArr[ i ].removeState( "parent_unfocused" );
+        } else {
+          this._calendar._dayLabelArr[ i ].addState( "parent_unfocused" );
+        }
+      }
     },
     
     _sendChanges : function( date, month, year ) {

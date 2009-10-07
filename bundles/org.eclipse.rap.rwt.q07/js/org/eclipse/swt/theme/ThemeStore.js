@@ -36,6 +36,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "*" : {
         "hover" : "over"
       },
+      "DateTime-Calendar-Day" : {
+        "unfocused" : "parent_unfocused"
+      },
       "List-Item" : {
         "unfocused" : "parent_unfocused"
       },
