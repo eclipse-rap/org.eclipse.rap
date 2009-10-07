@@ -1275,8 +1275,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _updateRowBounds : function() {
       var left = 0 - this._horzScrollBar.getValue();
-      // TODO [rh] make themeable
-      var checkImageWidth = 0;
       var checkImageHeight = 0;
       var checkBoxWidth = 0;
       if( this._checkBoxes !== null ) {
