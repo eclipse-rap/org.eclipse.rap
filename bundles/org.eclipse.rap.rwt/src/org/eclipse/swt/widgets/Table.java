@@ -2358,7 +2358,7 @@ public class Table extends Composite {
    */
   // TODO [if] move to Scrollable as in SWT
   public ScrollBar getHorizontalBar() {
-    checkWidget ();
+    checkWidget();
     return horizontalBar;
   }
 
@@ -2377,7 +2377,7 @@ public class Table extends Composite {
    */
   //  TODO [if] move to Scrollable as in SWT
   public ScrollBar getVerticalBar() {
-    checkWidget ();
+    checkWidget();
     return verticalBar;
   }
 

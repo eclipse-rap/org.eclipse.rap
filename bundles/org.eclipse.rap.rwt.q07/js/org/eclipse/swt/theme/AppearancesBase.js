@@ -542,37 +542,31 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.textColor = tv.getCssColor( "MenuItem", "color" );
       }
       if( states.cascade ) {                
-        result.arrow = tv.getCssSizedImage( 
-          "MenuItem-CascadeIcon",
-          "background-image" );
+        result.arrow
+          = tv.getCssSizedImage( "MenuItem-CascadeIcon", "background-image" );
       } else {
         result.arrow = null;        
       }
       if( states.selected ) {
         if( states.check ) {
-           result.selectionIndicator = tv.getCssSizedImage( 
-            "MenuItem-CheckIcon", 
-            "background-image" );
+           result.selectionIndicator
+             = tv.getCssSizedImage( "MenuItem-CheckIcon", "background-image" );
         } else if( states.radio ) {
-           result.selectionIndicator= tv.getCssSizedImage( 
-            "MenuItem-RadioIcon", 
-            "background-image" );
+           result.selectionIndicator
+             = tv.getCssSizedImage( "MenuItem-RadioIcon", "background-image" );
         }
       } else {
         if( states.radio ) {
-          var radioWidth = tv.getCssSizedImage( 
-              "MenuItem-RadioIcon", 
-              "background-image" )[1];
+          var radioWidth
+            = tv.getCssSizedImage( "MenuItem-RadioIcon", "background-image" )[ 1 ];
           result.selectionIndicator = [ null, radioWidth, 0 ];
         } else if( states.check ) {
-          var checkWidth = tv.getCssSizedImage( 
-              "MenuItem-CheckIcon", 
-              "background-image" )[1];
+          var checkWidth 
+            = tv.getCssSizedImage( "MenuItem-CheckIcon", "background-image" )[ 1 ];
           result.selectionIndicator = [ null, checkWidth, 0 ];          
         } else {
           result.selectionIndicator = null;
         }
-        
       }
       return result;
     }
@@ -581,8 +575,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "menu-separator" : {
     style : function( states ) {
       return {
-        height       : "auto",
-        marginTop    : 3,
+        height : "auto",
+        marginTop : 3,
         marginBottom : 2,
         paddingLeft  : 3,
         paddingRight : 3
@@ -625,12 +619,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        height                  : "auto",
+        height : "auto",
         horizontalChildrenAlign : "left",
-        verticalChildrenAlign   : "middle",
-        spacing                 : 4,
-        padding                 : [ 3, 5 ],
-        minWidth                : "auto"
+        verticalChildrenAlign : "middle",
+        spacing : 4,
+        padding : [ 3, 5 ],
+        minWidth : "auto"
       };
       result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : "undefined";
       if( states.selected ) {
@@ -683,8 +677,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Combo", "border" );
-      result.backgroundColor = tv.getCssColor( "Combo",
-                                               "background-color" );
+      result.backgroundColor
+        = tv.getCssColor( "Combo", "background-color" );
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "Combo", "font" );
       return result;
@@ -701,8 +695,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.overflow = "scrollY";
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "*", "font" );
-      result.backgroundColor = tv.getCssColor( "Combo",
-                                               "background-color" );
+      result.backgroundColor
+        = tv.getCssColor( "Combo", "background-color" );
       return result;
     }
   },
@@ -827,7 +821,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "tree-element" : {
     style : function( states ) {
       return {
-        height                : 16,
+        height : 16,
         verticalChildrenAlign : "middle"
       };
     }
@@ -836,7 +830,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "tree-element-icon" : {
     style : function( states ) {
       return {
-        width  : 16,
+        width : 16,
         height : 16,
         marginRight : 2
       };
