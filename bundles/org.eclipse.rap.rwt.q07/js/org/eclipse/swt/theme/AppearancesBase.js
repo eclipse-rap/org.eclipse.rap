@@ -1250,7 +1250,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         opacity : states.moving ? 0.6 : 1.0
       };
       result.padding = tv.getCssBoxDimensions( "TableColumn", "padding" );
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.textColor = tv.getCssColor( "TableColumn", "color" );
+      result.font = tv.getCssFont( "TableColumn", "font" );
       result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TableColumn", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TableColumn",

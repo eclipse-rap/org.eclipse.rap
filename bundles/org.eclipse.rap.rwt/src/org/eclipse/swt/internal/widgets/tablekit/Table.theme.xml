@@ -56,6 +56,14 @@
 
     <element name="TableColumn"
         description="Column header of Table controls">
+      
+      <property name="color"
+          type="color"
+          description="Text color for table column headers" />
+          
+      <property name="font"
+          type="font"
+          description="Font for table column headers" />
 
       <property name="background-color"
           type="color"

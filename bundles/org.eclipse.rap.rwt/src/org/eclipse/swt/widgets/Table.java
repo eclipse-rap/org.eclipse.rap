@@ -1845,7 +1845,11 @@ public class Table extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      int textHeight = TextSizeDetermination.getCharHeight( getFont() );
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      Font headerFont = adapter.getHeaderFont( this );
+      int textHeight = TextSizeDetermination.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
         Image image = getColumn( i ).getImage();
@@ -1855,9 +1859,6 @@ public class Table extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
       result += adapter.getHeaderBorderBottomWidth( this );
       result += adapter.getHeaderPadding( this ).height;
     }

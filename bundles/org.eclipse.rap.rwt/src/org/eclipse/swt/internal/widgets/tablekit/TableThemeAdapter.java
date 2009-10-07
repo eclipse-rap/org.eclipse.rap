@@ -12,6 +12,7 @@
 
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -37,5 +38,9 @@ public final class TableThemeAdapter extends ControlThemeAdapter {
 
   public Rectangle getHeaderPadding( final Control control ) {
     return getCssBoxDimensions( "TableColumn", "padding", control );
+  }
+
+  public Font getHeaderFont( final Control control ) {
+    return getCssFont( "TableColumn", "font", control );
   }
 }
