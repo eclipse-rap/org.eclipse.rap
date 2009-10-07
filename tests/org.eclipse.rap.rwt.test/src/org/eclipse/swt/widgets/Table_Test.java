@@ -2289,6 +2289,17 @@ public class Table_Test extends TestCase {
     assertEquals( 116, adapter.getLeftOffset() );
   }
 
+  public void testScrollBars() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    assertNotNull( table.getHorizontalBar() );
+    assertNotNull( table.getVerticalBar() );
+    table = new Table( shell, SWT.NO_SCROLL );
+    assertNull( table.getHorizontalBar() );
+    assertNull( table.getVerticalBar() );
+  }
+
   // 288634: [Table] TableItem images are not displayed if columns are created
   // after setInput
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634

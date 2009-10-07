@@ -45,6 +45,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._topIndexChanged = false;
     // indicates that the horizontal scoll bar was changed
     this._leftOffsetChanged = false;
+    // indicates that there are selection listener attached to the scrollbars on
+    // the server side
+    this._hasScrollBarsSelectionListener = false;
+    // indicates that the next request can be sent
+    this._readyToSendChanges = true;
     // Internally used fields to manage visible rows and scrolling
     this._itemHeight = 0;
     this._rows = new Array();
@@ -88,6 +93,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._columnArea.setTop( 0 );
     this._columnArea.setLeft( 0 );
     this._columnArea.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    // [if] The zIndex adjustment is needed, because of the cell editors.
+    // Whitout it, the cell editor control is positioned on the top of columns
+    // headers area when scrolling
+    this._columnArea.setZIndex( 20000 );
     // Create a dummy column header that is placed after the last column
     // The dummy column is always the first child in _columnArea
     var dummyColumn = new qx.ui.basic.Atom();
@@ -906,6 +915,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         // set new topIndex -> rows are updateded if necessary
         this._internalSetTopIndex( newTopIndex, false );
       }
+      if( this._readyToSendChanges && this._hasScrollBarsSelectionListener ) {
+        this._readyToSendChanges = false;
+        // Send changes
+        qx.client.Timer.once( this._sendChanges, this, 500 );
+      }
     },
 
     _onHorzScrollBarChangeValue : function() {
@@ -913,6 +927,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._updateRowBounds();
       this._updateGridLines();
       this._leftOffsetChanged = true;
+      if( this._readyToSendChanges && this._hasScrollBarsSelectionListener ) {
+        this._readyToSendChanges = false;
+        // Send changes
+        qx.client.Timer.once( this._sendChanges, this, 500 );
+      }
+    },
+    
+    setHasScrollBarsSelectionListener : function( value ) {
+      this._hasScrollBarsSelectionListener = value;
     },
 
     ///////////////////////
@@ -1567,6 +1590,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._leftOffsetChanged = false;
         }
       }
+    },
+    
+    _sendChanges : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var req = org.eclipse.swt.Request.getInstance();
+        req.send();
+      }
+      this._readyToSendChanges = true;
     },
 
     ////////////////////////

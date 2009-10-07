@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -56,6 +57,9 @@ public class TableLCA_Test extends TestCase {
     assertEquals( new Integer( -1 ), focusIndex );
     Boolean hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    String prop = TableLCA.PROP_SCROLLBARS_SELECTION_LISTENER;
+    hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.FALSE, hasListeners );
     Object defaultColumnwidth
       = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
@@ -124,6 +128,29 @@ public class TableLCA_Test extends TestCase {
     assertEquals( textLeft, itemMetrics[ 0 ].textLeft );
     textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
+    RWTFixture.clearPreserved();
+    // scrollbars selection listener
+    SelectionAdapter listener = new SelectionAdapter() {
+    };
+    table.getHorizontalBar().addSelectionListener( listener );
+    RWTFixture.preserveWidgets();
+    hasListeners = ( Boolean )adapter.getPreserved( prop );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    table.getHorizontalBar().removeSelectionListener( listener );
+    RWTFixture.preserveWidgets();
+    hasListeners = ( Boolean )adapter.getPreserved( prop );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();
+    table.getVerticalBar().addSelectionListener( listener );
+    RWTFixture.preserveWidgets();
+    hasListeners = ( Boolean )adapter.getPreserved( prop );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    table.getVerticalBar().removeSelectionListener( listener );
+    RWTFixture.preserveWidgets();
+    hasListeners = ( Boolean )adapter.getPreserved( prop );
+    assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     // control: enabled
     RWTFixture.preserveWidgets();
@@ -713,6 +740,21 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
+  public void testWriteScrollbarsSelectionListener() throws IOException {
+    RWTFixture.fakeNewRequest();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    SelectionAdapter listener = new SelectionAdapter() {
+    };
+    table.getHorizontalBar().addSelectionListener( listener );
+    TableLCA lca = new TableLCA();
+    lca.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setHasScrollBarsSelectionListener( true );";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
   public void testWriteFocusIndex() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -809,6 +851,35 @@ public class TableLCA_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     expected = "w.setCellToolTipText( \"[1,2]\" );";
     assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
+  public void testScrollbarsSelectionEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        log.add( "scrollbarSelected" );
+      }
+    };
+    table.getHorizontalBar().addSelectionListener( listener );
+    RWTFixture.fakeNewRequest();
+    String tableId = WidgetUtil.getId( table );
+    Fixture.fakeRequestParam( tableId + ".leftOffset", "10" );
+    RWTFixture.readDataAndProcessAction( table );
+    assertEquals( 1, log.size() );
+    assertEquals( 10, table.getHorizontalBar().getSelection() );
+    log.clear();
+    table.getVerticalBar().addSelectionListener( listener );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( tableId + ".leftOffset", "10" );
+    Fixture.fakeRequestParam( tableId + ".topIndex", "10" );
+    RWTFixture.readDataAndProcessAction( table );
+    assertEquals( 2, log.size() );
+    assertEquals( 10 * table.getItemHeight(),
+                  table.getVerticalBar().getSelection());
   }
 
   protected void setUp() throws Exception {

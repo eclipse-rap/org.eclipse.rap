@@ -23,12 +23,12 @@ import org.eclipse.swt.widgets.*;
  * <p>
  * Here is an example of using a ControlEditor: <code><pre>
  * Canvas canvas = new Canvas(shell, SWT.BORDER);
- * canvas.setBounds(10, 10, 300, 300);	
+ * canvas.setBounds(10, 10, 300, 300);
  * Color color = new Color(null, 255, 0, 0);
  * canvas.setBackground(color);
  * ControlEditor editor = new ControlEditor (canvas);
  * // The editor will be a button in the bottom right corner of the canvas.
- * // When selected, it will launch a Color dialog that will change the background 
+ * // When selected, it will launch a Color dialog that will change the background
  * // of the canvas.
  * Button button = new Button(canvas, SWT.PUSH);
  * button.setText("Select Color...");
@@ -42,10 +42,10 @@ import org.eclipse.swt.widgets.*;
  * 			color = new Color(null, rgb);
  * 			canvas.setBackground(color);
  * 		}
- * 		
+ *
  * 	}
  * });
- * 
+ *
  * editor.horizontalAlignment = SWT.RIGHT;
  * editor.verticalAlignment = SWT.BOTTOM;
  * editor.grabHorizontal = false;
@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.*;
  * editor.minimumHeight = size.y;
  * editor.setEditor (button);
  * </pre></code>
- * 
+ *
  * @since 1.0
  */
 public class ControlEditor {
@@ -103,7 +103,7 @@ public class ControlEditor {
   Control editor;
   private boolean hadFocus;
   private Listener controlListener;
-  // private Listener scrollbarListener;
+  private Listener scrollbarListener;
   private final static int[] EVENTS = {/*
                                         * SWT.KeyDown, SWT.KeyUp, SWT.MouseDown,
                                         * SWT.MouseUp,
@@ -113,7 +113,7 @@ public class ControlEditor {
 
   /**
    * Creates a ControlEditor for the specified Composite.
-   * 
+   *
    * @param parent the Composite above which this editor will be displayed
    */
   public ControlEditor( Composite parent ) {
@@ -127,15 +127,23 @@ public class ControlEditor {
     for( int i = 0; i < EVENTS.length; i++ ) {
       parent.addListener( EVENTS[ i ], controlListener );
     }
-    // scrollbarListener = new Listener() {
-    // public void handleEvent(Event e) {
-    // scroll (e);
-    // }
-    // };
-    // ScrollBar hBar = parent.getHorizontalBar ();
-    // if (hBar != null) hBar.addListener (SWT.Selection, scrollbarListener);
-    // ScrollBar vBar = parent.getVerticalBar ();
-    // if (vBar != null) vBar.addListener (SWT.Selection, scrollbarListener);
+    // TODO: [if] Remove instance check when ScrollBars are moved to Scrollable
+    if( parent instanceof Table ) {
+      Table table = ( Table )parent;
+      scrollbarListener = new Listener() {
+        public void handleEvent( Event e ) {
+          scroll( e );
+        }
+      };
+      ScrollBar hBar = table.getHorizontalBar();
+      if( hBar != null ) {
+        hBar.addListener( SWT.Selection, scrollbarListener );
+      }
+      ScrollBar vBar = table.getVerticalBar();
+      if( vBar != null ) {
+        vBar.addListener( SWT.Selection, scrollbarListener );
+      }
+    }
   }
 
   Rectangle computeBounds() {
@@ -182,23 +190,29 @@ public class ControlEditor {
       for( int i = 0; i < EVENTS.length; i++ ) {
         parent.removeListener( EVENTS[ i ], controlListener );
       }
-      // ScrollBar hBar = parent.getHorizontalBar ();
-      // if (hBar != null) hBar.removeListener (SWT.Selection,
-      // scrollbarListener);
-      // ScrollBar vBar = parent.getVerticalBar ();
-      // if (vBar != null) vBar.removeListener (SWT.Selection,
-      // scrollbarListener);
+      // TODO: [if] Remove instance check when ScrollBars are moved to Scrollable
+      if( parent instanceof Table ) {
+        Table table = ( Table )parent;
+        ScrollBar hBar = table.getHorizontalBar();
+        if( hBar != null ) {
+          hBar.removeListener( SWT.Selection, scrollbarListener );
+        }
+        ScrollBar vBar = table.getVerticalBar();
+        if( vBar != null ) {
+          vBar.removeListener( SWT.Selection, scrollbarListener );
+        }
+      }
     }
     parent = null;
     editor = null;
     hadFocus = false;
     controlListener = null;
-    // scrollbarListener = null;
+    scrollbarListener = null;
   }
 
   /**
    * Returns the Control that is displayed above the composite being edited.
-   * 
+   *
    * @return the Control that is displayed above the composite being edited
    */
   public Control getEditor() {
@@ -236,7 +250,7 @@ public class ControlEditor {
    * <p>
    * Note: The Control provided as the editor <b>must</b> be created with its
    * parent being the Composite specified in the ControlEditor constructor.
-   * 
+   *
    * @param editor the Control that is displayed above the composite being
    *          edited
    */
