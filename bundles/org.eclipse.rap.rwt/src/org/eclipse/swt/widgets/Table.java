@@ -252,7 +252,6 @@ public class Table extends Composite {
     = Table.class.getName() + "#enableCellToolTip";
 
   private static final int GRID_WIDTH = 1;
-  private static final int CHECK_HEIGHT = 13;
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
@@ -1826,7 +1825,10 @@ public class Table extends Composite {
     int itemImageHeight = getItemImageSize().y + paddingHeight;
     int result = Math.max( itemImageHeight, textHeight );
     if( ( style & SWT.CHECK ) != 0 ) {
-      result = Math.max( CHECK_HEIGHT, result );
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      result = Math.max( adapter.getCheckBoxImageSize( this ).y, result );
     }
     return result;
   }
@@ -2433,8 +2435,10 @@ public class Table extends Composite {
   final int getCheckWidth() {
     int result = 0;
     if( ( style & SWT.CHECK ) != 0 ) {
-      // TODO [rh] read from theme
-      result = 21;
+      ThemeManager themeManager = ThemeManager.getInstance();
+      TableThemeAdapter adapter
+        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+      result = adapter.getCheckBoxWidth( this );
     }
     return result;
   }

@@ -12,8 +12,7 @@
 
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
@@ -22,6 +21,10 @@ public final class TableThemeAdapter extends ControlThemeAdapter {
 
   public int getCheckBoxWidth( final Control control ) {
     return getCssDimension( "Table-Checkbox", "width", control );
+  }
+
+  public Point getCheckBoxImageSize( final Control control ) {
+    return getCssImageDimension( "Table-Checkbox", "background-image", control );
   }
 
   public Rectangle getCellPadding( final Control control ) {

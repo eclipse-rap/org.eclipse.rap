@@ -1220,7 +1220,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "*", "font" ),
-        border : tv.getCssBorder( "*", "border" )
+        border : tv.getCssBorder( "*", "border" ),
+        checkWidth : tv.getCssDimension( "Table-Checkbox", "width" ),
+        checkImageHeight : tv.getCssSizedImage( "Table-Checkbox", 
+                                                "background-image" )[2]
       };
     }
   },

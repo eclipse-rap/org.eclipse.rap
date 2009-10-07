@@ -245,11 +245,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     "itemdefaultselected" : "qx.event.type.DataEvent",
     "itemchecked" : "qx.event.type.DataEvent"
   },
+  
+  properties : {
+    
+    checkWidth : {
+      check : "Integer",
+      init : 21,
+      themeable : true
+    },
+    
+    checkImageHeight : {
+      check : "Integer",
+      init : 13,
+      themeable : true
+    }
+    
+  },
 
   statics : {
-    CHECK_WIDTH : 21,
-    CHECK_IMAGE_WIDTH : 13,
-    CHECK_IMAGE_HEIGHT : 13,
 
     ////////////////////////////////////
     // Helper to determine modifier keys
@@ -1101,7 +1114,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this.getColumnCount() === 0 ) {
         width = this.getDefaultColumnWidth();
         if( this._checkBoxes !== null ) {
-          width += org.eclipse.swt.widgets.Table.CHECK_WIDTH;
+          width += this.getCheckWidth();
         }
       } else {
         width = this.getColumnsWidth();
@@ -1121,7 +1134,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this.getColumnCount() === 0 ) {
         var columnsWidth = this.getDefaultColumnWidth();
         if( this._checkBoxes !== null ) {
-          columnsWidth += org.eclipse.swt.widgets.Table.CHECK_WIDTH;
+          columnsWidth += this.getCheckWidth();
         }
         headerWidth = Math.max( columnsWidth + vertScrollBarWidth, clientWidth );
         dummyColumn.setLeft( 0 );
@@ -1249,11 +1262,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRowTop : function() {
-      var checkBoxOffset
-        = this._itemHeight
-        / 2
-        - org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT
-        / 2;
+      var checkBoxOffset = this._itemHeight / 2 - this.getCheckImageHeight() / 2;
       var top = 0;
       for( var i = 0; i < this._rows.length; i++ ) {
         if( this._checkBoxes !== null ) {
@@ -1271,9 +1280,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var checkImageHeight = 0;
       var checkBoxWidth = 0;
       if( this._checkBoxes !== null ) {
-        // TODO [rh] move to theme, needs to be in sync with TableItem#CHECK_WIDTH
-        checkBoxWidth = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
-        checkImageHeight = org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT;
+        checkBoxWidth = this.getCheckWidth();
+        checkImageHeight = this.getCheckImageHeight();
       }
       var width;
       if( this.getColumnCount() === 0 ) {

@@ -179,7 +179,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       }
       var leftOffset = 0;
       if( parent.hasCheckBoxes() ) {
-        leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
+        leftOffset = parent.getCheckWidth();
       }
       row.setVariant( this._variant );
       // Row background color
