@@ -1320,10 +1320,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.paddingLeft = 4;
-      result.width = 21;
-      result.height = 13;
-      result.clipWidth = 21;
-      result.clipHeight = 13;
       result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
       return result;
     }
