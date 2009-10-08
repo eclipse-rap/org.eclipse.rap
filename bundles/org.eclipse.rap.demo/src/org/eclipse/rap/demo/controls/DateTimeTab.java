@@ -31,11 +31,13 @@ class DateTimeTab extends ExampleTab {
 
   protected void createStyleControls( final Composite parent ) {
     group1 = new Group( styleComp, SWT.SHADOW_IN );
+    group1.setText( "Type" );
     group1.setLayout( new RowLayout( SWT.VERTICAL ) );
     createStyleButton( group1, "DATE", SWT.DATE, SWT.RADIO, true );
     createStyleButton( group1, "TIME", SWT.TIME, SWT.RADIO, false );
     createStyleButton( group1, "CALENDAR", SWT.CALENDAR, SWT.RADIO, false );
     group2 = new Group( styleComp, SWT.SHADOW_IN );
+    group2.setText( "Details" );
     group2.setLayout( new RowLayout( SWT.VERTICAL ) );
     createStyleButton( group2, "SHORT", SWT.SHORT, SWT.RADIO, false );
     createStyleButton( group2, "MEDIUM", SWT.MEDIUM, SWT.RADIO, true );
