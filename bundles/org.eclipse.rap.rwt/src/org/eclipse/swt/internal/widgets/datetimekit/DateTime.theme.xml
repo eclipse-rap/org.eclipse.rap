@@ -96,8 +96,8 @@
         description="The calendar navigation bar">
       
       <property name="border"
-        type="border"
-        description="Calendar navigation bar border" />
+          type="border"
+          description="Calendar navigation bar border" />
         
       <property name="border-radius" type="boxdim">
           <description>
