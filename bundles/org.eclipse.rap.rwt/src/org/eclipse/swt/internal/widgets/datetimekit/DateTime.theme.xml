@@ -94,6 +94,17 @@
 
     <element name="DateTime-Calendar-Navbar"
         description="The calendar navigation bar">
+      
+      <property name="border"
+        type="border"
+        description="Calendar navigation bar border" />
+        
+      <property name="border-radius" type="boxdim">
+          <description>
+            Border radius. The border radius has no effect if an enhanced border,
+            like "inset" or "outset" is used.
+          </description>
+      </property>
 
       <property name="color"
           type="color"

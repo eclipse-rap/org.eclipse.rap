@@ -1911,7 +1911,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
+        border : tv.getCssBorder( "DateTime-Calendar-Navbar", "border" ),
+        backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", 
+                                          "background-color" ),
         padding : [ 4, 4, 4, 4 ]
       };
     }

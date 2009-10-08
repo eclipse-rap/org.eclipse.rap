@@ -30,6 +30,7 @@ DateTime-Calendar-Day:hover {
 }
 
 DateTime-Calendar-Navbar {
+  border: none;
   background-color: rgb( 0, 128, 192 );
   color: white;
   font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
