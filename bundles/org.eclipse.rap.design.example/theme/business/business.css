@@ -789,6 +789,7 @@ Group-Frame {
   padding: 5px;
   border: 1px solid #cccccc;
   border-radius: 7px 7px 7px 7px;
+  padding: 22px 2px 2px;
 }
 
 Group-Label {
@@ -796,7 +797,7 @@ Group-Label {
   color: #fbfcfd;
   margin: 14px 6px;
   border: 1px solid #3f87c1;
-  border-radius: 7px 7px 7px 0px;
+  border-radius: 7px 7px 7px 0px;  
 }
 
 /* Link */
