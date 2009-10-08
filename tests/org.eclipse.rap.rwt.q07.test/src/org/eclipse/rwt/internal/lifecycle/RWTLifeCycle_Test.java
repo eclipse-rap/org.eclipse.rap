@@ -900,18 +900,12 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     try {
       lifeCycle.execute();
-      // wait for UI thread to terminate
-//      synchronized( getUIThread().getLock() ) {
-//        getUIThread().join( 5000 );
-//      }
       fail( "Exception in render must be re-thrown by life cycle" );
     } catch( Throwable e ) {
       assertEquals( EXCEPTION_IN_RENDER, e.getMessage() );
     }
   }
 
-  // TODO [rh] bring back to life, once bug #219465 is closed
-  //      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
   public void testSessionInvalidateWithoutRunningEventLoop() throws Exception {
     final ISessionStore session = ContextProvider.getSession();
     final String[] uiThreadName = { "unknown-ui-thread" };
