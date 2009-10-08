@@ -1120,6 +1120,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         top : 0,
         left : 0,
+        border : tv.getCssBorder( "Group-Label", "border" ),
         padding : tv.getCssBoxDimensions( "Group-Label", "padding" ),
         margin : tv.getCssBoxDimensions( "Group-Label", "margin" ),
         backgroundColor : tv.getCssColor( "Group-Label", "background-color" ),
