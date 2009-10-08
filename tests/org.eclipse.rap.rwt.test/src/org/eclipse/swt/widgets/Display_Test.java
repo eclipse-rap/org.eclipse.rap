@@ -881,6 +881,9 @@ public class Display_Test extends TestCase {
     display.dispose();
     assertTrue( display.isDisposed() );
     assertNull( Display.getCurrent() );
+    // Ensure that calling dispose() on a disposed of Display is allowed
+    display.dispose();
+    assertTrue( display.isDisposed() );
   }
 
   public void testDisposeNotificationsOrder() {
