@@ -8,12 +8,11 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.service;
 
 
 /**
- * An <code>IServiceManager</code> is responsible to manager existing
+ * An <code>IServiceManager</code> is responsible to manage existing
  * <code>IServiceHandler</code>s.
  * 
  * @see IServiceHandler
