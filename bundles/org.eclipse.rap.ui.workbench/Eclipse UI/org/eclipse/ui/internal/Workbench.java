@@ -124,10 +124,8 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     private boolean started;
       private boolean sessionInvalidated;
       
-      private static final class ShutdownHandler
-        implements SessionStoreListener
-      {
-        public void beforeDestroy( final SessionStoreEvent event ) {
+      private static final class ShutdownHandler implements Listener {
+        public void handleEvent( Event event ){
           if( Workbench.getInstance().started ) {
             Workbench.getInstance().sessionInvalidated = true;
             Workbench.getInstance().close();
@@ -408,9 +406,6 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     public static final int createAndRunWorkbench(final Display display,
             final WorkbenchAdvisor advisor) {
         final int[] returnCode = new int[1];
-        // RAP [fappel]: change this to allow databinding dependencies
-        //               to be optional. Would be good to have this in
-        //               RCP too...
         Runnable runnable = new Runnable() {
             public void run() {
                 // create the workbench instance
@@ -422,11 +417,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                 // RAPEND: [bm] 
 
                 // run the workbench event loop
-                // RAP [bm]: 
-                ISessionStore session = ContextProvider.getSession();
-                ShutdownHandler shutdownHandler = new ShutdownHandler();
-                session.addSessionStoreListener( shutdownHandler );
-                // RAPEND: [bm] 
+                // RAP [rh]: cleanup when session terminates
+                display.addListener( SWT.Dispose, new ShutdownHandler() );
+                // RAPEND 
 
                 returnCode[0] = workbench.runUI();
             }

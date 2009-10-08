@@ -18,12 +18,27 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.widgets.Display;
 
 
 public class ExternalBrowser_Test extends TestCase {
   
+  public static final class TestJavaScriptExecutionOrderEntryPoint 
+    implements IEntryPoint 
+  {
+    public int createUI() {
+      new Display();
+      // execute a row open/close method calls 
+      ExternalBrowser.open( "1", "http://eclipse.org", 0 );
+      ExternalBrowser.close( "1" );
+      ExternalBrowser.open( "2", "http://eclipse.org", 0 );
+      ExternalBrowser.close( "2" );
+      return 0;
+    }
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
@@ -97,16 +112,10 @@ public class ExternalBrowser_Test extends TestCase {
    * matches the order of the ExternalBrowser#open/close calls
    */
   public void testJavaScriptExecutionOrder() throws IOException {
-    // set up test environment
-    Display display = new Display();
+    EntryPointManager.register( EntryPointManager.DEFAULT, 
+                                TestJavaScriptExecutionOrderEntryPoint.class );
     RWTFixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    // execute a row open/close method calls 
-    ExternalBrowser.open( "1", "http://eclipse.org", 0 );
-    ExternalBrowser.close( "1" );
-    ExternalBrowser.open( "2", "http://eclipse.org", 0 );
-    ExternalBrowser.close( "2" );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     // run life cycle
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();

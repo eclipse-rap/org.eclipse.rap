@@ -116,7 +116,7 @@ public class JobManagerAdapter
       try {
         manager[ 0 ] = findProgressManager( event.getJob() );
         display = ( Display )jobs.get( event.getJob() );
-        if( display != null ) {
+        if( display != null && !display.isDisposed() ) {
           display.asyncExec( new Runnable() {
             public void run() {
               Job job = event.getJob();
@@ -129,7 +129,7 @@ public class JobManagerAdapter
         jobs.remove( event.getJob() );
       }
     }
-    if( display != null ) {
+    if( display != null && !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
         public void run() {
           manager[ 0 ].changeListener.done( event );

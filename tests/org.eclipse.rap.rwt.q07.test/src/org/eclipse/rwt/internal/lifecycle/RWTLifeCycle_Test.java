@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
@@ -110,7 +111,7 @@ public class RWTLifeCycle_Test extends TestCase {
       return 0;
     }
   }
-  
+
   public static class TestErrorInLifeCycleEntryPoint implements IEntryPoint {
     public int createUI() {
       String msg = TestErrorInLifeCycleEntryPoint.class.getName();
@@ -132,7 +133,7 @@ public class RWTLifeCycle_Test extends TestCase {
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
-        public void handleEvent(Event event) {
+        public void handleEvent(final Event event) {
           log.append( "display disposed" );
         }
       } );
@@ -165,29 +166,29 @@ public class RWTLifeCycle_Test extends TestCase {
       return 0;
     }
   }
-  
+
   public static class ExceptionInRenderEntryPoint implements IEntryPoint {
     public static class BuggyShell extends Shell {
       public BuggyShell( final Display display ) {
         super( display );
       }
-      public Object getAdapter( Class adapter ) {
+      public Object getAdapter( final Class adapter ) {
         Object result;
         if( adapter.equals( ILifeCycleAdapter.class ) ) {
           result = new AbstractWidgetLCA() {
-            public void preserveValues( Widget widget ) {
+            public void preserveValues( final Widget widget ) {
             }
-            public void readData( Widget widget ) {
+            public void readData( final Widget widget ) {
             }
-            public void renderInitialization( Widget widget )
+            public void renderInitialization( final Widget widget )
               throws IOException
             {
               throw new RuntimeException( EXCEPTION_IN_RENDER );
             }
-            public void renderChanges( Widget widget ) throws IOException {
+            public void renderChanges( final Widget widget ) throws IOException {
               throw new RuntimeException( EXCEPTION_IN_RENDER );
             }
-            public void renderDispose( Widget widget ) throws IOException {
+            public void renderDispose( final Widget widget ) throws IOException {
             }
           };
         } else {
@@ -196,7 +197,7 @@ public class RWTLifeCycle_Test extends TestCase {
         return result;
       }
     }
-    
+
     public int createUI() {
       Display display = new Display();
       Shell shell = new BuggyShell( display );
@@ -211,6 +212,26 @@ public class RWTLifeCycle_Test extends TestCase {
         }
       }
       log.append( "regular end of createUI" );
+      return 0;
+    }
+  }
+
+  public static final class TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      display.addListener( SWT.Dispose, new Listener() {
+        public void handleEvent(final Event event) {
+          log.append( "disposeEvent, " );
+        }
+      } );
+      ISessionStore sessionStore = RWT.getSessionStore();
+      sessionStore.addSessionStoreListener( new SessionStoreListener() {
+        public void beforeDestroy( final SessionStoreEvent event ) {
+          log.append( "beforeDestroy" );
+        }
+      } );
       return 0;
     }
   }
@@ -344,7 +365,7 @@ public class RWTLifeCycle_Test extends TestCase {
                + "|";
     assertEquals( expected, log.toString() );
   }
-  
+
   public void testErrorInLifeCycle() throws IOException {
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestErrorInLifeCycleEntryPoint.class );
@@ -397,7 +418,7 @@ public class RWTLifeCycle_Test extends TestCase {
     final PhaseListener[] callbackHandler = new PhaseListener[ 1 ];
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void beforePhase( PhaseEvent event ) {
+      public void beforePhase( final PhaseEvent event ) {
         callbackHandler[ 0 ] = this;
       }
       public void afterPhase( final PhaseEvent event ) {
@@ -411,7 +432,7 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle1 = new RWTLifeCycle();
     lifeCycle1.execute();
     assertSame( listener, callbackHandler[ 0 ] );
-    // Simulate new session and run lifecycle 
+    // Simulate new session and run lifecycle
     newSession();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
@@ -574,7 +595,7 @@ public class RWTLifeCycle_Test extends TestCase {
     // This test ensures that nested calls of readAndDsipatch don't cause
     // an endless loop or a stack overflow - therefore no assert is needed
   }
-  
+
   public void testReadAndDispatchWithAsyncExec() {
     final java.util.List log = new ArrayList();
     Runnable runnable = new Runnable() {
@@ -686,7 +707,7 @@ public class RWTLifeCycle_Test extends TestCase {
     thread.start();
     // TODO [rh] Find more failsafe solution
     Thread.sleep( 200 );
-    
+
     String expected = "before"
                     + PhaseId.PREPARE_UI_ROOT
                     + "createUI"
@@ -696,7 +717,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testSleep() throws Throwable {
-    final RWTLifeCycle lifeCycle 
+    final RWTLifeCycle lifeCycle
       = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final ServiceContext[] uiContext = { null };
     lifeCycle.addPhaseListener( new LoggingPhaseListener() );
@@ -741,7 +762,7 @@ public class RWTLifeCycle_Test extends TestCase {
       uiThread[ 0 ].start();
       uiThread[ 0 ].switchThread();
     }
-    
+
     if( error[ 0 ] != null ) {
       throw error[ 0 ];
     }
@@ -811,7 +832,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( expected, log.toString() );
     assertFalse( uiThread[ 0 ].isAlive() );
   }
-  
+
   public void testGetSetPhaseOrder() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     IPhase[] phaseOrder = new IPhase[ 0 ];
@@ -869,7 +890,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertNotNull( stateInfo[ 0 ] );
     assertEquals( "", log.toString() );
   }
-  
+
   public void testExceptionInRender() throws Exception {
     Fixture.fakeRequestParam( RequestParams.STARTUP,
                               EntryPointManager.DEFAULT );
@@ -938,9 +959,19 @@ public class RWTLifeCycle_Test extends TestCase {
     invalidateSession( session );
     assertEquals( "display disposed", log.toString() );
   }
-  
-  private static void invalidateSession( final ISessionStore session ) 
-    throws InterruptedException 
+
+  public void testOrderOfDisplayDisposeAndSessionUnbound() throws Exception {
+    final ISessionStore session = ContextProvider.getSession();
+    Class clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, clazz );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.execute();
+    invalidateSession( session );
+    assertEquals( "disposeEvent, beforeDestroy", log.toString() );
+  }
+
+  private static void invalidateSession( final ISessionStore session )
+    throws InterruptedException
   {
     Thread serverThread = new Thread( new Runnable() {
       public void run() {
@@ -958,7 +989,7 @@ public class RWTLifeCycle_Test extends TestCase {
     result.setStateInfo( new ServiceStateInfo() );
     return result;
   }
-  
+
   private static void newSession() {
     ContextProvider.disposeContext();
     TestResponse response = new TestResponse();

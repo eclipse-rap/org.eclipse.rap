@@ -815,7 +815,7 @@ public class Display_Test extends TestCase {
     }
   }
 
-  public void testTimerExec() throws InterruptedException {
+  public void testTimerExec() {
     // Ensure that parameters are checked properly
     final Display display = new Display();
     try {
@@ -824,19 +824,31 @@ public class Display_Test extends TestCase {
     } catch( Exception e ) {
       // expected
     }
-    // Ensure that invoking from background thread works
+    // Further timerExec tests can be found in UICallbackManager_Test
+  }
+  
+  public void testTimerExecFromBackgroundThread() throws Exception {
+    final Throwable[] throwable = { null };
+    final Display display = new Display();
+    // Ensure that invoking from background thread throws InvalidThreadAccess
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        display.timerExec( 1, new Runnable() {
-          public void run() {
-            // do nothing
-          }
-        } );
+        try {
+          display.timerExec( 1, new Runnable() {
+            public void run() {
+              // do nothing
+            }
+          } );
+        } catch( Throwable e ) {
+          throwable[ 0 ] = e;
+        }
       }
     } );
     thread.start();
     thread.join();
-    // Further timerExec tests can be found in UICallbackManager_Test
+    assertTrue( throwable[ 0 ] instanceof SWTException );
+    SWTException swtException = ( SWTException )throwable[ 0 ];
+    assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
 
   public void testGetMonitors() {
@@ -987,6 +999,28 @@ public class Display_Test extends TestCase {
     } );
     display.close();
     assertFalse( display.isDisposed() );
+  }
+  
+  public void testCheckDevice() throws Exception {
+    final Throwable[] throwable = { null };
+    final Display display = new Display();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        // access 'some' method that calls checkDevice()
+        try {
+          display.getShells();
+        } catch( Throwable e ) {
+          throwable[ 0 ] = e;
+        }
+      }
+    };
+    Thread backgroundThread = new Thread( runnable );
+    backgroundThread.setDaemon( true );
+    backgroundThread.start();
+    backgroundThread.join();
+    assertTrue( throwable[ 0 ] instanceof SWTException );
+    SWTException swtException = ( SWTException )throwable[ 0 ];
+    assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
 
   protected void setUp() throws Exception {

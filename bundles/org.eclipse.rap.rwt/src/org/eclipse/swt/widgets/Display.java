@@ -1007,10 +1007,9 @@ public class Display extends Device implements Adaptable {
    *
    */
   public void wake() {
-//  TODO: [fappel] disposal check
-//  if( isDisposed() ) {
-//    error( SWT.ERROR_DEVICE_DISPOSED );
-//  }
+    if( isDisposed() ) {
+      error( SWT.ERROR_DEVICE_DISPOSED );
+    }
     if( getThread() != Thread.currentThread() ) {
       UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
         public void run() {
@@ -1333,7 +1332,7 @@ public class Display extends Device implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #removeFilter
-   * <!--@see #removeListener-->
+   * @see #removeListener
    */
   public void addFilter( final int eventType, final Listener listener ) {
     checkDevice();
@@ -1373,7 +1372,7 @@ public class Display extends Device implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #addFilter
-   * <!--@see #addListener-->
+   * @see #addListener
    */
   public void removeFilter( final int eventType, final Listener listener ) {
     checkDevice();
@@ -1583,7 +1582,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.2
    */
-  // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
+  // [bm] This is a verbatim copy of SWT, thus no reformatting was done.
   public Object getData( final String key ) {
     checkDevice ();
     if( key == null ) {
@@ -1600,7 +1599,7 @@ public class Display extends Device implements Adaptable {
     return null;
   }
 
-  //////////////////
+  ///////////
   // Monitors
 
   /**
@@ -1645,8 +1644,8 @@ public class Display extends Device implements Adaptable {
     checkDevice();
   }
 
-  //////////////////
-  // Helping methods
+  /////////////////////
+  // Consistency checks
 
   static boolean isValidClass( final Class clazz ) {
 //    String name = clazz.getName();
@@ -1654,6 +1653,18 @@ public class Display extends Device implements Adaptable {
 //    return name.substring( 0, index + 1 ).equals( PACKAGE_PREFIX );
     return true;
   }
+
+  protected void checkDevice() {
+    if( thread != Thread.currentThread() ) {
+      error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
+    if( isDisposed() ) {
+      error( SWT.ERROR_DEVICE_DISPOSED );
+    }
+  }
+
+  //////////////////
+  // Helping methods
 
   private void readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();
