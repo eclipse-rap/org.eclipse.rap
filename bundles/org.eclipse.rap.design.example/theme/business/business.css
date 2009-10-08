@@ -589,7 +589,7 @@ Label.standaloneView {
   background-color: rgb( 252, 252, 252 );
 }
 
-Combo, List {
+List {
   background-color: rgb( 252, 252, 252 );
 }
 
@@ -628,18 +628,38 @@ ExpandItem-Button:expanded:hover {
   background-image: url( /theme/business/icons/expanditem-collapse-hover.png );
 }
 
-/* Text, Combo, Spinner, DateTime */
+
+/* Combo */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
+
 Combo, CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: rgb( 252, 252, 252 );
 }
 
-Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpButton, DateTime-DownButton {
+Combo-Button:hover, CCombo-Button:hover {
   background-color: transparent;
   border: none;
+  background-image: url( /theme/business/icons/datetime-dropdown-hover.png );
+  width: 18px;
 }
+
+Combo-Button, CCombo-Button {
+  background-color: transparent;
+  border: none;
+  background-image: url( /theme/business/icons/datetime-dropdown.png );
+  width: 18px;
+}
+
+Combo-List {
+  border: 1px solid #c1c1c1;
+  border-radius: 0px 0px 2px 2px;
+}
+
+/* Spinner */
 
 Spinner {
   border: 1px solid #a4a4a4;
@@ -651,22 +671,28 @@ Spinner {
 Spinner-DownButton {
   background-image: url( /theme/business/icons/spinner-down.png );
   width: 18px;
+  background-color: transparent;
   border: 1px solid #a4a4a4;
 }
 
 Spinner-DownButton:hover {
   background-image: url( /theme/business/icons/spinner-down-hover.png );
+  background-color: #e2e2e2;
 }
 
 Spinner-UpButton {
   background-image: url( /theme/business/icons/spinner-up.png );
   width: 18px;
+  background-color: transparent;
   border: 1px solid #a4a4a4;
 }
 
 Spinner-UpButton:hover {
   background-image: url( /theme/business/icons/spinner-up-hover.png );
+  background-color: #e2e2e2;
 }
+
+/* DateTime */
 
 DateTime {
   border: 1px solid #a4a4a4;
@@ -730,21 +756,25 @@ DateTime-Calendar-NextYearButton:hover {
 DateTime-DownButton {
   background-image: url( /theme/business/icons/spinner-down.png );
   width: 18px;
+  background-color: transparent;
   border: 1px solid #a4a4a4;
 }
 
 DateTime-DownButton:hover {
   background-image: url( /theme/business/icons/spinner-down-hover.png );
+  background-color: #e2e2e2;
 }
 
 DateTime-UpButton {
   background-image: url( /theme/business/icons/spinner-up.png );
   width: 18px;
+  background-color: transparent;
   border: 1px solid #a4a4a4;
 }
 
 DateTime-UpButton:hover {
   background-image: url( /theme/business/icons/spinner-up-hover.png );
+  background-color: #e2e2e2;
 }
 
 DateTime-DropDownButton {
@@ -757,16 +787,6 @@ DateTime-DropDownButton:hover {
   width: 18px;
 }
 
-Combo-Button:hover, CCombo-Button:hover,
-Spinner-UpButton:hover, Spinner-DownButton:hover,
-DateTime-UpButton:hover, DateTime-DownButton:hover {
-  background-color: #e2e2e2;
-}
-
-Combo-Button, CCombo-Button {
-  background-image: url( /theme/business/icons/chevron-down.png );
-}
-
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
   background-color: #D2D2D2;
   color: #4a4a4a;
@@ -776,6 +796,8 @@ DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
   color: rgb( 128, 128, 128 );
 }
+
+/* Text */
 
 Text {
   border: 1px solid #a4a4a4;
@@ -789,15 +811,15 @@ Group-Frame {
   padding: 5px;
   border: 1px solid #cccccc;
   border-radius: 7px 7px 7px 7px;
-  padding: 22px 2px 2px;
 }
 
 Group-Label {
   background-color: #3f87c1;
   color: #fbfcfd;
-  margin: 14px 6px;
+  /*margin: 14px 6px;*/
+  margin: 1px 10px;
   border: 1px solid #3f87c1;
-  border-radius: 7px 7px 7px 0px;  
+  border-radius: 7px 7px 7px 0px;
 }
 
 /* Link */
