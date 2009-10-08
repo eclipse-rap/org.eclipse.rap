@@ -808,7 +808,7 @@ Text {
 /* Group */
 
 Group-Frame {
-  padding: 5px;
+  padding: 22px 2px 2px;
   border: 1px solid #cccccc;
   border-radius: 7px 7px 7px 7px;
 }
@@ -816,8 +816,7 @@ Group-Frame {
 Group-Label {
   background-color: #3f87c1;
   color: #fbfcfd;
-  /*margin: 14px 6px;*/
-  margin: 1px 10px;
+  margin: 14px 6px;
   border: 1px solid #3f87c1;
   border-radius: 7px 7px 7px 0px;
 }
