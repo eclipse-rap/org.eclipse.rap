@@ -19,6 +19,8 @@ import org.eclipse.swt.widgets.Control;
  * Theme adapter for {@link Control}s. The theme adapter provides a control
  * with information on characteristics of its representation which depend on the
  * current theme.
+ * 
+ * @since 1.0
  */
 public interface IControlThemeAdapter extends IThemeAdapter {
 
