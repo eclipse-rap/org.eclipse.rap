@@ -114,8 +114,8 @@ public final class JSWriter {
     return new JSWriter( null );
   }
 
-  private JSWriter( final Widget iwidgetdget ) {
-    this.widget = iwidgetdget;
+  private JSWriter( final Widget widget ) {
+    this.widget = widget;
   }
 
   /**
