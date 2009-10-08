@@ -1319,8 +1319,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.paddingLeft = 4;
-      result.source = tv.getCssImage( "Table-Checkbox", "background-image" );
+      var checkWidth = tv.getCssDimension( "Table-Checkbox", "width" );
+      var checkImage = tv.getCssSizedImage( "Table-Checkbox", "background-image" );
+      result.paddingLeft = Math.max( 0, ( checkWidth - checkImage[ 1 ] ) / 2 );
+      result.source = checkImage[ 0 ];
       return result;
     }
   },
