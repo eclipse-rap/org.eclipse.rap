@@ -787,7 +787,15 @@ Text {
 
 Group-Frame {
   padding: 5px;
-  border-radius: 5px 5px 0px 0px;
+  border: 1px solid #cccccc;
+  border-radius: 7px 7px 7px 7px;
+}
+
+Group-Label {
+  background-color: #3f87c1;
+  color: #fbfcfd;
+  margin: 14px 6px;
+  border-radius: 7px 7px 7px 0px;
 }
 
 /* Link */
