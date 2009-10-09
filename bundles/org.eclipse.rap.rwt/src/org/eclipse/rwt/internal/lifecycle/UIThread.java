@@ -25,6 +25,7 @@ final class UIThread
   private ServiceContext serviceContext;
   private ISessionStore sessionStore;
   private Runnable shutdownCallback;
+  private boolean uiThreadTerminating;
 
   public UIThread( final Runnable runnable ) {
     super( runnable );
@@ -59,7 +60,18 @@ final class UIThread
         ServletLog.log( "", e );
       }
       lock.notifyAll();
-      lock.wait();
+      try {
+        lock.wait();
+      } catch( InterruptedException e ) {
+        if( uiThreadTerminating ) {
+          // Equip the UI thread that is continuing its execution with a 
+          // service context and the proper phase (see terminateThread).
+          updateServiceContext();
+          CurrentPhase.set( PhaseId.PROCESS_ACTION );
+          uiThreadTerminating = false;
+        }
+        throw e;
+      }
     }
   }
 
@@ -72,13 +84,21 @@ final class UIThread
   }
 
   public void terminateThread() {
-    interrupt();
+    // Prepare a service context to be used by the UI thread that may continue
+    // to run as a result of the interrupt call
+    ServiceContext serviceContext = createServiceContext();
+    setServiceContext( serviceContext );
+    uiThreadTerminating = true;
+    // interrupt the UI thread that is expected to wait in switchThread or
+    // already be terminated
+    getThread().interrupt();
     try {
-      join();
+      getThread().join();
     } catch( InterruptedException e ) {
       String msg = "Received InterruptedException while terminating UIThread";
       ServletLog.log( msg, e );
     }
+    uiThreadTerminating = false;
   }
 
   public Thread getThread() {
@@ -103,10 +123,6 @@ final class UIThread
   }
 
   public void interceptShutdown() {
-    ServiceContext serviceContext
-      = UICallBackServiceHandler.getFakeContext( sessionStore );
-    serviceContext.setStateInfo( new ServiceStateInfo() );
-    setServiceContext( serviceContext );
     terminateThread();
   }
 
@@ -115,16 +131,24 @@ final class UIThread
     try {
       // Simulate PROCESS_ACTION phase if the session times out
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
-      
-      // TODO [rh] find a cleaner way to dispose of the display      
+      // TODO [rh] find a better decoupled way to dispose of the display
       Display display = RWTLifeCycle.getSessionDisplay();
       if( display != null ) {
         display.dispose();
       }
-
       shutdownCallback.run();
     } finally {
       ContextProvider.disposeContext();
     }
+  }
+
+  //////////////////
+  // Helping methods
+
+  private ServiceContext createServiceContext() {
+    ServiceContext result
+      = UICallBackServiceHandler.getFakeContext( sessionStore );
+    result.setStateInfo( new ServiceStateInfo() );
+    return result;
   }
 }

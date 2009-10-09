@@ -26,21 +26,24 @@ public class ControlsDemo implements IEntryPoint {
 
   public int createUI() {
     Display display = new Display();
-    Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
-    shell.setBounds( 10, 10, 850, 600 );
-    createContent( shell );
-    shell.setText( "SWT Controls Demo" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image image = Graphics.getImage( "resources/shell.gif", classLoader );
-    shell.setImage( image );
-    shell.layout();
-    shell.open();
-    while( !shell.isDisposed() ) {
-      if( !display.readAndDispatch() ) {
-        display.sleep();
+    try {
+      Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
+      shell.setBounds( 10, 10, 850, 600 );
+      createContent( shell );
+      shell.setText( "SWT Controls Demo" );
+      ClassLoader classLoader = getClass().getClassLoader();
+      Image image = Graphics.getImage( "resources/shell.gif", classLoader );
+      shell.setImage( image );
+      shell.layout();
+      shell.open();
+      while( !shell.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
       }
+    } finally {
+      display.dispose();
     }
-    display.dispose();
     return 0;
   }
 

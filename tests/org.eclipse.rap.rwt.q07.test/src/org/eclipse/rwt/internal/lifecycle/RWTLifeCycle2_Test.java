@@ -18,8 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.IInitialization;
@@ -27,8 +26,7 @@ import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -50,9 +48,9 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static String maliciousButtonId;
   private static boolean createUIEntered;
   private static boolean createUIExited;
-  
   private static java.util.List eventLog;
-  
+  private static PhaseId currentPhase;
+
   private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
   private TestSession session;
 
@@ -123,6 +121,34 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
+  public static final class TestSessionInvalidateWithDisposeInFinallyEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      createUIEntered = true;
+      Display display = new Display();
+      try {
+        Shell shell = new Shell( display );
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+      } finally {
+        createUIExited = true;
+        currentPhase = CurrentPhase.get();
+        try {
+          // Access a session singleton to ensure that we have a valid context
+          SessionSingletonBase.getInstance( this.getClass() );
+        } catch( Throwable thr ) {
+          eventLog.add( thr );
+        }
+        display.dispose();
+      }
+      return 0;
+    }
+  }
+
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
     EntryPointManager.register( EntryPointManager.DEFAULT,
@@ -189,6 +215,36 @@ public class RWTLifeCycle2_Test extends TestCase {
     runRWTDelegate( request );
     assertTrue( createUIExited );
     assertEquals( 1, eventLog.size() );
+  }
+
+  /*
+   * Bug 225167: [Display] dispose() causes an IllegalStateException (The 
+   *             context has been disposed)
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=225167
+   */
+  public void testSessionInvalidateWithDisposeInFinally() throws Exception {
+    TestRequest request;
+    Class clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, clazz );
+    // send initial request - response is index.html
+    request = newRequest();
+    request.setParameter( RequestParams.STARTUP, "default" );
+    runRWTDelegate( request );
+    assertTrue( createUIEntered );
+    // send 'application startup' request - response is JavaScript to create
+    // client-side representation of what was created in IEntryPoint#createUI
+    request = newRequest();
+    request.setParameter( RequestParams.UIROOT, "w1" );
+    runRWTDelegate( request );
+    assertTrue( createUIEntered );
+    assertFalse( createUIExited );
+    // send 'restart' request
+    request = newRequest();
+    request.setParameter( RequestParams.STARTUP, "default" );
+    runRWTDelegate( request );
+    assertTrue( createUIExited );
+    assertEquals( PhaseId.PROCESS_ACTION, currentPhase );
+    assertEquals( 0, eventLog.size() );
   }
 
   private static TestResponse runRWTDelegate( final HttpServletRequest request ) 
