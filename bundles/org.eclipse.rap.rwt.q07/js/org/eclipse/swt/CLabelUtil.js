@@ -38,6 +38,20 @@ qx.Class.define( "org.eclipse.swt.CLabelUtil", {
       // end workaround
       widget.setHideFocus( true );
       widget.setShow( org.eclipse.swt.CLabelUtil.SHOW_BOTH );
+      widget.addEventListener( "mouseover",
+                               org.eclipse.swt.CLabelUtil._onMouseOver );
+      widget.addEventListener( "mouseout",
+                               org.eclipse.swt.CLabelUtil._onMouseOut );
+    },
+    
+    _onMouseOver : function( event ) {
+      var clabel = event.getTarget();
+      clabel.addState( "over" );
+    },
+    
+    _onMouseOut : function( event ) {
+      var clabel = event.getTarget();
+      clabel.removeState( "over" );
     }
 
   }

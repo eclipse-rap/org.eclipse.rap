@@ -152,7 +152,8 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.ExpandBar.class,
     org.eclipse.swt.widgets.Sash.class,
     org.eclipse.swt.widgets.Slider.class,
-    org.eclipse.swt.custom.CCombo.class
+    org.eclipse.swt.custom.CCombo.class,
+    org.eclipse.swt.custom.CLabel.class
   };
 
   private static ThemeManager instance;

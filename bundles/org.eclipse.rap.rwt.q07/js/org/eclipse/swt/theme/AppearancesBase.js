@@ -150,23 +150,22 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "*", "color" );
-      result.backgroundColor = tv.getCssColor( "*", "background-color" );
-      result.font = tv.getCssFont( "*", "font" );
+      result.textColor = tv.getCssColor( "CLabel", "color" );
+      result.backgroundColor = tv.getCssColor( "CLabel", "background-color" );
+      result.font = tv.getCssFont( "CLabel", "font" );
       if( states.rwt_SHADOW_IN ) {
         result.border = "thinInset";
       } else if( states.rwt_SHADOW_OUT ) {
         result.border = "thinOutset";
       } else {
-        result.border = tv.getCssBorder( "Label", "border" );
+        result.border = tv.getCssBorder( "CLabel", "border" );
       }
-      result.backgroundImage = tv.getCssImage( "Label", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
+      result.backgroundImage = tv.getCssImage( "CLabel", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "CLabel", 
+                                                     "background-image" );
       result.cursor = "default";
-      result.padding = 3; // hardcoded in CLabel (#INDENT)
-      result.spacing = 5; // hardcoded in CLabel (#GAP)
+      result.padding = tv.getCssBoxDimensions( "CLabel", "padding" );
+      result.spacing = tv.getCssDimension( "CLabel", "spacing" );
       return result;
     }
   },

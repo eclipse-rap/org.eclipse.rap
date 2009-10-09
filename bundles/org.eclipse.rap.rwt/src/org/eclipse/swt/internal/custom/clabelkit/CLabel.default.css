@@ -1,0 +1,14 @@
+/* CLabel default theme */
+
+CLabel {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: none;
+  padding: 3px;
+  spacing: 5px;
+}
+
+CLabel[BORDER] {
+  border: 1px inset;
+}

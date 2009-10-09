@@ -10,18 +10,19 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.*;
 
 /**
  * A Label which supports aligned text and/or an image and different border styles.
  * <p>
- * If there is not enough space a CLabel uses the following strategy to fit the 
+ * If there is not enough space a CLabel uses the following strategy to fit the
  * information into the available space:
  * <pre>
  * 		ignores the indent in left align mode
@@ -36,7 +37,7 @@ import org.eclipse.swt.widgets.Composite;
  * <dt><b>Events:</b>
  * <dd></dd>
  * </dl>
- * 
+ *
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
@@ -44,16 +45,10 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class CLabel extends Canvas {
 
-	/** Gap between icon and text */
-  private static final int GAP = 5;
-  /** Left and right margins */
-  private static final int INDENT = 3;
-  /** a string inserted in the middle of text that has been shortened */
+	/** a string inserted in the middle of text that has been shortened */
 //  private static final String ELLIPSIS = "..."; //$NON-NLS-1$ // could use the ellipsis glyph on some platforms "\u2026"
   /** the alignment. Either CENTER, RIGHT, LEFT. Default is LEFT */
   private int align = SWT.LEFT;
-  private int hIndent = INDENT;
-  private int vIndent = INDENT;
   /** the current text */
   private String text;
   /** the current icon */
@@ -68,14 +63,14 @@ public class CLabel extends Canvas {
 
   private Image backgroundImage;
   private Color background;
-	
+
   /**
    * Constructs a new instance of this class given its parent
    * and a style value describing its behavior and appearance.
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -134,24 +129,29 @@ public class CLabel extends Canvas {
 
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
+    CLabelThemeAdapter themeAdapter = getThemeAdapter();
+    Rectangle padding = themeAdapter.getPadding( this );
+    int borderWidth = themeAdapter.getBorderWidth( this );
     Point e = getTotalSize( image, text );
     if ( wHint == SWT.DEFAULT ) {
-      e.x += 2 * hIndent;
+      e.x += padding.width;
+      e.x += 2 * borderWidth;
     } else {
       e.x = wHint;
     }
     if ( hHint == SWT.DEFAULT ) {
-      e.y += 2 * vIndent;
+      e.y += padding.height;
+      e.y += 2 * borderWidth;
     } else {
       e.y = hHint;
     }
     return e;
   }
-  
+
   /**
    * Returns the alignment.
    * The alignment style (LEFT, CENTER or RIGHT) is returned.
-   * 
+   *
    * @return SWT.LEFT, SWT.RIGHT or SWT.CENTER
    */
   public int getAlignment() {
@@ -161,7 +161,7 @@ public class CLabel extends Canvas {
 
   /**
    * Return the CLabel's image or <code>null</code>.
-   * 
+   *
    * @return the image of the label or null
    */
   public Image getImage() {
@@ -174,7 +174,8 @@ public class CLabel extends Canvas {
    */
   private Point getTotalSize( Image image, String text ) {
     Point size = new Point( 0, 0 );
-
+    CLabelThemeAdapter themeAdapter = getThemeAdapter();
+    int spacing = themeAdapter.getSpacing( this );
     if ( image != null ) {
       Rectangle r = image.getBounds();
       size.x += r.width;
@@ -186,7 +187,7 @@ public class CLabel extends Canvas {
       size.x += e.x;
       size.y = Math.max( size.y, e.y );
       if ( image != null )
-        size.x += GAP;
+        size.x += spacing;
     } else {
       int charHeight = TextSizeDetermination.getCharHeight( getFont() );
       size.y = Math.max( size.y, charHeight );
@@ -213,7 +214,7 @@ public class CLabel extends Canvas {
 
   /**
    * Return the Label's text.
-   * 
+   *
    * @return the text of the label or null
    */
   public String getText() {
@@ -236,9 +237,9 @@ public class CLabel extends Canvas {
   /**
    * Set the alignment of the CLabel.
    * Use the values LEFT, CENTER and RIGHT to align image and text within the available space.
-   * 
+   *
    * @param align the alignment style of LEFT, RIGHT or CENTER
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -273,9 +274,9 @@ public class CLabel extends Canvas {
 
   /**
    * Set the image to be drawn in the background of the label.
-   * 
+   *
    * @param image the image to be drawn in the background
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -293,13 +294,13 @@ public class CLabel extends Canvas {
   public void setFont( Font font ) {
     super.setFont( font );
   }
-  
+
   /**
    * Set the label's Image.
    * The value <code>null</code> clears it.
-   * 
+   *
    * @param image the image to be displayed in the label or null
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -311,13 +312,13 @@ public class CLabel extends Canvas {
       this.image = image;
     }
   }
-  
+
   /**
    * Set the label's text.
    * The value <code>null</code> clears it.
-   * 
+   *
    * @param text the text to be displayed in the label or null
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -336,13 +337,13 @@ public class CLabel extends Canvas {
     super.setToolTipText( string );
     appToolTipText = super.getToolTipText();
   }
-  
+
 /**
  * Shorten the given text <code>t</code> so that its length doesn't exceed
  * the given width. The default implementation replaces characters in the
  * center of the original string with an ellipsis ("...").
  * Override if you need a different strategy.
- * 
+ *
  * @param gc the gc to use for text measurement
  * @param t the text to shorten
  * @param width the width to shorten the text to, in pixels
@@ -364,7 +365,7 @@ public class CLabel extends Canvas {
 //		int l1 = FontSizeEstimation.stringExtent( s1, getFont() ).x;
 //		int l2 = FontSizeEstimation.stringExtent( s2, getFont() ).x;
 //		if (l1+w+l2 > width) {
-//			max = mid;			
+//			max = mid;
 //			mid = (max+min)/2;
 //		} else if (l1+w+l2 < width) {
 //			min = mid;
@@ -395,4 +396,9 @@ public class CLabel extends Canvas {
 //    } while (pos != -1);
 //    return lines;
 //}
+
+  private static CLabelThemeAdapter getThemeAdapter() {
+    ThemeManager themeManager = ThemeManager.getInstance();
+    return ( CLabelThemeAdapter )themeManager.getThemeAdapter( CLabel.class );
+  }
 }
