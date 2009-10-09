@@ -44,10 +44,6 @@ public class RWTLifeCycle_Test extends TestCase {
 
   private static StringBuffer log = new StringBuffer();
 
-  private PrintStream bufferedSystemErr;
-  private ByteArrayOutputStream capturedSystemErr;
-
-
   private final class LoggingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
     public void beforePhase( final PhaseEvent event ) {
@@ -963,7 +959,7 @@ public class RWTLifeCycle_Test extends TestCase {
     invalidateSession( session );
     assertEquals( "disposeEvent, beforeDestroy", log.toString() );
   }
-
+  
   private static void invalidateSession( final ISessionStore session )
     throws InterruptedException
   {
@@ -998,9 +994,6 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    bufferedSystemErr = System.err;
-    capturedSystemErr = new ByteArrayOutputStream();
-    System.setErr( new PrintStream( capturedSystemErr ) );
     log.setLength( 0 );
     RWTFixture.setUp();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
@@ -1009,6 +1002,5 @@ public class RWTLifeCycle_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
-    System.setErr( bufferedSystemErr );
   }
 }
