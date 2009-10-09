@@ -118,9 +118,10 @@ public class TypedEvent extends Event {
     //                So no event processing should take place, this situation
     //                may improve with the new readAndDispatch mechanism in
     //                place.
-    if( CurrentPhase.get() != null ) {
-      if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() )
-          || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) )
+    PhaseId currentPhase = CurrentPhase.get();
+    if( currentPhase != null ) {
+      if(    PhaseId.PREPARE_UI_ROOT.equals( currentPhase )
+          || PhaseId.PROCESS_ACTION.equals( currentPhase ) )
       {
         // TODO [fappel]: changes of the event fields in the filter handler
         //                methods should be forwarded to this event...
