@@ -61,6 +61,11 @@ public class RWTLifeCycle2_Test extends TestCase {
       createUIEntered = true;
       Display display = new Display();
       try {
+        display.addListener( SWT.Dispose, new Listener() {
+          public void handleEvent( final Event event ) {
+            eventLog.add( event );
+          }
+        } );
         Shell shell = new Shell( display );
         shell.setLayout( new FillLayout() );
         Button maliciousButton = new Button( shell, SWT.PUSH );
@@ -148,12 +153,11 @@ public class RWTLifeCycle2_Test extends TestCase {
       return 0;
     }
   }
-
+  
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 ExceptionInReadAndDispatchEntryPoint.class );
-
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
@@ -162,6 +166,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
+    assertEquals( 0, eventLog.size() );
     
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in IEntryPoint#createUI
@@ -171,6 +176,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
+    assertEquals( 0, eventLog.size() );
     
     // send 'malicious button click' - response is HTTP 500
     request = newRequest();
@@ -185,14 +191,17 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertNotNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
     assertTrue( createUIEntered );
     assertTrue( createUIExited );
+    assertEquals( 0, eventLog.size() );
     
     // send 'refresh' request - session is restarted, response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
     runRWTDelegate( request );
+    assertEquals( 1, eventLog.size() );
+    assertTrue( eventLog.get( 0 ) instanceof Event );
   }
   
-  public void testEventProcessinOnSessionRestart() throws Exception {
+  public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
     Class entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
     EntryPointManager.register( EntryPointManager.DEFAULT, entryPoint );
@@ -246,7 +255,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( PhaseId.PROCESS_ACTION, currentPhase );
     assertEquals( 0, eventLog.size() );
   }
-
+  
   private static TestResponse runRWTDelegate( final HttpServletRequest request ) 
     throws Exception 
   {
