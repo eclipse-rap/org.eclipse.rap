@@ -131,24 +131,26 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // Mouse listeners for resize
     
     _onMouseDown : function( evt ) {
-      this._inResize = this._isResizeLocation( evt.getPageX() );
-      if( this._inResize ) {
-        var position = this.getLeft() + this.getWidth();
-        this._table._showResizeLine( position );
-        this._resizeStartX = evt.getPageX();
-        this.setCapture( true );
-        evt.stopPropagation();
-        evt.preventDefault();
-      } else if( this._moveable ){
-        this._inMove = true;
-        this.setCapture( true );
-        this._bufferedZIndex = this.getZIndex();
-        this.setZIndex( 1e8 );
-        this._table._unhookColumnMove( this );
-        this._offsetX = evt.getPageX() - this.getLeft();
-        this._initialLeft = this.getLeft();
-        evt.stopPropagation();
-        evt.preventDefault();
+      if( !this._inMove && !this._inResize ) {
+        if( this._isResizeLocation( evt.getPageX() ) ) {
+          this._inResize = true;
+          var position = this.getLeft() + this.getWidth();
+          this._table._showResizeLine( position );
+          this._resizeStartX = evt.getPageX();
+          this.setCapture( true );
+          evt.stopPropagation();
+          evt.preventDefault();
+        } else if( this._moveable ) {
+          this._inMove = true;
+          this.setCapture( true );
+          this._bufferedZIndex = this.getZIndex();
+          this.setZIndex( 1e8 );
+          this._table._unhookColumnMove( this );
+          this._offsetX = evt.getPageX() - this.getLeft();
+          this._initialLeft = this.getLeft();
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
       }
     },
 
