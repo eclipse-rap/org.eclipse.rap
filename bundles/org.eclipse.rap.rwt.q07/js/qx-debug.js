@@ -7836,6 +7836,11 @@ apply:"_applyFocusRoot"}},
 members:{_allowContextMenu:qx.lang.Function.returnFalse,
 setAllowContextMenu:function(fun){this._allowContextMenu=fun;
 },
+_menuManager:null,
+setMenuManager:function(manager){this._menuManager=manager;
+},
+getMenuManager:function(manager){return this._menuManager;
+},
 _lastMouseEventType:null,
 _lastMouseDown:false,
 _lastMouseEventDate:0,
@@ -7926,7 +7931,7 @@ vCharCode,
 vKeyIdentifier);
 if(vType=="keydown"){this._checkKeyEventMatch(vKeyEventObject);
 }
-if(vTarget!=null&&vTarget.getEnabled()){switch(vKeyIdentifier){case "Escape":case "Tab":if(qx.Class.isDefined("qx.ui.menu.Manager")){qx.ui.menu.Manager.getInstance().update(vTarget,
+if(vTarget!=null&&vTarget.getEnabled()){switch(vKeyIdentifier){case "Escape":case "Tab":if(this._menuManager!=null){this._menuManager.update(vTarget,
 vType);
 }break;
 }if(!this.getAllowClientSelectAll()){if(vDomEvent.ctrlKey&&vKeyIdentifier=="A"){switch(vDomTarget.tagName.toLowerCase()){case "input":case "textarea":case "iframe":break;
@@ -8051,12 +8056,12 @@ vEventWasProcessed,
 vEventObject,
 vDomEvent){switch(vType){case "mousedown":if(qx.Class.isDefined("qx.ui.popup.PopupManager")){qx.ui.popup.PopupManager.getInstance().update(vTarget);
 }
-if(qx.Class.isDefined("qx.ui.menu.Manager")){qx.ui.menu.Manager.getInstance().update(vTarget,
+if(this._menuManager!=null){this._menuManager.update(vTarget,
 vType);
 }
 if(qx.Class.isDefined("qx.ui.embed.IframeManager")){qx.ui.embed.IframeManager.getInstance().handleMouseDown(vEventObject);
 }break;
-case "mouseup":if(qx.Class.isDefined("qx.ui.menu.Manager")){qx.ui.menu.Manager.getInstance().update(vTarget,
+case "mouseup":if(this._menuManager!=null){this._menuManager.update(vTarget,
 vType);
 }
 if(qx.Class.isDefined("qx.ui.embed.IframeManager")){qx.ui.embed.IframeManager.getInstance().handleMouseUp(vEventObject);
@@ -8082,7 +8087,7 @@ _onwindowblur:function(e){if(!this._focused||this._ignoreWindowBlur||e.originalT
 }this._focused=false;
 this.setCaptureWidget(null);
 if(qx.Class.isDefined("qx.ui.popup.PopupManager")){qx.ui.popup.PopupManager.getInstance().update();
-}if(qx.Class.isDefined("qx.ui.menu.Manager")){qx.ui.menu.Manager.getInstance().update();
+}if(this._menuManager){this._menuManager.update();
 }if(qx.Class.isDefined("qx.event.handler.DragAndDropHandler")){qx.event.handler.DragAndDropHandler.getInstance().globalCancelDrag();
 }qx.ui.core.ClientDocument.getInstance().createDispatchEvent("windowblur");
 },
@@ -12059,7 +12064,8 @@ sendToBack:function(){this.setZIndex(this._minZIndex+1);
 this._sendTo();
 },
 _sendTo:function(){var vPopups=qx.lang.Object.getValues(qx.ui.popup.PopupManager.getInstance().getAll());
-if(qx.Class.isDefined("qx.ui.menu.Manager")){var vMenus=qx.lang.Object.getValues(qx.ui.menu.Manager.getInstance().getAll());
+if(qx.event.handler.EventHandler.getInstance().getMenuManager()!=null){var manager=qx.event.handler.EventHandler.getInstance().getMenuManager();
+var vMenus=qx.lang.Object.getValues(manager.getAll());
 var vAll=vPopups.concat(vMenus).sort(qx.util.Compare.byZIndex);
 }else{var vAll=vPopups.sort(qx.util.Compare.byZIndex);
 }var vLength=vAll.length;
@@ -17362,36 +17368,6 @@ getIcon:function(){this._legendObject.getIcon();
 destruct:function(){this._disposeObjects("_legendObject",
 "_frameObject");
 }});
-
-
-
-
-/* ID: qx.ui.menu.Manager */
-qx.Class.define("qx.ui.menu.Manager",
-{type:"singleton",
-extend:qx.util.manager.Object,
-construct:function(){this.base(arguments);
-},
-members:{update:function(vTarget,
-vEventName){var vMenu,
-vHashCode;
-var vAll=this.getAll();
-for(vHashCode in vAll){vMenu=vAll[vHashCode];
-if(!vMenu.getAutoHide()){continue;
-}
-if(vTarget&&vTarget.getMenu&&vTarget.getMenu()){continue;
-}if(!vTarget){vMenu.hide();
-continue;
-}var isMouseDown=vEventName=="mousedown";
-var isMouseUp=vEventName=="mouseup";
-if(vMenu.getOpener()!==
-vTarget&&
-(vTarget&&
-(!vMenu.isSubElement(vTarget)&&isMouseDown)||
-(vMenu.isSubElement(vTarget,
-true)&&isMouseUp)||(!isMouseDown&&!isMouseUp))){vMenu.hide();
-continue;
-}}}}});
 
 
 
