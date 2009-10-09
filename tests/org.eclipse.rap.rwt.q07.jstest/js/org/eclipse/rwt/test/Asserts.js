@@ -148,7 +148,7 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
       var failed = ( args.actual !== args.expected );
   	  org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
-  	   "assertIdentical",
+  	   "assertEquals",
   	   args.expected, 
   	   args.actual,
   	   failed,

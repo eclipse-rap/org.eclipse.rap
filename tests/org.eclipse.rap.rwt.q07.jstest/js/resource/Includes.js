@@ -70,7 +70,6 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/RadioButtonUtil.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/GfxMixin.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/RoundedBorder.js" type="text/javascript"></script>\
-<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/MenuManager.js" type="text/javascript"></script>\
 \
 <!-- rwt.test -->\
 <script src="./js/org/eclipse/rwt/test/fixture/RAPRequestPatch.js" type="text/javascript"></script>\
