@@ -464,6 +464,8 @@ public class ToolItem extends Item {
     Rectangle clientArea = parent.getClientArea();
     int left = clientArea.x;
     int top = clientArea.y;
+    int width = getWidth();
+    int height = getHeight();
     int index = parent.indexOf( this );
     if( ( parent.style & SWT.VERTICAL ) != 0 ) {
       if( index > 0 ) {
@@ -473,7 +475,12 @@ public class ToolItem extends Item {
       } else {
         top += parent.getToolBarPadding().y;
       }      
-      left += parent.getToolBarPadding().x;
+      int innerParentWidth =   parent.getSize().x 
+                             - parent.getToolBarPadding().width;
+      left +=   parent.getToolBarPadding().x 
+              + innerParentWidth / 2 
+              - width / 2;
+      left = Math.max(  left, 0 );
     } else {
       if( index > 0 ) {
         Rectangle leftSiblingBounds = parent.getItem( index - 1 ).getBounds();
@@ -482,9 +489,14 @@ public class ToolItem extends Item {
       } else {
         left += parent.getToolBarPadding().x;
       }      
-      top += parent.getToolBarPadding().y;
+      int innerParentHeight =   parent.getSize().y 
+                              - parent.getToolBarPadding().height;
+      top +=   parent.getToolBarPadding().y 
+             + innerParentHeight / 2 
+             - height / 2;
+      top = Math.max(  top, 0 );
     }
-    return new Rectangle( left, top, getWidth(), getHeight() );
+    return new Rectangle( left, top, width, height );
   }
   
    // TODO [tb] : if needed, cache dimensions to optimize performance

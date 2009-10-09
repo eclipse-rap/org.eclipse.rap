@@ -961,7 +961,7 @@ public class CoolBar extends Composite {
       int available = width;
       for ( int i = 0; i < count; i++ ) {
         CoolItem item = items[row][i];
-        rowHeight = Math.max( rowHeight, item.internalGetBounds().height );
+        rowHeight = Math.max(rowHeight, item.preferredHeight);
         available -= item.internalGetMinimumWidth();
       }
       if ( row > 0 )
