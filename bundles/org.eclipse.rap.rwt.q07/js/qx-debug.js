@@ -8029,7 +8029,7 @@ vTarget,
 vOriginalTarget,
 vRelatedTarget);
 qx.event.type.MouseEvent.storeEventState(vEventObject);
-if(vTargetIsEnabled){var vEventWasProcessed=false;
+if(vDispatchTarget.getEnabled()){var vEventWasProcessed=false;
 vEventWasProcessed=vDispatchTarget?vDispatchTarget.dispatchEvent(vEventObject):true;
 this._onmouseevent_special_post(vType,
 vTarget,
