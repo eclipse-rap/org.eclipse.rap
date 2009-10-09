@@ -23,6 +23,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     this._hasSelectionListener = false;
     this._hyperlinksHaveListeners = false;
     this._linkColor;
+    // indicates that the next request can be sent
+    this._readyToSendChanges = true;
     // innerTab handling
     this._currentFocusedLink = -1;
     this._linksCount = 0;        
@@ -221,8 +223,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var index = parseInt( target.id );
       this._setFocusedLink( index );
       var leftBtnPressed = this._isLeftMouseButtonPressed( e );
-      if( this.isEnabled() && leftBtnPressed ) {
-        this._sendChanges( index );
+      if( this.isEnabled() && leftBtnPressed && this._readyToSendChanges ) {
+        // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
+        this._readyToSendChanges = false;
+        qx.client.Timer.once( function() {
+          this._sendChanges( index );
+        }, this, org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
       }
     },
     
@@ -329,6 +335,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
           req.send();
         }
       }
+      this._readyToSendChanges = true;
     }
   }
 } );
