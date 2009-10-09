@@ -168,8 +168,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   
   public static void initializeStateInfo() {
     if( getStateInfo() == null ) {
-      IServiceStateInfo stateInfo;
-      stateInfo = new ServiceStateInfo();
+      IServiceStateInfo stateInfo = new ServiceStateInfo();
       ContextProvider.getContext().setStateInfo( stateInfo );
     }
     if( getStateInfo().getResponseWriter() == null ) {
