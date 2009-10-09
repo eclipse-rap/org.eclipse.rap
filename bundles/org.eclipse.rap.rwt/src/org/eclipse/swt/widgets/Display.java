@@ -681,7 +681,7 @@ public class Display extends Device implements Adaptable {
       try {
         shell.dispose();
       } catch( Throwable thr ) {
-        ServletLog.log( "Exception while executing listener.", thr );
+        ServletLog.log( "Exception while disposing shell: " + shell, thr );
       }
     }
     // TODO [rh] consider dispatching pending messages (e.g. asyncExec)
