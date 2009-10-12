@@ -34,7 +34,6 @@ import org.eclipse.rwt.resources.IResourceManagerFactory;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -147,7 +146,6 @@ public final class RWTFixture {
   public static final String IMAGE_BLANK_PIXEL = "resources/images/blank.gif";
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
-  private static WidgetAdapterFactory widgetAdapterFactory;
   private static PhaseListener currentPhaseListener
     = new CurrentPhase.Listener();
 
@@ -217,15 +215,10 @@ public final class RWTFixture {
     lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-    widgetAdapterFactory = new WidgetAdapterFactory();
-    manager.registerAdapters( widgetAdapterFactory, Display.class );
-    manager.registerAdapters( widgetAdapterFactory, Widget.class );
   }
 
   public static void deregisterAdapterFactories() {
     AdapterManager manager = AdapterManagerImpl.getInstance();
-    manager.deregisterAdapters( widgetAdapterFactory, Display.class );
-    manager.deregisterAdapters( widgetAdapterFactory, Widget.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );
   }

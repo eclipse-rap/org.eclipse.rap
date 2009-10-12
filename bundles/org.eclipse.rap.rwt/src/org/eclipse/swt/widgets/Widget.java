@@ -149,20 +149,17 @@ public abstract class Widget implements Adaptable {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IEventAdapter.class ) {
-      // //////////////////////////////////////////////////////
-      // Note: This is not implemented via the AdapterManager,
-      // since the manager's mapping mechanism prevents
-      // the component being released unless the session
-      // is invalidated.
+      // Note: This is not implemented via the AdapterManager, since the 
+      // manager's mapping mechanism prevents the component being released 
+      // unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
       result = eventAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
-      // TODO: [fappel] this is done for performance improvement and replaces
-      //                the lookup in WidgetAdapterFactory. Since this is still
-      //                a matter of investigation, WidgetAdapterFactory is not
-      //                changed yet.
+      // [fappel] Directly return the WidgetAdapter instead of consulting the
+      // adapter factory. This is done for performance reasons and must not 
+      // be changed without good reason.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }
@@ -173,9 +170,7 @@ public abstract class Widget implements Adaptable {
       }
       result = widgetGraphicsAdapter;
     } else {
-      // TODO: [fappel] buffer the adapterManager for performance improvement.
-      //                Note: this is still a matter of investigation since
-      //                we improve cpu time on cost of memory consumption.
+      // [fappel] Buffer the adapterManager to improve performance
       if( adapterManager == null ) {
         adapterManager = AdapterManagerImpl.getInstance();
       }

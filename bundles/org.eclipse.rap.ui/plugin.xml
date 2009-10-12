@@ -2221,12 +2221,6 @@
     <factory
         factoryClass="org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory"
         adaptableClass="org.eclipse.swt.widgets.Display"/>
-    <factory
-        factoryClass="org.eclipse.swt.internal.widgets.WidgetAdapterFactory"
-        adaptableClass="org.eclipse.swt.widgets.Widget"/>
-    <factory
-        factoryClass="org.eclipse.swt.internal.widgets.WidgetAdapterFactory"
-        adaptableClass="org.eclipse.swt.widgets.Display"/>
   </extension>
 
   <extension

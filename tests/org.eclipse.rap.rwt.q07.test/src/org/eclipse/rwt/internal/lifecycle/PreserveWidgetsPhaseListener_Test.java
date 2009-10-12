@@ -31,7 +31,6 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.widgets.*;
 
 public class PreserveWidgetsPhaseListener_Test extends TestCase {
@@ -179,9 +178,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-    WidgetAdapterFactory widgetAdapterFactory = new WidgetAdapterFactory();
-    manager.registerAdapters( widgetAdapterFactory, Display.class );
-    manager.registerAdapters( widgetAdapterFactory, Widget.class );
     RWTFixture.registerResourceManager();
     // Create test widget hierarchy
     Display display = new Display();

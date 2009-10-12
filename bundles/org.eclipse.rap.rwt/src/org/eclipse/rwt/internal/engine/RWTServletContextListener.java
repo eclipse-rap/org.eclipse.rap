@@ -30,7 +30,6 @@ import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
-import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -230,10 +229,6 @@ public final class RWTServletContextListener implements ServletContextListener {
       AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
                                   Widget.class );
       AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
-                                  Display.class );
-      AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
-                                  Widget.class );
-      AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
                                   Display.class );
     }
   }

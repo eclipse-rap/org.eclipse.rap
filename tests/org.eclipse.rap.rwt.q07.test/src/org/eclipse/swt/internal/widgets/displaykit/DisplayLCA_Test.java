@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.*;
 public class DisplayLCA_Test extends TestCase {
 
   private AdapterFactory lifeCycleAdapterFactory;
-  private WidgetAdapterFactory widgetAdapterFactory;
   private final List log = new ArrayList();
   private final List renderInitLog = new ArrayList();
   private final List renderChangesLog = new ArrayList();
@@ -447,9 +446,6 @@ public class DisplayLCA_Test extends TestCase {
     };
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-    widgetAdapterFactory = new WidgetAdapterFactory();
-    manager.registerAdapters( widgetAdapterFactory, Display.class );
-    manager.registerAdapters( widgetAdapterFactory, Widget.class );
     clearLogs();
     RWTFixture.registerResourceManager();
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
@@ -460,8 +456,6 @@ public class DisplayLCA_Test extends TestCase {
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );
-    manager.deregisterAdapters( widgetAdapterFactory, Display.class );
-    manager.deregisterAdapters( widgetAdapterFactory, Widget.class );
     RWTFixture.deregisterResourceManager();
     String[] entryPoints = EntryPointManager.getEntryPoints();
     for( int i = 0; i < entryPoints.length; i++ ) {

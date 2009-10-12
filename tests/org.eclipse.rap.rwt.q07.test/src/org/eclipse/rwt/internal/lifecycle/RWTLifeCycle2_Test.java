@@ -32,7 +32,6 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -320,10 +319,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
                                 Widget.class );
     AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
-                                Display.class );
-    AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
-                                Widget.class );
-    AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
                                 Display.class );
     session = new TestSession();
     ServletContext servletContext = session.getServletContext();
