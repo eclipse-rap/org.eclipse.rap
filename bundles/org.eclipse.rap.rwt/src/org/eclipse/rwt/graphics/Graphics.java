@@ -33,6 +33,10 @@ public final class Graphics {
    * Returns an instance of {@link Color} given an
    * <code>RGB</code> describing the desired red, green and blue values.
    *
+   * <p>Note: it is considered an error to attempt to dispose of colors
+   * that were created by this method. An <code>IllegalStateException</code> is 
+   * thrown in this case.</p>  
+   * 
    * @param rgb the RGB values of the desired color - must not be null
    * @return the color
    *
@@ -48,6 +52,10 @@ public final class Graphics {
    * desired red, green and blue values expressed as ints in the range
    * 0 to 255 (where 0 is black and 255 is full brightness).
    *
+   * <p>Note: it is considered an error to attempt to dispose of colors
+   * that were created by this method. An <code>IllegalStateException</code> is 
+   * thrown in this case.</p>  
+   * 
    * @param red the amount of red in the color
    * @param green the amount of green in the color
    * @param blue the amount of blue in the color
@@ -62,6 +70,10 @@ public final class Graphics {
    * Returns a new font given a font data
    * which describes the desired font's appearance.
    *
+   * <p>Note: it is considered an error to attempt to dispose of fonts
+   * that were created by this method. An <code>IllegalStateException</code> is 
+   * thrown in this case.</p>  
+   * 
    * @param data the {@link FontData} to use - must not be null
    * @return the font
    */
@@ -72,6 +84,10 @@ public final class Graphics {
   /**
    * Returns a {@link Font} object given a font name, the height of the desired
    * font in points, and a font style.
+   *
+   * <p>Note: it is considered an error to attempt to dispose of fonts
+   * that were created by this method. An <code>IllegalStateException</code> is 
+   * thrown in this case.</p>  
    *
    * @param name the name of the font (must not be null)
    * @param height the font height in points
@@ -133,6 +149,10 @@ public final class Graphics {
   /**
    * Returns an instance of {@link Cursor} based on a style constant describing
    * the desired cursor appearance.
+   * 
+   * <p>Note: it is considered an error to attempt to dispose of cursors
+   * that were created by this method. An <code>IllegalStateException</code> is 
+   * thrown in this case.</p>  
    * 
    * @param style the style of the cursor to create
    * @return the cursor
