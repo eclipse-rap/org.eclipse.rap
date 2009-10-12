@@ -20,7 +20,6 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.internal.graphics.IColor;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -812,13 +811,10 @@ public final class JSWriter {
     buffer.append( id );
     buffer.append( "\" )" );
     return buffer.toString();
-//    String pattern = "{0}.findWidgetById( \"{1}\" )";
-//    Object[] args = new Object[] { WIDGET_MANAGER_REF, id };
-//    return format( pattern, args );
   }
 
   ///////////////////////////////////////////////
-  // Helping methods tp construct parameter lists
+  // Helping methods to construct parameter lists
 
   private static String createParamList( final Object[] args ) {
     return createParamList( " ", args, " ", true );
@@ -853,7 +849,7 @@ public final class JSWriter {
           params.append( args[ i ] );
         } else if( args[ i ] instanceof Color ) {
           params.append( '"' );
-          params.append( ( ( IColor )args[ i ] ).toColorValue() );
+          params.append( getColorValue( ( Color )args[ i ] ) );
           params.append( '"' );
         } else if( args[ i ] instanceof Object[] ) {
           params.append( createArray( ( Object[] )args[ i ] ) );
@@ -885,7 +881,7 @@ public final class JSWriter {
         buffer.append( createFindWidgetById( ( Widget )array[ i ] ) );
       } else if( array[ i ] instanceof Color ) {
         buffer.append( '"' );
-        buffer.append( ( ( IColor )array[ i ] ).toColorValue() );
+        buffer.append( getColorValue( ( Color )array[ i ] ) );
         buffer.append( '"' );
       } else {
         buffer.append( array[ i ] );
@@ -912,6 +908,27 @@ public final class JSWriter {
     } else {
       buffer.append( getSetterName( jsPropertyChain[ last ] ) );
     }
+    return buffer.toString();
+  }
+
+  private static String getColorValue( final Color color ) {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "#" );
+    String red = Integer.toHexString( color.getRed() );
+    if( red.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( red );
+    String green = Integer.toHexString( color.getGreen() );
+    if( green.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( green );
+    String blue = Integer.toHexString( color.getBlue() );
+    if( blue.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( blue );
     return buffer.toString();
   }
 

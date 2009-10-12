@@ -1275,7 +1275,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.2
    */
   public int getDoubleClickTime() {
-    checkDevice ();
+    checkDevice();
     return DOUBLE_CLICK_TIME;
   }
 

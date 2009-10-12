@@ -168,6 +168,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Font_Test.class );
     suite.addTestSuite( FontData_Test.class );
     suite.addTestSuite( Graphics_Test.class );
+    suite.addTestSuite( Resource_Test.class );
+    suite.addTestSuite( Cursor_Test.class );
     suite.addTestSuite( Device_Test.class );
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeDetermination_Test.class );

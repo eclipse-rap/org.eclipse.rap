@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,60 +7,31 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.swt.internal.graphics.IColor;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
- * Instances of this class manage resources that implement SWT's RGB color 
- * model. 
- * 
- * <p>To create a color, use one of the <code>getColor</code> methods in class 
- * <code>Graphics</code> and either specify the individual color components as 
+ * Instances of this class manage resources that implement SWT's RGB color
+ * model.
+ *
+ * <p>To create a color, use one of the <code>getColor</code> methods in class
+ * <code>Graphics</code> and either specify the individual color components as
  * integers in the range 0 to 255 or provide an instance of an <code>RGB</code>.
  * </p>
- * 
+ *
  * @see RGB
  * @see Device#getSystemColor
  * @see Graphics
- * 
+ *
  * @since 1.0
  */
 public class Color extends Resource {
-
-  /* (intentionally non-JavaDoc'ed)
-   * Extension of class <code>Color</code> with an additional method that
-   * returns a color id to pass to qooxdoo.
-   * NOTE: Don't remove this class. Despite a possible warning that this class 
-   * is never used locally - it IS. See ResourceFactory#createColorInstance.
-   */
-  private static class ColorExt extends Color implements IColor {
-
-    private final String colorValue;
-
-    private ColorExt( final int colorNr ) {
-      super( colorNr );
-      StringBuffer buffer = new StringBuffer();
-      buffer.append( "#" );
-      append( buffer, Integer.toHexString( getRed() ) );
-      append( buffer, Integer.toHexString( getGreen() ) );
-      append( buffer, Integer.toHexString( getBlue() ) );
-      colorValue = buffer.toString();
-    }
-
-    private void append( final StringBuffer buffer, final String value ) {
-      if( value.length() == 1  ) {
-        buffer.append( "0" );
-      }
-      buffer.append( value );
-    }
-
-    public String toColorValue() {
-      return colorValue;
-    }
-  }
 
   /**
    * Holds the color values within one integer.
@@ -71,7 +42,79 @@ public class Color extends Resource {
    * Prevents uninitialized instances from being created outside the package.
    */
   private Color( final int colorNr ) {
+    super( null );
     this.colorNr = colorNr;
+  }
+
+  /**
+   * Constructs a new instance of this class given a device and an
+   * <code>RGB</code> describing the desired red, green and blue values.
+   * On limited color devices, the color instance created by this call
+   * may not have the same RGB values as the ones specified by the
+   * argument. The RGB values on the returned instance will be the color
+   * values of the operating system color.
+   * <p>
+   * You must dispose the color when it is no longer required.
+   * </p>
+   *
+   * @param device the device on which to allocate the color
+   * @param rgb the RGB values of the desired color
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the rgb argument is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the red, green or blue components of the argument are not between 0 and 255</li>
+   * </ul>
+   *
+   * @see #dispose
+   * @since 1.3
+   */
+  public Color( final Device device, final RGB rgb ) {
+    super( device );
+    if( device == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( rgb == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    colorNr = ResourceFactory.computeColorNr( rgb.red, rgb.green, rgb.blue );
+  }
+
+  /**
+   * Constructs a new instance of this class given a device and the
+   * desired red, green and blue values expressed as ints in the range
+   * 0 to 255 (where 0 is black and 255 is full brightness). On limited
+   * color devices, the color instance created by this call may not have
+   * the same RGB values as the ones specified by the arguments. The
+   * RGB values on the returned instance will be the color values of
+   * the operating system color.
+   * <p>
+   * You must dispose the color when it is no longer required.
+   * </p>
+   *
+   * @param device the device on which to allocate the color
+   * @param red the amount of red in the color
+   * @param green the amount of green in the color
+   * @param blue the amount of blue in the color
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the red, green or blue argument is not between 0 and 255</li>
+   * </ul>
+   *
+   * @see #dispose
+   * @since 1.3
+   */
+  public Color( final Device device,
+                final int red,
+                final int green,
+                final int blue )
+  {
+    super( device );
+    if( device == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    colorNr = ResourceFactory.computeColorNr( red, green, blue );
   }
 
   /**
@@ -85,6 +128,9 @@ public class Color extends Resource {
    *              </ul>
    */
   public int getBlue() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
     return ( colorNr & 0xFF0000 ) >> 16;
   }
 
@@ -99,6 +145,9 @@ public class Color extends Resource {
    *              </ul>
    */
   public int getGreen() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
     return ( colorNr & 0xFF00 ) >> 8;
   }
 
@@ -113,6 +162,9 @@ public class Color extends Resource {
    *              </ul>
    */
   public int getRed() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
     return colorNr & 0xFF;
   }
 
@@ -127,6 +179,9 @@ public class Color extends Resource {
    *              </ul>
    */
   public RGB getRGB() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
     return new RGB( getRed(), getGreen(), getBlue() );
   }
 
@@ -140,7 +195,16 @@ public class Color extends Resource {
    * @see #hashCode
    */
   public boolean equals( final Object object ) {
-    return object == this;
+    boolean result;
+    if( object == this ) {
+      result = true;
+    } else if( object instanceof Color ) {
+      Color color = ( Color )object;
+      result = color.colorNr == this.colorNr;
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   /**
@@ -162,6 +226,13 @@ public class Color extends Resource {
    * @return a string representation of the receiver
    */
   public String toString() {
-    return "Color {" + getRed() + ", " + getGreen() + ", " + getBlue() + "}";
+    String result;
+    if( isDisposed() ) {
+      result = "Color {*DISPOSED*}";
+    } else {
+      result
+        = "Color {" + getRed() + ", " + getGreen() + ", " + getBlue() + "}"; 
+    }
+    return result;
   }
 }

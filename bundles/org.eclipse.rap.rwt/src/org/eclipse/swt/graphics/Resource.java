@@ -11,6 +11,9 @@
 
 package org.eclipse.swt.graphics;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+
 /**
  * This class is the abstract superclass of all graphics resource objects.  
  * Resources created by the application are shared across all sessions of the
@@ -33,5 +36,65 @@ package org.eclipse.swt.graphics;
  * @since 1.0
  */
 public abstract class Resource {
+
+  private final Device device;
+  private boolean disposed;
   
+  Resource( final Device device ) {
+    this.device = device;
+  }
+  
+  /**
+   * Returns the <code>Device</code> where this resource was
+   * created.
+   *
+   * @return <code>Device</code> the device of the receiver
+   * 
+   * @since 1.3
+   */
+  public Device getDevice() {
+    if( disposed ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    Device result = device;
+    // Currently, factory-managed resources (device == null) return the current 
+    // display. This is done under the assumption that resource methods are
+    // only called from the UI thread. This way also shared resources appear to 
+    // belong to the current session.
+    // Note that this is still under investigation.
+    if( result == null ) {
+      result = Display.getCurrent();
+    }
+    return result;
+  }
+
+  /**
+   * Disposes of the resource. Applications must dispose of all resources
+   * which they allocate.
+   * 
+   * @since 1.3
+   */
+  public void dispose() {
+    if( device == null ) {
+      String msg = "A factory-created resource cannot be disposed.";
+      throw new IllegalStateException( msg );
+    }
+    disposed = true;
+  }
+
+  /**
+   * Returns <code>true</code> if the resource has been disposed,
+   * and <code>false</code> otherwise.
+   * <p>
+   * This method gets the dispose state for the resource.
+   * When a resource has been disposed, it is an error to
+   * invoke any other method using the resource.
+   *
+   * @return <code>true</code> when the resource is disposed and <code>false</code> otherwise
+   * 
+   * @since 1.3
+   */
+  public boolean isDisposed() {
+    return disposed;
+  }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.graphics;
 
 import java.awt.image.BufferedImage;
@@ -48,6 +48,14 @@ public final class ResourceFactory {
                                 final int green,
                                 final int blue )
   {
+    int colorNr = computeColorNr( red, green, blue );
+    return getColor( colorNr );
+  }
+
+  public static int computeColorNr( final int red,
+                                    final int green,
+                                    final int blue )
+  {
     if(    red > 255
         || red < 0
         || green > 255
@@ -58,9 +66,9 @@ public final class ResourceFactory {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     int colorNr = red | ( green << 8 ) | ( blue << 16 );
-    return getColor( colorNr );
+    return colorNr;
   }
-
+  
   private static Color getColor( final int value ) {
     Color result;
     Integer key = new Integer( value );
@@ -83,11 +91,10 @@ public final class ResourceFactory {
                               final int height,
                               final int style )
   {
-    validateFontParams( name, height );
     int checkedStyle = checkFontStyle( style );
     Font result;
     Integer key = new Integer( fontHashCode( name, height, checkedStyle ) );
-    synchronized( Font.class ) {
+    synchronized( fonts ) {
       result = ( Font )fonts.get( key );
       if( result == null ) {
         FontData fontData = new FontData( name, height, checkedStyle );
@@ -102,9 +109,20 @@ public final class ResourceFactory {
                                   final int height,
                                   final int style )
   {
-    return name.hashCode() ^ ( height << 2 ) ^ style;
+    int nameHashCode = name == null ? 0 : name.hashCode();
+    return nameHashCode ^ ( height << 2 ) ^ style;
   }
 
+  public static int checkFontStyle( final int style ) {
+    int result = SWT.NORMAL;
+    if( ( style & SWT.BOLD ) != 0 ) {
+      result |= SWT.BOLD;
+    }
+    if( ( style & SWT.ITALIC ) != 0 ) {
+      result |= SWT.ITALIC;
+    }
+    return result;
+  }
 
   /////////
   // Images
@@ -376,27 +394,6 @@ public final class ResourceFactory {
   //////////////////
   // Helping methods
 
-  private static void validateFontParams( final String name, final int height )
-  {
-    if( name == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    if( height < 0 ) {
-      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
-    }
-  }
-
-  private static int checkFontStyle( final int style ) {
-    int result = SWT.NORMAL;
-    if( ( style & SWT.BOLD ) != 0 ) {
-      result |= SWT.BOLD;
-    }
-    if( ( style & SWT.ITALIC ) != 0 ) {
-      result |= SWT.ITALIC;
-    }
-    return result;
-  }
-
   private static String getImageFileExtension( final int type ) {
     String result;
     switch( type ) {
@@ -443,11 +440,8 @@ public final class ResourceFactory {
   private static Color createColorInstance( final int colorNr ) {
     Color result = null;
     try {
-      Class colorClass = Color.class;
-      Class[] classes = colorClass.getDeclaredClasses();
-      Class colorExtClass = classes[ 0 ];
       Class[] paramList = new Class[] { int.class };
-      Constructor constr = colorExtClass.getDeclaredConstructor( paramList );
+      Constructor constr = Color.class.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
       Object[] args = new Object[] { new Integer( colorNr ) };
       result = ( Color )constr.newInstance( args );
@@ -460,9 +454,8 @@ public final class ResourceFactory {
   private static Font createFontInstance( final FontData fontData ) {
     Font result = null;
     try {
-      Class fontClass = Font.class;
       Class[] paramList = new Class[] { FontData.class };
-      Constructor constr = fontClass.getDeclaredConstructor( paramList );
+      Constructor constr = Font.class.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
       result = ( Font )constr.newInstance( new Object[] { fontData } );
     } catch( final Exception e ) {

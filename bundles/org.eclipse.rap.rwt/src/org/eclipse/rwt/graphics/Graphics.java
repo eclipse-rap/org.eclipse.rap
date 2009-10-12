@@ -33,7 +33,7 @@ public final class Graphics {
    * Returns an instance of {@link Color} given an
    * <code>RGB</code> describing the desired red, green and blue values.
    *
-   * @param rgb the RGB values of the desired color
+   * @param rgb the RGB values of the desired color - must not be null
    * @return the color
    *
    * @see RGB
@@ -62,7 +62,7 @@ public final class Graphics {
    * Returns a new font given a font data
    * which describes the desired font's appearance.
    *
-   * @param data the {@link FontData} to use
+   * @param data the {@link FontData} to use - must not be null
    * @return the font
    */
   public static Font getFont( final FontData data ) {

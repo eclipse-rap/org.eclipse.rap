@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
@@ -272,6 +273,23 @@ public class JSWriter_Test extends TestCase {
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setIntegerValues( 1, 2 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testCallWithColorValue() throws IOException {
+    Color salmon = Graphics.getColor( 250, 128, 114 );
+    Color chocolate = Graphics.getColor( 210, 105, 30 );
+    Display display = new Display();
+    TestShell shell = new TestShell( display );
+    JSWriter writer = JSWriter.getWriterFor( shell.button );
+    writer.call( "foo", null ); // get rid of initialization Javascript code
+    Fixture.fakeResponseWriter();
+    writer.call( "setColor", new Object[] { salmon } );
+    String expected = "w.setColor( \"#fa8072\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    Fixture.fakeResponseWriter();
+    writer.call( "setColor", new Object[] { chocolate } );
+    expected = "w.setColor( \"#d2691e\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
@@ -1075,9 +1093,8 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer.set( "html", "\r\n\r" );
     assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
-
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

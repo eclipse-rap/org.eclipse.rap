@@ -37,10 +37,13 @@ public final class Image extends Resource {
 
   /* prevent instantiation from outside */
   private Image() {
+    super( null );
     width = -1;
     height = -1;
   }
+  
   private Image( final int width, final int height ) {
+    super( null );
     this.width = width;
     this.height = height;
   }
@@ -62,10 +65,9 @@ public final class Image extends Resource {
    */
   public Rectangle getBounds() {
     Rectangle result = null;
-//    TODO [rst] Uncomment if constructor provided
-//    if( isDisposed() ) {
-//      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-//    }
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
     if( width != -1 && height != -1 ) {
       result = new Rectangle( 0, 0, width, height );
     } else {

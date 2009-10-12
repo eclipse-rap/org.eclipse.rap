@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -39,35 +40,66 @@ import org.eclipse.swt.SWT;
  */
 public final class Cursor extends Resource {
 
-  private int value;
+  private final int value;
 
-  //prevent instance creation
+  // used by ResourceFactory#getCursor()
   private Cursor( final int style ) {
+    super( null );
+    checkStyle( style );
     value = style;
-  	switch( style ) {
-  	  case SWT.CURSOR_ARROW:
-  		case SWT.CURSOR_WAIT:
-  		case SWT.CURSOR_CROSS:
-  		case SWT.CURSOR_HELP:
-  		case SWT.CURSOR_SIZEALL:
-  		case SWT.CURSOR_SIZENS:
-  		case SWT.CURSOR_SIZEWE:
-  		case SWT.CURSOR_SIZEN:
-  		case SWT.CURSOR_SIZES:
-  		case SWT.CURSOR_SIZEE:
-  		case SWT.CURSOR_SIZEW:
-  		case SWT.CURSOR_SIZENE:
-  		case SWT.CURSOR_SIZESE:
-  		case SWT.CURSOR_SIZESW:
-  		case SWT.CURSOR_SIZENW:
-  		case SWT.CURSOR_IBEAM:
-  		case SWT.CURSOR_HAND:
-  		  break;
-  		default:
-  			SWT.error( SWT.ERROR_INVALID_ARGUMENT );
-  	}
   }
-
+  
+  /**  
+   * Constructs a new cursor given a device and a style
+   * constant describing the desired cursor appearance.
+   * <p>
+   * You must dispose the cursor when it is no longer required. 
+   * </p>
+   *
+   * @param device the device on which to allocate the cursor
+   * @param style the style of cursor to allocate
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
+   *    <li>ERROR_INVALID_ARGUMENT - when an unknown style is specified</li>
+   * </ul>
+   * @exception SWTError <ul>
+   *    <li>ERROR_NO_HANDLES - if a handle could not be obtained for cursor creation</li>
+   * </ul>
+   *
+   * @see SWT#CURSOR_ARROW
+   * @see SWT#CURSOR_WAIT
+   * @see SWT#CURSOR_CROSS
+   * @see SWT#CURSOR_APPSTARTING
+   * @see SWT#CURSOR_HELP
+   * @see SWT#CURSOR_SIZEALL
+   * @see SWT#CURSOR_SIZENESW
+   * @see SWT#CURSOR_SIZENS
+   * @see SWT#CURSOR_SIZENWSE
+   * @see SWT#CURSOR_SIZEWE
+   * @see SWT#CURSOR_SIZEN
+   * @see SWT#CURSOR_SIZES
+   * @see SWT#CURSOR_SIZEE
+   * @see SWT#CURSOR_SIZEW
+   * @see SWT#CURSOR_SIZENE
+   * @see SWT#CURSOR_SIZESE
+   * @see SWT#CURSOR_SIZESW
+   * @see SWT#CURSOR_SIZENW
+   * @see SWT#CURSOR_UPARROW
+   * @see SWT#CURSOR_IBEAM
+   * @see SWT#CURSOR_NO
+   * @see SWT#CURSOR_HAND
+   * 
+   * @since 1.3
+   */
+  public Cursor( final Device device, final int style ) {
+    super( device );
+    if( device == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+  	checkStyle( style );
+  	value = style;
+  }
   /**
    * Compares the argument to the receiver, and returns true
    * if they represent the <em>same</em> object using a class
@@ -79,7 +111,16 @@ public final class Cursor extends Resource {
    * @see #hashCode
    */
   public boolean equals( final Object object ) {
-    return object == this;
+    boolean result;
+    if( object == this ) {
+      result = true;
+    } else if( object instanceof Cursor ) {
+      Cursor cursor = ( Cursor )object;
+      result = cursor.value == value;
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   /**
@@ -92,7 +133,7 @@ public final class Cursor extends Resource {
    *
    * @see #equals
    */
-  public int hashCode () {
+  public int hashCode() {
     return 101 * value;
   }
 
@@ -103,6 +144,37 @@ public final class Cursor extends Resource {
    * @return a string representation of the receiver
    */
   public String toString () {
-    return "Cursor {" + value + "}";
+    String result;
+    if (isDisposed()) {
+      result = "Cursor {*DISPOSED*}";
+    } else {
+      result = "Cursor {" + value + "}";
+    }
+    return result;
+  }
+
+  private static void checkStyle( final int style ) {
+    switch( style ) {
+      case SWT.CURSOR_ARROW:
+      case SWT.CURSOR_WAIT:
+      case SWT.CURSOR_CROSS:
+      case SWT.CURSOR_HELP:
+      case SWT.CURSOR_SIZEALL:
+      case SWT.CURSOR_SIZENS:
+      case SWT.CURSOR_SIZEWE:
+      case SWT.CURSOR_SIZEN:
+      case SWT.CURSOR_SIZES:
+      case SWT.CURSOR_SIZEE:
+      case SWT.CURSOR_SIZEW:
+      case SWT.CURSOR_SIZENE:
+      case SWT.CURSOR_SIZESE:
+      case SWT.CURSOR_SIZESW:
+      case SWT.CURSOR_SIZENW:
+      case SWT.CURSOR_IBEAM:
+      case SWT.CURSOR_HAND:
+        break;
+      default:
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
   }
 }
