@@ -36,6 +36,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.addEventListener( "changeFont",
                            this._onChangeFont,
                            this );
+    this.getLegendObject().addEventListener( "mouseover",
+                                             this._onMouseOver,
+                                             this );
+    this.getLegendObject().addEventListener( "mouseout",
+                                             this._onMouseOut,
+                                             this );
   },
 
   destruct : function() {
@@ -45,6 +51,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.removeEventListener( "changeFont",
                               this._onChangeFont,
                               this );
+    this.getLegendObject().removeEventListener( "mouseover",
+                                                this._onMouseOver,
+                                                this );
+    this.getLegendObject().removeEventListener( "mouseout",
+                                                this._onMouseOut,
+                                                this );
   },
 
   members : {
@@ -59,6 +71,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     _onChangeFont : function( evt ) {
       var newFont = evt.getValue();
       this.getLegendObject().setFont( newFont );
+    },
+    
+    _onMouseOver : function( event ) {
+      this.getLegendObject().addState( "over" );
+      this.getFrameObject().addState( "over" );
+    },
+    
+    _onMouseOut : function( event ) {
+      this.getLegendObject().removeState( "over" );
+      this.getFrameObject().removeState( "over" );
     },
     
     _layoutPost : function( changes ) {

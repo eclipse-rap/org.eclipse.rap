@@ -63,6 +63,9 @@
           type="boxdim"
           description="Padding for group box frames (inner distance between frame border and content)." />
 
+      <state name="hover"
+          description="Applies while the cursor hovers over the group box label." />
+      
       <state name="disabled"
           description="Applies to the frame of a disabled group box." />
 
@@ -97,6 +100,9 @@
       <property name="color"
           type="color"
           description="Text color for group box label (override the color set by Group#setForegroundColor())." />
+          
+      <state name="hover"
+          description="Applies while the cursor hovers over the group box label." />
 
     </element>
 
