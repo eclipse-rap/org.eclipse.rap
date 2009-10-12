@@ -115,16 +115,20 @@ public class FormTextLCA extends AbstractWidgetLCA {
     String imageName = ResourceFactory.getImagePath( image );
     String text = bullet.getBulletText();
     Rectangle bounds = getBulletBounds( bullet );
-    Object[] args = new Object[] {
-      new Integer( style ),
-      imageName,
-      text,
-      new Integer( bounds.x ),
-      new Integer( bounds.y ),
-      new Integer( bounds.width ),
-      new Integer( bounds.height )
-    };
-    writer.call( "createBullet", args ); //$NON-NLS-1$
+    // [if] If <li> "style" attribute is set to "text" and there is no text set
+    // ( no "value" attribute ) the bullet bounds are null
+    if( bounds != null ) {
+      Object[] args = new Object[] {
+        new Integer( style ),
+        imageName,
+        text,
+        new Integer( bounds.x ),
+        new Integer( bounds.y ),
+        new Integer( bounds.width ),
+        new Integer( bounds.height )
+      };
+      writer.call( "createBullet", args ); //$NON-NLS-1$
+    }
   }
 
   private static void writeSegments( final FormText formText,
