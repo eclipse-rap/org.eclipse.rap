@@ -112,6 +112,11 @@ qx.Class.define( "org.eclipse.swt.Application", {
                             org.eclipse.swt.Application._onResize );
       doc.addEventListener( "keypress",
                             org.eclipse.swt.Application._onKeyPress );
+      // Fix for bug 193703:
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        doc.getElement().style.position = "absolute";      
+        doc.setSelectable( true );
+      }
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       org.eclipse.swt.Application._appendScrollBarSize();
