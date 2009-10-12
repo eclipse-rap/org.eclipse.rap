@@ -55,16 +55,16 @@ public class ColorDialog extends Dialog {
   
   private class SpinnerListener implements ModifyListener {
 
-    private Spinner spin;
-    private int colorIndex;
+    private final Spinner spinner;
+    private final int colorIndex;
 
-    public SpinnerListener( final Spinner spin, final int colorIndex ) {
-      this.spin = spin;
+    public SpinnerListener( final Spinner spinner, final int colorIndex ) {
+      this.spinner = spinner;
       this.colorIndex = colorIndex;
     }
 
-    public void modifyText( ModifyEvent event ) {
-      setColorFomSpinner( colorIndex, spin.getSelection() );
+    public void modifyText( final ModifyEvent event ) {
+      setColorFomSpinner( colorIndex, spinner.getSelection() );
     }
   }
   
@@ -74,8 +74,9 @@ public class ColorDialog extends Dialog {
   private static final int PALETTE_BOX_SIZE = 12;
   private static final int PALETTE_BOXES_IN_ROW = 14;
   private static final int COLOR_DISPLAY_BOX_SIZE = 76;
-  private static final int MAX_RGB_COMPONENT_VALUE = 255;
   
+  private static final int MAX_RGB_COMPONENT_VALUE = 255;
+
   // Color components
   private static final int RED = 0;
   private static final int GREEN = 1;
@@ -116,9 +117,9 @@ public class ColorDialog extends Dialog {
   private Shell shell;
   private RGB rgb;
   private Label colorDisplay;
-  private Spinner redSpin; 
-  private Spinner blueSpin;
-  private Spinner greenSpin;
+  private Spinner spRed; 
+  private Spinner spBlue;
+  private Spinner spGreen;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -239,9 +240,9 @@ public class ColorDialog extends Dialog {
   }
 
   private void updateSpinners() {
-    redSpin.setSelection( rgb.red );
-    greenSpin.setSelection( rgb.green );
-    blueSpin.setSelection( rgb.blue );
+    spRed.setSelection( rgb.red );
+    spGreen.setSelection( rgb.green );
+    spBlue.setSelection( rgb.blue );
   }
 
   private void createControls( final Composite parent ) {
@@ -267,21 +268,21 @@ public class ColorDialog extends Dialog {
     spinComp.setLayout( new GridLayout( 2, true ) );
     Label rLabel = new Label( spinComp, SWT.NONE );
     rLabel.setText( RWTMessages.getMessage( "RWT_ColorDialogLabelRed" ) );
-    redSpin = new Spinner( spinComp, SWT.BORDER );
-    redSpin.setMaximum( MAX_RGB_COMPONENT_VALUE );
-    redSpin.addModifyListener( new SpinnerListener( redSpin, RED ) );
+    spRed = new Spinner( spinComp, SWT.BORDER );
+    spRed.setMaximum( MAX_RGB_COMPONENT_VALUE );
+    spRed.addModifyListener( new SpinnerListener( spRed, RED ) );
     //
     Label gLabel = new Label( spinComp, SWT.NONE );
     gLabel.setText( RWTMessages.getMessage( "RWT_ColorDialogLabelGreen" ) );
-    greenSpin = new Spinner( spinComp, SWT.BORDER );
-    greenSpin.setMaximum( MAX_RGB_COMPONENT_VALUE );
-    greenSpin.addModifyListener( new SpinnerListener( greenSpin, GREEN ) );
+    spGreen = new Spinner( spinComp, SWT.BORDER );
+    spGreen.setMaximum( MAX_RGB_COMPONENT_VALUE );
+    spGreen.addModifyListener( new SpinnerListener( spGreen, GREEN ) );
     //
     Label bLabel = new Label( spinComp, SWT.NONE );
     bLabel.setText( RWTMessages.getMessage( "RWT_ColorDialogLabelBlue" ) );
-    blueSpin = new Spinner( spinComp, SWT.BORDER );
-    blueSpin.setMaximum( MAX_RGB_COMPONENT_VALUE );
-    blueSpin.addModifyListener( new SpinnerListener( blueSpin, BLUE ) );
+    spBlue = new Spinner( spinComp, SWT.BORDER );
+    spBlue.setMaximum( MAX_RGB_COMPONENT_VALUE );
+    spBlue.addModifyListener( new SpinnerListener( spBlue, BLUE ) );
   }
 
   private void createPalette( final Composite parent ) {

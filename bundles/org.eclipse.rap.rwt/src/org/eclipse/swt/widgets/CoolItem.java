@@ -50,7 +50,7 @@ public class CoolItem extends Item {
   private static final int CHEVRON_IMAGE_WIDTH = 8; // Width to draw the double
                                                     // arrow
 
-  //Keep in sync with defaultValue for handleSize in CoolItem.js
+  // Keep in sync with defaultValue for handleSize in CoolItem.js
   // (see function updateHandleBounds)
   // TODO: [bm] usage?
   private static final int HANDLE_SIZE = 3;
