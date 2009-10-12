@@ -55,13 +55,16 @@ public class CoolItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     CoolItem item = new CoolItem( bar, SWT.NONE );
+    bar.setBounds( 0, 0, 100, 100 );
     Point size = new Point( 80, 30 );
-    item.setSize( size );
-    assertEquals( new Point( 80 , 30 ), item.getSize() );
+    item.setPreferredSize( size );
+    bar.relayout();
+    assertEquals( new Point( 100 , 30 ), item.getSize() );
     assertNotSame( size, item.getSize() );
     
-    item.setSize( -2, -1 );
-    assertEquals( CoolItem.MINIMUM_WIDTH , item.getSize().x );
+    item.setPreferredSize( -2, -1 );
+    bar.relayout();
+    assertEquals( CoolItem.MINIMUM_WIDTH , item.getPreferredSize().x );
     assertEquals( 0, item.getSize().y );
   }
 
@@ -130,14 +133,6 @@ public class CoolItem_Test extends TestCase {
     Point size = coolItem.getSize();
     assertEquals( size.x, rect.width );
     assertEquals( size.y, rect.height );
-
-    coolItem.setSize( 25, 25 );
-    rect = coolItem.getBounds();
-    coolItem.setSize( 100, 25 );
-    Rectangle newRect = coolItem.getBounds();
-    assertEquals( rect.width + 75, newRect.width );
-    assertEquals( rect.x, newRect.x );
-    assertEquals( rect.y, newRect.y );
   }
   
   public void test_computeSizeII() {

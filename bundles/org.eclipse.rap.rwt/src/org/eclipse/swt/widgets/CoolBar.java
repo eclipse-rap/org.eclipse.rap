@@ -1017,17 +1017,15 @@ public class CoolBar extends Composite {
   }
 
   void relayout() {
-//    Point size = getSize();
-//    int height = layoutItems();
-//    if ( (style & SWT.VERTICAL) != 0 ) {
-//      Rectangle trim = computeTrim( 0, 0, height, 0 );
-//      if ( height != size.x )
-//        super.setSize( trim.width, size.y );
-//    } else {
-//      Rectangle trim = computeTrim( 0, 0, 0, height );
-//      if ( height != size.y )
-//        super.setSize( size.x, size.y );
-//    }
+  	Point size = getSize();
+  	int height = layoutItems();
+  	if ((style & SWT.VERTICAL) != 0) {
+  		Rectangle trim = computeTrim (0, 0, height, 0);
+  		if (height != size.x) super.setSize(trim.width, size.y);
+  	} else {
+  		Rectangle trim = computeTrim (0, 0, 0, height);
+  		if (height != size.y) super.setSize(size.x, trim.height);		
+  	}
   }
 
   /**
