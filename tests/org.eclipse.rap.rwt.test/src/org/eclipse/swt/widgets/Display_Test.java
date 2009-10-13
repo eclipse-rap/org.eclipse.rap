@@ -1026,6 +1026,61 @@ public class Display_Test extends TestCase {
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
 
+  public void testCloseEventFilter() {
+    Display display = new Display();
+    final StringBuffer order = new StringBuffer();
+    final java.util.List events = new ArrayList();
+    display.addFilter( SWT.Close, new Listener() {
+      public void handleEvent( final Event event ) {
+        events.add( event );
+        order.append( "filter, " );
+      }
+    } );
+    display.addListener( SWT.Close, new Listener() {
+      public void handleEvent( final Event event ) {
+        events.add( event );
+        event.doit = false;
+        order.append( "listener" );
+      }
+    } );
+    display.close();
+    assertEquals( "filter, listener", order.toString() );
+    assertEquals( 2, events.size() );
+    Event filterEvent = ( Event )events.get( 0 );
+    assertSame( display, filterEvent.display );
+    assertEquals( SWT.Close, filterEvent.type );
+    assertNull( filterEvent.widget );
+    Event listenerEevent = ( Event )events.get( 1 );
+    assertSame( filterEvent, listenerEevent );
+  }
+
+  public void testDisposeEventFilter() {
+    Display display = new Display();
+    final StringBuffer order = new StringBuffer();
+    final java.util.List events = new ArrayList();
+    display.addFilter( SWT.Dispose, new Listener() {
+      public void handleEvent( final Event event ) {
+        events.add( event );
+        order.append( "filter, " );
+      }
+    } );
+    display.addListener( SWT.Dispose, new Listener() {
+      public void handleEvent( final Event event ) {
+        events.add( event );
+        order.append( "listener" );
+      }
+    } );
+    display.dispose();
+    assertEquals( "filter, listener", order.toString() );
+    assertEquals( 2, events.size() );
+    Event filterEvent = ( Event )events.get( 0 );
+    assertSame( display, filterEvent.display );
+    assertEquals( SWT.Dispose, filterEvent.type );
+    assertNull( filterEvent.widget );
+    Event listenerEevent = ( Event )events.get( 1 );
+    assertSame( filterEvent, listenerEevent );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

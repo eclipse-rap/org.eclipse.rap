@@ -637,6 +637,8 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     Event event = new Event();
     event.display = this;
+    event.type = SWT.Close;
+    notifyFilters( event );
     if( closeListeners != null ) {
       Listener[] listeners = new Listener[ closeListeners.size() ];
       closeListeners.toArray( listeners );
@@ -657,17 +659,18 @@ public class Display extends Device implements Adaptable {
   }
 
   private void sendDisposeEvent() {
+    Event event = new Event();
+    event.display = this;
+    event.type = SWT.Dispose;
+    notifyFilters( event );
     if( disposeListeners != null ) {
-      Event event = new Event();
-      event.display = this;
-      event.type = SWT.Dispose;
       Listener[] listeners = new Listener[ disposeListeners.size() ];
       disposeListeners.toArray( listeners );
       for( int i = 0; i < listeners.length; i++ ) {
         try {
           listeners[ i ].handleEvent( event );
         } catch( Throwable thr ) {
-          String msg = "Exception while executing listener.";
+          String msg = "Exception while executing dispose-listener.";
           ServletLog.log( msg, thr );
         }
       }
@@ -1688,6 +1691,20 @@ public class Display extends Device implements Adaptable {
     String value = request.getParameter( parameterName );
     if( value != null ) {
       scrollBarSize = Integer.parseInt( value );
+    }
+  }
+
+  private void notifyFilters( final Event event ) {
+    IFilterEntry[] filterEntries = getFilterEntries();
+    for( int i = 0; i < filterEntries.length; i++ ) {
+      if( filterEntries[ i ].getType() == event.type ) {
+        try {
+          filterEntries[ i ].getListener().handleEvent( event );
+        } catch( Throwable thr ) {
+          String msg = "Exception while executing filter.";
+          ServletLog.log( msg, thr );
+        }
+      }
     }
   }
 
