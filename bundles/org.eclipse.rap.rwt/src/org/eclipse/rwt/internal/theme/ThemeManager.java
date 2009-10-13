@@ -430,7 +430,6 @@ public final class ThemeManager {
       }
       if( adapters.containsKey( clazz ) ) {
         result = ( IThemeAdapter )adapters.get( clazz );
-        adapters.put( widgetClass, result );
       } else {
         String msg = "No theme adapter registered for class "
                      + widgetClass.getName();
