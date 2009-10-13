@@ -42,6 +42,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.getLegendObject().addEventListener( "mouseout",
                                              this._onMouseOut,
                                              this );
+    this.addEventListener( "changeWidth", this._onChangeSize, this );
+    this.addEventListener( "changeHeight", this._onChangeSize, this );
   },
 
   destruct : function() {
@@ -57,6 +59,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.getLegendObject().removeEventListener( "mouseout",
                                                 this._onMouseOut,
                                                 this );
+    this.removeEventListener( "changeWidth", this._onChangeSize, this );
+    this.removeEventListener( "changeHeight", this._onChangeSize, this );
   },
 
   members : {
@@ -81,6 +85,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     _onMouseOut : function( event ) {
       this.getLegendObject().removeState( "over" );
       this.getFrameObject().removeState( "over" );
+    },
+    
+    _onChangeSize : function( event ) {
+      this.setClipWidth( this.getWidth() );
+      this.setClipHeight( this.getHeight() );
     },
     
     _layoutPost : function( changes ) {
