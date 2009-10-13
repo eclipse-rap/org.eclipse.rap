@@ -65,7 +65,6 @@ public class ExpandBar extends Composite {
     }
   }
 
-  static final int V_SCROLL_WIDTH = 16;
   static final int BORDER = 2;
   ExpandItem focusItem;
   int spacing;
@@ -114,7 +113,7 @@ public class ExpandBar extends Composite {
     addControlListener( resizeListener );
     itemHolder = new ItemHolder( ExpandItem.class );
     if( ( getStyle() & SWT.V_SCROLL ) != 0 ) {
-      v_scroll = V_SCROLL_WIDTH;
+      v_scroll = getScrollBarSize();
     }
     if( ( getStyle() & SWT.BORDER ) != 0 ) {
       border = BORDER;
@@ -499,5 +498,14 @@ public class ExpandBar extends Composite {
         expandItems[ i ].dispose();
       }
     }
+  }
+
+  ////////////////////////////
+  // Helping methods - various
+
+  private int getScrollBarSize() {
+    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = ( IDisplayAdapter )object;
+    return adapter.getScrollBarSize();
   }
 }
