@@ -33,7 +33,11 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     execute : function( script ) {
       var result = true;
       try {
-        this.getContentWindow().eval( script );
+        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          this.getContentWindow().execScript( script , "JScript" );
+        } else {
+          this.getContentWindow().eval( script );                    
+        }        
       } catch( e ) {
         result = false;
       }
