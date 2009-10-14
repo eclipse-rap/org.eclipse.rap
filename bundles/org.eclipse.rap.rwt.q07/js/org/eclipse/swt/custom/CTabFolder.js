@@ -473,9 +473,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           var req = org.eclipse.swt.Request.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
-          // TODO [rst] remove this parameter as soon as server-side code is revised
-          //      -> CTabFolderLCA.readData()
-          req.addParameter( id + ".selectedItemId", itemId );
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
           req.send();
         }

@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -158,6 +159,18 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           CTabItem tabItem
             = ( CTabItem )WidgetUtil.find( tabFolder, selectedItemId );
           tabFolder.setSelection( tabItem );
+        }
+      } );
+    }
+    // Selection event
+    String eventId1 = JSConst.EVENT_WIDGET_SELECTED;
+    String eventId2 = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if(    WidgetLCAUtil.wasEventSent( tabFolder, eventId1 )
+        || WidgetLCAUtil.wasEventSent( tabFolder, eventId2 ) )
+    {
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          CTabItem tabItem = tabFolder.getSelection();
           ControlLCAUtil.processSelection( tabFolder, tabItem, false );
         }
       } );
