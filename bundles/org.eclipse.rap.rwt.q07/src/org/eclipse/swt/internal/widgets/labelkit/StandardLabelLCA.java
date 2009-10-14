@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
@@ -37,7 +36,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static final String JS_FUNC_LABEL_UTIL_SET_TEXT
     = "org.eclipse.swt.LabelUtil.setText";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
-//  private static final Object[] PARAM_NULL = new Object[] { null };
 
   void preserveValues( final Label label ) {
     ControlLCAUtil.preserveValues( label );
