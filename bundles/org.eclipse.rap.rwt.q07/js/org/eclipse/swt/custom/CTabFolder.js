@@ -455,11 +455,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     _notifyItemClick : function( item ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         if( !item.isSelected() ) {
-          // deselect any previous selected CTabItem
-          this._mapItems( function( item ) {
-            item.setSelected( false );
-          } );
-          item.setSelected( true );
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var req = org.eclipse.swt.Request.getInstance();
           var id = widgetManager.findIdByWidget( this );
