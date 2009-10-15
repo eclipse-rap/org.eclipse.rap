@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import java.io.IOException;
@@ -28,7 +27,7 @@ import org.xml.sax.*;
  * Reader for theme definition files. These are the "*.theme.xml" files
  * that define themeable properties of a certain widget.
  */
-public class ThemeDefinitionReader {
+public final class ThemeDefinitionReader {
 
   private static final String ELEM_ROOT = "theme";
 
@@ -41,22 +40,6 @@ public class ThemeDefinitionReader {
   private static final String ELEM_STATE = "state";
   
   private static final String ATTR_NAME = "name";
-
-  public static final String TYPE_BOOLEAN = "boolean";
-
-  public static final String TYPE_BORDER = "border";
-
-  public static final String TYPE_DIMENSION = "dimension";
-
-  public static final String TYPE_BOXDIMENSIONS = "boxdim";
-
-  public static final String TYPE_COLOR = "color";
-
-  public static final String TYPE_FONT = "font";
-
-  public static final String TYPE_IMAGE = "image";
-
-  public static final String TYPE_TEXT_DECORATION = "text-decoration";
 
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
 

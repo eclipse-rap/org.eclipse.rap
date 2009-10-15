@@ -17,7 +17,8 @@ import junit.framework.TestCase;
 public class QxTheme_Test extends TestCase {
 
   public void testAppendUri() {
-    QxTheme theme = new QxTheme( "theme.Foo", "Foo Widgets", QxTheme.WIDGET );
+    QxTheme theme;
+    theme = new QxTheme( "theme.Foo", "Foo Widgets", QxTheme.WIDGET, null );
     theme.appendUri( "some.uri" );
     String code = theme.getJsCode();
     String defStr = "qx.Theme.define( \"theme.FooWidgets\",";
@@ -28,7 +29,8 @@ public class QxTheme_Test extends TestCase {
   }
 
   public void testNoValues() {
-    QxTheme theme = new QxTheme( "my.theme.Default", "", QxTheme.APPEARANCE );
+    QxTheme theme;
+    theme = new QxTheme( "my.theme.Default", "", QxTheme.APPEARANCE, null );
     String code = theme.getJsCode();
     String defStr = "qx.Theme.define( \"my.theme.DefaultAppearances\",";
     assertContains( defStr, code );
@@ -36,7 +38,8 @@ public class QxTheme_Test extends TestCase {
   }
 
   public void testTailAlreadyWritten() {
-    QxTheme theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.COLOR );
+    QxTheme theme;
+    theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.COLOR, null );
     theme.appendUri( "foo" );
     theme.getJsCode();
     theme.getJsCode(); // calling getJsCode twice is ok

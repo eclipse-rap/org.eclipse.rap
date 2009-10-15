@@ -114,7 +114,6 @@ public class ThemeManager_Test extends TestCase {
     Theme theme = manager.getTheme( themeId );
     assertNotNull( theme );
     assertEquals( themeName, theme.getName() );
-    assertNotNull( theme.getStyleSheet() );
   }
 
   public void testGetThemeableWidget() {

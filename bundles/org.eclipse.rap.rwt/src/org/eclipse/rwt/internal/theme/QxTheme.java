@@ -17,7 +17,7 @@ package org.eclipse.rwt.internal.theme;
  * Instances of this class represent a qooxdoo theme of a certain type. Used to
  * assemble the Javascript code for qooxdoo themes.
  */
-public class QxTheme {
+public final class QxTheme {
 
   /** Type for qooxdoo meta themes */
   public static final int META = 1;
@@ -48,17 +48,6 @@ public class QxTheme {
   private boolean headWritten;
   private boolean tailWritten;
   private boolean valueWritten;
-
-  /**
-   * Creates a new qooxdoo theme with the given, id, name, and type.
-   *
-   * @param id the fully qualified qx class name for the theme
-   * @param title the name of the theme
-   * @param type the type of the theme
-   */
-  public QxTheme( final String id, final String title, final int type ) {
-    this( id, title, type, null );
-  }
 
   /**
    * Creates a new qooxdoo theme with the given, id, name, type, and base class.

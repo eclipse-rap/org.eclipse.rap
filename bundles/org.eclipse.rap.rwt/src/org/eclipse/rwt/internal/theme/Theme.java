@@ -11,9 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import java.util.*;
-
-import org.eclipse.rwt.internal.theme.css.*;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 /**
@@ -23,54 +21,40 @@ import org.eclipse.rwt.internal.theme.css.*;
  */
 public final class Theme {
 
+  private final String jsId;
+
   private final String name;
-
-  private StyleSheet styleSheet;
-
-  private QxType[] values;
 
   private ThemeCssValuesMap valuesMap;
 
-  private String jsId;
-
-  public Theme( final String name, final StyleSheet styleSheet ) {
-    checkName( name );
-    this.name = name;
-    this.styleSheet = styleSheet;
-    readValuesFromStyleSheet();
-  }
-
-  public void initValuesMap( final ThemeableWidget[] themeableWidgets ) {
-    valuesMap = new ThemeCssValuesMap();
-    for( int i = 0; i < themeableWidgets.length; i++ ) {
-      ThemeableWidget themeableWidget = themeableWidgets[ i ];
-      IThemeCssElement[] elements = themeableWidget.elements;
-      if( themeableWidget.elements != null ) {
-        for( int j = 0; j < elements.length; j++ ) {
-          valuesMap.initElement( elements[ j ], styleSheet );
-        }
-      }
+  public Theme( final String jsId,
+                final String name,
+                final StyleSheet styleSheet,
+                final ThemeableWidget[] themeableWidgets )
+  {
+    if( jsId == null ) {
+      throw new NullPointerException( "jsId" );
     }
-  }
-  
-  public void setJsId( final String jsId ) {
+    if( name == null ) {
+      throw new NullPointerException( "name" );
+    }
+    if( styleSheet == null ) {
+      throw new NullPointerException( "stylesheet" );
+    }
+    if( themeableWidgets == null ) {
+      throw new NullPointerException( "themeableWidgets" );
+    }
     this.jsId = jsId;
-  }
-
-  public String getName() {
-    return name;
+    this.name = name;
+    valuesMap = new ThemeCssValuesMap( styleSheet, themeableWidgets );
   }
 
   public String getJsId() {
     return jsId;
   }
 
-  public StyleSheet getStyleSheet() {
-    return styleSheet;
-  }
-
-  public QxType[] getValues() {
-    return values;
+  public String getName() {
+    return name;
   }
 
   public ThemeCssValuesMap getValuesMap() {
@@ -86,44 +70,5 @@ public final class Theme {
       result = Integer.toHexString( value.hashCode() );
     }
     return result;
-  }
-
-  private void checkName( final String name ) {
-    if( name == null ) {
-      throw new NullPointerException( "name" );
-    }
-    if( name.length() == 0 ) {
-      throw new IllegalArgumentException( "empty argument" );
-    }
-  }
-
-  private void readValuesFromStyleSheet() {
-    // For each value in the style sheet, create a dummy property that will be
-    // registered with the qx themes. These dummy props are needed to fill the
-    // qx color/border/etc. themes.
-    HashSet valueSet = new HashSet();
-    StyleRule[] styleRules = styleSheet.getStyleRules();
-    for( int i = 0; i < styleRules.length; i++ ) {
-      StyleRule styleRule = styleRules[ i ];
-      IStylePropertyMap propertyMap = styleRule.getProperties();
-      String[] propertyNames = propertyMap.getProperties();
-      for( int j = 0; j < propertyNames.length; j++ ) {
-        String propertyName = propertyNames[ j ];
-        QxType value = propertyMap.getValue( propertyName );
-        // TODO [rst] Quick fix for NPE, revise
-        if( value != null ) {
-          valueSet.add( value );
-        }
-      }
-    }
-    values = ( QxType[] )valueSet.toArray( new QxType[ valueSet.size() ] );
-//    Arrays.sort( values, new Comparator() {
-//
-//      public int compare( Object o1, Object o2 ) {
-//        String hash1 = createCssKey( ( QxType )o1 );
-//        String hash2 = createCssKey( ( QxType )o2 );
-//        return hash1.compareTo( hash2 );
-//      }
-//    });
   }
 }

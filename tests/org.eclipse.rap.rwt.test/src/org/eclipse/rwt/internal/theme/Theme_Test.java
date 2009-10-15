@@ -21,20 +21,37 @@ public class Theme_Test extends TestCase {
   private static final String TEST_SYNTAX_CSS = "TestExample.css";
 
   public void testCreate() throws Exception {
+    String jsId = "some.nifty.js.id";
+    String name = "TestTheme";
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     assertNotNull( styleSheet );
-    String name = "TestTheme";
-    Theme theme = new Theme( name, styleSheet );
-    assertEquals( name, theme.getName() );
-    assertEquals( styleSheet, theme.getStyleSheet() );
-    assertNotNull( theme.getValues() );
-    assertTrue( theme.getValues().length > 0 );
-    assertNull( theme.getValuesMap() );
-    assertNull( theme.getJsId() );
-    String jsId = "some.nifty.js.id";
-    theme.setJsId( jsId );
+    try {
+      new Theme( null, name, styleSheet, new ThemeableWidget[ 0 ] );
+      fail();
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    try {
+      new Theme( jsId, null, styleSheet, new ThemeableWidget[ 0 ] );
+      fail();
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    try {
+      new Theme( jsId, name, null, new ThemeableWidget[ 0 ] );
+      fail();
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    try {
+      new Theme( jsId, name, styleSheet, null );
+      fail();
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    Theme theme = new Theme( jsId, name, styleSheet, new ThemeableWidget[ 0 ] );
     assertEquals( jsId, theme.getJsId() );
-    theme.initValuesMap( new ThemeableWidget[ 0 ] );
+    assertEquals( name, theme.getName() );
     assertNotNull( theme.getValuesMap() );
   }
 }

@@ -22,6 +22,22 @@ import org.w3c.css.sac.LexicalUnit;
  */
 public final class PropertyResolver {
 
+  private static final String TYPE_BOOLEAN = "boolean";
+
+  private static final String TYPE_BORDER = "border";
+
+  private static final String TYPE_DIMENSION = "dimension";
+
+  private static final String TYPE_BOXDIMENSIONS = "boxdim";
+
+  private static final String TYPE_COLOR = "color";
+
+  private static final String TYPE_FONT = "font";
+
+  private static final String TYPE_IMAGE = "image";
+
+  private static final String TYPE_TEXT_DECORATION = "text-decoration";
+
   private static final String BOLD = "bold";
 
   private static final String ITALIC = "italic";
@@ -66,7 +82,7 @@ public final class PropertyResolver {
   private static final Map NAMED_COLORS = new HashMap();
 
   private static final List BORDER_STYLES = new ArrayList();
-
+  
   /** Width value for "thin" identifier. */
   static final int THIN_VALUE = 1;
 
@@ -116,21 +132,21 @@ public final class PropertyResolver {
     if( type == null ) {
       throw new IllegalArgumentException( "Unknown property " + name );
     }
-    if( ThemeDefinitionReader.TYPE_BOOLEAN.equals( type ) ) {
+    if( TYPE_BOOLEAN.equals( type ) ) {
       throw new IllegalArgumentException( "Currently not supported" );
-    } else if( ThemeDefinitionReader.TYPE_BORDER.equals( type ) ) {
+    } else if( TYPE_BORDER.equals( type ) ) {
       result = readBorder( unit );
-    } else if( ThemeDefinitionReader.TYPE_BOXDIMENSIONS.equals( type ) ) {
+    } else if( TYPE_BOXDIMENSIONS.equals( type ) ) {
       result = readBoxDimensions( unit );
-    } else if( ThemeDefinitionReader.TYPE_COLOR.equals( type ) ) {
+    } else if( TYPE_COLOR.equals( type ) ) {
       result = readColor( unit );
-    } else if( ThemeDefinitionReader.TYPE_DIMENSION.equals( type ) ) {
+    } else if( TYPE_DIMENSION.equals( type ) ) {
       result = readDimension( unit );
-    } else if( ThemeDefinitionReader.TYPE_FONT.equals( type ) ) {
+    } else if( TYPE_FONT.equals( type ) ) {
       result = readFont( unit );
-    } else if( ThemeDefinitionReader.TYPE_IMAGE.equals( type ) ) {
+    } else if( TYPE_IMAGE.equals( type ) ) {
       result = readBackgroundImage( unit, loader );
-    } else if( ThemeDefinitionReader.TYPE_TEXT_DECORATION.equals( type ) ) {
+    } else if( TYPE_TEXT_DECORATION.equals( type ) ) {
       result = readTextDecoration( unit );
     } else {
       throw new RuntimeException( "Illegal type " + type );
@@ -149,26 +165,26 @@ public final class PropertyResolver {
         || "margin".equals( property )
         || "border-radius".equals( property ) )
     {
-      result = ThemeDefinitionReader.TYPE_BOXDIMENSIONS;
+      result = TYPE_BOXDIMENSIONS;
     } else if(    "color".equals( property )
                || property.endsWith( "-color" ) )
     {
-      result = ThemeDefinitionReader.TYPE_COLOR;
+      result = TYPE_COLOR;
     } else if( "font".equals( property ) ) {
-      result = ThemeDefinitionReader.TYPE_FONT;
+      result = TYPE_FONT;
     } else if(    "border".equals( property )
                || "border-bottom".equals( property ) )
     {
-      result = ThemeDefinitionReader.TYPE_BORDER;
+      result = TYPE_BORDER;
     } else if(    "spacing".equals( property )
                || "width".equals( property )
                || "height".equals( property ) )
     {
-      result = ThemeDefinitionReader.TYPE_DIMENSION;
+      result = TYPE_DIMENSION;
     } else if( property.endsWith( "-image" ) ) {
-      result = ThemeDefinitionReader.TYPE_IMAGE;
+      result = TYPE_IMAGE;
     } else if( "text-decoration".equals( property ) ) {
-      result = ThemeDefinitionReader.TYPE_TEXT_DECORATION;
+      result = TYPE_TEXT_DECORATION;
     }
     return result;
   }

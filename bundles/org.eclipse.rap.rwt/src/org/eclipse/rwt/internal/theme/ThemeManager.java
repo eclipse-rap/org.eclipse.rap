@@ -209,9 +209,10 @@ public final class ThemeManager {
       }
       // initialize predefined theme
       StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
-      predefinedTheme = new Theme( PREDEFINED_THEME_NAME, defaultStyleSheet );
-      predefinedTheme.initValuesMap( themeableWidgets.getAll() );
-      predefinedTheme.setJsId( PREDEFINED_THEME_ID );
+      predefinedTheme = new Theme( PREDEFINED_THEME_ID,
+                                   PREDEFINED_THEME_NAME,
+                                   defaultStyleSheet,
+                                   themeableWidgets.getAll() );
       themes.put( PREDEFINED_THEME_ID, predefinedTheme );
       initialized = true;
       logRegisteredThemeAdapters();
@@ -318,16 +319,17 @@ public final class ThemeManager {
                                           + fileName );
     }
     try {
-      Theme theme;
       CssFileReader reader = new CssFileReader();
+      StyleSheet styleSheet;
       try {
-        StyleSheet styleSheet = reader.parse( inputStream, fileName, loader );
-        theme = new Theme( name != null ? name : jsId, styleSheet );
+        styleSheet = reader.parse( inputStream, fileName, loader );
       } catch( CSSException e ) {
         throw new ThemeManagerException( "Failed parsing CSS file", e );
       }
-      theme.initValuesMap( themeableWidgets.getAll() );
-      theme.setJsId( jsId );
+      Theme theme = new Theme( jsId,
+                               name != null ? name : jsId,
+                               styleSheet,
+                               themeableWidgets.getAll() );
       themes.put( id, theme );
     } finally {
       inputStream.close();
@@ -670,7 +672,7 @@ public final class ThemeManager {
     Theme theme = ( Theme )themes.get( themeId );
     // themeable images
     log( " == register themeable images for theme " + themeId );
-    QxType[] values = theme.getValues();
+    QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
       if( value instanceof QxImage ) {

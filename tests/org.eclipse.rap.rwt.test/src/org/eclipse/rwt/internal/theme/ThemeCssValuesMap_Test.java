@@ -11,6 +11,7 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -22,9 +23,8 @@ import org.eclipse.swt.widgets.Button;
 
 public class ThemeCssValuesMap_Test extends TestCase {
 
-  public void testFont() throws Exception {
-    ThemeCssValuesMap map = new ThemeCssValuesMap();
-    initValuesMap( map );
+  public void testGetValues_Font() throws Exception {
+    ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] fontValues = map .getValues( "Button", "font" );
     assertNotNull( fontValues );
     // expected:
@@ -48,9 +48,8 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( font2, fontValues[ 2 ].value );
   }
 
-  public void testColor() throws Exception {
-    ThemeCssValuesMap map = new ThemeCssValuesMap();
-    initValuesMap( map );
+  public void testGetValues_Color() throws Exception {
+    ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] colorValues = map.getValues( "Button", "color" );
     assertNotNull( colorValues );
     // expected:
@@ -68,9 +67,8 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 3 ].value );
   }
 
-  public void testBackground() throws Exception {
-    ThemeCssValuesMap map = new ThemeCssValuesMap();
-    initValuesMap( map );
+  public void testGetValues_Background() throws Exception {
+    ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] backgroundValues = map.getValues( "Button",
                                                          "background-color" );
     // ([TOGGLE, :pressed) -> rgb( 227, 221, 158 )
@@ -88,6 +86,16 @@ public class ThemeCssValuesMap_Test extends TestCase {
                   backgroundValues[ 0 ].value );
   }
 
+  public void testGetAllValues() throws Exception {
+    ThemeCssValuesMap map = getValuesMap();
+    QxType[] values = map.getAllValues();
+    assertNotNull( values );
+    QxColor expected = QxColor.valueOf( "227, 221, 158" );
+    assertTrue( Arrays.asList( values ).contains( expected ) );
+    QxColor notExpected = QxColor.valueOf( "#123456" );
+    assertFalse( Arrays.asList( values ).contains( notExpected ) );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakeNewRequest();
@@ -97,13 +105,12 @@ public class ThemeCssValuesMap_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
-  private static void initValuesMap( final ThemeCssValuesMap result )
-    throws IOException
-  {
+  private static ThemeCssValuesMap getValuesMap() throws IOException {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     ThemeableWidget buttonWidget = manager.getThemeableWidget( Button.class );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    result.initElement( buttonWidget.elements[ 0 ], styleSheet );
+    ThemeableWidget[] themeableWidgets = new ThemeableWidget[] { buttonWidget };
+    return new ThemeCssValuesMap( styleSheet, themeableWidgets );
   }
 }

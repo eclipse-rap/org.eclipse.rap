@@ -26,7 +26,7 @@ public final class ThemeStoreWriter {
   }
 
   public void addTheme( final Theme theme, boolean isDefault ) {
-    QxType[] values = theme.getValues();
+    QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       valueSet.add( values[ i ] );
     }

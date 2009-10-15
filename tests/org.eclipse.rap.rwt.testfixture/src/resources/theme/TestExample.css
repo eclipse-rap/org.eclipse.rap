@@ -66,6 +66,7 @@ Button[PUSH]:pressed, Button[TOGGLE]:pressed {
 
 /* Border radius */
 Composite[BORDER] {
+  color: #123456;
   border: 2px #1695d4;
   border-radius: 5px 10px;
 }

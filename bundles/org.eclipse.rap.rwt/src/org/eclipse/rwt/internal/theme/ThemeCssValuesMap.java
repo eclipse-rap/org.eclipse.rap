@@ -21,26 +21,15 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
  * Contains the values defined in a CSS style sheet in an optimized structure
  * for providing quick access to the values for a given element and property.
  */
-public class ThemeCssValuesMap {
+public final class ThemeCssValuesMap {
 
   private final Map map;
 
-  public ThemeCssValuesMap() {
-    map = new HashMap();
-  }
-
-  public void initElement( final IThemeCssElement element,
-                           final StyleSheet styleSheet )
+  public ThemeCssValuesMap( final StyleSheet styleSheet,
+                            final ThemeableWidget[] themeableWidgets )
   {
-    String elementName = element.getName();
-    String[] properties = element.getProperties();
-    for( int i = 0; i < properties.length; i++ ) {
-      String propertyName = properties[ i ];
-      ConditionalValue[] values = styleSheet.getValues( elementName,
-                                                        propertyName );
-      ConditionalValue[] filteredValues = filterValues( values, element );
-      add( elementName, propertyName, filteredValues );
-    }
+    map = new HashMap();
+    init( styleSheet, themeableWidgets );
   }
 
   public ConditionalValue[] getValues( final String elementName,
@@ -53,6 +42,44 @@ public class ThemeCssValuesMap {
       result = ( ConditionalValue[] )map.get( new Key( "*", propertyName ) );
     }
     return result;
+  }
+
+  public QxType[] getAllValues() {
+    Set resultSet = new HashSet();
+    Iterator iterator = map.values().iterator();
+    while( iterator.hasNext() ) {
+      ConditionalValue[] condValues = ( ConditionalValue[] )iterator.next();
+      for( int i = 0; i < condValues.length; i++ ) {
+        ConditionalValue condValue = condValues[ i ];
+        resultSet.add( condValue.value );
+      }
+    }
+    QxType[] result = new QxType[ resultSet.size() ];
+    resultSet.toArray( result );
+    return result;
+  }
+
+  private void init( final StyleSheet styleSheet,
+                     final ThemeableWidget[] themeableWidgets )
+  {
+    for( int i = 0; i < themeableWidgets.length; i++ ) {
+      ThemeableWidget themeableWidget = themeableWidgets[ i ];
+      IThemeCssElement[] elements = themeableWidget.elements;
+      if( elements != null ) {
+        for( int j = 0; j < elements.length; j++ ) {
+          IThemeCssElement element = elements[ j ];
+          String elementName = element.getName();
+          String[] properties = element.getProperties();
+          for( int k = 0; k < properties.length; k++ ) {
+            String propertyName = properties[ k ];
+            ConditionalValue[] values = styleSheet.getValues( elementName,
+                                                              propertyName );
+            ConditionalValue[] filteredValues = filterValues( values, element );
+            map.put( new Key( elementName, propertyName ), filteredValues );
+          }
+        }
+      }
+    }
   }
 
   private ConditionalValue[] filterValues( final ConditionalValue[] values,
@@ -72,13 +99,6 @@ public class ThemeCssValuesMap {
     ConditionalValue[] result = new ConditionalValue[ resultList.size() ];
     resultList.toArray( result );
     return result;
-  }
-
-  private void add( final String elementName,
-                    final String propertyName,
-                    final ConditionalValue[] values )
-  {
-    map.put( new Key( elementName, propertyName ), values );
   }
 
   private static boolean matches( final IThemeCssElement element,
