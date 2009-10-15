@@ -12,37 +12,37 @@
  -->
 
 <theme>
-  
+
   <element name="Composite">
     <description>
       The theming of RWT Composite.
     </description>
 
-    <property name="border" type="border">
+    <property name="border">
       <description>
         The border that is drawn around the composite.
       </description>
     </property>
 
-    <property name="border-radius" type="boxdim">
+    <property name="border-radius">
       <description>
         Border radius. The border radius has no effect if an enhanced border,
         like "inset" or "outset" is used.
       </description>
     </property>
 
-    <property name="background-color" type="color">
+    <property name="background-color">
       <description>
         The background color for composites.
       </description>
-    </property> 
+    </property>
 
-    <property name="background-image" type="image">
+    <property name="background-image">
       <description>
         Background image or gradient for composites.
       </description>
     </property>
-    
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 

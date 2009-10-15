@@ -17,26 +17,22 @@
       description="SWT Shells (the window in SWT).">
 
     <property name="border"
-        type="border"
         description="Outer window border." />
 
-    <property name="border-radius" type="boxdim">
-        <description>
-          Border radius. The border radius has no effect if an enhanced border,
-          like "inset" or "outset" is used.
-        </description>
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
     </property>
 
     <property name="background-image"
-        type="image"
         description="Background image or gradient." />
 
     <property name="padding"
-        type="boxdim"
         description="Padding around the shell's client area." />
 
     <property name="background-color"
-        type="color"
         description="Background color for shells." />
 
     <style name="BORDER"
@@ -44,7 +40,7 @@
 
     <style name="TOOL"
         description="Indicates that the shell should behave like a tool window." />
-        
+
     <style name="SHEET"
         description="Indicates that the shell should behave like a sheet window." />
 
@@ -63,10 +59,9 @@
       </description>
 
       <property name="color"
-          type="color"
           description="Text color for the title bar." />
 
-      <property name="background-color" type="color">
+      <property name="background-color">
         <description>
           Background color for the title bar.
           Maps to system colors SWT.COLOR_TITLE_BACKGROUND and
@@ -74,7 +69,7 @@
         </description>
       </property>
 
-      <property name="background-gradient-color" type="color">
+      <property name="background-gradient-color">
         <description>
           Second background color for the title bar (currently ignored).
           Maps to system colors SWT.COLOR_TITLE_BACKGROUND_GRADIENT and
@@ -83,39 +78,33 @@
       </property>
 
       <property name="background-image"
-          type="image"
           description="Background image for the title bar." />
 
       <property name="font"
-          type="font"
           description="Font for the title bar." />
 
       <property name="margin"
-          type="boxdim"
           description="Margin for the title bar." />
 
       <property name="padding"
-          type="boxdim"
           description="Padding for the title bar." />
 
       <property name="height"
-          type="dimension"
           description="Height of the title bar." />
 
       <state name="inactive"
           description="Applies for all shells except the active shell." />
-          
+
       <property name="border"
-          type="border"
           description="Shell titlebar border." />
 
-      <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
-    
+
     </element>
 
     <element name="Shell-MinButton">
@@ -125,11 +114,9 @@
       </description>
 
       <property name="margin"
-           type="boxdim"
            description="Margin for the minimize button." />
 
       <property name="background-image"
-          type="image"
           description="Image for the minimize button." />
 
       <state name="maximized"
@@ -150,11 +137,9 @@
       </description>
 
       <property name="margin"
-          type="boxdim"
           description="Margin for the shell maximize/restore button." />
 
       <property name="background-image"
-          type="image"
           description="Background image for the shell maximize/restore button." />
 
       <state name="maximized"
@@ -175,11 +160,9 @@
       </description>
 
       <property name="margin"
-          type="boxdim"
           description="Margin for the shell close button." />
 
       <property name="background-image"
-          type="image"
           description="Background image for the shell close button." />
 
       <state name="maximized"

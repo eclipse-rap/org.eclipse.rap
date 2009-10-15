@@ -15,39 +15,33 @@
 
   <element name="Label">
     <description>
-    SWT Labels.
-    Labels are simple widgets that can contain either text or an image.
+      SWT Labels.
+      Labels are simple widgets that can contain either text or an image.
     </description>
 
     <property name="color"
-        type="color"
         description="Text color for labels." />
 
     <property name="background-color"
-        type="color"
         description="Background color for labels." />
 
     <property name="font"
-        type="font"
         description="Text font for labels." />
 
     <property name="border"
-        type="border"
         description="Border for labels." />
-        
-    <property name="border-radius" type="boxdim">
-        <description>
-          Border radius. The border radius has no effect if an enhanced border,
-          like "inset" or "outset" is used.
-        </description>
+
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
     </property>
 
     <property name="background-image"
-        type="image"
         description="Background image or gradient for Label." />
 
     <property name="text-decoration"
-        type="text-decoration"
         description="Decoration for label text." />
 
     <style name="BORDER"

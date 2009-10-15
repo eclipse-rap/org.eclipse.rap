@@ -17,15 +17,12 @@
       description="Progress bar controls">
 
     <property name="background-color"
-        type="color"
         description="Background color for progress bars" />
 
     <property name="background-image"
-        type="image"
         description="Background image for progress bars" />
-        
+
     <property name="border"
-        type="border"
         description="Border for progress bars." />
 
     <state name="disabled"
@@ -35,11 +32,9 @@
         description="The movable bar that indicates the progress">
 
       <property name="background-color"
-          type="color"
           description="Background color for progress indicator" />
 
       <property name="background-image"
-          type="image"
           description="Background image for progress indicator" />
 
       <state name="disabled"

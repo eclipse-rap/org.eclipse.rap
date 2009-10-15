@@ -19,9 +19,8 @@
     RWT CTabFolder widgets.
     This widget is used to arrange views in the Workbench default presentation.
     </description>
-    
+
     <property name="border-color"
-          type="color"
           description="CTabFolder border color." />
 
     <state name="disabled"
@@ -31,19 +30,15 @@
         description="Items of a CTabFolder control.">
 
       <property name="color"
-          type="color"
           description="Text color for the item tabs." />
 
       <property name="background-color"
-          type="color"
           description="Background color for the item tabs." />
 
       <property name="background-image"
-        type="image"
         description="Background image or gradient for CTabItem." />
 
       <property name="padding"
-          type="boxdim"
           description="Padding for CTabItem" />
 
       <property name="spacing"

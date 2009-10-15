@@ -16,11 +16,9 @@
   <element name="Table">
 
     <property name="color"
-        type="color"
         description="Text color for tables." />
 
     <property name="background-color"
-        type="color"
         description="Background color for tables." />
 
     <state name="disabled"
@@ -30,25 +28,23 @@
         description="Item elements of table controls">
 
       <property name="color"
-          type="color"
           description="Table item text color" />
 
       <property name="background-color"
-          type="color"
           description="Table item background color" />
 
       <state name="selected"
           description="Applies when table item is selected." />
-          
+
       <state name="unfocused"
-          description="Applies to items on unfocused table." />    
+          description="Applies to items on unfocused table." />
 
       <state name="even"
           description="Applies when the table item has an even index" />
 
       <state name="disabled"
           description="Applies to the items of a disabled table." />
-          
+
       <state name="hover"
           description="Applies while the user hovers over the table item." />
 
@@ -56,29 +52,23 @@
 
     <element name="TableColumn"
         description="Column header of Table controls">
-      
+
       <property name="color"
-          type="color"
           description="Text color for table column headers" />
-          
+
       <property name="font"
-          type="font"
           description="Font for table column headers" />
 
       <property name="background-color"
-          type="color"
           description="Background color for table column headers" />
 
       <property name="background-image"
-          type="image"
           description="Background image or gradient for TableColumn." />
 
       <property name="border-bottom"
-          type="border"
           description="Border for TableColumn bottom line." />
 
       <property name="padding"
-          type="boxdim"
           description="Padding for table columns." />
 
       <state name="hover"
@@ -91,7 +81,6 @@
           description="Sort indicators in Table column headers">
 
         <property name="background-image"
-            type="image"
             description="Indicator image for table sorting (up/down)" />
 
         <state name="up"
@@ -108,11 +97,9 @@
         description="A single cell in a multi-column Table.">
 
       <property name="padding"
-          type="boxdim"
           description="Defines the padding (i.e. the inner distance between border and content) for a table cell." />
 
       <property name="spacing"
-          type="dimension"
           description="Defines the spacing between image and text within a table cell." />
 
     </element>
@@ -121,7 +108,6 @@
         description="Grid lines in Table controls">
 
       <property name="color"
-          type="color"
           description="Grid line color when linesVisible is true" />
 
     </element>
@@ -130,10 +116,9 @@
         description="Checkboxes in Table controls">
 
       <property name="width"
-          type="dimension"
           description="Width of check boxes" />
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image for the table checkbox.
           The size of the image should be 13 x 13 pixels.

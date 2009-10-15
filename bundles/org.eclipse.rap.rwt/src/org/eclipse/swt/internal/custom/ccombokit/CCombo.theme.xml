@@ -17,42 +17,42 @@
       The theming of RWT CCombo.
     </description>
 
-    <property name="color" type="color">
+    <property name="color">
       <description>
         The text color used for the text field and the drop-down list of
         a CCombo.
       </description>
-    </property> 
+    </property>
 
-    <property name="background-color" type="color">
+    <property name="background-color">
       <description>
         The background color used for the text field and the drop-down list of
         a CCombo.
       </description>
-    </property> 
+    </property>
 
-    <property name="font" type="font">
+    <property name="font">
       <description>
         The font used for the text field and the drop-down list of a CCombo.
       </description>
     </property>
 
-    <property name="border" type="border">
+    <property name="border">
       <description>
         The border that is drawn around a CCombo.
       </description>
     </property>
-    
-    <property name="border-radius" type="boxdim">
+
+    <property name="border-radius">
         <description>
           Border radius. The border radius has no effect if an enhanced border,
           like "inset" or "outset" is used.
         </description>
     </property>
-    
+
     <state name="disabled"
         description="Applies to disabled CCombos." />
-    
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 
@@ -61,38 +61,38 @@
         The drop-down button of RWT CCombo.
       </description>
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           The icon for the CCombo drop-down button.
           The size of the image should be maximum 12 x 12 pixels.
         </description>
-      </property> 
+      </property>
 
-      <property name="background-color" type="color">
+      <property name="background-color">
         <description>
           The background color of the drop-down button of the CCombo.
         </description>
-      </property> 
+      </property>
 
-      <property name="border" type="border">
+      <property name="border">
         <description>
           The border of the drop-down button of the CCombo.
         </description>
       </property>
-      
-      <property name="border-radius" type="boxdim">
+
+      <property name="border-radius">
           <description>
             Border radius. The border radius has no effect if an enhanced border,
             like "inset" or "outset" is used.
           </description>
       </property>
-      
-      <property name="width" type="dimension">
+
+      <property name="width">
         <description>
           The width of the drop-down button of the CCombo.
         </description>
       </property>
-      
+
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent." />
 
@@ -100,44 +100,44 @@
           description="Applies while the user hovers over the CCombo button." />
 
     </element>
-    
+
     <element name="CCombo-Field">
       <description>
         The text field of RWT CCombo.
       </description>
-      
-      <property name="padding" type="boxdim">
+
+      <property name="padding">
         <description>
       	  Padding (inner distance) for ccombo text field.
         </description>
       </property>
-   
+
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent." />
-      
+
     </element>
-    
+
     <element name="CCombo-List">
       <description>
         The list of RWT CCombo.
       </description>
-      
-      <property name="border" type="border">
+
+      <property name="border">
         <description>
           The border of the list of the CCombo.
         </description>
       </property>
-      
-      <property name="border-radius" type="boxdim">
+
+      <property name="border-radius">
           <description>
             Border radius. The border radius has no effect if an enhanced border,
             like "inset" or "outset" is used.
           </description>
       </property>
-      
+
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent." />
-      
+
     </element>
 
   </element>

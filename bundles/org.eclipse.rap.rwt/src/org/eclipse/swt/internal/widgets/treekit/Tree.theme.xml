@@ -16,11 +16,9 @@
   <element name="Tree">
 
     <property name="color"
-        type="color"
         description="Text color for trees." />
 
     <property name="background-color"
-        type="color"
         description="Background color for trees." />
 
     <state name="disabled"
@@ -30,11 +28,9 @@
         description="Item elements of tree controls">
 
       <property name="color"
-          type="color"
           description="Tree item text color" />
 
       <property name="background-color"
-          type="color"
           description="Tree item background color" />
 
       <state name="selected"
@@ -52,19 +48,15 @@
         description="Column header of Tree controls">
 
       <property name="background-color"
-          type="color"
           description="Background color for tree column headers" />
 
       <property name="background-image"
-          type="image"
           description="Background image or gradient for tree column headers." />
 
       <property name="border-bottom"
-          type="border"
           description="Border for the bottom line of tree columns headers." />
 
       <property name="padding"
-          type="boxdim"
           description="Padding for the content of tree columns headers." />
 
       <state name="hover"
@@ -77,7 +69,6 @@
           description="Sort indicators in Tree column headers">
 
         <property name="background-image"
-            type="image"
             description="Indicator image for tree sorting (up/down)" />
 
         <state name="up"
@@ -92,11 +83,11 @@
       </element>
 
     </element>
-    
+
     <element name="Tree-Checkbox"
         description="Checkboxes in Tree controls">
-            
-      <property name="background-image" type="image">
+
+      <property name="background-image">
         <description>
           Background image for the tree checkbox.
           The size of the image should be 13 x 13 pixels.
@@ -108,7 +99,7 @@
 
       <state name="checked"
         description="When tree checkbox is checked" />
-      
+
       <state name="hover"
         description="Applies while the user hovers over a tree check box." />
 

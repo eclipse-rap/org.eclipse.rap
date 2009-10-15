@@ -17,23 +17,18 @@
       description="Menus">
 
     <property name="color"
-        type="color"
         description="Menu text color" />
 
     <property name="background-color"
-        type="color"
         description="Background color" />
 
     <property name="font"
-        type="font"
         description="Menu font" />
 
     <property name="border"
-        type="border"
         description="Menu border" />
 
     <property name="padding"
-        type="boxdim"
         description="Space between border and text / image" />
 
     <state name="disabled"
@@ -43,11 +38,9 @@
         description="Menu items">
 
       <property name="color"
-          type="color"
           description="Menu item text color" />
 
       <property name="background-color"
-          type="color"
           description="Background color" />
 
       <style name="PUSH"
@@ -79,7 +72,7 @@
         Applies when the MenuItem has a SWT.CHECK style flag.
       </description>
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           The icon image.
           The maximum size of the image should be 16 x 16 pixels.
@@ -97,7 +90,7 @@
         Applies when the MenuItem has a SWT.RADIO style flag.
       </description>
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           The icon image.
           The maximum size of the image should be 16 x 16 pixels.
@@ -115,7 +108,7 @@
         Applies when the MenuItem has a SWT.CASCADE style flag.
       </description>
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           The icon image.
           The maximum size of the image should be 16 x 16 pixels.

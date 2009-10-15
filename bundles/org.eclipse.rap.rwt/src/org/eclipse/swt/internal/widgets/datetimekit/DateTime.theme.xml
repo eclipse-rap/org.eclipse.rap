@@ -15,39 +15,35 @@
 
   <element name="DateTime"
       description="DateTime controls">
-    
+
     <property name="color"
-        type="color"
         description="Text color for DateTime." />
 
     <property name="background-color"
-        type="color"
         description="Background color" />
-        
-    <property name="font" type="font">
+
+    <property name="font">
       <description>
         Text font for DateTime. Not applied to DateTime Calendar.
       </description>
-    </property>    
-        
-    <property name="border"
-        type="border"
-        description="DateTime border" />
-        
-    <property name="border-radius" type="boxdim">
-        <description>
-          Border radius. The border radius has no effect if an enhanced border,
-          like "inset" or "outset" is used.
-        </description>
     </property>
-    
+
+    <property name="border"
+        description="DateTime border" />
+
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
+    </property>
+
     <property name="padding"
-        type="boxdim"
         description="Padding for DateTime Date/Time field part." />
 
     <state name="disabled"
         description="Applies to disbled DateTime controls." />
-        
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 
@@ -55,11 +51,9 @@
         description="Fields for date, month, year, hours, minutes, seconds">
 
       <property name="color"
-          type="color"
           description="Text color for DateTime fields." />
 
       <property name="background-color"
-          type="color"
           description="Background color for DateTime fields" />
 
       <state name="selected"
@@ -71,22 +65,20 @@
         description="Day from the calendar">
 
       <property name="color"
-          type="color"
           description="Text color" />
 
       <property name="background-color"
-          type="color"
           description="Background color" />
 
       <state name="selected"
           description="Applies to selected day." />
-          
+
       <state name="unfocused"
           description="Applies to the day on unfocused calendar." />
 
       <state name="otherMonth"
           description="Applies to the day that belongs to other month." />
-          
+
       <state name="hover"
           description="Applies while the user hovers over the calendar day." />
 
@@ -94,27 +86,24 @@
 
     <element name="DateTime-Calendar-Navbar"
         description="The calendar navigation bar">
-      
+
       <property name="border"
-          type="border"
           description="Calendar navigation bar border" />
-        
-      <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
 
       <property name="color"
-          type="color"
           description="Text color" />
 
       <property name="background-color"
-          type="color"
           description="Background color" />
-          
-      <property name="font" type="font">
+
+      <property name="font">
         <description>
           Text font for the Calendar navigation bar.
         </description>
@@ -125,13 +114,13 @@
     <element name="DateTime-Calendar-PreviousMonthButton"
         description="The calendar previous month button">
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image for the Calendar previous month button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
@@ -140,13 +129,13 @@
     <element name="DateTime-Calendar-NextMonthButton"
         description="The calendar next month button">
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image for the Calendar next month button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
@@ -155,13 +144,13 @@
     <element name="DateTime-Calendar-PreviousYearButton"
         description="The calendar previous year button">
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image for the Calendar previous year button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
@@ -170,47 +159,47 @@
     <element name="DateTime-Calendar-NextYearButton"
         description="The calendar next year button">
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image for the Calendar next year button.
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
     </element>
-    
+
     <element name="DateTime-UpButton"
         description="The DateTime Date/Time up button">
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image (icon) for the DateTime Date/Time up button.
         </description>
       </property>
-        
-      <property name="background-color" type="color">
+
+      <property name="background-color">
         <description>
           The background color of the DateTime Date/Time up button.
         </description>
       </property>
 
-      <property name="border" type="border">
+      <property name="border">
         <description>
           The border of the DateTime Date/Time up button.
         </description>
       </property>
-      
-      <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
-      
-      <property name="width" type="dimension">
+
+      <property name="width">
         <description>
           The width of the DateTime Date/Time up button.
         </description>
@@ -227,32 +216,32 @@
     <element name="DateTime-DownButton"
         description="The DateTime down button">
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image (icon) for the DateTime Date/Time down button.
         </description>
       </property>
-        
-      <property name="background-color" type="color">
+
+      <property name="background-color">
         <description>
           The background color of the DateTime Date/Time down button.
         </description>
       </property>
 
-      <property name="border" type="border">
+      <property name="border">
         <description>
           The border of the DateTime Date/Time down button.
         </description>
       </property>
-      
-      <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
-      
-      <property name="width" type="dimension">
+
+      <property name="width">
         <description>
           The width of the DateTime Date/Time down button.
         </description>
@@ -265,39 +254,39 @@
           description="Applies while a button is pressed." />
 
     </element>
-    
+
     <element name="DateTime-DropDownButton">
       <description>
         The DateTime drop-down button. Applies when the SWT.DROP_DOWN style is
         used.
       </description>
 
-      <property name="background-image" type="image">
+      <property name="background-image">
         <description>
           Background image (icon) for the DateTime Date drop-down button.
         </description>
       </property>
-        
-      <property name="background-color" type="color">
+
+      <property name="background-color">
         <description>
           The background color of the DateTime Date drop-down button.
         </description>
       </property>
 
-      <property name="border" type="border">
+      <property name="border">
         <description>
           The border of the DateTime Date drop-down button.
         </description>
       </property>
-      
-      <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
-      
-      <property name="width" type="dimension">
+
+      <property name="width">
         <description>
           The width of the DateTime Date drop-down button.
         </description>
@@ -310,21 +299,21 @@
           description="Applies while a button is pressed." />
 
     </element>
-    
+
     <element name="DateTime-DropDownCalendar">
       <description>
         The DateTime drop-down calendar. Applies when the SWT.DROP_DOWN style is
         used.
       </description>
-      
-      <property name="border" type="border">
+
+      <property name="border">
         <description>
           The border of the drop-down calendar.
         </description>
       </property>
-      
+
     </element>
-      
+
   </element>
 
 </theme>

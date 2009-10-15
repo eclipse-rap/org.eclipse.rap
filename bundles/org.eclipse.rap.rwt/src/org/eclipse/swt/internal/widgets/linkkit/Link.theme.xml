@@ -17,11 +17,9 @@
       description="SWT Link widgets.">
 
     <property name="font"
-        type="font"
         description="Font for link texts." />
 
     <property name="border"
-        type="border"
         description="Border for links." />
 
     <style name="BORDER"
@@ -31,9 +29,8 @@
         description="Embedded hyperlinks in a Link widget.">
 
       <property name="color"
-          type="color"
           description="Text color for hyperlinks in Link widget." />
-      
+
       <state name="disabled"
           description="Applies to hyperlinks of a disabled Link widget." />
 

@@ -12,63 +12,63 @@
  -->
 
 <theme>
-  
+
   <element name="ExpandBar">
     <description>
       RWT ExpandBar controls.
       It can be used to represent a category or group of elements.
     </description>
-    
-    <property name="color" type="color">
+
+    <property name="color">
       <description>
         Text color for expand item boxes.
         Applied to the expand item header label.
-      </description> 
-    </property>   
+      </description>
+    </property>
 
-    <property name="font" type="font">
+    <property name="font">
       <description>
         Font for expand item boxes.
         Applied to the expand item header label.
-      </description> 
-    </property>   
-    
+      </description>
+    </property>
+
     <element name="ExpandItem-Header">
       <description>
         The ExpandItem titlebar.
       </description>
-      
-      <property name="background-color" type="color">
+
+      <property name="background-color">
         <description>
           Background color for the expand item header.
         </description>
       </property>
-      
+
       <state name="expanded"
-        description="Applies while the ExpandItem is expanded." /> 
-      
+          description="Applies while the ExpandItem is expanded." />
+
     </element>
-    
+
     <element name="ExpandItem-Button">
       <description>
         The ExpandItem collapse/expand button.
       </description>
-      
-      <property name="background-image" type="image">
+
+      <property name="background-image">
         <description>
           Background image for the ExpandItem collapse/expand button.
           The size of the image should be 16 x 16 pixels.
         </description>
-      </property> 
-      
+      </property>
+
       <state name="hover"
-        description="Applies while the user hovers over a button." />
-        
+          description="Applies while the user hovers over a button." />
+
       <state name="expanded"
-        description="Applies while the ExpandItem is expanded." /> 
-        
+          description="Applies while the ExpandItem is expanded." />
+
     </element>
-    
-  </element>  
+
+  </element>
 
 </theme>

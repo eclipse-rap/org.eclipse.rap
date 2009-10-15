@@ -20,19 +20,15 @@
     </description>
 
     <property name="background-color"
-        type="color"
         description="Background color for group boxes." />
 
     <property name="color"
-        type="color"
         description="Text color for group boxes." />
 
     <property name="font"
-        type="font"
         description="Font for group boxes. Applied to the group box label." />
 
     <property name="border"
-        type="border"
         description="Border for group boxes." />
 
     <style name="BORDER"
@@ -45,10 +41,9 @@
         description="The frame that contains the child controls.">
 
       <property name="border"
-          type="border"
           description="Border for group box frames." />
-          
-      <property name="border-radius" type="boxdim">
+
+      <property name="border-radius">
         <description>
           Border radius. The border radius has no effect if an enhanced border,
           like "inset" or "outset" is used.
@@ -56,16 +51,14 @@
       </property>
 
       <property name="margin"
-          type="boxdim"
           description="Margin for group box frames (outer space around the frame)." />
 
       <property name="padding"
-          type="boxdim"
           description="Padding for group box frames (inner distance between frame border and content)." />
 
       <state name="hover"
           description="Applies while the cursor hovers over the group box frame." />
-      
+
       <state name="disabled"
           description="Applies to the frame of a disabled group box." />
 
@@ -73,34 +66,29 @@
 
     <element name="Group-Label"
         description="The label of a group box.">
-      
+
       <property name="border"
-          type="border"
           description="Border for group box label." />
-          
-      <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
 
       <property name="padding"
-          type="boxdim"
           description="Padding for group box labels (space around the label text)." />
 
       <property name="margin"
-          type="boxdim"
           description="Margin for group box labels (offset of the group box label)." />
-          
+
       <property name="background-color"
-          type="color"
           description="Background color for group box label (override the color set by Group#setBackgroundColor())." />
 
       <property name="color"
-          type="color"
           description="Text color for group box label (override the color set by Group#setForegroundColor())." />
-          
+
       <state name="hover"
           description="Applies while the cursor hovers over the group box label." />
 

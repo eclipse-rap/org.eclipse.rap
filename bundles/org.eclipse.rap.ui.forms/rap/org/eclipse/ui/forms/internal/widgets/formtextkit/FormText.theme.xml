@@ -14,23 +14,19 @@
 
   <element name="FormText"
       description="FormText control">
-    
+
     <property name="color"
-        type="color"
         description="Text color for FormText control." />
-    
+
     <property name="background-color"
-        type="color"
         description="Background color for FormText control." />
-        
+
     <property name="font"
-        type="font"
         description="Font for FormText control text." />
-        
+
     <property name="border"
-        type="border"
         description="FormText border" />
-        
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 

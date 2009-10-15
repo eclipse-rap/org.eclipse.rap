@@ -24,86 +24,86 @@
     Dummy element used to define certain SWT system colors.
     </description>
 
-    <property name="rwt-shadow-color" type="color">
+    <property name="rwt-shadow-color">
       <description>
-      Color used to draw (outer) shadow line in 3d borders.
-      Defines the value of SWT.COLOR_WIDGET_NORMAL_SHADOW.
+        Color used to draw (outer) shadow line in 3d borders.
+        Defines the value of SWT.COLOR_WIDGET_NORMAL_SHADOW.
       </description>
     </property>
 
-    <property name="rwt-highlight-color" type="color">
+    <property name="rwt-highlight-color">
       <description>
-      Color used to draw (outer) highlight line in 3d borders.
-      Defines the value of SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW.
+        Color used to draw (outer) highlight line in 3d borders.
+        Defines the value of SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW.
       </description>
     </property>
 
-    <property name="rwt-darkshadow-color" type="color">
+    <property name="rwt-darkshadow-color">
       <description>
-      Color used to draw (inner) shadow line in 3d borders.
-      Defines the value of SWT.COLOR_WIDGET_DARK_SHADOW.
+        Color used to draw (inner) shadow line in 3d borders.
+        Defines the value of SWT.COLOR_WIDGET_DARK_SHADOW.
       </description>
     </property>
 
-    <property name="rwt-lightshadow-color" type="color">
+    <property name="rwt-lightshadow-color">
       <description>
-      Color used to draw (inner) highlight line in 3d borders.
-      Defines the value of SWT.COLOR_WIDGET_LIGHT_SHADOW.
+        Color used to draw (inner) highlight line in 3d borders.
+        Defines the value of SWT.COLOR_WIDGET_LIGHT_SHADOW.
       </description>
     </property>
 
-    <property name="rwt-thinborder-color" type="color">
+    <property name="rwt-thinborder-color">
       <description>
-      Color for thin lines as shown by Group, TabFolder headers, Table headers,
-      etc.
-      Defines the value of SWT.COLOR_WIDGET_BORDER.
+        Color for thin lines as shown by Group, TabFolder headers, Table headers,
+        etc.
+        Defines the value of SWT.COLOR_WIDGET_BORDER.
       </description>
     </property>
 
-    <property name="rwt-selectionmarker-color" type="color">
+    <property name="rwt-selectionmarker-color">
       <description>
-      Color used to mark selected items like TreeColumns and TabViews.
+        Color used to mark selected items like TreeColumns and TabViews.
       </description>
     </property>
 
-    <property name="rwt-error-image" type="image">
+    <property name="rwt-error-image">
       <description>
-      The image used for MessageBoxes with style SWT.ICON_ERROR.
-      Also returned by Display#getSystemImage().
+        The image used for MessageBoxes with style SWT.ICON_ERROR.
+        Also returned by Display#getSystemImage().
       </description>
     </property>
 
-    <property name="rwt-information-image" type="image">
+    <property name="rwt-information-image">
       <description>
-      The image used for MessageBoxes with style SWT.ICON_INFORMATION.
-      Also returned by Display#getSystemImage().
+        The image used for MessageBoxes with style SWT.ICON_INFORMATION.
+        Also returned by Display#getSystemImage().
       </description>
     </property>
 
-    <property name="rwt-working-image" type="image">
+    <property name="rwt-working-image">
       <description>
-      The image used for MessageBoxes with style SWT.ICON_WORKING.
-      Also returned by Display#getSystemImage().
+        The image used for MessageBoxes with style SWT.ICON_WORKING.
+        Also returned by Display#getSystemImage().
       </description>
     </property>
 
-    <property name="rwt-question-image" type="image">
+    <property name="rwt-question-image">
       <description>
-      The image used for MessageBoxes with style SWT.ICON_QUESTION.
-      Also returned by Display#getSystemImage().
+        The image used for MessageBoxes with style SWT.ICON_QUESTION.
+        Also returned by Display#getSystemImage().
       </description>
     </property>
 
-    <property name="rwt-warning-image" type="image">
+    <property name="rwt-warning-image">
       <description>
-      The image used for MessageBoxes with style SWT.ICON_WARNING.
-      Also returned by Display#getSystemImage().
+        The image used for MessageBoxes with style SWT.ICON_WARNING.
+        Also returned by Display#getSystemImage().
       </description>
     </property>
 
-    <property name="background-image" type="image">
+    <property name="background-image">
       <description>
-      Background image for the display (client area of the browser window).
+        Background image for the display (client area of the browser window).
       </description>
     </property>
 
@@ -111,38 +111,32 @@
 
   <element name="ToolTip">
     <description>
-    Tooltips on SWT widgets, as set using setTooltipText().
+      Tooltips on SWT widgets, as set using setTooltipText().
     </description>
 
     <property name="color"
-        type="color"
         description="Text color for tooltips." />
 
     <property name="background-color"
-        type="color"
         description="Background color for tooltips." />
-        
+
     <property name="border"
-        type="border"
         description="Outer border for tooltips." />
 
-    <property name="border-radius" type="boxdim">
-        <description>
-          Border radius. The border radius has no effect if an enhanced border,
-          like "inset" or "outset" is used.
-        </description>
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
     </property>
 
     <property name="background-image"
-        type="image"
         description="Background image or gradient for tooltips." />
 
     <property name="padding"
-        type="boxdim"
         description="Padding around the tooltips text." />
-        
+
     <property name="font"
-        type="font"
         description="Text font for tooltips." />
 
   </element>
@@ -150,15 +144,15 @@
   <!-- TODO [rst] Eliminate when property support is gone. -->
   <element name="*" description="All elements">
 
-    <property name="color" type="color" />
+    <property name="color"/>
 
-    <property name="background-color" type="color"/>
+    <property name="background-color"/>
 
-    <property name="background-image" type="image"/>
+    <property name="background-image"/>
 
-    <property name="font" type="font"/>
+    <property name="font"/>
 
-    <property name="border" type="border"/>
+    <property name="border"/>
 
   </element>
 
