@@ -151,4 +151,8 @@ public interface ILayoutSetConstants {
   public static final String STACK_TABBG_POS = "stack.tabbg.pos";
   public static final String STACK_BUTTON_TOP = "stack.button.top";
   public static final String STACK_CONF_POS = "stack.conf.pos";
-}
+  public static final String STACK_TOP_STANDALONE_ACTIVE 
+    = "stack.top.standalone.active";
+  public static final String STACK_TOP_STANDALONE_INACTIVE 
+    = "stack.top.standalone.inactive";
+ }

@@ -74,6 +74,11 @@ public class StackInitializer implements ILayoutSetInitializer {
                             path + "stack_tabbar_left_inactive.png" );
     layoutSet.addImagePath( ILayoutSetConstants.STACK_TABBAR_RIGHT_INACTIVE, 
                             path + "stack_tabbar_right_inactive.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TOP_STANDALONE_ACTIVE, 
+                            path + "stack_border_top_active_standalone.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.STACK_TOP_STANDALONE_INACTIVE, 
+                            path + "stack_border_top_standalone.png" );
+    
     FormData fdConfButton = new FormData();
     fdConfButton.top = new FormAttachment( 0, 3 );
     fdConfButton.right = new FormAttachment( 100, -5 ); 

@@ -35,6 +35,7 @@ public class StackPresentationBuider extends ElementBuilder {
   public static final String BOTTOM_BORDER = "bottomBorder";
   public static final String RIGHT_BORDER = "rightBorder";
   public static final String LEFT_BORDER = "leftBorder";
+  public static final String TOP_BORDER = "topBorder";
   public static final String RIGHT = "right";
   public static final String LEFT = "left";
   private Image tabInactiveBgActive;
@@ -169,6 +170,7 @@ public class StackPresentationBuider extends ElementBuilder {
     fdTop.left = new FormAttachment( left );
     fdTop.right = new FormAttachment( right );
     fdTop.height = borderTop.getBounds().height;
+    labelMap.put( TOP_BORDER, top );
     
     Label bottom = new Label( frameComp, SWT.NONE );
     bottom.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );

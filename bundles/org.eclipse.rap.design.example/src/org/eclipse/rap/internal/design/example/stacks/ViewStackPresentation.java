@@ -90,7 +90,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Button overflowButton;
   private List overflowButtons = new ArrayList();
   private Map buttonPartMap = new HashMap();
-  private IPresentablePart oldPart;
+  private IPresentablePart oldPart;  
   
   private class DirtyListener implements IPropertyListener {
     
@@ -236,7 +236,15 @@ public class ViewStackPresentation extends ConfigurableStack {
       title.setData( WidgetUtil.CUSTOM_VARIANT, "standaloneView" );
       title.setText( newPart.getName() );      
     } else {
-      getTabBar().setVisible( false );      
+      getTabBar().setVisible( false );
+      Object labelMap = stackBuilder.getAdapter( Map.class );
+      if( labelMap != null && ( labelMap instanceof Map )  ) {
+        Map map = ( Map ) labelMap;
+        Label left = ( Label ) map.get( StackPresentationBuider.LEFT );
+        Label right = ( Label ) map.get( StackPresentationBuider.RIGHT );
+        left.setVisible( false );
+        right.setVisible( false );        
+      }
     }    
   }
 
@@ -992,11 +1000,14 @@ public class ViewStackPresentation extends ConfigurableStack {
         = ( Label ) labelMap.get( StackPresentationBuider.RIGHT_BORDER );
       Label bottomBorder 
         = ( Label ) labelMap.get( StackPresentationBuider.BOTTOM_BORDER );
+      Label topBorder 
+        = ( Label ) labelMap.get( StackPresentationBuider.TOP_BORDER );
       Image left;
       Image right;
       Image leftBorderImg;
       Image rightBorderImg;
       Image bottomBorderImg;
+      Image topBorderImg;
       if( active ) {
         String leftActive = ILayoutSetConstants.STACK_TABBAR_LEFT_ACTIVE;
         left = stackBuilder.getImage( leftActive );
@@ -1009,6 +1020,9 @@ public class ViewStackPresentation extends ConfigurableStack {
         String rightBorderActive 
           = ILayoutSetConstants.STACK_BORDER_RIGHT_AVTIVE;
         rightBorderImg = stackBuilder.getImage( rightBorderActive );
+        String stackTopStandaloneActive 
+          = ILayoutSetConstants.STACK_TOP_STANDALONE_ACTIVE;
+        topBorderImg = stackBuilder.getImage( stackTopStandaloneActive );
       } else {
         String leftInactive = ILayoutSetConstants.STACK_TABBAR_LEFT_INACTIVE;
         left = stackBuilder.getImage( leftInactive );
@@ -1020,12 +1034,29 @@ public class ViewStackPresentation extends ConfigurableStack {
           = stackBuilder.getImage( ILayoutSetConstants.STACK_BORDER_LEFT );
         rightBorderImg 
           = stackBuilder.getImage( ILayoutSetConstants.STACK_BORDER_RIGHT );
+        String stackTopStandaloneInactive 
+          = ILayoutSetConstants.STACK_TOP_STANDALONE_INACTIVE;
+        topBorderImg = stackBuilder.getImage( stackTopStandaloneInactive );
       }
       leftLabel.setImage( left );
       rightLabel.setImage( right );
       leftBorder.setBackgroundImage( leftBorderImg );
       rightBorder.setBackgroundImage( rightBorderImg );
       bottomBorder.setBackgroundImage( bottomBorderImg );
+      // top image for standalone view
+      if( isStandalone() && topBorderImg != null ) {        
+        topBorder.setBackgroundImage( topBorderImg );
+        int height = topBorderImg.getBounds().height;        
+        FormData fdTopBorder = ( FormData ) topBorder.getLayoutData();
+        fdTopBorder.height = height;       
+        fdTopBorder.top = new FormAttachment( 0, 7 );
+        FormData fdLeftBorder = ( FormData ) leftBorder.getLayoutData();
+        FormData fdRightBorder = ( FormData ) rightBorder.getLayoutData();
+        fdLeftBorder.top = new FormAttachment( 0, height + 6 );
+        fdRightBorder.top = new FormAttachment( 0, height + 6 );
+        topBorder.getParent().layout( true );
+        topBorder.moveAbove( null );
+      }
     }
   }
 
@@ -1095,15 +1126,17 @@ public class ViewStackPresentation extends ConfigurableStack {
         newHeight -= toolbarHeight;
         partBoundsY += toolbarHeight;
       } 
-      
+      String stackTopStandaloneActive 
+        = ILayoutSetConstants.STACK_TOP_STANDALONE_ACTIVE;
+      Image stackTop = stackBuilder.getImage( stackTopStandaloneActive );
+      if( stackTop != null ) {
+        partBoundsY += 1;
+        newHeight -= 1;
+      }
       Rectangle partBounds = new Rectangle( bounds.x + 8, 
                                             partBoundsY, 
                                             bounds.width - 16, 
                                             newHeight );
-//      Rectangle partBounds = new Rectangle( bounds.x + 5, 
-//                                            partBoundsY - 1, 
-//                                            bounds.width - 10, 
-//                                            newHeight + 3);
       currentPart.setBounds( partBounds );
     }
     layoutToolBar();
