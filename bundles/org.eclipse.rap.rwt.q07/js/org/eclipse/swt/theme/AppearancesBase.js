@@ -1445,8 +1445,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var padding = tv.getCssBoxDimensions( "CTabItem", "padding" );
+      result.paddingLeft = padding[ 3 ];
+      result.paddingRight = padding[ 1 ];
       var color = tv.getCssColor( "CTabFolder", "border-color" );
-      result.paddingLeft = 4;
       result.border = new qx.ui.core.Border();
       result.border.setRight( 1, "solid", color );
       if( states.selected ) {
