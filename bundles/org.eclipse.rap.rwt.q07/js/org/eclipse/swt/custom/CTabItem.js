@@ -57,14 +57,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._updateCloseButton();
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
-    this.addEventListener( "mousedown", this._onMouseDown, this );
+    this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
   },
 
   destruct : function() {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
-    this.removeEventListener( "mousedown", this._onMouseDown, this );
+    this.removeEventListener( "click", this._onClick, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );    
     this._closeButton.removeEventListener( "click", this._onClose, this );
     var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._updateCloseButton();
     },
 
-    _onMouseDown : function( evt ) {
+    _onClick : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         if( evt.getTarget() != this._closeButton ) {
           evt.getTarget().getParent()._notifyItemClick( evt.getTarget() );
