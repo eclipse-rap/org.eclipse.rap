@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -154,23 +153,12 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     final String selectedItemId
       = WidgetLCAUtil.readPropertyValue( tabFolder, PARAM_SELECTED_ITEM_ID );
     if( selectedItemId != null ) {
+      final CTabItem tabItem
+        = ( CTabItem )WidgetUtil.find( tabFolder, selectedItemId );
+      setInternalSelectedItem( tabFolder, tabItem );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabItem tabItem
-            = ( CTabItem )WidgetUtil.find( tabFolder, selectedItemId );
           tabFolder.setSelection( tabItem );
-        }
-      } );
-    }
-    // Selection event
-    String eventId1 = JSConst.EVENT_WIDGET_SELECTED;
-    String eventId2 = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    if(    WidgetLCAUtil.wasEventSent( tabFolder, eventId1 )
-        || WidgetLCAUtil.wasEventSent( tabFolder, eventId2 ) )
-    {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          CTabItem tabItem = tabFolder.getSelection();
           ControlLCAUtil.processSelection( tabFolder, tabItem, false );
         }
       } );
@@ -540,5 +528,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   private static CTabFolderEvent minimize( final CTabFolder tabFolder ) {
     return new CTabFolderEvent( tabFolder, CTabFolderEvent.MINIMIZE );
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void setInternalSelectedItem( final CTabFolder tabFolder,
+                                               final CTabItem item )
+  {
+    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ( ICTabFolderAdapter )adapter );
+    folderAdapter.setInternalSelectedItem( item );
   }
 }

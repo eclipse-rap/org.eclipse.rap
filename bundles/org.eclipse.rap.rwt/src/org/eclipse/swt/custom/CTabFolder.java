@@ -98,6 +98,9 @@ public class CTabFolder extends Composite {
   private FocusListener focusListener;
   private Menu showMenu;
   int selectedIndex = -1;
+  // [if] This field is used by CTabFolderLCA and CTabItemLCA only for preserving
+  // the selected tab item. Must be kept in sync with selectedIndex.
+  private int internalSelectedIndex = -1;
   private int firstIndex = -1; // index of the left most visible tab
   private boolean mru;
   private int[] priority = new int[ 0 ];
@@ -320,6 +323,7 @@ public class CTabFolder extends Composite {
       if( selectedIndex != index ) {
         int oldSelectionIndex = selectedIndex;
         selectedIndex = index;
+        internalSelectedIndex = index;
         getItem( selectedIndex ).showing = false;
         Control control = getItem( selectedIndex ).getControl();
         // Adjust bounds of selected control and make it visible (if any)
@@ -2183,6 +2187,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
         priority = new int[ 0 ];
         firstIndex = -1;
         selectedIndex = -1;
+        internalSelectedIndex = -1;
         Control control = item.getControl();
         if( control != null && !control.isDisposed() ) {
           control.setVisible( false );
@@ -2207,6 +2212,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
         if( selectedIndex == index ) {
           Control control = item.getControl();
           selectedIndex = -1;
+          internalSelectedIndex = -1;
           int nextSelection = mru ? priority[ 0 ] : Math.max( 0, index - 1 );
           setSelection( nextSelection, true );
           if( control != null && !control.isDisposed() ) {
@@ -2226,6 +2232,18 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   private CTabFolderThemeAdapter getCTabFolderThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( CTabFolderThemeAdapter )themeMgr.getThemeAdapter( CTabFolder.class );
+  }
+
+  private CTabItem getInternalSelectedItem() {
+    CTabItem result = null;
+    if( internalSelectedIndex != -1 ) {
+      result = ( CTabItem )itemHolder.getItem( internalSelectedIndex );
+    }
+    return result;
+  }
+
+  private void setInternalSelectedItem( final CTabItem item ) {
+    internalSelectedIndex = itemHolder.indexOf( item );
   }
 
   ////////////////
@@ -2282,6 +2300,14 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
     public IWidgetGraphicsAdapter getUserSelectionBackgroundGradient() {
       return selectionGraphicsAdapter;
+    }
+
+    public CTabItem getInternalSelectedItem() {
+      return CTabFolder.this.getInternalSelectedItem();
+    }
+
+    public void setInternalSelectedItem( final CTabItem item ) {
+      CTabFolder.this.setInternalSelectedItem( item );
     }
   }
 }

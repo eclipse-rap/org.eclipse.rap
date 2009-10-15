@@ -48,8 +48,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_IMAGE, getImage( item ) );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     adapter.preserve( PROP_BOUNDS, item.getBounds() );
-    boolean selected = item == parent.getSelection();
-    adapter.preserve( PROP_SELECTED, Boolean.valueOf( selected ) );
+    adapter.preserve( PROP_SELECTED, isItemSelected( item ) );
     boolean closeVisible = parent.getUnselectedCloseVisible();
     adapter.preserve( PROP_UNSELECTED_CLOSE_VISIBLE,
                       Boolean.valueOf( closeVisible ) );
@@ -138,11 +137,10 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   private static void writeSelection( final CTabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
-    boolean selected = item == item.getParent().getSelection();
-    Boolean newValue = Boolean.valueOf( selected );
+    Boolean newValue = isItemSelected( item );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( item, PROP_SELECTED, newValue, defValue ) ) {
-      writer.set( "selected", Boolean.valueOf( selected ) );
+      writer.set( "selected", newValue );
     }
   }
 
@@ -221,7 +219,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     return canClose;
   }
 
- ///////////////
+  ///////////////
   // Event helper
 
   private static CTabFolderEvent createCloseEvent( final CTabItem item ) {
@@ -240,5 +238,13 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
     Font font = fontAdapter.getUserFont();
     WidgetLCAUtil.preserveFont( item, font );
+  }
+
+  private static Boolean isItemSelected( final CTabItem item ) {
+    CTabFolder folder = item.getParent();
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ( ICTabFolderAdapter )adapter );
+    CTabItem selectedItem = folderAdapter.getInternalSelectedItem();
+    return Boolean.valueOf( item == selectedItem );
   }
 }
