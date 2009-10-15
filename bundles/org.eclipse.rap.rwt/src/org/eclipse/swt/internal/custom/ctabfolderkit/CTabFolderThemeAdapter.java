@@ -49,4 +49,12 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapter {
     QxType cssValue = ThemeUtil.getCssValue( "CTabItem", "padding", selector );
     return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
+
+  public int getItemSpacing( boolean selected ) {
+    SimpleSelector selector = selected
+                              ? SimpleSelector.SELECTED
+                              : SimpleSelector.DEFAULT;
+    QxType cssValue = ThemeUtil.getCssValue( "CTabItem", "spacing", selector );
+    return ( ( QxDimension )cssValue ).value;
+  }
 }

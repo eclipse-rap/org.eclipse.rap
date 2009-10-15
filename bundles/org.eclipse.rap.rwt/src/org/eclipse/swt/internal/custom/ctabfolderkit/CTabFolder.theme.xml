@@ -46,6 +46,9 @@
           type="boxdim"
           description="Padding for CTabItem" />
 
+      <property name="spacing"
+          description="Spacing between text and image" />
+
       <state name="selected"
           description="Applies to the selected item." />
 

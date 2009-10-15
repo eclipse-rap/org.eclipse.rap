@@ -1048,7 +1048,9 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionBackground;
     if( result == null ) {
-      CTabFolderThemeAdapter adapter = getCTabFolderThemeAdapter();
+      ThemeManager themeMgr = ThemeManager.getInstance();
+      CTabFolderThemeAdapter adapter
+        = ( CTabFolderThemeAdapter )themeMgr.getThemeAdapter( CTabFolder.class );
       result = adapter.getSelectedBackground( this );
     }
     if( result == null ) {
@@ -2260,6 +2262,10 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
   Rectangle getItemPadding( final boolean selected ) {
     return getCTabFolderThemeAdapter().getItemPadding( selected );
+  }
+
+  int getItemSpacing( final boolean selected ) {
+    return getCTabFolderThemeAdapter().getItemSpacing( selected );
   }
 
   ////////////////

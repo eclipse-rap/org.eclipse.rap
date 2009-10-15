@@ -35,8 +35,6 @@ import org.eclipse.swt.widgets.Item;
  */
 public class CTabItem extends Item {
 
-  static final int INTERNAL_SPACING = 4;
-
   static final String ELLIPSIS = "...";
 
   private final IWidgetFontAdapter widgetFontAdapter;
@@ -456,7 +454,7 @@ public class CTabItem extends Item {
       text = getText();
     }
     if (text != null) {
-      if (w > 0) w += INTERNAL_SPACING;
+      if (w > 0) w += parent.getItemSpacing( isSelected );
       if (font == null) {
 //        w += gc.textExtent(text, FLAGS).x;
         w += TextSizeDetermination.stringExtent( getFont(), text ).x;
@@ -470,7 +468,7 @@ public class CTabItem extends Item {
     }
     if (parent.showClose || showClose) {
       if (isSelected || parent.showUnselectedClose) {
-        if (w > 0) w += INTERNAL_SPACING;
+        if (w > 0) w += parent.getItemSpacing( isSelected );
         w += CTabFolder.BUTTON_SIZE;
       }
     }
@@ -505,7 +503,7 @@ public class CTabItem extends Item {
         int rightPadding = parent.getItemPaddingRight( true );
         int maxImageWidth = rightEdge - xDraw - rightPadding;
         if (!parent.single && closeRect.width > 0) {
-          maxImageWidth -= closeRect.width + INTERNAL_SPACING;
+          maxImageWidth -= closeRect.width + parent.getItemSpacing( true );
         }
         if (imageBounds.width < maxImageWidth) {
           result = true;
@@ -520,7 +518,7 @@ public class CTabItem extends Item {
         int rightPadding = parent.getItemPaddingRight( false );
         int maxImageWidth = x + width - xDraw - rightPadding;
         if (parent.showUnselectedClose && (parent.showClose || showClose)) {
-          maxImageWidth -= closeRect.width + INTERNAL_SPACING;
+          maxImageWidth -= closeRect.width + parent.getItemSpacing( false );
         }
         if (imageBounds.width < maxImageWidth) {
           result = true;
@@ -539,13 +537,13 @@ public class CTabItem extends Item {
       int xDraw = x + parent.getItemPaddingLeft( isSelected );
       if( showImage() ) {
         Rectangle imageBounds = getImage().getBounds();
-        xDraw += imageBounds.width + INTERNAL_SPACING;
+        xDraw += imageBounds.width + parent.getItemSpacing( isSelected );
       }
       int rightEdge = Math.min( x + width, parent.getRightItemEdge() );
       int rightPadding = parent.getItemPaddingRight( isSelected );
       int textWidth = rightEdge - xDraw - rightPadding;
       if( !parent.single && closeRect.width > 0 ) {
-        textWidth -= closeRect.width + INTERNAL_SPACING;
+        textWidth -= closeRect.width + parent.getItemSpacing( isSelected );
       }
       if( textWidth > 0 ) {
         Font itemFont = font == null ? parent.getFont() : font;
