@@ -49,10 +49,10 @@
           description="Border for group box frames." />
           
       <property name="border-radius" type="boxdim">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
 
       <property name="margin"
@@ -64,7 +64,7 @@
           description="Padding for group box frames (inner distance between frame border and content)." />
 
       <state name="hover"
-          description="Applies while the cursor hovers over the group box label." />
+          description="Applies while the cursor hovers over the group box frame." />
       
       <state name="disabled"
           description="Applies to the frame of a disabled group box." />
