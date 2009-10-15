@@ -527,6 +527,16 @@ List-Item:even:selected:unfocused {
   color: #ffffff;
 }
 
+/* Link */
+
+Link-Hyperlink {
+  color: #00589f;
+}
+
+Link-Hyperlink:disabled {
+  color: #959595;
+}
+
 /* Check Buttons */
 
 Button-CheckIcon {
