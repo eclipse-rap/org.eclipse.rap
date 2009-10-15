@@ -9,12 +9,12 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 
 
@@ -40,5 +40,13 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapter {
                                              "color",
                                              SimpleSelector.SELECTED );
     return QxColor.createColor( ( QxColor )cssValue );
+  }
+
+  public Rectangle getItemPadding( final boolean selected ) {
+    SimpleSelector selector = selected
+                              ? SimpleSelector.SELECTED
+                              : SimpleSelector.DEFAULT;
+    QxType cssValue = ThemeUtil.getCssValue( "CTabItem", "padding", selector );
+    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
 }

@@ -42,6 +42,10 @@
         type="image"
         description="Background image or gradient for CTabItem." />
 
+      <property name="padding"
+          type="boxdim"
+          description="Padding for CTabItem" />
+
       <state name="selected"
           description="Applies to the selected item." />
 

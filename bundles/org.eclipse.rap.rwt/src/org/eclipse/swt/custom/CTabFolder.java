@@ -13,7 +13,6 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
@@ -21,6 +20,7 @@ import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
+
 
 /**
  * Instances of this class implement the notebook user interface
@@ -51,11 +51,9 @@ import org.eclipse.swt.widgets.*;
  * </p>
  * <hr/>
  * <p>Implementation Status: </p>
- * <p>The <code>SINGLE</code> style is implemented but not fully functional.</p>
  * <p>Attributes, found in SWT, that are not supported</p>
+ * <ul>
  * <li>simple (treated as <code>true</code>)</li>
- * <li><code>BORDER</code> and <code>FLAT</code> styles are not fully
- * implemented</li>
  * </ul>
  *
  * @since 1.0
@@ -813,7 +811,7 @@ public class CTabFolder extends Composite {
    * Returns <code>true</code> if the CTabFolder only displays the selected tab
    * and <code>false</code> if the CTabFolder displays multiple tabs.
    *
-   * @return <code>true</code> if the CTabFolder only displys the selected tab and <code>false</code> if the CTabFolder displays multiple tabs
+   * @return <code>true</code> if the CTabFolder only displays the selected tab and <code>false</code> if the CTabFolder displays multiple tabs
    */
   public boolean getSingle() {
     checkWidget();
@@ -1438,7 +1436,7 @@ public class CTabFolder extends Composite {
   }
 
   ///////////////////////////////////
-  // Helping mothods to arrange items
+  // Helping methods to arrange items
 
   boolean updateItems() {
     return updateItems(selectedIndex);
@@ -1535,7 +1533,7 @@ public class CTabFolder extends Composite {
           item.y = y;
           item.showing = true;
           if( showClose || item.showClose ) {
-            item.closeRect.x = borderLeft + CTabItem.LEFT_MARGIN;
+            item.closeRect.x = borderLeft + getItemPaddingLeft( true );
             item.closeRect.y = onBottom
                                ? size.y
                                  - borderBottom
@@ -1580,9 +1578,10 @@ public class CTabFolder extends Composite {
           item.y = y;
           if( i == selectedIndex ) {
             int edge = Math.min( item.x + item.width, rightItemEdge );
-            item.closeRect.x = edge - CTabItem.RIGHT_MARGIN - BUTTON_SIZE;
+            item.closeRect.x = edge - getItemPaddingRight( true ) - BUTTON_SIZE;
           } else {
-            item.closeRect.x = item.x + item.width - CTabItem.RIGHT_MARGIN - BUTTON_SIZE;
+            int rightPadding = getItemPaddingRight( false );
+            item.closeRect.x = item.x + item.width - rightPadding - BUTTON_SIZE;
           }
           item.closeRect.y = onBottom
                              ? size.y
@@ -1898,11 +1897,12 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 //      GC gc = new GC(this);
       if (items.length == 0) {
 //        tempHeight = gc.textExtent("Default", CTabItem.FLAGS).y + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN; //$NON-NLS-1$
-        tempHeight = TextSizeDetermination.getCharHeight( getFont() ) + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN;
+        tempHeight =   TextSizeDetermination.getCharHeight( getFont() )
+                     + getItemPadding( false ).height;
       } else {
         for (int i=0; i < items.length; i++) {
 //          tempHeight = Math.max(tempHeight, items[i].preferredHeight(gc));
-          tempHeight = Math.max(tempHeight, items[i].preferredHeight());
+          tempHeight = Math.max(tempHeight, items[i].preferredHeight(i==selectedIndex));
         }
       }
 //      gc.dispose();
@@ -2048,11 +2048,11 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
       | SWT.SINGLE
       | SWT.MULTI;
     int result = style & mask;
-    // TOP and BOTTOM are mutually exlusive, TOP is the default
+    // TOP and BOTTOM are mutually exclusive, TOP is the default
     if( ( result & SWT.TOP ) != 0 ) {
       result = result & ~SWT.BOTTOM;
     }
-    // SINGLE and MULTI are mutually exlusive, MULTI is the default
+    // SINGLE and MULTI are mutually exclusive, MULTI is the default
     if( ( result & SWT.MULTI ) != 0 ) {
       result = result & ~SWT.SINGLE;
     }
@@ -2229,11 +2229,6 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     }
   }
 
-  private CTabFolderThemeAdapter getCTabFolderThemeAdapter() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( CTabFolderThemeAdapter )themeMgr.getThemeAdapter( CTabFolder.class );
-  }
-
   private CTabItem getInternalSelectedItem() {
     CTabItem result = null;
     if( internalSelectedIndex != -1 ) {
@@ -2244,6 +2239,27 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
   private void setInternalSelectedItem( final CTabItem item ) {
     internalSelectedIndex = itemHolder.indexOf( item );
+  }
+
+  //////////////////
+  // Theming related
+
+  private CTabFolderThemeAdapter getCTabFolderThemeAdapter() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    return ( CTabFolderThemeAdapter )themeMgr.getThemeAdapter( CTabFolder.class );
+  }
+
+  int getItemPaddingLeft( final boolean selected ) {
+    return getItemPadding( selected ).x;
+  }
+
+  int getItemPaddingRight( final boolean selected ) {
+    Rectangle padding = getItemPadding( selected );
+    return padding.width - padding.x;
+  }
+
+  Rectangle getItemPadding( final boolean selected ) {
+    return getCTabFolderThemeAdapter().getItemPadding( selected );
   }
 
   ////////////////
@@ -2283,7 +2299,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     }
 
     public String getShortenedItemText( final CTabItem item ) {
-      return item.getShortenedText();
+      return item.getShortenedText( item.getParent().getSelection() == item );
     }
 
     public Color getUserSelectionForeground() {

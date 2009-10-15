@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -18,6 +17,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
+
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -35,10 +35,6 @@ import org.eclipse.swt.widgets.Item;
  */
 public class CTabItem extends Item {
 
-  static final int TOP_MARGIN = 2;
-  static final int BOTTOM_MARGIN = 2;
-  static final int LEFT_MARGIN = 4;
-  static final int RIGHT_MARGIN = 4;
   static final int INTERNAL_SPACING = 4;
 
   static final String ELLIPSIS = "...";
@@ -48,7 +44,6 @@ public class CTabItem extends Item {
   private Control control;
   private String toolTipText;
   private Font font;
-  // TODO [rh] shortenedText is not yet calculated
   String shortenedText;
   int shortenedTextWidth;
 
@@ -420,7 +415,7 @@ public class CTabItem extends Item {
   ///////////////////////////////////////////////////////////////////////
   // Helping methods used by CTabFolder to control item size and location
 
-  int preferredHeight() {
+  int preferredHeight( final boolean isSelected ) {
     Image image = getImage();
     int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
@@ -431,7 +426,7 @@ public class CTabItem extends Item {
     } else {
       h = Math.max( h, TextSizeDetermination.textExtent( font, text, 0 ).y );
     }
-    return h + TOP_MARGIN + BOTTOM_MARGIN;
+    return h + parent.getItemPadding( isSelected ).height;
   }
 
   int preferredWidth( final boolean isSelected, final boolean minimum ) {
@@ -479,7 +474,7 @@ public class CTabItem extends Item {
         w += CTabFolder.BUTTON_SIZE;
       }
     }
-    return w + LEFT_MARGIN + RIGHT_MARGIN;
+    return w + parent.getItemPadding( isSelected ).width;
   }
 
   /*
@@ -492,14 +487,14 @@ public class CTabItem extends Item {
   /* (intentionally non-JavaDoc'ed)
    * Return whether the image (if any) should be shown or omitted if there is
    * not enough space. The code is copied from the drawSelected and
-   * drawUnselected methods ins SWT.
+   * drawUnselected methods in SWT.
    */
   boolean showImage() {
     boolean result = false;
     if( parent.getSelection() == this ) {
       int rightEdge = Math.min (x + width, parent.getRightItemEdge());
       // draw Image
-      int xDraw = x + LEFT_MARGIN;
+      int xDraw = x + parent.getItemPaddingLeft( true );
       if (parent.single && (parent.showClose || showClose)) {
         xDraw += CTabFolder.BUTTON_SIZE;
       }
@@ -507,7 +502,8 @@ public class CTabItem extends Item {
       if (image != null) {
         Rectangle imageBounds = image.getBounds();
         // only draw image if it won't overlap with close button
-        int maxImageWidth = rightEdge - xDraw - RIGHT_MARGIN;
+        int rightPadding = parent.getItemPaddingRight( true );
+        int maxImageWidth = rightEdge - xDraw - rightPadding;
         if (!parent.single && closeRect.width > 0) {
           maxImageWidth -= closeRect.width + INTERNAL_SPACING;
         }
@@ -516,12 +512,13 @@ public class CTabItem extends Item {
         }
       }
     } else {
-      int xDraw = x + LEFT_MARGIN;
+      int xDraw = x + parent.getItemPaddingLeft( false );
       Image image = getImage();
       if (image != null && parent.showUnselectedImage) {
         Rectangle imageBounds = image.getBounds();
         // only draw image if it won't overlap with close button
-        int maxImageWidth = x + width - xDraw - RIGHT_MARGIN;
+        int rightPadding = parent.getItemPaddingRight( false );
+        int maxImageWidth = x + width - xDraw - rightPadding;
         if (parent.showUnselectedClose && (parent.showClose || showClose)) {
           maxImageWidth -= closeRect.width + INTERNAL_SPACING;
         }
@@ -537,15 +534,16 @@ public class CTabItem extends Item {
    * The code of this methods is taken from SWT's CTabItem#drawSelected() and
    * modified to suit the specifics of RWT.
    */
-  String getShortenedText() {
+  String getShortenedText( final boolean isSelected ) {
     if( shortenedText == null ) {
-      int xDraw = x + LEFT_MARGIN;
+      int xDraw = x + parent.getItemPaddingLeft( isSelected );
       if( showImage() ) {
         Rectangle imageBounds = getImage().getBounds();
         xDraw += imageBounds.width + INTERNAL_SPACING;
       }
       int rightEdge = Math.min( x + width, parent.getRightItemEdge() );
-      int textWidth = rightEdge - xDraw - RIGHT_MARGIN;
+      int rightPadding = parent.getItemPaddingRight( isSelected );
+      int textWidth = rightEdge - xDraw - rightPadding;
       if( !parent.single && closeRect.width > 0 ) {
         textWidth -= closeRect.width + INTERNAL_SPACING;
       }
