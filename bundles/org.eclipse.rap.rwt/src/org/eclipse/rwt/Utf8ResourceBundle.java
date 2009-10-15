@@ -59,7 +59,7 @@ final class Utf8ResourceBundle {
       String result = ( String )bundle.handleGetObject( key );
       try {
         // We do not buffer the encoded result since the RWT.NLS mechanism
-        // creates and buffers the completly initialized nls instance. So each
+        // creates and buffers the completely initialized nls instance. So each
         // entry should only be read once.
         if( result != null ) {
           result = new String( result.getBytes( "ISO-8859-1" ), "UTF-8" );

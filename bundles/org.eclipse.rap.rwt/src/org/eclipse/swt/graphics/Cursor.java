@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+
 
 /**
  * Instances of this class manage operating system resources that

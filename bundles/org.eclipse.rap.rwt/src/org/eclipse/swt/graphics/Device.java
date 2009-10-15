@@ -13,8 +13,8 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+
 
 /**
  * This class is the abstract superclass of all device objects,

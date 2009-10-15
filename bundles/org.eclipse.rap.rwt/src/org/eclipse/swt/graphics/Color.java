@@ -11,10 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+
 
 /**
  * Instances of this class manage resources that implement SWT's RGB color

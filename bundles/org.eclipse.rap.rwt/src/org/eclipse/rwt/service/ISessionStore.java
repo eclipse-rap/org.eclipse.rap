@@ -117,8 +117,8 @@ public interface ISessionStore {
   /**
    * Adds an instance of <code>SessionStoreListener</code> to this
    * <code>ISessionStore</code>. <code>SessionStoreListener</code>s are
-   * used to get notifcations before the session store is destroyed.
-   * If the given listenern is already added the method has no effect.
+   * used to get notifications before the session store is destroyed.
+   * If the given listener is already added the method has no effect.
    *  
    * @param listener the SessionStoreListener to be added
    * @exception IllegalStateException If this method is called on an invalidated
@@ -129,7 +129,7 @@ public interface ISessionStore {
   /**
    * Removes an instance of <code>SessionStoreListener</code> to this
    * <code>ISessionStore</code>. <code>SessionStoreListener</code>s are
-   * used to get notifcations before the session store is destroyed.
+   * used to get notifications before the session store is destroyed.
    * If the given listener is not added to the session store this method
    * has no effect.
    * 

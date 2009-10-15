@@ -25,7 +25,7 @@ import java.util.Enumeration;
  * the {@link #loadById(String)} method with an appropriate <code>id</code>.
  * This will load any data stored under that id into the current setting store. 
  * <p>
- * This mechanism is intented to be used as follows: by default RWT will assign
+ * This mechanism is intended to be used as follows: by default RWT will assign
  * a new setting store to each new session, based on the current session id. 
  * After the user has authenticated, application developers can use the 
  * {@link #loadById(String)} method to initialize the store with persisted data 

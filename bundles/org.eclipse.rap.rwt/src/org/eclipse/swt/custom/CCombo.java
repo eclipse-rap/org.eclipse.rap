@@ -9,16 +9,15 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.widgets.*;
+
 
 /**
  * The CCombo class represents a selectable user interface object
