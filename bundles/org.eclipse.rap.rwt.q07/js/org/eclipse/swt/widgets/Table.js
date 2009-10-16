@@ -1219,6 +1219,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           // Append rows if rowCount was increased
           if( this._rows.length < newRowCount ) {
             while( this._rows.length < newRowCount ) {
+              var newRow = new org.eclipse.swt.widgets.TableRow();
+              this._hookRowEventListener( newRow );
+              newRow.setLinesVisible( this._linesVisible );
+              this._clientArea.add( newRow );
+              this._rows.push( newRow );
               if( this._checkBoxes != null ) {
                 var checkBox = new qx.ui.basic.Image();
                 checkBox.addEventListener( "click", this._onCheckBoxClick, this );
@@ -1232,11 +1237,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                 this._clientArea.add( checkBox );
                 this._checkBoxes.push( checkBox );
               }
-              var newRow = new org.eclipse.swt.widgets.TableRow();
-              this._hookRowEventListener( newRow );
-              newRow.setLinesVisible( this._linesVisible );
-              this._clientArea.add( newRow );
-              this._rows.push( newRow );
             }
           }
           // Re-calculate the position and size for each row
@@ -1299,8 +1299,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           checkBox.setHeight( checkImageHeight );
         }
         var row = this._rows[ i ];
-        row.setLeft( left + checkBoxWidth );
-        row.setWidth( width );
+        row.setLeft( left );
+        row.setWidth( width + checkBoxWidth );
         row.setHeight( this._itemHeight );
       }
     },

@@ -139,16 +139,17 @@ public final class TableLCAUtil {
         // If in column mode, cut image width if image exceeds right cell border
         int imageWidth = tableAdapter.getItemImageWidth( i );
         if( table.getColumnCount() > 0 ) {
-          int maxImageWidth = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
+          int maxImageWidth
+            = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
           if( imageWidth > maxImageWidth ) {
             imageWidth = maxImageWidth;
           }
         }
-        result[ i ].left = bounds.x - checkWidth;
+        result[ i ].left = bounds.x;
         result[ i ].width = bounds.width;
-        result[ i ].imageLeft = imageBounds.x - checkWidth;
+        result[ i ].imageLeft = imageBounds.x;
         result[ i ].imageWidth = imageWidth;
-        result[ i ].textLeft = textBounds.x - checkWidth;
+        result[ i ].textLeft = textBounds.x;
         result[ i ].textWidth = textBounds.width;
       }
     }
