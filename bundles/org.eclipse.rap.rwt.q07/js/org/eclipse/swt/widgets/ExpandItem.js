@@ -43,10 +43,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     this._chevron.addEventListener( "mouseover", this._onHandleMouseOver, this );
     this._chevron.addEventListener( "mouseout", this._onHandleMouseOut, this );  
     this._chevron.addEventListener( "contextmenu", this._onContextMenu, this );   
-    this.add( this._chevron );    
-    this._frameBorder = new qx.ui.core.Border( 1, "solid" );
-    this._frameBorder.setColor( this._header.getBackgroundColor() );
-    this.setBorder( this._frameBorder );
+    this.add( this._chevron );
   },
 
   destruct : function() {    
@@ -58,7 +55,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     this._chevron.removeEventListener( "mouseover", this._onHandleMouseOver, this );
     this._chevron.removeEventListener( "mouseout", this._onHandleMouseOut, this ); 
     this._chevron.removeEventListener( "contextmenu", this._onContextMenu, this );   
-    this._disposeObjects( "_header", "_chevron", "_frameBorder" );     
+    this._disposeObjects( "_header", "_chevron" );     
   },
 
   statics : {

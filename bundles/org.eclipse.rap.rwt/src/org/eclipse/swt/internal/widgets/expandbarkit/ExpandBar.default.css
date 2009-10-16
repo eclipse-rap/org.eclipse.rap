@@ -4,7 +4,12 @@ ExpandBar {
   color: black;
 }
 
+ExpandItem {
+  border: 1px solid #D4D0C8;
+}
+
 ExpandItem-Header {
+  border: none;
   background-color: #D4D0C8;
 }
 

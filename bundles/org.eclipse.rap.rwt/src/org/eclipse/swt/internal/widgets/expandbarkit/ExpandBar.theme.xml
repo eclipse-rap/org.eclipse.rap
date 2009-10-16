@@ -32,6 +32,39 @@
         Applied to the expand item header label.
       </description>
     </property>
+    
+    <property name="border"
+      description="ExpandBar border" />
+
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
+    </property>
+    
+    <style name="BORDER"
+        description="Style constant for bordered behavior." />
+        
+    <element name="ExpandItem">
+      <description>
+        The ExpandItem.
+      </description>
+
+      <property name="border"
+        description="ExpandItem border" />
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
+      </property>
+
+      <state name="expanded"
+          description="Applies while the ExpandItem is expanded." />
+
+    </element>
 
     <element name="ExpandItem-Header">
       <description>
@@ -41,6 +74,16 @@
       <property name="background-color">
         <description>
           Background color for the expand item header.
+        </description>
+      </property>
+      
+      <property name="border"
+        description="Expand item header border" />
+
+      <property name="border-radius">
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
         </description>
       </property>
 

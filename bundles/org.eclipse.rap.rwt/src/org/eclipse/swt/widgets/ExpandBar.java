@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -65,11 +66,8 @@ public class ExpandBar extends Composite {
     }
   }
 
-  static final int BORDER = 2;
   ExpandItem focusItem;
   int spacing;
-  int v_scroll;
-  int border;
   int allItemsHeight;
   int charHeight;
   private final ItemHolder itemHolder;
@@ -112,12 +110,6 @@ public class ExpandBar extends Composite {
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
     itemHolder = new ItemHolder( ExpandItem.class );
-    if( ( getStyle() & SWT.V_SCROLL ) != 0 ) {
-      v_scroll = getScrollBarSize();
-    }
-    if( ( getStyle() & SWT.BORDER ) != 0 ) {
-      border = BORDER;
-    }
   }
 
   /**
@@ -182,15 +174,9 @@ public class ExpandBar extends Composite {
             height += item.height;
           }
           height += spacing;
-          int barPreferredWidth = item.getPreferredWidth()
-                                  + v_scroll
-                                  + 2
-                                  * spacing
-                                  + 2
-                                  * border;
+          int barPreferredWidth = item.getPreferredWidth() + 2 * spacing;
           width = Math.max( width, barPreferredWidth );
         }
-        height += 2 * border;
       }
     }
     if( width == 0 ) {
@@ -204,6 +190,12 @@ public class ExpandBar extends Composite {
     }
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
+    }
+    int border = getBorderWidth();
+    width += border * 2;
+    height += border * 2;
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      width += getScrollBarSize();
     }
     return new Point( width, height );
   }
@@ -380,6 +372,8 @@ public class ExpandBar extends Composite {
       allItemsHeight = lastItem.y + lastItem.getBounds().height;
     }
     // Set items width based on scrollbar visibility
+    int border = getBorderWidth();
+    int v_scroll = getScrollBarSize();
     for( int i = 0; i < itemCount; i++ ) {
       ExpandItem item = getItem( i );
       if( isVScrollbarVisible() ) {
@@ -460,7 +454,8 @@ public class ExpandBar extends Composite {
   }
 
   boolean isVScrollbarVisible() {
-    return ( getStyle() & SWT.V_SCROLL ) != 0
+    int border = getBorderWidth();
+    return    ( getStyle() & SWT.V_SCROLL ) != 0
            && ( allItemsHeight > getBounds().height - 2 * border - spacing );
   }
 
@@ -503,7 +498,7 @@ public class ExpandBar extends Composite {
   ////////////////////////////
   // Helping methods - various
 
-  private int getScrollBarSize() {
+  int getScrollBarSize() {
     Object object = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter adapter = ( IDisplayAdapter )object;
     return adapter.getScrollBarSize();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,16 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  *     Tom Schindl<tom.schindl@bestsolution.at> - fix for issue 272674
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarThemeAdapter;
 
 
 /**
@@ -39,7 +42,6 @@ public class ExpandItem extends Item {
   static final int LEFT_MARGIN = 4;
   static final int RIGHT_MARGIN = 24;
   static final int INTERNAL_SPACING = 4;
-  static final int BORDER = 1;
   static final int CHEVRON_SIZE = 24;
   ExpandBar parent;
   Control control;
@@ -188,7 +190,9 @@ public class ExpandItem extends Item {
    */
   public int getHeaderHeight() {
     checkWidget();
-    return Math.max( parent.getBandHeight(), imageHeight );
+    int headerHeight = Math.max( parent.getBandHeight(), imageHeight );
+    headerHeight += getItemHeaderBorderWidth();
+    return headerHeight;
   }
 
   /**
@@ -281,9 +285,10 @@ public class ExpandItem extends Item {
     }
     if( control != null && !control.isDisposed() ) {
       if( !parent.isAppThemed() ) {
-        aX += BORDER;
-        aWidth = Math.max( 0, aWidth - BORDER * 2 );
-        aHeight = Math.max( 0, aHeight - BORDER );
+        int border = getItemBorderWidth();
+        aX += border;
+        aWidth = Math.max( 0, aWidth - border * 2 );
+        aHeight = Math.max( 0, aHeight - border );
       }
       if( move && size ) {
         control.setBounds( aX, aY + headerHeight, aWidth, aHeight );
@@ -329,9 +334,10 @@ public class ExpandItem extends Item {
       int headerHeight = getHeaderHeight();
       control.setVisible( expanded );
       if( !parent.isAppThemed() ) {
-        int width = Math.max( 0, this.width - BORDER * 2 );
-        int height = Math.max( 0, this.height - BORDER );
-        control.setBounds( x + BORDER, y + headerHeight, width, height );
+        int border = getItemBorderWidth();
+        int width = Math.max( 0, this.width - border * 2 );
+        int height = Math.max( 0, this.height - border );
+        control.setBounds( x + border, y + headerHeight, width, height );
       } else {
         control.setBounds( x, y + headerHeight, width, height );
       }
@@ -381,10 +387,7 @@ public class ExpandItem extends Item {
     checkWidget();
     if( image != getImage() ) {
       super.setImage( image );
-      int parentWidth = parent.computeSize( SWT.DEFAULT, SWT.DEFAULT, false ).x;
-      int availableWidth = parentWidth - 2 * parent.spacing - parent.v_scroll;
-      width = Math.max( getPreferredWidth(), availableWidth );
-      setBounds( 0, 0, width, height, false, true );
+      updateBounds();
     }
     int oldImageHeight = imageHeight;
     if( image != null ) {
@@ -406,10 +409,32 @@ public class ExpandItem extends Item {
     }
     if( !string.equals( getText() ) ) {
       super.setText( string );
-      int parentWidth = parent.computeSize( SWT.DEFAULT, SWT.DEFAULT, false ).x;
-      int availableWidth = parentWidth - 2 * parent.spacing - parent.v_scroll;
-      width = Math.max( getPreferredWidth(), availableWidth );
-      setBounds( 0, 0, width, height, false, true );
+      updateBounds();
     }
+  }
+
+  private void updateBounds() {
+    int parentWidth = parent.computeSize( SWT.DEFAULT, SWT.DEFAULT, false ).x;
+    int v_scroll = parent.getScrollBarSize();
+    int availableWidth = parentWidth - 2 * parent.spacing - v_scroll;
+    width = Math.max( getPreferredWidth(), availableWidth );
+    setBounds( 0, 0, width, height, false, true );
+  }
+
+  ////////////////////////////
+  // Helping methods - various
+
+  int getItemBorderWidth() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    ExpandBarThemeAdapter themeAdapter
+      = ( ExpandBarThemeAdapter )themeMgr.getThemeAdapter( parent.getClass() );
+    return themeAdapter.getItemBorderWidth( parent );
+  }
+
+  int getItemHeaderBorderWidth() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    ExpandBarThemeAdapter themeAdapter
+      = ( ExpandBarThemeAdapter )themeMgr.getThemeAdapter( parent.getClass() );
+    return themeAdapter.getItemHeaderBorderWidth( parent );
   }
 }

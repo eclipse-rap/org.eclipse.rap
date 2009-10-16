@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -121,7 +122,8 @@ public class ExpandItem_Test extends TestCase {
     item.setText( "What is your favorite button?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    assertEquals( composite.getSize().y + ExpandItem.BORDER, item.getHeight() );
+    assertEquals( composite.getSize().y + item.getItemBorderWidth(),
+                  item.getHeight() );
   }
 
   public void testHeaderHeight() {

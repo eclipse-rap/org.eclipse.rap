@@ -2087,7 +2087,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "*", "border" );
+      result.border = tv.getCssBorder( "ExpandBar", "border" );
       result.font = tv.getCssFont( "ExpandBar", "font" );
       result.textColor = tv.getCssColor( "ExpandBar", "color" );
       return result;
@@ -2096,8 +2096,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "expand-item" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        overflow : "hidden"
+        overflow : "hidden",
+        border : tv.getCssBorder( "ExpandItem", "border" )
       }
     }
   },
@@ -2128,9 +2130,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.verticalChildrenAlign = "middle";
       result.paddingLeft = 4;
       result.paddingRight = 24;
+      result.border = tv.getCssBorder( "ExpandItem-Header", "border" )
       result.backgroundColor
         = tv.getCssColor( "ExpandItem-Header", "background-color" );
-      result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : "undefined";
+      result.textColor = states.disabled
+                         ? tv.getCssColor( "*", "color" )
+                         : "undefined";
       result.cursor = states.disabled ? "default" : "pointer";
       return result;
     }
