@@ -634,7 +634,7 @@ Composite.compGray {
   background-color: rgb( 252, 252, 252 );
 }
 
-Text, Combo, Spinner, DateTime, Tree {
+Combo, Spinner, DateTime, Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
@@ -670,10 +670,10 @@ ExpandItem-Button:expanded {
   background-image: url( /theme/fancy/icons/expanditem-collapse.gif );
 }
 
-/* Text, Combo, Spinner, DateTime */
+/* Combo, Spinner, DateTime */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-Text[BORDER], Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
+Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
 }
@@ -710,6 +710,14 @@ DateTime-Field:selected, DateTime-Calendar-Day:selected {
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
   color: rgb( 128, 128, 128 );
+}
+
+/* Text */
+
+Text {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
+  color: #464a4e;
 }
 
 /* Group */
