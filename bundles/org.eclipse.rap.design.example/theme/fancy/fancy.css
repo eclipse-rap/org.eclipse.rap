@@ -345,61 +345,11 @@ Shell.toolbarLayer {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
-
-/* Table for Coolbar Overflow */
-
-Table.overflow {
-  color: rgb( 255, 255, 255 );
-}
-
-Table-Column.overflow {
-  background-color: transparent;
-}
-
-TableItem.overflow {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:even {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
-}
  
 /* Table */
 
 Table {
   background-color: #ffffff;
-}
-
-Table-Column.overflow {
-  background-color: transparent;
-}
-
-TableItem.overflow {
-  background-color: transparent;
-}
-
-TableItem.overflow:selected {
-  background-color: transparent;
-  color: #00589f;
-}
-
-TableItem.overflow:hover {
-  background-color: transparent;
-}
-
-TableItem.overflow:even:selected {
-  background-color: transparent;
-  color: #00589f;
-}
-
-TableItem.overflow:even {
-  background-color: transparent;
-}
-
-TableItem.overflow:even:hover {
-  background-color: transparent;
 }
 
 TableColumn {
@@ -420,7 +370,7 @@ Table-Cell {
 }
 
 TableItem {
-  background-color: #ffffff;
+  background-color: transparent;
   color: #666666;
 }
 
@@ -429,7 +379,7 @@ TableItem:hover {
 }
 
 TableItem:selected {
-  background-color: #92bf2b;
+  background-color: #abe033;
   color: #ffffff;
 } 
 
@@ -447,7 +397,7 @@ TableItem:even:hover {
 }
 
 TableItem:even:selected {
-  background-color: #92bf2b;
+  background-color: #abe033;
   color: #ffffff;
 }
 
@@ -493,6 +443,52 @@ TableColumn-SortIndicator:down {
   background-image: url( /theme/fancy/icons/sort-indicator-down.png );
 }
 
+/* Table for Coolbar Overflow */
+
+Table.overflow {
+  color: rgb( 255, 255, 255 );
+  background-color: transparent;
+}
+
+Table-Column.overflow {
+  background-color: transparent;
+}
+
+TableItem.overflow {
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
+}
+
+TableItem.overflow:even {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
+TableItem.overflow:selected {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
+TableItem.overflow:hover {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
+TableItem.overflow:even:selected {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
+TableItem.overflow:even {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
+TableItem.overflow:even:hover {
+  background-color: transparent; 
+  color: rgb( 255, 255, 255 ); 
+}
+
 /* List */
 
 List {
@@ -509,7 +505,7 @@ List-Item:hover {
 }
 
 List-Item:selected {
-  background-color: #92bf2b;
+  background-color: #abe033;
   color: #ffffff;
 } 
 
@@ -527,7 +523,7 @@ List-Item:even:hover {
 }
 
 List-Item:even:selected {
-  background-color: #92bf2b;
+  background-color: #abe033;
   color: #ffffff;
 }
 
@@ -650,24 +646,35 @@ Combo, Spinner, DateTime, Tree {
 
 /* Expand Bar */
 
+
 ExpandBar {
   color: white;
 }
 
 ExpandItem-Header {
-  background-color: #005397;
+  background-color: #abe033;  
+  border-radius: 3px 3px 0px 0px;
+}
+
+ExpandItem {
+  border: 1px solid #c1c1c1;
+  border-radius: 3px 3px 0px 0px;
 }
 
 ExpandItem-Button {
-  background-image: url( /theme/fancy/icons/expanditem-expand.gif );
+  background-image: url( /theme/business/icons/expanditem-expand.png );
 }
 
 ExpandItem-Button:hover {
-  background-image: url( /theme/fancy/icons/expanditem-expand-hover.png );
+  background-image: url( /theme/business/icons/expanditem-expand-hover.png );
 }
 
 ExpandItem-Button:expanded {
-  background-image: url( /theme/fancy/icons/expanditem-collapse.gif );
+  background-image: url( /theme/business/icons/expanditem-collapse.png );
+}
+
+ExpandItem-Button:expanded:hover {
+  background-image: url( /theme/business/icons/expanditem-collapse-hover.png );
 }
 
 /* Combo, Spinner, DateTime */

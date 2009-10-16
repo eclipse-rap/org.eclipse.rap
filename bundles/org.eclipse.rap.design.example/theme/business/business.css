@@ -350,11 +350,7 @@ Shell.toolbarLayer {
   border: none;
 }
 
-/* Table */
-
-Table {
-  background-color: #ffffff;
-}
+/* Table for Coolbar overflow */
 
 Table-Column.overflow {
   background-color: transparent;
@@ -386,6 +382,12 @@ TableItem.overflow:even:hover {
   background-color: transparent;
 }
 
+/* Table */
+
+Table {
+  background-color: #ffffff;
+}
+
 TableColumn {
   background-image: url( "/theme/business/icons/table-column.png" );
   color: #666666;
@@ -404,7 +406,7 @@ Table-Cell {
 }
 
 TableItem {
-  background-color: #ffffff;
+  background-color: transparent;
   color: #666666;
 }
 
