@@ -785,6 +785,9 @@ public class ExpandableComposite extends Canvas {
 	public void setClient(Control client) {
 		Assert.isTrue(client != null && client.getParent().equals(this));
 		this.client = client;
+		// [if] Fix for bug 263025
+		// some qooxdoo widget with size (0,0) are not invisible
+		this.client.setVisible( isExpanded() );
 	}
 
 	/**
