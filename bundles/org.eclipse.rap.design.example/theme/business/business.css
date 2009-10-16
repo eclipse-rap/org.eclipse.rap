@@ -642,7 +642,13 @@ ExpandBar {
 }
 
 ExpandItem-Header {
-  background-color: #005397;
+  background-color: #005397;  
+  border-radius: 3px 3px 0px 0px;
+}
+
+ExpandItem {
+  border: 1px solid #c1c1c1;
+  border-radius: 3px 3px 0px 0px;
 }
 
 ExpandItem-Button {
@@ -696,6 +702,7 @@ Combo-List {
 
 Spinner {
   border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
   padding: 1px 2px;
   color: #464a4e;
   background-color: rgb( 252, 252, 252 );
@@ -851,21 +858,25 @@ Group-Label {
   margin: 1px 10px;
 }
 
-/* Link */
-
-Link-Hyperlink {
-  color: #195d94;
-}
-
 /* Progress Bar */
 
 ProgressBar {
   background-color: #ffffff;
+  background-image: none;
   border: 1px solid #747a81;
 }
 
 ProgressBar-Indicator {
   background-color: #7bb0db;
+  background-image: none;
+}
+
+ProgressBar-Indicator:paused {
+  background-color: #ebebeb;
+}
+
+ProgressBar-Indicator:error {
+  background-color: rgb( 203, 32, 32 );
 }
 
 /* Composite */
