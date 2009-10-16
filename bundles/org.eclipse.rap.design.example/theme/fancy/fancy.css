@@ -494,14 +494,47 @@ TableColumn-SortIndicator:down {
 }
 
 /* List */
-List-Item {
-  background-color: transparent;
+
+List {
+  background-color: rgb( 252, 252, 252 );
 }
 
-/*
- disable alt row colors for Lists as they look weird inside examples' ExpandBar:
- List-Item:even,
- */
+List-Item {
+  background-color: #ffffff;
+  color: #666666;
+}
+
+List-Item:hover {
+  background-color: #e9f3d2;
+}
+
+List-Item:selected {
+  background-color: #92bf2b;
+  color: #ffffff;
+} 
+
+List-Item:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+List-Item:even {
+  background-color: #f3f3f4;
+}
+
+List-Item:even:hover {
+  background-color: #e9f3d2;
+}
+
+List-Item:even:selected {
+  background-color: #92bf2b;
+  color: #ffffff;
+}
+
+List-Item:even:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
 
 /* Check Buttons */
 
@@ -556,7 +589,7 @@ Menu {
 
 /* Selection color */
 
-List-Item:selected, TreeItem:selected {
+TreeItem:selected {
   background-color: #D2D2D2;
   color: #4a4a4a;
 }
@@ -601,7 +634,7 @@ Composite.compGray {
   background-color: rgb( 252, 252, 252 );
 }
 
-Text, Combo, Spinner, DateTime, List, Tree {
+Text, Combo, Spinner, DateTime, Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
