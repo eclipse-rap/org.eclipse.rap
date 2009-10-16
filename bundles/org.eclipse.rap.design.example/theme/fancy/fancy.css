@@ -346,7 +346,7 @@ Shell.toolbarLayer {
   border: none;
 }
 
-/* Table */
+/* Table for Coolbar Overflow */
 
 Table.overflow {
   color: rgb( 255, 255, 255 );
@@ -365,9 +365,53 @@ TableItem.overflow:even {
   background-color: transparent; 
   color: rgb( 255, 255, 255 ); 
 }
+ 
+/* Table */
 
-Table-Column {
-  background-color: #f3f3f4;
+Table {
+  background-color: #ffffff;
+}
+
+Table-Column.overflow {
+  background-color: transparent;
+}
+
+TableItem.overflow {
+  background-color: transparent;
+}
+
+TableItem.overflow:selected {
+  background-color: transparent;
+  color: #00589f;
+}
+
+TableItem.overflow:hover {
+  background-color: transparent;
+}
+
+TableItem.overflow:even:selected {
+  background-color: transparent;
+  color: #00589f;
+}
+
+TableItem.overflow:even {
+  background-color: transparent;
+}
+
+TableItem.overflow:even:hover {
+  background-color: transparent;
+}
+
+TableColumn {
+  background-image: url( "/theme/fancy/icons/table-column.png" );
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+}
+
+TableColumn:hover {
+  background-image: url( "/theme/fancy/icons/table-column-hover.png" );
+  border-bottom:none;
 }
 
 Table-Cell {
@@ -375,7 +419,82 @@ Table-Cell {
   padding: 5px;
 }
 
-List-Item, TableItem {
+TableItem {
+  background-color: #ffffff;
+  color: #666666;
+}
+
+TableItem:hover {
+  background-color: #e9f3d2;
+}
+
+TableItem:selected {
+  background-color: #92bf2b;
+  color: #ffffff;
+} 
+
+TableItem:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TableItem:even {
+  background-color: #f3f3f4;
+}
+
+TableItem:even:hover {
+  background-color: #e9f3d2;
+}
+
+TableItem:even:selected {
+  background-color: #92bf2b;
+  color: #ffffff;
+}
+
+TableItem:even:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+Table-GridLine {
+  color: #dedede;
+}
+
+Table-Checkbox {
+  width: 21px;
+  background-image: url( /theme/fancy/icons/check-unselected.png );
+}
+
+Table-Checkbox:hover {
+  background-image: url( /theme/fancy/icons/check-unselected-hover.png );
+}
+
+Table-Checkbox:checked {
+  background-image: url( /theme/fancy/icons/check-selected.png );
+}
+
+Table-Checkbox:checked:hover {
+  background-image: url( /theme/fancy/icons/check-selected-hover.png );
+}
+
+Table-Checkbox:checked:grayed {
+  background-image: url( /theme/fancy/icons/check-grayed.png );
+}
+
+Table-Checkbox:checked:grayed:hover {
+  background-image: url( /theme/fancy/icons/check-grayed-hover.png );
+}
+
+TableColumn-SortIndicator:up {
+  background-image: url( /theme/fancy/icons/sort-indicator-up.png );
+}
+
+TableColumn-SortIndicator:down {
+  background-image: url( /theme/fancy/icons/sort-indicator-down.png );
+}
+
+/* List */
+List-Item {
   background-color: transparent;
 }
 
@@ -383,9 +502,6 @@ List-Item, TableItem {
  disable alt row colors for Lists as they look weird inside examples' ExpandBar:
  List-Item:even,
  */
-TableItem:even {
-  background-color: #f3f3f4;
-}
 
 /* Check Buttons */
 
@@ -440,7 +556,7 @@ Menu {
 
 /* Selection color */
 
-List-Item:selected, TableItem:selected, TreeItem:selected {
+List-Item:selected, TreeItem:selected {
   background-color: #D2D2D2;
   color: #4a4a4a;
 }
@@ -485,7 +601,7 @@ Composite.compGray {
   background-color: rgb( 252, 252, 252 );
 }
 
-Text, Combo, Spinner, DateTime, List, Tree, Table {
+Text, Combo, Spinner, DateTime, List, Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
