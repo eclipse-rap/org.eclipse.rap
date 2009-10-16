@@ -89,7 +89,7 @@ public class Section extends ExpandableComposite {
 			descriptionControl = new Text(this, SWT.READ_ONLY | SWT.WRAP | rtl);
 			// [if] Fix for bug 263025
 	        // some qooxdoo widget with size (0,0) are not invisible
-			descriptionControl.setVisible( false );
+			descriptionControl.setVisible( isExpanded() );
 		}
 		if ((style & TITLE_BAR) != 0) {
 			Listener listener = new Listener() {
