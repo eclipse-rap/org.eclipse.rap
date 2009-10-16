@@ -576,12 +576,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
       var checkBox = this._checkBoxes[ rowIndex ];
       checkBox.addState( "over" );
+      this._rows[ rowIndex ].addState( "over" );
     },
     
     _onCheckBoxOut : function( evt ) {
       var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
       var checkBox = this._checkBoxes[ rowIndex ];
       checkBox.removeState( "over" );
+      this._rows[ rowIndex ].removeState( "over" );
     },
 
     // Note: [rst] This function is wired with the mousedown event. Using the
