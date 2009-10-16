@@ -1288,7 +1288,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         // see bug 290565 and bug 290879
         width = this.getDefaultColumnWidth() + checkBoxWidth;
       } else {
-        width = this.getColumnsWidth() - checkBoxWidth;
+        width = this.getColumnsWidth();
       }
       if( this._clientArea.getWidth() > width ) {
         width = this._clientArea.getWidth();
@@ -1302,7 +1302,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
         var row = this._rows[ i ];
         row.setLeft( left );
-        row.setWidth( width + checkBoxWidth );
+        row.setWidth( width );
         row.setHeight( this._itemHeight );
       }
     },
