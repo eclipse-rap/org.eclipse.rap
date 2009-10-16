@@ -321,7 +321,7 @@ public class CoolBarManager extends ContributionManager
   }
 
   /*
-   * This mathod manages the items which can not be shown in the coolbar because
+   * This method manages the items which can not be shown in the coolbar because
    * it is to small. So an overflow will be shown including these items.
    */
   private void manageOverflow() {        
@@ -332,14 +332,16 @@ public class CoolBarManager extends ContributionManager
     {
       // remove last children (button)
       int lastIndex = coolBar.getChildren().length - 1;
-      Control child = coolBar.getChildren()[ lastIndex ];
-      Object object = buttonItemMap.get( child );
-      ContributionItem item = ( ContributionItem ) object;
-      addOverflowItem( item );
-      activeOverflowOpenButton();
-      buttonItemMap.remove( child );
-      child.dispose();
-      child = null; 
+      if( lastIndex >= 0 ) {
+        Control child = coolBar.getChildren()[ lastIndex ];
+        Object object = buttonItemMap.get( child );
+        ContributionItem item = ( ContributionItem ) object;
+        addOverflowItem( item );
+        activeOverflowOpenButton();
+        buttonItemMap.remove( child );
+        child.dispose();
+        child = null; 
+      }
     }
 
     // check if the overflow button should be activated or not
