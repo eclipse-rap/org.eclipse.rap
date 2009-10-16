@@ -98,10 +98,10 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //		GC gc = event.gc;
 //		gc.setBackground(cell.getViewerRow().getBackground(
 //				cell.getColumnIndex()));
-	  cell.setBackground( null );
+	  cell.setBackground( cell.getViewerRow().getBackground(cell.getColumnIndex()) );
 //		gc.setForeground(cell.getViewerRow().getForeground(
 //				cell.getColumnIndex()));
-	  cell.setForeground( null );
+	  cell.setForeground( cell.getViewerRow().getForeground(cell.getColumnIndex()) );
 //		gc.fillRectangle(cell.getBounds());
 //		event.detail &= ~SWT.SELECTED;
 	}
