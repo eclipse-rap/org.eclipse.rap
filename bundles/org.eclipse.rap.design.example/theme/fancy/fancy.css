@@ -728,7 +728,11 @@ Group-Label {
 /* Link */
 
 Link-Hyperlink {
-  color: #195d94;
+  color: #93c12b;
+}
+
+Link-Hyperlink:disabled {
+  color: #959595;
 }
 
 /* Progress Bar */
