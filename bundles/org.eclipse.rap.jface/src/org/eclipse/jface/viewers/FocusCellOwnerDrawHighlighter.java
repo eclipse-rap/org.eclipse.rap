@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.*;
  * the control into owner draw mode and highlighting the currently selected
  * cell. To make the use this class you should create the control with the
  * {@link SWT#FULL_SELECTION} bit set
- * 
+ *
  * <p>
  * <strong>RAP specific:</strong> despite its name that was taken as-is from
  * JFace/RCP to ease single-sourcing, this class does not use custom drawing
@@ -31,20 +31,20 @@ import org.eclipse.swt.widgets.*;
  * <br />
  * The focused cell is displayed using the selection colors of the system.
  * </p>
- * 
+ *
  * This class can be subclassed to configure how the coloring of the selected
  * cell.
- * 
+ *
  * @since 1.2
- * 
+ *
  */
 public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
-  
+
   private final ColumnViewer viewer;
-  
+
 	/**
 	 * Create a new instance which can be passed to a
-	 * 
+	 *
 	 * @param viewer
 	 *            the viewer
 	 */
@@ -76,7 +76,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 
 //			gc.setBackground(background);
 //			gc.setForeground(foreground);
-//			
+//
 //			if (onlyTextHighlighting(cell)) {
 //				Rectangle area = event.getBounds();
 //				Rectangle rect = cell.getTextBounds();
@@ -89,7 +89,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //			}
 			cell.setBackground( background );
 			cell.setForeground( foreground );
-			
+
 //			event.detail &= ~SWT.SELECTED;
 		}
 	}
@@ -98,10 +98,10 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //		GC gc = event.gc;
 //		gc.setBackground(cell.getViewerRow().getBackground(
 //				cell.getColumnIndex()));
-	  cell.setBackground( cell.getViewerRow().getBackground(cell.getColumnIndex()) );
+	  cell.setBackground( null );
 //		gc.setForeground(cell.getViewerRow().getForeground(
 //				cell.getColumnIndex()));
-	  cell.setForeground( cell.getViewerRow().getForeground(cell.getColumnIndex()) );
+	  cell.setForeground( null );
 //		gc.fillRectangle(cell.getBounds());
 //		event.detail &= ~SWT.SELECTED;
 	}
@@ -126,7 +126,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 ////					} else {
 ////						markFocusedCell(event, cell);
 ////					}
-//					
+//
 //					focusCellChanged( focusCell );
 //			}
 //
@@ -192,7 +192,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	/**
 	 * The color to use when rendering the background of the selected cell when
 	 * the control has the input focus
-	 * 
+	 *
 	 * @param cell
 	 *            the cell which is colored
 	 * @return the color or <code>null</code> to use the default
@@ -204,7 +204,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	/**
 	 * The color to use when rendering the foreground (=text) of the selected
 	 * cell when the control has the input focus
-	 * 
+	 *
 	 * @param cell
 	 *            the cell which is colored
 	 * @return the color or <code>null</code> to use the default
@@ -216,7 +216,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	/**
 	 * The color to use when rendering the foreground (=text) of the selected
 	 * cell when the control has <b>no</b> input focus
-	 * 
+	 *
 	 * @param cell
 	 *            the cell which is colored
 	 * @return the color or <code>null</code> to use the same used when
@@ -229,7 +229,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	/**
 	 * The color to use when rendering the background of the selected cell when
 	 * the control has <b>no</b> input focus
-	 * 
+	 *
 	 * @param cell
 	 *            the cell which is colored
 	 * @return the color or <code>null</code> to use the same used when
@@ -241,7 +241,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 
 	/**
 	 * Controls whether the whole cell or only the text-area is highlighted
-	 * 
+	 *
 	 * @param cell
 	 *            the cell which is highlighted
 	 * @return <code>true</code> if only the text area should be highlighted
@@ -250,7 +250,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //		return false;
 		return true;
 	}
-	
+
 	 protected void init() {
     ColumnViewerEditorActivationListener listener
       = new ColumnViewerEditorActivationListener() {
