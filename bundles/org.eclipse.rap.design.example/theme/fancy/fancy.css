@@ -630,7 +630,7 @@ Composite.compGray {
   background-color: rgb( 252, 252, 252 );
 }
 
-Combo, Spinner, DateTime, Tree {
+Spinner, DateTime, Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
@@ -677,18 +677,37 @@ ExpandItem-Button:expanded:hover {
   background-image: url( /theme/business/icons/expanditem-collapse-hover.png );
 }
 
-/* Combo, Spinner, DateTime */
+/* Combo */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
-Combo, CCombo[BORDER], Spinner[BORDER], DateTime[BORDER] {
+
+Combo, CCombo {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: rgb( 252, 252, 252 );
 }
 
-Combo-Button, CCombo-Button, Spinner-UpButton, Spinner-DownButton, DateTime-UpButton, DateTime-DownButton {
+Combo-Button:hover, CCombo-Button:hover {
   background-color: transparent;
   border: none;
+  background-image: url( /theme/fancy/icons/datetime-dropdown-hover.png );
+  width: 18px;
 }
+
+Combo-Button, CCombo-Button {
+  background-color: transparent;
+  border: none;
+  background-image: url( /theme/fancy/icons/datetime-dropdown.png );
+  width: 18px;
+}
+
+Combo-List {
+  border: 1px solid #c1c1c1;
+  border-radius: 0px 0px 2px 2px;
+}
+
+/* Spinner */
 
 Spinner-UpButton, DateTime-UpButton {
   background-image: url( /theme/fancy/icons/chevron-up-small.png );
@@ -697,16 +716,6 @@ Spinner-UpButton, DateTime-UpButton {
 Spinner-DownButton, DateTime-DownButton {
   background-image: url( /theme/fancy/icons/chevron-down-small.png );
   /* background-color: #c1c1c1; */
-}
-
-Combo-Button:hover, CCombo-Button:hover,
-Spinner-UpButton:hover, Spinner-DownButton:hover,
-DateTime-UpButton:hover, DateTime-DownButton:hover {
-  background-color: #e2e2e2;
-}
-
-Combo-Button, CCombo-Button {
-  background-image: url( /theme/fancy/icons/chevron-down.png );
 }
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
