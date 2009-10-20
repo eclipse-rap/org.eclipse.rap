@@ -1185,7 +1185,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [rh] not yet rendered in LCA
   public void setSelectionForeground( final Color color ) {
     checkWidget();
     selectionForeground = color;

@@ -412,6 +412,9 @@ public class CTabFolder_Test extends TestCase {
       display.getSystemColor( SWT.COLOR_RED )
     };
     int[] percents = new int[] { 50, 100 };
+    folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    assertEquals( display.getSystemColor( SWT.COLOR_BLUE ),
+                  folderAdapter.getUserSelectionBackground() );
     folder.setSelectionBackground( colors, percents );
     IWidgetGraphicsAdapter gfxAdapter
       = folderAdapter.getUserSelectionBackgroundGradient();
@@ -426,6 +429,8 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( percents[ 1 ], gfxPercents[ 2 ] );
 
     folder.setSelectionBackground( null, null );
+    // resetting background gradient also resets background color
+    assertNull( folderAdapter.getUserSelectionBackground() );
     gfxAdapter = folderAdapter.getUserSelectionBackgroundGradient();
     gfxColors = gfxAdapter.getBackgroundGradientColors();
     gfxPercents = gfxAdapter.getBackgroundGradientPercents();

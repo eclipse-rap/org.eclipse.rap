@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
@@ -209,7 +208,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writeMinMaxState( tabFolder );
     writeListener( tabFolder );
     writeChevron( tabFolder );
-    writeColors( tabFolder );
+    writeSelectionColors( tabFolder );
     writeSelectionBgImage( tabFolder );
     writeSelectionBgGradient( tabFolder );
     writeBorderVisible( tabFolder );
@@ -421,7 +420,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeColors( final CTabFolder tabFolder )
+  private static void writeSelectionColors( final CTabFolder tabFolder )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
