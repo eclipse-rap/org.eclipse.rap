@@ -630,7 +630,7 @@ Composite.compGray {
   background-color: rgb( 252, 252, 252 );
 }
 
-Spinner, DateTime, Tree {
+DateTime, Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
@@ -709,14 +709,39 @@ Combo-List {
 
 /* Spinner */
 
-Spinner-UpButton, DateTime-UpButton {
-  background-image: url( /theme/fancy/icons/chevron-up-small.png );
+Spinner {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
+  padding: 1px 2px;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
 }
 
-Spinner-DownButton, DateTime-DownButton {
-  background-image: url( /theme/fancy/icons/chevron-down-small.png );
-  /* background-color: #c1c1c1; */
+Spinner-DownButton {
+  background-image: url( /theme/fancy/icons/spinner-down.png );
+  width: 18px;
+  background-color: transparent;
+  border: 1px solid #a4a4a4;
 }
+
+Spinner-DownButton:hover {
+  background-image: url( /theme/fancy/icons/spinner-down-hover.png );
+  background-color: #e2e2e2;
+}
+
+Spinner-UpButton {
+  background-image: url( /theme/fancy/icons/spinner-up.png );
+  width: 18px;
+  background-color: transparent;
+  border: 1px solid #a4a4a4;
+}
+
+Spinner-UpButton:hover {
+  background-image: url( /theme/fancy/icons/spinner-up-hover.png );
+  background-color: #e2e2e2;
+}
+
+/* DateTime */
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
   background-color: #D2D2D2;
