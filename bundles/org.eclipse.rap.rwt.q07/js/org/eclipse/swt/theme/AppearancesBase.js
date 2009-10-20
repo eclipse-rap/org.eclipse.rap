@@ -1383,9 +1383,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "CTabItem", "font" );
       result.textColor = tv.getCssColor( "CTabItem", "color" );
-      result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       return result;
     }
   },
@@ -1394,8 +1393,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.backgroundColor = "undefined";
-      result.textColor = "undefined";
+      result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
+      var color = tv.getCssColor( "CTabFolder", "border-color" );
       if( states.rwt_BORDER ) {
         var color = tv.getCssColor( "CTabFolder", "border-color" );
         result.border = new qx.ui.core.Border( 1, "solid", color );
@@ -1408,17 +1407,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "ctabfolder-frame" : {
     style: function( states ) {
-      // TODO [if] This is quick fix to get the backgroud color of selected item
-      states.selected = true;
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( !states.rwt_FLAT ) {
+        // get the background color for selected items
+        var tv = new org.eclipse.swt.theme.ThemeValues( { "selected": true } );
         var color = tv.getCssColor( "CTabItem", "background-color" );
         result.border = new qx.ui.core.Border( 2, "solid", color );
       } else {
         result.border = "undefined";
       }
-      result.backgroundColor = tv.getCssColor( "*", "background-color" );
+      result.backgroundColor = "undefined";
       return result;
     }
   },
@@ -1440,37 +1438,36 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "ctab-item" : {
-    include: "atom",
-
     style: function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.cursor = "default";
       var padding = tv.getCssBoxDimensions( "CTabItem", "padding" );
       result.paddingLeft = padding[ 3 ];
       result.paddingRight = padding[ 1 ];
       result.spacing = tv.getCssDimension( "CTabItem", "spacing" );
+      result.textColor = tv.getCssColor( "CTabItem", "color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
-      result.border = new qx.ui.core.Border();
-      result.border.setRight( 1, "solid", color );
+      result.border = new qx.ui.core.Border( 0, "solid", color );
+      result.border.setWidthRight( 1 );
       if( states.selected ) {
-        result.textColor = tv.getCssColor( "CTabItem", "color" );
+        if( states.barTop ) {
+          result.border.setWidthTop( 1 );
+        } else {
+          result.border.setWidthBottom( 1 );
+        }
+      } else if( states.firstItem && states.rwt_BORDER ) {
+        result.border.setWidthLeft( 1 );
+      }
+      if( states.selected ) {
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
         result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
         result.backgroundGradient = tv.getCssGradient( "CTabItem",
-                                                     "background-image" );
-        if( states.barTop ) {
-          result.border.setTop( 1, "solid", color );
-        } else {
-          result.border.setBottom( 1, "solid", color );
-        }
+                                                       "background-image" );
       } else {
-        result.textColor = "undefined";
         result.backgroundColor = "undefined";
         result.backgroundImage = null;
         result.backgroundGradient = null;
-      }
-      if( states.firstItem && states.rwt_BORDER ) {
-        result.border.setLeft( 1, "solid", color );
       }
       return result;
     }

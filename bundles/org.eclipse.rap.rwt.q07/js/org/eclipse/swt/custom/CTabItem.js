@@ -18,6 +18,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     if( parent.classname != "org.eclipse.swt.custom.CTabFolder" ) {
       this.error( "illegal parent, must be a CTabFolder" );
     }
+    this._parent = parent;
     this.setAppearance( "ctab-item" );
     this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
@@ -32,13 +33,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._showClose = false;
     this._canClose = canClose;
     this._unselectedCloseVisible = true;
-    this._selectionBackground = parent.getSelectionBackground();
-    this._selectionForeground = parent.getSelectionForeground();
-    this._selectionBackgroundImage = parent.getSelectionBackgroundImage();
-    this._selectionBackgroundGradientColors
-      = parent.getSelectionBackgroundGradientColors();
-    this._selectionBackgroundGradientPercents
-      = parent.getSelectionBackgroundGradientPercents();
+    this.updateForeground();
+    this.updateBackground();
+    this.updateBackgroundImage();
+    this.updateBackgroundGradient();
     this.setTabPosition( parent.getTabPosition() );
     // TODO [rst] change when a proper state inheritance concept exists
     if( parent.hasState( "rwt_BORDER" ) ) {
@@ -97,10 +95,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       } else {
         this.removeState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
       }
-      this._updateSelectionForeground();
-      this._updateSelectionBackground();
-      this._updateSelectionBackgroundImage();
-      this._updateSelectionBackgroundGradient();
+      this.updateForeground();
+      this.updateBackground();
+      this.updateBackgroundImage();
+      this.updateBackgroundGradient();
       this._updateCloseButton();
     },
 
@@ -118,65 +116,49 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._updateCloseButton();
     },
 
-    // transparent not supported, null resets color
-    setSelectionForeground : function( color ) {
-      this._selectionForeground = color;
-      this._updateSelectionForeground();
-    },
-
-    // transparent not supported, null resets color
-    setSelectionBackground : function( color ) {
-      this._selectionBackground = color;
-      this._updateSelectionBackground();
-    },
-    
-    setSelectionBackgroundImage : function( image ) {
-      this._selectionBackgroundImage = image;
-      this._updateSelectionBackgroundImage();
-    },
-    
-    setSelectionBackgroundGradient : function( colors, percents ) {
-      this._selectionBackgroundGradientColors = colors;
-      this._selectionBackgroundGradientPercents = percents;
-      this._updateSelectionBackgroundGradient();
-    },
-
-    _updateSelectionForeground : function() {
-      if( this.isSelected() && this._selectionForeground != null ) {
-        this.setTextColor( this._selectionForeground );
+    updateForeground : function() {
+      var color = this.isSelected()
+                  ? this._parent.getSelectionForeground()
+                  : this._parent.getTextColor();
+      if( color != null ) {
+        this.setTextColor( color );
       } else {
         this.resetTextColor();
       }
     },
 
-    _updateSelectionBackground : function() {
-      if( this.isSelected() && this._selectionBackground != null ) {
-        this.setBackgroundColor( this._selectionBackground );
+    updateBackground : function() {
+      var color = this.isSelected()
+                  ? this._parent.getSelectionBackground()
+                  : null;
+      if( color != null ) {
+        this.setBackgroundColor( color );
       } else {
         this.resetBackgroundColor();
       }
     },
-    
-    _updateSelectionBackgroundImage : function() {
-      if( this.isSelected() && this._selectionBackgroundImage != null ) {
-        this.setBackgroundImage( this._selectionBackgroundImage );
+
+    updateBackgroundImage : function() {
+      var image = null;
+      if( this.isSelected() ) {
+        image = this._parent.getSelectionBackgroundImage();
+      }
+      if( image != null ) {
+        this.setBackgroundImage( image );
       } else {
         this.resetBackgroundImage();
       }
     },
-    
-    _updateSelectionBackgroundGradient : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      if(    this.isSelected()
-          && this._selectionBackgroundGradientColors != null
-          && this._selectionBackgroundGradientPercents != null )
-      {
-        widgetManager.setBackgroundGradient( this, 
-                                             this._selectionBackgroundGradientColors,
-                                             this._selectionBackgroundGradientPercents );
-      } else {
-        widgetManager.setBackgroundGradient( this, null, null );
+
+    updateBackgroundGradient : function() {
+      var colors = null;
+      var percents = null;
+      if( this.isSelected() ) {
+        colors = this._parent.getSelectionBackgroundGradientColors();
+        percents = this._parent.getSelectionBackgroundGradientPercents();
       }
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      widgetManager.setBackgroundGradient( this, colors, percents );
     },
 
     _updateCloseButton : function() {

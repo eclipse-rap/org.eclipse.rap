@@ -5,6 +5,7 @@ CTabFolder {
 }
 
 CTabItem {
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   color: black;
   background-color: rgb( 248, 248, 255 );
   background-image: none;
@@ -15,4 +16,9 @@ CTabItem {
 CTabItem:selected {
   color: black;
   background-color: rgb( 217, 227, 243 );
+}
+
+/* Do not gray out disabled CTabItems, this is SWT behavior */
+CTabItem:disabled {
+  color: black;
 }
