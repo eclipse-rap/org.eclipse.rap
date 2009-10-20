@@ -630,7 +630,7 @@ Composite.compGray {
   background-color: rgb( 252, 252, 252 );
 }
 
-DateTime, Tree {
+Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
@@ -742,6 +742,99 @@ Spinner-UpButton:hover {
 }
 
 /* DateTime */
+
+DateTime {
+  border: 1px solid #a4a4a4;
+  padding: 1px 2px;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-radius: 2px 2px 2px 2px;
+}
+
+DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
+  background-color: #abe033;
+  color: white;
+}
+
+DateTime-Calendar-Day:otherMonth {
+  background-color: transparent;
+  color: #464a4e;
+}
+
+DateTime-Calendar-Day:hover {
+  background-color: #e9f3d2;
+}
+
+DateTime-Calendar-Navbar {
+  background-color: #abe033;
+  color: white;
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+DateTime-Calendar-PreviousMonthButton {
+  background-image: url( /theme/fancy/icons/lastMonth.png );
+}
+
+DateTime-Calendar-PreviousMonthButton:hover {
+  background-image: url( /theme/fancy/icons/lastMonth-hover.png );
+}
+
+DateTime-Calendar-NextMonthButton {
+  background-image: url( /theme/fancy/icons/nextMonth.png );
+}
+
+DateTime-Calendar-NextMonthButton:hover {
+  background-image: url( /theme/fancy/icons/nextMonth-hover.png );
+}
+
+DateTime-Calendar-PreviousYearButton {
+  background-image: url( /theme/fancy/icons/lastYear.png );
+}
+
+DateTime-Calendar-PreviousYearButton:hover {
+  background-image: url( /theme/fancy/icons/lastYear-hover.png );
+}
+
+DateTime-Calendar-NextYearButton {
+  background-image: url( /theme/fancy/icons/nextYear.png );
+}
+
+DateTime-Calendar-NextYearButton:hover {
+  background-image: url( /theme/fancy/icons/nextYear-hover.png );
+}
+
+DateTime-DownButton {
+  background-image: url( /theme/fancy/icons/spinner-down.png );
+  width: 18px;
+  background-color: transparent;
+  border: 1px solid #a4a4a4;
+}
+
+DateTime-DownButton:hover {
+  background-image: url( /theme/fancy/icons/spinner-down-hover.png );
+  background-color: #e2e2e2;
+}
+
+DateTime-UpButton {
+  background-image: url( /theme/fancy/icons/spinner-up.png );
+  width: 18px;
+  background-color: transparent;
+  border: 1px solid #a4a4a4;
+}
+
+DateTime-UpButton:hover {
+  background-image: url( /theme/fancy/icons/spinner-up-hover.png );
+  background-color: #e2e2e2;
+}
+
+DateTime-DropDownButton {
+  background-image: url( /theme/fancy/icons/datetime-dropdown.png );
+  width: 18px;
+}
+
+DateTime-DropDownButton:hover {
+  background-image: url( /theme/fancy/icons/datetime-dropdown-hover.png );
+  width: 18px;
+}
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
   background-color: #D2D2D2;
