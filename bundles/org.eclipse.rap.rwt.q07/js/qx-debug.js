@@ -8207,9 +8207,7 @@ if(!(this._lastUpDownType[keyCode]=="keydown"&&type=="keydown")){this._idealKeyH
 charCode,
 type,
 domEvent);
-}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||
-keyCode==
-8||keyCode==9){this._idealKeyHandler(keyCode,
+}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||keyCode==8||keyCode==9){this._idealKeyHandler(keyCode,
 charCode,
 "keypress",
 domEvent);
@@ -11036,18 +11034,14 @@ defer:function(statics){statics.__init();
 /* ID: qx.bom.element.Overflow */
 qx.Class.define("qx.bom.element.Overflow",
 {statics:{_compile:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(prop,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(prop,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }return "overflow:"+value+";";
 }:
 function(prop,
 value){return prop+":"+value+";";
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(prop,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(prop,
 value){return "overflow:"+value+";";
 }:
 function(prop,
@@ -11063,9 +11057,7 @@ compileY:function(value){return this._compile("overflow-y",
 value);
 },
 getX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11079,9 +11071,7 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11100,18 +11090,14 @@ mode,
 false);
 }}),
 setX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowX=value;
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11121,15 +11107,11 @@ value){element.style.overflowX=value;
 value){element.style.overflowX=value;
 }}),
 resetX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowX="";
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11138,9 +11120,7 @@ value){element.style.overflowX="";
 "default":function(element){element.style.overflowX="";
 }}),
 getY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11154,9 +11134,7 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11175,18 +11153,14 @@ mode,
 false);
 }}),
 setY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element,
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
 value){if(value==="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowY=value;
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11196,15 +11170,11 @@ value){element.style.overflowY=value;
 value){element.style.overflowY=value;
 }}),
 resetY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<
-1.8?
-function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowY="";
 },
-"opera":qx.bom.client.Engine.VERSION<
-9.5?
-function(element,
+"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11576,9 +11546,7 @@ throw msg;
 },
 matchesKeyEvent:function(e){var key=this.__key||this.getKeyIdentifier();
 if(!key&&!this.getKeyCode()){return ;
-}if((this.__modifier.Shift&&!e.isShiftPressed())||
-(this.__modifier.Control&&!e.isCtrlPressed())||
-(this.__modifier.Alt&&!e.isAltPressed())){return false;
+}if((this.__modifier.Shift&&!e.isShiftPressed())||(this.__modifier.Control&&!e.isCtrlPressed())||(this.__modifier.Alt&&!e.isAltPressed())){return false;
 }
 if(key){if(key==e.getKeyIdentifier()){return true;
 }}else{if(this.getKeyCode()==e.getKeyCode()){return true;
@@ -16636,15 +16604,14 @@ this,
 "default":function(){this.base(arguments);
 this._centerFieldVertically();
 }}),
-_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=this.getInnerHeight();
+_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=qx.html.Dimension.getAreaHeight(this.getElement());
 var inputElementHeight=qx.html.Dimension.getBoxHeight(this._inputElement);
 if(inputElementHeight!=0){if(qx.core.Variant.isSet("qx.client",
 "mshtml")){inputElementHeight-=2;
 }var top=(innerHeight-inputElementHeight)/2-1;
 if(top<0){top=0;
 }top=Math.floor(top);
-this._inputElement.style.position="relative";
-this._inputElement.style.top=top+"px";
+this.setPaddingTop(top);
 }}},
 _firstInputFixApplied:false,
 _textOnFocus:null,
@@ -17384,11 +17351,7 @@ if(vTarget&&vTarget.getMenu&&vTarget.getMenu()){continue;
 continue;
 }var isMouseDown=vEventName=="mousedown";
 var isMouseUp=vEventName=="mouseup";
-if(vMenu.getOpener()!==
-vTarget&&
-(vTarget&&
-(!vMenu.isSubElement(vTarget)&&isMouseDown)||
-(vMenu.isSubElement(vTarget,
+if(vMenu.getOpener()!==vTarget&&(vTarget&&(!vMenu.isSubElement(vTarget)&&isMouseDown)||(vMenu.isSubElement(vTarget,
 true)&&isMouseUp)||(!isMouseDown&&!isMouseUp))){vMenu.hide();
 continue;
 }}}}});
