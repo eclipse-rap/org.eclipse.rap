@@ -542,10 +542,6 @@ Button-CheckIcon:selected {
   background-image: url( /theme/fancy/icons/check-selected.png );
 }
 
-Button-CheckIcon:grayed {
-  background-image: url( /theme/fancy/icons/check-grayed.png );
-}
-
 Button-CheckIcon:hover {
   background-image: url( /theme/fancy/icons/check-unselected-hover.png );
 }
@@ -554,7 +550,11 @@ Button-CheckIcon:selected:hover {
   background-image: url( /theme/fancy/icons/check-selected-hover.png );
 }
 
-Button-CheckIcon:grayed:hover {
+Button-CheckIcon:selected:grayed {
+  background-image: url( /theme/fancy/icons/check-grayed.png );
+}
+
+Button-CheckIcon:selected:grayed:hover {
   background-image: url( /theme/fancy/icons/check-grayed-hover.png );
 }
 
