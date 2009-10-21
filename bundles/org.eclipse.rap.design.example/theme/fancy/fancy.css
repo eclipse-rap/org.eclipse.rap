@@ -681,12 +681,19 @@ ExpandItem-Button:expanded:hover {
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
 
-Combo, CCombo {
+CCombo {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: rgb( 252, 252, 252 );
 }
 
-Combo[BORDER], CCombo[BORDER] {
+Combo {
+  border: 1px solid #c1c1c1;
+  border-radius: 2px;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: rgb( 252, 252, 252 );
+}
+
+CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
