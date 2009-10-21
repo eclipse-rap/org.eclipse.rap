@@ -16604,14 +16604,15 @@ this,
 "default":function(){this.base(arguments);
 this._centerFieldVertically();
 }}),
-_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=qx.html.Dimension.getAreaHeight(this.getElement());
+_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=qx.html.Dimension.getAreaHeight(this._getTargetNode());
 var inputElementHeight=qx.html.Dimension.getBoxHeight(this._inputElement);
 if(inputElementHeight!=0){if(qx.core.Variant.isSet("qx.client",
 "mshtml")){inputElementHeight-=2;
 }var top=(innerHeight-inputElementHeight)/2-1;
 if(top<0){top=0;
 }top=Math.floor(top);
-this.setPaddingTop(top);
+this.setStyleProperty("paddingTop",
+top+"px");
 }}},
 _firstInputFixApplied:false,
 _textOnFocus:null,
