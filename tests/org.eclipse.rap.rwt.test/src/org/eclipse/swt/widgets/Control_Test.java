@@ -786,4 +786,18 @@ public class Control_Test extends TestCase {
     assertNotNull( monitor );
     assertEquals( display.getPrimaryMonitor(), monitor );
   }
+  
+  public void testUntypedHelpListener() {
+    final Event[] untypedHelpEvent = { null }; 
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Control control = new Shell( display );
+    control.addListener( SWT.Help, new Listener() {
+      public void handleEvent( final Event event ) {
+        untypedHelpEvent[ 0 ] = event;
+      }
+    } );
+    control.notifyListeners( SWT.Help, new Event() );
+    assertNotNull( untypedHelpEvent[ 0 ] );
+  }
 }

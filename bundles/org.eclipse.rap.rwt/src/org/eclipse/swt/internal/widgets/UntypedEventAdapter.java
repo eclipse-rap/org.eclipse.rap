@@ -299,6 +299,9 @@ public final class UntypedEventAdapter
       case SWT.Traverse:
         TraverseEvent.addListener( widget, ( TraverseListener )this );
       break;
+      case SWT.Help:
+        HelpEvent.addListener( widget, this );
+      break;
       default:
         validEventType = false;
     }
@@ -381,6 +384,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.Traverse:
         TraverseEvent.removeListener( widget, ( TraverseListener )this );
+      break;
+      case SWT.Help:
+        HelpEvent.removeListener( widget, this );
       break;
       default:
         validEventType = false;
@@ -475,6 +481,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.Traverse:
         typedEvent = new TraverseEvent( event );
+      break;
+      case SWT.Help:
+        typedEvent = new HelpEvent( event );
       break;
     }
     if( typedEvent != null ) {
