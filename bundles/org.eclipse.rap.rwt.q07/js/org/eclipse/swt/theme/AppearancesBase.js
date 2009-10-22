@@ -1456,7 +1456,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         } else {
           result.border.setWidthBottom( 1 );
         }
-      } else if( states.firstItem && states.rwt_BORDER ) {
+      }
+      if( states.firstItem && states.rwt_BORDER ) {
         result.border.setWidthLeft( 1 );
       }
       if( states.selected ) {
