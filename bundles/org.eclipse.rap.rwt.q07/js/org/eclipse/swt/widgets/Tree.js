@@ -48,8 +48,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     this._tree.setUseDoubleClick( false );  // true supresses dblclick events !
     this._tree.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
 
-    // TODO [rh] this is only to make the tree focusable at all
-    this._tree.setTabIndex( 1 );
     var manager = this._tree.getManager();
     manager.setMultiSelection( qx.lang.String.contains( style, "multi" ) );
     manager.addEventListener( "changeSelection", this._onChangeSelection, this );
@@ -149,9 +147,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         }
     },
     
-    focus : function()
-    {
+    focus : function() {
       this._tree.focus();
+    },
+    
+    setTabIndex : function( value ) {
+      this._tree.setTabIndex( value );
+    },
+    
+    setUserData : function( key, value ) {
+      this.base( arguments, key, value );
+      if( key === "id" ) {
+        this._tree.setUserData( key, value );
+      }
     },
 
     // TODO [rst] Find a generic solution for state inheritance
