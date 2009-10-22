@@ -689,8 +689,6 @@ Combo {
 CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: rgb( 252, 252, 252 );
 }
 
 Combo-Button:hover, CCombo-Button:hover {
