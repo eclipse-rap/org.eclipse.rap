@@ -2235,7 +2235,6 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   private CTabItem getInternalSelectedItem() {
     CTabItem result = null;
     if( internalSelectedIndex != -1 ) {
-      System.out.println("internalSelectedIndex: "+internalSelectedIndex);
       result = ( CTabItem )itemHolder.getItem( internalSelectedIndex );
     }
     return result;
