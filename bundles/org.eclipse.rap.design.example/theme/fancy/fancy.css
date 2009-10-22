@@ -580,7 +580,7 @@ Button-RadioIcon:selected:hover {
 Menu {
   color: rgb( 0, 89, 165 );
   background-color: white;
-  border: 1px rgb( 0, 89, 165 );
+  border: 1px #abe033;
 }
 
 /* Selection color */
