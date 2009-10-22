@@ -75,7 +75,6 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         case "End":
         case "Home":
           this._blockScrolling = false;
-          evt.preventDefault();
           evt.stopPropagation();
       }
     },
