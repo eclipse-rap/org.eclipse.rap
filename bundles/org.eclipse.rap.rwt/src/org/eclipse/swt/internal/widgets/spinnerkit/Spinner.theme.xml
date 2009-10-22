@@ -70,6 +70,9 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
+          
+      <state name="disabled"
+          description="Applies to disabled spinner up button." />
 
     </element>
 
@@ -100,6 +103,9 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
+          
+      <state name="disabled"
+          description="Applies to disabled spinner down button." />
 
     </element>
 

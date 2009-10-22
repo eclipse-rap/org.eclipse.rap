@@ -27,6 +27,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     this._textfield.addEventListener( "keydown", this._onKeyDown, this );
     this._textfield.setTabIndex( -1 );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this._upbutton.addEventListener( "changeEnabled",
+                                     this._onButtonChangeEnabled,
+                                     this );
+    this._downbutton.addEventListener( "changeEnabled",
+                                       this._onButtonChangeEnabled,
+                                       this );
   },
 
   destruct : function() {
@@ -35,6 +41,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     this._textfield.removeEventListener( "blur", this._onChangeValue, this );
     this._textfield.removeEventListener( "keydown", this._onKeyDown, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this._upbutton.removeEventListener( "changeEnabled",
+                                        this._onButtonChangeEnabled,
+                                        this );
+    this._downbutton.removeEventListener( "changeEnabled",
+                                          this._onButtonChangeEnabled,
+                                          this );
   },
 
   members : {
@@ -102,6 +114,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       var enabled = evt.getValue();
       this._upbutton.setEnabled( enabled && this.getValue() < this.getMax() );
       this._downbutton.setEnabled( enabled && this.getValue() > this.getMin() );
+    },
+    
+    _onButtonChangeEnabled : function( evt ) {
+      if( !this._upbutton.isEnabled() ) {
+        this._upbutton.addState( "disabled" );
+      } else {
+        this._upbutton.removeState( "disabled" );
+      }
+      if( !this._downbutton.isEnabled() ) {
+        this._downbutton.addState( "disabled" );
+      } else {
+        this._downbutton.removeState( "disabled" );
+      }
     },
 
     _onKeyDown : function( event ) {
