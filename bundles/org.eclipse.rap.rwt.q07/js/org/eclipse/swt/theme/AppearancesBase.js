@@ -281,7 +281,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font : tv.getCssFont( "*", "font" ),
         overflow : "hidden",
-        border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
+        border : tv.getCssBorder( "ToolBar", "border" ),
         textColor : tv.getCssColor( "ToolBar", "color" ),
         backgroundColor : tv.getCssColor( "ToolBar", "background-color" ),
         backgroundGradient : tv.getCssGradient( "ToolBar", "background-image" ),
@@ -1481,7 +1481,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( states.over ) {
         result.backgroundColor = "white";
-        result.border = "ctabfolder.button.border";
+        var color = tv.getCssColor( "CTabFolder", "border-color" );
+        result.border = new qx.ui.core.Border( 1, "solid", color );
       } else {
         result.backgroundColor = "undefined";
         result.border = "undefined";

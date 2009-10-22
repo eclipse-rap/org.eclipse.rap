@@ -490,7 +490,8 @@ public class ToolItem extends Item {
         left += parent.getToolBarPadding().x;
       }      
       int innerParentHeight =   parent.getSize().y 
-                              - parent.getToolBarPadding().height;
+                              - parent.getToolBarPadding().height
+                              - parent.getBorderWidth() * 2;
       top +=   parent.getToolBarPadding().y 
              + innerParentHeight / 2 
              - height / 2;

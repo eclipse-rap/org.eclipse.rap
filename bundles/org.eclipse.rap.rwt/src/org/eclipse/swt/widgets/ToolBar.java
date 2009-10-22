@@ -284,7 +284,8 @@ public class ToolBar extends Composite {
   }
 
   public int getBorderWidth() {
-    return ( style & SWT.BORDER ) != 0 ? 1 : 0;
+    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
+    return adapter.getBorderWidth( this );
   }
   
   Rectangle getToolBarPadding() { 

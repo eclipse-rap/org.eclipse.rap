@@ -85,17 +85,6 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
       colorRight : "widget.shadow"
     },
 
-    // -- toolbar --
-
-    "toolbar.BORDER.border" : {
-      width : 1,
-      color : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
-    },
-
-    "toolbar.border" : {
-      width : 0
-    },
-
     // -- tree --
     "tree.column.border" : {
       width : [ 0, 1, 2, 0 ],
@@ -135,18 +124,6 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
       widthRight : 1,
       colorLeft : "widget.highlight",
       colorRight : "widget.shadow"
-    },
-
-    // -- ctabfolder --
-
-    "ctabfolder.border" : {
-      width : 1,
-      color : "#c0c0c0"
-    },
-
-    "ctabfolder.button.border" : {
-      width : 1,
-      color : "#c0c0c0"
     }
   }
 } );

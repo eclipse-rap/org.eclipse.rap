@@ -31,8 +31,14 @@
     <property name="spacing"
         description="Spacing between the tool items" />
 
+    <property name="border"
+        description="Border for tool bar" />
+
     <state name="disabled"
         description="Applies to disabled tool bars" />
+        
+    <style name="BORDER"
+        description="Applies when style BORDER is set" />
 
     <element name="ToolItem"
         description="Items of ToolBar controls">
