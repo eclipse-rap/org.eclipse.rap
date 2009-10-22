@@ -2153,6 +2153,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     itemHolder.insert( item, index );
     if( selectedIndex >= index ) {
       selectedIndex++;
+      internalSelectedIndex++;
     }
     int[] newPriority = new int[ priority.length + 1 ];
     int next = 0, priorityIndex = priority.length;
@@ -2221,6 +2222,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
           }
         } else if( selectedIndex > index ) {
           selectedIndex--;
+          internalSelectedIndex--;
         }
       }
       updateItems();
@@ -2233,6 +2235,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   private CTabItem getInternalSelectedItem() {
     CTabItem result = null;
     if( internalSelectedIndex != -1 ) {
+      System.out.println("internalSelectedIndex: "+internalSelectedIndex);
       result = ( CTabItem )itemHolder.getItem( internalSelectedIndex );
     }
     return result;
