@@ -3688,6 +3688,7 @@ construct:function(){this.base(arguments);
 members:{appendLogEvent:function(evt){if(typeof console!='undefined'){var log=qx.log.Logger;
 var msg=this.formatLogEvent(evt);
 switch(evt.level){case log.LEVEL_DEBUG:if(console.debug){console.debug(msg);
+}else if(console.log){console.log(msg);
 }break;
 case log.LEVEL_INFO:if(console.info){console.info(msg);
 }break;
@@ -3705,7 +3706,7 @@ default:if(console.error){console.error(msg);
 qx.Class.define("qx.log.appender.Native",
 {extend:qx.log.appender.Abstract,
 construct:function(){this.base(arguments);
-if(typeof console!='undefined'&&console.debug&&!console.emu){this._appender=new qx.log.appender.FireBug;
+if(typeof console!='undefined'&&(console.debug||console.log)&&!console.emu){this._appender=new qx.log.appender.FireBug;
 }else{this._appender=new qx.log.appender.Window;
 }},
 members:{appendLogEvent:function(evt){if(this._appender){return this._appender.appendLogEvent(evt);
