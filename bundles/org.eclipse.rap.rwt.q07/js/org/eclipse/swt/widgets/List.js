@@ -166,6 +166,26 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       this._applyTopIndex( value );
     },
     
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        var items = this.getManager().getItems();
+        for( var i = 0; i < items.length; i++ ) {
+        	items[ i ].addState( state );
+        }
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        var items = this.getManager().getItems();
+        for( var i = 0; i < items.length; i++ ) {
+          items[ i ].removeState( state );
+        }
+      }
+    },
+
     _applyTopIndex : function( newIndex ) {
       var items = this.getManager().getItems();
       if( items.length > 0 && items[ 0 ].isCreated() ) {
