@@ -94,12 +94,25 @@ qx.Class.define( "org.eclipse.swt.Application", {
                             org.eclipse.swt.Application._onResize );
       doc.addEventListener( "keydown",
                             org.eclipse.swt.Application._onKeyDown );
+      // Observe browser history
+      qx.client.History.getInstance().addEventListener("request", function(e) {
+          var state = e.getData();
+          // application specific state update
+          this.setApplicationState(state);
+        }, this);
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
       req.send();
     },
-    
+
+    setApplicationState : function(state) {
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( "qx.client.History.request", "true" );
+        req.addParameter( "qx.client.History.state", state );
+        req.send();
+      },
+
     close : function( evt ) {
       this.base( arguments );
       return this._exitConfirmation;

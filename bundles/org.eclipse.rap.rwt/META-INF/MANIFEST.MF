@@ -18,6 +18,7 @@ Export-Package: org.apache.batik.css.parser;x-internal:=true,
  org.apache.batik.util.io;x-internal:=true,
  org.eclipse.rwt,
  org.eclipse.rwt.branding,
+ org.eclipse.rwt.events,
  org.eclipse.rwt.graphics,
  org.eclipse.rwt.internal;
   x-friends:="org.eclipse.rap.w4t,

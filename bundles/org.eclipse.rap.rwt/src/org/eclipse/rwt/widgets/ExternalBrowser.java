@@ -11,14 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -27,48 +24,6 @@ import org.eclipse.swt.widgets.Display;
  * @since 1.0
  */
 public final class ExternalBrowser {
-
-  private static final class JSExecutor implements PhaseListener {
-
-    private static final long serialVersionUID = 1L;
-
-    private final Display display;
-    private String code;
-
-    private JSExecutor( final Display display ) {
-      this.display = display;
-      this.code = "";
-    }
-    
-    private void append( final String command ) {
-      code += command;
-    }
-
-    public void beforePhase( final PhaseEvent event ) {
-      // do nothing
-    }
-
-    public void afterPhase( final PhaseEvent event ) {
-      if( display == RWTLifeCycle.getSessionDisplay() ) {
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        HtmlResponseWriter writer = stateInfo.getResponseWriter();
-        try {
-          writer.write( code, 0, code.length() );
-        } catch( IOException e ) {
-          // TODO [rh] proper exception handling - think about adding throws
-          //      IOException to after/beforePhase as there are various places
-          //      like this
-          throw new RuntimeException( e );
-        } finally {
-          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
-        }
-      }
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.RENDER;
-    }
-  }
 
   /**
    * Style parameter (value 1&lt;&lt;1) indicating that the address combo and
@@ -93,9 +48,6 @@ public final class ExternalBrowser {
    * browsers.</p>
    */
   public static final int STATUS = 1 << 3;
-
-  private static final String JS_EXECUTOR 
-    = ExternalBrowser.class.getName() + "#jsExecutor";
 
   private static final String OPEN 
     = "org.eclipse.rwt.widgets.ExternalBrowser." 
@@ -133,7 +85,7 @@ public final class ExternalBrowser {
     if( id.length() == 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    executeJS( getOpenJS( id, url, style ) );
+    JSExecutor.executeJS( getOpenJS( id, url, style ) );
   }
   
   /**
@@ -159,7 +111,7 @@ public final class ExternalBrowser {
     if( id.length() == 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    executeJS( getCloseJS( id ) );
+    JSExecutor.executeJS( getCloseJS( id ) );
   }
 
   ///////////////////////////////
@@ -209,17 +161,6 @@ public final class ExternalBrowser {
     features.append( feature );
     features.append( "=" );
     features.append( enable ? 1 : 0 );
-  }
-
-  private static void executeJS( final String code ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JSExecutor jsExecutor = ( JSExecutor )stateInfo.getAttribute( JS_EXECUTOR );
-    if( jsExecutor == null ) {
-      jsExecutor = new JSExecutor( Display.getCurrent() );
-      LifeCycleFactory.getLifeCycle().addPhaseListener( jsExecutor );
-      stateInfo.setAttribute( JS_EXECUTOR, jsExecutor );
-    }
-    jsExecutor.append( code );
   }
 
   //////////////////

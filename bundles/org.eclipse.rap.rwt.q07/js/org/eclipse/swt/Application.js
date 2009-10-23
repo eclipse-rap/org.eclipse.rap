@@ -117,11 +117,23 @@ qx.Class.define( "org.eclipse.swt.Application", {
         doc.getElement().style.position = "absolute";      
         doc.setSelectable( true );
       }
+      // Observe browser history
+      var history = qx.client.History.getInstance();
+      history.addEventListener( "request", this._historyNavigated, this );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       org.eclipse.swt.Application._appendScrollBarSize();
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSend, this );
+      req.send();
+    },
+    
+    _historyNavigated : function( event ) {
+      var entryId = event.getData();
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );
+      req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", 
+                        entryId );
       req.send();
     },
     

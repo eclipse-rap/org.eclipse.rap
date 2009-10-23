@@ -99,8 +99,5 @@
             class="org.eclipse.rap.examples.internal.RedirectServlet">
       </servlet>
    </extension>
-   <extension
-         point="org.eclipse.rap.ui.layouts">
-   </extension>
 
 </plugin>

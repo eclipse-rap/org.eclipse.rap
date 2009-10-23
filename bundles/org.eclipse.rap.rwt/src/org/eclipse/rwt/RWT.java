@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
-
 package org.eclipse.rwt;
 
 import java.lang.reflect.*;
@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.widgets.BrowserHistory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.*;
@@ -289,7 +290,20 @@ public final class RWT {
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( LOCALE, locale );
   }
-  
+
+  /**
+   * Returns an instance if <code>IBrowserHistory</code> that provides support 
+   * for the browser's history.
+   * 
+   * @return the browser history support implementation
+   * @see IBrowserHistory
+   * @since 1.3
+   */
+  public static IBrowserHistory getBrowserHistory() {
+    Object instance = SessionSingletonBase.getInstance( BrowserHistory.class );
+    return ( IBrowserHistory )instance;
+  }
+
   private RWT() {
     // prevent instantiation
   }

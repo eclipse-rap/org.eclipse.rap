@@ -16,6 +16,8 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.rap.examples.internal.model.ExampleCategory;
 import org.eclipse.rap.examples.internal.model.ExamplesModel;
+import org.eclipse.rwt.*;
+import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FillLayout;
@@ -29,15 +31,21 @@ public class NavigationView extends ViewPart {
     = "org.eclipse.rap.examples.navigationView";
 
   private ExpandBar expandBar;
-  private Object selectedElement;
-  private SelectionListener listSelectionListener = new ListSelectionListener();
-  private SelectionProvider selectionProvider = new SelectionProvider();
+  private String selectedElement;
+  private final SelectionListener listSelectionListener;
+  private final SelectionProvider selectionProvider;
+
+  public NavigationView() {
+    listSelectionListener = new ListSelectionListener();
+    selectionProvider = new SelectionProvider();
+  }
 
   public void createPartControl( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     createExpandBar( parent );
     fillExpandBar( ExamplesModel.getInstance() );
     getSite().setSelectionProvider( selectionProvider );
+    initBrowserHistorySupport();
     initSelection();
     getSite().getShell().getDisplay().asyncExec( new Runnable() {
       public void run() {
@@ -109,7 +117,6 @@ public class NavigationView extends ViewPart {
     // ----
     item.setExpanded( true );
     list.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent e ) {
         ExpandItem[] items = expandBar.getItems();
         for( int i = 0; i < items.length; i++ ) {
@@ -125,46 +132,89 @@ public class NavigationView extends ViewPart {
     return item;
   }
 
+  private void initBrowserHistorySupport() {
+    IBrowserHistory history = RWT.getBrowserHistory();
+    history.addBrowserHistoryListener( new BrowserHistoryListener() {
+      public void navigated( final BrowserHistoryEvent event ) {
+        setSelection( event.entryId, true );
+      }
+    } );
+  }
+
   private void initSelection() {
     if( expandBar.getItemCount() > 0 ) {
       ExpandItem firstItem = expandBar.getItem( 0 );
       firstItem.setExpanded( true );
       List list = ( List )firstItem.getControl();
       list.setSelection( 0 );
-      setSelection( list.getItem( 0 ) );
-//      selectionProvider.fireSelectionChanged();
+      setSelection( list.getItem( 0 ), false );
     }
   }
 
-  private void setSelection( final Object newSelection ) {
-    boolean changed = selectedElement == null
-                      ? newSelection != null
-                      : !selectedElement.equals( newSelection );
+  private void setSelection( final String newSelection, 
+                             final boolean updateControl )
+  {
+    boolean changed;
+    if( selectedElement == null ) {
+      changed = newSelection != null;
+    } else {
+      changed = !selectedElement.equals( newSelection );
+    }
     if( changed ) {
       selectedElement = newSelection;
+      // keep in sync with branding
+      String text = "RAP Examples - " + selectedElement;
+      RWT.getBrowserHistory().createEntry( selectedElement, text );
       selectionProvider.fireSelectionChanged();
     }
+    if( updateControl ) {
+      ExpandItem[] expandItems = expandBar.getItems();
+      boolean done = false;
+      for( int i = 0; !done && i < expandItems.length; i++ ) {
+        ExpandItem expandItem = expandItems[ i ];
+        List list = ( List )expandItem.getControl();
+        String[] listItems = list.getItems();
+        int index = indexOf( listItems, newSelection );
+        if( index != -1 ) {
+          done = true;
+          list.setSelection( index );
+          expandItems[ i ].setExpanded( true );
+        }
+      }
+    }
+  }
+
+  private static int indexOf( final String[] strings, final String string ) {
+    int result = -1;
+    for( int i = 0; result == -1 && i < strings.length; i++ ) {
+      if( string.equals( strings[ i ] ) ) {
+        result = i;
+      }
+    }
+    return result;
   }
 
   private final class ListSelectionListener extends SelectionAdapter {
 
-    public void widgetSelected( final SelectionEvent e ) {
-      List list = ( List )e.widget;
+    public void widgetSelected( final SelectionEvent event ) {
+      List list = ( List )event.widget;
       int index = list.getSelectionIndex();
-      setSelection( index == -1 ? null : list.getItem( index ) );
+      setSelection( index == -1 ? null : list.getItem( index ), false );
     }
   }
 
   private final class SelectionProvider implements ISelectionProvider {
 
-    private ListenerList selectionChangedListeners = new ListenerList();
+    private final ListenerList selectionChangedListeners = new ListenerList();
 
-    public void addSelectionChangedListener( final ISelectionChangedListener lsnr )
+    public void addSelectionChangedListener(
+      final ISelectionChangedListener lsnr )
     {
       selectionChangedListeners.add( lsnr );
     }
 
-    public void removeSelectionChangedListener( final ISelectionChangedListener lsnr )
+    public void removeSelectionChangedListener(
+      final ISelectionChangedListener lsnr )
     {
       selectionChangedListeners.remove( lsnr );
     }

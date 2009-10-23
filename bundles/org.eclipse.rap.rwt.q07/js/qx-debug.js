@@ -8207,7 +8207,9 @@ if(!(this._lastUpDownType[keyCode]=="keydown"&&type=="keydown")){this._idealKeyH
 charCode,
 type,
 domEvent);
-}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||keyCode==8||keyCode==9){this._idealKeyHandler(keyCode,
+}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||
+keyCode==
+8||keyCode==9){this._idealKeyHandler(keyCode,
 charCode,
 "keypress",
 domEvent);
@@ -11034,14 +11036,18 @@ defer:function(statics){statics.__init();
 /* ID: qx.bom.element.Overflow */
 qx.Class.define("qx.bom.element.Overflow",
 {statics:{_compile:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(prop,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(prop,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }return "overflow:"+value+";";
 }:
 function(prop,
 value){return prop+":"+value+";";
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(prop,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(prop,
 value){return "overflow:"+value+";";
 }:
 function(prop,
@@ -11057,7 +11063,9 @@ compileY:function(value){return this._compile("overflow-y",
 value);
 },
 getX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11071,7 +11079,9 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11090,14 +11100,18 @@ mode,
 false);
 }}),
 setX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowX=value;
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11107,11 +11121,15 @@ value){element.style.overflowX=value;
 value){element.style.overflowX=value;
 }}),
 resetX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowX="";
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11120,7 +11138,9 @@ value){element.style.overflowX="";
 "default":function(element){element.style.overflowX="";
 }}),
 getY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11134,7 +11154,9 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11153,14 +11175,18 @@ mode,
 false);
 }}),
 setY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 value){if(value==="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowY=value;
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11170,11 +11196,15 @@ value){element.style.overflowY=value;
 value){element.style.overflowY=value;
 }}),
 resetY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowY="";
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11546,7 +11576,9 @@ throw msg;
 },
 matchesKeyEvent:function(e){var key=this.__key||this.getKeyIdentifier();
 if(!key&&!this.getKeyCode()){return ;
-}if((this.__modifier.Shift&&!e.isShiftPressed())||(this.__modifier.Control&&!e.isCtrlPressed())||(this.__modifier.Alt&&!e.isAltPressed())){return false;
+}if((this.__modifier.Shift&&!e.isShiftPressed())||
+(this.__modifier.Control&&!e.isCtrlPressed())||
+(this.__modifier.Alt&&!e.isAltPressed())){return false;
 }
 if(key){if(key==e.getKeyIdentifier()){return true;
 }}else{if(this.getKeyCode()==e.getKeyCode()){return true;
@@ -17352,7 +17384,11 @@ if(vTarget&&vTarget.getMenu&&vTarget.getMenu()){continue;
 continue;
 }var isMouseDown=vEventName=="mousedown";
 var isMouseUp=vEventName=="mouseup";
-if(vMenu.getOpener()!==vTarget&&(vTarget&&(!vMenu.isSubElement(vTarget)&&isMouseDown)||(vMenu.isSubElement(vTarget,
+if(vMenu.getOpener()!==
+vTarget&&
+(vTarget&&
+(!vMenu.isSubElement(vTarget)&&isMouseDown)||
+(vMenu.isSubElement(vTarget,
 true)&&isMouseUp)||(!isMouseDown&&!isMouseUp))){vMenu.hide();
 continue;
 }}}}});
@@ -19264,4 +19300,121 @@ this.__onscroll,
 false);
 }delete this.__onscroll;
 }}});
+
+
+
+
+/* ID: qx.client.History */
+qx.Class.define("qx.client.History",
+{type:"singleton",
+extend:qx.core.Target,
+construct:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this.base(arguments);
+this._iframe=document.createElement("iframe");
+this._iframe.style.visibility="hidden";
+this._iframe.style.position="absolute";
+this._iframe.style.left="-1000px";
+this._iframe.style.top="-1000px";
+var src=qx.io.Alias.getInstance().resolve("static/html/blank.html");
+this._iframe.src=src;
+document.body.appendChild(this._iframe);
+this._titles={};
+this._state=decodeURIComponent(this.__getHash());
+this._locationState=decodeURIComponent(this.__getHash());
+this.__waitForIFrame(function(){this.__storeState(this._state);
+this.__startTimer();
+},
+this);
+},
+"default":function(){this.base(arguments);
+this._titles={};
+this._state=this.__getState();
+this.__startTimer();
+}}),
+events:{"request":"qx.event.type.DataEvent"},
+properties:{timeoutInterval:{check:"Number",
+init:100,
+apply:"_applyTimeoutInterval"}},
+members:{init:function(){qx.log.Logger.deprecatedMethodWarning(arguments.callee,
+"This method call is no longer needed.");
+},
+addToHistory:function(state,
+newTitle){if(newTitle!=null){document.title=newTitle;
+this._titles[state]=newTitle;
+}
+if(state!=this._state){top.location.hash="#"+encodeURIComponent(state);
+this.__storeState(state);
+}},
+getState:function(){return this._state;
+},
+navigateBack:function(){qx.client.Timer.once(function(){history.back();
+},
+0);
+},
+navigateForward:function(){qx.client.Timer.once(function(){history.forward();
+},
+0);
+},
+_applyTimeoutInterval:function(value){this._timer.setInterval(value);
+},
+__onHistoryLoad:function(state){this._state=state;
+this.createDispatchDataEvent("request",
+state);
+if(this._titles[state]!=null){document.title=this._titles[state];
+}},
+__startTimer:function(){this._timer=new qx.client.Timer(this.getTimeoutInterval());
+this._timer.addEventListener("interval",
+function(e){var newHash=this.__getState();
+if(newHash!=this._state){this.__onHistoryLoad(newHash);
+}},
+this);
+this._timer.start();
+},
+__getHash:function(){var href=top.location.href;
+var idx=href.indexOf("#");
+return idx>=0?href.substring(idx+1):"";
+},
+__getState:qx.core.Variant.select("qx.client",
+{"mshtml":function(){var locationState=decodeURIComponent(this.__getHash());
+if(locationState!=this._locationState){this._locationState=locationState;
+this.__storeState(locationState);
+return locationState;
+}var doc=this._iframe.contentWindow.document;
+var elem=doc.getElementById("state");
+var iframeState=elem?decodeURIComponent(elem.innerText):"";
+return iframeState;
+},
+"default":function(){return decodeURIComponent(this.__getHash());
+}}),
+__storeState:qx.core.Variant.select("qx.client",
+{"mshtml":function(state){var html='<html><body><div id="state">'+encodeURIComponent(state)+'</div></body></html>';
+try{var doc=this._iframe.contentWindow.document;
+doc.open();
+doc.write(html);
+doc.close();
+}catch(ex){return false;
+}return true;
+},
+"default":function(state){qx.client.Timer.once(function(){top.location.hash="#"+encodeURIComponent(state);
+},
+this,
+0);
+return true;
+}}),
+__waitForIFrame:qx.core.Variant.select("qx.client",
+{"mshtml":function(callback,
+context){if(!this._iframe.contentWindow||!this._iframe.contentWindow.document){qx.client.Timer.once(function(){this.__waitForIFrame(callback,
+context);
+},
+this,
+10);
+return;
+}callback.call(context||window);
+},
+"default":null})},
+destruct:function(){this._timer.stop();
+this._disposeObjects("_timer");
+this._disposeFields("_iframe",
+"_titles");
+}});
 

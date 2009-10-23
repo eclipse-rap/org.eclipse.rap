@@ -14,10 +14,5 @@ import org.eclipse.swt.widgets.Composite;
 
 public interface IExamplePage {
 
-  /**
-   * Creates the example page.
-   *
-   * @param parent
-   */
   public void createControl( Composite parent );
 }

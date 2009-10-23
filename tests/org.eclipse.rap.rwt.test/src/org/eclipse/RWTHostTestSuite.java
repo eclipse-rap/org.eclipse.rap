@@ -29,6 +29,7 @@ import org.eclipse.rwt.internal.theme.css.*;
 import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.widgets.BrowserHistory_Test;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
@@ -147,6 +148,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Text_Test.class );
     suite.addTestSuite( Spinner_Test.class );
     suite.addTestSuite( ExternalBrowser_Test.class );
+    suite.addTestSuite( BrowserHistory_Test.class );
     suite.addTestSuite( ProgressBar_Test.class );
     suite.addTestSuite( BusyIndicator_Test.class );
     suite.addTestSuite( Scale_Test.class );
