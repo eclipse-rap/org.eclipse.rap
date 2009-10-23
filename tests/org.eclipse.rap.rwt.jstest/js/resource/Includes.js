@@ -87,7 +87,8 @@ document.write('\
 // - Open the application in an Firefox with Firebug 
 // - In Firebug, go to "Html"
 // - In the document, go to <body> -> <script>
-// - Copy everything after call "qx.Class.define("org.eclipse.swt.theme.ThemeValues"
+// - Copy all calls that start with qx.Theme.define("org.eclipse.swt.theme.Default...
+// - There should be 7 
 // - be careful not to copy the line-numbers with the code
 // - add the following lines: (without the "//")
 //  qx.io.Alias.getInstance().add( "static", "../org.eclipse.rap.rwt.q07/js/resource/static" );
