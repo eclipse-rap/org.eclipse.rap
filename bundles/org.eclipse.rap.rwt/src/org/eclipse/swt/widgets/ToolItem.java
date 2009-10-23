@@ -512,9 +512,7 @@ public class ToolItem extends Item {
        height = 0; 
        ToolItem[] siblings = getParent().getItems();
        for( int i = 0; i < siblings.length; i++ ) {
-         if( ( siblings[ i ].style & SWT.SEPARATOR ) == 0 ) {
-           height = Math.max(  height, siblings[ i ].getPreferredHeight() );
-         }
+         height = Math.max(  height, siblings[ i ].getPreferredHeight() );
        }
      }
      return height;
@@ -555,14 +553,16 @@ public class ToolItem extends Item {
    
   int getPreferredHeight() { 
     int height = DEFAULT_HEIGHT;
-    int frameHeight = getPadding().height + ( getBorderWidth() * 2 );       
-    if( !"".equals( getText() ) ) {
-      int charHeight = TextSizeDetermination.getCharHeight( parent.getFont() );
-      height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
-    }
-    if( getImage() != null ) {
-      int imageHeight = getImage().getBounds().height;
-      height = Math.max( height, imageHeight + frameHeight );
+    if( ( style & SWT.SEPARATOR ) == 0 ) {
+      int frameHeight = getPadding().height + ( getBorderWidth() * 2 );
+      if( !"".equals( getText() ) ) {
+        int charHeight = TextSizeDetermination.getCharHeight( parent.getFont() );
+        height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
+      }
+      if( getImage() != null ) {
+        int imageHeight = getImage().getBounds().height;
+        height = Math.max( height, imageHeight + frameHeight );
+      }
     }
     return height;
   }
