@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
    *              Valid types are "image" and "label".
    *              Examples:
    *                [ "image" ]
-   *                [ "image, "image", "label", "image" ]
+   *                [ "image", "image", "label", "image" ]
    */
   construct : function( cells ) {
     this.base( arguments );

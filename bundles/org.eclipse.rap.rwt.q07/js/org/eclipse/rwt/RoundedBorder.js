@@ -17,25 +17,19 @@ qx.Class.define("org.eclipse.rwt.RoundedBorder",
    * @param color {Color} The border color, see also {@link #color}
    * @param radius {Number} The corner radius.
    */
-  construct : function(width, color, radius)
-  {
+  construct : function( width, color, radius ) {
     this.base( arguments );
-
     this.__width = [ 0, 0, 0, 0 ];
-
     if ( width !== undefined ) {
       this.setWidth( width );
     }
-
     if ( color !== undefined ) {
       this.setColor( color );
     }
-
     if ( radius !== undefined ) {
       this.setRadius( radius );
     }
   },
-
 
   properties : {
 
@@ -48,8 +42,6 @@ qx.Class.define("org.eclipse.rwt.RoundedBorder",
     }
 
   },
-
-
 
   members : {
 
@@ -65,7 +57,6 @@ qx.Class.define("org.eclipse.rwt.RoundedBorder",
     setRadius : function( value ) {
       this.setRadii( [ value, value, value, value ] );
     },
-
 
     //handle properties
     // the manager is always informed with "top" since "renderTop" handles
