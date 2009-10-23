@@ -61,8 +61,8 @@
 
       <property name="background-image">
         <description>
-          The icon for the Combo drop-down button.
-          The size of the image should be maximum 12 x 12 pixels.
+          Background image, gradient or icon if not specified in
+          Combo-Button-Icon for combo drop-down button.
         </description>
       </property>
 
@@ -95,6 +95,22 @@
           description="Applies while the user hovers over the combo button." />
 
     </element>
+    
+    <element name="Combo-Button-Icon">
+      <description>
+        The drop-down button icon.
+      </description>
+      
+      <property name="background-image">
+        <description>
+          The icon for the Combo drop-down button.
+        </description>
+      </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the combo button." />
+      
+    </element>  
 
     <element name="Combo-Field">
       <description>
@@ -121,10 +137,10 @@
       </property>
 
       <property name="border-radius">
-          <description>
-            Border radius. The border radius has no effect if an enhanced border,
-            like "inset" or "outset" is used.
-          </description>
+        <description>
+          Border radius. The border radius has no effect if an enhanced border,
+          like "inset" or "outset" is used.
+        </description>
       </property>
 
     </element>

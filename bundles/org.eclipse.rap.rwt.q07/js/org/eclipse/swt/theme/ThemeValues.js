@@ -31,6 +31,10 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     this._states = states;
     this._store = org.eclipse.swt.theme.ThemeStore.getInstance();
   },
+  
+  statics : {
+    NONE_IMAGE : "static/image/blank.gif"
+  },
 
   members : {
 
@@ -114,7 +118,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       } else {
         // TODO [rst] Handle null values - currently, both null and the string
         // "undefined" lead to a js error for icon property
-        result = "static/image/blank.gif";
+        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE;
       }
       return result;
     },

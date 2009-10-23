@@ -730,8 +730,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.top = 0;
       result.bottom = 0;
       result.right = 0;
-      result.icon = tv.getCssImage( "Combo-Button", "background-image" );
-        // TODO [rst] rather use button.bgcolor?
+      result.icon = tv.getCssImage( "Combo-Button-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "Combo-Button", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "Combo-Button", 
+                                                 "background-image" );
+      }      
+      result.backgroundGradient = tv.getCssGradient( "Combo-Button", 
+                                                     "background-image" );      
+      // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "Combo-Button",
                                                "background-color" );
       return result;
