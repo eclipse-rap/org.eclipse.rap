@@ -25,9 +25,9 @@ import org.eclipse.rwt.resources.IResourceManager;
 
 
 /** <p>The resource manager is responsible for registering resources
- *  like images, css files etc. which are available on the applications 
- *  classpath. The registered files will be read out from their libraries 
- *  and delivered if requested. Usually resources are stored in libraries 
+ *  like images, css files etc. which are available on the applications
+ *  classpath. The registered files will be read out from their libraries
+ *  and delivered if requested. Usually resources are stored in libraries
  *  in the WEB-INF/lib directory of a web-application</p>
  *  <p>Implementation as Singleton.</p>
  *  <p>This class is not intended to be used by clients.</p>
@@ -36,12 +36,12 @@ public class ResourceManagerImpl
   extends ResourceBase
   implements IResourceManager, Adaptable
 {
-  
+
   public static final String RESOURCES = "rwt-resources";
 
   /** <p>The singleton instance of ResourceManager.</p> */
   private static IResourceManager _instance;
-  
+
   private final String webAppRoot;
   private final Map repository;
   private final Map cache;
@@ -50,48 +50,48 @@ public class ResourceManagerImpl
   private JsConcatenator jsConcatenator;
 
   private static final class Resource {
-    /** the 'raw' content of the resource. In case of a text resource (charset 
+    /** the 'raw' content of the resource. In case of a text resource (charset
      * was given) the content is UTF-8 encoded. */
     private final int[] content;
-    /** the charset in which the resource was encoded before red or null for 
+    /** the charset in which the resource was encoded before red or null for
      * binary resources. */
     private final String charset;
     /** the reources' version or null for 'no version' */
     private final Integer version;
-    
-    public Resource( final int[] content, 
-                     final String charset, 
-                     final Integer version ) 
+
+    public Resource( final int[] content,
+                     final String charset,
+                     final Integer version )
     {
       this.charset = charset;
       this.content = content;
       this.version = version;
     }
-    
+
     public String getCharset() {
       return charset;
     }
-    
+
     public int[] getContent() {
       return content;
     }
-    
+
     public Integer getVersion() {
       return version;
     }
   }
-  
+
   private ResourceManagerImpl( final String webAppRoot ) {
     this.webAppRoot = webAppRoot;
     repository = new Hashtable();
     cache = new Hashtable();
     contextLoader = new ThreadLocal();
   }
-  
+
   /** <p>Returns the singleton instance of ResourceManager.</p> */
-  public static synchronized IResourceManager createInstance( 
+  public static synchronized IResourceManager createInstance(
     final String webAppRoot,
-    final String mode ) 
+    final String mode )
   {
     if( _instance == null ) {
       _instance = new ResourceManagerImpl( webAppRoot );
@@ -99,31 +99,31 @@ public class ResourceManagerImpl
     }
     return _instance;
   }
-  
+
   /** <p>Retruns the singleton instance of <code>IResourceManager</code>.</p> */
   public static IResourceManager getInstance() {
     return _instance;
-  }  
-  
+  }
+
   /**
-   * <p>Loads the given <code>resource</code> from the class path.</p> 
+   * <p>Loads the given <code>resource</code> from the class path.</p>
    * @param resource the name of the resource to be loaded. Must not be
    * <code>null</code>
    */
   public static String load( final String resource ) {
     ParamCheck.notNull( resource, "resource" );
-    return ( ( ResourceManagerImpl )_instance ).doLoad( resource );    
+    return ( ( ResourceManagerImpl )_instance ).doLoad( resource );
   }
-   
+
   /**
    * <p>Returns the content of the resource denoted by <code>name</code>.</p>
-   * @param name the name of the resource to find, must not be 
+   * @param name the name of the resource to find, must not be
    * <code>null</code>.
    * @param version the version (can be obtained by {@link #findVersion(String)}
-   * <code>findVersion(String)</code>) of the resource or <code>null</code> 
+   * <code>findVersion(String)</code>) of the resource or <code>null</code>
    * if the resource is unversioned.
    * @return the content of the resource or <code>null</code> if no resource
-   * with the given <code>name</code> and <code>version</code> exists. 
+   * with the given <code>name</code> and <code>version</code> exists.
    */
   public static int[] findResource( final String name, final Integer version ) {
     ParamCheck.notNull( name, "name" );
@@ -131,8 +131,8 @@ public class ResourceManagerImpl
     ResourceManagerImpl manager = ( ResourceManagerImpl )_instance;
     Resource resource = ( Resource )manager.cache.get( createKey( name ) );
     if( resource != null ) {
-      if(    ( version == null && resource.getVersion() == null ) 
-          || ( version != null && version.equals( resource.getVersion() ) ) ) 
+      if(    ( version == null && resource.getVersion() == null )
+          || ( version != null && version.equals( resource.getVersion() ) ) )
       {
         result = resource.getContent();
       }
@@ -141,11 +141,11 @@ public class ResourceManagerImpl
   }
 
   /**
-   * <p>Returns the version number for the previously {@link 
+   * <p>Returns the version number for the previously {@link
    * #register(String, String, RegisterOptions) registered} resource.</p>
    * @param name the name of the resource for which the version number should be
    * obtained. Must not be <code>null</code>.
-   * @return the version number or <code>null</code> if either no such resource 
+   * @return the version number or <code>null</code> if either no such resource
    * was registered or the resource does not have a version number.
    * @throws NullPointerException when <<code>name</code> is <code>null</code>.
    */
@@ -160,10 +160,10 @@ public class ResourceManagerImpl
     return result;
   }
 
-  
+
   //////////////////////
   // interface Adaptable
-  
+
   public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == JsConcatenator.class ){
@@ -199,33 +199,33 @@ public class ResourceManagerImpl
     }
     return result;
   }
-  
-  
+
+
   /////////////////////////////
   // interface IResourceManager
-  
+
   public void register( final String name ) {
     ParamCheck.notNull( name, "name" );
     doRegister( name, null, RegisterOptions.NONE );
   }
-  
-  public void register( final String name, final String charset ) 
+
+  public void register( final String name, final String charset )
   {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
     doRegister( name, charset, RegisterOptions.NONE );
   }
 
-  public void register( final String name, 
-                        final String charset, 
-                        final RegisterOptions options ) 
+  public void register( final String name,
+                        final String charset,
+                        final RegisterOptions options )
   {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
     ParamCheck.notNull( options, "options" );
     doRegister( name, charset, options );
   }
-  
+
   public void register( final String name, final InputStream is ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( is, "is" );
@@ -242,9 +242,9 @@ public class ResourceManagerImpl
   }
 
   public void register( final String name,
-                        final InputStream is, 
-                        final String charset, 
-                        final RegisterOptions options ) 
+                        final InputStream is,
+                        final String charset,
+                        final RegisterOptions options )
   {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( is, "is" );
@@ -262,18 +262,18 @@ public class ResourceManagerImpl
     }
     repository.put( key, name );
   }
-  
+
   public String getCharset( final String name ) {
     ParamCheck.notNull( name, "name" );
     Resource resource = ( Resource )cache.get( createKey( name ) );
     return resource.getCharset();
   }
-  
+
   public boolean isRegistered( final String name ) {
     ParamCheck.notNull( name, "name" );
     String key = createKey( name );
     String fileName = ( String )repository.get( key );
-    return fileName != null;    
+    return fileName != null;
   }
 
   public String getLocation( final String name ) {
@@ -283,7 +283,7 @@ public class ResourceManagerImpl
     Assert.isNotNull( fileName, "No resource registered for key " + name );
     return createRequestURL( fileName, findVersion( name ) );
   }
-  
+
   public URL getResource( final String name ) {
     return getLoader().getResource( name );
   }
@@ -331,7 +331,7 @@ public class ResourceManagerImpl
     }
     return result;
   }
-  
+
   //////////////////
   // helping methods
 
@@ -352,13 +352,13 @@ public class ResourceManagerImpl
     }
     return result;
   }
-  
+
   private static String createKey( final String name ) {
     return String.valueOf( name.hashCode() );
   }
 
-  private static String createRequestURL( final String fileName, 
-                                          final Integer version ) 
+  private static String createRequestURL( final String fileName,
+                                          final Integer version )
   {
     String result;
     String newFileName = fileName.replace( '\\', '/' );
@@ -374,15 +374,15 @@ public class ResourceManagerImpl
       url.append( URLHelper.getURLString( false ) );
       URLHelper.appendFirstParam( url, RequestParams.RESOURCE, newFileName );
       if( version != null ) {
-        URLHelper.appendParam( url, 
-                               RequestParams.RESOURCE_VERSION, 
+        URLHelper.appendParam( url,
+                               RequestParams.RESOURCE_VERSION,
                                String.valueOf( version.intValue() ) );
       }
       result = ContextProvider.getResponse().encodeURL( url.toString() );
     }
     return result;
   }
-  
+
   private String doLoad( final String resource ) {
     String key = createKey( resource );
     if( !repository.containsKey( key ) ) {
@@ -396,7 +396,7 @@ public class ResourceManagerImpl
     return createRequestURL( resource, null );
   }
 
-  private void doRegister( final String name, 
+  private void doRegister( final String name,
                            final String charset,
                            final RegisterOptions options )
   {
@@ -417,10 +417,10 @@ public class ResourceManagerImpl
     }
   }
 
-  private void doRegister( final String name, 
-                           final String charset, 
-                           final RegisterOptions options, 
-                           final String key, 
+  private void doRegister( final String name,
+                           final String charset,
+                           final RegisterOptions options,
+                           final String key,
                            final int[] content )
     throws IOException
   {
@@ -439,7 +439,7 @@ public class ResourceManagerImpl
       cache.put( key, new Resource( content, charset, version ) );
     }
   }
-  
+
   private static void createFile( final File fileToWrite ) throws IOException {
     File dir = new File( fileToWrite.getParent() );
     if( !dir.exists() ) {
@@ -451,9 +451,9 @@ public class ResourceManagerImpl
       fileToWrite.createNewFile();
     }
   }
-  
-  private static Integer computeVersion( final int[] content, 
-                                         final RegisterOptions options ) 
+
+  private static Integer computeVersion( final int[] content,
+                                         final RegisterOptions options )
   {
     Integer result = null;
     if( content != null && shouldVersion( options ) ) {
@@ -467,13 +467,13 @@ public class ResourceManagerImpl
   }
 
   private static boolean shouldVersion( final RegisterOptions options ) {
-    return    (    options == RegisterOptions.VERSION 
+    return    (    options == RegisterOptions.VERSION
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
            && SystemProps.useVersionedJavaScript();
   }
-  
-  static String versionedResourceName( final String name, 
-                                       final Integer version ) 
+
+  static String versionedResourceName( final String name,
+                                       final Integer version )
   {
     String result = name;
     if( version != null ) {
@@ -487,7 +487,7 @@ public class ResourceManagerImpl
         // append version number if not suffix
         result = name + versionString;
       } else {
-        // insert version number between name and suffix 
+        // insert version number between name and suffix
         result =   name.substring( 0, dotPos )
                  + versionString
                  + name.substring( dotPos );
@@ -497,11 +497,11 @@ public class ResourceManagerImpl
   }
 
   private static boolean shouldCompress( final RegisterOptions options ) {
-    return    (    options == RegisterOptions.COMPRESS 
+    return    (    options == RegisterOptions.COMPRESS
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
            && SystemProps.useCompressedJavaScript();
   }
-  
+
   private File getDiskLocation( final String name, final Integer version ) {
     StringBuffer filename = new StringBuffer();
     filename.append( webAppRoot );
@@ -511,16 +511,17 @@ public class ResourceManagerImpl
     filename.append( versionedResourceName( escapeFilename( name ), version ) );
     return new File( filename.toString() );
   }
-  
+
   private static String escapeFilename( final String name ) {
     String result = name;
     result = name.replaceAll( "\\$", "\\$\\$" );
     result = result.replaceAll( ":", "\\$1" );
+    result = result.replaceAll( "\\?", "\\$2" );
     return result;
   }
 
-  private static File getTempLocation( final String name, 
-                                       final Integer version ) 
+  private static File getTempLocation( final String name,
+                                       final Integer version )
   {
     StringBuffer result = new StringBuffer();
     result.append( System.getProperty( "java.io.tmpdir" ) );
