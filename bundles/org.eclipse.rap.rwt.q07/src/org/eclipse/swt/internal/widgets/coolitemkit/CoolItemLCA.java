@@ -149,8 +149,11 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       CoolItem item = items[ i ];
       Rectangle itemBounds = item.getBounds();
       if( item != coolItem && itemBounds.contains( newX, itemBounds.y ) ) {
-        int[] itemOrder = coolItem.getParent().getItemOrder();
-        newOrder = Math.min( itemOrder[ i ] + 1, itemOrder.length - 1 );
+        if( coolItem.getBounds().x > newX ) {
+          newOrder = i + 1;
+        } else {
+          newOrder = i;
+        }
         changed = changeOrder( coolItem, newOrder );
       }
       maxX = Math.max( maxX, itemBounds.x + itemBounds.width );
@@ -158,7 +161,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
     if( newOrder == -1 && newX > maxX ) {
       // item was moved after the last item
-      changed = changeOrder( coolItem, coolItem.getParent().getItemCount() - 1 );
+      int last = coolItem.getParent().getItemCount() - 1;
+      changed = changeOrder( coolItem, last );
     } else if( newOrder == -1 && newX < minX ) {
       // item was moved before the first item
       changed = changeOrder( coolItem, 0 );
@@ -182,38 +186,25 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     CoolBar coolBar = coolItem.getParent();
     int itemIndex = coolBar.indexOf( coolItem );
     int[] itemOrder = coolBar.getItemOrder();
-    int oldOrder = itemOrder[ itemIndex ];
-    if( oldOrder != newOrder ) {
-      if( newOrder < oldOrder ) {
-        for( int i = 0; i < itemOrder.length; i++ ) {
-          CoolItem item = coolBar.getItem( i );
-          if(    item != coolItem
-              && itemOrder[ i ] >= newOrder
-              && itemOrder[ i ] < itemOrder[ itemIndex ] )
-          {
-            itemOrder[ i ] += 1;
+    int length = itemOrder.length;
+    int[] targetOrder = new int[ length ];
+    int index = 0;
+    if ( itemIndex != newOrder ) {
+      for( int i = 0; i < length; i++ ) {
+        if( i == newOrder ) {
+          targetOrder[ i ] = itemOrder[ itemIndex ];
+        } else {
+          if( index == itemIndex ) {
+            index++;
           }
-        }
-      } else {
-        for( int i = 0; i < itemOrder.length; i++ ) {
-          CoolItem item = coolBar.getItem( i );
-          if(     item != coolItem
-              && itemOrder[ i ] <= newOrder
-              && itemOrder[ i ] > itemOrder[ itemIndex ] )
-          {
-            itemOrder[ i ] -= 1;
-          }
+          targetOrder[ i ] = itemOrder[ index ];
+          index++;
         }
       }
-      result = itemOrder[ itemIndex ] != newOrder;
-      if( result ) {
-        itemOrder[ itemIndex ] = newOrder;
-
-        Object adapter = coolBar.getAdapter( ICoolBarAdapter.class );
-        ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-
-        cba.setItemOrder( itemOrder );
-      }
+      Object adapter = coolBar.getAdapter( ICoolBarAdapter.class );
+      ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
+      cba.setItemOrder( targetOrder );
+      result = true;
     } else {
       result = false;
     }

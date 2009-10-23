@@ -11,6 +11,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
@@ -972,7 +973,7 @@ public class CoolBar extends Composite {
         CoolItem child = items[row][i];
         int newWidth = available + child.internalGetMinimumWidth();
         if ( i + 1 < count ) {
-          newWidth = Math.min( newWidth, child.requestedWidth );
+          newWidth = Math.min( newWidth, child.preferredWidth );
           available -= (newWidth - child.internalGetMinimumWidth());
         }
         Rectangle oldBounds = child.internalGetBounds();
@@ -1102,7 +1103,7 @@ public class CoolBar extends Composite {
     items = new CoolItem[1][count];
     items[0] = row;
 
-    relayout();
+    layoutItems();
   }
 
   /**
