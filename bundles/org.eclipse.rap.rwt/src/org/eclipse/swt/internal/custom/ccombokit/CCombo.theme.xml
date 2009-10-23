@@ -63,8 +63,8 @@
 
       <property name="background-image">
         <description>
-          The icon for the CCombo drop-down button.
-          The size of the image should be maximum 12 x 12 pixels.
+          Background image, gradient or icon if not specified in
+          CCombo-Button-Icon for CCombo drop-down button.
         </description>
       </property>
 
@@ -99,6 +99,22 @@
       <state name="hover"
           description="Applies while the user hovers over the CCombo button." />
 
+    </element>
+    
+    <element name="CCombo-Button-Icon">
+      <description>
+        The drop-down button icon.
+      </description>
+      
+      <property name="background-image">
+        <description>
+          The icon for the CCombo drop-down button.
+        </description>
+      </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the CCombo button." />
+      
     </element>
 
     <element name="CCombo-Field">

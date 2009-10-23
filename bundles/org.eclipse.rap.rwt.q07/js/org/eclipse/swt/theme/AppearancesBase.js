@@ -811,8 +811,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.top = 0;
       result.bottom = 0;
       result.right = 0;
-      result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
-        // TODO [rst] rather use button.bgcolor?
+      result.icon = tv.getCssImage( "CCombo-Button-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "CCombo-Button", 
+                                                 "background-image" );
+      }      
+      result.backgroundGradient = tv.getCssGradient( "CCombo-Button", 
+                                                     "background-image" );
+      // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "CCombo-Button",
                                                "background-color" );
       return result;
