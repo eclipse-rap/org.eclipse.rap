@@ -13,7 +13,7 @@
 // - accepted bug: widgets with no dimensions of their own
 //                 wont work together with a gfxBorder
 
-qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
+qx.Mixin.define( "org.eclipse.rwt.GfxMixin", {
 
   properties : {
 
@@ -67,9 +67,23 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
           max = Math.max( max, width[ i ] );
         }
       }
+      var renderRadii;
+      if( width != null && radii != null ) { 
+        renderRadii = [];
+        for( var i = 0; i < 4; i++ ) {
+          var prev = i > 0 ? i - 1 : 3;
+          if( width[ i ] == 0 || width[ prev ] == 0 ) {
+            renderRadii[ i ] = 0;
+          } else {
+            renderRadii[ i ] = radii[ i ];          
+          }
+        }        
+      } else {
+        renderRadii = radii;
+      }
       this.setGfxProperty( "borderMaxWidth", max );
       this.setGfxProperty( "borderColor", color );
-      this.setGfxProperty( "borderRadii", radii );
+      this.setGfxProperty( "borderRadii", renderRadii );
       // TODO  [tb] : check if ONLY the color is changed before doing this:
       this.setGfxProperty( "borderLayouted", false ); // use GfxBorder to chcek
 
@@ -133,7 +147,6 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       this.setGfxProperty( "fillType", useGradient ? "gradient" : "solid" );
       var useBackground = ( useGradient || this._gfxBorderEnabled );
       var toggle = ( this._gfxBackgroundEnabled != useBackground );
-
       if( toggle ) {
         if( useBackground ) {
           var backgroundColor = this.getStyleProperty( "backgroundColor" );
@@ -147,11 +160,9 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
         }
         this._handleGfxStatus();
      }
-
       if( ( toggle || useBackground ) && this._gfxNodeReady() ) {
         this._renderGfxBackground();
       }
-
       if (qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         if( toggle && !useBackground ) {
          this._disableVmlColorRestore();
@@ -249,7 +260,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
     //----------------------------------------------------
 
     _createGfxNode : function() {
-      if ( !this._innerStyle ) {
+      if( !this._innerStyle ) {
         var outline = null;
         if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
           //this prevents a graphical glitch in Safari
@@ -258,40 +269,37 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
           this.__outerElementStyleProperties.outline = true;
         }
         // make opacity work
-        if (qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
           this.removeStyleProperty( "filter" );
           this.__outerElementStyleProperties.filter = true;
         } else {
           this.removeStyleProperty( "opacity" );
           this.__outerElementStyleProperties.opacity = true;
-          if (qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+          if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
             this.removeStyleProperty( "MozOpacity" );
             this.__outerElementStyleProperties.MozOpacity = true;
           }
         }
         this.prepareEnhancedBorder();
-        if (qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         	this.addToQueue( "width" );
         	this.addToQueue( "height" );
         }
-
         if( outline ) {
           this.setStyleProperty( "outline", outline );
         }
         delete outline;
-
         this._applyOpacity( this.getOpacity() );
       }
       var statics = org.eclipse.rwt.GfxMixin;
       var mode = statics.getSupportedRendermode();
-      switch( mode ){
+      switch( mode ) {
         case statics.VML_RENDERER:
           this._createVmlNode();
         break;
         case statics.SVG_RENDERER:
           this._createSvgNode();
         break;
-        default:
       }
     },
 
@@ -307,13 +315,12 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
         var cl = this._borderElement = document.createElement("div");
         var es = elem.style;
         var cs = this._innerStyle = cl.style;
-        if (qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        } else {
+        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
           cs.width = cs.height = "100%";
         }
         cs.position = "absolute";
-        for ( var i in this._styleProperties ) {
-          switch(i) {
+        for( var i in this._styleProperties ) {
+          switch( i ) {
             case "zIndex":
             case "filter":
             case "display":
@@ -329,17 +336,21 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
         if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
           es.outline = "none";
         }
-
-        for (var i in this._htmlProperties) {
+        // The next line is needed for clipping in IE. Overflow is a 
+        // "innerStyle" property, so this this css-value will never be set or 
+        // reset. Therefore, this widget also no longer has the ability to 
+        // show overflow:
+        es.overflow = "hidden";
+        for( var i in this._htmlProperties) {
           switch( i ) {
             case "unselectable":
               cl.unselectable = this._htmlProperties[i];
           }
         }
-        while (elem.firstChild) {
-          cl.appendChild(elem.firstChild);
+        while( elem.firstChild ) {
+          cl.appendChild( elem.firstChild );
         }
-        elem.appendChild(cl);
+        elem.appendChild( cl );
       } else {
         if( this._innerStyleHidden ) {
           this._setSimulatedPadding();
@@ -400,7 +411,6 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
           this._prepareSvgShape();
           this._renderSvgBackground();
         break;
-        default:
       }
     },
 
@@ -420,17 +430,22 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
           this._prepareSvgShape();
           this._styleSvgBorder();
         break;
-        default:
       }
     },
 
+    // NOTE ON MAXIMUM RADII:
+    // Currently, no radius may be greater than half of the smaller egdge.
+    // They will be reduced if needed. This could be handled more flexible
+    // if there are different radii in different corners, but currently it is 
+    // not. A 15x10 box can not have the radii 7 0 0 0, although it would
+    // be possible geometrically. The radii 5 0 0 0 will be rendered.
     _layoutGfxBorder : function() {
       var rectDimension = [ this.getBoxWidth(), this.getBoxHeight() ];
       var oldDimension = this.getGfxProperty( "rectDimension" );
       if(    !this.getGfxProperty( "borderLayouted" )
           || ( rectDimension[ 0 ] != oldDimension[ 0 ] )
-          || ( rectDimension[ 1 ] != oldDimension[ 1 ] )
-      ) {
+          || ( rectDimension[ 1 ] != oldDimension[ 1 ] ) )
+      {
         this.setGfxProperty( "rectDimension", rectDimension );
         this._setSimulatedPadding();
         var statics = org.eclipse.rwt.GfxMixin;
@@ -481,7 +496,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       node.appendChild(defs);
 
       var grad = create( "linearGradient" ); // TODO [tb] : create lazy ?
-      grad.setAttribute( "id", "gradient_"+hash);
+      grad.setAttribute( "id", "gradient_" + hash );
       grad.setAttribute( "x1", 0 );
       grad.setAttribute( "y1", 0 );
       grad.setAttribute( "x2", 0 );
@@ -622,12 +637,10 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       node.style.top = "0";
       node.style.left = "0";
       this._gfxNode = node;
-
       var fill = create( "fill" );
       fill.method = "sigma";
       fill.angle = 180;
       this._gfxData.fill = fill;
-
       this._prepareVmlShape();
     },
 
@@ -796,7 +809,6 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       var widths = this.getGfxProperty( "borderWidths" );
       if( widths && radius ) {
         var shape = this._gfxData.pathElement;
-        //this._gfxNode.removeChild( shape );
         var maxWidth = this.getGfxProperty( "borderMaxWidth" );
         var rectDimension = this.getGfxProperty( "rectDimension" );
         this._enableVmlLayout( true );
@@ -806,13 +818,10 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
           rectDimension,
           radius
         );
-        shape.path = path.shape;
-        //shape.style.clip = path.clip;
-        //this._gfxNode.appendChild( shape );        
+        shape.path = path;
       } else {
         this._enableVmlLayout( false );
       }
-      //this._vmlRestoreColor();
     },
 
     _enableVmlLayout : function( value) {
@@ -867,9 +876,8 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       return this._renderMode;
     },
 
-
-
     //-------------------------- SVG --------------------------------------//
+
     createSVGNode : function( type ) {
       return document.createElementNS( "http://www.w3.org/2000/svg", type );
     },
@@ -945,8 +953,6 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       return document.createElement( "v:" + type );
     },
 
-
-
     createVmlPath : function( borderWidth, maxWidth, dimension, radius ) {
       var f = this.VMLFACTOR;
       var quarter = this.VMLQCIRCEL;
@@ -957,26 +963,11 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       var borderLeft = 0;
 
       if( maxWidth > 0 ) {
-       borderTop = ( borderWidth[ 0 ] == 0 ? -maxWidth - 1 : maxWidth);
-       borderRight = ( borderWidth[ 1 ] == 0 ? -maxWidth - 1 : maxWidth);
-       borderBottom = ( borderWidth[ 2 ] == 0 ? -maxWidth - 1 : maxWidth);
-       borderLeft = ( borderWidth[ 3 ] == 0 ? -maxWidth - 1: maxWidth);
+        borderTop = ( borderWidth[ 0 ] == 0 ? -maxWidth - 1 : maxWidth );
+        borderRight = ( borderWidth[ 1 ] == 0 ? -maxWidth - 1 : maxWidth );
+        borderBottom = ( borderWidth[ 2 ] == 0 ? -maxWidth - 1 : maxWidth );
+        borderLeft = ( borderWidth[ 3 ] == 0 ? -maxWidth - 1: maxWidth );
       }
-
-      var clipTop = ( borderTop < 0 ? - borderTop : 0 );
-      var clipLeft = ( borderLeft < 0 ? - borderLeft : 0 );
-      var clipRight = (   borderRight < 0
-                        ? ( clipLeft ? clipLeft : 1 ) + dimension[ 0 ]
-                        : "auto"
-                       );
-      var clipBottom = (   borderBottom < 0
-                         ? ( clipTop ? clipTop : 1 ) + dimension[ 1 ]
-                         : "auto"
-                       );
-      var clip = [];
-      clip.push( "rect(" );
-      clip.push( clipTop, clipRight, clipBottom, clipLeft );
-      clip.push( ")" );
 
       var rectWidth =
         ( dimension[ 0 ] - ( borderLeft * 0.5 + borderRight * 0.5 ) ) * f ;
@@ -989,7 +980,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
       //a few safeguards:
       rectWidth = Math.max( 0, rectWidth );
       rectHeight = Math.max( 0, rectHeight );
-      var maxRadius = Math.min( rectWidth, rectHeight ) / 2;
+      var maxRadius = Math.floor( Math.min( rectWidth, rectHeight ) / 2 );
 
       var radiusLeftTop = Math.min( radius[ 0 ] * f, maxRadius );
       var radiusTopRight = Math.min( radius[ 1 ] * f, maxRadius );
@@ -1031,10 +1022,7 @@ qx.Mixin.define("org.eclipse.rwt.GfxMixin", {
 
       path.push( "X E" );
 
-      return {
-        shape : path.join(" "),
-        clip : clip.join(" ")
-      };
+      return  path.join(" ");
     },
 
     transitionColors : function( color1, color2, start, stop, steps ) {

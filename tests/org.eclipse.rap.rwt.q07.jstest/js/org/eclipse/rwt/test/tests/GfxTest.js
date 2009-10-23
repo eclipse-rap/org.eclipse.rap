@@ -336,7 +336,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
         qx.ui.core.Widget.flushGlobalQueues();
         assertTrue( "Outline defined 8", this._isOutlineDefined( shell ) );       
       }      
-    }),
+    } ),
+    
+    testGfxInvisibleCorners : function() {
+      this.widget5 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = this.widget5; 
+      widget.addToDocument();
+      widget.setLocation( 0, 0 );
+      widget.setDimension( 100, 100 );
+      this.gfxBorder.setWidthTop( 1 );
+      this.gfxBorder.setWidthRight( 0 );
+      this.gfxBorder.setWidthBottom( 0 );
+      this.gfxBorder.setWidthLeft( 1 );
+      this.gfxBorder.setRadius( 5 );
+      widget.setBorder( this.gfxBorder ); 
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertTrue( this.usesGfxBorder( widget ) );
+      var radii = widget.getGfxProperty( "borderRadii", radii );
+      assertEquals( [ 5, 0, 0, 0 ], radii );
+    },    
     
     /////////
     // Helper
@@ -478,7 +496,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
   	                      this.widget1,
   	                      this.widget2,
   	                      this.widget3,
-  	                      this.widget4  );
+  	                      this.widget5  );
   }
   
 } );
