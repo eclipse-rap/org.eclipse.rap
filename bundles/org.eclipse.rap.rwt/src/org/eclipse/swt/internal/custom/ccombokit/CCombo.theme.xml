@@ -112,6 +112,9 @@
         </description>
       </property>
       
+      <style name="FLAT"
+          description="Applies when style FLAT is set on the parent." />
+      
       <state name="hover"
           description="Applies while the user hovers over the CCombo button." />
       
