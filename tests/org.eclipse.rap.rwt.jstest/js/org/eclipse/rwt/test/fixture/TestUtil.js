@@ -97,7 +97,11 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
       
     rightClick : function( widget ) {
       var right = qx.event.type.MouseEvent.buttons.right;
-      this.fakeMouseEventDOM( widget._getTargetNode(), "contextmenu", right );      
+      var node = widget._getTargetNode();
+      this.fakeMouseEventDOM( node, "mousedown", right );
+      this.fakeMouseEventDOM( node, "mouseup", right );
+      this.fakeMouseEventDOM( node, "click", right );
+      this.fakeMouseEventDOM( node, "contextmenu", right );      
     },
 
     fakeMouseEventDOM : function( node, type, button ) {

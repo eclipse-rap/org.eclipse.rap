@@ -33,7 +33,8 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
       top : 0,
       right : 0,
       bottom : 0,
-      left : 0      
+      left : 0,
+      anonymous : true
     } );    
     this.add( this._layout );
     this.addEventListener( "mousedown", this._unhoverSubMenu );
@@ -187,7 +188,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
       }      
     },
     
-    // needed for the qooxdoo menu-manager:
+    // needed for the menu-manager:
     isSubElement : function( vElement, vButtonsOnly ) {
       var ret = false;
       if (    ( vElement.getParent() === this._layout ) 
@@ -318,18 +319,18 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     
     
     _beforeAppear : function() {
-      // original qooxdoo code:
-      qx.ui.layout.CanvasLayout.prototype._beforeAppear.call(this);
-      qx.ui.menu.Manager.getInstance().add(this);
+      // original qooxdoo code: (1 line)
+      qx.ui.layout.CanvasLayout.prototype._beforeAppear.call( this );
+      org.eclipse.rwt.MenuManager.getInstance().add( this );
       this.bringToFront();
       this._makeActive();
       this._menuShown();
     },
     
     _beforeDisappear : function() {
-      // original qooxdoo code: (2 lines) 
-      qx.ui.layout.CanvasLayout.prototype._beforeDisappear.call(this);
-      qx.ui.menu.Manager.getInstance().remove(this);
+      // original qooxdoo code: (1 line) 
+      qx.ui.layout.CanvasLayout.prototype._beforeDisappear.call( this );
+      org.eclipse.rwt.MenuManager.getInstance().remove( this );
       if( this.getFocusRoot() ) {
         // if the menu is disposed while visible, it might not have a focusRoot
         this._makeInactive();
@@ -486,7 +487,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
         this._openItem.getMenu().hoverFirstItem();
       } else if( this._hoverItem ){
         this._hoverItem.execute();
-        qx.ui.menu.Manager.getInstance().update();
+        org.eclipse.rwt.MenuManager.getInstance().update();
       }      
       event.preventDefault();
       event.stopPropagation();

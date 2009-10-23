@@ -27,6 +27,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     eventHandler.setAllowContextMenu(
       org.eclipse.rwt.widgets.Menu.getAllowContextMenu
     );
+    eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
   },
   
   destruct : function() {

@@ -24,6 +24,11 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
       qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GfxMixin );
       qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
                       org.eclipse.rwt.GfxMixin );
+      var eventHandler = qx.event.handler.EventHandler.getInstance();
+      eventHandler.setAllowContextMenu(
+        org.eclipse.rwt.widgets.Menu.getAllowContextMenu
+      );
+      eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );                      
       qx.ui.basic.ScrollBar.EVENT_DELAY = 125;
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize", 
