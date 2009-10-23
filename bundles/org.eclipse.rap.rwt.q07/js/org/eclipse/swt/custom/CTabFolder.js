@@ -35,6 +35,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._maxButton = null;
     this._minButton = null;
     this._body = new qx.ui.layout.CanvasLayout();
+    this._body.addState( "barTop" );
     this._body.setAppearance( "ctabfolder-body" );
     this.add( this._body );
     this._separator = new qx.ui.layout.CanvasLayout();
@@ -117,6 +118,11 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       this._mapItems( function( item ) {
       	item.setTabPosition( tabPosition );
       } );
+      if( tabPosition == "top" ) {
+        this._body.addState( "barTop" );
+      } else {
+        this._body.removeState( "barTop" );
+      }
       this._updateLayout();
     },
     

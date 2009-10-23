@@ -23,6 +23,9 @@
     <property name="border-color"
         description="CTabFolder border color." />
 
+    <property name="border-radius"
+        description="CTabFolder border radius." />
+
     <state name="disabled"
         description="Applies to items of a disabled CTabFolder." />
 

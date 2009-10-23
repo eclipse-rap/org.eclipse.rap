@@ -1395,11 +1395,20 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
-      if( states.rwt_BORDER ) {
-        var color = tv.getCssColor( "CTabFolder", "border-color" );
-        result.border = new qx.ui.core.Border( 1, "solid", color );
+      var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" );
+      if( radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0 )
+      {
+        result.border = new org.eclipse.rwt.RoundedBorder( 0, color, 0 );
+        if( states.barTop ) {
+          result.border.setRadii( [ radii[ 0 ], radii[ 1 ], 0, 0 ] );
+        } else {
+          result.border.setRadii( [ 0, 0, radii[ 2 ], radii[ 3 ] ] );
+        }
       } else {
-        result.border = "undefined";
+        result.border = new qx.ui.core.Border( 0, "solid", color );
+      }
+      if( states.rwt_BORDER ) {
+        result.border.setWidth( 1 );
       }
       return result;
     }
@@ -1448,16 +1457,47 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = tv.getCssDimension( "CTabItem", "spacing" );
       result.textColor = tv.getCssColor( "CTabItem", "color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
-      result.border = new qx.ui.core.Border( 0, "solid", color );
-      result.border.setWidthRight( 1 );
+      // create a copy of the radii from theme
+      var radii
+         = tv.getCssBoxDimensions( "CTabFolder", "border-radius" ).slice( 0 );
+      // cut off rounded corners at opposite side of tabs
+      if( states.barTop ) {
+        radii[ 2 ] = 0;
+        radii[ 3 ] = 0;
+      } else {
+        radii[ 0 ] = 0;
+        radii[ 1 ] = 0;
+      }
+      // cut off right rounded corners of unselected tabs
+      if( !states.selected ) {
+        radii[ 1 ] = 0;
+        radii[ 2 ] = 0;
+      }
+      // cut off left rounded corners of unselected tabs except first
+      if( !states.selected && !( states.firstItem && states.rwt_BORDER ) ) {
+        radii[ 0 ] = 0;
+        radii[ 3 ] = 0;
+      }
+      var rounded
+         = radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0;
+      if( rounded ) {
+        result.border = new org.eclipse.rwt.RoundedBorder( 0, color );
+        result.border.setRadii( radii );
+      } else {
+        result.border = new qx.ui.core.Border( 0, "solid", color );
+      }
+      if( !states.nextSelected ) {
+        result.border.setWidthRight( 1 );
+      }
       if( states.selected ) {
+        result.border.setWidthLeft( 1 );
         if( states.barTop ) {
           result.border.setWidthTop( 1 );
         } else {
           result.border.setWidthBottom( 1 );
         }
       }
-      if( states.firstItem && states.rwt_BORDER ) {
+      if( states.firstItem && states.rwt_BORDER && !rounded ) {
         result.border.setWidthLeft( 1 );
       }
       if( states.selected ) {

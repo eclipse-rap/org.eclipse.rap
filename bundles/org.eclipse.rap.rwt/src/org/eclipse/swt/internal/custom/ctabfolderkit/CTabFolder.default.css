@@ -2,6 +2,7 @@
 
 CTabFolder {
   border-color: #c0c0c0;
+  border-radius: 0px;
 }
 
 CTabItem {
