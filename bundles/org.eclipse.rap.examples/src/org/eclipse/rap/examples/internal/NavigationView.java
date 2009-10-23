@@ -18,6 +18,7 @@ import org.eclipse.rap.examples.internal.model.ExampleCategory;
 import org.eclipse.rap.examples.internal.model.ExamplesModel;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FillLayout;
@@ -111,6 +112,7 @@ public class NavigationView extends ViewPart {
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     item.setText( category.getName() );
     List list = new List( expandBar, SWT.SINGLE );
+    list.setData( WidgetUtil.CUSTOM_VARIANT, "EXAMPLES" );
     list.addSelectionListener( listSelectionListener );
     item.setControl( list );
     // TODO [rst] Remove this block when auto-collapse is activated again
