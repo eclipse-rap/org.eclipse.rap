@@ -63,18 +63,34 @@ DateTime-UpButton:pressed, DateTime-DownButton:pressed {
 }
 
 DateTime-UpButton {
+  /* 
+  For backward compatibility we have to keep the up button icon
+  definition in DateTime-UpButton and not in DateTime-UpButton-Icon
+  */
   background-image: url( resource/widget/rap/datetime/up_button.gif );
 }
 
 DateTime-DownButton {
+  /* 
+  For backward compatibility we have to keep the down button icon
+  definition in DateTime-DownButton and not in DateTime-DownButton-Icon
+  */
   background-image: url( resource/widget/rap/datetime/down_button.gif );
 }
 
 DateTime-DropDownButton {
+  /* 
+  For backward compatibility we have to keep the drop-down button icon
+  definition in DateTime-DropDownButton and not in DateTime-DropDownButton-Icon
+  */
   background-image: url( resource/widget/rap/datetime/drop_down_button.gif );
   background-color: rgb( 248, 248, 255 );
   border: 1px outset;
   width: 15px;
+}
+
+DateTime-UpButton-Icon, DateTime-DownButton-Icon, DateTime-DropDownButton-Icon {
+  background-image: none;
 }
 
 DateTime-DropDownCalendar {

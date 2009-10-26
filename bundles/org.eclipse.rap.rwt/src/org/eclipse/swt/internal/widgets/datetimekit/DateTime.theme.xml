@@ -176,7 +176,8 @@
 
       <property name="background-image">
         <description>
-          Background image (icon) for the DateTime Date/Time up button.
+          Background image, gradient or icon if not specified in
+          DateTime-UpButton-Icon for DateTime up button.
         </description>
       </property>
 
@@ -210,6 +211,26 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
+          
+      <state name="disabled"
+          description="Applies to disabled DateTime up button." />
+
+    </element>
+    
+    <element name="DateTime-UpButton-Icon"
+        description="The DateTime up button icon">
+
+      <property name="background-image"
+          description="The icon for DateTime up button." />
+          
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
+
+      <state name="pressed"
+          description="Applies while a button is pressed." />
+          
+      <state name="disabled"
+          description="Applies to disabled DateTime up button." />
 
     </element>
 
@@ -218,7 +239,8 @@
 
       <property name="background-image">
         <description>
-          Background image (icon) for the DateTime Date/Time down button.
+          Background image, gradient or icon if not specified in
+          DateTime-DownButton-Icon for DateTime down button.
         </description>
       </property>
 
@@ -252,6 +274,26 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
+          
+      <state name="disabled"
+          description="Applies to disabled DateTime down button." />
+
+    </element>
+    
+    <element name="DateTime-DownButton-Icon"
+        description="The DateTime down button icon">
+
+      <property name="background-image"
+          description="The icon for DateTime down button." />
+          
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
+
+      <state name="pressed"
+          description="Applies while a button is pressed." />
+          
+      <state name="disabled"
+          description="Applies to disabled DateTime down button." />
 
     </element>
 
@@ -263,7 +305,8 @@
 
       <property name="background-image">
         <description>
-          Background image (icon) for the DateTime Date drop-down button.
+          Background image, gradient or icon if not specified in
+          DateTime-DropDownButton-Icon for DateTime drop-down button.
         </description>
       </property>
 
@@ -298,6 +341,25 @@
       <state name="pressed"
           description="Applies while a button is pressed." />
 
+    </element>
+    
+    <element name="DateTime-DropDownButton-Icon">
+      <description>
+        The drop-down button icon.
+      </description>
+      
+      <property name="background-image">
+        <description>
+          The icon for the DateTime drop-down button.
+        </description>
+      </property>
+      
+      <state name="hover"
+        description="Applies while the user hovers over the button." />
+
+      <state name="pressed"
+          description="Applies while a button is pressed." />
+      
     </element>
 
     <element name="DateTime-DropDownCalendar">
