@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -88,12 +89,12 @@ public class CoolBarTab extends ExampleTab {
     item1.setText( "new" + id );
     item1.setImage( image1 );
     ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
-    item2.setText( "open" );
+    item2.setText( "open" + id );
     ToolItem item3 = new ToolItem( toolBar, SWT.PUSH );
-    item3.setText( "save as" );
+    item3.setText( "save as" + id );
     new ToolItem( toolBar, SWT.SEPARATOR );
     ToolItem item4 = new ToolItem( toolBar, SWT.PUSH );
-    item4.setText( "print" );
+    item4.setText( "print" + id );
     return toolBar;
   }
 
