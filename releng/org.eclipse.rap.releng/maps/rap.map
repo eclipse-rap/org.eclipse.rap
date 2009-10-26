@@ -75,6 +75,8 @@ plugin@org.eclipse.rap.maildemo.ext=HEAD,:pserver:anonymous@dev.eclipse.org:/cvs
 feature@org.eclipse.rap.releng.warbuild.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/warbuild/demo-feature
 
 plugin@org.eclipse.equinox.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge
+plugin@org.eclipse.equinox.servletbridge.template=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge.template
+fragment@org.eclipse.equinox.servletbridge.extensionbundle=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge.extensionbundle
 plugin@org.eclipse.equinox.http.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.http.servletbridge
 
 # rms
