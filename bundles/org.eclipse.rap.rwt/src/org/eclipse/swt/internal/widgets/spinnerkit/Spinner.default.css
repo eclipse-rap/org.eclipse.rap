@@ -22,9 +22,21 @@ Spinner-UpButton:pressed, Spinner-DownButton:pressed {
 }
 
 Spinner-UpButton {
+  /* 
+  For backward compatibility we have to keep the up button icon
+  definition in Spinner-UpButton and not in Spinner-UpButton-Icon
+  */
   background-image: url( resource/widget/rap/spinner/up_button.gif );
 }
 
 Spinner-DownButton {
+  /* 
+  For backward compatibility we have to keep the down button icon
+  definition in Spinner-DownButton and not in Spinner-DownButton-Icon
+  */
   background-image: url( resource/widget/rap/spinner/down_button.gif );
+}
+
+Spinner-UpButton-Icon, Spinner-DownButton-Icon {
+  background-image: none;
 }

@@ -1203,7 +1203,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
-      result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
+      result.icon = tv.getCssImage( "Spinner-UpButton-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "Spinner-UpButton", 
+                                                 "background-image" );
+      }      
+      result.backgroundGradient = tv.getCssGradient( "Spinner-UpButton", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
       result.backgroundColor = tv.getCssColor( "Spinner-UpButton",
                                                "background-color" );
@@ -1216,7 +1224,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
-      result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
+      result.icon = tv.getCssImage( "Spinner-DownButton-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "Spinner-DownButton", 
+                                                 "background-image" );
+      }      
+      result.backgroundGradient = tv.getCssGradient( "Spinner-DownButton", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
       result.backgroundColor = tv.getCssColor( "Spinner-DownButton",
                                                "background-color" );
