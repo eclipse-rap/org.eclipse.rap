@@ -57,6 +57,25 @@
           description="Applies to items of a disabled CTabFolder." />
 
     </element>
+            
+    <element name="CTabFolder-DropDownButton-Icon">
+      <description>
+        The drop-down button icon (chevron).
+      </description>
+      
+      <property name="background-image">
+        <description>
+          The icon for the CTabFolder drop-down button.
+        </description>
+      </property>
+      
+      <state name="hover"
+          description="Applies while the user hovers over the button." />
+
+      <state name="pressed"
+          description="Applies while a button is pressed." />
+      
+    </element>
 
   </element>
 

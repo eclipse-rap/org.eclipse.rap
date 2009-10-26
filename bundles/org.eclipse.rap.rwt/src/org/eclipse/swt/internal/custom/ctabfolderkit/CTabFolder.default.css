@@ -23,3 +23,7 @@ CTabItem:selected {
 CTabItem:disabled {
   color: black;
 }
+
+CTabFolder-DropDownButton-Icon {
+  background-image: url( resource/widget/rap/ctabfolder/chevron.gif );
+}

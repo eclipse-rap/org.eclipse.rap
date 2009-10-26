@@ -1562,6 +1562,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "ctabfolder-drop-down-button" : {
+    include : "ctabfolder-button",
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );      
+      result.icon = tv.getCssImage( "CTabFolder-DropDownButton-Icon",
+                                    "background-image" );      
+      return result;
+    }
+  },  
 
   "ctab-close-button" : {
     include : "image",

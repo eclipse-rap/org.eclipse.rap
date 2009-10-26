@@ -240,10 +240,9 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       if( this._chevron == null ) {
         // Create chevron button
         this._chevron = new qx.ui.form.Button();
-        this._chevron.setAppearance( "ctabfolder-button" );
+        this._chevron.setAppearance( "ctabfolder-drop-down-button" );
         this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
-        this._chevron.setIcon( "widget/ctabfolder/chevron.gif" );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, 
                        org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP );
