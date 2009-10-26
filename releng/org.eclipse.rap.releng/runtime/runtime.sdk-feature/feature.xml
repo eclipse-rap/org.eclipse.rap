@@ -104,7 +104,7 @@
    <plugin id="org.eclipse.rap.jface.databinding" version="0.0.0" unpack="false"/>
    <plugin id="org.eclipse.rap.jface.databinding.source" version="0.0.0" unpack="false"/>
 
-   <plugin id="org.eclipse.rap.junit" version="0.0.0" unpack="false"/>
+   <plugin id="org.eclipse.rap.junit" version="0.0.0" unpack="true"/>
    <plugin id="org.eclipse.rap.junit.source" version="0.0.0" unpack="false"/>
 
    <plugin id="org.eclipse.rap.junit.runtime" version="0.0.0" unpack="false"/>
