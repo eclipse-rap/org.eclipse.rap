@@ -218,7 +218,7 @@ public final class UntypedEventAdapter
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
-  
+
   public void helpRequested( final HelpEvent typedEvent ) {
     Event event = createEvent( SWT.Help, typedEvent.getSource() );
     copyFields( typedEvent, event );
@@ -418,6 +418,89 @@ public final class UntypedEventAdapter
       }
     }
     return ( Listener[] )result.toArray( new Listener[0] );
+  }
+
+  public boolean hasUntypedListener( final int eventType ) {
+    boolean result = false;
+    Entry[] entries = getEntries();
+    for( int i = 0; !result && i < entries.length; i++ ) {
+      Entry entry = entries[ i ];
+      if( entry.eventType == eventType ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  public static boolean hasTypedListener( final Widget widget, 
+                                          final int eventType )
+  {
+    boolean result = false;
+    switch( eventType ) {
+      case SWT.Move:
+      case SWT.Resize:
+        result = ControlEvent.hasListener( widget );
+        break;
+      case SWT.Dispose:
+        result = DisposeEvent.hasListener( widget );
+        break;
+      case SWT.Selection:
+      case SWT.DefaultSelection:
+        result = SelectionEvent.hasListener( widget );
+        break;
+      case SWT.FocusIn:
+      case SWT.FocusOut:
+        result = FocusEvent.hasListener( widget );
+        break;
+      case SWT.Expand:
+      case SWT.Collapse:
+        result = TreeEvent.hasListener( widget );
+        break;
+      case SWT.Activate:
+      case SWT.Deactivate:
+        if( widget instanceof Shell ) {
+          result = ShellEvent.hasListener( widget );
+        } else {
+          result = ActivateEvent.hasListener( widget );
+        }
+        break;
+      case SWT.Close:
+        result = ShellEvent.hasListener( widget );
+        break;
+      case SWT.Hide:
+      case SWT.Show:
+        if( widget instanceof Control ) {
+          result = ShowEvent.hasListener( widget );
+        } else {
+          result = MenuEvent.hasListener( widget );
+        }
+        break;
+      case SWT.Modify:
+        result = ModifyEvent.hasListener( widget );
+        break;
+      case SWT.Verify:
+        result = VerifyEvent.hasListener( widget );
+        break;
+      case SWT.SetData:
+        result = SetDataEvent.hasListener( widget );
+        break;
+      case SWT.MouseDown:
+      case SWT.MouseUp:
+      case SWT.MouseDoubleClick:
+        result = MouseEvent.hasListener( widget );
+        break;
+      case SWT.KeyDown:
+      case SWT.KeyUp:
+        result = KeyEvent.hasListener( widget );
+        break;
+      case SWT.Traverse:
+        result = TraverseEvent.hasListener( widget );
+        break;
+      case SWT.Help:
+        result = HelpEvent.hasListener( widget );
+        break;
+    }
+    return result;
   }
 
   public static void notifyListeners( final int eventType, final Event event ) {

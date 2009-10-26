@@ -575,7 +575,14 @@ public abstract class Widget implements Adaptable {
    */
   public boolean isListening( final int eventType ) {
     checkWidget();
-    return getListeners( eventType ).length > 0;
+    boolean result = false;
+    if( untypedAdapter != null ) {
+      result = untypedAdapter.hasUntypedListener( eventType );
+    }
+    if( !result ) {
+      result = UntypedEventAdapter.hasTypedListener( this, eventType );
+    }
+    return result;
   }
   
   /**
@@ -603,7 +610,7 @@ public abstract class Widget implements Adaptable {
     checkWidget();
     Listener[] listeners;
     if( untypedAdapter == null ) {
-      listeners = new Listener[0];
+      listeners = new Listener[ 0 ];
     } else {
       listeners = untypedAdapter.getListeners( eventType );
     }

@@ -358,4 +358,15 @@ public class Widget_Test extends TestCase {
     widget.removeListener( SWT.Resize, dummyListener );
     assertFalse( widget.isListening( SWT.Resize ) );
   }
+  
+  public void testIsListeningForTypedEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Control control = new Shell( display );
+    control.addHelpListener( new HelpListener() {
+      public void helpRequested( final HelpEvent event ) {
+      }
+    } );
+    assertTrue( control.isListening( SWT.Help ) );
+  }
 }
