@@ -69,8 +69,13 @@ import org.eclipse.ui.progress.WorkbenchJob;
 public class DecoratorManager implements ILabelProviderListener,
 		IDecoratorManager, IExtensionChangeHandler {
 
-	private static String EXTENSIONPOINT_UNIQUE_ID = WorkbenchPlugin.PI_WORKBENCH
-			+ "." + IWorkbenchRegistryConstants.PL_DECORATORS; //$NON-NLS-1$
+// RAP [rh] extension point namespace (see bug 293379)
+//	private static String EXTENSIONPOINT_UNIQUE_ID = WorkbenchPlugin.PI_WORKBENCH
+//			+ "." + IWorkbenchRegistryConstants.PL_DECORATORS; //$NON-NLS-1$
+	private static String EXTENSIONPOINT_UNIQUE_ID
+	  = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
+	  + "." 
+	  + IWorkbenchRegistryConstants.PL_DECORATORS; //$NON-NLS-1$
 
 	/**
 	 * The family for the decorate job.
