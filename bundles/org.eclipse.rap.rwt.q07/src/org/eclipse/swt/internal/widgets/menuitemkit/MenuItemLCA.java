@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
@@ -55,8 +56,8 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    MenuItem menuItem = ( MenuItem )widget;
-    getDelegateLCA( menuItem ).renderDispose( menuItem );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
   
   private static boolean isTopLevelMenuBarItem( final MenuItem menuItem ) {

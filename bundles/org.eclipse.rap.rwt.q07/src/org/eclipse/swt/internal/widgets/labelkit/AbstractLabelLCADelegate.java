@@ -21,5 +21,4 @@ abstract class AbstractLabelLCADelegate {
   abstract void readData( Label label );
   abstract void renderInitialization( Label label ) throws IOException;
   abstract void renderChanges( Label label ) throws IOException;
-  abstract void renderDispose( Label label ) throws IOException;
 }

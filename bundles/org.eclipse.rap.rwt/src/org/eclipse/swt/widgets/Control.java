@@ -56,6 +56,18 @@ public abstract class Control extends Widget {
       return result;
     }
 
+    public Shell getShell() {
+      return Control.this.internalGetShell();
+    }
+
+    public int getTabIndex() {
+      return tabIndex;
+    }
+
+    public void setTabIndex( final int index ) {
+      tabIndex = index;
+    }
+
     public Font getUserFont() {
       return font;
     }
@@ -74,14 +86,6 @@ public abstract class Control extends Widget {
 
     public boolean getBackgroundTransparency() {
       return backgroundTransparency;
-    }
-
-    public int getTabIndex() {
-      return tabIndex;
-    }
-
-    public void setTabIndex( final int index ) {
-      tabIndex = index;
     }
   }
 
@@ -189,7 +193,11 @@ public abstract class Control extends Widget {
    */
   public Shell getShell() {
     checkWidget();
-    return parent.getShell();
+    return internalGetShell();
+  }
+
+  Shell internalGetShell() {
+    return parent.internalGetShell();
   }
 
   /**

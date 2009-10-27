@@ -21,6 +21,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 public class TabFolderAndItem_Test extends TestCase {
@@ -254,7 +255,7 @@ public class TabFolderAndItem_Test extends TestCase {
     TabItem item = new TabItem( folder, SWT.NONE );
     folder.dispose();
     assertEquals( true, item.isDisposed() );
-    assertEquals( 0, folder.getItemCount() );
+    assertEquals( 0, ItemHolder.getItems( folder ).length );
   }
   
   public void testIndexedItemCreation() {

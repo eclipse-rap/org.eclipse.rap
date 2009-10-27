@@ -44,12 +44,14 @@ public class ButtonLCA_Test extends TestCase {
     //default
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    Boolean isDefault = ( Boolean )adapter.getPreserved( ButtonLCAUtil.PROP_DEFAULT );
+    Boolean isDefault
+      = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.FALSE, isDefault );
     button.getShell().setDefaultButton( button );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
-    isDefault = ( Boolean )adapter.getPreserved( ButtonLCAUtil.PROP_DEFAULT );
+    isDefault
+      = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.TRUE, isDefault );
     RWTFixture.clearPreserved();
     display.dispose();
@@ -380,9 +382,9 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.PUSH );
-    assertFalse( ButtonLCAUtil.isDefaultButton( button ) );
+    assertFalse( PushButtonDelegateLCA.isDefaultButton( button ) );
     shell.setDefaultButton( button );
-    assertTrue( ButtonLCAUtil.isDefaultButton( button ) );
+    assertTrue( PushButtonDelegateLCA.isDefaultButton( button ) );
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872

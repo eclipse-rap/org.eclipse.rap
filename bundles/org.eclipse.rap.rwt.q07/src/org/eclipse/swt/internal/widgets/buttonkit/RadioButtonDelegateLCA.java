@@ -53,11 +53,6 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.writeChanges( button );
   }
 
-  void renderDispose( final Button button ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( button );
-    writer.dispose();
-  }
-     
   private static void processSelectionEvent( final Button button ) {
     if( SelectionEvent.hasListener( button ) ) {
       int type = SelectionEvent.WIDGET_SELECTED;

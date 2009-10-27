@@ -92,11 +92,6 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
     WidgetLCAUtil.writeCustomVariant( dateTime );
   }
 
-  void renderDispose( final DateTime dateTime ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( dateTime );
-    writer.dispose();
-  }
-
   ///////////////////////////////////////
   // Helping methods to write properties
 

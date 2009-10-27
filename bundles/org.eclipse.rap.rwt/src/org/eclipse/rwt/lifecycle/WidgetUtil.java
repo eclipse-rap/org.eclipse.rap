@@ -123,7 +123,7 @@ public final class WidgetUtil {
     //      - safer 1: in case someone tries to obtain id directly from addapter
     //      - safer 2: changing the id after widget was initialized could be
     //        detected and prevented
-    //      - less memory: new HashMap created per widget to hold the id
+    //      - less memory: new 'data' array created per widget to hold the id
     //      - illegal id's could be rejected immediately (close to error source)
     //      - faster (?): only "return getAdapter( widget ).getId();" in here
     String result = null;

@@ -26,6 +26,7 @@ import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 
 public class Tree_Test extends TestCase {
 
@@ -100,9 +101,9 @@ public class Tree_Test extends TestCase {
     assertEquals( true, item.isDisposed() );
     assertEquals( true, subItem.isDisposed() );
     assertEquals( true, column.isDisposed() );
-    assertEquals( 0, tree.getItemCount() );
-    assertEquals( 0, item.getItemCount() );
-    assertEquals( 0, subItem.getItemCount() );
+    assertEquals( 0, ItemHolder.getItems( tree ).length );
+    assertEquals( 0, ItemHolder.getItems( item ).length );
+    assertEquals( 0, ItemHolder.getItems( subItem ).length );
   }
 
   public void testDisposeSelected() {

@@ -56,11 +56,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writeGrayed( button );
   }
 
-  void renderDispose( final Button button ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( button );
-    writer.dispose();
-  }
-
   private static void writeGrayed( final Button button ) throws IOException {
     Boolean newValue = Boolean.valueOf( button.getGrayed() );
     String prop = PROP_GRAYED;

@@ -120,8 +120,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
    */
   public void renderDispose( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
-    // When the Table is disposed of, it takes care of disposing all its items
-    if( !item.getParent().isDisposed() ) {
+    if( !isParentDisposed( item ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "dispose", null );
     }
@@ -472,5 +471,11 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     WidgetAdapter adapter
       = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
     adapter.setInitialized( initialized );
+  }
+  
+  private boolean isParentDisposed( final TableItem item ) {
+    ITableItemAdapter adapter
+      = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    return adapter.isParentDisposed();
   }
 }

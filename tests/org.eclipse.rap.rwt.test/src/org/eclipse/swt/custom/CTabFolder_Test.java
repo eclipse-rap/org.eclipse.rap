@@ -24,7 +24,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
 
@@ -98,7 +99,7 @@ public class CTabFolder_Test extends TestCase {
     folder1.dispose();
     assertEquals( true, folder1.isDisposed() );
     assertEquals( true, item1.isDisposed() );
-    assertEquals( 0, folder1.getItemCount() );
+    assertEquals( 0, ItemHolder.getItems( folder1 ).length );
 
     // Ensure that no SelectionEvent is sent when disposing of a CTabFolder
     assertEquals( "", log.toString() );

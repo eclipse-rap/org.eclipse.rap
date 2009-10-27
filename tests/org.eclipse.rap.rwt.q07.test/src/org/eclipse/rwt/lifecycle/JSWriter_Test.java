@@ -27,7 +27,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -983,15 +982,17 @@ public class JSWriter_Test extends TestCase {
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "wm.dispose( \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-
-    Fixture.fakeResponseWriter();
-    shell.setDefaultButton( shell.button );
-    ButtonLCA btnLCA = new ButtonLCA();
-    btnLCA.renderDispose( shell.button );
-    expected
-      =   "var t = wm.findWidgetById( \"w3\" );"
-        + "t.setDefaultButton( null );"
-        + "wm.dispose( \"w2\" );";
+  }
+  
+  public void testDisposeWithDisposedControl() throws IOException {
+    Display display = new Display();
+    TestShell shell = new TestShell( display );
+    shell.button.dispose();
+    JSWriter writer = JSWriter.getWriterFor( shell.button );
+    writer.dispose();
+    String expected
+      = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+      + "wm.dispose( \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

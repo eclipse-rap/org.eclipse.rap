@@ -84,6 +84,10 @@ public class TableItem extends Item {
       }
       return result;
     }
+    
+    public boolean isParentDisposed() {
+      return TableItem.this.parent.isDisposed();  
+    }
   }
 
   private static final class Data {

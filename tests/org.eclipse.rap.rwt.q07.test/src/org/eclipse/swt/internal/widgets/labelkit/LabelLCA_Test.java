@@ -253,6 +253,17 @@ public class LabelLCA_Test extends TestCase {
     assertTrue( actual.indexOf( expected1 ) != -1 );
     assertTrue( actual.indexOf( expected2 ) != -1 );
   }
+  
+  public void testRenderDispose() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+    label.dispose();
+    Fixture.fakeResponseWriter();
+    LabelLCA labelLCA = new LabelLCA();
+    labelLCA.renderDispose( label );
+    assertEquals( "wm.dispose( \"w2\" );", Fixture.getAllMarkup() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

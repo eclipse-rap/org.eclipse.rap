@@ -350,7 +350,7 @@ public class Shell extends Decorations {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
 
-  public Shell getShell() {
+  Shell internalGetShell() {
     return this;
   }
 

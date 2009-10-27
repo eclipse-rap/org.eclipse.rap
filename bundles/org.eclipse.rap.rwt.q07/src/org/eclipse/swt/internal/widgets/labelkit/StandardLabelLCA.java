@@ -71,11 +71,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     WidgetLCAUtil.writeCustomVariant( label );
   }
 
-  void renderDispose( final Label label ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( label );
-    writer.dispose();
-  }
-
   //////////////////////////////////////
   // Helping methods to write JavaScript
 

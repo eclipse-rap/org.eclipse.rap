@@ -483,26 +483,30 @@ public class ControlLCAUtil {
   public static void writeActivateListener( final Control control )
     throws IOException
   {
-    Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
-    Boolean defValue = Boolean.FALSE;
-    String prop = PROP_ACTIVATE_LISTENER;
-    Shell shell = control.getShell();
-    if(    !shell.isDisposed()
-        && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) )
-    {
-      String function = newValue.booleanValue()
-                      ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
-                      : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
-      JSWriter writer = JSWriter.getWriterFor( control );
-      Object[] args = new Object[] { control };
-      writer.call( shell, function, args );
+    if( !control.isDisposed() ) {
+      Boolean newValue
+        = Boolean.valueOf( ActivateEvent.hasListener( control ) );
+      Boolean defValue = Boolean.FALSE;
+      String prop = PROP_ACTIVATE_LISTENER;
+      Shell shell = control.getShell();
+      if(    !shell.isDisposed()
+          && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) )
+      {
+        String function = newValue.booleanValue()
+                        ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
+                        : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
+        JSWriter writer = JSWriter.getWriterFor( control );
+        writer.call( shell, function, new Object[]{ control } );
+      }
     }
   }
 
   static void resetActivateListener( final Control control )
     throws IOException
   {
-    Shell shell = control.getShell();
+    Object adapter = control.getAdapter( IControlAdapter.class );
+    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+    Shell shell = controlAdapter.getShell();
     if( !shell.isDisposed() && ActivateEvent.hasListener( control ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.call( shell,

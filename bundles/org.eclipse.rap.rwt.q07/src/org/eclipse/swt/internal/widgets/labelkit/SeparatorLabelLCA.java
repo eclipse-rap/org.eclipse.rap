@@ -52,11 +52,6 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     WidgetLCAUtil.writeCustomVariant( label );
   }
 
-  void renderDispose( final Label label ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( label );
-    writer.dispose();
-  }
-
   private static void writeStyle( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     int style = label.getStyle();

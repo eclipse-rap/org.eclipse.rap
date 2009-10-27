@@ -43,6 +43,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static final String PROP_SHELL_MENU  = "menuBar";
   private static final String PROP_SHELL_MENU_BOUNDS  = "menuBarShellClientArea";
 
+  private final static Object[] NULL_PARAMETER = new Object[] { null };
+
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     Shell shell = ( Shell )widget;
@@ -107,7 +109,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "resizable",
                 new Object[] { resizable, resizable, resizable, resizable } );
     Composite parent = shell.getParent();
-    if( ( parent instanceof Shell ) ) {
+    if( parent instanceof Shell ) {
       writer.set( "parentShell", parent );
     }
     writer.call( "initialize", null );
@@ -129,6 +131,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeMode( shell );
     writeCloseListener( shell );
     writeMinimumSize( shell );
+    writeDefaultButton( shell );
     WidgetLCAUtil.writeCustomVariant( shell );
   }
 
@@ -158,7 +161,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
                                   new Integer( 0xFF ) ) )
     {
       JSWriter writer = JSWriter.getWriterFor( shell );
-      float opacity = ( ( alpha & 0xFF ) * 1000 / 0xFF ) / 1000.0f;
+      float opacity = ( alpha & 0xFF ) * 1000 / 0xFF / 1000.0f;
       writer.set( "opacity", opacity );
     }
   }
@@ -181,6 +184,15 @@ public final class ShellLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.set( "minWidth", new Integer( newValue.x ) );
       writer.set( "minHeight", new Integer( newValue.y ) );
+    }
+  }
+
+  private static void writeDefaultButton( final Shell shell ) throws IOException
+  {
+    Button defaultButton = shell.getDefaultButton();
+    if( defaultButton != null && defaultButton.isDisposed() ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.call( "setDefaultButton", NULL_PARAMETER );
     }
   }
 
@@ -269,7 +281,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void writeImage( final Shell shell ) throws IOException {
-    if( ( shell.getStyle() & ( SWT.TITLE ) ) != 0 ) {
+    if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {
       Image image = shell.getImage();
       if( image == null ) {
         Image[] defaultImages = shell.getImages();

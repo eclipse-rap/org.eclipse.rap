@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
@@ -20,5 +21,4 @@ abstract class AbstractDateTimeLCADelegate {
   abstract void readData( DateTime dateTime );
   abstract void renderInitialization( DateTime dateTime ) throws IOException;
   abstract void renderChanges( DateTime dateTime ) throws IOException;
-  abstract void renderDispose( DateTime dateTime ) throws IOException;
 }

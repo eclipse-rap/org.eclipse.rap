@@ -90,7 +90,7 @@ public abstract class Widget implements Adaptable {
   Display display;
   private Object data;
   private AdapterManager adapterManager;
-  private WidgetAdapter widgetAdapter;
+  private IWidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
@@ -265,7 +265,12 @@ public abstract class Widget implements Adaptable {
    * @see #setData(String, Object)
    */
   public Object getData( final String key ) {
-    checkWidget();
+    // Must not call checkWidget() here to allow to obtain the custom id after
+    // the widget has been disposed of (see WidgetUtil#getId). Only validate 
+    // thread.
+    if( !isValidThread() ) {
+      error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -745,43 +750,39 @@ public abstract class Widget implements Adaptable {
   void releaseWidget() {
     adapterManager = null;
     untypedAdapter = null;
-    // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
-    //       running.
-//    data = null;
     state |= DISPOSED;
   }
 
-//  /**
-//   * Checks that this class can be subclassed.
-//   * <p>
-//   * The SWT class library is intended to be subclassed
-//   * only at specific, controlled points (most notably,
-//   * <code>Composite</code> and <code>Canvas</code> when
-//   * implementing new widgets). This method enforces this
-//   * rule unless it is overridden.
-//   * </p><p>
-//   * <em>IMPORTANT:</em> By providing an implementation of this
-//   * method that allows a subclass of a class which does not
-//   * normally allow subclassing to be created, the implementer
-//   * agrees to be fully responsible for the fact that any such
-//   * subclass will likely fail between SWT releases and will be
-//   * strongly platform specific. No support is provided for
-//   * user-written classes which are implemented in this fashion.
-//   * </p><p>
-//   * The ability to subclass outside of the allowed SWT classes
-//   * is intended purely to enable those not on the SWT development
-//   * team to implement patches in order to get around specific
-//   * limitations in advance of when those limitations can be
-//   * addressed by the team. Subclassing should not be attempted
-//   * without an intimate and detailed understanding of the hierarchy.
-//   * </p>
-//   *
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
-//   * </ul>
-//   */
+  /**
+   * Checks that this class can be subclassed.
+   * <p>
+   * The SWT class library is intended to be subclassed
+   * only at specific, controlled points (most notably,
+   * <code>Composite</code> and <code>Canvas</code> when
+   * implementing new widgets). This method enforces this
+   * rule unless it is overridden.
+   * </p><p>
+   * <em>IMPORTANT:</em> By providing an implementation of this
+   * method that allows a subclass of a class which does not
+   * normally allow subclassing to be created, the implementer
+   * agrees to be fully responsible for the fact that any such
+   * subclass will likely fail between SWT releases and will be
+   * strongly platform specific. No support is provided for
+   * user-written classes which are implemented in this fashion.
+   * </p><p>
+   * The ability to subclass outside of the allowed SWT classes
+   * is intended purely to enable those not on the SWT development
+   * team to implement patches in order to get around specific
+   * limitations in advance of when those limitations can be
+   * addressed by the team. Subclassing should not be attempted
+   * without an intimate and detailed understanding of the hierarchy.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   */
   protected void checkSubclass() {
-    // TODO [rh] IMPLEMENTATION MISSING (see Display#isValidClass)
     if( !isValidSubclass() ) {
       error( SWT.ERROR_INVALID_SUBCLASS );
     }
@@ -823,11 +824,9 @@ public abstract class Widget implements Adaptable {
     if( !isValidThread() ) {
       error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
-//    TODO [fappel]: implementation
-//    if( isDisposed() ) {
-//      error( SWT.ERROR_WIDGET_DISPOSED );
-//    }
-//    if ((state & DISPOSED) != 0) error (SWT.ERROR_WIDGET_DISPOSED);
+    if( ( state & DISPOSED ) != 0 ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
   }
 
   /*

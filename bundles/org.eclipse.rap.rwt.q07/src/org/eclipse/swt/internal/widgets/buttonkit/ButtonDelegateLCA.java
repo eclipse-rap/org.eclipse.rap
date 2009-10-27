@@ -19,5 +19,4 @@ abstract class ButtonDelegateLCA {
   abstract void readData( Button button );
   abstract void renderInitialization( Button button ) throws IOException;
   abstract void renderChanges( Button button ) throws IOException;
-  abstract void renderDispose( Button button ) throws IOException;
 }

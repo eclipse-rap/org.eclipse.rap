@@ -16,12 +16,12 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class ButtonLCA extends AbstractWidgetLCA {
   
-  private final static Object[] NULL_PARAMETER = new Object[] { null };
   private final static ButtonDelegateLCA PUSH = new PushButtonDelegateLCA();
   private final static ButtonDelegateLCA CHECK = new CheckButtonDelegateLCA();
   private final static ButtonDelegateLCA RADIO = new RadioButtonDelegateLCA();
@@ -43,13 +43,8 @@ public final class ButtonLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    Button button = ( Button )widget;
-    Shell shell = button.getShell();
-    if( !shell.isDisposed() && ButtonLCAUtil.isDefaultButton( button ) ) {
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.call( shell, "setDefaultButton", NULL_PARAMETER );
-    }
-    getLCADelegate( widget ).renderDispose( ( Button )widget );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 
   private static ButtonDelegateLCA getLCADelegate( final Widget widget ) {

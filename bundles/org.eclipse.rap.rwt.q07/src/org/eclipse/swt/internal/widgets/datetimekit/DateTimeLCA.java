@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Widget;
@@ -43,7 +45,8 @@ public final class DateTimeLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    getDelegate( widget ).renderDispose( ( DateTime )widget );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 
   private static AbstractDateTimeLCADelegate getDelegate( final Widget widget )

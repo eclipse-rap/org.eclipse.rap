@@ -31,7 +31,6 @@ final class ButtonLCAUtil {
 
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
-  static final String PROP_DEFAULT = "defaultButton";
   static final String PROP_SELECTION_LISTENERS = "selectionListeners";
 
   private static final String PARAM_SELECTION = "selection";
@@ -59,8 +58,6 @@ final class ButtonLCAUtil {
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
-    adapter.preserve( PROP_DEFAULT,
-                      Boolean.valueOf( isDefaultButton( button ) ) );
     boolean hasListeners = SelectionEvent.hasListener( button );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListeners ) );
@@ -124,19 +121,6 @@ final class ButtonLCAUtil {
     writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
   }
 
-  // TODO [rst] Can this be moved to ShellLCA ?
-  static void writeDefault( final Button button ) throws IOException {
-    boolean isDefault = isDefaultButton( button );
-    Boolean defValue = Boolean.FALSE;
-    Boolean actValue = Boolean.valueOf( isDefault );
-    if( WidgetLCAUtil.hasChanged( button, PROP_DEFAULT, actValue, defValue ) ) {
-      if( isDefault ) {
-        JSWriter writer = JSWriter.getWriterFor( button.getShell() );
-        writer.set( "defaultButton", new Object[] { button } );
-      }
-    }
-  }
-
   static void writeSelectionListener( final Button button ) throws IOException {
     boolean hasListener = SelectionEvent.hasListener( button );
     Boolean newValue = Boolean.valueOf( hasListener );
@@ -145,10 +129,6 @@ final class ButtonLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( button );
       writer.set( "hasSelectionListener", newValue );
     }
-  }
-
-  static boolean isDefaultButton( final Button button ) {
-    return button.getShell().getDefaultButton() == button;
   }
 
   static void writeChanges( final Button button ) throws IOException {

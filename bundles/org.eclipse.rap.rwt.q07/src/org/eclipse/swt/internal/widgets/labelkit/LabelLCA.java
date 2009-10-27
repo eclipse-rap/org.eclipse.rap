@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.labelkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
@@ -42,7 +43,8 @@ public class LabelLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    getDelegate( widget ).renderDispose( ( Label )widget );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 
   private static AbstractLabelLCADelegate getDelegate( final Widget widget ) {
