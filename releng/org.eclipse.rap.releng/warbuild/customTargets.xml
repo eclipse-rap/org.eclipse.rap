@@ -85,15 +85,6 @@
       </fileset>
     </unzip>
 
-  	<!-- Delete ...servletbridge and ...template. They are only used during 
-  	     build and should not go into the final WAR file -->
-  	<delete>
-      <fileset dir="${warDirectory}/plugins">
-          <filename name="org.eclipse.equinox.servletbridge.template_*.jar" />
-          <filename name="org.eclipse.equinox.servletbridge_*.jar" />
-      </fileset>
-  	</delete>
-
     <mkdir dir="${outputDirectory}" />
     <zip destfile="${outputDirectory}/rapdemo.war" basedir="${warDirectory}" />
 
