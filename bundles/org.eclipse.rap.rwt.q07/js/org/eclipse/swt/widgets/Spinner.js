@@ -80,6 +80,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._textfield.setSelectionLength( 0 );
       this._textfield._visualizeBlur();
     },
+    
+    // [if] Override original qooxdoo Spinner method. Fix for bug 209476
+    _oninput : function( evt ){
+      this._checkValue( true, false );
+    },
 
     _onChangeValue : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend && !this._isModified ) {
