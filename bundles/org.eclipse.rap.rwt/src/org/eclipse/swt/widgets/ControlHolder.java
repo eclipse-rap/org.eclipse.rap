@@ -75,6 +75,14 @@ final class ControlHolder {
     return controls.indexOf( control );
   }
   
+
+  boolean contains( final Control control ) {
+    if( control == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    return controls.contains( control );
+  }
+  
   static int size( Composite composite ) {
     return getControlHolder( composite ).size();
   }

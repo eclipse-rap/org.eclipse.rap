@@ -109,6 +109,43 @@ public class Widget_Test extends TestCase {
     }
   }
 
+  public void testDisposeParentWhileInDispose() {
+    // This test leads to a stack overflow or, if line "item[ 0 ].dispose();"
+    // is activated to a NPE
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Composite composite = new Composite( shell, SWT.NONE );
+    ToolBar toolbar = new ToolBar( composite, SWT.NONE );
+    final ToolItem[] item = { null };
+    toolbar.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( final DisposeEvent event ) {
+        item[ 0 ].dispose();
+      }
+    } );
+    toolbar.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( final DisposeEvent event ) {
+        composite.dispose();
+      }
+    } );
+    item[ 0 ] = new ToolItem( toolbar, SWT.PUSH );
+    shell.dispose();
+    // no assert: this test ensures that no StackOverflowError occurs
+  }
+  
+  public void testDisposeSelfWhileInDispose() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    final Shell widget = new Shell( display, SWT.NONE );
+    widget.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( final DisposeEvent event ) {
+        widget.dispose();
+      }
+    } );
+    widget.dispose();
+    // no assert: this test ensures that no exception occurs
+  }
+
   public void testCheckBits() {
     int style = SWT.VERTICAL | SWT.HORIZONTAL;
     int result = Widget.checkBits( style,
@@ -313,16 +350,16 @@ public class Widget_Test extends TestCase {
     control.notifyListeners( SWT.Resize, null );
     assertEquals( "typed", log.toString() );
   }
-  
+
   public void testNotifyListenersInvalidEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Widget widget = new Shell( display );
     widget.notifyListeners( 4711, new Event() );
-    // no assertion: this test ensures that invalid event types are silently 
-    // ignored 
+    // no assertion: this test ensures that invalid event types are silently
+    // ignored
   }
-  
+
   public void testGetListeners() throws Exception {
     final Display display = new Display();
     final Widget widget = new Shell( display );
@@ -330,11 +367,11 @@ public class Widget_Test extends TestCase {
     assertNotNull( listeners );
     assertEquals( 0, listeners.length );
     Listener dummyListener = new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
       }
     };
     Listener dummyListener2 = new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
       }
     };
     widget.addListener( SWT.Resize, dummyListener );
@@ -349,7 +386,7 @@ public class Widget_Test extends TestCase {
     final Display display = new Display();
     final Widget widget = new Shell( display );
     final Listener dummyListener = new Listener() {
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
       }
     };
     assertFalse( widget.isListening( SWT.Resize ) );
@@ -358,7 +395,7 @@ public class Widget_Test extends TestCase {
     widget.removeListener( SWT.Resize, dummyListener );
     assertFalse( widget.isListening( SWT.Resize ) );
   }
-  
+
   public void testIsListeningForTypedEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();

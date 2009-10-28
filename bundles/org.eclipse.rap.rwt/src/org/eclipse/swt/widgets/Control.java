@@ -1872,7 +1872,7 @@ public abstract class Control extends Widget {
       }
       setFocusControl( focusControl );
     }
-    Shell shell = getShell();
+    Shell shell = internalGetShell();
     if( shell.getSavedFocus() == this ) {
       shell.setSavedFocus( null );
     }

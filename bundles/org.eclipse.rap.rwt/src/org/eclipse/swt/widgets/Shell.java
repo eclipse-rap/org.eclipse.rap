@@ -367,6 +367,10 @@ public class Shell extends Decorations {
    */
   public Shell [] getShells() {
     checkWidget();
+    return internalGetShells();
+  }
+
+  private Shell[] internalGetShells() {
     int count = 0;
     Shell[] shells = display.getShells();
     for( int i = 0; i < shells.length; i++ ) {
@@ -1026,7 +1030,7 @@ public class Shell extends Decorations {
 
   void releaseChildren() {
     super.releaseChildren();
-    Shell[] dialogShells = getShells();
+    Shell[] dialogShells = internalGetShells();
     for( int i = 0; i < dialogShells.length; i++ ) {
       dialogShells[ i ].dispose();
     }

@@ -197,7 +197,7 @@ public class ToolBar extends Composite {
    */
   public ToolItem[] getItems() {
     checkWidget();
-    return (org.eclipse.swt.widgets.ToolItem[] )itemHolder.getItems();
+    return ( ToolItem[] )itemHolder.getItems();
   }
 
   /**
@@ -336,7 +336,7 @@ public class ToolBar extends Composite {
 
   void removeControl( final Control control ) {
     super.removeControl( control );
-    ToolItem[] items = getItems();
+    ToolItem[] items = ( ToolItem[] )itemHolder.getItems();
     for( int i = 0; i < items.length; i++ ) {
       ToolItem item = items[ i ];
       if( item != null && item.getControl() == control ) {
@@ -349,7 +349,7 @@ public class ToolBar extends Composite {
   // Widget overrides
 
   final void releaseChildren() {
-    ToolItem[] toolItems = getItems();
+    ToolItem[] toolItems = ( ToolItem[] )itemHolder.getItems();
     for( int i = 0; i < toolItems.length; i++ ) {
       toolItems[ i ].dispose();
     }
