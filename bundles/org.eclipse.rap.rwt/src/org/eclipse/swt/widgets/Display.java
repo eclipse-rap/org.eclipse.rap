@@ -776,7 +776,9 @@ public class Display extends Device implements Adaptable {
         shells.add( activeShell );
       }
       ShellEvent shellEvent;
-      if( lastActiveShell != null ) {
+      if(    lastActiveShell != null 
+          && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 )
+      {
         shellEvent = new ShellEvent( lastActiveShell,
                                      ShellEvent.SHELL_DEACTIVATED );
         shellEvent.processEvent();

@@ -22,6 +22,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.layout.FillLayout;
 
 public class Shell_Test extends TestCase {
 
@@ -355,7 +356,8 @@ public class Shell_Test extends TestCase {
    * 278996: [Shell] Stackoverflow when closing child shell
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996
    */
-  public void testCloseOnDeactivate() {
+  public void testCloseOnDeactivateWithSingleShell() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     final Shell shell = new Shell( display );
     shell.addShellListener( new ShellAdapter() {
@@ -366,6 +368,45 @@ public class Shell_Test extends TestCase {
     shell.open();
     shell.setActive();
     // no assert: test case is to ensure that no stack overflow occurs
+  }
+
+  /*
+   * Bug 282506: [Shell] StackOverflow when calling Shell#close in Deactivate
+   *             listener
+   */
+  public void testCloseOnDeactivateWithMultipleShells() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    final Shell dialog = new Shell( shell );
+    dialog.setLayout( new FillLayout() );
+    dialog.addShellListener( new ShellAdapter() {
+      public void shellDeactivated( final ShellEvent event ) {
+        dialog.close();
+      }
+    } );
+    dialog.open();
+    dialog.close();
+    // no assert: test case is to ensure that no stack overflow occurs
+  }
+  
+  public void testNoDeactivateEventOnDispose() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addShellListener( new ShellAdapter() {
+      public void shellActivated( final ShellEvent event ) {
+        log.append( "shell activated" );
+      }
+      public void shellDeactivated( final ShellEvent event ) {
+        log.append( "shell deactivated" );
+      }
+    } );
+    shell.open();
+    shell.dispose();
+    assertEquals( "shell activated", log.toString() );
   }
 
   public void testMaximized() {
