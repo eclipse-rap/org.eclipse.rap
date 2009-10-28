@@ -17,6 +17,73 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
   },
   
   members : {
+        
+    testFocusIndicatorPush : function() {
+      var hasFocusIndicator = function( widget ) {
+        var node = widget._getTargetNode();
+        var result = false;
+        for( var i = 0; i < node.childNodes.length; i++ ) {
+          if( node.childNodes[ i ].getAttribute( "id") == "focusIndicator" ) {
+            result = true;
+          }
+        }
+        return result;
+      }
+      var focudIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.setText( "bla" );
+      this._currentButton = button;
+      button.addToDocument();
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertFalse( button.hasState( "focus" ) );
+      assertFalse( hasFocusIndicator( button ) );
+      button.focus();
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertTrue( hasFocusIndicator( button ) );
+      button.setImage( "test.jpg" );
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertTrue( hasFocusIndicator( button ) );
+      button.blur();
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertFalse( hasFocusIndicator( button ) );
+      button.destroy();
+      qx.ui.core.Widget.flushGlobalQueues();
+    },
+    
+    testFocusIndicatorCheck : function() {
+      var hasFocusIndicator = function( widget ) {
+        var node = widget._getTargetNode();
+        var result = false;
+        for( var i = 0; i < node.childNodes.length; i++ ) {
+          if( node.childNodes[ i ].getAttribute( "id") == "focusIndicator" ) {
+            result = true;
+          }
+        }
+        return result;
+      }
+      var focudIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+      var button = new org.eclipse.rwt.widgets.Button( "check" );      
+      button.addState( "rwt_CHECK" );
+      button.setText( "bla" );
+      this._currentButton = button;
+      button.addToDocument();
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertFalse( button.hasState( "focus" ) );
+      assertFalse( hasFocusIndicator( button ) );
+      button.focus();
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertTrue( hasFocusIndicator( button ) );
+      button.setImage( "test.jpg" );
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertTrue( hasFocusIndicator( button ) );
+      button.blur();
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertFalse( hasFocusIndicator( button ) );
+      button.destroy();
+      qx.ui.core.Widget.flushGlobalQueues();
+    },
+        
     testParent : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       this._currentButton = button;
@@ -33,7 +100,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         button.getCellNode( 2 ).parentNode 
       );
       button.setParent( null );
-      button.dispose();
+      button.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
     
@@ -45,7 +112,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( "Hello World!", button.getCellNode( 2 ).innerHTML );
       button.setParent( null );
-      button.dispose();
+      button.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
     
@@ -59,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         this.testUtil.getCssBackgroundImage( button.getCellNode( 1 ) ).search( "test.jpg" ) != -1 
       );
       button.setParent( null );
-      button.dispose();
+      button.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
     
@@ -67,6 +134,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       //this test is also valid for toggle button
       //var button = new org.eclipse.swt.widgets.CheckBox();
       var button = new org.eclipse.rwt.widgets.Button( "check" );
+      button.addState( "rwt_CHECK" );
       button.setUserData( "id", "w1" );
       this._currentButton = button;
       button.addToDocument();
@@ -100,6 +168,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     
     testExecuteRadioButton : function() {
       var button = new org.eclipse.rwt.widgets.Button( "radio" );
+      button.addState( "rwt_RADIO" );
       button.setUserData( "id", "w1" );
       this._currentButton = button;
       button.addToDocument();
@@ -142,6 +211,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     
     testExecutePushButton : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();

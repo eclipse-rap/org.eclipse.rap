@@ -169,6 +169,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/theme/ThemeStore.js";
   private static final String THEME_BORDERS_BASE
     = "org/eclipse/swt/theme/BordersBase.js";
+  private static final String FOCUS_INDICATOR
+  = "org/eclipse/rwt/FocusIndicator.js";
   private static final String MENU_MANAGER
     = "org/eclipse/rwt/MenuManager.js";
 
@@ -266,7 +268,8 @@ final class QooxdooResourcesUtil {
       register( THEME_BORDERS_BASE, compress );
       register( THEME_STORE, compress );
       register( THEME_VALUES, compress );
-      register( MENU_MANAGER, compress );
+      register( FOCUS_INDICATOR, compress );
+      register( MENU_MANAGER, compress );      
 
       // register contributions
       registerContributions();

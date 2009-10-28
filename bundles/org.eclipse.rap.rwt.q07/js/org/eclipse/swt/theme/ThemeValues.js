@@ -37,6 +37,18 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
   },
 
   members : {
+    
+    hasValue : function( element, key ) {
+      var result = false;
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues();
+      for( var slot in values ) {
+        if( typeof values[ slot ][ vkey ] != "undefined" ) {
+          result = true;
+        }
+      }
+      return result;
+    },
 
     getCssBorder : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );

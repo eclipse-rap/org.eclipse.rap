@@ -25,7 +25,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
      case "radio":
       this.setAppearance( "radio-button" );
     }
-    this.initTabIndex();      
+    this.initTabIndex();
+    this.addEventListener( "focus", this._onFocus );
+    this.addEventListener( "blur", this._onBlur );    
   },
   
   properties : {
@@ -35,5 +37,33 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
       init : -1
     }
         
+  },
+  
+  members : {
+
+    //overwritten:
+    _afterRenderLayout : function( changes ) {
+      if( this.hasState( "focused" ) ) {
+         this._showFocusIndicator();
+      }
+    },
+    
+    _showFocusIndicator : function() {
+      var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+      var node =   this.getCellNode( 2 ) != null 
+                 ? this.getCellNode( 2 )
+                 : this.getCellNode( 1 );
+      focusIndicator.show( this, "Button-FocusIndicator", node );      
+    },
+    
+    _onFocus : function( event ) {
+      this._showFocusIndicator();
+    },
+    
+    _onBlur : function( event ) {
+      var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+      focusIndicator.hide( this );
+    }
+    
   }
 } );

@@ -84,3 +84,17 @@ Button-RadioIcon:selected {
 Button-RadioIcon:selected:hover {
   background-image: url( resource/widget/rap/button/radio-selected-hover.png );
 }
+
+Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  margin: 2px;
+  padding: 0px;
+}
+
+Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  padding: 2px 2px 2px 1px;
+  margin: 0px;
+}

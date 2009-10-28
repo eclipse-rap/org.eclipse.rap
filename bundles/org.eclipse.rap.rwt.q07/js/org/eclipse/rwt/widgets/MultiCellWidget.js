@@ -336,6 +336,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     
     _beforeRenderLayout : qx.lang.Function.returnTrue,
     
+    _afterRenderLayout : qx.lang.Function.returnTrue,
+    
     _cellHasContent : function( cell ) {
       var content = this.__cellData[ cell ][ 1 ];
       return content != null;
@@ -484,6 +486,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       if ( changes.layoutY ) {
         this._renderLayoutY();
       }
+      this._afterRenderLayout( changes );
       this.base( arguments, changes );
     },
 

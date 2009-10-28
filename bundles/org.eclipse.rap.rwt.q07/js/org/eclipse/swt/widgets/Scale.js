@@ -453,6 +453,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     setPageIncrement : function( value ) {
       this._pageIncrement = value;
       this._updateMiddleMarkers();
+    },
+    
+    // overwritten:
+    _visualizeFocus : function() {
+      this.base( arguments );
+      this._thumb.addState( "focused" );
+    },
+    
+    // overwritten:
+    _visualizeBlur : function() {
+      this.base( arguments );
+      this._thumb.removeState( "focused" );
     }
+
   }
 } );

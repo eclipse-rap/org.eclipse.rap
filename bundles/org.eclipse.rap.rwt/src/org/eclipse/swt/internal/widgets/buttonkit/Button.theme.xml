@@ -112,6 +112,53 @@
           description="Applies when the button is disabled." />
 
     </element>
+    
+    <element name="Button-FocusIndicator" 
+          description="The frame that is drawn when the button is focused." >
+
+      <property name="background-color"
+          description="The fill-color of the frame." />
+  
+      <property name="border">
+        <description>
+          The border of the frame. 
+          3D-styles inset, outset, etc are not supported.
+        </description>
+      </property>
+      
+      <property name="padding">
+        <description>
+          The padding between the frame and the buttons text. 
+          If this is set to "0px", margin will be used to layout the FocusIndicator. 
+        </description>
+      </property>        
+
+      <property name="margin">
+        <description>
+          The margin between the buttons border and the frame. 
+          Only used if padding is set to "0px".        
+        </description>
+      </property>
+
+      <style name="PUSH"
+          description="Indicates that the button is a push button." />
+  
+      <style name="TOGGLE"
+          description="Indicates that the button is a toggle button." />
+  
+      <style name="CHECK"
+          description="Indicates that the button is a check box." />
+  
+      <style name="RADIO"
+          description="Indicates that the button is a radio button." />
+  
+      <style name="FLAT"
+          description="Indicates that the button should have a flat appearance." />
+  
+      <style name="BORDER"
+          description="Indicates that the button should have a border." />
+
+    </element>
 
   </element>
 

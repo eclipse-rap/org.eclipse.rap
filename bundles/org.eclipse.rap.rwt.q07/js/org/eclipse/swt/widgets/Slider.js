@@ -642,6 +642,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     setThumb : function( value ) {
       this._thumbWidth = value;
       this._updateThumbSize();
-    }
+    },
+    
+    // overwritten:
+    _visualizeFocus : function() {
+      this.base( arguments );
+      this._thumb.addState( "focused" );
+    },
+    
+    // overwritten:
+    _visualizeBlur : function() {
+      this.base( arguments );
+      this._thumb.removeState( "focused" );
+    }    
+
   }
 } );

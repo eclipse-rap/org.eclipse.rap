@@ -4834,7 +4834,8 @@ type:"abstract",
 construct:function(){this.base(arguments);
 this._layoutChanges={};
 if(qx.core.Setting.get("qx.widgetDebugId")){this._generateHtmlId();
-}},
+}this.initHideFocus();
+},
 events:{"beforeAppear":"qx.event.type.Event",
 "appear":"qx.event.type.Event",
 "beforeDisappear":"qx.event.type.Event",
@@ -5311,7 +5312,7 @@ init:null,
 apply:"_applyTabIndex",
 event:"changeTabIndex"},
 hideFocus:{check:"Boolean",
-init:false,
+init:true,
 apply:"_applyHideFocus",
 themeable:true},
 enableElementFocus:{check:"Boolean",
@@ -6487,7 +6488,8 @@ __outerElementStyleProperties:{cursor:true,
 zIndex:true,
 filter:true,
 display:true,
-visibility:true},
+visibility:true,
+outline:true},
 setStyleProperty:function(propName,
 value){if(!this._styleProperties){this._styleProperties={};
 }this._styleProperties[propName]=value;

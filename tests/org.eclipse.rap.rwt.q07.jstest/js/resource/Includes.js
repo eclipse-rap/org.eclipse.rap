@@ -71,6 +71,7 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/GfxMixin.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/RoundedBorder.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/MenuManager.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/FocusIndicator.js" type="text/javascript"></script>\
 \
 <!-- rwt.test -->\
 <script src="./js/org/eclipse/rwt/test/fixture/RAPRequestPatch.js" type="text/javascript"></script>\
@@ -84,13 +85,14 @@ document.write('\
 ');
 
 // How to generate the RAPThemeSupport.js:
-// - Start an RAP-application
+// - Start an RAP-application (non-debug for client-side)
 // - Open the application in an Firefox with Firebug 
 // - In Firebug, go to "Html"
 // - In the document, go to <body> -> <script>
-// - Copy all calls that start with qx.Theme.define("org.eclipse.swt.theme.Default...
-// - There should be 7 
-// - be careful not to copy the line-numbers with the code
+// - Copy all calls that start with "qx.Theme.define("org.eclipse.swt.theme.Default..."
+// - There should be 7 (there are several per row, maybe all in one)
+// - Also copy the calls after that, "ts=org.eclipse.swt.theme.ThemeStore.getInstance();ts.defineValues..."
+// - be careful not to copy line-numbers with the code
 // - add the following lines: (without the "//")
 //  qx.io.Alias.getInstance().add( "static", "../org.eclipse.rap.rwt.q07/js/resource/static" );
 //  qx.io.Alias.getInstance().add( "org.eclipse.swt", "../org.eclipse.rap.rwt.q07/js/resource" );
