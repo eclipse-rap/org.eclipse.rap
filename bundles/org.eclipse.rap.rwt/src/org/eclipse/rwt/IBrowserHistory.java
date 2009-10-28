@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
+import org.eclipse.rwt.events.BrowserHistoryListener;
+
 /**
  * <p>
  * This interface rovides methods to use the browser's history for navigating

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
+import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.events.*;
 import org.eclipse.rwt.internal.lifecycle.*;

@@ -18,6 +18,7 @@ import org.eclipse.rap.examples.internal.model.ExampleCategory;
 import org.eclipse.rap.examples.internal.model.ExamplesModel;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
+import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;

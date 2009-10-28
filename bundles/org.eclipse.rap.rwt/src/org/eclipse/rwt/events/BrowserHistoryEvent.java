@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.events;
 
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.BrowserHistoryListener;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.events.Event;
 
 /**
@@ -19,6 +18,7 @@ import org.eclipse.rwt.internal.events.Event;
  * navigation event.
  *
  * @see BrowserHistoryListener
+ * @see IBrowserHistory
  * @since 1.3
  */
 public final class BrowserHistoryEvent extends Event {
@@ -29,7 +29,7 @@ public final class BrowserHistoryEvent extends Event {
   private static final Class LISTENER = BrowserHistoryListener.class;
 
   /**
-   * TODO [rh] JavaDoc
+   * The browser history entry to which the user navigated.
    */
   public String entryId;
 

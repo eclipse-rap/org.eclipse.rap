@@ -8,16 +8,17 @@
  *   EclipseSource - initial API and implementation
  *   Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rwt.events;
 
 import java.util.EventListener;
 
-import org.eclipse.rwt.events.BrowserHistoryEvent;
+import org.eclipse.rwt.IBrowserHistory;
 
 /**
  * An event handler that is invoked after the user navigated to a previously
  * created history entry.
  * @see BrowserHistoryEvent
+ * @see IBrowserHistory
  * @since 1.3
  */
 public interface BrowserHistoryListener extends EventListener {
