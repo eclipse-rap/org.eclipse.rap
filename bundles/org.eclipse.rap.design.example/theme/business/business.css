@@ -62,8 +62,14 @@ Button[TOGGLE]:selected {
   );
 }
 
-Button:hover {
-  background-color: white;
+Button[PUSH]:hover, Button[TOGGLE]:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
 }
 
 Button.clearButton {
