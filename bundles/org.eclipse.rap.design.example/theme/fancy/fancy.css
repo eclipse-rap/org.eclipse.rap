@@ -33,21 +33,22 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
     from( #ffffff ),
     color-stop( 48%, #f0f0f0 ),
     color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
+    to( #ffffff )
   );
-}
-
-Button[PUSH]:pressed, Button[TOGGLE]:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-  padding: 4px 5px 2px 7px;
 }
 
 Button[TOGGLE]:selected {
+  /* background-color: #d3d3d3; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 30%, #f0f0f0 ),
+    color-stop( 70%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button[TOGGLE]:selected:hover {
   /* background-color: #d3d3d3; */
   background-image: gradient(
     linear, left top, left bottom,
@@ -63,8 +64,18 @@ Button[PUSH]:hover, Button[TOGGLE]:hover {
     from( #ffffff ),
     color-stop( 48%, #f0f0f0 ),
     color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
+    to( #cccccc )
   );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
 }
 
 Button.clearButton {
