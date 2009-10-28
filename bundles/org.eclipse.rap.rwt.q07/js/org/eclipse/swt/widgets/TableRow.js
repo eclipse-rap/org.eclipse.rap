@@ -49,6 +49,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
         } else {
           this.removeState( "even" );
         }
+        if( value == -1 ) {
+          this.removeState( "over" );
+        }
       }
     },
 
