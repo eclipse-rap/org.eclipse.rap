@@ -24,11 +24,23 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
     this._variant = null;
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
+    var states = {};
+    states[ "over" ] = true;
+    var themeValues = new org.eclipse.swt.theme.ThemeValues( states );
+    var hoverBgColor = themeValues.getCssColor( "TableItem", "background-color" );
+    var hoverFgColor = themeValues.getCssColor( "TableItem", "color" );
+    this._hasHoverColorsDefined
+      = hoverBgColor != "undefined" || hoverFgColor != "undefined";
+    themeValues.dispose();
   },
   
   destruct : function() {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
+  },
+  
+  events : {
+    "changeOverState" : "qx.event.type.ChangeEvent"
   },
 
   members : {
@@ -69,6 +81,26 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
       this._variant = variant;
     },
     
+    addState : function( state ) {
+      var hasOverState = this.hasState( "over" );
+      this.base( arguments, state );
+      if( state === "over" && !hasOverState ) {
+        this.createDispatchChangeEvent( "changeOverState", true, false );
+      }
+    },
+    
+    removeState : function( state ) {
+      var hasOverState = this.hasState( "over" );
+      this.base( arguments, state );
+      if( state === "over" && hasOverState ) {
+        this.createDispatchChangeEvent( "changeOverState", false, true );
+      }
+    },
+    
+    hasHoverColorsDefined : function() {
+      return this._hasHoverColorsDefined;
+    },
+    
     _onMouseOver : function( evt ) {
       if( this._itemIndex != -1 ) {
         this.addState( "over" );
@@ -76,9 +108,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
     },
     
     _onMouseOut : function( evt ) {
-      if( this._itemIndex != -1 ) {
-        this.removeState( "over" );
-      }
+      this.removeState( "over" );
     },
 
     // Override default focus behaviour

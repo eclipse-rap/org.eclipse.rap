@@ -183,7 +183,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       }
       row.setVariant( this._variant );
       // Row background color
-      if( this._drawColors() && this._background != null ) {
+      if( drawColors && this._background != null ) {
         row.setBackgroundColor( this._background );
       } else {
         row.resetBackgroundColor();
@@ -267,7 +267,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     _drawColors : function() {
       var enabled = this._parent.getEnabled();
       var selected = this._parent._isItemSelected( this._getIndex() );
-      return enabled && ( this._parent._hideSelection || !selected );
+      var hovered = this._parent._isItemHovered( this._getIndex() );
+      return enabled && ( this._parent._hideSelection || !selected ) && !hovered;
     },
 
     _renderBackground : function( node, left, width, height, background ) {

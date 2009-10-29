@@ -700,6 +700,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
+    
+    _onRowChangeOverState : function( evt ) {
+      var row = evt.getTarget();
+      if( row.hasState( "over" ) ) {
+        for( var i = 0; i < this._rows.length; i++ ) {
+          if( this._rows[ i ] !== row ) {
+            this._rows[ i ].removeState( "over" );
+          }
+        }
+      }
+      var itemIndex = row.getItemIndex();
+      if( itemIndex != -1 ) {
+        this._renderItem( row, this._items[ itemIndex ] );
+      }
+    },
 
     _toggleCheckState : function( itemIndex ) {
       if( this._checkBoxes != null ) {
@@ -1069,6 +1084,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       return result
     },
+    
+    _isItemHovered : function( itemIndex ) {
+      var result = false;
+      var rowIndex = this._getRowIndexFromItemIndex( itemIndex );
+      if( rowIndex >= 0 ) {
+        var row = this._rows[ rowIndex ];
+        result = row.hasState( "over" ) && row.hasHoverColorsDefined();
+      }
+      return result;
+    },
 
     /////////////////////////
     // TableColumn management
@@ -1255,12 +1280,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       row.addEventListener( "mousedown", this._onRowClick, this );
       row.addEventListener( "dblclick", this._onRowDblClick, this );
       row.addEventListener( "contextmenu", this._onRowContextMenu, this );
+      row.addEventListener( "changeOverState", this._onRowChangeOverState, this );
     },
 
     _unhookRowEventListener : function( row ) {
       row.removeEventListener( "mousedown", this._onRowClick, this );
       row.removeEventListener( "dblclick", this._onRowDblClick, this );
       row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
+      row.removeEventListener( "changeOverState", this._onRowChangeOverState, this );
     },
 
     _updateRowTop : function() {
@@ -1542,11 +1569,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Focus tracking - may change appearance of selected row
 
     _onFocusIn : function( evt ) {
-      this._updateFocusState()
+      this._updateFocusState();
     },
 
     _onFocusOut : function( evt ) {
-      this._updateFocusState()
+      this._updateFocusState();
     },
 
     ////////////////////////////////////////////////////////////
