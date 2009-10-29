@@ -100,7 +100,6 @@ Button.configMenuButton {
 
 Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
   background-image: none;
-  background-color: none;
 }
 
 Button.clearButton:pressed {
