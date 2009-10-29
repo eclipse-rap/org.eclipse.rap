@@ -19,12 +19,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.swt.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-
+import org.eclipse.swt.widgets.Display;
 
 
 public class Image_Test extends TestCase {
@@ -34,15 +33,16 @@ public class Image_Test extends TestCase {
     // only if you comment initial registration in
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
     assertFalse( manager.isRegistered( RWTFixture.IMAGE1 ) );
-//    assertEquals( 0, Image.size() );
     Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
-    String contextPath = Fixture.CONTEXT_DIR.getPath() + "/rwt-resources/";
+    String contextPath 
+      = Fixture.CONTEXT_DIR.getPath() 
+      + "/" 
+      + ResourceManagerImpl.RESOURCES 
+      + "/";
     assertTrue( new File( contextPath + RWTFixture.IMAGE1 ).exists() );
-//    assertEquals( 1, Image.size() );
     Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
-//    assertEquals( 1, Image.size() );
     assertSame( image1, image2 );
     assertEquals( ResourceFactory.getImagePath( image1 ),
                   ResourceFactory.getImagePath( image2 ) );
@@ -50,16 +50,9 @@ public class Image_Test extends TestCase {
     Graphics.getImage( RWTFixture.IMAGE2 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE2 ) );
     assertTrue( new File( contextPath + "/" + RWTFixture.IMAGE2 ).exists() );
-//    assertEquals( 2, Image.size() );
-    // clear cache
-//    Graphics.clear();
-    // works only, if deregistration in ressourceManager is implemented
-    // assertFalse( manager.isRegistered( "resource/icon/nuvola/16/down.png" ));
-//    assertEquals( 0, Image.size() );
     // ... and do it again...
     image1 = Graphics.getImage( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
-//    assertEquals( 1, Image.size() );
   }
 
   public void testImageFinderWithClassLoader() throws IOException {
@@ -70,7 +63,6 @@ public class Image_Test extends TestCase {
 
     IResourceManager manager = ResourceManager.getInstance();
     assertFalse( manager.isRegistered( RWTFixture.IMAGE3 ) );
-//    assertEquals( 0, Image.size() );
     try {
       Graphics.getImage( "test.gif" );
       fail( "Image not available on the classpath." );
@@ -82,22 +74,21 @@ public class Image_Test extends TestCase {
   }
 
   public void testImageFinderWithInputStream() throws IOException {
-    String imgName = "testIS.gif";
-    File testGif = new File( Fixture.CONTEXT_DIR, imgName );
+    String imageName = "testIS.gif";
+    File testGif = new File( Fixture.CONTEXT_DIR, imageName );
     Fixture.copyTestResource( RWTFixture.IMAGE3, testGif );
     URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
 
     IResourceManager manager = ResourceManager.getInstance();
     assertFalse( manager.isRegistered( RWTFixture.IMAGE3 ) );
-//    assertEquals( 0, Image.size() );
     try {
-      Graphics.getImage( imgName );
+      Graphics.getImage( imageName );
       fail( "Image not available on the classpath." );
     } catch( final IllegalArgumentException iae ) {
       // expected
     }
-    InputStream is = classLoader.getResourceAsStream( imgName );
+    InputStream is = classLoader.getResourceAsStream( imageName );
     Image image = Graphics.getImage( "test.gif", is );
     assertNotNull( image );
   }
@@ -136,7 +127,95 @@ public class Image_Test extends TestCase {
     assertTrue( manager.isRegistered( RWTFixture.IMAGE_50x100 ) );
     assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
   }
+  
+  public void testConstructor() {
+    try {
+      new Image( null, new ByteArrayInputStream( new byte[ 0 ] ) );
+      fail( "Must provide device for image constructor" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
+  public void testStreamConstructor() throws IOException {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Display display = new Display();
+    Image image = new Image( display, stream );
+    assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
+    stream.close();
+  }
+  
+  public void testStreamConstructorWithIllegalImage() {
+    Display display = new Display();
+    try {
+      new Image( display, new ByteArrayInputStream( new byte[ 12 ] ) );
+      fail( "Must throw exception when passing in invalid image data" );
+    } catch( SWTException e ) {
+      assertEquals( SWT.ERROR_UNSUPPORTED_FORMAT, e.code );
+    }
+  }
+  
+  public void testFileConstructor() throws IOException {
+    File testImage = new File( Fixture.TEMP_DIR, "test.gif" );
+    Fixture.copyTestResource( RWTFixture.IMAGE1, testImage );
+    Display display = new Display();
+    Image image = new Image( display, testImage.getAbsolutePath() );
+    assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
+    testImage.delete();
+  }
+  
+  public void testDispose() {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Display display = new Display();
+    Image image = new Image( display, stream );
+    image.dispose();
+    assertTrue( image.isDisposed() );
+  }
+  
+  public void testDisposeFactoryCreated() {
+    Image color = Graphics.getImage( RWTFixture.IMAGE1 );
+    try {
+      color.dispose();
+      fail( "It is not allowed to dispose of a factory-created image" );
+    } catch( IllegalStateException e ) {
+      assertFalse( color.isDisposed() );
+    }
+  }
 
+  public void testEquality() {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream;
+    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image anotherImage = Graphics.getImage( RWTFixture.IMAGE2 );
+    assertTrue( image1.equals( image2 ) );
+    assertFalse( image1.equals( anotherImage ) );
+    Device device = new Display();
+    stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    image1 = new Image( device, stream );
+    stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    image2 = new Image( device, stream );
+    assertFalse( image1.equals( image2 ) );
+    stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    image1 = new Image( device, stream );
+    image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    assertFalse( image1.equals( image2 ) );
+  }
+
+  public void testIdentity() {
+    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    assertSame( image1, image2 );
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Device device = new Display();
+    image1 = new Image( device, stream );
+    image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    assertNotSame( image1, image2 );
+  }
+  
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
     Fixture.setUp();
@@ -148,6 +227,5 @@ public class Image_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
-//    Image.clear();
   }
 }

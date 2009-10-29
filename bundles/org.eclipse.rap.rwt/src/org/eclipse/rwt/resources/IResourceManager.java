@@ -174,6 +174,17 @@ public interface IResourceManager {
                  RegisterOptions options );
 
   /**
+   * Unregisters the resource with the given <code>name</code>.
+   * 
+   * @param name the name that represents the resource. Must not be 
+   * <code>null</code>.
+   * @return <code>true</code> is returned if unregstering the resource was 
+   * succesful; <code>false</code> otherwise. 
+   * @since 1.3 
+   */
+  boolean unregister( String name );
+
+  /**
    * <p>Returns the charset of a registered resource as it was specified in
    * the call to <code>register(String,String)</code> or 
    * <code>register(String,String,ResourceOption)</code>.</p>

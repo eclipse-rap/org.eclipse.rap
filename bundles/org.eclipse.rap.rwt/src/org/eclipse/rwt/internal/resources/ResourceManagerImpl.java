@@ -262,6 +262,21 @@ public class ResourceManagerImpl
     }
     repository.put( key, name );
   }
+  
+  public boolean unregister( final String name ) {
+    ParamCheck.notNull( name, "name" );
+    boolean result = false;
+    String key = createKey( name );
+    String fileName = ( String )repository.remove( key );
+    if( fileName != null ) {
+      result = true;
+      Integer version = findVersion( name );
+      File file = getDiskLocation( name, version );
+      file.delete();
+      cache.remove( key );
+    }
+    return result;
+  }
 
   public String getCharset( final String name ) {
     ParamCheck.notNull( name, "name" );

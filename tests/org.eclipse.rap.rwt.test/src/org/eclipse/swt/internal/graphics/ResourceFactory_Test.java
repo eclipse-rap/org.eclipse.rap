@@ -82,6 +82,13 @@ public class ResourceFactory_Test extends TestCase {
     assertNotNull( blankData );
     assertEquals( 1, blankData.width );
     assertEquals( 1, blankData.height );
+
+    try {
+      ResourceFactory.getImageData( null );
+      fail( "Must not allow null-argument" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
   }
 
   protected void setUp() throws Exception {

@@ -117,6 +117,10 @@ public class Fixture {
     {
       
     }
+    
+    public boolean unregister( String name ) {
+      return false;
+    }
 
     public void setContextLoader( final ClassLoader classLoader ) {
       

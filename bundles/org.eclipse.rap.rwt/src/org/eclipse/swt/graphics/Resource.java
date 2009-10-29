@@ -79,7 +79,11 @@ public abstract class Resource {
       String msg = "A factory-created resource cannot be disposed.";
       throw new IllegalStateException( msg );
     }
+    destroy();
     disposed = true;
+  }
+
+  void destroy() {
   }
 
   /**

@@ -14,19 +14,19 @@ package org.eclipse.swt.graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
-
 /**
- * Instances of this class manage resources that define how text looks when
- * it is displayed.
- *
- * <p>Fonts may be constructed using one of the <code>getFont</code> methods
- * in class <code>Graphics</code> by providing a name, size and style information
- * or a <code>FontData</code> object which encapsulates this data.
+ * Instances of this class manage resources that define how text looks when it
+ * is displayed.
+ * <p>
+ * To create fonts, it is recommended to use one of the <code>getFont</code>
+ * methods in class <code>Graphics</code> by providing a name, size and style
+ * information or a <code>FontData</code> object which encapsulates this data.
  * </p>
- *
+ * 
  * @see FontData
  * @see Graphics
- *
+ * @see org.eclipse.rwt.graphics.Graphics#getFont(FontData)
+ * @see org.eclipse.rwt.graphics.Graphics#getFont(String, int, int)
  * @since 1.0
  */
 public final class Font extends Resource {
@@ -44,6 +44,12 @@ public final class Font extends Resource {
    * which describes the desired font's appearance.
    * <p>
    * You must dispose the font when it is no longer required.
+   * </p>
+   * 
+   * <p><strong>Note</strong>, this constructor is provided for convenience when
+   * single-sourcing code with SWT. For RWT, the recommended way to create fonts
+   * is to use one of the <code>getFont</code> methods in class 
+   * <code>Graphics</code>.
    * </p>
    *
    * @param device the device to create the font on
@@ -69,6 +75,12 @@ public final class Font extends Resource {
    * appearance.
    * <p>
    * You must dispose the font when it is no longer required.
+   * </p>
+   *
+   * <p><strong>Note</strong>, this constructor is provided for convenience when
+   * single-sourcing code with SWT. For RWT, the recommended way to create fonts
+   * is to use one of the <code>getFont</code> methods in class 
+   * <code>Graphics</code>.
    * </p>
    *
    * @param device the device to create the font on

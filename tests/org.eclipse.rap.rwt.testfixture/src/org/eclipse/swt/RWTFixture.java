@@ -128,6 +128,10 @@ public final class RWTFixture {
                           RegisterOptions options )
     {
     }
+    
+    public boolean unregister( String name ) {
+      return false;
+    }
 
     public void setContextLoader( final ClassLoader contextLoader ) {
       loader = contextLoader;

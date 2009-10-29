@@ -37,7 +37,7 @@ final class ImageDataCache {
    */
   ImageData getImageData( final Image image ) {
     if( image == null ) {
-      throw new NullPointerException( "null argument" );
+      throw new NullPointerException( "image" );
     }
     ImageData cached;
     synchronized( cache ) {
@@ -54,7 +54,7 @@ final class ImageDataCache {
    */
   void putImageData( final Image image, final ImageData imageData ) {
     if( image == null || imageData == null ) {
-      throw new NullPointerException( "null argument" );
+      throw new NullPointerException( "imageData" );
     }
     if( imageData.data.length <= MAX_DATA_SIZE ) {
       // TODO [rst] Implement replacement strategy (LRU or LFU)

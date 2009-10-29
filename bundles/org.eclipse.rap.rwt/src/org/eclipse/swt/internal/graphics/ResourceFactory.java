@@ -65,10 +65,10 @@ public final class ResourceFactory {
     {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    int colorNr = red | ( green << 8 ) | ( blue << 16 );
+    int colorNr = red | green << 8 | blue << 16;
     return colorNr;
   }
-  
+
   private static Color getColor( final int value ) {
     Color result;
     Integer key = new Integer( value );
@@ -110,7 +110,7 @@ public final class ResourceFactory {
                                   final int style )
   {
     int nameHashCode = name == null ? 0 : name.hashCode();
-    return nameHashCode ^ ( height << 2 ) ^ style;
+    return nameHashCode ^ height << 2 ^ style;
   }
 
   public static int checkFontStyle( final int style ) {
@@ -179,11 +179,12 @@ public final class ResourceFactory {
     int type
       = imageData.type != SWT.IMAGE_UNDEFINED ? imageData.type : SWT.IMAGE_PNG;
     loader.save( outputStream, type );
-    byte[] byteArray = outputStream.toByteArray();
-    InputStream inputStream = new ByteArrayInputStream( byteArray );
-    String path = "generated/"
-                  + hashCode( byteArray )
-                  + getImageFileExtension( type );
+    byte[] bytes = outputStream.toByteArray();
+    InputStream inputStream = new ByteArrayInputStream( bytes );
+    String path
+      = "generated/"
+      + hashCode( bytes )
+      + getImageFileExtension( type );
     if( images.containsKey( path ) ) {
       result = ( Image )images.get( path );
     } else {
@@ -193,23 +194,9 @@ public final class ResourceFactory {
   }
 
   public static String getImagePath( final Image image ) {
-    String result = getImageName( image );
-    if( result != null ) {
-      result = ResourceManager.getInstance().getLocation( result );
-    }
-    return result;
-  }
-  
-  private static synchronized String getImageName( final Image image ) {
     String result = null;
-    Iterator it = images.entrySet().iterator();
-    boolean found = false;
-    while( !found && it.hasNext() ) {
-      Map.Entry entry = ( Map.Entry )it.next();
-      if( entry.getValue().equals( image ) ) {
-        result = ( String )entry.getKey();
-        found = true;
-      }
+    if( image != null ) {
+      result = ResourceManager.getInstance().getLocation( image.resourceName );
     }
     return result;
   }
@@ -218,8 +205,8 @@ public final class ResourceFactory {
     ImageData result = imageDataCache.getImageData( image );
     if( result == null ) {
       IResourceManager manager = ResourceManager.getInstance();
-      String imagePath = getImageName( image );
-      if( imagePath != null ) {
+      if( image != null ) {
+        String imagePath = image.resourceName;
         try {
           InputStream inputStream = manager.getRegisteredContent( imagePath );
           if( inputStream != null ) {
@@ -315,8 +302,20 @@ public final class ResourceFactory {
                  new IllegalArgumentException( msg ),
                  msg );
     }
+    Point size = registerImage( path, inputStream );
     Image result;
+    if( size != null ) {
+      result = createImageInstance( path, size.x, size.y );
+    } else {
+      result = createImageInstance( path, -1, -1 );
+    }
+    images.put( path, result );
+    return result;
+  }
 
+  public static Point registerImage( final String name,
+                                      final InputStream inputStream )
+  {
     ////////////////////////////////////////////////////////////////////////////
     // TODO: [fappel] Image size calculation and resource registration both
     //                read the input stream. Because of this I use a workaround
@@ -329,41 +328,25 @@ public final class ResourceFactory {
 
     BufferedInputStream bis = new BufferedInputStream( inputStream );
     bis.mark( Integer.MAX_VALUE );
-    Point size = null;
+    Point result = null;
     try {
-      size = readImageSize( bis );
+      result = readImageSize( bis );
     } catch( IOException e ) {
       // ImageReader also throws IllegalArgumentExceptions for some files
-      ServletLog.log( "Failed to determine size for image: " + path, e );
-    }
-    if( size != null ) {
-      result = createImageInstance( size.x, size.y );
-    } else {
-      result = createImageInstance( -1, -1 );
+      ServletLog.log( "Failed to determine size for image: " + name, e );
     }
     try {
       bis.reset();
     } catch( final IOException shouldNotHappen ) {
       String txt = "Could not reset input stream while reading image ''{0}''.";
-      String msg = MessageFormat.format( txt, new Object[] { path } );
+      String msg = MessageFormat.format( txt, new Object[] { name } );
       throw new RuntimeException( msg, shouldNotHappen );
     }
     IResourceManager manager = ResourceManager.getInstance();
-    manager.register( path, bis );
-
-    ////////////////////////////////////////////////////////////////////////////
-
-    images.put( path, result );
+    manager.register( name, bis );
     return result;
   }
 
-  /**
-   * @return an array whose first element is the image <em>width</em> and second
-   *         is the <em>height</em>, <code>null</code> if the bounds could not
-   *         be read.
-   * @throws IOException if an error occurs while reading the input stream
-   * @throws IllegalArgumentException if the image has an invalid format
-   */
   public static Point readImageSize( final InputStream input )
     throws IOException
   {
@@ -464,17 +447,22 @@ public final class ResourceFactory {
     return result;
   }
 
-  private static Image createImageInstance( final int width, final int height )
+  private static Image createImageInstance( final String resourceName,
+                                            final int width, 
+                                            final int height )
   {
     Image result = null;
     try {
       Class imageClass = Image.class;
-      Class[] paramList = new Class[] { int.class, int.class };
-      Constructor constr = imageClass.getDeclaredConstructor( paramList );
-      constr.setAccessible( true );
-      result = ( Image )constr.newInstance( new Object[] {
-        new Integer( width ), new Integer( height )
-      } );
+      Class[] paramList = new Class[] { String.class, int.class, int.class };
+      Constructor constructor = imageClass.getDeclaredConstructor( paramList );
+      constructor.setAccessible( true );
+      Object[] args = new Object[] {
+        resourceName,
+        new Integer( width ), 
+        new Integer( height )
+      };
+      result = ( Image )constructor.newInstance( args );
     } catch( final Exception e ) {
       throw new RuntimeException( "Failed to instantiate Image", e );
     }

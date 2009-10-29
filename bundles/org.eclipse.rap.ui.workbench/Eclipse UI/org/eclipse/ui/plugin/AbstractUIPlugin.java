@@ -257,21 +257,23 @@ public abstract class AbstractUIPlugin extends Plugin {
      * @return the image registry
      */
     public ImageRegistry getImageRegistry() {
-		// RAP [bm]: needs session scope
+		// RAP [rh]: there is one imageRegistry per plug-in per session
 //        if (imageRegistry == null) {
 //            imageRegistry = createImageRegistry();
 //            initializeImageRegistry(imageRegistry);
 //        }
 //        return imageRegistry;
-    	String IMAGE_REGISTRY = AbstractUIPlugin.class.getName() + ".imageRegistry";
-        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY  );
+    	  String imageRegistryKey
+    	    = AbstractUIPlugin.class.getName()
+    	    + ".imageRegistry-"
+    	    + RWT.getSessionStore().getId();
+        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( imageRegistryKey  );
         if( imageRegistry == null ) {
           imageRegistry = createImageRegistry();
           initializeImageRegistry( imageRegistry );
-          RWT.getSessionStore().setAttribute( IMAGE_REGISTRY, imageRegistry );
+          RWT.getSessionStore().setAttribute( imageRegistryKey, imageRegistry );
         }
         return imageRegistry;
-        // RAPEND: [bm]
     }
 
     /**

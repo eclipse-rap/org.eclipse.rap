@@ -26,12 +26,11 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class ResourceManagerImpl_Test extends TestCase {
 
-  // /////////////////////
-  // constant definitions
   private final static String TEST_RESOURCE_1_JAR
     = "resources/js/resourcetest.js";
   private final static String TEST_RESOURCE_1
@@ -83,18 +82,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       + "="
       + "1895582734";
 
-  /////////
-  // fields
   private String webAppRoot;
-
-  /**
-   * <p>
-   * creates a new instance of ResourceManager_Test.
-   * </p>
-   */
-  public ResourceManagerImpl_Test( final String name ) {
-    super( name );
-  }
 
   protected void tearDown() throws Exception {
     ContextProvider.disposeContext();
@@ -313,6 +301,49 @@ public class ResourceManagerImpl_Test extends TestCase {
                       HTML.CHARSET_NAME_ISO_8859_1,
                       IResourceManager.RegisterOptions.COMPRESS );
     assertFalse( "file must not be written twice", new File( name ).exists() );
+  }
+
+  public void testUnregisterNonExistingResource() throws Exception {
+    IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
+    boolean wasRegistered = manager.unregister( "foo" );
+    assertFalse( wasRegistered );
+  }
+
+  public void testUnregisterWithIllegalArgument() throws Exception {
+    IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
+    try {
+      manager.unregister( null );
+      fail( "unregister must not allow null-argument" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+  }
+
+  public void testUnregister() throws Exception {
+    IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
+    manager.register( TEST_RESOURCE_1_JAR );
+    boolean wasRegistered = manager.unregister( TEST_RESOURCE_1_JAR );
+    assertTrue( wasRegistered );
+    String fileName = getResourceCopyFile( TEST_RESOURCE_1_JAR );
+    assertFalse( new File( fileName ).exists() );
+  }
+
+  public void testUnregisterVersionedResource() throws Exception {
+    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
+    clearTempFile();
+    IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
+    String testResource = TEST_RESOURCE_1_VERSIONED;
+    Integer version = ResourceManagerImpl.findVersion( testResource );
+    String versionedResourceName
+      = ResourceManagerImpl.versionedResourceName( testResource, version );
+    String fileName = getResourceCopyFile( versionedResourceName );
+    manager.register( TEST_RESOURCE_1,
+                      HTML.CHARSET_NAME_ISO_8859_1,
+                      RegisterOptions.VERSION );
+    assertTrue( new File( fileName ).exists() ); // precondition
+    boolean wasRegistered = manager.unregister( TEST_RESOURCE_1 );
+    assertTrue( wasRegistered );
+    assertFalse( new File( fileName ).exists() );
   }
 
   public void testLocationRetrievalDisk() throws Exception {

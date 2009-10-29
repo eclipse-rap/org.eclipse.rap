@@ -152,6 +152,10 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
       resourceManager.register( name, is, charset, options );
       registerAtHttpService( name );
     }
+    
+    public boolean unregister( final String name ) {
+      return resourceManager.unregister( name );
+    }
 
     public void setContextLoader( final ClassLoader classLoader ) {
       resourceManager.setContextLoader( classLoader );
