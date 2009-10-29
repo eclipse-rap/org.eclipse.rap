@@ -921,6 +921,11 @@ Text[BORDER] {
 
 /* Group */
 
+Group {
+  color: #4a4a4a;
+  background-color: white;
+}
+
 Group-Frame {
   padding: 8px 2px 2px;
   border: 1px solid #cccccc;
@@ -954,6 +959,17 @@ ProgressBar-Indicator:error {
 }
 
 /* Composite */
+
+Composite {
+  background-color: #ffffff;
+  background-image: none;
+  border: none;
+}
+
+Composite[BORDER] {
+  background-color: white;
+  background-image: none;
+}
 
 Composite.tabActive {
   border: 1px solid #00589f;
