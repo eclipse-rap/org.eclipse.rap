@@ -9,8 +9,6 @@
 *******************************************************************************/ 
 
 * {
-  color: #4a4a4a;
-  background-color: white;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -18,13 +16,12 @@
   color: #CFCFCF;
 }
 
-*[BORDER] {
-  border: 1px solid #C1C1C1;
-}
 
 /* Button */
 
 Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  color: #4a4a4a;
+  background-color: white;
   border: 1px solid #A4A4A4;
   border-radius: 3px;
   padding: 2px 5px;
@@ -85,6 +82,10 @@ Button.clearButton {
   padding: 2px;
 }
 
+Button.clearButton:hover, Button.clearButton:selected, Button.clearButton:pressed {
+  background-image: none;
+}
+
 Button.configMenuButton {
   background-color: transparent;
   background-image: none;
@@ -92,7 +93,7 @@ Button.configMenuButton {
   padding: 1px;
 }
 
-Button.clearButton:pressed {
+Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
   background-image: none;
 }
 
@@ -163,7 +164,7 @@ Button.menuBar {
   font: 13px Arial, Helvetica, sans-serif;
 }
 
-Button.menuBar:pressed {
+Button.menuBar:pressed, Button.menuBar:hover {
   background-image: none;
 }
 
@@ -208,7 +209,7 @@ Button.partActive {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Button.partActive:pressed {
+Button.partActive:pressed, Button.partActive:hover {
   background-image: none;
 }
 
@@ -220,7 +221,7 @@ Button.partInActiveActive {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Button.partInactiveActive:pressed {
+Button.partInActiveActive:pressed, Button.partInActiveActive:hover {
   background-image: none;
 }
 
@@ -232,7 +233,7 @@ Button.partInactive {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Button.partInactive:pressed {
+Button.partInactive:pressed, Button.partInactive:hover {
   background-image: none;
 }
 
@@ -252,8 +253,13 @@ Button.perspectiveActive {
   font: 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
 }
 
+Button.perspectiveActive:hover, Button.perspectiveActive:pressed, Button.perspectiveActive:selected {
+  background-image: none;
+}
+
 Button.perspective:hover {
   font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+  background-image: none;
 }
 
 Button.perspective:pressed {
@@ -294,7 +300,6 @@ Button.tabOverflowInactive:hover {
 
 Shell-Titlebar {
   color: white;
-  /* background-image: url( /theme/fancy/icons/shell-active-background.png ); */
   background-image: gradient( linear, left top, left bottom,
                               from( #a8dd32 ), to( #87b127 ) );
   padding: 2px 5px 2px;
@@ -307,22 +312,24 @@ Shell-Titlebar {
 
 Shell-Titlebar:inactive {
   color: #aaaaaa;
-  /* background-image: url( /theme/fancy/icons/shell-inactive-background.png ); */
   background-image: gradient( linear, left top, left bottom,
                               from( #595959 ), to( #4b4b4b ) );
 }
 
 Shell {
   background-color: white;
+  color: #4a4a4a;
 }
 
 Shell[BORDER], Shell[TITLE] {
+  background-color: white;
   border: 2px solid #99c92c;
   border-radius: 6px;
   padding: 5px;
 }
 
 Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  background-color: white;
   border: 2px solid #4b4b4b;
 }
 
@@ -365,7 +372,8 @@ Shell.toolbarLayer {
 /* Table */
 
 Table {
-  background-color: #ffffff;
+  color: #4a4a4a;
+  background-color: white;
 }
 
 TableColumn {
@@ -509,6 +517,7 @@ TableItem.overflow:even:hover {
 
 List {
   background-color: rgb( 252, 252, 252 );
+  color: #4a4a4a;
 }
 
 List-Item {
@@ -599,6 +608,11 @@ Menu {
   border: 1px #abe033;
 }
 
+MenuItem:hover {
+  background-color: #e9f3d2;
+  color: #4a4a4a;
+}
+
 /* Selection color */
 
 TreeItem:selected {
@@ -649,6 +663,7 @@ Composite.compGray {
 Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
+  color: #4a4a4a;  
 }
 
 .formKey {
@@ -660,11 +675,22 @@ Tree {
   font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-/* Expand Bar */
+/* Label */
 
+Label, CLabel {
+  color: #4a4a4a;
+  background-color: white;
+}
+
+/* Expand Bar */
 
 ExpandBar {
   color: white;
+  background-color: white;
+}
+
+ExpandBar[BORDER] {
+  border: 1px solid #C1C1C1;
 }
 
 ExpandItem-Header {
@@ -700,6 +726,7 @@ ExpandItem-Button:expanded:hover {
 CCombo {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: rgb( 252, 252, 252 );
+  color: #4a4a4a;
 }
 
 Combo {
@@ -707,6 +734,7 @@ Combo {
   border-radius: 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: rgb( 252, 252, 252 );
+  color: #4a4a4a;
 }
 
 CCombo[BORDER] {
@@ -774,6 +802,8 @@ DateTime {
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-radius: 2px 2px 2px 2px;
+  color: #4a4a4a;
+  background-color: white;
 }
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
@@ -876,6 +906,7 @@ DateTime-Calendar-Day:otherMonth {
 
 Text {
   color: #464a4e;
+  background-color: white;
 }
 
 Text[BORDER] {
@@ -885,6 +916,11 @@ Text[BORDER] {
 }
 
 /* Group */
+
+Group {
+  color: #4a4a4a;
+  background-color: white;
+}
 
 Group-Frame {
   padding: 8px 2px 2px;
@@ -920,6 +956,17 @@ ProgressBar-Indicator {
 
 /* Composite */
 
+Composite {
+  background-color: #ffffff;
+  background-image: none;
+  border: none;
+}
+
+Composite[BORDER] {
+  background-color: white;
+  background-image: none;
+}
+
 Composite.tabActive {
   border: 1px solid #ffffff;
   border-radius: 5px 5px 0px 0px;
@@ -942,6 +989,10 @@ Composite.partBackgroundTrans {
   border: none;
 }
 
-Composite {
-  border: none;
+/* ToolTip */
+
+ToolTip {
+  background-color: rgb( 255, 255, 255 );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;  
 }

@@ -9,8 +9,6 @@
 *******************************************************************************/ 
 
 * {
-  color: #4a4a4a;
-  background-color: white;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -25,6 +23,8 @@
 /* Button */
 
 Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  color: #4a4a4a;
+  background-color: white;
   border: 1px solid #A4A4A4;
   border-radius: 3px;
   padding: 2px 5px;
@@ -79,17 +79,28 @@ Button[PUSH]:pressed, Button[TOGGLE]:pressed {
 }
 
 Button.clearButton {
+  color: #4a4a4a;
   background-color: transparent;
   background-image: none;
   border: none;
   padding: 2px;
 }
 
+Button.clearButton:pressed, Button.clearButton:hover {
+  background-image: none;
+}
+
 Button.configMenuButton {
+  color: #4a4a4a;
   background-color: transparent;
   background-image: none;
   border: none;
   padding: 1px;
+}
+
+Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
+  background-image: none;
+  background-color: none;
 }
 
 Button.clearButton:pressed {
@@ -97,6 +108,7 @@ Button.clearButton:pressed {
 }
 
 Button.viewClose {
+  color: #4a4a4a;
   background-color: transparent;
   background-image: url( /img/business/stack_tab_active_close_active.png );
   border: none;
@@ -112,6 +124,7 @@ Button.viewClose:hover {
 }
 
 Button.viewCloseInactive {
+  color: #4a4a4a;
   background-color: transparent;
   background-image: url( /img/business/stack_tab_inactive_close_active.png );
   border: none;
@@ -126,6 +139,7 @@ Button.viewCloseInactive:hover {
 }
 
 Button.toolbarOverflowInactive {
+  color: #4a4a4a;
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow.png );
   border: none;
@@ -141,6 +155,7 @@ Button.toolbarOverflowInactive:hover {
 }
 
 Button.toolbarOverflowActive {
+  color: #4a4a4a;
   background-color: transparent;
   background-image: url( /img/business/toolbar_overflow_active.png );
   border: none;
@@ -163,7 +178,7 @@ Button.menuBar {
   font: 13px Arial, Helvetica, sans-serif;
 }
 
-Button.menuBar:pressed {
+Button.menuBar:pressed, Button.menuBar:hover {
   background-image: none;
 }
 
@@ -208,7 +223,7 @@ Button.partActive {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Button.partActive:pressed {
+Button.partActive:pressed, Button.partActive:hover {
   background-image: none;
 }
 
@@ -220,7 +235,7 @@ Button.partInactive {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Button.partInactive:pressed {
+Button.partInactive:pressed, Button.partInactive:hover {
   background-image: none;
 }
 
@@ -232,7 +247,7 @@ Button.partInActiveActive {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Button.partInactiveActive:pressed {
+Button.partInActiveActive:pressed, Button.partInActiveActive:hover {
   background-image: none;
 }
 
@@ -252,6 +267,10 @@ Button.perspectiveActive {
   font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
 }
 
+Button.perspectiveActive:pressed, Button.perspectiveActive:hover {
+  background-image: none;
+}
+
 Button.perspective:hover {
   font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
 }
@@ -261,6 +280,7 @@ Button.perspective:pressed {
 }
 
 Button.tabOverflowActive {
+  color: #4a4a4a;
   background-color: transparent;
   border: none;
   padding: 2px;
@@ -276,6 +296,7 @@ Button.tabOverflowActive:hover {
 }
 
 Button.tabOverflowInactive {
+  color: #4a4a4a;
   background-color: transparent;
   border: none;
   padding: 2px;
@@ -294,7 +315,6 @@ Button.tabOverflowInactive:hover {
 
 Shell-Titlebar {
   color: white;
-  /* background-image: url( /theme/business/icons/shell-active-background.png ); */
   background-image: gradient( linear, left top, left bottom,
                               from( #005fac ), to( #005092 ) );
   padding: 2px 5px 2px;
@@ -307,7 +327,6 @@ Shell-Titlebar {
 
 Shell-Titlebar:inactive {
   color: #aaaaaa;
-  /* background-image: url( /theme/business/icons/shell-inactive-background.png ); */
   background-image: gradient( linear, left top, left bottom,
                               from( #595959 ), to( #4b4b4b ) );
 }
@@ -317,6 +336,8 @@ Shell {
 }
 
 Shell[BORDER], Shell[TITLE] {
+  color: #4a4a4a;
+  background-color: white;
   border: 2px solid #005092;
   border-radius: 6px;
   padding: 5px;
@@ -397,6 +418,7 @@ TableItem.overflow:even:hover {
 /* Table */
 
 Table {
+  color: #4a4a4a;
   background-color: #ffffff;
 }
 
@@ -494,6 +516,7 @@ TableColumn-SortIndicator:down {
 /* Tree */
 
 Tree {
+  color: #4a4a4a;
   border: none;
   background-color: rgb( 252, 252, 252 );
 }
@@ -501,6 +524,7 @@ Tree {
 /* List */
 
 List {
+  color: #4a4a4a;
   background-color: rgb( 252, 252, 252 );
 }
 
@@ -622,6 +646,13 @@ Menu {
 
 .menuBarPopup {
   border: none;
+}
+
+/* Label */
+
+Label, CLable {
+  color: #4a4a4a;
+  background-color: white;
 }
 
 Label.menuBorder {
@@ -943,4 +974,12 @@ Composite.inactiveButton {
 Composite.partBackgroundTrans {
   background-color: transparent;
   border: none;
+}
+
+/* ToolTip */
+
+ToolTip {
+  background-color: rgb( 255, 255, 255 );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;  
 }
