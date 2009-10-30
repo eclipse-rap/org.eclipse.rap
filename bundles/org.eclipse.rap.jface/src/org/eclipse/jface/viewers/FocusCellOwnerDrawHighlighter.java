@@ -161,15 +161,20 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
           // erase old selection
           for( int i = 0; i < oldSelection.length; i++ ) {
             Widget item = oldSelection[ i ];
-            ViewerRow row = viewer.getViewerRowFromItem( item );
-            int count = row.getColumnCount();
-            for( int j = 0; j < count; j++ ) {
-              ViewerCell cell = row.getCell( j );
-              removeSelectionInformation( null, cell );
+            if( !item.isDisposed() ) {
+              ViewerRow row = viewer.getViewerRowFromItem( item );
+              int count = row.getColumnCount();
+              for( int j = 0; j < count; j++ ) {
+                ViewerCell cell = row.getCell( j );
+                removeSelectionInformation( null, cell );
+              }
             }
           }
           if( oldFocusCell != null ) {
-            removeSelectionInformation( null, oldFocusCell );
+            Widget item = oldFocusCell.getItem();
+            if( !item.isDisposed() ) {
+              removeSelectionInformation( null, oldFocusCell );
+            }
           }
           // colorize new selection
           Widget[] selection = getSelectedItems();
