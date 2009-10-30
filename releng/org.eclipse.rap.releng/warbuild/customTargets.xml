@@ -1,7 +1,11 @@
 <project name="Build specific targets and properties" default="noDefault">
 
-  <available property="allElementsFile" file="${builder}/allElements.xml" value="${builder}/allElements.xml" />
-  <property name="allElementsFile" location="${eclipse.pdebuild.templates}/headless-build/allElements.xml" />
+  <available
+      property="allElementsFile" 
+      file="${builder}/allElements.xml" value="${builder}/allElements.xml" />
+  <property 
+      name="allElementsFile" 
+      location="${eclipse.pdebuild.templates}/headless-build/allElements.xml" />
 
   <import file="${allElementsFile}" />
   <target name="allElements">
@@ -13,7 +17,11 @@
   <!-- Replace values for mapsCheckoutTag as desired. -->
   <!-- ===================================================================== -->
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
-    <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
+    <cvs 
+        cvsRoot="${mapsRepo}" 
+        package="${mapsRoot}" 
+        dest="${buildDirectory}/maps" 
+        tag="${mapsCheckoutTag}" />
   </target>
 
   <target name="checkLocalMaps">
@@ -89,14 +97,14 @@
       Delete org.eclipse.equinox.servletbridge and ...servletbridge.template
       before packaging the WAR file. They are only necessary while building 
     -->
-    <echo message="Before delete" />
     <delete>
-      <fileset dir="${warDirectory}/WEB-INF/eclipse/plugins">
-        <filename name="org.eclipse.equinox.servletbridge_*.jar"/>
-        <filename name="org.eclipse.equinox.servletbridge.template_*.jar"/>
-      </fileset>
+      <fileset 
+        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge_*.jar"
+        erroronmissingdir="true" />
+      <fileset 
+        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge.template_*.jar"
+        erroronmissingdir="true" />
     </delete>  
-    <echo message="After delete" />
 
     <mkdir dir="${outputDirectory}" />
     <zip destfile="${outputDirectory}/rapdemo.war" basedir="${warDirectory}" />
