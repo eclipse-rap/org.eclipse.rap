@@ -96,14 +96,20 @@ public class Font_Test extends TestCase {
     assertEquals( SWT.NORMAL, fontData.getStyle() );
   }
   
-  public void testConstructorWithIllegalArguments() {
+  public void testConstructorWithNullDevice() {
     Device device = new Display();
+    Font font = new Font( device, "roman", 1, SWT.NORMAL );
+    assertSame( Display.getCurrent(), font.getDevice() );
+  }
+  
+  public void testConstructorWithIllegalArguments() {
     try {
       new Font( null, "roman", 1, SWT.NONE );
       fail( "The device must not be null" );
     } catch( IllegalArgumentException e ) {
       // Expected
     }
+    Device device = new Display();
     try {
       new Font( device, null, 1, SWT.NONE );
       fail( "The font name must not be null" );

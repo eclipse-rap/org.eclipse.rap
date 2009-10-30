@@ -13,29 +13,26 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
 
-
 /**
- * Instances of this class manage operating system resources that
- * specify the appearance of the on-screen pointer.
- *
- * <p>Cursors may be constructed using one of the <code>getCursor</code> methods
- * in class <code>Graphics</code> by providing a style information.
+ * Instances of this class manage operating system resources that specify the
+ * appearance of the on-screen pointer.
+ * 
+ * <p>To obtain cursors, it is recommended to use one of the
+ * <code>getSystemCursor</code> method from class <code>Display</code>.
  * </p>
+ * 
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>
- *   CURSOR_ARROW, CURSOR_WAIT, CURSOR_CROSS, CURSOR_HELP,
- *   CURSOR_SIZEALL, CURSOR_SIZENS, CURSOR_SIZEWE,
- *   CURSOR_SIZEN, CURSOR_SIZES, CURSOR_SIZEE, CURSOR_SIZEW, CURSOR_SIZENE, CURSOR_SIZESE,
- *   CURSOR_SIZESW, CURSOR_SIZENW, CURSOR_IBEAM, CURSOR_HAND
- * </dd>
+ * <dd>CURSOR_ARROW, CURSOR_WAIT, CURSOR_CROSS, CURSOR_HELP, CURSOR_SIZEALL,
+ * CURSOR_SIZENS, CURSOR_SIZEWE, CURSOR_SIZEN, CURSOR_SIZES, CURSOR_SIZEE,
+ * CURSOR_SIZEW, CURSOR_SIZENE, CURSOR_SIZESE, CURSOR_SIZESW, CURSOR_SIZENW,
+ * CURSOR_IBEAM, CURSOR_HAND</dd>
  * </dl>
  * <p>
  * Note: Only one of the above styles may be specified.
  * </p>
- *
+ * 
  * @see Graphics
- *
  * @since 1.2
  */
 public final class Cursor extends Resource {
@@ -54,6 +51,12 @@ public final class Cursor extends Resource {
    * constant describing the desired cursor appearance.
    * <p>
    * You must dispose the cursor when it is no longer required. 
+   * </p>
+   *
+   * <p><strong>Note</strong>, this constructor is provided for convenience when
+   * single-sourcing code with SWT. For RWT, the recommended way to create cursors
+   * is to use one of the <code>getSystemCursor</code> method from class 
+   * <code>Display</code>.
    * </p>
    *
    * @param device the device on which to allocate the cursor
@@ -89,14 +92,12 @@ public final class Cursor extends Resource {
    * @see SWT#CURSOR_IBEAM
    * @see SWT#CURSOR_NO
    * @see SWT#CURSOR_HAND
+   * @see org.eclipse.swt.widgets.Display#getSystemCursor(int)
    * 
    * @since 1.3
    */
   public Cursor( final Device device, final int style ) {
-    super( device );
-    if( device == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
+    super( checkDevice( device ) );
   	checkStyle( style );
   	value = style;
   }

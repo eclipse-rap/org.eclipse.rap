@@ -99,10 +99,7 @@ public final class Font extends Resource {
    * @since 1.3
    */
   public Font( final Device device, final FontData[] fontData ) {
-    super( device );
-    if( device == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
+    super( checkDevice( device ) );
     if( fontData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }

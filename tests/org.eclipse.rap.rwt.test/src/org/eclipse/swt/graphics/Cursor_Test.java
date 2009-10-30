@@ -32,6 +32,12 @@ public class Cursor_Test extends TestCase {
     }
   }
   
+  public void testConstructorWithNullDevice() {
+    Display device = new Display();
+    Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
+    assertSame( Display.getCurrent(), cursor.getDevice() );
+  }
+  
   public void testEquality() {
     Display device = new Display();
     Cursor cursor1 = device.getSystemCursor( SWT.CURSOR_ARROW );

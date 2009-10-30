@@ -85,6 +85,11 @@ public class Color_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    new Display();
+    Color color = new Color( null, 0, 0, 0 );
+    assertSame( Display.getCurrent(), color.getDevice() );
+    color = new Color( null, new RGB( 0, 0, 0 ) );
+    assertSame( Display.getCurrent(), color.getDevice() );
   }
   
   public void testDispose() {

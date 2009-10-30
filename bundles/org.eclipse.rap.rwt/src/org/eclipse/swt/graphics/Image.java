@@ -114,10 +114,7 @@ public final class Image extends Resource {
    * @since 1.3
    */
   public Image( final Device device, final InputStream stream ) {
-    super( device );
-    if( device == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
+    super( checkDevice( device ) );
     if( stream == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -156,10 +153,7 @@ public final class Image extends Resource {
    * @since 1.3
    */
   public Image( final Device device, final String fileName ) {
-    super( device );
-    if( device == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
+    super( checkDevice( device ) );
     if( fileName == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }

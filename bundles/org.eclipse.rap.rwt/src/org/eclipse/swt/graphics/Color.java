@@ -80,10 +80,7 @@ public class Color extends Resource {
    * @since 1.3
    */
   public Color( final Device device, final RGB rgb ) {
-    super( device );
-    if( device == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
+    super( checkDevice( device ) );
     if( rgb == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -128,10 +125,7 @@ public class Color extends Resource {
                 final int green,
                 final int blue )
   {
-    super( device );
-    if( device == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
+    super( checkDevice( device ) );
     colorNr = ResourceFactory.computeColorNr( red, green, blue );
   }
 

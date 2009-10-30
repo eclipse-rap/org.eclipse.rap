@@ -101,4 +101,15 @@ public abstract class Resource {
   public boolean isDisposed() {
     return disposed;
   }
+
+  static Device checkDevice( final Device device ) {
+    Device result = device;
+    if( result == null ) {
+      result = Display.getCurrent();
+    }
+    if( result == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    return result;
+  }
 }

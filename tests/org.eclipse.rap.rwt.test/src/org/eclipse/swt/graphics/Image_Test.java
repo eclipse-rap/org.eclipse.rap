@@ -137,6 +137,19 @@ public class Image_Test extends TestCase {
     }
   }
   
+  public void testConstructorWithNullDevice() throws IOException {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    new Display();
+    Image image = new Image( null, stream );
+    assertSame( Display.getCurrent(), image.getDevice() );
+    File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
+    Fixture.copyTestResource( RWTFixture.IMAGE1, imageFile );
+    image = new Image( null, imageFile.getAbsolutePath() );
+    assertSame( Display.getCurrent(), image.getDevice() );
+    imageFile.delete();
+  }
+  
   public void testStreamConstructor() throws IOException {
     ClassLoader loader = RWTFixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
