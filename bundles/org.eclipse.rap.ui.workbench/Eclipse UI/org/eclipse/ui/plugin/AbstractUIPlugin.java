@@ -257,16 +257,10 @@ public abstract class AbstractUIPlugin extends Plugin {
      * @return the image registry
      */
     public ImageRegistry getImageRegistry() {
-		// RAP [rh]: there is one imageRegistry per plug-in per session
-//        if (imageRegistry == null) {
-//            imageRegistry = createImageRegistry();
-//            initializeImageRegistry(imageRegistry);
-//        }
-//        return imageRegistry;
-    	  String imageRegistryKey
+        String imageRegistryKey
     	    = AbstractUIPlugin.class.getName()
     	    + ".imageRegistry-"
-    	    + RWT.getSessionStore().getId();
+    	    + getBundle().getSymbolicName();
         ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( imageRegistryKey  );
         if( imageRegistry == null ) {
           imageRegistry = createImageRegistry();
