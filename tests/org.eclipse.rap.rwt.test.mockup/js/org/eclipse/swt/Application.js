@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.Application", {
@@ -95,11 +96,12 @@ qx.Class.define( "org.eclipse.swt.Application", {
       doc.addEventListener( "keydown",
                             org.eclipse.swt.Application._onKeyDown );
       // Observe browser history
-      qx.client.History.getInstance().addEventListener("request", function(e) {
-          var state = e.getData();
-          // application specific state update
-          this.setApplicationState(state);
-        }, this);
+      qx.client.History.getInstance().addEventListener( "request", function( e )
+      {
+        var state = e.getData();
+        // application specific state update
+        this.setApplicationState( state );
+      }, this );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
