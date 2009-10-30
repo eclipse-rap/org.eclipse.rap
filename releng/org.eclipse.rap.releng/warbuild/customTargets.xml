@@ -99,11 +99,9 @@
     -->
     <delete>
       <fileset 
-        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge_*.jar"
-        erroronmissingdir="true" />
+        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge_*.jar" />
       <fileset 
-        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge.template_*.jar"
-        erroronmissingdir="true" />
+        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge.template_*.jar" />
     </delete>  
 
     <mkdir dir="${outputDirectory}" />
