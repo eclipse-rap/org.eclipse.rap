@@ -84,6 +84,17 @@
         <include name="**/*.zip" />
       </fileset>
     </unzip>
+    
+    <!-- 
+      Delete org.eclipse.equinox.servletbridge and ...servletbridge.template
+      before packaging the WAR file. They are only necessary while building 
+    -->
+    <delete>
+      <fileset dir="${warDirectory}/WEB-INF/eclipse/plugins">
+        <filename name="org.eclipse.equinox.servletbridge_*.jar"/>
+        <filename name="org.eclipse.equinox.servletbridge.template_*.jar"/>
+      </fileset>
+    </delete>  
 
     <mkdir dir="${outputDirectory}" />
     <zip destfile="${outputDirectory}/rapdemo.war" basedir="${warDirectory}" />
