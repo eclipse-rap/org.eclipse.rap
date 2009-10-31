@@ -35,8 +35,8 @@ public class Browser_Test extends TestCase {
     Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     
-    assertEquals( null, browser.getUrl() );
-    assertEquals( null, getText( browser ) );
+    assertEquals( "", browser.getUrl() );
+    assertEquals( "", getText( browser ) );
   }
   
   public void testUrlAndText() {
@@ -45,9 +45,9 @@ public class Browser_Test extends TestCase {
     Browser browser = new Browser( shell, SWT.NONE );
     
     browser.setUrl( "http://eclipse.org/rap" );
-    assertEquals( null, getText( browser ) );
+    assertEquals( "", getText( browser ) );
     browser.setText( "<html></head>..." );
-    assertEquals( null, browser.getUrl() );
+    assertEquals( "", browser.getUrl() );
     
     try {
       browser.setUrl( "oldValue" );

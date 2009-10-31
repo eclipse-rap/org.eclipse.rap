@@ -31,6 +31,7 @@ public class BrowserLCA_Test extends TestCase {
   
   public void testUrl() throws IOException {
     Display display = new Display();
+    RWTFixture.markInitialized( display );
     Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     

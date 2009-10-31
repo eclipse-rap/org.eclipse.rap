@@ -95,6 +95,8 @@ public class Browser extends Composite {
    */
   public Browser( final Composite parent, final int style ) {
     super( parent, style );
+    html = "";
+    url = "";
     browserAdapter = new BrowserAdapter();
   }
   
@@ -127,7 +129,7 @@ public class Browser extends Composite {
     boolean result = event.doit;
     if( result ) {
       this.url = url;
-      html = null;
+      html = "";
       event = new LocationEvent( this, LocationEvent.CHANGED, url );
       event.processEvent();
     }
@@ -185,7 +187,7 @@ public class Browser extends Composite {
     boolean result = event.doit;
     if( result ) {
       this.html = html;
-      url = null;
+      url = "";
       event = new LocationEvent( this, LocationEvent.CHANGED, ABOUT_BLANK );
       event.processEvent();
     }

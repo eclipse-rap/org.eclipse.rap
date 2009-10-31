@@ -93,9 +93,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String text = getText( browser );
     String url = browser.getUrl();
     String result;
-    if( text != null && !"".equals( text.trim() ) ) {       
+    if( !"".equals( text.trim() ) ) {       
       result = registerHtml( text );
-    } else if( url != null && !"".equals( url.trim() ) ) {        
+    } else if( !"".equals( url.trim() ) ) {        
       result = url;
     } else {        
       result = registerHtml( BLANK_HTML );
