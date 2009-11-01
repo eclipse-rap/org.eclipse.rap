@@ -19,8 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.custom.CTabFolder;
@@ -101,53 +100,6 @@ public class Display_Test extends TestCase {
     thread.start();
     thread.join();
     assertSame( thread, display[ 0 ].getThread() );
-
-
-//    final Display[] display = { new Display() };
-//    final Thread[] thread = new Thread[ 1 ];
-//    final ServiceContext context[] = { ContextProvider.getContext() };
-//    final RWTLifeCycle lifeCycle = new RWTLifeCycle();
-//    lifeCycle.addPhaseListener( new PhaseListener() {
-//      private static final long serialVersionUID = 1L;
-//      public void afterPhase( PhaseEvent event ) {
-//      }
-//      public void beforePhase( PhaseEvent event ) {
-//        thread[ 0 ] = display[ 0 ].getThread();
-//      }
-//      public PhaseId getPhaseId() {
-//        return PhaseId.PREPARE_UI_ROOT;
-//      }
-//    } );
-//
-//    Runnable runnable = new Runnable() {
-//      public void run() {
-//        ContextProvider.setContext( context[ 0 ] );
-//        Fixture.fakeResponseWriter();
-//        String id = "org.eclipse.swt.display";
-//        ContextProvider.getSession().setAttribute( id, display[ 0 ] );
-//        String displayId = DisplayUtil.getAdapter( display[ 0 ] ).getId();
-//        Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-//        try {
-//          lifeCycle.execute();
-//        } catch( IOException e ) {
-//          // TODO Auto-generated catch block
-//          e.printStackTrace();
-//          fail();
-//        }
-//      }
-//    };
-//    Thread thread1 = new Thread( runnable );
-//    thread1.start();
-//    thread1.join();
-//    assertSame( thread1, thread[ 0 ] );
-//
-//    Thread thread2 = new Thread( runnable );
-//    thread2.start();
-//    thread2.join();
-//    assertSame( thread2, thread[ 0 ] );
-//    RWTFixture.tearDown();
-//    assertNull( display[ 0 ].getThread() );
-//    RWTFixture.setUp();
   }
 
   public void testGetShells() {
@@ -736,7 +688,6 @@ public class Display_Test extends TestCase {
         }
       }
     };
-
     // addFilter
     Display display = new Display();
     try {
@@ -750,7 +701,6 @@ public class Display_Test extends TestCase {
     shell.close();
     assertTrue( callbackReceived[ CLOSE_CALLBACK ] );
     assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
-
     // removeFilter
     callbackReceived[ CLOSE_CALLBACK ] = false;
     callbackReceived[ DISPOSE_CALLBACK ] = false;
@@ -765,7 +715,6 @@ public class Display_Test extends TestCase {
     shell.close();
     assertFalse( callbackReceived[ CLOSE_CALLBACK ] );
     assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
-
     // remove filter for an event that was not added before -> do nothing
     display.removeFilter( SWT.FocusIn, listener );
   }
