@@ -81,6 +81,32 @@ public class Display_Test extends TestCase {
     assertNull( displayFromBgThread[ 0 ] );
     assertNull( displayFromBgThreadWithFakeContext[ 0 ] );
   }
+  
+  public void testGetDefault() throws InterruptedException {
+    final Display[] backgroundDisplay = { null };
+    final Display display = new Display();
+    assertSame( display, Display.getDefault() );
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        backgroundDisplay[ 0 ] = Display.getDefault();
+      }
+    } );
+    thread.start();
+    thread.join();
+    assertNull( backgroundDisplay[ 0 ] );
+    Thread threadWithContext = new Thread( new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+          public void run() {
+            backgroundDisplay[ 0 ] = Display.getDefault();
+          }
+        } );
+      }
+    } );
+    threadWithContext.start();
+    threadWithContext.join();
+    assertSame( display, backgroundDisplay[ 0 ] );
+  }
 
   public void testGetThread() throws InterruptedException {
     Display first = new Display();
