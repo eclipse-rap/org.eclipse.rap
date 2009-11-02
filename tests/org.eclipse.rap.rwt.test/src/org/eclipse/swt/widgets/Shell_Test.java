@@ -91,22 +91,20 @@ public class Shell_Test extends TestCase {
   }
 
   public void testConstructor() {
+    Shell shell;
     Display display = new Display();
-    Shell shell = new Shell( ( Display )null, SWT.NONE );
+    shell = new Shell();
     assertSame( display, shell.getDisplay() );
-
+    shell = new Shell( ( Display )null, SWT.NONE );
+    assertSame( display, shell.getDisplay() );
     shell = new Shell( ( Display )null );
     assertEquals( SWT.SHELL_TRIM | SWT.LEFT_TO_RIGHT, shell.getStyle() );
-
     shell = new Shell( display, SWT.NO_TRIM | SWT.CLOSE );
     assertTrue( ( shell.getStyle() & SWT.CLOSE ) == 0 );
-
     shell = new Shell( ( Shell )null );
     assertEquals( SWT.DIALOG_TRIM | SWT.LEFT_TO_RIGHT, shell.getStyle() );
-
     shell = new Shell( display, SWT.MIN );
     assertTrue( ( shell.getStyle() & SWT.CLOSE ) != 0 );
-
     try {
       Shell disposedShell = new Shell( display, SWT.NONE );
       disposedShell.dispose();
@@ -116,7 +114,7 @@ public class Shell_Test extends TestCase {
       // expected
     }
   }
-
+  
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
