@@ -69,7 +69,6 @@ public class SelectionEvent extends TypedEvent {
    * if one was specified.
    * 
    * @see org.eclipse.swt.widgets.Link#setText(String)
-   * @since 1.0
    */
   public String text;
   
