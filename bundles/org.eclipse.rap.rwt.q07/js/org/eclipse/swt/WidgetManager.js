@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
  
 /**
@@ -177,11 +178,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
 
     focus : function( widgetId ) {
       var widget = this.findWidgetById( widgetId );
-      if( widget.isMaterialized() ) {
+      if( widget.isSeeable() ) {
         widget.focus();
       } else {
-        widget.addEventListener( "appear", 
-                                 org.eclipse.swt.WidgetManager._onAppearFocus, 
+        widget.addEventListener( "appear",
+                                 org.eclipse.swt.WidgetManager._onAppearFocus,
                                  widget );
       }
     },
