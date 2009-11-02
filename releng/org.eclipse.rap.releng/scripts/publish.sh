@@ -88,7 +88,7 @@ function parseArguments() {
 }
 
 ################################################################################
-# Utility function for building sub-tasks.
+# Utility functions for building sub-tasks.
 
 # Uploads given srcFile to build.eclipse.org and signs it. When signing is
 # finished, the signed file is downloaded to dstFile.
@@ -281,12 +281,6 @@ function findLauncher() {
 ################################################################################
 # MAIN
 
-# allow sourcing this script
-if [ -n "$PUBLISH_SCRIPT_INCLUDE" ]; then
-  findLauncher
-  return
-fi
-
 parseArguments "$@"
 findLauncher
 
@@ -334,6 +328,9 @@ if [ -n "$REPOSITORY_PATH" ]; then
 
   echo "merge new content into local copy of repository"
   rm -rf newSite && unzip packed-signed-normalized-$INPUT_ARCHIVE_NAME -d newSite || exit 1
+  # pack directories as jars
+  find newSite/eclipse/plugins -mindepth 1 -maxdepth 1 -type d -exec echo jar {} \; -exec jar cMf {}.jar -C {} . \; -exec rm -r {} \;
+  find newSite/eclipse/features -mindepth 1 -maxdepth 1 -type d -exec echo jar {} \; -exec jar cMf {}.jar -C {} . \; -exec rm -r {} \;
   rsync -rv newSite/eclipse/ $localCopy/ || exit 1
   rm -rf newSite
 
@@ -350,3 +347,4 @@ if [ -n "$REPOSITORY_PATH" ]; then
     $localCopy/ \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ || exit 1
 fi
+
