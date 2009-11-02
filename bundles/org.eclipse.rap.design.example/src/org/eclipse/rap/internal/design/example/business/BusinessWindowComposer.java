@@ -44,7 +44,7 @@ public class BusinessWindowComposer implements IWindowComposer {
 
 
   private static final int MARGIN = 35;
-  private Shell shell;
+  protected Shell shell;
   private IWorkbenchWindowConfigurer configurer;
   private ApplicationWindow window;
   private Composite headerArea;

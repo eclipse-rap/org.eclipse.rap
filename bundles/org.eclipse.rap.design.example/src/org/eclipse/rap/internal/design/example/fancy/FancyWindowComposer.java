@@ -44,7 +44,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 public class FancyWindowComposer implements IWindowComposer {
 
   private static final int MARGIN = 0;
-  private Shell shell;
+  protected Shell shell;
   private IWorkbenchWindowConfigurer configurer;
   private ApplicationWindow window;
   private Composite headerArea;
