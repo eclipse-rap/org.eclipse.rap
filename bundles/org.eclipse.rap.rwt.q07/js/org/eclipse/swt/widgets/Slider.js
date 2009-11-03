@@ -78,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this._thumbOffset = 0;
     // Min button
     this._minButton = new qx.ui.form.Button();
-    this._minButton.setTabIndex( -1 );
+    this._minButton.setTabIndex( null );
     if( this._horizontal ) {
       this._minButton.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.add( this._minButton );
     // Max button
     this._maxButton = new qx.ui.form.Button();
-    this._maxButton.setTabIndex( -1 );
+    this._maxButton.setTabIndex( null );
     if( this._horizontal ) {
       this._maxButton.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {

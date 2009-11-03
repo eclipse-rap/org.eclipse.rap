@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
     
   	_onAppear : function( evt ) {
-      this._link.setTabIndex( -1 );
+      this._link.setTabIndex( null );
       this._link.setHideFocus( true );
       this._applyHyperlinksStyleProperties();
       this._addEventListeners();
@@ -139,7 +139,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     applyText : function() {
       this._link.setHtml( this._text );
       if ( this._linksCount == 0 ) {
-        this.setTabIndex( -1 );
+        this.setTabIndex( null );
       } else {
         this.setTabIndex( 1 );
       }

@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
 
     tabIndex : {
       refine : true,
-      init : -1
+      init : 1
     }
         
   },

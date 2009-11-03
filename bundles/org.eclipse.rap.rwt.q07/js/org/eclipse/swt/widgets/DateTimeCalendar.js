@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
     this._calendar = new org.eclipse.swt.widgets.Calendar();
     this._calendar.addEventListener( "changeDate", this._onChangeDate, this );
     this._calendar.setDate( new Date( 74, 5, 6 ) );
-    this._calendar.setTabIndex( -1 );
+    this._calendar.setTabIndex( null );
     this.add( this._calendar );
     
     this.addEventListener( "contextmenu", this._onContextMenu, this );

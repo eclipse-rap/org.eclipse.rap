@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
     this._textfield.addEventListener( "blur", this._onChangeValue, this );
     this._textfield.addEventListener( "keydown", this._onKeyDown, this );
-    this._textfield.setTabIndex( -1 );
+    this._textfield.setTabIndex( null );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 

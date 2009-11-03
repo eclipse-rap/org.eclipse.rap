@@ -128,7 +128,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this._spinner.setMax( 12 );
     this._spinner.setValue( this._monthInt );
     this._spinner.addEventListener( "change",  this._onSpinnerChange, this );
-    this._spinner._textfield.setTabIndex( -1 );
+    this._spinner._textfield.setTabIndex( null );
     // Hack to prevent the spinner text field to request the focus
     this._spinner._textfield.setFocused = function() {};
     // Solution for Bug 284021
@@ -155,7 +155,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton = new qx.ui.form.Button();
       this._dropDownButton.setAppearance( "datetime-drop-down-button" );
-      this._dropDownButton.setTabIndex( -1 );
+      this._dropDownButton.setTabIndex( null );
       this._dropDownButton.setAllowStretchY( true );
       this.add( this._dropDownButton );
       // Get names of weekdays and months
@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this._calendar = new org.eclipse.swt.widgets.Calendar();
       this._calendar.setAppearance( "datetime-drop-down-calendar" );
       this._calendar.setDate( new Date( 70, 0, 1 ) );
-      this._calendar.setTabIndex( -1 );
+      this._calendar.setTabIndex( null );
       this._calendar.setVisibility( false );
       // TODO: [if] Calendar buttons tooltips have wrong z-index
       // Remove tooltips for now.

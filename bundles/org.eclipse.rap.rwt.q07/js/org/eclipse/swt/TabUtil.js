@@ -14,7 +14,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
   statics : {
     createTabItem : function( id, parentId, index ) {
       var tabButton = new qx.ui.pageview.tabview.Button();
-      tabButton.setTabIndex( -1 );
+      tabButton.setTabIndex( null );
       tabButton.setLabel( "(empty)" );
       tabButton.getLabelObject().setMode( "html" ); 
       tabButton.setLabel( "" );

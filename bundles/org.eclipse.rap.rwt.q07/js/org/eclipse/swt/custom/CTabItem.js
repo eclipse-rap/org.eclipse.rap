@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    this.setTabIndex( -1 );
+    this.setTabIndex( null );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
     this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );

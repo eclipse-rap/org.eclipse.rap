@@ -36,17 +36,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._listItemHeight = "auto";
     // Text field
     this._field = new qx.ui.form.TextField();
-    this._field.setTabIndex( -1 );
+    this._field.setTabIndex( null );
     this._field.setAllowStretchY( true );
     this.add( this._field );
     // Drop down button
     this._button = new qx.ui.form.Button();
-    this._button.setTabIndex( -1 );
+    this._button.setTabIndex( null );
     this._button.setAllowStretchY( true );
     this.add( this._button );
     // List
     this._list = new qx.ui.form.List();
-    this._list.setTabIndex( -1 );
+    this._list.setTabIndex( null );
     this._list.setDisplay( false );
     this._list.setWidth( "auto" );
     // List Manager

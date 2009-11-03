@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           // prevent items from being drawn outside the list
           item.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
           item.setContextMenu( this.getContextMenu() );
-          item.setTabIndex( -1 );
+          item.setTabIndex( null );
           item.setLabel( "(empty)" );
           item.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
           item.setLabel( items[ i ] );

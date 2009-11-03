@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     this._spinner.setMax( 23 );
     this._spinner.setValue( 0 );
     this._spinner.addEventListener( "change",  this._onSpinnerChange, this );
-    this._spinner._textfield.setTabIndex( -1 );
+    this._spinner._textfield.setTabIndex( null );
     // Hack to prevent the spinner text field to request the focus
     this._spinner._textfield.setFocused = function() {};
     // Solution for Bug 284021
