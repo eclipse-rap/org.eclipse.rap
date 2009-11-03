@@ -90,6 +90,69 @@ function parseArguments() {
 ################################################################################
 # Utility functions for building sub-tasks.
 
+# Packs all directories into jars and unpacks jarred directories later.
+#
+# Parameters: (pack|unpack|rename) srcFile dstFile
+#
+# pack:
+#   all plugin/feature directories are packed to a file named *.unpack.jar
+# unpack:
+#   all plugin/feature jars that match *.unpack.jar are unpacked
+# rename:
+#   all plugin/feature jars that match *.unpack.jar are renamed to *.jar
+#
+function jarDirs() {
+  # parameter checking
+  if [ $# -ne 3 ]; then
+    echo "Usage: jarDirs (pack|unpack|rename) srcFile dstFile"
+    return 1
+  fi
+  local mode=$1
+  local srcFile=`readlink -nm "$2"`
+  local dstFile=`readlink -nm "$3"`
+  local srcFileName="${srcFile##*/}"
+  if [ ! -e "$srcFile" ]; then
+    echo "Source file does not exist: $srcFile"
+    return 1
+  fi
+  if [ -e "$dstFile" ]; then
+    echo "Target file exists already: $dstFile, skipping"
+    return 0
+  fi
+  mkdir -p .unzipped && rm -rf .unzipped/* || return 1
+  unzip -q $srcFile -d .unzipped || return 1
+  if [ "$mode" == "pack" ]; then
+    find .unzipped/eclipse/plugins -mindepth 1 -maxdepth 1 -type d \
+      -exec echo jar {} \; \
+      -exec jar cMf {}.unpack.jar -C {} . \; \
+      -exec rm -r {} \; || return 1
+    find .unzipped/eclipse/features -mindepth 1 -maxdepth 1 -type d \
+      -exec echo jar {} \; \
+      -exec jar cMf {}.unpack.jar -C {} . \; \
+      -exec rm -r {} \; || return 1
+  elif [ "$mode" == "unpack" ]; then
+    for f in .unzipped/eclipse/plugins/*.unpack.jar; do
+      unzip -q $f -d ${f/.unpack.jar/} && rm $f || return 1
+    done
+    for f in .unzipped/eclipse/features/*.unpack.jar; do
+      unzip -q $f -d ${f/.unpack.jar/} && rm $f || return 1
+    done
+  elif [ "$mode" == "rename" ]; then
+    # Note: *.unpack.jar.pack.gz files need to be renamed too
+    for f in .unzipped/eclipse/plugins/*.unpack.jar*; do
+      mv $f ${f/.unpack.jar/.jar} || return 1
+    done
+    for f in .unzipped/eclipse/features/*.unpack.jar*; do
+      mv $f ${f/.unpack.jar/.jar} || return 1
+    done
+  else
+    echo "Invalid mode: $mode, use pack or normalize"
+    return 1
+  fi
+  cd .unzipped && zip -q -r "$dstFile" . && cd .. && rm -rf .unzipped || return 1
+  echo ok
+}
+
 # Uploads given srcFile to build.eclipse.org and signs it. When signing is
 # finished, the signed file is downloaded to dstFile.
 #
@@ -150,14 +213,14 @@ EOI
   test $? -eq 0 || return 1
   # repack zip file since the signing process yields zip files that do not work on Windows Vista
   echo "repacking..."
-  rm -rf .unzipped && unzip -d .unzipped "$dstFile" && rm "$dstFile" \
-    && cd .unzipped && zip -r "$dstFile" . && cd .. && rm -rf .unzipped || return 1
+  rm -rf .unzipped && unzip -q -d .unzipped "$dstFile" && rm "$dstFile" \
+    && cd .unzipped && zip -q -r "$dstFile" . && cd .. && rm -rf .unzipped || return 1
   echo ok
 }
 
 # Calls pack200 on the given srcFile and copies the result to dstFile.
 #
-# Parameters: srcFile dstFile
+# Parameters: (normalize|pack) srcFile dstFile
 #
 function packBuild() {
   # parameter checking
@@ -284,23 +347,27 @@ function findLauncher() {
 parseArguments "$@"
 findLauncher
 
+# pack all directories as jars (signing process doesn't handle directories correctly)
+echo "=== jar all dirs in $INPUT_ARCHIVE"
+jarDirs pack "$INPUT_ARCHIVE" jarred-$INPUT_ARCHIVE_NAME || exit 1
+ 
 # exclude icu.base bundles from packing and signing
-ICU_BUNDLES=`zipinfo -1 "$INPUT_ARCHIVE" | grep com.ibm.icu`
-echo "pack.excludes: `echo $ICU_BUNDLES | sed 's/ /, /'`" > pack.properties
-echo "sign.excludes: `echo $ICU_BUNDLES | sed 's/ /, /'`" >> pack.properties
+EXCLUDE_BUNDLES=`zipinfo -1 jarred-$INPUT_ARCHIVE_NAME | grep -E 'com.ibm.icu|org.junit_3'`
+echo "pack.excludes: `echo $EXCLUDE_BUNDLES | sed 's/ /, /g'`" > pack.properties
+echo "sign.excludes: `echo $EXCLUDE_BUNDLES | sed 's/ /, /g'`" >> pack.properties
 zip "$INPUT_ARCHIVE" pack.properties && rm pack.properties || exit 1
 
 # pack200 - normalize
 echo "=== normalize (pack200) $INPUT_ARCHIVE"
-packBuild normalize "$INPUT_ARCHIVE" normalized-$INPUT_ARCHIVE_NAME || exit 1
+packBuild normalize jarred-$INPUT_ARCHIVE normalized-$INPUT_ARCHIVE_NAME || exit 1
 
 # sign
 echo "=== sign normalized $INPUT_ARCHIVE"
-signBuild normalized-$INPUT_ARCHIVE_NAME signed-normalized-$INPUT_ARCHIVE_NAME || exit 1
+signBuild normalized-$INPUT_ARCHIVE_NAME signed-$INPUT_ARCHIVE_NAME || exit 1
 
 if [ -n "$ZIP_DOWNLOAD_PATH" ]; then
   # create a copy without pack.properties
-  cp signed-normalized-$INPUT_ARCHIVE_NAME upload-$INPUT_ARCHIVE_NAME
+  jarDirs unpack signed-$INPUT_ARCHIVE_NAME upload-$INPUT_ARCHIVE_NAME
   zip -d upload-$INPUT_ARCHIVE_NAME pack.properties
   # upload zip
   echo "=== upload zip file to $ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME"
@@ -315,7 +382,7 @@ fi
 if [ -n "$REPOSITORY_PATH" ]; then
   # pack200 - pack
   echo "=== pack200 signed $INPUT_ARCHIVE_NAME"
-  packBuild pack signed-normalized-$INPUT_ARCHIVE_NAME packed-signed-normalized-$INPUT_ARCHIVE_NAME || exit 1
+  packBuild pack signed-$INPUT_ARCHIVE_NAME packed-$INPUT_ARCHIVE_NAME || exit 1
 
   # download old repo
   echo "=== merge repository dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/"
@@ -327,11 +394,10 @@ if [ -n "$REPOSITORY_PATH" ]; then
     $localCopy/ || return 1
 
   echo "merge new content into local copy of repository"
-  rm -rf newSite && unzip packed-signed-normalized-$INPUT_ARCHIVE_NAME -d newSite || exit 1
-  # pack directories as jars
-  find newSite/eclipse/plugins -mindepth 1 -maxdepth 1 -type d -exec echo jar {} \; -exec jar cMf {}.jar -C {} . \; -exec rm -r {} \;
-  find newSite/eclipse/features -mindepth 1 -maxdepth 1 -type d -exec echo jar {} \; -exec jar cMf {}.jar -C {} . \; -exec rm -r {} \;
-  rsync -rv newSite/eclipse/ $localCopy/ || exit 1
+  jarDirs rename packed-$INPUT_ARCHIVE_NAME renamed-$INPUT_ARCHIVE_NAME
+  rm -rf newSite && unzip -q renamed-$INPUT_ARCHIVE_NAME -d newSite || exit 1
+  rm renamed-$INPUT_ARCHIVE_NAME
+  rsync -r newSite/eclipse/ $localCopy/ || exit 1
   rm -rf newSite
 
   # metadata
