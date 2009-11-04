@@ -78,6 +78,7 @@ public class CoolBarManager extends ContributionManager
   private static final String ACTIVE = "toolbarOverflowActive";
   private static final String INACTIVE = "toolbarOverflowInactive";
   private static final int SPACING = 25;
+  private static final int WAVE_SPACING = 20;
   private Map buttonItemMap = new HashMap();
   private ElementBuilder dummyBuilder;
   private Composite coolBar;
@@ -325,25 +326,20 @@ public class CoolBarManager extends ContributionManager
    * it is to small. So an overflow will be shown including these items.
    */
   private void manageOverflow() {        
-    int coolbarWidth = coolBar.getParent().getSize().x; 
-    for( int childrenSize = getChildrenSize( coolBar ); 
-         childrenSize > coolbarWidth - 20; 
-         childrenSize = getChildrenSize( coolBar ) ) 
-    {
-      // remove last children (button)
-      int lastIndex = coolBar.getChildren().length - 1;
-      if( lastIndex >= 0 ) {
-        Control child = coolBar.getChildren()[ lastIndex ];
+    int coolbarWidth = coolBar.getParent().getSize().x - WAVE_SPACING;     
+    int childrenLength = coolBar.getChildren().length - 1;
+    for( int i = childrenLength; i >= 0; i-- ) {
+      int childrenSize = getChildrenSize( coolBar );
+      if( childrenSize > coolbarWidth ) {
+        Control child = coolBar.getChildren()[ i ];
         Object object = buttonItemMap.get( child );
         ContributionItem item = ( ContributionItem ) object;
         addOverflowItem( item );
         activeOverflowOpenButton();
         buttonItemMap.remove( child );
         child.dispose();
-        child = null; 
       }
     }
-
     // check if the overflow button should be activated or not
     checkOverflowActivation();    
   }
