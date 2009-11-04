@@ -133,29 +133,33 @@ public final class RWT {
           } catch( final Exception ex ) {
             throw new IllegalStateException( ex.getMessage() );
           }
-          Field[] fieldArray = clazz.getDeclaredFields();
-          for( int i = 0; i < fieldArray.length; i++ ) {
+          Field[] fields = clazz.getDeclaredFields();
+          for( int i = 0; i < fields.length; i++ ) {
+            String fieldName = fields[ i ].getName();
             try {
-              int modifiers = fieldArray[ i ].getModifiers();
-              if(    String.class.isAssignableFrom( fieldArray[ i ].getType() )
-                  && Modifier.isPublic( modifiers ) 
-                  && !Modifier.isStatic( modifiers ) )
+              if(    String.class.isAssignableFrom( fields[ i ].getType() )
+                  && Modifier.isPublic( fields[ i ].getModifiers() ) 
+                  && !Modifier.isStatic( fields[ i ].getModifiers() ) )
               {
                 try {
-                  String value = bundle.getString( fieldArray[ i ].getName() );
+                  String value = bundle.getString( fieldName );
                   if( value != null ) {
-                    fieldArray[ i ].setAccessible( true );
-                    fieldArray[ i ].set( result, value );
+                    fields[ i ].setAccessible( true );
+                    fields[ i ].set( result, value );
                   }
                 } catch( final MissingResourceException mre ) {
-                  fieldArray[ i ].setAccessible( true );
-                  fieldArray[ i ].set( result, "" );
-                  mre.printStackTrace();
+                  fields[ i ].setAccessible( true );
+                  fields[ i ].set( result, "" );
+                  throw mre;
                 }
               }
             } catch( final Exception ex ) {
-              // TODO [rh] handle exception
-              ex.printStackTrace();
+              String msg
+                = "Failed to load localized message for: " 
+                + clazz.getName() 
+                + "#" 
+                + fieldName;
+              ServletLog.log( msg, ex );
             }
           }
           map.put( bundle, result );

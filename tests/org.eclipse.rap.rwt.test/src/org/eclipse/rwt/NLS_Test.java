@@ -52,6 +52,22 @@ public class NLS_Test extends TestCase {
     }
   }
   
+  final static class TestIncompleteMessages {
+    private static final String BUNDLE_NAME
+      = "org.eclipse.rwt.incomplete_messages";
+    
+    public String NoTranslationAvailable;
+
+    public static TestIncompleteMessages get() {
+      Class clazz = TestIncompleteMessages.class;
+      Object messages = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
+      return ( TestIncompleteMessages )messages;
+    }
+    
+    private TestIncompleteMessages() {
+    }
+  }
+  
   protected void setUp() throws Exception {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
@@ -101,5 +117,9 @@ public class NLS_Test extends TestCase {
     assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
     
     assertSame( TestMessagesUTF8.get(), TestMessagesUTF8.get() );
+  }
+  
+  public void testNLSWithIncompleteLocalization() {
+    assertEquals( "", TestIncompleteMessages.get().NoTranslationAvailable );
   }
 }
