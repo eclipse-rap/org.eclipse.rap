@@ -307,8 +307,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=262155
     _isRelevantEvent : function( evt ) {
       var target = evt.getTarget();
+      var dummyColumn = this._columnArea.getChildren()[ 0 ];
       return    target === this
-             || target instanceof org.eclipse.swt.widgets.TableRow;
+             || target === dummyColumn
+             || target instanceof org.eclipse.swt.widgets.TableRow
+             || target instanceof org.eclipse.swt.widgets.TableColumn;
     },
 
     setCursor : function( value ) {
