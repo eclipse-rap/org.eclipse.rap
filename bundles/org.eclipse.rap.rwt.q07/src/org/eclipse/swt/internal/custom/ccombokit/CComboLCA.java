@@ -11,6 +11,7 @@ package org.eclipse.swt.internal.custom.ccombokit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -92,7 +93,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.widgets.Combo", 
+    writer.newWidget( "org.eclipse.swt.widgets.Combo",
                       new Object[] { "ccombo" } );
     ControlLCAUtil.writeStyleFlags( ccombo );
   }
@@ -178,15 +179,12 @@ public final class CComboLCA extends AbstractWidgetLCA {
   private static void writeItems( final CCombo ccombo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( ccombo );
     String[] items = ccombo.getItems();
-    if( WidgetLCAUtil.hasChanged( ccombo,
-                                  PROP_ITEMS,
-                                  items,
-                                  DEFAUT_ITEMS ) )
-    {
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
       // Convert newlines into whitespaces
       for( int i = 0; i < items.length; i++ ) {
         items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
+        items[ i ] = CommonPatterns.replaceWhiteSpaces( items[ i ] );
       }
       writer.set( PROP_ITEMS, new Object[] { items } );
     }
@@ -272,7 +270,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
       writer.set( PROP_LIST_ITEM_HEIGHT, "listItemHeight", newValue );
     }
   }
-  
+
   private static void writeMaxListHeight( final CCombo ccombo )
     throws IOException
   {

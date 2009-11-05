@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -161,7 +162,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       combo.setSelection( selection );
     }
   }
-  
+
   private static Point readSelection( final Combo combo ) {
     Point result = null;
     String selStart = WidgetLCAUtil.readPropertyValue( combo,
@@ -191,6 +192,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       for( int i = 0; i < items.length; i++ ) {
         items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
+        items[ i ] = CommonPatterns.replaceWhiteSpaces( items[ i ] );
       }
       writer.set( PROP_ITEMS, new Object[] { items } );
     }
@@ -207,16 +209,16 @@ public class ComboLCA extends AbstractWidgetLCA {
     // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
     boolean textChanged = !isEditable( combo )
-                          && WidgetLCAUtil.hasChanged( combo, 
-                                                       PROP_TEXT, 
-                                                       combo.getText(), 
+                          && WidgetLCAUtil.hasChanged( combo,
+                                                       PROP_TEXT,
+                                                       combo.getText(),
                                                        "" );
     if( selectionChanged || textChanged ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
       writer.call( JS_FUNC_SELECT, new Object[] { newValue } );
     }
   }
-  
+
   private static void writeTextSelection( final Combo combo )
     throws IOException
   {
@@ -241,7 +243,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       }
     }
   }
-  
+
   private static void writeTextLimit( final Combo combo )
     throws IOException
   {
@@ -272,7 +274,7 @@ public class ComboLCA extends AbstractWidgetLCA {
         writer.set( PROP_LIST_ITEM_HEIGHT, "listItemHeight", newValue );
       }
   }
-  
+
   private static void writeMaxListHeight( final Combo combo )
     throws IOException
   {
@@ -285,7 +287,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       writer.set( PROP_MAX_LIST_HEIGHT, "maxListHeight", newValue );
     }
   }
-  
+
   private static void writeListVisible( final Combo combo )
     throws IOException
   {
@@ -333,7 +335,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       writer.set( "hasVerifyModifyListener", newValue );
     }
   }
-  
+
   //////////////////
   // Helping methods
 
@@ -346,7 +348,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     int itemHeight = getListItemHeight( combo );
     return visibleItemCount * itemHeight;
   }
-  
+
   static int getListItemHeight( final Combo combo ) {
     int charHeight = TextSizeDetermination.getCharHeight( combo.getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
