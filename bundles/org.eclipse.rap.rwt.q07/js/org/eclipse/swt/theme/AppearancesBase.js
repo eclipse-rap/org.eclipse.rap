@@ -1186,8 +1186,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
 
-      result.padding = tv.getCssBoxDimensions( "Spinner", "padding" );
-      result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : "undefined";
+      // [if] Do not apply top/bottom paddings on the client
+      var cssPadding = tv.getCssBoxDimensions( "Spinner", "padding" );
+      result.paddingRight = cssPadding[ 1 ];
+      result.paddingLeft = cssPadding[ 3 ];
+      result.textColor = states.disabled
+                         ? tv.getCssColor( "*", "color" )
+                         : "undefined";
 
       result.top = 0;
       result.left = 0;
