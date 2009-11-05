@@ -114,7 +114,7 @@ public class TreeTab extends ExampleTab {
       changeImage( tree, treeImage );
     }
     final Label lblTreeEvent = new Label( parent, SWT.NONE );
-    lblTreeEvent.setLayoutData( new GridData( 200, 22 ) );
+    lblTreeEvent.setLayoutData( new GridData( 300, 22 ) );
     Menu treeMenu = new Menu( tree );
     MenuItem treeMenuItem = new MenuItem( treeMenu, SWT.PUSH );
     treeMenuItem.addSelectionListener( new SelectionAdapter() {
