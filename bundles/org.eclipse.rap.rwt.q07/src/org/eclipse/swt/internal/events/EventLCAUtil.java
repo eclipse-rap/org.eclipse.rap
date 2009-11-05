@@ -14,19 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 
-public class EventLCAUtil {
-
-  private EventLCAUtil() {
-    // prevent instantiation
-  }
+public final class EventLCAUtil {
 
   public static int readStateMask( final String paramName ) {
-    int stateMask = 0;
-    String modifier = readStringParam( paramName );
-    if( modifier != null ) {
-      stateMask = translateModifier( modifier );
+    int result = 0;
+    String modifiers = readStringParam( paramName );
+    if( modifiers != null ) {
+      result = translateModifier( modifiers );
     }
-    return stateMask;
+    return result;
   }
 
   private static String readStringParam( final String paramName ) {
@@ -40,7 +36,7 @@ public class EventLCAUtil {
     int result = 0;
     for( int i = 0; i < modifiers.length; i++ ) {
       if( "ctrl".equals( modifiers[ i ] ) ) {
-        result  |= SWT.CTRL;
+        result |= SWT.CTRL;
       } else if( "alt".equals( modifiers[ i ] ) ) {
         result |= SWT.ALT;
       } else if ( "shift".equals(  modifiers[ i ] ) ) {
@@ -48,5 +44,9 @@ public class EventLCAUtil {
       }
     }
     return result;
+  }
+
+  private EventLCAUtil() {
+    // prevent instantiation
   }
 }
