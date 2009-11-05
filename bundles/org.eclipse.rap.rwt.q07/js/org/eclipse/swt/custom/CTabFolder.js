@@ -482,6 +482,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           var itemId = widgetManager.findIdByWidget( item );
           req.addParameter( id + ".selectedItemId", itemId );
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }
@@ -498,6 +499,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           //      -> CTabFolderLCA.readData()
           req.addParameter( id + ".selectedItemId", itemId );
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }

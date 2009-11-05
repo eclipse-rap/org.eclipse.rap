@@ -692,6 +692,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         req.addParameter( id + ".year", this._lastValidYear );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
         this._readyToSendChanges = true;

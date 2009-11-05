@@ -644,6 +644,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         req.addParameter( id + ".selectedItem", list.indexOf( listItem ) );
         if( this._hasSelectionListener || this._hasVerifyModifyListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }
@@ -656,6 +657,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var id = widgetManager.findIdByWidget( this );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }

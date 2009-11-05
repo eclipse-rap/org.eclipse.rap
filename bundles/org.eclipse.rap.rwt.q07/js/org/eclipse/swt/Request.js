@@ -110,11 +110,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
      */
     addEvent : function( eventType, sourceId ) {
       this._parameters[ eventType ] = sourceId;
-      if(    eventType === "org.eclipse.swt.events.widgetSelected"
-          || eventType === "org.eclipse.swt.events.widgetDefaultSelected" )
-      {
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      }
     },
 
     /**

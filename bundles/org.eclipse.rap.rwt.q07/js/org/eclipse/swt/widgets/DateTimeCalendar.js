@@ -118,6 +118,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeCalendar", {
         req.addParameter( id + ".year", year );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }

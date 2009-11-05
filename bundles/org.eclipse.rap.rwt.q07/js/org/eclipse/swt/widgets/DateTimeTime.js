@@ -369,6 +369,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
                           this._removeLeadingZero( this._secondsTextField.getText() ) );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
         this._readyToSendChanges = true;

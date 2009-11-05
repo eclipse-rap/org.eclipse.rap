@@ -331,6 +331,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
         var req = org.eclipse.swt.Request.getInstance();
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.addEvent( "org.eclipse.swt.events.widgetSelected.index", index );
           req.send();
         }

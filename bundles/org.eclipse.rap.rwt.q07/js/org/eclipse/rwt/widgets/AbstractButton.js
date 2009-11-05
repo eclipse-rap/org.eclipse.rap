@@ -143,6 +143,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         }
         req.send();
       }

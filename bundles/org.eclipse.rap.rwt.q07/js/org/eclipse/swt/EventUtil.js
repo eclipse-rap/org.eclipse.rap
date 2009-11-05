@@ -53,6 +53,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( id + ".bounds.x", left );
         req.addParameter( id + ".bounds.y", top );
         req.addParameter( id + ".bounds.width", width );

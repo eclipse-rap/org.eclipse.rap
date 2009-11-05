@@ -468,6 +468,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           var req = org.eclipse.swt.Request.getInstance();
           var eventName = "org.eclipse.swt.events.widgetDefaultSelected";
           req.addEvent( eventName, id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.addParameter( eventName + ".item", itemId );
           req.send();
         }
@@ -490,6 +491,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
             var itemId = wm.findIdByWidget( item );
             var eventName = "org.eclipse.swt.events.widgetSelected";
             req.addEvent( eventName, id );
+            org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
             req.addParameter( eventName + ".item", itemId );
             req.send();
           }
@@ -566,6 +568,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           var req = org.eclipse.swt.Request.getInstance();
           var eventName = "org.eclipse.swt.events.widgetSelected";
           req.addEvent( eventName, id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.addParameter( eventName + ".item", itemId );
           req.send();
         }
@@ -593,6 +596,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           var req = org.eclipse.swt.Request.getInstance();
           var eventName = "org.eclipse.swt.events.widgetSelected";
           req.addEvent( eventName, id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.addParameter( eventName + ".item", itemId );
           req.addParameter( eventName + ".detail", "check" );
           req.send();

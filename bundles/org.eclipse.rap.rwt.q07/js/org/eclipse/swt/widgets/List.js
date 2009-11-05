@@ -281,6 +281,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           var id = wm.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }
@@ -301,6 +302,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         req.addParameter( id + ".selection", this._getSelectionIndices() );
         if( this._changeSelectionNotification == "action" ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
       }

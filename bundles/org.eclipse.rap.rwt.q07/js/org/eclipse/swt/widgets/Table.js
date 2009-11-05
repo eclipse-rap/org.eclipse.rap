@@ -1587,6 +1587,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var id = widgetManager.findIdByWidget( evt.getTarget() );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.addParameter( "org.eclipse.swt.events.widgetSelected.index",
                         evt.getData() );
       req.send();
@@ -1597,6 +1598,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var id = widgetManager.findIdByWidget( evt.getTarget() );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.addParameter( "org.eclipse.swt.events.widgetSelected.index",
                         evt.getData() );
       req.send();
@@ -1607,6 +1609,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var id = widgetManager.findIdByWidget( evt.getTarget() );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.addParameter( "org.eclipse.swt.events.widgetSelected.index",
                         evt.getData() );
       req.addParameter( "org.eclipse.swt.events.widgetSelected.detail",

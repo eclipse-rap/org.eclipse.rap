@@ -606,6 +606,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         req.addParameter( id + ".selection", this._selection );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
         this._readyToSendChanges = true;

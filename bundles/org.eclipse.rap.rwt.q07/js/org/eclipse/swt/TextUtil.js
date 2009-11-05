@@ -258,6 +258,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var id = widgetManager.findIdByWidget( text );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
     },
 
