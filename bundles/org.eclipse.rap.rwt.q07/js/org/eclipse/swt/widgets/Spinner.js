@@ -123,6 +123,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
         }
       }
     },
+    
+    _onmousewheel : function( evt ) {
+      if( this.getFocused() ) {
+        this.base( arguments, evt );
+      }
+    },
 
     _addModifyTextEvent : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();

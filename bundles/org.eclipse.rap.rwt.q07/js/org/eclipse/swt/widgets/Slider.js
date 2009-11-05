@@ -297,8 +297,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     },
     
     _onMouseWheel : function( evt ) {
-      evt.preventDefault();
-      evt.stopPropagation();
+      if( this.getFocused() ) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        var change = Math.round( evt.getWheelDelta() );
+        var sel = this._selection - change;
+        if( sel < this._minimum ) {
+          sel = this._minimum;
+        } 
+        if( sel > ( this._maximum - this._thumbWidth ) ) {
+          sel = this._maximum - this._thumbWidth;
+        } 
+        this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
+      }
     },
 
     _onChangeEnabled : function( evt ) {

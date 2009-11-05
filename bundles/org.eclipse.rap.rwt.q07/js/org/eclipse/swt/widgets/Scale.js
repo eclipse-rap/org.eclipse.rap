@@ -246,21 +246,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     },
     
     _onMouseWheel : function( evt ) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      var change = Math.round( evt.getWheelDelta() );
-      var sel = this._selection - change;
-      if( sel < this._minimum ) {
-        sel = this._minimum;
-      } 
-      if( sel > this._maximum ) {
-        sel = this._maximum;
-      } 
-      this.setSelection( sel );
-      if( this._readyToSendChanges ) {
-        this._readyToSendChanges = false;
-        // Send changes
-        qx.client.Timer.once( this._sendChanges, this, 500 );
+      if( this.getFocused() ) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        var change = Math.round( evt.getWheelDelta() );
+        var sel = this._selection - change;
+        if( sel < this._minimum ) {
+          sel = this._minimum;
+        } 
+        if( sel > this._maximum ) {
+          sel = this._maximum;
+        } 
+        this.setSelection( sel );
+        if( this._readyToSendChanges ) {
+          this._readyToSendChanges = false;
+          // Send changes
+          qx.client.Timer.once( this._sendChanges, this, 500 );
+        }
       }
     },
     

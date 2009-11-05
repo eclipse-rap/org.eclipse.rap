@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
 
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "keyup", this._onKeyUp, this );
-    this.addEventListener( "mousewheel", this._onmousewheel, this );
+    this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
@@ -138,6 +138,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
     this._spinner.removeEventListener("keydown", this._spinner._onkeydown, this._spinner);
     this._spinner.removeEventListener("keyup", this._spinner._onkeyup, this._spinner);
+    this._spinner.removeEventListener("mousewheel", this._spinner._onmousewheel, this._spinner);
     this._spinner.setVisibility( !this._drop_down );
     this.add( this._spinner );
     // Drop-down button and calendar
@@ -183,7 +184,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "keyup", this._onKeyUp, this );
-    this.removeEventListener( "mousewheel", this._onmousewheel, this );
+    this.removeEventListener( "mousewheel", this._onMouseWheel, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
@@ -613,9 +614,14 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       }
     },
 
-    _onmousewheel : function( evt ) {
-      evt.preventDefault();
-      evt.stopPropagation();
+    _onMouseWheel : function( evt ) {
+      if( this.getFocused() ) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        if( !this._dropped ) {
+          this._spinner._onmousewheel( evt );
+        }
+      }
     },
 
     _getDaysInMonth : function() {
@@ -861,7 +867,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           var date = new Date( year, this._monthInt - 1, day );
           this._calendar.setDate( date );
           this._focusedTextField.removeState( "selected" );
-        } else {
+        } else if( this.getFocused() ){
           this._focusedTextField.addState( "selected" );
         }
       }
