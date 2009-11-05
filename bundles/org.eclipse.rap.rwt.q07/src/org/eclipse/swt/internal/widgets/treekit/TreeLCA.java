@@ -21,6 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -124,10 +125,13 @@ public final class TreeLCA extends AbstractWidgetLCA {
                                               ? SWT.CHECK
                                               : SWT.NONE;
       int eventType = SelectionEvent.WIDGET_SELECTED;
+      int stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       SelectionEvent event = new SelectionEvent( tree,
                                                  treeItem,
                                                  eventType,
                                                  bounds,
+                                                 stateMask,
                                                  null,
                                                  true,
                                                  detail );
@@ -139,18 +143,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     HttpServletRequest request = ContextProvider.getRequest();
     String eventName = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       String itemId = request.getParameter( eventName + ".item" );
       Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
-      int detail = SWT.NONE;
       int eventType = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-      SelectionEvent event = new SelectionEvent( tree,
-                                                 treeItem,
-                                                 eventType,
-                                                 bounds,
-                                                 null,
-                                                 true,
-                                                 detail );
+      SelectionEvent event = new SelectionEvent( tree, treeItem, eventType );
+      event.stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }

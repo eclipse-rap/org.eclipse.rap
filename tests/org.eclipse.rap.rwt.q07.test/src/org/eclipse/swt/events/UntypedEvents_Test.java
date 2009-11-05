@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.events;
@@ -26,11 +27,11 @@ import org.eclipse.swt.widgets.*;
 
 
 public class UntypedEvents_Test extends TestCase {
-  
+
   private static final String WIDGET_SELECTED = "widgetSelected";
   private static final String WIDGET_DEFAULT_SELECTED = "widgetSelected";
   private String log = "";
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -39,12 +40,12 @@ public class UntypedEvents_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
-  
+
   public void testUntypedEventInvocation() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     final Widget widget = new Button( shell, SWT.PUSH );
-    
+
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         assertSame( widget, event.widget );
@@ -53,6 +54,7 @@ public class UntypedEvents_Test extends TestCase {
         assertEquals( 20, event.y );
         assertEquals( 30, event.width );
         assertEquals( 40, event.height );
+        assertEquals( 3, event.stateMask );
         assertEquals( true, event.doit );
         log += WIDGET_SELECTED;
       }
@@ -62,13 +64,14 @@ public class UntypedEvents_Test extends TestCase {
                                                null,
                                                SelectionEvent.WIDGET_SELECTED,
                                                new Rectangle( 10, 20, 30, 40 ),
+                                               3,
                                                null,
                                                true,
                                                SWT.NONE );
     event.processEvent();
     assertEquals( WIDGET_SELECTED, log );
     widget.removeListener( SWT.Selection, listener );
-    
+
     log = "";
     listener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -78,6 +81,7 @@ public class UntypedEvents_Test extends TestCase {
         assertEquals( 20, event.y );
         assertEquals( 30, event.width );
         assertEquals( 40, event.height );
+        assertEquals( 3, event.stateMask );
         assertEquals( true, event.doit );
         log += WIDGET_SELECTED;
       }
@@ -87,6 +91,7 @@ public class UntypedEvents_Test extends TestCase {
                                 null,
                                 SelectionEvent.WIDGET_DEFAULT_SELECTED,
                                 new Rectangle( 10, 20, 30, 40 ),
+                                3,
                                 null,
                                 true,
                                 SWT.NONE );
@@ -94,7 +99,7 @@ public class UntypedEvents_Test extends TestCase {
     assertEquals( WIDGET_DEFAULT_SELECTED, log );
     widget.removeListener( SWT.DefaultSelection, listener );
   }
-  
+
   public void testFilter() {
     final boolean[] executed = new boolean[ 1 ];
     Display display = new Display();
@@ -117,7 +122,7 @@ public class UntypedEvents_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
-    
+
     RWTFixture.executeLifeCycleFromServerThread( );
     assertTrue( executed[ 0 ] );
   }

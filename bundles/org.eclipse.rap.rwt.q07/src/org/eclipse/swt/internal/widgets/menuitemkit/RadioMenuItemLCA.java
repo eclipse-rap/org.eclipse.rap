@@ -13,9 +13,11 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
@@ -49,15 +51,15 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, 
-                             "org.eclipse.rwt.widgets.MenuItem", 
+    MenuItemLCAUtil.newItem( menuItem,
+                             "org.eclipse.rwt.widgets.MenuItem",
                              ITEM_TYPE_RADIO );
   }
 
   // TODO [tb] : to MenuItemLCAUtil ?
   void renderChanges( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.writeImageAndText( menuItem );
-    MenuItemLCAUtil.writeSelectionListener( menuItem ); 
+    MenuItemLCAUtil.writeSelectionListener( menuItem );
     MenuItemLCAUtil.writeSelection( menuItem );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
@@ -74,7 +76,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     }
     return value != null;
   }
-  
+
   private static void processSelectionEvent( final MenuItem item ) {
     if( SelectionEvent.hasListener( item ) ) {
       int type = SelectionEvent.WIDGET_SELECTED;
@@ -84,9 +86,11 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
       } else {
         event = new DeselectionEvent( item, null, type );
       }
+      event.stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }
-  
+
 
 }

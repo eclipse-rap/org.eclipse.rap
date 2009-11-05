@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets;
@@ -27,13 +28,13 @@ public class UntypedEventAdapter_Test extends TestCase {
   private static final String EVENT_FIRED = "fired|";
   private static int eventType;
   private static String log;
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     eventType = 0;
     log = "";
   }
-  
+
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
@@ -130,7 +131,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( SWT.Move, eventType );
     assertEquals( EVENT_FIRED + EVENT_FIRED, log );
     assertEquals( 1, eventBuffer.size() );
-    
+
     log = "";
     eventType = 0;
     eventBuffer.clear();
@@ -149,7 +150,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( "", log );
     assertEquals( 0, eventBuffer.size() );
   }
-  
+
   public void testExecutionOrder() throws Exception {
     Display display = new Display();
     Control widget = new Shell( display );
@@ -169,7 +170,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.controlMoved( new ControlEvent( widget, 0 ) );
     assertEquals( "L1|L2|", log );
   }
-  
+
   public void testEventFields() {
     final Event[] eventLog = { null };
     final Display display = new Display();
@@ -198,6 +199,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     selEvent.height = 4;
     selEvent.text = "some text";
     selEvent.detail = 123;
+    selEvent.stateMask = 321;
     adapter.widgetSelected( selEvent );
     assertEquals( selEvent.text, eventLog[ 0 ].text );
     assertEquals( selEvent.x, eventLog[ 0 ].x );
@@ -205,6 +207,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( selEvent.height, eventLog[ 0 ].height );
     assertEquals( selEvent.width, eventLog[ 0 ].width );
     assertEquals( selEvent.detail, eventLog[ 0 ].detail );
+    assertEquals( selEvent.stateMask, eventLog[ 0 ].stateMask );
     // Key event
     adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.KeyDown, listener );
@@ -221,7 +224,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( keyEvent.data, eventLog[ 0 ].data );
     assertEquals( keyEvent.doit, eventLog[ 0 ].doit );
   }
-  
+
   public void testInvalidEventType() {
     final Event[] eventLog = { null };
     Listener listener = new Listener() {

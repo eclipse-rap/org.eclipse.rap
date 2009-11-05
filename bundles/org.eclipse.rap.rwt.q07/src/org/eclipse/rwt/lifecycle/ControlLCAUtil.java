@@ -26,9 +26,9 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -636,7 +636,7 @@ public class ControlLCAUtil {
    * Recursively computes the tab indices for all child controls of a given
    * composite and stores the resulting values in the control adapters.
    */
-  private static int computeTabIndices( final Composite composite, 
+  private static int computeTabIndices( final Composite composite,
                                         final int startIndex )
   {
     Control[] tabList = composite.getTabList();
@@ -730,10 +730,13 @@ public class ControlLCAUtil {
     } else {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
+    int stateMask
+      = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
     return new SelectionEvent( widget,
                                item,
                                type,
                                bounds,
+                               stateMask,
                                null,
                                true,
                                SWT.NONE );
@@ -743,8 +746,8 @@ public class ControlLCAUtil {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
       final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
-      String modifier = readStringParam( JSConst.EVENT_KEY_DOWN_MODIFIER );
-      final int stateMask = translateModifier( modifier );
+      final int stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
       final int traverseKey = getTraverseKey( keyCode, stateMask );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
@@ -910,21 +913,6 @@ public class ControlLCAUtil {
     char result = ( char )0;
     if( Character.isDefined( ( char )keyCode ) ) {
       result = ( char )keyCode;
-    }
-    return result;
-  }
-
-  static int translateModifier( final String value ) {
-    String[] modifiers = value.split( "," );
-    int result = 0;
-    for( int i = 0; i < modifiers.length; i++ ) {
-      if( "ctrl".equals( modifiers[ i ] ) ) {
-        result  |= SWT.CTRL;
-      } else if( "alt".equals( modifiers[ i ] ) ) {
-        result |= SWT.ALT;
-      } else if ( "shift".equals(  modifiers[ i ] ) ) {
-        result |= SWT.SHIFT;
-      }
     }
     return result;
   }

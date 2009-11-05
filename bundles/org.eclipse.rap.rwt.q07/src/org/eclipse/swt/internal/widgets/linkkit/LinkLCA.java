@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Link;
@@ -30,7 +31,7 @@ import org.eclipse.swt.widgets.Widget;
  * Life-cycle adapter for the Link widget
  */
 public class LinkLCA extends AbstractWidgetLCA {
-  
+
   //Constants for JS functions names
   private static final String JS_FUNC_ADDTEXT = "addText";
   private static final String JS_FUNC_ADDLINK = "addLink";
@@ -149,7 +150,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     };
     writer.call( JS_FUNC_ADDLINK, args );
   }
-  
+
   private static void writeApplyText( final Link link ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( link );
     writer.call( JS_FUNC_APPLYTEXT, null );
@@ -169,6 +170,8 @@ public class LinkLCA extends AbstractWidgetLCA {
         SelectionEvent event
           = new SelectionEvent( link, null, SelectionEvent.WIDGET_SELECTED );
         event.text = ids[ index ];
+        event.stateMask
+          = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
         event.processEvent();
       }
     }

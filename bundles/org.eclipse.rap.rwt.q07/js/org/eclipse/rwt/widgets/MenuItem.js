@@ -231,6 +231,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
           var id = widgetManager.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
           req.addParameter( id + ".selection", this._selected );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         }
       }
     },    

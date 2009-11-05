@@ -29,7 +29,7 @@ public final class DeselectionEvent extends SelectionEvent {
                            final Widget item,
                            final int id )
   {
-    super( widget, item, id, emptyRectangle(), null, true, SWT.NONE );
+    super( widget, item, id, emptyRectangle(), 0, null, true, SWT.NONE );
   }
 
   public DeselectionEvent( final Event e ) {

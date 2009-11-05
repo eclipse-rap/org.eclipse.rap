@@ -432,7 +432,7 @@ public final class UntypedEventAdapter
     return result;
   }
 
-  public static boolean hasTypedListener( final Widget widget, 
+  public static boolean hasTypedListener( final Widget widget,
                                           final int eventType )
   {
     boolean result = false;
@@ -623,6 +623,7 @@ public final class UntypedEventAdapter
     to.height = from.height;
     to.item = from.item;
     to.text = from.text;
+    to.stateMask = from.stateMask;
   }
 
   private static void copyFields( final TreeEvent from, final Event to ) {

@@ -21,6 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.widgets.*;
@@ -244,8 +245,16 @@ public final class TableLCA extends AbstractWidgetLCA {
         int detail = getWidgetSelectedDetail();
         int id = SelectionEvent.WIDGET_SELECTED;
         Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-        SelectionEvent event
-          = new SelectionEvent( table, item, id, bounds, "", true, detail );
+        int stateMask
+          = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+        SelectionEvent event = new SelectionEvent( table,
+                                                   item,
+                                                   id,
+                                                   bounds,
+                                                   stateMask,
+                                                   "",
+                                                   true,
+                                                   detail );
         event.processEvent();
       }
     }
@@ -264,6 +273,8 @@ public final class TableLCA extends AbstractWidgetLCA {
       }
       int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
       SelectionEvent event = new SelectionEvent( table, item, id );
+      event.stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }
@@ -493,6 +504,8 @@ public final class TableLCA extends AbstractWidgetLCA {
       if( SelectionEvent.hasListener( scrollBar ) ) {
         int eventId = SelectionEvent.WIDGET_SELECTED;
         SelectionEvent evt = new SelectionEvent( scrollBar, null, eventId );
+        evt.stateMask
+          = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
         evt.processEvent();
       }
     }

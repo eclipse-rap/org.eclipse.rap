@@ -14,11 +14,13 @@ package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -86,7 +88,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
     JSWriter writer = JSWriter.getWriterFor( scrolledComposite );
-    writer.newWidget( QX_TYPE );    
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( scrolledComposite );
   }
 
@@ -143,8 +145,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       writer.set( "clipWidth", bounds.width );
       writer.set( "clipHeight", bounds.height );
     }
-  }  
-  
+  }
+
   private static void writeSelectionListener( final ScrolledComposite composite )
     throws IOException
   {
@@ -156,7 +158,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       writer.set( "hasSelectionListener", newValue );
     }
   }
-  
+
   private static void writeShowFocusedControl( final ScrolledComposite composite )
     throws IOException
   {
@@ -198,7 +200,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static boolean hasSelectionListener( final ScrolledComposite composite )
   {
     boolean result = false;
@@ -212,10 +214,12 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static void processSelection( final ScrollBar scrollBar ) {
     SelectionEvent evt
       = new SelectionEvent( scrollBar, null, SelectionEvent.WIDGET_SELECTED );
+    evt.stateMask
+      = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
     evt.processEvent();
   }
 }

@@ -46,6 +46,7 @@ public class SelectionEvent_Test extends TestCase {
         assertEquals( 20, event.y );
         assertEquals( 30, event.width );
         assertEquals( 40, event.height );
+        assertEquals( 3, event.stateMask );
         assertEquals( true, event.doit );
         log += WIDGET_SELECTED;
       }
@@ -54,6 +55,7 @@ public class SelectionEvent_Test extends TestCase {
                                                null,
                                                SelectionEvent.WIDGET_SELECTED,
                                                new Rectangle( 10, 20, 30, 40 ),
+                                               3,
                                                null,
                                                true,
                                                SWT.NONE );
@@ -78,6 +80,7 @@ public class SelectionEvent_Test extends TestCase {
         assertEquals( 0, event.y );
         assertEquals( 0, event.width );
         assertEquals( 0, event.height );
+        assertEquals( 0, event.stateMask );
         assertEquals( true, event.doit );
         log += WIDGET_SELECTED;
       }

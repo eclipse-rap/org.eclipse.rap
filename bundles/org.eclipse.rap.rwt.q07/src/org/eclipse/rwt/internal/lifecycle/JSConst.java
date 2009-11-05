@@ -67,6 +67,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.widgetSelected.item";
   public static final String EVENT_WIDGET_SELECTED_INDEX
     = "org.eclipse.swt.events.widgetSelected.index";
+  public static final String EVENT_WIDGET_SELECTED_MODIFIER
+    = "org.eclipse.swt.events.widgetSelected.modifier";
   public static final String EVENT_SET_DATA_INDEX
     = "org.eclipse.swt.events.setData.index";
   public static final String EVENT_MOUSE_UP_BUTTON

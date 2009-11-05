@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -121,10 +122,13 @@ final class ToolItemLCAUtil {
                                            final Rectangle bounds,
                                            final int detail )
   {
+    int stateMask
+      = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
     return new SelectionEvent( widget,
                                null,
                                SelectionEvent.WIDGET_SELECTED,
                                bounds,
+                               stateMask,
                                null,
                                true,
                                detail );

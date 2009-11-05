@@ -13,16 +13,18 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.widgets.Button;
 
 
 final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
-  private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";  
+  private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";
   private static final Object[] PARAM_RADIO = new Object[] { "radio" };
 
   void preserveValues( final Button button ) {
@@ -62,6 +64,8 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
       } else {
         event = new DeselectionEvent( button, null, type );
       }
+      event.stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }

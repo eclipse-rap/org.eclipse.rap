@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.events;
@@ -26,12 +27,12 @@ import org.eclipse.swt.widgets.*;
  * Note: The fields that are filled in depend on the widget.
  * </p>
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
- * 
+ *
  * @see SelectionListener
  */
 public class SelectionEvent extends TypedEvent {
@@ -40,9 +41,9 @@ public class SelectionEvent extends TypedEvent {
 
   public static final int WIDGET_SELECTED = SWT.Selection;
   public static final int WIDGET_DEFAULT_SELECTED = SWT.DefaultSelection;
-  
+
   private static final Class LISTENER = SelectionListener.class;
-  
+
   /**
    * The x location of the selected area.
    */
@@ -64,21 +65,29 @@ public class SelectionEvent extends TypedEvent {
   public int height;
 
   /**
+   * The state of the keyboard modifier keys at the time
+   * the event was generated.
+   *
+   * @since 1.3
+   */
+  public int stateMask;
+
+  /**
    * The text of the hyperlink that was selected.
    * This will be either the text of the hyperlink or the value of its HREF,
    * if one was specified.
-   * 
+   *
    * @see org.eclipse.swt.widgets.Link#setText(String)
    */
   public String text;
-  
+
 	/**
 	 * A flag indicating whether the operation should be allowed.
 	 * Setting this field to <code>false</code> will cancel the
 	 * operation, depending on the widget.
 	 */
   public boolean doit;
-  
+
   /**
    * The item that was selected.
    */
@@ -109,7 +118,7 @@ public class SelectionEvent extends TypedEvent {
    * </ul></p>
    */
   public int detail;
-  
+
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -121,16 +130,17 @@ public class SelectionEvent extends TypedEvent {
           e.item,
           e.type,
           new Rectangle( e.x, e.y, e.width, e.height ),
+          e.stateMask,
           e.text,
           e.doit,
           e.detail );
   }
-  
+
   /**
-   * Constructs a new instance of this class. 
+   * Constructs a new instance of this class.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -138,14 +148,21 @@ public class SelectionEvent extends TypedEvent {
                          final Widget item,
                          final int id )
   {
-    this( widget, item, id, new Rectangle( 0, 0, 0, 0 ), null, true, SWT.NONE );
+    this( widget,
+          item,
+          id,
+          new Rectangle( 0, 0, 0, 0 ),
+          0,
+          null,
+          true,
+          SWT.NONE );
   }
 
   /**
-   * Constructs a new instance of this class. 
+   * Constructs a new instance of this class.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -153,6 +170,7 @@ public class SelectionEvent extends TypedEvent {
                          final Widget item,
                          final int id,
                          final Rectangle bounds,
+                         final int stateMask,
                          final String text,
                          final boolean doit,
                          final int detail )
@@ -163,6 +181,7 @@ public class SelectionEvent extends TypedEvent {
     this.y = bounds.y;
     this.width = bounds.width;
     this.height = bounds.height;
+    this.stateMask = stateMask;
     this.text = text;
     this.doit = doit;
     this.item = item;
@@ -175,7 +194,7 @@ public class SelectionEvent extends TypedEvent {
         ( ( SelectionListener )listener ).widgetSelected( this );
       break;
       case WIDGET_DEFAULT_SELECTED:
-        ( ( SelectionListener )listener ).widgetDefaultSelected( this );        
+        ( ( SelectionListener )listener ).widgetDefaultSelected( this );
         break;
       default:
         throw new IllegalStateException( "Invalid event handler type." );
@@ -185,7 +204,7 @@ public class SelectionEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
@@ -193,7 +212,7 @@ public class SelectionEvent extends TypedEvent {
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static void addListener( final Adaptable adaptable,
                                   final SelectionListener listener )
   {
@@ -209,7 +228,7 @@ public class SelectionEvent extends TypedEvent {
   public static Object[] getListeners( final Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
-  
+
   public String toString() {
     String string = super.toString ();
     return   string.substring( 0, string.length() - 1 ) // remove trailing '}'
@@ -225,8 +244,10 @@ public class SelectionEvent extends TypedEvent {
            + width
            + " height="
            + height
-           // + " stateMask=" + stateMask
-           + " text=" + text
+           + " stateMask="
+           + stateMask
+           + " text="
+           + text
            + " doit="
            + doit
            + "}";

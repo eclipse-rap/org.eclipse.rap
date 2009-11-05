@@ -39,6 +39,8 @@ final class QooxdooResourcesUtil {
 
   private static final String KEY_EVENT_HANDLER_PATCH
     = "org/eclipse/rwt/KeyEventHandlerPatch.js";
+  private static final String DOM_EVENT_PATCH
+    = "org/eclipse/rwt/DomEventPatch.js";
   private static final String GFX_MIXIN_JS
     = "org/eclipse/rwt/GfxMixin.js";
   private static final String ROUNDED_BORDER_JS
@@ -206,6 +208,7 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_STYLE_JS, compress );
 
       register( KEY_EVENT_HANDLER_PATCH, compress );
+      register( DOM_EVENT_PATCH, compress );
       register( GFX_MIXIN_JS, compress );
       register( ROUNDED_BORDER_JS, compress );
       register( APPLICATION_JS, compress );
@@ -269,7 +272,7 @@ final class QooxdooResourcesUtil {
       register( THEME_STORE, compress );
       register( THEME_VALUES, compress );
       register( FOCUS_INDICATOR, compress );
-      register( MENU_MANAGER, compress );      
+      register( MENU_MANAGER, compress );
 
       // register contributions
       registerContributions();

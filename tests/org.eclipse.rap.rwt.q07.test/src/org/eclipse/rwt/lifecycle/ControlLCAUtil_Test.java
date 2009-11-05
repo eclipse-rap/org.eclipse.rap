@@ -504,32 +504,6 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.KeyUp, upEvent.type );
   }
 
-  public void testTranslateModifier() {
-    int stateMask = ControlLCAUtil.translateModifier( "" );
-    assertEquals( 0, stateMask & SWT.MODIFIER_MASK );
-    assertEquals( 0, stateMask & SWT.CTRL );
-    assertEquals( 0, stateMask & SWT.SHIFT );
-    assertEquals( 0, stateMask & SWT.ALT );
-    // Shift
-    stateMask = ControlLCAUtil.translateModifier( "shift," );
-    assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
-    assertEquals( 0, stateMask & SWT.CTRL );
-    assertTrue( ( stateMask & SWT.SHIFT ) != 0 );
-    assertEquals( 0, stateMask & SWT.ALT );
-    // Alt
-    stateMask = ControlLCAUtil.translateModifier( "alt," );
-    assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
-    assertEquals( 0, stateMask & SWT.CTRL );
-    assertEquals( 0, stateMask & SWT.SHIFT );
-    assertTrue( ( stateMask & SWT.ALT ) != 0 );
-    // Shift + Ctrl + Alt
-    stateMask = ControlLCAUtil.translateModifier( "alt,shift,ctrl" );
-    assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
-    assertTrue( ( stateMask & SWT.SHIFT ) != 0 );
-    assertTrue( ( stateMask & SWT.CTRL ) != 0 );
-    assertTrue( ( stateMask & SWT.ALT ) != 0 );
-  }
-
   public void testGetTraverseKey() {
     int traverseKey;
     traverseKey = ControlLCAUtil.getTraverseKey( 13, 0 );

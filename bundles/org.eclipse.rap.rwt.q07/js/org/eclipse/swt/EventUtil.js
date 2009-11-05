@@ -34,6 +34,9 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       y : -1,
       mouseUpCount : 0
     },
+    _shiftKey : false,
+    _ctrlKey : false,
+    _altKey : false,       
 
     widgetSelected : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -55,6 +58,26 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         req.addParameter( id + ".bounds.width", width );
         req.addParameter( id + ".bounds.height", height );
         req.send();
+      }
+    },
+    
+    addWidgetSelectedModifier : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var modifier = "";
+        if( org.eclipse.swt.EventUtil._shiftKey ) {
+          modifier += "shift,";
+        }
+        if( org.eclipse.swt.EventUtil._ctrlKey ) {
+          modifier += "ctrl,";
+        }
+        if( org.eclipse.swt.EventUtil._altKey ) {
+          modifier += "alt,";
+        }
+        if( modifier !== "" ) {
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier", 
+                            modifier );
+        }
       }
     },
 
