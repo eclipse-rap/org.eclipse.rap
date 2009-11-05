@@ -36,9 +36,8 @@ public class EventLCAUtil_Test extends TestCase {
     assertTrue( ( stateMask & SWT.ALT ) != 0 );
     // Shift + Ctrl + Alt
     stateMask = EventLCAUtil.translateModifier( "alt,shift,ctrl" );
-    assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
-    assertTrue( ( stateMask & SWT.SHIFT ) != 0 );
-    assertTrue( ( stateMask & SWT.CTRL ) != 0 );
-    assertTrue( ( stateMask & SWT.ALT ) != 0 );
+    assertEquals( SWT.SHIFT | SWT.CTRL | SWT.ALT,
+                  stateMask & SWT.MODIFIER_MASK );
+    assertEquals( stateMask, stateMask & SWT.MODIFIER_MASK );
   }
 }
