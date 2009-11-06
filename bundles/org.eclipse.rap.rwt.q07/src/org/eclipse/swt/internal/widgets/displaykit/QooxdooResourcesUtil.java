@@ -65,6 +65,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/TabUtil.js";
   private static final String WIDGET_UTIL_JS
     = "org/eclipse/swt/WidgetUtil.js";
+  private static final String COMPOSITE_JS
+    = "org/eclipse/swt/widgets/Composite.js";
   private static final String CTAB_FOLDER_JS
     = "org/eclipse/swt/custom/CTabFolder.js";
   private static final String CTAB_ITEM_JS
@@ -172,7 +174,7 @@ final class QooxdooResourcesUtil {
   private static final String THEME_BORDERS_BASE
     = "org/eclipse/swt/theme/BordersBase.js";
   private static final String FOCUS_INDICATOR
-  = "org/eclipse/rwt/FocusIndicator.js";
+    = "org/eclipse/rwt/FocusIndicator.js";
   private static final String MENU_MANAGER
     = "org/eclipse/rwt/MenuManager.js";
 
@@ -220,6 +222,7 @@ final class QooxdooResourcesUtil {
       register( SYNC_KEY_EVENT_UTIL_JS, compress );
       register( TOOLTIP_JS, compress );
       register( WIDGET_UTIL_JS, compress );
+      register( COMPOSITE_JS, compress );
       register( SASH_JS, compress );
       register( TAB_UTIL_JS, compress );
       register( CTAB_ITEM_JS, compress );

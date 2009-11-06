@@ -45,6 +45,9 @@
 
     <style name="BORDER"
         description="Style constant for bordered behavior." />
+        
+    <state name="hover"
+        description="Applies while the user hovers over a composite." />
 
   </element>
 
