@@ -177,6 +177,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
   },
 
   statics : {
+    SEND_DELAY : 50,
     STATE_HORIZONTAL : "horizontal",
     STATE_VERTICAL : "vertical",
     BUTTON_WIDTH : 16,
@@ -290,7 +291,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           if( this._readyToSendChanges ) {
             this._readyToSendChanges = false;
             // Send changes
-            qx.client.Timer.once( this._sendChanges, this, 500 );
+            qx.client.Timer.once( this._sendChanges,
+                                  this,
+                                  org.eclipse.swt.widgets.Slider.SEND_DELAY );
           }
         }
       }
@@ -298,8 +301,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     
     _onMouseWheel : function( evt ) {
       if( this.getFocused() ) {
-        evt.preventDefault();
-        evt.stopPropagation();
+      evt.preventDefault();
+      evt.stopPropagation();
         var change = Math.round( evt.getWheelDelta() );
         var sel = this._selection - change;
         if( sel < this._minimum ) {
@@ -359,7 +362,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         if( this._readyToSendChanges ) {
           this._readyToSendChanges = false;
           // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
+          qx.client.Timer.once( this._sendChanges,
+                                this,
+                                org.eclipse.swt.widgets.Slider.SEND_DELAY );
+          
         }
       }
     },
@@ -390,7 +396,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         if( this._readyToSendChanges ) {
           this._readyToSendChanges = false;
           // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
+          qx.client.Timer.once( this._sendChanges,
+                                this,
+                                org.eclipse.swt.widgets.Slider.SEND_DELAY );
+          
         }
       }
     },
@@ -411,7 +420,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         if( this._readyToSendChanges ) {
           this._readyToSendChanges = false;
           // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
+          qx.client.Timer.once( this._sendChanges,
+                                this,
+                                org.eclipse.swt.widgets.Slider.SEND_DELAY );
+
         }
       }
     },
@@ -471,7 +483,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       if( this._readyToSendChanges ) {
         this._readyToSendChanges = false;
         // Send changes
-        qx.client.Timer.once( this._sendChanges, this, 500 );
+        qx.client.Timer.once( this._sendChanges,
+                              this,
+                              org.eclipse.swt.widgets.Slider.SEND_DELAY );
+        
       }
     },
 
@@ -510,7 +525,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           if( this._readyToSendChanges ) {
             this._readyToSendChanges = false;
             // Send changes
-            qx.client.Timer.once( this._sendChanges, this, 500 );
+            qx.client.Timer.once( this._sendChanges,
+                                  this,
+                                  org.eclipse.swt.widgets.Slider.SEND_DELAY );
+
           }
         }
       }
@@ -671,7 +689,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     _visualizeBlur : function() {
       this.base( arguments );
       this._thumb.removeState( "focused" );
-    }    
-
+    }
   }
 } );
