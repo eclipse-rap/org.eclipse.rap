@@ -387,7 +387,7 @@ Shell.toolbarLayer {
 
 /* Table for Coolbar overflow */
 
-Table-Column.overflow {
+TableColumn.overflow {
   background-color: transparent;
 }
 
