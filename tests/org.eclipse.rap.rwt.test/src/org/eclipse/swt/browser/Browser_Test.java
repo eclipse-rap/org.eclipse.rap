@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
@@ -76,12 +77,14 @@ public class Browser_Test extends TestCase {
       public void changing( final LocationEvent event ) {
         log.append( "changing" + event.location + "|" );
         assertEquals( expectedLocation[ 0 ], event.location );
+        assertFalse( event.top );
       }
       public void changed( final LocationEvent event ) {
         log.append( "changed" + event.location );
         assertSame( browser, event.getSource() );
         assertEquals( true, event.doit );
         assertEquals( expectedLocation[ 0 ], event.location );
+        assertTrue( event.top );
       }
     };
     LocationListener vetoListener = new LocationListener() {

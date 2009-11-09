@@ -43,19 +43,19 @@ public class LocationEvent extends TypedEvent {
   private static final Class LISTENER = LocationListener.class;
   
   /** current location */
-	public String location;
-	
-//	/**
-//	 * A flag indicating whether the location opens in the top frame
-//	 * or not.
-//	 */
-//	public boolean top;
-	
-	/**
-	 * A flag indicating whether the location loading should be allowed.
-	 * Setting this field to <code>false</code> will cancel the operation.
-	 */
-	public boolean doit = true;
+  public String location;
+
+  /**
+   * A flag indicating whether the location opens in the top frame
+   * or not.
+   */
+  public boolean top;
+
+  /**
+   * A flag indicating whether the location loading should be allowed.
+   * Setting this field to <code>false</code> will cancel the operation.
+   */
+  public boolean doit = true;
 
   LocationEvent( final Object source, 
                  final int id, 

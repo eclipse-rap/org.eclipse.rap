@@ -131,6 +131,7 @@ public class Browser extends Composite {
       this.url = url;
       html = "";
       event = new LocationEvent( this, LocationEvent.CHANGED, url );
+      event.top = true;
       event.processEvent();
     }
     return result;
@@ -189,6 +190,7 @@ public class Browser extends Composite {
       this.html = html;
       url = "";
       event = new LocationEvent( this, LocationEvent.CHANGED, ABOUT_BLANK );
+      event.top = true;
       event.processEvent();
     }
     return result;
