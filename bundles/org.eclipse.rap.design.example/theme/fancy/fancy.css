@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2009 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
@@ -6,7 +6,7 @@
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 
 * {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -16,12 +16,14 @@
   color: #CFCFCF;
 }
 
-
 /* Button */
 
-Button[PUSH], Button[TOGGLE], Button[BORDER] {
+Button {
   color: #4a4a4a;
   background-color: white;
+}
+
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
   border: 1px solid #A4A4A4;
   border-radius: 3px;
   padding: 2px 5px;
@@ -368,7 +370,7 @@ Shell.toolbarLayer {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
- 
+
 /* Table */
 
 Table {
@@ -405,7 +407,7 @@ TableItem:hover {
 TableItem:selected {
   background-color: #abe033;
   color: #ffffff;
-} 
+}
 
 TableItem:selected:unfocused {
   background-color: #959595;
@@ -484,33 +486,33 @@ TableItem.overflow {
 }
 
 TableItem.overflow:even {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
 }
 
 TableItem.overflow:selected {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
 }
 
 TableItem.overflow:hover {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
 }
 
 TableItem.overflow:even:selected {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
 }
 
 TableItem.overflow:even {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
 }
 
 TableItem.overflow:even:hover {
-  background-color: transparent; 
-  color: rgb( 255, 255, 255 ); 
+  background-color: transparent;
+  color: rgb( 255, 255, 255 );
 }
 
 /* List */
@@ -532,7 +534,7 @@ List-Item:hover {
 List-Item:selected {
   background-color: #abe033;
   color: #ffffff;
-} 
+}
 
 List-Item:selected:unfocused {
   background-color: #959595;
@@ -641,6 +643,7 @@ Label.standaloneView {
 
 Tree {
   border: none;
+  background-color: rgb( 252, 252, 252 );
 }
 
 Composite.compGray {
@@ -663,7 +666,7 @@ Composite.compGray {
 Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
-  color: #4a4a4a;  
+  color: #4a4a4a;
 }
 
 .formKey {
@@ -694,7 +697,7 @@ ExpandBar[BORDER] {
 }
 
 ExpandItem-Header {
-  background-color: #abe033;  
+  background-color: #abe033;
   border-radius: 3px 3px 0px 0px;
 }
 
@@ -723,21 +726,13 @@ ExpandItem-Button:expanded:hover {
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
 
-CCombo {
+Combo, CCombo {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: rgb( 252, 252, 252 );
   color: #4a4a4a;
 }
 
-Combo {
-  border: 1px solid #c1c1c1;
-  border-radius: 2px;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: rgb( 252, 252, 252 );
-  color: #4a4a4a;
-}
-
-CCombo[BORDER] {
+Combo, CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
 }
@@ -803,7 +798,7 @@ DateTime {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-radius: 2px 2px 2px 2px;
   color: #4a4a4a;
-  background-color: white;
+  background-color: rgb( 252, 252, 252 );
 }
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
@@ -906,13 +901,12 @@ DateTime-Calendar-Day:otherMonth {
 
 Text {
   color: #464a4e;
-  background-color: white;
+  background-color: rgb( 252, 252, 252 );
 }
 
 Text[BORDER] {
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;
-  color: #464a4e;
 }
 
 /* Group */
@@ -994,5 +988,5 @@ Composite.partBackgroundTrans {
 ToolTip {
   background-color: rgb( 255, 255, 255 );
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #4a4a4a;  
+  color: #4a4a4a;
 }

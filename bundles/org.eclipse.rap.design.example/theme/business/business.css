@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2009 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
@@ -6,7 +6,7 @@
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 
 * {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -22,9 +22,12 @@
 
 /* Button */
 
-Button[PUSH], Button[TOGGLE], Button[BORDER] {
+Button {
   color: #4a4a4a;
   background-color: white;
+}
+
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
   border: 1px solid #A4A4A4;
   border-radius: 3px;
   padding: 2px 5px;
@@ -450,7 +453,7 @@ TableItem:hover {
 TableItem:selected {
   background-color: #00589f;
   color: #ffffff;
-} 
+}
 
 TableItem:selected:unfocused {
   background-color: #959595;
@@ -539,7 +542,7 @@ List-Item:hover {
 List-Item:selected {
   background-color: #00589f;
   color: #ffffff;
-} 
+}
 
 List-Item:selected:unfocused {
   background-color: #959595;
@@ -564,7 +567,7 @@ List-Item:even:selected:unfocused {
   color: #ffffff;
 }
 
-/* List in ExpandBar, used in 
+/* List in ExpandBar, used in
    org.eclipse.rap.examples.internal NavigationView#createCategoryItem() */
 List-Item.EXAMPLES:even {
   background-color: #ffffff;
@@ -649,7 +652,7 @@ Menu {
 
 /* Label */
 
-Label, CLable {
+Label, CLabel {
   color: #4a4a4a;
   background-color: white;
 }
@@ -702,7 +705,7 @@ ExpandBar {
 }
 
 ExpandItem-Header {
-  background-color: #005397;  
+  background-color: #005397;
   border-radius: 3px 3px 0px 0px;
 }
 
@@ -732,19 +735,13 @@ ExpandItem-Button:expanded:hover {
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
 
-CCombo {
+Combo, CCombo {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: rgb( 252, 252, 252 );
+  color: #464a4e;
 }
 
-Combo {
-  border: 1px solid #c1c1c1;
-  border-radius: 2px;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: rgb( 252, 252, 252 );
-}
-
-CCombo[BORDER] {
+Combo, CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
 }
@@ -805,6 +802,8 @@ Spinner-UpButton:hover {
 /* DateTime */
 
 DateTime {
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
   border: 1px solid #a4a4a4;
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -911,12 +910,12 @@ DateTime-Calendar-Day:otherMonth {
 
 Text {
   color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
 }
 
 Text[BORDER] {
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;
-  color: #464a4e;
 }
 
 /* Group */
@@ -996,5 +995,5 @@ Composite.partBackgroundTrans {
 ToolTip {
   background-color: rgb( 255, 255, 255 );
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #4a4a4a;  
+  color: #4a4a4a;
 }
