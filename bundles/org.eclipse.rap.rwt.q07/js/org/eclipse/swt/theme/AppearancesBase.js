@@ -2244,7 +2244,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.verticalChildrenAlign = "middle";
       result.paddingLeft = 4;
       result.paddingRight = 24;
-      result.border = tv.getCssBorder( "ExpandItem-Header", "border" )
+      result.border = tv.getCssBorder( "ExpandItem-Header", "border" );
       result.backgroundColor
         = tv.getCssColor( "ExpandItem-Header", "background-color" );
       result.textColor = states.disabled
