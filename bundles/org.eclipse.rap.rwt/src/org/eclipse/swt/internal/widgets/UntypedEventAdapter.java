@@ -282,7 +282,7 @@ public final class UntypedEventAdapter
         ModifyEvent.addListener( widget, this );
       break;
       case SWT.Verify:
-        VerifyEvent.addListener( widget, this );
+        VerifyEvent.addListener( widget, ( VerifyListener )this );
       break;
       case SWT.SetData:
         SetDataEvent.addListener( widget, this );
@@ -368,7 +368,7 @@ public final class UntypedEventAdapter
         ModifyEvent.removeListener( widget, this );
       break;
       case SWT.Verify:
-        VerifyEvent.removeListener( widget, this );
+        VerifyEvent.removeListener( widget, ( VerifyListener )this );
       break;
       case SWT.SetData:
         SetDataEvent.removeListener( widget, this );

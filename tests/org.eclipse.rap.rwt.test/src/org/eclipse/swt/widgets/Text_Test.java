@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -164,6 +164,8 @@ public class Text_Test extends TestCase {
     } );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
+        assertEquals( '\0', event.character );
+        assertEquals( 0, event.keyCode );
         log.add( event );
       }
     } );
