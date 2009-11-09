@@ -582,6 +582,10 @@ List-Item.EXAMPLES:even:selected {
   color: #ffffff;
 }
 
+List-Item.EXAMPLES:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
 
 /* Link */
 
