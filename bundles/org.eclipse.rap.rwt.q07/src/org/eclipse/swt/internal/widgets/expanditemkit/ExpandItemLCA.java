@@ -107,7 +107,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   private static ExpandEvent createExpandEvent( final ExpandItem expandItem ) {
     ExpandEvent event = new ExpandEvent( expandItem.getParent(),
                                          expandItem,
-                                         ExpandEvent.EXPANDED );
+                                         ExpandEvent.EXPAND );
     event.item = expandItem;
     return event;
   }
@@ -116,7 +116,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   {
     ExpandEvent event = new ExpandEvent( expandItem.getParent(),
                                          expandItem,
-                                         ExpandEvent.COLLAPSED );
+                                         ExpandEvent.COLLAPSE );
     event.item = expandItem;
     return event;
   }

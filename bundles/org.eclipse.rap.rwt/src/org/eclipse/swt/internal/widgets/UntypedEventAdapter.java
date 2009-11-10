@@ -523,7 +523,11 @@ public final class UntypedEventAdapter
       break;
       case SWT.Expand:
       case SWT.Collapse:
-        typedEvent = new TreeEvent( event );
+        if( event.widget instanceof Tree ) {
+          typedEvent = new TreeEvent( event );
+        } else {
+          typedEvent = new ExpandEvent( event );
+        }
       break;
       case SWT.Activate:
       case SWT.Deactivate:

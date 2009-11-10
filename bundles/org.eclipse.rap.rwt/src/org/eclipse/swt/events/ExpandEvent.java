@@ -32,8 +32,9 @@ public class ExpandEvent extends SelectionEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int EXPANDED = SWT.Expand;
-  public static final int COLLAPSED = SWT.Collapse;
+  public static final int EXPAND = SWT.Expand;
+  public static final int COLLAPSE = SWT.Collapse;
+  
   private static final Class LISTENER = ExpandListener.class;
 
   /**
@@ -61,10 +62,10 @@ public class ExpandEvent extends SelectionEvent {
 
   protected void dispatchToObserver( final Object listener ) {
     switch( getID() ) {
-      case EXPANDED:
+      case EXPAND:
         ( ( ExpandListener )listener ).itemExpanded( this );
       break;
-      case COLLAPSED:
+      case COLLAPSE:
         ( ( ExpandListener )listener ).itemCollapsed( this );
       break;
       default:

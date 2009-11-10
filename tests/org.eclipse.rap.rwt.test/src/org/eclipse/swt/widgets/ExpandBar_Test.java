@@ -13,8 +13,11 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ExpandEvent;
+import org.eclipse.swt.events.ExpandListener;
 import org.eclipse.swt.graphics.Font;
 
 public class ExpandBar_Test extends TestCase {
@@ -106,5 +109,26 @@ public class ExpandBar_Test extends TestCase {
     expandBar.dispose();
     assertTrue( expandBar.isDisposed() );
     assertTrue( item.isDisposed() );
+  }
+
+  public void testExpandListener() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    final StringBuffer log = new StringBuffer();
+    ExpandListener expandListener = new ExpandListener() {
+      public void itemCollapsed( ExpandEvent e ) {
+        log.append( "collapsed" );
+      }
+      public void itemExpanded( ExpandEvent e ) {
+        log.append( "expanded|" );
+      }
+    };
+    expandBar.addExpandListener( expandListener );
+    expandBar.notifyListeners( SWT.Expand, new Event() );
+    assertEquals( "expanded|", log.toString() );
+    expandBar.notifyListeners( SWT.Collapse, new Event() );
+    assertEquals( "expanded|collapsed", log.toString() );
   }
 }
