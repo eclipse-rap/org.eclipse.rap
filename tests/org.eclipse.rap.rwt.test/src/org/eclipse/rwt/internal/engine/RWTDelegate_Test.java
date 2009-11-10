@@ -37,6 +37,7 @@ public class RWTDelegate_Test extends TestCase {
     assertEquals( "/fooapp/W4TDelegate?param1=value1", url );
     request.setParameter( "param2", "value2" );
     url = RWTDelegate.createRedirectUrl( request );
-    assertEquals( "/fooapp/W4TDelegate?param2=value2&param1=value1", url );
+    assertTrue(    "/fooapp/W4TDelegate?param1=value1&param2=value2".equals( url )
+                || "/fooapp/W4TDelegate?param2=value2&param1=value1".equals( url ) );
   }
 }
