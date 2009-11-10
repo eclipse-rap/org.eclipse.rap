@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -106,6 +108,40 @@ public class Display_Test extends TestCase {
     threadWithContext.start();
     threadWithContext.join();
     assertSame( display, backgroundDisplay[ 0 ] );
+  }
+  
+  public void testGetDefaultCreatesDisplay() throws InterruptedException {
+    // getDefault must not create a Display if called from a background thread
+    final Display[] backgroundDisplay = { null };
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        backgroundDisplay[ 0 ] = Display.getDefault();
+      }
+    } );
+    thread.start();
+    thread.join();
+    assertNull( backgroundDisplay[ 0 ] ) ;
+    // getDefault must create a Display if called from the UI thread
+    IUIThreadHolder uiThreadHolder = new IUIThreadHolder() {
+      public void updateServiceContext() {
+      }
+      public void terminateThread() {
+      }
+      public void switchThread() throws InterruptedException {
+      }
+      public void setServiceContext( ServiceContext serviceContext ) {
+      }
+      public Thread getThread() {
+        return Thread.currentThread();
+      }
+      public Object getLock() {
+        return null;
+      }
+    };
+    ISessionStore session = RWT.getSessionStore();
+    session.setAttribute( RWTLifeCycle.UI_THREAD, uiThreadHolder );
+    Display display = Display.getDefault();
+    assertNotNull( display );
   }
 
   public void testGetThread() throws InterruptedException {

@@ -314,11 +314,6 @@ public class RWTLifeCycle extends LifeCycle {
     return result;
   }
 
-  static IUIThreadHolder getUIThreadHolder() {
-    ISessionStore session = ContextProvider.getSession();
-    return ( IUIThreadHolder )session.getAttribute( UI_THREAD );
-  }
-
   private static void switchThread( final IUIThreadHolder uiThread )
     throws UIThreadTerminatedError
   {
@@ -477,6 +472,11 @@ public class RWTLifeCycle extends LifeCycle {
   IPhase[] getPhaseOrder() {
     IServiceStateInfo stateInfo = ContextProvider.getContext().getStateInfo();
     return ( IPhase[] )stateInfo.getAttribute( PHASE_ORDER );
+  }
+
+  public static IUIThreadHolder getUIThreadHolder() {
+    ISessionStore session = ContextProvider.getSession();
+    return ( IUIThreadHolder )session.getAttribute( UI_THREAD );
   }
 
   public static void setSessionDisplay( final Display display ) {

@@ -149,18 +149,27 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
-   * Returns the default display. One is created (making the
-   * thread that invokes this method its user-interface thread)
-   * if it did not already exist.
-   * <p>
-   * RWT specific: This will not return a new display if there is none
-   * available. This may be fixed in the future.
+   * Returns the default display. One is created if it did not already exist.
+   * 
+   * <p><strong>Note:</strong> In RWT, a new display is only created if the
+   * calling thread is the user-interface thread.
    * </p>
    *
    * @return the default display
    */
   public static Display getDefault() {
-    return RWTLifeCycle.getSessionDisplay();
+    Display result = RWTLifeCycle.getSessionDisplay();
+    if( result == null && isUIThread() ) { 
+      result = new Display();
+    }
+    return result;
+  }
+  
+  private static boolean isUIThread() {
+    return 
+         ContextProvider.hasContext()
+      && RWTLifeCycle.getUIThreadHolder().getThread() != null
+      && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }
 
   private final List shells;
