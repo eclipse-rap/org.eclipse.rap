@@ -47,7 +47,7 @@ public class ToolBar extends Composite {
 
   private static final int DEFAULT_TOOLBAR_WIDTH = 24;
   private static final int DEFAULT_TOOLBAR_HEIGHT = 22;
-  
+
   private final ItemHolder itemHolder = new ItemHolder( ToolItem.class );
 
   /**
@@ -246,7 +246,7 @@ public class ToolBar extends Composite {
         width = Math.max( width, itemBounds.width );
         if( i == itemHolder.size() - 1 ) {
           height += itemBounds.height + itemBounds.y;
-        }      
+        }
       }
     } else {
       for( int i = 0; i < itemHolder.size(); i++ ) {
@@ -256,8 +256,8 @@ public class ToolBar extends Composite {
         if( i == itemHolder.size() - 1 ) {
           width += itemBounds.width + itemBounds.x;
         }
-        
-      }      
+
+      }
     }
     width += getToolBarPadding().width;
     height += getToolBarPadding().height;
@@ -287,17 +287,17 @@ public class ToolBar extends Composite {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getBorderWidth( this );
   }
-  
-  Rectangle getToolBarPadding() { 
+
+  Rectangle getToolBarPadding() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getToolBarPadding( this );
   }
-  
+
   private ToolBarThemeAdapter getToolBarThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( ToolBarThemeAdapter )themeMgr.getThemeAdapter( ToolBar.class );
-  }  
-  
+  }
+
   /**
    * Returns the number of rows in the receiver. When
    * the receiver has the <code>WRAP</code> style, the
@@ -328,6 +328,7 @@ public class ToolBar extends Composite {
       Rectangle ibounds = item.getBounds();
       boolean visible = ibounds.x + ibounds.width <= bounds.width;
       item.setVisible( visible );
+      item.resizeControl();
     }
   }
 
