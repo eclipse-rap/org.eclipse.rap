@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
@@ -20,15 +20,15 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Utility class to open and close an external browser window.
- * 
+ *
  * @since 1.0
  */
 public final class ExternalBrowser {
 
   /**
    * Style parameter (value 1&lt;&lt;1) indicating that the address combo and
-   * 'Go' button will be created for the browser. 
-   * <p>Note: This style parameter is a hint and might be ignored by some 
+   * 'Go' button will be created for the browser.
+   * <p>Note: This style parameter is a hint and might be ignored by some
    * browsers.</p>
    */
   public static final int LOCATION_BAR = 1 << 1;
@@ -36,7 +36,7 @@ public final class ExternalBrowser {
   /**
    * Style parameter (value 1&lt;&lt;2) indicating that the navigation bar for
    * navigating web pages will be created for the web browser.
-   * <p>Note: This style parameter is a hint and might be ignored by some 
+   * <p>Note: This style parameter is a hint and might be ignored by some
    * browsers.</p>
    */
   public static final int NAVIGATION_BAR = 1 << 2;
@@ -44,39 +44,39 @@ public final class ExternalBrowser {
   /**
    * Style constant (value 1&lt;&lt;3) indicating that status will be tracked
    * and shown for the browser (page loading progress, text messages etc.).
-   * <p>Note: This style parameter is a hint and might be ignored by some 
+   * <p>Note: This style parameter is a hint and might be ignored by some
    * browsers.</p>
    */
   public static final int STATUS = 1 << 3;
 
-  private static final String OPEN 
-    = "org.eclipse.rwt.widgets.ExternalBrowser." 
+  private static final String OPEN
+    = "org.eclipse.rwt.widgets.ExternalBrowser."
     + "open( \"{0}\", \"{1}\", \"{2}\" );";
   private static final String CLOSE
     = "org.eclipse.rwt.widgets.ExternalBrowser.close( \"{0}\" );";
 
   /**
    * Opens the given <code>url</code> in an external browser.
-   * 
+   *
    * <p>The method will reuse an existing browser window if the same
    * <code>id</code> value is passed to it.</p>
-   * 
+   *
    * @param id if an instance of a browser with the same id is already
    *   opened, it will be reused instead of opening a new one. The id
    *   must neither be <code>null</code> nor empty.
    * @param url the URL to display, must not be <code>null</code>
    * @param style the style display constants. Style constants should be
    *   bitwise-ORed together.
-   *   
+   *
    * @throws SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the <code>id</code> or <code>url</code> 
+   *    <li>ERROR_WIDGET_DISPOSED - if the <code>id</code> or <code>url</code>
    *      is <code>null</code></li>
    *    <li>ERROR_INVALID_ARGUMENT - if the <code>id</code> is empty</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that 
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
    *      created the receiver</li>
    * </ul>
    */
-  public static void open( final String id, final String url, final int style ) 
+  public static void open( final String id, final String url, final int style )
   {
     checkWidget();
     if( id == null || url == null ) {
@@ -87,19 +87,19 @@ public final class ExternalBrowser {
     }
     JSExecutor.executeJS( getOpenJS( id, url, style ) );
   }
-  
+
   /**
    * Closes the browser window denoted by the given <code>id</code>. The
    * method does nothing if there is no browser window with the given id.
-   * 
-   * @param id if an instance of a browser with the same id is opened, 
+   *
+   * @param id if an instance of a browser with the same id is opened,
    *   it will be close. The id must neither be <code>null</code> nor empty.
-   *   
+   *
    * @throws SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the <code>id</code> is 
+   *    <li>ERROR_WIDGET_DISPOSED - if the <code>id</code> is
    *      <code>null</code></li>
    *    <li>ERROR_INVALID_ARGUMENT - if the <code>id</code> is empty</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that 
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
    *      created the receiver</li>
    * </ul>
    */
@@ -116,28 +116,30 @@ public final class ExternalBrowser {
 
   ///////////////////////////////
   // JavaScript code 'generation'
-  
-  private static String getOpenJS( final String id, 
-                                   final String url, 
-                                   final int style ) 
+
+  private static String getOpenJS( final String id,
+                                   final String url,
+                                   final int style )
   {
     String[] args = new String[] { escapeId( id ), url, getFeatures( style ) };
     return MessageFormat.format( OPEN, args );
   }
-  
+
   private static String getCloseJS( final String id ) {
     return MessageFormat.format( CLOSE, new String[] { escapeId( id ) } );
   }
-  
+
   static String escapeId( final String id ) {
     String result = id;
     result = result.replaceAll( "\\_", "\\_0" );
+    // IE does not accept '-' in popup-window names
+    result = result.replaceAll( "\\-", "\\_1" );
     result = result.replaceAll( "\\.", "\\_" );
     // IE does not accept blanks in popup-window names
     result = result.replaceAll( " ", "\\__" );
     return result;
   }
-  
+
   private static String getFeatures( final int style ) {
     StringBuffer result = new StringBuffer();
     appendFeature( result, "dependent", true );
@@ -150,10 +152,10 @@ public final class ExternalBrowser {
     appendFeature( result, "menubar", navigation );
     return result.toString();
   }
-  
-  private static void appendFeature( final StringBuffer features, 
-                                     final String feature, 
-                                     final boolean enable ) 
+
+  private static void appendFeature( final StringBuffer features,
+                                     final String feature,
+                                     final boolean enable )
   {
     if( features.length() > 0 ) {
       features.append( "," );
@@ -165,7 +167,7 @@ public final class ExternalBrowser {
 
   //////////////////
   // Helping methods
-  
+
   private static void checkWidget() {
     if( Display.getCurrent().getThread() != Thread.currentThread() ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
