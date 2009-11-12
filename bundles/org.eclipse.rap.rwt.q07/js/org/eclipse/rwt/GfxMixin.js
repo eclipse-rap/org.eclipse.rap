@@ -324,6 +324,7 @@ qx.Mixin.define( "org.eclipse.rwt.GfxMixin", {
             case "zIndex":
             case "filter":
             case "display":
+            case "cursor":
               break;
             default:
               cs[i] = this._styleProperties[i];
