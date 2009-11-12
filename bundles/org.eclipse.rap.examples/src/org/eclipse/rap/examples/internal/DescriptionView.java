@@ -15,7 +15,8 @@ import org.eclipse.rap.examples.internal.model.ExamplesModel;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
@@ -29,20 +30,37 @@ public class DescriptionView extends ViewPart {
 
   public static final String ID
     = "org.eclipse.rap.examples.descriptionView";
+  private static final String DOWNLOAD
+    = "<html><head></head><body>"
+    + "<p style=\"font: 12px Verdana, 'Lucida Sans', sans-serif;\">"
+    + "<a href=\"http://rap.eclipsesource.com/download/rapdemo.war\">" 
+    + "Download</a> the Examples WAR"
+    + "</p>"
+    + "</body></html>";
   private static final String NO_DESCRIPTION = "";
   private static final String BASE_URL = ".";
 
-  private Browser browser;
+  private Browser brwDescription;
+  private Browser brwDownload;
 
   public void createPartControl( final Composite parent ) {
-    parent.setLayout( new FillLayout() );
-    browser = new Browser( parent, SWT.NONE );
-    browser.setData( WidgetUtil.CUSTOM_VARIANT, "descriptionView" );
+    GridLayout layout = new GridLayout();
+    layout.verticalSpacing = 15;
+    parent.setLayout( layout );
+    brwDescription = new Browser( parent, SWT.NONE );
+    brwDescription.setData( WidgetUtil.CUSTOM_VARIANT, "descriptionView" );
+    GridData gridData = new GridData( SWT.FILL, SWT.FILL, true, true );
+    brwDescription.setLayoutData( gridData );
+    brwDownload = new Browser( parent, SWT.NONE );
+    brwDownload.setText( DOWNLOAD );
+    gridData = new GridData( SWT.FILL, SWT.BOTTOM, true, false );
+    gridData.heightHint = 30;
+    brwDownload.setLayoutData( gridData );
     createSelectionListener();
   }
 
   public void setFocus() {
-    browser.setFocus();
+    brwDescription.setFocus();
   }
 
   private void createSelectionListener() {
@@ -59,7 +77,7 @@ public class DescriptionView extends ViewPart {
             showPage( ( String )firstElement );
           }
         } else {
-          browser.setText( NO_DESCRIPTION );
+          brwDescription.setText( NO_DESCRIPTION );
         }
       }
     } );
@@ -69,9 +87,9 @@ public class DescriptionView extends ViewPart {
     String descriptionPath
       = ExamplesModel.getInstance().getDescriptionUrl( name );
     if( descriptionPath != null ) {
-      boolean loaded = browser.setUrl( BASE_URL + descriptionPath );
+      boolean loaded = brwDescription.setUrl( BASE_URL + descriptionPath );
       if( !loaded ) {
-        browser.setText( NO_DESCRIPTION );
+        brwDescription.setText( NO_DESCRIPTION );
       }
     }
   }
