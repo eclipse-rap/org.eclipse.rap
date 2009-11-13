@@ -9,10 +9,11 @@ Slider-Thumb {
   border: 1px outset;
 }
 
-Slider-DownButton {
+Slider-DownButton, Slider-UpButton {
   background-color: #F8F8FF;
   border: 1px outset;
   background-image: none;
+  cursor: default;
 }
 
 Slider-DownButton:horizontal {
@@ -21,12 +22,6 @@ Slider-DownButton:horizontal {
 
 Slider-DownButton:vertical {
   background-image: url( resource/widget/rap/slider/v_btn_min.gif );
-}
-
-Slider-UpButton {
-  background-color: #F8F8FF;
-  border: 1px outset;
-  background-image: none;
 }
 
 Slider-UpButton:horizontal {

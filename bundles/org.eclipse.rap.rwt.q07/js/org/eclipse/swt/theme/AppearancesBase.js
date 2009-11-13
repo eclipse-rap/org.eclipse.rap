@@ -2330,6 +2330,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       }
+      result.cursor = tv.getCssCursor( "Slider-DownButton", "cursor" );
       return result;
     }
   },
@@ -2347,6 +2348,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       }
+      result.cursor = tv.getCssCursor( "Slider-UpButton", "cursor" );
       return result;
     }
   }

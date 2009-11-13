@@ -60,6 +60,9 @@
           The max size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Slider down button cursor." />
 
       <state name="hover"
           description="On button roll over" />
@@ -72,6 +75,9 @@
 
       <state name="vertical"
           description="Corresponds to SWT.VERTICAL state of the slider." />
+          
+      <state name="disabled"
+          description="Applies to disabled Slider down button." />
 
     </element>
 
@@ -90,6 +96,9 @@
           The max size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Slider up button cursor." />
 
       <state name="hover"
           description="On button roll over" />
@@ -102,6 +111,9 @@
 
       <state name="vertical"
           description="Corresponds to SWT.VERTICAL state of the slider." />
+          
+      <state name="disabled"
+          description="Applies to disabled Slider up button." />
 
     </element>
 
