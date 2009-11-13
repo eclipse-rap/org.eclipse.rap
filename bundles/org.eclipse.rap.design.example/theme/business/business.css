@@ -40,6 +40,14 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   );
 }
 
+Button[PUSH], Button[TOGGLE] {
+  cursor: pointer;
+}
+
+Button[PUSH]:disabled, Button[TOGGLE]:disabled {
+  cursor: default;
+}
+
 Button[TOGGLE]:selected {
   /* background-color: #d3d3d3; */
   background-image: gradient(
