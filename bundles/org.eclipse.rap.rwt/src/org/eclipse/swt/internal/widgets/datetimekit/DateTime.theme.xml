@@ -120,6 +120,12 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Calendar previous month button cursor." />
+        
+      <state name="disabled"
+          description="Applies to disabled Calendar previous month button." />
 
       <state name="hover"
           description="Applies while the user hovers over the button." />
@@ -135,6 +141,12 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Calendar next month button cursor." />
+        
+      <state name="disabled"
+          description="Applies to disabled Calendar next month button." />
 
       <state name="hover"
           description="Applies while the user hovers over the button." />
@@ -150,6 +162,12 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Calendar previous year button cursor." />
+        
+      <state name="disabled"
+          description="Applies to disabled Calendar previous year button." />
 
       <state name="hover"
           description="Applies while the user hovers over the button." />
@@ -165,6 +183,12 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
+      
+      <property name="cursor"
+        description="Calendar next year button cursor." />
+        
+      <state name="disabled"
+          description="Applies to disabled Calendar next year button." />
 
       <state name="hover"
           description="Applies while the user hovers over the button." />
@@ -199,6 +223,9 @@
           like "inset" or "outset" is used.
         </description>
       </property>
+      
+      <property name="cursor"
+        description="DateTime Date/Time up button cursor." />
 
       <property name="width">
         <description>
@@ -262,6 +289,9 @@
           like "inset" or "outset" is used.
         </description>
       </property>
+      
+      <property name="cursor"
+        description="DateTime Date/Time down button cursor." />
 
       <property name="width">
         <description>
@@ -328,6 +358,9 @@
           like "inset" or "outset" is used.
         </description>
       </property>
+      
+      <property name="cursor"
+        description="DateTime Date drop-down button cursor." />
 
       <property name="width">
         <description>
@@ -336,10 +369,13 @@
       </property>
 
       <state name="hover"
-        description="Applies while the user hovers over the button." />
+          description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
+      
+      <state name="disabled"
+          description="Applies to disabled DateTime Date drop-down button." />
 
     </element>
     

@@ -1968,6 +1968,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
       result.backgroundColor = tv.getCssColor( "DateTime-UpButton",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "DateTime-UpButton", "cursor" );
       return result;
     }
   },
@@ -1990,6 +1991,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
       result.backgroundColor = tv.getCssColor( "DateTime-DownButton",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "DateTime-DownButton", "cursor" );
       return result;
     }
   },
@@ -2012,6 +2014,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                      "background-image" );
       result.backgroundColor = tv.getCssColor( "DateTime-DropDownButton",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "DateTime-DropDownButton", "cursor" );
       return result;
     }
   },
@@ -2067,7 +2070,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton",
-                               "background-image" )
+                               "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton",
+                                  "cursor" )
       };
     }
   },
@@ -2079,7 +2084,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton",
-                               "background-image" )
+                               "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton",
+                                  "cursor" )
       };
     }
   },
@@ -2091,7 +2098,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton",
-                               "background-image" )
+                               "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton",
+                                  "cursor" )
       };
     }
   },
@@ -2103,7 +2112,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextYearButton",
-                               "background-image" )
+                               "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton",
+                                  "cursor" )
       };
     }
   },
