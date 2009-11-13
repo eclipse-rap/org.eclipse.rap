@@ -65,6 +65,9 @@
           like "inset" or "outset" is used.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Spinner up button cursor." />
 
       <property name="width"
           description="Width of the spinner up button." />
@@ -119,6 +122,9 @@
           like "inset" or "outset" is used.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Spinner down button cursor." />
 
       <property name="width"
           description="Width of the spinner down button." />

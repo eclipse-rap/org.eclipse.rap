@@ -1224,6 +1224,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
       result.backgroundColor = tv.getCssColor( "Spinner-UpButton",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "Spinner-UpButton", "cursor" );
       return result;
     }
   },
@@ -1245,6 +1246,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
       result.backgroundColor = tv.getCssColor( "Spinner-DownButton",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "Spinner-DownButton", "cursor" );
       return result;
     }
   },
