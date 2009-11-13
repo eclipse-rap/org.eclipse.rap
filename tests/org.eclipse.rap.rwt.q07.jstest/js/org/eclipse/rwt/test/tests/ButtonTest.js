@@ -187,7 +187,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( button.hasState( "selected" ) );      
       assertContains( "w1.selection=true",  this.testUtil.getMessage() );
       var button2 = new org.eclipse.rwt.widgets.Button( "radio" );
-      button2.setUserData( "id", "w2" );      
+      button2.addState( "rwt_RADIO" );
+      button2.setUserData( "id", "w2" );
       button2.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
       this.testUtil.clearRequestLog();
