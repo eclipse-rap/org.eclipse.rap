@@ -38,6 +38,8 @@ public final class PropertyResolver {
 
   private static final String TYPE_TEXT_DECORATION = "text-decoration";
 
+  private static final String TYPE_CURSOR = "cursor";
+
   private static final String BOLD = "bold";
 
   private static final String ITALIC = "italic";
@@ -82,7 +84,7 @@ public final class PropertyResolver {
   private static final Map NAMED_COLORS = new HashMap();
 
   private static final List BORDER_STYLES = new ArrayList();
-  
+
   /** Width value for "thin" identifier. */
   static final int THIN_VALUE = 1;
 
@@ -148,6 +150,8 @@ public final class PropertyResolver {
       result = readBackgroundImage( unit, loader );
     } else if( TYPE_TEXT_DECORATION.equals( type ) ) {
       result = readTextDecoration( unit );
+    } else if( TYPE_CURSOR.equals( type ) ) {
+      result = readCursor( unit );
     } else {
       throw new RuntimeException( "Illegal type " + type );
     }
@@ -185,6 +189,8 @@ public final class PropertyResolver {
       result = TYPE_IMAGE;
     } else if( "text-decoration".equals( property ) ) {
       result = TYPE_TEXT_DECORATION;
+    } else if( "cursor".equals( property ) ) {
+      result = TYPE_CURSOR;
     }
     return result;
   }
@@ -617,6 +623,21 @@ public final class PropertyResolver {
         result = new QxIdentifier( value );
       } else {
         String msg = "Invalid value for text-decoration: " + value;
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    return result;
+  }
+
+  static QxCursor readCursor( final LexicalUnit unit ) {
+    QxCursor result = null;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = unit.getStringValue();
+      if( QxCursor.isValidCursor( value ) ) {
+        result = new QxCursor( value );
+      } else {
+        String msg = "Invalid value for cursor: " + value;
         throw new IllegalArgumentException( msg );
       }
     }

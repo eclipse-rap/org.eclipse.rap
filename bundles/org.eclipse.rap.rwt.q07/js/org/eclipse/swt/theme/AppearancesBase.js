@@ -141,7 +141,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "Label", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
       result.border = tv.getCssBorder( "Label", "border" );
-      result.cursor = "default";
+      result.cursor = tv.getCssCursor( "Label", "cursor" );
       return result;
     }
   },
@@ -163,7 +163,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "CLabel", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "CLabel", 
                                                      "background-image" );
-      result.cursor = "default";
+      result.cursor = tv.getCssCursor( "CLabel", "cursor" );
       result.padding = tv.getCssBoxDimensions( "CLabel", "padding" );
       result.spacing = tv.getCssDimension( "CLabel", "spacing" );
       return result;
@@ -222,6 +222,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "Button", "border" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
+      result.cursor = tv.getCssCursor( "Button", "cursor" );
       return result;
     }
   },
@@ -242,7 +243,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
         selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", 
-                                                  "background-image" )
+                                                  "background-image" ),
+        cursor : tv.getCssCursor( "Button", "cursor" )
       }
     }
   },
@@ -264,7 +266,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
         selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", 
-                                                  "background-image" )
+                                                  "background-image" ),
+        cursor : tv.getCssCursor( "Button", "cursor" )
       }
     }
   },
@@ -694,8 +697,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.overflow = "scrollY";
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "*", "font" );
-      result.backgroundColor
-        = tv.getCssColor( "Combo", "background-color" );
+      result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
       return result;
     }
   },
@@ -2228,7 +2230,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.clipHeight = 16;
       result.right = 4;
       result.source = tv.getCssImage( "ExpandItem-Button", "background-image" );
-      result.cursor = states.disabled ? "default" : "pointer";
+      result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
       return result;
     }
   },
@@ -2250,7 +2252,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = states.disabled
                          ? tv.getCssColor( "*", "color" )
                          : "undefined";
-      result.cursor = states.disabled ? "default" : "pointer";
+      result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
       return result;
     }
   },

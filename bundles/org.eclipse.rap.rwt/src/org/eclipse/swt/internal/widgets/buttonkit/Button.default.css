@@ -5,6 +5,7 @@ Button {
   color: black;
   padding: 4px 5px;
   spacing: 2px;
+  cursor: default;
 }
 
 Button[PUSH], Button[TOGGLE] {

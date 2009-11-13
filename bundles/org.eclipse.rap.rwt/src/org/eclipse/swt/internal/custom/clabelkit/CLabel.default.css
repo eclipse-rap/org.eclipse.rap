@@ -7,6 +7,7 @@ CLabel {
   border: none;
   padding: 3px;
   spacing: 5px;
+  cursor: default;
 }
 
 CLabel[BORDER] {

@@ -152,6 +152,14 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       this.__checkDefined( result, element, key );
       return result;
     },
+    
+    getCssCursor : function( element, key ) {
+      var vkey = this._store.getCssValue( element, this._states, key );
+      var values = this._store.getThemeValues();
+      var result = values.cursors[ vkey ];
+      this.__checkDefined( result, element, key );
+      return result;
+    },
 
     __checkDefined : function( value, element, key ) {
       if( value === undefined ) {

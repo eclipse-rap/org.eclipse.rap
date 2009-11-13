@@ -29,7 +29,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       gradients : {},
       fonts : {},
       colors : {},
-      borders : {}
+      borders : {},
+      cursors : {}
     };
     this._cssValues = {};
     this._statesMap = {

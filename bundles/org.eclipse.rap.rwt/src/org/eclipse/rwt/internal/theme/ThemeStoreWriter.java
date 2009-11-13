@@ -51,6 +51,7 @@ public final class ThemeStoreWriter {
     JsonObject colorMap = new JsonObject();
     JsonObject fontMap = new JsonObject();
     JsonObject borderMap = new JsonObject();
+    JsonObject cursorMap = new JsonObject();
     QxType[] values = new QxType[ valueSet.size() ];
     valueSet.toArray( values );
     for( int i = 0; i < values.length; i++ ) {
@@ -112,6 +113,9 @@ public final class ThemeStoreWriter {
         borderObject.append( "style", border.style );
         borderObject.append( "color", border.color );
         borderMap.append( key, borderObject );
+      } else if( value instanceof QxCursor ) {
+        QxCursor cursor = ( QxCursor )value;
+        cursorMap.append( key, cursor.value );
       }
     }
     JsonObject valuesMap = new JsonObject();
@@ -122,6 +126,7 @@ public final class ThemeStoreWriter {
     valuesMap.append( "colors", colorMap );
     valuesMap.append( "fonts", fontMap );
     valuesMap.append( "borders", borderMap );
+    valuesMap.append( "cursors", cursorMap );
     return valuesMap;
   }
 

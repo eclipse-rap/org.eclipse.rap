@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -380,6 +381,36 @@ public class PropertyResolver_Test extends TestCase {
     assertNull( res8 );
   }
 
+  public void testCursor() throws Exception {
+    String input = "default";
+    QxCursor res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    assertNotNull( res1 );
+    assertEquals( input, res1.value );
+
+    input = "pointer";
+    res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    assertNotNull( res1 );
+    assertEquals( input, res1.value );
+
+    input = "wait";
+    res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    assertNotNull( res1 );
+    assertEquals( input, res1.value );
+
+    input = "crosshair";
+    res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    assertNotNull( res1 );
+    assertEquals( input, res1.value );
+
+    input = "alabala";
+    try {
+      PropertyResolver.readCursor( parseProperty( input ) );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
   public void testGetType() throws Exception {
     assertEquals( "color", PropertyResolver.getType( "color" ) );
     assertEquals( "color", PropertyResolver.getType( "background-color" ) );
@@ -392,6 +423,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( "boxdim", PropertyResolver.getType( "padding" ) );
     assertEquals( "boxdim", PropertyResolver.getType( "margin" ) );
     assertEquals( "image", PropertyResolver.getType( "background-image" ) );
+    assertEquals( "cursor", PropertyResolver.getType( "cursor" ) );
     assertNull( PropertyResolver.getType( "unknown" ) );
   }
 

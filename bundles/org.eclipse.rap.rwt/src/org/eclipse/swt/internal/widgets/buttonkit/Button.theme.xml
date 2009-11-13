@@ -36,6 +36,9 @@
         like "inset" or "outset" is used.
       </description>
     </property>
+    
+    <property name="cursor"
+        description="Control's cursor." />
 
     <property name="padding"
         description="Padding (inner distance) for buttons." />

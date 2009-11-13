@@ -36,6 +36,9 @@
         like "inset" or "outset" is used.
       </description>
     </property>
+    
+    <property name="cursor"
+        description="Control's cursor." />
 
     <property name="background-image"
         description="Background image or gradient for CLabel." />

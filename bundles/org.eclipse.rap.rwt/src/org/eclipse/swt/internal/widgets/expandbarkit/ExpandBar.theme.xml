@@ -86,9 +86,15 @@
           like "inset" or "outset" is used.
         </description>
       </property>
+      
+      <property name="cursor"
+          description="Expand item header cursor." />
 
       <state name="expanded"
           description="Applies while the ExpandItem is expanded." />
+          
+      <state name="disabled"
+          description="Applies for disabled ExpandBars." />
 
     </element>
 

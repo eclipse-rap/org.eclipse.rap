@@ -6,6 +6,7 @@ Label {
   background-image: none;
   border: none;
   text-decoration: none;
+  cursor: default;
 }
 
 Label:hover {
