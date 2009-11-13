@@ -744,6 +744,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "Combo-Button",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "Combo-Button", "cursor" );
       return result;
     }
   },
@@ -825,6 +826,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "CCombo-Button",
                                                "background-color" );
+      result.cursor = tv.getCssCursor( "CCombo-Button", "cursor" );
       return result;
     }
   },

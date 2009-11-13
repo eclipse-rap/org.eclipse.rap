@@ -86,6 +86,9 @@
             like "inset" or "outset" is used.
           </description>
       </property>
+      
+      <property name="cursor"
+        description="CCombo button cursor." />
 
       <property name="width">
         <description>
@@ -98,6 +101,9 @@
 
       <state name="hover"
           description="Applies while the user hovers over the CCombo button." />
+          
+      <state name="disabled"
+          description="Applies when the button is disabled." />
 
     </element>
     
