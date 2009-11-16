@@ -10,6 +10,7 @@ ExpandItem {
 
 ExpandItem-Header {
   border: none;
+  background-image: none;
   background-color: #D4D0C8;
   cursor: pointer;
 }

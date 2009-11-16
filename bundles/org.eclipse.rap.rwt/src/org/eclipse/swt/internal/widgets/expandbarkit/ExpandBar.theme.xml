@@ -77,6 +77,12 @@
         </description>
       </property>
       
+      <property name="background-image">
+        <description>
+          Background image or gradient for the expand item header.
+        </description>
+      </property>
+      
       <property name="border"
         description="Expand item header border" />
 

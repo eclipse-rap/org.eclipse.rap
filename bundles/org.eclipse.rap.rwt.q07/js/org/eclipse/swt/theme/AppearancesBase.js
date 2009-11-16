@@ -2268,6 +2268,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                          ? tv.getCssColor( "*", "color" )
                          : "undefined";
       result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
+      result.backgroundImage = tv.getCssImage( "ExpandItem-Header",
+                                               "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ExpandItem-Header",
+                                                     "background-image" );
       return result;
     }
   },
