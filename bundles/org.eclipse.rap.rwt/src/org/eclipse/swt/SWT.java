@@ -2385,6 +2385,14 @@ public class SWT {
 
 
   /**
+   * The <code>Image</code> constructor argument indicating that
+   * the new image should be a copy of the image provided as
+   * an argument  (value is 0).
+   * @since 1.3
+   */ 
+  public static final int IMAGE_COPY = 0;
+
+  /**
    * Image format constant indicating an unknown image type (value is -1).
    */
   public static final int IMAGE_UNDEFINED = -1;

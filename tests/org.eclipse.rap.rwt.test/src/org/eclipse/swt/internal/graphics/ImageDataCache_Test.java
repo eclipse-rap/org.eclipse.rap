@@ -8,9 +8,9 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
@@ -59,14 +59,14 @@ public class ImageDataCache_Test extends TestCase {
   }
 
   public void testModifyData() throws Exception {
-    ImageData origData = getImageData( RWTFixture.IMAGE1 );
-    Image image = ResourceFactory.findImage( origData );
-    cache.putImageData( image, origData );
+    ImageData originalData = getImageData( RWTFixture.IMAGE1 );
+    Image image = ResourceFactory.findImage( originalData );
+    cache.putImageData( image, originalData );
     ImageData copyData1 = cache.getImageData( image );
-    assertNotSame( origData, copyData1 );
-    assertEqualsImageData( origData, copyData1 );
+    assertNotSame( originalData, copyData1 );
+    assertEqualsImageData( originalData, copyData1 );
     // modify original data
-    origData.setPixel( 0, 0, 23 );
+    originalData.setPixel( 0, 0, 23 );
     ImageData copyData2 = cache.getImageData( image );
     assertNotSame( copyData1, copyData2 );
     assertEqualsImageData( copyData1, copyData2 );
@@ -80,13 +80,16 @@ public class ImageDataCache_Test extends TestCase {
     assertTrue( Arrays.equals( imageData1.data, imageData2.data ) );
   }
 
-  private ImageData getImageData( final String resource ) {
+  private static ImageData getImageData( final String resource ) 
+    throws IOException 
+  {
     IResourceManager manager = ResourceManager.getInstance();
     InputStream inputStream = manager.getResourceAsStream( resource );
     if( inputStream == null ) {
       throw new IllegalArgumentException( "resource could not be found" );
     }
     ImageData[] datas = ImageDataLoader.load( inputStream );
+    inputStream.close();
     return datas[ 0 ];
   }
 }

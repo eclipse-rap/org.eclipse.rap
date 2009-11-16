@@ -13,21 +13,22 @@ package org.eclipse.swt.graphics;
 import java.io.*;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * Instances of this class are graphics which have been prepared
- * for display on a specific device. That is, they are to display 
+ * for display on a specific device. That is, they are to display
  * on widgets with, for example, <code>Button.setImage()</code>.
- * 
+ *
  * <p>If loaded from a file format that supports it, an
  * <code>Image</code> may have transparency, meaning that certain
  * pixels are specified as being transparent when drawn. Examples
  * of file formats that support transparency are GIF and PNG.</p>
- * 
+ *
  * <p>In RWT, images are shared among all sessions. Therefore they
- * lack a public constructor. Images can be created using the 
+ * lack a public constructor. Images can be created using the
  * <code>getImage()</code> methods of class <code>Graphics</code>
  *
  * @see org.eclipse.rwt.graphics.Graphics#getImage(String)
@@ -43,7 +44,7 @@ public final class Image extends Resource {
    * platforms and should never be accessed from application code.
    */
   public String resourceName;
-  
+
   private int width;
   private int height;
 
@@ -65,7 +66,7 @@ public final class Image extends Resource {
    * <p>
    * This constructor is provided for convenience when loading a single
    * image only. If the stream contains multiple images, only the first
-   * one will be loaded. To load multiple images, use 
+   * one will be loaded. To load multiple images, use
    * <code>ImageLoader.load()</code>.
    * </p><p>
    * This constructor may be used to load a resource as follows:
@@ -88,10 +89,10 @@ public final class Image extends Resource {
    * </pre>
    *
    * <p><strong>Note</strong>, this constructor is provided for convenience when
-   * single-sourcing code with SWT. For RWT, the recommended way to create images 
+   * single-sourcing code with SWT. For RWT, the recommended way to create images
    * is to use one of the <code>Graphics#getImage()</code> methods.
    * </p>
-   * 
+   *
    * @param device the device on which to create the image
    * @param stream the input stream to load the image from
    *
@@ -160,6 +161,59 @@ public final class Image extends Resource {
     init( fileName );
   }
 
+  /**
+   * Constructs a new instance of this class based on the
+   * provided image, with an appearance that varies depending
+   * on the value of the flag. The possible flag values are:
+   * <dl>
+   * <dt><b>{@link SWT#IMAGE_COPY}</b></dt>
+   * <dd>the result is an identical copy of srcImage</dd>
+   * <dt><b>{@link SWT#IMAGE_DISABLE}</b></dt>
+   * <dd>the result is a copy of srcImage which has a <em>disabled</em> look</dd>
+   * <dt><b>{@link SWT#IMAGE_GRAY}</b></dt>
+   * <dd>the result is a copy of srcImage which has a <em>gray scale</em> look</dd>
+   * </dl>
+   *
+   * @param device the device on which to create the image
+   * @param srcImage the image to use as the source
+   * @param flag the style, either <code>IMAGE_COPY</code>, <code>IMAGE_DISABLE</code> or <code>IMAGE_GRAY</code>
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
+   *    <li>ERROR_NULL_ARGUMENT - if srcImage is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the flag is not one of <code>IMAGE_COPY</code>, <code>IMAGE_DISABLE</code> or <code>IMAGE_GRAY</code></li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_INVALID_IMAGE - if the image is not a bitmap or an icon, or is otherwise in an invalid state</li>
+   *    <li>ERROR_UNSUPPORTED_DEPTH - if the depth of the image is not supported</li>
+   * </ul>
+   * @exception SWTError <ul>
+   *    <li>ERROR_NO_HANDLES if a handle could not be obtained for image creation</li>
+   * </ul>
+   * @since 1.3
+   */
+  public Image( final Device device, final Image srcImage, final int flag ) {
+    super( checkDevice( device ) );
+    if( srcImage == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( srcImage.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    switch( flag ) {
+      case SWT.IMAGE_COPY:
+        IResourceManager resourceManager = RWT.getResourceManager();
+        InputStream content
+          = resourceManager.getRegisteredContent( srcImage.resourceName );
+        init( content );
+      break;
+      default:
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      break;
+    }
+  }
+
   private void init( final String fileName ) {
     try {
       FileInputStream stream = new FileInputStream( fileName );
@@ -172,7 +226,7 @@ public final class Image extends Resource {
       throw new SWTException( SWT.ERROR_IO, e.getMessage() );
     }
   }
-  
+
   private void init( final InputStream stream ) {
     resourceName = "image-" + String.valueOf( hashCode() );
     Point size = ResourceFactory.registerImage( resourceName, stream );
@@ -214,7 +268,7 @@ public final class Image extends Resource {
 
   ///////////
   // Disposal
-  
+
   void destroy() {
     RWT.getResourceManager().unregister( resourceName );
   }

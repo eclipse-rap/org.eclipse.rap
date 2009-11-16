@@ -178,6 +178,37 @@ public class Image_Test extends TestCase {
     testImage.delete();
   }
   
+  public void testImageConstructor() throws Exception {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Display display = new Display();
+    Image image = new Image( display, stream );
+    Image copiedImage = new Image( display, image, SWT.IMAGE_COPY );
+    assertEquals( image.getBounds(), copiedImage.getBounds() );
+    assertFalse( image.resourceName.equals( copiedImage.resourceName ) );
+    image.dispose();
+    assertFalse( copiedImage.isDisposed() );
+  }
+  
+  public void testImageConstructorWithIllegalArguments() throws Exception {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Display display = new Display();
+    Image image = new Image( display, stream );
+    try {
+      new Image( display, null, SWT.IMAGE_COPY );
+      fail( "Must not allow null-image" );
+    } catch( Exception e ) {
+      // expected
+    }
+    try {
+      new Image( display, image, SWT.PUSH );
+      fail( "Must not allow invalid flag" );
+    } catch( Exception e ) {
+      // expected
+    }
+  }
+  
   public void testDispose() {
     ClassLoader loader = RWTFixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
