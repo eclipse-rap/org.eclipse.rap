@@ -1781,7 +1781,7 @@ public abstract class Control extends Widget {
     checkWidget();
     setRedraw( true );
   }
-  
+
   /**
    * Forces all outstanding paint requests for the widget
    * to be processed before this method returns. If there
@@ -1802,7 +1802,7 @@ public abstract class Control extends Widget {
   public void update() {
     checkWidget();
   }
-  
+
   /**
    * Changes the parent of the widget to be the one provided if
    * the underlying operating system supports this feature.
@@ -1813,20 +1813,20 @@ public abstract class Control extends Widget {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   *    <li>ERROR_NULL_ARGUMENT - if the parent is <code>null</code></li> 
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is <code>null</code></li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *  </ul>
-   *  
+   *
    *  @since 1.3
    */
   public boolean setParent( final Composite parent ) {
     checkWidget();
     return false;
   }
-  
+
   /**
    * Returns <code>true</code> if the underlying operating
    * system supports this reparenting, otherwise <code>false</code>
@@ -1837,7 +1837,7 @@ public abstract class Control extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public boolean isReparentable() {
@@ -1933,12 +1933,15 @@ public abstract class Control extends Widget {
   // Focus helping methods
 
   private void setFocusControl( final Control control ) {
+    Shell shell = getShell();
+    if( control != null ) {
+      getDisplay().setActiveShell( shell );
+    }
     // focus
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setFocusControl( control );
     // active
-    Shell shell = getShell();
     shell.setActiveControl( control );
   }
 

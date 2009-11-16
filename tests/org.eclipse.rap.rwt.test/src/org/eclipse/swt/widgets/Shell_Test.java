@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -114,7 +115,7 @@ public class Shell_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -349,6 +350,38 @@ public class Shell_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
+  public void testActiveShellOnFocusControl() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Shell secondShell = new Shell( display );
+    shell.open();
+    secondShell.open();
+    assertSame( secondShell, display.getActiveShell() );
+    shell.addShellListener( new ShellAdapter() {
+      public void shellActivated( final ShellEvent event ) {
+        log.add( "shellActivated" );
+      }
+    } );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addFocusListener( new FocusAdapter() {
+      public void focusGained( final FocusEvent event ) {
+        log.add( "buttonFocusGained" );
+      }
+    } );
+    button.addListener( SWT.Activate, new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( "buttonActivated" );
+      }
+    } );
+    button.setFocus();
+    assertSame( shell, display.getActiveShell() );
+    assertEquals( 3, log.size() );
+    assertEquals( "shellActivated", ( String )log.get( 0 ) );
+    assertEquals( "buttonFocusGained", ( String )log.get( 1 ) );
+    assertEquals( "buttonActivated", ( String )log.get( 2 ) );
+  }
 
   /* test case to simulate the scenario reported in this bug:
    * 278996: [Shell] Stackoverflow when closing child shell
@@ -388,7 +421,7 @@ public class Shell_Test extends TestCase {
     dialog.close();
     // no assert: test case is to ensure that no stack overflow occurs
   }
-  
+
   public void testNoDeactivateEventOnDispose() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
