@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // TODO [rst] Find a generic solution for state inheritance
     addState : function( state ) {
       this.base( arguments, state );
-      if( state == "active"
+      if(    state == "active"
           || state == "maximized"
           || state == "minimized"
           || state.substr( 0, 8 ) == "variant_"
@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     removeState : function( state ) {
       this.base( arguments, state );
-      if( state == "active"
+      if(    state == "active"
           || state == "maximized"
           || state == "minimized"
           || state.substr( 0, 8 ) == "variant_"
