@@ -327,28 +327,28 @@ public class ViewStackPresentation extends ConfigurableStack {
    */
   private void handleConfigurationButton() {
     boolean hasViewMenu = false;
-    if( currentPart != null ) {
-      if( currentPart instanceof PresentablePart ) {
-        PresentablePart part = ( PresentablePart ) currentPart;
-        hasViewMenu = part.getPane().hasViewMenu();
-      }
-      IToolBarManager manager = getPartToolBarManager();
-      boolean hasViewActions = manager != null && manager.getItems().length > 0;
-      if( hasViewActions || hasViewMenu ) {
-        if( confButton != null ) {
-          // enable conf button
-          confButton.setEnabled( true );
-          String toolTip = "Configure the actions and viwmenu from " 
-            + currentPart.getName();
-          confButton.setToolTipText( toolTip );
-        } 
-      } else {
-        if( confButton != null ) {
-          // disable conf button
-          confButton.setEnabled( false );
-          String toolTip =  currentPart.getName() +
-          		" has no actions or viewmenu to configure";
-          confButton.setToolTipText( toolTip );
+    if( currentPart != null && currentPart instanceof PresentablePart ) {
+      PresentablePart part = ( PresentablePart ) currentPart;
+      if( part.getPane() != null ) {
+        hasViewMenu = part.getPane().hasViewMenu();      
+        IToolBarManager manager = getPartToolBarManager();
+        boolean hasViewActions = manager != null && manager.getItems().length > 0;
+        if( hasViewActions || hasViewMenu ) {
+          if( confButton != null ) {
+            // enable conf button
+            confButton.setEnabled( true );
+            String toolTip = "Configure the actions and viewmenu from " 
+              + currentPart.getName();
+            confButton.setToolTipText( toolTip );
+          } 
+        } else {
+          if( confButton != null ) {
+            // disable conf button
+            confButton.setEnabled( false );
+            String toolTip =  currentPart.getName() +
+            		" has no actions or viewmenu to configure";
+            confButton.setToolTipText( toolTip );
+          }
         }
       }
     }
