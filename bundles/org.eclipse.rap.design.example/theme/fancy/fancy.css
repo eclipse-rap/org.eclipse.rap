@@ -706,6 +706,15 @@ ExpandBar[BORDER] {
 
 ExpandItem-Header {
   background-color: #abe033;
+  /*
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  */
   border-radius: 3px 3px 0px 0px;
 }
 
@@ -745,17 +754,25 @@ Combo, CCombo[BORDER] {
   border-radius: 2px;
 }
 
-Combo-Button:hover, CCombo-Button:hover {
-  background-color: transparent;
-  border: none;
-  background-image: url( /theme/fancy/icons/datetime-dropdown-hover.png );
-  width: 18px;
+Combo-Button-Icon, CCombo-Button-Icon {
+  background-image: url( /theme/fancy/icons/down.png );
+}
+
+Combo-Button-Icon:hover, CCombo-Button-Icon:hover {
+  background-image: url( /theme/fancy/icons/down-hover.png );
 }
 
 Combo-Button, CCombo-Button {
   background-color: transparent;
   border: none;
-  background-image: url( /theme/fancy/icons/datetime-dropdown.png );
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
   width: 18px;
 }
 
@@ -774,29 +791,44 @@ Spinner {
   background-color: rgb( 252, 252, 252 );
 }
 
-Spinner-DownButton {
-  background-image: url( /theme/fancy/icons/spinner-down.png );
-  width: 18px;
-  background-color: transparent;
-  border: 1px solid #a4a4a4;
+Spinner-DownButton-Icon {
+  background-image: url( /theme/fancy/icons/down.png );
 }
 
-Spinner-DownButton:hover {
-  background-image: url( /theme/fancy/icons/spinner-down-hover.png );
-  background-color: #e2e2e2;
+Spinner-DownButton-Icon:hover {
+  background-image: url( /theme/fancy/icons/down-hover.png );
+}
+
+Spinner-DownButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    to( #ffffff )
+  );
+  width: 18px;
+  border: none;
+}
+
+Spinner-UpButton-Icon {
+  background-image: url( /theme/fancy/icons/up.png );
+}
+
+Spinner-UpButton-Icon:hover {
+  background-image: url( /theme/fancy/icons/up-hover.png );
 }
 
 Spinner-UpButton {
-  background-image: url( /theme/fancy/icons/spinner-up.png );
-  width: 18px;
   background-color: transparent;
-  border: 1px solid #a4a4a4;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e0e0e0 )
+  );
+  width: 18px;
+  border: none;
 }
 
-Spinner-UpButton:hover {
-  background-image: url( /theme/fancy/icons/spinner-up-hover.png );
-  background-color: #e2e2e2;
-}
 
 /* DateTime */
 
@@ -861,37 +893,63 @@ DateTime-Calendar-NextYearButton:hover {
   background-image: url( /theme/fancy/icons/nextYear-hover.png );
 }
 
-DateTime-DownButton {
-  background-image: url( /theme/fancy/icons/spinner-down.png );
-  width: 18px;
-  background-color: transparent;
-  border: 1px solid #a4a4a4;
+DateTime-DownButton-Icon {
+  background-image: url( /theme/fancy/icons/down.png );
 }
 
-DateTime-DownButton:hover {
-  background-image: url( /theme/fancy/icons/spinner-down-hover.png );
-  background-color: #e2e2e2;
+DateTime-DownButton-Icon:hover {
+  background-image: url( /theme/fancy/icons/down-hover.png );
+}
+
+DateTime-DownButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    to( #ffffff )
+  );
+  width: 18px;
+  border: none;
+}
+
+DateTime-UpButton-Icon {
+  background-image: url( /theme/fancy/icons/up.png );
+}
+
+DateTime-UpButton-Icon:hover {
+  background-image: url( /theme/fancy/icons/up-hover.png );
 }
 
 DateTime-UpButton {
-  background-image: url( /theme/fancy/icons/spinner-up.png );
-  width: 18px;
   background-color: transparent;
-  border: 1px solid #a4a4a4;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e0e0e0 )
+  );
+  width: 18px;
+  border: none;
 }
 
-DateTime-UpButton:hover {
-  background-image: url( /theme/fancy/icons/spinner-up-hover.png );
-  background-color: #e2e2e2;
+DateTime-DropDownButton-Icon {
+  background-image: url( /theme/fancy/icons/down.png );
+}
+
+DateTime-DropDownButton-Icon:hover {
+  background-image: url( /theme/fancy/icons/down-hover.png );
 }
 
 DateTime-DropDownButton {
-  background-image: url( /theme/fancy/icons/datetime-dropdown.png );
-  width: 18px;
-}
-
-DateTime-DropDownButton:hover {
-  background-image: url( /theme/fancy/icons/datetime-dropdown-hover.png );
+  background-color: transparent;
+  border: none;
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
   width: 18px;
 }
 
