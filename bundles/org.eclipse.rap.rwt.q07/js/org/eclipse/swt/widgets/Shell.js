@@ -30,6 +30,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
     this.getCaptionBar().setWidth( "100%" );
+    // [if] Listen for DOM event instead of qooxdoo event - see bug 294846.
+    this.removeEventListener( "mousedown", this._onwindowmousedown );
+    this.__onwindowmousedown
+      = qx.lang.Function.bind( this._onwindowmousedown, this );
   },
 
   statics : {
@@ -133,6 +137,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
+    if( !qx.core.Object.inGlobalDispose() ) {
+      qx.html.EventRegistration.removeEventListener( this.getElement(),
+                                                     "mousedown",
+                                                     this.__onwindowmousedown );
+    }
     this._activateListenerWidgets = null;
   },
 
@@ -141,6 +150,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   members : {
+    _applyElement : function( value, old ) {
+      this.base( arguments, value, old );
+      qx.html.EventRegistration.addEventListener( this.getElement(),
+                                                  "mousedown",
+                                                  this.__onwindowmousedown );
+    },
+    
     setDefaultButton : function( value ) {
       this._defaultButton = value;
     },
