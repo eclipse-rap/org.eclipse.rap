@@ -233,7 +233,7 @@ public abstract class Control extends Widget {
    */
   public void setVisible( final boolean visible ) {
     checkWidget();
-    if( ( ( state & HIDDEN ) != 0 ) != !visible ) {
+    if( ( state & HIDDEN ) != 0 != !visible ) {
       if( visible ) {
         ShowEvent event = new ShowEvent( this, ShowEvent.SHOWN );
         event.processEvent();
@@ -1759,7 +1759,7 @@ public abstract class Control extends Widget {
    */
   public void setRedraw( final boolean redraw ) {
     checkWidget();
-    RWTLifeCycle.fakeRedraw( this, redraw );
+    internalSetRedraw( redraw );
   }
 
   /**
@@ -1779,7 +1779,54 @@ public abstract class Control extends Widget {
    */
   public void redraw() {
     checkWidget();
-    setRedraw( true );
+    internalSetRedraw( true );
+  }
+
+  /**
+   * Causes the rectangular area of the receiver specified by
+   * the arguments to be marked as needing to be redrawn.
+   * The next time a paint request is processed, that area of
+   * the receiver will be painted, including the background.
+   * If the <code>all</code> flag is <code>true</code>, any
+   * children of the receiver which intersect with the specified
+   * area will also paint their intersecting areas. If the
+   * <code>all</code> flag is <code>false</code>, the children
+   * will not be painted.
+   *
+   * @param x the x coordinate of the area to draw
+   * @param y the y coordinate of the area to draw
+   * @param width the width of the area to draw
+   * @param height the height of the area to draw
+   * @param all <code>true</code> if children should redraw, and <code>false</code> otherwise
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #update()
+   * @see PaintListener
+   * @see SWT#Paint
+   * @see SWT#NO_BACKGROUND
+   * @see SWT#NO_REDRAW_RESIZE
+   * @see SWT#NO_MERGE_PAINTS
+   * @see SWT#DOUBLE_BUFFERED
+   * @since 1.3
+   */
+  public void redraw( final int x,
+                      final int y,
+                      final int width,
+                      final int height,
+                      final boolean all )
+  {
+    checkWidget();
+    if( width > 0 && height > 0 ) {
+      internalSetRedraw( true );
+    }
+  }
+
+  private void internalSetRedraw( final boolean redraw ) {
+    RWTLifeCycle.fakeRedraw( this, redraw );
   }
 
   /**
@@ -1899,7 +1946,7 @@ public abstract class Control extends Widget {
   ////////////////////////////////
   // Helping methods for setBounds
 
-  void setBounds( final Rectangle bounds, boolean updateMode ) {
+  void setBounds( final Rectangle bounds, final boolean updateMode ) {
     Point oldLocation = getLocation();
     Point oldSize = getSize();
     this.bounds
@@ -1971,11 +2018,13 @@ public abstract class Control extends Widget {
   }
 
   // Copied from SWT/win32 as is
-  void fixFocus (Control focusControl) {
+  void fixFocus (final Control focusControl) {
     Shell shell = getShell ();
     Control control = this;
     while (control != shell && (control = control.parent) != null) {
-      if (control.setFixedFocus ()) return;
+      if (control.setFixedFocus ()) {
+        return;
+      }
     }
     shell.setSavedFocus (focusControl);
 //    OS.SetFocus (0);
@@ -1987,7 +2036,9 @@ public abstract class Control extends Widget {
 
   // Copied from SWT/win32 as is
   boolean setFixedFocus () {
-    if ((style & SWT.NO_FOCUS) != 0) return false;
+    if ((style & SWT.NO_FOCUS) != 0) {
+      return false;
+    }
     return forceFocus ();
   }
 

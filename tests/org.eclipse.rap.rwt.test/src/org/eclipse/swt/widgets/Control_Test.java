@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -799,5 +800,12 @@ public class Control_Test extends TestCase {
     } );
     control.notifyListeners( SWT.Help, new Event() );
     assertNotNull( untypedHelpEvent[ 0 ] );
+  }
+  
+  public void testRedraw() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    control.redraw();
+    assertTrue( RWTLifeCycle.needsFakeRedraw( control ) );
   }
 }
