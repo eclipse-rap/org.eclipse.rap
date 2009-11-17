@@ -246,6 +246,7 @@ public class ControlLCA_Test extends TestCase {
             public void renderDispose( final Widget widget )
               throws IOException
             {
+              log.append( "renderDispose" );
             }
             public void renderInitialization( final Widget widget )
               throws IOException
@@ -274,6 +275,6 @@ public class ControlLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     RWTFixture.executeLifeCycleFromServerThread();
-    assertEquals( "", log.toString() );
+    assertEquals( "renderDispose", log.toString() );
   }
 }
