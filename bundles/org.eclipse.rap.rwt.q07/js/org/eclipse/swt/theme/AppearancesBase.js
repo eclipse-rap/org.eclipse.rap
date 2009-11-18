@@ -2327,7 +2327,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
-      result.icon = tv.getCssImage( "Slider-DownButton", "background-image" );
+      result.icon = tv.getCssImage( "Slider-DownButton-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "Slider-DownButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "Slider-DownButton", 
+                                                 "background-image" );
+      }      
+      result.backgroundGradient = tv.getCssGradient( "Slider-DownButton", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "Slider-DownButton", "border" );
       if( states.horizontal ){
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
@@ -2345,7 +2353,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
-      result.icon = tv.getCssImage( "Slider-UpButton", "background-image" );
+      result.icon = tv.getCssImage( "Slider-UpButton-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "Slider-UpButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "Slider-UpButton", 
+                                                 "background-image" );
+      }      
+      result.backgroundGradient = tv.getCssGradient( "Slider-UpButton", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "Slider-UpButton", "border" );
       if( states.horizontal ) {
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
