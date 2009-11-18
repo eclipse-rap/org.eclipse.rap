@@ -822,6 +822,15 @@ Spinner-DownButton {
   border: none;
 }
 
+Spinner-DownButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b0b0b0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
 Spinner-UpButton-Icon {
   background-image: url( /theme/business/icons/up.png );
 }
@@ -839,6 +848,15 @@ Spinner-UpButton {
   );
   width: 18px;
   border: none;
+}
+
+Spinner-UpButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
 
 /* DateTime */
