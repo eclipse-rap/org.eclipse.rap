@@ -526,13 +526,13 @@ TableItem.overflow:even:hover {
 /* List */
 
 List {
-  background-color: rgb( 252, 252, 252 );
+  background-color: #ffffff;
   color: #4a4a4a;
 }
 
 List-Item {
   background-color: #ffffff;
-  color: #666666;
+  color: #4a4a4a;
 }
 
 List-Item:hover {
