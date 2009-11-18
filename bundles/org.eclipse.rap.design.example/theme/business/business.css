@@ -796,6 +796,15 @@ Combo-Button, CCombo-Button {
   width: 18px;
 }
 
+Combo-Button:pressed, CCombo-Button:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
 Combo-List {
   border: 1px solid #c1c1c1;
   border-radius: 0px 0px 2px 2px;
@@ -949,6 +958,15 @@ DateTime-DownButton {
   border: none;
 }
 
+DateTime-DownButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b0b0b0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
 DateTime-UpButton-Icon {
   background-image: url( /theme/business/icons/up.png );
 }
@@ -966,6 +984,15 @@ DateTime-UpButton {
   );
   width: 18px;
   border: none;
+}
+
+DateTime-UpButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
 
 DateTime-DropDownButton-Icon {
