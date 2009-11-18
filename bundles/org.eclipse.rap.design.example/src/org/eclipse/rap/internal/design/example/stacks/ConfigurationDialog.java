@@ -22,6 +22,7 @@ import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -344,6 +345,10 @@ public class ConfigurationDialog extends PopupDialog {
       }
     }
     
+  }
+  
+  protected Color getBackground() {
+    return Graphics.getColor( 255, 255, 255 );
   }
   
 }
