@@ -89,6 +89,14 @@ Button[PUSH]:pressed, Button[TOGGLE]:pressed {
   padding: 4px 5px 2px 7px;
 }
 
+Button[CHECK][BORDER] {
+  background-image: none;
+}
+
+Button[RADIO][BORDER] {
+  background-image: none;
+}
+
 Button.clearButton {
   color: #4a4a4a;
   background-color: transparent;
