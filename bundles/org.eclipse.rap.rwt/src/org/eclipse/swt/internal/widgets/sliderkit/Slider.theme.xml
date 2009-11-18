@@ -33,7 +33,10 @@
 
       <property name="border"
           description="Thumb border" />
-
+          
+      <property name="border-radius"
+          description="Thumb border radius" />          
+      
       <state name="hover"
           description="On thumb roll over" />
 
@@ -53,6 +56,9 @@
 
       <property name="border"
           description="Down button border" />
+          
+      <property name="border-radius"
+          description="Down button border radius" />
 
       <property name="background-image">
         <description>
@@ -89,6 +95,9 @@
 
       <property name="border"
           description="Up button border" />
+          
+      <property name="border-radius"
+          description="Up button border radius" />
 
       <property name="background-image">
         <description>
