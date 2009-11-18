@@ -662,6 +662,12 @@ Menu {
   color: rgb( 0, 89, 165 );
   background-color: white;
   border: 1px rgb( 0, 89, 165 );
+/*  border-radius: 2px 2px 0px 0px; */
+}
+
+MenuItem:hover {
+  background-color: #dae9f7;
+  color: #4a4a4a;
 }
 
 /* Selection color */
