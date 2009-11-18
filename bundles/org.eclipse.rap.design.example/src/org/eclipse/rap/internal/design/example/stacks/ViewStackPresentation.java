@@ -70,7 +70,8 @@ public class ViewStackPresentation extends ConfigurableStack {
   private static final int BUTTON_SPACING = 6;
   private static final String ID_CLOSE = "close";
   private static final String BUTTON_ID = "buttonId";
-  private static final int SIZE_SPACING = 65;
+  private static final int WIDTH_SPACING = 65;
+  private static final int HEIGHT_SPACING = 15;
   private Control presentationControl;
   private IPresentablePart currentPart;
   private ElementBuilder stackBuilder;
@@ -1198,21 +1199,39 @@ public class ViewStackPresentation extends ConfigurableStack {
     final int availableParallel,
     final int availablePerpendicular,
     final int preferredResult )
-  {
-    int minSize = calculateMinimumSize();
+  {    
     int result = preferredResult;
-    if (getSite().getState() == IStackPresentationSite.STATE_MINIMIZED 
-        || preferredResult < minSize) 
-    {
-      result = minSize;
-    }    
+    if( width ) {
+      // preferred width
+      int minWidth = calculateMinimumWidth();
+      if( getSite().getState() == IStackPresentationSite.STATE_MINIMIZED 
+          || preferredResult < minWidth ) 
+      {
+        result = minWidth;
+      }    
+    } else {
+      // preferred height
+      result = calculateMinimumHeight();
+    }
     return result;
   }
 
   /*
-   * Calculates the size of the biggest child
+   * Returns the height of the tabbar plus a spacing
    */
-  private int calculateMinimumSize() {
+  private int calculateMinimumHeight() {
+    int result = 0;
+    if( tabBg != null ) {
+      tabBg.pack();
+      result = tabBg.getSize().y;  
+    }
+    return result + HEIGHT_SPACING;
+  }
+
+  /*
+   * Calculates the width of the biggest child
+   */
+  private int calculateMinimumWidth() {
     int result = 0;
     if( tabBg != null ) {
       Control[] children = tabBg.getChildren();
@@ -1222,6 +1241,6 @@ public class ViewStackPresentation extends ConfigurableStack {
         }
       }    
     }
-    return result + SIZE_SPACING;
+    return result + WIDTH_SPACING;
   }
 }
