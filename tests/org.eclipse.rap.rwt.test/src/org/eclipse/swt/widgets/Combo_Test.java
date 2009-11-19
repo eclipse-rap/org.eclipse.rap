@@ -181,6 +181,19 @@ public class Combo_Test extends TestCase {
     }
   }
 
+  public void testSetTextForReadOnly() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo.add( "item0" );
+    combo.add( "item1" );
+    combo.select( 0 );
+    combo.setText( "" );
+    assertEquals( "item0", combo.getText() );
+    combo.setText( "item1" );
+    assertEquals( "item1", combo.getText() );
+  }
+
   public void testTextLimit() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -226,9 +239,6 @@ public class Combo_Test extends TestCase {
     combo.select( 0 );
     assertEquals( "test", combo.getText() );
     combo.remove( 0 );
-    // XXX: [bm] normal swt windows behavior: calling removeAll clears textfield,
-    // just removing the item in question leaves the text - should we support this?
-//    assertEquals( "test", combo.getText() );
     combo.add( "foo" );
     combo.select( 0 );
     assertEquals( "foo", combo.getText() );
@@ -336,6 +346,29 @@ public class Combo_Test extends TestCase {
     assertEquals( 0, combo.getItems().length );
   }
 
+  public void testRemoveAllForReadOnly() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo.add( "item" );
+    combo.select( 0 );
+    assertEquals( "item", combo.getText() ); // precondition
+    combo.removeAll();
+    assertEquals( "", combo.getText() );
+    assertEquals( 0, combo.getItemCount() );
+  }
+
+  public void testRemoveForReadOnly() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo.add( "item" );
+    combo.select( 0 );
+    assertEquals( "item", combo.getText() ); // precondition
+    combo.remove( 0 );
+    assertEquals( "", combo.getText() );
+  }
+  
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
