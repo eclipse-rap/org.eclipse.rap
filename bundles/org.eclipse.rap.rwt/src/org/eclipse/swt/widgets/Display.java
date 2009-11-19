@@ -168,6 +168,7 @@ public class Display extends Device implements Adaptable {
   private static boolean isUIThread() {
     return 
          ContextProvider.hasContext()
+      && RWTLifeCycle.getUIThreadHolder() != null   
       && RWTLifeCycle.getUIThreadHolder().getThread() != null
       && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }

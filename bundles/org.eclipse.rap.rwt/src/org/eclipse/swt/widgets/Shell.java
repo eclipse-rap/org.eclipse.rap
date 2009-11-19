@@ -148,6 +148,9 @@ public class Shell extends Decorations {
       this.display = display;
     } else {
       this.display = Display.getCurrent();
+      if( this.display == null ) {
+        this.display = Display.getDefault();
+      }
     }
     text = "";
     alpha = 0xFF;

@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -91,7 +90,7 @@ public class Shell_Test extends TestCase {
     assertTrue( clientAreaWithoutMenuBar.y < clientAreaWithMenuBar.y );
   }
 
-  public void testConstructor() {
+  public void testConstructor() throws Exception {
     Shell shell;
     Display display = new Display();
     shell = new Shell();
@@ -114,8 +113,24 @@ public class Shell_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    final Shell[] backgroundShell = { null };
+    final boolean[] failed = { false };
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        try {
+          backgroundShell[ 0 ] = new Shell();
+        } catch( Exception e ) {
+          failed[ 0 ] = true;
+        }
+      }
+    } );
+    thread.setDaemon( true );
+    thread.start();
+    thread.join();
+    assertNull( backgroundShell[ 0 ] );
+    assertTrue( failed[ 0 ] );
   }
-
+  
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
