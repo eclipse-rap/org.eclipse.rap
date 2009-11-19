@@ -115,10 +115,15 @@ qx.Class.define( "org.eclipse.swt.Application", {
                             org.eclipse.swt.Application._onResize );
       doc.addEventListener( "keypress",
                             org.eclipse.swt.Application._onKeyPress );
-      // Fix for bug 193703:
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        // Fix for bug 193703:
         doc.getElement().style.position = "absolute";      
         doc.setSelectable( true );
+        // Fix for bug 295475:
+        var docElement = document.documentElement;
+        qx.html.EventRegistration.addEventListener( docElement, 
+                                                    "mousedown", 
+                                                    this._onFFMouseDown );
       }
       // Observe browser history
       var history = qx.client.History.getInstance();
@@ -131,6 +136,11 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.send();
     },
     
+    close : function( evt ) {
+      this.base( arguments );
+      return this._exitConfirmation;
+    },
+
     _historyNavigated : function( event ) {
       var entryId = event.getData();
       var req = org.eclipse.swt.Request.getInstance();
@@ -140,11 +150,19 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.send();
     },
     
-    close : function( evt ) {
-      this.base( arguments );
-      return this._exitConfirmation;
+    _onFFMouseDown : function( event ) {
+      var tagName = null;
+      try{
+        tagName = event.originalTarget.tagName;
+      } catch( e ) {
+        // Firefox bug: On the very first mousedown, access to the events target 
+        // is forbidden and causes an error.
+      }
+      if( tagName != null && tagName != "INPUT" ) {
+        event.preventDefault();
+      }
     },
-
+    
     _onSend : function( evt ) {
       var pageX = qx.event.type.MouseEvent.getPageX();
       var pageY = qx.event.type.MouseEvent.getPageY();
