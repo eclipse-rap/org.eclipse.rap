@@ -2,6 +2,7 @@
 
 Slider {
   background-color: #F0F0F8;
+  border: none;
 }
 
 Slider-Thumb {

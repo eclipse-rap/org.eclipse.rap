@@ -2283,7 +2283,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : tv.getCssBorder( "*", "border" ),
+        border : tv.getCssBorder( "Slider", "border" ),
         font : tv.getCssFont( "*", "font" ),
         textColor : tv.getCssColor( "*", "color" ),
         backgroundColor : tv.getCssColor( "Slider", "background-color" )

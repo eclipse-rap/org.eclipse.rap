@@ -197,6 +197,9 @@ public class Slider extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
+    int border = getBorderWidth();    
+    width += border * 2;
+    height += border * 2;
   	return new Point( width, height );
   }
 
