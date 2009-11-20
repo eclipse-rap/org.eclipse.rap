@@ -370,6 +370,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           this._manager.scrollItemIntoView( value );
         }
       } else {
+        if( !this._editable ) {
+          this._field.setValue( "" );
+        }
         this._resetListSelection();
       }
       this._sendWidgetSelected();
