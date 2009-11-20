@@ -448,8 +448,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onMouseWheel : function( evt ) {
       if( this._dropped ) {
-        evt.preventDefault();
-        evt.stopPropagation();
+        var target = evt.getTarget();
+        if(    !( target instanceof qx.ui.form.List )
+            && !( target instanceof qx.ui.form.ListItem ) )
+        {      
+          evt.preventDefault();
+          evt.stopPropagation();
+        }
       } else if( this.getFocused() ) {
         evt.preventDefault();
         evt.stopPropagation();
