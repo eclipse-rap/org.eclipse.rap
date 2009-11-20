@@ -8,6 +8,7 @@ Slider {
 Slider-Thumb {
   background-color: #F8F8FF;
   border: 1px outset;
+  background-image: none;
 }
 
 Slider-DownButton, Slider-UpButton {

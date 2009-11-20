@@ -2313,8 +2313,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "Slider-Thumb", "background-color" );
+      result.backgroundColor = tv.getCssColor( "Slider-Thumb",
+                                               "background-color" );
       result.border = tv.getCssBorder( "Slider-Thumb", "border" );
+      result.backgroundImage = tv.getCssImage( "Slider-Thumb",
+                                               "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Slider-Thumb", 
+                                                     "background-image" );
       // Assigning icon for proper visualization in IE
       result.icon = "static/image/blank.gif";
       return result;

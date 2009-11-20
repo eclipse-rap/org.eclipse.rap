@@ -45,7 +45,13 @@
           description="Thumb border" />
           
       <property name="border-radius"
-          description="Thumb border radius" />          
+          description="Thumb border radius" />
+          
+      <property name="background-image">
+          <description>
+            Background image or gradient for slider movable thumb.
+          </description>
+      </property>
       
       <state name="hover"
           description="On thumb roll over" />
