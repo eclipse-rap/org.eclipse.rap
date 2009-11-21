@@ -2174,9 +2174,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       });
       // FIXME: [if] Bigger font size leads to text cutoff 
       var font = tv.getCssFont( "*", "font" );
-      font.setSize( 11 );
+      var smallFont = new qx.ui.core.Font();
+      smallFont.setSize( 11 );
+      smallFont.setFamily( font.getFamily() );
+      smallFont.setBold( font.getBold() );
+      smallFont.setItalic( font.getItalic() );
       return {
-        font            : font,
+        font            : smallFont,
         border          : border,
         textAlign       : "center",
         textColor       : states.disabled
