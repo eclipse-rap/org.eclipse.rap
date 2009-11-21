@@ -16576,11 +16576,13 @@ if(inp){var value=this.__font;
 value?value.renderElement(inp):qx.ui.core.Font.resetElement(inp);
 }},
 _visualizeFocus:function(){this.base(arguments);
-if(!qx.event.handler.FocusHandler.mouseFocus&&this.getEnableElementFocus()){try{this._inputElement.focus();
+var isIE=qx.core.Variant.isSet("qx.client",
+"mshtml");
+if((!qx.event.handler.FocusHandler.mouseFocus||isIE)&&this.getEnableElementFocus()){try{this._inputElement.focus();
 }catch(ex){}}},
 _visualizeBlur:function(){this.base(arguments);
-if(!qx.event.handler.FocusHandler.mouseFocus){try{this._inputElement.blur();
-}catch(ex){}}},
+try{this._inputElement.blur();
+}catch(ex){}},
 getComputedValue:function(){if(this._inputElement){return this._inputElement.value;
 }return this.getValue();
 },
