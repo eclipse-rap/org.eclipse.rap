@@ -19291,7 +19291,7 @@ addToHistory:function(state,
 newTitle){if(newTitle!=null){document.title=newTitle;
 this._titles[state]=newTitle;
 }
-if(state!=this._state){top.location.hash="#"+encodeURIComponent(state);
+if(state!=this._state){window.location.hash="#"+encodeURIComponent(state);
 this.__storeState(state);
 }},
 getState:function(){return this._state;
@@ -19319,7 +19319,7 @@ if(newHash!=this._state){this.__onHistoryLoad(newHash);
 this);
 this._timer.start();
 },
-__getHash:function(){var href=top.location.href;
+__getHash:function(){var href=window.location.href;
 var idx=href.indexOf("#");
 return idx>=0?href.substring(idx+1):"";
 },
@@ -19344,7 +19344,7 @@ doc.close();
 }catch(ex){return false;
 }return true;
 },
-"default":function(state){qx.client.Timer.once(function(){top.location.hash="#"+encodeURIComponent(state);
+"default":function(state){qx.client.Timer.once(function(){window.location.hash="#"+encodeURIComponent(state);
 },
 this,
 0);
