@@ -132,18 +132,26 @@ function jarDirs() {
       -exec rm -r {} \; || return 1
   elif [ "$mode" == "unpack" ]; then
     for f in .unzipped/eclipse/plugins/*.unpack.jar; do
-      unzip -q $f -d ${f/.unpack.jar/} && rm $f || return 1
+      if [ -e "$f" ]; then
+        unzip -q $f -d ${f/.unpack.jar/} && rm $f || return 1
+      fi
     done
     for f in .unzipped/eclipse/features/*.unpack.jar; do
-      unzip -q $f -d ${f/.unpack.jar/} && rm $f || return 1
+      if [ -e "$f" ]; then
+        unzip -q $f -d ${f/.unpack.jar/} && rm $f || return 1
+      fi
     done
   elif [ "$mode" == "rename" ]; then
     # Note: *.unpack.jar.pack.gz files need to be renamed too
     for f in .unzipped/eclipse/plugins/*.unpack.jar*; do
-      mv $f ${f/.unpack.jar/.jar} || return 1
+      if [ -e "$f" ]; then
+        mv $f ${f/.unpack.jar/.jar} || return 1
+      fi
     done
     for f in .unzipped/eclipse/features/*.unpack.jar*; do
-      mv $f ${f/.unpack.jar/.jar} || return 1
+      if [ -e "$f" ]; then
+        mv $f ${f/.unpack.jar/.jar} || return 1
+      fi
     done
   else
     echo "Invalid mode: $mode, use pack or normalize"
@@ -352,7 +360,7 @@ echo "=== jar all dirs in $INPUT_ARCHIVE"
 jarDirs pack "$INPUT_ARCHIVE" jarred-$INPUT_ARCHIVE_NAME || exit 1
  
 # exclude icu.base bundles from packing and signing
-EXCLUDE_BUNDLES=`zipinfo -1 jarred-$INPUT_ARCHIVE_NAME | grep -E 'com.ibm.icu|org.junit_3'`
+EXCLUDE_BUNDLES=`zipinfo -1 jarred-$INPUT_ARCHIVE_NAME | grep -v 'org.eclipse.rap'`
 echo "pack.excludes: `echo $EXCLUDE_BUNDLES | sed 's/ /, /g'`" > pack.properties
 echo "sign.excludes: `echo $EXCLUDE_BUNDLES | sed 's/ /, /g'`" >> pack.properties
 zip "$INPUT_ARCHIVE" pack.properties && rm pack.properties || exit 1
@@ -368,11 +376,11 @@ signBuild normalized-$INPUT_ARCHIVE_NAME signed-$INPUT_ARCHIVE_NAME || exit 1
 if [ -n "$ZIP_DOWNLOAD_PATH" ]; then
   # create a copy without pack.properties
   jarDirs unpack signed-$INPUT_ARCHIVE_NAME upload-$INPUT_ARCHIVE_NAME
-  zip -d upload-$INPUT_ARCHIVE_NAME pack.properties
+  zip -d upload-$INPUT_ARCHIVE_NAME pack.properties 2> /dev/null
   # upload zip
   echo "=== upload zip file to $ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME"
   echo check local file before uploading: upload-$INPUT_ARCHIVE_NAME
-  echo -n "press ok to upload "
+  echo -n "press Return to upload "
   read c
   rsync -v --progress \
     upload-$INPUT_ARCHIVE_NAME \
@@ -392,7 +400,10 @@ if [ -n "$REPOSITORY_PATH" ]; then
   rsync -av --delete --progress \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ \
     $localCopy/ || return 1
-
+  echo --- downloaded old repository ---
+  echo Any modifications before merging?
+  echo -n "press Return to proceed "
+  read c
   echo "merge new content into local copy of repository"
   jarDirs rename packed-$INPUT_ARCHIVE_NAME renamed-$INPUT_ARCHIVE_NAME
   rm -rf newSite && unzip -q renamed-$INPUT_ARCHIVE_NAME -d newSite || exit 1
@@ -407,7 +418,7 @@ if [ -n "$REPOSITORY_PATH" ]; then
   # upload
   echo "=== upload repository $REPOSITORY_PATH"
   echo check local repository before uploading: $localCopy
-  echo -n "press ok to upload "
+  echo -n "press Return to upload "
   read c
   rsync -av --progress \
     $localCopy/ \
