@@ -126,8 +126,10 @@ public class ConfigurationDialog extends PopupDialog {
   
   public boolean close() {
     getParentShell().removeControlListener( resizeListener );
-    modalBackground.close();
-    modalBackground.dispose();
+    if( !modalBackground.isDisposed() ) {
+      modalBackground.close();
+      modalBackground.dispose();
+    }
     action.fireToolBarChange();
     return super.close();
   }

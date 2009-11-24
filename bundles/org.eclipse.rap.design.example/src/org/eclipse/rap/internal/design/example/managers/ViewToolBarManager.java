@@ -233,11 +233,31 @@ public class ViewToolBarManager extends ContributionManager
         flags = SWT.PUSH;
       }  
       // normal items
-      final Button button = new Button( parent, flags );    
+      final Button button = new Button( parent, flags );        
       button.setData( item );
       button.setToolTipText( action.getToolTipText() );
       button.setImage( action.getImageDescriptor().createImage() );
       button.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
+      button.setEnabled( action.isEnabled() );
+      // add listener for enablement
+      final IPropertyChangeListener listener = new IPropertyChangeListener() {        
+        public void propertyChange( final PropertyChangeEvent event ) {
+          if( event.getProperty().equals( IAction.ENABLED ) ) {
+            if( event.getNewValue() instanceof Boolean ) {
+              Boolean enabled = ( Boolean ) event.getNewValue();
+              button.setEnabled( enabled.booleanValue() );
+            }            
+          }
+        }
+      };
+      action.addPropertyChangeListener( listener );
+      // remove the listener when button is going to be disposed
+      button.addDisposeListener( new DisposeListener() {        
+        public void widgetDisposed( final DisposeEvent event ) {
+          button.removeDisposeListener( this );
+          action.removePropertyChangeListener( listener );
+        }
+      } );
       button.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent e ) {
           // SWT.DROPDOWN not yet supported

@@ -10,8 +10,10 @@
 package org.eclipse.rap.internal.design.example;
 
 import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.CommandEvent;
 import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.ICommandListener;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.common.NotDefinedException;
@@ -44,6 +46,7 @@ public class CommandUtil {
     private Command command;
     private String text;
     private String tooltipText;
+    private boolean enabled;
 
     public CommandParameter( 
       final Command command, 
@@ -85,6 +88,14 @@ public class CommandUtil {
     public String getTooltipText() {
       return tooltipText;
     }
+    
+    public void setEnabled( final boolean enabled ) {
+      this.enabled = enabled;
+    }
+    
+    public boolean isEnabled() {
+      return enabled;
+    }
   }
   
   /*
@@ -93,8 +104,7 @@ public class CommandUtil {
   public static Action wrapCommand( 
     final CommandContributionItem item, 
     final Composite parent ) 
-  {
-    Action result = null;    
+  {   
     final CommandParameter param = extractCommandInformation( item, parent );    
     String text = param.getTooltipText();
     String toolTipText = param.getTooltipText();
@@ -106,17 +116,27 @@ public class CommandUtil {
     } else if( param.getStyle() == CommandContributionItem.STYLE_RADIO ) {
       style = IAction.AS_RADIO_BUTTON;
     }
-    result = new Action( text, style ){
+    final Action result = new Action( text, style ){
       public void run() {
         Command command = param.getCommand();
         executeCommand( command );
       }
     };
+    result.setEnabled( param.isEnabled() );
+    // listener to set enabling
+    param.getCommand().addCommandListener( new ICommandListener() {      
+      public void commandChanged( final CommandEvent commandEvent ) {
+        if( commandEvent.isEnabledChanged() ) {
+          result.setEnabled( commandEvent.getCommand().isEnabled() );
+        }
+      }
+    } );
     ImageDescriptor desc = new ImageDescriptor() {
       public Image createImage() {
         return param.getIcon();
       }      
     };
+    
     result.setImageDescriptor( desc );
     result.setToolTipText( toolTipText );    
     return result;
@@ -156,7 +176,7 @@ public class CommandUtil {
     icon = toolItem.getImage();
     text = toolItem.getToolTipText();
     tooltipText = toolItem.getToolTipText();
-
+    boolean enabled = toolItem.isEnabled();
     // extract menu
     Menu menu = null;
     if( style == CommandContributionItem.STYLE_PULLDOWN ) {
@@ -175,7 +195,7 @@ public class CommandUtil {
                                  menu, 
                                  text,
                                  tooltipText );
-    
+    result.setEnabled( enabled );
     toolbar.dispose();
     return result;
   }
