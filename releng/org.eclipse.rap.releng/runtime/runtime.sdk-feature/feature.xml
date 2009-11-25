@@ -30,9 +30,6 @@
    <plugin id="com.ibm.icu.base" version="0.0.0" unpack="false"/>
    <plugin id="com.ibm.icu.base.source" version="0.0.0" unpack="false"/>
 
-   <plugin id="org.apache.commons.logging" version="0.0.0" unpack="false"/>
-   <plugin id="org.apache.commons.logging.source" version="0.0.0" unpack="false"/>
-
    <plugin id="org.eclipse.core.commands" version="0.0.0" unpack="false"/>
    <plugin id="org.eclipse.core.commands.source" version="0.0.0" unpack="false"/>
 
