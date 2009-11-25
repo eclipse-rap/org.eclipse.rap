@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-// RAP [bm]: Last sentence rap-specific
 /**
  * DecoratedField manages image decorations around a control. It allows clients
  * to specify an image decoration and a position for the decoration relative to
@@ -57,8 +56,6 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @since 1.0
  * @deprecated As of 3.3, clients should use ControlDecoration instead.
- * 				As this is not yet available in RAP you can still use this
- * 				one to achieve at least some of the functionality.
  * 
  */
 public class DecoratedField {

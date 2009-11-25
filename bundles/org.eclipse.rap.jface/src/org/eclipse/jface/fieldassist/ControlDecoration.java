@@ -1,14 +1,14 @@
-///*******************************************************************************
-// * Copyright (c) 2006, 2008 IBM Corporation and others.
-// * All rights reserved. This program and the accompanying materials
-// * are made available under the terms of the Eclipse Public License v1.0
-// * which accompanies this distribution, and is available at
-// * http://www.eclipse.org/legal/epl-v10.html
-// *
-// * Contributors:
-// *     IBM Corporation - initial API and implementation
-// *******************************************************************************/
-//package org.eclipse.jface.fieldassist;
+/*******************************************************************************
+ * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.jface.fieldassist;
 //
 //import org.eclipse.core.runtime.ListenerList;
 //import org.eclipse.swt.SWT;
@@ -25,53 +25,54 @@
 //import org.eclipse.swt.events.PaintEvent;
 //import org.eclipse.swt.events.PaintListener;
 //import org.eclipse.swt.events.SelectionEvent;
-//import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.SelectionListener;
 //import org.eclipse.swt.graphics.GC;
-//import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Image;
 //import org.eclipse.swt.graphics.Point;
 //import org.eclipse.swt.graphics.Rectangle;
 //import org.eclipse.swt.graphics.Region;
-//import org.eclipse.swt.widgets.Composite;
-//import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 //import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.widgets.Event;
 //import org.eclipse.swt.widgets.Listener;
 //import org.eclipse.swt.widgets.Shell;
 //import org.eclipse.swt.widgets.Widget;
-//
-///**
-// * ControlDecoration renders an image decoration near a control. It allows
-// * clients to specify an image and a position for the image relative to the
-// * control. A ControlDecoration may be assigned description text, which can
-// * optionally be shown when the user hovers over the image. Clients can decorate
-// * any kind of control.
-// * <p>
-// * Decoration images always appear on the left or right side of the field, never
-// * above or below it. Decorations can be positioned at the top, center, or
-// * bottom of either side of the control. Future implementations may provide
-// * additional positioning options for decorations.
-// * <p>
-// * ControlDecoration renders the image adjacent to the specified (already
-// * created) control, with no guarantee that it won't be clipped or otherwise
-// * obscured or overlapped by adjacent controls, including another
-// * ControlDecoration placed in the same location. Clients should ensure that
-// * there is adequate space adjacent to the control to show the decoration
-// * properly.
-// * <p>
-// * Clients using ControlDecoration should typically ensure that enough margin
-// * space is reserved for a decoration by altering the layout data margins,
-// * although this is not assumed or required by the ControlDecoration
-// * implementation.
-// * <p>
-// * This class is intended to be instantiated and used by clients. It is not
-// * intended to be subclassed by clients.
-// * 
-// * @since 1.0
-// * 
-// * @see FieldDecoration
-// * @see FieldDecorationRegistry
-// */
-//public class ControlDecoration {
+import org.eclipse.swt.internal.widgets.Decoration;
+
+/**
+ * ControlDecoration renders an image decoration near a control. It allows
+ * clients to specify an image and a position for the image relative to the
+ * control. A ControlDecoration may be assigned description text, which can
+ * optionally be shown when the user hovers over the image. Clients can decorate
+ * any kind of control.
+ * <p>
+ * Decoration images always appear on the left or right side of the field, never
+ * above or below it. Decorations can be positioned at the top, center, or
+ * bottom of either side of the control. Future implementations may provide
+ * additional positioning options for decorations.
+ * <p>
+ * ControlDecoration renders the image adjacent to the specified (already
+ * created) control, with no guarantee that it won't be clipped or otherwise
+ * obscured or overlapped by adjacent controls, including another
+ * ControlDecoration placed in the same location. Clients should ensure that
+ * there is adequate space adjacent to the control to show the decoration
+ * properly.
+ * <p>
+ * Clients using ControlDecoration should typically ensure that enough margin
+ * space is reserved for a decoration by altering the layout data margins,
+ * although this is not assumed or required by the ControlDecoration
+ * implementation.
+ * <p>
+ * This class is intended to be instantiated and used by clients. It is not
+ * intended to be subclassed by clients.
+ * 
+ * @since 1.3
+ * 
+ * @see FieldDecoration
+ * @see FieldDecorationRegistry
+ */
+public class ControlDecoration {
 //	/**
 //	 * Debug flag for tracing
 //	 */
@@ -149,22 +150,20 @@
 //	 */
 //	private DisposeListener disposeListener;
 //
-//	// RAP [bm]: 
-////	/**
-////	 * The paint listener installed for drawing the decoration
-////	 */
-////	private PaintListener paintListener;
-////
-////	/**
-////	 * The mouse listener installed for tracking the hover
-////	 */
-////	private MouseTrackListener mouseTrackListener;
-////
-////	/**
-////	 * The mouse move listener installed for tracking the hover
-////	 */
-////	private MouseMoveListener mouseMoveListener;
-//	// RAPEND: [bm] 
+//	/**
+//	 * The paint listener installed for drawing the decoration
+//	 */
+//	private PaintListener paintListener;
+//
+//	/**
+//	 * The mouse listener installed for tracking the hover
+//	 */
+//	private MouseTrackListener mouseTrackListener;
+//
+//	/**
+//	 * The mouse move listener installed for tracking the hover
+//	 */
+//	private MouseMoveListener mouseMoveListener;
 //
 //	/**
 //	 * The untyped listener installed for notifying external listeners
@@ -195,6 +194,10 @@
 //	 * event.
 //	 */
 //	private boolean hasFocus = false;
+	
+	// RAP [if] RWT Decoration widget
+	private Decoration decoration;
+	
 //
 //	/**
 //	 * The hover used for showing description text
@@ -240,8 +243,7 @@
 //		/**
 //		 * The region used to manage the shell shape
 //		 */
-//		// RAP [bm]: 
-////		Region region;
+//		Region region;
 //
 //		/**
 //		 * Boolean indicating whether the last computed polygon location had an
@@ -260,17 +262,14 @@
 //					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 //			hoverShell.setForeground(display
 //					.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-//			// RAP [bm]: 
-////			hoverShell.addPaintListener(new PaintListener() {
-////				public void paintControl(PaintEvent pe) {
-////					pe.gc.drawText(text, hm, hm);
-////					if (!CARBON) {
-////						pe.gc.drawPolygon(getPolygon(true));
-////					}
-////				}
-////			});
-//			// RAPEND: [bm] 
-//
+//			hoverShell.addPaintListener(new PaintListener() {
+//				public void paintControl(PaintEvent pe) {
+//					pe.gc.drawText(text, hm, hm);
+//					if (!CARBON) {
+//						pe.gc.drawPolygon(getPolygon(true));
+//					}
+//				}
+//			});
 //			hoverShell.addMouseListener(new MouseAdapter() {
 //				public void mouseDown(MouseEvent e) {
 //					hideHover();
@@ -304,12 +303,9 @@
 //			if (!hoverShell.isDisposed()) {
 //				hoverShell.dispose();
 //			}
-//			// RAP [bm]: 
-////			if (region != null) {
-////				region.dispose();
-////			}
-//			// RAPEND: [bm] 
-//
+//			if (region != null) {
+//				region.dispose();
+//			}
 //		}
 //
 //		/*
@@ -392,85 +388,87 @@
 //		}
 //	}
 //
-//	/**
-//	 * Construct a ControlDecoration for decorating the specified control at the
-//	 * specified position relative to the control. Render the decoration on top
-//	 * of any Control that happens to appear at the specified location.
-//	 * <p>
-//	 * SWT constants are used to specify the position of the decoration relative
-//	 * to the control. The position should include style bits describing both
-//	 * the vertical and horizontal orientation. <code>SWT.LEFT</code> and
-//	 * <code>SWT.RIGHT</code> describe the horizontal placement of the
-//	 * decoration relative to the control, and the constants
-//	 * <code>SWT.TOP</code>, <code>SWT.CENTER</code>, and
-//	 * <code>SWT.BOTTOM</code> describe the vertical alignment of the
-//	 * decoration relative to the control. Decorations always appear on either
-//	 * the left or right side of the control, never above or below it. For
-//	 * example, a decoration appearing on the left side of the field, at the
-//	 * top, is specified as SWT.LEFT | SWT.TOP. If no position style bits are
-//	 * specified, the control decoration will be positioned to the left and
-//	 * center of the control (<code>SWT.LEFT | SWT.CENTER</code>).
-//	 * </p>
-//	 * 
-//	 * @param control
-//	 *            the control to be decorated
-//	 * @param position
-//	 *            bit-wise or of position constants (<code>SWT.TOP</code>,
-//	 *            <code>SWT.BOTTOM</code>, <code>SWT.LEFT</code>,
-//	 *            <code>SWT.RIGHT</code>, and <code>SWT.CENTER</code>).
-//	 */
-//	public ControlDecoration(Control control, int position) {
-//		this(control, position, null);
-//
-//	}
-//
-//	/**
-//	 * Construct a ControlDecoration for decorating the specified control at the
-//	 * specified position relative to the control. Render the decoration only on
-//	 * the specified Composite or its children. The decoration will be clipped
-//	 * if it does not appear within the visible bounds of the composite or its
-//	 * child composites.
-//	 * <p>
-//	 * SWT constants are used to specify the position of the decoration relative
-//	 * to the control. The position should include style bits describing both
-//	 * the vertical and horizontal orientation. <code>SWT.LEFT</code> and
-//	 * <code>SWT.RIGHT</code> describe the horizontal placement of the
-//	 * decoration relative to the control, and the constants
-//	 * <code>SWT.TOP</code>, <code>SWT.CENTER</code>, and
-//	 * <code>SWT.BOTTOM</code> describe the vertical alignment of the
-//	 * decoration relative to the control. Decorations always appear on either
-//	 * the left or right side of the control, never above or below it. For
-//	 * example, a decoration appearing on the left side of the field, at the
-//	 * top, is specified as SWT.LEFT | SWT.TOP. If no position style bits are
-//	 * specified, the control decoration will be positioned to the left and
-//	 * center of the control (<code>SWT.LEFT | SWT.CENTER</code>).
-//	 * </p>
-//	 * 
-//	 * @param control
-//	 *            the control to be decorated
-//	 * @param position
-//	 *            bit-wise or of position constants (<code>SWT.TOP</code>,
-//	 *            <code>SWT.BOTTOM</code>, <code>SWT.LEFT</code>,
-//	 *            <code>SWT.RIGHT</code>, and <code>SWT.CENTER</code>).
-//	 * @param composite
-//	 *            The SWT composite within which the decoration should be
-//	 *            rendered. The decoration will be clipped to this composite,
-//	 *            but it may be rendered on a child of the composite. The
-//	 *            decoration will not be visible if the specified composite or
-//	 *            its child composites are not visible in the space relative to
-//	 *            the control, where the decoration is to be rendered. If this
-//	 *            value is <code>null</code>, then the decoration will be
-//	 *            rendered on whichever composite (or composites) are located in
-//	 *            the specified position.
-//	 */
-//	public ControlDecoration(Control control, int position, Composite composite) {
+	/**
+	 * Construct a ControlDecoration for decorating the specified control at the
+	 * specified position relative to the control. Render the decoration on top
+	 * of any Control that happens to appear at the specified location.
+	 * <p>
+	 * SWT constants are used to specify the position of the decoration relative
+	 * to the control. The position should include style bits describing both
+	 * the vertical and horizontal orientation. <code>SWT.LEFT</code> and
+	 * <code>SWT.RIGHT</code> describe the horizontal placement of the
+	 * decoration relative to the control, and the constants
+	 * <code>SWT.TOP</code>, <code>SWT.CENTER</code>, and
+	 * <code>SWT.BOTTOM</code> describe the vertical alignment of the
+	 * decoration relative to the control. Decorations always appear on either
+	 * the left or right side of the control, never above or below it. For
+	 * example, a decoration appearing on the left side of the field, at the
+	 * top, is specified as SWT.LEFT | SWT.TOP. If no position style bits are
+	 * specified, the control decoration will be positioned to the left and
+	 * center of the control (<code>SWT.LEFT | SWT.CENTER</code>).
+	 * </p>
+	 * 
+	 * @param control
+	 *            the control to be decorated
+	 * @param position
+	 *            bit-wise or of position constants (<code>SWT.TOP</code>,
+	 *            <code>SWT.BOTTOM</code>, <code>SWT.LEFT</code>,
+	 *            <code>SWT.RIGHT</code>, and <code>SWT.CENTER</code>).
+	 */
+	public ControlDecoration(Control control, int position) {
+		this(control, position, null);
+
+	}
+
+	/**
+	 * Construct a ControlDecoration for decorating the specified control at the
+	 * specified position relative to the control. Render the decoration only on
+	 * the specified Composite or its children. The decoration will be clipped
+	 * if it does not appear within the visible bounds of the composite or its
+	 * child composites.
+	 * <p>
+	 * SWT constants are used to specify the position of the decoration relative
+	 * to the control. The position should include style bits describing both
+	 * the vertical and horizontal orientation. <code>SWT.LEFT</code> and
+	 * <code>SWT.RIGHT</code> describe the horizontal placement of the
+	 * decoration relative to the control, and the constants
+	 * <code>SWT.TOP</code>, <code>SWT.CENTER</code>, and
+	 * <code>SWT.BOTTOM</code> describe the vertical alignment of the
+	 * decoration relative to the control. Decorations always appear on either
+	 * the left or right side of the control, never above or below it. For
+	 * example, a decoration appearing on the left side of the field, at the
+	 * top, is specified as SWT.LEFT | SWT.TOP. If no position style bits are
+	 * specified, the control decoration will be positioned to the left and
+	 * center of the control (<code>SWT.LEFT | SWT.CENTER</code>).
+	 * </p>
+	 * 
+	 * @param control
+	 *            the control to be decorated
+	 * @param position
+	 *            bit-wise or of position constants (<code>SWT.TOP</code>,
+	 *            <code>SWT.BOTTOM</code>, <code>SWT.LEFT</code>,
+	 *            <code>SWT.RIGHT</code>, and <code>SWT.CENTER</code>).
+	 * @param composite
+	 *            The SWT composite within which the decoration should be
+	 *            rendered. The decoration will be clipped to this composite,
+	 *            but it may be rendered on a child of the composite. The
+	 *            decoration will not be visible if the specified composite or
+	 *            its child composites are not visible in the space relative to
+	 *            the control, where the decoration is to be rendered. If this
+	 *            value is <code>null</code>, then the decoration will be
+	 *            rendered on whichever composite (or composites) are located in
+	 *            the specified position.
+	 */
+	public ControlDecoration(Control control, int position, Composite composite) {
 //		this.position = position;
 //		this.control = control;
 //		this.composite = composite;
 //
 //		addControlListeners();
-//
-//	}
+	    
+	    // RAP [if]
+	    decoration = new Decoration( control, position, composite );
+	}
 //
 //	/**
 //	 * Adds the listener to the collection of listeners who will be notified
@@ -512,56 +510,60 @@
 //		menuDetectListeners.remove(listener);
 //	}
 //
-//	/**
-//	 * Adds the listener to the collection of listeners who will be notified
-//	 * when the decoration is selected, by sending it one of the messages
-//	 * defined in the <code>SelectionListener</code> interface.
-//	 * <p>
-//	 * <code>widgetSelected</code> is called when the decoration is selected
-//	 * (by mouse click). <code>widgetDefaultSelected</code> is called when the
-//	 * decoration is double-clicked.
-//	 * </p>
-//	 * <p>
-//	 * The <code>widget</code> field in the SelectionEvent will contain the
-//	 * Composite on which the decoration is rendered that received the click.
-//	 * The <code>x</code> and <code>y</code> fields will be in coordinates
-//	 * relative to that widget. The <code>data</code> field will contain the
-//	 * decoration that received the event.
-//	 * </p>
-//	 * 
-//	 * @param listener
-//	 *            the listener which should be notified
-//	 * 
-//	 * @see org.eclipse.swt.events.SelectionListener
-//	 * @see org.eclipse.swt.events.SelectionEvent
-//	 * @see #removeSelectionListener
-//	 */
-//	public void addSelectionListener(SelectionListener listener) {
+	/**
+	 * Adds the listener to the collection of listeners who will be notified
+	 * when the decoration is selected, by sending it one of the messages
+	 * defined in the <code>SelectionListener</code> interface.
+	 * <p>
+	 * <code>widgetSelected</code> is called when the decoration is selected
+	 * (by mouse click). <code>widgetDefaultSelected</code> is called when the
+	 * decoration is double-clicked.
+	 * </p>
+	 * <p>
+	 * The <code>widget</code> field in the SelectionEvent will contain the
+	 * Composite on which the decoration is rendered that received the click.
+	 * The <code>x</code> and <code>y</code> fields will be in coordinates
+	 * relative to that widget. The <code>data</code> field will contain the
+	 * decoration that received the event.
+	 * </p>
+	 * 
+	 * @param listener
+	 *            the listener which should be notified
+	 * 
+	 * @see org.eclipse.swt.events.SelectionListener
+	 * @see org.eclipse.swt.events.SelectionEvent
+	 * @see #removeSelectionListener
+	 */
+	public void addSelectionListener(SelectionListener listener) {
 //		selectionListeners.add(listener);
-//	}
-//
-//	/**
-//	 * Removes the listener from the collection of listeners who will be
-//	 * notified when the decoration is selected.
-//	 * 
-//	 * @param listener
-//	 *            the listener which should no longer be notified. This message
-//	 *            has no effect if the listener was not previously added to the
-//	 *            receiver.
-//	 * 
-//	 * @see org.eclipse.swt.events.SelectionListener
-//	 * @see #addSelectionListener
-//	 */
-//	public void removeSelectionListener(SelectionListener listener) {
+	    // RAP [if]
+        decoration.addSelectionListener( listener );
+	}
+
+	/**
+	 * Removes the listener from the collection of listeners who will be
+	 * notified when the decoration is selected.
+	 * 
+	 * @param listener
+	 *            the listener which should no longer be notified. This message
+	 *            has no effect if the listener was not previously added to the
+	 *            receiver.
+	 * 
+	 * @see org.eclipse.swt.events.SelectionListener
+	 * @see #addSelectionListener
+	 */
+	public void removeSelectionListener(SelectionListener listener) {
 //		selectionListeners.remove(listener);
-//	}
-//
-//	/**
-//	 * Dispose this ControlDecoration. Unhook any listeners that have been
-//	 * installed on the target control. This method has no effect if the
-//	 * receiver is already disposed.
-//	 */
-//	public void dispose() {
+	    // RAP [if]
+	    decoration.removeSelectionListener( listener );
+	}
+
+	/**
+	 * Dispose this ControlDecoration. Unhook any listeners that have been
+	 * installed on the target control. This method has no effect if the
+	 * receiver is already disposed.
+	 */
+	public void dispose() {
 //		if (control == null) {
 //			return;
 //		}
@@ -571,17 +573,22 @@
 //		}
 //		removeControlListeners();
 //		control = null;
-//	}
-//
-//	/**
-//	 * Get the control that is decorated by the receiver.
-//	 * 
-//	 * @return the Control decorated by the receiver. May be <code>null</code>
-//	 *         if the control has been uninstalled.
-//	 */
-//	public Control getControl() {
+	  
+	    // RAP [if]
+	    decoration.dispose();
+	}
+
+	/**
+	 * Get the control that is decorated by the receiver.
+	 * 
+	 * @return the Control decorated by the receiver. May be <code>null</code>
+	 *         if the control has been uninstalled.
+	 */
+	public Control getControl() {
 //		return control;
-//	}
+	    // RAP [if]
+	    return decoration.getControl();
+	}
 //
 //	/**
 //	 * Add any listeners needed on the target control and on the composite where
@@ -856,168 +863,192 @@
 //		}
 //	}
 //
-//	/**
-//	 * Show the control decoration. This message has no effect if the decoration
-//	 * is already showing. If {@link #setShowOnlyOnFocus(boolean)} is set to
-//	 * <code>true</code>, the decoration will only be shown if the control
-//	 * has focus.
-//	 */
-//	public void show() {
+	/**
+	 * Show the control decoration. This message has no effect if the decoration
+	 * is already showing. If {@link #setShowOnlyOnFocus(boolean)} is set to
+	 * <code>true</code>, the decoration will only be shown if the control
+	 * has focus.
+	 */
+	public void show() {
 //		if (!visible) {
 //			visible = true;
 //			update();
 //		}
-//	}
-//
-//	/**
-//	 * Hide the control decoration and any associated hovers. This message has
-//	 * no effect if the decoration is already hidden.
-//	 */
-//	public void hide() {
+	    // RAP [if]
+	    decoration.show();
+	}
+
+	/**
+	 * Hide the control decoration and any associated hovers. This message has
+	 * no effect if the decoration is already hidden.
+	 */
+	public void hide() {
 //		if (visible) {
 //			visible = false;
 //			hideHover();
 //			update();
 //		}
-//	}
-//
-//	/**
-//	 * Get the description text that may be shown in a hover for this
-//	 * decoration.
-//	 * 
-//	 * @return the text to be shown as a description for the decoration, or
-//	 *         <code>null</code> if none has been set.
-//	 */
-//	public String getDescriptionText() {
+	    // RAP [if]
+	    decoration.hide();
+	}
+
+	/**
+	 * Get the description text that may be shown in a hover for this
+	 * decoration.
+	 * 
+	 * @return the text to be shown as a description for the decoration, or
+	 *         <code>null</code> if none has been set.
+	 */
+	public String getDescriptionText() {
 //		return descriptionText;
-//	}
-//
-//	/**
-//	 * Set the image shown in this control decoration. Update the rendered
-//	 * decoration.
-//	 * 
-//	 * @param text
-//	 *            the text to be shown as a description for the decoration, or
-//	 *            <code>null</code> if none has been set.
-//	 */
-//	public void setDescriptionText(String text) {
+	    // RAP [if]
+	    return decoration.getDescriptionText();
+	}
+
+	/**
+	 * Set the image shown in this control decoration. Update the rendered
+	 * decoration.
+	 * 
+	 * @param text
+	 *            the text to be shown as a description for the decoration, or
+	 *            <code>null</code> if none has been set.
+	 */
+	public void setDescriptionText(String text) {
 //		this.descriptionText = text;
 //		update();
-//	}
-//
-//	/**
-//	 * Get the image shown in this control decoration.
-//	 * 
-//	 * @return the image to be shown adjacent to the control, or
-//	 *         <code>null</code> if one has not been set.
-//	 */
-//	public Image getImage() {
+	    // RAP [if]
+	    decoration.setDescriptionText( text );
+	}
+
+	/**
+	 * Get the image shown in this control decoration.
+	 * 
+	 * @return the image to be shown adjacent to the control, or
+	 *         <code>null</code> if one has not been set.
+	 */
+	public Image getImage() {
 //		return image;
-//	}
-//
-//	/**
-//	 * Set the image shown in this control decoration. Update the rendered
-//	 * decoration.
-//	 * 
-//	 * @param image
-//	 *            the image to be shown adjacent to the control. Should never be
-//	 *            <code>null</code>.
-//	 */
-//	public void setImage(Image image) {
+	    // RAP [if]
+	    return decoration.getImage();
+	}
+
+	/**
+	 * Set the image shown in this control decoration. Update the rendered
+	 * decoration.
+	 * 
+	 * @param image
+	 *            the image to be shown adjacent to the control. Should never be
+	 *            <code>null</code>.
+	 */
+	public void setImage(Image image) {
 //		this.image = image;
 //		update();
-//	}
-//
-//	/**
-//	 * Get the boolean that controls whether the decoration is shown only when
-//	 * the control has focus. The default value of this setting is
-//	 * <code>false</code>.
-//	 * 
-//	 * @return <code>true</code> if the decoration should only be shown when
-//	 *         the control has focus, and <code>false</code> if it should
-//	 *         always be shown. Note that if the control is not capable of
-//	 *         receiving focus (<code>SWT.NO_FOCUS</code>), then the
-//	 *         decoration will never show when this value is <code>true</code>.
-//	 */
-//	public boolean getShowOnlyOnFocus() {
+	    // RAP [if]
+	    decoration.setImage( image );
+	}
+
+	/**
+	 * Get the boolean that controls whether the decoration is shown only when
+	 * the control has focus. The default value of this setting is
+	 * <code>false</code>.
+	 * 
+	 * @return <code>true</code> if the decoration should only be shown when
+	 *         the control has focus, and <code>false</code> if it should
+	 *         always be shown. Note that if the control is not capable of
+	 *         receiving focus (<code>SWT.NO_FOCUS</code>), then the
+	 *         decoration will never show when this value is <code>true</code>.
+	 */
+	public boolean getShowOnlyOnFocus() {
 //		return showOnlyOnFocus;
-//	}
-//
-//	/**
-//	 * Set the boolean that controls whether the decoration is shown only when
-//	 * the control has focus. The default value of this setting is
-//	 * <code>false</code>.
-//	 * 
-//	 * @param showOnlyOnFocus
-//	 *            <code>true</code> if the decoration should only be shown
-//	 *            when the control has focus, and <code>false</code> if it
-//	 *            should always be shown. Note that if the control is not
-//	 *            capable of receiving focus (<code>SWT.NO_FOCUS</code>),
-//	 *            then the decoration will never show when this value is
-//	 *            <code>true</code>.
-//	 */
-//	public void setShowOnlyOnFocus(boolean showOnlyOnFocus) {
+	    // RAP [if]
+	    return decoration.getShowOnlyOnFocus();
+	}
+
+	/**
+	 * Set the boolean that controls whether the decoration is shown only when
+	 * the control has focus. The default value of this setting is
+	 * <code>false</code>.
+	 * 
+	 * @param showOnlyOnFocus
+	 *            <code>true</code> if the decoration should only be shown
+	 *            when the control has focus, and <code>false</code> if it
+	 *            should always be shown. Note that if the control is not
+	 *            capable of receiving focus (<code>SWT.NO_FOCUS</code>),
+	 *            then the decoration will never show when this value is
+	 *            <code>true</code>.
+	 */
+	public void setShowOnlyOnFocus(boolean showOnlyOnFocus) {
 //		this.showOnlyOnFocus = showOnlyOnFocus;
 //		update();
-//	}
-//
-//	/**
-//	 * Get the boolean that controls whether the decoration's description text
-//	 * should be shown in a hover when the user hovers over the decoration. The
-//	 * default value of this setting is <code>true</code>.
-//	 * 
-//	 * @return <code>true</code> if a hover popup containing the decoration's
-//	 *         description text should be shown when the user hovers over the
-//	 *         decoration, and <code>false</code> if a hover should not be
-//	 *         shown.
-//	 */
-//	public boolean getShowHover() {
+	    // RAP [if]
+	    decoration.setShowOnlyOnFocus( showOnlyOnFocus );
+	}
+
+	/**
+	 * Get the boolean that controls whether the decoration's description text
+	 * should be shown in a hover when the user hovers over the decoration. The
+	 * default value of this setting is <code>true</code>.
+	 * 
+	 * @return <code>true</code> if a hover popup containing the decoration's
+	 *         description text should be shown when the user hovers over the
+	 *         decoration, and <code>false</code> if a hover should not be
+	 *         shown.
+	 */
+	public boolean getShowHover() {
 //		return showHover;
-//	}
-//
-//	/**
-//	 * Set the boolean that controls whether the decoration's description text
-//	 * should be shown in a hover when the user hovers over the decoration. The
-//	 * default value of this setting is <code>true</code>.
-//	 * 
-//	 * @param showHover
-//	 *            <code>true</code> if a hover popup containing the
-//	 *            decoration's description text should be shown when the user
-//	 *            hovers over the decoration, and <code>false</code> if a
-//	 *            hover should not be shown.
-//	 */
-//	public void setShowHover(boolean showHover) {
+	    // RAP [if]
+	    return decoration.getShowHover();
+	}
+
+	/**
+	 * Set the boolean that controls whether the decoration's description text
+	 * should be shown in a hover when the user hovers over the decoration. The
+	 * default value of this setting is <code>true</code>.
+	 * 
+	 * @param showHover
+	 *            <code>true</code> if a hover popup containing the
+	 *            decoration's description text should be shown when the user
+	 *            hovers over the decoration, and <code>false</code> if a
+	 *            hover should not be shown.
+	 */
+	public void setShowHover(boolean showHover) {
 //		this.showHover = showHover;
 //		update();
-//	}
-//
-//	/**
-//	 * Get the margin width in pixels that should be used between the decorator
-//	 * and the horizontal edge of the control. The default value of this setting
-//	 * is <code>0</code>.
-//	 * 
-//	 * @return the number of pixels that should be reserved between the
-//	 *         horizontal edge of the control and the adjacent edge of the
-//	 *         decoration.
-//	 */
-//	public int getMarginWidth() {
+	    // RAP [if]
+	    decoration.setShowHover( showHover );
+	}
+
+	/**
+	 * Get the margin width in pixels that should be used between the decorator
+	 * and the horizontal edge of the control. The default value of this setting
+	 * is <code>0</code>.
+	 * 
+	 * @return the number of pixels that should be reserved between the
+	 *         horizontal edge of the control and the adjacent edge of the
+	 *         decoration.
+	 */
+	public int getMarginWidth() {
 //		return marginWidth;
-//	}
-//
-//	/**
-//	 * Set the margin width in pixels that should be used between the decorator
-//	 * and the horizontal edge of the control. The default value of this setting
-//	 * is <code>0</code>.
-//	 * 
-//	 * @param marginWidth
-//	 *            the number of pixels that should be reserved between the
-//	 *            horizontal edge of the control and the adjacent edge of the
-//	 *            decoration.
-//	 */
-//	public void setMarginWidth(int marginWidth) {
+	    // RAP [if]
+	    return decoration.getMarginWidth();
+	}
+
+	/**
+	 * Set the margin width in pixels that should be used between the decorator
+	 * and the horizontal edge of the control. The default value of this setting
+	 * is <code>0</code>.
+	 * 
+	 * @param marginWidth
+	 *            the number of pixels that should be reserved between the
+	 *            horizontal edge of the control and the adjacent edge of the
+	 *            decoration.
+	 */
+	public void setMarginWidth(int marginWidth) {
 //		this.marginWidth = marginWidth;
 //		update();
-//	}
+	    // RAP [if]
+	    decoration.setMarginWidth( marginWidth );
+	}
 //
 //	/**
 //	 * Something has changed, requiring redraw. Redraw the decoration and update
@@ -1213,4 +1244,4 @@
 //					.println("Removed listener>>>" + listenerType + " from>>>" + widget); //$NON-NLS-1$//$NON-NLS-2$
 //		}
 //	}
-//}
+}

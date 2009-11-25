@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets;
@@ -100,7 +101,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     Control tableControl = new Button( table, SWT.PUSH );
     final int[] count = { 0 };
     final Object[] elements = new Object[]{
-      shell, table, column1, column2, item1, item2, tableControl 
+      shell, table, column1, column2, item1, item2, tableControl
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -186,6 +187,40 @@ public class WidgetTreeVisitor_Test extends TestCase {
       }
     } );
     assertEquals( 5, count[ 0 ] );
+  }
+
+  public void testTreeVisitorWithDecoration() {
+    Display display = new Display();
+    final Shell shell = new Shell( display , SWT.NONE );
+    Control control1 = new Button( shell, SWT.PUSH );
+    Decoration decoration1 = new Decoration( control1, SWT.RIGHT, null );
+    Composite composite = new Composite( shell, SWT.NONE );
+    Control control2 = new Button( composite, SWT.PUSH );
+    Decoration decoration2 = new Decoration( control2, SWT.RIGHT, null );
+    final int[] count = {
+      0
+    };
+    final Object[] elements = new Object[]{
+      shell, control1, decoration1, composite, control2, decoration2
+    };
+    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        assertSame( widget, elements[ count[ 0 ] ] );
+        count[ 0 ]++;
+        return widget != shell;
+      }
+    } );
+    assertEquals( 1, count[ 0 ] );
+    count[ 0 ] = 0;
+    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+
+      public boolean doVisit( final Widget widget ) {
+        assertSame( widget, elements[ count[ 0 ] ] );
+        count[ 0 ]++;
+        return true;
+      }
+    } );
+    assertEquals( 6, count[ 0 ] );
   }
 
   protected void setUp() throws Exception {
