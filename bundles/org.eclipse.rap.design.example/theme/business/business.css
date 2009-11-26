@@ -1275,3 +1275,8 @@ Slider-Thumb:pressed {
     to( #b0b0b0 )
   );
 }
+
+/* Display */
+Display {
+  background-image: url( /theme/business/icons/browser_bg.png );
+}
