@@ -100,7 +100,7 @@ public class WidgetTreeVisitor {
   }
 
   private static void handleWidgetDecorations( final Widget root,
-                                         final WidgetTreeVisitor visitor )
+                                               final WidgetTreeVisitor visitor )
   {
     List decorations = ( List )root.getData( Decorator.KEY_DECORATIONS );
     if( decorations != null ) {
