@@ -248,16 +248,13 @@ public class ExpandItem extends Item {
   }
 
   Rectangle getBounds() {
-    Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-    if( this.expanded ) {
-      bounds = new Rectangle( this.x,
-                              this.y,
-                              this.width,
-                              getHeaderHeight() + height );
+    Rectangle result;
+    if( expanded ) {
+      result = new Rectangle( x, y, width, getHeaderHeight() + height );
     } else {
-      bounds = new Rectangle( this.x, this.y, this.width, getHeaderHeight() );
+      result = new Rectangle( x, y, width, getHeaderHeight() );
     }
-    return bounds;
+    return result;
   }
 
   void setBounds( final int x,

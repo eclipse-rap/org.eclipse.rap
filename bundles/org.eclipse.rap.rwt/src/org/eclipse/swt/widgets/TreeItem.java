@@ -196,9 +196,7 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( final TreeItem parentItem, final int style ) {
-    this( parentItem == null
-                            ? null
-                            : parentItem.parent, parentItem, style, -1 );
+    this( parentItem == null ? null : parentItem.parent, parentItem, style, -1 );
   }
 
   /**

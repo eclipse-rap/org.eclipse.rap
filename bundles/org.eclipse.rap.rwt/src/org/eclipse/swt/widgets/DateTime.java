@@ -554,21 +554,6 @@ public class DateTime extends Composite {
     }
   }
 
-  /**
-   * Sets the font that the receiver will use to paint textual information
-   * to the font specified by the argument, or to the default font for that
-   * kind of control if the argument is null.
-   *
-   * @param font the new font (or null)
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   *                </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *                </ul>
-   */
   public void setFont( final Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
@@ -706,7 +691,7 @@ public class DateTime extends Composite {
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
       weekdayTextFieldBounds.width
-        = getMaxStringLength( weekdayNames ) + H_PADDING + 2;
+        = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
     weekdayTextFieldBounds.height
       = TextSizeDetermination.stringExtent( font, weekdayNames[1] ).y
@@ -728,7 +713,7 @@ public class DateTime extends Composite {
         = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
     } else {
       monthTextFieldBounds.width
-        = getMaxStringLength( monthNames ) + H_PADDING + 2;
+        = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
     monthTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The month date separator bounds
@@ -796,7 +781,7 @@ public class DateTime extends Composite {
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
       weekdayTextFieldBounds.width
-        = getMaxStringLength( weekdayNames ) + H_PADDING + 2;
+        = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
     weekdayTextFieldBounds.height
       = TextSizeDetermination.stringExtent( font, weekdayNames[1] ).y
@@ -834,7 +819,7 @@ public class DateTime extends Composite {
         = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
     } else {
       monthTextFieldBounds.width
-        = getMaxStringLength( monthNames ) + H_PADDING + 2;
+        = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
     monthTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The month year separator bounds
@@ -886,7 +871,7 @@ public class DateTime extends Composite {
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
       weekdayTextFieldBounds.width
-        = getMaxStringLength( weekdayNames ) + H_PADDING + 2;
+        = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
     weekdayTextFieldBounds.height
       = TextSizeDetermination.stringExtent( font, weekdayNames[1] ).y
@@ -921,7 +906,7 @@ public class DateTime extends Composite {
         = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
     } else {
       monthTextFieldBounds.width
-        = getMaxStringLength( monthNames ) + H_PADDING + 2;
+        = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
     monthTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The month day separator bounds
@@ -1001,23 +986,26 @@ public class DateTime extends Composite {
     return adapter.getPadding( this );
   }
 
-  private int getDaysInMonth( final int month, final int year ) {
+  String getNameText() {
+    return "DateTime";
+  }
+
+  private static int getDaysInMonth( final int month, final int year ) {
     GregorianCalendar cal = new GregorianCalendar( year, month, 1 );
     return cal.getActualMaximum( Calendar.DAY_OF_MONTH );
   }
 
-  private int getMaxStringLength( final String[] strings ) {
+  private int getMaxWidth( final String[] strings ) {
     Font font = getFont();
-    int maxLength = 0;
+    int result = 0;
     for( int i = 0; i < strings.length; i++ ) {
-      int currentStringWidth
-        = TextSizeDetermination.stringExtent( font, strings[i] ).x;
-      maxLength = Math.max( maxLength, currentStringWidth );
+      int width = TextSizeDetermination.stringExtent( font, strings[ i ] ).x;
+      result = Math.max( result, width );
     }
-    return maxLength;
+    return result;
   }
 
-  private String getDateSeparator() {
+  private static String getDateSeparator() {
     DateFormat df
       = DateFormat.getDateInstance( DateFormat.SHORT, RWT.getLocale() );
     String datePattern = ( ( SimpleDateFormat )df ).toPattern();
@@ -1030,27 +1018,23 @@ public class DateTime extends Composite {
     return result;
   }
 
-  private String getDatePattern( final String dateSeparator ) {
-    DateFormat df
+  private static String getDatePattern( final String dateSeparator ) {
+    DateFormat format
       = DateFormat.getDateInstance( DateFormat.SHORT, RWT.getLocale() );
-    String datePattern = ( ( SimpleDateFormat )df ).toPattern();
+    String datePattern = ( ( SimpleDateFormat )format ).toPattern();
     String result = "";
-    StringTokenizer st = new StringTokenizer( datePattern,
-                                              dateSeparator );
-    while ( st.hasMoreTokens() ) {
-      String token = st.nextToken();
+    StringTokenizer tokenizer
+      = new StringTokenizer( datePattern, dateSeparator );
+    while ( tokenizer.hasMoreTokens() ) {
+      String token = tokenizer.nextToken();
       result += Character.toString( token.charAt( 0 ) );
     }
     return result.toUpperCase();
   }
 
-  String getNameText() {
-    return "DateTime";
-  }
-
-  private boolean checkDate( final int year,
-                             final int month,
-                             final int day )
+  private static boolean checkDate( final int year,
+                                    final int month,
+                                    final int day )
   {
     int daysInMonth = getDaysInMonth( month, year );
     boolean validYear = ( year >= 1752 && year <= 9999 && day <= daysInMonth );
@@ -1059,9 +1043,9 @@ public class DateTime extends Composite {
     return validYear && validMonth && validDay;
   }
 
-  private boolean checkTime( final int hours,
-                             final int minutes,
-                             final int seconds )
+  private static boolean checkTime( final int hours,
+                                    final int minutes,
+                                    final int seconds )
   {
     boolean validHours = ( hours >= 0 && hours <= 23 );
     boolean validMinutes = ( minutes >= 0 && minutes <= 59 );
@@ -1083,11 +1067,5 @@ public class DateTime extends Composite {
       style &= ~SWT.DROP_DOWN;
     }
     return style;
-  }
-
-  protected void checkSubclass() {
-    if( !isValidSubclass() ) {
-      error( SWT.ERROR_INVALID_SUBCLASS );
-    }
   }
 }
