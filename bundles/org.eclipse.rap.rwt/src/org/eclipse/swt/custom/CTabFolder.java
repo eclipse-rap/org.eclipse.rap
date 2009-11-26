@@ -2185,7 +2185,6 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     if( !inDispose && index != -1  ) {
       CTabItem[] items = getItems();
       if( items.length == 1 ) {
-        items = new CTabItem[ 0 ];
         priority = new int[ 0 ];
         firstIndex = -1;
         selectedIndex = -1;
