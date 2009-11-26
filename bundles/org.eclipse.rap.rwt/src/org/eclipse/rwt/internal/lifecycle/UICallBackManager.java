@@ -256,9 +256,9 @@ public final class UICallBackManager
           }
         }
         sendImmediately();
+        runnables.clear();
+        runnables = null;
       }
-      runnables.clear();
-      runnables = null;
     }
   }
 
