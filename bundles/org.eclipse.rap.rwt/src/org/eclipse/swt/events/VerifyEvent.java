@@ -38,12 +38,6 @@ public final class VerifyEvent extends KeyEvent {
   private static final Class LISTENER = VerifyListener.class;
 
   /**
-   * A flag indicating whether the operation should be allowed.
-   * Setting this field to <code>false</code> will cancel the operation.
-   */
-  public boolean doit;
-
-  /**
    * the new text that will be inserted.
    * Setting this field will change the text that is about to
    * be inserted or deleted.
