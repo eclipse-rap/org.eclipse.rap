@@ -291,6 +291,7 @@ Button.perspectiveActive:pressed, Button.perspectiveActive:hover {
 
 Button.perspective:hover {
   font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+  background-image: none;
 }
 
 Button.perspective:pressed {
