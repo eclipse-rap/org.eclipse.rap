@@ -177,8 +177,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/FocusIndicator.js";
   private static final String MENU_MANAGER
     = "org/eclipse/rwt/MenuManager.js";
-  private static final String DECORATION_JS
-    = "org/eclipse/rwt/widgets/Decoration.js";
+  private static final String CONTROL_DECORATOR_JS
+    = "org/eclipse/rwt/widgets/ControlDecorator.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -278,7 +278,7 @@ final class QooxdooResourcesUtil {
       register( THEME_VALUES, compress );
       register( FOCUS_INDICATOR, compress );
       register( MENU_MANAGER, compress );
-      register( DECORATION_JS, compress );
+      register( CONTROL_DECORATOR_JS, compress );
 
       // register contributions
       registerContributions();

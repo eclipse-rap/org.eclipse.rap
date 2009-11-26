@@ -93,7 +93,7 @@ public class ControlsDemo implements IEntryPoint {
       new ErrorHandlingTab( topFolder ),
       new NLSTab( topFolder ),
       new VariantsTab( topFolder ),
-      new ControlDecorationTab( topFolder )
+      new ControlDecoratorTab( topFolder )
     };
     tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );

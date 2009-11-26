@@ -30,7 +30,6 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   // Property names for preserveValues
   public static final String PROP_TEXT = Props.TEXT;
   public static final String PROP_IMAGE = Props.IMAGE;
-  public static final String PROP_BOUNDS = Props.BOUNDS;
   public static final String PROP_EXPANDED = "expanded";
   public static final String PROP_ENABLED = "enabled";
   public static final String PROP_HEADER_HEIGHT = "headerHeight";
@@ -48,7 +47,8 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_HEADER_HEIGHT,
                       new Integer( expandItem.getHeaderHeight() ) );
     IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( expandItem.getParent() );
-    adapter.preserve( PROP_BOUNDS, expandBarAdapter.getBounds( expandItem ) );
+    WidgetLCAUtil.preserveBounds( expandItem, 
+                                  expandBarAdapter.getBounds( expandItem ) );
   }
 
   public void readData( final Widget widget ) {

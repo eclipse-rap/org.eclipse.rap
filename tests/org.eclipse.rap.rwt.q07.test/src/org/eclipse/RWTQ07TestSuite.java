@@ -25,7 +25,7 @@ import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
 import org.eclipse.swt.internal.events.EventLCAUtil_Test;
 import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
-import org.eclipse.swt.internal.internal.widgets.decorationkit.DecorationLCA_Test;
+import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA_Test;
 import org.eclipse.swt.internal.widgets.WidgetAdapter_Test;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.clabelkit.CLabelLCA_Test;
@@ -138,7 +138,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( CComboLCA_Test.class );
     suite.addTestSuite( CLabelLCA_Test.class );
     suite.addTestSuite( ProgressBarLCA_Test.class );
-    suite.addTestSuite( DecorationLCA_Test.class );
+    suite.addTestSuite( ControlDecoratorLCA_Test.class );
 
     return suite;
   }

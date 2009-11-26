@@ -97,6 +97,21 @@ public final class WidgetLCAUtil {
   // Methods to preserve common property values
 
   /**
+   * Preserves the value of the property <code>bounds</code> of the
+   * specified widget.
+   *
+   * @param widget the widget whose toolTip property to preserve
+   * @param bounds the value to preserve
+   * @see #writeBounds(Widget, Control, Rectangle)
+   */
+  public static void preserveBounds( final Widget widget, 
+                                     final Rectangle bounds ) 
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( Props.BOUNDS, bounds );
+  }
+
+  /**
    * Preserves the value of the property <code>toolTipText</code> of the
    * specified widget.
    *

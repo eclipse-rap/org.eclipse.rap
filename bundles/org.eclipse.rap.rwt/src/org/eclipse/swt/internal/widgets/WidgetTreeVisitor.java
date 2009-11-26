@@ -48,7 +48,7 @@ public class WidgetTreeVisitor {
       if( visitor.visit( composite ) ) {
         handleMenus( composite, visitor );
         handleItems( root, visitor );
-        handleDecorations( root, visitor );
+        handleWidgetDecorations( root, visitor );
         Control[] children = composite.getChildren();
         for( int i = 0; i < children.length; i++ ) {
           accept( children[ i ], visitor );
@@ -57,11 +57,11 @@ public class WidgetTreeVisitor {
     } else if( ItemHolder.isItemHolder( root ) ) {
       if( visitor.visit( root ) ) {
         handleItems( root, visitor );
-        handleDecorations( root, visitor );
+        handleWidgetDecorations( root, visitor );
       }
     } else {
       if( visitor.visit( root ) ) {
-        handleDecorations( root, visitor );
+        handleWidgetDecorations( root, visitor );
       }
     }
   }
@@ -99,13 +99,15 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleDecorations( final Widget root,
+  private static void handleWidgetDecorations( final Widget root,
                                          final WidgetTreeVisitor visitor )
   {
-    List decorations = ( List )root.getData( Decoration.KEY_DECORATIONS );
+    List decorations = ( List )root.getData( Decorator.KEY_DECORATIONS );
     if( decorations != null ) {
-      for( int i = 0; i < decorations.size(); i++ ) {
-        visitor.visit( ( Decoration )decorations.get( i ) );
+      Widget[] widgets = new Widget[ decorations.size() ];
+      decorations.toArray( widgets );
+      for( int i = 0; i < widgets.length; i++ ) {
+        visitor.visit( widgets[ i ] );
       }
     }
   }

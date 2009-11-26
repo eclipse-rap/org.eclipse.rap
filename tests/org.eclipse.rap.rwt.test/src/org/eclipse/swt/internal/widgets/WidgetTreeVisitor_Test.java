@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import junit.framework.TestCase;
@@ -42,17 +41,13 @@ public class WidgetTreeVisitor_Test extends TestCase {
       subTreeItem1,
       treeItem2
     };
-    final int[] count = {
-      0
-    };
+    final int[] count = { 0 };
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
-
       public boolean visit( final Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return true;
       }
-
       public boolean visit( final Composite composite ) {
         assertSame( composite, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -62,7 +57,6 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 9, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
-
       public boolean visit( final Composite composite ) {
         count[ 0 ]++;
         return false;
@@ -71,7 +65,6 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -81,7 +74,6 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 9, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         count[ 0 ]++;
         return widget != treeItem1;
@@ -162,14 +154,11 @@ public class WidgetTreeVisitor_Test extends TestCase {
     Menu shellMenu = new Menu( shell );
     Text text = new Text( shell, SWT.NONE );
     Menu textMenu = new Menu( text );
-    final int[] count = {
-      0
-    };
+    final int[] count = { 0 };
     final Object[] elements = new Object[]{
       shell, menuBar, shellMenu, textMenu, text
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -179,7 +168,6 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -193,13 +181,11 @@ public class WidgetTreeVisitor_Test extends TestCase {
     Display display = new Display();
     final Shell shell = new Shell( display , SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
-    Decoration decoration1 = new Decoration( control1, SWT.RIGHT, null );
+    Decorator decoration1 = new Decorator( control1, SWT.RIGHT );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control2 = new Button( composite, SWT.PUSH );
-    Decoration decoration2 = new Decoration( control2, SWT.RIGHT, null );
-    final int[] count = {
-      0
-    };
+    Decorator decoration2 = new Decorator( control2, SWT.RIGHT );
+    final int[] count = { 0 };
     final Object[] elements = new Object[]{
       shell, control1, decoration1, composite, control2, decoration2
     };

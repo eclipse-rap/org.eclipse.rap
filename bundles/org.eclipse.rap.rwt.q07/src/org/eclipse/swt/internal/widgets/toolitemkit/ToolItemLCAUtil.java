@@ -48,7 +48,7 @@ final class ToolItemLCAUtil {
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( Props.BOUNDS, toolItem.getBounds() );
+    WidgetLCAUtil.preserveBounds( toolItem, toolItem.getBounds() );
     adapter.preserve( Props.MENU, toolItem.getParent().getMenu() );
   }
 

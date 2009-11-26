@@ -22,35 +22,35 @@ import org.eclipse.swt.widgets.*;
 
 import junit.framework.TestCase;
 
-public class Decoration_Test extends TestCase {
+public class Decorator_Test extends TestCase {
 
   public void testCreate() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    List decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    List decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNull( decorations );
 
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertSame( control, decoration.getControl() );
     assertEquals( control.getParent(), decoration.getParent() );
     assertNull( decoration.getImage() );
-    assertNull( decoration.getDescriptionText() );
+    assertNull( decoration.getText() );
     assertTrue( decoration.getShowHover() );
     assertFalse( decoration.getShowOnlyOnFocus() );
     assertEquals( 0, decoration.getMarginWidth() );
     assertFalse( decoration.isVisible() );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
     assertFalse( FocusEvent.hasListener( control ) );
-    decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNotNull( decorations );
     assertEquals( 1, decorations.size() );
 
-    decoration = new Decoration( control, SWT.LEFT, shell );
+    decoration = new ControlDecorator( control, SWT.LEFT, shell );
     assertSame( control, decoration.getControl() );
     assertEquals( shell, decoration.getParent() );
-    decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNotNull( decorations );
     assertEquals( 2, decorations.size() );
   }
@@ -61,28 +61,28 @@ public class Decoration_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
-    List decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    List decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNotNull( decorations );
     assertEquals( 1, decorations.size() );
     control.dispose();
     assertTrue( decoration.isDisposed() );
 
     control = new Button( composite, SWT.PUSH );
-    decoration = new Decoration( control, SWT.RIGHT, null );
-    decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNotNull( decorations );
     assertEquals( 1, decorations.size() );
     composite.dispose();
     assertTrue( decoration.isDisposed() );
 
     control = new Button( composite, SWT.PUSH );
-    decoration = new Decoration( control, SWT.RIGHT, null );
-    decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNotNull( decorations );
     assertEquals( 1, decorations.size() );
     decoration.dispose();
-    decorations = ( List )control.getData( Decoration.KEY_DECORATIONS );
+    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNull( decorations );
   }
 
@@ -91,7 +91,7 @@ public class Decoration_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertNull( decoration.getImage() );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
     Image image = Graphics.getImage( RWTFixture.IMAGE1 );
@@ -109,12 +109,12 @@ public class Decoration_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
-    assertNull( decoration.getDescriptionText() );
-    decoration.setDescriptionText( "Click me" );
-    assertEquals( "Click me", decoration.getDescriptionText() );
-    decoration.setDescriptionText( null );
-    assertNull( decoration.getDescriptionText() );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    assertNull( decoration.getText() );
+    decoration.setText( "Click me" );
+    assertEquals( "Click me", decoration.getText() );
+    decoration.setText( null );
+    assertNull( decoration.getText() );
   }
 
   public void testMarginWidth() {
@@ -122,7 +122,7 @@ public class Decoration_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertEquals( 0, decoration.getMarginWidth() );
     decoration.setMarginWidth( 5 );
     assertEquals( 5, decoration.getMarginWidth() );
@@ -133,7 +133,7 @@ public class Decoration_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertFalse( decoration.getShowOnlyOnFocus() );
     assertFalse( FocusEvent.hasListener( control ) );
     decoration.setShowOnlyOnFocus( true );
@@ -143,13 +143,25 @@ public class Decoration_Test extends TestCase {
     assertFalse( decoration.getShowOnlyOnFocus() );
     assertFalse( FocusEvent.hasListener( control ) );
   }
+  
+  public void testShowOnlyOnFocusCalledTwice() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Control control = new Button( shell, SWT.PUSH );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    decoration.setShowOnlyOnFocus( true );
+    assertTrue( FocusEvent.hasListener( control ) );
+    decoration.setShowOnlyOnFocus( true );
+    decoration.setShowOnlyOnFocus( false );
+    assertFalse( FocusEvent.hasListener( control ) );
+  }
 
   public void testShowHover() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertTrue( decoration.getShowHover() );
     decoration.setShowHover( false );
     assertFalse( decoration.getShowHover() );
@@ -162,7 +174,7 @@ public class Decoration_Test extends TestCase {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     Control button = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertFalse( decoration.isVisible() );
     Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     decoration.setImage( image );
@@ -183,7 +195,7 @@ public class Decoration_Test extends TestCase {
     button.setFocus();
     assertFalse( decoration.isVisible() );
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

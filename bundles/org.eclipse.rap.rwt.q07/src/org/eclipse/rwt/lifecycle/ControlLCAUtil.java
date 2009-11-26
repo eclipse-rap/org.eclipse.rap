@@ -120,7 +120,7 @@ public class ControlLCAUtil {
    */
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    adapter.preserve( Props.BOUNDS, control.getBounds() );
+    WidgetLCAUtil.preserveBounds( control, control.getBounds() );
     // TODO [rh] revise this (see also writeZIndex)
     if( !( control instanceof Shell ) ) {
       adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );

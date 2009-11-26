@@ -161,7 +161,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Scrollable_Test.class );
     suite.addTestSuite( Decorations_Test.class );
     suite.addTestSuite( ScrolledComposite_Test.class );
-    suite.addTestSuite( Decoration_Test.class );
+    suite.addTestSuite( Decorator_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

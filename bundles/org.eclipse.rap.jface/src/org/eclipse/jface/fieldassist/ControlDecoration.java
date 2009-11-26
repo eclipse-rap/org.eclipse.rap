@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Control;
 //import org.eclipse.swt.widgets.Listener;
 //import org.eclipse.swt.widgets.Shell;
 //import org.eclipse.swt.widgets.Widget;
-import org.eclipse.swt.internal.widgets.Decoration;
+import org.eclipse.swt.internal.widgets.ControlDecorator;
 
 /**
  * ControlDecoration renders an image decoration near a control. It allows
@@ -196,7 +196,7 @@ public class ControlDecoration {
 //	private boolean hasFocus = false;
 	
 	// RAP [if] RWT Decoration widget
-	private Decoration decoration;
+	private ControlDecorator decorator;
 	
 //
 //	/**
@@ -467,7 +467,7 @@ public class ControlDecoration {
 //		addControlListeners();
 	    
 	    // RAP [if]
-	    decoration = new Decoration( control, position, composite );
+	    decorator = new ControlDecorator( control, position, composite );
 	}
 //
 //	/**
@@ -537,7 +537,7 @@ public class ControlDecoration {
 	public void addSelectionListener(SelectionListener listener) {
 //		selectionListeners.add(listener);
 	    // RAP [if]
-        decoration.addSelectionListener( listener );
+        decorator.addSelectionListener( listener );
 	}
 
 	/**
@@ -555,7 +555,7 @@ public class ControlDecoration {
 	public void removeSelectionListener(SelectionListener listener) {
 //		selectionListeners.remove(listener);
 	    // RAP [if]
-	    decoration.removeSelectionListener( listener );
+	    decorator.removeSelectionListener( listener );
 	}
 
 	/**
@@ -575,7 +575,7 @@ public class ControlDecoration {
 //		control = null;
 	  
 	    // RAP [if]
-	    decoration.dispose();
+	    decorator.dispose();
 	}
 
 	/**
@@ -587,7 +587,7 @@ public class ControlDecoration {
 	public Control getControl() {
 //		return control;
 	    // RAP [if]
-	    return decoration.getControl();
+	    return decorator.getControl();
 	}
 //
 //	/**
@@ -875,7 +875,7 @@ public class ControlDecoration {
 //			update();
 //		}
 	    // RAP [if]
-	    decoration.show();
+	    decorator.show();
 	}
 
 	/**
@@ -889,7 +889,7 @@ public class ControlDecoration {
 //			update();
 //		}
 	    // RAP [if]
-	    decoration.hide();
+	    decorator.hide();
 	}
 
 	/**
@@ -902,7 +902,7 @@ public class ControlDecoration {
 	public String getDescriptionText() {
 //		return descriptionText;
 	    // RAP [if]
-	    return decoration.getDescriptionText();
+	    return decorator.getText();
 	}
 
 	/**
@@ -917,7 +917,7 @@ public class ControlDecoration {
 //		this.descriptionText = text;
 //		update();
 	    // RAP [if]
-	    decoration.setDescriptionText( text );
+	    decorator.setText( text );
 	}
 
 	/**
@@ -929,7 +929,7 @@ public class ControlDecoration {
 	public Image getImage() {
 //		return image;
 	    // RAP [if]
-	    return decoration.getImage();
+	    return decorator.getImage();
 	}
 
 	/**
@@ -944,7 +944,7 @@ public class ControlDecoration {
 //		this.image = image;
 //		update();
 	    // RAP [if]
-	    decoration.setImage( image );
+	    decorator.setImage( image );
 	}
 
 	/**
@@ -961,7 +961,7 @@ public class ControlDecoration {
 	public boolean getShowOnlyOnFocus() {
 //		return showOnlyOnFocus;
 	    // RAP [if]
-	    return decoration.getShowOnlyOnFocus();
+	    return decorator.getShowOnlyOnFocus();
 	}
 
 	/**
@@ -981,7 +981,7 @@ public class ControlDecoration {
 //		this.showOnlyOnFocus = showOnlyOnFocus;
 //		update();
 	    // RAP [if]
-	    decoration.setShowOnlyOnFocus( showOnlyOnFocus );
+	    decorator.setShowOnlyOnFocus( showOnlyOnFocus );
 	}
 
 	/**
@@ -997,7 +997,7 @@ public class ControlDecoration {
 	public boolean getShowHover() {
 //		return showHover;
 	    // RAP [if]
-	    return decoration.getShowHover();
+	    return decorator.getShowHover();
 	}
 
 	/**
@@ -1015,7 +1015,7 @@ public class ControlDecoration {
 //		this.showHover = showHover;
 //		update();
 	    // RAP [if]
-	    decoration.setShowHover( showHover );
+	    decorator.setShowHover( showHover );
 	}
 
 	/**
@@ -1030,7 +1030,7 @@ public class ControlDecoration {
 	public int getMarginWidth() {
 //		return marginWidth;
 	    // RAP [if]
-	    return decoration.getMarginWidth();
+	    return decorator.getMarginWidth();
 	}
 
 	/**
@@ -1047,7 +1047,7 @@ public class ControlDecoration {
 //		this.marginWidth = marginWidth;
 //		update();
 	    // RAP [if]
-	    decoration.setMarginWidth( marginWidth );
+	    decorator.setMarginWidth( marginWidth );
 	}
 //
 //	/**

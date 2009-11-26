@@ -7,8 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-
-package org.eclipse.swt.internal.internal.widgets.decorationkit;
+package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
 import java.io.IOException;
 
@@ -18,13 +17,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.Decoration;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.ControlDecorator;
+import org.eclipse.swt.widgets.Widget;
 
-public class DecorationLCA extends AbstractWidgetLCA {
+public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
-  static final String PROP_DESCRIPTION_TEXT = "descriptionText";
+  private static final String PROP_IMAGE = "image";
+  private static final String PROP_VISIBLE = "visible";
+  static final String PROP_TEXT = "text";
   static final String PROP_SHOW_HOVER = "showHover";
   static final String PROP_SELECTION_LISTENERS = "selectionListeners";
 
@@ -39,46 +39,46 @@ public class DecorationLCA extends AbstractWidgetLCA {
                           JSListenerType.ACTION );
 
   public void preserveValues( final Widget widget ) {
-    Decoration decoration = ( Decoration )widget;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( decoration );
-    adapter.preserve( Props.BOUNDS, decoration.getBounds() );
-    adapter.preserve( Props.IMAGE, decoration.getImage() );
-    adapter.preserve( PROP_DESCRIPTION_TEXT, decoration.getDescriptionText() );
-    Boolean showHover = Boolean.valueOf( decoration.getShowHover() );
+    ControlDecorator decorator = ( ControlDecorator )widget;
+    WidgetLCAUtil.preserveBounds( decorator, decorator.getBounds() );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( decorator );
+    adapter.preserve( PROP_IMAGE, decorator.getImage() );
+    adapter.preserve( PROP_TEXT, decorator.getText() );
+    Boolean showHover = Boolean.valueOf( decorator.getShowHover() );
     adapter.preserve( PROP_SHOW_HOVER, showHover );
-    adapter.preserve( Props.VISIBLE, Boolean.valueOf( decoration.isVisible() ) );
+    adapter.preserve( PROP_VISIBLE, 
+                      Boolean.valueOf( decorator.isVisible() ) );
     Boolean hasListener
-      = Boolean.valueOf( SelectionEvent.hasListener( decoration ) );
+      = Boolean.valueOf( SelectionEvent.hasListener( decorator ) );
     adapter.preserve( PROP_SELECTION_LISTENERS, hasListener );
   }
-
+  
   public void readData( final Widget widget ) {
-    Decoration decoration = ( Decoration )widget;
-    readSelectionEvent( decoration );
+    readSelectionEvent( ( ControlDecorator )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    Decoration decoration = ( Decoration )widget;
-    JSWriter writer = JSWriter.getWriterFor( decoration );
+    ControlDecorator decorator = ( ControlDecorator )widget;
+    JSWriter writer = JSWriter.getWriterFor( decorator );
     Object[] args = new Object[]{
-      decoration.getParent()
+      decorator.getParent()
     };
-    writer.newWidget( "org.eclipse.rwt.widgets.Decoration", args );
+    writer.newWidget( "org.eclipse.rwt.widgets.ControlDecorator", args );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    Decoration decoration = ( Decoration )widget;
-    WidgetLCAUtil.writeBounds( decoration,
-                               decoration.getParent(),
-                               decoration.getBounds() );
-    WidgetLCAUtil.writeImage( decoration,
-                              Props.IMAGE,
+    ControlDecorator decorator = ( ControlDecorator )widget;
+    WidgetLCAUtil.writeBounds( decorator,
+                               decorator.getParent(),
+                               decorator.getBounds() );
+    WidgetLCAUtil.writeImage( decorator,
+                              PROP_IMAGE,
                               "source",
-                              decoration.getImage() );
-    writeDescriptionText( decoration );
-    writeShowHover( decoration );
-    writeVisible( decoration );
-    writeSelectionListener( decoration );
+                              decorator.getImage() );
+    writeText( decorator );
+    writeShowHover( decorator );
+    writeVisible( decorator );
+    writeSelectionListener( decorator );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -89,66 +89,66 @@ public class DecorationLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
-  private static void writeDescriptionText( final Decoration decoration )
+  private static void writeText( final ControlDecorator decorator )
     throws IOException
   {
-    String newValue = decoration.getDescriptionText();
-    JSWriter writer = JSWriter.getWriterFor( decoration );
-    writer.set( PROP_DESCRIPTION_TEXT, PROP_DESCRIPTION_TEXT, newValue, null );
+    String newValue = decorator.getText();
+    JSWriter writer = JSWriter.getWriterFor( decorator );
+    writer.set( PROP_TEXT, "text", newValue, "" );
   }
 
-  private static void writeShowHover( final Decoration decoration )
+  private static void writeShowHover( final ControlDecorator decorator )
     throws IOException
   {
-    Boolean newValue = Boolean.valueOf( decoration.getShowHover() );
-    JSWriter writer = JSWriter.getWriterFor( decoration );
+    Boolean newValue = Boolean.valueOf( decorator.getShowHover() );
+    JSWriter writer = JSWriter.getWriterFor( decorator );
     writer.set( PROP_SHOW_HOVER, PROP_SHOW_HOVER, newValue, Boolean.TRUE );
   }
 
-  private static void writeVisible( final Decoration decoration )
+  private static void writeVisible( final ControlDecorator decorator )
     throws IOException
   {
-    Boolean newValue = Boolean.valueOf( decoration.isVisible() );
+    Boolean newValue = Boolean.valueOf( decorator.isVisible() );
     Boolean defValue = Boolean.TRUE;
-    JSWriter writer = JSWriter.getWriterFor( decoration );
-    writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
+    JSWriter writer = JSWriter.getWriterFor( decorator );
+    writer.set( PROP_VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
   }
 
-  private static void writeSelectionListener( final Decoration decoration )
+  private static void writeSelectionListener( final ControlDecorator decorator )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( decoration );
+    JSWriter writer = JSWriter.getWriterFor( decorator );
     writer.updateListener( SELECTION_LISTENER,
                            PROP_SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( decoration ) );
+                           SelectionEvent.hasListener( decorator ) );
     writer.updateListener( DEFAULT_SELECTION_LISTENER,
                            PROP_SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( decoration ) );
+                           SelectionEvent.hasListener( decorator ) );
   }
 
   ////////////////////////////////////////////////////
   // Helping methods to read client-side state changes
 
-  private static void readSelectionEvent( final Decoration decoration ) {
+  private static void readSelectionEvent( final ControlDecorator decorator ) {
     String eventName = JSConst.EVENT_WIDGET_SELECTED;
     int eventId = SelectionEvent.WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( decoration, eventName ) ) {
-      processSelectionEvent( decoration, eventId );
+    if( WidgetLCAUtil.wasEventSent( decorator, eventName ) ) {
+      processSelectionEvent( decorator, eventId );
     }
     eventName = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     eventId = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( decoration, eventName ) ) {
-      processSelectionEvent( decoration, eventId );
+    if( WidgetLCAUtil.wasEventSent( decorator, eventName ) ) {
+      processSelectionEvent( decorator, eventId );
     }
   }
 
-  private static void processSelectionEvent( final Decoration decoration,
+  private static void processSelectionEvent( final ControlDecorator decorator,
                                              final int id )
   {
     Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
     int stateMask
       = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-    SelectionEvent event = new SelectionEvent( decoration,
+    SelectionEvent event = new SelectionEvent( decorator,
                                                null,
                                                id,
                                                bounds,

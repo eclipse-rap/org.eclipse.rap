@@ -19,7 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-public class ControlDecorationTab extends ExampleTab {
+public class ControlDecoratorTab extends ExampleTab {
 
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
 
@@ -27,8 +27,8 @@ public class ControlDecorationTab extends ExampleTab {
   private boolean showHover = true;
   private final ControlDecoration[] decorations = new ControlDecoration[ 2 ];
 
-  public ControlDecorationTab( final CTabFolder topFolder ) {
-    super( topFolder, "ControlDecoration" );
+  public ControlDecoratorTab( final CTabFolder topFolder ) {
+    super( topFolder, "ControlDecorator" );
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -56,8 +56,7 @@ public class ControlDecorationTab extends ExampleTab {
     Button button = new Button( group, SWT.PUSH );
     button.setText( "Set" );
     button.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent event ) {
         for( int i = 0; i < decorations.length; i++ ) {
           ControlDecoration decoration = decorations[ i ];
           decoration.setDescriptionText( descriptionText.getText() );

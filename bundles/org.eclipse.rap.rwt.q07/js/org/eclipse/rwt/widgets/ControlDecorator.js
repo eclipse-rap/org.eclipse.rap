@@ -9,7 +9,7 @@
  ******************************************************************************/
 
 
-qx.Class.define( "org.eclipse.rwt.widgets.Decoration", {
+qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
   extend : qx.ui.basic.Image,
 
   construct : function( parent ) {
@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Decoration", {
     this.setParent( parent );
     this.setZIndex( 1000 );
     this._showHover = true;
-    this._descriptionText = null;
+    this._text = null;
     this._toolTip = new qx.ui.popup.ToolTip();
     this._toolTip.setShowInterval( 200 );
   },
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Decoration", {
 
   members : {
 
-    setDescriptionText : function( value ) {
-      this._descriptionText = value;
+    setText : function( value ) {
+      this._text = value;
       this._updateToolTip();
     },
 
@@ -39,13 +39,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Decoration", {
     },
 
     _updateToolTip : function() {
-      if(    this._descriptionText === null
-          || this._descriptionText === ""
-          || !this._showHover )
-      {
+      if( this._text === null || this._text === "" || !this._showHover ) {
         this.setToolTip( null );
       } else {
-        this._toolTip.getAtom().setLabel( this._descriptionText );
+        this._toolTip.getAtom().setLabel( this._text );
         if( this.getToolTip() == null ) {
           this.setToolTip( this._toolTip );
         }

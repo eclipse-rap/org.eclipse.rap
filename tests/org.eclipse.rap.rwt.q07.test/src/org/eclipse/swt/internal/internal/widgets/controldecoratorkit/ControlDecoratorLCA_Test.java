@@ -7,7 +7,7 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.internal.widgets.decorationkit;
+package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -19,20 +19,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Decoration;
+import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA;
+import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 import junit.framework.TestCase;
 
-public class DecorationLCA_Test extends TestCase {
+public class ControlDecoratorLCA_Test extends TestCase {
 
   public void testPreserveValues() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    ControlDecorator decoration
+      = new ControlDecorator( control, SWT.RIGHT, null );
     RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( decoration );
@@ -40,17 +42,17 @@ public class DecorationLCA_Test extends TestCase {
                   adapter.getPreserved( Props.BOUNDS ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( null,
-                  adapter.getPreserved( DecorationLCA.PROP_DESCRIPTION_TEXT ) );
+                  adapter.getPreserved( ControlDecoratorLCA.PROP_TEXT ) );
     assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( DecorationLCA.PROP_SHOW_HOVER ) );
+                  adapter.getPreserved( ControlDecoratorLCA.PROP_SHOW_HOVER ) );
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( Props.VISIBLE ) );
-    String prop = DecorationLCA.PROP_SELECTION_LISTENERS;
+    String prop = ControlDecoratorLCA.PROP_SELECTION_LISTENERS;
     assertEquals( Boolean.FALSE, adapter.getPreserved( prop ) );
     RWTFixture.clearPreserved();
     Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     decoration.setImage( image );
-    decoration.setDescriptionText( "text" );
+    decoration.setText( "text" );
     decoration.setShowHover( false );
     SelectionListener selectionListener = new SelectionAdapter() {
     };
@@ -62,9 +64,9 @@ public class DecorationLCA_Test extends TestCase {
                   adapter.getPreserved( Props.BOUNDS ) );
     assertEquals( image, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( "text",
-                  adapter.getPreserved( DecorationLCA.PROP_DESCRIPTION_TEXT ) );
+                  adapter.getPreserved( ControlDecoratorLCA.PROP_TEXT ) );
     assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( DecorationLCA.PROP_SHOW_HOVER ) );
+                  adapter.getPreserved( ControlDecoratorLCA.PROP_SHOW_HOVER ) );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( Props.VISIBLE ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( prop ) );
@@ -75,7 +77,7 @@ public class DecorationLCA_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    final Decoration decoration = new Decoration( control, SWT.RIGHT, null );
+    final ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     final StringBuffer log = new StringBuffer();
     SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
