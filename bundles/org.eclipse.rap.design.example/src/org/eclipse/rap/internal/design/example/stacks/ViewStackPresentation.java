@@ -413,7 +413,9 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( currentPart != null ) {
           currentPart.getControl().moveAbove( null );
           Control toolBar = currentPart.getToolBar();
-          toolBar.moveAbove( null );
+          if( toolBar != null ) {
+            toolBar.moveAbove( null );
+          }
         }
         
       }
