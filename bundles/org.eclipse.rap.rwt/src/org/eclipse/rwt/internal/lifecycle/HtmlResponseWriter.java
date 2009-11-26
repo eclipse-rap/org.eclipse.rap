@@ -137,7 +137,7 @@ public class HtmlResponseWriter extends Writer {
    * <p>This method is not inteded to be used by clients.</p>
    */
   public void appendLayer( final StringBuffer token ) {
-    layers.add( token.toString() );
+    appendLayer( token.toString() );
   }
   
   /**
@@ -145,7 +145,7 @@ public class HtmlResponseWriter extends Writer {
    * <p>This method is not inteded to be used by clients.</p>
    */  
   public void appendLayer( final String token ) {
-    appendLayer( token );
+    layers.add( token );
   }
  
   /** <p>Concatenates this HtmlResponseWriter's layers to its body token list.
