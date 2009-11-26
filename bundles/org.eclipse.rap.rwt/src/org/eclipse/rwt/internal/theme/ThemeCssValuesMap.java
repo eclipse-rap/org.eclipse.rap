@@ -148,9 +148,9 @@ public final class ThemeCssValuesMap {
       boolean result;
       if( obj == this ) {
         result = true;
-      } else if( obj.getClass() == getClass() ) {
+      } else if( obj != null && obj.getClass() == getClass() ) {
         Key other = ( Key )obj;
-        result = element.equals( other.element )
+        result =    element.equals( other.element )
                  && property.equals( other.property );
       } else {
         result = false;
