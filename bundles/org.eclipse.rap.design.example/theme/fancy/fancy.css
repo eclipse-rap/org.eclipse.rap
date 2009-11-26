@@ -387,6 +387,54 @@ Shell.toolbarLayer {
   border: none;
 }
 
+/* Tree */
+
+Tree {
+  background-color: rgb( 255, 255, 255 );
+  border: none;
+  color: #4a4a4a;
+}
+
+TreeItem {
+  background-color: rgb( 255, 255, 255 );
+  color: #4a4a4a;
+}
+
+TreeItem:selected {
+  background-color: #abe033;
+  color: #ffffff;
+}
+
+TreeItem:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TreeColumn {
+  background-image: url( "/theme/fancy/icons/table-column.png" );
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+  padding: 1px 2px;
+}
+
+TreeColumn:hover {
+  background-image: url( "/theme/fancy/icons/table-column-hover.png" );
+  border-bottom:none;
+}
+
+TreeColumn-SortIndicator {
+  background-image: none;
+}
+
+TreeColumn-SortIndicator:up {
+  background-image: url( /theme/fancy/icons/sort-indicator-up.png );
+}
+
+TreeColumn-SortIndicator:down {
+  background-image: url( /theme/fancy/icons/sort-indicator-down.png );
+}
+
 /* Table */
 
 Table {
@@ -633,11 +681,6 @@ MenuItem:hover {
 
 /* Selection color */
 
-TreeItem:selected {
-  background-color: #D2D2D2;
-  color: #4a4a4a;
-}
-
 .menuBarPopup {
   border: none;
 }
@@ -657,11 +700,6 @@ Label.standaloneView {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
-Tree {
-  border: none;
-  background-color: rgb( 252, 252, 252 );
-}
-
 Composite.compGray {
   background-color: rgb( 255, 255, 255 );
 }
@@ -677,12 +715,6 @@ Composite.compGray {
 .compTransNoBorder {
   border: none;
   background-color: rgb( 252, 252, 252 );
-}
-
-Tree {
-  background-color: rgb( 255, 255, 255 );
-  border: none;
-  color: #4a4a4a;
 }
 
 .formKey {
