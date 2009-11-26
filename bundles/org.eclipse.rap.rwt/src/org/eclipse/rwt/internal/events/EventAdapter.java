@@ -25,7 +25,7 @@ public class EventAdapter implements IEventAdapter {
    * <p>Custom Set implementation (intended to hold Listeners) to reduce 
    * memory consumption.</p>
    */
-  private final class ListenerSet implements Set {
+  private static final class ListenerSet implements Set {
 
     // Start with low capacity, assuming that only few listeners are added
     private final List list = new ArrayList( 3 );

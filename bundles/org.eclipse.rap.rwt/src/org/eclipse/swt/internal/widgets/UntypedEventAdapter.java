@@ -38,7 +38,7 @@ public final class UntypedEventAdapter
              HelpListener
 {
 
-  private class Entry {
+  private static final class Entry {
     final int eventType;
     final Listener listener;
     private Entry( final int eventType, final Listener listener ) {
