@@ -192,5 +192,10 @@ public final class TableLCAUtil {
       }
       return result;
     }
+    
+    public int hashCode() {
+      String msg = "ItemMetrics#hashCode() not implemented";
+      throw new UnsupportedOperationException( msg );
+    }
   }
 }
