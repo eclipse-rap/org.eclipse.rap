@@ -1024,7 +1024,7 @@ public class ControlLCAUtil {
         field.setAccessible( true );
         value = field.getInt( newValue );
       } catch( Exception e ) {
-        throw new RuntimeException();
+        throw new RuntimeException( e );
       }
       switch( value ) {
         case SWT.CURSOR_ARROW:
