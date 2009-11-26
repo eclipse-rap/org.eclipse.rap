@@ -178,7 +178,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     Composite tabBar = getTabBar();
     toolbarBg = new Composite( tabBar.getParent(), SWT.NONE );
     toolbarBg.setLayout( new FormLayout() );
-    Image bg = stackBuilder.getImage( ILayoutSetConstants.STACK_VIEW_TOOLBAR_BG );
+    Image bg 
+      = stackBuilder.getImage( ILayoutSetConstants.STACK_VIEW_TOOLBAR_BG );
     toolbarBg.setBackgroundImage( bg );
     FormData fdToolBar = new FormData();
     toolbarBg.setLayoutData( fdToolBar );
@@ -333,7 +334,8 @@ public class ViewStackPresentation extends ConfigurableStack {
       if( part.getPane() != null ) {
         hasViewMenu = part.getPane().hasViewMenu();      
         IToolBarManager manager = getPartToolBarManager();
-        boolean hasViewActions = manager != null && manager.getItems().length > 0;
+        boolean hasViewActions 
+          = manager != null && manager.getItems().length > 0;
         if( hasViewActions || hasViewMenu ) {
           if( confButton != null ) {
             // enable conf button
@@ -396,6 +398,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( toolBarLayer != null ) {
           toolBarLayer.setVisible( false );
         }
+        currentPart.getControl().moveAbove( null );
       };
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {    
@@ -407,6 +410,12 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( toolBarLayer != null ) {
           toolBarLayer.setVisible( false );
         }
+        if( currentPart != null ) {
+          currentPart.getControl().moveAbove( null );
+          Control toolBar = currentPart.getToolBar();
+          toolBar.moveAbove( null );
+        }
+        
       }
     } );
     
@@ -461,7 +470,8 @@ public class ViewStackPresentation extends ConfigurableStack {
       Composite buttonArea = ( Composite ) object;
       buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "tabInactive" );      
       checkHideSeparator( buttonArea );
-      Color bg = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
+      Color bg 
+        = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
       buttonArea.setBackground( bg );
       Control[] children = buttonArea.getChildren();
       buttonArea.setLayout( new FormLayout() );
@@ -480,7 +490,8 @@ public class ViewStackPresentation extends ConfigurableStack {
           // Corner
           Composite corner = ( Composite ) child;
           corner.setVisible( true );
-          String cornerDesc = ILayoutSetConstants.STACK_TAB_INACTIVE_CORNER_ACTIVE;
+          String cornerDesc 
+            = ILayoutSetConstants.STACK_TAB_INACTIVE_CORNER_ACTIVE;
           Image cornerImage = stackBuilder.getImage( cornerDesc );
           corner.setBackgroundImage( null );
           FormData fdCorner = ( FormData ) corner.getLayoutData();
@@ -643,12 +654,14 @@ public class ViewStackPresentation extends ConfigurableStack {
   private void handleOverflowButton() {
     if( overflowButton == null ) {
       overflowButton = new Button( tabBg.getParent(), SWT.PUSH );
-      String stackOverflowPosition = ILayoutSetConstants.STACK_OVERFLOW_POSITION;
+      String stackOverflowPosition 
+        = ILayoutSetConstants.STACK_OVERFLOW_POSITION;
       FormData fdOverflowButton 
         = stackBuilder.getPosition( stackOverflowPosition );
       overflowButton.setLayoutData( fdOverflowButton );  
-      Image icon 
-        = stackBuilder.getImage( ILayoutSetConstants.STACK_TAB_OVERFLOW_ACTIVE );
+      String stackTabOverflowActive 
+        = ILayoutSetConstants.STACK_TAB_OVERFLOW_ACTIVE;
+      Image icon = stackBuilder.getImage( stackTabOverflowActive );
       fdOverflowButton.height = icon.getBounds().height;
       fdOverflowButton.width = icon.getBounds().width;      
       String variant = "tabOverflowInactive";
@@ -921,7 +934,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     currentPart = toSelect;
     currentPart.getControl().moveAbove( null );
     makePartButtonActive( currentPart );
-    setBounds( presentationControl.getBounds() );    
+    setBounds( presentationControl.getBounds() );       
   }
 
   public void setActive( final int newState ) {
