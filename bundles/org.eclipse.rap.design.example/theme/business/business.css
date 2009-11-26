@@ -402,6 +402,56 @@ Shell.toolbarLayer {
   border: none;
 }
 
+/* Tree */
+
+/* Tree */
+
+Tree {
+  background-color: rgb( 255, 255, 255 );
+  border: none;
+  color: #4a4a4a;
+}
+
+TreeItem {
+  background-color: transparent;
+  color: #666666;
+}
+
+TreeItem:selected {
+  background-color: #00589f;
+  color: #ffffff;
+}
+
+TreeItem:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TreeColumn {
+  background-image: url( "/theme/business/icons/table-column.png" );
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+  padding: 1px 2px;
+}
+
+TreeColumn:hover {
+  background-image: url( "/theme/business/icons/table-column-hover.png" );
+  border-bottom:none;
+}
+
+TreeColumn-SortIndicator {
+  background-image: none;
+}
+
+TreeColumn-SortIndicator:up {
+  background-image: url( /theme/business/icons/sort-indicator-up.png );
+}
+
+TreeColumn-SortIndicator:down {
+  background-image: url( /theme/business/icons/sort-indicator-down.png );
+}
+
 /* Table for Coolbar overflow */
 
 TableColumn.overflow {
@@ -530,14 +580,6 @@ TableColumn-SortIndicator:up {
 
 TableColumn-SortIndicator:down {
   background-image: url( /theme/business/icons/sort-indicator-down.png );
-}
-
-/* Tree */
-
-Tree {
-  color: #4a4a4a;
-  border: none;
-  background-color: rgb( 252, 252, 252 );
 }
 
 /* List */
