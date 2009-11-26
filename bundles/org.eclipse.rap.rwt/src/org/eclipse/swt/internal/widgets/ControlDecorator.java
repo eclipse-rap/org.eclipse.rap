@@ -25,6 +25,7 @@ public final class ControlDecorator extends Decorator {
   private boolean visible;
   private boolean showOnlyOnFocus;
   private boolean showHover;
+  private boolean hasFocus;
   private int marginWidth;
   private FocusListener focusListener;
 
@@ -123,8 +124,8 @@ public final class ControlDecorator extends Decorator {
     if( control != null && !control.isVisible() ) {
       result = false;
     }
-    if( showOnlyOnFocus && getDisplay().getFocusControl() != control ) {
-      result = false;
+    if( showOnlyOnFocus ) {
+      result = result && hasFocus;
     }
     return result;
   }
@@ -203,7 +204,13 @@ public final class ControlDecorator extends Decorator {
 
   private void addFocusListener() {
     if( focusListener == null ) {
-      focusListener = new FocusAdapter() {
+      focusListener = new FocusListener() {
+        public void focusGained( final FocusEvent event ) {
+          hasFocus = true;
+        }
+        public void focusLost( final FocusEvent event ) {
+          hasFocus = false;
+        }
       };
     }
     Control control = ( Control )getDecoratedWidget();
