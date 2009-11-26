@@ -278,6 +278,9 @@ This is not supported by every browser.
                <documentation>
                   The id of the PresentationFactory to load.
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.presentationFactories/factory/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
          <attribute name="defaultLayoutId" type="string">
@@ -285,6 +288,9 @@ This is not supported by every browser.
                <documentation>
                   The id of the default Layout to load.
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.layouts/layout/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
