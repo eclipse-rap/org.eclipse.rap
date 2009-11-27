@@ -19291,7 +19291,8 @@ addToHistory:function(state,
 newTitle){if(newTitle!=null){document.title=newTitle;
 this._titles[state]=newTitle;
 }
-if(state!=this._state){window.location.hash="#"+encodeURIComponent(state);
+if(state!=this._state){this._state=state;
+window.location.hash="#"+encodeURIComponent(state);
 this.__storeState(state);
 }},
 getState:function(){return this._state;
@@ -19314,7 +19315,7 @@ if(this._titles[state]!=null){document.title=this._titles[state];
 __startTimer:function(){this._timer=new qx.client.Timer(this.getTimeoutInterval());
 this._timer.addEventListener("interval",
 function(e){var newHash=this.__getState();
-if(newHash!=this._state){this.__onHistoryLoad(newHash);
+if(newHash!=this._state&&this._titles[newHash]!=null){this.__onHistoryLoad(newHash);
 }},
 this);
 this._timer.start();
