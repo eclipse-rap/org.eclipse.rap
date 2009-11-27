@@ -19289,8 +19289,7 @@ members:{init:function(){qx.log.Logger.deprecatedMethodWarning(arguments.callee,
 },
 addToHistory:function(state,
 newTitle){if(newTitle!=null){document.title=newTitle;
-this._titles[state]=newTitle;
-}
+}this._titles[state]=document.title;
 if(state!=this._state){this._state=state;
 window.location.hash="#"+encodeURIComponent(state);
 this.__storeState(state);
