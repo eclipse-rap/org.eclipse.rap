@@ -31,19 +31,19 @@ public class BrowserHistory_Test extends TestCase {
     IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.createEntry( null, "name" );
-      fail( "BrowserHistory#createEntry must not allow id == null" );
+      fail( "BrowserHistory#mark must not allow id == null" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
       history.createEntry( "", "name" );
-      fail( "BrowserHistory#createEntry must not id to be an empty string" );
+      fail( "BrowserHistory#mark must not id to be an empty string" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
-      history.createEntry( "entry", null );
-      fail( "BrowserHistory#createEntry must not allow null for title" );
+      history.createEntry( null, null );
+      fail( "BrowserHistory#mark must not allow null for name or title" );
     } catch( IllegalArgumentException e ) {
       // expected
     }

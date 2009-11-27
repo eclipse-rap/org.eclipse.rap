@@ -33,8 +33,8 @@ public interface IBrowserHistory {
    * @param id Identifies the entry and should be unique among all entries.
    *          It is usually visible for the user within the address bar of 
    *          the browser. Must neither be <code>null</code> not empty.
-   * @param text A text for the user to identify the entry in the browser's UI.
-   *          Must not be <code>null</code>.
+   * @param text A text for the user to identify the entry in the browser's UI 
+   *          or <code>null</code> if  
    */
   void createEntry( String id, String text );
 

@@ -53,17 +53,17 @@ public final class BrowserHistory
   // IBrowserHistory
 
   public void createEntry( final String id, final String text ) {
-    if( id == null ) {
+    if( null == id ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( id.length() == 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( text == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
     String quotedId = "\"" + CommonPatterns.escapeDoubleQuoted( id ) + "\"";
-    String quotedText = "\"" + CommonPatterns.escapeDoubleQuoted( text ) + "\"";
+    String quotedText = text;
+    if( quotedText != null ) {
+      quotedText = "\"" + CommonPatterns.escapeDoubleQuoted( text ) + "\"";
+    }
     String[] args = new String[]{ quotedId, quotedText };
     JSExecutor.executeJS( MessageFormat.format( ADD_TO_HISTORY, args ) );
   }
