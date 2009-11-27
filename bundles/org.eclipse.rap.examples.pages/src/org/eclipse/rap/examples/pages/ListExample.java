@@ -79,7 +79,7 @@ public class ListExample implements IExamplePage {
         event.data = list.getSelection();
       }
       public void dragFinished( final DragSourceEvent event ) {
-        if( event.doit ) {
+        if( event.detail == DND.DROP_MOVE ) {
           String[] items = list.getSelection();
           for( int i = 0; i < items.length; i++ ) {
             list.remove( items[ i ] );
