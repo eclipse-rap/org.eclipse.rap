@@ -8215,7 +8215,9 @@ if(!(this._lastUpDownType[keyCode]=="keydown"&&type=="keydown")){this._idealKeyH
 charCode,
 type,
 domEvent);
-}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||keyCode==8||keyCode==9){this._idealKeyHandler(keyCode,
+}if(type=="keydown"){if(this._isNonPrintableKeyCode(keyCode)||
+keyCode==
+8||keyCode==9){this._idealKeyHandler(keyCode,
 charCode,
 "keypress",
 domEvent);
@@ -11042,14 +11044,18 @@ defer:function(statics){statics.__init();
 /* ID: qx.bom.element.Overflow */
 qx.Class.define("qx.bom.element.Overflow",
 {statics:{_compile:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(prop,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(prop,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }return "overflow:"+value+";";
 }:
 function(prop,
 value){return prop+":"+value+";";
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(prop,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(prop,
 value){return "overflow:"+value+";";
 }:
 function(prop,
@@ -11065,7 +11071,9 @@ compileY:function(value){return this._compile("overflow-y",
 value);
 },
 getX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11079,7 +11087,9 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11098,14 +11108,18 @@ mode,
 false);
 }}),
 setX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 value){if(value=="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowX=value;
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11115,11 +11129,15 @@ value){element.style.overflowX=value;
 value){element.style.overflowX=value;
 }}),
 resetX:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowX="";
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11128,7 +11146,9 @@ value){element.style.overflowX="";
 "default":function(element){element.style.overflowX="";
 }}),
 getY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 mode){var overflow=qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11142,7 +11162,9 @@ mode){return qx.bom.element.Style.get(element,
 mode,
 false);
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 mode){return qx.bom.element.Style.get(element,
 "overflow",
 mode,
@@ -11161,14 +11183,18 @@ mode,
 false);
 }}),
 setY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element,
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element,
 value){if(value==="hidden"){value="-moz-scrollbars-none";
 }element.style.overflow=value;
 }:
 function(element,
 value){element.style.overflowY=value;
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow=value;
 }:
 function(element,
@@ -11178,11 +11204,15 @@ value){element.style.overflowY=value;
 value){element.style.overflowY=value;
 }}),
 resetY:qx.core.Variant.select("qx.client",
-{"gecko":qx.bom.client.Engine.VERSION<1.8?function(element){element.style.overflow="";
+{"gecko":qx.bom.client.Engine.VERSION<
+1.8?
+function(element){element.style.overflow="";
 }:
 function(element){element.style.overflowY="";
 },
-"opera":qx.bom.client.Engine.VERSION<9.5?function(element,
+"opera":qx.bom.client.Engine.VERSION<
+9.5?
+function(element,
 value){element.style.overflow="";
 }:
 function(element,
@@ -11554,7 +11584,9 @@ throw msg;
 },
 matchesKeyEvent:function(e){var key=this.__key||this.getKeyIdentifier();
 if(!key&&!this.getKeyCode()){return ;
-}if((this.__modifier.Shift&&!e.isShiftPressed())||(this.__modifier.Control&&!e.isCtrlPressed())||(this.__modifier.Alt&&!e.isAltPressed())){return false;
+}if((this.__modifier.Shift&&!e.isShiftPressed())||
+(this.__modifier.Control&&!e.isCtrlPressed())||
+(this.__modifier.Alt&&!e.isAltPressed())){return false;
 }
 if(key){if(key==e.getKeyIdentifier()){return true;
 }}else{if(this.getKeyCode()==e.getKeyCode()){return true;
@@ -17473,7 +17505,8 @@ case "mouseup":return this._handleMouseUp(e);
 case "mousemove":return this._handleMouseMove(e);
 }},
 _handleMouseDown:function(e){if(e.getDefaultPrevented()||!e.isLeftButtonPressed()){return;
-}this.__dragCache={startScreenX:e.getScreenX(),
+}
+if(this.__dragCache==null){this.__dragCache={startScreenX:e.getScreenX(),
 startScreenY:e.getScreenY(),
 pageX:e.getPageX(),
 pageY:e.getPageY(),
@@ -17481,7 +17514,7 @@ sourceWidget:e.getTarget(),
 sourceTopLevel:e.getTarget().getTopLevelWidget(),
 dragHandlerActive:false,
 hasFiredDragStart:false};
-},
+}},
 _handleMouseMove:function(e){if(!this.__dragCache){return;
 }if(this.__dragCache.dragHandlerActive){this.__dragCache.pageX=e.getPageX();
 this.__dragCache.pageY=e.getPageY();
@@ -17551,9 +17584,6 @@ e,
 this.getSourceWidget(),
 currentDestinationWidget),
 true);
-this._fireUserEvents(this.__dragCache&&this.__dragCache.currentDropWidget,
-null,
-e);
 this._endDragCore();
 },
 _endDragCore:function(){if(this.__feedbackWidget){var doc=qx.ui.core.ClientDocument.getInstance();
@@ -19289,9 +19319,9 @@ members:{init:function(){qx.log.Logger.deprecatedMethodWarning(arguments.callee,
 },
 addToHistory:function(state,
 newTitle){if(newTitle!=null){document.title=newTitle;
-}this._titles[state]=document.title;
-if(state!=this._state){this._state=state;
-window.location.hash="#"+encodeURIComponent(state);
+this._titles[state]=newTitle;
+}
+if(state!=this._state){window.location.hash="#"+encodeURIComponent(state);
 this.__storeState(state);
 }},
 getState:function(){return this._state;
@@ -19314,7 +19344,7 @@ if(this._titles[state]!=null){document.title=this._titles[state];
 __startTimer:function(){this._timer=new qx.client.Timer(this.getTimeoutInterval());
 this._timer.addEventListener("interval",
 function(e){var newHash=this.__getState();
-if(newHash!=this._state&&this._titles[newHash]!=null){this.__onHistoryLoad(newHash);
+if(newHash!=this._state){this.__onHistoryLoad(newHash);
 }},
 this);
 this._timer.start();
