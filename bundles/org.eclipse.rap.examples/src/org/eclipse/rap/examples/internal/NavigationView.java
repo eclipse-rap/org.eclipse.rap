@@ -118,27 +118,27 @@ public class NavigationView extends ViewPart {
     item.setControl( list );
     // TODO [rst] Remove this block when auto-collapse is activated again
     // ----
-    item.setExpanded( true );
-    list.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
-        ExpandItem[] items = expandBar.getItems();
-        for( int i = 0; i < items.length; i++ ) {
-          ExpandItem item = items[ i ];
-          List list = ( List )item.getControl();
-          if( list != e.widget ) {
-            list.deselectAll();
-          }
-        }
-      }
-    } );
+    item.setExpanded( true );    
     // ----
     return item;
+  }
+  
+  private void deselectAll( final List skipped ) {
+    ExpandItem[] items = expandBar.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      ExpandItem item = items[ i ];
+      List list = ( List )item.getControl();
+      if( list != skipped ) {
+        list.deselectAll();
+      }
+    }
   }
 
   private void initBrowserHistorySupport() {
     IBrowserHistory history = RWT.getBrowserHistory();
     history.addBrowserHistoryListener( new BrowserHistoryListener() {
       public void navigated( final BrowserHistoryEvent event ) {
+        deselectAll( null );
         setSelection( event.entryId, true );
       }
     } );
@@ -182,6 +182,7 @@ public class NavigationView extends ViewPart {
           done = true;
           list.setSelection( index );
           expandItems[ i ].setExpanded( true );
+          list.setFocus();
         }
       }
     }
@@ -202,6 +203,7 @@ public class NavigationView extends ViewPart {
     public void widgetSelected( final SelectionEvent event ) {
       List list = ( List )event.widget;
       int index = list.getSelectionIndex();
+      deselectAll( list );
       setSelection( index == -1 ? null : list.getItem( index ), false );
     }
   }
