@@ -156,6 +156,19 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       }
       return data != null && data == true;
     },
+    
+    /**
+     * Returns the nearest SWT-control in the hierarchy for the given qxWidget 
+     * or null if no parent control could be found. If the given qxWidget
+     * represents a control, it is returned.
+     */
+    findControl : function( qxWidget ) {
+      var parent = qxWidget;
+      while( parent != null && !this.isControl( parent ) ) {
+        parent = parent.getParent ? parent.getParent() : null;
+      }
+      return parent;   
+    },
 
     /**
      * Adds the given widget to the children of the widget denoted by parentId

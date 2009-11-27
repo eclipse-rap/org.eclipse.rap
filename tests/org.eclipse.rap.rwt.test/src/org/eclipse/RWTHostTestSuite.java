@@ -33,8 +33,11 @@ import org.eclipse.rwt.widgets.BrowserHistory_Test;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
+import org.eclipse.swt.dnd.DragSource_Test;
+import org.eclipse.swt.dnd.Transfer_Test;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.events.DragDetectEvent_Test;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -162,6 +165,9 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Decorations_Test.class );
     suite.addTestSuite( ScrolledComposite_Test.class );
     suite.addTestSuite( Decorator_Test.class );
+    suite.addTestSuite( DragDetectEvent_Test.class );
+    suite.addTestSuite( DragSource_Test.class );
+    suite.addTestSuite( Transfer_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

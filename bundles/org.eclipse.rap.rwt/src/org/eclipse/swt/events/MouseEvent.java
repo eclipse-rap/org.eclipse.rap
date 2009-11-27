@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Widget;
  * 
  * @since 1.1
  */
-public final class MouseEvent extends TypedEvent {
+public class MouseEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
   

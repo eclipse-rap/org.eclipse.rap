@@ -104,18 +104,26 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
       this.fakeMouseEventDOM( node, "contextmenu", right );      
     },
 
-    fakeMouseEventDOM : function( node, type, button ) {
-      if( !node ) {
+    fakeMouseEventDOM : function( node, type, button, left, top ) {
+      if( typeof node == "undefined" ) {
         throw( "Error in fakeMouseEventDOM: node not defined! " );
-      }      
+      }
+      if( typeof left == "undefined" ) {
+        left = 0;
+      }
+      if( typeof top == "undefined" ) {
+        top = 0;
+      }
       var domEvent = {
         "type" : type,
         "target" : node,
         "button" : button,
-        "pageX" : 0,
-        "pageY" : 0,
-        "clientX" : 0,
-        "clientY" : 0
+        "pageX" : left,
+        "pageY" : top,
+        "clientX" : left,
+        "clientY" : top,
+        "screenX" : left,
+        "screenY" : top
       } 
       qx.event.handler.EventHandler.getInstance().__onmouseevent( domEvent );
     },
@@ -241,10 +249,32 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
     
     /**
      * Kills the actual timer-functionality, as it could cause problems
-     * with debugging 
+     * with debugging, calls to "once" are only logged
      */   
     prepareTimerUse : function() {
-      qx.client.Timer.prototype._applyEnabled = function(){}      
+      qx.client.Timer.prototype._applyEnabled = function(){};
+      qx.client.Timer._onceCallsLog = [];
+      qx.client.Timer.once = function( func, obj, timeout ) {
+        var source = arguments.callee.caller;
+        this._onceCallsLog.push( [ func, obj, timeout, source ] );
+      } 
+    },
+    
+    getTimerOnceLog : function() {
+      return qx.client.Timer._onceCallsLog;
+    },
+     
+    clearTimerOnceLog : function() {
+      qx.client.Timer._onceCallsLog = [];
+    }, 
+    
+    forceTimerOnce : function() {
+      // TODO [tb] : sort order by time
+      var log = qx.client.Timer._onceCallsLog;
+      for( var i = 0; i < log.length; i++ ) {
+        log[ i ][ 0 ].call( log[ i ][ 1 ] );
+      }
+      qx.client.Timer._onceCallsLog = [];
     },
     
     forceInterval : function( timer ) {

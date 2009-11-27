@@ -33,8 +33,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCA_Test;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFocus_Test;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
+import org.eclipse.swt.internal.widgets.displaykit.*;
 import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarLCA_Test;
 import org.eclipse.swt.internal.widgets.expanditemkit.ExpandItemLCA_Test;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
@@ -139,6 +138,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( CLabelLCA_Test.class );
     suite.addTestSuite( ProgressBarLCA_Test.class );
     suite.addTestSuite( ControlDecoratorLCA_Test.class );
+    suite.addTestSuite( DNDSupport_Test.class );
 
     return suite;
   }

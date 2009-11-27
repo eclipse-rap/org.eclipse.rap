@@ -12,42 +12,45 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
+
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.widgets.*;
 
 /**
  * Utility class that provides a traversal through a widget-tree
  * using the visitor pattern.
- *
+ * 
  * <p>The traversal through the children will be skipped if the visit call
- * on the parent node returns <code>false</code>.</p>
+ * on the parent node returns <code>false</code>.</p> 
  */
 public class WidgetTreeVisitor {
 
   public static abstract class AllWidgetTreeVisitor extends WidgetTreeVisitor {
-
+    
     public final boolean visit( final Widget widget ) {
       return doVisit( widget );
     }
-
+    
     public final boolean visit( final Composite composite ) {
       return doVisit( composite );
     }
 
     public abstract boolean doVisit( Widget widget );
   }
-
+  
   // TODO [rh] all SWT Menu have shell as their parent
   //      we should visit the menus as part of visiting shell, not on each
-  //      control -> could lead to visiting one menu multiple times
-  public static void accept( final Widget root,
-                             final WidgetTreeVisitor visitor )
+  //      control -> could lead to visiting one menu multiple times      
+  public static void accept( final Widget root, 
+                             final WidgetTreeVisitor visitor ) 
   {
     if( root instanceof Composite ) {
       Composite composite = ( Composite )root;
       if( visitor.visit( composite ) ) {
         handleMenus( composite, visitor );
-        handleItems( root, visitor );
+        handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
+        handleItems( root, visitor );
         Control[] children = composite.getChildren();
         for( int i = 0; i < children.length; i++ ) {
           accept( children[ i ], visitor );
@@ -55,11 +58,13 @@ public class WidgetTreeVisitor {
       }
     } else if( ItemHolder.isItemHolder( root ) ) {
       if( visitor.visit( root ) ) {
-        handleItems( root, visitor );
+        handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
+        handleItems( root, visitor );
       }
     } else {
       if( visitor.visit( root ) ) {
+        handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
       }
     }
@@ -75,9 +80,24 @@ public class WidgetTreeVisitor {
 
   ///////////////////////////////////////////////////
   // Helping methods to visit particular hierarchies
+  
+  private static void handleDragDrop( final Widget widget,
+                                      final WidgetTreeVisitor visitor )
+  {
+    if( widget instanceof Control ) {
+      Widget dragSource = ( Widget )widget.getData( DND.DRAG_SOURCE_KEY );
+      if( dragSource != null ) {
+        visitor.visit( dragSource );
+      }
+      Widget dropTarget = ( Widget )widget.getData( DND.DROP_TARGET_KEY );
+      if( dropTarget != null ) {
+        visitor.visit( dropTarget );
+      }
+    }
+  }
 
   private static void handleMenus( final Composite composite,
-                                   final WidgetTreeVisitor visitor )
+                                   final WidgetTreeVisitor visitor ) 
   {
     if( MenuHolder.isMenuHolder( composite ) ) {
       Menu[] menus = MenuHolder.getMenus( composite );
@@ -87,7 +107,7 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleItems( final Widget root,
+  private static void handleItems( final Widget root, 
                                    final WidgetTreeVisitor visitor )
   {
     if( ItemHolder.isItemHolder( root ) ) {

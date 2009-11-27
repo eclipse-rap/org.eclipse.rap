@@ -38,6 +38,11 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     _ctrlKey : false,
     _altKey : false,       
 
+    eventTimestamp : function() {
+      var app = qx.core.Init.getInstance().getApplication();
+      return new Date().getTime() - app.getStartupTime();
+    },
+
     widgetSelected : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var req = org.eclipse.swt.Request.getInstance();
@@ -203,11 +208,9 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // find parent control and ensure that it is the same as the widget-
         // parameter. Otherwise the mouse event is ignored.  
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var parent = evt.getOriginalTarget();
-        while( parent != null && !widgetManager.isControl( parent ) ) {
-          parent = parent.getParent ? parent.getParent() : null;
-        }
-        result = widget === parent;
+        var target = evt.getOriginalTarget();
+        var control = widgetManager.findControl( target );
+        result = widget === control;
       }
       return result;
     },
@@ -239,7 +242,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseDown.button", button );
       req.addParameter( "org.eclipse.swt.events.mouseDown.x", evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseDown.y", evt.getPageY() );
-      req.addParameter( "org.eclipse.swt.events.mouseDown.time", this._eventTimestamp() );
+      req.addParameter( "org.eclipse.swt.events.mouseDown.time", this.eventTimestamp() );
     },
 
     _mouseUpParams : function( widget, evt ) {
@@ -250,7 +253,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseUp.button", button );
       req.addParameter( "org.eclipse.swt.events.mouseUp.x", evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseUp.y", evt.getPageY() );
-      req.addParameter( "org.eclipse.swt.events.mouseUp.time", this._eventTimestamp() );
+      req.addParameter( "org.eclipse.swt.events.mouseUp.time", this.eventTimestamp() );
     },
 
     _mouseDoubleClickParams : function( widget, evt ) {
@@ -264,12 +267,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.y",
                         evt.getPageY() );
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.time", 
-                        this._eventTimestamp() );
-    },
-
-    _eventTimestamp : function() {
-      var app = qx.core.Init.getInstance().getApplication();
-      return new Date().getTime() - app.getStartupTime();
+                        this.eventTimestamp() );
     },
 
     /**
@@ -308,9 +306,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         if( id === null ) {
           // find parent control for the widget that received the event in case 
           // it wasn't the control itself that received the event
-          while( widget != null && !widgetManager.isControl( widget ) ) {
-            widget = widget.getParent ? widget.getParent() : null;
-          }
+          widget = widgetManager.findControl( widget );
           id = widgetManager.findIdByWidget( widget );
         }
         if( id != null ) {

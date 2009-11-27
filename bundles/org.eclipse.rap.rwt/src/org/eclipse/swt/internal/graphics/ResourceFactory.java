@@ -204,10 +204,10 @@ public final class ResourceFactory {
   public static ImageData getImageData( final Image image ) {
     ImageData result = imageDataCache.getImageData( image );
     if( result == null ) {
-      IResourceManager manager = ResourceManager.getInstance();
       if( image != null ) {
         String imagePath = image.resourceName;
         try {
+          IResourceManager manager = ResourceManager.getInstance();
           InputStream inputStream = manager.getRegisteredContent( imagePath );
           if( inputStream != null ) {
             try {

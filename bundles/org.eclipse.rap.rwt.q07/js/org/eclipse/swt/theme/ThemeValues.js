@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
   },
   
   statics : {
-    NONE_IMAGE : "static/image/blank.gif"
+    NONE_IMAGE : null
   },
 
   members : {

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -83,16 +84,16 @@ public class EventAdapter implements IEventAdapter {
     }
 
     public Object[] toArray( final Object[] a ) {
-      throw new UnsupportedOperationException();
+      return list.toArray( a ); 
     }
   }
 
   public Object[] getListener( final Class listenerType ) {
     ParamCheck.notNull( listenerType, "listenerType" );
-    Object[] result = EMPTY_RESULT;
-    if( hasListener( listenerType ) ) {
-      result = getListenerSet( listenerType ).toArray();
-    }
+    Set listenerSet = getListenerSet( listenerType );
+    int size = listenerSet.size();
+    Object[] result = ( Object[] )Array.newInstance( listenerType, size );
+    listenerSet.toArray( result );
     return result;
   }
 

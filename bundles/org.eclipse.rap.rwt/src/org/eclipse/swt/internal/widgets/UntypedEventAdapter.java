@@ -35,7 +35,8 @@ public final class UntypedEventAdapter
              TraverseListener,
              ShowListener,
              ActivateListener,
-             HelpListener
+             HelpListener,
+             DragDetectListener
 {
 
   private static final class Entry {
@@ -224,6 +225,12 @@ public final class UntypedEventAdapter
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
+  
+  public void dragDetected( final DragDetectEvent typedEvent ) {
+    Event event = createEvent( SWT.DragDetect, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+  }
 
   //////////////////////
   // Listener management
@@ -301,6 +308,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.Help:
         HelpEvent.addListener( widget, this );
+      break;
+      case SWT.DragDetect:
+        DragDetectEvent.addListener( widget, ( DragDetectListener )this );
       break;
       default:
         validEventType = false;
@@ -387,6 +397,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.Help:
         HelpEvent.removeListener( widget, this );
+      break;
+      case SWT.DragDetect:
+        DragDetectEvent.removeListener( widget, ( DragDetectListener )this );
       break;
       default:
         validEventType = false;
@@ -571,6 +584,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.Help:
         typedEvent = new HelpEvent( event );
+      break;
+      case SWT.DragDetect:
+        typedEvent = new DragDetectEvent( event );
       break;
     }
     if( typedEvent != null ) {

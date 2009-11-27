@@ -345,9 +345,22 @@ public class SWT {
    * @see org.eclipse.swt.events.HelpListener#helpRequested
    * @see org.eclipse.swt.events.HelpEvent
    *
-   *  @since 1.3
+   * @since 1.3
    */
   public static final int Help = 28;
+
+  /**
+   * The drag detect event type (value is 29).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.dnd.DragSource
+   * 
+   * @since 1.3
+   */
+  public static final int DragDetect = 29;
 
   /**
    * The traverse event type (value is 31).

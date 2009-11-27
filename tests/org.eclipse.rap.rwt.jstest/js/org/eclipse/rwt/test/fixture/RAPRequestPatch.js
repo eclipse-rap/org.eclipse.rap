@@ -43,7 +43,8 @@ qx.Mixin.define( "org.eclipse.rwt.test.fixture.RAPRequestPatch", {
         this._logSend();
         this._runningRequestCount++;
         if( this._runningRequestCount === 1 ) {
-          qx.client.Timer.once( this._showWaitHint, this, 500 );
+          // Removed: is distracting in debugging and useless unless tested 
+          //qx.client.Timer.once( this._showWaitHint, this, 500 );
         }
         this._parameters = {};
         request.send();

@@ -15,9 +15,10 @@ import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ShowEvent;
+import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
@@ -1726,6 +1727,56 @@ public abstract class Control extends Widget {
   public void removeHelpListener( final HelpListener listener ) {
     checkWidget();
     HelpEvent.removeListener( this, listener );
+  }
+
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when a drag gesture occurs, by sending it
+   * one of the messages defined in the <code>DragDetectListener</code>
+   * interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see DragDetectListener
+   * @see #removeDragDetectListener
+   * 
+   * @since 1.3
+   */
+  public void addDragDetectListener( final DragDetectListener listener ) {
+    checkWidget();
+    DragDetectEvent.addListener( this, listener );
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when a drag gesture occurs.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see DragDetectListener
+   * @see #addDragDetectListener
+   * 
+   * @since 1.3
+   */
+  public void removeDragDetectListener( final DragDetectListener listener ) {
+    checkWidget();
+    DragDetectEvent.removeListener( this, listener );
   }
 
   ////////////////

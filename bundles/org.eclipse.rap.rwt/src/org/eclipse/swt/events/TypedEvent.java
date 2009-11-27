@@ -22,6 +22,8 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
@@ -64,6 +66,9 @@ public class TypedEvent extends Event {
     ShellEvent.class,
     MenuEvent.class,
     KeyEvent.class,
+    DragDetectEvent.class,
+    DragSourceEvent.class,
+    DropTargetEvent.class,
     HelpEvent.class
   };
 
@@ -85,6 +90,19 @@ public class TypedEvent extends Event {
   public Object data;
 
   /**
+   * Constructs a new instance of this class based on the
+   * information in the argument.
+   *
+   * @param e the low level event to initialize the receiver with
+   */
+  public TypedEvent( org.eclipse.swt.widgets.Event e ) {
+    super( e.widget, e.type );
+    this.display = e.display;
+    this.widget = e.widget;
+    this.data = e.data;
+  }
+
+  /**
    * Constructs a new instance of this class.
    *
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
@@ -100,9 +118,9 @@ public class TypedEvent extends Event {
   }
 
   public Object getSource() {
-    // TODO [rh] introduced to get rid of discouraged access warning when
-    //      application code accesses getSource() which is defined in
-    //      org.eclipse.rwt.internal.events.Event
+    // [rh] introduced to get rid of discouraged access warning when
+    // application code accesses getSource() which is defined in
+    // org.eclipse.rwt.internal.events.Event
     return super.getSource();
   }
 

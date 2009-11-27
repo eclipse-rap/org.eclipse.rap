@@ -12,8 +12,10 @@
 package org.eclipse.swt.internal.widgets;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
 
@@ -207,6 +209,26 @@ public class WidgetTreeVisitor_Test extends TestCase {
       }
     } );
     assertEquals( 6, count[ 0 ] );
+  }
+  
+  public void testTreeVisitorWithDragSource() {
+    Display display = new Display();
+    final Shell shell = new Shell( display , SWT.NONE );
+    DragSource compositeDragSource = new DragSource( shell, SWT.NONE );
+    Text text = new Text( shell, SWT.NONE );
+    DragSource controlDragSource = new DragSource( text, SWT.NONE );
+    final int[] count = { 0 };
+    final Object[] elements = new Object[]{
+      shell, compositeDragSource, text, controlDragSource
+    };
+    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        assertSame( elements[ count[ 0 ] ], widget );
+        count[ 0 ]++;
+        return true;
+      }
+    } );
+    assertEquals( 4, count[ 0 ] );
   }
 
   protected void setUp() throws Exception {

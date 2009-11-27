@@ -31,6 +31,8 @@ import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
@@ -327,6 +329,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         shellAdapter.setBounds( display.getBounds() );
       }
     }
+    DNDSupport.processEvents();
   }
 
   public void processAction( final Device display ) {
@@ -361,6 +364,15 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();
+    // TODO [rh] get rid of dependency on DragSource/DropTarget 
+    // Must dispose of DragSources and DropTargets first
+    for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
+      Widget toDispose = disposedWidgets[ i ];
+      if( toDispose instanceof DragSource || toDispose instanceof DropTarget ) {
+        AbstractWidgetLCA lca = WidgetUtil. getLCA( toDispose );
+        lca.renderDispose( toDispose );
+      }
+    }
     // TODO [rst] since widget pooling is removed, the loop should be reverted
     //            again
     // [fappel]: client side disposal order is crucial for the widget
@@ -369,8 +381,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     //           SWT).
     for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
       Widget toDispose = disposedWidgets[ i ];
-      AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
-      lca.renderDispose( toDispose );
+      if(    !( toDispose instanceof DragSource ) 
+          && !( toDispose instanceof DropTarget ) )
+      {
+        AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
+        lca.renderDispose( toDispose );
+      }
     }
   }
 

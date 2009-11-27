@@ -177,6 +177,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/FocusIndicator.js";
   private static final String MENU_MANAGER
     = "org/eclipse/rwt/MenuManager.js";
+  private static final String DND_SUPPORT
+    = "org/eclipse/rwt/DNDSupport.js";
   private static final String CONTROL_DECORATOR_JS
     = "org/eclipse/rwt/widgets/ControlDecorator.js";
 
@@ -204,13 +206,14 @@ final class QooxdooResourcesUtil {
         register( QX_JS, false );
       }
       boolean compress = !isDebug;
+      
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here to keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants
       register( QX_CONSTANT_CORE_JS, compress );
       register( QX_CONSTANT_LAYOUT_JS, compress );
       register( QX_CONSTANT_STYLE_JS, compress );
-
+      
       register( KEY_EVENT_HANDLER_PATCH, compress );
       register( DOM_EVENT_PATCH, compress );
       register( GFX_MIXIN_JS, compress );
@@ -277,7 +280,8 @@ final class QooxdooResourcesUtil {
       register( THEME_STORE, compress );
       register( THEME_VALUES, compress );
       register( FOCUS_INDICATOR, compress );
-      register( MENU_MANAGER, compress );
+      register( MENU_MANAGER, compress );      
+      register( DND_SUPPORT, compress );
       register( CONTROL_DECORATOR_JS, compress );
 
       // register contributions

@@ -38,6 +38,13 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
       org.eclipse.rwt.test.fixture.AppSimulator._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
       //req.send();     
+
+      var startupTime = new Date().getTime();
+      var realApp = qx.core.Init.getInstance().getApplication();
+      realApp.getStartupTime = function() {
+        return startupTime;
+      }
+      
     },
         
     _onResize : function( evt ) {
