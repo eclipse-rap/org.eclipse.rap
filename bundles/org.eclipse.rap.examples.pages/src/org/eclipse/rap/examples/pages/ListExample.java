@@ -132,6 +132,9 @@ public class ListExample implements IExamplePage {
     srcList.setItems( items );
   }
   
+  ////////////////
+  // Inner classes
+  
   private static final class StringArrayTransfer extends ByteArrayTransfer {
 
     private static final String TYPE_NAME = "string-array";
