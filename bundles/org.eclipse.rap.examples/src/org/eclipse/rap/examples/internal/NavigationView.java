@@ -139,7 +139,7 @@ public class NavigationView extends ViewPart {
     history.addBrowserHistoryListener( new BrowserHistoryListener() {
       public void navigated( final BrowserHistoryEvent event ) {
         deselectAll( null );
-        setSelection( event.entryId, true );
+        setSelection( event.entryId, true, false );
       }
     } );
   }
@@ -150,12 +150,13 @@ public class NavigationView extends ViewPart {
       firstItem.setExpanded( true );
       List list = ( List )firstItem.getControl();
       list.setSelection( 0 );
-      setSelection( list.getItem( 0 ), false );
+      setSelection( list.getItem( 0 ), false, true );
     }
   }
 
   private void setSelection( final String newSelection, 
-                             final boolean updateControl )
+                             final boolean updateControl,
+                             final boolean updateHistory )
   {
     boolean changed;
     if( selectedElement == null ) {
@@ -166,8 +167,10 @@ public class NavigationView extends ViewPart {
     if( changed ) {
       selectedElement = newSelection;
       // keep in sync with branding
-      String text = "RAP Examples - " + selectedElement;
-      RWT.getBrowserHistory().createEntry( selectedElement, text );
+      if( updateHistory ) {
+        String text = "RAP Examples - " + selectedElement;
+        RWT.getBrowserHistory().createEntry( selectedElement, text );
+      }
       selectionProvider.fireSelectionChanged();
     }
     if( updateControl ) {
@@ -204,7 +207,7 @@ public class NavigationView extends ViewPart {
       List list = ( List )event.widget;
       int index = list.getSelectionIndex();
       deselectAll( list );
-      setSelection( index == -1 ? null : list.getItem( index ), false );
+      setSelection( index == -1 ? null : list.getItem( index ), false, true );
     }
   }
 
