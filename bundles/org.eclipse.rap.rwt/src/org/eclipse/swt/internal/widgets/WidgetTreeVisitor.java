@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
@@ -48,7 +47,7 @@ public class WidgetTreeVisitor {
       if( visitor.visit( composite ) ) {
         handleMenus( composite, visitor );
         handleItems( root, visitor );
-        handleWidgetDecorations( root, visitor );
+        handleDecorator( root, visitor );
         Control[] children = composite.getChildren();
         for( int i = 0; i < children.length; i++ ) {
           accept( children[ i ], visitor );
@@ -57,11 +56,11 @@ public class WidgetTreeVisitor {
     } else if( ItemHolder.isItemHolder( root ) ) {
       if( visitor.visit( root ) ) {
         handleItems( root, visitor );
-        handleWidgetDecorations( root, visitor );
+        handleDecorator( root, visitor );
       }
     } else {
       if( visitor.visit( root ) ) {
-        handleWidgetDecorations( root, visitor );
+        handleDecorator( root, visitor );
       }
     }
   }
@@ -99,8 +98,8 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleWidgetDecorations( final Widget root,
-                                               final WidgetTreeVisitor visitor )
+  private static void handleDecorator( final Widget root,
+                                       final WidgetTreeVisitor visitor )
   {
     List decorations = ( List )root.getData( Decorator.KEY_DECORATIONS );
     if( decorations != null ) {
