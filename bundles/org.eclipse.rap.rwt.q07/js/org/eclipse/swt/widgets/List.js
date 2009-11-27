@@ -27,6 +27,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
     selMgr.setMultiSelection( multiSelection );
+    selMgr.setDragSelection( false );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
     this.addEventListener( "click", this._onClick, this );
