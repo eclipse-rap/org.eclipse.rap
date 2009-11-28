@@ -400,8 +400,8 @@ if [ -n "$REPOSITORY_PATH" ]; then
   rsync -av --delete --progress \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ \
     $localCopy/ || return 1
-  echo --- downloaded old repository ---
-  echo Any modifications before merging?
+  echo "downloaded old repository to $localCopy"
+  echo "any modifications before merging?"
   echo -n "press Return to proceed "
   read c
   echo "merge new content into local copy of repository"
@@ -420,7 +420,7 @@ if [ -n "$REPOSITORY_PATH" ]; then
   echo check local repository before uploading: $localCopy
   echo -n "press Return to upload "
   read c
-  rsync -av --progress \
+  rsync -av --delete --progress \
     $localCopy/ \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ || exit 1
 fi
