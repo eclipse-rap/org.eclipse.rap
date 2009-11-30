@@ -382,33 +382,46 @@ public class PropertyResolver_Test extends TestCase {
   }
 
   public void testCursor() throws Exception {
+    // Test predefined cursor
     String input = "default";
-    QxCursor res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    QxCursor res1 = PropertyResolver.readCursor( parseProperty( input ),
+                                                 RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     input = "pointer";
-    res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    res1 = PropertyResolver.readCursor( parseProperty( input ),
+                                        RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     input = "wait";
-    res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    res1 = PropertyResolver.readCursor( parseProperty( input ),
+                                        RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     input = "crosshair";
-    res1 = PropertyResolver.readCursor( parseProperty( input ) );
+    res1 = PropertyResolver.readCursor( parseProperty( input ),
+                                        RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
-    input = "alabala";
-    try {
-      PropertyResolver.readCursor( parseProperty( input ) );
-      fail( "Must throw IAE" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    // Test custom cursor
+    QxCursor expected = QxCursor.valueOf( RWTFixture.IMAGE_50x100,
+                                          RESOURCE_LOADER );
+    // cursor: url( "path" );
+    input = "url( \"" + RWTFixture.IMAGE_50x100 + "\" )";
+    QxCursor res2 = PropertyResolver.readCursor( parseProperty( input ),
+                                                 RESOURCE_LOADER );
+    assertNotNull( res2 );
+    assertEquals( expected, res2 );
+    // cursor: url( path );
+    input = "url( " + RWTFixture.IMAGE_50x100 + " )";
+    QxCursor res3 = PropertyResolver.readCursor( parseProperty( input ),
+                                                 RESOURCE_LOADER );
+    assertNotNull( res3 );
+    assertEquals( expected, res3 );
   }
 
   public void testGetType() throws Exception {

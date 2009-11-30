@@ -115,7 +115,11 @@ public final class ThemeStoreWriter {
         borderMap.append( key, borderObject );
       } else if( value instanceof QxCursor ) {
         QxCursor cursor = ( QxCursor )value;
-        cursorMap.append( key, cursor.value );
+        if( cursor.isCustomCursor() ) {
+          cursorMap.append( key, key );
+        } else {
+          cursorMap.append( key, cursor.value );
+        }
       }
     }
     JsonObject valuesMap = new JsonObject();

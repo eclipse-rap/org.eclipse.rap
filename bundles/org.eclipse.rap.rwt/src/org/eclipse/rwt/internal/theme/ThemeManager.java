@@ -120,6 +120,7 @@ public final class ThemeManager {
   /** Destination path for theme resources */
   private static final String THEME_RESOURCE_DEST = "themes";
   static final String IMAGE_DEST_PATH = THEME_RESOURCE_DEST + "/images";
+  static final String CURSOR_DEST_PATH = THEME_RESOURCE_DEST + "/cursors";
 
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
 
@@ -620,6 +621,7 @@ public final class ThemeManager {
         String jsId = theme.getJsId();
         registerNonThemeableWidgetImages( themeId );
         registerThemeableWidgetImages( themeId );
+        registerThemeableWidgetCursors( themeId );
         StringBuffer sb = new StringBuffer();
         sb.append( createQxThemes( theme ) );
         // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
@@ -703,6 +705,51 @@ public final class ThemeManager {
             resMgr.register( registerPath, inputStream );
             String location = resMgr.getLocation( registerPath );
             log( " theme image registered @ " + location );
+          } finally {
+            try {
+              inputStream.close();
+            } catch( final IOException e ) {
+              throw new RuntimeException( e );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void registerThemeableWidgetCursors( final String themeId ) {
+    Theme theme = ( Theme )themes.get( themeId );
+    // themeable cursors
+    log( " == register themeable cursors for theme " + themeId );
+    QxType[] values = theme.getValuesMap().getAllValues();
+    for( int i = 0; i < values.length; i++ ) {
+      QxType value = values[ i ];
+      if( value instanceof QxCursor ) {
+        QxCursor cursor = ( QxCursor )value;
+        if( cursor.isCustomCursor() ) {
+          String key = Theme.createCssKey( value );
+          String path = cursor.value;
+          log( " register theme cursor " + key + ", path=" + path );
+          InputStream inputStream;
+          try {
+            inputStream = cursor.loader.getResourceAsStream( path );
+          } catch( IOException e ) {
+            String message = "Failed to load resource " + path;
+            throw new ThemeManagerException( message, e );
+          }
+          if( inputStream == null ) {
+            String pattern = "Resource ''{0}'' not found for theme ''{1}''";
+            Object[] arguments = new Object[]{ path, theme.getName() };
+            String mesg = MessageFormat.format( pattern, arguments  );
+            throw new IllegalArgumentException( mesg );
+          }
+          try {
+            String widgetDestPath = CURSOR_DEST_PATH;
+            String registerPath = widgetDestPath + "/" + key;
+            IResourceManager resMgr = ResourceManager.getInstance();
+            resMgr.register( registerPath, inputStream );
+            String location = resMgr.getLocation( registerPath );
+            log( " theme cursor registered @ " + location );
           } finally {
             try {
               inputStream.close();

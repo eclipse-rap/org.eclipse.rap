@@ -151,7 +151,7 @@ public final class PropertyResolver {
     } else if( TYPE_TEXT_DECORATION.equals( type ) ) {
       result = readTextDecoration( unit );
     } else if( TYPE_CURSOR.equals( type ) ) {
-      result = readCursor( unit );
+      result = readCursor( unit, loader );
     } else {
       throw new RuntimeException( "Illegal type " + type );
     }
@@ -629,17 +629,16 @@ public final class PropertyResolver {
     return result;
   }
 
-  static QxCursor readCursor( final LexicalUnit unit ) {
+  static QxCursor readCursor( final LexicalUnit unit,
+                              final ResourceLoader loader ) {
     QxCursor result = null;
     short type = unit.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_IDENT ) {
+    if( type == LexicalUnit.SAC_URI ) {
       String value = unit.getStringValue();
-      if( QxCursor.isValidCursor( value ) ) {
-        result = new QxCursor( value );
-      } else {
-        String msg = "Invalid value for cursor: " + value;
-        throw new IllegalArgumentException( msg );
-      }
+      result = QxCursor.valueOf( value, loader );
+    } else if( type == LexicalUnit.SAC_IDENT ) {
+      String value = unit.getStringValue();
+      result = QxCursor.valueOf( value );
     }
     return result;
   }

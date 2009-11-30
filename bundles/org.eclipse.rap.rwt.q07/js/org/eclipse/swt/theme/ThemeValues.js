@@ -158,6 +158,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var values = this._store.getThemeValues();
       var result = values.cursors[ vkey ];
       this.__checkDefined( result, element, key );
+      if( vkey === result ) {
+        result = "rwt-resources/themes/cursors/" + result;
+      }
       return result;
     },
 
