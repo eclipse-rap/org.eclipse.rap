@@ -38,6 +38,12 @@ public class QxCursor_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    try {
+      QxCursor.valueOf( "alabala" );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testNotExisting() {
