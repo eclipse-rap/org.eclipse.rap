@@ -398,7 +398,12 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( toolBarLayer != null ) {
           toolBarLayer.setVisible( false );
         }
+        // move the toolbar on top
         currentPart.getControl().moveAbove( null );
+        Control toolBar = currentPart.getToolBar();
+        if( toolBar != null ) {
+          toolBar.moveAbove( null );
+        }
       };
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {    
