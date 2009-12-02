@@ -941,7 +941,10 @@ public class ViewStackPresentation extends ConfigurableStack {
     currentPart = toSelect;
     currentPart.getControl().moveAbove( null );
     makePartButtonActive( currentPart );
-    setBounds( presentationControl.getBounds() );       
+    setBounds( presentationControl.getBounds() );   
+    if( toolBarLayer != null ) {
+      toolBarLayer.setVisible( false );
+    }
   }
 
   public void setActive( final int newState ) {
