@@ -428,4 +428,16 @@ public class Text_Test extends TestCase {
     assertEquals( new Point( 8, 8 ), text.getSelection() );
     assertEquals( 8, text.getCaretPosition() );
   }
+  
+  public void testGetText() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
+    text.setText( "Test Text" );
+    assertEquals( "Test", text.getText( 0, 3 ) );
+    assertEquals( "", text.getText( 5, 4 ) );
+    assertEquals( "s", text.getText( 2, 2 ) );
+    assertEquals( "Test Text", text.getText( 0, 25 ) );
+    assertEquals( "Test ", text.getText( -3, 4 ) );
+  }
 }

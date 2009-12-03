@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -168,6 +169,45 @@ public class Text extends Scrollable {
   public String getText() {
     checkWidget();
     return text;
+  }
+  
+  /**
+   * Returns a range of text. Returns an empty string if the start of the range
+   * is greater than the end.
+   * <p>
+   * Indexing is zero based. The range of a selection is from 0..N-1 where N is
+   * the number of characters in the widget.
+   * </p>
+   * 
+   * @param start the start of the range
+   * @param end the end of the range
+   * @return the range of text
+   * @exception SWTException <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @since 1.3
+   */
+  public String getText( final int start, final int end ) {
+    checkWidget();
+    String result;
+    if( !( start <= end && 0 <= end ) ) {
+      result = "";
+    } else {
+      int safeEnd = Math.min( end, text.length() - 1 );
+      if( start > safeEnd ) {
+        result = "";
+      } else {
+        int safeStart = Math.max( 0, start );
+        /*
+         * NOTE: The current implementation uses substring () which can
+         * reference a potentially large character array.
+         */
+        result = text.substring( safeStart, safeEnd + 1 );
+      }
+    }
+    return result;
   }
 
   /**
