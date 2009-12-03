@@ -131,4 +131,30 @@ public class ExpandBar_Test extends TestCase {
     expandBar.notifyListeners( SWT.Collapse, new Event() );
     assertEquals( "expanded|collapsed", log.toString() );
   }
+  
+  public void testIndexOfWithNullItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    try {
+      expandBar.indexOf( null );
+      fail( "No exception thrown for expandItem == null" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testIndexOfWithDisposedItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
+    item.dispose();
+    try {
+      expandBar.indexOf( item );
+      fail( "No exception thrown for disposed expandItem" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
 }

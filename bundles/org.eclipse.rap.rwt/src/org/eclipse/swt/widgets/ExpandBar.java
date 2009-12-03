@@ -343,6 +343,12 @@ public class ExpandBar extends Composite {
    */
   public int indexOf( final ExpandItem item ) {
     checkWidget();
+    if( item == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     return itemHolder.indexOf( item );
   }
 
