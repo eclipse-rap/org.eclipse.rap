@@ -347,6 +347,9 @@ public class TableItem extends Item {
    */
   public void setImage( final int index, final Image image ) {
     checkWidget();
+    if( image != null && image.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
@@ -381,6 +384,11 @@ public class TableItem extends Item {
     checkWidget();
     if( images == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( int i = 0; i < images.length; i++ ) {
+      if( images[ i ] != null && images[ i ].isDisposed() ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
     }
     for( int i = 0; i < images.length; i++ ) {
       setImage( i, images[ i ] );
@@ -444,6 +452,9 @@ public class TableItem extends Item {
    */
   public void setBackground( final Color color ) {
     checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( !equals( background, color ) ) {
       background = color;
       markCached();
@@ -493,6 +504,9 @@ public class TableItem extends Item {
    */
   public void setBackground( final int index, final Color color ) {
     checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
@@ -552,6 +566,9 @@ public class TableItem extends Item {
    */
   public void setForeground( final Color color ) {
     checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( !equals( foreground, color ) ) {
       foreground = color;
       markCached();
@@ -601,6 +618,9 @@ public class TableItem extends Item {
    */
   public void setForeground( final int index, final Color color ) {
     checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
@@ -658,6 +678,9 @@ public class TableItem extends Item {
    */
   public void setFont( final Font font ) {
     checkWidget();
+    if( font != null && font.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( !equals( this.font, font ) ) {
       this.font = font;
       markCached();
@@ -711,6 +734,9 @@ public class TableItem extends Item {
    */
   public void setFont( final int index, final Font font ) {
     checkWidget();
+    if( font != null && font.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );

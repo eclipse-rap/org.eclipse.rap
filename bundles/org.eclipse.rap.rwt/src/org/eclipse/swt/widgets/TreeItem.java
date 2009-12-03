@@ -536,7 +536,7 @@ public class TreeItem extends Item {
    * Sets the background color at the given column index in the receiver to the
    * color specified by the argument, or to the default system color for the
    * item if the argument is null.
-   *
+   * 
    * @param columnIndex the column index
    * @param value the new color (or null)
    * @exception IllegalArgumentException <ul>
@@ -544,14 +544,17 @@ public class TreeItem extends Item {
    *              </li>
    *              </ul>
    * @exception SWTException <ul>
-   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
-   *              </li> <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
    * @since 1.0
    */
   public void setBackground( final int columnIndex, final Color value ) {
     checkWidget();
+    if( value != null && value.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
       return;
@@ -601,6 +604,9 @@ public class TreeItem extends Item {
    */
   public void setFont( final int columnIndex, final Font value ) {
     checkWidget();
+    if( value != null && value.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
       return;
@@ -649,6 +655,9 @@ public class TreeItem extends Item {
    */
   public void setForeground( final int columnIndex, final Color value ) {
     checkWidget();
+    if( value != null && value.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
       return;
@@ -697,6 +706,9 @@ public class TreeItem extends Item {
    */
   public void setFont( final Font font ) {
     checkWidget();
+    if( font != null && font.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     this.font = font;
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = true;
@@ -754,6 +766,9 @@ public class TreeItem extends Item {
    */
   public void setBackground( final Color value ) {
     checkWidget();
+    if( value != null && value.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( background == value ) {
       return;
     }
@@ -830,6 +845,9 @@ public class TreeItem extends Item {
    */
   public void setForeground( final Color value ) {
     checkWidget();
+    if( value != null && value.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( foreground == value ) {
       return;
     }
@@ -1281,6 +1299,9 @@ public class TreeItem extends Item {
    */
   public void setImage( final int columnIndex, final Image value ) {
     checkWidget();
+    if( value != null && value.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     TreeColumn[] columns = ( TreeColumn[] )parent.columnHolder.getItems();
     int validColumnCount = Math.max( 1, columns.length );
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
@@ -1326,6 +1347,11 @@ public class TreeItem extends Item {
     checkWidget();
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( int i = 0; i < value.length; i++ ) {
+      if( value[ i ] != null && value[ i ].isDisposed() ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
     }
     // TODO make a smarter implementation of this
     for( int i = 0; i < value.length; i++ ) {

@@ -639,6 +639,44 @@ public class CTabFolder_Test extends TestCase {
     folder.setSize( 800, 800 );
     assertSame( item1, folder.getItem( new Point( 10, 7 ) ) );
   }
+  
+  public void testSetSelectionBackground()
+  {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    CTabFolder folder = new CTabFolder( control, SWT.NONE );
+    Color color = new Color(display, 0, 0, 0);
+    color.dispose();
+    try{
+      folder.setSelectionBackground( color );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
+  }
+  
+  public void testSetSelectionBackgroundI()
+  {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    CTabFolder folder = new CTabFolder( control, SWT.NONE );
+    //Now testing the method CTabFolder#setSelectionBackground(Color[], int[], boolean);
+    Color color = new Color(display, 255, 0, 0);
+    color.dispose();
+    Color[] colors = new Color[] { new Color(display, 0, 0, 0), color, new Color(display, 0, 0, 255) };
+    int[] percents = new int[] {10, 40, 50};
+    try {
+      folder.setSelectionBackground( colors, percents, true );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
+    
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

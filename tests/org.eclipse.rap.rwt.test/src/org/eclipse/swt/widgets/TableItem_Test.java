@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -407,7 +409,6 @@ public class TableItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-
     // Test with no columns at all
     TableItem item = new TableItem( table, SWT.NONE );
     assertEquals( null, item.getImage() );
@@ -416,7 +417,6 @@ public class TableItem_Test extends TestCase {
     assertEquals( null, item.getImage( 5 ) );
     item.setImage( image );
     assertSame( image, item.getImage() );
-
     // Test with columns
     table.removeAll();
     new TableColumn( table, SWT.NONE );
@@ -429,6 +429,86 @@ public class TableItem_Test extends TestCase {
     assertEquals( null, item.getImage( 5 ) );
     item.setImage( image );
     assertSame( image, item.getImage() );
+    // Test for a disposed Image in the array
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Image image2 = new Image( display, stream );
+    image2.dispose();
+    try {
+      item.setImage( image2 );
+      fail( "No exception thrown for a disposed image" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    finally {
+      try {
+        stream.close();
+      }
+      catch(IOException e) {
+        fail("Unable to close input stream.");
+      }
+    }
+  }
+  
+  public void testSetImage() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Table table = new Table( shell, SWT.CHECK );
+    TableItem tableItem = new TableItem( table, 0 );
+    Image[] images = new Image[]{
+      Graphics.getImage( RWTFixture.IMAGE1 ),
+      Graphics.getImage( RWTFixture.IMAGE2 ),
+      Graphics.getImage( RWTFixture.IMAGE3 )
+    };
+    assertNull( tableItem.getImage( 1 ) );
+    tableItem.setImage( -1, null );
+    assertNull( tableItem.getImage( -1 ) );
+    tableItem.setImage( 0, images[ 0 ] );
+    assertEquals( images[ 0 ], tableItem.getImage( 0 ) );
+    String texts[] = new String[ images.length ];
+    for( int i = 0; i < texts.length; i++ ) {
+      texts[ i ] = String.valueOf( i );
+    }
+    // tree.setText(texts); // create enough columns for
+    // TreeItem.setImage(Image[]) to work
+    int columnCount = table.getColumnCount();
+    if( columnCount < texts.length ) {
+      for( int i = columnCount; i < texts.length; i++ ) {
+        new TableColumn( table, SWT.NONE );
+      }
+    }
+    TableColumn[] columns = table.getColumns();
+    for( int i = 0; i < texts.length; i++ ) {
+      columns[ i ].setText( texts[ i ] );
+    }
+    tableItem.setImage( 1, images[ 1 ] );
+    assertEquals( images[ 1 ], tableItem.getImage( 1 ) );
+    tableItem.setImage( images );
+    for( int i = 0; i < images.length; i++ ) {
+      assertEquals( images[ i ], tableItem.getImage( i ) );
+    }
+    try {
+      tableItem.setImage( ( Image[] )null );
+      fail( "No exception thrown for images == null" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // Test for a disposed Image in the array
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    Image[] images2 = new Image[]{
+      Graphics.getImage( RWTFixture.IMAGE1 ),
+      image,
+      Graphics.getImage( RWTFixture.IMAGE3 )
+    };
+    try {
+      tableItem.setImage( images2 );
+      fail( "No exception thrown for a disposed image" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testCheckedAndGrayed() {
@@ -737,7 +817,160 @@ public class TableItem_Test extends TestCase {
     fonts = tableItemAdapter.getCellFonts();
     assertSame( cellFont, fonts[ 0 ] );
   }
+  
+  public void testSetBackground()
+  {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Table table = new Table(control, SWT.NONE);
+    TableItem tableItem = new TableItem(table, SWT.NONE);
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    tableItem.setBackground( color );
+    assertEquals( color, tableItem.getBackground() );
+    tableItem.setBackground( null );
+    assertEquals( table.getBackground(), tableItem.getBackground() );
+    Color color2 = new Color(display, 0, 255, 0);
+    color2.dispose();
+    try{
+      tableItem.setBackground( color2 );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    } 
+  }
+  
+  public void testSetBackgroundI() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Table table = new Table( control, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    tableItem.setBackground( 0, color );
+    assertEquals( color, tableItem.getBackground(0) );
+    tableItem.setBackground( 0, null );
+    assertEquals( table.getBackground(), tableItem.getBackground() );
+    Color color2 = new Color( display, 0, 255, 0 );
+    color2.dispose();
+    // Test for the method TableItem#setBackground( int, Color)
+    try {
+      tableItem.setBackground( 10, color2 );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
+  }
+  
+  public void testSetFont() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Table table = new Table(control, SWT.NONE);
+    TableItem tableItem = new TableItem(table, SWT.NONE);
+    
+    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
+                                       15,
+                                       SWT.BOLD );
+     tableItem.setFont( tableFont );
+     table.setFont( tableFont );
+     assertSame( tableFont, tableItem.getFont() );
+     Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+     tableItem.setFont( itemFont );
+     assertSame( itemFont, tableItem.getFont() );
+     tableItem.setFont( null );
+     assertSame( tableFont, tableItem.getFont() );
+     
+    // Test with images, that should appear on unselected tabs
+    Font font = new Font(display, "Testfont", 10, SWT.BOLD);
+    font.dispose();
+    try{
+      tableItem.setFont( font );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
+  }
+  
+  public void testSetFontI() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Table table = new Table(control, SWT.NONE);
+    TableItem tableItem = new TableItem(table, SWT.NONE);
+    
+    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
+                                      15,
+                                      SWT.BOLD );
+    tableItem.setFont( 0, tableFont );
+    table.setFont( tableFont );
+    assertSame( tableFont, tableItem.getFont(0) );
+    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    tableItem.setFont( itemFont );
+    assertSame( itemFont, tableItem.getFont() );
+    tableItem.setFont( null );
+    assertSame( tableFont, tableItem.getFont() );
+    // Test with images, that should appear on unselected tabs
+    Font font = new Font(display, "Testfont", 10, SWT.BOLD);
+    font.dispose();
+    //Test for the method TableItem#setFont( int, Font)
+    try{
+      tableItem.setFont(3, font );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
+  }
 
+  public void testSetForeground() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Table table = new Table(control, SWT.NONE);
+    TableItem tableItem = new TableItem(table, SWT.NONE);
+    
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    tableItem.setForeground( color );
+    assertEquals( color, tableItem.getForeground(  ) );
+    tableItem.setForeground( null );
+    assertEquals( table.getForeground(), tableItem.getForeground() );
+    
+    Color color2 = new Color(display, 255, 0, 0);
+    color2.dispose();
+    try{
+      tableItem.setForeground( color2 );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
+  }
+  
+  public void testSetForegroundI() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Table table = new Table(control, SWT.NONE);
+    TableItem tableItem = new TableItem(table, SWT.NONE);
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    tableItem.setForeground(0, color );
+    assertEquals( color, tableItem.getForeground( 0 ) );
+    tableItem.setForeground( null );
+    assertEquals( table.getForeground(), tableItem.getForeground() );
+    Color color2 = new Color(display, 255, 0, 0);
+    color2.dispose();
+    
+  //Test for the method TableItem#setForeground( int, Font)
+    try{
+      tableItem.setForeground(150, color2 );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
+  }
   /////////////////
   // helper methods
 

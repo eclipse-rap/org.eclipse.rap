@@ -12,13 +12,17 @@
 
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -807,5 +811,111 @@ public class Control_Test extends TestCase {
     Composite control = new Shell( display );
     control.redraw();
     assertTrue( RWTLifeCycle.needsFakeRedraw( control ) );
+  }
+  
+  public void testSetBackground() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    control.setBackground( color );
+    assertEquals( color, control.getBackground() );
+    control.setBackground( null );
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    IControlThemeAdapter adapter = ( IControlThemeAdapter )themeMgr.getThemeAdapter( control.getClass() );
+    assertEquals( adapter.getBackground( control ), control.getBackground() );
+    Color color2 = new Color( display, 0, 0, 0 );
+    color2.dispose();
+    try {
+      control.setBackground( color2 );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
+  }
+  
+  public void testSetBackgroundImage() {
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      control.setBackgroundImage( image );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
+    finally {
+      try {
+        stream.close();
+      }
+      catch(IOException e) {
+        fail("Unable to close input stream.");
+      }
+    }
+  }
+  
+  public void testSetCursor() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Cursor cursor = new Cursor( display, SWT.NONE );
+    control.setCursor( cursor );
+    assertEquals( cursor, control.getCursor() );
+    control.setCursor( null );
+    assertEquals( null, control.getCursor() );
+    cursor.dispose();
+    try {
+      control.setCursor( cursor );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
+  }
+  
+  public void testSetFont() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Font controlFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
+                                         15,
+                                         SWT.BOLD );
+    control.setFont( controlFont );
+    assertSame( controlFont, control.getFont() );
+    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    control.setFont( itemFont );
+    assertSame( itemFont, control.getFont() );
+    control.setFont( null );
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    IControlThemeAdapter adapter = ( IControlThemeAdapter )themeMgr.getThemeAdapter( control.getClass() );
+    assertSame( adapter.getFont( control ), control.getFont() );
+    // Test with images, that should appear on unselected tabs
+    Font font = new Font( display, "Testfont", 10, SWT.BOLD );
+    font.dispose();
+    try {
+      control.setFont( font );
+      fail( "Disposed font must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
+  }
+  
+  public void testSetForeground() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    control.setForeground( color );
+    assertEquals( color, control.getForeground() );
+    control.setForeground( null );
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    IControlThemeAdapter adapter = ( IControlThemeAdapter )themeMgr.getThemeAdapter( control.getClass() );
+    assertEquals( adapter.getForeground( control ), control.getForeground() );
+    Color color2 = new Color( display, 255, 0, 0 );
+    color2.dispose();
+    try {
+      control.setForeground( color2 );
+      fail( "Disposed color must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
   }
 }

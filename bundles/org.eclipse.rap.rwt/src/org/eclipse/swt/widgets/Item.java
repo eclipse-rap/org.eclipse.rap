@@ -150,6 +150,9 @@ public abstract class Item extends Widget {
    */
   public void setImage( final Image image ) {
     checkWidget();
+    if( image != null && image.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     this.image = image;
   }
 

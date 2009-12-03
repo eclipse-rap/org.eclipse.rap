@@ -216,6 +216,12 @@ public class Image_Test extends TestCase {
     Image image = new Image( display, stream );
     image.dispose();
     assertTrue( image.isDisposed() );
+    try {
+      stream.close();
+    }
+    catch(IOException e) {
+      fail("Unable to close input stream.");
+    }
   }
   
   public void testDisposeFactoryCreated() {

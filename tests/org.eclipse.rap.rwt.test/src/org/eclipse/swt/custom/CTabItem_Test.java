@@ -13,10 +13,11 @@
 package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
+
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -210,6 +211,33 @@ public class CTabItem_Test extends TestCase {
     folder.setSelection( item1 );
     assertTrue( adapter.showItemImage( item1 ) );
     assertFalse( adapter.showItemImage( item2 ) );
+  }
+  
+  public void testSetFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    // Test with images, that should appear on unselected tabs
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Font folderFont = folder.getFont();
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    Font cTabFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
+                                      15,
+                                      SWT.BOLD );
+    item.setFont( cTabFont );
+    assertSame( cTabFont, item.getFont() );
+    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    item.setFont( itemFont );
+    assertSame( itemFont, item.getFont() );
+    item.setFont( null );
+    assertSame( folderFont, item.getFont() );
+    Font font = new Font( display, "Testfont", 10, SWT.BOLD );
+    font.dispose();
+    try {
+      item.setFont( font );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
   }
 
   protected void setUp() throws Exception {

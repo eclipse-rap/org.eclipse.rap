@@ -391,6 +391,9 @@ public abstract class Control extends Widget {
    */
   public void setBackground( final Color color ) {
     checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     background = color;
     updateBackground();
   }
@@ -441,10 +444,10 @@ public abstract class Control extends Widget {
    * </p>
    * @param image the new image (or null)
    *
-   * <!--@exception IllegalArgumentException <ul>
+   * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument is not a bitmap</li>
-   * </ul>-->
+   *    <!-- <li>ERROR_INVALID_ARGUMENT - if the argument is not a bitmap</li>-->
+   * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -454,15 +457,14 @@ public abstract class Control extends Widget {
    */
   public void setBackgroundImage( final Image image ) {
     checkWidget();
-    if( image != null ) {
-//      if( image.isDisposed() )
-//        error( SWT.ERROR_INVALID_ARGUMENT );
-//      if( image.type != SWT.BITMAP )
-//        error( SWT.ERROR_INVALID_ARGUMENT );
+    if( image != null && image.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
     }
     if( backgroundImage != image ) {
       backgroundImage = image;
     }
+    // if( image.type != SWT.BITMAP )
+    // error( SWT.ERROR_INVALID_ARGUMENT );
   }
 
   /**
@@ -503,7 +505,10 @@ public abstract class Control extends Widget {
    */
   public void setForeground( final Color color ) {
     checkWidget();
-    foreground = color;
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+      foreground = color; 
   }
 
   /**
@@ -612,6 +617,9 @@ public abstract class Control extends Widget {
    */
   public void setFont( final Font font ) {
     checkWidget();
+    if( font != null && font.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     this.font = font;
   }
 
@@ -661,6 +669,9 @@ public abstract class Control extends Widget {
    */
   public void setCursor( final Cursor cursor ) {
     checkWidget();
+    if( cursor != null && cursor.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     this.cursor = cursor;
   }
 

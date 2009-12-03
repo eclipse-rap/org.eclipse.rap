@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 
 public class Item_Test extends TestCase {
 
@@ -48,6 +51,17 @@ public class Item_Test extends TestCase {
     };
     item2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
     assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item2.getImage() );
+    // Test for a disposed Image as argument
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Image image2 = new Image( display, stream );
+    image2.dispose();
+    try {
+      item.setImage( image2 );
+      fail( "No exception thrown for a disposed image" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testDispose() {

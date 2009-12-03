@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -339,6 +342,30 @@ public class TreeItem_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    // Test for a disposed Image in the array
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    Image[] images2 = new Image[]{
+      Graphics.getImage( RWTFixture.IMAGE1 ),
+      image,
+      Graphics.getImage( RWTFixture.IMAGE3 )
+    };
+    try {
+      treeItem.setImage( images2 );
+      fail( "No exception thrown for a disposed image" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    finally {
+      try {
+        stream.close();
+      }
+      catch(IOException e) {
+        fail("Unable to close input stream.");
+      }
+    }
   }
 
   public void testSetImageI() {
@@ -374,6 +401,26 @@ public class TreeItem_Test extends TestCase {
     treeItem.setImage( images[ 1 ] );
     treeItem.setImage( 0, images[ 0 ] );
     assertEquals( images[ 0 ], treeItem.getImage( 0 ) );
+    
+  //Test for a disposed Image in the array
+    ClassLoader loader = RWTFixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      treeItem.setImage( image );
+      fail( "No exception thrown for a disposed image" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    finally {
+      try {
+        stream.close();
+      }
+      catch(IOException e) {
+        fail("Unable to close input stream.");
+      }
+    }
   }
 
   public void testSetForeground() {
@@ -386,6 +433,16 @@ public class TreeItem_Test extends TestCase {
     assertEquals( color, treeItem.getForeground() );
     treeItem.setForeground( null );
     assertEquals( tree.getForeground(), treeItem.getForeground() );
+    Color color2 = new Color(display, 255, 0, 0);
+    color2.dispose();
+    try{
+      treeItem.setForeground( color2 );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
   }
 
   public void testSetBackground() {
@@ -398,6 +455,15 @@ public class TreeItem_Test extends TestCase {
     assertEquals( color, treeItem.getBackground() );
     treeItem.setBackground( null );
     assertEquals( tree.getBackground(), treeItem.getBackground() );
+    // Test for the case that the argument has been disposed
+    Color color2 = new Color( display, 0, 255, 0 );
+    color2.dispose();
+    try {
+      treeItem.setBackground( color2 );
+      fail( "Disposed color must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
   }
 
   public void testSetForegroundI() {
@@ -432,6 +498,16 @@ public class TreeItem_Test extends TestCase {
     assertEquals( red, treeItem.getForeground( 0 ) );
     treeItem.setForeground( null );
     assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+    Color color2 = new Color(display, 255, 0, 0);
+    color2.dispose();
+    try{
+      treeItem.setForeground(0,  color2 );
+      fail("Disposed Image must not be set.");
+    }
+    catch (IllegalArgumentException e)
+    {
+      //Expected Exception
+    }
   }
 
   public void testSetFontI() {
@@ -466,6 +542,41 @@ public class TreeItem_Test extends TestCase {
     assertTrue( font2.equals( treeItem.getFont( 0 ) ) );
     treeItem.setFont( null );
     assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
+    // Test with a disposed font
+    Font font3 = new Font( display, "Testfont", 10, SWT.BOLD );
+    font3.dispose();
+    try {
+      treeItem.setFont(0, font3 );
+      fail( "Disposed font must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
+  }
+  
+  public void testSetFont() {
+      Display display = new Display();
+      Shell shell = new Shell( display, SWT.NONE );
+      Tree tree = new Tree( shell, SWT.NONE );
+      Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
+                                        15,
+                                        SWT.BOLD );
+      tree.setFont( treeFont );
+      TreeItem item = new TreeItem( tree, SWT.NONE );
+      assertSame( treeFont, item.getFont() );
+      Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+      item.setFont( itemFont );
+      assertSame( itemFont, item.getFont() );
+      item.setFont( null );
+      assertSame( treeFont, item.getFont() );
+   // Test with a disposed font
+      Font font = new Font( display, "Testfont", 10, SWT.BOLD );
+      font.dispose();
+      try {
+        item.setFont( font );
+        fail( "Disposed font must not be set." );
+      } catch( IllegalArgumentException e ) {
+        // Expected Exception
+      }
   }
 
   public void testSetBackgroundI() {
@@ -500,6 +611,15 @@ public class TreeItem_Test extends TestCase {
     assertEquals( red, treeItem.getBackground( 0 ) );
     treeItem.setBackground( null );
     assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
+    // Test for the case that the argument has been disposed
+    Color color = new Color( display, 0, 255, 0 );
+    color.dispose();
+    try {
+      treeItem.setBackground( 0, color );
+      fail( "Disposed color must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
   }
 
   public void testGetBoundsEmptyItem() {

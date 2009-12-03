@@ -1031,6 +1031,8 @@ public class CTabFolder extends Composite {
    */
   public void setSelectionBackground( final Color color ) {
     checkWidget();
+    if( null != color && color.isDisposed() )
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     selectionBackground = color;
   }
 
@@ -1112,6 +1114,9 @@ public class CTabFolder extends Composite {
    *                 less than the size of the colors array.
    *
    * @param vertical indicate the direction of the gradient.  True is vertical and false is horizontal.
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    *
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
@@ -1127,6 +1132,11 @@ public class CTabFolder extends Composite {
   {
     checkWidget();
     if( colors != null ) {
+      for (int i = 0; i < colors.length; i++ ) {
+        if(colors[i] != null && colors[i].isDisposed()) {
+          SWT.error(SWT.ERROR_INVALID_ARGUMENT);
+        }
+      }
       if(    percents == null
           || percents.length != colors.length - 1 ) {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );

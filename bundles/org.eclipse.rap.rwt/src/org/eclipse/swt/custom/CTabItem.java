@@ -199,6 +199,9 @@ public class CTabItem extends Item {
    */
   public void setFont( final Font font ) {
     checkWidget();
+    if( font != null && font.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( font != this.font ) {
       this.font = font;
       if( !parent.updateTabHeight( false ) ) {

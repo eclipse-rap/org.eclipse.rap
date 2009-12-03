@@ -190,9 +190,9 @@ public class TabItem extends Item {
   
   public void setImage( final Image image ) {
     checkWidget();
-    int index = parent.indexOf (this);
-    if (index > -1) {
-      super.setImage (image);
+    int index = parent.indexOf( this );
+    if( index > -1 ) {
+      super.setImage( image );
     }
   }
   
