@@ -51,7 +51,21 @@ public class TreeItem_Test extends TestCase {
       new TreeItem( tree, SWT.NONE, 5 );
       fail( "No exception thrown for illegal index argument" );
     } catch( IllegalArgumentException e ) {
+   // expected
     }
+    
+    try {
+      new TreeItem( item, SWT.NONE, 5 );
+      fail( "No exception thrown for illegal index argument" );
+    } catch( IllegalArgumentException e ) {
+   // expected
+    }
+    try {
+      new TreeItem( item, SWT.NONE, -1 );
+      fail( "No exception thrown for illegal index argument" );
+    } catch( IllegalArgumentException e ) {
+   // expected
+    } 
   }
 
   public void testRemoveAll() {

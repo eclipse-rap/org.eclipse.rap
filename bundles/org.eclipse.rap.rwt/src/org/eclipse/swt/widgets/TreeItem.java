@@ -125,7 +125,9 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( final Tree parent, final int style ) {
-    this( parent, null, style, -1 );
+    this( parent, null, style, parent == null
+                                             ? 0
+                                             : parent.getItemCount() );
   }
 
   /**
@@ -196,7 +198,14 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( final TreeItem parentItem, final int style ) {
-    this( parentItem == null ? null : parentItem.parent, parentItem, style, -1 );
+    this( parentItem == null
+                            ? null
+                            : parentItem.parent,
+          parentItem,
+          style,
+          parentItem == null
+                            ? 0
+                            : parentItem.getItemCount() );
   }
 
   /**
@@ -236,7 +245,7 @@ public class TreeItem extends Item {
   {
     this( parentItem == null
                             ? null
-                            : parentItem.parent, parentItem, style, -1 );
+                            : parentItem.parent, parentItem, style, index );
   }
 
   private TreeItem( final Tree parent,
@@ -245,20 +254,31 @@ public class TreeItem extends Item {
                     final int index )
   {
     super( parent, style );
+    int numberOfItems;
+        // if there is a parent item, get the next index of parentItem
+        if( parentItem != null ) {
+          numberOfItems = parentItem.getItemCount();
+        }
+        // If there is no parent item, get the next index of the tree
+        else {
+          numberOfItems = parent.getItemCount();
+        }
+        // check range
+        if( index < 0 || index > numberOfItems ) {
+          error( SWT.ERROR_INVALID_RANGE );
+        }
+        
     this.parent = parent;
     this.parentItem = parentItem;
     if( parentItem != null ) {
       this.depth = parentItem.depth + 1;
     }
-    int newIndex;
     if( parentItem != null ) {
-      newIndex = index == -1 ? parentItem.getItemCount() : index;
-      ItemHolder.insertItem( parentItem, this, newIndex );
+      ItemHolder.insertItem( parentItem, this, index );
     } else {
-      newIndex = index == -1 ? parent.getItemCount() : index;
-      ItemHolder.insertItem( parent, this, newIndex );
+      ItemHolder.insertItem( parent, this, index );
     }
-    this.index = newIndex;
+    this.index = index;
     itemHolder = new ItemHolder( TreeItem.class );
     treeItemAdapter = new TreeItemAdapter();
     int columnCount = parent.columnHolder.size();
