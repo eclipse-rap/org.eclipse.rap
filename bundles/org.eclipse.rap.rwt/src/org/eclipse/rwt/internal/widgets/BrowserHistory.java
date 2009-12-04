@@ -32,26 +32,23 @@ public final class BrowserHistory
 {
 
   private static final long serialVersionUID = 1L;
-
+  
   private static final String EVENT_HISTORY_NAVIGATED
     = "org.eclipse.rwt.events.historyNavigated";
   private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID
     = "org.eclipse.rwt.events.historyNavigated.entryId";
   private static final String ADD_TO_HISTORY
     = "qx.client.History.getInstance().addToHistory( {0}, {1} );";
-  private static final String STARTUP_ENTRY = "startup.entry";
 
   private final Display display;
   private IEventAdapter eventAdapter;
-  private String startupEntry;
 
   public BrowserHistory() {
     this.display = Display.getCurrent();
     LifeCycleFactory.getLifeCycle().addPhaseListener( this );
     RWT.getSessionStore().addSessionStoreListener( this );
-    readStartupEntry();
   }
-
+  
   //////////////////
   // IBrowserHistory
 
@@ -71,7 +68,7 @@ public final class BrowserHistory
     JSExecutor.executeJS( MessageFormat.format( ADD_TO_HISTORY, args ) );
   }
 
-  public void addBrowserHistoryListener( final BrowserHistoryListener listener )
+  public void addBrowserHistoryListener( final BrowserHistoryListener listener ) 
   {
     if( null == listener ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -79,18 +76,14 @@ public final class BrowserHistory
     BrowserHistoryEvent.addListener( this, listener );
   }
 
-  public void removeBrowserHistoryListener( final BrowserHistoryListener lsnr )
+  public void removeBrowserHistoryListener( final BrowserHistoryListener lsnr ) 
   {
     if( null == lsnr ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     BrowserHistoryEvent.removeListener( this, lsnr );
   }
-
-  public String getStartupEntry() {
-    return startupEntry;
-  }
-
+  
   ////////////////
   // PhaseListener
 
@@ -116,7 +109,7 @@ public final class BrowserHistory
 
   ////////////
   // Adaptable
-
+  
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IEventAdapter.class ) {
@@ -132,16 +125,8 @@ public final class BrowserHistory
 
   ///////////////////////
   // SessionStoreListener
-
+  
   public void beforeDestroy( final SessionStoreEvent event ) {
     LifeCycleFactory.getLifeCycle().removePhaseListener( this );
-  }
-
-  //////////////////
-  // Helping methods
-
-  private void readStartupEntry() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    startupEntry = request.getParameter( STARTUP_ENTRY );
   }
 }

@@ -34,7 +34,7 @@ public interface IBrowserHistory {
    *          It is usually visible for the user within the address bar of
    *          the browser. Must neither be <code>null</code> not empty.
    * @param text A text for the user to identify the entry in the browser's UI
-   *          or <code>null</code> if
+   *          or <code>null</code>.
    */
   void createEntry( String id, String text );
 
@@ -53,11 +53,4 @@ public interface IBrowserHistory {
    *          <code>null</code>.
    */
   void removeBrowserHistoryListener( BrowserHistoryListener listener );
-
-  /**
-   * Gets the application startup entry.
-   *
-   * @return the application startup entry or <code>null</code> if not specified.
-   */
-  String getStartupEntry();
 }
