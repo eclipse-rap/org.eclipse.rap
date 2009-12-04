@@ -369,6 +369,39 @@ public class Combo_Test extends TestCase {
     assertEquals( "", combo.getText() );
   }
   
+  public void testRemoveOutOfRange() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    try {
+      combo.remove( 0, 100 );
+      fail( "No exception thrown for illegal index argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      combo.remove( -2, 2 );
+      fail( "No exception thrown for illegal index argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      combo.remove( 2, 0 );
+      fail( "No exception thrown for illegal index argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      combo.remove( -1, -2 );
+      fail( "No exception thrown for illegal index argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );

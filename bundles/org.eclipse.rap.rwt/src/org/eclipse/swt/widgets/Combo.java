@@ -380,12 +380,21 @@ public class Combo extends Composite {
    */
   public void remove( final int start, final int end ) {
     checkWidget();
-    int selectionIndex = getSelectionIndex();
     String[] items = model.getItems();
+    int lastIndex = items.length - 1;
+    if(    start < 0
+        || start > lastIndex
+        || end < 0
+        || end > lastIndex
+        || end < start )
+    {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
+    int selectionIndex = getSelectionIndex();
     for( int i = start; i <= end; i++ ) {
-      int indexTemp = indexOf( items[i] );
-      if( selectionIndex == indexTemp ) {
-        deselect( indexTemp );
+      int index = indexOf( items[ i ] );
+      if( selectionIndex == index ) {
+        deselect( index );
       }
     }
     model.remove( start, end );
