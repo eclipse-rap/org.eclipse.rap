@@ -2346,6 +2346,26 @@ public class Table_Test extends TestCase {
     assertEquals( 33, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
+  
+  public void testRemoveArrayDuplicates() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    int number = 5;
+    TableItem[] items = new TableItem[ number ];
+    for( int i = 0; i < number; i++ ) {
+      items[ i ] = new TableItem( table, 0 );
+    }
+    assertEquals( 5, table.getItemCount() );
+    table.remove( new int[]{
+      1, 1
+    } );
+    assertEquals( 4, table.getItemCount() );
+    table.remove( new int[]{
+      0, 2, 1, 1
+    } );
+    assertEquals( 1, table.getItemCount() );
+  }
 
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;

@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
@@ -843,8 +844,12 @@ public class Table extends Composite {
       if( !( 0 <= start && start <= end && end < itemCount ) ) {
         SWT.error( SWT.ERROR_INVALID_RANGE );
       }
+      int lastValue = -1;
       for( int i = 0; i < sortedIndices.length; i++ ) {
-        removeItem( sortedIndices[ i ] );
+        if( sortedIndices[ i ] != lastValue ) {
+          lastValue = sortedIndices[ i ];
+          removeItem( sortedIndices[ i ] );
+        }
       }
       if( itemCount == 0 ) {
         setTableEmpty();
