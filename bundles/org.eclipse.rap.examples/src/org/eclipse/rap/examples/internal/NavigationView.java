@@ -118,11 +118,11 @@ public class NavigationView extends ViewPart {
     item.setControl( list );
     // TODO [rst] Remove this block when auto-collapse is activated again
     // ----
-    item.setExpanded( true );    
+    item.setExpanded( true );
     // ----
     return item;
   }
-  
+
   private void deselectAll( final List skipped ) {
     ExpandItem[] items = expandBar.getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -146,15 +146,38 @@ public class NavigationView extends ViewPart {
 
   private void initSelection() {
     if( expandBar.getItemCount() > 0 ) {
-      ExpandItem firstItem = expandBar.getItem( 0 );
-      firstItem.setExpanded( true );
-      List list = ( List )firstItem.getControl();
-      list.setSelection( 0 );
-      setSelection( list.getItem( 0 ), false, true );
+      IBrowserHistory history = RWT.getBrowserHistory();
+      String startupEntry = history.getStartupEntry();
+      if( isValidEntry( startupEntry ) ) {
+        setSelection( startupEntry, true, true );
+      } else {
+        ExpandItem firstItem = expandBar.getItem( 0 );
+        firstItem.setExpanded( true );
+        List list = ( List )firstItem.getControl();
+        list.setSelection( 0 );
+        setSelection( list.getItem( 0 ), false, true );
+      }
     }
   }
 
-  private void setSelection( final String newSelection, 
+  private boolean isValidEntry( final String entry ) {
+    boolean result = false;
+    if( entry != null ) {
+      ExpandItem[] expandItems = expandBar.getItems();
+      for( int i = 0; !result && i < expandItems.length; i++ ) {
+        ExpandItem expandItem = expandItems[ i ];
+        List list = ( List )expandItem.getControl();
+        String[] listItems = list.getItems();
+        int index = indexOf( listItems, entry );
+        if( index != -1 ) {
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  private void setSelection( final String newSelection,
                              final boolean updateControl,
                              final boolean updateHistory )
   {

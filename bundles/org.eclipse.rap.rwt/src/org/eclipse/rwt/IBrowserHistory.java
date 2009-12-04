@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -22,35 +22,42 @@ import org.eclipse.rwt.events.BrowserHistoryListener;
  * Note that the browser history exists once per session, so using the
  * {@link IBrowserHistory} is only possible within the session context.
  * </p>
- * 
+ *
  * @since 1.3
  */
 public interface IBrowserHistory {
 
   /**
    * Creates an entry in the browser history.
-   * 
+   *
    * @param id Identifies the entry and should be unique among all entries.
-   *          It is usually visible for the user within the address bar of 
+   *          It is usually visible for the user within the address bar of
    *          the browser. Must neither be <code>null</code> not empty.
-   * @param text A text for the user to identify the entry in the browser's UI 
-   *          or <code>null</code> if  
+   * @param text A text for the user to identify the entry in the browser's UI
+   *          or <code>null</code> if
    */
   void createEntry( String id, String text );
 
   /**
    * Adds a {@link BrowserHistoryListener} to the history support.
-   * 
-   * @param listener the {@link BrowserHistoryListener}. Must not be 
+   *
+   * @param listener the {@link BrowserHistoryListener}. Must not be
    *          <code>null</code>.
    */
   void addBrowserHistoryListener( BrowserHistoryListener listener );
 
   /**
    * Removes a {@link BrowserHistoryListener} from the history support.
-   * 
-   * @param listener the {@link BrowserHistoryListener}. Must not be 
+   *
+   * @param listener the {@link BrowserHistoryListener}. Must not be
    *          <code>null</code>.
    */
   void removeBrowserHistoryListener( BrowserHistoryListener listener );
+
+  /**
+   * Gets the application startup entry.
+   *
+   * @return the application startup entry or <code>null</code> if not specified.
+   */
+  String getStartupEntry();
 }

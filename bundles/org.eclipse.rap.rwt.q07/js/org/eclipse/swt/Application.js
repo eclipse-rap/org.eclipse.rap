@@ -71,6 +71,15 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var req = org.eclipse.swt.Request.getInstance();
       var id = req.getUIRootId();
       req.addParameter( id + ".scrollbar.size", String( size ) );
+    },
+    
+    _appendStartupEntry : function() {
+      // Append startup entry to request
+      var req = org.eclipse.swt.Request.getInstance();
+      var entry = window.location.hash;
+      if( entry != "" ) {
+        req.addParameter( "startup.entry", entry.substr( 1 ) );
+      }
     }
   },
 
@@ -131,6 +140,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       org.eclipse.swt.Application._appendScrollBarSize();
+      org.eclipse.swt.Application._appendStartupEntry();
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSend, this );
       req.send();
