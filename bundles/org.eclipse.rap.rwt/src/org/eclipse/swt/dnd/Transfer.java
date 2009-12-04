@@ -134,11 +134,6 @@ public abstract class Transfer {
    * You may register the same type more than once, the same unique identifier
    * will be returned if the type has been previously registered.
    * </p>
-   * <p>
-   * Note: On windows, do <b>not</b> call this method with pre-defined Clipboard
-   * Format types such as CF_TEXT or CF_BITMAP because the pre-defined
-   * identifier will not be returned
-   * </p>
    * 
    * @param formatName the name of a data type
    * @return the unique identifier associated with this data type
@@ -152,7 +147,6 @@ public abstract class Transfer {
    * 
    * @param object a java representation of the data to be converted
    * @return true if object is of the correct form for this transfer type
-   * @since 3.1
    */
   protected boolean validate( Object object ) {
     return true;
