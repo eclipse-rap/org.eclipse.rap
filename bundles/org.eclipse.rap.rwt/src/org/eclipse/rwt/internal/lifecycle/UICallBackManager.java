@@ -215,14 +215,7 @@ public final class UICallBackManager
       } finally {
         locked.remove( currentThread );
         if( !result ) {
-          // TODO [rh] remove the try/catch block once this bug 278258 is fixed
-          //      (Rework ISessionStore#add/removeSessionStoreListener)
-          try {
-            ContextProvider.getSession().removeSessionStoreListener( listener );
-          } catch( IllegalStateException e ) {
-            // ignore - the session store is (about to be) unbound, this means
-            // the listener is/will be removed anyway
-          }
+          ContextProvider.getSession().removeSessionStoreListener( listener );
         }
       }
       waitForUIThread = true;

@@ -104,60 +104,37 @@ public class SessionStore_Test extends TestCase {
     assertSame( httpSession, sessionLog[ 0 ] );
     assertSame( attr2, valueLog[ 0 ] );
     assertSame( session, storeLog[ 0 ] );
-    try {
-      session.setAttribute( ATTR1, null );
-      fail();
-    } catch( final IllegalStateException ise ) {
-    }
-    try {
-      session.getAttribute( ATTR1 );
-      fail();
-    } catch( final IllegalStateException ise ) {
-    }
-    try {
-      session.removeAttribute( ATTR1 );
-      fail();
-    } catch( final IllegalStateException ise ) {
-    }
-    try {
-      session.getAttributeNames();
-      fail();
-    } catch( final IllegalStateException ise ) {
-    }
-    try {
-      session.addSessionStoreListener( null );
-      fail();
-    } catch( final IllegalStateException ise ) {
-    }
-    try {
-      session.removeSessionStoreListener( null );
-      fail();
-    } catch( final IllegalStateException ise ) {
-    }
-
-
+    // check method calls for unbound session store
+    boolean setAttribute = session.setAttribute( ATTR1, null );
+    assertFalse( setAttribute );
+    Object attribute = session.getAttribute( ATTR1 );
+    assertNull( attribute );
+    boolean removeAttribute = session.removeAttribute( ATTR1 );
+    assertFalse( removeAttribute );
+    attributeNames = session.getAttributeNames();
+    assertNotNull( attributeNames );
+    assertFalse( attributeNames.hasMoreElements() );
+    boolean addSessionStoreListener = session.addSessionStoreListener( null );
+    assertFalse( addSessionStoreListener );
+    boolean removeSessionStoreListener = session.removeSessionStoreListener( null );
+    assertFalse( removeSessionStoreListener );
+    // check that listener cannot be added when about to be unbound
+    final boolean[] aboutUnboundListener = { true };
     TestSession checkAboutUnboundHttpSession = new TestSession();
     final SessionStoreImpl checkAboutUnbound
       = new SessionStoreImpl( checkAboutUnboundHttpSession );
     checkAboutUnbound.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( final SessionStoreEvent event ) {
-        checkAboutUnbound.addSessionStoreListener( new SessionStoreListener() {
+        SessionStoreListener lsnr = new SessionStoreListener() {
           public void beforeDestroy( final SessionStoreEvent event ) {
           }
-        } );
-      }
-    } );
-    TestServletContext servletContext
-      = ( TestServletContext )checkAboutUnboundHttpSession.getServletContext();
-    final Set problems = new HashSet();
-    servletContext.setLogger( new TestLogger() {
-      public void log( final String message, final Throwable throwable ) {
-        problems.add( throwable );
+        };
+        aboutUnboundListener[ 0 ]
+          = checkAboutUnbound.addSessionStoreListener( lsnr );
       }
     } );
     checkAboutUnbound.getHttpSession().invalidate();
-    assertEquals( 1, problems.size() );
-    servletContext.setLogger( null );
+    assertFalse( aboutUnboundListener[ 0 ] );
 
     final boolean[] hasContext = { false };
     SessionStoreImpl checkContext = new SessionStoreImpl( new TestSession() );
@@ -169,7 +146,7 @@ public class SessionStore_Test extends TestCase {
     checkContext.getHttpSession().invalidate();
     assertTrue( hasContext[ 0 ] );
   }
-
+  
   public void testCallback() {
     final boolean[] interceptShutdownWasCalled = { false };
     final Runnable[] shutdownCallback = { null };

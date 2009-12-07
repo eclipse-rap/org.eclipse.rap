@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -26,9 +27,10 @@ public final class SessionStoreImpl
   public static final String ID_SESSION_STORE
     = SessionStoreImpl.class.getName();
   
-  private final Map attributes = new HashMap();
-  private final Set listeners = new HashSet();
+  private final Map attributes;
+  private final Set listeners;
   private final HttpSession session;
+  private final String id;
   private boolean bound;
   private boolean aboutUnbound;
   private ISessionShutdownAdapter shutdownAdapter;
@@ -36,6 +38,9 @@ public final class SessionStoreImpl
   
   public SessionStoreImpl( final HttpSession session ) {
     ParamCheck.notNull( session, "session" );
+    attributes = new HashMap();
+    listeners = new HashSet();
+    this.id = session.getId();
     this.session = session;
     this.session.setAttribute( ID_SESSION_STORE, this );
     bound = true;
@@ -52,57 +57,64 @@ public final class SessionStoreImpl
       } );
     }
   }
-
   
   //////////////////////////
   // interface ISessionStore
   
   public Object getAttribute( final String name ) {
-    checkBound();
-    synchronized( attributes ) {
-      return attributes.get( name );
+    Object result = null;
+    if( bound ) {
+      synchronized( attributes ) {
+        result = attributes.get( name );
+      }
     }
+    return result;
   }
 
-  public void setAttribute( final String name, final Object value ) {
-    checkBound();
-    if( value == null ) {
-      removeAttribute( name );
-    } else {
-      Object removed = null;
-      synchronized( attributes ) {
-        if( attributes.containsKey( name ) ) {
-          removed = removeAttributeInternal( name );
+  public boolean setAttribute( final String name, final Object value ) {
+    boolean result = false;
+    if( bound ) {
+      result = true;
+      if( value == null ) {
+        removeAttribute( name );
+      } else {
+        Object removed = null;
+        synchronized( attributes ) {
+          if( attributes.containsKey( name ) ) {
+            removed = removeAttributeInternal( name );
+          }
+          attributes.put( name, value );
         }
-        attributes.put( name, value );        
+        if( removed != null ) {
+          fireValueUnbound( name, removed );
+        }
+        fireValueBound( name, value );
       }
-      if( removed != null ) {
-        fireValueUnbound( name, removed );
-      }
-      fireValueBound( name, value );
     }
+    return result;
   }
   
-  public void removeAttribute( final String name ) {
-    checkBound();
-    fireValueUnbound( name, removeAttributeInternal( name ) );
+  public boolean removeAttribute( final String name ) {
+    boolean result = false;
+    if( bound ) {
+      result = true;
+      fireValueUnbound( name, removeAttributeInternal( name ) );
+    }
+    return result;
   }
 
   public Enumeration getAttributeNames() {
-    checkBound();
-    final Iterator iterator = attributes.keySet().iterator();
-    return new Enumeration() {
-      public boolean hasMoreElements() {
-        return iterator.hasNext();
-      }
-      public Object nextElement() {
-        return iterator.next();
-      }
-    };
+    Enumeration result;
+    if( bound ) {
+      result = createAttributeNameEnumeration();
+    } else {
+      result = createEmptyEnumeration();
+    }
+    return result;
   }
-  
+
   public String getId() {
-    return session.getId();
+    return id;
   }
   
   public HttpSession getHttpSession() {
@@ -113,20 +125,26 @@ public final class SessionStoreImpl
     return bound;
   }
 
-  public void addSessionStoreListener( final SessionStoreListener lsnr ) {
-    checkAboutUnbound();
-    checkBound();
-    synchronized( listeners ) {
-      listeners.add( lsnr );
+  public boolean addSessionStoreListener( final SessionStoreListener lsnr ) {
+    boolean result = false;
+    if( bound && !aboutUnbound ) {
+      result = true;
+      synchronized( listeners ) {
+        listeners.add( lsnr );
+      }
     }
+    return result;
   }
 
-  public void removeSessionStoreListener( final SessionStoreListener lsnr ) {
-    checkAboutUnbound();
-    checkBound();
-    synchronized( listeners ) {
-      listeners.remove( lsnr );
+  public boolean removeSessionStoreListener( final SessionStoreListener lsnr ) {
+    boolean result = false;
+    if( bound && !aboutUnbound ) {
+      result = true;
+      synchronized( listeners ) {
+        listeners.remove( lsnr );
+      }
     }
+    return result;
   }
 
   
@@ -229,19 +247,6 @@ public final class SessionStoreImpl
     return result;
   }
   
-  private void checkBound() {
-    if( !bound ) {
-      throw new IllegalStateException( "The session store has been unbound." );
-    }
-  }
-  
-  private void checkAboutUnbound() {
-    if( aboutUnbound ) {
-      String msg = "The session store is about to be unbound.";
-      throw new IllegalStateException( msg );
-    }
-  }
-    
   private void fireValueBound( final String name, final Object value ) {
     if( value instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener
@@ -260,5 +265,28 @@ public final class SessionStoreImpl
         = new HttpSessionBindingEvent( session, name, removed );
       listener.valueUnbound( evt );
     }
+  }
+
+  private Enumeration createEmptyEnumeration() {
+    return new Enumeration() {
+      public boolean hasMoreElements() {
+        return false;
+      }
+      public Object nextElement() {
+        throw new NoSuchElementException();
+      }
+    };
+  }
+
+  private Enumeration createAttributeNameEnumeration() {
+    final Iterator iterator = attributes.keySet().iterator();
+    return new Enumeration() {
+      public boolean hasMoreElements() {
+        return iterator.hasNext();
+      }
+      public Object nextElement() {
+        return iterator.next();
+      }
+    };
   }
 }
