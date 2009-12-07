@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContextEvent;
@@ -17,8 +16,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.TestServletContext;
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -27,30 +24,20 @@ import org.eclipse.swt.RWTFixture;
 
 public class PhaseListenerRegistry_Test extends TestCase {
 
-  private String savedLifeCycle;
-
   protected void setUp() throws Exception {
-    Fixture.setUp();
-    savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
+    RWTFixture.fakeContext();
+    RWTFixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    AdapterFactoryRegistry.clear();
-    PhaseListenerRegistry.clear();
-    RWTFixture.deregisterResourceManager();
-    if( savedLifeCycle != null ) {
-      System.setProperty( IInitialization.PARAM_LIFE_CYCLE, savedLifeCycle );
-    }
+    RWTFixture.tearDown();
   }
   
   public void testDefaultInitialization() throws Exception {
     // ensures that the default phase listeners are registered
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
-    Fixture.createContext();
+    Fixture.createContext( true );
     RWTServletContextListener listener = new RWTServletContextListener();
     TestServletContext servletContext = new TestServletContext();
     listener.contextInitialized( new ServletContextEvent( servletContext ) );

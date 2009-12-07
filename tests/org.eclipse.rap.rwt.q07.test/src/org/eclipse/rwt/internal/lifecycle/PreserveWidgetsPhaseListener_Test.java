@@ -50,23 +50,15 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     }
   }
   
-  private String savedLifeCycle;
-
   protected void setUp() throws Exception {
-    Fixture.setUp();
-    savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
+    RWTFixture.fakeContext();
+    RWTFixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    AdapterFactoryRegistry.clear();
-    PhaseListenerRegistry.clear();
-    RWTFixture.deregisterResourceManager();
-    if( savedLifeCycle != null ) {
-      System.setProperty( IInitialization.PARAM_LIFE_CYCLE, savedLifeCycle );
-    }
+    RWTFixture.tearDown();
   }
 
   public void testInitialization() throws Exception {

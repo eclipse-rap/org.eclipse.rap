@@ -268,7 +268,7 @@ public class Image_Test extends TestCase {
   
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
-    Fixture.setUp();
+    RWTFixture.setUpWithoutResourceManager();
     RWTFixture.registerAdapterFactories();
     Fixture.createContext( false );
     // registration of real resource manager

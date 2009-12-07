@@ -27,7 +27,7 @@ public class EventAdapter_Test extends TestCase {
   
   protected void setUp() throws Exception {
     RWTFixture.setUp();
-    Fixture.createContext();
+    Fixture.createContext( true );
   }
   
   protected void tearDown() throws Exception {

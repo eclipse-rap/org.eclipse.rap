@@ -189,7 +189,8 @@ public final class RWTFixture {
 
     // deregistration of adapter factories
     deregisterAdapterFactories();
-    
+    AdapterFactoryRegistry.clear();
+
     // Keep the ThemeManager initialized to speed up the TestSuite
 
     // clear Graphics resources

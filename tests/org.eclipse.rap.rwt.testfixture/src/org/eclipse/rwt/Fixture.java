@@ -43,8 +43,6 @@ public class Fixture {
   public final static File TEMP_DIR 
     = new File( System.getProperty( "java.io.tmpdir" ) );
   public final static File CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
-  public final static String OPERATING_SYSTEM 
-    = System.getProperty( "os.name" );
   
   public final static class TestResourceManager
     implements IResourceManager, Adaptable
@@ -875,7 +873,6 @@ public class Fixture {
     public Enumeration getInitParameterNames() {
       return null;
     }
-    
   }
   
   public static class TestServletOutputStream extends ServletOutputStream {
@@ -942,15 +939,6 @@ public class Fixture {
     }
   }
   
-  public static void createContext()
-    throws IOException, 
-           FactoryConfigurationError, 
-           ParserConfigurationException, 
-           SAXException
-  {
-    createContext( true );
-  }
-  
   public static void createContextWithoutResourceManager()
     throws FileNotFoundException, 
            IOException, 
@@ -981,7 +969,7 @@ public class Fixture {
     }
   }
   
-  public static void delete( final File toDelete ) {
+  private static void delete( final File toDelete ) {
     if( toDelete.isDirectory() ) {
       File[] children = toDelete.listFiles();
       for( int i = 0; i < children.length; i++ ) {
@@ -1074,34 +1062,6 @@ public class Fixture {
     } 
   }
   
-  public static void setResponseWriter( final HtmlResponseWriter writer ) {
-    ContextProvider.getStateInfo().setResponseWriter( writer );
-  }
-  
-  public static String getHeadMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < writer.getHeadSize(); i++ ) {
-      buffer.append( writer.getHeadToken( i ) );
-    }
-    return buffer.toString();
-  }
-  
-  public static String getFootMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < writer.getFootSize(); i++ ) {
-      buffer.append( writer.getFootToken( i ) );
-    }
-    return buffer.toString();
-  }
-  
-  public static String getBodyMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < writer.getBodySize(); i++ ) {
-      buffer.append( writer.getBodyToken( i ) );
-    }
-    return buffer.toString();
-  }
-  
   public static String getAllMarkup() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
@@ -1116,9 +1076,28 @@ public class Fixture {
     return buffer.toString();
   }
   
-  public static void fakeUserAgent( final String userAgent ) {
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setHeader( "User-Agent", userAgent );
+  private static String getHeadMarkup( final HtmlResponseWriter writer ) {
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < writer.getHeadSize(); i++ ) {
+      buffer.append( writer.getHeadToken( i ) );
+    }
+    return buffer.toString();
+  }
+  
+  private static String getFootMarkup( final HtmlResponseWriter writer ) {
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < writer.getFootSize(); i++ ) {
+      buffer.append( writer.getFootToken( i ) );
+    }
+    return buffer.toString();
+  }
+  
+  private static String getBodyMarkup( final HtmlResponseWriter writer ) {
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < writer.getBodySize(); i++ ) {
+      buffer.append( writer.getBodyToken( i ) );
+    }
+    return buffer.toString();
   }
   
   public static void fakeResponseWriter() {

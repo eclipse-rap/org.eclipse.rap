@@ -8,32 +8,27 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.swt.RWTFixture;
 
 
 
 public class AdapterManager_Test extends TestCase {
 
-  public interface Concealer {
-    // empty, used only for test case
-  }
-  
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    RWTFixture.fakeContext();
   }
   
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    RWTFixture.tearDown();
   }
   
   public void testAdapterManager() throws Exception {
-    
     AdapterFactory adapterFactory = new AdapterFactory() {
       public Object getAdapter( final Object adaptable, 
                                 final Class adapter ) {
@@ -93,6 +88,10 @@ public class AdapterManager_Test extends TestCase {
   
   /////////////
   // test types
+  
+  public interface Concealer {
+    // empty, used only for test case
+  }
   
   class Dummy implements IDummyType, Adaptable {
     public void doNothing() {

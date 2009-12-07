@@ -384,7 +384,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    RWTFixture.fakeContext();
+    RWTFixture.fakeNewRequest();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
@@ -453,15 +454,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    AdapterManager manager = AdapterManagerImpl.getInstance();
-    manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
-    manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );
-    RWTFixture.deregisterResourceManager();
-    String[] entryPoints = EntryPointManager.getEntryPoints();
-    for( int i = 0; i < entryPoints.length; i++ ) {
-      EntryPointManager.deregister( entryPoints[ i ] );
-    }
-    Fixture.tearDown();
+    RWTFixture.tearDown();
   }
 
   private void clearLogs() {

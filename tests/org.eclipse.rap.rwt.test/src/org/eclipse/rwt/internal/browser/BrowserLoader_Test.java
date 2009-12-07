@@ -18,7 +18,10 @@ import java.io.PrintStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.Fixture.TestRequest;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.swt.RWTFixture;
 
 /** 
  * <p> BrowserLoader_Test is the testcase for browser class loading for a 
@@ -106,7 +109,7 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testLoadClassForName() {
     String userAgent = "unknown browser v0.43";
-    Fixture.fakeUserAgent( userAgent );
+    fakeUserAgent( userAgent );
     Fixture.fakeRequestParam( RequestParams.SCRIPT, "true" );
     Fixture.fakeRequestParam( RequestParams.AJAX_ENABLED, "true" );
     //
@@ -116,7 +119,7 @@ public class BrowserLoader_Test extends TestCase {
     assertEquals( false, browser.isScriptEnabled() );
     assertEquals( false, browser.isAjaxEnabled() );
     //
-    Fixture.fakeUserAgent( userAgent );
+    fakeUserAgent( userAgent );
     Fixture.fakeRequestParam( RequestParams.SCRIPT, "true" );
     Fixture.fakeRequestParam( RequestParams.AJAX_ENABLED, "true" );
     Mozilla1_6 fallback = new Mozilla1_6( false, false );
@@ -127,7 +130,7 @@ public class BrowserLoader_Test extends TestCase {
   }
 
   public void testStrange() {
-    Fixture.fakeUserAgent( USERAGENT_STRANGE );
+    fakeUserAgent( USERAGENT_STRANGE );
     Fixture.fakeRequestParam( RequestParams.SCRIPT, "true" );
     Fixture.fakeRequestParam( RequestParams.AJAX_ENABLED, "true" );
     Browser browser = BrowserLoader.load();
@@ -138,7 +141,7 @@ public class BrowserLoader_Test extends TestCase {
   }
   
   public void testDefault() {
-    Fixture.fakeUserAgent( USERAGENT_DEFAULT );
+    fakeUserAgent( USERAGENT_DEFAULT );
     Fixture.fakeRequestParam( RequestParams.SCRIPT, "true" );
     Fixture.fakeRequestParam( RequestParams.AJAX_ENABLED, "true" );
     Browser browser = BrowserLoader.load();
@@ -150,10 +153,10 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testSafari() {   
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_SAFARI_1_3 );
+    fakeUserAgent( USERAGENT_SAFARI_1_3 );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Safari2.class, browser.getClass() );   
-    Fixture.fakeUserAgent( USERAGENT_SAFARI_2_0 );
+    fakeUserAgent( USERAGENT_SAFARI_2_0 );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Safari2.class, browser.getClass() );
     assertNoSystemOut();
@@ -161,7 +164,7 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testNetscapeNavigator() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_4_7_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_4_7_WIN );
     browser = BrowserLoader.load();  
     assertEquals( Default.class, browser.getClass() ); 
     assertNoSystemOut();
@@ -169,13 +172,13 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testNetscapeMozilla() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_6_2_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_6_2_WIN );
     browser = BrowserLoader.load();  
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_6.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_7_1_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_7_1_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_6.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_8_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_8_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() ); 
     assertNoSystemOut();
@@ -183,16 +186,16 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testOpera() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_OPERA_6 );
+    fakeUserAgent( USERAGENT_OPERA_6 );
     browser = BrowserLoader.load();  
     assertEquals( org.eclipse.rwt.internal.browser.Default.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_OPERA_7_23_WIN_2K );
+    fakeUserAgent( USERAGENT_OPERA_7_23_WIN_2K );
     browser = BrowserLoader.load();  
     assertEquals( org.eclipse.rwt.internal.browser.Default.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_OPERA_8_WIN );
+    fakeUserAgent( USERAGENT_OPERA_8_WIN );
     browser = BrowserLoader.load();  
     assertEquals( org.eclipse.rwt.internal.browser.Opera8.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_OPERA_9_WIN );
+    fakeUserAgent( USERAGENT_OPERA_9_WIN );
     browser = BrowserLoader.load();  
     assertEquals( org.eclipse.rwt.internal.browser.Opera9.class, browser.getClass() ); 
     assertNoSystemOut();
@@ -200,13 +203,13 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testKonqueror() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_KONQUEROR_3_1 );
+    fakeUserAgent( USERAGENT_KONQUEROR_3_1 );
     browser = BrowserLoader.load();
     assertEquals( Konqueror3_1.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_KONQUEROR_3_2 );
+    fakeUserAgent( USERAGENT_KONQUEROR_3_2 );
     browser = BrowserLoader.load();
     assertEquals( Konqueror3_2.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_KONQUEROR_3_5 );
+    fakeUserAgent( USERAGENT_KONQUEROR_3_5 );
     browser = BrowserLoader.load();
     assertEquals( Konqueror3_4.class, browser.getClass() ); 
     assertNoSystemOut();
@@ -214,19 +217,19 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testFireFox() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_0_WIN );
+    fakeUserAgent( USERAGENT_FIREFOX_1_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_0_8_LINUX );
+    fakeUserAgent( USERAGENT_FIREFOX_0_8_LINUX );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_6.class, browser.getClass() );  
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_5 );
+    fakeUserAgent( USERAGENT_FIREFOX_1_5 );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() );  
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_6 );
+    fakeUserAgent( USERAGENT_FIREFOX_1_6 );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() );  
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_2_0_ALPHA );
+    fakeUserAgent( USERAGENT_FIREFOX_2_0_ALPHA );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() );  
     assertNoSystemOut();
@@ -234,37 +237,37 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testIE() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_IE_2_0_WIN );
+    fakeUserAgent( USERAGENT_IE_2_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Default.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_IE_5_0_WIN );
+    fakeUserAgent( USERAGENT_IE_5_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Ie5.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_IE_5_5_WIN );
+    fakeUserAgent( USERAGENT_IE_5_5_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Ie5_5.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_IE_6_0_WIN );
+    fakeUserAgent( USERAGENT_IE_6_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Ie6.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_IE_7_0_WIN );
+    fakeUserAgent( USERAGENT_IE_7_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Ie7.class, browser.getClass() );
     // A fictitious future IE 8.5 - tests DetectorID#getMajor 
-    Fixture.fakeUserAgent( "Mozilla/4.0 (compatible; MSIE 8.5; Windows NT 5.0)" );
+    fakeUserAgent( "Mozilla/4.0 (compatible; MSIE 8.5; Windows NT 5.0)" );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Ie7.class, browser.getClass() ); 
     assertNoSystemOut();
   }
   
   public void testMozilla() {
-    Fixture.fakeUserAgent( USERAGENT_MOZILLA_1_6 );
+    fakeUserAgent( USERAGENT_MOZILLA_1_6 );
     Browser browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_6.class, browser.getClass() ); 
     assertNoSystemOut();
   }
   
   public void testCamino() {
-    Fixture.fakeUserAgent( USERAGENT_CAMINO );
+    fakeUserAgent( USERAGENT_CAMINO );
     Browser browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() ); 
     assertNoSystemOut();
@@ -272,10 +275,10 @@ public class BrowserLoader_Test extends TestCase {
   
   public void testEpiphany() {
     Browser browser;
-    Fixture.fakeUserAgent( USERAGENT_EPIPHANY_1_8_2 );
+    fakeUserAgent( USERAGENT_EPIPHANY_1_8_2 );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() ); 
-    Fixture.fakeUserAgent( USERAGENT_EPIPHANY_1_8_5 );
+    fakeUserAgent( USERAGENT_EPIPHANY_1_8_5 );
     browser = BrowserLoader.load();
     assertEquals( org.eclipse.rwt.internal.browser.Mozilla1_7.class, browser.getClass() );
     assertNoSystemOut();
@@ -285,98 +288,98 @@ public class BrowserLoader_Test extends TestCase {
     Browser browser;
     Fixture.fakeRequestParam( RequestParams.AJAX_ENABLED, "true" );
     // Default
-    Fixture.fakeUserAgent( USERAGENT_DEFAULT );
+    fakeUserAgent( USERAGENT_DEFAULT );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
     // Internet Explorer
-    Fixture.fakeUserAgent( USERAGENT_IE_2_0_WIN );
+    fakeUserAgent( USERAGENT_IE_2_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_IE_5_0_WIN );
+    fakeUserAgent( USERAGENT_IE_5_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_IE_5_5_WIN );
+    fakeUserAgent( USERAGENT_IE_5_5_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_IE_6_0_WIN );
+    fakeUserAgent( USERAGENT_IE_6_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_IE_7_0_WIN );
+    fakeUserAgent( USERAGENT_IE_7_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
     // Firefox
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_0_8_LINUX );
+    fakeUserAgent( USERAGENT_FIREFOX_0_8_LINUX );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_0_WIN );
+    fakeUserAgent( USERAGENT_FIREFOX_1_0_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_5  );
+    fakeUserAgent( USERAGENT_FIREFOX_1_5 );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_5 );
+    fakeUserAgent( USERAGENT_FIREFOX_1_5 );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_1_6 );
+    fakeUserAgent( USERAGENT_FIREFOX_1_6 );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_FIREFOX_2_0_ALPHA );
+    fakeUserAgent( USERAGENT_FIREFOX_2_0_ALPHA );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
     // Netscape Navigator
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_4_7_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_4_7_WIN );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
     // Netscape with Gecko engine
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_7_1_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_7_1_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_6_2_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_6_2_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_NETSCAPE_8_WIN );
+    fakeUserAgent( USERAGENT_NETSCAPE_8_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
     // Safari
-    Fixture.fakeUserAgent( USERAGENT_SAFARI_1_3 );
+    fakeUserAgent( USERAGENT_SAFARI_1_3 );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_SAFARI_2_0 );
+    fakeUserAgent( USERAGENT_SAFARI_2_0 );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
     // Opera
-    Fixture.fakeUserAgent( USERAGENT_OPERA_7_23_WIN_2K );
+    fakeUserAgent( USERAGENT_OPERA_7_23_WIN_2K );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_OPERA_8_WIN );
+    fakeUserAgent( USERAGENT_OPERA_8_WIN );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_OPERA_9_WIN );
+    fakeUserAgent( USERAGENT_OPERA_9_WIN );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
     // Konqueror
-    Fixture.fakeUserAgent( USERAGENT_KONQUEROR_3_1 );
+    fakeUserAgent( USERAGENT_KONQUEROR_3_1 );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_KONQUEROR_3_2 );
+    fakeUserAgent( USERAGENT_KONQUEROR_3_2 );
     browser = BrowserLoader.load();
     assertEquals( false, browser.isAjaxEnabled() );
     // Camino
-    Fixture.fakeUserAgent( USERAGENT_CAMINO );
+    fakeUserAgent( USERAGENT_CAMINO );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
     // Epiphany
-    Fixture.fakeUserAgent( USERAGENT_EPIPHANY_1_8_2 );
+    fakeUserAgent( USERAGENT_EPIPHANY_1_8_2 );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
-    Fixture.fakeUserAgent( USERAGENT_EPIPHANY_1_8_5 );
+    fakeUserAgent( USERAGENT_EPIPHANY_1_8_5 );
     browser = BrowserLoader.load();
     assertEquals( true, browser.isAjaxEnabled() );
     assertNoSystemOut();
   }
   
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    RWTFixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     bufferedSystemOut = System.out;
     capturedSystemOut = new ByteArrayOutputStream();
@@ -385,13 +388,17 @@ public class BrowserLoader_Test extends TestCase {
   
   protected void tearDown() throws Exception {
     System.setOut( bufferedSystemOut );
-    Fixture.tearDown();
-    Fixture.removeContext();
+    RWTFixture.tearDown();
   }
 
   private void assertNoSystemOut() {
     String msg = "No output shoud have been written, but was:\n" 
                + new String( capturedSystemOut.toByteArray() );
     assertEquals( msg, 0, capturedSystemOut.toByteArray().length );
+  }
+
+  private static void fakeUserAgent( final String userAgent ) {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setHeader( "User-Agent", userAgent );
   }
 }

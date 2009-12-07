@@ -15,9 +15,9 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.swt.RWTFixture;
 
 
 public class LifeCycleFactory_Test extends TestCase {
@@ -39,12 +39,10 @@ public class LifeCycleFactory_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.createContext();
+    RWTFixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    Fixture.removeContext();
+    RWTFixture.tearDown();
   }
 }

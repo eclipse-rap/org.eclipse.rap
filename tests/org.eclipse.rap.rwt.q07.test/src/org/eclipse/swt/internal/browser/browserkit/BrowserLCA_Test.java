@@ -15,8 +15,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.IInitialization;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -76,14 +74,11 @@ public class BrowserLCA_Test extends TestCase {
   
   protected void setUp() throws Exception {
     // we need the resource manager for this test
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
-                        RWTLifeCycle.class.getName() );
-    Fixture.setUp();
-    RWTFixture.registerAdapterFactories();
-    ThemeManager.getInstance().initialize();
+    RWTFixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
+    ThemeManager.getInstance().initialize();
   }
   
   protected void tearDown() throws Exception {

@@ -8,16 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.resources;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.IInitialization;
-import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.RWTFixture;
@@ -25,24 +19,12 @@ import org.eclipse.swt.RWTFixture;
 
 public class ResourceRegistry_Test extends TestCase {
 
-  private String savedLifeCycle;
-
   protected void setUp() throws Exception {
-    Fixture.setUp();
-    savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
+    RWTFixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    AdapterFactoryRegistry.clear();
-    PhaseListenerRegistry.clear();
-    ResourceRegistry.clear();
-    RWTFixture.deregisterResourceManager();
-    if( savedLifeCycle != null ) {
-      System.setProperty( IInitialization.PARAM_LIFE_CYCLE, savedLifeCycle );
-    }
+    RWTFixture.tearDown();
   }
   
   public void testAddAndGetAndClear() {

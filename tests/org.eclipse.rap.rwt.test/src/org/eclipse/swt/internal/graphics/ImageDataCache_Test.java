@@ -30,8 +30,7 @@ public class ImageDataCache_Test extends TestCase {
 
   protected void setUp() throws Exception {
     // we do need the resource manager for this test
-    Fixture.setUp();
-    RWTFixture.registerAdapterFactories();
+    RWTFixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );

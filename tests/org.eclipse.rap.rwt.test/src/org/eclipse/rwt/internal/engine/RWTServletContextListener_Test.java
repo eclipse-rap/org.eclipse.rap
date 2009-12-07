@@ -28,6 +28,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.RWTFixture.TestResourceManager;
 import org.eclipse.swt.RWTFixture.TestResourceManagerFactory;
@@ -51,8 +52,6 @@ public class RWTServletContextListener_Test extends TestCase {
 
   private static String phaseListenerLog = "";
 
-  private String savedLifeCycle;
-  
   public static class TestEntryPointWithShell implements IEntryPoint {
     Composite shell;
     public int createUI() {
@@ -100,18 +99,14 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    Fixture.setUp();
-    savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
+    RWTFixture.fakeContext();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
   }
   
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    RWTFixture.tearDown();
     AdapterFactoryRegistry.clear();
-    if( savedLifeCycle != null ) {
-      System.setProperty( IInitialization.PARAM_LIFE_CYCLE, savedLifeCycle );
-    }
   }
   
   public void testAdapterFactoryRegistryInitialization() {

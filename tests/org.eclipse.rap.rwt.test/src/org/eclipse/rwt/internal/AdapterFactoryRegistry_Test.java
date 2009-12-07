@@ -42,16 +42,14 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
+    RWTFixture.fakeContext();
+    RWTFixture.fakeNewRequest();
   }
   
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    AdapterFactoryRegistry.clear();
+    RWTFixture.tearDown();
   }
   
   public void testRegistration() {

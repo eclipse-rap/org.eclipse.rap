@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
@@ -19,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.*;
 import org.eclipse.rwt.internal.util.CssClass;
+import org.eclipse.swt.RWTFixture;
 
 
 /** <p>Tests functionality of org.eclipse.rap.HtmlResponseWriter</p>
@@ -39,12 +39,12 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    RWTFixture.setUp();
     Fixture.fakeBrowser( new Default( true, true ) );
   }
   
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    RWTFixture.tearDown();
   }
   
   

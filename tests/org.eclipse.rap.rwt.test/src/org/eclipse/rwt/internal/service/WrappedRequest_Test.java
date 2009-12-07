@@ -136,7 +136,8 @@ public class WrappedRequest_Test extends TestCase {
                               EntryPointManager.DEFAULT );
     Fixture.fakeRequestParam( "w4t_scriptEnabled", "true" );
     Fixture.fakeRequestParam( "w4t_ajaxEnabled", "true" );
-    Fixture.fakeUserAgent( "myAgent" );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setHeader( "User-Agent", "myAgent" );
     ServiceManager.getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
