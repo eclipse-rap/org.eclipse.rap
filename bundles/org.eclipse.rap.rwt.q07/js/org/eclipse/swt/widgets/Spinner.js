@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     _onSend : function( evt ) {
       this._isModified = false;
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget(this);
+      var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".selection", this.getValue() );
       req.removeEventListener( "send", this._onSend, this );
@@ -166,8 +166,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
 
     _sendModifyText : function( evt ) {
       if( this._isModified ) {
-        var req = org.eclipse.swt.Request.getInstance();
-        req.send();
+        org.eclipse.swt.Request.getInstance().send();
         this._isModified = false;
       }
     }
