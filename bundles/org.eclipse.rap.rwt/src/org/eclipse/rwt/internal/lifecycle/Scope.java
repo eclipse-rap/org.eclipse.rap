@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.*;
 
 
-public class Scope implements Comparable {
+public final class Scope implements Comparable {
 
   public static final Scope APPLICATION = new Scope( "APPLICATION" );
   public static final Scope SESSION = new Scope( "SESSION" );
@@ -28,17 +28,17 @@ public class Scope implements Comparable {
   public static final List VALUES 
     = Collections.unmodifiableList( Arrays.asList( values ) );
   
-  private final String scopeName;
+  private final String name;
   private final int ordinal;
 
   
-  private Scope( final String scopeName ) {
-    this.scopeName = scopeName;
+  private Scope( final String name ) {
+    this.name = name;
     this.ordinal = nextOrdinal++;
   }
   
   public String toString() {
-    return scopeName;
+    return name;
   }
 
   public int compareTo( final Object toCompare ) {

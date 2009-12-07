@@ -67,20 +67,19 @@ public class PhaseId implements Comparable {
   /**
    * A list containing the instances of this enumeration.
    */
-  // TODO [rst] Does this have to be public?
   public static final List VALUES
     = Collections.unmodifiableList( Arrays.asList( values ) );
   
-  private final String phaseName;
+  private final String name;
   private final int ordinal;
 
-  private PhaseId( final String phaseName ) {
-    this.phaseName = phaseName;
+  private PhaseId( final String name ) {
+    this.name = name;
     this.ordinal = nextOrdinal++;
   }
   
   public String toString() {
-    return phaseName;
+    return name;
   }
 
   public int compareTo( final Object toCompare ) {
@@ -92,7 +91,6 @@ public class PhaseId implements Comparable {
    *
    * @return the ordinal number
    */
-  // TODO [rst] Does this have to be public?
   public int getOrdinal() {
     return ordinal;
   }
