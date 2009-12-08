@@ -75,7 +75,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           doc.addEventListener( "keydown", this._onKeyEvent, this );
           doc.addEventListener( "keyup", this._onKeyEvent, this );
           this.setCurrentTargetWidget( event.getOriginalTarget() );
-          this._fakeMouseEvent( "mouseout" );
+          this._fakeMouseEvent( "mouseout" ); // fix for bug 296348
           var sourceWidget = dndHandler.__dragCache.sourceWidget;
           var feedbackWidget = this._getFeedbackWidget( control, sourceWidget );
           // Note: Unlike SWT, the feedbackWidget can not be rendered behind
@@ -452,6 +452,23 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     /////////
     // helper
 
+    _cleanUp : function() {
+      this._fakeMouseEvent( "mouseover" ); // fix for bug 296348
+      this.setCurrentTargetWidget( null );
+      if( this._currentDropTarget != null) {
+        this.setFeedback( this._currentDropTarget, null, 0 );
+        this._currentDropTarget = null;
+      }
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      dndHandler.setFeedbackWidget( null );
+      this._resetFeedbackWidget();
+      this._currentDragSource = null;
+      var doc = qx.ui.core.ClientDocument.getInstance();
+      doc.removeEventListener( "mouseover", this._onMouseOver, this );
+      doc.removeEventListener( "keydown", this._onKeyEvent, this );
+      doc.removeEventListener( "keyup", this._onKeyEvent, this );
+    },
+
     _fakeMouseEvent : function( type ) {
       var domTarget = this._currentTargetWidget._getTargetNode();
       var eventHandler = qx.event.handler.EventHandler;
@@ -483,23 +500,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
                                                 this._currentTargetWidget,
                                                 null );
       target.dispatchEvent( event );
-    },
-
-    _cleanUp : function() {
-      this._fakeMouseEvent( "mouseover" );
-      this.setCurrentTargetWidget( null );
-      if( this._currentDropTarget != null) {
-        this.setFeedback( this._currentDropTarget, null, 0 );
-        this._currentDropTarget = null;
-      }
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      dndHandler.setFeedbackWidget( null );
-      this._resetFeedbackWidget();
-      this._currentDragSource = null;
-      var doc = qx.ui.core.ClientDocument.getInstance();
-      doc.removeEventListener( "mouseover", this._onMouseOver, this );
-      doc.removeEventListener( "keydown", this._onKeyEvent, this );
-      doc.removeEventListener( "keyup", this._onKeyEvent, this );
     },
 
     //////////////////
