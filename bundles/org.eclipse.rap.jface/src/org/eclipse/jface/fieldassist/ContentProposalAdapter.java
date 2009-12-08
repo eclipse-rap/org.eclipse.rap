@@ -148,7 +148,10 @@ public class ContentProposalAdapter {
 				// Listeners on the target control's shell
 				Shell controlShell = control.getShell();
 				controlShell.addListener(SWT.Move, this);
-				controlShell.addListener(SWT.Resize, this);
+				// RAP [if] Don't add a resize listener because of 
+				// TextSizeDetermnation
+//				controlShell.addListener(SWT.Resize, this);
+				// RAPEND [if]
 
 			}
 
@@ -176,7 +179,10 @@ public class ContentProposalAdapter {
 
 					Shell controlShell = control.getShell();
 					controlShell.removeListener(SWT.Move, this);
-					controlShell.removeListener(SWT.Resize, this);
+					// RAP [if] Don't add a resize listener because of 
+	                // TextSizeDetermnation
+//					controlShell.removeListener(SWT.Resize, this);
+					// RAPEND [if]
 				}
 			}
 		}
@@ -217,6 +223,12 @@ public class ContentProposalAdapter {
 //					// Some keys will always set doit to false anyway.
 //					e.doit = propagateKeys;
 //				}
+				
+				// RAP [if]: Recompute proposals on modify event too.
+                if( e.type == SWT.Modify ) {                  
+                  asyncRecomputeProposals(filterText);
+                }
+                // ENDRAP [if]
 
 				// No character. Check for navigation keys.
 
@@ -341,71 +353,71 @@ public class ContentProposalAdapter {
 				// key != 0
 				// Check for special keys involved in cancelling, accepting, or
 				// filtering the proposals.
-//				switch (key) {
-//				case SWT.ESC:
-//					e.doit = false;
-//					close();
-//					break;
-//
-//				case SWT.LF:
-//				case SWT.CR:
-//					e.doit = false;
-//					Object p = getSelectedProposal();
-//					if (p != null) {
-//						acceptCurrentProposal();
-//					} else {
-//						close();
-//					}
-//					break;
-//
-//				case SWT.TAB:
-//					e.doit = false;
-//					getShell().setFocus();
-//					return;
-//
-//				case SWT.BS:
-//					// Backspace should back out of any stored filter text
-//					if (filterStyle != FILTER_NONE) {
-//						// We have no filter to back out of, so do nothing
-//						if (filterText.length() == 0) {
-//							return;
-//						}
-//						// There is filter to back out of
-//						filterText = filterText.substring(0, filterText
-//								.length() - 1);
-//						asyncRecomputeProposals(filterText);
-//						return;
-//					}
-//					// There is no filtering provided by us, but some
-//					// clients provide their own filtering based on content.
-//					// Recompute the proposals if the cursor position
-//					// will change (is not at 0).
-//					int pos = getControlContentAdapter().getCursorPosition(
-//							getControl());
-//					// We rely on the fact that the contents and pos do not yet
-//					// reflect the result of the BS. If the contents were
-//					// already empty, then BS should not cause
-//					// a recompute.
-//					if (pos > 0) {
-//						asyncRecomputeProposals(filterText);
-//					}
-//					break;
-//
-//				default:
-//					// If the key is a defined unicode character, and not one of
-//					// the special cases processed above, update the filter text
-//					// and filter the proposals.
-//					if (Character.isDefined(key)) {
-//						if (filterStyle == FILTER_CUMULATIVE) {
-//							filterText = filterText + String.valueOf(key);
-//						} else if (filterStyle == FILTER_CHARACTER) {
-//							filterText = String.valueOf(key);
-//						}
-//						// Recompute proposals after processing this event.
-//						asyncRecomputeProposals(filterText);
-//					}
-//					break;
-//				}
+				switch (key) {
+				case SWT.ESC:
+					e.doit = false;
+					close();
+					break;
+
+				case SWT.LF:
+				case SWT.CR:
+					e.doit = false;
+					Object p = getSelectedProposal();
+					if (p != null) {
+						acceptCurrentProposal();
+					} else {
+						close();
+					}
+					break;
+
+				case SWT.TAB:
+					e.doit = false;
+					getShell().setFocus();
+					return;
+
+				case SWT.BS:
+					// Backspace should back out of any stored filter text
+					if (filterStyle != FILTER_NONE) {
+						// We have no filter to back out of, so do nothing
+						if (filterText.length() == 0) {
+							return;
+						}
+						// There is filter to back out of
+						filterText = filterText.substring(0, filterText
+								.length() - 1);
+						asyncRecomputeProposals(filterText);
+						return;
+					}
+					// There is no filtering provided by us, but some
+					// clients provide their own filtering based on content.
+					// Recompute the proposals if the cursor position
+					// will change (is not at 0).
+					int pos = getControlContentAdapter().getCursorPosition(
+							getControl());
+					// We rely on the fact that the contents and pos do not yet
+					// reflect the result of the BS. If the contents were
+					// already empty, then BS should not cause
+					// a recompute.
+					if (pos > 0) {
+						asyncRecomputeProposals(filterText);
+					}
+					break;
+
+				default:
+					// If the key is a defined unicode character, and not one of
+					// the special cases processed above, update the filter text
+					// and filter the proposals.
+					if (Character.isDefined(key)) {
+						if (filterStyle == FILTER_CUMULATIVE) {
+							filterText = filterText + String.valueOf(key);
+						} else if (filterStyle == FILTER_CHARACTER) {
+							filterText = String.valueOf(key);
+						}
+						// Recompute proposals after processing this event.
+						asyncRecomputeProposals(filterText);
+					}
+					break;
+				}			
 			}
 		}
 		// RAPEND: [bm] 
@@ -987,44 +999,39 @@ public class ContentProposalAdapter {
 		/*
 		 * Request the proposals from the proposal provider, and recompute any
 		 * caches. Repopulate the popup if it is open.
-		 */
-		// RAP [bm]: 
-//		private void recomputeProposals(String filterText) {
-//			IContentProposal[] allProposals = getProposals();
-//			// If the non-filtered proposal list is empty, we should
-//			// close the popup.
-//			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
-//			if (allProposals.length == 0) {
-//				proposals = allProposals;
-//				close();
-//			} else {
-//				// Keep the popup open, but filter by any provided filter text
-//				setProposals(filterProposals(allProposals, filterText));
-//			}
-//		}
-		// RAPEND: [bm] 
-
+		 */ 
+		private void recomputeProposals(String filterText) {
+			IContentProposal[] allProposals = getProposals();
+			// If the non-filtered proposal list is empty, we should
+			// close the popup.
+			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
+			if (allProposals.length == 0) {
+				proposals = allProposals;
+				close();
+			} else {
+				// Keep the popup open, but filter by any provided filter text
+				setProposals(filterProposals(allProposals, filterText));
+			}
+		}
 		
 		/*
 		 * In an async block, request the proposals. This is used when clients
 		 * are in the middle of processing an event that affects the widget
 		 * content. By using an async, we ensure that the widget content is up
 		 * to date with the event.
-		 */
-		// RAP [bm]: 
-//		private void asyncRecomputeProposals(final String filterText) {
-//			if (isValid()) {
-//				control.getDisplay().asyncExec(new Runnable() {
-//					public void run() {
-//						recordCursorPosition();
-//						recomputeProposals(filterText);
-//					}
-//				});
-//			} else {
-//				recomputeProposals(filterText);
-//			}
-//		}
-		// RAPEND: [bm] 
+		 */ 
+		private void asyncRecomputeProposals(final String filterText) {
+			if (isValid()) {
+				control.getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						recordCursorPosition();
+						recomputeProposals(filterText);
+					}
+				});
+			} else {
+				recomputeProposals(filterText);
+			}
+		}
 
 		/*
 		 * Filter the provided list of content proposals according to the filter
@@ -1695,44 +1702,44 @@ public class ContentProposalAdapter {
 				}
 
 				switch (e.type) {
-				// RAP [bm]: 
-//				case SWT.Traverse:
-//				case SWT.KeyDown:
-//					if (DEBUG) {
-//						StringBuffer sb;
-//						if (e.type == SWT.Traverse) {
-//							sb = new StringBuffer("Traverse"); //$NON-NLS-1$
-//						} else {
-//							sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
-//						}
-//						sb.append(" received by adapter"); //$NON-NLS-1$
-//						dump(sb.toString(), e);
-//					}
-//					// If the popup is open, it gets first shot at the
-//					// keystroke and should set the doit flags appropriately.
-//					if (popup != null) {
-//						popup.getTargetControlListener().handleEvent(e);
-//						if (DEBUG) {
-//							StringBuffer sb;
-//							if (e.type == SWT.Traverse) {
-//								sb = new StringBuffer("Traverse"); //$NON-NLS-1$
-//							} else {
-//								sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
-//							}
-//							sb.append(" after being handled by popup"); //$NON-NLS-1$
-//							dump(sb.toString(), e);
-//						}
-//
-//						return;
-//					}
-//
-//					// We were only listening to traverse events for the popup
-//					if (e.type == SWT.Traverse) {
-//						return;
-//					}
-//
-//					// The popup is not open. We are looking at keydown events
-//					// for a trigger to open the popup.
+				case SWT.Traverse:
+				case SWT.KeyDown:
+					if (DEBUG) {
+						StringBuffer sb;
+						if (e.type == SWT.Traverse) {
+							sb = new StringBuffer("Traverse"); //$NON-NLS-1$
+						} else {
+							sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
+						}
+						sb.append(" received by adapter"); //$NON-NLS-1$
+						dump(sb.toString(), e);
+					}
+					// If the popup is open, it gets first shot at the
+					// keystroke and should set the doit flags appropriately.
+					if (popup != null) {
+						popup.getTargetControlListener().handleEvent(e);
+						if (DEBUG) {
+							StringBuffer sb;
+							if (e.type == SWT.Traverse) {
+								sb = new StringBuffer("Traverse"); //$NON-NLS-1$
+							} else {
+								sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
+							}
+							sb.append(" after being handled by popup"); //$NON-NLS-1$
+							dump(sb.toString(), e);
+						}
+
+						return;
+					}
+
+					// We were only listening to traverse events for the popup
+					if (e.type == SWT.Traverse) {
+						return;
+					}
+
+					// The popup is not open. We are looking at keydown events
+					// for a trigger to open the popup.
+					// RAP [if]: KeyStroke
 //					if (triggerKeyStroke != null) {
 //						// Either there are no modifiers for the trigger and we
 //						// check the character field...
@@ -1751,33 +1758,34 @@ public class ContentProposalAdapter {
 //							return;
 //						}
 //					}
-//					/*
-//					 * The triggering keystroke was not invoked. If a character
-//					 * was typed, compare it to the autoactivation characters.
-//					 */
-//					if (e.character != 0) {
-//						if (autoActivateString != null) {
-//							if (autoActivateString.indexOf(e.character) >= 0) {
-//								autoActivate();
-//							} else {
-//								// No autoactivation occurred, so record the key
-//								// down as a means to interrupt any
-//								// autoactivation
-//								// that is pending due to autoactivation delay.
-//								receivedKeyDown = true;
-//							}
-//						} else {
-//							// The autoactivate string is null. If the trigger
-//							// is also null, we want to act on any modification
-//							// to the content.  Set a flag so we'll catch this
-//							// in the modify event.
+					// ENDRAP [if]
+					/*
+					 * The triggering keystroke was not invoked. If a character
+					 * was typed, compare it to the autoactivation characters.
+					 */
+					if (e.character != 0) {
+						if (autoActivateString != null) {
+							if (autoActivateString.indexOf(e.character) >= 0) {
+								autoActivate();
+							} else {
+								// No autoactivation occurred, so record the key
+								// down as a means to interrupt any
+								// autoactivation
+								// that is pending due to autoactivation delay.
+								receivedKeyDown = true;
+							}
+						} else {
+							// The autoactivate string is null. If the trigger
+							// is also null, we want to act on any modification
+							// to the content.  Set a flag so we'll catch this
+							// in the modify event.
+						    // RAP [if]: KeyStroke
 //							if (triggerKeyStroke == null) {
-//								watchModify = true;
+								watchModify = true;
 //							}
-//						}
-//					}
-//					break;
-				// RAPEND: [bm] 
+						}
+					}
+					break;
 
 				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
 				// Given that we will close the popup when there are no valid
@@ -1801,6 +1809,11 @@ public class ContentProposalAdapter {
 							autoActivate();
 						}
 					}
+					// RAP [if]: Recompute proposals on modify event too.
+					if( popup != null ) {
+                      popup.getTargetControlListener().handleEvent( e );
+					}
+					// ENDRAP [if]
 					break;
 				default:
 					break;
@@ -1832,10 +1845,8 @@ public class ContentProposalAdapter {
 				return "[0x" + Integer.toHexString(i) + ']'; //$NON-NLS-1$
 			}
 		};
-		// RAP [bm]: 
-//		control.addListener(SWT.KeyDown, controlListener);
-//		control.addListener(SWT.Traverse, controlListener);
-		// RAPEND: [bm] 
+		control.addListener(SWT.KeyDown, controlListener);		
+		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
 
 		if (DEBUG) {
