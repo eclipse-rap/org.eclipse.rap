@@ -10,6 +10,8 @@
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.*;
@@ -28,6 +30,10 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     = "org.eclipse.rwt.DNDSupport.getInstance().setDragSourceTransferTypes";
   private static final String JSFUNC_SET_OPERATION_OVERWRITE
     = "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite";
+  private static final String JSFUNC_SET_FEEDBACK
+    = "org.eclipse.rwt.DNDSupport.getInstance().setFeedback";
+  private static final String JSFUNC_CANCEL
+    = "org.eclipse.rwt.DNDSupport.getInstance().cancel";
 
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
@@ -56,6 +62,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     DragSource dragSource = ( DragSource )widget;
     writeTransfer( dragSource );
     writeDetail( dragSource );
+    writeFeedback( dragSource );
     writeCancel( dragSource );
   }
 
@@ -98,6 +105,21 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
 
+  private void writeFeedback( final DragSource dragSource ) throws IOException {
+    IDNDAdapter dndAdapter
+      = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+    if( dndAdapter.hasFeedbackChanged() ) {
+      JSWriter writer = JSWriter.getWriterFor( dragSource );
+      int value = dndAdapter.getFeedbackChangedValue();
+      Object[] args = new Object[]{
+        dndAdapter.getFeedbackChangedControl(),
+        convertFeedback( value ),
+        new Integer( value )
+      };
+      writer.callStatic( JSFUNC_SET_FEEDBACK, args );
+    }
+  }
+
   private static void writeCancel( final DragSource dragSource )
     throws IOException
   {
@@ -105,8 +127,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
       = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.isCanceled() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
-      String function = "org.eclipse.rwt.DNDSupport.getInstance().cancel";
-      writer.callStatic( function, new Object[]{} );
+      writer.callStatic( JSFUNC_CANCEL, null );
     }
   }
 
@@ -125,4 +146,30 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
+  private static String[] convertFeedback( final int feedback ) {
+    List list = new ArrayList();
+    if( ( feedback & DND.FEEDBACK_EXPAND ) != 0 ) {
+      list.add( "expand" );
+    }
+    if( ( feedback & DND.FEEDBACK_INSERT_AFTER ) != 0 ) {
+      list.add( "after" );
+    }
+    if( ( feedback & DND.FEEDBACK_INSERT_BEFORE ) != 0 ) {
+      list.add( "before" );
+    }
+    if( ( feedback & DND.FEEDBACK_SCROLL ) != 0 ) {
+      list.add( "scroll" );
+    }
+    if( ( feedback & DND.FEEDBACK_SELECT ) != 0 ) {
+      list.add( "select" );
+    }
+    String[] result = new String[ list.size() ];
+    for( int i = 0; i < list.size(); i++ ) {
+      result[ i ] = ( String )list.get( i );
+    }
+    return result;
+  }
+
+
 }

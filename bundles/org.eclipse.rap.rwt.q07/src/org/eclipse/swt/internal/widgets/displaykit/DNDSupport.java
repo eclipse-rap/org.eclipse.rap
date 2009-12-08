@@ -45,18 +45,26 @@ public final class DNDSupport {
     = PACKAGE_PREFIX + ".dragEnter.x";
   private static final String EVENT_DRAG_ENTER_Y
     = PACKAGE_PREFIX + ".dragEnter.y";
+  private static final String EVENT_DRAG_ENTER_ITEM
+  = PACKAGE_PREFIX + ".dragEnter.item";
   private static final String EVENT_DRAG_ENTER_TIME
     = PACKAGE_PREFIX + ".dragEnter.time";
   private static final String EVENT_DRAG_ENTER_SOURCE
     = PACKAGE_PREFIX + ".dragEnter.source";
+  private static final String EVENT_DRAG_ENTER_FEEDBACK
+    = PACKAGE_PREFIX + ".dragEnter.feedback";
   private static final String EVENT_DRAG_OVER
     = PACKAGE_PREFIX + ".dragOver";
   private static final String EVENT_DRAG_OVER_OPERATION
     = PACKAGE_PREFIX + ".dragOver.operation";
+  private static final String EVENT_DRAG_OVER_FEEDBACK
+  = PACKAGE_PREFIX + ".dragOver.feedback";
   private static final String EVENT_DRAG_OVER_X
     = PACKAGE_PREFIX + ".dragOver.x";
   private static final String EVENT_DRAG_OVER_Y
     = PACKAGE_PREFIX + ".dragOver.y";
+  private static final String EVENT_DRAG_OVER_ITEM
+    = PACKAGE_PREFIX + ".dragOver.item";
   private static final String EVENT_DRAG_OVER_SOURCE
     = PACKAGE_PREFIX + ".dragOver.source";
   private static final String EVENT_DRAG_OVER_TIME
@@ -79,6 +87,8 @@ public final class DNDSupport {
     = PACKAGE_PREFIX + ".dropAccept.x";
   private static final String EVENT_DROP_ACCEPT_Y
     = PACKAGE_PREFIX + ".dropAccept.y";
+  private static final String EVENT_DROP_ACCEPT_ITEM
+    = PACKAGE_PREFIX + ".dropAccept.item";
   private static final String EVENT_DROP_ACCEPT_SOURCE
     = PACKAGE_PREFIX + ".dropAccept.source";
   private static final String EVENT_DROP_ACCEPT_TIME
@@ -144,20 +154,26 @@ public final class DNDSupport {
       DropTargetEvent event
         = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_ENTER );
       int operation = readOperationParam( EVENT_DRAG_ENTER_OPERATION );
+      int feedback = readIntParam( EVENT_DRAG_ENTER_FEEDBACK );
+      Item item = readItemParam( EVENT_DRAG_ENTER_ITEM );
       TransferData[] validDataTypes
         = determineDataTypes( dragSource, dropTarget );
       TransferData dataType = validDataTypes[ 0 ];
       event.detail = operation;
+      event.feedback = feedback;
       event.currentDataType = dataType;
       event.dataTypes = validDataTypes;
+      event.item = item;
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( EVENT_DRAG_ENTER_TIME );
       event.processEvent();
       if( event.detail != operation ) {
-        int changedOperation = checkOperation( dragSource, dropTarget, event.detail );
-        getDNDAdapter( dragSource ).setDetailChanged( control, changedOperation );
+        changeOperation( dragSource, dropTarget, event.detail );
         // TODO [tb] : check dataType
+      }
+      if( event.feedback != feedback ) {
+        getDNDAdapter( dragSource ).setFeedbackChanged( control, event.feedback );        
       }
     }
   }
@@ -175,16 +191,25 @@ public final class DNDSupport {
       } else {
         operation = readOperationParam( EVENT_DRAG_OVER_OPERATION );
       }
+      int feedback;      
+      if( dndAdapter.hasFeedbackChanged() ) {
+        feedback = dndAdapter.getFeedbackChangedValue();
+      } else {
+        feedback = readIntParam( EVENT_DRAG_OVER_FEEDBACK );
+      }      
       // TODO [tb] : check for changed dataType
       TransferData[] validDataTypes
         = determineDataTypes( dragSource, dropTarget );
       TransferData dataType = validDataTypes[ 0 ];
       Point point = readXYParams( EVENT_DRAG_OVER_X, EVENT_DRAG_OVER_Y );
+      Item item = readItemParam( EVENT_DRAG_OVER_ITEM );
       DropTargetEvent event
         = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OVER );
       event.detail = operation;
+      event.feedback = feedback;
       event.currentDataType = dataType;
       event.dataTypes = validDataTypes;
+      event.item = item;
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( EVENT_DRAG_OVER_TIME );
@@ -192,6 +217,9 @@ public final class DNDSupport {
       if( event.detail != operation ) {
         changeOperation( dragSource, dropTarget, event.detail );
         // TODO [tb] : check for changed dataType
+      }
+      if( event.feedback != feedback ) {
+        getDNDAdapter( dragSource ).setFeedbackChanged( control, event.feedback );        
       }
     }
   }
@@ -221,6 +249,7 @@ public final class DNDSupport {
         operation = readOperationParam( EVENT_DROP_ACCEPT_OPERATION );
       }
       Point point = readXYParams( EVENT_DROP_ACCEPT_X, EVENT_DROP_ACCEPT_Y );
+      Item item = readItemParam( EVENT_DROP_ACCEPT_ITEM );
       int time = readIntParam( EVENT_DROP_ACCEPT_TIME );
       // fire DRAG_LEAVE, which is suppressed by the client
       fireDragLeave( operation, dropTarget, point, time );
@@ -229,7 +258,7 @@ public final class DNDSupport {
         = determineDataTypes( dragSource, dropTarget );
       TransferData dataType = validDataTypes[ 0 ];
       DropTargetEvent event
-        = createDropAcceptEvent( dropTarget, operation, point, dataType );
+        = createDropAcceptEvent( dropTarget, operation, point, dataType, item );
       event.processEvent();
       operation = checkOperation( dragSource, dropTarget, event.detail );
       dataType = checkDataType( event.currentDataType, validDataTypes );
@@ -246,6 +275,7 @@ public final class DNDSupport {
         dropEvent.detail = operation;
         dropEvent.currentDataType = dataType;
         dropEvent.dataTypes = validDataTypes;
+        dropEvent.item = item;
         dropEvent.x = point.x;
         dropEvent.y = point.y;
         dropEvent.data = data;
@@ -305,13 +335,15 @@ public final class DNDSupport {
     final DropTarget dropTarget,
     final int operation,
     final Point point,
-    final TransferData dataType )
+    final TransferData dataType, 
+    final Item item )
   {
     DropTargetEvent result
       = new DropTargetEvent( dropTarget, DropTargetEvent.DROP_ACCEPT );
     result.detail = operation;
     result.x = point.x;
     result.y = point.y;
+    result.item = item;
     result.currentDataType = dataType;
     return result;
   }
@@ -336,6 +368,7 @@ public final class DNDSupport {
       // fire DRAG_END
       DragSource dragSource = getDragSource( dragSourceControl );
       getDNDAdapter( dragSource ).cancelDetailChanged();
+      getDNDAdapter( dragSource ).cancelFeedbackChanged();
       Point point = readXYParams( EVENT_DRAG_FINISHED_X,
                                   EVENT_DRAG_FINISHED_Y );
       DragSourceEvent event
@@ -414,14 +447,14 @@ public final class DNDSupport {
     return result;
   }
 
-  private static Control findControlById( final String id ) {
-    Control result = null;
+  private static Widget findWidgetById( final String id ) {
+    Widget result = null;
     Display display = RWTLifeCycle.getSessionDisplay();
     Shell[] shells = getDisplayAdapter( display ).getShells();
     for( int i = 0; result == null && i < shells.length; i++ ) {
       Widget widget = WidgetUtil.find( shells[ i ], id );
       if( widget != null ) {
-        result = ( Control )widget;
+        result = widget;
       }
     }
     return result;
@@ -446,11 +479,20 @@ public final class DNDSupport {
     Control result = null;
     String value = readStringParam( paramName );
     if( value != null ) {
-      result = findControlById( value );
+      result = ( Control )findWidgetById( value );
     }
     return result;
   }
 
+  private static Item readItemParam( final String paramName ) {
+    Item result = null;
+    String value = readStringParam( paramName );
+    if( value != null ) {
+      result = ( Item )findWidgetById( value );
+    }
+    return result;
+  }
+  
   // DND TODO [tb] : Is a check needed (like checkAndProcessMouseEvent)?
   //                 Yes, a drag would have to be canceled for invalid
   //                 coordinates on DragDetect, and dragEnter/Leave COULD

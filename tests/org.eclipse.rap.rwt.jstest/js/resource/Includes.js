@@ -73,6 +73,8 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/MenuManager.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/FocusIndicator.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/DNDSupport.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/TreeDNDFeedback.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/TableDNDFeedback.js" type="text/javascript"></script>\
 \
 <!-- rwt.test -->\
 <script src="./js/org/eclipse/rwt/test/fixture/RAPRequestPatch.js" type="text/javascript"></script>\

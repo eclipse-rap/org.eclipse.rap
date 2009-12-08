@@ -120,8 +120,10 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
     assertEquals : function() {      
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
       var failed = false;
-      var expectedIsObject = ( typeof args.expected == "object" ); 
-      var actualIsObject = ( typeof args.actual == "object" ); 
+      var expectedIsObject 
+        = typeof args.expected == "object" && args.expected != null;
+      var actualIsObject 
+        = typeof args.actual == "object" && args.actual != null;
       if( actualIsObject || expectedIsObject ) {
         if( actualIsObject && expectedIsObject ) {
           var diffs = org.eclipse.rwt.test.Asserts._getObjectsDiff( 

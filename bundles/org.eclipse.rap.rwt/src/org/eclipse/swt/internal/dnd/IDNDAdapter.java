@@ -16,9 +16,16 @@ public interface IDNDAdapter {
   
   void cancel();
   boolean isCanceled();
+  
   void setDetailChanged( Control control, int detail );
   void cancelDetailChanged();
   boolean hasDetailChanged();
   int getDetailChangedValue();
   Control getDetailChangedControl();
+  
+  void setFeedbackChanged( Control control, int feedback );  
+  void cancelFeedbackChanged();
+  boolean hasFeedbackChanged();
+  int getFeedbackChangedValue();
+  Control getFeedbackChangedControl();
 }

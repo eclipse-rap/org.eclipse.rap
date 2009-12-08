@@ -372,8 +372,8 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.setTransfer( transfer );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dropAccept( final DropTargetEvent event ) {
-        event.currentDataType
-          = RTFTransfer.getInstance().getSupportedTypes()[ 0 ];
+        RTFTransfer rtfTransfer = RTFTransfer.getInstance();
+        event.currentDataType = rtfTransfer.getSupportedTypes()[ 0 ];
         log.add( event );
       }
       public void drop( final DropTargetEvent event ) {
@@ -804,8 +804,9 @@ public class DNDSupport_Test extends TestCase {
                            2 );
     RWTFixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    String expected =   "org.eclipse.rwt.DNDSupport.getInstance()"
-                      + ".setOperationOverwrite( ";
+    String expected
+      = "org.eclipse.rwt.DNDSupport.getInstance()"
+      + ".setOperationOverwrite( ";
     assertTrue( markup.indexOf( expected ) == -1 );
   }
 
@@ -818,9 +819,6 @@ public class DNDSupport_Test extends TestCase {
     DragSource dragSource = new DragSource( dragSourceControl, operations );
     dragSource.setTransfer( types );
     Control dropTargetControl = new Label( shell, SWT.NONE );
-    String qxWidget =   "wm.findWidgetById( \""
-                      + WidgetUtil.getId( dropTargetControl )
-                      + "\" )";
     DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
@@ -852,10 +850,13 @@ public class DNDSupport_Test extends TestCase {
                            2 );
     RWTFixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    String expected =   "org.eclipse.rwt.DNDSupport.getInstance()"
-                      + ".setOperationOverwrite( "
-                      + qxWidget
-                      + ", \"link";
+    String expected
+      = "org.eclipse.rwt.DNDSupport.getInstance()"
+      + ".setOperationOverwrite( "
+      + ( "wm.findWidgetById( \""
+      + WidgetUtil.getId( dropTargetControl )
+      + "\" )" )
+      + ", \"link";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -868,9 +869,6 @@ public class DNDSupport_Test extends TestCase {
     DragSource dragSource = new DragSource( dragSourceControl, operations );
     dragSource.setTransfer( types );
     Control dropTargetControl = new Label( shell, SWT.NONE );
-    String qxWidget =   "wm.findWidgetById( \""
-                      + WidgetUtil.getId( dropTargetControl )
-                      + "\" )";
     DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
@@ -902,10 +900,13 @@ public class DNDSupport_Test extends TestCase {
                            2 );
     RWTFixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    String expected =   "org.eclipse.rwt.DNDSupport.getInstance()"
-                      + ".setOperationOverwrite( "
-                      + qxWidget
-                      + ", \"link";
+    String expected
+      = "org.eclipse.rwt.DNDSupport.getInstance()"
+      + ".setOperationOverwrite( "
+      + ( "wm.findWidgetById( \""
+      + WidgetUtil.getId( dropTargetControl )
+      + "\" )" )
+      + ", \"link";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -960,8 +961,8 @@ public class DNDSupport_Test extends TestCase {
     createDragSourceEvent( dragSourceControl, "dragFinished", 3 );
     RWTFixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    String overwrite =
-      "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite( ";
+    String overwrite
+      = "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite( ";
     assertTrue( markup.indexOf( overwrite ) == -1 );
     assertEquals( 3, log.size() );
     DropTargetEvent dragEnter = ( DropTargetEvent )log.get( 0 );
@@ -996,6 +997,96 @@ public class DNDSupport_Test extends TestCase {
       = DNDSupport.determineDataTypes( dragSource, dropTarget );
     assertTrue( dataTypes.length > 0 );
     assertTrue( HTMLTransfer.getInstance().isSupportedType( dataTypes[ 0 ] ) );
+  }
+
+  public void testResponseFeedbackChangedOnEnter() {
+    int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
+    Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control dragSourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    dragSource.setTransfer( types );
+    Control dropTargetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    dropTarget.setTransfer( types );
+    dropTarget.addDropListener( new DropTargetAdapter() {
+      public void dragEnter( final DropTargetEvent event ) {
+        event.feedback = DND.FEEDBACK_SELECT;
+      }
+    } );
+    shell.open();
+    // Simulate request that sends a drop event
+    String displayId = DisplayUtil.getId( display );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    RWTFixture.executeLifeCycleFromServerThread();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    createDropTargetEvent( dropTargetControl,
+                           dragSourceControl,
+                           "dragEnter",
+                           1 );
+    createDropTargetEvent( dropTargetControl,
+                           dragSourceControl,
+                           "dragOver",
+                           2 );
+    RWTFixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    String expected
+      = "org.eclipse.rwt.DNDSupport.getInstance()"
+      + ".setFeedback( "
+      + ( "wm.findWidgetById( \""
+      + WidgetUtil.getId( dropTargetControl )
+      + "\" )" )
+      + ", [ \"select\" ], "
+      + DND.FEEDBACK_SELECT;
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
+  public void testResponseFeedbackChangedOnOver() {
+    int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
+    Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control dragSourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    dragSource.setTransfer( types );
+    Control dropTargetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    dropTarget.setTransfer( types );
+    dropTarget.addDropListener( new DropTargetAdapter() {
+      public void dragOver( final DropTargetEvent event ) {
+        event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL;
+      }
+    } );
+    shell.open();
+    // Simulate request that sends a drop event
+    String displayId = DisplayUtil.getId( display );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    RWTFixture.executeLifeCycleFromServerThread();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    createDropTargetEvent( dropTargetControl,
+                           dragSourceControl,
+                           "dragEnter",
+                           1 );
+    createDropTargetEvent( dropTargetControl,
+                           dragSourceControl,
+                           "dragOver",
+                           2 );
+    RWTFixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    String expected
+      = "org.eclipse.rwt.DNDSupport.getInstance()"
+      + ".setFeedback( "
+      + ( "wm.findWidgetById( \""
+      + WidgetUtil.getId( dropTargetControl )
+      + "\" )" )
+      + ", [ \"expand\", \"scroll\" ], "
+      + ( DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL );
+    assertTrue( markup.indexOf( expected ) != -1 );
   }
 
   // Mirrors _sendDragSourceEvent in DNDSupport.js
@@ -1045,8 +1136,8 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeRequestParam( prefix + ".x", String.valueOf( x ) );
     Fixture.fakeRequestParam( prefix + ".y", String.valueOf( y ) );
     Fixture.fakeRequestParam( prefix + ".operation", operation );
+    Fixture.fakeRequestParam( prefix + ".feedback", "0" );
     Fixture.fakeRequestParam( prefix + ".source", sourceId );
     Fixture.fakeRequestParam( prefix + ".time", String.valueOf( time ) );
   }
-
 }

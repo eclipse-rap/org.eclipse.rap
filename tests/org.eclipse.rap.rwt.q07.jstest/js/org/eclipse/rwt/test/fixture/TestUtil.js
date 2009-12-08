@@ -114,14 +114,20 @@ qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
       if( typeof top == "undefined" ) {
         top = 0;
       }
+      var clientX = left;
+      var clientY = top;
+      if( qx.core.Client.getEngine() == "mshtml" ) {
+        clientX -= qx.bom.Viewport.getScrollLeft(window);
+        clientY -= qx.bom.Viewport.getScrollTop(window);
+      }
       var domEvent = {
         "type" : type,
         "target" : node,
         "button" : button,
         "pageX" : left,
         "pageY" : top,
-        "clientX" : left,
-        "clientY" : top,
+        "clientX" : clientX,
+        "clientY" : clientY,
         "screenX" : left,
         "screenY" : top
       } 

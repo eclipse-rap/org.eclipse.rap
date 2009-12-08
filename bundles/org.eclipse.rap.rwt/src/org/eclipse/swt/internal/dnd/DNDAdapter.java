@@ -21,6 +21,10 @@ public final class DNDAdapter implements IDNDAdapter {
     = DNDAdapter.class.getName() + "#detailChangedValue";
   private static final String DETAIL_CHANGED_CONTROL
     = DNDAdapter.class.getName() + "#detailChangedControl";
+  private static final String FEEDBACK_CHANGED_VALUE
+    = DNDAdapter.class.getName() + "#feedbackChangedValue";
+  private static final String FEEDBACK_CHANGED_CONTROL
+    = DNDAdapter.class.getName() + "#feedbackChangedControl";
 
   public void cancel() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -58,6 +62,35 @@ public final class DNDAdapter implements IDNDAdapter {
   public Control getDetailChangedControl() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return ( Control )stateInfo.getAttribute( DETAIL_CHANGED_CONTROL );
+  }
+
+  public void setFeedbackChanged( Control control, int feedback ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( FEEDBACK_CHANGED_VALUE, new Integer( feedback ) );
+    stateInfo.setAttribute( FEEDBACK_CHANGED_CONTROL, control );
+  }
+
+  public void cancelFeedbackChanged() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( FEEDBACK_CHANGED_VALUE, null );
+    stateInfo.setAttribute( FEEDBACK_CHANGED_CONTROL, null );
+  }
+
+  public boolean hasFeedbackChanged() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Object value = stateInfo.getAttribute( FEEDBACK_CHANGED_VALUE );
+    return value != null;
+  }
+
+  public int getFeedbackChangedValue() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Integer value = ( Integer )stateInfo.getAttribute( FEEDBACK_CHANGED_VALUE );
+    return value.intValue();
+  }
+
+  public Control getFeedbackChangedControl() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    return ( Control )stateInfo.getAttribute( FEEDBACK_CHANGED_CONTROL );
   }
 
 }
