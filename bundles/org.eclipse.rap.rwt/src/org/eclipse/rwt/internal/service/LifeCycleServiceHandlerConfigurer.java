@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.browser.Default;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -251,9 +252,14 @@ public final class LifeCycleServiceHandlerConfigurer
     BrandingUtil.replacePlaceholder( template,
                                      TemplateHolder.VAR_EXIT_CONFIRMATION,
                                      script );
+    String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
+    BrandingUtil.replacePlaceholder( template, 
+                                     TemplateHolder.VAR_NO_SCRIPT_MESSAGE, 
+                                     noScriptWarning );
   }
 
-  private static void registerBrandingResources( final AbstractBranding branding )
+  private static void registerBrandingResources( 
+    final AbstractBranding branding )
     throws IOException
   {
     synchronized( registeredBrandings ) {

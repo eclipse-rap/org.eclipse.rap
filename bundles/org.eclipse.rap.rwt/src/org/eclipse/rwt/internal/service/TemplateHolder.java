@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -30,6 +31,7 @@ public final class TemplateHolder {
   private final static String TOKEN_HEADERS = "headers";
   private final static String TOKEN_STARTUP = "startup";
   private final static String TOKEN_EXIT_CONFIRMATION = "exitConfirmation";
+  private final static String TOKEN_NO_SCRIPT_MESSAGE = "noScriptMessage";
 
   public final static Variable VAR_BACKGROUND_IMAGE
     = new Variable( TOKEN_BACKGROUND_IMAGE );
@@ -55,6 +57,8 @@ public final class TemplateHolder {
     = new Variable( TOKEN_STARTUP );
   public final static Variable VAR_EXIT_CONFIRMATION
     = new Variable( TOKEN_EXIT_CONFIRMATION );
+  public final static Variable VAR_NO_SCRIPT_MESSAGE
+    = new Variable( TOKEN_NO_SCRIPT_MESSAGE );
 
 
   public static final class Variable {
@@ -117,7 +121,8 @@ public final class TemplateHolder {
            || nextToken.equals( TOKEN_TITLE.toString() )
            || nextToken.equals( TOKEN_HEADERS.toString() )
            || nextToken.equals( TOKEN_STARTUP.toString() )
-           || nextToken.equals( TOKEN_EXIT_CONFIRMATION.toString() );
+           || nextToken.equals( TOKEN_EXIT_CONFIRMATION.toString() )
+           || nextToken.equals( TOKEN_NO_SCRIPT_MESSAGE.toString() );
   }
 
   private void addReplacementIndex( final Variable variable, final int index ) {

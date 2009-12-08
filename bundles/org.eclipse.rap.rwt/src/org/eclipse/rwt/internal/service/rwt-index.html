@@ -8,6 +8,12 @@
 
   <body background="${backgroundImage}">
 
+    <noscript>
+      <p style = "z-index:100000;background-color:white">
+        ${noScriptMessage}
+      </p>
+    </noscript>
+
     <!-- body of branding -->
     ${body}
     <!-- end body of branding --> 
@@ -73,11 +79,11 @@
         // end rap runtime application
       } else {
         // write unsupported browser or security message
-        document.write( "<p>Your browser or settings are not supported. " );
-        document.write( "Please use one of those: IE 6 or higher, " );
-        document.write( "Firefox 1.5 or higher or Opera 10 or higher. " );
-        document.write( "Ensure that javascript is enabled and " );
-        document.write( "XMLHttpRequests are allowed.</p>" );
+        var msg
+          = "<p style=\"z-index:100000;background-color:white\">"
+          + "${noScriptMessage}"
+          + "</p>";        
+        document.write( msg );
       }
     </script>
   </body>
