@@ -157,6 +157,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
                                                   this.__onwindowmousedown );
     },
     
+    // [if] Override to prevent the new open shell to automaticaly become
+    // an active shell.
+    _beforeAppear : function() {
+      qx.ui.layout.CanvasLayout.prototype._beforeAppear.call( this );
+      qx.ui.popup.PopupManager.getInstance().update();
+      var activeWindow = this.getWindowManager().getActiveWindow();
+      this.getWindowManager().add( this );
+      this.getWindowManager().setActiveWindow( activeWindow );
+    },
+    
     setDefaultButton : function( value ) {
       this._defaultButton = value;
     },
