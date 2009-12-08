@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
     
     // [if] Override to prevent the new open shell to automaticaly become
-    // an active shell.
+    // an active shell (see bug 297167).
     _beforeAppear : function() {
       qx.ui.layout.CanvasLayout.prototype._beforeAppear.call( this );
       qx.ui.popup.PopupManager.getInstance().update();
