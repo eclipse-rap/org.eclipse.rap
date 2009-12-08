@@ -441,7 +441,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
                                    event );
         this.cancel();
       } else if( this._currentDropTarget != null ) {
-        console.log( this._currentDropTarget );
         var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
         var action 
           = this._computeCurrentAction( event, this._currentDropTarget );
