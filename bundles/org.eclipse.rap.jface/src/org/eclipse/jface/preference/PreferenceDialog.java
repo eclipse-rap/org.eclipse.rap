@@ -474,11 +474,9 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 			 */
 			public void handleEvent(Event event) {
-				// RAP [bm]: DRAG not supported
-//				if (event.detail == SWT.DRAG) {
-//					return;
-//				}
-				// RAPEND: [bm] 
+				if (event.detail == SWT.DRAG) {
+					return;
+				} 
 
 				int shift = event.x - sash.getBounds().x;
 				GridData data = (GridData) rightControl.getLayoutData();

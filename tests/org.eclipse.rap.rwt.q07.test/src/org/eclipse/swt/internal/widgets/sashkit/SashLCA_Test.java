@@ -221,6 +221,8 @@ public class SashLCA_Test extends TestCase {
     sash.addSelectionListener( selectionListener );
     String sashId = WidgetUtil.getId( sash );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, sashId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".detail",
+                              "drag" );
     RWTFixture.readDataAndProcessAction( sash );
     assertEquals( "widgetSelected", log.toString() );
   }

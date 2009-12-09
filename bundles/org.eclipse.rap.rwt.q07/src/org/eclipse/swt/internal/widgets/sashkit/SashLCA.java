@@ -14,7 +14,10 @@ package org.eclipse.swt.internal.widgets.sashkit;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -68,16 +71,15 @@ public final class SashLCA extends AbstractWidgetLCA {
   }
 
   private static void processSelection( final Sash sash ) {
+    HttpServletRequest request = ContextProvider.getRequest();
     String eventId = JSConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( sash, eventId ) ) {
       int eventType = SelectionEvent.WIDGET_SELECTED;
       Rectangle bounds = WidgetLCAUtil.readBounds( sash, sash.getBounds() );
       int stateMask
         = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-      int detail = SWT.NONE;
-      if( ( sash.getStyle() & SWT.SMOOTH ) == 0 ) {
-        detail = SWT.DRAG;
-      }
+      String detailStr = request.getParameter( eventId + ".detail" );
+      int detail = "drag".equals( detailStr ) ? SWT.DRAG : SWT.NONE;      
       SelectionEvent event = new SelectionEvent( sash,
                                                  null,
                                                  eventType,

@@ -357,17 +357,15 @@ public class FastViewPane {
                 }
 
                 setSize(distanceFromEdge);
-
-                // RAP [bm]: 
-//                if (e.detail != SWT.DRAG) {
-//                    updateFastViewSashBounds();
-//                    //					getPresentation().getControl().moveAbove(null);
-//                    //					currentPane.moveAbove(null); 
-//                    //					sash.moveAbove(null);
-//                    //currentPane.getControl().redraw();
-//                    sash.redraw();
-//                }
-                // RAPEND: [bm] 
+ 
+                if (e.detail != SWT.DRAG) {
+                    updateFastViewSashBounds();
+                    //					getPresentation().getControl().moveAbove(null);
+                    //					currentPane.moveAbove(null); 
+                    //					sash.moveAbove(null);
+                    //currentPane.getControl().redraw();
+                    sash.redraw();
+                }
 
             }
         }

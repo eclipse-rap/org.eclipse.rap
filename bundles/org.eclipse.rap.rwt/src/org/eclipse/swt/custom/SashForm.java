@@ -261,8 +261,7 @@ void onDragSash(Event event) {
     ((SashFormData)data1).weight = (((long)b1.height << 16) + area.height - 1) / area.height;
     ((SashFormData)data2).weight = (((long)b2.height << 16) + area.height - 1) / area.height;
   }
-//  if (correction || (event.doit && event.detail != SWT.DRAG)) {
-  if (correction || event.doit) {
+  if (correction || (event.doit && event.detail != SWT.DRAG)) {
     c1.setBounds(b1);
     sash.setBounds(event.x, event.y, event.width, event.height);
     c2.setBounds(b2);

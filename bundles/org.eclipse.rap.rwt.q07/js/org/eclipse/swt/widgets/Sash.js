@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.Sash", {
@@ -113,6 +114,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
       this.setZIndex( 1e7 );
       this._slider.show();
       this._sliderHandle.show();
+      // notify server
+      this._sendWidgetSelected();
     },
 
     _onMouseUpX : function( evt ) {
@@ -128,9 +131,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     },
 
     _commonMouseUp : function() {
-      // TODO [rst] Clarify what the getOffsetLeft() does
-      var leftOffset = this._slider.getLeft() + this._frameOffset;
-      var topOffset = this._slider.getTop() + this._frameOffset;
       this._slider.hide();
       this._sliderHandle.hide();
       this.setCapture( false );
@@ -139,15 +139,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this.setZIndex( this._bufferZIndex );
       }
       // notify server
-      if( leftOffset != 0 || topOffset != 0 ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        org.eclipse.swt.EventUtil.doWidgetSelected( id, 
-                                                    this.getLeft() + leftOffset, 
-                                                    this.getTop() + topOffset, 
-                                                    this.getWidth(), 
-                                                    this.getHeight() );
-      }
+      this._sendWidgetSelected();
     },
 
     _onMouseMoveX : function( evt ) {
@@ -215,6 +207,28 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this.removeState( "vertical" );
         this._handle.removeState( "vertical" );
         this._sliderHandle.removeState( "vertical" );
+      }
+    },
+    
+    _sendWidgetSelected : function() {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {        
+        // TODO [rst] Clarify what the getOffsetLeft() does
+        var leftOffset = this._slider.getLeft() + this._frameOffset;
+        var topOffset = this._slider.getTop() + this._frameOffset;
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+        req.addParameter( id + ".bounds.x", this.getLeft() + leftOffset );
+        req.addParameter( id + ".bounds.y", this.getTop() + topOffset );
+        req.addParameter( id + ".bounds.width", this.getWidth() );
+        req.addParameter( id + ".bounds.height", this.getHeight() );
+        if( this.getCapture() ) {
+          req.addParameter( "org.eclipse.swt.events.widgetSelected.detail",
+                            "drag" );
+        }
+        req.send();
       }
     }
   }

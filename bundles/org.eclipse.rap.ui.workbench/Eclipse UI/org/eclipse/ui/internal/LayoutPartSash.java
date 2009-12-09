@@ -60,13 +60,12 @@ class LayoutPartSash extends LayoutPart {
 
         selectionListener = new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) { 
-                checkDragLimit(e);
-                
-// RAP [rh] Selection event for Sash does not specify event detail               
-//                if (e.detail != SWT.DRAG) {    
+                checkDragLimit(e);           
+            
+                if (e.detail != SWT.DRAG) {    
                     LayoutPartSash.this.widgetSelected(e.x, e.y, e.width,
                             e.height);
-//                }
+                }
             }
         };
     }
