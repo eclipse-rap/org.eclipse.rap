@@ -32,7 +32,10 @@ public class QxCursor implements QxType {
     "nw-resize",
     "sw-resize",
     "col-resize",
-    "row-resize"
+    "row-resize",
+    "progress",
+    "not-allowed",
+    "no-drop"
   };
 
   public final String value;
