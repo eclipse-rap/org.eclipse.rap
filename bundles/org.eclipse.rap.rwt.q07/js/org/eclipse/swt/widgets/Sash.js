@@ -144,6 +144,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
 
     _onMouseMoveX : function( evt ) {
       if( this.getCapture() ) {
+        // [if] Global cursor is reset by Request#_hideWaitHint. Set it again.
+        if( this.getTopLevelWidget().getGlobalCursor() != this.getCursor() ) {
+          this.getTopLevelWidget().setGlobalCursor( this.getCursor() );
+        }
         var toMove = evt.getPageX() - this._dragOffset;
         this._slider.setLeft( this._normalizeMove( toMove ) );
         this._sliderHandle.setLeft( this._normalizeMove( toMove ) );
@@ -152,6 +156,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
 
     _onMouseMoveY : function( evt ) {
       if( this.getCapture() ) {
+        // [if] Global cursor is reset by Request#_hideWaitHint. Set it again.
+        if( this.getTopLevelWidget().getGlobalCursor() != this.getCursor() ) {
+          this.getTopLevelWidget().setGlobalCursor( this.getCursor() );
+        }
         var toMove = evt.getPageY() - this._dragOffset;
         this._slider.setTop( this._normalizeMove( toMove ) );
         this._sliderHandle.setTop( this._normalizeMove( toMove ) );
