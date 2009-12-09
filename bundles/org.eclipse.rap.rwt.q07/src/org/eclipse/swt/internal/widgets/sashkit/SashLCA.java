@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.sashkit;
@@ -17,6 +18,8 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -34,9 +37,8 @@ public final class SashLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    // TODO [rh] clarify whether bounds should be sent (last parameter)
-    ControlLCAUtil.processSelection( widget, null, true );
     Sash sash = ( Sash )widget;
+    processSelection( sash );
     ControlLCAUtil.processMouseEvents( sash );
     ControlLCAUtil.processKeyEvents( sash );
     WidgetLCAUtil.processHelp( sash );
@@ -50,7 +52,7 @@ public final class SashLCA extends AbstractWidgetLCA {
       = ( sash.getStyle() & SWT.HORIZONTAL ) != 0
       ? JSConst.QX_CONST_HORIZONTAL_ORIENTATION
       : JSConst.QX_CONST_VERTICAL_ORIENTATION;
-    writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );    
+    writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );
     ControlLCAUtil.writeStyleFlags( sash );
   }
 
@@ -65,4 +67,26 @@ public final class SashLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  private static void processSelection( final Sash sash ) {
+    String eventId = JSConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( sash, eventId ) ) {
+      int eventType = SelectionEvent.WIDGET_SELECTED;
+      Rectangle bounds = WidgetLCAUtil.readBounds( sash, sash.getBounds() );
+      int stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      int detail = SWT.NONE;
+      if( ( sash.getStyle() & SWT.SMOOTH ) == 0 ) {
+        detail = SWT.DRAG;
+      }
+      SelectionEvent event = new SelectionEvent( sash,
+                                                 null,
+                                                 eventType,
+                                                 bounds,
+                                                 stateMask,
+                                                 null,
+                                                 true,
+                                                 detail );
+      event.processEvent();
+    }
+  }
 }

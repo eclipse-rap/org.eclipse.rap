@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.sashkit;
@@ -16,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
@@ -195,6 +197,32 @@ public class SashLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     sashLCA.renderChanges( sash );
     assertEquals( "", Fixture.getAllMarkup() );
+  }
+
+  public void testSelectionEvent() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Sash sash = new Sash( shell, SWT.NONE );
+    final StringBuffer log = new StringBuffer();
+    SelectionListener selectionListener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        assertEquals( sash, event.getSource() );
+        assertEquals( null, event.item );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( 0, event.stateMask );
+        assertEquals( SWT.DRAG, event.detail );
+        assertEquals( true, event.doit );
+        log.append( "widgetSelected" );
+      }
+    };
+    sash.addSelectionListener( selectionListener );
+    String sashId = WidgetUtil.getId( sash );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, sashId );
+    RWTFixture.readDataAndProcessAction( sash );
+    assertEquals( "widgetSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {

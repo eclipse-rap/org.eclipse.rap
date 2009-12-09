@@ -351,13 +351,13 @@ public class SWT {
 
   /**
    * The drag detect event type (value is 29).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.dnd.DragSource
-   * 
+   *
    * @since 1.3
    */
   public static final int DragDetect = 29;
@@ -387,6 +387,14 @@ public class SWT {
    * @see org.eclipse.swt.widgets.Tree
    */
   public static final int SetData = 36;
+
+  /**
+   * Indicates that a user-interface component is being dragged,
+   * for example dragging the thumb of a scroll bar (value is 1).
+   *
+   * @since 1.3
+   */
+  public static final int DRAG = 1;
 
   /**
    * Traversal event detail field value indicating that no
@@ -2402,7 +2410,7 @@ public class SWT {
    * the new image should be a copy of the image provided as
    * an argument  (value is 0).
    * @since 1.3
-   */ 
+   */
   public static final int IMAGE_COPY = 0;
 
   /**
