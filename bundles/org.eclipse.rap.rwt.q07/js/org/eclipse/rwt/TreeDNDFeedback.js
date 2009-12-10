@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     },
 
     _isScrolledIntoView : function( item ) {
-      var itemTop = this._getItemLocation( item.getLabelObject() )[ 1 ];
+      var itemTop = this._getItemLocation( item.getLabelObject() ).y;
       var scrollTop = this._tree.getScrollTop();
       var itemTopRelative = itemTop - scrollTop;
       var containerHeight = this._tree.getInnerHeight();
