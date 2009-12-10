@@ -104,10 +104,11 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
 
     _renderFeedbackBefore : function( item, value ) {
       if( value ) {
-        var labelObject = item.getLabelObject();      
+        var labelObject = item.getLabelObject();
+        // draw insert-indicator above item (1px heigher)
         var location = this._getItemLocation( labelObject );
-        location[ 0 ]++;
-        this._showInsertIndicator( location[ 0 ], location[ 1 ] );
+        location.y--;
+        this._showInsertIndicator( location.x, location.y );
       } else {
         this._hideInsertIndicator();
       }
@@ -116,11 +117,11 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     _renderFeedbackAfter : function( item, value ) {
       if( value ) {
         var labelObject = item.getLabelObject();
+        // draw insert-indicator below item (1px heigher)  
         var location = this._getItemLocation( labelObject );
         var height = labelObject.getHeightValue();
-        location[ 1 ] += height;
-        location[ 1 ]--;
-        this._showInsertIndicator( location[ 0 ], location[ 1 ] );
+        location.y = location.y + ( height - 1 );
+        this._showInsertIndicator( location.x, location.y );
       } else {
         this._hideInsertIndicator();
       }
@@ -143,12 +144,12 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     },
 
     _getItemLocation : function( item ) {
-      var location = [ 0, 0 ];
+      var location = { x : 0, y : 0 };
       var node = item.getElement();
       var treeNode = this._tree._getTargetNode();
       while( node != treeNode ) {
-        location[ 0 ] += parseInt( node.style.left );
-        location[ 1 ] += parseInt( node.style.top );
+        location.x += parseInt( node.style.left );
+        location.y += parseInt( node.style.top );
         node = node.parentNode;
       }
       return location;

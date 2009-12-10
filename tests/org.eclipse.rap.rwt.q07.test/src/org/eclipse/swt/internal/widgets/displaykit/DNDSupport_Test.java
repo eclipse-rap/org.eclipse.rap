@@ -87,7 +87,9 @@ public class DNDSupport_Test extends TestCase {
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
+    shell.setLocation( 5, 5 );
     Control dragSourceControl = new Label( shell, SWT.NONE );
+    dragSourceControl.setLocation( 10, 20 );
     DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
     Control dropTargetControl = new Label( shell, SWT.NONE );
     new DropTarget( dropTargetControl, DND.DROP_MOVE );
@@ -113,7 +115,8 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( 2, log.size() );
     DragDetectEvent dragDetect = ( DragDetectEvent )log.get( 0 );
     assertEquals( DragDetectEvent.DRAG_DETECT, dragDetect.getID() );
-    // TODO [tb] : test mapping of mouse coordinates
+    assertEquals( -17, dragDetect.x );
+    assertEquals( -27, dragDetect.y );
     assertSame( dragSourceControl, dragDetect.widget );
     DragSourceEvent dragStart = ( DragSourceEvent )log.get( 1 );
     assertEquals( DragSourceEvent.DRAG_START, dragStart.getID() );

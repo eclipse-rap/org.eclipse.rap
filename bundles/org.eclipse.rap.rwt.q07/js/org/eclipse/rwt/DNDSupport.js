@@ -351,49 +351,60 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this._feedbackWidget.setEnabled( false );
         this._feedbackWidget.setPadding( 2 );
       }
-      var widget = this._feedbackWidget;
       while( !success && item != control ) {
         if( item instanceof org.eclipse.swt.widgets.TreeItem ) {
           success = true;
-          if( item.getIcon() != null ) {
-            var iconObject = item.getIconObject();
-            widget.setCellContent( 0, item.getIcon() );
-            widget.setCellDimension( 0, 
-                                     iconObject.getPreferredInnerWidth(),
-                                     iconObject.getPreferredInnerHeight() );
-          } else {
-            var color = item.getLabelObject().getBackgroundColor();
-            widget.setBackgroundColor( color );
-            widget.setCellContent( 1, item.getLabel() );
-            widget.setFont( item.getLabelObject().getFont() );
-          }
+          this._configureTreeItemFeedback( item );
         } else if( item instanceof org.eclipse.swt.widgets.TableRow ) {
           success = true;
-          if( item.getElement().childNodes.length > 0  ) {
-            var rowDiv = item.getElement();
-            var cellDiv = rowDiv.childNodes[ 0 ];
-            widget.setCellContent( 1, cellDiv.innerHTML ) ;
-            // TODO [tb] : get cell-only fonts how?
-            widget.setFont( item.getFont() );
-            if( cellDiv.style.backgroundColor != "" ) {
-              widget.setBackgroundColor( cellDiv.style.backgroundColor );
-            } else {
-              widget.setBackgroundColor( rowDiv.style.backgroundColor );
-            }
-            if( cellDiv.style.color != "" ) {
-              widget.setTextColor( cellDiv.style.color );
-            } else {
-              widget.setTextColor( rowDiv.style.color );
-            }
-          }
+          this.configureTablwRowFeedback( item );
         }
         if( !success ) {
           item = item.getParent();
         }
       }
-      return success ? widget : null;
+      return success ? this._feedbackWidget : null;
     },
 
+    _configureTreeItemFeedback : function( item ) {
+      var widget = this._feedbackWidget;
+      if( item.getIcon() != null ) {
+        var iconObject = item.getIconObject();
+        widget.setCellContent( 0, item.getIcon() );
+        widget.setCellDimension( 0, 
+                                 iconObject.getPreferredInnerWidth(),
+                                 iconObject.getPreferredInnerHeight() );
+      } else {
+        var backgroundColor = item.getLabelObject().getBackgroundColor();
+        var textColor = item.getLabelObject().getTextColor();
+        widget.setBackgroundColor( backgroundColor );
+        widget.setTextColor( textColor );
+        widget.setCellContent( 1, item.getLabel() );
+        widget.setFont( item.getLabelObject().getFont() );
+      }
+    },
+    
+    configureTablwRowFeedback : function( item ) {
+      var widget = this._feedbackWidget;
+      if( item.getElement().childNodes.length > 0  ) {
+        var rowDiv = item.getElement();
+        var cellDiv = rowDiv.childNodes[ 0 ];
+        widget.setCellContent( 1, cellDiv.innerHTML ) ;
+        // TODO [tb] : get cell-only fonts how?
+        widget.setFont( item.getFont() );
+        if( cellDiv.style.backgroundColor != "" ) {
+          widget.setBackgroundColor( cellDiv.style.backgroundColor );
+        } else {
+          widget.setBackgroundColor( rowDiv.style.backgroundColor );
+        }
+        if( cellDiv.style.color != "" ) {
+          widget.setTextColor( cellDiv.style.color );
+        } else {
+          widget.setTextColor( rowDiv.style.color );
+        }
+      }
+    },
+    
     _resetFeedbackWidget : function() {
       if( this._feedbackWidget != null ) {
         this._feedbackWidget.setParent( null );
