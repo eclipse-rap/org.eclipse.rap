@@ -54,6 +54,11 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var hash = widget.toHashCode();
       delete this._dragSources[ hash ];
     },
+    
+    isDragSource : function( widget ) {
+      var hash = widget.toHashCode();
+      return typeof this._dragSources[ hash ] != "undefined";       
+    },
 
     _dragStartHandler : function( event ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();

@@ -158,6 +158,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     }
     // Disable scrolling (see bug 279460)
     qx.ui.core.Widget.disableScrolling( this );
+    // Fix for bug Bug 297202
+    this._clickDelayed = false;
+    this.addEventListener( "dragstart", this._onDragStart, this );    
   },
 
   destruct : function() {
@@ -171,6 +174,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "keydown", this._onKeyDown, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "keyup", this._onKeyUp, this );
+    this.removeEventListener( "dragstart", this._onDragStart, this );    
     this._virtualItem.dispose();
     this._emptyItem.dispose();
     // For performance reasons, when disposing a a Table, the server-side LCA
@@ -194,7 +198,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._vertScrollBar = null;
     }
     for( var i = 0; i < this._gridLines.length; i++ ) {
-      this._gridLines[ i ].removeEventListener( "mousedown", this._onGridLinesMouseDown, this );
+      this._gridLines[ i ].removeEventListener( "mousedown", this._onRowMouseDown, this );
+      this._gridLines[ i ].removeEventListener( "mouseup", this._onRowMouseUp, this );
       this._gridLines[ i ].dispose();
       this._gridLines[ i ] = null;
     }
@@ -588,23 +593,68 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       checkBox.removeState( "over" );
       this._rows[ rowIndex ].removeState( "over" );
     },
-
+    
     // Note: [rst] This function is wired with the mousedown event. Using the
     //             click event causes problems because click is issued on the
     //             release of the mouse button and it is not fired at all if the
     //             mouse has been moved to another element between down and up.
     //             See https://bugs.eclipse.org/bugs/show_bug.cgi?id=257338
-    _onRowClick : function( evt ) {
-      this._rowClicked( evt, evt.getTarget() );
+    _onRowMouseDown : function( evt ) {
+      var row = this._getRowFromEvent( evt );
+      if( row != null ) {        
+        var itemIndex = this._topIndex + this._rows.indexOf( row );
+        if( this._isDragSource() && this._isItemSelected( itemIndex ) ) {
+          if( this._isValidMouseEvent( row, itemIndex ) ) {
+            this.setFocusIndex( itemIndex );
+            this._clickDelayed = true;
+          }        
+        } else {
+          this._rowClicked( evt, row );
+        }
+      }
+    },
+    
+    _onRowMouseUp : function( evt ) {
+      if( this._clickDelayed ) {
+        this._clickDelayed = false;
+        var row = this._getRowFromEvent( evt );
+        if( row != null ) {
+          this._rowClicked( evt, row );
+        }
+      }
+    },
+    
+    _getRowFromEvent : function( evt ) {
+      var target = evt.getTarget();
+      var result = null;
+      if( target instanceof org.eclipse.swt.widgets.TableRow ) {
+        result = target;
+      } else {
+        result = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );        
+      }
+      return result;
     },
 
+    _isDragSource : function() {
+      return org.eclipse.rwt.DNDSupport.getInstance().isDragSource( this );
+    },
+    
+    _onDragStart : function( event ) {
+      this._clickDelayed = false;
+    },
+    
+    _isValidMouseEvent : function( targetRow, itemIndex ) {
+      var result =    itemIndex >= 0
+                   && itemIndex < this._itemCount
+                   && this._items[ itemIndex ]
+                   && this._suspendClicksOnRow != targetRow;
+      return result;      
+    },
+    
+    // Note: [tb] An exception is made if the table is a dragSource (bug 297202)
     _rowClicked : function( evt, row ) {
       var itemIndex = this._topIndex + this._rows.indexOf( row );
-      if(    itemIndex >= 0
-          && itemIndex < this._itemCount
-          && this._items[ itemIndex ]
-          && this._suspendClicksOnRow != row )
-      {
+      if( this._isValidMouseEvent( row, itemIndex ) ) {
         this._suspendClicksOnRow = row;
         qx.client.Timer.once( this._resumeClicks,
                               this,
@@ -1280,14 +1330,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _hookRowEventListener : function( row ) {
-      row.addEventListener( "mousedown", this._onRowClick, this );
+      row.addEventListener( "mousedown", this._onRowMouseDown, this );
+      row.addEventListener( "mouseup", this._onRowMouseUp, this );
       row.addEventListener( "dblclick", this._onRowDblClick, this );
       row.addEventListener( "contextmenu", this._onRowContextMenu, this );
       row.addEventListener( "changeOverState", this._onRowChangeOverState, this );
     },
 
     _unhookRowEventListener : function( row ) {
-      row.removeEventListener( "mousedown", this._onRowClick, this );
+      row.removeEventListener( "mousedown", this._onRowMouseDown, this );
+      row.removeEventListener( "mouseup", this._onRowMouseUp, this );
       row.removeEventListener( "dblclick", this._onRowDblClick, this );
       row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
       row.removeEventListener( "changeOverState", this._onRowChangeOverState, this );
@@ -1532,7 +1584,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         line.setAppearance( "table-gridline-vertical" );
         line.addState( "vertical" );
         line.setZIndex( 1e5 );
-        line.addEventListener( "mousedown", this._onGridLinesMouseDown, this );
+        line.addEventListener( "mousedown", this._onRowMouseDown, this );
+        line.addEventListener( "mouseup", this._onRowMouseUp, this );
         this._gridLines.push( line );
         this._clientArea.add( line );
       }
@@ -1540,13 +1593,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       for( var i = count; i < this._gridLines.length; i++ ) {
         var line = this._gridLines[ i ];
         line.setStyleProperty( "visibility", "hidden" );
-      }
-    },
-
-    _onGridLinesMouseDown : function( evt ) {
-      var row = this._getRowAtPoint( evt.getPageX(), evt.getPageY() );
-      if( row != null ) {
-        this._rowClicked( evt, row );
       }
     },
 
