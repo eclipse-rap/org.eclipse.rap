@@ -131,15 +131,15 @@ public class ListExample implements IExamplePage {
     Arrays.sort( items );
     srcList.setItems( items );
   }
-  
+
   ////////////////
   // Inner classes
-  
+
   private static final class StringArrayTransfer extends ByteArrayTransfer {
 
     private static final String TYPE_NAME = "string-array";
     private static final int TYPE_ID = registerType( TYPE_NAME );
-    
+
     protected int[] getTypeIds() {
       return new int[] { TYPE_ID };
     }
@@ -147,12 +147,14 @@ public class ListExample implements IExamplePage {
     protected String[] getTypeNames() {
       return new String[] { TYPE_NAME };
     }
-    
-    public void javaToNative( Object object, TransferData transferData ) {
+
+    public void javaToNative( final Object object, 
+                              final TransferData transferData ) 
+    {
       transferData.data = object;
     }
-    
-    public Object nativeToJava( TransferData transferData ) {
+
+    public Object nativeToJava( final TransferData transferData ) {
       return transferData.data;
     }
   }
