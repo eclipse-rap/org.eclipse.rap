@@ -21,6 +21,11 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.util.IOpenEventListener;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -500,53 +505,53 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 		postSelectionChangedListeners.add(listener);
 	}
 
-	// RAP [bm]: DND
-//	/**
-//	 * Adds support for dragging items out of this viewer via a user
-//	 * drag-and-drop operation.
-//	 * 
-//	 * @param operations
-//	 *            a bitwise OR of the supported drag and drop operation types (
-//	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
-//	 *            <code>DROP_MOVE</code>)
-//	 * @param transferTypes
-//	 *            the transfer types that are supported by the drag operation
-//	 * @param listener
-//	 *            the callback that will be invoked to set the drag data and to
-//	 *            cleanup after the drag and drop operation finishes
-//	 * @see org.eclipse.swt.dnd.DND
-//	 */
-//	public void addDragSupport(int operations, Transfer[] transferTypes, DragSourceListener listener) {
-//
-//		Control myControl = getControl();
-//		final DragSource dragSource = new DragSource(myControl, operations);
-//		dragSource.setTransfer(transferTypes);
-//		dragSource.addDragListener(listener);
-//	}
+	/**
+	 * Adds support for dragging items out of this viewer via a user
+	 * drag-and-drop operation.
+	 * 
+	 * @param operations
+	 *            a bitwise OR of the supported drag and drop operation types (
+	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
+	 *            <code>DROP_MOVE</code>)
+	 * @param transferTypes
+	 *            the transfer types that are supported by the drag operation
+	 * @param listener
+	 *            the callback that will be invoked to set the drag data and to
+	 *            cleanup after the drag and drop operation finishes
+	 * @see org.eclipse.swt.dnd.DND
+	 * @since 1.3
+	 */
+	public void addDragSupport(int operations, Transfer[] transferTypes, DragSourceListener listener) {
 
-	// RAP [bm]: DND
-//	/**
-//	 * Adds support for dropping items into this viewer via a user drag-and-drop
-//	 * operation.
-//	 * 
-//	 * @param operations
-//	 *            a bitwise OR of the supported drag and drop operation types (
-//	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
-//	 *            <code>DROP_MOVE</code>)
-//	 * @param transferTypes
-//	 *            the transfer types that are supported by the drop operation
-//	 * @param listener
-//	 *            the callback that will be invoked after the drag and drop
-//	 *            operation finishes
-//	 * @see org.eclipse.swt.dnd.DND
-//	 */
-//	public void addDropSupport(int operations, Transfer[] transferTypes,
-//			final DropTargetListener listener) {
-//		Control control = getControl();
-//		DropTarget dropTarget = new DropTarget(control, operations);
-//		dropTarget.setTransfer(transferTypes);
-//		dropTarget.addDropListener(listener);
-//	}
+		Control myControl = getControl();
+		final DragSource dragSource = new DragSource(myControl, operations);
+		dragSource.setTransfer(transferTypes);
+		dragSource.addDragListener(listener);
+	}
+
+	/**
+	 * Adds support for dropping items into this viewer via a user drag-and-drop
+	 * operation.
+	 * 
+	 * @param operations
+	 *            a bitwise OR of the supported drag and drop operation types (
+	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
+	 *            <code>DROP_MOVE</code>)
+	 * @param transferTypes
+	 *            the transfer types that are supported by the drop operation
+	 * @param listener
+	 *            the callback that will be invoked after the drag and drop
+	 *            operation finishes
+	 * @see org.eclipse.swt.dnd.DND
+	 * @since 1.3
+	 */
+	public void addDropSupport(int operations, Transfer[] transferTypes,
+			final DropTargetListener listener) {
+		Control control = getControl();
+		DropTarget dropTarget = new DropTarget(control, operations);
+		dropTarget.setTransfer(transferTypes);
+		dropTarget.addDropListener(listener);
+	}
 
 	/**
 	 * Adds the given filter to this viewer, and triggers refiltering and
