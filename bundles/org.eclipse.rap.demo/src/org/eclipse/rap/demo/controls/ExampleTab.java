@@ -633,7 +633,7 @@ abstract class ExampleTab {
       try {
         Field field = swtClass.getField( selection );
         int cursorStyle = field.getInt( swtClass );
-        cursor = Graphics.getCursor( cursorStyle );
+        cursor = Display.getCurrent().getSystemCursor( cursorStyle );
       } catch( Exception e ) {
       }
     }
