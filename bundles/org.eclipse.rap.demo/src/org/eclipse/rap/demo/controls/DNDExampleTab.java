@@ -42,8 +42,6 @@ public class DNDExampleTab extends ExampleTab {
   private String dragDataText;
   private String dragDataRTF;
   private String dragDataHTML;
-  private String[] dragDataFiles;
-  private List fileList;
   private boolean dragEnabled = false;
   private int dropOperation = 0;
   private int dropFeedback = 0;
@@ -314,7 +312,6 @@ public class DNDExampleTab extends ExampleTab {
         dragConsole.append( ">>dragFinished\n" );
         printEvent( event );
         dragDataText = dragDataRTF = dragDataHTML = null;
-        dragDataFiles = null;
         if( event.detail == DND.DROP_MOVE ) {
           switch( dragControlType ) {
             case BUTTON_CHECK:
@@ -377,15 +374,11 @@ public class DNDExampleTab extends ExampleTab {
         if( HTMLTransfer.getInstance().isSupportedType( event.dataType ) ) {
           event.data = dragDataHTML;
         }
-        if( FileTransfer.getInstance().isSupportedType( event.dataType ) ) {
-          event.data = dragDataFiles;
-        }
       }
 
       public void dragStart( final org.eclipse.swt.dnd.DragSourceEvent event ) {
         dragConsole.append( ">>dragStart\n" );
         printEvent( event );
-        dragDataFiles = fileList.getItems();
         switch( dragControlType ) {
           case BUTTON_CHECK:
           case BUTTON_TOGGLE:
@@ -500,11 +493,6 @@ public class DNDExampleTab extends ExampleTab {
             event.doit = false;
           }
           if( dragTypes[ i ] instanceof HTMLTransfer && dragDataHTML == null ) {
-            event.doit = false;
-          }
-          if( dragTypes[ i ] instanceof FileTransfer
-              && ( dragDataFiles == null || dragDataFiles.length == 0 ) )
-          {
             event.doit = false;
           }
         }
@@ -1048,7 +1036,6 @@ public class DNDExampleTab extends ExampleTab {
         }
       }
     } );
-    b = new Button( parent, SWT.CHECK );
   }
 
   private void createDropWidget( final Composite parent ) {
