@@ -22,7 +22,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.SubActionBars2;
-//import org.eclipse.ui.dnd.IDragAndDropService;
+import org.eclipse.ui.dnd.IDragAndDropService;
 import org.eclipse.ui.internal.registry.EditorDescriptor;
 
 /**
@@ -64,9 +64,8 @@ public class EditorSite extends PartSite implements IEditorSite {
 	private void initializeDefaultServices() {
 		// Register an implementation of the service appropriate for the 
 		// EditorSite.
-// RAP [rh] DnD not supported: IDragAndDropService disabled	  
-//		final IDragAndDropService editorDTService = new EditorSiteDragAndDropServiceImpl();
-//		serviceLocator.registerService(IDragAndDropService.class, editorDTService);
+		final IDragAndDropService editorDTService = new EditorSiteDragAndDropServiceImpl();
+		serviceLocator.registerService(IDragAndDropService.class, editorDTService);
 	}
 	
     public void setActionBars(SubActionBars bars) {

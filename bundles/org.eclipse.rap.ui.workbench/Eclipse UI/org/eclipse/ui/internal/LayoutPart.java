@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISizeProvider;
 import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.internal.dnd.IDropTarget;
+import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.dnd.SwtUtil;
 
 /**
@@ -157,10 +158,9 @@ abstract public class LayoutPart implements ISizeProvider {
     	return preferredParallel;    	
     }
 
-// RAP [rh] DnD support missing    
-//    public IDropTarget getDropTarget(Object draggedObject, Point displayCoordinates) {
-//        return null;
-//    }
+    public IDropTarget getDropTarget(Object draggedObject, Point displayCoordinates) {
+        return null;
+    }
     
     public boolean isDocked() {
         Shell s = getShell();
