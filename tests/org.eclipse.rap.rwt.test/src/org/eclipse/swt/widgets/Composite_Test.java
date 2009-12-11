@@ -13,9 +13,9 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -25,12 +25,12 @@ import org.eclipse.swt.layout.*;
 public class Composite_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testStyle() {
@@ -109,7 +109,7 @@ public class Composite_Test extends TestCase {
     Composite composite = new Composite( shell, SWT.BORDER );
     assertEquals( 2, composite.getBorderWidth() );
     composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setImage( image );

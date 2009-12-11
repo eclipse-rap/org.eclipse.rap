@@ -13,8 +13,8 @@ package org.eclipse.swt.events;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -27,12 +27,12 @@ public class ShellEvent_Test extends TestCase {
   private String log = "";
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testAddRemoveClosedListener() {

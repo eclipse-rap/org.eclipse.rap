@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.*;
@@ -39,11 +38,11 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPreserveValues() {
@@ -64,8 +63,8 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     sc.getVerticalBar().setVisible( true );
     Rectangle rectangle = new Rectangle( 12, 30, 20, 40 );
     sc.setBounds( rectangle );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     assertEquals( new Integer( 23 ),
                   adapter.getPreserved( PROP_H_BAR_SELECTION ) );
     assertEquals( new Integer( 42 ),
@@ -78,53 +77,53 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( "scroll", overflow );
     // bound
     sc.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( sc );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     sc.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sc.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sc.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // selection listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     Boolean hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener listener = new SelectionListener() {
 
       public void widgetDefaultSelected( final SelectionEvent e ) {
@@ -134,23 +133,23 @@ public class ScrolledCompositeLCA_Test extends TestCase {
       }      
     };
     sc.getVerticalBar().addSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     sc.getVerticalBar().removeSelectionListener( listener );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sc.getHorizontalBar().addSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     sc.getHorizontalBar().removeSelectionListener( listener );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sc.addControlListener( new ControlListener() {
 
       public void controlMoved( final ControlEvent e ) {
@@ -159,11 +158,11 @@ public class ScrolledCompositeLCA_Test extends TestCase {
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     sc.setBackground( background );
@@ -171,33 +170,33 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     sc.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     sc.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, sc.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sc.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( "some text", sc.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // activate_listeners Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sc.addFocusListener( new FocusListener() {
 
       public void focusGained( final FocusEvent event ) {
@@ -206,23 +205,23 @@ public class ScrolledCompositeLCA_Test extends TestCase {
       public void focusLost( final FocusEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( sc, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -234,8 +233,8 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
     ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     Button button = new Button( sc, SWT.PUSH );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     button.setSize( 300, 400 );
     Fixture.fakeResponseWriter();
     ButtonLCA lca = new ButtonLCA();
@@ -260,7 +259,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     String scId = WidgetUtil.getId( sc );
     Fixture.fakeRequestParam( scId + ".horizontalBar.selection", "10" );
     Fixture.fakeRequestParam( scId + ".verticalBar.selection", "10" );
-    RWTFixture.readDataAndProcessAction( sc );
+    Fixture.readDataAndProcessAction( sc );
     assertEquals( 2, log.size() );
     assertEquals( new Point( 10, 10 ), sc.getOrigin() );
     assertEquals( 10, sc.getHorizontalBar().getSelection() );
@@ -268,7 +267,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     log.clear();
     Fixture.fakeRequestParam( scId + ".horizontalBar.selection", null );
     Fixture.fakeRequestParam( scId + ".verticalBar.selection", "20" );
-    RWTFixture.readDataAndProcessAction( sc );
+    Fixture.readDataAndProcessAction( sc );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 10, 20 ), sc.getOrigin() );
     assertEquals( 10, sc.getHorizontalBar().getSelection() );
@@ -276,7 +275,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     log.clear();
     Fixture.fakeRequestParam( scId + ".horizontalBar.selection", "20" );
     Fixture.fakeRequestParam( scId + ".verticalBar.selection", null );
-    RWTFixture.readDataAndProcessAction( sc );
+    Fixture.readDataAndProcessAction( sc );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 20, 20 ), sc.getOrigin() );
     assertEquals( 20, sc.getHorizontalBar().getSelection() );

@@ -15,20 +15,20 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 
 public class DateTime_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testInvalidValues() {
@@ -212,7 +212,7 @@ public class DateTime_Test extends TestCase {
   }
 
   public void testComputeSize() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     // The component computeSize depends on day/months names

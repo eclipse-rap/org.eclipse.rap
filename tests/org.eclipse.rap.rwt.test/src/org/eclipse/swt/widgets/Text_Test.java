@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
@@ -27,11 +27,11 @@ import org.eclipse.swt.graphics.Rectangle;
 public class Text_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testInitialValues() {
@@ -130,7 +130,7 @@ public class Text_Test extends TestCase {
   }
 
   public void testModifyEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -152,7 +152,7 @@ public class Text_Test extends TestCase {
 
   public void testVerifyEvent() {
     VerifyListener verifyListener;
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -328,7 +328,7 @@ public class Text_Test extends TestCase {
 	}
 
   public void testInsertWithModifyListener() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -357,7 +357,7 @@ public class Text_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
@@ -388,7 +388,7 @@ public class Text_Test extends TestCase {
   }
 
   public void testComputeTrim() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );

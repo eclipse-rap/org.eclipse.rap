@@ -18,7 +18,6 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
@@ -28,11 +27,11 @@ import org.eclipse.swt.widgets.*;
 public class TreeColumnLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPreserveValues() {
@@ -40,59 +39,59 @@ public class TreeColumnLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.CENTER );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // text
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     column.setText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // image
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    RWTFixture.clearPreserved();
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Fixture.clearPreserved();
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     column.setImage( image );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( null, column.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     column.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( "some text", column.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // alignment
     column.setAlignment( SWT.LEFT );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     Integer alignment = ( Integer )adapter.getPreserved( TreeColumnLCA.PROP_ALIGNMENT );
     assertEquals( SWT.LEFT, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     column.setAlignment( SWT.RIGHT );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     alignment = ( Integer )adapter.getPreserved( TreeColumnLCA.PROP_ALIGNMENT );
     assertEquals( SWT.RIGHT, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     column.setAlignment( SWT.CENTER );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     alignment = ( Integer )adapter.getPreserved( TreeColumnLCA.PROP_ALIGNMENT );
     assertEquals( SWT.CENTER, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // zindex,left,sortimage,resizable,moveable,selection_listeners,width
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     Object zindex = adapter.getPreserved( TreeColumnLCA.PROP_Z_INDEX );
     assertEquals( new Integer( TreeColumnLCA.getZIndex( column ) ), zindex );
@@ -106,14 +105,14 @@ public class TreeColumnLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, moveable );
     Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     column.setMoveable( true );
     column.setResizable( false );
     column.setWidth( 30 );
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     column.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     zindex = adapter.getPreserved( TreeColumnLCA.PROP_Z_INDEX );
     assertEquals( new Integer( TreeColumnLCA.getZIndex( column ) ), zindex );
@@ -129,7 +128,7 @@ public class TreeColumnLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
     Object width = adapter.getPreserved( TreeColumnLCA.PROP_WIDTH );
     assertEquals( new Integer( 30 ), width );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -156,16 +155,16 @@ public class TreeColumnLCA_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     //
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // Simulate request that changes column width
     int newWidth = column.getWidth() + 2;
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.controlResized", columnId );
     Fixture.fakeRequestParam( columnId + ".width", String.valueOf( newWidth ) );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "controlResized", log.toString() );
     assertEquals( newWidth, column.getWidth() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );

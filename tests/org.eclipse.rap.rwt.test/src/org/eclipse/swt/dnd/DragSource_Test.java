@@ -11,7 +11,7 @@ package org.eclipse.swt.dnd;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -38,10 +38,10 @@ public class DragSource_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

@@ -20,7 +20,6 @@ import org.eclipse.rwt.internal.browser.Mozilla1_6;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.swt.RWTFixture;
 
 /**
  * <p>Unit tests for HTMLUtil</p>
@@ -28,11 +27,11 @@ import org.eclipse.swt.RWTFixture;
 public class HTMLUtil_Test extends TestCase {
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testHiddenInput() throws IOException {

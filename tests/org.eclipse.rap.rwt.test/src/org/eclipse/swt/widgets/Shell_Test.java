@@ -16,8 +16,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -182,7 +183,7 @@ public class Shell_Test extends TestCase {
   public void testLayoutOnSetVisible() {
     // ensure that layout is trigered while opening a shell, more specifically
     // during setVisible( true )
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -366,7 +367,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testActiveShellOnFocusControl() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -403,7 +404,7 @@ public class Shell_Test extends TestCase {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996
    */
   public void testCloseOnDeactivateWithSingleShell() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     final Shell shell = new Shell( display );
     shell.addShellListener( new ShellAdapter() {
@@ -421,7 +422,7 @@ public class Shell_Test extends TestCase {
    *             listener
    */
   public void testCloseOnDeactivateWithMultipleShells() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.open();
@@ -438,7 +439,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testNoDeactivateEventOnDispose() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -585,11 +586,11 @@ public class Shell_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

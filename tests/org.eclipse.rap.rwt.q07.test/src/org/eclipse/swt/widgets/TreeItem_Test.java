@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -170,10 +169,10 @@ public class TreeItem_Test extends TestCase {
     assertEquals( null, item.getImage() );
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
     item.setText( "foo" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setChecked( true );
     assertEquals( "foo", item.getText() );
-    assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ), item.getImage() );
+    assertEquals( Graphics.getImage( Fixture.IMAGE1 ), item.getImage() );
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getChecked() ) );
     item.clear();
     assertEquals( "", item.getText() );
@@ -319,9 +318,9 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Image[] images = new Image[]{
-      Graphics.getImage( RWTFixture.IMAGE1 ),
-      Graphics.getImage( RWTFixture.IMAGE2 ),
-      Graphics.getImage( RWTFixture.IMAGE3 )
+      Graphics.getImage( Fixture.IMAGE1 ),
+      Graphics.getImage( Fixture.IMAGE2 ),
+      Graphics.getImage( Fixture.IMAGE3 )
     };
     assertNull( treeItem.getImage( 1 ) );
     treeItem.setImage( -1, null );
@@ -357,14 +356,14 @@ public class TreeItem_Test extends TestCase {
       // expected
     }
     // Test for a disposed Image in the array
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
     image.dispose();
     Image[] images2 = new Image[]{
-      Graphics.getImage( RWTFixture.IMAGE1 ),
+      Graphics.getImage( Fixture.IMAGE1 ),
       image,
-      Graphics.getImage( RWTFixture.IMAGE3 )
+      Graphics.getImage( Fixture.IMAGE3 )
     };
     try {
       treeItem.setImage( images2 );
@@ -388,9 +387,9 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Image[] images = new Image[]{
-      Graphics.getImage( RWTFixture.IMAGE1 ),
-      Graphics.getImage( RWTFixture.IMAGE2 ),
-      Graphics.getImage( RWTFixture.IMAGE3 )
+      Graphics.getImage( Fixture.IMAGE1 ),
+      Graphics.getImage( Fixture.IMAGE2 ),
+      Graphics.getImage( Fixture.IMAGE3 )
     };
     // no columns
     assertEquals( null, treeItem.getImage( 0 ) );
@@ -416,9 +415,9 @@ public class TreeItem_Test extends TestCase {
     treeItem.setImage( 0, images[ 0 ] );
     assertEquals( images[ 0 ], treeItem.getImage( 0 ) );
     
-  //Test for a disposed Image in the array
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    // Test for a disposed Image in the array
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
     image.dispose();
     try {
@@ -655,7 +654,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, 0 );
     // no columns - plain style
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     String string = "hello";
     Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
@@ -751,11 +750,11 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, rootItem.getBounds().y );
     assertEquals( 16, rootItem2.getBounds().y );
     assertEquals( 32, rootItem3.getBounds().y );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "32" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( -32, rootItem.getBounds().y );
     assertEquals( -16, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );
@@ -887,7 +886,7 @@ public class TreeItem_Test extends TestCase {
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
     assertEquals( 100, col1Bounds.x );
     assertEquals( 200, col2Bounds.x );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
     item.setImage( 2, image );
@@ -917,20 +916,20 @@ public class TreeItem_Test extends TestCase {
     treeItem.setFont( 0, display.getSystemFont() );
     treeItem.setForeground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
     treeItem.setBackground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
-    treeItem.setImage( 0, Graphics.getImage( RWTFixture.IMAGE1 ) );
+    treeItem.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
     createColumns( tree, 1 );
     treeItem.setFont( 1, display.getSystemFont() );
     treeItem.setForeground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
     treeItem.setBackground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
-    treeItem.setImage( 1, Graphics.getImage( RWTFixture.IMAGE1 ) );
+    treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE1 ) );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private static TreeColumn[] createColumns( final Tree tree, final int count )

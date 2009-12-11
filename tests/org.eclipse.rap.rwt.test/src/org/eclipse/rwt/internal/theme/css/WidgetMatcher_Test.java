@@ -13,10 +13,10 @@ package org.eclipse.rwt.internal.theme.css;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -90,10 +90,10 @@ public class WidgetMatcher_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

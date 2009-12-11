@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.*;
 import org.eclipse.rwt.internal.util.CssClass;
-import org.eclipse.swt.RWTFixture;
 
 
 /** <p>Tests functionality of org.eclipse.rap.HtmlResponseWriter</p>
@@ -39,12 +38,12 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeBrowser( new Default( true, true ) );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   

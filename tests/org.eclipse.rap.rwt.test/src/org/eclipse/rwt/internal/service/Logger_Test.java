@@ -21,12 +21,11 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
-import org.eclipse.swt.RWTFixture;
 
 
 
@@ -62,7 +61,7 @@ public class Logger_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.createContext( false );
     bufferedConfigurer = LifeCycleServiceHandler.configurer;
     LifeCycleServiceHandler.configurer 
@@ -85,7 +84,7 @@ public class Logger_Test extends TestCase {
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     Fixture.removeContext();
     removeAllTestHandlers();
     LifeCycleServiceHandler.configurer = bufferedConfigurer; 

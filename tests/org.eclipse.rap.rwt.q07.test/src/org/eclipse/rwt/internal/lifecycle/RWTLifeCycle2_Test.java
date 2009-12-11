@@ -28,7 +28,6 @@ import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServic
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
@@ -287,7 +286,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   private static TestResponse newResponse() {
-    TestResponse result = new Fixture.TestResponse();
+    TestResponse result = new TestResponse();
     TestServletOutputStream outputStream = new TestServletOutputStream();
     result.setOutputStream( outputStream );
     return result;
@@ -313,7 +312,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
-    RWTFixture.registerResourceManager();
+    Fixture.registerResourceManager();
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
     AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
@@ -338,7 +337,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     session.invalidate();
     session = null;
     AdapterFactoryRegistry.clear();
-    RWTFixture.deregisterResourceManager();
+    Fixture.deregisterResourceManager();
     ResourceFactory.clear();
     // remove all registered PhaseListener
     PhaseListenerRegistry.clear();

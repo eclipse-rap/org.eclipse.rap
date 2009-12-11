@@ -17,7 +17,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
@@ -27,13 +26,13 @@ import org.eclipse.swt.widgets.*;
 public class ExpandBarLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPreserveValues() {
@@ -42,71 +41,71 @@ public class ExpandBarLCA_Test extends TestCase {
     ExpandBar expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ExpandItem expandItem = createExpandItems( expandBar );
     expandBar.setSize( expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Show Vertical Scrollbar
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( expandBar );
     Boolean showVScrollbar
       = ( Boolean )adapter.getPreserved( ExpandBarLCA.PROP_SHOW_VSCROLLBAR );
     assertEquals( Boolean.FALSE, showVScrollbar );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     expandItem.setExpanded( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     showVScrollbar = ( Boolean )adapter.getPreserved( ExpandBarLCA.PROP_SHOW_VSCROLLBAR );
     assertEquals( Boolean.TRUE, showVScrollbar );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Bottom Spacing Bounds
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     Rectangle bottomSpacingBounds = ( Rectangle )adapter.getPreserved( ExpandBarLCA.PROP_BOTTOM_SPACING_BOUNDS );
     assertEquals( new Rectangle( 4, 209, 10, 4 ), bottomSpacingBounds );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     expandItem.setExpanded( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     bottomSpacingBounds = ( Rectangle )adapter.getPreserved( ExpandBarLCA.PROP_BOTTOM_SPACING_BOUNDS );
     assertEquals( new Rectangle( 4, 56, 10, 4 ), bottomSpacingBounds );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     expandBar.setSpacing( 8 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     bottomSpacingBounds = ( Rectangle )adapter.getPreserved( ExpandBarLCA.PROP_BOTTOM_SPACING_BOUNDS );
     assertEquals( new Rectangle( 8, 64, 10, 8 ), bottomSpacingBounds );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     expandBar.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     expandBar.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( expandBar );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     expandBar.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     expandBar.setBackground( background );
@@ -114,12 +113,12 @@ public class ExpandBarLCA_Test extends TestCase {
     expandBar.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     expandBar.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -134,7 +133,7 @@ public class ExpandBarLCA_Test extends TestCase {
     new Button( composite, SWT.TOGGLE ).setText( "SWT.TOGGLE" );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
     item.setText( "What is your favorite button?" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
     item.setExpanded( false );
@@ -155,7 +154,7 @@ public class ExpandBarLCA_Test extends TestCase {
     new Label( composite, SWT.NONE ).setText( "SWT.ICON_QUESTION" );
     item = new ExpandItem( expandBar, SWT.NONE, 1 );
     item.setText( "What is your favorite icon?" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
     item.setExpanded( false );

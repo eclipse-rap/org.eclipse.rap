@@ -15,7 +15,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -25,12 +24,12 @@ import org.eclipse.swt.widgets.*;
 public class DragSourceLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   
@@ -43,12 +42,12 @@ public class DragSourceLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     dragSourceControl.dispose();
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // expected: ... wm.dispose( "w3" ); ... deregisterDragSource( "w3" )
     String markup = Fixture.getAllMarkup();
     int unregisterPos = markup.indexOf( "deregisterDragSource" );
@@ -67,13 +66,13 @@ public class DragSourceLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     dragSource.dispose();
     dragSourceControl.dispose();
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // expected: ... wm.dispose( "w3" ); ... deregisterDragSource( "w3" )
     String markup = Fixture.getAllMarkup();
     int unregisterPos = markup.indexOf( "deregisterDragSource" );

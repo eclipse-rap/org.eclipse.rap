@@ -11,9 +11,9 @@ package org.eclipse.ui.forms.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 public class ToggleHyperlink_Test extends TestCase {
 
   public void testColors() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Twistie twistie = new Twistie( shell, SWT.NONE );
@@ -37,7 +37,7 @@ public class ToggleHyperlink_Test extends TestCase {
   }
 
   public void testExpanded() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Twistie twistie = new Twistie( shell, SWT.NONE );
@@ -46,7 +46,7 @@ public class ToggleHyperlink_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Twistie twistie = new Twistie( shell, SWT.NONE );
@@ -58,10 +58,10 @@ public class ToggleHyperlink_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

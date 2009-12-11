@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
+
 import junit.framework.TestCase;
 
 public class SlimList_Test extends TestCase {

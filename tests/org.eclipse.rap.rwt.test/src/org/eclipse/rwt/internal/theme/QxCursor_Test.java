@@ -9,15 +9,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.swt.RWTFixture;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
 
 
 public class QxCursor_Test extends TestCase {
 
   private static final ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( RWTFixture.class );
+    = ThemeTestUtil.createResourceLoader( Fixture.class );
 
   public void testIllegalArguments() {
     try {
@@ -63,9 +63,9 @@ public class QxCursor_Test extends TestCase {
   }
 
   public void testCustomCursor() {
-    QxCursor cursor = QxCursor.valueOf( RWTFixture.IMAGE_50x100,
+    QxCursor cursor = QxCursor.valueOf( Fixture.IMAGE_50x100,
                                         RESOURCE_LOADER );
-    assertEquals( RWTFixture.IMAGE_50x100, cursor.value );
+    assertEquals( Fixture.IMAGE_50x100, cursor.value );
     assertEquals( RESOURCE_LOADER, cursor.loader );
     assertTrue( cursor.isCustomCursor() );
   }
@@ -73,7 +73,7 @@ public class QxCursor_Test extends TestCase {
   public void testDefaultString() {
     QxCursor cursor = QxCursor.valueOf( "crosshair" );
     assertEquals( "crosshair", cursor.toDefaultString() );
-    cursor = QxCursor.valueOf( RWTFixture.IMAGE_50x100,
+    cursor = QxCursor.valueOf( Fixture.IMAGE_50x100,
                                RESOURCE_LOADER );
     assertEquals( "", cursor.toDefaultString() );
   }
@@ -84,9 +84,9 @@ public class QxCursor_Test extends TestCase {
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
 
-    cursor1 = QxCursor.valueOf( RWTFixture.IMAGE_50x100,
+    cursor1 = QxCursor.valueOf( Fixture.IMAGE_50x100,
                                 RESOURCE_LOADER );
-    cursor2 = QxCursor.valueOf( RWTFixture.IMAGE_50x100,
+    cursor2 = QxCursor.valueOf( Fixture.IMAGE_50x100,
                                 RESOURCE_LOADER );
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );

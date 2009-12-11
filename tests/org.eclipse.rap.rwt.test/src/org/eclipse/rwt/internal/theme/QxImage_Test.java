@@ -13,13 +13,13 @@ package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 
 
 public class QxImage_Test extends TestCase {
 
   private static final ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( RWTFixture.class );
+    = ThemeTestUtil.createResourceLoader( Fixture.class );
 
   public void testIllegalArguments() {
     try {
@@ -76,10 +76,10 @@ public class QxImage_Test extends TestCase {
   }
 
   public void testCreateImage() {
-    QxImage qxImage = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+    QxImage qxImage = QxImage.valueOf( Fixture.IMAGE_50x100,
                                        RESOURCE_LOADER );
     assertFalse( qxImage.none );
-    assertEquals( RWTFixture.IMAGE_50x100, qxImage.path );
+    assertEquals( Fixture.IMAGE_50x100, qxImage.path );
     assertSame( RESOURCE_LOADER, qxImage.loader );
     assertNull( qxImage.gradientColors );
     assertNull( qxImage.gradientPercents );
@@ -103,15 +103,15 @@ public class QxImage_Test extends TestCase {
 
   public void testDefaultString() {
     assertEquals( "none", QxImage.NONE.toDefaultString() );
-    assertEquals( "", QxImage.valueOf( RWTFixture.IMAGE_50x100,
+    assertEquals( "", QxImage.valueOf( Fixture.IMAGE_50x100,
                                        RESOURCE_LOADER ).toDefaultString() );
   }
 
   public void testHashCode() {
     assertEquals( -1, QxImage.NONE.hashCode() );
-    QxImage qxImage1 = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+    QxImage qxImage1 = QxImage.valueOf( Fixture.IMAGE_50x100,
                                         RESOURCE_LOADER );
-    QxImage qxImage2 = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+    QxImage qxImage2 = QxImage.valueOf( Fixture.IMAGE_50x100,
                                         RESOURCE_LOADER );
     assertEquals( qxImage1, qxImage2 );
     assertEquals( qxImage1.hashCode(), qxImage2.hashCode() );
@@ -128,7 +128,7 @@ public class QxImage_Test extends TestCase {
   public void testGetResourceName() {
     QxImage image = QxImage.NONE;
     assertNull( image.getResourceName() );
-    image = QxImage.valueOf( RWTFixture.IMAGE_50x100, RESOURCE_LOADER );
+    image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( "themes/images/cd56ce7d", image.getResourceName() );
   }
 }

@@ -12,7 +12,7 @@ package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -42,10 +42,10 @@ public final class BusyIndicator_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

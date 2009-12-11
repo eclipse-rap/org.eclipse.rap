@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Cursor;
@@ -41,8 +40,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell , SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeBounds( composite );
     // TODO [fappel]: check whether minWidth and minHeight is still needed -
@@ -53,9 +52,9 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // Ensure that unchanged bound do not lead to markup
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( composite );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( composite );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ControlLCAUtil.writeBounds( composite );
     assertEquals( "", Fixture.getAllMarkup() );
     // Ensure that bounds-changes on an already initialized widgets are rendered
@@ -83,28 +82,28 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( "abc" ) != -1 );
     // on an initialized control: change tooltip from non-empty to empty
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( shell );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( shell );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     shell.setToolTipText( null );
     ControlLCAUtil.writeToolTip( shell );
     assertTrue( Fixture.getAllMarkup().indexOf( "setToolTip" ) != -1 );
     // on an initialized control: change tooltip from non-empty to empty
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( shell );
+    Fixture.markInitialized( shell );
     shell.setToolTipText( "abc" );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     shell.setToolTipText( "newTooltip" );
     ControlLCAUtil.writeToolTip( shell );
     assertTrue( Fixture.getAllMarkup().indexOf( "setToolTip" ) != -1 );
     assertTrue( Fixture.getAllMarkup().indexOf( "newTooltip" ) != -1 );
     // on an initialized control: change non-empty tooltip text
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( shell );
+    Fixture.markInitialized( shell );
     shell.setToolTipText( "newToolTip" );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     shell.setToolTipText( "anotherTooltip" );
     ControlLCAUtil.writeToolTip( shell );
     assertTrue( Fixture.getAllMarkup().indexOf( "setToolTip" ) != -1 );
@@ -149,7 +148,7 @@ public class ControlLCAUtil_Test extends TestCase {
     // An initialized widget with unchanged activateListeners must not render
     // JavaScript code for adding activateListeners
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( label );
+    Fixture.markInitialized( label );
     labelLCA.preserveValues( label );
     labelLCA.renderChanges( label );
     markup = Fixture.getAllMarkup();
@@ -158,7 +157,7 @@ public class ControlLCAUtil_Test extends TestCase {
     // Removing an ActivateListener from an initialized widget must render
     // JavaScript code for removing activateListeners
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( label );
+    Fixture.markInitialized( label );
     labelLCA.preserveValues( label );
     ActivateEvent.removeListener( label, listener );
     labelLCA.renderChanges( label );
@@ -178,7 +177,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessSelection() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     SelectionListener listener = new SelectionListener() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -246,8 +245,8 @@ public class ControlLCAUtil_Test extends TestCase {
     final Control control = new Button( shell, SWT.PUSH );
     AbstractWidgetLCA controlLCA = WidgetUtil.getLCA( control );
     Cursor cursor = display.getSystemCursor( SWT.CURSOR_HAND );
-    RWTFixture.markInitialized( control );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( control );
+    Fixture.preserveWidgets();
     control.setCursor( cursor );
     ControlLCAUtil.writeCursor( control );
     String expected = "w.setCursor( \"pointer\" );";
@@ -318,8 +317,8 @@ public class ControlLCAUtil_Test extends TestCase {
     String shellId = WidgetUtil.getId( shell );
     // Simulate requests that carry information about a key-down event
     // - incomplete request
-    RWTFixture.fakeNewRequest();
-    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
     eventLog.clear();
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     try {
@@ -330,14 +329,14 @@ public class ControlLCAUtil_Test extends TestCase {
     }
     assertTrue( eventLog.isEmpty() );
     // - key-event without meaningful information (e.g. Shift-key only)
-    RWTFixture.fakeNewRequest();
-    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     ControlLCAUtil.processKeyEvents( shell );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();
     Event event = ( Event )eventLog.get( 0 );
     assertEquals( SWT.KeyDown, event.type );
@@ -376,13 +375,13 @@ public class ControlLCAUtil_Test extends TestCase {
     // Simulate KeyEvent request, listener leaves doit untouched (doit==true)
     shell.addListener( SWT.KeyDown, doitTrueListener );
     shell.addListener( SWT.KeyUp, keyUpListener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, eventLog.size() );
     assertEquals( SWT.KeyDown, ( ( Event )eventLog.get( 0 ) ).type );
     assertTrue( ( ( Event )eventLog.get( 0 ) ).doit );
@@ -395,13 +394,13 @@ public class ControlLCAUtil_Test extends TestCase {
     // Simulate KeyEvent request, listener sets doit = false
     eventLog.clear();
     shell.addListener( SWT.KeyDown, doitFalseListener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, eventLog.size() );
     assertEquals( SWT.KeyDown, ( ( Event )eventLog.get( 0 ) ).type );
     assertFalse( ( ( Event )eventLog.get( 0 ) ).doit );
@@ -434,13 +433,13 @@ public class ControlLCAUtil_Test extends TestCase {
 
     // Simulate Tab key stroke, listener leaves doit untouched (doit==true)
     shell.addListener( SWT.Traverse, doitTrueListener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "9" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, eventLog.size() );
     assertEquals( SWT.Traverse, ( ( Event )eventLog.get( 0 ) ).type );
     assertTrue( ( ( Event )eventLog.get( 0 ) ).doit );
@@ -451,13 +450,13 @@ public class ControlLCAUtil_Test extends TestCase {
     // Simulate Tab key stroke, listener sets doit = false
     eventLog.clear();
     shell.addListener( SWT.Traverse, doitFalseListener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "9" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, eventLog.size() );
     assertEquals( SWT.Traverse, ( ( Event )eventLog.get( 0 ) ).type );
     assertFalse( ( ( Event )eventLog.get( 0 ) ).doit );
@@ -486,13 +485,13 @@ public class ControlLCAUtil_Test extends TestCase {
     shell.addListener( SWT.Traverse, listener );
     shell.addListener( SWT.KeyDown, listener );
     shell.addListener( SWT.KeyUp, listener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "27" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, eventLog.size() );
     Event traverseEvent = ( Event )eventLog.get( 0 );
     assertEquals( SWT.Traverse, traverseEvent.type );
@@ -545,10 +544,10 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveBackgroundImage( control );
-    RWTFixture.markInitialized( control );
-    control.setBackgroundImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    Fixture.markInitialized( control );
+    control.setBackgroundImage( Graphics.getImage( Fixture.IMAGE1 ) );
     ControlLCAUtil.writeBackgroundImage( control );
-    String imageLocation = "rwt-resources/" + RWTFixture.IMAGE1;
+    String imageLocation = "rwt-resources/" + Fixture.IMAGE1;
     String expected =   "var w = wm.findWidgetById( \"w2\" );"
                       + "w.setBackgroundImage( \""
                       + imageLocation
@@ -564,7 +563,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessHelpEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Control control = new Shell( display, SWT.NONE );
@@ -582,11 +581,11 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

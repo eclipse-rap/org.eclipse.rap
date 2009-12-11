@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
@@ -368,7 +368,7 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testAddModifyListener() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
@@ -437,7 +437,7 @@ public class CCombo_Test extends TestCase {
   }
   
   public void testAddModifyListenerReadOnly() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
@@ -504,7 +504,7 @@ public class CCombo_Test extends TestCase {
   
   public void testVerifyEvent() {
     VerifyListener verifyListener;
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -602,7 +602,7 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testComputeSize() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
@@ -629,7 +629,7 @@ public class CCombo_Test extends TestCase {
   }
   
   public void testSetTextAndSelection() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final CCombo combo = new CCombo( shell, SWT.NONE );
@@ -658,10 +658,10 @@ public class CCombo_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

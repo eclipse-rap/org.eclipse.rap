@@ -13,10 +13,12 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
@@ -27,11 +29,11 @@ import org.eclipse.swt.layout.FillLayout;
 public class Table_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testInitialValues() {
@@ -323,7 +325,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeInSetData() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -346,7 +348,7 @@ public class Table_Test extends TestCase {
 
   public void testReduceSetItemCountWithSelection() {
     // Create a table that is populated with setItemCount with all selected
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -374,7 +376,7 @@ public class Table_Test extends TestCase {
 
   public void testReduceSetItemCountWithSelectionVirtual() {
     // Create a table that is populated with setItemCount with all selected
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 800, 800 );
@@ -468,7 +470,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testFocusIndexVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -505,7 +507,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveAllVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -551,7 +553,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveRangeVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -586,7 +588,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
@@ -601,7 +603,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveArrayVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -1089,7 +1091,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testIsSelectedVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -1116,7 +1118,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearNonVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.CHECK );
@@ -1127,7 +1129,7 @@ public class Table_Test extends TestCase {
 
     table.setSelection( item );
     item.setText( "abc" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setChecked( true );
     item.setGrayed( true );
     table.clear( table.indexOf( item ) );
@@ -1148,7 +1150,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -1176,10 +1178,10 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       items[ i ] = new TableItem( table, SWT.NONE );
       items[ i ].setText( "abc" );
-      items[ i ].setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+      items[ i ].setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     }
     table.clear( 2, 5 );
-    Image img = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image img = Graphics.getImage( Fixture.IMAGE1 );
     for( int i = 0; i < 10; i++ ) {
       if( i >= 2 && i <= 5 ) {
         assertEquals( "", items[ i ].getText() );
@@ -1208,11 +1210,11 @@ public class Table_Test extends TestCase {
 	  for (int i = 0; i < 10; i++) {
 		  items[i] = new TableItem( table, SWT.NONE );
 		  items[i].setText( "abc" );
-		  items[i].setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+		  items[i].setImage( Graphics.getImage( Fixture.IMAGE1 ) );
 	  }
 
 	  table.clear( new int[]{ 1, 3, 5 } );
-    Image img = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image img = Graphics.getImage( Fixture.IMAGE1 );
     for( int i = 0; i < 10; i++ ) {
       if( i == 1 || i == 3 || i == 5 ) {
         assertEquals( "", items[ i ].getText() );
@@ -1232,7 +1234,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowItem() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -1270,7 +1272,7 @@ public class Table_Test extends TestCase {
   public void testSetSelectionBeforeSetSize() {
     // Calling setSelection() before setSize() should not change top index
     // See bug 272714, https://bugs.eclipse.org/bugs/show_bug.cgi?id=272714
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -1382,7 +1384,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetColumnOrder() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     ControlAdapter controlAdapter = new ControlAdapter() {
       public void controlMoved( final ControlEvent event ) {
@@ -1455,7 +1457,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testRedrawAfterDisposeVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -1550,7 +1552,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearAllAndSetItemCountWithSelection() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -1573,7 +1575,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetItemCountWithSetDataListener() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -1591,7 +1593,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testResizeWithVirtualItems() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -1621,11 +1623,11 @@ public class Table_Test extends TestCase {
     assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
 
     // Setting the first image also sets the itemImageSize for always and ever
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
 
     // Ensure that the itemImageSize - once detemined - does not change anymore
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
 
     // Ensure that the method returns the actual image size, not clipped by the
@@ -1645,17 +1647,17 @@ public class Table_Test extends TestCase {
     assertFalse( table.hasColumnImages( 0 ) );
     item0.setImage( ( Image )null );
     assertFalse( table.hasColumnImages( 0 ) );
-    item0.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item0.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
     assertTrue( table.hasColumnImages( 0 ) );
     item0.setImage( ( Image )null );
     assertFalse( table.hasColumnImages( 0 ) );
-    item0.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item0.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
     item0.dispose();
     assertFalse( table.hasColumnImages( 0 ) );
     item0 = new TableItem( table, SWT.NONE );
-    item0.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item0.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
     TableItem item1 = new TableItem( table, SWT.NONE );
-    item1.setImage( Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item1.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
     assertTrue( table.hasColumnImages( 0 ) );
     item1.setImage( ( Image )null );
     assertTrue( table.hasColumnImages( 0 ) );
@@ -1665,12 +1667,12 @@ public class Table_Test extends TestCase {
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     item0 = new TableItem( table, SWT.NONE );
-    item0.setImage( 1, Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item0.setImage( 1, Graphics.getImage( Fixture.IMAGE_50x100 ) );
     assertFalse( table.hasColumnImages( 0 ) );
     assertTrue( table.hasColumnImages( 1 ) );
     column0.dispose();
     assertTrue( table.hasColumnImages( 0 ) );
-    item0.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_50x100 ) );
+    item0.setImage( 0, Graphics.getImage( Fixture.IMAGE_50x100 ) );
     assertTrue( table.hasColumnImages( 0 ) );
     item0.setImage( 0, null );
     assertFalse( table.hasColumnImages( 0 ) );
@@ -1759,7 +1761,7 @@ public class Table_Test extends TestCase {
    *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
    */
   public void testCheckDataWithInvalidIndex() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -1772,7 +1774,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testComputeSizeNonVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
 
@@ -1835,7 +1837,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testComputeSizeVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
 
@@ -1920,7 +1922,7 @@ public class Table_Test extends TestCase {
     // default font size (11) + hardcoded minimal vertical padding (4)
     assertEquals( 15, table.getItemHeight() );
     TableItem item2 = new TableItem( table, SWT.NONE );
-    item2.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    item2.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     // vertical padding defaults to 0
     assertEquals( 50, table.getItemHeight() );
   }
@@ -2031,7 +2033,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnResize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -2054,7 +2056,7 @@ public class Table_Test extends TestCase {
     assertTrue( table.hasHScrollBar() );
     item.setText( "" );
     assertFalse( table.hasHScrollBar() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     item.setImage( image );
     assertTrue( table.hasHScrollBar() );
     item.setImage( ( Image )null );
@@ -2076,7 +2078,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -2092,7 +2094,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnVirtualItemCountChange() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -2115,13 +2117,13 @@ public class Table_Test extends TestCase {
     assertFalse( table.hasHScrollBar() );
     item.setText( "Very long long long long long long long long text" );
     assertFalse( table.hasHScrollBar() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     item.setImage( image );
     assertFalse( table.hasHScrollBar() );
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -2139,7 +2141,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -2156,7 +2158,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetMeasureItemWithoutColumnsVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final String[] data = new String[ 1000 ];
     for( int i = 0; i < data.length; i++ ) {
       data[ i ] = "";
@@ -2197,7 +2199,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -2227,7 +2229,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testIndexOfVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -2244,7 +2246,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumn() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 800, 600 );
@@ -2310,7 +2312,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( new String[] { "col 1", "col 2", "col 3" } );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( new Image[] { image, null, image } );
     assertTrue( table.hasColumnImages( 0 ) );
     TableColumn col1 = new TableColumn( table, SWT.NONE );

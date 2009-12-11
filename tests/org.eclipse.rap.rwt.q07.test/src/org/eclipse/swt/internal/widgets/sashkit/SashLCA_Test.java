@@ -13,6 +13,7 @@
 package org.eclipse.swt.internal.widgets.sashkit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -20,7 +21,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -35,8 +35,8 @@ public class SashLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Sash sash = new Sash( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( sash );
     Object[] Listeners;
     Listeners = ( Object[] )adapter.getPreserved( Props.SELECTION_LISTENERS );
@@ -47,57 +47,57 @@ public class SashLCA_Test extends TestCase {
       }
     };
     sash.addSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     Listeners = ( Object[] )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( 1, Listeners.length );
     assertEquals( listener, Listeners[ 0 ] );
     //control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sash.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sash.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( sash );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     sash.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     sash.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     Boolean hasListeners
      = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sash.addControlListener( new ControlListener() {
 
       public void controlMoved( final ControlEvent e ) {
@@ -106,16 +106,16 @@ public class SashLCA_Test extends TestCase {
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     sash.setBackground( background );
@@ -123,33 +123,33 @@ public class SashLCA_Test extends TestCase {
     sash.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     sash.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( null, sash.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sash.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( "some text", sash.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activate_listeners   Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     sash.addFocusListener( new FocusListener() {
 
       public void focusGained( final FocusEvent event ) {
@@ -158,23 +158,23 @@ public class SashLCA_Test extends TestCase {
       public void focusLost( final FocusEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( sash, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -184,17 +184,17 @@ public class SashLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Sash sash = new Sash( shell, SWT.NONE );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( sash );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( sash );
+    Fixture.preserveWidgets();
     sash.setBounds( new Rectangle( 20, 100, 50, 60 ) );
     SashLCA sashLCA = new SashLCA();
     sashLCA.renderChanges( sash );
     assertTrue( Fixture.getAllMarkup()
       .endsWith( "setSpace( 20, 50, 100, 60 );" ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Fixture.fakeResponseWriter();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     sashLCA.renderChanges( sash );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -223,15 +223,15 @@ public class SashLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, sashId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".detail",
                               "drag" );
-    RWTFixture.readDataAndProcessAction( sash );
+    Fixture.readDataAndProcessAction( sash );
     assertEquals( "widgetSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

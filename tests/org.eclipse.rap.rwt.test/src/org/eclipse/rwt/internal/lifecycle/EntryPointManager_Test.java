@@ -13,8 +13,8 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.swt.RWTFixture;
 
 public class EntryPointManager_Test extends TestCase {
 
@@ -28,11 +28,11 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testRegister() {

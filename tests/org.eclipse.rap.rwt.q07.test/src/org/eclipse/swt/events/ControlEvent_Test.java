@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
@@ -24,11 +23,11 @@ import org.eclipse.swt.widgets.*;
 public class ControlEvent_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testResize() {
@@ -40,7 +39,7 @@ public class ControlEvent_Test extends TestCase {
         source[ 0 ] = ( Control )event.getSource();
       }
     } );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     control.setSize( 10, 20 );
     assertSame( control, source[ 0 ] );
     
@@ -50,7 +49,7 @@ public class ControlEvent_Test extends TestCase {
     String id = WidgetUtil.getId( control );
     Fixture.fakeRequestParam( id + ".bounds.width", "50" );
     Fixture.fakeRequestParam( id + ".bounds.height", "100" );
-    RWTFixture.readDataAndProcessAction( control );
+    Fixture.readDataAndProcessAction( control );
     assertSame( control, source[ 0 ] );
     assertEquals( new Point( 50, 100 ), control.getSize() );
   }
@@ -64,7 +63,7 @@ public class ControlEvent_Test extends TestCase {
         source[ 0 ] = ( Control )event.getSource();
       }
     } );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     control.setLocation( 30, 40 );
     assertSame( control, source[ 0 ] );
 
@@ -74,7 +73,7 @@ public class ControlEvent_Test extends TestCase {
     String id = WidgetUtil.getId( control );
     Fixture.fakeRequestParam( id + ".bounds.x", "150" );
     Fixture.fakeRequestParam( id + ".bounds.y", "200" );
-    RWTFixture.readDataAndProcessAction( control );
+    Fixture.readDataAndProcessAction( control );
     assertSame( control, source[ 0 ] );
     assertEquals( new Point( 150, 200 ), control.getLocation() );
   }

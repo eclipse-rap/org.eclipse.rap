@@ -16,21 +16,20 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.swt.RWTFixture;
 
 
 public class BrowserSurvey_Test extends TestCase {
   private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     bufferedConfigurer = LifeCycleServiceHandler.configurer; 
     LifeCycleServiceHandler.configurer
       = new LifeCycleServiceHandlerConfigurer();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     LifeCycleServiceHandler.configurer = bufferedConfigurer;
   }
 

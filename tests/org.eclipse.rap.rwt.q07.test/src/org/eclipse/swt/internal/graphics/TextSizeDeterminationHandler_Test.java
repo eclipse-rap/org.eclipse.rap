@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -17,12 +19,9 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
-
-import junit.framework.TestCase;
 
 
 public class TextSizeDeterminationHandler_Test extends TestCase {
@@ -32,7 +31,7 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
 
     // Let pass one startup request to init the 'system'
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
@@ -40,11 +39,11 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
     ISessionStore session = ContextProvider.getSession();
     String id = LifeCycle.class.getName();
     session.setAttribute( id, lifeCycle );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
     // The actual test request
     Fixture.fakeResponseWriter();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -62,7 +61,7 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
         return PhaseId.RENDER;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
 
     String probe = TextSizeProbeStore.DEFAULT_PROBE;
     String[] expected = new String[] {
@@ -84,7 +83,7 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     TextSizeDataBase.reset();
     TextSizeProbeStore.reset();
   }
@@ -92,6 +91,6 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
   protected void tearDown() throws Exception {
     TextSizeProbeStore.reset();
     TextSizeDataBase.reset();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

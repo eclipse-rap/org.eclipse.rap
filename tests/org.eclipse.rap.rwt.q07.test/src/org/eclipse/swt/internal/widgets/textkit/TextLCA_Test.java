@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
@@ -31,11 +30,11 @@ import org.eclipse.swt.widgets.*;
 public class TextLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testMultiPreserveValues() {
@@ -60,25 +59,25 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
     testPreserveValues( display, text );
     //Selection_Listener
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     String propSelectionLsnr = TextLCAUtil.PROP_SELECTION_LISTENER;
     Boolean hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     text.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
   public void testReadData() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
@@ -101,17 +100,17 @@ public class TextLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( text );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     TextLCA textLCA = new TextLCA();
     text.setText( "hello" );
     textLCA.renderChanges( text );
     assertTrue( Fixture.getAllMarkup().endsWith( "setValue( \"hello\" );" ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     textLCA.renderChanges( text );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -131,11 +130,11 @@ public class TextLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "new text" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "modifyText", log.toString() );
   }
 
@@ -155,11 +154,11 @@ public class TextLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "verifyText", log.toString() );
   }
   
@@ -182,17 +181,17 @@ public class TextLCA_Test extends TestCase {
       }
     };
     text.addVerifyListener( emptyVerifyListener );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( text );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( text );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that an empty verify listener does not lead to sending the
     // original text and selection values back to the client
     String markup = Fixture.getAllMarkup();
@@ -213,13 +212,13 @@ public class TextLCA_Test extends TestCase {
     };
     text.addVerifyListener( alteringVerifyListener );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verified", text.getText() );
@@ -235,13 +234,13 @@ public class TextLCA_Test extends TestCase {
     };
     text.addVerifyListener( alteringVerifyListener );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
     assertEquals( "", text.getText() );
@@ -255,17 +254,17 @@ public class TextLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.SINGLE );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( text );
-    RWTFixture.fakeNewRequest();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( text );
+    Fixture.fakeNewRequest();
     String textId = WidgetUtil.getId( text );
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
     String markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
@@ -296,13 +295,13 @@ public class TextLCA_Test extends TestCase {
         log.add( event );
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 2, log.size() );
     assertTrue( log.get( 0 ) instanceof VerifyEvent );
     assertTrue( log.get( 1 ) instanceof ModifyEvent );
@@ -322,18 +321,18 @@ public class TextLCA_Test extends TestCase {
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setMaxLength" ) );
     // Positive textLimit is written as setMaxLength( ... )
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( text );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( text );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     text.setTextLimit( 12 );
     lca.renderChanges( text );
     String expected = "setMaxLength( 12 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // Negative textLimit is tread as 'no limit'
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( text );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( text );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     text.setTextLimit( -50 );
     lca.renderChanges( text );
     expected = "setMaxLength( null );";
@@ -344,52 +343,52 @@ public class TextLCA_Test extends TestCase {
     Boolean hasListeners;
     //text
     text.setText( "some text" );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     assertEquals( text.getText(), adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //text-limit
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     Integer textLimit
      = ( Integer )( adapter.getPreserved( TextLCAUtil.PROP_TEXT_LIMIT ) );
     assertEquals( Integer.MAX_VALUE, textLimit.intValue() );
     text.setTextLimit( 30 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     textLimit
      = ( Integer )( adapter.getPreserved( TextLCAUtil.PROP_TEXT_LIMIT ) );
     assertEquals( 30, textLimit.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //selection
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     Point point = new Point( 0, 0 );
     assertEquals( point, adapter.getPreserved( TextLCAUtil.PROP_SELECTION ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     point = new Point( 3, 6 );
     text.setSelection( point );
     text.getSelection();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( point, adapter.getPreserved( TextLCAUtil.PROP_SELECTION ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //readonly
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     Boolean readonly
      = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_READONLY );
     assertEquals( Boolean.FALSE, readonly );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     text.setEditable( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     readonly = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_READONLY );
     assertEquals( Boolean.TRUE, readonly );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //verifymodify-Listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     Boolean hasVerifyModifyListener
      = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
@@ -399,25 +398,25 @@ public class TextLCA_Test extends TestCase {
       public void verifyText( final VerifyEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     hasVerifyModifyListener
      = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, hasVerifyModifyListener );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //Bounds
     Rectangle rectangle = new Rectangle( 10, 10, 200, 100 );
     text.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     text.addControlListener( new ControlListener() {
 
       public void controlMoved( final ControlEvent e ) {
@@ -426,48 +425,48 @@ public class TextLCA_Test extends TestCase {
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     text.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( text );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     text.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     text.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( text );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 }

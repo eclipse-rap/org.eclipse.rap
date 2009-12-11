@@ -10,11 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.widgets.Button;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.swt.widgets.Button;
 
 
 public class LifeCycleAdapterUtil_Test extends TestCase {
@@ -54,11 +53,11 @@ public class LifeCycleAdapterUtil_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

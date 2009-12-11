@@ -15,9 +15,9 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.widgets.Button;
 
 
@@ -97,12 +97,12 @@ public class ThemeCssValuesMap_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakeNewRequest();
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private static ThemeCssValuesMap getValuesMap() throws IOException {

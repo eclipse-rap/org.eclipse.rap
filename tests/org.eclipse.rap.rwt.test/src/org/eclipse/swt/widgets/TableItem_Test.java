@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -32,11 +32,11 @@ import org.eclipse.swt.layout.FillLayout;
 public class TableItem_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testCreation() {
@@ -206,7 +206,7 @@ public class TableItem_Test extends TestCase {
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 200 );
     
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     item.setImage( 0, image );
     assertTrue( item.getTextBounds( 0 ).x > image.getBounds().width );
     item.setImage( 0, null );
@@ -267,7 +267,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( bounds.height > 0 );
 
     // Set an actual image - its size rules the bounds returned
-    item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
     assertEquals( 100, bounds.width );
@@ -295,7 +295,7 @@ public class TableItem_Test extends TestCase {
     // Bounds of an image of a column that provides enough space are ruled by
     // the images size
     column.setWidth( 1000 );
-    item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
     assertEquals( 100, bounds.width );
@@ -303,7 +303,7 @@ public class TableItem_Test extends TestCase {
     // A column width that is smaller than the images width does not clip the
     // image bounds
     column.setWidth( 20 );
-    item.setImage( 0, Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
     assertEquals( 100, bounds.width );
@@ -386,7 +386,7 @@ public class TableItem_Test extends TestCase {
     item.setText( "yes" );
     assertEquals( "yes", item.getText() );
     item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( "", item.getText() );
 
     // Test with columns
@@ -400,12 +400,12 @@ public class TableItem_Test extends TestCase {
     item.setText( 5, "abc" );
     assertEquals( "", item.getText( 5 ) );
     item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( "", item.getText() );
   }
 
   public void testImage() {
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -430,8 +430,8 @@ public class TableItem_Test extends TestCase {
     item.setImage( image );
     assertSame( image, item.getImage() );
     // Test for a disposed Image in the array
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image2 = new Image( display, stream );
     image2.dispose();
     try {
@@ -456,9 +456,9 @@ public class TableItem_Test extends TestCase {
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, 0 );
     Image[] images = new Image[]{
-      Graphics.getImage( RWTFixture.IMAGE1 ),
-      Graphics.getImage( RWTFixture.IMAGE2 ),
-      Graphics.getImage( RWTFixture.IMAGE3 )
+      Graphics.getImage( Fixture.IMAGE1 ),
+      Graphics.getImage( Fixture.IMAGE2 ),
+      Graphics.getImage( Fixture.IMAGE3 )
     };
     assertNull( tableItem.getImage( 1 ) );
     tableItem.setImage( -1, null );
@@ -494,14 +494,14 @@ public class TableItem_Test extends TestCase {
       // expected
     }
     // Test for a disposed Image in the array
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
     image.dispose();
     Image[] images2 = new Image[]{
-      Graphics.getImage( RWTFixture.IMAGE1 ),
+      Graphics.getImage( Fixture.IMAGE1 ),
       image,
-      Graphics.getImage( RWTFixture.IMAGE3 )
+      Graphics.getImage( Fixture.IMAGE3 )
     };
     try {
       tableItem.setImage( images2 );
@@ -538,7 +538,7 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testClearVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -661,7 +661,7 @@ public class TableItem_Test extends TestCase {
    * fired when the item becomes visible. SWT (on Windows) behaves the same. */
   public void testSetterWithVirtual() {
     // set up virtual table with unresolved items
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List eventLog = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -687,7 +687,7 @@ public class TableItem_Test extends TestCase {
   }
   
   public void testDisposeVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -712,7 +712,7 @@ public class TableItem_Test extends TestCase {
   
   public void testSetItemCountDisposeOrder() {
     final java.util.List log = new ArrayList();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );

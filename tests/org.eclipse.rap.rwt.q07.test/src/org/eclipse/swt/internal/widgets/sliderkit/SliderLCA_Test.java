@@ -18,10 +18,10 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -31,10 +31,10 @@ public class SliderLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserved minimum, maximum, 
     // selection, increment, pageIncrement and thumb
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
     Integer minimum
       = ( Integer )adapter.getPreserved( SliderLCA.PROP_MINIMUM );
@@ -54,7 +54,7 @@ public class SliderLCA_Test extends TestCase {
     Integer thumb
     = ( Integer )adapter.getPreserved( SliderLCA.PROP_THUMB );
     assertEquals( 10, thumb.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( slider );
     // Test preserved selection listeners
@@ -73,67 +73,67 @@ public class SliderLCA_Test extends TestCase {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     slider.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     slider.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     slider.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( slider );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     slider.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     slider.setBackground( background );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testPreserveSelectionListener( final Slider slider ) {
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
     Boolean hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() { };
     slider.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testSelectionEvent( final Slider slider ) {
@@ -154,15 +154,15 @@ public class SliderLCA_Test extends TestCase {
     slider.addSelectionListener( selectionListener );
     String dateTimeId = WidgetUtil.getId( slider );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
-    RWTFixture.readDataAndProcessAction( slider );
+    Fixture.readDataAndProcessAction( slider );
     assertEquals( "widgetSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

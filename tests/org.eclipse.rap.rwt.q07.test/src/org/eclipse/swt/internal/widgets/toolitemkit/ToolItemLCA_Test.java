@@ -24,7 +24,6 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
@@ -38,14 +37,14 @@ public class ToolItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.CHECK );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( Props.SELECTION_INDICES ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     item.setSelection( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( Props.SELECTION_INDICES ) );
     testPreserveValues( display, item );
@@ -57,7 +56,7 @@ public class ToolItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.DROP_DOWN );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, item );
     display.dispose();
   }
@@ -67,7 +66,7 @@ public class ToolItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.PUSH );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, item );
     display.dispose();
   }
@@ -77,14 +76,14 @@ public class ToolItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.RADIO );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( Props.SELECTION_INDICES ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     item.setSelection( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( Props.SELECTION_INDICES ) );
     testPreserveValues( display, item );
@@ -96,8 +95,8 @@ public class ToolItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.SEPARATOR );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     assertEquals( null, adapter.getPreserved( Props.CONTROL ) );
   }
@@ -127,7 +126,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolItemId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -144,7 +143,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item0Id + ".selection", "false" );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertFalse( item0.getSelection() );
     assertTrue( item1.getSelection() );
   }
@@ -156,23 +155,23 @@ public class ToolItemLCA_Test extends TestCase {
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     final ToolItem item = new ToolItem( tb, SWT.CHECK );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( item );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ToolItemLCA itemLCA = new ToolItemLCA();
     item.setText( "benny" );
     itemLCA.renderChanges( item );
     String expected = "setText( \"benny\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     item.setSelection( true );
     itemLCA.renderChanges( item );
     assertTrue( Fixture.getAllMarkup().endsWith( "setSelection( true );" ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     itemLCA.renderChanges( item );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -200,8 +199,8 @@ public class ToolItemLCA_Test extends TestCase {
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( toolBar, SWT.CHECK );
 
-    Image enabledImage = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image disabledImage = Graphics.getImage( RWTFixture.IMAGE2 );
+    Image enabledImage = Graphics.getImage( Fixture.IMAGE1 );
+    Image disabledImage = Graphics.getImage( Fixture.IMAGE2 );
     assertNull( ToolItemLCAUtil.getImage( item ) );
 
     item.setImage( enabledImage );
@@ -219,18 +218,18 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private void testPreserveValues( final Display display, final ToolItem item )
   {
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
@@ -241,7 +240,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "", adapter.getPreserved( Props.TOOLTIP ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     item.addSelectionListener( selectionListener );
@@ -251,7 +250,7 @@ public class ToolItemLCA_Test extends TestCase {
     ToolBar toolbar = item.getParent();
     Menu contextMenu = new Menu( toolbar );
     toolbar.setMenu( contextMenu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     if( ( item.getStyle() & SWT.SEPARATOR ) == 0 ) {

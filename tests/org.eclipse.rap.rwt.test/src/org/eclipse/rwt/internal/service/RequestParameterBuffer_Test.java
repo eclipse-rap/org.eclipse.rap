@@ -15,7 +15,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.swt.RWTFixture;
 
 
 public class RequestParameterBuffer_Test extends TestCase {
@@ -36,12 +35,12 @@ public class RequestParameterBuffer_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.createContext( true );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     Fixture.removeContext();
   }
 }

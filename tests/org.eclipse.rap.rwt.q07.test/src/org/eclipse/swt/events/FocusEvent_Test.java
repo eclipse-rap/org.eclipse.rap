@@ -14,10 +14,9 @@ package org.eclipse.swt.events;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -25,11 +24,11 @@ import org.eclipse.swt.widgets.*;
 public class FocusEvent_Test extends TestCase {
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testFocusLost() {
@@ -52,12 +51,12 @@ public class FocusEvent_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String focusControlId = WidgetUtil.getId( focusControl );
 
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", focusControlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", 
                               focusControlId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "focusLost", log.toString() );
   }
   
@@ -79,12 +78,12 @@ public class FocusEvent_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
     
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", 
                               controlId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "focusGained", log.toString() );
   }
 }

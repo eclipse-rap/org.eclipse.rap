@@ -16,20 +16,19 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.util.HTML;
-import org.eclipse.swt.RWTFixture;
 
 
 public class JSLibraryServiceHandler_Test extends TestCase {
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testResponseEncoding() throws IOException, ServletException {

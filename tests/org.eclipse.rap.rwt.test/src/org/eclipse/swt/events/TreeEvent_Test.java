@@ -12,8 +12,8 @@ package org.eclipse.swt.events;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -24,11 +24,11 @@ public class TreeEvent_Test extends TestCase {
   private String log = "";
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testAddRemoveClosedListener() {
@@ -49,12 +49,12 @@ public class TreeEvent_Test extends TestCase {
     tree.addTreeListener( listener );
     log = "";
     TreeEvent event = new TreeEvent( tree, item, TreeEvent.TREE_COLLAPSED );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     event.processEvent();
     assertEquals( TREE_COLLAPSED, log );
     log = "";
     event = new TreeEvent( tree, item, TreeEvent.TREE_EXPANDED );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     event.processEvent();
     assertEquals( TREE_EXPANDED, log );
   }

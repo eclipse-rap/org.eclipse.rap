@@ -30,9 +30,9 @@ public class SessionSingleton_Test extends TestCase {
   }
   
   public void testSessionSingletons() throws Exception {
-    Fixture.TestSession session1 = new Fixture.TestSession();
-    Fixture.TestResponse testResponse1 = new Fixture.TestResponse();
-    Fixture.TestRequest testRequest1 = new Fixture.TestRequest();
+    TestSession session1 = new TestSession();
+    TestResponse testResponse1 = new TestResponse();
+    TestRequest testRequest1 = new TestRequest();
     testRequest1.setSession( session1 );
     final ServiceContext serviceContext1
       = new ServiceContext( testRequest1, testResponse1 );
@@ -89,9 +89,9 @@ public class SessionSingleton_Test extends TestCase {
   }
   
   public void testSessionSingletonsWithoutStateInfo() throws Exception {
-    Fixture.TestSession session1 = new Fixture.TestSession();
-    Fixture.TestResponse testResponse1 = new Fixture.TestResponse();
-    Fixture.TestRequest testRequest1 = new Fixture.TestRequest();
+    TestSession session1 = new TestSession();
+    TestResponse testResponse1 = new TestResponse();
+    TestRequest testRequest1 = new TestRequest();
     testRequest1.setSession( session1 );
     final ServiceContext serviceContext1
     = new ServiceContext( testRequest1, testResponse1 );

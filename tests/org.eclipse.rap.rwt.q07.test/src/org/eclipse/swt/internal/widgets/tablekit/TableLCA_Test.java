@@ -21,7 +21,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -38,8 +37,8 @@ public class TableLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.BORDER );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
     Object headerHeight = adapter.getPreserved( TableLCA.PROP_HEADER_HEIGHT );
     assertEquals( new Integer( 0 ), headerHeight );
@@ -79,7 +78,7 @@ public class TableLCA_Test extends TestCase {
                   adapter.getPreserved( TableLCA.PROP_HIDE_SELECTION ) );
     assertEquals( new Integer( 0 ),
                   adapter.getPreserved( TableLCA.PROP_LEFT_OFFSET ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     TableColumn tc1 = new TableColumn( table, SWT.CENTER );
     tc1.setText( "column1" );
     tc1.setWidth( 50 );
@@ -98,7 +97,7 @@ public class TableLCA_Test extends TestCase {
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     table.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     headerHeight = adapter.getPreserved( TableLCA.PROP_HEADER_HEIGHT );
     assertEquals( new Integer( table.getHeaderHeight() ), headerHeight );
@@ -128,81 +127,81 @@ public class TableLCA_Test extends TestCase {
     assertEquals( textLeft, itemMetrics[ 0 ].textLeft );
     textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // scrollbars selection listener
     SelectionAdapter listener = new SelectionAdapter() {
     };
     table.getHorizontalBar().addSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.getHorizontalBar().removeSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.getVerticalBar().addSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.getVerticalBar().removeSelectionListener( listener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( table );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     table.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // bounds
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     table.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control_listeners (Table always registers a control listener)
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     table.setBackground( background );
@@ -210,58 +209,58 @@ public class TableLCA_Test extends TestCase {
     table.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     table.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // scroll bars
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     Object preserved = adapter.getPreserved( TableLCA.PROP_HAS_H_SCROLL_BAR );
     assertTrue( preserved != null );
     preserved = adapter.getPreserved( TableLCA.PROP_HAS_V_SCROLL_BAR );
     assertTrue( preserved != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltip text
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( null, table.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( "some text", table.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // activate listeners, focus listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     table.addFocusListener( new FocusAdapter() { } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( table, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -281,11 +280,11 @@ public class TableLCA_Test extends TestCase {
     } );
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
 
     assertEquals( 1, ItemHolder.getItems( table ).length );
@@ -311,7 +310,7 @@ public class TableLCA_Test extends TestCase {
       }
     } );
     // Simulate request that comes in after item2 was checked (but not selected)
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
     String item2Id = WidgetUtil.getId( item2 );
@@ -321,7 +320,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -351,14 +350,14 @@ public class TableLCA_Test extends TestCase {
       }
     } );
     // Simulate request that comes in after item2 was checked (but not selected)
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
     String item2Index = String.valueOf( table.indexOf( item2 ) );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -374,11 +373,11 @@ public class TableLCA_Test extends TestCase {
     events[ 0 ] = null;
     table.setSelection( 1 ); // Set focused item
     table.select( 0 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -395,11 +394,11 @@ public class TableLCA_Test extends TestCase {
     table.setSelection( 0 ); // Set focused item
     table.deselectAll();
     table.select( 1 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -415,11 +414,11 @@ public class TableLCA_Test extends TestCase {
     events[ 0 ] = null;
     table.setSelection( 1 ); // Set focused item
     table.deselectAll();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -454,7 +453,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
     assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }
@@ -469,7 +468,7 @@ public class TableLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500,501,502,503" );
@@ -490,7 +489,7 @@ public class TableLCA_Test extends TestCase {
         return PhaseId.PROCESS_ACTION;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
 
     assertTrue( isItemVirtual( table, 499 ) );
     assertTrue( isItemVirtual( table, 800 ) );
@@ -498,7 +497,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testClearVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
@@ -522,11 +521,11 @@ public class TableLCA_Test extends TestCase {
     final int lastItemIndex = table.getItemCount() - 1;
     String lastItemId = WidgetUtil.getId( table.getItem( lastItemIndex ) );
     // fake one request that would initialize the UI
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // run actual request
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -539,7 +538,7 @@ public class TableLCA_Test extends TestCase {
         return PhaseId.PROCESS_ACTION;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected
       = "var w = wm.findWidgetById( \""
@@ -569,13 +568,13 @@ public class TableLCA_Test extends TestCase {
     String tableId = WidgetUtil.getId( table );
     // Run test request
     assertTrue( isItemVirtual( table, 500 ) ); // ensure precondition
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
     Fixture.fakeRequestParam( tableId + ".selection", "500" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // Remove SetData listener to not accidentially resolve item with asserts
     table.removeListener( SWT.SetData, listener );
     // assert request results
@@ -594,7 +593,7 @@ public class TableLCA_Test extends TestCase {
    *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
    */
   public void testReduceItemCountInSetData() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -605,13 +604,13 @@ public class TableLCA_Test extends TestCase {
       }
     } );
 
-    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakePhase( PhaseId.READ_DATA );
     table.setItemCount( 1 );
     ITableAdapter adapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.checkData( 0 );
 
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     table.setItemCount( 0 );
     int eventCount = 0;
     while( ProcessActionRunner.executeNext() ) {
@@ -625,7 +624,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testGetItemMetrics() {
     Display display = new Display();
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
@@ -652,7 +651,7 @@ public class TableLCA_Test extends TestCase {
     assertTrue( metrics[ 0 ].imageWidth > 0 );
 
     item1.setImage( image );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     item1.setImage( ( Image )null );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
 
@@ -668,7 +667,7 @@ public class TableLCA_Test extends TestCase {
     metrics = TableLCAUtil.getItemMetrics( table );
     assertEquals( 10, metrics[ 0 ].imageWidth );
 
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     item1.setImage( image );
     table.setSelection( item1 );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
@@ -676,7 +675,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testGetItemMetricsWithoutColumns() {
     Display display = new Display();
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
@@ -700,7 +699,7 @@ public class TableLCA_Test extends TestCase {
     assertTrue( metrics[ 0 ].imageWidth > 0 );
 
     item1.setImage( image );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     item1.setImage( ( Image )null );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
 
@@ -711,7 +710,7 @@ public class TableLCA_Test extends TestCase {
                    + defaultSpacing;
     assertEquals( expected, metrics[ 0 ].textLeft );
 
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     item1.setImage( image );
     table.setSelection( item1 );
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
@@ -729,7 +728,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testWriteScrollbarsVisible() throws IOException {
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NO_SCROLL );
@@ -741,7 +740,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testWriteScrollbarsSelectionListener() throws IOException {
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
@@ -763,14 +762,14 @@ public class TableLCA_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     TableLCA lca = new TableLCA();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     lca.renderChanges( table );
     String markup = Fixture.getAllMarkup();
     String expected = "w.setFocusIndex";
     assertTrue( markup.indexOf( expected ) == -1 );
     table.setSelection( 0 );
-    RWTFixture.fakeNewRequest();
-    RWTFixture.markInitialized( table );
+    Fixture.fakeNewRequest();
+    Fixture.markInitialized( table );
     lca.preserveValues( table );
     table.getItem( 0 ).dispose();
     lca.renderChanges( table );
@@ -836,25 +835,25 @@ public class TableLCA_Test extends TestCase {
     } );
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
-    RWTFixture.fakeNewRequest();
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected = "w.setCellToolTipText(";
     assertTrue( markup.indexOf( expected ) == -1 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_TEXT_REQUESTED,
                               tableId );
     Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL,
                               "1,2" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     markup = Fixture.getAllMarkup();
     expected = "w.setCellToolTipText( \"[1,2]\" );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
   public void testScrollbarsSelectionEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -865,29 +864,29 @@ public class TableLCA_Test extends TestCase {
       }
     };
     table.getHorizontalBar().addSelectionListener( listener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String tableId = WidgetUtil.getId( table );
     Fixture.fakeRequestParam( tableId + ".leftOffset", "10" );
-    RWTFixture.readDataAndProcessAction( table );
+    Fixture.readDataAndProcessAction( table );
     assertEquals( 1, log.size() );
     assertEquals( 10, table.getHorizontalBar().getSelection() );
     log.clear();
     table.getVerticalBar().addSelectionListener( listener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( tableId + ".leftOffset", "10" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "10" );
-    RWTFixture.readDataAndProcessAction( table );
+    Fixture.readDataAndProcessAction( table );
     assertEquals( 2, log.size() );
     assertEquals( 10 * table.getItemHeight(),
                   table.getVerticalBar().getSelection());
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private static boolean isItemVirtual( final Table table, final int index ) {

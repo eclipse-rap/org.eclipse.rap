@@ -20,11 +20,11 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
@@ -47,11 +47,11 @@ public class Tree_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item1.getImage() );
+    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item1.getImage() );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
-    item2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item2.getImage() );
+    item2.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE2 ), item2.getImage() );
   }
 
   public void testStyle() {
@@ -532,12 +532,12 @@ public class Tree_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakePhase( PhaseId.RENDER );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testGetColumnCount() {
@@ -720,17 +720,17 @@ public class Tree_Test extends TestCase {
         log.add( item );
       }
     } );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     tree.setItemCount( 20 );
-    RWTFixture.readDataAndProcessAction( tree );
+    Fixture.readDataAndProcessAction( tree );
     assertTrue( log.size() < 20 );
     assertTrue( log.size() > 0 );
     // scroll to bottom
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 16, log.size() );
     // open a tree node should only materialize visible items
     log.clear();
@@ -738,18 +738,18 @@ public class Tree_Test extends TestCase {
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     adapter.setScrollTop( 0 );
     tree.setSize( 100, 32 ); // only space for 2 items
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String aItemId = WidgetUtil.getId( tree.getItem( 0 ) );
     Fixture.fakeRequestParam( aItemId + ".state", "expanded" );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.treeExpanded", aItemId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     // scrolling should materialize the now visible subitems
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "16" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, log.size() );
   }
 
@@ -773,9 +773,9 @@ public class Tree_Test extends TestCase {
         item.setItemCount( 10 );
       }
     } );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     tree.setItemCount( 1 );
-    RWTFixture.readDataAndProcessAction( tree );
+    Fixture.readDataAndProcessAction( tree );
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
     tree.clearAll( true );
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
@@ -790,7 +790,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testComputeSizeNonVirtual() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -850,7 +850,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testComputeSizeVirtual() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.BORDER | SWT.VIRTUAL );
@@ -893,7 +893,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testShowColumn() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 800, 600 );
@@ -985,7 +985,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnResize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -1008,7 +1008,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasHScrollBar() );
     item.setText( "" );
     assertFalse( tree.hasHScrollBar() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     item.setImage( image );
     assertTrue( tree.hasHScrollBar() );
     item.setImage( ( Image )null );
@@ -1020,7 +1020,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -1037,7 +1037,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnVirtualItemCountChange() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
@@ -1061,13 +1061,13 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
     item.setText( "Very long long long long long long long long text" );
     assertFalse( tree.hasHScrollBar() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     item.setImage( image );
     assertFalse( tree.hasHScrollBar() );
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -1086,7 +1086,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );

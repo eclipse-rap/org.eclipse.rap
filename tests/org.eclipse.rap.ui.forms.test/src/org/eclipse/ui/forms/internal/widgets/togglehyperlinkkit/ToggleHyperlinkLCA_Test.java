@@ -13,7 +13,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -30,8 +29,8 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Twistie twistie = new Twistie( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( twistie );
     String prop = ToggleHyperlinkLCA.PROP_EXPANDED;
     Boolean expanded = ( Boolean )adapter.getPreserved( prop );
@@ -39,9 +38,9 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     prop = ToggleHyperlinkLCA.PROP_SELECTION_LISTENERS;
     Boolean hasListener = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.TRUE, hasListener );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     twistie.setExpanded( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     expanded = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.TRUE, expanded );
     // Test preserved control properties
@@ -75,7 +74,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     String hyperlinkId = WidgetUtil.getId( hyperlink );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED,
                               hyperlinkId );
-    RWTFixture.readDataAndProcessAction( hyperlink );
+    Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }
 }

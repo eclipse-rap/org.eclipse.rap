@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -41,11 +40,11 @@ public class ExternalBrowser_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testOpen() {
@@ -117,7 +116,7 @@ public class ExternalBrowser_Test extends TestCase {
   public void testJavaScriptExecutionOrder() throws IOException {
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestJavaScriptExecutionOrderEntryPoint.class );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     // run life cycle
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();

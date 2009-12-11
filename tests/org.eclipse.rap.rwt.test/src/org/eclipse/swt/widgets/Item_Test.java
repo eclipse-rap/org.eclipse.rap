@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
@@ -43,17 +43,17 @@ public class Item_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
     };
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item.getImage() );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item.getImage() );
     item.setImage( null );
     assertEquals( null, item.getImage() );
     Item item2 = new Item( shell, SWT.NONE ) {
     };
-    item2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item2.getImage() );
+    item2.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE2 ), item2.getImage() );
     // Test for a disposed Image as argument
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image2 = new Image( display, stream );
     image2.dispose();
     try {
@@ -74,10 +74,10 @@ public class Item_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

@@ -12,11 +12,12 @@
 package org.eclipse.rwt.internal.theme.css;
 
 import java.io.*;
+
 import junit.framework.TestCase;
 
 import org.apache.batik.css.parser.Parser;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.swt.RWTFixture;
 import org.w3c.css.sac.*;
 
 public class PropertyResolver_Test extends TestCase {
@@ -24,7 +25,7 @@ public class PropertyResolver_Test extends TestCase {
   private static Parser parser = new Parser();
 
   private static ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( RWTFixture.class );
+    = ThemeTestUtil.createResourceLoader( Fixture.class );
 
   public void testColor() throws Exception {
     QxColor transparent
@@ -251,19 +252,19 @@ public class PropertyResolver_Test extends TestCase {
                                                          RESOURCE_LOADER );
     assertEquals( QxImage.NONE, res1 );
     // background-image: url( "path" );
-    input = "url( \"" + RWTFixture.IMAGE_50x100 + "\" )";
+    input = "url( \"" + Fixture.IMAGE_50x100 + "\" )";
     QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input ),
                                                          RESOURCE_LOADER );
-    QxImage expected = QxImage.valueOf( RWTFixture.IMAGE_50x100,
+    QxImage expected = QxImage.valueOf( Fixture.IMAGE_50x100,
                                         RESOURCE_LOADER );
     assertEquals( expected, res2 );
     // background-image: url( path );
-    input = "url( " + RWTFixture.IMAGE_50x100 + " )";
+    input = "url( " + Fixture.IMAGE_50x100 + " )";
     QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input ),
                                                          RESOURCE_LOADER );
     assertEquals( expected, res3 );
     // background-image: "path";
-    input = "\"" + RWTFixture.IMAGE_50x100 + "\"";
+    input = "\"" + Fixture.IMAGE_50x100 + "\"";
     QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input ),
                                                          RESOURCE_LOADER );
     assertNull( res4 );
@@ -408,16 +409,16 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( input, res1.value );
 
     // Test custom cursor
-    QxCursor expected = QxCursor.valueOf( RWTFixture.IMAGE_50x100,
+    QxCursor expected = QxCursor.valueOf( Fixture.IMAGE_50x100,
                                           RESOURCE_LOADER );
     // cursor: url( "path" );
-    input = "url( \"" + RWTFixture.IMAGE_50x100 + "\" )";
+    input = "url( \"" + Fixture.IMAGE_50x100 + "\" )";
     QxCursor res2 = PropertyResolver.readCursor( parseProperty( input ),
                                                  RESOURCE_LOADER );
     assertNotNull( res2 );
     assertEquals( expected, res2 );
     // cursor: url( path );
-    input = "url( " + RWTFixture.IMAGE_50x100 + " )";
+    input = "url( " + Fixture.IMAGE_50x100 + " )";
     QxCursor res3 = PropertyResolver.readCursor( parseProperty( input ),
                                                  RESOURCE_LOADER );
     assertNotNull( res3 );

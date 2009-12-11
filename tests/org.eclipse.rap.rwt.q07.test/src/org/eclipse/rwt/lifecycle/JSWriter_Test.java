@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.browser.Default;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
@@ -377,12 +376,12 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( widget );
 
     // call JSWriter once to get rid of prologue
-    RWTFixture.markInitialized( widget );
+    Fixture.markInitialized( widget );
     Fixture.fakeResponseWriter();
     writer.set( "foo", "bar" );
     
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( "stringArray", new String[] { "a", "b", "c" } );
     String[] newValue = new String[] { "c", "b", "a" };
@@ -391,7 +390,7 @@ public class JSWriter_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     String[] value = new String[] { "c", "b", "a" };
     adapter.preserve( "stringArray", value );
     writer.set( "stringArray", "stringArray", value, null );
@@ -403,8 +402,8 @@ public class JSWriter_Test extends TestCase {
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.text );
     shell.text.setText( "" );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.set( "text", "value", shell.text.getText() );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
@@ -412,20 +411,20 @@ public class JSWriter_Test extends TestCase {
       + "w.setValue( \"\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell.text );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell.text );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.set( "text", "value", shell.text.getText() );
     assertEquals( "", Fixture.getAllMarkup() );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     shell.text.setText( "hello" );
     writer.set( "text", "value", shell.text.getText() );
     assertEquals( "w.setValue( \"hello\" );", Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.set( "text", "value", shell.text.getText() );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -632,9 +631,9 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( button );
     JSListenerInfo jsListenerInfo = new JSListenerInfo( "execute",
                                                         "selectedEvent",
@@ -647,8 +646,8 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with listeners
     button.addSelectionListener( selectionListener );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
@@ -660,17 +659,17 @@ public class JSWriter_Test extends TestCase {
     // Test adding the first listeners
     Fixture.fakeResponseWriter();
     button.removeSelectionListener( selectionListener );
-    RWTFixture.markInitialized( button );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( button );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     button.addSelectionListener( selectionListener );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     button.addSelectionListener( selectionListener2 );
     writer.updateListener( jsListenerInfo,
@@ -679,8 +678,8 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     button.removeSelectionListener( selectionListener );
     button.removeSelectionListener( selectionListener2 );
     writer.updateListener( jsListenerInfo,
@@ -690,8 +689,8 @@ public class JSWriter_Test extends TestCase {
                   Fixture.getAllMarkup() );
     // Test that no changes to listeners do not cause any additional markup
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
@@ -707,9 +706,9 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( checkBox );
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type",
@@ -726,8 +725,8 @@ public class JSWriter_Test extends TestCase {
     // Test rendering with action listener added
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( checkBox );
     adapter.setInitialized( true );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener = new SelectionAdapter() {};
     SelectionEvent.addListener( checkBox, selectionListener );
     Fixture.fakeResponseWriter();
@@ -739,8 +738,8 @@ public class JSWriter_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
@@ -749,8 +748,8 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionEvent.removeListener( checkBox, selectionListener );
     SelectionEvent.removeListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
@@ -770,10 +769,10 @@ public class JSWriter_Test extends TestCase {
     Button checkBox = new Button( shell, SWT.CHECK );
     // Test initial rendering with action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener = new SelectionAdapter() {};
     SelectionEvent.addListener( checkBox, selectionListener );
     JSWriter writer = JSWriter.getWriterFor( checkBox );
@@ -793,8 +792,8 @@ public class JSWriter_Test extends TestCase {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( checkBox );
     adapter.setInitialized( true );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
@@ -803,8 +802,8 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionEvent.removeListener( checkBox, selectionListener );
     SelectionEvent.removeListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
@@ -824,9 +823,9 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( button );
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "execute", "selectedEvent", JSListenerType.ACTION );
@@ -840,8 +839,8 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with listeners
     button.addSelectionListener( selectionListener );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
                            Props.SELECTION_LISTENERS,
@@ -855,9 +854,9 @@ public class JSWriter_Test extends TestCase {
     // Test adding the first listeners
     Fixture.fakeResponseWriter();
     button.removeSelectionListener( selectionListener );
-    RWTFixture.markInitialized( button );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( button );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     button.addSelectionListener( selectionListener );
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
@@ -866,8 +865,8 @@ public class JSWriter_Test extends TestCase {
 
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     button.addSelectionListener( selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
@@ -878,8 +877,8 @@ public class JSWriter_Test extends TestCase {
 
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     button.removeSelectionListener( selectionListener );
     button.removeSelectionListener( selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
@@ -894,8 +893,8 @@ public class JSWriter_Test extends TestCase {
 
     // Test that no changes to listeners do not cause any additional markup
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
                            Props.SELECTION_LISTENERS,
@@ -912,9 +911,9 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( checkBox );
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type", "event", JSListenerType.STATE_AND_ACTION );
@@ -931,8 +930,8 @@ public class JSWriter_Test extends TestCase {
     // Test rendering with action listener added
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( checkBox );
     adapter.setInitialized( true );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener = new SelectionAdapter() {};
     SelectionEvent.addListener( checkBox, selectionListener );
     Fixture.fakeResponseWriter();
@@ -947,8 +946,8 @@ public class JSWriter_Test extends TestCase {
 
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( checkBox, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
@@ -959,8 +958,8 @@ public class JSWriter_Test extends TestCase {
 
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     SelectionEvent.removeListener( checkBox, selectionListener );
     SelectionEvent.removeListener( checkBox, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
@@ -1030,16 +1029,16 @@ public class JSWriter_Test extends TestCase {
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=195735
   public void testWidgetDisposal() throws Exception {
     // Run requests to initialize the 'system'
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 WidgetDisposalEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String dispId = WidgetDisposalEntryPoint.dispId;
     Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
     lifeCycle.execute();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
     String buttonId = WidgetDisposalEntryPoint.buttonId;
@@ -1097,12 +1096,12 @@ public class JSWriter_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakePhase( PhaseId.RENDER );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

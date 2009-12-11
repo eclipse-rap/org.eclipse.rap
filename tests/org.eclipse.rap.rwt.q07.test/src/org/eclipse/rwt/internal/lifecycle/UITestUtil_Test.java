@@ -11,14 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.*;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -57,21 +56,21 @@ public class UITestUtil_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     String displayId = DisplayUtil.getId( display );
     // Request with not yet initialized widgets
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) != -1 );
     
     // Request with already initialized widgets
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) == -1 );
     
     // Request with invalid id
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Label label = new Label( shell, SWT.NONE );
     label.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
@@ -90,7 +89,7 @@ public class UITestUtil_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     // ensure that the overridden id is available after the widget was disposed
     // of - needed by render phase
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "customId" );
     assertEquals( "customId", WidgetUtil.getId( shell ) );
     shell.dispose();
@@ -98,11 +97,11 @@ public class UITestUtil_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     UITestUtil.enabled = false;
   }
 }

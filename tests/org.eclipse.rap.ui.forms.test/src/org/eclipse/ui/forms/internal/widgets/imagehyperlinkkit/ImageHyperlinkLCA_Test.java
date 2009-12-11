@@ -11,10 +11,10 @@ package org.eclipse.ui.forms.internal.widgets.imagehyperlinkkit;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -28,25 +28,25 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( hyperlink );
     Image image = ( Image )adapter.getPreserved( ImageHyperlinkLCA.PROP_IMAGE );
     assertEquals( null, image );
-    RWTFixture.clearPreserved();
-    Image newImage = Graphics.getImage( RWTFixture.IMAGE1 );
+    Fixture.clearPreserved();
+    Image newImage = Graphics.getImage( Fixture.IMAGE1 );
     hyperlink.setImage( newImage );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     image = ( Image )adapter.getPreserved( ImageHyperlinkLCA.PROP_IMAGE );
     assertEquals( newImage, image );
     display.dispose();
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

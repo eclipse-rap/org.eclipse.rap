@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.TestRequest;
-import org.eclipse.rwt.Fixture.TestResponse;
+import org.eclipse.rwt.TestRequest;
+import org.eclipse.rwt.TestResponse;
 
 
 public class RWTDelegate_Test extends TestCase {

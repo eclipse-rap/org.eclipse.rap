@@ -14,7 +14,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
@@ -33,8 +32,8 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Hyperlink hyperlink = new Hyperlink( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( hyperlink );
     String text = ( String )adapter.getPreserved( HyperlinkLCA.PROP_TEXT );
     assertEquals( "", text );
@@ -53,7 +52,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Integer underlineMode
       = ( Integer )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINE_MODE );
     assertEquals( 0, underlineMode.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     String newText = "click me";
     hyperlink.setText( newText );
     hyperlink.setUnderlined( true );
@@ -63,7 +62,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     getAdapter( hyperlink ).setActiveBackground( newActiveBackground );
     int newUnderlineMode = HyperlinkSettings.UNDERLINE_HOVER;
     getAdapter( hyperlink ).setUnderlineMode( newUnderlineMode );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     text = ( String )adapter.getPreserved( HyperlinkLCA.PROP_TEXT );
     assertEquals( newText, text );
     underlined
@@ -109,7 +108,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     String hyperlinkId = WidgetUtil.getId( hyperlink );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED,
                               hyperlinkId );
-    RWTFixture.readDataAndProcessAction( hyperlink );
+    Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }
 

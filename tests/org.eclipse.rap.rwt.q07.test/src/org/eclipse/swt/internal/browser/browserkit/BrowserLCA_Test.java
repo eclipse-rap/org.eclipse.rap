@@ -18,7 +18,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Display;
@@ -29,7 +28,7 @@ public class BrowserLCA_Test extends TestCase {
   
   public void testUrl() throws IOException {
     Display display = new Display();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     
@@ -37,8 +36,8 @@ public class BrowserLCA_Test extends TestCase {
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
     
-    RWTFixture.markInitialized( browser );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
     assertFalse( BrowserLCA.hasUrlChanged( browser ) );
     
     browser = new Browser( shell, SWT.NONE );
@@ -47,8 +46,8 @@ public class BrowserLCA_Test extends TestCase {
     expected = String.valueOf( "Hello".hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
     
-    RWTFixture.markInitialized( browser );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
     browser.setText( "GoodBye" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "GoodBye".hashCode() );
@@ -59,8 +58,8 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     assertEquals( "http://eclipse.org/rap", BrowserLCA.getUrl( browser ) );
 
-    RWTFixture.markInitialized( browser );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
     browser.setUrl( "http://eclipse.org/rip" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
@@ -74,7 +73,7 @@ public class BrowserLCA_Test extends TestCase {
   
   protected void setUp() throws Exception {
     // we need the resource manager for this test
-    RWTFixture.setUpWithoutResourceManager();
+    Fixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
@@ -82,6 +81,6 @@ public class BrowserLCA_Test extends TestCase {
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

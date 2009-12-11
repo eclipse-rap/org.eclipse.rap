@@ -21,7 +21,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
@@ -40,9 +39,9 @@ public class CComboLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     CCombo ccombo = new CCombo( shell, SWT.DEFAULT );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserving a CCombo with no items and (naturally) no selection
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
@@ -61,7 +60,7 @@ public class CComboLCA_Test extends TestCase {
                   adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
     // Test preserving CCombo with items, where one is selected
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
     ccombo.select( 1 );
@@ -74,7 +73,7 @@ public class CComboLCA_Test extends TestCase {
 
       public void modifyText( final ModifyEvent event ) {
       }} );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
 
     adapter = WidgetUtil.getAdapter( ccombo );
     items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
@@ -96,11 +95,11 @@ public class CComboLCA_Test extends TestCase {
      = ( Boolean )adapter.getPreserved( CComboLCA.PROP_VERIFY_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ccombo.addControlListener( new ControlListener (){
 
       public void controlMoved( final ControlEvent e ) {
@@ -108,11 +107,11 @@ public class CComboLCA_Test extends TestCase {
 
       public void controlResized( final ControlEvent e ) {
       }});
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     ccombo.setBackground( background );
@@ -120,40 +119,40 @@ public class CComboLCA_Test extends TestCase {
     ccombo.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     ccombo.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( null, ccombo.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ccombo.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( "some text", ccombo.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activateListener
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     hasListeners = (Boolean)adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( ccombo, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -161,24 +160,24 @@ public class CComboLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     CCombo ccombo = new CCombo( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( Boolean.TRUE , adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
     // activateListeners, focusListeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     Boolean focusListener
      = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, focusListener );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ccombo.addFocusListener( new FocusListener (){
       public void focusGained( final FocusEvent event ) {
       }
 
       public void focusLost( final FocusEvent event ) {
       }} );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     Boolean hasListeners
        = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -191,10 +190,10 @@ public class CComboLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( ccombo );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     CComboLCA ccomboLCA = new CComboLCA();
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
@@ -203,15 +202,15 @@ public class CComboLCA_Test extends TestCase {
     expected = "w.setItems( [ \"item 1\", \"item 2\" ] );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ccombo.select( 1 );
     ccomboLCA.renderChanges( ccombo );
     expected = "w.select( 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ccomboLCA.renderChanges( ccombo );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -243,7 +242,7 @@ public class CComboLCA_Test extends TestCase {
         log.append( "widgetSelected" );
       }
     } );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Fixture.fakeRequestParam( ccomboId + ".selectedItem", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, ccomboId );
     WidgetUtil.getLCA( ccombo ).readData( ccombo );
@@ -268,16 +267,16 @@ public class CComboLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final CCombo ccombo = new CCombo( shell, SWT.NONE );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( ccombo );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( ccombo );
     // test without verify listener
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String textId = WidgetUtil.getId( ccombo );
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "some text" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
     String markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
@@ -294,10 +293,10 @@ public class CComboLCA_Test extends TestCase {
         log.append( event.text );
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
     markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
@@ -324,17 +323,17 @@ public class CComboLCA_Test extends TestCase {
       }
     };
     ccombo.addVerifyListener( emptyVerifyListener );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( ccombo );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( ccombo );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
     Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that an empty verify listener does not lead to sending the
     // original text and selection values back to the client
     String markup = Fixture.getAllMarkup();
@@ -355,13 +354,13 @@ public class CComboLCA_Test extends TestCase {
     };
     ccombo.addVerifyListener( alteringVerifyListener );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
     Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
     assertEquals( "verified", ccombo.getText() );
@@ -377,13 +376,13 @@ public class CComboLCA_Test extends TestCase {
     };
     ccombo.addVerifyListener( alteringVerifyListener );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
     Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), ccombo.getSelection() );
     assertEquals( "", ccombo.getText() );
@@ -404,18 +403,18 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setTextLimit" ) );
     // Positive textLimit is written as setMaxLength( ... )
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( ccombo );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( ccombo );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ccombo.setTextLimit( 12 );
     lca.renderChanges( ccombo );
     String expected = "setTextLimit( 12 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // textLimit = CCombo.LIMIT is tread as 'no limit'
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( ccombo );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( ccombo );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ccombo.setTextLimit( CCombo.LIMIT );
     lca.renderChanges( ccombo );
     expected = "setTextLimit( null );";
@@ -443,24 +442,24 @@ public class CComboLCA_Test extends TestCase {
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     // Execute life cycle once to simulate startup request
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
 
     // Simulate button click that executes widgetSelected
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String expected = "w.select( 0 )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

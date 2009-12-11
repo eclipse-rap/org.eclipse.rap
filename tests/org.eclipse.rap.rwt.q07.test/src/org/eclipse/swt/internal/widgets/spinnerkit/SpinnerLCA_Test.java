@@ -15,11 +15,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -36,8 +36,8 @@ public class SpinnerLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
     Boolean hasListeners;
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( spinner );
     Object selection = adapter.getPreserved( SpinnerLCA.PROP_SELECTION );
     assertEquals( new Integer( 0 ), selection );
@@ -58,7 +58,7 @@ public class SpinnerLCA_Test extends TestCase {
     hasListeners
       = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     spinner.setSelection( 5 );
     spinner.setMinimum( 3 );
     spinner.setMaximum( 200 );
@@ -71,7 +71,7 @@ public class SpinnerLCA_Test extends TestCase {
       }
     } );
     spinner.addSelectionListener( new SelectionAdapter() {} );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     selection = adapter.getPreserved( SpinnerLCA.PROP_SELECTION );
     minimum = adapter.getPreserved( SpinnerLCA.PROP_MINIMUM );
@@ -91,53 +91,53 @@ public class SpinnerLCA_Test extends TestCase {
     hasListeners
       = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     spinner.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     spinner.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( spinner );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     spinner.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     spinner.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     spinner.addControlListener( new ControlListener() {
 
       public void controlMoved( final ControlEvent e ) {
@@ -146,16 +146,16 @@ public class SpinnerLCA_Test extends TestCase {
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     spinner.setBackground( background );
@@ -163,33 +163,33 @@ public class SpinnerLCA_Test extends TestCase {
     spinner.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     spinner.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( null, spinner.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     spinner.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( "some text", spinner.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // activate_listeners Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     spinner.addFocusListener( new FocusListener() {
 
       public void focusGained( final FocusEvent event ) {
@@ -198,23 +198,23 @@ public class SpinnerLCA_Test extends TestCase {
       public void focusLost( final FocusEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( spinner, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -225,17 +225,17 @@ public class SpinnerLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String spinnerId = WidgetUtil.getId( spinner );
     // simulate valid client-side selection
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "77" );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 77, spinner.getSelection() );
     // simulate invalid client-side selection
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "777" );
     spinner.setSelection( 1 );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
   }
 
@@ -247,12 +247,12 @@ public class SpinnerLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String spinnerId = WidgetUtil.getId( spinner );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "", log.toString() );
     log.setLength( 0 );
     spinner.addModifyListener( new ModifyListener() {
@@ -274,25 +274,25 @@ public class SpinnerLCA_Test extends TestCase {
         log.append( ".widgetDefaultSelected" );
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "2" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( ".modifyText.widgetSelected", log.toString() );
     log.setLength( 0 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( ".widgetDefaultSelected", log.toString() );
   }
 
   protected void setUp() {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

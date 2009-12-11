@@ -13,9 +13,9 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
@@ -131,7 +131,7 @@ public class MenuItem_Test extends TestCase {
     MenuItem separator = new MenuItem( menu, SWT.SEPARATOR );
 
     // Don't allow an image to be set on a separator menu item
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     assertNotNull( image );
     separator.setImage( image );
     assertEquals( null, separator.getImage() );
@@ -161,11 +161,11 @@ public class MenuItem_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

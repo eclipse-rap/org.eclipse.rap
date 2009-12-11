@@ -12,10 +12,10 @@ package org.eclipse.rwt.internal.resources;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.TestResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.RWTFixture.TestResourceManager;
 
 
 public class ResourceManager_Test extends TestCase {
@@ -42,6 +42,6 @@ public class ResourceManager_Test extends TestCase {
       // expected
     }
     // cleanup for subsequent tests
-    RWTFixture.deregisterResourceManager();
+    Fixture.deregisterResourceManager();
   }
 }

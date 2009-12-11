@@ -17,9 +17,9 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceContext;
-import org.eclipse.swt.RWTFixture;
 
 
 public class RWTLifeCycleServiceHandlerSync_Test extends TestCase {
@@ -97,9 +97,9 @@ public class RWTLifeCycleServiceHandlerSync_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

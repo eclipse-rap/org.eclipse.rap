@@ -12,7 +12,8 @@ package org.eclipse.rwt.internal.theme.css;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.QxColor;
+import org.eclipse.rwt.internal.theme.SimpleSelector;
 
 
 public class SimpleSelector_Test extends TestCase {

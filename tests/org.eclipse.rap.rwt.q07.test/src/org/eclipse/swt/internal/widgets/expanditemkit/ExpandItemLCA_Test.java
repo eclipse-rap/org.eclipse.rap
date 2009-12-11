@@ -15,25 +15,26 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Ie6;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class ExpandItemLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPreserveValues() {
@@ -42,10 +43,10 @@ public class ExpandItemLCA_Test extends TestCase {
     ExpandBar expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ExpandItem expandItem = createExpandItems( expandBar );
     expandBar.setSize( expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE2 );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
+    Image image2 = Graphics.getImage( Fixture.IMAGE2 );
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( expandItem );
     Object text = adapter.getPreserved( ExpandItemLCA.PROP_TEXT );
     assertEquals( "What is your favorite icon?", text );
@@ -56,13 +57,13 @@ public class ExpandItemLCA_Test extends TestCase {
     Object headerHeight
       = adapter.getPreserved( ExpandItemLCA.PROP_HEADER_HEIGHT );
     assertEquals( ExpandItemLCA.DEFAULT_HEADER_HEIGHT, headerHeight );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     expandItem.setText( "Item text" );
-    expandItem.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
+    expandItem.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
     expandItem.setExpanded( true );
     Font font = Graphics.getFont( "font", 30, SWT.BOLD );
     expandBar.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandItem );
     text = adapter.getPreserved( ExpandItemLCA.PROP_TEXT );
     assertEquals( "Item text", text );
@@ -72,7 +73,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, expanded );
     headerHeight = adapter.getPreserved( ExpandItemLCA.PROP_HEADER_HEIGHT );
     assertEquals( new Integer( 34 ), headerHeight );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -111,12 +112,12 @@ public class ExpandItemLCA_Test extends TestCase {
     expandBar.addExpandListener( listener );
     String expandItemId = WidgetUtil.getId( expandItem );
     Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_EXPANDED, expandItemId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "expanded", log.toString() );
     log.setLength( 0 );
     Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_EXPANDED, null );
     Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_COLLAPSED, expandItemId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "collapsed", log.toString() );
   }
 
@@ -127,10 +128,10 @@ public class ExpandItemLCA_Test extends TestCase {
     final ExpandItem expandItem = createExpandItems( expandBar );
     String expandItemId = WidgetUtil.getId( expandItem );
     Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_EXPANDED, expandItemId );
-    RWTFixture.readDataAndProcessAction( expandItem );
+    Fixture.readDataAndProcessAction( expandItem );
     assertEquals( true, expandItem.getExpanded() );
     Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_COLLAPSED, expandItemId );
-    RWTFixture.readDataAndProcessAction( expandItem );
+    Fixture.readDataAndProcessAction( expandItem );
     assertEquals( false, expandItem.getExpanded() );
   }
 
@@ -145,7 +146,7 @@ public class ExpandItemLCA_Test extends TestCase {
     new Button( composite, SWT.TOGGLE ).setText( "SWT.TOGGLE" );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
     item.setText( "What is your favorite button?" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
     item.setExpanded( false );
@@ -166,7 +167,7 @@ public class ExpandItemLCA_Test extends TestCase {
     new Label( composite, SWT.NONE ).setText( "SWT.ICON_QUESTION" );
     item = new ExpandItem( expandBar, SWT.NONE, 1 );
     item.setText( "What is your favorite icon?" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
     item.setExpanded( false );

@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -39,21 +38,21 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, button );
     //default
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     Boolean isDefault
       = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.FALSE, isDefault );
     button.getShell().setDefaultButton( button );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     isDefault
       = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.TRUE, isDefault );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -61,14 +60,14 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.RADIO );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -76,17 +75,17 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.CHECK );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
     button.setGrayed( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( CheckButtonDelegateLCA.PROP_GRAYED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -94,38 +93,38 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.ARROW );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, button );
     //alignment
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     Integer alignment
      = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.UP, alignment.intValue() );
     button.setAlignment( SWT.LEFT );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.LEFT, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setAlignment( SWT.RIGHT );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.RIGHT, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setAlignment( SWT.UP );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.UP, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setAlignment( SWT.DOWN );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.DOWN, alignment.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -133,14 +132,14 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.TOGGLE );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -150,22 +149,22 @@ public class ButtonLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       button.setText( "abc" );
-      RWTFixture.preserveWidgets();
+      Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       Object object = adapter.getPreserved( Props.TEXT );
       assertEquals( "abc", ( String )object );
-      RWTFixture.clearPreserved();
-      Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+      Fixture.clearPreserved();
+      Image image = Graphics.getImage( Fixture.IMAGE1 );
       button.setImage( image );
-      RWTFixture.preserveWidgets();
+      Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-      RWTFixture.clearPreserved();
-      RWTFixture.preserveWidgets();
+      Fixture.clearPreserved();
+      Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
       assertEquals( Boolean.FALSE, hasListeners );
-      RWTFixture.clearPreserved();
+      Fixture.clearPreserved();
       button.addFocusListener( new FocusListener() {
 
         public void focusGained( final FocusEvent event ) {
@@ -174,87 +173,87 @@ public class ButtonLCA_Test extends TestCase {
         public void focusLost( final FocusEvent event ) {
         }
       } );
-      RWTFixture.preserveWidgets();
+      Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
       assertEquals( Boolean.TRUE, hasListeners );
-      RWTFixture.clearPreserved();
+      Fixture.clearPreserved();
     }
     //Selection_Listener
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     button.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     button.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( button );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     button.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     //visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.addControlListener( new ControlListener() {
       public void controlMoved( final ControlEvent e ) {
       }
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     button.setBackground( background );
@@ -262,45 +261,45 @@ public class ButtonLCA_Test extends TestCase {
     button.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     button.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( null, button.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( "some text", button.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activate_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( button, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   public void testDisabledButtonSelection() {
     final StringBuffer log = new StringBuffer();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Button button = new Button( shell, SWT.NONE );
@@ -324,7 +323,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( "widgetActivated|", log.toString() );
   }
 
@@ -346,11 +345,11 @@ public class ButtonLCA_Test extends TestCase {
     } );
     String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected",
                               buttonId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "widgetSelected", log.toString() );
   }
 
@@ -413,21 +412,21 @@ public class ButtonLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
     String button2Id = WidgetUtil.getId( button2 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertTrue( log.indexOf( "1:true" ) != -1 );
     assertTrue( log.indexOf( "2:" ) == -1 );
     assertTrue( log.indexOf( "3:" ) == -1 );
 
     log.delete( 0, log.length() );
 
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "false" );
     Fixture.fakeRequestParam( button2Id + ".selection", "true" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertTrue( log.indexOf( "1:false" ) != -1 );
     assertTrue( log.indexOf( "2:true" ) != -1 );
     assertTrue( log.indexOf( "3:" ) == -1 );
@@ -452,11 +451,11 @@ public class ButtonLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
     String button2Id = WidgetUtil.getId( button2 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     SelectionEvent event = ( SelectionEvent )log.get( 0 );
     assertSame( button2, event.widget );
@@ -483,11 +482,11 @@ public class ButtonLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
     String button2Id = WidgetUtil.getId( button2 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     Event event = ( Event )log.get( 0 );
     assertSame( button2, event.widget );
@@ -500,15 +499,15 @@ public class ButtonLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.PUSH );
     button.setText( "Test" );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    RWTFixture.markInitialized( button );
-    RWTFixture.preserveWidgets();
+    button.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    Fixture.markInitialized( button );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
     lca.renderChanges( button );
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
-    String imageLocation = "rwt-resources/" + RWTFixture.IMAGE1;
+    String imageLocation = "rwt-resources/" + Fixture.IMAGE1;
     String expected = "w.setImage( \"" + imageLocation + "\", 58, 12 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
@@ -526,11 +525,11 @@ public class ButtonLCA_Test extends TestCase {
     Button checkButton = new Button( shell, SWT.CHECK );
     Button radioButton = new Button( shell, SWT.RADIO );
     checkButton.setText( "Test" );
-    checkButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    checkButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     radioButton.setText( "Test" );
-    radioButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    RWTFixture.markInitialized( radioButton );
-    RWTFixture.preserveWidgets();
+    radioButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    Fixture.markInitialized( radioButton );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     CheckButtonDelegateLCA checkLCA = new CheckButtonDelegateLCA();
     RadioButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
@@ -546,10 +545,10 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

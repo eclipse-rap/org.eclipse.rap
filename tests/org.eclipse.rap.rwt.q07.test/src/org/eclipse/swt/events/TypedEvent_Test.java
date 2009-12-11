@@ -19,7 +19,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -48,11 +47,11 @@ public class TypedEvent_Test extends TestCase {
     = "before" + PhaseId.PREPARE_UI_ROOT + "|";
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPhase() {
@@ -84,7 +83,7 @@ public class TypedEvent_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     String expected
       = BEFORE_PREPARE_UI_ROOT
       + AFTER_PREPARE_UI_ROOT
@@ -122,7 +121,7 @@ public class TypedEvent_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
 
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( ActivateEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( SelectionEvent.class, eventLog.get( 1 ).getClass() );
 
@@ -153,7 +152,7 @@ public class TypedEvent_Test extends TestCase {
     String focusedControlParam = displayId + ".focusControl";
     Fixture.fakeRequestParam( focusedControlParam, buttonId );
 
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( FocusEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( MouseEvent.class, eventLog.get( 1 ).getClass() );
   }

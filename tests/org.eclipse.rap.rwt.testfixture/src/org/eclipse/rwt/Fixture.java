@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,885 +13,77 @@ package org.eclipse.rwt;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.Principal;
-import java.util.*;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Assert;
 
+import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.browser.Browser;
+import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.SAXException;
 
-/*
- * This class provides fake context data for test runs.
- */
 public class Fixture {
 
   public final static File TEMP_DIR 
     = new File( System.getProperty( "java.io.tmpdir" ) );
   public final static File CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
   
-  public final static class TestResourceManager
-    implements IResourceManager, Adaptable
-  {
-    
-    public Object getAdapter( final Class adapter ) {
-      return new JsConcatenator() {
-        public void startJsConcatenation() {
-        }
-        public String getContent() {
-          return "";
-        }
-        public String getLocation() {
-          return "";
-        }
-      };
-    }
+  public static final String IMAGE1 = "resources/images/image1.gif";
+  public static final String IMAGE2 = "resources/images/image2.gif";
+  public static final String IMAGE3 = "resources/images/image3.gif";
+  public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
+  public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
 
-    public String getCharset( final String name ) {
-      return null;
-    }
-
-    public ClassLoader getContextLoader() {
-      return null;
-    }
-
-    public String getLocation( final String name ) {
-      return null;
-    }
-
-    public URL getResource( final String name ) {
-      return null;
-    }
-
-    public InputStream getResourceAsStream( final String name ) {
-      return null;
-    }
-
-    public Enumeration getResources( final String name ) throws IOException {
-      return null;
-    }
-
-    public boolean isRegistered( final String name ) {
-      return false;
-    }
-
-    public void register( final String name ) {
-      
-    }
-    
-    public void register( final String name, final InputStream is ) {
-      
-    }
-
-    public void register( final String name, final String charset ) {
-      
-    }
-
-    public void register( final String name, 
-                          final String charset, 
-                          final RegisterOptions options )
-    {
-      
-    }
-
-    public void register( String name,
-                          InputStream is,
-                          String charset,
-                          RegisterOptions options )
-    {
-      
-    }
-    
-    public boolean unregister( String name ) {
-      return false;
-    }
-
-    public void setContextLoader( final ClassLoader classLoader ) {
-      
-    }
-
-    public InputStream getRegisteredContent( final String name ) {
-      return null;
-    }
-  }
-
-  public final static class TestRequest implements HttpServletRequest {
-    
-    private HttpSession session;
-    private String scheme = "http";
-    private String serverName = "fooserver";
-    private String contextPath = "/fooapp";
-    private String requestURI = "/fooapp/W4TDelegate";
-    private final StringBuffer requestURL = new StringBuffer();
-    private String servletPath = "/W4TDelegate";
-    private String pathInfo;
-    private Map parameters = new HashMap();
-    private Map headers = new HashMap();
-    private Map attributes = new HashMap();
-    private Set cookies = new HashSet();
-    private Locale locale;
-    
-    public String getAuthType() {
-      return null;
-    }
-    
-    public void addCookie( final Cookie cookie ) {
-      cookies.add( cookie );
-    }
-    
-    public Cookie[] getCookies() {
-      return ( Cookie[] )cookies.toArray( new Cookie[ cookies.size() ] );
-    }
-    
-    public long getDateHeader( final String arg0 ) {
-      return 0;
-    }
-    
-    public String getHeader( final String arg0 ) {
-      return ( String )headers.get( arg0 );
-    }
-    
-    public void setHeader(final String arg0, final String arg1) {
-      headers.put(arg0, arg1);      
-    }
-    
-    public Enumeration getHeaders( final String arg0 ) {
-      return null;
-    }
-    
-    public Enumeration getHeaderNames() {
-      return new Enumeration() {
-        private Iterator iterator = headers.keySet().iterator();
-        public boolean hasMoreElements() {
-          return iterator.hasNext();
-        }
-        public Object nextElement() {
-          return iterator.next();
-        }
-      };
-    }
-    
-    public int getIntHeader( final String arg0 ) {
-      return 0;
-    }
-    
-    public String getMethod() {
-      return null;
-    }
-    
-    public String getPathInfo() {
-      return pathInfo;
-    }
-    
-    public void setPathInfo( final String pathInfo ) {
-      this.pathInfo = pathInfo;
-    }
-    
-    public String getPathTranslated() {
-      return null;
-    }
-    
-    public String getContextPath() {
-      return contextPath;
-    }
-    
-    public String getQueryString() {
-      return null;
-    }
-    
-    public String getRemoteUser() {
-      return null;
-    }
-    
-    public boolean isUserInRole( final String arg0 ) {
-      return false;
-    }
-    
-    public Principal getUserPrincipal() {
-      return null;
-    }
-    
-    public String getRequestedSessionId() {
-      return null;
-    }
-    
-    public String getRequestURI() {
-      return requestURI;
-    }
-    
-    public void setRequestURI( final String requestURI ) {
-      this.requestURI = requestURI;
-    }
-    
-    public StringBuffer getRequestURL() {
-      return requestURL;
-    }
-    
-    public String getServletPath() {
-      return servletPath;
-    }
-    
-    public void setServletPath( final String servletPath ) {
-      this.servletPath = servletPath;
-    }
-    
-    public HttpSession getSession( final boolean arg0 ) {
-      return session;
-    }
-    
-    /**
-     * @return  Returns the session.
-     * @uml.property  name="session"
-     */
-    public HttpSession getSession() {
-      return session;
-    }
-    
-    public boolean isRequestedSessionIdValid() {
-      return false;
-    }
-    
-    public boolean isRequestedSessionIdFromCookie() {
-      return false;
-    }
-    
-    public boolean isRequestedSessionIdFromURL() {
-      return false;
-    }
-    
-    public boolean isRequestedSessionIdFromUrl() {
-      return false;
-    }
-    
-    public Object getAttribute( final String arg0 ) {
-      return attributes.get( arg0 );
-    }
-    
-    public Enumeration getAttributeNames() {
-      return null;
-    }
-    
-    public String getCharacterEncoding() {
-      return null;
-    }
-    
-    public void setCharacterEncoding( final String arg0 )
-      throws UnsupportedEncodingException
-    {
-    }
-    
-    public int getContentLength() {
-      return 0;
-    }
-    
-    public String getContentType() {
-      return null;
-    }
-    
-    public ServletInputStream getInputStream() throws IOException {
-      return null;
-    }
-    
-    public String getParameter( final String arg0 ) {
-      String[] value = ( String[] )parameters.get( arg0 );
-      String result = null;
-      if( value != null ) {
-        result = value[ 0 ];
-      }
-      return result;
-    }
-    
-    public Enumeration getParameterNames() {
-      return new Enumeration() {
-        private Iterator iterator = parameters.keySet().iterator();
-        public boolean hasMoreElements() {
-          return iterator.hasNext();
-        }
-        
-        public Object nextElement() {
-          return iterator.next();
-        }
-      };
-    }
-    
-    public String[] getParameterValues( final String arg0 ) {
-      return ( String[] )parameters.get( arg0 );
-    }
-    
-    public void setParameter( final String key, final String value ) {      
-      if( value == null ) {
-        parameters.remove( key );
-      } else {
-        parameters.put( key, new String[] { value } );
-      }
-    }
-    
-    public void addParameter( final String key, final String value ) {
-      if( parameters.containsKey( key ) ) {
-        String[] values = ( String[] )parameters.get( key );
-        String[] newValues = new String[ values.length + 1 ];
-        System.arraycopy( values, 0, newValues, 0, values.length );
-        newValues[ values.length ] = value;
-        parameters.put( key, newValues );
-      } else {
-        setParameter( key, value );
-      }
-    }
-    
-    public Map getParameterMap() {
-      return parameters;
-    }
-    
-    public String getProtocol() {
-      return null;
-    }
-    
-    /**
-     * @return  Returns the scheme.
-     * @uml.property  name="scheme"
-     */
-    public String getScheme() {
-      return scheme;
-    }
-    
-    /**
-     * @param scheme  The scheme to set.
-     * @uml.property  name="scheme"
-     */
-    public void setScheme( final String scheme ) {
-      this.scheme = scheme;
-    }
-    
-    /**
-     * @return  Returns the serverName.
-     * @uml.property  name="serverName"
-     */
-    public String getServerName() {
-      return serverName;
-    }
-    
-    /**
-     * @param serverName  The serverName to set.
-     * @uml.property  name="serverName"
-     */
-    public void setServerName( final String serverName ) {
-      this.serverName = serverName;
-    }
-    
-    public int getServerPort() {
-      return 8080;
-    }
-    
-    public BufferedReader getReader() throws IOException {
-      return null;
-    }
-    
-    public String getRemoteAddr() {
-      return null;
-    }
-    
-    public String getRemoteHost() {
-      return null;
-    }
-    
-    public void setAttribute( final String arg0, final Object arg1 ) {
-      attributes.put( arg0, arg1 );
-    }
-    
-    public void removeAttribute( final String arg0 ) {
-    }
-    
-    public Locale getLocale() {
-      return locale == null ? Locale.getDefault() : locale ;
-    }
-
-    public void setLocale( final Locale locale ) {
-      this.locale = locale;
-    }
-
-    public Enumeration getLocales() {
-      return null;
-    }
-    
-    public boolean isSecure() {
-      return false;
-    }
-    
-    public RequestDispatcher getRequestDispatcher( final String arg0 ) {
-      return null;
-    }
-    
-    public String getRealPath( final String arg0 ) {
-      return null;
-    }
-    
-    /**
-     * @param session  The session to set.
-     * @uml.property  name="session"
-     */
-    public void setSession( final HttpSession session ) {
-      this.session = session;
-    }
-
-    public String getLocalAddr() {
-      throw new UnsupportedOperationException();
-    }
-
-    public String getLocalName() {
-      throw new UnsupportedOperationException();
-    }
-
-    public int getLocalPort() {
-      throw new UnsupportedOperationException();
-    }
-
-    public int getRemotePort() {
-      throw new UnsupportedOperationException();
-    }
-  }
-  
-  public final static class TestResponse implements HttpServletResponse {
-    
-    private ServletOutputStream outStream;
-    private String contentType;
-    private Map cookies = new HashMap();
-    private Map headers = new HashMap();
-    private int errorStatus;
-    private String redirect;
-
-    public void addCookie( final Cookie arg0 ) {
-      cookies.put( arg0.getName(), arg0 );
-    }
-    
-    public Cookie getCookie( final String cookieName ) {
-      return ( Cookie )cookies.get( cookieName );
-    }
-    
-    public boolean containsHeader( final String arg0 ) {
-      return false;
-    }
-    
-    public String encodeURL( final String arg0 ) {
-      return arg0;
-    }
-    
-    public String encodeRedirectURL( final String arg0 ) {
-      return arg0;
-    }
-    
-    public String encodeUrl( final String arg0 ) {
-      return arg0;
-    }
-    
-    public String encodeRedirectUrl( final String arg0 ) {
-      return arg0;
-    }
-    
-    public void sendError( final int arg0, final String arg1 )
-      throws IOException
-    {
-      errorStatus = arg0;
-    }
-    
-    public void sendError( final int arg0 ) throws IOException {
-      errorStatus = arg0;
-    }
-    
-    public int getErrorStatus() {
-      return errorStatus;
-    }
-    
-    public void sendRedirect( final String arg0 ) throws IOException {
-      redirect = arg0;
-    }
-    
-    public String getRedirect() {
-      return redirect;
-    }
-    
-    public void setDateHeader( final String arg0, final long arg1 ) {
-    }
-    
-    public void addDateHeader( final String arg0, final long arg1 ) {
-    }
-    
-    public void setHeader( final String arg0, final String arg1 ) {
-      headers.put( arg0, arg1 );
-    }
-    
-    public String getHeader( final String name ) {
-      return ( String )headers.get( name );
-    }
-    
-    public void addHeader( final String arg0, final String arg1 ) {
-    }
-    
-    public void setIntHeader( final String arg0, final int arg1 ) {
-    }
-    
-    public void addIntHeader( final String arg0, final int arg1 ) {
-    }
-    
-    public void setStatus( final int arg0 ) {
-    }
-    
-    public void setStatus( final int arg0, final String arg1 ) {
-    }
-    
-    public String getCharacterEncoding() {
-      return null;
-    }
-    
-    public ServletOutputStream getOutputStream() throws IOException {
-      return outStream;
-    }
-    
-    public void setOutputStream( final ServletOutputStream outStream ) {
-      this.outStream = outStream;
-    }
-    
-    public PrintWriter getWriter() throws IOException {
-      return new PrintWriter( outStream );
-    }
-    
-    public void setContentLength( final int arg0 ) {
-    }
-    
-    public void setContentType( final String contentType ) {
-      this.contentType = contentType;
-    }
-    
-    public String getContentType() {
-      return contentType;
-    }
-    
-    public void setBufferSize( final int arg0 ) {
-    }
-    
-    public int getBufferSize() {
-      return 0;
-    }
-    
-    public void flushBuffer() throws IOException {
-    }
-    
-    public void resetBuffer() {
-    }
-    
-    public boolean isCommitted() {
-      return false;
-    }
-    
-    public void reset() {
-    }
-    
-    public void setLocale( final Locale arg0 ) {
-    }
-    
-    public Locale getLocale() {
-      return null;
-    }
-
-    public void setCharacterEncoding( String charset ) {
-      throw new UnsupportedOperationException();
-    }
-  }
-  
-  public static interface TestLogger {
-    void log( String message, Throwable throwable );
-  }
-  
-  public final static class TestServletContext implements ServletContext {
-
-    private String servletContextName;
-    private final Map initParameters = new HashMap();
-    private Map attributes = new HashMap();
-    private TestLogger logger;
-
-    public void setLogger( final TestLogger logger ) {
-      this.logger = logger;
-    }
-    
-    public ServletContext getContext( final String arg0 ) {
-      return null;
-    }
-
-    public int getMajorVersion() {
-      return 0;
-    }
-
-    public int getMinorVersion() {
-      return 0;
-    }
-
-    public String getMimeType( final String arg0 ) {
-      return null;
-    }
-
-    public Set getResourcePaths( final String arg0 ) {
-      return null;
-    }
-
-    public URL getResource( final String arg0 ) throws MalformedURLException {
-      return null;
-    }
-
-    public InputStream getResourceAsStream( final String arg0 ) {
-      return null;
-    }
-
-    public RequestDispatcher getRequestDispatcher( final String arg0 ) {
-      return null;
-    }
-
-    public RequestDispatcher getNamedDispatcher( final String arg0 ) {
-      return null;
-    }
-
-    public Servlet getServlet( final String arg0 ) throws ServletException {
-      return null;
-    }
-
-    public Enumeration getServlets() {
-      return null;
-    }
-
-    public Enumeration getServletNames() {
-      return null;
-    }
-
-    public void log( final String arg0 ) {
-      log( arg0, null );
-    }
-
-    public void log( final Exception arg0, final String arg1 ) {
-      log( arg1, arg0 );
-    }
-
-    public void log( final String arg0, final Throwable arg1 ) {
-      if( logger != null ) {
-        logger.log( arg0, arg1 );
-      }
-    }
-
-    public String getRealPath( final String arg0 ) {
-      return null;
-    }
-
-    public String getServerInfo() {
-      return null;
-    }
-
-    public String getInitParameter( final String name ) {
-      return ( String )initParameters.get( name );
-    }
-    
-    public void setInitParameter( final String name, final String value ) {
-      initParameters.put( name, value );
-    }
-
-    public Enumeration getInitParameterNames() {
-      return null;
-    }
-
-    public Object getAttribute( final String arg0 ) {
-      return attributes.get( arg0 );
-    }
-
-    public Enumeration getAttributeNames() {
-      return null;
-    }
-
-    public void setAttribute( final String arg0, final Object arg1 ) {
-      attributes .put( arg0, arg1 );
-    }
-
-    public void removeAttribute( final String arg0 ) {
-    }
-
-    public String getServletContextName() {
-      return servletContextName;
-    }
-    
-    public void setServletContextName( final String servletContextName ) {
-      this.servletContextName = servletContextName;
-    }
-
-    public String getContextPath() {
-      return null;
-    }
-    
-  }
-  
-  public final static class TestSession implements HttpSession {
-    
-    private final Map attributes = new HashMap();
-    private final ServletContext servletContext = new TestServletContext();
-    private boolean isInvalidated;
-    private boolean newSession;
-    
-    public long getCreationTime() {
-      return 0;
-    }
-    
-    public String getId() {
-      if( isInvalidated ) {
-        String text 
-          = "Unable to obtain session id. Session already invalidated.";
-        throw new IllegalStateException( text );
-      }
-      return String.valueOf( hashCode() );
-    }
-    
-    public long getLastAccessedTime() {
-      return 0;
-    }
-    
-    public ServletContext getServletContext() {
-      return servletContext ;
-    }
-    
-    public void setMaxInactiveInterval( final int arg0 ) {
-    }
-    
-    public int getMaxInactiveInterval() {
-      return 0;
-    }
-    
-    /**
-     * @deprecated
-     */
-    public HttpSessionContext getSessionContext() {
-      return null;
-    }
-    
-    public Object getAttribute( final String arg0 ) {
-      return attributes.get( arg0 );
-    }
-    
-    public Object getValue( final String arg0 ) {
-      return null;
-    }
-    
-    public Enumeration getAttributeNames() {
-      final Iterator iterator = attributes.keySet().iterator();
-      return new Enumeration() {
-        public boolean hasMoreElements() {
-          return iterator.hasNext();
-        }
-        public Object nextElement() {
-          return iterator.next();
-        }
-      };
-    }
-    
-    public String[] getValueNames() {
-      return null;
-    }
-    
-    public void setAttribute( final String arg0, final Object arg1 ) {
-      if( arg1 instanceof HttpSessionBindingListener ) {
-        HttpSessionBindingListener listener
-          = ( HttpSessionBindingListener )arg1;
-        listener.valueBound( new HttpSessionBindingEvent( this, arg0, arg1 ) );
-      }
-      attributes.put( arg0, arg1 );
-    }
-    
-    public void putValue( final String arg0, final Object arg1 ) {
-    }
-    
-    public void removeAttribute( final String arg0 ) {
-      Object removed = attributes.remove( arg0 );
-      if( removed instanceof HttpSessionBindingListener ) {
-        HttpSessionBindingListener listener
-          = ( HttpSessionBindingListener )removed;
-        HttpSessionBindingEvent evt
-          = new HttpSessionBindingEvent( this, arg0, removed );
-        listener.valueUnbound( evt );
-      }
-    }
-    
-    public void removeValue( final String arg0 ) {
-    }
-    
-    public void invalidate() {
-      Object[] keys = attributes.keySet().toArray();
-      for( int i = 0; i < keys.length; i++ ) {
-        String key = ( String )keys[ i ];
-        Object val = attributes.get( key );
-        if( val instanceof HttpSessionBindingListener ) {
-          HttpSessionBindingListener lsnr = ( HttpSessionBindingListener )val;
-          lsnr.valueUnbound( new HttpSessionBindingEvent( this, key, val ) );
-        }
-      }
-      attributes.clear();
-      isInvalidated = true;
-    }
-    
-    public boolean isInvalidated() {
-      return isInvalidated;
-    }
-    
-    public boolean isNew() {
-      return newSession;
-    }
-
-    public void setNew( boolean newSession ) {
-      this.newSession = newSession;
-    }
-  }
-  
-  public static class TestServletConfig implements ServletConfig {
-    
-    public String getServletName() {
-      return null;
-    }
-    
-    public ServletContext getServletContext() {
-      return null;
-    }
-    
-    public String getInitParameter( final String initParameter ) {
-      return null;
-    }
-    
-    public Enumeration getInitParameterNames() {
-      return null;
-    }
-  }
-  
-  public static class TestServletOutputStream extends ServletOutputStream {
-
-    private ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    
-    public void write( final int b ) throws IOException {
-      stream.write( b );
-    }
-    
-    public ByteArrayOutputStream getContent() {
-      return stream;
-    }
-  }
+  private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
+  private static PhaseListener currentPhaseListener
+    = new CurrentPhase.Listener();
   
   private Fixture() {
+    // prevent instantiation
   }
-  
+
   public static void setUp() {
+    // standard setup
+    commonSetUp();
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
+                        RWTLifeCycle.class.getName() );
+  
+    ThemeManager.getInstance().initialize();
+    registerAdapterFactories();
+    PhaseListenerRegistry.add( Fixture.currentPhaseListener );
+  
+    // registration of mockup resource manager
+    registerResourceManager();
+  
+    SettingStoreManager.register( new MemorySettingStoreFactory() );
+  }
+
+  public static void setUpWithoutResourceManager() {
+    // standard setup
+    commonSetUp();
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
+                        RWTLifeCycle.class.getName() );
+  
+    // registration of adapter factories
+    registerAdapterFactories();
+  }
+
+  private static void commonSetUp() {
     // disable js-versioning by default to make comparison easier
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
     clearSingletons();
@@ -907,19 +99,47 @@ public class Fixture {
     fakeContextProvider( response, request );
   }
 
+  public static void tearDown() {
+    // deregistration of mockup resource manager
+    deregisterResourceManager();
+  
+    // deregistration of adapter factories
+    deregisterAdapterFactories();
+    AdapterFactoryRegistry.clear();
+  
+    // Keep the ThemeManager initialized to speed up the TestSuite
+  
+    // clear Graphics resources
+    ResourceFactory.clear();
+  
+    // remove all registered entry points
+    String[] entryPoints = EntryPointManager.getEntryPoints();
+    for( int i = 0; i < entryPoints.length; i++ ) {
+      EntryPointManager.deregister( entryPoints[ i ] );
+    }
+    // standard teardown
+    HttpSession session = ContextProvider.getRequest().getSession();
+    ContextProvider.disposeContext();
+    session.invalidate();
+    clearSingletons();
+    System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
+  
+    AbstractBranding[] all = BrandingManager.getAll();
+    for( int i = 0; i < all.length; i++ ) {
+      BrandingManager.deregister( all[ i ] );
+    }
+  
+    LifeCycleFactory.destroy();
+  
+    PhaseListenerRegistry.clear();
+  }
+
   public static void clearSingletons() {
     setPrivateField( ResourceManagerImpl.class, null, "_instance", null );
     setPrivateField( LifeCycleFactory.class, null, "globalLifeCycle", null );
     setPrivateField( SettingStoreManager.class, null, "factory", null ); 
   }
 
-  public static void tearDown() {
-    HttpSession session = ContextProvider.getRequest().getSession();
-    ContextProvider.disposeContext();
-    session.invalidate();
-    clearSingletons();
-  }
-  
   public static void createContext( final boolean fake )
     throws IOException, 
            FactoryConfigurationError, 
@@ -1106,8 +326,163 @@ public class Fixture {
     stateInfo.setResponseWriter( writer );
   }
 
-  public static void fakePhase( final PhaseId phaseId ) {
-    String key = CurrentPhase.class.getName() + "#value";
-    ContextProvider.getStateInfo().setAttribute( key, phaseId );
+  public static void fakePhase( final PhaseId phase ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value",
+                            phase );
+  }
+
+  public static void fakeContext() {
+    TestRequest request = new TestRequest();
+    TestResponse response = new TestResponse();
+    TestSession session = new TestSession();
+    request.setSession( session );
+    ServiceContext context = new ServiceContext( request, response );
+    ContextProvider.setContext( context );
+  }
+
+  public static void readDataAndProcessAction( final Display display ) {
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    fakePhase( PhaseId.READ_DATA );
+    displayLCA.readData( display );
+    Fixture.preserveWidgets();
+    fakePhase( PhaseId.PROCESS_ACTION );
+    displayLCA.processAction( display );
+  }
+
+  public static void readDataAndProcessAction( final Widget widget ) {
+    AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
+    fakePhase( PhaseId.READ_DATA );
+    widgetLCA.readData( widget );
+    fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = widget.getDisplay();
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    displayLCA.processAction( display );
+  }
+
+  public static void fakeNewRequest() {
+    HttpSession session = ContextProvider.getRequest().getSession();
+    TestRequest request = new TestRequest();
+    request.setSession( session );
+    TestResponse response = new TestResponse();
+    ServiceContext serviceContext = new ServiceContext( request, response );
+    serviceContext.setStateInfo( new ServiceStateInfo() );
+    ContextProvider.disposeContext();
+    ContextProvider.setContext( serviceContext );
+    fakeResponseWriter();
+    fakeBrowser( new Ie6( true, true ) );
+  }
+
+  public static void markInitialized( final Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetAdapter.class );
+    WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
+    widgetAdapter.setInitialized( true );
+  }
+
+  public static void markInitialized( final Display display ) {
+    Object adapter = display.getAdapter( IWidgetAdapter.class );
+    WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
+    widgetAdapter.setInitialized( true );
+  }
+
+  public static void preserveWidgets() {
+    PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.READ_DATA );
+    listener.afterPhase( event );
+  }
+
+  public static void clearPreserved() {
+    PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
+    ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
+    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.RENDER );
+    listener.afterPhase( event );
+  }
+
+  public static void registerResourceManager() {
+    ResourceManager.register( new TestResourceManagerFactory() );
+    // clear Graphics resources
+    ResourceFactory.clear();
+  }
+
+  public static void deregisterResourceManager() {
+    setPrivateField( ResourceManager.class, null, "_instance", null );
+    setPrivateField( ResourceManager.class, null, "factory", null );
+  }
+
+  public static void registerAdapterFactories() {
+    AdapterManager manager = AdapterManagerImpl.getInstance();
+    Fixture.lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
+    manager.registerAdapters( Fixture.lifeCycleAdapterFactory, Display.class );
+    manager.registerAdapters( Fixture.lifeCycleAdapterFactory, Widget.class );
+  }
+
+  public static void deregisterAdapterFactories() {
+    AdapterManager manager = AdapterManagerImpl.getInstance();
+    manager.deregisterAdapters( Fixture.lifeCycleAdapterFactory, Display.class );
+    manager.deregisterAdapters( Fixture.lifeCycleAdapterFactory, Widget.class );
+  }
+
+  public static void executeLifeCycleFromServerThread() {
+    final RWTLifeCycle lifeCycle
+      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    final IUIThreadHolder threadHolder = new IUIThreadHolder() {
+      private Thread thread = Thread.currentThread();
+  
+      public void setServiceContext( ServiceContext serviceContext ) {
+      }
+      public void switchThread() throws InterruptedException {
+        synchronized( getLock() ) {
+          notifyAll();
+          wait();
+        }
+      }
+      public void updateServiceContext() {
+      }
+      public void terminateThread() {
+      }
+      public Thread getThread() {
+        return thread;
+      }
+      public Object getLock() {
+        return this;
+      }
+    };
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( RWTLifeCycle.UI_THREAD, threadHolder );
+  
+    final ServiceContext context = ContextProvider.getContext();
+    Thread serverThread = new Thread( new Runnable() {
+      public void run() {
+        synchronized( threadHolder.getLock() ) {
+          ContextProvider.setContext( context );
+          try {
+            try {
+              lifeCycle.execute();
+              lifeCycle.setPhaseOrder( null );
+            } catch( IOException e ) {
+              throw new RuntimeException( e );
+            }
+          } finally {
+            ContextProvider.releaseContextHolder();
+            threadHolder.notifyAll();
+          }
+        }
+      }
+    }, "ServerThread" );
+  
+    synchronized( threadHolder.getLock() ) {
+      serverThread.start();
+      try {
+        lifeCycle.sleep();
+      } catch( ThreadDeath e ) {
+        throw new RuntimeException( e );
+      }
+    }
+  
+    while( RWTLifeCycle.getSessionDisplay().readAndDispatch() ) {
+    }
+  
+    lifeCycle.sleep();
   }
 }

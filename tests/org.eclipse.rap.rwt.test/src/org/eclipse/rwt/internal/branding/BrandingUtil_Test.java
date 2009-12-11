@@ -14,11 +14,11 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.TemplateHolder;
-import org.eclipse.swt.RWTFixture;
 
 
 public class BrandingUtil_Test extends TestCase {
@@ -171,10 +171,10 @@ public class BrandingUtil_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

@@ -15,7 +15,7 @@ import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
@@ -28,10 +28,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.RWTFixture.TestResourceManager;
-import org.eclipse.swt.RWTFixture.TestResourceManagerFactory;
 import org.eclipse.swt.widgets.*;
 
 
@@ -99,19 +96,19 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.fakeContext();
+    Fixture.fakeContext();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     AdapterFactoryRegistry.clear();
   }
   
   public void testAdapterFactoryRegistryInitialization() {
     RWTServletContextListener listener = new RWTServletContextListener();
-    Fixture.TestServletContext servletContext = new TestServletContext();
+    TestServletContext servletContext = new TestServletContext();
     String factoryName = TestAdapterFactory.class.getName();
     String adaptableName = TestAdaptable.class.getName();
     String factoryParams =   "\n  "
@@ -135,7 +132,7 @@ public class RWTServletContextListener_Test extends TestCase {
   
   public void testResourceManagerInitialization() {
     RWTServletContextListener listener = new RWTServletContextListener();
-    Fixture.TestServletContext servletContext = new TestServletContext();
+    TestServletContext servletContext = new TestServletContext();
     String factoryName = TestResourceManagerFactory.class.getName();
     servletContext.setInitParameter( RESOURCE_MANAGER_FACTORY, 
                                      factoryName );
@@ -147,7 +144,7 @@ public class RWTServletContextListener_Test extends TestCase {
   public void testEntryPointInitialization() {
     // org.eclipse.swt: TestEntryPoint
     RWTServletContextListener listener = new RWTServletContextListener();
-    Fixture.TestServletContext servletContext = new TestServletContext();
+    TestServletContext servletContext = new TestServletContext();
     servletContext.setInitParameter( ENTRYPOINT, 
                                      TestEntryPointWithShell.class.getName() );
     listener.contextInitialized( new ServletContextEvent( servletContext ) );

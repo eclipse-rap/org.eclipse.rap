@@ -18,10 +18,9 @@ import java.io.PrintStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.Fixture.TestRequest;
+import org.eclipse.rwt.TestRequest;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.swt.RWTFixture;
 
 /** 
  * <p> BrowserLoader_Test is the testcase for browser class loading for a 
@@ -379,7 +378,7 @@ public class BrowserLoader_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUpWithoutResourceManager();
+    Fixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     bufferedSystemOut = System.out;
     capturedSystemOut = new ByteArrayOutputStream();
@@ -388,7 +387,7 @@ public class BrowserLoader_Test extends TestCase {
   
   protected void tearDown() throws Exception {
     System.setOut( bufferedSystemOut );
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private void assertNoSystemOut() {

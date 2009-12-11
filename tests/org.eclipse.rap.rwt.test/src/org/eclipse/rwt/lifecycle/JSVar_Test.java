@@ -13,17 +13,17 @@ package org.eclipse.rwt.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 
 
 public class JSVar_Test extends TestCase {
   
   public void testConstructor() {
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     JSVar var1Request1 = new JSVar();
     JSVar var2Request1 = new JSVar();
     assertFalse( var1Request1.toString().equals( var2Request1.toString() ) );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     JSVar var1Request2 = new JSVar();
     assertEquals( var1Request2.toString(), var1Request1.toString() );
     try {
@@ -46,10 +46,10 @@ public class JSVar_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

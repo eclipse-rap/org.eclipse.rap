@@ -9,11 +9,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.swt.RWTFixture;
+import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-
-import junit.framework.TestCase;
 
 public class Monitor_Test extends TestCase {
 
@@ -59,10 +59,10 @@ public class Monitor_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

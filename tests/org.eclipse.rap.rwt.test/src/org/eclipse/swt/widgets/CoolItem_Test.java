@@ -12,7 +12,8 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
-import org.eclipse.swt.RWTFixture;
+
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -227,10 +228,10 @@ public class CoolItem_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

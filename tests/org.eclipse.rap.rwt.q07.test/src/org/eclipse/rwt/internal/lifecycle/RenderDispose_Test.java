@@ -17,7 +17,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -33,14 +32,14 @@ public class RenderDispose_Test extends TestCase {
     String displayId = DisplayUtil.getAdapter( display ).getId();
     // first rendering: html document that contains the javaScript 'application'
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     // second rendering: initial markup that constructs the above created
     // widget hierarchy (display, shell and button)
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     // create and dispose of the button
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.addPhaseListener( new PhaseListener() {
 
@@ -58,7 +57,7 @@ public class RenderDispose_Test extends TestCase {
         return PhaseId.RENDER;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     String expectedStart
       =   "var req = org.eclipse.swt.Request.getInstance();"
         + "req.setRequestCounter(";
@@ -67,7 +66,7 @@ public class RenderDispose_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
     PhaseListenerRegistry.add( preserveWidgetsPhaseListener );
@@ -75,6 +74,6 @@ public class RenderDispose_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     PhaseListenerRegistry.clear();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

@@ -11,16 +11,16 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
 
+import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
-
-import junit.framework.TestCase;
 
 public class Decorator_Test extends TestCase {
 
@@ -56,7 +56,7 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testDispose() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
@@ -94,7 +94,7 @@ public class Decorator_Test extends TestCase {
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertNull( decoration.getImage() );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     decoration.setImage( image );
     assertSame( image, decoration.getImage() );
     assertEquals( image.getBounds().width, decoration.getBounds().width );
@@ -168,7 +168,7 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testVisible() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
@@ -176,7 +176,7 @@ public class Decorator_Test extends TestCase {
     Control button = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertFalse( decoration.isVisible() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     decoration.setImage( image );
     shell.open();
     assertTrue( decoration.isVisible() );
@@ -197,10 +197,10 @@ public class Decorator_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

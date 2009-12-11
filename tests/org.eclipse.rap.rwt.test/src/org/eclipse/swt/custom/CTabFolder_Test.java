@@ -15,9 +15,9 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -76,7 +76,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testDispose() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer  log = new StringBuffer();
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -211,7 +211,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionWithEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -277,7 +277,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testResize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
@@ -482,7 +482,7 @@ public class CTabFolder_Test extends TestCase {
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     assertNull( folderAdapter.getUserSelectionBackgroundImage() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     folder.setSelectionBackground( image );
     assertEquals( image, folderAdapter.getUserSelectionBackgroundImage() );
     folder.setSelectionBackground( ( Image )null );
@@ -490,7 +490,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testChevronVisibilityWithSingleStyle() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     shell.setSize( 150, 150 );
@@ -538,7 +538,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testComputeTrim() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
@@ -565,7 +565,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testClientArea() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
@@ -593,7 +593,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testComputeSize() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
@@ -626,7 +626,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testGetItem() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
@@ -679,11 +679,11 @@ public class CTabFolder_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private static Rectangle getChevronRect( final CTabFolder folder ) {

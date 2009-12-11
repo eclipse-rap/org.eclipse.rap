@@ -17,8 +17,8 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
@@ -312,7 +312,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     TextSizeDataBase.reset();
     TextSizeProbeStore.reset();
   }
@@ -320,6 +320,6 @@ public class TextSizeDetermination_Test extends TestCase {
   protected void tearDown() throws Exception {
     TextSizeProbeStore.reset();
     TextSizeDataBase.reset();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

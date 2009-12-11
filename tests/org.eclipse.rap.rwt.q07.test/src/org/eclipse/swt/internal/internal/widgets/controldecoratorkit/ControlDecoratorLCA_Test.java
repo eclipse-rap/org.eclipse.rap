@@ -9,22 +9,20 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
-
-import junit.framework.TestCase;
 
 public class ControlDecoratorLCA_Test extends TestCase {
 
@@ -35,8 +33,8 @@ public class ControlDecoratorLCA_Test extends TestCase {
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration
       = new ControlDecorator( control, SWT.RIGHT, null );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( decoration );
     assertEquals( new Rectangle( 0, 0, 0, 0 ),
                   adapter.getPreserved( Props.BOUNDS ) );
@@ -49,8 +47,8 @@ public class ControlDecoratorLCA_Test extends TestCase {
                   adapter.getPreserved( Props.VISIBLE ) );
     String prop = ControlDecoratorLCA.PROP_SELECTION_LISTENERS;
     assertEquals( Boolean.FALSE, adapter.getPreserved( prop ) );
-    RWTFixture.clearPreserved();
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Fixture.clearPreserved();
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     decoration.setImage( image );
     decoration.setText( "text" );
     decoration.setShowHover( false );
@@ -58,7 +56,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     };
     decoration.addSelectionListener( selectionListener );
     shell.open();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( decoration );
     assertEquals( new Rectangle( 0, -6, 58, 12 ),
                   adapter.getPreserved( Props.BOUNDS ) );
@@ -106,20 +104,20 @@ public class ControlDecoratorLCA_Test extends TestCase {
     decoration.addSelectionListener( selectionListener );
     String decorId = WidgetUtil.getId( decoration );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, decorId );
-    RWTFixture.readDataAndProcessAction( decoration );
+    Fixture.readDataAndProcessAction( decoration );
     assertEquals( "widgetSelected", log.toString() );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     log.setLength( 0 );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, decorId );
-    RWTFixture.readDataAndProcessAction( decoration );
+    Fixture.readDataAndProcessAction( decoration );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

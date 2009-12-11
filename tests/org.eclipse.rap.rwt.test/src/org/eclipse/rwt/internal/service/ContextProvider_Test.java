@@ -12,8 +12,8 @@ package org.eclipse.rwt.internal.service;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.TestRequest;
-import org.eclipse.rwt.Fixture.TestResponse;
+import org.eclipse.rwt.TestRequest;
+import org.eclipse.rwt.TestResponse;
 
 
 public class ContextProvider_Test extends TestCase {

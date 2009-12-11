@@ -17,12 +17,13 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
 
 public class ResourceFactory_Test extends TestCase {
+
+  public static final String IMAGE_BLANK_PIXEL = "resources/images/blank.gif";
 
   public void testGetColor() throws Exception {
     assertEquals( 0, ResourceFactory.colorsCount() );
@@ -54,20 +55,20 @@ public class ResourceFactory_Test extends TestCase {
   public void testGetImage() throws Exception {
     assertEquals( 0, ResourceFactory.imagesCount() );
     ClassLoader classLoader = ResourceFactory_Test.class.getClassLoader();
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE_50x100, classLoader );
+    Image image1 = Graphics.getImage( Fixture.IMAGE_50x100, classLoader );
     assertNotNull( image1 );
     assertEquals( 1, ResourceFactory.imagesCount() );
-    Image image1a = Graphics.getImage( RWTFixture.IMAGE_50x100, classLoader );
+    Image image1a = Graphics.getImage( Fixture.IMAGE_50x100, classLoader );
     assertSame( image1, image1a );
     assertEquals( 1, ResourceFactory.imagesCount() );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE_100x50, classLoader );
+    Image image2 = Graphics.getImage( Fixture.IMAGE_100x50, classLoader );
     assertNotNull( image2 );
     assertEquals( 2, ResourceFactory.imagesCount() );
   }
 
   public void testGetImageData() throws Exception {
     ClassLoader classLoader = ResourceFactory_Test.class.getClassLoader();
-    Image image = Graphics.getImage( RWTFixture.IMAGE_50x100, classLoader );
+    Image image = Graphics.getImage( Fixture.IMAGE_50x100, classLoader );
     ImageData imageData = ResourceFactory.getImageData( image );
     assertNotNull( imageData );
     assertEquals( 50, imageData.width );
@@ -76,7 +77,7 @@ public class ResourceFactory_Test extends TestCase {
     assertNotNull( imageData2 );
     assertEquals( imageData.data.length, imageData2.data.length );
     assertNotSame( imageData, imageData2 );
-    Image blankImage = Graphics.getImage( RWTFixture.IMAGE_BLANK_PIXEL,
+    Image blankImage = Graphics.getImage( "resources/images/blank.gif",
                                           classLoader );
     ImageData blankData = ResourceFactory.getImageData( blankImage );
     assertNotNull( blankData );
@@ -93,14 +94,14 @@ public class ResourceFactory_Test extends TestCase {
 
   protected void setUp() throws Exception {
     // we do need the resource manager for this test
-    RWTFixture.setUpWithoutResourceManager();
+    Fixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     ResourceFactory.clear();
   }
 }

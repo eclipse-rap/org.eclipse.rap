@@ -12,19 +12,17 @@ package org.eclipse.rwt.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.IBrowserHistory;
-import org.eclipse.rwt.RWT;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.*;
 
 
 public class BrowserHistory_Test extends TestCase {
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testCreateEntry() {

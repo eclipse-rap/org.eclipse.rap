@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.graphics.Image;
 
 
@@ -30,7 +29,7 @@ public class ImageDataCache_Test extends TestCase {
 
   protected void setUp() throws Exception {
     // we do need the resource manager for this test
-    RWTFixture.setUpWithoutResourceManager();
+    Fixture.setUpWithoutResourceManager();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
@@ -38,11 +37,11 @@ public class ImageDataCache_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testSmallImage() throws Exception {
-    ImageData imageData = getImageData( RWTFixture.IMAGE1 ); // 129 bytes
+    ImageData imageData = getImageData( Fixture.IMAGE1 ); // 129 bytes
     Image image = ResourceFactory.findImage( imageData );
     assertNull( cache.getImageData( image ) );
     cache.putImageData( image, imageData );
@@ -50,7 +49,7 @@ public class ImageDataCache_Test extends TestCase {
   }
 
   public void testTooBig() throws Exception {
-    ImageData imageData = getImageData( RWTFixture.IMAGE_100x50 ); // 1281 bytes
+    ImageData imageData = getImageData( Fixture.IMAGE_100x50 ); // 1281 bytes
     Image image = ResourceFactory.findImage( imageData );
     assertNull( cache.getImageData( image ) );
     cache.putImageData( image, imageData );
@@ -58,7 +57,7 @@ public class ImageDataCache_Test extends TestCase {
   }
 
   public void testModifyData() throws Exception {
-    ImageData originalData = getImageData( RWTFixture.IMAGE1 );
+    ImageData originalData = getImageData( Fixture.IMAGE1 );
     Image image = ResourceFactory.findImage( originalData );
     cache.putImageData( image, originalData );
     ImageData copyData1 = cache.getImageData( image );

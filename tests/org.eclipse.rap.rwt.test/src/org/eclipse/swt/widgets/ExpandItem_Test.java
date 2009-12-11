@@ -13,9 +13,9 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -24,11 +24,11 @@ import org.eclipse.swt.layout.GridLayout;
 public class ExpandItem_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testCreation() {
@@ -71,7 +71,7 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testDispose() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
@@ -93,12 +93,12 @@ public class ExpandItem_Test extends TestCase {
     item.setText( "abc" );
     assertEquals( "abc", item.getText() );
     item = new ExpandItem( expandBar, SWT.NONE );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( "", item.getText() );
   }
 
   public void testImage() {
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Display display = new Display();
     Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );

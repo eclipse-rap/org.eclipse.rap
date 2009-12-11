@@ -9,9 +9,9 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -36,8 +36,8 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
       + "<p>Second paragraph</p>"
       + "</form>";
     formText.setText( text, true, false );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( formText );
     String prop = FormTextLCA.PROP_PARAGRAPHS;
     Paragraph[] paragraphs

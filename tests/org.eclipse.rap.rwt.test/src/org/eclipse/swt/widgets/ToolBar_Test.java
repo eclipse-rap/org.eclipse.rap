@@ -13,20 +13,20 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 
 public class ToolBar_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testCreation() {
@@ -56,15 +56,15 @@ public class ToolBar_Test extends TestCase {
     // search operation indexOf
     ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
     ToolItem item2 = new ToolItem( toolBar, SWT.RADIO );
-    item2.setImage(Graphics.getImage( RWTFixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item2.getImage() );
+    item2.setImage(Graphics.getImage( Fixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item2.getImage() );
     assertEquals( 3, toolBar.getItemCount() );
     assertEquals( 3, toolBar.getItems().length );
     assertEquals( 1, toolBar.indexOf( item1 ) );
     assertEquals( item1, toolBar.getItem( 1 ) );
     assertEquals( item2, toolBar.getItem( 2 ) );
     ToolItem item3 = new ToolItem( toolBar, SWT.SEPARATOR );
-    item3.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
+    item3.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
     assertNull( item3.getImage() );
   }
 
@@ -153,7 +153,7 @@ public class ToolBar_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );

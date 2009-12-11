@@ -17,26 +17,27 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.Ie6;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class MenuItemLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testBarPreserveValues() {
@@ -45,7 +46,7 @@ public class MenuItemLCA_Test extends TestCase {
     Menu menu = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.BAR );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
     display.dispose();
@@ -60,7 +61,7 @@ public class MenuItemLCA_Test extends TestCase {
     fileItem.setMenu( fileMenu );
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( fileMenu, SWT.PUSH );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Selection_Listener
     testPreserveSelectionListener( menuItem );
     testPreserveEnabled( menuItem );
@@ -77,7 +78,7 @@ public class MenuItemLCA_Test extends TestCase {
     fileItem.setMenu( fileMenu );
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( fileMenu, SWT.RADIO );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Selection_Listener
     testPreserveSelectionListener( menuItem );
     testPreserveEnabled( menuItem );
@@ -85,11 +86,11 @@ public class MenuItemLCA_Test extends TestCase {
     //selection
     menuItem.setSelection( true );
     menuItem.setText( "menu item" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     assertEquals( Boolean.TRUE, Boolean.valueOf( menuItem.getSelection() ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.SELECTION_INDICES ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -102,17 +103,17 @@ public class MenuItemLCA_Test extends TestCase {
     fileItem.setMenu( fileMenu );
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( fileMenu, SWT.CHECK );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Selection_Listener
     testPreserveSelectionListener( menuItem );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
     //selection
     menuItem.setSelection( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.SELECTION_INDICES ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -139,7 +140,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -170,7 +171,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -198,20 +199,20 @@ public class MenuItemLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String radio1Id = WidgetUtil.getId( radioItem1 );
     String radio2Id = WidgetUtil.getId( radioItem2 );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radio1Id + ".selection", "true" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     SelectionEvent event = ( SelectionEvent )log.get( 0 );
     assertSame( radioItem1, event.widget );
     assertTrue( radioItem1.getSelection() );
     assertEquals( 1, log.size() );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radio1Id + ".selection", "false" );
     Fixture.fakeRequestParam( radio2Id + ".selection", "true" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     event = ( SelectionEvent )log.get( 0 );
     assertSame( radioItem1, event.widget );
@@ -244,11 +245,11 @@ public class MenuItemLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String item1Id = WidgetUtil.getId( radioItem1 );
     String item2Id = WidgetUtil.getId( radioItem2);
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item2Id + ".selection", "false" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     SelectionEvent event = ( SelectionEvent )log.get( 0 );
     assertSame( radioItem2, event.widget );
@@ -279,11 +280,11 @@ public class MenuItemLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String item1Id = WidgetUtil.getId( radioItem1 );
     String item2Id = WidgetUtil.getId( radioItem2);
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item2Id + ".selection", "false" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     Event event = ( Event )log.get( 0 );
     assertSame( radioItem2, event.widget );
@@ -293,43 +294,43 @@ public class MenuItemLCA_Test extends TestCase {
     
   private void testPreserveSelectionListener( final MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( Props.SELECTION_LISTENERS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     menuItem.addSelectionListener( new SelectionAdapter() {} );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( Props.SELECTION_LISTENERS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testPreserveText( final MenuItem menuItem ) {
     IWidgetAdapter adapter;
     adapter = WidgetUtil.getAdapter( menuItem );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     menuItem.setText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testPreserveEnabled( final MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();    
+    Fixture.clearPreserved();    
     menuItem.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();    
+    Fixture.clearPreserved();    
     menuItem.setEnabled( true );
     menuItem.getParent().setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     // even if parent is disabled
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();    
+    Fixture.clearPreserved();    
   }
 }

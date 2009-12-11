@@ -14,18 +14,17 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
-import org.eclipse.swt.RWTFixture;
 
 
 
 public class AdapterManager_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.fakeContext();
+    Fixture.fakeContext();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testAdapterManager() throws Exception {

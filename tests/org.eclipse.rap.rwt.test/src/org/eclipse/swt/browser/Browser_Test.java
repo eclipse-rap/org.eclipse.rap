@@ -13,8 +13,8 @@ package org.eclipse.swt.browser;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -24,11 +24,11 @@ import org.eclipse.swt.widgets.Shell;
 public class Browser_Test extends TestCase {
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testInitialValues() {
@@ -67,7 +67,7 @@ public class Browser_Test extends TestCase {
   }
   
   public void testLocationEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     final String[] expectedLocation = new String[ 1 ];
     Display display = new Display();

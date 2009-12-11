@@ -16,9 +16,10 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.internal.theme.ThemeTestUtil;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -32,18 +33,18 @@ public class Button_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
 
     Button button = new Button( shell, SWT.NONE );
-    button.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), button.getImage() );
+    button.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE1 ), button.getImage() );
 
     Button button2 = new Button( shell, SWT.NONE );
-    button2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), button2.getImage() );
+    button2.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE2 ), button2.getImage() );
 
     button2.setImage( null );
     assertEquals( null, button2.getImage() );
 
     Button arrowButton = new Button( shell, SWT.ARROW );
-    arrowButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    arrowButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( null, arrowButton.getImage() );
   }
 
@@ -163,7 +164,7 @@ public class Button_Test extends TestCase {
     String text = "Click me!";
     Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 48, 13 ), extent );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );
@@ -267,7 +268,7 @@ public class Button_Test extends TestCase {
     String text = "Click me!";
     Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 48, 13 ), extent );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );
@@ -287,10 +288,10 @@ public class Button_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

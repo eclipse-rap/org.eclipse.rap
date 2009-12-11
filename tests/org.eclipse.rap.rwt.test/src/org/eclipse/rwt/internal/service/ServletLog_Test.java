@@ -9,18 +9,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.Fixture.TestLogger;
-import org.eclipse.rwt.Fixture.TestServletContext;
-import org.eclipse.rwt.internal.service.ServletLog;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.*;
 
 
 public class ServletLog_Test extends TestCase {
@@ -30,7 +27,7 @@ public class ServletLog_Test extends TestCase {
   public void testLogWithContext() {
     final String[] message = { null };
     final Throwable[] throwable= { null };
-    RWTFixture.setUp();
+    Fixture.setUp();
     HttpSession session = RWT.getSessionStore().getHttpSession();
     ServletContext servletContext = session.getServletContext();
     TestServletContext testServletContext
@@ -48,7 +45,7 @@ public class ServletLog_Test extends TestCase {
     assertEquals( LOG_MESSAGE, message[ 0 ] );
     assertSame( exception, throwable[ 0 ] );
     // clean up
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testLogWithoutContext() {

@@ -9,7 +9,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 

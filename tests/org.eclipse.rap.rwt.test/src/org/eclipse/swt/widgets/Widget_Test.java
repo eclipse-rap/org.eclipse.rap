@@ -14,10 +14,12 @@ package org.eclipse.swt.widgets;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 
 
@@ -25,15 +27,15 @@ import org.eclipse.swt.events.*;
 public class Widget_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testGetAdapter() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Widget shell = new Shell( display );
     // ensure that Widget#getAdapter can be called after widget was disposed of
@@ -112,7 +114,7 @@ public class Widget_Test extends TestCase {
   public void testDisposeParentWhileInDispose() {
     // This test leads to a stack overflow or, if line "item[ 0 ].dispose();"
     // is activated to a NPE
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Composite composite = new Composite( shell, SWT.NONE );
@@ -134,7 +136,7 @@ public class Widget_Test extends TestCase {
   }
   
   public void testDisposeSelfWhileInDispose() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     final Shell widget = new Shell( display, SWT.NONE );
     widget.addDisposeListener( new DisposeListener() {
@@ -203,7 +205,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testDisposeWithException() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Widget widget = new Shell( display );
     widget.addDisposeListener( new DisposeListener() {
@@ -233,7 +235,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListeners() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Widget widget = new Shell( display );
     final StringBuffer log = new StringBuffer();
@@ -247,7 +249,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersTyped() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     final StringBuffer log = new StringBuffer();
@@ -261,7 +263,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersDisplayFilter() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     final StringBuffer log = new StringBuffer();
@@ -276,7 +278,7 @@ public class Widget_Test extends TestCase {
 
   // SWT always overrides e.type, e.display and e.widget
   public void testNotifyListenersEventFields() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Shell shell = new Shell( display );
     final StringBuffer log = new StringBuffer();
@@ -315,7 +317,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersSetData() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Widget widget = new Shell( display );
     final StringBuffer log = new StringBuffer();
@@ -336,7 +338,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersNullEvent() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Control control = new Shell( display );
     final StringBuffer log = new StringBuffer();
@@ -352,7 +354,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersInvalidEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Widget widget = new Shell( display );
     widget.notifyListeners( 4711, new Event() );
@@ -397,7 +399,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testIsListeningForTypedEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Control control = new Shell( display );
     control.addHelpListener( new HelpListener() {

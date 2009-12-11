@@ -9,15 +9,15 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.swt.RWTFixture;
+import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-
-import junit.framework.TestCase;
 
 
 public class ScrolledComposite_Test extends TestCase {
@@ -250,10 +250,10 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

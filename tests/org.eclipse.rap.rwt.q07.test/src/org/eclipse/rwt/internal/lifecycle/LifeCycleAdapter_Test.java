@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.widgets.*;
@@ -50,8 +49,8 @@ public class LifeCycleAdapter_Test extends TestCase {
     Display display2 = new Display();
     Object adapter3 = display2.getAdapter( ILifeCycleAdapter.class );
     assertSame( adapter2, adapter3 );
-    RWTFixture.tearDown();
-    RWTFixture.setUp();
+    Fixture.tearDown();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     Display display3 = new Display();
     Object adapter4 = display3.getAdapter( ILifeCycleAdapter.class );
@@ -82,8 +81,8 @@ public class LifeCycleAdapter_Test extends TestCase {
     Object compositeLCA = composite.getAdapter( ILifeCycleAdapter.class );
     assertTrue( compositeLCA instanceof IWidgetLifeCycleAdapter );
     assertNotSame( customComposite1LCA, compositeLCA );
-    RWTFixture.tearDown();
-    RWTFixture.setUp();
+    Fixture.tearDown();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     display = new Display();
     Composite otherSessionShell = new Shell( display, SWT.NONE );
@@ -107,11 +106,11 @@ public class LifeCycleAdapter_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

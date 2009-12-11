@@ -19,7 +19,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -35,22 +34,22 @@ public class TabItemLCA_Test extends TestCase {
     new TabItem( tabFolder, SWT.NONE );
     TabItem item = new TabItem( tabFolder, SWT.NONE );
 
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE, adapter.getPreserved( PROP_SELECTED ) );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( "", adapter.getPreserved( Props.TOOLTIP ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     tabFolder.setSelection( 1 );
     item.setText( "some text" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setToolTipText( "tooltip text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( PROP_SELECTED ) );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ),
+    assertEquals( Graphics.getImage( Fixture.IMAGE1 ),
                   adapter.getPreserved( Props.IMAGE ) );
     assertEquals( "tooltip text", adapter.getPreserved( Props.TOOLTIP ) );
     display.dispose();
@@ -64,10 +63,10 @@ public class TabItemLCA_Test extends TestCase {
     TabItem item = new TabItem( tabFolder, SWT.NONE );
     String itemId = WidgetUtil.getId( item );
     // read changed selection
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, itemId );
     Fixture.fakeRequestParam( itemId + ".selection", "true" );
-    RWTFixture.readDataAndProcessAction( item );
+    Fixture.readDataAndProcessAction( item );
     assertSame( item, tabFolder.getSelection()[ 0 ] );
   }
   
@@ -77,8 +76,8 @@ public class TabItemLCA_Test extends TestCase {
     TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
     new TabItem( tabFolder, SWT.NONE );
     TabItem item = new TabItem( tabFolder, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     AbstractWidgetLCA adapter = WidgetUtil.getLCA( item );
     item.setToolTipText( "tooltip text" );
@@ -88,11 +87,11 @@ public class TabItemLCA_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeBrowser( new Ie6( true, true ) );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

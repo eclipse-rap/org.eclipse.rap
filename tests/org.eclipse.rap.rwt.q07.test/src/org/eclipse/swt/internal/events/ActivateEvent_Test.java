@@ -22,9 +22,9 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -32,11 +32,11 @@ import org.eclipse.swt.widgets.*;
 public class ActivateEvent_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testListenerOnControl() {
@@ -59,13 +59,13 @@ public class ActivateEvent_Test extends TestCase {
     } );
 
     fakeActivateRequestParam( label );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 1, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
   }
 
   public void testListenerOnComposite() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Widget[] activated = new Widget[ 10 ];
     final int[] activatedCount = { 0 };
     final Widget[] deactivated = new Widget[ 10 ];
@@ -95,7 +95,7 @@ public class ActivateEvent_Test extends TestCase {
     ActivateEvent.addListener( otherLabel, listener );
     
     fakeActivateRequestParam( label );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
     assertSame( composite, activated[ 1 ] );
@@ -105,7 +105,7 @@ public class ActivateEvent_Test extends TestCase {
   }
 
   public void testActivateOnFocus() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     // This label gets implicitly focused (and thus activated) on Shell#open()
@@ -146,7 +146,7 @@ public class ActivateEvent_Test extends TestCase {
     control.addListener( SWT.Deactivate, listener );
     // simulated request: activate control -> Activate event fired
     fakeActivateRequestParam( control );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 1, log.size() );
     Event loggedEvent = ( Event )log.get( 0 );
     assertEquals( SWT.Activate, loggedEvent.type );
@@ -158,7 +158,7 @@ public class ActivateEvent_Test extends TestCase {
     Control newControl = new Label( shell, SWT.NONE );
     newControl.addListener( SWT.Activate, listener );
     fakeActivateRequestParam( newControl );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     loggedEvent = ( Event )log.get( 0 );
     assertEquals( SWT.Deactivate, loggedEvent.type );
@@ -186,7 +186,7 @@ public class ActivateEvent_Test extends TestCase {
     String controlId = WidgetUtil.getId( shell );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, controlId );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertNotNull( untypedEvent[ 0 ] );
     assertNotNull( typedEvent[ 0 ] );
     assertEquals( SWT.Activate, untypedEvent[ 0 ].type );

@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.FocusAdapter;
@@ -35,14 +34,14 @@ import org.eclipse.swt.widgets.*;
 public class ControlLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUpWithoutResourceManager();
+    Fixture.setUpWithoutResourceManager();
     ThemeManager.getInstance().initialize();
   }
 
   protected void tearDown() throws Exception {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPreserveValues() {
@@ -50,51 +49,51 @@ public class ControlLCA_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     Boolean hasListeners;
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     button.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ));
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.addControlListener( new ControlAdapter() { } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     button.setBackground( background );
@@ -102,50 +101,50 @@ public class ControlLCA_Test extends TestCase {
     button.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     button.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( null, button.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( "some text", button.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activate_listeners   Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     button.addFocusListener( new FocusAdapter() { } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( button, new ActivateAdapter() { } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -164,16 +163,16 @@ public class ControlLCA_Test extends TestCase {
 
     // Unchanged visible attribute must not be rendered
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( button );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    Fixture.preserveWidgets();
     lca.renderInitialization( button );
     lca.renderChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
 
     // Changed visible attribute must not be rendered
     Fixture.fakeResponseWriter();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     button.setVisible( false );
     lca.renderInitialization( button );
     lca.renderChanges( button );
@@ -264,9 +263,9 @@ public class ControlLCA_Test extends TestCase {
         return result;
       }
     };
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( control );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( control );
     // redraw & dispose: must revoke redraw
     control.redraw();
     control.dispose();
@@ -274,7 +273,7 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "renderDispose", log.toString() );
   }
 }

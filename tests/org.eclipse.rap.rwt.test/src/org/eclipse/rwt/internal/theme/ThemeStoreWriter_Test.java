@@ -11,7 +11,7 @@ package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 
 
 public class ThemeStoreWriter_Test extends TestCase {
@@ -27,10 +27,10 @@ public class ThemeStoreWriter_Test extends TestCase {
                      + "Button[BORDER] { color: red; }\n"
                      + "Button { background-image: none;\n }"
                      + "Button[BORDER] { background-image: url( "
-                     + RWTFixture.IMAGE_50x100
+                     + Fixture.IMAGE_50x100
                      + " ); }\n";
     ResourceLoader loader
-      = ThemeTestUtil.createResourceLoader( RWTFixture.class );
+      = ThemeTestUtil.createResourceLoader( Fixture.class );
     ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
     Theme theme = ThemeManager.getInstance().getTheme( themeId );
     storeWriter.addTheme( theme, true );
@@ -54,12 +54,12 @@ public class ThemeStoreWriter_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakeNewRequest();
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
     ThemeManager.getInstance().reset();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

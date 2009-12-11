@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.swt.RWTFixture;
 
 
 public class RWTRequestVersionControl_Test extends TestCase {
@@ -39,10 +38,10 @@ public class RWTRequestVersionControl_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
@@ -26,11 +26,11 @@ import org.eclipse.swt.graphics.Image;
 public class TreeColumn_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testCreation() {
@@ -126,7 +126,7 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testWidth() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -149,7 +149,7 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testPack() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     ControlAdapter resizeListener = new ControlAdapter() {
 
@@ -199,7 +199,7 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testPackWithVirtual() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Listener setDataListener = new Listener() {
 
@@ -237,7 +237,7 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );

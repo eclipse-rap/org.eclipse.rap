@@ -17,7 +17,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -36,9 +35,9 @@ public class DateTimeLCA_Test extends TestCase {
     dateTime.setDay( 1 );
     dateTime.setMonth( 1 );
     dateTime.setYear( 2008 );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserved day, month, year
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
     Integer day = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_DAY );
     assertEquals( 1, day.intValue() );
@@ -46,13 +45,13 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( 1, month.intValue() );
     Integer year = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_YEAR );
     assertEquals( 2008, year.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
     // Test preserved sub widgets bounds
     IDateTimeAdapter dtAdapter
       = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     String propName = IDateTimeAdapter.WEEKDAY_TEXTFIELD + "_BOUNDS";
     Rectangle bounds = ( Rectangle )adapter.getPreserved( propName );
     assertEquals( dtAdapter.getBounds( IDateTimeAdapter.WEEKDAY_TEXTFIELD ),
@@ -89,7 +88,7 @@ public class DateTimeLCA_Test extends TestCase {
     bounds = ( Rectangle )adapter.getPreserved( propName );
     assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DROP_DOWN_BUTTON ),
                   bounds );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
     display.dispose();
@@ -102,9 +101,9 @@ public class DateTimeLCA_Test extends TestCase {
     dateTime.setHours( 1 );
     dateTime.setMinutes( 2 );
     dateTime.setSeconds( 3 );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserved hours, minutes, seconds
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
     Integer hours
       = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_HOURS );
@@ -115,12 +114,12 @@ public class DateTimeLCA_Test extends TestCase {
     Integer seconds
       = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_SECONDS );
     assertEquals( 3, seconds.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
     // Test preserved sub widgets bounds
     IDateTimeAdapter dtAdapter = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     String propName = IDateTimeAdapter.HOURS_TEXTFIELD + "_BOUNDS";
     Rectangle bounds = ( Rectangle )adapter.getPreserved( propName );
     assertEquals( dtAdapter.getBounds( IDateTimeAdapter.HOURS_TEXTFIELD ),
@@ -144,7 +143,7 @@ public class DateTimeLCA_Test extends TestCase {
     propName = IDateTimeAdapter.SPINNER + "_BOUNDS";
     bounds = ( Rectangle )adapter.getPreserved( propName );
     assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SPINNER ), bounds );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
     display.dispose();
@@ -157,9 +156,9 @@ public class DateTimeLCA_Test extends TestCase {
     dateTime.setDay( 1 );
     dateTime.setMonth( 1 );
     dateTime.setYear( 2008 );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserved day, month, year
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
     Integer day = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_DAY );
     assertEquals( 1, day.intValue() );
@@ -167,7 +166,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( 1, month.intValue() );
     Integer year = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_YEAR );
     assertEquals( 2008, year.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
     // Test preserved selection listeners
@@ -188,38 +187,38 @@ public class DateTimeLCA_Test extends TestCase {
 
   private void testPreserveControlProperties( final DateTime dateTime ) {
     // control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     dateTime.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     dateTime.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( dateTime );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     dateTime.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     dateTime.setBackground( background );
@@ -227,29 +226,29 @@ public class DateTimeLCA_Test extends TestCase {
     dateTime.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     dateTime.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testPreserveSelectionListener( final DateTime dateTime ) {
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
     Boolean hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     dateTime.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testSelectionEvent( final DateTime dateTime ) {
@@ -271,15 +270,15 @@ public class DateTimeLCA_Test extends TestCase {
     dateTime.addSelectionListener( selectionListener );
     String dateTimeId = WidgetUtil.getId( dateTime );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
-    RWTFixture.readDataAndProcessAction( dateTime );
+    Fixture.readDataAndProcessAction( dateTime );
     assertEquals( "widgetSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

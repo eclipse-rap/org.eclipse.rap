@@ -19,7 +19,8 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.DragDetectEvent;
 import org.eclipse.swt.events.DragDetectListener;
@@ -29,20 +30,20 @@ import org.eclipse.swt.widgets.*;
 public class DNDSupport_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testRegisterAndDisposeDragSource() {
     Display display = new Display();
     Shell shell = new Shell( display );
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Control dragSourceControl = new Label( shell, SWT.NONE );
     DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
@@ -55,7 +56,7 @@ public class DNDSupport_Test extends TestCase {
     String transferType
       = dndSupport
       + ".setDragSourceTransferTypes( w, [ \"org.eclipse.swt.dnd.TextTransfer";
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( register ) != -1 );
     assertTrue( markup.indexOf( transferType ) != -1 );
@@ -65,7 +66,7 @@ public class DNDSupport_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Control dropTargetControl = new Label( shell, SWT.NONE );
     DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_COPY );
@@ -77,7 +78,7 @@ public class DNDSupport_Test extends TestCase {
     String transferType
       = dndSupport
       + ".setDropTargetTransferTypes( w, [ \"org.eclipse.swt.dnd.TextTransfer";
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( register ) != -1 );
     assertTrue( markup.indexOf( transferType ) != -1 );
@@ -111,7 +112,7 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDragSourceEvent( dragSourceControl, "dragStart", 1 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     DragDetectEvent dragDetect = ( DragDetectEvent )log.get( 0 );
     assertEquals( DragDetectEvent.DRAG_DETECT, dragDetect.getID() );
@@ -154,13 +155,13 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 1 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     log.clear();
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragLeave", 2 );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 3 );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragOver", 4 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, log.size() );
     DropTargetEvent dragLeave = ( DropTargetEvent )log.get( 0 );
     assertEquals( DropTargetEvent.DRAG_LEAVE, dragLeave.getID() );
@@ -210,7 +211,7 @@ public class DNDSupport_Test extends TestCase {
                            "move",
                            1 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, log.size() );
     // dropAccept expected
     DropTargetEvent dropAcceptEvent = ( DropTargetEvent )log.get( 0 );
@@ -275,7 +276,7 @@ public class DNDSupport_Test extends TestCase {
                            1 );
     // run life cycle
     try {
-      RWTFixture.executeLifeCycleFromServerThread();
+      Fixture.executeLifeCycleFromServerThread();
     } catch( SWTException e ) {
       log.add( e );
     }
@@ -343,7 +344,7 @@ public class DNDSupport_Test extends TestCase {
                            "move",
                            1 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, log.size() );
     // dropAccept expected
     DropTargetEvent dropAcceptEvent = ( DropTargetEvent )log.get( 0 );
@@ -401,7 +402,7 @@ public class DNDSupport_Test extends TestCase {
                            "move",
                            1 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // Invalid TransferData => no dropAccept
     assertEquals( 1, log.size() );
     DropTargetEvent dropAcceptEvent = ( DropTargetEvent )log.get( 0 );
@@ -447,7 +448,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     DropTargetEvent dropAcceptEvent = ( DropTargetEvent )log.get( 0 );
     assertEquals( DropTargetEvent.DROP_ACCEPT, dropAcceptEvent.getID() );
@@ -487,7 +488,7 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDragSourceEvent( dragSourceControl, "dragFinished", 1 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, log.size() );
     assertTrue( log.get( 0 ) instanceof DragSourceEvent );
     DragSourceEvent event = ( DragSourceEvent )log.get( 0 );
@@ -534,7 +535,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 5, log.size() );
     // 1. expect dragLeave event
     assertTrue( log.get( 0 ) instanceof DropTargetEvent );
@@ -596,7 +597,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 4, log.size() );
     // 1. expect dropAccept event
     DropTargetEvent dropTargetEvent = ( DropTargetEvent )log.get( 0 );
@@ -653,7 +654,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, log.size() );
     // 1. expect dropAccept event
     DropTargetEvent dropTargetEvent = ( DropTargetEvent )log.get( 0 );
@@ -705,7 +706,7 @@ public class DNDSupport_Test extends TestCase {
                            1 );
     createDragSourceEvent( dragSourceControl, "dragFinished", 2 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 4, log.size() );
     // 1. expect dropAccept event
     assertTrue( log.get( 0 ) instanceof DropTargetEvent );
@@ -760,7 +761,7 @@ public class DNDSupport_Test extends TestCase {
                            "dropAccept",
                            0 );
     // run life cycle
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // Ensure that dataType is set to something meaningful
     DragSourceEvent setDataEvent = ( DragSourceEvent )log.get( 0 );
     assertNotNull( setDataEvent.dataType );
@@ -786,10 +787,10 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
-    RWTFixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -805,7 +806,7 @@ public class DNDSupport_Test extends TestCase {
                            10,
                            "copy",
                            2 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
@@ -832,10 +833,10 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
-    RWTFixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -851,7 +852,7 @@ public class DNDSupport_Test extends TestCase {
                            10,
                            "copy",
                            2 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
@@ -882,10 +883,10 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
-    RWTFixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -901,7 +902,7 @@ public class DNDSupport_Test extends TestCase {
                            10,
                            "copy",
                            2 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
@@ -944,10 +945,10 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
-    RWTFixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -962,7 +963,7 @@ public class DNDSupport_Test extends TestCase {
                            "dropAccept",
                            3 );
     createDragSourceEvent( dragSourceControl, "dragFinished", 3 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String overwrite
       = "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite( ";
@@ -1021,10 +1022,10 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
-    RWTFixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -1034,7 +1035,7 @@ public class DNDSupport_Test extends TestCase {
                            dragSourceControl,
                            "dragOver",
                            2 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
@@ -1066,10 +1067,10 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     String displayId = DisplayUtil.getId( display );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
-    RWTFixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -1079,7 +1080,7 @@ public class DNDSupport_Test extends TestCase {
                            dragSourceControl,
                            "dragOver",
                            2 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"

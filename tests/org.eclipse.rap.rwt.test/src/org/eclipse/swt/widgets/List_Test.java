@@ -16,12 +16,13 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 
 
 public class List_Test extends TestCase {
@@ -242,7 +243,7 @@ public class List_Test extends TestCase {
   }
 
   public void testSelectionForSingle() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
@@ -959,7 +960,7 @@ public class List_Test extends TestCase {
   }
 
   public void testFocusIndexForSingle() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
@@ -1114,7 +1115,7 @@ public class List_Test extends TestCase {
   }
 
   public void testComputeSize() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
@@ -1153,7 +1154,7 @@ public class List_Test extends TestCase {
   }
 
   public void testShowSelectionEmptyList() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.NONE );
@@ -1170,7 +1171,7 @@ public class List_Test extends TestCase {
   }
 
   public void testShowSelectionBottom() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.NONE );
@@ -1186,7 +1187,7 @@ public class List_Test extends TestCase {
   }
 
   public void testShowSelectionTop() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.NONE );
@@ -1275,7 +1276,7 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnResize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
@@ -1312,7 +1313,7 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
@@ -1328,7 +1329,7 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
@@ -1344,10 +1345,10 @@ public class List_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

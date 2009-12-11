@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,15 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -432,7 +430,7 @@ public class RWTLifeCycle_Test extends TestCase {
     newSession();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.registerAdapterFactories();
+    Fixture.registerAdapterFactories();
     callbackHandler[ 0 ] = null;
     RWTLifeCycle lifeCycle2 = new RWTLifeCycle();
     lifeCycle2.execute();
@@ -525,14 +523,14 @@ public class RWTLifeCycle_Test extends TestCase {
     boolean returnValue = RWTLifeCycle.readAndDispatch();
     assertFalse( returnValue );
 
-    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
         log.append( "executed" );
       }
     } );
 
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     returnValue = RWTLifeCycle.readAndDispatch();
     assertTrue( returnValue );
     assertEquals( "executed", log.toString() );
@@ -542,7 +540,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertFalse( returnValue );
     assertEquals( "", log.toString() );
 
-    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakePhase( PhaseId.READ_DATA );
     log.setLength( 0 );
     Display display = new Display();
     Shell widget = new Shell( display ) {
@@ -562,14 +560,14 @@ public class RWTLifeCycle_Test extends TestCase {
     // cycle running
     event.processEvent();
     log.setLength( 0 );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     returnValue = RWTLifeCycle.readAndDispatch();
     assertTrue( returnValue );
     assertEquals( "eventExecuted", log.toString() );
   }
 
   public void testNestedReadAndDispatch() {
-    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakePhase( PhaseId.READ_DATA );
     final Display display = new Display();
     Shell widget = new Shell( display ) {
       public boolean getVisible() {
@@ -586,7 +584,7 @@ public class RWTLifeCycle_Test extends TestCase {
       = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
     event.processEvent();
 
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();
     // This test ensures that nested calls of readAndDsipatch don't cause
     // an endless loop or a stack overflow - therefore no assert is needed
@@ -602,7 +600,7 @@ public class RWTLifeCycle_Test extends TestCase {
     Display display = new Display();
     display.asyncExec( runnable );
 
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     boolean result = display.readAndDispatch();
     assertTrue( result );
     assertSame( runnable, log.get( 0 ) );
@@ -837,7 +835,7 @@ public class RWTLifeCycle_Test extends TestCase {
     // create new context to ensure that phase order is stored in context
     ServiceContext bufferedContext = ContextProvider.getContext();
     ContextProvider.releaseContextHolder();
-    RWTFixture.fakeContext();
+    Fixture.fakeContext();
     ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
     assertNull( lifeCycle.getPhaseOrder() );
     // clean up
@@ -995,12 +993,12 @@ public class RWTLifeCycle_Test extends TestCase {
 
   protected void setUp() throws Exception {
     log.setLength( 0 );
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

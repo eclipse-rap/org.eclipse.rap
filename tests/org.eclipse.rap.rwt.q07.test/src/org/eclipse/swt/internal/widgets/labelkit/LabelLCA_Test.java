@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -34,49 +33,49 @@ public class LabelLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, label );
     //Text
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setText( "xyz" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( label.getText(), adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //Image
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     label.setImage( image );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //aligment
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     Integer alignment = ( Integer )adapter.getPreserved( "alignment" );
     assertEquals( new Integer( SWT.LEFT ), alignment );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setAlignment( SWT.RIGHT );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     alignment = ( Integer )adapter.getPreserved( "alignment" );
     assertEquals( new Integer( SWT.RIGHT ), alignment );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setAlignment( SWT.CENTER );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     alignment = ( Integer )adapter.getPreserved( "alignment" );
     assertEquals( new Integer( SWT.CENTER ), alignment );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setAlignment( SWT.LEFT );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     alignment = ( Integer )adapter.getPreserved( "alignment" );
     assertEquals( new Integer( SWT.LEFT ), alignment );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -84,54 +83,54 @@ public class LabelLCA_Test extends TestCase {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     label.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( label );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     label.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     //visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.addControlListener( new ControlListener() {
 
       public void controlMoved( final ControlEvent e ) {
@@ -140,11 +139,11 @@ public class LabelLCA_Test extends TestCase {
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     label.setBackground( background );
@@ -152,40 +151,40 @@ public class LabelLCA_Test extends TestCase {
     label.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     label.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( null, label.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     label.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( "some text", label.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activate_listeners   Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( label, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   public void testSeparatorPreserveValues() {
@@ -193,7 +192,7 @@ public class LabelLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     int style = SWT.SEPARATOR | SWT.HORIZONTAL;
     Label label = new Label( shell, style );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     testPreserveValues( display, label );
     display.dispose();
   }
@@ -204,8 +203,8 @@ public class LabelLCA_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
     ControlLCAUtil.preserveValues( label );
-    RWTFixture.markInitialized( label );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( label );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     label.setText( "test" );
     lca.renderChanges( label );
@@ -266,10 +265,10 @@ public class LabelLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

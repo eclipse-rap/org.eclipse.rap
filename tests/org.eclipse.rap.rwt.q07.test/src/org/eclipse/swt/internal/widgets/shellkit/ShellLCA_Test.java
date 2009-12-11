@@ -18,7 +18,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -36,8 +35,8 @@ public class ShellLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     Boolean hasListeners;
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     hasListeners
      = ( Boolean )adapter.getPreserved( ShellLCA.PROP_SHELL_LISTENER );
@@ -49,7 +48,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_MODE ) );
     assertEquals( new Point( 80, 2 ),
                   adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     shell.setText( "some text" );
     shell.open();
     shell.setActive();
@@ -68,10 +67,10 @@ public class ShellLCA_Test extends TestCase {
       }
     } );
     shell.setMaximized( true );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setImage( image );
     shell.setMinimumSize( 100, 100 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( ShellLCA.PROP_SHELL_LISTENER );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
@@ -82,53 +81,53 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( "maximized", adapter.getPreserved( ShellLCA.PROP_MODE ) );
     assertEquals( new Point( 100, 100 ),
                   adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     shell.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     shell.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( shell );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     shell.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 100, 150 );
     shell.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     shell.addControlListener( new ControlListener() {
 
       public void controlMoved( final ControlEvent e ) {
@@ -137,11 +136,11 @@ public class ShellLCA_Test extends TestCase {
       public void controlResized( final ControlEvent e ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     shell.setBackground( background );
@@ -149,28 +148,28 @@ public class ShellLCA_Test extends TestCase {
     shell.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     shell.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( null, shell.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     shell.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( "some text", shell.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activate_listeners   Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     shell.addFocusListener( new FocusListener() {
 
       public void focusGained( final FocusEvent event ) {
@@ -179,23 +178,23 @@ public class ShellLCA_Test extends TestCase {
       public void focusLost( final FocusEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( shell, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -212,7 +211,7 @@ public class ShellLCA_Test extends TestCase {
     } );
     String shellId = WidgetUtil.getId( shell );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
-    RWTFixture.readDataAndProcessAction( shell );
+    Fixture.readDataAndProcessAction( shell );
     assertEquals( "closed", log.toString() );
   }
 
@@ -228,7 +227,7 @@ public class ShellLCA_Test extends TestCase {
     setActiveControl( shell, otherLabel );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( shellId + ".activeControl", labelId );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertSame( label, getActiveControl( shell ) );
     // Ensure that if there is both, an avtiveControl parameter and a
     // controlActivated event, the activeControl parameter is ignored
@@ -236,7 +235,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( shellId + ".activeControl", otherLabelId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, labelId );
-    RWTFixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( display );
     assertSame( label, getActiveControl( shell ) );
   }
 
@@ -248,15 +247,15 @@ public class ShellLCA_Test extends TestCase {
     assertFalse( shell.getMinimized() );
     String shellId = WidgetUtil.getId( shell );
     Fixture.fakeRequestParam( shellId + ".mode", "maximized" );
-    RWTFixture.readDataAndProcessAction( shell );
+    Fixture.readDataAndProcessAction( shell );
     assertTrue( shell.getMaximized() );
     assertFalse( shell.getMinimized() );
     Fixture.fakeRequestParam( shellId + ".mode", "minimized" );
-    RWTFixture.readDataAndProcessAction( shell );
+    Fixture.readDataAndProcessAction( shell );
     assertFalse( shell.getMaximized() );
     assertTrue( shell.getMinimized() );
     Fixture.fakeRequestParam( shellId + ".mode", "null" );
-    RWTFixture.readDataAndProcessAction( shell );
+    Fixture.readDataAndProcessAction( shell );
     assertFalse( shell.getMaximized() );
     assertFalse( shell.getMinimized() );
   }
@@ -302,15 +301,15 @@ public class ShellLCA_Test extends TestCase {
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
     // Simulate shell activation without event listeners
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED,
                               shellToActivateId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
     // Set precondition and assert it
-    RWTFixture.markInitialized( activeShell );
-    RWTFixture.markInitialized( shellToActivate );
+    Fixture.markInitialized( activeShell );
+    Fixture.markInitialized( shellToActivate );
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
 
@@ -319,11 +318,11 @@ public class ShellLCA_Test extends TestCase {
     ActivateEvent.addListener( activeShell, activateListener );
     shellToActivate.addShellListener( shellListener );
     activeShell.addShellListener( shellListener );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED,
                               shellToActivateId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
     String expected = "deactivated:activeShell|activated:shellToActivate|";
     assertEquals( expected, activateEventLog.toString() );
@@ -348,12 +347,12 @@ public class ShellLCA_Test extends TestCase {
       // expected
     }
     // no deactivation event must be created for a null active shell
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String shell1Id = WidgetUtil.getId( shell1 );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shell1Id );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertSame( shell1, display.getActiveShell() );
   }
 
@@ -363,10 +362,10 @@ public class ShellLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 0, display.getShells().length );
     assertEquals( null, display.getActiveShell() );
     assertEquals( true, shell.isDisposed() );
@@ -394,8 +393,8 @@ public class ShellLCA_Test extends TestCase {
   public void testWriteInitialBounds() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeBounds( shell );
     String notExpected = "w.setSpace( 0, 0, 0, 0 );";
@@ -405,8 +404,8 @@ public class ShellLCA_Test extends TestCase {
   public void testWriteMinimumSize() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     shell.setMinimumSize( 100, 100 );
     Fixture.fakeResponseWriter();
     ShellLCA lca = new ShellLCA();
@@ -419,8 +418,8 @@ public class ShellLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     assertTrue( ( shell.getStyle() & SWT.TITLE ) != 0 );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ShellLCA lca = new ShellLCA();
     lca.renderInitialization( shell );
@@ -431,40 +430,40 @@ public class ShellLCA_Test extends TestCase {
   public void testTitleImage() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ShellLCA lca = new ShellLCA();
     // with caption bar
-    shell.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
     String expected = "w.setIcon( \""
                       + ResourceFactory.getImagePath( shell.getImage() )
                       + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // without caption bar
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     shell = new Shell( display, SWT.NO_TRIM );
-    shell.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
     expected = "w.setIcon( \""
                + ResourceFactory.getImagePath( shell.getImage() )
                + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) == -1 );
     // with caption bar, without MIN, MAX, CLOSE
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     shell = new Shell( display, SWT.TITLE );
-    shell.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
     expected = "w.setIcon( \""
                + ResourceFactory.getImagePath( shell.getImage() )
                + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // with multiple images
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     shell = new Shell( display, SWT.TITLE );
-    shell.setImages( new Image[] { Graphics.getImage( RWTFixture.IMAGE1 ) } );
+    shell.setImages( new Image[] { Graphics.getImage( Fixture.IMAGE1 ) } );
     lca.renderChanges( shell );
     expected = "w.setIcon( \""
                + ResourceFactory.getImagePath( shell.getImages()[0] )
@@ -473,11 +472,11 @@ public class ShellLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private static Control getActiveControl( final Shell shell ) {

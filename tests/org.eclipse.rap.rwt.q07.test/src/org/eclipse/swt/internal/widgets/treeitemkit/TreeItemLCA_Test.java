@@ -21,8 +21,8 @@ import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
@@ -36,7 +36,7 @@ public class TreeItemLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     new TreeColumn( tree, SWT.NONE, 0 );
     new TreeColumn( tree, SWT.NONE, 1 );
@@ -44,10 +44,10 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setText( "qwert" );
     new TreeItem( treeItem, SWT.NONE, 0 );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     treeItem.setImage( image );
     treeItem.setExpanded( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     String[] texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
     assertEquals( "qwert", texts[ 0 ] );
@@ -73,13 +73,13 @@ public class TreeItemLCA_Test extends TestCase {
     assertNull( foregrounds );
     Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
     assertEquals( Boolean.TRUE, materialized );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     treeItem.setText( 0, "item11" );
     treeItem.setText( 1, "item12" );
     treeItem.setText( 2, "item13" );
-    treeItem.setImage( 0, Graphics.getImage( RWTFixture.IMAGE1 ) );
-    treeItem.setImage( 1, Graphics.getImage( RWTFixture.IMAGE2 ) );
-    treeItem.setImage( 2, Graphics.getImage( RWTFixture.IMAGE3 ) );
+    treeItem.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
+    treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE2 ) );
+    treeItem.setImage( 2, Graphics.getImage( Fixture.IMAGE3 ) );
     tree.setSelection( treeItem );
     background = Graphics.getColor( 234, 113, 34 );
     treeItem.setBackground( ( Color )background );
@@ -103,16 +103,16 @@ public class TreeItemLCA_Test extends TestCase {
     treeItem.setForeground( 1, foreground2 );
     Color foreground3 = Graphics.getColor( 88, 134, 34 );
     treeItem.setForeground( 2, foreground3 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( treeItem );
     texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
     assertEquals( "item11", texts[ 0 ] );
     assertEquals( "item12", texts[ 1 ] );
     assertEquals( "item13", texts[ 2 ] );
     images = ( Image[] )adapter.getPreserved( TreeItemLCA.PROP_IMAGES );
-    assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ), images[ 0 ] );
-    assertEquals( Graphics.getImage( RWTFixture.IMAGE2 ), images[ 1 ] );
-    assertEquals( Graphics.getImage( RWTFixture.IMAGE3 ), images[ 2 ] );
+    assertEquals( Graphics.getImage( Fixture.IMAGE1 ), images[ 0 ] );
+    assertEquals( Graphics.getImage( Fixture.IMAGE2 ), images[ 1 ] );
+    assertEquals( Graphics.getImage( Fixture.IMAGE3 ), images[ 2 ] );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( TreeItemLCA.PROP_SELECTION ) );
     assertEquals( background,
@@ -133,7 +133,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( foreground1, foregrounds[ 0 ] );
     assertEquals( foreground2, foregrounds[ 1 ] );
     assertEquals( foreground3, foregrounds[ 2 ] );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -142,23 +142,23 @@ public class TreeItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.FALSE,
                   adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     treeItem.setChecked( true );
     treeItem.setGrayed( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -167,12 +167,12 @@ public class TreeItemLCA_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
     assertEquals( Boolean.FALSE, materialized );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -212,12 +212,12 @@ public class TreeItemLCA_Test extends TestCase {
     tree.addTreeListener( listener );
     String treeItemId = WidgetUtil.getId( treeItem );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
-    RWTFixture.readDataAndProcessAction( treeItem );
+    Fixture.readDataAndProcessAction( treeItem );
     assertEquals( "expanded", log.toString() );
     log.setLength( 0 );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, null );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
-    RWTFixture.readDataAndProcessAction( treeItem );
+    Fixture.readDataAndProcessAction( treeItem );
     assertEquals( "collapsed", log.toString() );
   }
 
@@ -230,10 +230,10 @@ public class TreeItemLCA_Test extends TestCase {
     treeItem.setExpanded( false );
     String treeItemId = WidgetUtil.getId( treeItem );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
-    RWTFixture.readDataAndProcessAction( treeItem );
+    Fixture.readDataAndProcessAction( treeItem );
     assertEquals( true, treeItem.getExpanded() );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
-    RWTFixture.readDataAndProcessAction( treeItem );
+    Fixture.readDataAndProcessAction( treeItem );
     assertEquals( false, treeItem.getExpanded() );
   }
 
@@ -244,10 +244,10 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     String displayId = DisplayUtil.getId( display );
     String treeItemId = WidgetUtil.getId( treeItem );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeItemId + ".checked", "true" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( true, treeItem.getChecked() );
   }
 
@@ -258,12 +258,12 @@ public class TreeItemLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( tree );
-    RWTFixture.markInitialized( treeItem );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( tree );
+    Fixture.markInitialized( treeItem );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     TreeItemLCA tiLCA = new TreeItemLCA();
     treeItem.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     tiLCA.renderChanges( treeItem );
@@ -271,8 +271,8 @@ public class TreeItemLCA_Test extends TestCase {
     expected = "w.setBackgroundColor( \"#ff0000\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     treeItem.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     tiLCA.renderChanges( treeItem );
     expected = "w.setTextColor( \"#00ff00\" );";
@@ -296,12 +296,12 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

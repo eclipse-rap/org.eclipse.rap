@@ -22,22 +22,23 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class TableItemLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakePhase( PhaseId.RENDER );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testPreserveValues() {
@@ -49,8 +50,8 @@ public class TableItemLCA_Test extends TestCase {
     new TableColumn( table, SWT.CENTER );
     TableItem item1 = new TableItem( table, SWT.NONE );
     TableItem item2 = new TableItem( table, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item1 );
 //    Object top = adapter.getPreserved( TableItemLCA.PROP_TOP );
 //    assertEquals( new Integer( item1.getBounds().y ), top );
@@ -92,7 +93,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( preservedCellFonts[ 0 ] );
     assertNull( preservedCellFonts[ 1 ] );
     assertNull( preservedCellFonts[ 2 ] );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     item1.setText( 0, "item11" );
     item1.setText( 1, "item12" );
     item1.setText( 2, "item13" );
@@ -102,9 +103,9 @@ public class TableItemLCA_Test extends TestCase {
     item1.setFont( 1, font2 );
     Font font3 = Graphics.getFont( "font3", 6, 1 );
     item1.setFont( 2, font3 );
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE2 );
-    Image image3 = Graphics.getImage( RWTFixture.IMAGE3 );
+    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
+    Image image2 = Graphics.getImage( Fixture.IMAGE2 );
+    Image image3 = Graphics.getImage( Fixture.IMAGE3 );
     item1.setImage( new Image[]{
       image1, image2, image3
     } );
@@ -124,7 +125,7 @@ public class TableItemLCA_Test extends TestCase {
     ITableAdapter tableAdapter
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     tableAdapter.setFocusIndex( 0 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item1 );
 //    top = adapter.getPreserved( TableItemLCA.PROP_TOP );
     checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
@@ -158,28 +159,28 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( foreground1, preservedCellForegrounds[ 0 ] );
     assertEquals( foreground2, preservedCellForegrounds[ 1 ] );
     assertEquals( foreground3, preservedCellForegrounds[ 2 ] );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // text
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item2 );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     item2.setText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item2 );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // image
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item2 );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    RWTFixture.clearPreserved();
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Fixture.clearPreserved();
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     item2.setImage( image );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item2 );
     assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -188,23 +189,23 @@ public class TableItemLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Object checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
     assertEquals( Boolean.FALSE, checked );
     Object grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
     assertEquals( Boolean.FALSE, grayed );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     item.setChecked( true );
     item.setGrayed( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item );
     checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
     grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
     assertEquals( Boolean.TRUE, checked );
     assertEquals( Boolean.TRUE, grayed );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -217,7 +218,7 @@ public class TableItemLCA_Test extends TestCase {
     // will be rendered
     Fixture.fakeResponseWriter();
     TableItemLCA tableItemLCA = new TableItemLCA();
-    RWTFixture.markInitialized( item );
+    Fixture.markInitialized( item );
     tableItemLCA.preserveValues( item );
     item.setText( "newText" );
     tableItemLCA.renderChanges( item );
@@ -241,12 +242,12 @@ public class TableItemLCA_Test extends TestCase {
         executed[ 0 ] = true;
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertTrue( executed[ 0 ] );
   }
 
@@ -256,9 +257,9 @@ public class TableItemLCA_Test extends TestCase {
     final Table table = new Table( shell, SWT.CHECK );
     TableItem itemOnlyDisposed = new TableItem( table, SWT.NONE );
     TableItem itemWithTableDisposed = new TableItem( table, SWT.NONE );
-    RWTFixture.markInitialized( table );
-    RWTFixture.markInitialized( itemOnlyDisposed );
-    RWTFixture.markInitialized( itemWithTableDisposed );
+    Fixture.markInitialized( table );
+    Fixture.markInitialized( itemOnlyDisposed );
+    Fixture.markInitialized( itemWithTableDisposed );
     // Test that when a single items is disposed, its JavaScript dispose
     // function is called
     itemOnlyDisposed.dispose();
@@ -290,7 +291,7 @@ public class TableItemLCA_Test extends TestCase {
     table.clear( 0 );
     TableItemLCA lca = new TableItemLCA();
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( item );
+    Fixture.markInitialized( item );
     // Ensure that nothing else than the 'checked' property gets preserved
     lca.preserveValues( item );
     IWidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
@@ -343,7 +344,7 @@ public class TableItemLCA_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.fakeResponseWriter();
     TableItemLCA tableItemLCA = new TableItemLCA();
-    RWTFixture.markInitialized( item );
+    Fixture.markInitialized( item );
     tableItemLCA.preserveValues( item );
     item.setText( "char test: &<>.,'\"&lt;" );
     tableItemLCA.renderChanges( item );
@@ -363,7 +364,7 @@ public class TableItemLCA_Test extends TestCase {
     // Create another column after setting a cell background
     // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=277089
     new TableColumn( table, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
   }
 }

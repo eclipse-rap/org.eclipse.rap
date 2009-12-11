@@ -22,7 +22,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -40,9 +39,9 @@ public class ComboLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.DEFAULT );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserving a combo with no items and (naturally) no selection
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
@@ -58,7 +57,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Point( 0, 0 ),
                   adapter.getPreserved( ComboLCA.PROP_TEXT_SELECTION ) );
     // Test preserving combo with items were one is selected
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     combo.add( "item 1" );
     combo.add( "item 2" );
     combo.select( 1 );
@@ -70,7 +69,7 @@ public class ComboLCA_Test extends TestCase {
 
       public void modifyText( final ModifyEvent event ) {
       }} );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 2, items.length );
@@ -87,11 +86,11 @@ public class ComboLCA_Test extends TestCase {
      = ( Boolean )adapter.getPreserved( ComboLCA.PROP_VERIFY_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     //control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     combo.addControlListener( new ControlListener (){
 
       public void controlMoved( final ControlEvent e ) {
@@ -99,11 +98,11 @@ public class ComboLCA_Test extends TestCase {
 
       public void controlResized( final ControlEvent e ) {
       }});
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     combo.setBackground( background );
@@ -111,40 +110,40 @@ public class ComboLCA_Test extends TestCase {
     combo.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     combo.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     assertEquals( null, combo.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     combo.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     assertEquals( "some text", combo.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //activateListener
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     hasListeners = (Boolean)adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( combo, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -152,17 +151,17 @@ public class ComboLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     assertEquals( Boolean.TRUE , adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     //activate_listeners   Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     Boolean focusListener
      = (Boolean)adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, focusListener );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     combo.addFocusListener( new FocusListener (){
 
       public void focusGained( final FocusEvent event ) {
@@ -170,15 +169,15 @@ public class ComboLCA_Test extends TestCase {
 
       public void focusLost( final FocusEvent event ) {
       }} );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     Boolean hasListeners
      = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // textLimit
     combo.setTextLimit( 10 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     Integer textLimit
       = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 10 ), textLimit );
@@ -191,10 +190,10 @@ public class ComboLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( combo );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     ComboLCA comboLCA = new ComboLCA();
     combo.add( "item 1" );
     combo.add( "item 2" );
@@ -203,15 +202,15 @@ public class ComboLCA_Test extends TestCase {
     expected = "w.setItems( [ \"item 1\", \"item 2\" ] );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     combo.select( 1 );
     comboLCA.renderChanges( combo );
     expected = "w.select( 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     comboLCA.renderChanges( combo );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -243,7 +242,7 @@ public class ComboLCA_Test extends TestCase {
         log.append( "widgetSelected" );
       }
     } );
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Fixture.fakeRequestParam( comboId + ".selectedItem", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, comboId );
     WidgetUtil.getLCA( combo ).readData( combo );
@@ -264,16 +263,16 @@ public class ComboLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.BORDER );
     shell.open();
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( combo );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( combo );
     // test without verify listener
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     String textId = WidgetUtil.getId( combo );
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "some text" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
     String markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
@@ -290,10 +289,10 @@ public class ComboLCA_Test extends TestCase {
         log.append( event.text );
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
     markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
@@ -320,17 +319,17 @@ public class ComboLCA_Test extends TestCase {
       }
     };
     combo.addVerifyListener( emptyVerifyListener );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( combo );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( combo );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( comboId + ".text", "verify me" );
     Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     // ensure that an empty verify listener does not lead to sending the
     // original text and selection values back to the client
     String markup = Fixture.getAllMarkup();
@@ -351,13 +350,13 @@ public class ComboLCA_Test extends TestCase {
     };
     combo.addVerifyListener( alteringVerifyListener );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( comboId + ".text", "verify me" );
     Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), combo.getSelection() );
     assertEquals( "verified", combo.getText() );
@@ -373,13 +372,13 @@ public class ComboLCA_Test extends TestCase {
     };
     combo.addVerifyListener( alteringVerifyListener );
     log.clear();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( comboId + ".text", "verify me" );
     Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), combo.getSelection() );
     assertEquals( "", combo.getText() );
@@ -407,15 +406,15 @@ public class ComboLCA_Test extends TestCase {
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     // Execute life cycle once to simulate startup request
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
 
     // Simulate button click that executes widgetSelected
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     String expected = "w.select( 0 )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
@@ -434,18 +433,18 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setTextLimit" ) );
     // Positive textLimit is written as setMaxLength( ... )
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( combo );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( combo );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     combo.setTextLimit( 12 );
     lca.renderChanges( combo );
     String expected = "setTextLimit( 12 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // textLimit = Combo.LIMIT is tread as 'no limit'
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( combo );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( combo );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     combo.setTextLimit( Combo.LIMIT );
     lca.renderChanges( combo );
     expected = "setTextLimit( null );";
@@ -453,10 +452,10 @@ public class ComboLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

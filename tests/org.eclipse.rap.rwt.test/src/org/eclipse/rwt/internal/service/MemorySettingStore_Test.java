@@ -11,7 +11,8 @@
 
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.service.FileSettingStore_Test;
+import org.eclipse.rwt.service.ISettingStoreFactory;
 
 /**
  * Tests for the classes {@link MemorySettingStore} 

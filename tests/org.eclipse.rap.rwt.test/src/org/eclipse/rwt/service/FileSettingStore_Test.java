@@ -15,7 +15,7 @@ import java.util.Enumeration;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 
 
 /**
@@ -310,13 +310,13 @@ public class FileSettingStore_Test extends TestCase {
  }
   
   protected void setUp() {
-    RWTFixture.setUp();
+    Fixture.setUp();
     storeId = createUniqueId();
     store = getFactory().createSettingStore( storeId );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   

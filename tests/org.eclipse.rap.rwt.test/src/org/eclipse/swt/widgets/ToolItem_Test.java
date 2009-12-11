@@ -9,20 +9,20 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWT;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.swt.SWT;
 
 
 public class ToolItem_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testText() {

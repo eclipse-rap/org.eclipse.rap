@@ -27,13 +27,13 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -80,10 +80,10 @@ public class DisplayLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     new Button( shell, SWT.PUSH );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     shell.setFocus();
     shell.open();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     assertEquals( shell,
                   adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
@@ -181,11 +181,11 @@ public class DisplayLCA_Test extends TestCase {
     String buttonId = WidgetUtil.getId( button );
 
     // Run requests to initialize the 'system'
-    RWTFixture.fakeNewRequest();
-    RWTFixture.executeLifeCycleFromServerThread( );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
     // Run the actual test request: the button is clicked
     // It changes its text and disposes itself
@@ -196,10 +196,10 @@ public class DisplayLCA_Test extends TestCase {
         button.dispose();
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button ) );
@@ -212,11 +212,11 @@ public class DisplayLCA_Test extends TestCase {
         button2.dispose();
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button2 ) );
@@ -229,11 +229,11 @@ public class DisplayLCA_Test extends TestCase {
         button3.dispose();
       }
     } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button3 ) );
@@ -322,18 +322,18 @@ public class DisplayLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
 
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( control, display.getFocusControl() );
 
     // Request parameter focusControl with value 'null' is ignored
     Control previousFocusControl = display.getFocusControl();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( previousFocusControl, display.getFocusControl() );
   }
 
@@ -384,8 +384,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.fakeContext();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeContext();
+    Fixture.fakeNewRequest();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
@@ -448,13 +448,13 @@ public class DisplayLCA_Test extends TestCase {
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
     clearLogs();
-    RWTFixture.registerResourceManager();
+    Fixture.registerResourceManager();
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   private void clearLogs() {

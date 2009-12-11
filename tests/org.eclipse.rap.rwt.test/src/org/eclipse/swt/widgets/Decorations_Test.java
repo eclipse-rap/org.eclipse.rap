@@ -12,9 +12,9 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.graphics.Image;
 
 public class Decorations_Test extends TestCase {
@@ -41,8 +41,8 @@ public class Decorations_Test extends TestCase {
     Decorations shell = new Shell( display );
     assertNotNull( shell.getImages() );
     assertEquals( 0, shell.getImages().length );
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE2 );
+    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
+    Image image2 = Graphics.getImage( Fixture.IMAGE2 );
     shell.setImages( new Image[]{ image1, image2 } );
     Image[] images = shell.getImages();
     assertEquals( 2, images.length );
@@ -54,17 +54,17 @@ public class Decorations_Test extends TestCase {
     Display display = new Display();
     Decorations shell = new Shell( display );
     assertNull( shell.getImage() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setImage( image );
     assertEquals( image, shell.getImage() );
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

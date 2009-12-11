@@ -17,10 +17,8 @@ import javax.servlet.http.Cookie;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.TestRequest;
-import org.eclipse.rwt.Fixture.TestResponse;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.service.ISettingStore;
-import org.eclipse.swt.RWTFixture;
 
 
 /**
@@ -33,7 +31,7 @@ public class SettingStoreManager_Test extends TestCase {
     assertNotNull( store );
 
     // same session, new request -> same store
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     ISettingStore sameStore = SettingStoreManager.getStore();
     assertSame( store, sameStore );
   }
@@ -106,11 +104,11 @@ public class SettingStoreManager_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   //////////////////
@@ -118,7 +116,7 @@ public class SettingStoreManager_Test extends TestCase {
 
   private void fakeNewSession() {
     ContextProvider.disposeContext();
-    RWTFixture.fakeContext();
+    Fixture.fakeContext();
   }
 
 }

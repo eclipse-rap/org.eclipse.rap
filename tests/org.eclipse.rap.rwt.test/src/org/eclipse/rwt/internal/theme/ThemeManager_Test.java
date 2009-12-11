@@ -13,8 +13,8 @@ package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 import org.eclipse.swt.widgets.*;
@@ -143,12 +143,12 @@ public class ThemeManager_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakeNewRequest();
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
     ThemeManager.getInstance().reset();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

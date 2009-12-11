@@ -15,7 +15,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageData;
@@ -78,8 +77,8 @@ public class Transfer_Test extends TestCase {
   public void testImagaeTransferConversion() {
     Transfer transfer = ImageTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
-    Image image = Graphics.getImage( RWTFixture.IMAGE1, 
-                                     RWTFixture.class.getClassLoader() );
+    Image image = Graphics.getImage( Fixture.IMAGE1, 
+                                     Fixture.class.getClassLoader() );
     ImageData imageData = ResourceFactory.getImageData( image );
     transfer.javaToNative( imageData, data );
     assertEquals( 1, data.result );
@@ -174,14 +173,14 @@ public class Transfer_Test extends TestCase {
   
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
-    RWTFixture.setUpWithoutResourceManager();
-    RWTFixture.registerAdapterFactories();
+    Fixture.setUpWithoutResourceManager();
+    Fixture.registerAdapterFactories();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

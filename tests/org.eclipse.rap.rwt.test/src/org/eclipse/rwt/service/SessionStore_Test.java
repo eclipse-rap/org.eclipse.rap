@@ -17,6 +17,7 @@ import javax.servlet.http.*;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rwt.internal.service.ContextProvider;

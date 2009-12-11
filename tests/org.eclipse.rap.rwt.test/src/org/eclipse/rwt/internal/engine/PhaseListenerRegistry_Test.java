@@ -15,22 +15,21 @@ import javax.servlet.ServletContextEvent;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.Fixture.TestServletContext;
+import org.eclipse.rwt.TestServletContext;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 
 
 public class PhaseListenerRegistry_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.fakeContext();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeContext();
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testDefaultInitialization() throws Exception {

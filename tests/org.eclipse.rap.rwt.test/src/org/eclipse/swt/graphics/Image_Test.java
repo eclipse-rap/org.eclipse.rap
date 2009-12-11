@@ -21,7 +21,8 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Display;
 
@@ -32,37 +33,37 @@ public class Image_Test extends TestCase {
     IResourceManager manager = ResourceManager.getInstance();
     // only if you comment initial registration in
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
-    assertFalse( manager.isRegistered( RWTFixture.IMAGE1 ) );
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
+    assertFalse( manager.isRegistered( Fixture.IMAGE1 ) );
+    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
+    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
     String contextPath 
       = Fixture.CONTEXT_DIR.getPath() 
       + "/" 
       + ResourceManagerImpl.RESOURCES 
       + "/";
-    assertTrue( new File( contextPath + RWTFixture.IMAGE1 ).exists() );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
-    assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
+    assertTrue( new File( contextPath + Fixture.IMAGE1 ).exists() );
+    Image image2 = Graphics.getImage( Fixture.IMAGE1 );
+    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
     assertSame( image1, image2 );
     assertEquals( ResourceFactory.getImagePath( image1 ),
                   ResourceFactory.getImagePath( image2 ) );
     // another picture
-    Graphics.getImage( RWTFixture.IMAGE2 );
-    assertTrue( manager.isRegistered( RWTFixture.IMAGE2 ) );
-    assertTrue( new File( contextPath + "/" + RWTFixture.IMAGE2 ).exists() );
+    Graphics.getImage( Fixture.IMAGE2 );
+    assertTrue( manager.isRegistered( Fixture.IMAGE2 ) );
+    assertTrue( new File( contextPath + "/" + Fixture.IMAGE2 ).exists() );
     // ... and do it again...
-    image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
+    image1 = Graphics.getImage( Fixture.IMAGE1 );
+    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
   }
 
   public void testImageFinderWithClassLoader() throws IOException {
     File testGif = new File( Fixture.CONTEXT_DIR, "test.gif" );
-    Fixture.copyTestResource( RWTFixture.IMAGE3, testGif );
+    Fixture.copyTestResource( Fixture.IMAGE3, testGif );
     URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
 
     IResourceManager manager = ResourceManager.getInstance();
-    assertFalse( manager.isRegistered( RWTFixture.IMAGE3 ) );
+    assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
     try {
       Graphics.getImage( "test.gif" );
       fail( "Image not available on the classpath." );
@@ -76,12 +77,12 @@ public class Image_Test extends TestCase {
   public void testImageFinderWithInputStream() throws IOException {
     String imageName = "testIS.gif";
     File testGif = new File( Fixture.CONTEXT_DIR, imageName );
-    Fixture.copyTestResource( RWTFixture.IMAGE3, testGif );
+    Fixture.copyTestResource( Fixture.IMAGE3, testGif );
     URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
 
     IResourceManager manager = ResourceManager.getInstance();
-    assertFalse( manager.isRegistered( RWTFixture.IMAGE3 ) );
+    assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
     try {
       Graphics.getImage( imageName );
       fail( "Image not available on the classpath." );
@@ -117,14 +118,14 @@ public class Image_Test extends TestCase {
   public void testImageBounds() {
     IResourceManager manager = ResourceManager.getInstance();
     // 100 x 50
-    assertFalse( manager.isRegistered( RWTFixture.IMAGE_100x50 ) );
-    Image image_100x50 = Graphics.getImage( RWTFixture.IMAGE_100x50 );
-    assertTrue( manager.isRegistered( RWTFixture.IMAGE_100x50 ) );
+    assertFalse( manager.isRegistered( Fixture.IMAGE_100x50 ) );
+    Image image_100x50 = Graphics.getImage( Fixture.IMAGE_100x50 );
+    assertTrue( manager.isRegistered( Fixture.IMAGE_100x50 ) );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image_100x50.getBounds() );
     // 50 x 100
-    assertFalse( manager.isRegistered( RWTFixture.IMAGE_50x100 ) );
-    Image image_50x100 = Graphics.getImage( RWTFixture.IMAGE_50x100 );
-    assertTrue( manager.isRegistered( RWTFixture.IMAGE_50x100 ) );
+    assertFalse( manager.isRegistered( Fixture.IMAGE_50x100 ) );
+    Image image_50x100 = Graphics.getImage( Fixture.IMAGE_50x100 );
+    assertTrue( manager.isRegistered( Fixture.IMAGE_50x100 ) );
     assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
   }
   
@@ -138,21 +139,21 @@ public class Image_Test extends TestCase {
   }
   
   public void testConstructorWithNullDevice() throws IOException {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     new Display();
     Image image = new Image( null, stream );
     assertSame( Display.getCurrent(), image.getDevice() );
     File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
-    Fixture.copyTestResource( RWTFixture.IMAGE1, imageFile );
+    Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
     image = new Image( null, imageFile.getAbsolutePath() );
     assertSame( Display.getCurrent(), image.getDevice() );
     imageFile.delete();
   }
   
   public void testStreamConstructor() throws IOException {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
     Image image = new Image( display, stream );
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
@@ -171,7 +172,7 @@ public class Image_Test extends TestCase {
   
   public void testFileConstructor() throws IOException {
     File testImage = new File( Fixture.TEMP_DIR, "test.gif" );
-    Fixture.copyTestResource( RWTFixture.IMAGE1, testImage );
+    Fixture.copyTestResource( Fixture.IMAGE1, testImage );
     Display display = new Display();
     Image image = new Image( display, testImage.getAbsolutePath() );
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
@@ -179,8 +180,8 @@ public class Image_Test extends TestCase {
   }
   
   public void testImageConstructor() throws Exception {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
     Image image = new Image( display, stream );
     Image copiedImage = new Image( display, image, SWT.IMAGE_COPY );
@@ -191,8 +192,8 @@ public class Image_Test extends TestCase {
   }
   
   public void testImageConstructorWithIllegalArguments() throws Exception {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
     Image image = new Image( display, stream );
     try {
@@ -210,8 +211,8 @@ public class Image_Test extends TestCase {
   }
   
   public void testDispose() {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
     Image image = new Image( display, stream );
     image.dispose();
@@ -225,7 +226,7 @@ public class Image_Test extends TestCase {
   }
   
   public void testDisposeFactoryCreated() {
-    Image color = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image color = Graphics.getImage( Fixture.IMAGE1 );
     try {
       color.dispose();
       fail( "It is not allowed to dispose of a factory-created image" );
@@ -235,47 +236,47 @@ public class Image_Test extends TestCase {
   }
 
   public void testEquality() {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
+    ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream;
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image anotherImage = Graphics.getImage( RWTFixture.IMAGE2 );
+    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
+    Image image2 = Graphics.getImage( Fixture.IMAGE1 );
+    Image anotherImage = Graphics.getImage( Fixture.IMAGE2 );
     assertTrue( image1.equals( image2 ) );
     assertFalse( image1.equals( anotherImage ) );
     Device device = new Display();
-    stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     image1 = new Image( device, stream );
-    stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     image2 = new Image( device, stream );
     assertFalse( image1.equals( image2 ) );
-    stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     image1 = new Image( device, stream );
-    image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertFalse( image1.equals( image2 ) );
   }
 
   public void testIdentity() {
-    Image image1 = Graphics.getImage( RWTFixture.IMAGE1 );
-    Image image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
+    Image image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertSame( image1, image2 );
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Device device = new Display();
     image1 = new Image( device, stream );
-    image2 = Graphics.getImage( RWTFixture.IMAGE1 );
+    image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertNotSame( image1, image2 );
   }
   
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
-    RWTFixture.setUpWithoutResourceManager();
-    RWTFixture.registerAdapterFactories();
+    Fixture.setUpWithoutResourceManager();
+    Fixture.registerAdapterFactories();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

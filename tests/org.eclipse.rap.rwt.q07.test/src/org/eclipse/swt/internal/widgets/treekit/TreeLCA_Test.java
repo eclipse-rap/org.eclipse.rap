@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -37,117 +36,117 @@ public class TreeLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Selection_Listener
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     tree.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // HeaderHight,HeaderVisible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     Object headerheight = adapter.getPreserved( TreeLCA.PROP_HEADER_HEIGHT );
     assertEquals( new Integer( 0 ), headerheight );
     Object headervisible = adapter.getPreserved( TreeLCA.PROP_HEADER_VISIBLE );
     assertEquals( Boolean.FALSE, headervisible );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     tree.setHeaderVisible( true );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     headerheight = adapter.getPreserved( TreeLCA.PROP_HEADER_HEIGHT );
     assertEquals( new Integer( tree.getHeaderHeight() ), headerheight );
     headervisible = adapter.getPreserved( TreeLCA.PROP_HEADER_VISIBLE );
     assertEquals( Boolean.TRUE, headervisible );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // column_order
     TreeColumn child1 = new TreeColumn( tree, SWT.NONE, 0 );
     child1.setText( "child1" );
     TreeColumn child2 = new TreeColumn( tree, SWT.NONE, 1 );
     child2.setText( "child2" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     int[] columnOrder1 = tree.getColumnOrder();
     Integer[] columnOrder2
       = ( Integer[] )adapter.getPreserved( TreeLCA.PROP_COLUMN_ORDER );
     assertEquals( new Integer( columnOrder1[ 0 ] ), columnOrder2[ 0 ] );
     assertEquals( new Integer( columnOrder1[ 1 ] ), columnOrder2[ 1 ] );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // scroll left
     ITreeAdapter treeAdapter
       = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     treeAdapter.setScrollLeft( 50 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( new Integer( 50 ),
                   adapter.getPreserved( TreeLCA.PROP_SCROLL_LEFT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // scroll bars
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     Object preserved = adapter.getPreserved( TreeLCA.PROP_HAS_H_SCROLL_BAR );
     assertTrue( preserved != null );
     preserved = adapter.getPreserved( TreeLCA.PROP_HAS_V_SCROLL_BAR );
     assertTrue( preserved != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     tree.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     tree.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( tree );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     tree.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     tree.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     tree.setBackground( background );
@@ -155,33 +154,33 @@ public class TreeLCA_Test extends TestCase {
     tree.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     tree.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( null, tree.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     tree.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( "some text", tree.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // activate_listeners Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     tree.addFocusListener( new FocusListener() {
 
       public void focusGained( final FocusEvent event ) {
@@ -190,23 +189,23 @@ public class TreeLCA_Test extends TestCase {
       public void focusLost( final FocusEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( tree, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -238,7 +237,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item",
                               treeItemId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "itemSelected", log.toString() );
   }
 
@@ -270,7 +269,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item",
                               treeItemId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "itemSelected", log.toString() );
   }
 
@@ -301,7 +300,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item",
                               treeItemId );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( "itemSelected", log.toString() );
   }
 
@@ -314,19 +313,19 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "undefined" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     assertEquals( 80, adapter.getScrollTop() );
     assertEquals( 0, adapter.getScrollLeft() );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

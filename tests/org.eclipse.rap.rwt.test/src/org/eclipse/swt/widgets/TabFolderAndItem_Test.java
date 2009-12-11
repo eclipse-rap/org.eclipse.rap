@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -39,7 +39,7 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testInitialSelection() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -101,7 +101,7 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testSelection() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
@@ -223,11 +223,11 @@ public class TabFolderAndItem_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
-    item0.setImage(Graphics.getImage( RWTFixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item0.getImage() );
+    item0.setImage(Graphics.getImage( Fixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item0.getImage() );
     TabItem item1 = new TabItem( folder, SWT.NONE );
-    item1.setImage(Graphics.getImage( RWTFixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item1.getImage() );
+    item1.setImage(Graphics.getImage( Fixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( Fixture.IMAGE2 ), item1.getImage() );
   }
 
   public void testHierarchy() {
@@ -259,7 +259,7 @@ public class TabFolderAndItem_Test extends TestCase {
   }
   
   public void testIndexedItemCreation() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
@@ -272,7 +272,7 @@ public class TabFolderAndItem_Test extends TestCase {
   }
   
   public void testItemDispose() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
@@ -299,10 +299,10 @@ public class TabFolderAndItem_Test extends TestCase {
   
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

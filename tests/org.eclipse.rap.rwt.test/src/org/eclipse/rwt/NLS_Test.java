@@ -15,9 +15,7 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.TestRequest;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.swt.RWTFixture;
 
 
 public class NLS_Test extends TestCase {
@@ -71,7 +69,7 @@ public class NLS_Test extends TestCase {
   protected void setUp() throws Exception {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
-    RWTFixture.fakeContext();
+    Fixture.fakeContext();
   }
   
   protected void tearDown() throws Exception {

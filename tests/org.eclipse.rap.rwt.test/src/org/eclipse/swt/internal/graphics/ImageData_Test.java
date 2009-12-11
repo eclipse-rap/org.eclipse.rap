@@ -19,31 +19,28 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ImageDataLoader;
 
 
 public class ImageData_Test extends TestCase {
   
   protected void setUp() throws Exception {
     // we do need the resource manager for this test
-    RWTFixture.setUpWithoutResourceManager();
-    RWTFixture.registerAdapterFactories();
+    Fixture.setUpWithoutResourceManager();
+    Fixture.registerAdapterFactories();
     Fixture.createContext( false );
     // registration of real resource manager
     ResourceManager.register( new DefaultResourceManagerFactory() );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testImageData() {
     IResourceManager manager = ResourceManager.getInstance();
     InputStream inputStream
-      = manager.getResourceAsStream( RWTFixture.IMAGE_100x50 );
+      = manager.getResourceAsStream( Fixture.IMAGE_100x50 );
     assertNotNull( inputStream );
     ImageData[] datas = ImageDataLoader.load( inputStream );
     assertNotNull( datas );

@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
@@ -40,12 +40,12 @@ public class ToolBarThemeAdapter_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakeNewRequest();
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
     ThemeManager.getInstance().reset();
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

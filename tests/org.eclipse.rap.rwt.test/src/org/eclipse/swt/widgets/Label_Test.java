@@ -13,9 +13,9 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -100,7 +100,7 @@ public class Label_Test extends TestCase {
     Label label = new Label( shell, SWT.SEPARATOR );
     label.setText( "bla" );
     assertEquals( "", label.getText() );
-    label.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    label.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( null, label.getImage() );
   }
 
@@ -109,7 +109,7 @@ public class Label_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     label.setText( "bla" );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     label.setImage( image );
     assertSame( image, label.getImage() );
     assertEquals( "", label.getText() );
@@ -144,7 +144,7 @@ public class Label_Test extends TestCase {
   }
 
   public void testComputeSize() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
@@ -155,12 +155,12 @@ public class Label_Test extends TestCase {
     expected = new Point( 53, 16 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    label.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     expected = new Point( 100, 50 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     label = new Label( shell, SWT.BORDER );
-    label.setImage( Graphics.getImage( RWTFixture.IMAGE_100x50 ) );
+    label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     expected = new Point( 102, 52 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -177,10 +177,10 @@ public class Label_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

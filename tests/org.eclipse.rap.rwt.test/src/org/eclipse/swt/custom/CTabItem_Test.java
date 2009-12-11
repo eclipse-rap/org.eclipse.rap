@@ -14,10 +14,11 @@ package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -194,9 +195,9 @@ public class CTabItem_Test extends TestCase {
     ICTabFolderAdapter adapter
       = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
     item1 = new CTabItem( folder, SWT.NONE );
-    item1.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item2 = new CTabItem( folder, SWT.NONE );
-    item2.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item2.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     folder.setSelection( item1 );
     assertTrue( adapter.showItemImage( item1 ) );
     assertTrue( adapter.showItemImage( item2 ) );
@@ -205,9 +206,9 @@ public class CTabItem_Test extends TestCase {
     folder.setSize( 100, 100 );
     folder.setUnselectedImageVisible( false );
     item1 = new CTabItem( folder, SWT.NONE );
-    item1.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item2 = new CTabItem( folder, SWT.NONE );
-    item2.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item2.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     folder.setSelection( item1 );
     assertTrue( adapter.showItemImage( item1 ) );
     assertFalse( adapter.showItemImage( item2 ) );
@@ -241,10 +242,10 @@ public class CTabItem_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

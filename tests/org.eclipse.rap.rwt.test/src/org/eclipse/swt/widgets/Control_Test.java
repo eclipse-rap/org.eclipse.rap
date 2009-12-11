@@ -18,12 +18,12 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -34,12 +34,12 @@ import org.eclipse.swt.layout.FillLayout;
 public class Control_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testStyle() {
@@ -296,7 +296,7 @@ public class Control_Test extends TestCase {
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     Color widgetBg = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.NONE );
@@ -351,7 +351,7 @@ public class Control_Test extends TestCase {
     Composite comp = new Composite( shell, SWT.NONE );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     comp.setBackground( blue );
-    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     comp.setBackgroundImage( image );
     Control control = new Label( comp, SWT.NONE );
     IControlAdapter adapter
@@ -693,7 +693,7 @@ public class Control_Test extends TestCase {
   }
 
   public void testShowEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Listener showListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -737,7 +737,7 @@ public class Control_Test extends TestCase {
   }
 
   public void testHideEvent() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Listener showListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -794,7 +794,7 @@ public class Control_Test extends TestCase {
   
   public void testUntypedHelpListener() {
     final Event[] untypedHelpEvent = { null }; 
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Control control = new Shell( display );
     control.addListener( SWT.Help, new Listener() {
@@ -834,8 +834,8 @@ public class Control_Test extends TestCase {
   }
   
   public void testSetBackgroundImage() {
-    ClassLoader loader = RWTFixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( RWTFixture.IMAGE1 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
     Composite control = new Shell( display );
     Image image = new Image( display, stream );

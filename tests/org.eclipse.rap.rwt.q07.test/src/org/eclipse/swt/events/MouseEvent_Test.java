@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -35,13 +34,13 @@ public class MouseEvent_Test extends TestCase {
   private String log;
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     log = "";
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testAddRemoveListener() {
@@ -147,7 +146,7 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, events.size() );
     MouseEvent mouseEvent = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseEvent.getID() );
@@ -168,7 +167,7 @@ public class MouseEvent_Test extends TestCase {
     fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseDoubleClickRequest( shellId, shellX + 24, shellY + 24 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, events.size() );
     mouseEvent = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseEvent.getID() );
@@ -220,7 +219,7 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, events.size() );
     Event mouseEvent = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseEvent.type );
@@ -241,7 +240,7 @@ public class MouseEvent_Test extends TestCase {
     fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseDoubleClickRequest( shellId, shellX + 24, shellY + 24 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, events.size() );
     mouseEvent = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseEvent.type );
@@ -291,7 +290,7 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     fakeMouseDownRequest( shellId, shellX + 1, shellY + 1 );
     fakeMouseUpRequest( shellId, shellX + 1, shellY + 1 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, shell.getBorderWidth() );
     assertEquals( 0, events.size() );
     events.clear();
@@ -300,7 +299,7 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     fakeMouseDownRequest( shellId, shellX + 10, shellY + 10 );
     fakeMouseUpRequest( shellId, shellX + 10, shellY + 10 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell menubar
@@ -308,7 +307,7 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 0, events.size() );
   }
 

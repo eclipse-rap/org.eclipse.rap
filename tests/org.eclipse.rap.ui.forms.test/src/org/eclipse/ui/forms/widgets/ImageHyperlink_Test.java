@@ -11,9 +11,9 @@ package org.eclipse.ui.forms.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -35,13 +35,13 @@ public class ImageHyperlink_Test extends TestCase {
       = toolkit.createImageHyperlink( form.getBody(), SWT.NONE );
     assertNotNull( hyperlink );
     assertEquals( null, hyperlink.getImage() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     hyperlink.setImage( image );
     assertEquals( image, hyperlink.getImage() );
   }
 
   public void testComputeSize() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     shell.setLayout( new FillLayout() );
@@ -52,7 +52,7 @@ public class ImageHyperlink_Test extends TestCase {
       = toolkit.createImageHyperlink( form.getBody(), SWT.NONE );
     assertNotNull( hyperlink );
     assertEquals( null, hyperlink.getImage() );
-    Image image = Graphics.getImage( RWTFixture.IMAGE_100x50 );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     hyperlink.setImage( image );
     Point expected = new Point( 109, 52 );
     assertEquals( expected, hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -62,10 +62,10 @@ public class ImageHyperlink_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

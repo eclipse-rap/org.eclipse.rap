@@ -13,8 +13,8 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -24,15 +24,15 @@ import org.eclipse.swt.layout.FillLayout;
 public class Layout_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testLayoutCall() {
-    RWTFixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
+    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
@@ -67,7 +67,7 @@ public class Layout_Test extends TestCase {
   }
 
   public void testClientArea() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
+    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Shell shell = new Shell( display );
     Composite comp1 = new Composite( shell, SWT.NONE );
@@ -81,7 +81,7 @@ public class Layout_Test extends TestCase {
   }
 
   public void testComputeSize() throws Exception {
-    RWTFixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
+    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Button control1 = new Button( shell, SWT.PUSH );

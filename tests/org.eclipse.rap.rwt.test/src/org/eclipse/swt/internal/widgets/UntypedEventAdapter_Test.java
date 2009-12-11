@@ -17,7 +17,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.RWTFixture;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
@@ -30,13 +30,13 @@ public class UntypedEventAdapter_Test extends TestCase {
   private static String log;
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     eventType = 0;
     log = "";
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testListenerTypes() throws Exception {

@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
@@ -45,14 +44,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
     assertEquals( true, hasChanged );
     // test subsequent behaviour (when already initialized)
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( text );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
     assertEquals( false, hasChanged );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     text.setText( "whatsoevervaluehasbeensetduringrequest" );
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
     assertEquals( true, hasChanged );
@@ -68,36 +67,36 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( true, hasChanged );
 
     list.setItems( new String[] { "a" } );
-    RWTFixture.markInitialized( display );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a" } );
     assertEquals( false, hasChanged );
 
     list.setItems( new String[] { "a" } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "b" } );
     assertEquals( true, hasChanged );
 
     list.setItems( new String[] { "a" } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasChanged
       = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a", "b" } );
     assertEquals( true, hasChanged );
 
     list.setItems( new String[] { "a" } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", null );
     assertEquals( true, hasChanged );
 
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "selection", new int[] { 0, 1, 4 } );
     assertEquals( true, hasChanged );
 
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "selection", new int[] { 0, 1, 2 } );
     assertEquals( false, hasChanged );
   }
@@ -217,7 +216,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeFont( label, label.getFont() );
     assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
 
@@ -237,7 +236,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeFont( label, label.getFont() );
     assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
 
@@ -256,7 +255,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     Font oldFont = label.getFont();
     FontData fontData = oldFont.getFontData()[ 0 ];
     Font newFont = Graphics.getFont( fontData.getName(), 42, SWT.NORMAL );
@@ -271,7 +270,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
-    RWTFixture.markInitialized( label );
+    Fixture.markInitialized( label );
     WidgetLCAUtil.preserveFont( label, font );
     WidgetLCAUtil.writeFont( label, null );
     String expected = "var w = wm.findWidgetById( \"w2\" );w.resetFont();";
@@ -284,7 +283,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
     Color red = Graphics.getColor( 255, 0, 0 );
-    RWTFixture.markInitialized( label );
+    Fixture.markInitialized( label );
     WidgetLCAUtil.preserveForeground( label, red );
     WidgetLCAUtil.writeForeground( label, null );
     String expected = "var w = wm.findWidgetById( \"w2\" );w.resetTextColor();";
@@ -298,7 +297,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     // for an un-initialized control: no image -> no markup
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeImage( item, 
                               Props.IMAGE, 
                               JSConst.QX_FIELD_ICON, 
@@ -307,7 +306,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     // for an un-initialized control: render image, if any
     Fixture.fakeResponseWriter();
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     WidgetLCAUtil.writeImage( item, 
                               Props.IMAGE, 
                               JSConst.QX_FIELD_ICON, 
@@ -318,8 +317,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 
     // for an initialized control with change image: render it
-    RWTFixture.markInitialized( item );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     item.setImage( null );
     WidgetLCAUtil.writeImage( item, 
@@ -335,7 +334,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeCustomVariant( label );
     assertEquals( "", Fixture.getAllMarkup() );
 
@@ -352,7 +351,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Control control = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeCustomVariant( control );
     assertEquals( "", Fixture.getAllMarkup() );
 
@@ -373,7 +372,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveCustomVariant( control );
-    RWTFixture.markInitialized( control );
+    Fixture.markInitialized( control );
     control.setData( WidgetUtil.CUSTOM_VARIANT, null );
     WidgetLCAUtil.writeCustomVariant( control );
     expected = "w.removeState( \"variant_new_variant\" );";
@@ -387,10 +386,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     Color red = display.getSystemColor( SWT.COLOR_RED );
 
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeBackground( control, null, false );
     assertEquals( "", Fixture.getAllMarkup() );
-    RWTFixture.markInitialized( control );
+    Fixture.markInitialized( control );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, null, false );
@@ -439,7 +438,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     // for an un-initialized control: no menu -> no markup
     Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
     assertEquals( "", Fixture.getAllMarkup() );
 
@@ -454,8 +453,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 
     // for an initialized control with change menu: render it
-    RWTFixture.markInitialized( label );
-    RWTFixture.preserveWidgets();
+    Fixture.markInitialized( label );
+    Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     label.setMenu( null );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
@@ -489,7 +488,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     CompositeLCA lca = new CompositeLCA();
     lca.preserveValues( control );
-    RWTFixture.markInitialized( control );
+    Fixture.markInitialized( control );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] gradientColors = new Color[] {
@@ -544,7 +543,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     CompositeLCA lca = new CompositeLCA();
     Fixture.fakeResponseWriter();
     lca.preserveValues( widget );
-    RWTFixture.markInitialized( widget );
+    Fixture.markInitialized( widget );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color color = Graphics.getColor( 0, 255, 0 );
@@ -580,10 +579,10 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

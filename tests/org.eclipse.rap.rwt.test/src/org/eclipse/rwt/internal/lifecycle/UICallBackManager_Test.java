@@ -17,13 +17,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.Fixture.TestResponse;
-import org.eclipse.rwt.Fixture.TestServletOutputStream;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.lifecycle.UICallBackManager.SyncRunnable;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -37,12 +36,12 @@ public class UICallBackManager_Test extends TestCase {
   private static String log = "";
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     log = "";
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testWaitFor() throws InterruptedException {
@@ -121,7 +120,7 @@ public class UICallBackManager_Test extends TestCase {
     // test runnables execution during lifecycle with interlocked additions
     fakeRequestParam( display );
     simulateBackgroundAdditionDuringLifeCycle( context, display );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
 
@@ -146,7 +145,7 @@ public class UICallBackManager_Test extends TestCase {
     simulateUICallBackThreadLockDuringLifeCycle(
       context,
       uiCallBackServiceHandlerThrowable );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
       uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
     }

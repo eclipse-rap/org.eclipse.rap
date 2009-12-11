@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,17 +25,17 @@ import org.eclipse.swt.widgets.*;
 public class EventAdapter_Test extends TestCase {
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.createContext( true );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     Fixture.removeContext();
   }
   
   public void testActionPerformed() throws Exception  {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.PUSH );
@@ -65,7 +64,7 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testAddListenerWithIllegalArguments() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Widget widget = new Shell( display );
     IEventAdapter eventAdapter

@@ -15,10 +15,10 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.service.BrowserSurvey;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandlerConfigurer;
-import org.eclipse.swt.RWTFixture;
 
 
 public class BrandingManager_Test extends TestCase {
@@ -205,10 +205,10 @@ public class BrandingManager_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

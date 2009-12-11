@@ -18,14 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.Fixture.TestResponse;
-import org.eclipse.rwt.Fixture.TestServletOutputStream;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
-import org.eclipse.swt.RWTFixture;
 
 
 
@@ -45,12 +41,12 @@ public class ServiceHandler_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
     Fixture.createContext( false );
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
     Fixture.removeContext();
     log = "";
   }

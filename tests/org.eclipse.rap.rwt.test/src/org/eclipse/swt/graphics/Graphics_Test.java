@@ -13,8 +13,8 @@ package org.eclipse.swt.graphics;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 
 
@@ -61,10 +61,10 @@ public class Graphics_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

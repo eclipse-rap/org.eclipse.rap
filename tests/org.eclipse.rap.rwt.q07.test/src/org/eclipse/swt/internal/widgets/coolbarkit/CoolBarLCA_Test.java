@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
@@ -36,42 +35,42 @@ public final class CoolBarLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.FLAT );
     Boolean hasListeners;
-    RWTFixture.markInitialized( bar );
+    Fixture.markInitialized( bar );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
     lca.preserveValues( bar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.LOCKED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     bar.setLocked( true );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.LOCKED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control: enabled
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     bar.setEnabled( false );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     bar.setVisible( false );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( bar );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
@@ -79,25 +78,25 @@ public final class CoolBarLCA_Test extends TestCase {
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     bar.setBounds( rectangle );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control_listeners is always true
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     bar.setBackground( background );
@@ -110,35 +109,35 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tab_index
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltiptext
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( null, bar.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     bar.setToolTipText( "some text" );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( "some text", bar.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // activate_listeners
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( bar, new ActivateAdapter() {
     } );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -148,7 +147,7 @@ public final class CoolBarLCA_Test extends TestCase {
     CoolBar bar = new CoolBar( shell, SWT.FLAT );
     CoolItem item = new CoolItem( bar, SWT.NONE );
     Button button = new Button( bar, SWT.NONE );
-    RWTFixture.markInitialized( item );
+    Fixture.markInitialized( item );
     item.setControl( button );
     item.setSize( 30, 20 );
     Rectangle rectangle = new Rectangle( 0,
@@ -163,7 +162,7 @@ public final class CoolBarLCA_Test extends TestCase {
     item.setControl( null );
     lca.preserveValues( item );
     assertNull( adapter.getPreserved( Props.CONTROL ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -173,7 +172,7 @@ public final class CoolBarLCA_Test extends TestCase {
     CoolBar bar = new CoolBar( shell, SWT.FLAT );
     CoolItem item = new CoolItem( bar, SWT.NONE );
     Button button = new Button( bar, SWT.NONE );
-    RWTFixture.markInitialized( item );
+    Fixture.markInitialized( item );
     item.setControl( button );
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
@@ -185,15 +184,15 @@ public final class CoolBarLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testItemReordering1() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.FLAT );
@@ -274,13 +273,13 @@ public final class CoolBarLCA_Test extends TestCase {
     // Set up environment; get displayId first as it currently is in 'real life'
     String displayId = DisplayUtil.getId( display );
     String item0Id = WidgetUtil.getId( item0 );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( bar );
-    RWTFixture.markInitialized( item0 );
-    RWTFixture.markInitialized( item0.getControl() );
-    RWTFixture.markInitialized( item1 );
-    RWTFixture.markInitialized( item1.getControl() );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( bar );
+    Fixture.markInitialized( item0 );
+    Fixture.markInitialized( item0.getControl() );
+    Fixture.markInitialized( item1 );
+    Fixture.markInitialized( item1.getControl() );
     
     // get adapter to set item order
     Object adapter = bar.getAdapter( ICoolBarAdapter.class );
@@ -288,23 +287,23 @@ public final class CoolBarLCA_Test extends TestCase {
 
     // Drag item0 and drop it inside the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "483" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
     
     // Drag item0 and drop it beyond the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "2000" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
   }
@@ -325,13 +324,13 @@ public final class CoolBarLCA_Test extends TestCase {
     // Set up environment; get displayId first as it currently is in 'real life'
     String displayId = DisplayUtil.getId( display );
     String item0Id = WidgetUtil.getId( item0 );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
-    RWTFixture.markInitialized( bar );
-    RWTFixture.markInitialized( item0 );
-    RWTFixture.markInitialized( item0.getControl() );
-    RWTFixture.markInitialized( item1 );
-    RWTFixture.markInitialized( item1.getControl() );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( bar );
+    Fixture.markInitialized( item0 );
+    Fixture.markInitialized( item0.getControl() );
+    Fixture.markInitialized( item1 );
+    Fixture.markInitialized( item1.getControl() );
     
     // get adapter to set item order
     Object adapter = bar.getAdapter( ICoolBarAdapter.class );
@@ -340,12 +339,12 @@ public final class CoolBarLCA_Test extends TestCase {
     // Simulate that fist item is dragged around but dropped at its original
     // position
     cba.setItemOrder( new int[] { 0, 1 } );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "10" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
-    RWTFixture.executeLifeCycleFromServerThread();
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
     String expected

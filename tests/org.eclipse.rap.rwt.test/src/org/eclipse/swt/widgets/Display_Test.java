@@ -20,7 +20,8 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.*;
@@ -737,7 +738,7 @@ public class Display_Test extends TestCase {
   }
 
   public void testAddAndRemoveFilter() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final int CLOSE_CALLBACK = 0;
     final int DISPOSE_CALLBACK = 1;
     final boolean[] callbackReceived = new boolean[]{ false, false };
@@ -784,7 +785,7 @@ public class Display_Test extends TestCase {
   public void testEnsureIdIsW1() throws IOException {
     Class entryPointClass = EnsureIdEntryPoint.class;
     EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
     assertEquals( "w1", DisplayUtil.getId( RWTLifeCycle.getSessionDisplay() ) );
@@ -901,7 +902,7 @@ public class Display_Test extends TestCase {
     // 1. display dispose listener
     // 2. shell dispose listeners
     // 3. disposeRunnable(s)
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -932,7 +933,7 @@ public class Display_Test extends TestCase {
   }
 
   public void testDisposeWithExceptionsInListeners() {
-    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
@@ -1093,10 +1094,10 @@ public class Display_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

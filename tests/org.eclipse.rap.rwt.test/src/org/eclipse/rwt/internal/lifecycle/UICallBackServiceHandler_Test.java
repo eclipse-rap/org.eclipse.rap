@@ -15,12 +15,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.Fixture.TestResponse;
-import org.eclipse.rwt.Fixture.TestServletOutputStream;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.HTML;
-import org.eclipse.swt.RWTFixture;
 
 
 public class UICallBackServiceHandler_Test extends TestCase {
@@ -29,11 +26,11 @@ public class UICallBackServiceHandler_Test extends TestCase {
   private static final String ID_2 = "id_2";
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
   
   public void testOnOffSwitch() throws InterruptedException {
@@ -45,7 +42,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     final String[] otherSession = new String[ 1 ];
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        RWTFixture.fakeContext();
+        Fixture.fakeContext();
         otherSession[ 0 ] = UICallBackServiceHandler.jsEnableUICallBack();
       } 
     } );

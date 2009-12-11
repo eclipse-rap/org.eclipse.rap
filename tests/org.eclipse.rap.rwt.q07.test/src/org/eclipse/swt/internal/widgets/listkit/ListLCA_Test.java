@@ -21,7 +21,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -39,41 +38,41 @@ public class ListLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.SINGLE | SWT.BORDER );
     Boolean hasListeners;
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // selection-Listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     list.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // items
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     String[] items = ( String[] )adapter.getPreserved( ListLCA.PROP_ITEMS );
     assertEquals( 0, items.length );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     list.setItems( new String[]{
       "item1", "item2", "item3"
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     items = ( String[] )adapter.getPreserved( ListLCA.PROP_ITEMS );
     assertEquals( 3, items.length );
     assertEquals( "item1", items[ 0 ] );
     assertEquals( "item2", items[ 1 ] );
     assertEquals( "item3", items[ 2 ] );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // focus_index, topIndex, selection
     list.setSelection( 2 );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     Object focusIndex = adapter.getPreserved( ListLCA.PROP_FOCUS_INDEX );
     assertEquals( new Integer( 2 ), focusIndex );
@@ -81,66 +80,66 @@ public class ListLCA_Test extends TestCase {
     assertEquals( new Integer( list.getTopIndex() ), topIndex );
     Object selection = adapter.getPreserved( Props.SELECTION_INDICES );
     assertEquals( new Integer( 2 ), selection );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // scroll bars
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     Object preserved = adapter.getPreserved( ListLCA.PROP_HAS_H_SCROLL_BAR );
     assertTrue( preserved != null );
     preserved = adapter.getPreserved( ListLCA.PROP_HAS_V_SCROLL_BAR );
     assertTrue( preserved != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control: enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     list.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     list.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( list );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     list.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // bound
     list.getFocusIndex();
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     list.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // control_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // z-index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     list.setBackground( background );
@@ -148,33 +147,33 @@ public class ListLCA_Test extends TestCase {
     list.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     list.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tab_index
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // tooltiptext
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( null, list.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     list.setToolTipText( "some text" );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( "some text", list.getToolTipText() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // activate_listeners Focus_listeners
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     list.addFocusListener( new FocusListener() {
 
       public void focusGained( final FocusEvent event ) {
@@ -183,23 +182,23 @@ public class ListLCA_Test extends TestCase {
       public void focusLost( final FocusEvent event ) {
       }
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
-    RWTFixture.preserveWidgets();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     ActivateEvent.addListener( list, new ActivateAdapter() {
     } );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     display.dispose();
   }
 
@@ -281,7 +280,7 @@ public class ListLCA_Test extends TestCase {
     String listId = WidgetUtil.getId( list );
     Fixture.fakeRequestParam( listId + ".selection", "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, listId );
-    RWTFixture.readDataAndProcessAction( list );
+    Fixture.readDataAndProcessAction( list );
     assertEquals( "selectionEvent", log.toString() );
     assertEquals( 1, list.getSelectionIndex() );
   }
@@ -291,10 +290,10 @@ public class ListLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
     // Ensure that changed items are rendered
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( list );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( list );
     Fixture.fakeResponseWriter();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     AbstractWidgetLCA listLCA = WidgetUtil.getLCA( list );
     list.setItems( new String[]{
       "a"
@@ -302,9 +301,9 @@ public class ListLCA_Test extends TestCase {
     listLCA.renderChanges( list );
     assertTrue( Fixture.getAllMarkup().indexOf( "setItems" ) != -1 );
     // Ensure that unchanged items do not cause unnecessary JavaScript code
-    RWTFixture.markInitialized( list );
+    Fixture.markInitialized( list );
     Fixture.fakeResponseWriter();
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     listLCA.renderChanges( list );
     assertTrue( Fixture.getAllMarkup().indexOf( "setItems" ) == -1 );
   }
@@ -320,17 +319,17 @@ public class ListLCA_Test extends TestCase {
     // Test with focusIndex -1
     setFocusIndex( list, 0 );
     Fixture.fakeRequestParam( listId + ".focusIndex", "-1" );
-    RWTFixture.readDataAndProcessAction( list );
+    Fixture.readDataAndProcessAction( list );
     assertEquals( -1, list.getFocusIndex() );
     // Test with value focusIndex
     setFocusIndex( list, 0 );
     Fixture.fakeRequestParam( listId + ".focusIndex", "1" );
-    RWTFixture.readDataAndProcessAction( list );
+    Fixture.readDataAndProcessAction( list );
     assertEquals( 1, list.getFocusIndex() );
     // Test with focusIndex out of range
     setFocusIndex( list, 0 );
     Fixture.fakeRequestParam( listId + ".focusIndex", "22" );
-    RWTFixture.readDataAndProcessAction( list );
+    Fixture.readDataAndProcessAction( list );
     assertEquals( 0, list.getFocusIndex() );
   }
 
@@ -359,8 +358,8 @@ public class ListLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     List list = new List( shell, SWT.NONE );
-    RWTFixture.markInitialized( display );
-    RWTFixture.markInitialized( shell );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
     Fixture.fakeResponseWriter();
     AbstractWidgetLCA listLCA = WidgetUtil.getLCA( list );
     listLCA.renderInitialization( list );
@@ -374,7 +373,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
 
     // multiselection
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     list = new List( shell, SWT.MULTI );
     listLCA.renderInitialization( list );
     expected = "var w = wm.newWidget( \""
@@ -387,7 +386,7 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testWriteOverflow() throws IOException {
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeNewRequest();
     Display display = new Display();
     Shell shell = new Shell( display );
     List list = new List( shell, SWT.V_SCROLL | SWT.H_SCROLL );
@@ -400,10 +399,10 @@ public class ListLCA_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }

@@ -17,9 +17,7 @@ import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.Fixture.TestServletContext;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.browser.Ie6up;
@@ -27,7 +25,6 @@ import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.internal.widgets.Props;
@@ -53,12 +50,12 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   protected void setUp() throws Exception {
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
-    RWTFixture.fakeContext();
-    RWTFixture.fakeNewRequest();
+    Fixture.fakeContext();
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 
   public void testInitialization() throws Exception {
@@ -66,19 +63,19 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     // and executes at the designated phases
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.registerAdapterFactories();
+    Fixture.registerAdapterFactories();
     Fixture.createContextWithoutResourceManager();
     RWTServletContextListener listener = new RWTServletContextListener();
     TestServletContext servletContext = new TestServletContext();
     listener.contextInitialized( new ServletContextEvent( servletContext ) );
-    RWTFixture.deregisterResourceManager();
-    RWTFixture.registerResourceManager();
+    Fixture.deregisterResourceManager();
+    Fixture.registerResourceManager();
     ThemeManager.getInstance().initialize();
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     text.setText( "hello" );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final StringBuffer log = new StringBuffer();
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -101,7 +98,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "copy created", log.toString() );
     // clean up
     Fixture.removeContext();
@@ -170,14 +167,14 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-    RWTFixture.registerResourceManager();
+    Fixture.registerResourceManager();
     // Create test widget hierarchy
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     new Text( shell, SWT.NONE );
     // Execute life cycle
-    RWTFixture.markInitialized( display );
-    RWTFixture.executeLifeCycleFromServerThread( );
+    Fixture.markInitialized( display );
+    Fixture.executeLifeCycleFromServerThread( );
     String expected = Display.class.getName()
                     + Shell.class.getName()
                     + Text.class.getName();
@@ -190,9 +187,9 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     Fixture.createContextWithoutResourceManager();
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
-    RWTFixture.registerResourceManager();
+    Fixture.registerResourceManager();
     ThemeManager.getInstance().initialize();
-    RWTFixture.registerAdapterFactories();
+    Fixture.registerAdapterFactories();
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestEntryPointWithShell.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
@@ -203,21 +200,16 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     fakeUIRootRequestParam( RWTLifeCycle.getSessionDisplay() );
     lifeCycle.execute();
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) != -1 );
-    // clean up
-    RWTFixture.deregisterAdapterFactories();
-    RWTFixture.deregisterResourceManager();
-    Fixture.removeContext();
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
   
   public void testClearPreservedWithDisposedDisplay() {
-    RWTFixture.fakePhase( PhaseId.RENDER );
+    Fixture.fakePhase( PhaseId.RENDER );
     Display display = new Display();
     display.dispose();
     try {
       PreserveWidgetsPhaseListener.clearPreserved( display );
     } catch( Exception e ) {
-      fail( "Preserve-phase-listener must succed event with disposed display" );
+      fail( "Preserve-phase-listener must succeed even with disposed display" );
     }
   }
 

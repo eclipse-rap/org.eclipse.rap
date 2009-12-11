@@ -18,7 +18,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -31,10 +30,10 @@ public class ScaleLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
-    RWTFixture.markInitialized( display );
+    Fixture.markInitialized( display );
     // Test preserved minimum, maximum,
     // selection, increment and ageIncrement
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
     Integer minimum
       = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MINIMUM );
@@ -51,7 +50,7 @@ public class ScaleLCA_Test extends TestCase {
     Integer pageIncrement
       = ( Integer )adapter.getPreserved( ScaleLCA.PROP_PAGE_INCREMENT );
     assertEquals( 10, pageIncrement.intValue() );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( scale );
     // Test preserved selection listeners
@@ -70,43 +69,43 @@ public class ScaleLCA_Test extends TestCase {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     scale.setBounds( rectangle );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // enabled
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     scale.setEnabled( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // visible
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     scale.setVisible( false );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     // menu
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     Menu menu = new Menu( scale );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
     scale.setMenu( menu );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     scale.setBackground( background );
@@ -114,29 +113,29 @@ public class ScaleLCA_Test extends TestCase {
     scale.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     scale.setFont( font );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testPreserveSelectionListener( final Scale scale ) {
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
     Boolean hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() { };
     scale.addSelectionListener( selectionListener );
-    RWTFixture.preserveWidgets();
+    Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
     hasListeners
       = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    RWTFixture.clearPreserved();
+    Fixture.clearPreserved();
   }
 
   private void testSelectionEvent( final Scale scale ) {
@@ -157,15 +156,15 @@ public class ScaleLCA_Test extends TestCase {
     scale.addSelectionListener( selectionListener );
     String scaleId = WidgetUtil.getId( scale );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, scaleId );
-    RWTFixture.readDataAndProcessAction( scale );
+    Fixture.readDataAndProcessAction( scale );
     assertEquals( "widgetSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUp();
+    Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+    Fixture.tearDown();
   }
 }
