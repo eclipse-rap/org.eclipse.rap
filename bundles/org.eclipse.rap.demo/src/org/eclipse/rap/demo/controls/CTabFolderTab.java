@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.util.Iterator;
@@ -20,8 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -48,6 +46,8 @@ public class CTabFolderTab extends ExampleTab {
   private int tabHeight = -1;
   private boolean showSelectionBgGradient = false;
   private boolean showSelectionBgImage = false;
+  private boolean customFontOnItem;
+  private static Font customFont = Graphics.getFont( "Courier", 12, SWT.ITALIC );
 
   public CTabFolderTab( final CTabFolder parent ) {
     super( parent, "CTabFolder" );
@@ -59,6 +59,8 @@ public class CTabFolderTab extends ExampleTab {
     createStyleButton( "TOP", SWT.TOP );
     createStyleButton( "BOTTOM", SWT.BOTTOM );
     createStyleButton( "CLOSE", SWT.CLOSE );
+    createStyleButton( "SINGLE", SWT.SINGLE );
+    createStyleButton( "MULTI", SWT.MULTI );
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
@@ -131,6 +133,15 @@ public class CTabFolderTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         Button button = ( Button )event.widget;
         showClose = button.getSelection();
+        updateProperties();
+      }
+    } );
+    text = "Custom font on Tab 2";
+    Button cbCustomFont = createPropertyButton( text, SWT.CHECK );
+    cbCustomFont.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Button button = ( Button )event.widget;
+        customFontOnItem = button.getSelection();
         updateProperties();
       }
     } );
@@ -307,6 +318,7 @@ public class CTabFolderTab extends ExampleTab {
     }
     if( items.length > 1 ) {
       items[ 1 ].setShowClose( showClose );
+      items[ 1 ].setFont( customFontOnItem ? customFont : null );
     }
     folder.setMinimizeVisible( minVisible );
     folder.setMaximizeVisible( maxVisible );
