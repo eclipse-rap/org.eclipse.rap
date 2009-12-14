@@ -384,7 +384,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Shell [] getShells() {
+  public Shell[] getShells() {
     checkWidget();
     return internalGetShells();
   }
@@ -395,7 +395,7 @@ public class Shell extends Decorations {
     for( int i = 0; i < shells.length; i++ ) {
       Control shell = shells[ i ];
       do {
-        shell = shell.getParent();
+        shell = shell.parent;
       } while( shell != null && shell != this );
       if( shell == this ) {
         count++;
@@ -406,7 +406,7 @@ public class Shell extends Decorations {
     for( int i = 0; i < shells.length; i++ ) {
       Control shell = shells[ i ];
       do {
-        shell = shell.getParent();
+        shell = shell.parent;
       } while( shell != null && shell != this );
       if( shell == this ) {
         result[ index++ ] = shells[ i ];
