@@ -67,9 +67,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
-    private IOException ioProblem = null;
+    private IOException ioProblem;
 
     public boolean doVisit( final Widget widget ) {
+      ioProblem = null;
       boolean result = true;
       try {
         render( widget );
@@ -128,38 +129,41 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   public void render( final Display display ) throws IOException {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter out = stateInfo.getResponseWriter();
-    HttpServletResponse response = ContextProvider.getResponse();
     HttpServletRequest request = ContextProvider.getRequest();
     // TODO [rh] should be replaced by requestCounter == 0
     if( request.getParameter( RequestParams.UIROOT ) == null ) {
       writeClientDocument( display );
     } else {
+      HttpServletResponse response = ContextProvider.getResponse();
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
-      out.write( getRequestCounter() );
       disposeWidgets();
+      writeRequestCounter();
       writeTheme( display );
       writeErrorPages( display );
       writeExitConfirmation( display );
-      RenderVisitor visitor = new RenderVisitor();
-      Composite[] shells = getShells( display );
-      for( int i = 0; i < shells.length; i++ ) {
-        Composite shell = shells[ i ];
-        WidgetTreeVisitor.accept( shell, visitor );
-        visitor.reThrowProblem();
-      }
+      renderShells( display );
       writeActiveControls( display );
       writeFocus( display );
       markInitialized( display );
     }
   }
 
-  private static String getRequestCounter() {
-    Object[] param = new Object[] { RWTRequestVersionControl.nextRequestId() };
-    return MessageFormat.format( PATTERN_REQUEST_COUNTER, param );
+  private static void renderShells( final Display display ) throws IOException {
+    RenderVisitor visitor = new RenderVisitor();
+    Composite[] shells = getShells( display );
+    for( int i = 0; i < shells.length; i++ ) {
+      WidgetTreeVisitor.accept( shells[ i ], visitor );
+      visitor.reThrowProblem();
+    }
   }
 
+  private static void writeRequestCounter() throws IOException {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    Object[] args = new Object[] { RWTRequestVersionControl.nextRequestId() };
+    out.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
+  }
+  
   private static void writeTheme( final Display display ) throws IOException {
     String currThemeId = ThemeUtil.getCurrentThemeId();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
