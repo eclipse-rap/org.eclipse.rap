@@ -2042,16 +2042,18 @@ public abstract class Control extends Widget {
   // Focus helping methods
 
   private void setFocusControl( final Control control ) {
-    Shell shell = getShell();
     if( control != null ) {
-      getDisplay().setActiveShell( shell );
+      display.setActiveShell( control.getShell() );
     }
     // focus
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setFocusControl( control );
     // active
-    shell.setActiveControl( control );
+    if( control != null ) {
+      Shell shell = control.getShell();
+      shell.setActiveControl( control );
+    }
   }
 
   Control[] getPath() {
