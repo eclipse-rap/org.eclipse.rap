@@ -76,7 +76,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( dropTarget );
       Object[] args = new Object[]{
         dropTarget.getControl(),
-        DNDLCAUtil.convertTarnsferTypes( newValue )
+        DNDLCAUtil.convertTransferTypes( newValue )
       };
       writer.callStatic( JSFUNC_SET_TRANSFER_TYPES, args );
     }

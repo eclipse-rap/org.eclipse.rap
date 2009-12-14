@@ -32,6 +32,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     = "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite";
   private static final String JSFUNC_SET_FEEDBACK
     = "org.eclipse.rwt.DNDSupport.getInstance().setFeedback";
+  private static final String JSFUNC_SET_DATATYPE
+    = "org.eclipse.rwt.DNDSupport.getInstance().setDataType";
   private static final String JSFUNC_CANCEL
     = "org.eclipse.rwt.DNDSupport.getInstance().cancel";
 
@@ -63,6 +65,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     writeTransfer( dragSource );
     writeDetail( dragSource );
     writeFeedback( dragSource );
+    writeDataType( dragSource );
     writeCancel( dragSource );
   }
 
@@ -86,7 +89,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
         JSWriter writer = JSWriter.getWriterFor( dragSource );
         Object[] args = new Object[]{
           dragSource.getControl(),
-          DNDLCAUtil.convertTarnsferTypes( newValue )
+          DNDLCAUtil.convertTransferTypes( newValue )
         };
         writer.callStatic( JSFUNC_SET_TRANSFER_TYPES, args );
     }
@@ -120,6 +123,20 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
 
+  private void writeDataType( final DragSource dragSource ) throws IOException {
+    IDNDAdapter dndAdapter
+      = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+    if( dndAdapter.hasDataTypeChanged() ) {
+      JSWriter writer = JSWriter.getWriterFor( dragSource );
+      TransferData value = dndAdapter.getDataTypeChangedValue();
+      Object[] args = new Object[]{
+        dndAdapter.getDataTypeChangedControl(),
+        new Integer( value.type )
+      };
+      writer.callStatic( JSFUNC_SET_DATATYPE, args );
+    }
+  }
+  
   private static void writeCancel( final DragSource dragSource )
     throws IOException
   {

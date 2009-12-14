@@ -9,8 +9,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.swt.dnd.*;
 
 
 public final class DNDLCAUtil {
@@ -19,11 +21,18 @@ public final class DNDLCAUtil {
     // prevent instantiation
   }
   
-  public static String[] convertTarnsferTypes( final Transfer[] transfer ) {
-    String[] result = new String[ transfer.length ];
-    // TODO [tb] : might not suffice, see TransferData.sameType
+  public static String[] convertTransferTypes( final Transfer[] transfer ) {
+    List allTypes = new ArrayList();
     for( int i = 0; i < transfer.length; i++ ) {
-      result[ i ] = transfer[ i ].getClass().getName();
+      TransferData[] supported = transfer[ i ].getSupportedTypes();
+      for( int j = 0; j < supported.length; j++ ) {
+        allTypes.add( supported[ j ] );
+      }
+    }
+    String[] result = new String[ allTypes.size() ];
+    for( int i = 0; i < allTypes.size(); i++ ) {
+      TransferData dataType = ( TransferData )allTypes.get( i );
+      result[ i ] = String.valueOf( dataType.type );
     }
     return result;
   }

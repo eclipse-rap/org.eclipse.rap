@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     this._feedback = null;
     this._feedbackCode = 0;
     this._feedbackWidget = null;
+    this._dataTypeOverwrite = null;
   },
 
   members : {
@@ -174,6 +175,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this.setFeedback( target, null, 0 );
       this._currentDropTarget = null;
       this._actionOverwrite = null;
+      this._dataTypeOverwrite = null;
       if( this._isDropTargetEventScheduled( "dragEnter" ) ) {
         this._cancelDropTargetEvent( "dragEnter" );
         this._cancelDropTargetEvent( "dragOver" );
@@ -209,6 +211,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       param[ eventName + ".item" ] = itemId;
       param[ eventName + ".operation" ] = operation;
       param[ eventName + ".feedback" ] = this._feedbackCode;
+      param[ eventName + ".dataType" ] = this._dataTypeOverwrite;
       param[ eventName + ".source" ] = source;
       param[ eventName + ".time" ] = time;
       event[ "param" ] = param;
@@ -479,6 +482,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       dndHandler.setFeedbackWidget( null );
       this._resetFeedbackWidget();
       this._currentDragSource = null;
+      this._dataTypeOverwrite = null;
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.removeEventListener( "mouseover", this._onMouseOver, this );
       doc.removeEventListener( "keydown", this._onKeyEvent, this );
@@ -556,6 +560,12 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           this._feedback = null;
         }
         this._feedbackCode = code;
+      }
+    },
+    
+    setDataType : function( widget, type ) {
+      if( widget == this._currentDropTarget ) {
+        this._dataTypeOverwrite = type;
       }
     }
   

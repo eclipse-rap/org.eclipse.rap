@@ -69,6 +69,8 @@ public final class DNDSupport {
     = PACKAGE_PREFIX + ".dragOver.source";
   private static final String EVENT_DRAG_OVER_TIME
     = PACKAGE_PREFIX + ".dragOver.time";
+  private static final String EVENT_DRAG_OVER_DATATYPE
+    = PACKAGE_PREFIX + ".dragOver.dataType";
   private static final String EVENT_DRAG_LEAVE
     = PACKAGE_PREFIX + ".dragLeave";
   private static final String EVENT_DRAG_LEAVE_OPERATION
@@ -93,6 +95,8 @@ public final class DNDSupport {
     = PACKAGE_PREFIX + ".dropAccept.source";
   private static final String EVENT_DROP_ACCEPT_TIME
     = PACKAGE_PREFIX + ".dropAccept.time";
+  private static final String EVENT_DROP_ACCEPT_DATATYPE
+    = PACKAGE_PREFIX + ".dropAccept.dataType";
   private static final String EVENT_DRAG_FINISHED
     = PACKAGE_PREFIX + ".dragFinished";
   private static final String EVENT_DRAG_FINISHED_X
@@ -170,8 +174,9 @@ public final class DNDSupport {
       event.processEvent();
       if( event.detail != operation ) {
         changeOperation( dragSource, dropTarget, event.detail );
-        // TODO [tb] : check dataType
       }
+      // no check, dataType is always changed from null to a valid value:
+      changeDataType( dragSource, dropTarget, event.currentDataType );      
       if( event.feedback != feedback ) {
         getDNDAdapter( dragSource ).setFeedbackChanged( control, event.feedback );        
       }
@@ -197,10 +202,12 @@ public final class DNDSupport {
       } else {
         feedback = readIntParam( EVENT_DRAG_OVER_FEEDBACK );
       }      
-      // TODO [tb] : check for changed dataType
-      TransferData[] validDataTypes
-        = determineDataTypes( dragSource, dropTarget );
-      TransferData dataType = validDataTypes[ 0 ];
+      TransferData dataType;
+      if( dndAdapter.hasDataTypeChanged() ) {
+        dataType = dndAdapter.getDataTypeChangedValue();
+      } else {
+        dataType = readDataTypeParam( EVENT_DRAG_OVER_DATATYPE );
+      }
       Point point = readXYParams( EVENT_DRAG_OVER_X, EVENT_DRAG_OVER_Y );
       Item item = readItemParam( EVENT_DRAG_OVER_ITEM );
       DropTargetEvent event
@@ -208,7 +215,7 @@ public final class DNDSupport {
       event.detail = operation;
       event.feedback = feedback;
       event.currentDataType = dataType;
-      event.dataTypes = validDataTypes;
+      event.dataTypes = determineDataTypes( dragSource, dropTarget );
       event.item = item;
       event.x = point.x;
       event.y = point.y;
@@ -216,11 +223,13 @@ public final class DNDSupport {
       event.processEvent();
       if( event.detail != operation ) {
         changeOperation( dragSource, dropTarget, event.detail );
-        // TODO [tb] : check for changed dataType
+      }
+      if( event.currentDataType != dataType ) {
+        changeDataType( dragSource, dropTarget, event.currentDataType );
       }
       if( event.feedback != feedback ) {
         getDNDAdapter( dragSource ).setFeedbackChanged( control, event.feedback );        
-      }
+      }      
     }
   }
 
@@ -248,19 +257,24 @@ public final class DNDSupport {
       } else {
         operation = readOperationParam( EVENT_DROP_ACCEPT_OPERATION );
       }
+      TransferData dataType;
+      if( dndAdapter.hasDataTypeChanged() ) {
+        dataType = dndAdapter.getDataTypeChangedValue();
+      } else {
+        dataType = readDataTypeParam( EVENT_DROP_ACCEPT_DATATYPE );
+      }
       Point point = readXYParams( EVENT_DROP_ACCEPT_X, EVENT_DROP_ACCEPT_Y );
       Item item = readItemParam( EVENT_DROP_ACCEPT_ITEM );
       int time = readIntParam( EVENT_DROP_ACCEPT_TIME );
       // fire DRAG_LEAVE, which is suppressed by the client
       fireDragLeave( operation, dropTarget, point, time );
       // fire DROP_ACCEPT
-      TransferData[] validDataTypes
-        = determineDataTypes( dragSource, dropTarget );
-      TransferData dataType = validDataTypes[ 0 ];
       DropTargetEvent event
         = createDropAcceptEvent( dropTarget, operation, point, dataType, item );
       event.processEvent();
       operation = checkOperation( dragSource, dropTarget, event.detail );
+      TransferData[] validDataTypes
+        = determineDataTypes( dragSource, dropTarget );                
       dataType = checkDataType( event.currentDataType, validDataTypes );
       if( operation != DND.DROP_NONE && dataType != null ) {
         // fire DRAG_SET_DATA
@@ -367,8 +381,10 @@ public final class DNDSupport {
     if( dragSourceControl != null ) {
       // fire DRAG_END
       DragSource dragSource = getDragSource( dragSourceControl );
-      getDNDAdapter( dragSource ).cancelDetailChanged();
-      getDNDAdapter( dragSource ).cancelFeedbackChanged();
+      IDNDAdapter dndAdapter = getDNDAdapter( dragSource ); 
+      dndAdapter.cancelDetailChanged();
+      dndAdapter.cancelFeedbackChanged();
+      dndAdapter.cancelDataTypeChanged();
       Point point = readXYParams( EVENT_DRAG_FINISHED_X,
                                   EVENT_DRAG_FINISHED_Y );
       DragSourceEvent event
@@ -493,6 +509,17 @@ public final class DNDSupport {
     return result;
   }
   
+  private static TransferData readDataTypeParam( final String paramName ) {
+    TransferData result = null;
+    String value = readStringParam( paramName );
+    value = "null".equals( value ) ? null : value;
+    if( value != null ) {
+      result = new TransferData();
+      result.type = Integer.parseInt( value );
+    }
+    return result;
+  }
+  
   // DND TODO [tb] : Is a check needed (like checkAndProcessMouseEvent)?
   //                 Yes, a drag would have to be canceled for invalid
   //                 coordinates on DragDetect, and dragEnter/Leave COULD
@@ -536,7 +563,24 @@ public final class DNDSupport {
     IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
     dndAdapter.setDetailChanged( dropTarget.getControl(), checkedOperation );
   }
-
+  
+  private static void changeDataType( final DragSource dragSource,
+                                      final DropTarget dropTarget,
+                                      final TransferData dataType )
+  {
+    
+    TransferData[] validDataTypes
+      = determineDataTypes( dragSource, dropTarget );    
+    TransferData value = checkDataType( dataType, validDataTypes );
+    // NOTE [tb] : If the value is not valid, another valid value will be set.
+    //             This is simplified from SWT, where null would be set.
+    if( value == null ) {
+      value = validDataTypes[ 0 ];
+    }
+    IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
+    dndAdapter.setDataTypeChanged( dropTarget.getControl(), value );
+  }
+  
   private static int checkOperation( final DragSource dragSource,
                                      final DropTarget dropTarget,
                                      final int operation )

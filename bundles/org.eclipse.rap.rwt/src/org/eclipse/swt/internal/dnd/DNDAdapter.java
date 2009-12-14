@@ -11,6 +11,7 @@ package org.eclipse.swt.internal.dnd;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Control;
 
 
@@ -25,10 +26,17 @@ public final class DNDAdapter implements IDNDAdapter {
     = DNDAdapter.class.getName() + "#feedbackChangedValue";
   private static final String FEEDBACK_CHANGED_CONTROL
     = DNDAdapter.class.getName() + "#feedbackChangedControl";
+  private static final String DATATYPE_CHANGED_VALUE
+    = DNDAdapter.class.getName() + "#dataTypeChangedValue";
+  private static final String DATATYPE_CHANGED_CONTROL
+    = DNDAdapter.class.getName() + "#dataTypeChangedControl";
 
   public void cancel() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( CANCEL, Boolean.TRUE );
+    this.cancelDetailChanged();
+    this.cancelFeedbackChanged();
+    this.cancelDataTypeChanged();
   }
 
   public boolean isCanceled() {
@@ -64,7 +72,7 @@ public final class DNDAdapter implements IDNDAdapter {
     return ( Control )stateInfo.getAttribute( DETAIL_CHANGED_CONTROL );
   }
 
-  public void setFeedbackChanged( Control control, int feedback ) {
+  public void setFeedbackChanged( final Control control, final int feedback ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( FEEDBACK_CHANGED_VALUE, new Integer( feedback ) );
     stateInfo.setAttribute( FEEDBACK_CHANGED_CONTROL, control );
@@ -91,6 +99,36 @@ public final class DNDAdapter implements IDNDAdapter {
   public Control getFeedbackChangedControl() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return ( Control )stateInfo.getAttribute( FEEDBACK_CHANGED_CONTROL );
+  }
+
+  public void setDataTypeChanged( final Control control,
+                                  final TransferData dataType )
+  {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( DATATYPE_CHANGED_VALUE, dataType );
+    stateInfo.setAttribute( DATATYPE_CHANGED_CONTROL, control );
+  }
+
+  public void cancelDataTypeChanged() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( DATATYPE_CHANGED_VALUE, null );
+    stateInfo.setAttribute( DATATYPE_CHANGED_CONTROL, null );
+  }
+
+  public boolean hasDataTypeChanged() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Object value = stateInfo.getAttribute( DATATYPE_CHANGED_VALUE );
+    return value != null;
+  }
+
+  public TransferData getDataTypeChangedValue() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    return ( TransferData )stateInfo.getAttribute( DATATYPE_CHANGED_VALUE );
+  }
+
+  public Control getDataTypeChangedControl() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    return ( Control )stateInfo.getAttribute( DATATYPE_CHANGED_CONTROL );
   }
 
 }

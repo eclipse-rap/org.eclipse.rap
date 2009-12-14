@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd;
 
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Control;
 
 
@@ -28,4 +29,10 @@ public interface IDNDAdapter {
   boolean hasFeedbackChanged();
   int getFeedbackChangedValue();
   Control getFeedbackChangedControl();
+
+  void setDataTypeChanged( Control control, TransferData dataType );  
+  void cancelDataTypeChanged();
+  boolean hasDataTypeChanged();
+  TransferData getDataTypeChangedValue();
+  Control getDataTypeChangedControl();
 }
