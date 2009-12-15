@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 
 
 /**
- * This class serves as a session-wide buffer to store an later on merge the 
+ * This class serves as a session-wide buffer to store and later on merge the 
  * once stored request parameters with those of the current request. 
  */
 final class RequestParameterBuffer {
