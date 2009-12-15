@@ -19,8 +19,6 @@ package org.eclipse.swt.browser;
  * interested in.
  * </p>
  * 
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
- *
  * @since 1.3
  */
 public abstract class LocationAdapter implements LocationListener {

@@ -42,9 +42,6 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * within the SWT implementation.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#label">Label snippets</a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: ControlExample</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * <hr />
  * <strong>Note:</strong> Unlike in SWT, setting an image clears the text of the
  * label and vice versa. Thus, after calling <code>setText()</code>, the method

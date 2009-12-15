@@ -43,9 +43,6 @@ import org.eclipse.swt.widgets.*;
  * <dd>DefaultSelection, Modify, Selection, Verify</dd>
  * </dl>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#ccombo">CCombo snippets</a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: CustomControlExample</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.2
  */
 public final class CCombo extends Composite {

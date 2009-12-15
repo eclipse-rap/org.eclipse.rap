@@ -83,9 +83,6 @@ import org.eclipse.swt.widgets.Event;
  * </p>
  * 
  * @see TraverseListener
- * <!--
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information< /a>
- * -->
  * 
  * @since 1.2
  */

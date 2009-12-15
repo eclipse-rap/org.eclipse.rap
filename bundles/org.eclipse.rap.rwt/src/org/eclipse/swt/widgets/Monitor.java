@@ -15,8 +15,6 @@ import org.eclipse.swt.graphics.Rectangle;
  * Instances of this class are descriptions of monitors.
  *
  * @see Display
- * @see <a href="http://www.eclipse.org/swt/snippets/#monitor">Monitor snippets</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * 
  * @since 1.2
  */

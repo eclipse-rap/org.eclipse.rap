@@ -69,11 +69,6 @@ import org.eclipse.swt.widgets.*;
 *	});
 * </pre></code>
 *
-* <!--
-* @see <a href="http://www.eclipse.org/swt/snippets/#tableeditor">TableEditor snippets</a>
-* @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
-* -->
-*
 * @since 1.2
 */
 public class TableEditor extends ControlEditor {

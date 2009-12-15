@@ -62,9 +62,6 @@ import org.eclipse.swt.events.*;
  * </p>
  *
  * @see ScrollBar
- * @see <a href="http://www.eclipse.org/swt/snippets/#slider">Slider snippets</a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: ControlExample</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.2
  */
 public class Slider extends Control {

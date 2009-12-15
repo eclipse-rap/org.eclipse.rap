@@ -33,11 +33,6 @@ import org.eclipse.swt.events.*;
  * SWT implementation.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#scale">Scale snippets< /a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example:
- *      ControlExample< /a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further
- *      information< /a>
  * @since 1.2
  */
 public class Scale extends Control {
