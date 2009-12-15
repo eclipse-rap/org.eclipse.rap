@@ -106,6 +106,7 @@ public class ButtonTab extends ExampleTab {
     final Label label = new Label( group, SWT.NONE );
     label.setText( "Enter some text and press Return" );
     final Text text = new Text( group, SWT.BORDER | SWT.SINGLE );
+    text.setLayoutData( new RowData( 100, SWT.DEFAULT ) );
     defaultButton = new Button( group, style | SWT.PUSH );
     defaultButton.setText( "Default Button" );
     defaultButton.getShell().setDefaultButton( defaultButton );
@@ -125,13 +126,6 @@ public class ButtonTab extends ExampleTab {
       item.setText( "Item " + ( i + 1 ) );
     }
     parent.setMenu( menu );
-    parent.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent e ) {
-        int height = label.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y;
-        int width = height * 5;
-        text.setLayoutData( new RowData( width, height ) );
-      }
-    } );
   }
 
   private void createImageButton( final Composite parent ) {
@@ -145,7 +139,7 @@ public class ButtonTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void updateButtonImage( final Button button ) {
     if( showImage ) {
       if( buttonImage == null ) {
@@ -157,7 +151,7 @@ public class ButtonTab extends ExampleTab {
       button.setImage( null );
     }
   }
-  
+
   private void createGrayedButton( final Composite parent ) {
     final Button grayedButton = new Button( parent, SWT.CHECK );
     grayedButton.setText( "Grayed Check Buttons" );
@@ -168,7 +162,7 @@ public class ButtonTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void updateButtonGrayed( ) {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
