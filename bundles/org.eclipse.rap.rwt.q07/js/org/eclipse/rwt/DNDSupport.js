@@ -15,18 +15,19 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
   construct : function() {
     this.base( arguments );
+    this._dragSources = {};
+    this._dropTargets = {};
+    this._dropTargetEventQueue = {};    
+    this._requestScheduled = false;
     this._currentDragSource = null;
     this._currentDropTarget = null;
     this._currentTargetWidget = null;
-    this._requestScheduled = false;
-    this._dragSources = {};
-    this._dropTargets = {};
+    this._currentMousePosition = { x : 0, y : 0 };
     this._actionOverwrite = null;
-    this._dropTargetEventQueue = {};
-    this._feedback = null;
-    this._feedbackCode = 0;
-    this._feedbackWidget = null;
-    this._dataTypeOverwrite = null;
+    this._dataTypeOverwrite = null;    
+    this._dropFeedbackRenderer = null;
+    this._dropFeedbackFlags = 0;
+    this._dragFeedbackWidget = null;
   },
 
   members : {
@@ -101,15 +102,15 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._cleanUp()
     },
 
-    _sendDragSourceEvent : function( widget, type, mouseEvent ) {
+    _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var x = 0;
       var y = 0;
-      if( mouseEvent instanceof qx.event.type.MouseEvent ) {
-        x = mouseEvent.getPageX();
-        y = mouseEvent.getPageY();
+      if( qxDomEvent instanceof qx.event.type.MouseEvent ) {
+        x = qxDomEvent.getPageX();
+        y = qxDomEvent.getPageY();
       }
       var eventName = "org.eclipse.swt.dnd." + type;
       req.addEvent( eventName, id );
@@ -156,14 +157,17 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var mouseEvent = event.getMouseEvent();
       this._currentDropTarget = target;
       var action = this._computeCurrentAction( mouseEvent, target );
+      this._setAction( action, null );
       this._sendDropTargetEvent( target, "dragEnter", mouseEvent, action );
     },
 
     _dragMoveHandler : function( event ) {
       var target = event.getCurrentTarget();
       var mouseEvent = event.getMouseEvent();
+      this._currentMousePosition.x = mouseEvent.getPageX();
+      this._currentMousePosition.y = mouseEvent.getPageY();
       var action = this._computeCurrentAction( mouseEvent, target );
-      this._setAction( action );
+      this._setAction( action, mouseEvent );
       this._sendDropTargetEvent( target, "dragOver", mouseEvent, action );
     },    
 
@@ -191,13 +195,20 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._sendDropTargetEvent( target, "dropAccept", mouseEvent, action ); 
     },
     
-    _sendDropTargetEvent : function( widget, type, mouseEvent, action ) {
+    _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var item = this._getCurrentItemTarget();
       var itemId = item != null ? wm.findIdByWidget( item ) : null
-      var x = mouseEvent.getPageX();
-      var y = mouseEvent.getPageY();
+      var x = 0;
+      var y = 0;
+      if( qxDomEvent instanceof qx.event.type.MouseEvent ) {
+        x = qxDomEvent.getPageX();
+        y = qxDomEvent.getPageY();
+      } else {
+        x = this._currentMousePosition.x;
+        y = this._currentMousePosition.y;
+      }
       var source = wm.findIdByWidget( this._currentDragSource ); 
       var time = org.eclipse.swt.EventUtil.eventTimestamp();
       var operation = action == "alias" ? "link" : action; 
@@ -210,7 +221,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       param[ eventName + ".y" ] = y;
       param[ eventName + ".item" ] = itemId;
       param[ eventName + ".operation" ] = operation;
-      param[ eventName + ".feedback" ] = this._feedbackCode;
+      param[ eventName + ".feedback" ] = this._dropFeedbackFlags;
       param[ eventName + ".dataType" ] = this._dataTypeOverwrite;
       param[ eventName + ".source" ] = source;
       param[ eventName + ".time" ] = time;
@@ -261,13 +272,19 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     //////////
     // actions
 
-    _setAction : function( newAction ) {
+    _setAction : function( newAction, sourceEvent ) {
       // NOTE: using setCurrentAction would conflict with key events
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
       var oldAction = dndHandler.getCurrentAction();
       if( oldAction != newAction ) {
         dndHandler.clearActions();
         dndHandler.setAction( newAction );
+        if( sourceEvent != null ) {
+          this._sendDropTargetEvent( this._currentDropTarget,
+                                     "dragOperationChanged",
+                                     sourceEvent,
+                                     newAction );
+        }
       }
     },
     
@@ -302,7 +319,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         var dragActions = this._dragSources[ dragSourceHash ].actions;      
         if( !dragActions[ result ] || !dropActions[ result ] ) {
           result = "none";
-        }       
+        }
       }      
       return result;      
     },
@@ -311,20 +328,29 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     // feedback
 
     // TODO [tb] : allow overwrite using DropTarget.setDropTargetEffect?
+    /*
+     * Creates a feedback-renderer matching the given widget,
+     * "implementing" the following interface:
+     *  setFeedback : function( feedbackMap )
+     *  renderFeedback : function( target )
+     *  isFeedbackNode : function( node )
+     */
     _createFeedback : function( widget ) {
-      if( this._feedback == null ) {
+      if( this._dropFeedbackRenderer == null ) {
         if( widget instanceof org.eclipse.swt.widgets.Tree ) {
-          this._feedback = new org.eclipse.rwt.TreeDNDFeedback( widget );
+          this._dropFeedbackRenderer 
+            = new org.eclipse.rwt.TreeDNDFeedback( widget );
         } else if( widget instanceof org.eclipse.swt.widgets.Table ) {
-          this._feedback = new org.eclipse.rwt.TableDNDFeedback( widget );
+          this._dropFeedbackRenderer 
+            = new org.eclipse.rwt.TableDNDFeedback( widget );
         }
       }
     },
 
     _renderFeedback : function( target ) {
-      if( this._feedback != null ) {
+      if( this._dropFeedbackRenderer != null ) {
         var target = this._getCurrentFeedbackTarget()
-        this._feedback.renderFeedback( target );
+        this._dropFeedbackRenderer.renderFeedback( target );
       }
     },
     
@@ -352,12 +378,12 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getFeedbackWidget : function( control, target ) {
       var item = target;
       var success = false;
-      if( this._feedbackWidget == null ) {
-        this._feedbackWidget 
+      if( this._dragFeedbackWidget == null ) {
+        this._dragFeedbackWidget 
           = new org.eclipse.rwt.widgets.MultiCellWidget( [ "image", "label" ] );
-        this._feedbackWidget.setOpacity( 0.7 );
-        this._feedbackWidget.setEnabled( false );
-        this._feedbackWidget.setPadding( 2 );
+        this._dragFeedbackWidget.setOpacity( 0.7 );
+        this._dragFeedbackWidget.setEnabled( false );
+        this._dragFeedbackWidget.setPadding( 2 );
       }
       while( !success && item != control ) {
         if( item instanceof org.eclipse.swt.widgets.TreeItem ) {
@@ -365,17 +391,17 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           this._configureTreeItemFeedback( item );
         } else if( item instanceof org.eclipse.swt.widgets.TableRow ) {
           success = true;
-          this.configureTablwRowFeedback( item );
+          this.configureTableRowFeedback( item );
         }
         if( !success ) {
           item = item.getParent();
         }
       }
-      return success ? this._feedbackWidget : null;
+      return success ? this._dragFeedbackWidget : null;
     },
 
     _configureTreeItemFeedback : function( item ) {
-      var widget = this._feedbackWidget;
+      var widget = this._dragFeedbackWidget;
       if( item.getIcon() != null ) {
         var iconObject = item.getIconObject();
         widget.setCellContent( 0, item.getIcon() );
@@ -392,8 +418,8 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
     },
     
-    configureTablwRowFeedback : function( item ) {
-      var widget = this._feedbackWidget;
+    configureTableRowFeedback : function( item ) {
+      var widget = this._dragFeedbackWidget;
       if( item.getElement().childNodes.length > 0  ) {
         var rowDiv = item.getElement();
         var cellDiv = rowDiv.childNodes[ 0 ];
@@ -414,13 +440,13 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
     
     _resetFeedbackWidget : function() {
-      if( this._feedbackWidget != null ) {
-        this._feedbackWidget.setParent( null );
-        this._feedbackWidget.setFont( null );
-        this._feedbackWidget.setCellContent( 0, null );
-        this._feedbackWidget.setCellDimension( 0, null, null );
-        this._feedbackWidget.setCellContent( 1, null );
-        this._feedbackWidget.setBackgroundColor( null );
+      if( this._dragFeedbackWidget != null ) {
+        this._dragFeedbackWidget.setParent( null );
+        this._dragFeedbackWidget.setFont( null );
+        this._dragFeedbackWidget.setCellContent( 0, null );
+        this._dragFeedbackWidget.setCellDimension( 0, null, null );
+        this._dragFeedbackWidget.setCellContent( 1, null );
+        this._dragFeedbackWidget.setBackgroundColor( null );
       }
     },
 
@@ -436,9 +462,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     _onMouseOver : function( event ) {
       var target = event.getTarget();
-      if( this._feedback != null ) {
+      if( this._dropFeedbackRenderer != null ) {
         var node = event.getDomTarget();
-        if( !this._feedback.isFeedbackNode( node ) ) {
+        if( !this._dropFeedbackRenderer.isFeedbackNode( node ) ) {
           this.setCurrentTargetWidget( target );
         }
       } else {
@@ -463,7 +489,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
         var action 
           = this._computeCurrentAction( event, this._currentDropTarget );
-        this._setAction( action );
+        this._setAction( action, event );
         dndHandler._renderCursor();
       }
     },
@@ -483,6 +509,8 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._resetFeedbackWidget();
       this._currentDragSource = null;
       this._dataTypeOverwrite = null;
+      this._currentMousePosition.x = 0;
+      this._currentMousePosition.y = 0;      
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.removeEventListener( "mouseover", this._onMouseOver, this );
       doc.removeEventListener( "keydown", this._onKeyEvent, this );
@@ -538,28 +566,34 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         var action = operation == "link" ? "alias" : operation;
         var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
         this._actionOverwrite = action;
-        this._setAction( action );
+        this._setAction( action, null );
         dndHandler._renderCursor();
       }
     },
     
-    setFeedback : function( widget, feedback, code ) {
+    /*
+     * feedback is an array of strings with possible values
+     * "select", "before", "after", "expand" and "scroll", while
+     * flags is the "feedback"-field of SWTs dropTargetEvent,
+     * representing the same information as an integer. 
+     */
+    setFeedback : function( widget, feedback, flags ) {
       if( widget == this._currentDropTarget ) {
         if( feedback != null ) {
           this._createFeedback( widget );
-          if( this._feedback != null ) {
+          if( this._dropFeedbackRenderer != null ) {
             var feedbackMap = {};
             for( var i = 0; i < feedback.length; i++ ) {
               feedbackMap[ feedback[ i ] ] = true;
             }
-            this._feedback.setFeedback( feedbackMap );
+            this._dropFeedbackRenderer.setFeedback( feedbackMap );
             this._renderFeedback();
           }
-        } else if( this._feedback != null ) {
-          this._feedback.dispose();
-          this._feedback = null;
+        } else if( this._dropFeedbackRenderer != null ) {
+          this._dropFeedbackRenderer.dispose();
+          this._dropFeedbackRenderer = null;
         }
-        this._feedbackCode = code;
+        this._dropFeedbackFlags = flags;
       }
     },
     

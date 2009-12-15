@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.*;
  *
  * @see DragSourceAdapter
  * @see DragSourceEvent
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.3
  */
 public class DragSourceEffect extends DragSourceAdapter {

@@ -21,8 +21,6 @@ import org.eclipse.swt.widgets.Widget;
  * the DragSourceListener.
  * 
  * @see DragSourceListener
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further
- *      information</a>
  * @since 1.3
  */
 public class DragSourceEvent extends TypedEvent {

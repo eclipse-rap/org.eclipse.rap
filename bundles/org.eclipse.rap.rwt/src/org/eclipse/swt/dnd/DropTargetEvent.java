@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.Widget;
  * The DropTargetEvent contains the event information passed in the methods of
  * the DropTargetListener.
  * 
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further
- *      information</a>
  * @since 1.3
  */
 public class DropTargetEvent extends TypedEvent {

@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.*;
  * 
  * @see DropTargetAdapter
  * @see DropTargetEvent
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.3
  */
 public class DropTargetEffect extends DropTargetAdapter {

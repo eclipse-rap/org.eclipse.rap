@@ -22,7 +22,6 @@ package org.eclipse.swt.dnd;
  *
  * @see DropTargetListener
  * @see DropTargetEvent
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.3
  */
 public class DropTargetAdapter implements DropTargetListener {

@@ -22,8 +22,13 @@ qx.Class.define( "org.eclipse.rwt.TableDNDFeedback", {
 
   destruct : function() {
     this._renderFeedback( this._currentRow, false );
-    this._disposeObjects( "_scrollTimer" );
-    this._disposeFields( "_table", "_feedback", "_currentRow" );
+    if( this._scrollTimer != null ) {
+      this._scrollTimer.dispose();
+      this._scrollTimer = null;
+    }
+    this._table = null;
+    this._feedback = null;
+    this._currentRow = null;
   },
 
   members : {
