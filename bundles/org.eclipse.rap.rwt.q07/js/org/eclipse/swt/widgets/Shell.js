@@ -32,6 +32,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.getCaptionBar().setWidth( "100%" );
     // [if] Listen for DOM event instead of qooxdoo event - see bug 294846.
     this.removeEventListener( "mousedown", this._onwindowmousedown );
+    this.addEventListener( "create", this._onCreate, this );
     this.__onwindowmousedown
       = qx.lang.Function.bind( this._onwindowmousedown, this );
   },
@@ -137,7 +138,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
-    if( !qx.core.Object.inGlobalDispose() ) {
+    if( this.isCreated() ) {
       qx.html.EventRegistration.removeEventListener( this.getElement(),
                                                      "mousedown",
                                                      this.__onwindowmousedown );
@@ -150,11 +151,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   members : {
-    _applyElement : function( value, old ) {
-      this.base( arguments, value, old );
+    _onCreate : function( evt ) {
       qx.html.EventRegistration.addEventListener( this.getElement(),
                                                   "mousedown",
                                                   this.__onwindowmousedown );
+      this.removeEventListener( "create", this._onCreate, this );
     },
     
     // [if] Override to prevent the new open shell to automaticaly become
