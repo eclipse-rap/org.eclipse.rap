@@ -349,7 +349,7 @@ public class ViewStackPresentation extends ConfigurableStack {
             // disable conf button
             confButton.setEnabled( false );
             String toolTip =  currentPart.getName() +
-            		" has no actions or viewmenu to configure";
+                    " has no actions or viewmenu to configure";
             confButton.setToolTipText( toolTip );
           }
         }
@@ -638,7 +638,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       hideLastVisibleButton();
       manageOverflow();
     } else {
-      showLastChildIfNecessary();
+      showLastChildIfNecessary( 0 );
     }
     handleOverflowButton();
   }
@@ -723,18 +723,22 @@ public class ViewStackPresentation extends ConfigurableStack {
     manageOverflow();
   }
 
-  private void showLastChildIfNecessary() {
+  private void showLastChildIfNecessary( final int recursionCount ) {
     Control childToShow = getLastInvisibleButton();
     if( childToShow != null 
-        && futureTabChildrenSize( childToShow ) < tabBg.getBounds().width &&
-        tabBgHasInvisibleButtons() ) 
+        && futureTabChildrenSize( childToShow ) < tabBg.getBounds().width 
+        && tabBgHasInvisibleButtons() ) 
     {
       childToShow.setVisible( true );
       IPresentablePart part 
         = ( IPresentablePart ) buttonPartMap.get( childToShow );
       makePartButtonInactive( part );
       overflowButtons.remove( childToShow );
-      showLastChildIfNecessary();
+      tabBg.layout( true, true );
+      if( recursionCount <= tabBg.getChildren().length ) {
+        int newCount = recursionCount + 1;
+        showLastChildIfNecessary( newCount );
+      }
     }
   }
 
@@ -785,9 +789,9 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( buttonIsActive( children[ i ] ) ) {
           if( i > 0 ) {
             children[ i - 1 ].setVisible( false );
-            result = children[ i - 1 ];
-            children[ i ].moveAbove( children[ i - 1 ] );
+            result = children[ i - 1 ];            
             overflowButtons.add( children[ i - 1 ] );
+            children[ i ].moveAbove( children[ i - 1 ] );
           }
         } else {
           children[ i ].setVisible( false );
@@ -795,7 +799,9 @@ public class ViewStackPresentation extends ConfigurableStack {
           overflowButtons.add( children[ i ] );
         }
         lastChildHidden = true;
-        tabBg.layout( true, true );        
+
+        tabBg.layout( true, true ); 
+        
       }
     }
     return result;
@@ -803,6 +809,7 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private boolean buttonIsActive( final Control control ) {
     boolean result = false;
+    // check against the button variant
     if( control instanceof Composite ) {
       Composite buttonArea = ( Composite ) control;
       Control[] children = buttonArea.getChildren();
@@ -814,7 +821,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           }
         }
       }
-    }    
+    }            
     return result;
   }
 
