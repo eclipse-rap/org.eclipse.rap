@@ -12,10 +12,12 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -70,7 +72,15 @@ public class DialogsTab extends ExampleTab {
       }
     } );
     showInputDlgButton.setLayoutData( createGridDataFillBoth() );
-    insertSpaceLabels( group1, 2 );
+    Button showProgressDlgButton = new Button( group1, SWT.PUSH );
+    showProgressDlgButton.setText( "ProgressDialog" );
+    showProgressDlgButton.setLayoutData( createGridDataFillBoth() );
+    showProgressDlgButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        showProgressDialog();  
+      }
+    } );
+    insertSpaceLabels( group1, 1 );
 
     inputDlgResLabel = new Label( group1, SWT.WRAP );
     inputDlgResLabel.setText( "Result:" );
@@ -220,6 +230,26 @@ public class DialogsTab extends ExampleTab {
     }
     inputDlgResLabel.setText( resultText  );
     inputDlgResLabel.pack();
+  }
+
+  private void showProgressDialog() {
+    ProgressMonitorDialog dialog = new ProgressMonitorDialog( getShell() );
+    try {
+      dialog.run( true, true, new IRunnableWithProgress() {
+        public void run( final IProgressMonitor monitor )
+          throws InvocationTargetException, InterruptedException
+        {
+          monitor.beginTask( "Counting from one to 20...", 20 );
+          for( int i = 1; !monitor.isCanceled() && i <= 20; i++ ) {
+            monitor.worked( 1 );
+            Thread.sleep( 1000 );
+          }
+          monitor.done();
+        }
+      } );
+    } catch( Exception e ) {
+      MessageDialog.openError( getShell(), "Error", e.getMessage() );
+    }
   }
 
   private void showMessageDialogInfo() {
