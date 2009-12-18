@@ -348,10 +348,26 @@ qx.Mixin.define( "org.eclipse.rwt.GfxMixin", {
               cl.unselectable = this._htmlProperties[i];
           }
         }
+        if( this instanceof qx.ui.core.Parent ) {
+          this.forEachVisibleChild( function() {
+            this._beforeDisappear();
+          } );
+        }
         while( elem.firstChild ) {
           cl.appendChild( elem.firstChild );
         }
+        if( this instanceof qx.ui.core.Parent ) {
+          this.forEachVisibleChild( function() {
+            this._afterDisappear();
+            this._beforeAppear();
+          } );
+        }
         elem.appendChild( cl );
+        if( this instanceof qx.ui.core.Parent ) {
+          this.forEachVisibleChild( function() {
+            this._afterAppear();
+          } );
+        }
       } else {
         if( this._innerStyleHidden ) {
           this._setSimulatedPadding();
