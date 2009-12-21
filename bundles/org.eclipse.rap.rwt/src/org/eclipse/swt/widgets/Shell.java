@@ -165,8 +165,8 @@ public class Shell extends Decorations {
     createWidget();
     setInitialSize();
   }
-  
-  
+
+
   /**
    * Constructs a new instance of this class. This is equivalent
    * to calling <code>Shell((Display) null)</code>.
@@ -175,7 +175,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Shell() {
@@ -665,11 +665,10 @@ public class Shell extends Decorations {
    */
   public void open() {
     checkWidget();
-    bringToTop();
-    // Order of setVisible/setActive is crucial: see isVisible-check in
-    // Shell#setActive()
-    setVisible( true );
+    // Order of setActiveShell/bringToTop/setVisible is crucial
     display.setActiveShell( this );
+    bringToTop();
+    setVisible( true );
     if( !restoreFocus() && !traverseGroup( true ) ) {
       setFocus();
     }
