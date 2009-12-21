@@ -12,41 +12,39 @@ package org.eclipse.rwt.internal;
 
 import org.eclipse.rwt.AdapterFactory;
 
-
-
 /**
- * <p>An <code>AdapterManager</code> appears as a registry for 
- * <code>AdapterFactory</code> implementations. Clients directly de-/register 
- * <code>AdapterFactory</code> implementations at the manager.</p>
+ * <p>
+ * An <code>AdapterManager</code> appears as a registry for
+ * <code>AdapterFactory</code> implementations. Clients directly de-/register
+ * <code>AdapterFactory</code> implementations at the manager.
+ * </p>
+ * <p>
+ * <code>Adaptable</code> objects tunnel invocations of
+ * <code>Adaptable.getAdapter</code> to the manager's
+ * <code>AdapterManager.getAdapter</code> method. The manager itself dispatches
+ * the invocation to the <code>AdapterFactory</code> instance registered for the
+ * given adaptable object and requested adapter.
+ * </p>
+ * <p>
+ * Usage:
  * 
- * <p><code>Adaptable</code> objects tunnel invocations of 
- * <code>Adaptable.getAdapter</code> to the manager's 
- * <code>AdapterManager.getAdapter</code> method. The manager himself 
- * dispatches the invokation to the <code>AdapterFactory</code> instance 
- * registered for the given adaptable object and requested adapter.</p>  
- * 
- * <p>Usage:
  * <pre>
- *  AdapterFactory adapterFactory = new AdapterFactory() {
- *  
- *  public Class[] getAdapterList() {
+ * AdapterFactory adapterFactory = new AdapterFactory() {
+ *   public Class[] getAdapterList() {
  *     return new Class[] { MyAdapter.class };
  *   }
- *
- *  public Object getAdapter( final Object adaptable, 
- *                             final adapter ) {
+ *   public Object getAdapter( Object adaptable, Class adapter ) {
  *     MyAdaptableType adaptableInstance = ( MyAdaptableType )adaptable;
  *     return MyAdapterImpl( adaptableInstance );
  *   }
  * }
- * AdapterManager manager = W4TContext.getAdapterManager();
+ * AdapterManager manager = AdapterManagerImpl.getInstance();
  * manager.registerAdapters( adapterFactory, MyAdaptableType.class );
  * </pre>
- * 
  * </p>
- *
+ * 
  * @see org.eclipse.rwt.Adaptable
- * @see AdapterFactory 
+ * @see AdapterFactory
  */
 public interface AdapterManager {
   
