@@ -161,7 +161,6 @@ public final class ThemeManager {
 
   private final Set customAppearances;
   private final Map themes;
-  private final Map adapters;
   private final Set registeredThemeFiles;
   private boolean initialized;
   private Theme predefinedTheme;
@@ -176,7 +175,6 @@ public final class ThemeManager {
     themeableWidgets = new ThemeableWidgetHolder();
     customAppearances = new HashSet();
     themes = new LinkedHashMap();
-    adapters = new HashMap();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
     defaultStyleSheetBuilder = new StyleSheetBuilder();
@@ -216,7 +214,6 @@ public final class ThemeManager {
                                    themeableWidgets.getAll() );
       themes.put( PREDEFINED_THEME_ID, predefinedTheme );
       initialized = true;
-      logRegisteredThemeAdapters();
     }
   }
 
@@ -231,7 +228,6 @@ public final class ThemeManager {
       themeableWidgets = new ThemeableWidgetHolder();
       customAppearances.clear();
       themes.clear();
-      adapters.clear();
       registeredCssElements.clear();
       defaultStyleSheetBuilder = new StyleSheetBuilder();
       predefinedTheme = null;
@@ -409,39 +405,6 @@ public final class ThemeManager {
     return result;
   }
 
-  /**
-   * Returns the theme adapter to use for controls of the specified type.
-   *
-   * @param widgetClass
-   * @return the theme adapter
-   * @throws IllegalStateException if not initialized
-   * @throws IllegalArgumentException if no theme adapter has been registered
-   *           for the given widget
-   */
-  public IThemeAdapter getThemeAdapter( final Class widgetClass ) {
-    checkInitialized();
-    IThemeAdapter result = null;
-    if( adapters.containsKey( widgetClass ) ) {
-      result = ( IThemeAdapter )adapters.get( widgetClass );
-    } else {
-      Class clazz = widgetClass;
-      while(    clazz != null
-             && clazz != Widget.class
-             && !adapters.containsKey( clazz ) )
-      {
-        clazz = clazz.getSuperclass();
-      }
-      if( adapters.containsKey( clazz ) ) {
-        result = ( IThemeAdapter )adapters.get( clazz );
-      } else {
-        String msg = "No theme adapter registered for class "
-                     + widgetClass.getName();
-        throw new IllegalArgumentException( msg );
-      }
-    }
-    return result;
-  }
-
   ThemeableWidget getThemeableWidget( final Class widget ) {
     return themeableWidgets.get( widget );
   }
@@ -477,7 +440,6 @@ public final class ThemeManager {
         log( "  looking through package " + pkgName );
         found |= loadThemeDef( themeWidget, pkgName, className );
         found |= loadAppearanceJs( themeWidget, pkgName, className );
-        found |= loadThemeAdapter( themeWidget, pkgName, className );
         found |= loadDefaultCss( themeWidget, pkgName, className );
       }
       if( themeWidget.elements == null ) {
@@ -545,42 +507,6 @@ public final class ThemeManager {
     return result;
   }
 
-  /**
-   * Tries to load the theme adapter for a class from a given package.
-   */
-  private boolean loadThemeAdapter( final ThemeableWidget themeWidget,
-                                    final String pkgName,
-                                    final String className )
-  {
-    boolean result = false;
-    IThemeAdapter themeAdapter = null;
-    String adapterClassName = pkgName + '.' + className + "ThemeAdapter";
-    try {
-      ClassLoader classLoader = themeWidget.widget.getClassLoader();
-      Class adapterClass = classLoader.loadClass( adapterClassName );
-      themeAdapter = ( IThemeAdapter )adapterClass.newInstance();
-      if( themeAdapter != null ) {
-        log( "Found theme adapter class: " + themeAdapter.getClass().getName() );
-        result = true;
-        adapters.put( themeWidget.widget, themeAdapter );
-      }
-    } catch( final ClassNotFoundException e ) {
-      // ignore and try to load from next package name variant
-    } catch( final InstantiationException e ) {
-      String message =   "Failed to instantiate theme adapter class "
-                       + adapterClassName;
-      throw new ThemeManagerException( message, e );
-    } catch( final IllegalAccessException e ) {
-      String message =   "Failed to instantiate theme adapter class "
-                       + adapterClassName;
-      throw new ThemeManagerException( message, e );
-    }
-    return result;
-  }
-
-  /**
-   * Tries to load the theme adapter for a class from a given package.
-   */
   private boolean loadDefaultCss( final ThemeableWidget themeWidget,
                                   final String pkgName,
                                   final String className ) throws IOException
@@ -853,17 +779,6 @@ public final class ThemeManager {
     if( id.length() == 0 ) {
       throw new IllegalArgumentException( "empty id" );
     }
-  }
-
-  private void logRegisteredThemeAdapters() {
-    log( "=== REGISTERED ADAPTERS ===" );
-    Iterator iter = adapters.keySet().iterator();
-    while( iter.hasNext() ) {
-      Class key = ( Class )iter.next();
-      Object adapter = adapters.get( key );
-      log( key.getName() + ": " + adapter );
-    }
-    log( "=== END REGISTERED ADAPTERS ===" );
   }
 
   // TODO [rst] Replace with Logger calls

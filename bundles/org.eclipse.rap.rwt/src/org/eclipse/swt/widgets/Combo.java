@@ -9,17 +9,15 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
-
 
 /**
  * Instances of this class are controls that allow the user
@@ -1099,16 +1097,14 @@ public class Combo extends Composite {
   }
 
   private Rectangle getPadding() {
-    ThemeManager manager = ThemeManager.getInstance();
     ComboThemeAdapter adapter
-      = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
+      = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return adapter.getPadding( this );
   }
 
   private int getButtonWidth() {
-    ThemeManager manager = ThemeManager.getInstance();
     ComboThemeAdapter adapter
-      = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
+      = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return adapter.getButtonWidth( this );
   }
 

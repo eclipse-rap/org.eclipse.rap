@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
@@ -623,8 +624,7 @@ public class ToolItem extends Item {
   }
   
   private ToolBarThemeAdapter getToolBarThemeAdapter() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( ToolBarThemeAdapter )themeMgr.getThemeAdapter( ToolBar.class );
+    return ( ToolBarThemeAdapter )parent.getAdapter( IThemeAdapter.class );
   }
 
   /**

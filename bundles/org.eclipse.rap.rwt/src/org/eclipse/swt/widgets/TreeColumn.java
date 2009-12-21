@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
+import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
 
 /**
@@ -253,10 +254,9 @@ public class TreeColumn extends Item {
         contentWidth += MARGIN_IMAGE;
       }
     }
-    ThemeManager themeManager = ThemeManager.getInstance();
-    TableThemeAdapter adapter
-      = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
-    contentWidth += adapter.getHeaderPadding( parent ).width;
+    TreeThemeAdapter themeAdapter
+      = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+    contentWidth += themeAdapter.getHeaderPadding( parent ).width;
     return contentWidth;
   }
 

@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -830,10 +830,9 @@ public class Text extends Scrollable {
   }
 
   private Rectangle getPadding() {
-    ThemeManager manager = ThemeManager.getInstance();
-    TextThemeAdapter adapter
-      = ( TextThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getPadding( this );
+    TextThemeAdapter themeAdapter
+      = ( TextThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getPadding( this );
   }
 
   ////////////////////////////////////////////

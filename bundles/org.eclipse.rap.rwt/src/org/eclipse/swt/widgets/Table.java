@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -1830,9 +1830,8 @@ public class Table extends Composite {
     int itemImageHeight = getItemImageSize().y + paddingHeight;
     int result = Math.max( itemImageHeight, textHeight );
     if( ( style & SWT.CHECK ) != 0 ) {
-      ThemeManager themeManager = ThemeManager.getInstance();
       TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
+        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       result = Math.max( adapter.getCheckBoxImageSize( this ).y, result );
     }
     return result;
@@ -1852,10 +1851,9 @@ public class Table extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
-      Font headerFont = adapter.getHeaderFont( this );
+      TableThemeAdapter themeAdapter
+        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      Font headerFont = themeAdapter.getHeaderFont( this );
       int textHeight = TextSizeDetermination.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
@@ -1866,8 +1864,8 @@ public class Table extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
-      result += adapter.getHeaderBorderBottomWidth( this );
-      result += adapter.getHeaderPadding( this ).height;
+      result += themeAdapter.getHeaderBorderBottomWidth( this );
+      result += themeAdapter.getHeaderPadding( this ).height;
     }
     return result;
   }
@@ -2317,20 +2315,18 @@ public class Table extends Composite {
 
   Rectangle getCellPadding() {
     if( bufferedCellPadding == null ) {
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
-      bufferedCellPadding = adapter.getCellPadding( this );
+      TableThemeAdapter themeAdapter
+        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      bufferedCellPadding = themeAdapter.getCellPadding( this );
     }
     return bufferedCellPadding;
   }
 
   int getCellSpacing() {
     if( bufferedCellSpacing < 0 ) {
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
-      bufferedCellSpacing = adapter.getCellSpacing( parent );
+      TableThemeAdapter themeAdapter
+        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      bufferedCellSpacing = themeAdapter.getCellSpacing( parent );
     }
     return bufferedCellSpacing;
   }
@@ -2440,10 +2436,9 @@ public class Table extends Composite {
   final int getCheckWidth() {
     int result = 0;
     if( ( style & SWT.CHECK ) != 0 ) {
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
-      result = adapter.getCheckBoxWidth( this );
+      TableThemeAdapter themeAdapter
+        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getCheckBoxWidth( this );
     }
     return result;
   }

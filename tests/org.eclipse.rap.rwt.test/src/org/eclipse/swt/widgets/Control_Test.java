@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -820,9 +820,9 @@ public class Control_Test extends TestCase {
     control.setBackground( color );
     assertEquals( color, control.getBackground() );
     control.setBackground( null );
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    IControlThemeAdapter adapter = ( IControlThemeAdapter )themeMgr.getThemeAdapter( control.getClass() );
-    assertEquals( adapter.getBackground( control ), control.getBackground() );
+    IControlThemeAdapter themeAdapter
+      = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+    assertEquals( themeAdapter.getBackground( control ), control.getBackground() );
     Color color2 = new Color( display, 0, 0, 0 );
     color2.dispose();
     try {
@@ -885,9 +885,9 @@ public class Control_Test extends TestCase {
     control.setFont( itemFont );
     assertSame( itemFont, control.getFont() );
     control.setFont( null );
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    IControlThemeAdapter adapter = ( IControlThemeAdapter )themeMgr.getThemeAdapter( control.getClass() );
-    assertSame( adapter.getFont( control ), control.getFont() );
+    IControlThemeAdapter themeAdapter
+      = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+    assertSame( themeAdapter.getFont( control ), control.getFont() );
     // Test with images, that should appear on unselected tabs
     Font font = new Font( display, "Testfont", 10, SWT.BOLD );
     font.dispose();
@@ -906,9 +906,9 @@ public class Control_Test extends TestCase {
     control.setForeground( color );
     assertEquals( color, control.getForeground() );
     control.setForeground( null );
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    IControlThemeAdapter adapter = ( IControlThemeAdapter )themeMgr.getThemeAdapter( control.getClass() );
-    assertEquals( adapter.getForeground( control ), control.getForeground() );
+    IControlThemeAdapter themeAdapter
+      = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+    assertEquals( themeAdapter.getForeground( control ), control.getForeground() );
     Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
     try {

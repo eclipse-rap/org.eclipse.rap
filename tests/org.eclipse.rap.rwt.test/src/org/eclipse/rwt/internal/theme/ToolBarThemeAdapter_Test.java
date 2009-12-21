@@ -24,19 +24,16 @@ public class ToolBarThemeAdapter_Test extends TestCase {
   public void testGetItemPaddingAndBorderWidth() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
-    IThemeAdapter themeAdapter = themeManager.getThemeAdapter( ToolBar.class );
-    assertTrue( themeAdapter instanceof ToolBarThemeAdapter );
-    ToolBarThemeAdapter adapter = ( ToolBarThemeAdapter )themeAdapter;
     ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
-    assertEquals( 1, adapter.getItemBorderWidth( toolBar ) );
+    ToolBarThemeAdapter themeAdapter
+      = ( ToolBarThemeAdapter )toolBar.getAdapter( IThemeAdapter.class );
+    assertEquals( 1, themeAdapter.getItemBorderWidth( toolBar ) );
     assertEquals( new Rectangle( 3, 2, 6, 4 ),
-                  adapter.getItemPadding( toolBar ) );
+                  themeAdapter.getItemPadding( toolBar ) );
     ToolBar flatToolBar = new ToolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
-    assertEquals( 0, adapter.getItemBorderWidth( flatToolBar ) );
+    assertEquals( 0, themeAdapter.getItemBorderWidth( flatToolBar ) );
     assertEquals( new Rectangle( 4, 3, 8, 6 ),
-                  adapter.getItemPadding( flatToolBar ) );
+                  themeAdapter.getItemPadding( flatToolBar ) );
   }
 
   protected void setUp() throws Exception {

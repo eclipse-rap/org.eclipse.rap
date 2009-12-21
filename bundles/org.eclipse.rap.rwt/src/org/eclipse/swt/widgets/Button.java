@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -393,7 +393,8 @@ public class Button extends Control {
     if( height == 0 ) {
       height = 10;
     }
-    ButtonThemeAdapter themeAdapter = getThemeAdapter();
+    ButtonThemeAdapter themeAdapter
+      = ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
     if( hasText && hasImage ) {
       int spacing = themeAdapter.getSpacing( this );
       width += spacing;
@@ -512,10 +513,5 @@ public class Button extends Control {
       result = checkBits( result, SWT.UP, SWT.DOWN, SWT.LEFT, SWT.RIGHT, 0, 0 );
     }
     return result;
-  }
-
-  private static ButtonThemeAdapter getThemeAdapter() {
-    ThemeManager themeManager = ThemeManager.getInstance();
-    return ( ButtonThemeAdapter )themeManager.getThemeAdapter( Button.class );
   }
 }

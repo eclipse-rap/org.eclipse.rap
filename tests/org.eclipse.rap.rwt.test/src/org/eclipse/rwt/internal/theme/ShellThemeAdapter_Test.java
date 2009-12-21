@@ -31,26 +31,23 @@ public class ShellThemeAdapter_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
-    IThemeAdapter themeAdapter = themeManager.getThemeAdapter( Shell.class );
-    assertTrue( themeAdapter instanceof ShellThemeAdapter );
-    ShellThemeAdapter sta = ( ShellThemeAdapter )themeAdapter;
-    assertEquals( 1, sta.getBorderWidth( shell ) );
-    assertEquals( defFgColor, sta.getForeground( shell ) );
-    assertEquals( defBgColor, sta.getBackground( shell ) );
+    ShellThemeAdapter themeAdapter
+      = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    assertEquals( 1, themeAdapter.getBorderWidth( shell ) );
+    assertEquals( defFgColor, themeAdapter.getForeground( shell ) );
+    assertEquals( defBgColor, themeAdapter.getBackground( shell ) );
     shell.setMaximized( true );
-    assertEquals( 0, sta.getBorderWidth( shell ) );
+    assertEquals( 0, themeAdapter.getBorderWidth( shell ) );
   }
 
   public void testShellWithBorder() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.BORDER );
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
-    IThemeAdapter themeAdapter = themeManager.getThemeAdapter( Shell.class );
-    ShellThemeAdapter sta = ( ShellThemeAdapter )themeAdapter;
-    assertEquals( 2, sta.getBorderWidth( shell ) );
+    ShellThemeAdapter themeAdapter
+      = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    assertEquals( 2, themeAdapter.getBorderWidth( shell ) );
     shell.setMaximized( true );
-    assertEquals( 0, sta.getBorderWidth( shell ) );
+    assertEquals( 0, themeAdapter.getBorderWidth( shell ) );
   }
 
   protected void setUp() throws Exception {

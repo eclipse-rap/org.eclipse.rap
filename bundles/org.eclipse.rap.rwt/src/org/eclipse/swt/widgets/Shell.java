@@ -12,11 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
@@ -514,10 +516,10 @@ public class Shell extends Decorations {
   }
 
   private int getMinHeightLimit() {
-    int minHeightLimit = getTitleBarMargin().height;
-    minHeightLimit += getTitleBarHeight();
-    minHeightLimit += 2 * getBorderWidth();
-    return minHeightLimit;
+    int result = getTitleBarMargin().height;
+    result += getTitleBarHeight();
+    result += 2 * getBorderWidth();
+    return result;
   }
 
   private Rectangle getMenuBounds() {
@@ -537,31 +539,28 @@ public class Shell extends Decorations {
   }
 
   private int getTitleBarHeight() {
-    ShellThemeAdapter adapter = getShellThemeAdapter();
-    return adapter.getTitleBarHeight( this );
+    ShellThemeAdapter themeAdapter
+      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getTitleBarHeight( this );
   }
 
   private Rectangle getTitleBarMargin() {
-    ShellThemeAdapter adapter = getShellThemeAdapter();
-    return adapter.getTitleBarMargin( this );
+    ShellThemeAdapter themeAdapter
+      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getTitleBarMargin( this );
   }
 
   private int getMenuBarHeight() {
-    ShellThemeAdapter adapter = getShellThemeAdapter();
-    return adapter.getMenuBarHeight( this );
+    ShellThemeAdapter themeAdapter
+      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getMenuBarHeight( this );
   }
 
   // margin of the client area
   private Rectangle getPadding() {
-    ShellThemeAdapter adapter = getShellThemeAdapter();
-    return adapter.getPadding( this );
-  }
-
-  private ShellThemeAdapter getShellThemeAdapter() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
-    ShellThemeAdapter adapter = ( ShellThemeAdapter )themeAdapter;
-    return adapter;
+    ShellThemeAdapter themeAdapter
+      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getPadding( this );
   }
 
   Composite findDeferredControl() {

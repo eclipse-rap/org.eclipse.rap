@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * A Label which supports aligned text and/or an image and different border styles.
@@ -129,7 +131,8 @@ public class CLabel extends Canvas {
 
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    CLabelThemeAdapter themeAdapter = getThemeAdapter();
+    CLabelThemeAdapter themeAdapter
+      = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
     Rectangle padding = themeAdapter.getPadding( this );
     int borderWidth = themeAdapter.getBorderWidth( this );
     Point e = getTotalSize( image, text );
@@ -174,7 +177,8 @@ public class CLabel extends Canvas {
    */
   private Point getTotalSize( Image image, String text ) {
     Point size = new Point( 0, 0 );
-    CLabelThemeAdapter themeAdapter = getThemeAdapter();
+    CLabelThemeAdapter themeAdapter
+      = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
     int spacing = themeAdapter.getSpacing( this );
     if ( image != null ) {
       Rectangle r = image.getBounds();
@@ -396,9 +400,4 @@ public class CLabel extends Canvas {
 //    } while (pos != -1);
 //    return lines;
 //}
-
-  private static CLabelThemeAdapter getThemeAdapter() {
-    ThemeManager themeManager = ThemeManager.getInstance();
-    return ( CLabelThemeAdapter )themeManager.getThemeAdapter( CLabel.class );
-  }
 }

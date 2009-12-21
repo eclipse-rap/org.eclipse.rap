@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
@@ -1050,10 +1051,9 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionBackground;
     if( result == null ) {
-      ThemeManager themeMgr = ThemeManager.getInstance();
-      CTabFolderThemeAdapter adapter
-        = ( CTabFolderThemeAdapter )themeMgr.getThemeAdapter( CTabFolder.class );
-      result = adapter.getSelectedBackground( this );
+      CTabFolderThemeAdapter themeAdapter
+        = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getSelectedBackground( this );
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -1214,8 +1214,9 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionForeground;
     if( result == null ) {
-      CTabFolderThemeAdapter adapter = getCTabFolderThemeAdapter();
-      result = adapter.getSelectedForeground( this );
+      CTabFolderThemeAdapter themeAdapter
+        = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getSelectedForeground( this );
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -2256,11 +2257,6 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   //////////////////
   // Theming related
 
-  private CTabFolderThemeAdapter getCTabFolderThemeAdapter() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( CTabFolderThemeAdapter )themeMgr.getThemeAdapter( CTabFolder.class );
-  }
-
   int getItemPaddingLeft( final boolean selected ) {
     return getItemPadding( selected ).x;
   }
@@ -2271,11 +2267,15 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   }
 
   Rectangle getItemPadding( final boolean selected ) {
-    return getCTabFolderThemeAdapter().getItemPadding( selected );
+    CTabFolderThemeAdapter themeAdapter
+      = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getItemPadding( selected );
   }
 
   int getItemSpacing( final boolean selected ) {
-    return getCTabFolderThemeAdapter().getItemSpacing( selected );
+    CTabFolderThemeAdapter themeAdapter
+      = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getItemSpacing( selected );
   }
 
   ////////////////

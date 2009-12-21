@@ -25,9 +25,8 @@ public class ControlThemeAdapter_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.BORDER );
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
-    IThemeAdapter themeAdapter = themeManager.getThemeAdapter( Label.class );
+    IThemeAdapter themeAdapter
+      = ( IThemeAdapter )label.getAdapter( IThemeAdapter.class );
     assertTrue( themeAdapter instanceof ControlThemeAdapter );
     ControlThemeAdapter cta = ( ControlThemeAdapter )themeAdapter;
     assertEquals( 1, cta.getBorderWidth( label ) );

@@ -9,8 +9,9 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
@@ -1099,17 +1100,15 @@ public final class CCombo extends Composite {
 
   // Made in the same way as in Combo.java
   private Rectangle getPadding() {
-    ThemeManager manager = ThemeManager.getInstance();
-    CComboThemeAdapter adapter
-      = ( CComboThemeAdapter )manager.getThemeAdapter( CCombo.class );
-    return adapter.getPadding( this );
+    CComboThemeAdapter themeAdapter
+      = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getPadding( this );
   }
 
   private int getButtonWidth() {
-    ThemeManager manager = ThemeManager.getInstance();
-    CComboThemeAdapter adapter
-      = ( CComboThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getButtonWidth( this );
+    CComboThemeAdapter themeAdapter
+      = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getButtonWidth( this );
   }
 
   private static int checkStyle( final int style ) {

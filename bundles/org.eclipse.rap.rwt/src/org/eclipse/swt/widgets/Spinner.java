@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -591,17 +592,15 @@ public class Spinner extends Composite {
   // Helping methods
 
   private Rectangle getPadding() {
-    ThemeManager manager = ThemeManager.getInstance();
-    SpinnerThemeAdapter adapter
-      = ( SpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getPadding( this );
+    SpinnerThemeAdapter themeAdapter
+      = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getPadding( this );
   }
   
   private int getButtonWidth() {
-    ThemeManager manager = ThemeManager.getInstance();
-    SpinnerThemeAdapter adapter
-      = ( SpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getButtonWidth( this );
+    SpinnerThemeAdapter themeAdapter
+      = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getButtonWidth( this );
   }
 
   private static int checkStyle( final int style ) {

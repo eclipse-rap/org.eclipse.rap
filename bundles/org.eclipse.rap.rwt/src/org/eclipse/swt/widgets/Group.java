@@ -12,8 +12,8 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
 
@@ -136,8 +136,9 @@ public class Group extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    GroupThemeAdapter adapter = getGroupThemeAdapter();
-    Rectangle trimmings = adapter.getTrimmingSize( this );
+    GroupThemeAdapter themeAdapter
+      = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+    Rectangle trimmings = themeAdapter.getTrimmingSize( this );
     int border = getBorderWidth();
     int width = Math.max( 0, bounds.width - trimmings.width - 2 * border );
     int height = Math.max( 0, bounds.height - trimmings.height - 2 * border );
@@ -149,8 +150,9 @@ public class Group extends Composite {
                                 final int width,
                                 final int height )
   {
-    GroupThemeAdapter adapter = getGroupThemeAdapter();
-    Rectangle trimmings = adapter.getTrimmingSize( this );
+    GroupThemeAdapter themeAdapter
+      = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+    Rectangle trimmings = themeAdapter.getTrimmingSize( this );
     int border = getBorderWidth();
     return super.computeTrim( x - trimmings.x - border,
                               y - trimmings.y - border,
@@ -168,8 +170,9 @@ public class Group extends Composite {
     if( length != 0 ) {
       Font font = getFont();
       Point stringExtent = Graphics.stringExtent( font, text );
-      GroupThemeAdapter adapter = getGroupThemeAdapter();
-      Rectangle headTrimmings = adapter.getHeaderTrimmingSize( this );
+      GroupThemeAdapter themeAdapter
+        = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+      Rectangle headTrimmings = themeAdapter.getHeaderTrimmingSize( this );
       int headerWidth = stringExtent.x + headTrimmings.width;
       result.x = Math.max( result.x, headerWidth );
     }
@@ -191,11 +194,5 @@ public class Group extends Composite {
      * widget's client area. The fix is to clear the SWT style.
      */
     return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
-  }
-
-  private GroupThemeAdapter getGroupThemeAdapter() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
-    return ( GroupThemeAdapter )themeAdapter;
   }
 }

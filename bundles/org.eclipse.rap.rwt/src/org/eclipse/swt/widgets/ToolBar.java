@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
@@ -284,18 +285,15 @@ public class ToolBar extends Composite {
   }
 
   public int getBorderWidth() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getBorderWidth( this );
+    ToolBarThemeAdapter themeAdapter
+      = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getBorderWidth( this );
   }
 
   Rectangle getToolBarPadding() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getToolBarPadding( this );
-  }
-
-  private ToolBarThemeAdapter getToolBarThemeAdapter() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( ToolBarThemeAdapter )themeMgr.getThemeAdapter( ToolBar.class );
+    ToolBarThemeAdapter themeAdapter
+      = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getToolBarPadding( this );
   }
 
   /**

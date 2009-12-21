@@ -25,24 +25,6 @@ public class ThemeManager_Test extends TestCase {
   private static final ResourceLoader LOADER
     = ThemeTestUtil.createResourceLoader( ThemeManager_Test.class );
 
-  public void testThemeAdapters() {
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
-    IThemeAdapter themeAdapter;
-    // Control
-    themeAdapter = themeManager.getThemeAdapter( Control.class );
-    assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof IControlThemeAdapter );
-    // Button
-    themeAdapter = themeManager.getThemeAdapter( Button.class );
-    assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof ButtonThemeAdapter );
-    // Shell
-    themeAdapter = themeManager.getThemeAdapter( Shell.class );
-    assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof ShellThemeAdapter );
-  }
-
   public void testReset() {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();

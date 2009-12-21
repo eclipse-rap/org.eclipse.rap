@@ -16,8 +16,10 @@ import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.events.EventAdapter;
 import org.eclipse.rwt.internal.events.IEventAdapter;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.widgets.*;
@@ -164,6 +166,10 @@ public abstract class Widget implements Adaptable {
         widgetAdapter = new WidgetAdapter();
       }
       result = widgetAdapter;
+    } else if( adapter == IThemeAdapter.class ) {
+      // This also bypasses the AdapterManager for the sake of performance.
+      // ThemeAdapters are requested frequently during size computations.
+      result = ThemeAdapterUtil.getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();
@@ -175,7 +181,7 @@ public abstract class Widget implements Adaptable {
         adapterManager = AdapterManagerImpl.getInstance();
       }
       result = adapterManager.getAdapter( this, adapter );
-    } 
+    }
     return result;
   }
 

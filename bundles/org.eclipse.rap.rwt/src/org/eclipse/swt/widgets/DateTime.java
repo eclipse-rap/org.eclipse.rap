@@ -15,8 +15,9 @@ import java.text.*;
 import java.util.*;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
@@ -966,24 +967,21 @@ public class DateTime extends Composite {
   }
 
   private int getSpinnerButtonWidth() {
-    ThemeManager manager = ThemeManager.getInstance();
-    DateTimeThemeAdapter adapter
-      = ( DateTimeThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getSpinnerButtonWidth( this );
+    DateTimeThemeAdapter themeAdapter
+      = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getSpinnerButtonWidth( this );
   }
 
   private int getDropDownButtonWidth() {
-    ThemeManager manager = ThemeManager.getInstance();
-    DateTimeThemeAdapter adapter
-      = ( DateTimeThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getDropDownButtonWidth( this );
+    DateTimeThemeAdapter themeAdapter
+      = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getDropDownButtonWidth( this );
   }
 
   private Rectangle getPadding() {
-    ThemeManager manager = ThemeManager.getInstance();
-    DateTimeThemeAdapter adapter
-      = ( DateTimeThemeAdapter )manager.getThemeAdapter( getClass() );
-    return adapter.getPadding( this );
+    DateTimeThemeAdapter themeAdapter
+      = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getPadding( this );
   }
 
   String getNameText() {

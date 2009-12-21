@@ -14,9 +14,10 @@ package org.eclipse.swt.widgets;
 import java.util.*;
 import java.util.List;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -1103,11 +1104,10 @@ public class Tree extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TreeThemeAdapter adapter
-        = ( TreeThemeAdapter )themeManager.getThemeAdapter( Tree.class );
-      result += adapter.getHeaderBorderBottomWidth( this );
-      result += adapter.getHeaderPadding( this ).height;
+      TreeThemeAdapter themeAdapter
+        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+      result += themeAdapter.getHeaderBorderBottomWidth( this );
+      result += themeAdapter.getHeaderPadding( this ).height;
     }
     return result;
   }

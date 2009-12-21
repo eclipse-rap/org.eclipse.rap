@@ -12,13 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.*;
+import org.eclipse.swt.internal.events.ShowEvent;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
@@ -416,8 +416,9 @@ public abstract class Control extends Widget {
     }
     Color result = control.background;
     if( result == null ) {
-      IControlThemeAdapter adapter = getControlThemeAdapter( control.getClass() );
-      result = adapter.getBackground( control );
+      IControlThemeAdapter themeAdapter = 
+        ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getBackground( control );
     }
     Shell shell = control.getShell();
     control = control.parent;
@@ -525,8 +526,9 @@ public abstract class Control extends Widget {
     checkWidget();
     Color result = foreground;
     if( result == null ) {
-      IControlThemeAdapter adapter = getControlThemeAdapter();
-      result = adapter.getForeground( this );
+      IControlThemeAdapter themeAdapter
+        = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getForeground( this );
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -637,8 +639,9 @@ public abstract class Control extends Widget {
     checkWidget();
     Font result = font;
     if( result == null ) {
-      IControlThemeAdapter adapter = getControlThemeAdapter();
-      result = adapter.getFont( this );
+      IControlThemeAdapter themeAdapter
+        = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getFont( this );
     }
     return result;
   }
@@ -1117,8 +1120,9 @@ public abstract class Control extends Widget {
    */
   public int getBorderWidth() {
     checkWidget();
-    IControlThemeAdapter adapter = getControlThemeAdapter();
-    return adapter.getBorderWidth( this );
+    IControlThemeAdapter themeAdapter
+      = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getBorderWidth( this );
   }
 
   /**
@@ -2126,16 +2130,5 @@ public abstract class Control extends Widget {
     if( menu != null ) {
       menu.removeDisposeListener( menuDisposeListener );
     }
-  }
-
-  private IControlThemeAdapter getControlThemeAdapter() {
-    return getControlThemeAdapter( this.getClass() );
-  }
-
-  private IControlThemeAdapter getControlThemeAdapter(
-    final Class controlClass )
-  {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( IControlThemeAdapter )themeMgr.getThemeAdapter( controlClass );
   }
 }

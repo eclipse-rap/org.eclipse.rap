@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -467,10 +468,9 @@ public class TableColumn extends Item {
       {
         width += SORT_INDICATOR_WIDTH + SPACING;
       }
-      ThemeManager themeManager = ThemeManager.getInstance();
-      TableThemeAdapter adapter
-        = ( TableThemeAdapter )themeManager.getThemeAdapter( Table.class );
-      width += adapter.getHeaderPadding( parent ).width;
+      TableThemeAdapter themeAdapter
+        = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+      width += themeAdapter.getHeaderPadding( parent ).width;
     }
     // Mimic Windows behaviour that forces first item to resolve
     if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {
