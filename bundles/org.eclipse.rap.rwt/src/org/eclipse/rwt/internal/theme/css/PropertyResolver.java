@@ -16,34 +16,13 @@ import java.util.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.LexicalUnit;
 
-
 /**
  * Utility class to read values from LexicalUnits.
  */
 public final class PropertyResolver {
 
-  private static final String TYPE_BOOLEAN = "boolean";
-
-  private static final String TYPE_BORDER = "border";
-
-  private static final String TYPE_DIMENSION = "dimension";
-
-  private static final String TYPE_BOXDIMENSIONS = "boxdim";
-
-  private static final String TYPE_COLOR = "color";
-
-  private static final String TYPE_FONT = "font";
-
-  private static final String TYPE_IMAGE = "image";
-
-  private static final String TYPE_TEXT_DECORATION = "text-decoration";
-
-  private static final String TYPE_CURSOR = "cursor";
-
   private static final String BOLD = "bold";
-
   private static final String ITALIC = "italic";
-
   private static final String NORMAL = "normal";
   // No border; the computed border width is zero.
   private static final String NONE = "none";
@@ -69,49 +48,39 @@ public final class PropertyResolver {
   // The opposite of 'inset': the border makes the box look as though it were
   // coming out of the canvas.
   private static final String OUTSET = "outset";
-
   /** A thin border. */
   private static final String THIN = "thin";
-
   /** A medium border. */
   private static final String MEDIUM = "medium";
-
   /** A thick border. */
   private static final String THICK = "thick";
-
   private static final String TRANSPARENT = "transparent";
-
   private static final Map NAMED_COLORS = new HashMap();
-
   private static final List BORDER_STYLES = new ArrayList();
-
   /** Width value for "thin" identifier. */
   static final int THIN_VALUE = 1;
-
   /** Width value for "medium" identifier. */
   static final int MEDIUM_VALUE = 3;
-
   /** Width value for "thick" identifier. */
   static final int THICK_VALUE = 5;
-
   static {
     // register 16 standard HTML colors
-    NAMED_COLORS.put( "black", new int[] { 0, 0, 0 } );
-    NAMED_COLORS.put( "gray", new int[] { 128, 128, 128 } );
-    NAMED_COLORS.put( "silver", new int[] { 192, 192, 192 } );
-    NAMED_COLORS.put( "white", new int[] { 255, 255, 255 } );
-    NAMED_COLORS.put( "maroon", new int[] { 128, 0, 0 } );
-    NAMED_COLORS.put( "red", new int[] { 255, 0, 0 } );
-    NAMED_COLORS.put( "purple", new int[] { 128, 0, 128 } );
-    NAMED_COLORS.put( "fuchsia", new int[] { 255, 0, 255 } );
-    NAMED_COLORS.put( "green", new int[] { 0, 128, 0 } );
-    NAMED_COLORS.put( "lime", new int[] { 0, 255, 0 } );
-    NAMED_COLORS.put( "navy", new int[] { 0, 0, 128 } );
-    NAMED_COLORS.put( "blue", new int[] { 0, 0, 255 } );
-    NAMED_COLORS.put( "olive", new int[] { 128, 128, 0 } );
-    NAMED_COLORS.put( "yellow", new int[] { 255, 255, 0 } );
-    NAMED_COLORS.put( "teal", new int[] { 0, 128, 128 } );
-    NAMED_COLORS.put( "aqua", new int[] { 0, 255, 255 } );
+    NAMED_COLORS.put( "black", new NamedColor( 0, 0, 0 ) );
+    NAMED_COLORS.put( "gray", new NamedColor( 128, 128, 128 ) );
+    NAMED_COLORS.put( "silver", new NamedColor( 192, 192, 192 ) );
+    NAMED_COLORS.put( "white", new NamedColor( 255, 255, 255 ) );
+    NAMED_COLORS.put( "maroon", new NamedColor( 128, 0, 0 ) );
+    NAMED_COLORS.put( "red", new NamedColor( 255, 0, 0 ) );
+    NAMED_COLORS.put( "purple", new NamedColor( 128, 0, 128 ) );
+    NAMED_COLORS.put( "fuchsia", new NamedColor( 255, 0, 255 ) );
+    NAMED_COLORS.put( "green", new NamedColor( 0, 128, 0 ) );
+    NAMED_COLORS.put( "lime", new NamedColor( 0, 255, 0 ) );
+    NAMED_COLORS.put( "navy", new NamedColor( 0, 0, 128 ) );
+    NAMED_COLORS.put( "blue", new NamedColor( 0, 0, 255 ) );
+    NAMED_COLORS.put( "olive", new NamedColor( 128, 128, 0 ) );
+    NAMED_COLORS.put( "yellow", new NamedColor( 255, 255, 0 ) );
+    NAMED_COLORS.put( "teal", new NamedColor( 0, 128, 128 ) );
+    NAMED_COLORS.put( "aqua", new NamedColor( 0, 255, 255 ) );
     // register border styles
     BORDER_STYLES.add( NONE );
     BORDER_STYLES.add( HIDDEN );
@@ -130,77 +99,38 @@ public final class PropertyResolver {
                                         final ResourceLoader loader )
   {
     QxType result;
-    String type = getType( name );
-    if( type == null ) {
-      throw new IllegalArgumentException( "Unknown property " + name );
-    }
-    if( TYPE_BOOLEAN.equals( type ) ) {
-      throw new IllegalArgumentException( "Currently not supported" );
-    } else if( TYPE_BORDER.equals( type ) ) {
+    if( isBorderProperty( name ) ) {
       result = readBorder( unit );
-    } else if( TYPE_BOXDIMENSIONS.equals( type ) ) {
+    } else if( isBoxDimensionProperty( name ) ) {
       result = readBoxDimensions( unit );
-    } else if( TYPE_COLOR.equals( type ) ) {
+    } else if( isColorProperty( name ) ) {
       result = readColor( unit );
-    } else if( TYPE_DIMENSION.equals( type ) ) {
+    } else if( isDimensionProperty( name ) ) {
       result = readDimension( unit );
-    } else if( TYPE_FONT.equals( type ) ) {
+    } else if( isFontProperty( name ) ) {
       result = readFont( unit );
-    } else if( TYPE_IMAGE.equals( type ) ) {
+    } else if( isImageProperty( name ) ) {
       result = readBackgroundImage( unit, loader );
-    } else if( TYPE_TEXT_DECORATION.equals( type ) ) {
+    } else if( isTextDecorationProperty( name ) ) {
       result = readTextDecoration( unit );
-    } else if( TYPE_CURSOR.equals( type ) ) {
+    } else if( isCursorProperty( name ) ) {
       result = readCursor( unit, loader );
     } else {
-      throw new RuntimeException( "Illegal type " + type );
-    }
-    if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse value "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Unknown property " + name );
     }
     return result;
   }
 
-  public static String getType( final String property ) {
-    // TODO [rst] respect properties declared in theme.xml files
-    String result = null;
-    if(    "padding".equals( property )
-        || "margin".equals( property )
-        || "border-radius".equals( property ) )
-    {
-      result = TYPE_BOXDIMENSIONS;
-    } else if(    "color".equals( property )
-               || property.endsWith( "-color" ) )
-    {
-      result = TYPE_COLOR;
-    } else if( "font".equals( property ) ) {
-      result = TYPE_FONT;
-    } else if(    "border".equals( property )
-               || "border-bottom".equals( property ) )
-    {
-      result = TYPE_BORDER;
-    } else if(    "spacing".equals( property )
-               || "width".equals( property )
-               || "height".equals( property ) )
-    {
-      result = TYPE_DIMENSION;
-    } else if( property.endsWith( "-image" ) ) {
-      result = TYPE_IMAGE;
-    } else if( "text-decoration".equals( property ) ) {
-      result = TYPE_TEXT_DECORATION;
-    } else if( "cursor".equals( property ) ) {
-      result = TYPE_CURSOR;
-    }
-    return result;
+  static boolean isColorProperty( final String property ) {
+    return "color".equals( property ) || property.endsWith( "-color" );
   }
 
-  static QxColor readColor( final LexicalUnit input ) {
+  static QxColor readColor( final LexicalUnit unit ) {
     QxColor result = null;
-    short type = input.getLexicalUnitType();
+    short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_RGBCOLOR ) {
       // The parser ensures that we have exactly three parameters for this type
-      LexicalUnit redParam = input.getParameters();
+      LexicalUnit redParam = unit.getParameters();
       LexicalUnit greenParam
         = redParam.getNextLexicalUnit().getNextLexicalUnit();
       LexicalUnit blueParam
@@ -226,22 +156,32 @@ public final class PropertyResolver {
           result = QxColor.create( red, green, blue );
         }
       }
-    } else if( type == LexicalUnit.SAC_FUNCTION
-               && "rgb".equals( input.getFunctionName() ) )
+    } else if(    type == LexicalUnit.SAC_FUNCTION
+               && "rgb".equals( unit.getFunctionName() ) )
     {
       throw new IllegalArgumentException( "Failed to parse rgb() function" );
     } else if( type == LexicalUnit.SAC_IDENT ) {
-      String string = input.getStringValue();
+      String string = unit.getStringValue();
       if( TRANSPARENT.equals( string ) ) {
         result = QxColor.TRANSPARENT;
       } else if( NAMED_COLORS.containsKey( string.toLowerCase() ) ) {
-        int[] values = ( int[] )NAMED_COLORS.get( string.toLowerCase() );
-        result = QxColor.create( values[ 0 ], values[ 1 ], values[ 2 ] );
+        NamedColor color = ( NamedColor )NAMED_COLORS.get( string.toLowerCase() );
+        result = QxColor.create( color.red, color.green, color.blue );
       }
     } else if( type == LexicalUnit.SAC_INHERIT ) {
       result = QxColor.TRANSPARENT;
     }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse color "
+                                          + toString( unit ) );
+    }
     return result;
+  }
+
+  static boolean isDimensionProperty( final String property ) {
+    return    "spacing".equals( property )
+           || "width".equals( property )
+           || "height".equals( property );
   }
 
   static QxDimension readDimension( final LexicalUnit unit ) {
@@ -250,7 +190,57 @@ public final class PropertyResolver {
     if( length != null ) {
       result = QxDimension.create( length.intValue() );
     }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse dimension "
+                                          + toString( unit ) );
+    }
     return result;
+  }
+
+  static boolean isBorderProperty( final String property ) {
+    return "border".equals( property ) || "border-bottom".equals( property );
+  }
+
+  static QxBorder readBorder( final LexicalUnit unit ) {
+    QxBorder result = null;
+    QxColor color = null;
+    String style = null;
+    int width = -1;
+    LexicalUnit nextUnit = unit;
+    boolean consumed = false;
+    while( nextUnit != null ) {
+      consumed = false;
+      if( !consumed && width == -1 ) {
+        width = readBorderWidth( nextUnit );
+        consumed |= width != -1;
+      }
+      if( !consumed && style == null ) {
+        style = readBorderStyle( nextUnit );
+        consumed |= style != null;
+      }
+      if( !consumed && color == null ) {
+        color = readColor( nextUnit );
+        consumed |= color != null;
+      }
+      nextUnit = consumed ? nextUnit.getNextLexicalUnit() : null;
+    }
+    if( consumed ) {
+      // TODO [rst] create should take a QxColor
+      result = QxBorder.create( width == -1 ? 0 : width,
+                                style,
+                                color != null ? color.toDefaultString() : null );
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse border "
+                                          + toString( unit ) );
+    }
+    return result;
+  }
+
+  static boolean isBoxDimensionProperty( final String property ) {
+    return "padding".equals( property )
+           || "margin".equals( property )
+           || "border-radius".equals( property );
   }
 
   static QxBoxDimensions readBoxDimensions( final LexicalUnit unit ) {
@@ -278,9 +268,13 @@ public final class PropertyResolver {
         nextUnit = nextUnit.getNextLexicalUnit();
       }
       ok &= nextUnit == null;
-      if( ok  ) {
+      if( ok ) {
         result = QxBoxDimensions.create( top, right, bottom, left );
       }
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse box dimensions "
+                                          + toString( unit ) );
     }
     return result;
   }
@@ -318,34 +312,55 @@ public final class PropertyResolver {
     return result;
   }
 
-  static QxBorder readBorder( final LexicalUnit unit ) {
-    QxBorder result = null;
-    QxColor color = null;
+  static boolean isFontProperty( final String property ) {
+    return "font".equals( property );
+  }
+
+  // The format of a URI value is 'url(' followed by optional whitespace
+  // followed by an optional single quote (') or double quote (") character
+  // followed by the URI itself, followed by an optional single quote (') or
+  // double quote (") character followed by optional whitespace followed by ')'.
+  // The two quote characters must be the same.
+  static QxFont readFont( final LexicalUnit unit ) {
+    QxFont result = null;
+    String[] family = null;
     String style = null;
-    int width = -1;
-    LexicalUnit nextUnit = unit;
+    String weight = null;
+    int size = -1;
     boolean consumed = false;
-    while( nextUnit != null ) {
+    boolean consumedSize = false;
+    boolean consumedFamily = false;
+    LexicalUnit nextUnit = unit;
+    while( nextUnit != null && !consumedFamily ) {
       consumed = false;
-      if( !consumed && width == -1 ) {
-        width = readBorderWidth( nextUnit );
-        consumed |= width != -1;
-      }
-      if( !consumed && style == null ) {
-        style = readBorderStyle( nextUnit );
+      if( !consumed && !consumedSize && style == null ) {
+        style = readFontStyle( nextUnit );
         consumed |= style != null;
       }
-      if( !consumed && color == null ) {
-        color = readColor( nextUnit );
-        consumed |= color != null;
+      if( !consumed && !consumedSize && weight == null ) {
+        weight = readFontWeight( nextUnit );
+        consumed |= weight != null;
+      }
+      if( !consumed && !consumedFamily && size == -1 ) {
+        size = readFontSize( nextUnit );
+        consumedSize = size != -1;
+        consumed |= consumedSize;
+      }
+      if( !consumed && consumedSize && family == null ) {
+        family = readFontFamily( nextUnit );
+        consumedFamily = family != null;
+        consumed |= consumedFamily;
       }
       nextUnit = consumed ? nextUnit.getNextLexicalUnit() : null;
     }
-    if( consumed ) {
-      // TODO [rst] create should take a QxColor
-      result = QxBorder.create( width == -1 ? 0 : width,
-                                style,
-                                color != null ? color.toDefaultString() : null );
+    if( consumed && consumedSize && consumedFamily ) {
+      boolean bold = BOLD.equals( weight );
+      boolean italic = ITALIC.equals( style );
+      result = QxFont.create( family, size, bold, italic );
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse font "
+                                          + toString( unit ) );
     }
     return result;
   }
@@ -397,7 +412,7 @@ public final class PropertyResolver {
     String buffer = "";
     while( nextUnit != null && ok ) {
       short type = nextUnit.getLexicalUnitType();
-      if( type == LexicalUnit.SAC_STRING_VALUE
+      if(    type == LexicalUnit.SAC_STRING_VALUE
           || type == LexicalUnit.SAC_IDENT )
       {
         if( buffer.length() > 0 ) {
@@ -423,63 +438,13 @@ public final class PropertyResolver {
     return result;
   }
 
-  // The format of a URI value is 'url(' followed by optional whitespace
-  // followed by an optional single quote (') or double quote (") character
-  // followed by the URI itself, followed by an optional single quote (') or
-  // double quote (") character followed by optional whitespace followed by ')'.
-  // The two quote characters must be the same.
-
-  static QxFont readFont( final LexicalUnit unit ) {
-    QxFont result = null;
-    String[] family = null;
-    String style = null;
-    String weight = null;
-    int size = -1;
-    boolean consumed = false;
-    boolean consumedSize = false;
-    boolean consumedFamily = false;
-    LexicalUnit nextUnit = unit;
-    while( nextUnit != null && !consumedFamily ) {
-      consumed = false;
-      if( !consumed && !consumedSize && style == null ) {
-        style = readFontStyle( nextUnit );
-        consumed |= style != null;
-      }
-      if( !consumed && !consumedSize && weight == null ) {
-        weight = readFontWeight( nextUnit );
-        consumed |= weight != null;
-      }
-      if( !consumed && !consumedFamily && size == -1 ) {
-        size = readFontSize( nextUnit );
-        consumedSize = size != -1;
-        consumed |= consumedSize;
-      }
-      if( !consumed && consumedSize && family == null ) {
-        family = readFontFamily( nextUnit );
-        consumedFamily = family != null;
-        consumed |= consumedFamily;
-      }
-      nextUnit = consumed ? nextUnit.getNextLexicalUnit() : null;
-    }
-    if( consumed && consumedSize && consumedFamily ) {
-      boolean bold = BOLD.equals( weight );
-      boolean italic = ITALIC.equals( style );
-      result = QxFont.create( family, size, bold, italic );
-    }
-    return result;
-  }
-
-  static String readUrl( final LexicalUnit unit ) {
-    String result = null;
-    short type = unit.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_URI ) {
-      result = unit.getStringValue();
-    }
-    return result;
+  static boolean isImageProperty( final String property ) {
+    return property.endsWith( "-image" );
   }
 
   static QxImage readBackgroundImage( final LexicalUnit unit,
-                                      final ResourceLoader loader ) {
+                                      final ResourceLoader loader )
+  {
     QxImage result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_URI ) {
@@ -495,6 +460,10 @@ public final class PropertyResolver {
       if( "gradient".equals( function ) ) {
         result = readGradient( unit );
       }
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse image "
+                                          + toString( unit ) );
     }
     return result;
   }
@@ -514,43 +483,46 @@ public final class PropertyResolver {
     LexicalUnit x1 = parameters.getNextLexicalUnit().getNextLexicalUnit();
     LexicalUnit y1 = x1.getNextLexicalUnit();
     if(    x1.getLexicalUnitType() == LexicalUnit.SAC_IDENT
-        && y1.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
+        && y1.getLexicalUnitType() == LexicalUnit.SAC_IDENT )
+    {
       String x1value = x1.getStringValue();
       String y1value = y1.getStringValue();
       if( !( "left".equals( x1value ) && "top".equals( y1value ) ) ) {
         String msg = "Invalid value for background-image gradient: "
-                   + x1value
-                   + " "
-                   + y1value;
+                     + x1value
+                     + " "
+                     + y1value;
         throw new IllegalArgumentException( msg );
       }
     } else if(    x1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
-               && y1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
+               && y1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER )
+    {
       String msg = "Invalid value for background-image gradient: "
-                 + Integer.toString( x1.getIntegerValue() )
-                 + " "
-                 + Integer.toString( y1.getIntegerValue() );
+                   + Integer.toString( x1.getIntegerValue() )
+                   + " "
+                   + Integer.toString( y1.getIntegerValue() );
       throw new IllegalArgumentException( msg );
     }
     LexicalUnit x2 = y1.getNextLexicalUnit().getNextLexicalUnit();
     LexicalUnit y2 = x2.getNextLexicalUnit();
     if(    x2.getLexicalUnitType() == LexicalUnit.SAC_IDENT
-        && y2.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
+        && y2.getLexicalUnitType() == LexicalUnit.SAC_IDENT )
+    {
       String x2value = x2.getStringValue();
       String y2value = y2.getStringValue();
       if( !( "left".equals( x2value ) && "bottom".equals( y2value ) ) ) {
         String msg = "Invalid value for background-image gradient: "
-                   + x2value
-                   + " "
-                   + y2value;
+                     + x2value
+                     + " "
+                     + y2value;
         throw new IllegalArgumentException( msg );
       }
-    } else if(    x2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
+    } else if( x2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
                && y2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
       String msg = "Invalid value for background-image gradient: "
-                 + Integer.toString( x2.getIntegerValue() )
-                 + " "
-                 + Integer.toString( y2.getIntegerValue() );
+                   + Integer.toString( x2.getIntegerValue() )
+                   + " "
+                   + Integer.toString( y2.getIntegerValue() );
       throw new IllegalArgumentException( msg );
     }
     LexicalUnit nextUnit = y2.getNextLexicalUnit();
@@ -576,7 +548,7 @@ public final class PropertyResolver {
           color = readGradientColor( colorUnit );
         } else {
           String msg = "Invalid value for background-image gradient: "
-                     + function;
+                       + function;
           throw new IllegalArgumentException( msg );
         }
       }
@@ -603,11 +575,15 @@ public final class PropertyResolver {
     Float result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_PERCENTAGE ) {
-      result =  new Float( normalizePercentValue( unit.getFloatValue() ) );
+      result = new Float( normalizePercentValue( unit.getFloatValue() ) );
     } else if( type == LexicalUnit.SAC_REAL ) {
-      result =  new Float( normalizePercentValue( unit.getFloatValue() * 100 ) );
+      result = new Float( normalizePercentValue( unit.getFloatValue() * 100 ) );
     }
     return result;
+  }
+
+  static boolean isTextDecorationProperty( final String property ) {
+    return "text-decoration".equals( property );
   }
 
   static QxIdentifier readTextDecoration( final LexicalUnit unit ) {
@@ -626,11 +602,20 @@ public final class PropertyResolver {
         throw new IllegalArgumentException( msg );
       }
     }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse text-decoration "
+                                          + toString( unit ) );
+    }
     return result;
   }
 
+  static boolean isCursorProperty( final String property ) {
+    return "cursor".equals( property );
+  }
+
   static QxCursor readCursor( final LexicalUnit unit,
-                              final ResourceLoader loader ) {
+                              final ResourceLoader loader )
+  {
     QxCursor result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_URI ) {
@@ -639,6 +624,10 @@ public final class PropertyResolver {
     } else if( type == LexicalUnit.SAC_IDENT ) {
       String value = unit.getStringValue();
       result = QxCursor.valueOf( value );
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse cursor "
+                                          + toString( unit ) );
     }
     return result;
   }
@@ -713,22 +702,22 @@ public final class PropertyResolver {
     if( type == LexicalUnit.SAC_ATTR ) {
       buffer.append( "ATTR " + value.getStringValue() );
     } else if( type == LexicalUnit.SAC_CENTIMETER
-        || type == LexicalUnit.SAC_DEGREE
-        || type == LexicalUnit.SAC_EM
-        || type == LexicalUnit.SAC_EX
-        || type == LexicalUnit.SAC_GRADIAN
-        || type == LexicalUnit.SAC_HERTZ
-        || type == LexicalUnit.SAC_INCH
-        || type == LexicalUnit.SAC_KILOHERTZ
-        || type == LexicalUnit.SAC_MILLIMETER
-        || type == LexicalUnit.SAC_MILLISECOND
-        || type == LexicalUnit.SAC_PERCENTAGE
-        || type == LexicalUnit.SAC_PICA
-        || type == LexicalUnit.SAC_POINT
-        || type == LexicalUnit.SAC_PIXEL
-        || type == LexicalUnit.SAC_RADIAN
-        || type == LexicalUnit.SAC_SECOND
-        || type == LexicalUnit.SAC_DIMENSION )
+               || type == LexicalUnit.SAC_DEGREE
+               || type == LexicalUnit.SAC_EM
+               || type == LexicalUnit.SAC_EX
+               || type == LexicalUnit.SAC_GRADIAN
+               || type == LexicalUnit.SAC_HERTZ
+               || type == LexicalUnit.SAC_INCH
+               || type == LexicalUnit.SAC_KILOHERTZ
+               || type == LexicalUnit.SAC_MILLIMETER
+               || type == LexicalUnit.SAC_MILLISECOND
+               || type == LexicalUnit.SAC_PERCENTAGE
+               || type == LexicalUnit.SAC_PICA
+               || type == LexicalUnit.SAC_POINT
+               || type == LexicalUnit.SAC_PIXEL
+               || type == LexicalUnit.SAC_RADIAN
+               || type == LexicalUnit.SAC_SECOND
+               || type == LexicalUnit.SAC_DIMENSION )
     {
       buffer.append( "DIM "
                      + value.getFloatValue()
@@ -761,5 +750,17 @@ public final class PropertyResolver {
       buffer.append( toString( next ) );
     }
     return buffer.toString();
+  }
+
+  private static final class NamedColor {
+    
+    public NamedColor( int red, int green, int blue ) {
+      this.red = red;
+      this.green = green;
+      this.blue = blue;
+    }
+    final int red;
+    final int green;
+    final int blue;
   }
 }

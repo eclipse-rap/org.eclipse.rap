@@ -53,11 +53,14 @@ public class PropertyResolver_Test extends TestCase {
     QxColor colorP2
       = PropertyResolver.readColor( parseProperty( "rgb( -10%, 50%, 110% )" ) );
     assertEquals( colorP1, colorP2 );
-    QxColor mixed
-      = PropertyResolver.readColor( parseProperty( "rgb( 0%, 50, 100 )" ) );
-    assertNull( mixed );
     QxColor inherit = PropertyResolver.readColor( parseProperty( "inherit" ) );
     assertEquals( QxColor.TRANSPARENT, inherit );
+    try {
+      PropertyResolver.readColor( parseProperty( "rgb( 0%, 50, 100 )" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testDimension() throws Exception {
@@ -67,8 +70,12 @@ public class PropertyResolver_Test extends TestCase {
     QxDimension dim2 = PropertyResolver.readDimension( parseProperty( "2px" ) );
     assertNotNull( dim2 );
     assertEquals( QxDimension.create( 2 ), dim2 );
-    QxDimension invalid = PropertyResolver.readDimension( parseProperty( "2em" ) );
-    assertNull( invalid );
+    try {
+      PropertyResolver.readDimension( parseProperty( "2em" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testBoxdimensions() throws Exception {
@@ -88,12 +95,20 @@ public class PropertyResolver_Test extends TestCase {
     QxBoxDimensions bdim12 = PropertyResolver.readBoxDimensions( unit12 );
     assertNotNull( bdim12 );
     assertEquals( QxBoxDimensions.create( 1, 2, 1, 2 ), bdim12 );
-    LexicalUnit illegalUnit = parseProperty( "2" );
-    QxBoxDimensions illegal1 = PropertyResolver.readBoxDimensions( illegalUnit );
-    assertNull( illegal1 );
+    LexicalUnit illegalUnit1 = parseProperty( "2" );
+    try {
+      PropertyResolver.readBoxDimensions( illegalUnit1 );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
     LexicalUnit illegalUnit2 = parseProperty( "2em" );
-    QxBoxDimensions illegal2 = PropertyResolver.readBoxDimensions( illegalUnit2 );
-    assertNull( illegal2 );
+    try {
+      PropertyResolver.readBoxDimensions( illegalUnit2 );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testBorderWidth() throws Exception {
@@ -124,11 +139,19 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testBorder() throws Exception {
     String input = "1";
-    QxBorder illegal1 = PropertyResolver.readBorder( parseProperty( input ) );
-    assertNull( illegal1 );
+    try {
+      PropertyResolver.readBorder( parseProperty( input ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
     input = "1px red blue green";
-    QxBorder illegal2 = PropertyResolver.readBorder( parseProperty( input ) );
-    assertNull( illegal2 );
+    try {
+      PropertyResolver.readBorder( parseProperty( input ) );
+      fail();
+    } catch( Exception e ) {
+      // expected
+    }
     input = "1px solid blue";
     QxBorder border1 = PropertyResolver.readBorder( parseProperty( input ) );
     assertEquals( QxBorder.create( 1, "solid", "#0000ff" ), border1 );
@@ -138,22 +161,6 @@ public class PropertyResolver_Test extends TestCase {
     input = "rgb( 0, 0, 255 ) solid 1px";
     QxBorder border3 = PropertyResolver.readBorder( parseProperty( input ) );
     assertEquals( border1, border3 );
-  }
-
-  public void testUrl() throws Exception {
-    String expected = "http://example.org";
-    String input1 = "url( 'http://example.org' )";
-    String res1 = PropertyResolver.readUrl( parseProperty( input1 ) );
-    assertEquals( expected, res1 );
-    String input2 = "url( \"http://example.org\" )";
-    String res2 = PropertyResolver.readUrl( parseProperty( input2 ) );
-    assertEquals( expected, res2 );
-    String input3 = "url(http://example.org)";
-    String res3 = PropertyResolver.readUrl( parseProperty( input3 ) );
-    assertEquals( expected, res3 );
-    String illegal = "2";
-    String resIllegal = PropertyResolver.readUrl( parseProperty( illegal ) );
-    assertNull( resIllegal );
   }
 
   public void testFontStyle() throws Exception {
@@ -232,17 +239,30 @@ public class PropertyResolver_Test extends TestCase {
     QxFont exp4 = QxFont.create( family4, 8, false, false );
     QxFont res4 = PropertyResolver.readFont( parseProperty( input4 ) );
     assertEquals( exp4, res4 );
-    // missing size
-    String invalid1 = "Helvetica";
-    assertNull( PropertyResolver.readFont( parseProperty( invalid1 ) ) );
-    String invalid2 = "bold Helvetica";
-    assertNull( PropertyResolver.readFont( parseProperty( invalid2 ) ) );
-    // missing family
-    String invalid3 = "8px";
-    assertNull( PropertyResolver.readFont( parseProperty( invalid3 ) ) );
-    // wrong order
-    String invalid4 = "Helvetica 8px";
-    assertNull( PropertyResolver.readFont( parseProperty( invalid4 ) ) );
+    try {
+      PropertyResolver.readFont( parseProperty( "Helvetica" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      PropertyResolver.readFont( parseProperty( "bold Helvetica" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      PropertyResolver.readFont( parseProperty( "8px" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      PropertyResolver.readFont( parseProperty( "Helvetica 8px" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testBackgroundImage() throws Exception {
@@ -265,9 +285,13 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( expected, res3 );
     // background-image: "path";
     input = "\"" + Fixture.IMAGE_50x100 + "\"";
-    QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                                         RESOURCE_LOADER );
-    assertNull( res4 );
+    try {
+      PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                            RESOURCE_LOADER );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testGradient() throws Exception {
@@ -377,9 +401,12 @@ public class PropertyResolver_Test extends TestCase {
       // expected
     }
     String input8 = "gradient( linear, left top, left bottom )";
-    QxImage res8 = PropertyResolver.readBackgroundImage( parseProperty( input8 ),
-                                                         RESOURCE_LOADER );
-    assertNull( res8 );
+    try {
+      PropertyResolver.readBackgroundImage( parseProperty( input8 ),
+                                            RESOURCE_LOADER );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testCursor() throws Exception {
@@ -425,20 +452,33 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( expected, res3 );
   }
 
-  public void testGetType() throws Exception {
-    assertEquals( "color", PropertyResolver.getType( "color" ) );
-    assertEquals( "color", PropertyResolver.getType( "background-color" ) );
-    assertEquals( "color",
-                  PropertyResolver.getType( "background-gradient-color" ) );
-    assertEquals( "color",
-                  PropertyResolver.getType( "rwt-selectionmarker-color" ) );
-    assertEquals( "border", PropertyResolver.getType( "border" ) );
-    assertEquals( "font", PropertyResolver.getType( "font" ) );
-    assertEquals( "boxdim", PropertyResolver.getType( "padding" ) );
-    assertEquals( "boxdim", PropertyResolver.getType( "margin" ) );
-    assertEquals( "image", PropertyResolver.getType( "background-image" ) );
-    assertEquals( "cursor", PropertyResolver.getType( "cursor" ) );
-    assertNull( PropertyResolver.getType( "unknown" ) );
+  public void testIsColorProperty() throws Exception {
+    assertFalse( PropertyResolver.isColorProperty( "border" ) );
+    assertTrue( PropertyResolver.isColorProperty( "color" ) );
+    assertTrue( PropertyResolver.isColorProperty( "background-color" ) );
+    assertTrue( PropertyResolver.isColorProperty( "background-gradient-color" ) );
+    assertTrue( PropertyResolver.isColorProperty( "rwt-selectionmarker-color" ) );
+  }
+
+  public void testIsBorderProperty() throws Exception {
+    assertTrue( PropertyResolver.isBorderProperty( "border" ) );
+  }
+
+  public void testIsFontProperty() throws Exception {
+    assertTrue( PropertyResolver.isFontProperty( "font" ) );
+  }
+
+  public void testIsBoxDimProperty() throws Exception {
+    assertTrue( PropertyResolver.isBoxDimensionProperty( "padding" ) );
+    assertTrue( PropertyResolver.isBoxDimensionProperty( "margin" ) );
+  }
+
+  public void testIsImageProperty() throws Exception {
+    assertTrue( PropertyResolver.isImageProperty( "background-image" ) );
+  }
+
+  public void testIsCursorProperty() throws Exception {
+    assertTrue( PropertyResolver.isCursorProperty( "cursor" ) );
   }
 
   public void testResolveProperty() throws Exception {
@@ -456,7 +496,7 @@ public class PropertyResolver_Test extends TestCase {
       PropertyResolver.resolveProperty( "color", unit2 , null );
       fail();
     } catch( IllegalArgumentException e ) {
-      assertTrue( e.getMessage().indexOf( "value darkslategray" ) != -1 );
+      assertTrue( e.getMessage().indexOf( "color darkslategray" ) != -1 );
     }
   }
 
