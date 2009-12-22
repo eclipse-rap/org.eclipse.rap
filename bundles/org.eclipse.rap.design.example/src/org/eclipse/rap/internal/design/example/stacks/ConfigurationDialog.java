@@ -1,12 +1,12 @@
-/******************************************************************************* 
-* Copyright (c) 2008 EclipseSource and others. All rights reserved. This
+/*******************************************************************************
+* Copyright (c) 2008, 2009 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 package org.eclipse.rap.internal.design.example.stacks;
 
 import java.util.ArrayList;
@@ -25,8 +25,6 @@ import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -63,20 +61,14 @@ public class ConfigurationDialog extends PopupDialog {
   private ElementBuilder builder;
   private Button viewMenuBox;
   private boolean viewMenuVisChanged;
-  private ControlAdapter resizeListener = new ControlAdapter(){
-    public void controlResized( ControlEvent e ) {
-      adjustBounds();
-    };
-  };
   private Label lastImageLabel;
   private Label description;
   private Shell modalBackground;
-  
-  public ConfigurationDialog( 
-    final Shell parent,
-    final int shellStyle,
-    final IStackPresentationSite site,
-    final ConfigAction action )
+
+  public ConfigurationDialog( final Shell parent,
+                              final int shellStyle,
+                              final IStackPresentationSite site,
+                              final ConfigAction action )
   {
     super( parent,
            shellStyle,
@@ -91,14 +83,9 @@ public class ConfigurationDialog extends PopupDialog {
     //parent.setBackgroundMode( SWT.INHERIT_NONE );
     this.site = site;
     this.action = action;
-    hookResizeListener( parent );
-    builder = new DummyBuilder( parent,  
+    builder = new DummyBuilder( parent,
                                 ILayoutSetConstants.SET_ID_CONFIG_DIALOG );
     viewMenuVisChanged = false;
-  }
-  
-  private void hookResizeListener( Shell parent ) {
-    parent.addControlListener( resizeListener );
   }
 
   protected void adjustBounds() {
@@ -108,13 +95,13 @@ public class ConfigurationDialog extends PopupDialog {
     Rectangle bounds = window.getShell().getBounds();
     int newWidth = getShell().getBounds().width + 20;
     int newHeight = getShell().getBounds().height + 20;
-    getShell().setBounds( bounds.x + ( bounds.width / 2 ) - ( newWidth / 2 ), 
-                          bounds.y + ( bounds.height / 2 ) - ( newHeight / 2 ), 
-                          newWidth, 
-                          newHeight );          
+    getShell().setBounds( bounds.x + ( bounds.width / 2 ) - ( newWidth / 2 ),
+                          bounds.y + ( bounds.height / 2 ) - ( newHeight / 2 ),
+                          newWidth,
+                          newHeight );
   }
-  
-  public boolean close( final boolean save ) { 
+
+  public boolean close( final boolean save ) {
     if( save ) {
       // save the viewmenu visibility
       saveViewMenuVisibility();
@@ -123,9 +110,8 @@ public class ConfigurationDialog extends PopupDialog {
     }
     return close();
   }
-  
+
   public boolean close() {
-    getParentShell().removeControlListener( resizeListener );
     if( !modalBackground.isDisposed() ) {
       modalBackground.close();
       modalBackground.dispose();
@@ -133,12 +119,12 @@ public class ConfigurationDialog extends PopupDialog {
     action.fireToolBarChange();
     return super.close();
   }
-  
-  protected Control createDialogArea( final Composite parent ) {        
+
+  protected Control createDialogArea( final Composite parent ) {
     Composite background = new Composite( parent, SWT.NONE );
     background.setLayout( new FormLayout() );
     Color white = builder.getColor( ILayoutSetConstants.CONFIG_WHITE );
-        
+
     Composite configComposite = new Composite( background, SWT.NONE );
     FormData fdConfigComposite = new FormData();
     fdConfigComposite.top = new FormAttachment( 0, 0 );
@@ -147,13 +133,13 @@ public class ConfigurationDialog extends PopupDialog {
     fdConfigComposite.bottom = new FormAttachment( 100, -10 );
     configComposite.setLayoutData( fdConfigComposite );
     configComposite.setLayout( new FormLayout() );
-   
+
     // Fill with ViewActions
     loadActionSettings( configComposite );
-    
+
     // Viewmenu
     hookViewMenuArea( white, configComposite );
-    
+
     // OK / Cancel buttons
     Button cancel = new Button( configComposite, SWT.PUSH );
     cancel.setText( "Cancel" );
@@ -167,7 +153,7 @@ public class ConfigurationDialog extends PopupDialog {
         close( false );
       };
     } );
-    
+
     Button ok = new Button( configComposite, SWT.PUSH );
     ok.setText( "OK" );
     FormData fdOK = new FormData();
@@ -180,11 +166,13 @@ public class ConfigurationDialog extends PopupDialog {
         close( true );
       };
     } );
-    ok.moveAbove( cancel );    
-    return background;   
+    ok.moveAbove( cancel );
+    return background;
   }
 
-  private void hookViewMenuArea( Color white, Composite configComposite ) {    
+  private void hookViewMenuArea( final Color white,
+                                 final Composite configComposite )
+  {
     if( action.hasPartMenu() ) {
       viewMenuBox = new Button( configComposite, SWT.CHECK );
       viewMenuBox.setForeground( white );
@@ -200,33 +188,33 @@ public class ConfigurationDialog extends PopupDialog {
         fdViewMenuBox.top = new FormAttachment( description, OFFSET );
         fdViewMenuBox.left = new FormAttachment( 0, OFFSET + 5 );
       }
-      viewMenuBox.setText( "viewmenu" );      
+      viewMenuBox.setText( "viewmenu" );
     }
   }
-  
-  private void loadActionSettings( final Composite container ) {    
-    ConfigurableStack stackPresentation 
+
+  private void loadActionSettings( final Composite container ) {
+    ConfigurableStack stackPresentation
       = ( ConfigurableStack ) action.getStackPresentation();
-    IToolBarManager manager = stackPresentation.getPartToolBarManager();    
+    IToolBarManager manager = stackPresentation.getPartToolBarManager();
     description = null;
     description = new Label( container, SWT.NONE );
     description.setText( "Visible actions" );
     FormData fdActionDesc = new FormData();
     description.setLayoutData( fdActionDesc );
     if( viewMenuBox != null ) {
-      fdActionDesc.top = new FormAttachment( viewMenuBox, OFFSET );              
+      fdActionDesc.top = new FormAttachment( viewMenuBox, OFFSET );
     } else {
       fdActionDesc.top = new FormAttachment( 0, OFFSET );
     }
     fdActionDesc.left = new FormAttachment( 0, OFFSET );
-    if( manager != null ) {      
+    if( manager != null ) {
       String paneId = stackPresentation.getPaneId( site );
       IContributionItem[] items = manager.getItems();
-      
+
       for( int i = 0; i < items.length; i++ ) {
-        if( !( items[ i ] instanceof Separator ) ) {                    
+        if( !( items[ i ] instanceof Separator ) ) {
           // handle items
-          String itemId = items[ i ].getId();  
+          String itemId = items[ i ].getId();
           String text = null;
           Image icon = null;
           if( items[ i ] instanceof ActionContributionItem ) {
@@ -238,11 +226,11 @@ public class ConfigurationDialog extends PopupDialog {
               text = item.getAction().getText();
             } else {
               text = item.getAction().getToolTipText();
-            }            
+            }
           } else if( items[ i ] instanceof CommandContributionItem ) {
             // commands
-            CommandContributionItem item 
-              = ( CommandContributionItem ) items[ i ];            
+            CommandContributionItem item
+              = ( CommandContributionItem ) items[ i ];
             Object[] commandInfo = getCommandInfo( item, container );
             if( commandInfo != null ) {
               icon = ( Image ) commandInfo[ 0 ];
@@ -251,11 +239,11 @@ public class ConfigurationDialog extends PopupDialog {
                 text = ( String ) commandInfo[ 1 ];
               } else {
                 text = ( String  ) commandInfo[ 2 ];
-              }              
-            }                        
+              }
+            }
           }
           Label imageLabel = new Label( container, SWT.NONE );
-          imageLabel.setImage( icon );        
+          imageLabel.setImage( icon );
           FormData fdImageLabel = new FormData();
           imageLabel.setLayoutData( fdImageLabel );
           if( lastImageLabel != null ) {
@@ -265,12 +253,12 @@ public class ConfigurationDialog extends PopupDialog {
             fdImageLabel.top = new FormAttachment( description, OFFSET );
             lastImageLabel = imageLabel;
           }
-          fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );   
-          
+          fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );
+
           Button check = new Button( container, SWT.CHECK );
           check.setText( text );
           check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-          boolean selected 
+          boolean selected
             = action.isViewActionVisibile( paneId, itemId );
           FormData fdCheck = new FormData();
           check.setLayoutData( fdCheck );
@@ -283,12 +271,11 @@ public class ConfigurationDialog extends PopupDialog {
           lastImageLabel = imageLabel;
         }
       }
-    }    
+    }
   }
 
-  private Object[] getCommandInfo( 
-    final CommandContributionItem item, 
-    final Composite container ) 
+  private Object[] getCommandInfo( final CommandContributionItem item,
+                                   final Composite container )
   {
     Object[] result = null;
     ToolBar toolbar = new ToolBar( container, SWT.NONE );
@@ -305,52 +292,51 @@ public class ConfigurationDialog extends PopupDialog {
     return result;
   }
 
-  public int open() {    
+  public int open() {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     Rectangle bounds = window.getShell().getBounds();
-    modalBackground 
-      = new Shell( getParentShell(), SWT.NO_TRIM );
-    modalBackground.setAlpha( 80 );   
+    modalBackground = new Shell( getParentShell(), SWT.NO_TRIM );
+    modalBackground.setAlpha( 80 );
     modalBackground.setBounds( bounds );
     modalBackground.open();
-    
+
     int result = super.open();
     Shell shell = getShell();
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     shell.setText( "Configuration for " + site.getSelectedPart().getName() );
     shell.setImage( builder.getImage( ILayoutSetConstants.CONFIG_DIALOG_ICON ) );
     shell.setActive();
-    shell.setFocus();  
+    shell.setFocus();
     action.fireToolBarChange();
     adjustBounds();
     return result;
   }
-  
+
   private void saveViewActionVisibilities() {
-    ConfigurableStack stackPresentation 
-    = ( ConfigurableStack ) action.getStackPresentation();
+    ConfigurableStack stackPresentation
+      = ( ConfigurableStack ) action.getStackPresentation();
     String paneId = stackPresentation.getPaneId( site );
-    
+
     for( int i = 0; i < actionList.size(); i++ ) {
       String actionId = ( String ) actionList.get( i );
       Button check = ( Button ) actionButtonMap.get( actionId );
       action.saveViewActionVisibility( paneId, actionId, check.getSelection() );
     }
   }
-  
+
   private void saveViewMenuVisibility() {
     if( viewMenuBox != null ) {
       boolean selection = viewMenuBox.getSelection();
       if( selection != viewMenuVisChanged ) {
-        action.savePartMenuVisibility( selection );        
+        action.savePartMenuVisibility( selection );
       }
     }
-    
+
   }
-  
+
   protected Color getBackground() {
     return Graphics.getColor( 255, 255, 255 );
   }
-  
+
 }
