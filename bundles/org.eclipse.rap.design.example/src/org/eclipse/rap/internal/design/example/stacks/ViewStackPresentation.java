@@ -358,7 +358,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private void createPartButton( final IPresentablePart part ) {
-    final Composite buttonArea = new Composite( tabBg, SWT.NONE );
+    Composite buttonArea = new Composite( tabBg, SWT.NONE );
     buttonArea.setData( WidgetUtil.CUSTOM_VARIANT,
                         "inactiveButton" );
     buttonArea.setLayout( new FormLayout() );
@@ -372,7 +372,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       public void propertyChanged( final Object source, final int propId ) {
         if( propId == IPresentablePart.PROP_PART_NAME ) {
           partButton.setText( part.getName() );
-          buttonArea.getParent().layout();
+          tabBg.layout();
         } else if( propId == IPresentablePart.PROP_TITLE ) {
           partButton.setToolTipText( part.getTitleToolTip() );
         }
