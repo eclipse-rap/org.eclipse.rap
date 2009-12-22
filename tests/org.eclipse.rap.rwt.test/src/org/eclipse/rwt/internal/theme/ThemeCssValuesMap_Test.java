@@ -56,15 +56,14 @@ public class ThemeCssValuesMap_Test extends TestCase {
     // [ .special ] -> red
     // .special-blue -> blue
     // []           -> #705e42
-    // TODO [rst] Should be only 3 when ConditionalValues optimizes correctly
-    assertEquals( 4, colorValues.length );
-    // 1
+    assertEquals( 3, colorValues.length );
+    // first
     assertEquals( 1, colorValues[ 0 ].constraints.length );
     assertEquals( ".special", colorValues[ 0 ].constraints[ 0 ] );
     assertEquals( QxColor.valueOf( "red" ), colorValues[ 0 ].value );
-    // 4
-    assertEquals( 0, colorValues[ 3 ].constraints.length );
-    assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 3 ].value );
+    // last
+    assertEquals( 0, colorValues[ 2 ].constraints.length );
+    assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 2 ].value );
   }
 
   public void testGetValues_Background() throws Exception {
@@ -80,8 +79,8 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( 6, backgroundValues.length );
     // 1
     assertEquals( 2, backgroundValues[ 0 ].constraints.length );
-    assertEquals( "[TOGGLE", backgroundValues[ 0 ].constraints[ 0 ] );
-    assertEquals( ":pressed", backgroundValues[ 0 ].constraints[ 1 ] );
+    assertEquals( ":pressed", backgroundValues[ 0 ].constraints[ 0 ] );
+    assertEquals( "[TOGGLE", backgroundValues[ 0 ].constraints[ 1 ] );
     assertEquals( QxColor.valueOf( "227, 221, 158" ),
                   backgroundValues[ 0 ].value );
   }

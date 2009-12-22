@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
 
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.QxType;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
@@ -25,18 +25,16 @@ public final class StyleSheet {
 
   private static final SelectorWrapperComparator COMPARATOR
     = new SelectorWrapperComparator();
-
   private final StyleRule[] styleRules;
-
   private SelectorWrapper[] selectorWrappers;
 
   public StyleSheet( final StyleRule[] styleRules ) {
-    this.styleRules = styleRules;
+    this.styleRules = ( StyleRule[] )styleRules.clone();
     createSelectorWrappers();
   }
 
   public StyleRule[] getStyleRules() {
-    return styleRules;
+    return ( StyleRule[] )styleRules.clone();
   }
 
   public ConditionalValue[] getValues( final String elementName,
@@ -52,9 +50,10 @@ public final class StyleSheet {
         if( value != null ) {
           String[] constraints
             = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
-          ConditionalValue condValue
-            = new ConditionalValue( constraints, value );
-          buffer.add( condValue );
+          Arrays.sort( constraints );
+          if( !containsConstraintsAlready( buffer, constraints ) ) {
+            buffer.add( new ConditionalValue( constraints, value ) );
+          }
         }
       }
     }
@@ -86,17 +85,31 @@ public final class StyleSheet {
     return buffer.toString();
   }
 
+  private static boolean containsConstraintsAlready( List conditionalValuesList,
+                                                     String[] constraints )
+  {
+    Iterator iterator = conditionalValuesList.iterator();
+    boolean result = false;
+    while( iterator.hasNext() && !result ) {
+      ConditionalValue condValue = ( ConditionalValue )iterator.next();
+      if( Arrays.equals( condValue.constraints, constraints ) ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
   private void createSelectorWrappers() {
     ArrayList selectorWrappersList = new ArrayList();
-    for( int i_rule = 0; i_rule < styleRules.length; i_rule++ ) {
-      StyleRule styleRule = styleRules[ i_rule ];
+    for( int pos = 0; pos < styleRules.length; pos++ ) {
+      StyleRule styleRule = styleRules[ pos ];
       SelectorList selectors = styleRule.getSelectors();
       IStylePropertyMap properties = styleRule.getProperties();
       int length = selectors.getLength();
-      for( int i_sel = 0; i_sel < length; i_sel++ ) {
-        Selector selector = selectors.item( i_sel );
+      for( int i = 0; i < length; i++ ) {
+        Selector selector = selectors.item( i );
         SelectorWrapper selectorWrapper
-          = new SelectorWrapper( selector, properties, i_rule );
+          = new SelectorWrapper( selector, properties, pos );
         selectorWrappersList.add( selectorWrapper );
       }
     }
@@ -109,9 +122,7 @@ public final class StyleSheet {
   static class SelectorWrapper {
 
     public final Selector selector;
-
     public final IStylePropertyMap propertyMap;
-
     public final int position;
 
     public SelectorWrapper( final Selector selector,
@@ -119,8 +130,8 @@ public final class StyleSheet {
                             final int position )
     {
       this.selector = selector;
-      this.position = position;
       this.propertyMap = propertyMap;
+      this.position = position;
     }
   }
 

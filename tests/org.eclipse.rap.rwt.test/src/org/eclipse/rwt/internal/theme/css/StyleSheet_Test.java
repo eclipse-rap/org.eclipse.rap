@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.theme.*;
@@ -27,15 +29,45 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( 13, rules.length );
   }
 
+  public void testAllConstraintsAreSorted() throws Exception {
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
+    ConditionalValue[] values = styleSheet.getValues( "Button", "border" );
+    for( int i = 0; i < values.length; i++ ) {
+      String[] constraints = values[ i ].constraints;
+      String[] sortedConstraints = constraints;
+      Arrays.sort( sortedConstraints );
+      assertEquals( join( sortedConstraints ), join( constraints ) );
+    }
+  }
+
+  public void testGetConditionalValues_Optimized() throws Exception {
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=282461
+    String css = "* { color: red }\n" + "Button { color: blue }\n";
+    StyleSheet styleSheet = ThemeTestUtil.createStyleSheet( css );
+    ConditionalValue[] values = styleSheet.getValues( "Button", "color" );
+    assertEquals( 1, values.length );
+    assertEquals( "", join( values[ 0 ].constraints ) );
+    assertEquals( QxColor.create( 0, 0, 255 ), values[ 0 ].value );
+  }
+
+  public void testGetConditionalValues_SortedAndOptimized() throws Exception {
+    String css =   "Button:hover[BORDER].special { color: red }\n"
+                 + "Button[BORDER]:hover.special { color: green }\n"
+                 + "Button.special[BORDER]:hover { color: blue }\n";
+    StyleSheet styleSheet = ThemeTestUtil.createStyleSheet( css );
+    ConditionalValue[] values = styleSheet.getValues( "Button", "color" );
+    assertEquals( 1, values.length );
+    assertEquals( ".special,:hover,[BORDER", join( values[ 0 ].constraints ) );
+    assertEquals( QxColor.create( 0, 0, 255 ), values[ 0 ].value );
+  }
+
   public void testGetConditionalValues() throws Exception {
-    // TODO [rst] Commented lines due to missing optimization
-    // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=282461
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     ConditionalValue[] values = styleSheet.getValues( "Button", "border" );
     assertEquals( 5, values.length );
-    assertEquals( "[TOGGLE,[BORDER", join( values[ 0 ].constraints ) );
+    assertEquals( "[BORDER,[TOGGLE", join( values[ 0 ].constraints ) );
     assertEquals( QxBorder.create( 2, "solid", "#1695d4" ), values[ 0 ].value );
-    assertEquals( "[PUSH,[BORDER", join( values[ 1 ].constraints ) );
+    assertEquals( "[BORDER,[PUSH", join( values[ 1 ].constraints ) );
     assertEquals( QxBorder.create( 2, "solid", "#1695d4" ), values[ 1 ].value );
     assertEquals( "[TOGGLE", join( values[ 2 ].constraints ) );
     assertEquals( QxBorder.create( 1, "solid", "#1695d4" ), values[ 2 ].value );
@@ -44,18 +76,18 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( "[BORDER", join( values[ 4 ].constraints ) );
     assertEquals( QxBorder.create( 2, "outset", null ), values[ 4 ].value );
     values = styleSheet.getValues( "Button", "color" );
-//    assertEquals( 3, values.length );
+    assertEquals( 3, values.length );
     assertEquals( ".special", join( values[ 0 ].constraints ) );
     assertEquals( QxColor.create( 255, 0, 0 ), values[ 0 ].value );
     assertEquals( ".special-blue", join( values[ 1 ].constraints ) );
     assertEquals( QxColor.create( 0, 0, 255 ), values[ 1 ].value );
-//    assertEquals( QxColor.create( 112, 94, 66 ), values[ 2 ].value );
-//    assertEquals( "", join( values[ 2 ].constraints ) );
+    assertEquals( QxColor.create( 112, 94, 66 ), values[ 2 ].value );
+    assertEquals( "", join( values[ 2 ].constraints ) );
     values = styleSheet.getValues( "Button", "background-color" );
-//    assertEquals( 6, values.length );
-    assertEquals( "[TOGGLE,:pressed", join( values[ 0 ].constraints ) );
+    assertEquals( 6, values.length );
+    assertEquals( ":pressed,[TOGGLE", join( values[ 0 ].constraints ) );
     assertEquals( QxColor.create( 227, 221, 158 ), values[ 0 ].value );
-    assertEquals( "[PUSH,:pressed", join( values[ 1 ].constraints ) );
+    assertEquals( ":pressed,[PUSH", join( values[ 1 ].constraints ) );
     assertEquals( QxColor.create( 227, 221, 158 ), values[ 1 ].value );
     assertEquals( ".special", join( values[ 2 ].constraints ) );
     assertEquals( QxColor.TRANSPARENT, values[ 2 ].value );
