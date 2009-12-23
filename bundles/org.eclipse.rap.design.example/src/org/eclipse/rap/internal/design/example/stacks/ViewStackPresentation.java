@@ -312,6 +312,7 @@ public class ViewStackPresentation extends ConfigurableStack {
                                     size.x,
                                     size.y - 1
                                   );
+            toolBarLayer.moveAbove( toolBar );
             toolBarLayer.setVisible( true );
           }
         }
@@ -1176,8 +1177,7 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private Shell getToolBarLayer() {
     if( toolBarLayer == null && toolbarBg != null ) {
-      Display display = toolbarBg.getDisplay();
-      toolBarLayer = new Shell( display, SWT.NO_TRIM | SWT.ON_TOP );
+      toolBarLayer = new Shell( toolbarBg.getShell(), SWT.NO_TRIM );
       toolBarLayer.setData( WidgetUtil.CUSTOM_VARIANT, "toolbarLayer" );
       toolBarLayer.setAlpha( 200 );
       toolBarLayer.open();
