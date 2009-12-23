@@ -33,9 +33,8 @@ public class ToolBarTab extends ExampleTab {
   }
 
   protected void createStyleControls( final Composite parent ) {
-    // TODO [rst] Allow for vertical toolbars
-//    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
-//    createStyleButton( "VERTICAL", SWT.VERTICAL );
+    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
+    createStyleButton( "VERTICAL", SWT.VERTICAL );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
     createVisibilityButton();
