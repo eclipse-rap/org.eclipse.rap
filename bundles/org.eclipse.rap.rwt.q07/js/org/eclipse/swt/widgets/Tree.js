@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -482,19 +482,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         var req = org.eclipse.swt.Request.getInstance();
         var id = wm.findIdByWidget( this );
         var item = this._tree.getManager().getLeadItem();
-        var selection = this._getSelectionIndices();
-        if( selection != "" ) {
-          req.addParameter( id + ".selection", selection );
-          if(    this._selectionListeners 
-              && item instanceof org.eclipse.swt.widgets.TreeItem ) {
-            this._suspendClicks();
-            var itemId = wm.findIdByWidget( item );
-            var eventName = "org.eclipse.swt.events.widgetSelected";
-            req.addEvent( eventName, id );
-            org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-            req.addParameter( eventName + ".item", itemId );
-            req.send();
-          }
+        var selection = this._getSelectionIndices();        
+        req.addParameter( id + ".selection", selection );
+        if(    this._selectionListeners 
+            && item instanceof org.eclipse.swt.widgets.TreeItem ) {
+          this._suspendClicks();
+          var itemId = wm.findIdByWidget( item );
+          var eventName = "org.eclipse.swt.events.widgetSelected";
+          req.addEvent( eventName, id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+          req.addParameter( eventName + ".item", itemId );
+          req.send();
         }
       }
     },
