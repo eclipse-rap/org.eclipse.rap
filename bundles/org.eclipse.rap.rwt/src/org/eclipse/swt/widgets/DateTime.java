@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class DateTime extends Composite {
   private final class DateTimeAdapter implements IDateTimeAdapter {
 
     public Rectangle getBounds( final int widget ) {
-      Rectangle result = new Rectangle( 0, 0, 0, 0);
+      Rectangle result = new Rectangle( 0, 0, 0, 0 );
       switch( widget ) {
         case WEEKDAY_TEXTFIELD:
           result = weekdayTextFieldBounds;
@@ -102,6 +102,10 @@ public class DateTime extends Composite {
       return result;
     }
 
+    public Point getCellSize() {
+      return new Point( cellSize.x, cellSize.y );
+    }
+
     public String[] getMonthNames() {
       return monthNames;
     }
@@ -125,12 +129,17 @@ public class DateTime extends Composite {
 
   private int V_PADDING = 1;
   private int H_PADDING = 6;
+  private int CALENDAR_HEADER_HEIGHT = 24;
+  private int MIN_CELL_WIDTH = 24;
+  private int MIN_CELL_HEIGHT = 16;
+  private int CELL_PADDING = 2;
 
   private String[] monthNames;
   private String[] weekdayNames;
   private String[] weekdayShortNames;
   private String dateSeparator;
   private String datePattern;
+  private Point cellSize;
 
   private final IDateTimeAdapter dateTimeAdapter;
   private Calendar rightNow;
@@ -195,6 +204,7 @@ public class DateTime extends Composite {
     weekdayShortNames = symbols.getShortWeekdays();
     dateSeparator = getDateSeparator();
     datePattern = getDatePattern( dateSeparator );
+    cellSize = computeCellSize();
     computeSubWidgetsBounds();
   }
 
@@ -612,14 +622,27 @@ public class DateTime extends Composite {
     }
   }
 
+  private Point computeCellSize() {
+    int width = MIN_CELL_WIDTH;
+    int height = MIN_CELL_HEIGHT;
+    for( int i = 0; i < weekdayShortNames.length; i++ ) {
+      Point nameSize
+        = TextSizeDetermination.stringExtent( getFont(),
+                                              weekdayShortNames[ i ] );
+      width = Math.max( width, nameSize.x + CELL_PADDING );
+      height = Math.max( height, nameSize.y + CELL_PADDING );
+    }
+    return new Point( width, height );
+  }
+
   private Point computeSubWidgetsBounds() {
     Font font = getFont();
     int width = 0, height = 0;
     Rectangle padding = getPadding();
     int border = getBorderWidth();
     if( ( style & SWT.CALENDAR ) != 0 ) {
-      width = 192 + border * 2;
-      height = 136 + border * 2;
+      width = cellSize.x * 8 + border * 2;
+      height = cellSize.y * 7 + CALENDAR_HEADER_HEIGHT + border * 2;
     } else if( ( style & SWT.DATE ) != 0 ) {
       Point prefSize = new Point( 0, 0 );
       if( datePattern.equals( "MDY" ) ) {

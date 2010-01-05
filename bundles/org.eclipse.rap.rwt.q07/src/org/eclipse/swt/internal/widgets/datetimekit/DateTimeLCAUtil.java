@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -67,5 +69,18 @@ final class DateTimeLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( dateTime );
       writer.set( "hasSelectionListener", newValue );
     }
+  }
+
+  static void initCellSize( final DateTime dateTime ) throws IOException {
+    IDateTimeAdapter dateTimeAdapter
+      = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
+    JSWriter writer = JSWriter.getWriterFor( dateTime );
+    Point cellSize = dateTimeAdapter.getCellSize();
+    writer.callFieldAssignment( new JSVar( "org.eclipse.swt.widgets.Calendar" ),
+                                "CELL_WIDTH",
+                                String.valueOf( cellSize.x ) );
+    writer.callFieldAssignment( new JSVar( "org.eclipse.swt.widgets.Calendar" ),
+                                "CELL_HEIGHT",
+                                String.valueOf( cellSize.y ) );
   }
 }
