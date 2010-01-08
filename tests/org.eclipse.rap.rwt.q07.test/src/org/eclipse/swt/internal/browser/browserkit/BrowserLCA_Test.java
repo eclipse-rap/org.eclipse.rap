@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
@@ -15,37 +16,42 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 
 public class BrowserLCA_Test extends TestCase {
-  
+
   public void testUrl() throws IOException {
     Display display = new Display();
     Fixture.markInitialized( display );
     Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
-    
+
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
-    
+
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
     assertFalse( BrowserLCA.hasUrlChanged( browser ) );
-    
+
     browser = new Browser( shell, SWT.NONE );
     browser.setText( "Hello" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "Hello".hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
-    
+
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
     browser.setText( "GoodBye" );
@@ -63,14 +69,170 @@ public class BrowserLCA_Test extends TestCase {
     browser.setUrl( "http://eclipse.org/rip" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
-    
+
     browser = new Browser( shell, SWT.NONE );
     browser.setText( "" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
   }
-  
+
+  public void testExecuteFunction() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    new BrowserFunction( browser, "func" ) {
+      public Object function( final Object[] arguments ) {
+        for( int i = 0; i < arguments.length; i++ ) {
+          log.append( arguments[ i ].toString() );
+          log.append( "|" );
+        }
+        return new Object[ 0 ];
+      }
+    };
+    Fixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( display );
+    String browserId = WidgetUtil.getId( browser );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String param = browserId + "." + BrowserLCA.PARAM_EXECUTE_FUNCTION;
+    Fixture.fakeRequestParam( param, "func" );
+    param = browserId + "." + BrowserLCA.PARAM_EXECUTE_ARGUMENTS;
+    Fixture.fakeRequestParam( param, "[\"eclipse\",3.6]" );
+    Fixture.readDataAndProcessAction( browser );
+    assertTrue( log.indexOf( "eclipse" ) != -1 );
+    assertTrue( log.indexOf( "3.6" ) != -1 );
+  }
+
+  public void testParseArguments() {
+    String input = "[]";
+    Object result = BrowserLCA.parseArguments( input );
+    assertNotNull( result );
+    assertTrue( result.getClass().isArray() );
+    Object[] resultArray = ( Object[] )result;
+    assertEquals( 0, resultArray.length );
+    input = "[null]";
+    result = BrowserLCA.parseArguments( input );
+    assertTrue( result.getClass().isArray() );
+    resultArray = ( Object[] )result;
+    assertEquals( 1, resultArray.length );
+    assertNull( resultArray[ 0 ] );
+    input = "[undefined]";
+    result = BrowserLCA.parseArguments( input );
+    assertTrue( result.getClass().isArray() );
+    resultArray = ( Object[] )result;
+    assertEquals( 1, resultArray.length );
+    assertNull( resultArray[ 0 ] );
+    input = "[\"eclipse\"]";
+    result = BrowserLCA.parseArguments( input );
+    assertTrue( result.getClass().isArray() );
+    resultArray = ( Object[] )result;
+    assertEquals( 1, resultArray.length );
+    assertEquals( new String( "eclipse" ), resultArray[ 0 ] );
+    input = "[\"ecl[\\\"]ipse\"]";
+    result = BrowserLCA.parseArguments( input );
+    assertTrue( result.getClass().isArray() );
+    resultArray = ( Object[] )result;
+    assertEquals( 1, resultArray.length );
+    assertEquals( new String( "ecl[\"]ipse" ), resultArray[ 0 ] );
+    input = "[3.6]";
+    result = BrowserLCA.parseArguments( input );
+    assertTrue( result.getClass().isArray() );
+    resultArray = ( Object[] )result;
+    assertEquals( 1, resultArray.length );
+    assertEquals( new Double( 3.6 ), resultArray[ 0 ] );
+    input = "[12,false,null,[3.6,[\"swt\",true]],\"eclipse\"]";
+    result = BrowserLCA.parseArguments( input );
+    assertTrue( result.getClass().isArray() );
+    resultArray = ( Object[] )result;
+    assertEquals( 5, resultArray.length );
+    assertEquals( new Double( 12 ), resultArray[ 0 ] );
+    assertEquals( new Boolean( false ), resultArray[ 1 ] );
+    assertNull( resultArray[ 2 ] );
+    assertTrue( resultArray[ 3 ].getClass().isArray() );
+    Object[] resultArray1 = ( Object[] )resultArray[ 3 ];
+    assertEquals( 2, resultArray1.length );
+    assertEquals( new Double( 3.6 ), resultArray1[ 0 ] );
+    assertTrue( resultArray1[ 1 ].getClass().isArray() );
+    Object[] resultArray2 = ( Object[] )resultArray1[ 1 ];
+    assertEquals( 2, resultArray2.length );
+    assertEquals( "swt", resultArray2[ 0 ] );
+    assertEquals( new Boolean( true ), resultArray2[ 1 ] );
+    assertEquals( "eclipse", resultArray[ 4 ] );
+  }
+
+  public void testWithType() {
+    String input = "null";
+    Object result = BrowserLCA.withType( input );
+    assertNull( result );
+    input = "undefined";
+    result = BrowserLCA.withType( input );
+    assertNull( result );
+    input = "true";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof Boolean );
+    assertTrue( ( ( Boolean )result ).booleanValue() );
+    input = "false";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof Boolean );
+    assertFalse( ( ( Boolean )result ).booleanValue() );
+    input = "\"eclipse\"";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof String );
+    assertEquals( "eclipse", ( String )result );
+    input = "3.6";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof Double );
+    assertEquals( new Double( 3.6 ), result );
+    input = "bla-bla";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof String );
+    assertEquals( "bla-bla", ( String )result );
+    input = "3.6 percent";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof String );
+    assertEquals( "3.6 percent", ( String )result );
+    input = "null \" 3.6 true";
+    result = BrowserLCA.withType( input );
+    assertTrue( result instanceof String );
+    assertEquals( "null \" 3.6 true", ( String )result );
+  }
+
+  public void testToJson() {
+    Object input = null;
+    String result = BrowserLCA.toJson( input, true );
+    String expected = "null";
+    assertEquals( expected, result );
+    input = Boolean.TRUE;
+    result = BrowserLCA.toJson( input, true );
+    expected = "true";
+    assertEquals( expected, result );
+    input = Boolean.FALSE;
+    result = BrowserLCA.toJson( input, true );
+    expected = "false";
+    assertEquals( expected, result );
+    input = new Double( 3.6 );
+    result = BrowserLCA.toJson( input, true );
+    expected = "3.6";
+    assertEquals( expected, result );
+    input = new String( "eclipse" );
+    result = BrowserLCA.toJson( input, true );
+    expected = "\"eclipse\"";
+    assertEquals( expected, result );
+    input = new Object[] {
+      new Short( ( short )3 ),
+      new Boolean( true ),
+      null,
+      new Object[] { "a string", new Boolean( false ) },
+      "hi",
+      new Float( 2.0 )
+    };
+    result = BrowserLCA.toJson( input, true );
+    expected = "[3,true,null,[\"a string\",false],\"hi\",2.0]";
+    assertEquals( expected, result );
+  }
+
   protected void setUp() throws Exception {
     // we need the resource manager for this test
     Fixture.setUpWithoutResourceManager();
@@ -79,7 +241,7 @@ public class BrowserLCA_Test extends TestCase {
     ResourceManager.register( new DefaultResourceManagerFactory() );
     ThemeManager.getInstance().initialize();
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

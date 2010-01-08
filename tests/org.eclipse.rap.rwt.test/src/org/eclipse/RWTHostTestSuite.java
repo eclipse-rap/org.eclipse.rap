@@ -31,6 +31,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.widgets.BrowserHistory_Test;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
+import org.eclipse.swt.browser.BrowserFunction_Test;
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.dnd.DragSource_Test;
@@ -147,6 +148,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Label_Test.class );
     suite.addTestSuite( Link_Test.class );
     suite.addTestSuite( Browser_Test.class );
+    suite.addTestSuite( BrowserFunction_Test.class );
     suite.addTestSuite( Group_Test.class );
     suite.addTestSuite( Text_Test.class );
     suite.addTestSuite( Spinner_Test.class );

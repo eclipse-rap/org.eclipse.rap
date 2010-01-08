@@ -2403,7 +2403,15 @@ public class SWT {
    * (value is 48).
    */
   public static final int ERROR_INVALID_FONT = 48;
-
+  
+  /** 
+   * SWT error constant indicating that an attempt was made to
+   * use an BrowserFunction object which had already been disposed
+   * (value is 49).
+   * 
+   * @since 1.3
+   */
+  public static final int ERROR_FUNCTION_DISPOSED = 49;
 
   /**
    * The <code>Image</code> constructor argument indicating that
