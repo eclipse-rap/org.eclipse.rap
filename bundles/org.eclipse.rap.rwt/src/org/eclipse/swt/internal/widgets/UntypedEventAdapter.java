@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -225,7 +225,7 @@ public final class UntypedEventAdapter
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
-  
+
   public void dragDetected( final DragDetectEvent typedEvent ) {
     Event event = createEvent( SWT.DragDetect, typedEvent.getSource() );
     copyFields( typedEvent, event );
@@ -678,6 +678,7 @@ public final class UntypedEventAdapter
     to.time = from.time;
     to.x = from.x;
     to.y = from.y;
+    to.stateMask = from.stateMask;
   }
 
   private static void copyFields( final ShellEvent from, final Event to ) {

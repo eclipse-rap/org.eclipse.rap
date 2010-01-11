@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,22 +69,27 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     
     addWidgetSelectedModifier : function() {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var modifier = "";
-        if( org.eclipse.swt.EventUtil._shiftKey ) {
-          modifier += "shift,";
-        }
-        if( org.eclipse.swt.EventUtil._ctrlKey ) {
-          modifier += "ctrl,";
-        }
-        if( org.eclipse.swt.EventUtil._altKey ) {
-          modifier += "alt,";
-        }
+        var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
         if( modifier !== "" ) {
           var req = org.eclipse.swt.Request.getInstance();
-          req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier", 
+          req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier",
                             modifier );
         }
       }
+    },
+    
+    _getKeyModifier : function() {
+      var modifier = "";
+      if( org.eclipse.swt.EventUtil._shiftKey ) {
+        modifier += "shift,";
+      }
+      if( org.eclipse.swt.EventUtil._ctrlKey ) {
+        modifier += "ctrl,";
+      }
+      if( org.eclipse.swt.EventUtil._altKey ) {
+        modifier += "alt,";
+      }
+      return modifier;
     },
 
     widgetResized : function( evt ) {
@@ -238,27 +243,36 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       var req = org.eclipse.swt.Request.getInstance();
       var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
+      var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
       req.addEvent( "org.eclipse.swt.events.mouseDown", id );
       req.addParameter( "org.eclipse.swt.events.mouseDown.button", button );
       req.addParameter( "org.eclipse.swt.events.mouseDown.x", evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseDown.y", evt.getPageY() );
-      req.addParameter( "org.eclipse.swt.events.mouseDown.time", this.eventTimestamp() );
+      req.addParameter( "org.eclipse.swt.events.mouseDown.time", this.eventTimestamp() );              
+      if( modifier !== "" ) {       
+        req.addParameter( "org.eclipse.swt.events.mouseDown.modifier", modifier );
+      }
     },
 
     _mouseUpParams : function( widget, evt ) {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
       var req = org.eclipse.swt.Request.getInstance();
+      var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
+      var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
       req.addEvent( "org.eclipse.swt.events.mouseUp", id );
       req.addParameter( "org.eclipse.swt.events.mouseUp.button", button );
       req.addParameter( "org.eclipse.swt.events.mouseUp.x", evt.getPageX() );
       req.addParameter( "org.eclipse.swt.events.mouseUp.y", evt.getPageY() );
       req.addParameter( "org.eclipse.swt.events.mouseUp.time", this.eventTimestamp() );
+      if( modifier !== "" ) {       
+        req.addParameter( "org.eclipse.swt.events.mouseUp.modifier", modifier );
+      }
     },
 
     _mouseDoubleClickParams : function( widget, evt ) {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       var req = org.eclipse.swt.Request.getInstance();
+      var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
       req.addEvent( "org.eclipse.swt.events.mouseDoubleClick", id );
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.button",
                         org.eclipse.swt.EventUtil._determineMouseButton( evt ) );
@@ -268,6 +282,10 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
                         evt.getPageY() );
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.time", 
                         this.eventTimestamp() );
+      if( modifier !== "" ) {       
+        req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.modifier",
+                          modifier );
+      }
     },
 
     /**

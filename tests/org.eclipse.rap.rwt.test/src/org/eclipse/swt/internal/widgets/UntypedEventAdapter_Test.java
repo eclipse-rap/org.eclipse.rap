@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -223,6 +223,21 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( keyEvent.stateMask, eventLog[ 0 ].stateMask );
     assertEquals( keyEvent.data, eventLog[ 0 ].data );
     assertEquals( keyEvent.doit, eventLog[ 0 ].doit );
+    // Mouse event
+    adapter = new UntypedEventAdapter();
+    adapter.addListener( SWT.MouseDown, listener );
+    MouseEvent mouseEvent = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
+    mouseEvent.x = 1;
+    mouseEvent.y = 2;
+    mouseEvent.button = 3;
+    mouseEvent.time = 4;
+    mouseEvent.stateMask = 321;
+    adapter.mouseDown( mouseEvent );
+    assertEquals( mouseEvent.x, eventLog[ 0 ].x );
+    assertEquals( mouseEvent.y, eventLog[ 0 ].y );
+    assertEquals( mouseEvent.button, eventLog[ 0 ].button );
+    assertEquals( mouseEvent.time, eventLog[ 0 ].time );
+    assertEquals( mouseEvent.stateMask, eventLog[ 0 ].stateMask );
   }
 
   public void testInvalidEventType() {

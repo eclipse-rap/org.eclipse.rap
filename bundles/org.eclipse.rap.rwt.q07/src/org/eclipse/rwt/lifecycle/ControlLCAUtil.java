@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -949,6 +949,8 @@ public class ControlLCAUtil {
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
+      event.stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER );
       checkAndProcessMouseEvent( event );
     }
     String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
@@ -963,6 +965,8 @@ public class ControlLCAUtil {
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
+      String stateMaskParam = JSConst.EVENT_MOUSE_DOUBLE_CLICK_MODIFIER;
+      event.stateMask = EventLCAUtil.readStateMask( stateMaskParam );
       checkAndProcessMouseEvent( event );
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
@@ -974,6 +978,8 @@ public class ControlLCAUtil {
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
+      event.stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER );
       checkAndProcessMouseEvent( event );
     }
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseUp.y";
   public static final String EVENT_MOUSE_UP_TIME
     = "org.eclipse.swt.events.mouseUp.time";
+  public static final String EVENT_MOUSE_UP_MODIFIER
+    = "org.eclipse.swt.events.mouseUp.modifier";
   public static final String EVENT_MOUSE_DOWN_BUTTON
     = "org.eclipse.swt.events.mouseDown.button";
   public static final String EVENT_MOUSE_DOWN_X
@@ -87,6 +89,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDown.y";
   public static final String EVENT_MOUSE_DOWN_TIME
     = "org.eclipse.swt.events.mouseDown.time";
+  public static final String EVENT_MOUSE_DOWN_MODIFIER
+    = "org.eclipse.swt.events.mouseDown.modifier";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_BUTTON
     = "org.eclipse.swt.events.mouseDoubleClick.button";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_X
@@ -95,6 +99,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.mouseDoubleClick.y";
   public static final String EVENT_MOUSE_DOUBLE_CLICK_TIME
     = "org.eclipse.swt.events.mouseDoubleClick.time";
+  public static final String EVENT_MOUSE_DOUBLE_CLICK_MODIFIER
+    = "org.eclipse.swt.events.mouseDoubleClick.modifier";
   public static final String EVENT_KEY_DOWN_KEY_CODE
     = "org.eclipse.swt.events.keyDown.keyCode";
   public static final String EVENT_KEY_DOWN_CHAR_CODE
