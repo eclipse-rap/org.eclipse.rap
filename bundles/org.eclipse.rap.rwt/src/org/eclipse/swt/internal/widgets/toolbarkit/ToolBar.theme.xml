@@ -55,6 +55,13 @@
       <property name="border"
           description="Border for tool bar items" />
 
+	    <property name="border-radius">
+	      <description>
+	        Border radius. The border radius has no effect if an enhanced border,
+	        like "inset" or "outset" is used.
+	      </description>
+	    </property>
+    
       <property name="spacing"
           description="Spacing between the text and icon" />
 
