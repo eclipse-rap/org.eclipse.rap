@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,13 @@ qx.Class.define( "org.eclipse.swt.Application", {
     this._startupTime = new Date().getTime();
     qx.Class.patch( qx.event.handler.KeyEventHandler,
                     org.eclipse.rwt.KeyEventHandlerPatch );
-    qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GfxMixin );
-    qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GfxMixin );
+    qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
+    qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
     qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
-                    org.eclipse.rwt.GfxMixin );
+                    org.eclipse.rwt.GraphicsMixin );
     qx.Class.patch( qx.event.type.DomEvent,
                     org.eclipse.rwt.DomEventPatch );              
+    org.eclipse.rwt.GraphicsUtil.init();
     var eventHandler = qx.event.handler.EventHandler.getInstance();
     eventHandler.setAllowContextMenu(
       org.eclipse.rwt.widgets.Menu.getAllowContextMenu

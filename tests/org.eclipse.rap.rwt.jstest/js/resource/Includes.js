@@ -68,13 +68,16 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/MenuItem.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/MenuBar.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/RadioButtonUtil.js" type="text/javascript"></script>\
-<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/GfxMixin.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/GraphicsMixin.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/RoundedBorder.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/MenuManager.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/FocusIndicator.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/DNDSupport.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/TreeDNDFeedback.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/TableDNDFeedback.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/SVG.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/VML.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/GraphicsUtil.js" type="text/javascript"></script>\
 \
 <!-- rwt.test -->\
 <script src="./js/org/eclipse/rwt/test/fixture/RAPRequestPatch.js" type="text/javascript"></script>\

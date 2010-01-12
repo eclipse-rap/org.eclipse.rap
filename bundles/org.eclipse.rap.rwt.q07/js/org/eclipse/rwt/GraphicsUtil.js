@@ -1,0 +1,169 @@
+/*******************************************************************************
+ * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   EclipseSource - initial API and implementation
+ ******************************************************************************/
+
+qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
+
+  statics : {
+    _renderClass : null,
+    
+    init : function() {
+      if( this._renderClass == null ) {
+        var engine = qx.core.Client.getEngine();
+        var version = qx.core.Client.getVersion();
+        if ( ( engine == "mshtml" ) && ( version >= 5.5 ) ) {
+          this._renderClass = org.eclipse.rwt.VML;
+        } else if ( ( engine == "gecko" )  && ( version >= 1.8 ) ) {
+          this._renderClass = org.eclipse.rwt.SVG;
+        } else if ( ( engine == "webkit" ) && ( version >= 523 ) ) {
+          this._renderClass = org.eclipse.rwt.SVG;
+        } else if ( ( engine == "opera" )  && ( version >= 9 ) ) {
+          this._renderClass = org.eclipse.rwt.SVG;
+        }
+        if( this._renderClass != null ) {
+          this._renderClass.init();
+        }
+      }
+    },
+    
+    ///////
+    // Core
+    
+    /**
+     * Returns a handle for a canvas. This objects members are considered
+     * package-private and should not be accessed outside the renderclass.
+     * The canvas dimensions will be those of its parent-node.
+     * The overflow-behavior is browser-dependant. To enforce a 
+     * "overflow:hidden"-behavior, set it on the parent-node of the canvas. 
+     */
+    createCanvas : function() {
+      var result = null;
+      result = this._renderClass.createCanvas();
+      return result;
+    },
+    
+    /**
+     * Set mode to "relative" for use with layout-values using "%".
+     * This the initial state of canvas.
+     * Set mode to "absolute" for use with layout-values representing pixels.       
+     */
+    setLayoutMode : function( canvas, mode ) {
+      this._renderClass.setLayoutMode( canvas, mode );
+    },
+
+    /**
+     * Returns the DOM-node for the given canvas to be added to or removed from
+     * HTML DOM-nodes. Returns null if no renderClass is found!
+     */
+    getCanvasNode : function( canvas ) {
+      var result = null;
+      result = this._renderClass.getCanvasNode( canvas );
+      return result;      
+    },
+    
+    /**
+     * This must be called after the canvas has been (directly or inderectly)
+     * inserted into the DOM, i.e. after it becomes visible. It has not to 
+     * be called if the canvas was made visible by other means, e.g. the
+     * "visibility" or "opacity" properties, but it won't do any damage.
+     */
+    handleAppear : function( canvas ) {
+      this._renderClass.handleAppear( canvas );
+    },
+    
+    /**
+     * Returns a handle for a shape. This objects members are considered
+     * package-private and should not be accessed outside the renderclass. 
+     * Currently supported types: "rect", "roundrect"
+     */
+    createShape : function( type ) {
+      var result = null;
+      if( this._renderClass != null ) {
+        result = this._renderClass.createShape( type );
+      }
+      return result;      
+    },
+    
+    addToCanvas : function( canvas, shape ) {
+      // TODO [tb] : z-index support?
+      this._renderClass.addToCanvas( canvas, shape );
+    },
+    
+    removeFromCanvas : function( canvas, shape ) {
+      this._renderClass.removeFromCanvas( canvas, shape );
+    },
+    
+    ////////////
+    // Layouting
+    
+    /**
+     * shape must be of type "rect"
+     * all other values must be a number (for pixels) or a string with 
+     * "%"-postfix for percentage, depending on the layout-mode of the canvas. 
+     * If the layout-mode and the format of the value don't match, the shape
+     * might be layouted incorrectly.
+     * width and height must be positive or 0.
+     * Initial values are all 0. 
+     */
+    setRectBounds : function( shape, x, y, width, height ) {
+      this._renderClass.setRectBounds( shape, x, y, width, height );
+    },
+
+    /**
+     * radii is an array: [ topLeft, topRight, bottomRight, bottomLeft ] 
+     * Other paramters as described in "setRectBounds".
+     * Using this function in layout-mode "percentage" is not tested.
+     * 
+     * NOTE ON MAXIMUM RADII:
+     * Currently, no radius may be greater than half of the smaller egdge.
+     * They will be reduced if needed. This could be handled more flexible
+     * if there are different radii in different corners, but currently it is 
+     * not. A 15x10 box can not have the radii 7 0 0 0, although it would
+     * be possible geometrically. The radii 5 0 0 0 will be rendered.
+     */    
+    setRoundRectLayout : function( shape, x, y, width, height, radii ) {
+      this._renderClass.setRoundRectLayout( shape, 
+                                            x, 
+                                            y, 
+                                            width, 
+                                            height, 
+                                            radii );
+    },
+
+    //////////
+    // Styling
+
+    /**
+     * color is any rgb-value or null (transparent).
+     * Initial value is null.
+     */
+    setFillColor : function( shape, color ) {
+      this._renderClass.setFillColor( shape, color );
+    },
+    
+    /**
+     * gradient is a two dimensional array [ [ offset, color ] ] or null.
+     * Iniital value is null (transparent). 
+     */
+    setFillGradient : function( shape, gradient ) {
+      this._renderClass.setFillGradient( shape, gradient );
+    },
+    
+    /**
+     * color is any rgb-value or null (transparent)
+     * width is any positive number or 0.
+     * Initial values are null and 0.
+     */
+    setStroke : function( shape, color, width ) {
+      this._renderClass.setStroke( shape, color, width );
+    }
+    
+  }
+
+} );

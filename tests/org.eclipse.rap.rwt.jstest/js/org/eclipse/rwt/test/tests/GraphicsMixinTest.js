@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
   extend : qx.core.Object,
 
 	construct : function(){
@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
       shell.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
       assertFalse( "gradient was removed while not in dom",
-                   this.usesGfxBackground( shell ) );  
+                   this.usesGfxBackground( shell ) );
       shell.setBorder( this.gfxBorder );
       shell.setBackgroundColor( "green" );
       qx.ui.core.Widget.flushGlobalQueues();
@@ -377,7 +377,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
     nodeIsCanvas : function( node ) {
       var ret = false;
       if( qx.core.Client.getEngine() == "mshtml" ) {
-        ret = ( node.tagName == "group" ); // TODO [tb]: a more generic method?
+        ret = ( node.tagName == "group" );
       } else {
         ret = ( node.toString() == "[object SVGSVGElement]");
       }
@@ -417,8 +417,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
       var outer = widget._style;
       this.info( "fakePadding: " + inner.width + " " + inner.height );
       var isPx = true;
-      isPx = ( inner.width.search("%") == -1 ) ? isPx : false;
-      isPx = ( inner.height.search("%") == -1 ) ? isPx : false;
+      isPx = ( inner.width.search( "%" ) == -1 ) ? isPx : false;
+      isPx = ( inner.height.search( "%" ) == -1 ) ? isPx : false;
       if( inner == outer || isPx == false ) { 
         ret = [ 0, 0, 0, 0 ];
       } else {
@@ -441,13 +441,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GfxTest", {
     },
         
     getGfxBorderWidth : function( widget ) {
-     var rectNode = widget._gfxData.pathElement;
+     var rectNode = widget._gfxData.pathElement.node;
       var width = null;
       if( qx.core.Client.getEngine() == "mshtml" ) {
-        //IE returns strokeweight either as number (than its pt)
+        //IE returns strokeweight either as number (then its pt)
         //or as string with a "px" or "pt" postfix
         width =  rectNode.strokeweight; 
-        if( typeof width == "number" || width.search("pt") != -1 ) {
+        if( typeof width == "number" || width.search( "pt" ) != -1 ) {
           width = parseFloat( width );                     
           width = width / 0.75; 
         } else { // assume its px

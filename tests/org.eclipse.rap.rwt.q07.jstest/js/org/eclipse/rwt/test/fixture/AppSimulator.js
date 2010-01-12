@@ -20,10 +20,11 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
                       org.eclipse.rwt.KeyEventHandlerPatch ); 
       qx.Class.patch( org.eclipse.swt.Request,
                         org.eclipse.rwt.test.fixture.RAPRequestPatch);
-      qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GfxMixin );
-      qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GfxMixin );
+      qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
+      qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
       qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
-                      org.eclipse.rwt.GfxMixin );
+                      org.eclipse.rwt.GraphicsMixin );
+      org.eclipse.rwt.GraphicsUtil.init();
       var eventHandler = qx.event.handler.EventHandler.getInstance();
       eventHandler.setAllowContextMenu(
         org.eclipse.rwt.widgets.Menu.getAllowContextMenu

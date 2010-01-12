@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,14 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/KeyEventHandlerPatch.js";
   private static final String DOM_EVENT_PATCH
     = "org/eclipse/rwt/DomEventPatch.js";
-  private static final String GFX_MIXIN_JS
-    = "org/eclipse/rwt/GfxMixin.js";
+  private static final String SVG_JS
+    = "org/eclipse/rwt/SVG.js";
+  private static final String VML_JS
+    = "org/eclipse/rwt/VML.js";
+  private static final String GRAPHICS_UTIL_JS
+    = "org/eclipse/rwt/GraphicsUtil.js";
+  private static final String GRAPHICS_MIXIN_JS
+    = "org/eclipse/rwt/GraphicsMixin.js";
   private static final String ROUNDED_BORDER_JS
     = "org/eclipse/rwt/RoundedBorder.js";
   private static final String APPLICATION_JS
@@ -210,17 +216,20 @@ final class QooxdooResourcesUtil {
         register( QX_JS, false );
       }
       boolean compress = !isDebug;
-      
+
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here to keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants
       register( QX_CONSTANT_CORE_JS, compress );
       register( QX_CONSTANT_LAYOUT_JS, compress );
       register( QX_CONSTANT_STYLE_JS, compress );
-      
+
       register( KEY_EVENT_HANDLER_PATCH, compress );
       register( DOM_EVENT_PATCH, compress );
-      register( GFX_MIXIN_JS, compress );
+      register( SVG_JS, compress );
+      register( VML_JS, compress );
+      register( GRAPHICS_UTIL_JS, compress );
+      register( GRAPHICS_MIXIN_JS, compress );
       register( ROUNDED_BORDER_JS, compress );
       register( APPLICATION_JS, compress );
       register( REQUEST_JS, compress );
@@ -284,7 +293,7 @@ final class QooxdooResourcesUtil {
       register( THEME_STORE, compress );
       register( THEME_VALUES, compress );
       register( FOCUS_INDICATOR, compress );
-      register( MENU_MANAGER, compress );      
+      register( MENU_MANAGER, compress );
       register( DND_SUPPORT, compress );
       register( TREE_DND_FEEDBACK, compress );
       register( TABLE_DND_FEEDBACK, compress );
