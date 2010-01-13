@@ -172,11 +172,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
       for( int i = 0; i < functions.length; i++ ) {
-        Object[] args = new Object[]{
-          functions[ i ]
-        };
         JSWriter writer = JSWriter.getWriterFor( browser );
-        writer.call( "createFunction", args );
+        writer.call( "createFunction", new Object[]{ functions[ i ] } );
       }
     }
   }
@@ -190,11 +187,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
       for( int i = 0; i < functions.length; i++ ) {
-        Object[] args = new Object[]{
-          functions[ i ]
-        };
         JSWriter writer = JSWriter.getWriterFor( browser );
-        writer.call( "destroyFunction", args );
+        writer.call( "destroyFunction", new Object[]{ functions[ i ] } );
       }
     }
   }
@@ -237,19 +231,14 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String function
       = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_NAME + id );
     if( function != null ) {
-      Object result
-        = stateInfo.getAttribute( EXECUTED_FUNCTION_RESULT + id );
+      Object result = stateInfo.getAttribute( EXECUTED_FUNCTION_RESULT + id );
       if( result != null ) {
         result = new JSVar( toJson( result, true ) );
       }
       String error
         = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_ERROR + id );
-      Object[] args = new Object[]{
-        result,
-        error
-      };
       JSWriter writer = JSWriter.getWriterFor( browser );
-      writer.call( "setFunctionResult", args );
+      writer.call( "setFunctionResult", new Object[]{ result, error } );
     }
   }
 
@@ -344,7 +333,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  static String toJson( final Object object, boolean deleteLastChar ) {
+  static String toJson( final Object object, final boolean deleteLastChar ) {
     StringBuffer result = new StringBuffer();
     if( object == null ) {
       result.append( "null" );
