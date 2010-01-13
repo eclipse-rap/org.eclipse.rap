@@ -82,10 +82,8 @@ plugin@org.eclipse.equinox.http.servletbridge=HEAD,:pserver:anonymous@dev.eclips
 # rms
 feature@org.eclipse.rap.rms.feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rms.feature
 
-plugin@org.eclipse.rap.custom.viewers=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.custom.viewers
 plugin@org.eclipse.rap.rms.data=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rms.data
 plugin@org.eclipse.rap.rms.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rms.ui
-plugin@org.eclipse.rap.rwt.custom=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rwt.custom
 
 plugin@org.eclipse.rap.pde.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rap.pde.runtime
 

@@ -214,13 +214,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.rap.custom.viewers"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.rap.rms.data"
          download-size="0"
          install-size="0"
@@ -229,13 +222,6 @@
 
    <plugin
          id="org.eclipse.rap.rms.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.rap.rwt.custom"
          download-size="0"
          install-size="0"
          version="0.0.0"
