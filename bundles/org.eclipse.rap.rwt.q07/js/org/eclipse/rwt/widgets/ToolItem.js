@@ -133,7 +133,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
           var diff = inner - preferred;
           if( diff > 0 ) {
             var space = this.getSpacing();
-            if( diff > (space * 2) ) {
+            if(    ( diff > ( space * 2 ) ) 
+                && this.getHorizontalChildrenAlign() != "left" ) 
+            {
               var spaceLeft = Math.round( diff * 0.5 ) - space; 
               var spaceRight = Math.round( diff * 0.5 );
               this.setCellWidth( 0, spaceLeft );
