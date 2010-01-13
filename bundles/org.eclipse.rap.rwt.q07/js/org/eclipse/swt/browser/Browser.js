@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
 
     createFunction : function( name ) {
       var window = this.getContentWindow();
-      if( window == null ) {
+      if( window == null || !this.isLoaded() ) {
         qx.client.Timer.once( function() {
           this.createFunction( name );
         }, this, 100 );
