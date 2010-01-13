@@ -69,6 +69,9 @@ final class ToolItemLCAUtil {
     writer.newWidget( QX_TYPE, new Object[]{ param, flat } );
     writer.call( toolBar, "addAt", new Object[]{ toolItem, index } );
     WidgetLCAUtil.writeStyleFlag( toolItem, SWT.FLAT, "FLAT" );
+    if( ( toolBar.getStyle() & SWT.VERTICAL ) != 0 ) {
+      writer.call( JSConst.QX_FUNC_ADD_STATE, new Object[] { "rwt_VERTICAL"} );
+    }
   }
 
   static void renderChanges( final ToolItem toolItem ) throws IOException {

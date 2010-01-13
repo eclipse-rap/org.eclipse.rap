@@ -332,15 +332,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
       result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "ToolItem", "color" );
+                       ? tv.getCssColor( "*", "color" )
+                       : tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
-      result.backgroundImage = states.selected && !states.over  // TODO [tb] : no longer needed?
-                               ? "static/image/dotted_white.gif"
-                               : tv.getCssImage( "ToolItem", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );
+      // TODO [tb] no longer needed?
+      result.backgroundImage = states.selected && !states.over
+                             ? "static/image/dotted_white.gif"
+                             : tv.getCssImage( "ToolItem", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ToolItem",
+                                                     "background-image" );
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
+      result.horizontalChildrenAlign = states.rwt_VERTICAL ? "left" : "center";
       if( states.dropDown ) {
         result.dropDownArrow = tv.getCssSizedImage( "ToolItem-DropDownIcon",
                                                     "background-image" );
