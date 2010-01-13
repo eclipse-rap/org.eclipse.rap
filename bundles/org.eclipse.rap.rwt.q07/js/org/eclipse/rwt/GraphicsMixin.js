@@ -537,17 +537,15 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     //overwritten:
     _layoutPost : function( changes ) {
-      //this function is also implemented in "Terminator" and "Parent"
-      //without a "super"-call, therefore the mixin should not be
-      //applied to "Widget" itself. For any widget that implements
-      //"_layoutPost", this mixin will not work if
-      // "this.base( arguments, changes );" is not called there
+      // This function is also implemented in "Terminator" and "Parent",
+      // therefore the mixin can not be applied to "Widget" itself. 
+      // For any widget that implements "_layoutPost", rounded corners will
+      // not work unless the widget implements the code below itself:
       this.base( arguments, changes );
       if( this._gfxLayoutEnabled ) {
         this._layoutGfxBorder();
       }
     }
-
         
   }
 
