@@ -115,11 +115,9 @@ final class BrowserTab extends ExampleTab {
   }
 
   private void createExternalBrowserSelector( final Composite parent ) {
-    Composite group = new Composite( parent, SWT.NONE );
+    Group group = new Group( parent, SWT.NONE );
     group.setLayout( new GridLayout( 2, false ) );
-    Label lblExternalBrowser = new Label( group, SWT.NONE );
-    lblExternalBrowser.setText( "External Browser" );
-    lblExternalBrowser.setLayoutData( horizontalSpan2() );
+    group.setText( "External Browser" );
     Label lblId = new Label( group, SWT.NONE );
     lblId.setText( "Id" );
     final Text txtId = new Text( group, SWT.BORDER );
