@@ -182,9 +182,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
     
     setHtmlId : function( widget, id ) {
-      // Test if 'widget' provides a setHtmlProperty method, fail silently
-      // otherwise 
-      if( widget.setHtmlProperty ) {
+      // Test if 'widget' isn|t undefined and provides a setHtmlProperty method, 
+      // fail silently otherwise
+      if(    widget instanceof Object 
+          && typeof widget.setHtmlProperty == "function" )
+      {
         widget.setHtmlProperty( "id", id );
       }
     },
