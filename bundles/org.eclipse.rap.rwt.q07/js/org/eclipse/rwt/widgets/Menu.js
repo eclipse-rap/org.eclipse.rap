@@ -363,6 +363,8 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
    _onopentimer : function( event ) {
       this._openTimer.stop();
       this.setOpenItem( this._hoverItem );
+      // fix for bug 299350
+      this._closeTimer.stop();
     },
 
     _onclosetimer : function( event ) {
