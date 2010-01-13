@@ -205,6 +205,74 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.flush();
     },
 
+    // for Bug 299034
+    testStopDropEventPropagation : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var actions = [ "copy", "move", "alias" ];
+      var source = this.createSource();
+      var target = this.createTarget();
+      var parentTarget = new qx.ui.layout.CanvasLayout();
+      parentTarget.setLocation( 10, 10 );
+      parentTarget.setDimension( 100, 100 );
+      parentTarget.addToDocument();
+      parentTarget.setUserData( "id", "w3" );
+      parentTarget.setUserData( "isControl", true );
+      dndSupport.registerDropTarget( parentTarget, actions );
+      dndSupport.setDropTargetTransferTypes( parentTarget, [ "default" ] );
+      target.setParent( parentTarget );
+      var targetLog = [];
+      var parentTargetLog = [];
+      var addToTargetLog = function( value ){ 
+        targetLog.push( value ); 
+      };
+      var addToParentTargetLog = function( value ){ 
+        parentTargetLog.push( value ); 
+      };
+      parentTarget.addEventListener( "dragover", addToParentTargetLog ); 
+      parentTarget.addEventListener( "dragmove", addToParentTargetLog ); 
+      parentTarget.addEventListener( "dragout", addToParentTargetLog ); 
+      parentTarget.addEventListener( "dragdrop", addToParentTargetLog ); 
+      target.addEventListener( "dragover", addToTargetLog ); 
+      target.addEventListener( "dragmove", addToTargetLog ); 
+      target.addEventListener( "dragout", addToTargetLog ); 
+      target.addEventListener( "dragdrop", addToTargetLog ); 
+      org.eclipse.rwt.test.fixture.TestUtil.flush();      
+      var sourceNode = source._getTargetNode();
+      var targetNode = target._getTargetNode();
+      var doc = document.body;
+      // drag
+      testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      // Over + move
+      testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton, 31, 15 );
+      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
+      // Move
+      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 33, 15 );
+      // Out
+      testUtil.fakeMouseEventDOM( targetNode, "mouseout", leftButton, 41, 15 );
+      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 42, 15 );      
+      // Over + move
+      testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton, 31, 15 );
+      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
+      // Drop 
+      testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton, 32, 16 );
+      testUtil.clearTimerOnceLog();
+      testUtil.clearRequestLog();
+      assertEquals( 0, parentTargetLog.length );
+      assertEquals( 7, targetLog.length );
+      dndSupport.cancel();
+      dndSupport.deregisterDragSource( source );
+      dndSupport.deregisterDropTarget( target );
+      source.setParent( null );
+      source.destroy();
+      target.setParent( null );
+      target.destroy();
+      testUtil.flush();
+    },
+
     testIgnorePassOverTarget : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();

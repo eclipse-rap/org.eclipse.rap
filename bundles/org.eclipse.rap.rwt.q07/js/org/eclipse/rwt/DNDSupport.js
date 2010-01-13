@@ -90,6 +90,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           // get all the mouse-events instead of a potential drop-target. 
           dndHandler.setFeedbackWidget( feedbackWidget, 10, 20 );
           event.startDrag();
+          event.stopPropagation();
         }
         this._sendDragSourceEvent( target, "dragStart", event.getMouseEvent() );
       }
@@ -159,6 +160,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var action = this._computeCurrentAction( mouseEvent, target );
       this._setAction( action, null );
       this._sendDropTargetEvent( target, "dragEnter", mouseEvent, action );
+      event.stopPropagation();
     },
 
     _dragMoveHandler : function( event ) {
@@ -169,6 +171,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var action = this._computeCurrentAction( mouseEvent, target );
       this._setAction( action, mouseEvent );
       this._sendDropTargetEvent( target, "dragOver", mouseEvent, action );
+      event.stopPropagation();
     },    
 
     _dragOutHandler : function( event ) {
@@ -186,13 +189,15 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       } else {
         this._sendDropTargetEvent( target, "dragLeave", mouseEvent, "none" );
       }
+      event.stopPropagation();
     },
          
     _dragDropHandler : function( event ) {
       var target = event.getCurrentTarget();
       var mouseEvent = event.getMouseEvent();
       var action = this._computeCurrentAction( mouseEvent, target );
-      this._sendDropTargetEvent( target, "dropAccept", mouseEvent, action ); 
+      this._sendDropTargetEvent( target, "dropAccept", mouseEvent, action );
+      event.stopPropagation();
     },
     
     _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
