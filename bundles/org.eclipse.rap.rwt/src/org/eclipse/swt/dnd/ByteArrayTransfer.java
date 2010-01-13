@@ -119,66 +119,74 @@ package org.eclipse.swt.dnd;
  */
 public abstract class ByteArrayTransfer extends Transfer {
 
-public TransferData[] getSupportedTypes() {
-	int[] types = getTypeIds();
-	TransferData[] data = new TransferData[types.length];
-	for (int i = 0; i < types.length; i++) {
-		data[i] = new TransferData();
-		data[i].type = types[i];
-	}
-	return data;
-}
-
-public boolean isSupportedType(TransferData transferData){
-	if (transferData == null) return false;
-	int[] types = getTypeIds();
-	for (int i = 0; i < types.length; i++) {
-		if (transferData.type == types[i])
-		    return true;
-	}
-	return false;
-}
-
-/**
- * This implementation of <code>javaToNative</code> converts a java 
- * <code>byte[]</code> to a platform specific representation.
- * 
- * @param object a java <code>byte[]</code> containing the data to be converted
- * @param transferData an empty <code>TransferData</code> object that will
- *  	be filled in on return with the platform specific format of the data
- * 
- * @see Transfer#nativeToJava
- */
-public void javaToNative (Object object, TransferData transferData) {
-	if (!checkByteArray(object) || !isSupportedType(transferData)) {
-		DND.error(DND.ERROR_INVALID_DATA);
-	}
-	byte[] data = (byte[])object;
-	System.arraycopy( data, 0, transferData.data, 0, data.length );
-	transferData.result = 1;
-}
-
-/**
- * This implementation of <code>nativeToJava</code> converts a platform specific 
- * representation of a byte array to a java <code>byte[]</code>.   
- * 
- * @param transferData the platform specific representation of the data to be converted
- * @return a java <code>byte[]</code> containing the converted data if the conversion was
- * 		successful; otherwise null
- * 
- * @see Transfer#javaToNative
- */
-public Object nativeToJava(TransferData transferData) {
-	if (!isSupportedType(transferData) || !( transferData.data instanceof byte[] ) ) {
-    return null;
+  public TransferData[] getSupportedTypes() {
+    int[] types = getTypeIds();
+    TransferData[] data = new TransferData[ types.length ];
+    for( int i = 0; i < types.length; i++ ) {
+      data[ i ] = new TransferData();
+      data[ i ].type = types[ i ];
+    }
+    return data;
   }
-	byte[] data = ( byte[] )transferData.data;
-	byte[] result = new byte[ data.length ];
-	System.arraycopy( data, 0, result, 0, data.length );
-	return result;
-}
 
-boolean checkByteArray(Object object) {
-	return (object != null && object instanceof byte[] && ((byte[])object).length > 0);
-}
+  public boolean isSupportedType( final TransferData transferData ) {
+    boolean result = false;
+    if( transferData != null ) {
+      int[] types = getTypeIds();
+      for( int i = 0; !result && i < types.length; i++ ) {
+        if( transferData.type == types[ i ] )
+          result = true;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * This implementation of <code>javaToNative</code> converts a java
+   * <code>byte[]</code> to a platform specific representation.
+   * 
+   * @param object a java <code>byte[]</code> containing the data to be
+   *          converted
+   * @param transferData an empty <code>TransferData</code> object that will be
+   *          filled in on return with the platform specific format of the data
+   * @see Transfer#nativeToJava
+   */
+  public void javaToNative( final Object object,
+                            final TransferData transferData ) 
+  {
+    if( !checkByteArray( object ) || !isSupportedType( transferData ) ) {
+      DND.error( DND.ERROR_INVALID_DATA );
+    }
+    byte[] data = ( byte[] )object;
+    transferData.data = new byte[ data.length ];
+    System.arraycopy( data, 0, transferData.data, 0, data.length );
+    transferData.result = 1;
+  }
+
+  /**
+   * This implementation of <code>nativeToJava</code> converts a platform
+   * specific representation of a byte array to a java <code>byte[]</code>.
+   * 
+   * @param transferData the platform specific representation of the data to be
+   *          converted
+   * @return a java <code>byte[]</code> containing the converted data if the
+   *         conversion was successful; otherwise null
+   * @see Transfer#javaToNative
+   */
+  public Object nativeToJava( final TransferData transferData ) {
+    byte[] result = null;
+    if(    isSupportedType( transferData ) 
+        && ( transferData.data instanceof byte[] ) )
+    {
+      byte[] data = ( byte[] )transferData.data;
+      result = new byte[ data.length ];
+      System.arraycopy( data, 0, result, 0, data.length );
+    }
+    return result;
+  }
+
+  private static boolean checkByteArray( final Object object ) {
+    return    object != null && object instanceof byte[] 
+           && ( ( byte[] )object ).length > 0;
+  }
 }

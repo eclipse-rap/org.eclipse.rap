@@ -103,10 +103,7 @@ public class Transfer_Test extends TestCase {
   public void testFileTransferConversion() {
     Transfer transfer = FileTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
-    String[] fileNames = new String[] {
-      "c:/file1",
-      "c:/file2",
-    };
+    String[] fileNames = new String[] { "c:/file1", "c:/file2", };
     transfer.javaToNative( fileNames, data );
     assertEquals( 1, data.result );
     Object java = transfer.nativeToJava( data );
