@@ -292,14 +292,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
               es[i] = "";
           }
         }
-        // [if] Fix for bug
-        // 279800: Some focused widgets look strange in webkit
-        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=279800
-        if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-          es.outline = "none";
-        }
-        // The next line is needed for clipping in IE. Overflow is a 
-        // "innerStyle" property, so this this css-value will never be set or 
+        // [if] Fix for bug 279800: Some focused widgets look strange in webkit
+        es.outline = "none";
+        // The next line is needed for clipping in IE. Overflow is an
+        // "outerStyle" property, so this this css-value will never be set or 
         // reset. Therefore, this widget also no longer has the ability to 
         // show overflow:
         es.overflow = "hidden";
