@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -29,6 +30,8 @@ import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.service.localization.LocaleProvider;
+import org.eclipse.rap.ui.internal.SessionLocaleProvider;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
@@ -64,7 +67,6 @@ import org.eclipse.ui.internal.themes.IThemeRegistry;
 import org.eclipse.ui.internal.themes.ThemeRegistry;
 import org.eclipse.ui.internal.themes.ThemeRegistryReader;
 import org.eclipse.ui.internal.util.BundleUtility;
-//import org.eclipse.ui.internal.util.SWTResourceUtil;
 import org.eclipse.ui.internal.wizards.ExportWizardRegistry;
 import org.eclipse.ui.internal.wizards.ImportWizardRegistry;
 import org.eclipse.ui.internal.wizards.NewWizardRegistry;
@@ -79,6 +81,7 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -267,6 +270,9 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
     // The set of currently starting bundles
     private Collection startingBundles = new HashSet();
+      
+    // RAP [rh] multi-session-aware LocaleProvider service
+    private ServiceRegistration localeProviderService;
 
     /**
      * Global workbench ui plugin flag. Only workbench implementation is allowed to use this flag
@@ -1081,6 +1087,12 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
         JFaceUtil.initializeJFace();
         
+        // RAP [rh] regsister a multi-session-aware LocaleProvider
+        LocaleProvider localeProvider = new SessionLocaleProvider();
+        String localeProviderName = LocaleProvider.class.getName();
+        localeProviderService
+          = context.registerService( localeProviderName, localeProvider, new Hashtable() );
+
         // RAP [fappel]: initialize session aware job management
         JobManagerAdapter.getInstance();
         
@@ -1336,7 +1348,9 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         EntryPointExtension.unbindAll();
         // RAPEND: [bm] 
 
-
+        // RAP [rh] unregister multi-session-aware LocaleProvider service
+        localeProviderService.unregister();
+        
     	// TODO normally super.stop(*) would be the last statement in this
     	// method
         super.stop(context);
