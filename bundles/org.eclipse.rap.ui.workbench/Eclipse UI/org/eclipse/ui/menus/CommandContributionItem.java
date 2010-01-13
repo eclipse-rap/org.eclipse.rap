@@ -105,6 +105,11 @@ public final class CommandContributionItem extends ContributionItem {
 
 	// RAP [bm]: 
 //	private IBindingService bindingService;
+	
+	// RAP [hs]:
+	// necessary to access the menu within the getMenuManager method to style 
+	// the menu.
+	private MenuManager menuManager;
 
 	private ParameterizedCommand command;
 
@@ -649,7 +654,11 @@ public final class CommandContributionItem extends ContributionItem {
 				if (event.detail == 4) { // on drop-down button
 					ToolItem ti = (ToolItem) item;
 
-					final MenuManager menuManager = new MenuManager();
+					// RAP [hs]:
+					// save the manager in a field to access it within the
+					// getMenuManager method.
+					menuManager = new MenuManager();
+					
 					Menu menu = menuManager.createContextMenu(ti.getParent());
 					if (workbenchHelpSystem != null) {
 						workbenchHelpSystem.setHelp(menu, helpContextId);
@@ -764,4 +773,29 @@ public final class CommandContributionItem extends ContributionItem {
 		}
 		return super.isVisible();
 	}
+	
+	/**
+	 * RAP [hs]: This mehtod is needed to access the menu for the styling. It is 
+	 * marked public only so that it can be shared
+     * within the packages provided by RAP. It should never be accessed
+     * from application code.
+	 * @return the menuManager for this ContributionItem.
+	 * @since 1.3
+	 */	
+    public MenuManager getMenuManager() {
+      return menuManager;
+    }
+     
+    /**
+     * RAP [hs]: Mehtod is needed to modify the mode to show the label 
+     * within a ToolBar. It is marked public only so that it can be shared
+     * within the packages provided by RAP. It should never be accessed
+     * from application code.
+     * @param mode the new mode. Should be the constant MODE_FORCE_TEXT
+     * @since 1.3
+     */
+    public void setMode( final int mode ) {
+      this.mode = mode;
+    }
+
 }

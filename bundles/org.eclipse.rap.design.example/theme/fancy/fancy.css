@@ -1344,3 +1344,92 @@ CTabFolder-DropDownButton-Icon {
 CTabFolder-DropDownButton-Icon:hover {
   background-image: url( /theme/fancy/icons/ctabfolder-dropdown-hover.png );
 }
+
+/* Header Toolbar */
+
+ToolBar.header-toolbar {
+  padding: 0px 0px 0px 25px;
+  color: white;
+  spacing: 25px;
+}
+
+ToolItem.header-toolbar {
+  color: white;
+  border: none;
+  padding: 5px 5px 5px 5px;
+  spacing: 10px;
+}
+
+ToolItem.header-toolbar:hover {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #3b8fc2;
+  border-radius: 5px 5px 0px 0px;
+  padding: 5px 5px 5px 5px;
+}
+
+ToolItem-DropDownIcon.header-toolbar {
+  background-image: url( img/fancy/toolbar_arrow.png );
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-toolbar:hover {
+  background-image: url( img/fancy/toolbar_arrow.png );
+  border: 1px solid #3b8fc2;
+}
+
+Menu.header-toolbar {
+  color: #3b8fc2;
+  background-color: white;
+  border: 1px solid #3b8fc2;
+  border-radius: 0px 0px 5px 5px;
+}
+
+MenuItem.header-toolbar {
+  color: #656565;
+}
+
+MenuItem.header-toolbar:hover {
+  color: #3b8fc2;
+  background-color: transparent;
+}
+
+
+/* Header overflow toolbar */
+
+ToolItem.header-overflow {
+  color: #656565;
+  border: none;
+  padding: 0px 25px 0px 0px;
+}
+
+ToolItem.header-overflow:hover {
+  background-color: transparent;
+  color: #3b8fc2;
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-overflow {
+  background-image: url( img/fancy/toolbar_overflow_arrow.png );
+}
+
+ToolItem-DropDownIcon.header-overflow:hover {
+  background-image: url( img/fancy/toolbar_overflow_arrow.png );
+  border: none;
+}
+
+Menu.header-overflow {
+  color: #656565;
+  background-color: white;
+  border: 1px #69b0df;
+  border-radius: 5px;
+}
+
+MenuItem.header-overflow {
+  color: #656565;
+}
+
+MenuItem.header-overflow:hover {
+  color: #3b8fc2;
+  background-color: transparent;
+}

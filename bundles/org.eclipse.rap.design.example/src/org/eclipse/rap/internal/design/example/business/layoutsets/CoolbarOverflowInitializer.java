@@ -30,7 +30,7 @@ public class CoolbarOverflowInitializer implements ILayoutSetInitializer {
                             path + "toolbar_overflow_arrow.png" );
     FormData fdItemTable = new FormData();
     fdItemTable.top = new FormAttachment( 0, 4 );
-    fdItemTable.left = new FormAttachment( 0, 93 );
+    fdItemTable.left = new FormAttachment( 0, 103 );
     fdItemTable.bottom = new FormAttachment( 100, -2 );
     fdItemTable.right = new FormAttachment( 100 ); 
     layoutSet.addPosition( ILayoutSetConstants.OVERFLOW_POS, fdItemTable );

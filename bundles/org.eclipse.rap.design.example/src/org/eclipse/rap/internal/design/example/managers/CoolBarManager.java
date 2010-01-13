@@ -10,359 +10,341 @@
 package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.ContributionItem;
-import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IContributionManagerOverrides;
 import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.ToolBarContributionItem;
-import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.internal.provisional.action.CoolBarManager2;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rap.internal.design.example.CommandUtil;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
-import org.eclipse.rap.internal.design.example.CommandUtil.CommandParameter;
 import org.eclipse.rap.internal.design.example.builder.CoolbarLayerBuilder;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 
-public class CoolBarManager extends ContributionManager 
-  implements ICoolBarManager2 
-{
+public class CoolBarManager extends CoolBarManager2 {
   
+  private static final String HEADER_TOOLBAR_VARIANT = "header-toolbar";
+  private static final String HEADER_OVERFLOW_VARIANT = "header-overflow";
   private static final String ACTIVE = "toolbarOverflowActive";
   private static final String INACTIVE = "toolbarOverflowInactive";
-  private static final int SPACING = 25;
   private static final int WAVE_SPACING = 20;
-  private Map buttonItemMap = new HashMap();
-  private ElementBuilder dummyBuilder;
-  private Composite coolBar;
+  private static final int SPACING = 25;
+  
   private Composite overflowParent;
+  private Image preservedWave; 
+  private ToolBar toolbar;
+  private List overflowItems = new ArrayList();
   private Button overflowOpenButton;
   private Button overflowCloseButton; 
-  private Composite overflowLayer;
-  private Image preservedWave;
   private Image newWave;
-  private List overflowItems = new ArrayList();
-  private List commanItems = new ArrayList();
-  private Table overflowTable;
-  private int indexOfIcon;
-  private int indexOfText;
-  private int indexOfPulldown;
-  private Map commandParamMap = new HashMap();
-  private Menu openMenu;
+  private Composite overflowLayer;
+  private ElementBuilder dummyBuilder;
+  private ToolBar overflowToolbar;
+  private ScrolledComposite overflowToolbarParent;
   
   private FocusListener focusListener = new FocusAdapter() {
     public void focusLost( FocusEvent event ) {
-      // close the overflow if the table focus is lost
-      closeOverflow( null );  
+      // close the overflow if the toolbar focus is lost
+      closeOverflow();  
       toggleImages();
     }
   };
   
-  public CoolBarManager() {
-    super();
-    // initialize a dummy builder to get the coolbar images
-    dummyBuilder = new DummyBuilder( null, ILayoutSetConstants.SET_ID_COOLBAR );
-  }
-
-  public Control createControl2( final Composite parent ) {
-    // create the coolbar control
-    coolBar = new Composite( parent, SWT.NONE );
-    coolBar.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
-    RowLayout layout = new RowLayout();
-    layout.spacing = SPACING;
-    layout.wrap = false;
-    layout.marginRight = 0;
-    coolBar.setLayout( layout );   
-    coolBar.getParent().getParent().addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent e ) {
-        // close the overflow and update the coolbar if the browser has resized
-        if( openMenu != null ) {
-          // TODO: Sometimes the menu don't close when the control is resized
-          openMenu.setVisible( false );
-        }
-        closeOverflow( null );
-        update( true );
-      }
-    } );
+  /*
+   * Class for accessing a pull down item's menu to set a custom variant.
+   */
+  private class StylingSelectionAdapter extends SelectionAdapter {
+    private String variant;
     
-    return coolBar;
-  }
-
-  public void dispose() {
-    if( coolBar != null && !coolBar.isDisposed() ) {
-      coolBar.dispose();
+    public StylingSelectionAdapter( final String variant ) {
+      this.variant = variant;
     }
-    IContributionItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-        items[ i ].dispose();
-    }
-  }
-
-  public Control getControl2() {
-    return coolBar;
-  }
-
-  public void refresh() {
-    update( true );
-  }
-
-  public void resetItemOrder() {
-    update( true );
-  }
-
-  public void setItems( final IContributionItem[] newItems ) {
-  }
-
-  public void add( final IToolBarManager toolBarManager ) {
-    Assert.isNotNull( toolBarManager );    
-    super.add( new ToolBarContributionItem( toolBarManager ) );
-  }
-
-  public IMenuManager getContextMenuManager() {
-    return null;
-  }
-
-  public boolean getLockLayout() {
-    return false;
-  }
-
-  public int getStyle() {
-    return 0;
-  }
-
-  public void setContextMenuManager( final IMenuManager menuManager ) {
-  }
-
-  public void setLockLayout( final boolean value ) {  
-  }
-
-  public void add( final IAction action ) {    
-    super.add( action );
-  }
-
-  public void add( final IContributionItem item ) {
-    super.add( item );
-  }
-
-  public void appendToGroup( final String groupName, final IAction action ) {
-    super.appendToGroup( groupName, action );
-  }
-
-  public void appendToGroup( 
-    final String groupName, 
-    final IContributionItem item ) 
-  {
-    super.appendToGroup( groupName, item );
-  }
-
-  public IContributionItem find( final String id ) {
-    return super.find( id );
-  }
-
-  public IContributionItem[] getItems() {
-    return super.getItems();
-  }
-
-  public IContributionManagerOverrides getOverrides() {
-    return super.getOverrides();
-  }
-
-  public void insertAfter( final String id, final IAction action ) {
-    super.insertAfter( id, action );
-  }
-
-  public void insertAfter( final String id, final IContributionItem item ) {
-    super.insertAfter( id, item );
-  }
-
-  public void insertBefore( final String id, final IAction action ) {
-    super.insertBefore( id, action );
-  }
-
-  public void insertBefore( final String id, final IContributionItem item ) {
-    super.insertBefore( id, item );
-  }
-
-  public boolean isDirty() {
-    return super.isDirty();
-  }
-
-  public boolean isEmpty() {
-    return super.isEmpty();
-  }
-
-  public void markDirty() {
-    super.markDirty();
-  }
-
-  public void prependToGroup( final String groupName, final IAction action ) {
-    super.prependToGroup( groupName, action );
-  }
-
-  public void prependToGroup( 
-    final String groupName, 
-    final IContributionItem item ) 
-  {
-    super.prependToGroup( groupName, item );
-  }
-
-  public IContributionItem remove( final String id ) {
-    return super.remove( id );
-  }
-
-  public IContributionItem remove( final IContributionItem item ) {
-    return super.remove( item );
-  }
-
-  public void removeAll() {
-    super.removeAll();
-  }
-
-  public void update( final boolean force ) {
-    // dispose all coolbar buttons
-    if( coolBar != null ) {
-      Control[] children = coolBar.getChildren();
-      for( int i = 0; i < children.length; i++ ) {
-        if( !children[ i ].isDisposed() ) {
-          children[ i ].dispose();
+    
+    private void styleMenuItems( final Menu menu ) {
+      MenuItem[] items = menu.getItems();
+      if( items != null && items.length > 0  && variant != null ) {
+        for( int i = 0; i < items.length; i++ ) {
+          items[ i ].setData( WidgetUtil.CUSTOM_VARIANT, variant );
         }
       }
-      
-      final IContributionItem[] items = getItems();
-      final List visibleItems = new ArrayList( items.length );
-      // add the items to show in the coolbar
-      for( int i = 0; i < items.length; i++ ) {
-          final IContributionItem item = items[ i ];
-          if ( item.isVisible() ) {
-              visibleItems.add( item );
-          }
-      }
-      
-      for( int i = 0; i < visibleItems.size(); i++ ) {
-        IContributionItem item = ( IContributionItem ) visibleItems.get( i );
-        IToolBarManager manager = null;        
-        // get the coolbar manager
-        if( item instanceof IToolBarContributionItem ) {        
-          IToolBarContributionItem toolItem = ( IToolBarContributionItem ) item;
-          manager = toolItem.getToolBarManager();           
-        } 
-        
-        // wrap contrib items to buttons and add these to the coolbar
-        if( manager != null ) {
-          IContributionItem[] toolItems = manager.getItems();
-          for( int j = 0; j < toolItems.length; j++ ) {
-            if( toolItems[ j ].isVisible() ) {
-              if( toolItems[ j ] instanceof ActionContributionItem ) {
-                // actions
-                ActionContributionItem actionItem 
-                  = ( ActionContributionItem ) toolItems[ j ];
-                addActionToCoolBar( actionItem );
-              } else if( toolItems[ j ] instanceof CommandContributionItem ) {
-                // commands
-                CommandContributionItem commandItem 
-                  = ( CommandContributionItem ) toolItems[ j ];
-                addCommandToCoolBar( commandItem );
+    }
+    
+    public void widgetSelected( final SelectionEvent e ) {
+      Widget widget = e.widget;
+      if( widget != null && widget instanceof ToolItem ) {
+        if( widget.getData( WidgetUtil.CUSTOM_VARIANT ) != null ) {
+          IContributionItem item = ( IContributionItem ) widget.getData();
+          if( item instanceof CommandContributionItem ) {
+            CommandContributionItem commandItem 
+              = ( CommandContributionItem ) item;
+            MenuManager manager = commandItem.getMenuManager();
+            if( manager != null ) {
+              Menu menu = manager.getMenu();
+              if( menu != null ) {
+                menu.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+                styleMenuItems( menu );
+              }
+            }
+          } else if( item instanceof ActionContributionItem ) {
+            ActionContributionItem actionItem = ( ActionContributionItem ) item;
+            IAction action = actionItem.getAction();            
+            IMenuCreator menuCreator = action.getMenuCreator();
+            if( menuCreator != null ) {
+              Menu menu = menuCreator.getMenu( toolbar );
+              if( menu != null ) {
+                menu.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+                styleMenuItems( menu );
               }
             }
           }
-        }      
-        
+        }
       }
-      coolBar.pack();
-      coolBar.layout( true, true );
-      manageOverflow();
     }
   }
+  
+  public CoolBarManager() {
+    dummyBuilder = new DummyBuilder( null, ILayoutSetConstants.SET_ID_COOLBAR );
+  }
+  
+  public Control createControl2( final Composite parent ) {
+    toolbar = new ToolBar( parent, SWT.NONE );
+    toolbar.setData( WidgetUtil.CUSTOM_VARIANT, HEADER_TOOLBAR_VARIANT );
+    toolbar.getParent().getParent().addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent e ) {
+        // close the overflow and update the ToolBar if the browser has resized
+        closeOverflow();   
+        update( true );
+      }
+    } );
 
+
+    return toolbar;
+  }
+  
+  public Control getControl2() {
+    return toolbar;
+  }
+
+  
+  public void update( final boolean force ) {
+    if( ( isDirty() || force ) && getControl2() != null ) {
+      refresh();
+      boolean changed = false;
+      /*
+       * Make a list of items including only those items that are
+       * visible. Separators are being removed. Because we use only one Toolbar
+       * all ToolBarContributionItems will be extracted in their IContribution
+       * Items.
+       */
+      final IContributionItem[] items = getItems();
+      final List visibleItems = new ArrayList( items.length );
+      for( int i = 0; i < items.length; i++ ) {
+        final IContributionItem item = items[i];
+        if( item.isVisible() ) {
+          if( item instanceof IToolBarContributionItem ) {
+            IToolBarContributionItem toolbarItem 
+              = ( IToolBarContributionItem ) item;
+            IToolBarManager toolBarManager = toolbarItem.getToolBarManager();
+            IContributionItem[] toolbarItems = toolBarManager.getItems();
+            for( int j = 0; j < toolbarItems.length; j++ ) {
+              final IContributionItem toolItem = toolbarItems[ j ];
+              if( toolItem.isVisible() && !toolItem.isSeparator() ) {
+                visibleItems.add( toolItem );
+              }
+            }
+          }
+        }
+      }
+      
+      /*
+       * Make a list of ToolItem widgets in the tool bar for which there
+       * is no current visible contribution item. These are the widgets
+       * to be disposed. Dynamic items are also removed.
+       */
+      ToolItem[] toolItems = toolbar.getItems();
+      final ArrayList toolItemsToRemove = new ArrayList(toolItems.length);
+      for (int i = 0; i < toolItems.length; i++) {
+          final Object data = toolItems[i].getData();
+          if ((data == null)
+                  || (!visibleItems.contains(data))
+                  || ((data instanceof IContributionItem) && ((IContributionItem) data)
+                          .isDynamic())) {
+              toolItemsToRemove.add(toolItems[i]);
+          }
+      }
+      
+      // Dispose of any items in the list to be removed.
+      for( int i = toolItemsToRemove.size() - 1; i >= 0; i-- ) {
+        ToolItem toolItem = ( ToolItem ) toolItemsToRemove.get(i);
+        if( !toolItem.isDisposed() ) {
+          Control control = toolItem.getControl();
+          if( control != null ) {
+            toolItem.setControl( null );
+            control.dispose();
+          }
+          toolItem.dispose();
+        }
+      }
+      
+      // Add any new items by telling them to fill.
+      toolItems = toolbar.getItems();
+      IContributionItem sourceItem;
+      IContributionItem destinationItem;
+      int sourceIndex = 0;
+      int destinationIndex = 0;
+      final Iterator visibleItemItr = visibleItems.iterator();
+      while( visibleItemItr.hasNext() ) {
+        sourceItem = ( IContributionItem ) visibleItemItr.next();
+
+        // Retrieve the corresponding contribution item from SWT's
+        // data.
+        if( sourceIndex < toolItems.length ) {
+          destinationItem 
+            = ( IContributionItem ) toolItems[ sourceIndex ].getData();
+        } else {
+          destinationItem = null;
+        }
+
+        // The items match if they are equal or both separators.
+        if( destinationItem != null ) {
+          if( sourceItem.equals( destinationItem ) ) {
+            sourceIndex++;
+            destinationIndex++;
+            sourceItem.update();
+            continue;
+          } else if( ( destinationItem.isSeparator() )
+                  && ( sourceItem.isSeparator() ) ) {
+            toolItems[ sourceIndex ].setData( sourceItem );
+            sourceIndex++;
+            destinationIndex++;
+            sourceItem.update();
+            continue;
+          }
+        }
+
+        // Otherwise, a new item has to be added.
+        final int start = toolbar.getItemCount();
+        sourceItem.fill( toolbar, destinationIndex );
+        final int newItems = toolbar.getItemCount() - start;
+        // add the selection listener for the styling
+        StylingSelectionAdapter listener 
+          = new StylingSelectionAdapter( HEADER_TOOLBAR_VARIANT );
+        for( int i = 0; i < newItems; i++ ) {
+          ToolItem item = toolbar.getItem( destinationIndex++ );
+          item.setData( sourceItem );  
+          item.addSelectionListener( listener );
+        }
+        changed = true;
+      }
+      
+      // Remove any old widgets not accounted for.
+      for( int i = toolItems.length - 1; i >= sourceIndex; i-- ) {
+        final ToolItem item = toolItems[ i ];
+        if( !item.isDisposed() ) {
+          Control control = item.getControl();
+          if( control != null ) {
+            item.setControl( null );
+            control.dispose();
+          }
+          item.dispose();
+          changed = true;
+        }
+      }
+      
+      // Update wrap indices. only needed by a coolbar
+      //updateWrapIndices();
+      
+      // Update the sizes.
+      for( int i = 0; i < items.length; i++ ) {
+        IContributionItem item = items[ i ];
+        item.update( SIZE );
+      }     
+
+      if (changed) {
+          updateToolbarTabOrder();
+      }
+      
+      // We are no longer dirty.
+      setDirty( false );
+      styleToolItems();
+      toolbar.pack();
+      toolbar.layout( true, true );
+      manageOverflow();
+    } 
+    
+  }
+  
   /*
    * This method manages the items which can not be shown in the coolbar because
    * it is to small. So an overflow will be shown including these items.
    */
-  private void manageOverflow() {        
-    int coolbarWidth = coolBar.getParent().getSize().x - WAVE_SPACING;     
-    int childrenLength = coolBar.getChildren().length - 1;
+  private void manageOverflow() {    
+    int coolbarWidth = toolbar.getParent().getSize().x - WAVE_SPACING;     
+    int childrenLength = toolbar.getItemCount() - 1;    
+    overflowItems.clear();
     for( int i = childrenLength; i >= 0; i-- ) {
-      int childrenSize = getChildrenSize( coolBar );
+      int childrenSize = getChildrenSize( toolbar );      
       if( childrenSize > coolbarWidth ) {
-        Control child = coolBar.getChildren()[ i ];
-        Object object = buttonItemMap.get( child );
-        ContributionItem item = ( ContributionItem ) object;
+        ToolItem toolItem = toolbar.getItem( i );
+        IContributionItem item = ( IContributionItem ) toolItem.getData();
         addOverflowItem( item );
-        activeOverflowOpenButton();
-        buttonItemMap.remove( child );
-        child.dispose();
+        activateOverflowOpenButton();
+        Control control = toolItem.getControl();
+        toolItem.setControl( null );
+        if( control != null ) {
+          control.dispose(); 
+        }       
+        toolItem.dispose();
       }
     }
     // check if the overflow button should be activated or not
     checkOverflowActivation();    
   }
-
-  private void checkOverflowActivation() {
-    boolean foundInToolBar = true;
-    for( int i = 0; i < overflowItems.size() && foundInToolBar; i++ ) {
-      ContributionItem item = ( ContributionItem ) overflowItems.get( i );
-      foundInToolBar = buttonItemMap.containsValue( item );
-    }
-    // If every item has a representation in the coolbar, the overflow button 
+  
+  private void checkOverflowActivation() {    
+    // If every item has a representation in the toolbar, the overflow button 
     // should be invisible
-    if( foundInToolBar ) {
+    if( overflowItems.size() > 0 ) {
+      activateOverflowOpenButton();
+    } else {      
       deactivateOverflowButton();
-    } else {
-      activeOverflowOpenButton();
     }
   }
 
-  private void addOverflowItem( final ContributionItem item ) {
-    // add the contrib item to the overflow items if it's not allready in
-    int indexOf = overflowItems.indexOf( item );
-    if( indexOf == -1 ) {
+  private void addOverflowItem( final IContributionItem item ) {
+    // add the contrib item to the overflow items if it's not allready in   
+    if( !overflowItems.contains( item ) ) {
       overflowItems.add( item );
     }
   }
@@ -377,14 +359,11 @@ public class CoolBarManager extends ContributionManager
    * This method calculates the size of all children of the coolbar. This is
    * necessary to compare the correct sizes for the overflow.
    */
-  private int getChildrenSize( final Composite comp ) {    
+  private int getChildrenSize( final ToolBar toolbar ) {    
     int result = 0;
-    Control[] children = comp.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      if( !children[ i ].isDisposed() ) {
-        children[ i ].pack( true );
-        result += ( children[ i ].getSize().x + SPACING );
-      }
+    ToolItem[] items = toolbar.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      result += items[ i ].getWidth() + SPACING;
     }
     return result;
   }
@@ -392,7 +371,7 @@ public class CoolBarManager extends ContributionManager
   /*
    * Creates and activates the overflow button
    */
-  private void activeOverflowOpenButton() {
+  private void activateOverflowOpenButton() {
     if( overflowParent != null && overflowOpenButton == null ) {
       overflowOpenButton = new Button( overflowParent, SWT.PUSH );
       overflowOpenButton.setData( WidgetUtil.CUSTOM_VARIANT, INACTIVE );
@@ -412,9 +391,35 @@ public class CoolBarManager extends ContributionManager
       overflowCloseButton = new Button( overflowParent, SWT.PUSH );
       overflowCloseButton.setData( WidgetUtil.CUSTOM_VARIANT, ACTIVE );
       overflowCloseButton.setLayoutData( getOverflowButtonLayoutData() );
-      
+      overflowCloseButton.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent e ) {
+          closeOverflow();
+          toggleImages();
+        };
+      } );
     }
     overflowCloseButton.setVisible( false );
+  }
+  
+  /*
+   * Change the images, this includes the chefron icon and the wave image
+   */
+  private void toggleImages() {
+    Image wave = null;
+    if( overflowOpenButton.isVisible() ) {
+      // The button was inactive so active it
+      overflowOpenButton.setVisible( false );
+      overflowCloseButton.setVisible( true );
+      wave = newWave;
+      overflowLayer.getParent().setVisible( true );
+      overflowLayer.setFocus();
+    } else {      
+      overflowCloseButton.setVisible( false );
+      overflowOpenButton.setVisible( true );
+      overflowLayer.getParent().setVisible( false );
+      wave = preservedWave;
+    }
+    overflowParent.setBackgroundImage( wave );
   }
   
   private FormData getOverflowButtonLayoutData() {
@@ -454,423 +459,157 @@ public class CoolBarManager extends ContributionManager
       FormData fdLayer = ( FormData ) overflowLayer.getParent().getLayoutData();
       fdLayer.left = fdParent.left;
     }
-    
-    update( true );
-    fillOverflowTable();
+       
+    // fill the vertical overflow toolbar with the overflow items 
+    fillOverflowToolbar();
     
     overflowParent.getParent().layout( true );
     overflowLayer.getParent().moveAbove( null );
     overflowLayer.getParent().moveBelow( overflowParent );
   }
-
-  private void fillOverflowTable() {
-    if( overflowTable == null ) {
-      overflowTable = new Table( overflowLayer, SWT.SINGLE | SWT.NO_SCROLL );
-      overflowTable.setBackgroundMode( SWT.INHERIT_FORCE );
-      DummyBuilder builder 
-        = new DummyBuilder( null, ILayoutSetConstants.SET_ID_OVERFLOW );
-      FormData pos = builder.getPosition( ILayoutSetConstants.OVERFLOW_POS ); 
-      overflowTable.setLayoutData( pos );
-      overflowTable.setData( WidgetUtil.CUSTOM_VARIANT, "overflow" ); 
-      overflowTable.setBackgroundMode( SWT.INHERIT_FORCE );
-      overflowTable.setHeaderVisible( false );
-      overflowTable.setLinesVisible( false );
-      // create columns
-      TableColumn iconColumn = new TableColumn( overflowTable, SWT.NONE );
-      iconColumn.setResizable( false );
-      iconColumn.setMoveable( false );
-      TableColumn textColumn = new TableColumn( overflowTable, SWT.NONE );
-      TableColumn pulldownColumn = new TableColumn( overflowTable, SWT.NONE );
-      pulldownColumn.setResizable( false );
-      pulldownColumn.setMoveable( false );
-      indexOfIcon = overflowTable.indexOf( iconColumn );
-      indexOfText = overflowTable.indexOf( textColumn );
-      indexOfPulldown = overflowTable.indexOf( pulldownColumn );
-      overflowTable.addFocusListener( focusListener );
-    }
-    emptyOverflowTable();
-    overflowTable.setVisible( true );
-    
-    // add selection support
-    final Map itemMap = new HashMap();
-    final Map actionMap = new HashMap();
-    final MouseAdapter mousDownListner = new MouseAdapter() {
-      public void mouseDown( MouseEvent e ) {        
-        TableItem[] selection = overflowTable.getSelection();            
-        TableItem item = selection[ 0 ];
-        int indexOf = overflowTable.indexOf( item );
-        Rectangle bounds = item.getBounds( indexOfPulldown );
-        Object object = itemMap.get( new Integer( indexOf ) );
-        Action action = null;
-        if( object != null ) {
-          if( object instanceof Action ) {
-            // action
-            action = ( Action ) object;                             
-          } 
-        }
-        if( e.x < bounds.x && action != null ) {
-          // action clicked
-          closeOverflow( this );               
-          action.run(); 
-        } else {
-          // pulldown clicked
-          final Menu pulldownMenu 
-            = getPulldownMenu( action, overflowTable, actionMap );
-          if( pulldownMenu != null ) {      
-            Display display = overflowTable.getDisplay();
-            Point newLoc = display.map( overflowTable, 
-                                        null, 
-                                        bounds.x + 20, 
-                                        bounds.y );
-            pulldownMenu.setLocation( newLoc );
-            pulldownMenu.setVisible( true );
-            openMenu = pulldownMenu;
-            final MouseAdapter adapter = this;
-            pulldownMenu.addListener( SWT.Hide, new Listener() {              
-              public void handleEvent( final Event event ) {
-                closeOverflow( adapter );
-                pulldownMenu.removeListener( SWT.Hide, this );
-              }
-            } );
-          }
-        }
-      }
-    };
-    overflowTable.addMouseListener( mousDownListner );
-    
-    // fill the table
-    clearCommandItems();
-    String key = ILayoutSetConstants.OVERFLOW_ARROW;
-    ElementBuilder dummy 
-      = new DummyBuilder( null, ILayoutSetConstants.SET_ID_OVERFLOW );
-    Image arrowIcon = dummy.getImage( key );
-    for( int i = 0; i < overflowItems.size(); i++ ) {
-      ContributionItem contrib = ( ContributionItem ) overflowItems.get( i );
-      if( !buttonItemMap.containsValue( contrib ) ) {        
-        TableItem tableItem = new TableItem( overflowTable, SWT.NONE );  
-        Action action = null;
-        if( contrib instanceof ActionContributionItem ) {
-          // action
-          ActionContributionItem actionItem 
-            = ( ActionContributionItem ) contrib;
-          action = ( Action ) actionItem.getAction();        
-        } else if( contrib instanceof CommandContributionItem ) {
-          // command
-          CommandContributionItem item = ( CommandContributionItem ) contrib;
-          action = CommandUtil.wrapCommand( item, coolBar );
-          actionMap.put( action, item );
-        }
-        // icon column
-        Integer value = new Integer( overflowTable.indexOf( tableItem ) );
-        itemMap.put( value, action );
-        ImageDescriptor imageDescriptor = action.getImageDescriptor();
-        if( imageDescriptor != null ) {
-          Image icon = imageDescriptor.createImage();
-          tableItem.setImage( indexOfIcon, icon );          
-        }
-        // text column
-        setTableItemStyle( tableItem );
-        String text = action.getText();
-        // reomve the & because there is no shortkey suppor tin the coolbar
-        tableItem.setText( indexOfText, text.replaceAll( "&", "" ) );
-        tableItem.setData( WidgetUtil.CUSTOM_VARIANT, "overflow" );
-        // pulldown
-        if( action.getStyle() == IAction.AS_DROP_DOWN_MENU ) {
-          tableItem.setImage( indexOfPulldown, arrowIcon );  
-        }
-      }
-    }
-
-    // pack and set focus for the focuslistener     
-    overflowTable.getColumn( indexOfIcon ).pack();
-    overflowTable.getColumn( indexOfText ).pack();
-    overflowTable.getColumn( indexOfPulldown ).pack();
-    overflowTable.pack();   
-    overflowLayer.getParent().layout( true, true );
-    overflowLayer.getParent().pack( true );
-    overflowTable.setFocus();
-  }
-
-  private Menu getPulldownMenu( 
-    final Action action, 
-    final Control parent, 
-    final Map actionMap ) 
-  {
-    Menu result = null;
-    if( action == null ) {
-      throw new IllegalArgumentException();
-    }
-    IMenuCreator menuCreator = action.getMenuCreator();
-    if( menuCreator != null ) {
-      result = menuCreator.getMenu( parent );
-    }
-    if( actionMap != null ) {
-      Object object = actionMap.get( action );
-      if( object != null && object instanceof CommandContributionItem ) {
-        CommandContributionItem item = ( CommandContributionItem ) object;
-        CommandParameter param = extractCommandInformation( item );
-        result = param.getMenu();
-      }
-    }
-    return result;
-  }
-
-  private void emptyOverflowTable() {
-    TableItem[] items = overflowTable.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
-    }
-    overflowTable.clearAll();
-    overflowTable.removeAll();
-  }
-
-  private void clearCommandItems() {
-    for( int i = 0; i < commanItems.size(); i++ ) {
-      MenuItem item = ( MenuItem ) commanItems.get( i );
-      destroyItem( item );
-    }
-  }
-
-  private void setTableItemStyle( final TableItem tableItem ) {
-    Color color 
-      = dummyBuilder.getColor( ILayoutSetConstants.COOLBAR_OVERFLOW_COLOR );
-    tableItem.setForeground( color );
-  }
-
-  /*
-   * Change the images, this includes the chefron icon and the wave image
-   */
-  private void toggleImages() {
-    Image wave = null;
-    if( overflowOpenButton.isVisible() ) {
-      // The button was inactive so active it
-      overflowOpenButton.setVisible( false );
-      overflowCloseButton.setVisible( true );
-      wave = newWave;
-      overflowLayer.getParent().setVisible( true );
-      overflowLayer.setFocus();
-    } else {
-      overflowCloseButton.setVisible( false );
-      overflowOpenButton.setVisible( true );
-      overflowLayer.getParent().setVisible( false );
-      wave = preservedWave;
-    }
-    overflowParent.setBackgroundImage( wave );
-  }
   
-  private void closeOverflow( MouseAdapter adapter ) {
+  private void closeOverflow( ) {
     if( overflowLayer != null && preservedWave != null ) {
       boolean opened = overflowLayer.getParent().isVisible();
       if( opened ) {
         overflowLayer.getParent().setVisible( false );
         overflowParent.setBackgroundImage( preservedWave );
         overflowOpenButton.setData( WidgetUtil.CUSTOM_VARIANT, INACTIVE );
-        overflowItems.clear();        
-        clearCommandItems();
-      }
-      if( adapter != null ) {
-        overflowTable.removeMouseListener( adapter );
+        clearOverflowToolbar();
       }
     }
-  }
-
-  private void addCommandToCoolBar( final CommandContributionItem item ) {
-    CommandParameter param = extractCommandInformation( item );    
-    if( param.getStyle() == CommandContributionItem.STYLE_PULLDOWN ) {
-      // pull down button
-      createPullDownButton( item, 
-                            CommandUtil.wrapCommand( item, coolBar ), 
-                            param.getStyle() );
-    } else {
-      final Button button = new Button( coolBar, param.getStyle() );
-      Command command = param.getCommand();
-      button.setData( command );
-      button.setText( param.getText() );
-      button.setToolTipText( param.getTooltipText() );
-      button.setData( WidgetUtil.CUSTOM_VARIANT, "coolBar" );        
-      button.setImage( param.getIcon() );
-      button.addSelectionListener( new SelectionAdapter() {
-        public void widgetSelected( final SelectionEvent e ) {
-          Command buttonCommand = ( Command ) button.getData();
-          CommandUtil.executeCommand( buttonCommand );
-        };
-      } );
-      button.addDisposeListener( new DisposeListener() {      
-        public void widgetDisposed( DisposeEvent event ) {
-          buttonItemMap.remove( button );
-        }
-      } );
-      buttonItemMap.put( button, item );
-    }          
-  }   
-
-  private CommandParameter extractCommandInformation( 
-    final CommandContributionItem item ) 
-  {
-    CommandParameter result = null;
-    Object object = commandParamMap.get( item );
-    if( object == null ) {
-      result = CommandUtil.extractCommandInformation( item, coolBar );
-      commandParamMap.put( item, result );
-    } else {
-      result = ( CommandParameter ) object;
-    }
-    return result;
-  }
-
-
-  
-  private void destroyItem( Item item ) {
-    item.dispose();
-    item = null;
   }
   
   /*
-   * Calculates the coolbar button bounds
+   * Dispose all Items in the overflow 
    */
-  private void adjustButtonBounds( final Button button ) {
-    Image image 
-      = dummyBuilder.getImage( ILayoutSetConstants.COOLBAR_BUTTON_BG );
-    int height = image.getBounds().height;
-    button.setSize( button.getSize().x, height );
-  }
-
-  private void addActionToCoolBar( final ActionContributionItem item ) {
-    final IAction action = item.getAction();
-    int actionStyle = action.getStyle();
-    int style = getButtonStyle( actionStyle );       
-        
-    if( action.getStyle() == IAction.AS_DROP_DOWN_MENU ) {
-      // drop down button
-      createPullDownButton( item, action, style );
-    } else {
-      // create normal button
-      final Button button = createCoolBarButton( coolBar, style, action );
-      buttonItemMap.put( button, item );
-      button.addDisposeListener( new DisposeListener() {      
-        public void widgetDisposed( DisposeEvent event ) {
-          buttonItemMap.remove( button );
+  private void clearOverflowToolbar() {
+    if( overflowToolbar != null ) {
+      ToolItem[] items = overflowToolbar.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        ToolItem toolItem = items[ i ];
+        if( toolItem != null && !toolItem.isDisposed() ) {
+          toolItem.setData( null );
+          toolItem.dispose();
         }
-      } ); 
-    }  
-  }
-
-  private void createPullDownButton( 
-    final ContributionItem item,
-    final IAction action,
-    final int style )
-  {    
-    final Composite buttonParent = new Composite( coolBar, SWT.NONE );
-    buttonItemMap.put( buttonParent, item );
-    RowLayout layout = new RowLayout( SWT.HORIZONTAL );
-    layout.spacing = 0;
-    layout.marginBottom = 0;
-    layout.marginHeight = 0;
-    layout.marginLeft = 0;
-    layout.marginRight = 0;
-    layout.marginTop = 0;
-    layout.marginWidth = 0;
-    buttonParent.setLayout( layout );
-    buttonParent.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
-    Button button = createCoolBarButton( buttonParent, SWT.PUSH, action );
-    buttonParent.addDisposeListener( new DisposeListener() {      
-      public void widgetDisposed( final  DisposeEvent event ) {
-        buttonItemMap.remove( buttonParent );
-        clearComposite( buttonParent );
       }
-    } ); 
-    // create the pulldown arrow
-    final Button arrow = new Button( buttonParent, SWT.PUSH );   
-    arrow.setData( WidgetUtil.CUSTOM_VARIANT, "coolBarPulldown" );
-    Image arrowIcon 
-      = dummyBuilder.getImage( ILayoutSetConstants.COOLBAR_ARROW );
-    arrow.setImage( arrowIcon );
-    final Menu menu = getItemMenu( item, action, button );
-    arrow.setText( " " );
-    arrow.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
-        if( menu != null ) {
-          menu.setVisible( true );
-          openMenu = menu;
-          Display display = arrow.getDisplay();
-          Point newLoc = display.map( arrow, null, 10, arrow.getSize().y );
-          menu.setLocation( newLoc );
-        }
-      };
-    } );
-    buttonParent.layout( true );
-  }
-
-  private Menu getItemMenu( 
-    final ContributionItem item,
-    final IAction action,
-    final Button button )
-  {
-    Menu menu;
-    if( item instanceof CommandContributionItem ) {
-      CommandParameter param 
-        = extractCommandInformation( ( CommandContributionItem ) item );
-      menu = param.getMenu();
-    } else {
-      menu = getPulldownMenu( ( Action ) action, button, null );
     }
-    return menu;
   }
 
-  private void clearComposite( final Composite comp ) {
-    Control[] children = comp.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      children[ i ].dispose();
+  /*
+   * Take all overflow items and fill the vertical overflow toolbar.
+   */
+  private void fillOverflowToolbar() {
+    if( overflowToolbar == null ) {
+      // scrolled toolbar parent
+      overflowToolbarParent 
+        = new ScrolledComposite( overflowLayer, SWT.V_SCROLL );        
+      DummyBuilder builder 
+        = new DummyBuilder( null, ILayoutSetConstants.SET_ID_OVERFLOW );
+      FormData pos = builder.getPosition( ILayoutSetConstants.OVERFLOW_POS ); 
+      overflowToolbarParent.setLayoutData( pos );      
+      // parent for the toolbar
+      Composite parent = new Composite( overflowToolbarParent, SWT.NONE );
+      parent.setLayout( new FillLayout() );      
+      // toolbar
+      overflowToolbar = new ToolBar( parent, SWT.VERTICAL );
+      overflowToolbar.setBackgroundMode( SWT.INHERIT_FORCE );
+      overflowToolbar.setData( WidgetUtil.CUSTOM_VARIANT, 
+                               HEADER_OVERFLOW_VARIANT );
+      overflowLayer.getParent().addFocusListener( focusListener );      
+      // configure the ScrolledComposite      
+      overflowToolbarParent.setContent( parent );
+      overflowToolbarParent.setExpandVertical( true ); 
+      overflowToolbarParent.setExpandHorizontal( true );
+      overflowToolbarParent.setOrigin( 0, 0 );
+      overflowToolbarParent.setAlwaysShowScrollBars( false );      
+    }    
+    // clear the old overflow if items exist
+    clearOverflowToolbar();    
+    // fill the toolbar
+    int maxWidth = 0;
+    for( int i = 0; i < overflowItems.size(); i++ ) {
+      IContributionItem item = ( IContributionItem ) overflowItems.get( i );
+      item.fill( overflowToolbar, i );
+      final ToolItem toolItem = overflowToolbar.getItem( i );
+      // add a selection listener for the styling
+      StylingSelectionAdapter listener 
+        = new StylingSelectionAdapter( HEADER_OVERFLOW_VARIANT );
+      toolItem.addSelectionListener( listener );
+      toolItem.setData( WidgetUtil.CUSTOM_VARIANT, HEADER_OVERFLOW_VARIANT );
+      if( toolItem.getWidth() > maxWidth ) {
+        maxWidth = toolItem.getWidth();
+      }
+    }    
+    // layout the controls
+    overflowLayer.getParent().layout( true, true );
+    overflowLayer.getParent().pack( true );   
+    overflowToolbarParent.setMinSize( maxWidth, overflowItems.size() * 25 );
+    // bring the scroll position back to it's origin every time the overflow 
+    // has opened
+    overflowToolbarParent.setOrigin( 0, 0 );    
+    overflowToolbarParent.layout();
+    overflowToolbarParent.setFocus();    
+  }
+
+  private void styleToolItems() {
+    if( toolbar != null ) {
+      ToolItem[] items = toolbar.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        ToolItem toolItem = items[ i ];
+        final IContributionItem item = ( IContributionItem ) toolItem.getData();
+        if( toolItem.getText() == "" ) {
+          modifyModeForceText( item );
+        }                      
+        toolItem.setData( WidgetUtil.CUSTOM_VARIANT, HEADER_TOOLBAR_VARIANT );
+      }
+    }
+  }
+  
+  
+  /*
+   * This method changes the modes from ActionContributionItems and
+   * CommandContributionItems to display the text within a ToolItem.
+   */
+  private void modifyModeForceText( final IContributionItem item ) {
+    if( item instanceof ActionContributionItem ) {
+      ActionContributionItem actionItem = ( ActionContributionItem ) item;
+      actionItem.setMode( ActionContributionItem.MODE_FORCE_TEXT );
+    } else if( item instanceof CommandContributionItem ) {
+      CommandContributionItem commandItem = ( CommandContributionItem ) item;
+      commandItem.setMode( CommandContributionItem.MODE_FORCE_TEXT );
     }    
   }
 
-  private int getButtonStyle( int actionStyle ) {
-    int style;
-    switch( actionStyle ) {
-      case IAction.AS_CHECK_BOX:
-        style = SWT.CHECK;
-      break;
-      case IAction.AS_DROP_DOWN_MENU:
-        style = SWT.PUSH;
-      break;
-      case IAction.AS_RADIO_BUTTON:
-        style = SWT.RADIO;
-      break;
-      default:
-        style = SWT.PUSH;
-      break;
-    }
-    return style;
-  }
-  
-  private Button createCoolBarButton( 
-    final Composite parent, 
-    final int style, 
-    final IAction action ) 
-  {
-    final Button button = new Button( parent, style );
-    adjustButtonBounds( button );
-    button.setText( action.getText() );
-    button.setToolTipText( action.getToolTipText() );
-    if( action.getImageDescriptor() != null ) {
-      button.setImage( action.getImageDescriptor().createImage() );
-    }
-    button.setData( WidgetUtil.CUSTOM_VARIANT, "coolBar" );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        try{      
-          action.run();          
-        } catch( Exception ex ) {
-          
+  private void updateToolbarTabOrder() {
+    if( toolbar != null ) {
+      ToolItem[] items = toolbar.getItems();
+      if( items != null ) {
+        ArrayList children = new ArrayList( items.length );
+        for( int i = 0; i < items.length; i++ ) {
+          if( ( items[ i ].getControl() != null )
+             && ( !items[ i ].getControl().isDisposed() ) ) 
+          {
+            children.add( items[ i ].getControl() );
+          }
+        }
+        // Convert array
+        Control[] childrenArray = new Control[ 0 ];
+        childrenArray = ( Control[] ) children.toArray( childrenArray );
+        if( childrenArray != null ) {
+          toolbar.setTabList( childrenArray );
         }
       }
-    } );           
-    return button;
-  }
+    }
+  }  
   
+  /*
+   * Method to set the parent for the overflow. This method is called within
+   * the WindowComposers.
+   */
   public void setOverflowParent( final Composite overflowParent ) {
     this.overflowParent = overflowParent;
     preservedWave = overflowParent.getBackgroundImage();
   }
-    
+  
 }
