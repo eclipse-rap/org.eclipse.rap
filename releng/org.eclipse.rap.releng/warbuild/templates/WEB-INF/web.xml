@@ -8,13 +8,19 @@
 		<servlet-class>org.eclipse.equinox.servletbridge.BridgeServlet</servlet-class>
     
     <!-- the OSGi console is useful for trouble shooting but will fill up your 
-             appserver log quickly, so deactivate on production use -->
+         appserver log quickly, so deactivate on production use -->
     <!--
 		<init-param>
 			<param-name>commandline</param-name>
 			<param-value>-console</param-value>			
 		</init-param>		
 		-->
+		
+    <!-- Enable multi-language support for the extension registry -->
+		<init-param>
+			<param-name>commandline</param-name>
+			<param-value>-registryMultiLanguage</param-value>			
+		</init-param>		
     
     <!-- Framework Controls could be useful for testing purpose, but
          we disable it in RAP environment per default -->
