@@ -14,10 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
-import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
-import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
 
 
 public class ThemeManager_Test extends TestCase {

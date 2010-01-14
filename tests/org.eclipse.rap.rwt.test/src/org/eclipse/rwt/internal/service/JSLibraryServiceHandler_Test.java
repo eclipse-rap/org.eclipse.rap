@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.util.HTML;
 
 

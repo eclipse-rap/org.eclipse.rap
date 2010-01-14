@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -16,8 +18,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import junit.framework.TestCase;
 
 public class BrowserFunction_Test extends TestCase {
 

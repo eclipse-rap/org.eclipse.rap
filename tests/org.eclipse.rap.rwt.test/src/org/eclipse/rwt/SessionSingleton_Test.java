@@ -13,7 +13,6 @@ package org.eclipse.rwt;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.service.*;
 
 

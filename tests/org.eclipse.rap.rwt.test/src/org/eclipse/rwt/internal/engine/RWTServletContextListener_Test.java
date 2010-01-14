@@ -16,7 +16,6 @@ import javax.servlet.ServletContextEvent;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
