@@ -18,12 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.widgets.BrowserHistory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.widgets.Display;
 
 
 /**
@@ -306,6 +310,27 @@ public final class RWT {
   public static IBrowserHistory getBrowserHistory() {
     Object instance = SessionSingletonBase.getInstance( BrowserHistory.class );
     return ( IBrowserHistory )instance;
+  }
+  
+  /**
+   * Executes the run method of the given <code>runnable</code> on the 
+   * request thread. This method may only be called from the UI thread.
+   * <p>
+   * <strong>NOTE:</strong> This API is provisional and may change without
+   * further notice.
+   * </p>
+   * @param runnable the code to be executed on the request thread
+   * @throws SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the UI thread</li>
+   * </ul>
+   * @since 1.3
+   */
+  public static void requestThreadExec( final Runnable runnable ) {
+    Display display = RWTLifeCycle.getSessionDisplay();
+    if( display == null || display.getThread() != Thread.currentThread() ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
+    RWTLifeCycle.requestThreadExec( runnable );
   }
 
   private RWT() {

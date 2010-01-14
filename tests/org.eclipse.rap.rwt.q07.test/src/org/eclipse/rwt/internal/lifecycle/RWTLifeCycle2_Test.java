@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.engine.RWTDelegate;

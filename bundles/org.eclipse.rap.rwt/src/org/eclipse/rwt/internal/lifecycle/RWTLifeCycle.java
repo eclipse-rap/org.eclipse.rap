@@ -50,6 +50,8 @@ public class RWTLifeCycle extends LifeCycle {
     = RWTLifeCycle.class.getName() + ".phaseOrder";
   private static final String UI_THREAD_THROWABLE
     = UIThreadController.class.getName() + "#UIThreadThrowable";
+  private static final String REQUEST_THREAD_RUNNABLE
+    = RWTLifeCycle.class.getName() + "#requestThreadRunnable";
 
   private final static IPhase[] PHASES = new IPhase[] {
     new PrepareUIRoot(),
@@ -149,7 +151,15 @@ public class RWTLifeCycle extends LifeCycle {
       setPhaseOrder( PHASE_ORDER_SUBSEQUENT );
     }
     try {
-      executeUIThread();
+      Runnable runnable = null;
+      do {
+        setRequestThreadRunnable( null );
+        executeUIThread();
+        runnable = getRequestThreadRunnable();
+        if( runnable != null ) {
+          runnable.run();
+        }
+      } while( runnable != null );
     } catch( InterruptedException e ) {
       String msg = "Received InterruptedException while executing life cycle";
       ServletLog.log( msg, e );
@@ -173,6 +183,22 @@ public class RWTLifeCycle extends LifeCycle {
   public Scope getScope() {
     return Scope.APPLICATION;
   }
+
+  public static void requestThreadExec( final Runnable runnable ) {
+    setRequestThreadRunnable( runnable );
+    switchThread();
+  }
+
+  private static void setRequestThreadRunnable( final Runnable runnable ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( REQUEST_THREAD_RUNNABLE, runnable );
+  }
+  
+  private static Runnable getRequestThreadRunnable() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    return ( Runnable )stateInfo.getAttribute( REQUEST_THREAD_RUNNABLE );
+  }
+
 
   //////////////////////////
   // readAndDispatch & sleep
@@ -314,6 +340,13 @@ public class RWTLifeCycle extends LifeCycle {
     return result;
   }
 
+  private static void switchThread() {
+    ISessionStore session = ContextProvider.getSession();
+    IUIThreadHolder uiThreadHolder
+      = ( IUIThreadHolder )session.getAttribute( UI_THREAD );
+    switchThread( uiThreadHolder );
+  }
+  
   private static void switchThread( final IUIThreadHolder uiThread )
     throws UIThreadTerminatedError
   {
