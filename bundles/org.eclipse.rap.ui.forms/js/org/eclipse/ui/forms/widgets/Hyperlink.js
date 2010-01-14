@@ -21,14 +21,9 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     // End of workaround
     var labelObject = this.getLabelObject();
     labelObject.setAppearance( "hyperlink-label" );
-    // Explicitly set cursor on label object
-    // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=455
     labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
-    labelObject.setCursor( qx.constant.Style.CURSOR_HAND );
     labelObject.setWrap( qx.lang.String.contains( style, "wrap" ) );
-    labelObject.setWidth( "100%" );
-    labelObject.setHeight( "100%" );
-    // TODO [rh] workaoround for weird getLabelObject behavior
+    // TODO [rh] workaround for weird getLabelObject behavior
     this.setLabel( "" );
     // End of workaround
     this._savedBackgroundColor = null;
@@ -39,13 +34,11 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     this._hover = false;
     this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
-    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
   destruct : function() {
     this.removeEventListener( "mousemove", this._onMouseMove, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
-    this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
   statics : {
@@ -76,15 +69,6 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     
     setUnderlineMode : function( value ) {
       this._underlineMode = value;      
-    },
-    
-    _onChangeEnabled : function( evt ) {
-      var labelObject = this.getLabelObject();
-      if( this.getEnabled() ) {
-        labelObject.setCursor( qx.constant.Style.CURSOR_HAND );
-      } else {
-        labelObject.setCursor( qx.constant.Style.CURSOR_DEFAULT );
-      }
     },
 
     _onMouseMove : function( evt ) {

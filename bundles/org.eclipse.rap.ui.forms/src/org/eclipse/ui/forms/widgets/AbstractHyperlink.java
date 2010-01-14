@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.internal.forms.widgets.FormsResources;
+//import org.eclipse.ui.internal.forms.widgets.FormsResources;
 
 /**
  * This is the base class for custom hyperlink widget. It is responsible for
@@ -140,7 +140,8 @@ public abstract class AbstractHyperlink extends Canvas {
 // RAP [rh] add defaultSelectionListener, sent by ToggleHyperlink.js to get
 //     notified about clicks on toggle image
 		addListener(SWT.DefaultSelection, listener);
-		setCursor(FormsResources.getHandCursor());
+// RAP [if] Cursor is managed on the client side
+//		setCursor(FormsResources.getHandCursor());
 	}
 
 	/**
@@ -231,7 +232,8 @@ public abstract class AbstractHyperlink extends Canvas {
 		if (listeners == null)
 			return;
 		int size = listeners.size();
-		setCursor(FormsResources.getBusyCursor());
+// RAP [if] Cursor is managed on the client side
+//		setCursor(FormsResources.getBusyCursor());
 		HyperlinkEvent he = new HyperlinkEvent(this, getHref(), getText(),
 				e.stateMask);
 		Object[] listenerList = listeners.getListeners();
@@ -239,8 +241,9 @@ public abstract class AbstractHyperlink extends Canvas {
 			IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
 			listener.linkActivated(he);
 		}
-		if (!isDisposed())
-			setCursor(FormsResources.getHandCursor());
+// RAP [if] Cursor is managed on the client side
+//		if (!isDisposed())
+//			setCursor(FormsResources.getHandCursor());
 	}
 
 	/**

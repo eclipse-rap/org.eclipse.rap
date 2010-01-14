@@ -18,7 +18,7 @@ appearances = {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         font: tv.getCssFont( "*", "font" ),
-        cursor : "pointer",
+        cursor : states.disabled ? "default" : "pointer",
         spacing : 4,
         width : "auto",
         height : "auto",
@@ -34,7 +34,8 @@ appearances = {
       return {
         textColor : states.disabled
                   ? tv.getCssColor( "*", "color" )
-                  : "undefined"
+                  : "undefined",
+        cursor : states.disabled ? "default" : "pointer"
       }
     }
   }
