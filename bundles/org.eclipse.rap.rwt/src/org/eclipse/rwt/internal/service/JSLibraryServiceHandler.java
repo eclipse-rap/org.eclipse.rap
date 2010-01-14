@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -63,6 +64,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     HttpServletResponse response = RWT.getResponse();
     response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT );
     response.setHeader( HTML.EXPIRES, EXPIRES_NEVER );
+    response.setCharacterEncoding( HTML.CHARSET_NAME_UTF_8 );
     if( isAcceptEncoding() && getInitProps().isCompression()) {
       writeCompressedOutput();
     } else {
