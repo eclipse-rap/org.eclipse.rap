@@ -57,7 +57,7 @@ public class RWTDelegate extends HttpServlet {
         ServiceContext context = new ServiceContext( wrappedRequest, response );
         ContextProvider.setContext( context );
         createSessionStore();
-        ServiceManager.getHandler().service( );
+        ServiceManager.getHandler().service();
       } finally {
         ContextProvider.disposeContext();
       }                                                         
