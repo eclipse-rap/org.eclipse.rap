@@ -87,9 +87,9 @@ public class Section extends ExpandableComposite {
 		int rtl = cstyle /* & SWT.RIGHT_TO_LEFT */;
 		if ((style & DESCRIPTION) != 0) {
 			descriptionControl = new Text(this, SWT.READ_ONLY | SWT.WRAP | rtl);
-			// [if] Fix for bug 263025
+			// [if] Fix for bug 263025, 297466
 	        // some qooxdoo widget with size (0,0) are not invisible
-			descriptionControl.setVisible( isExpanded() );
+			descriptionControl.setVisible( false );
 		}
 		if ((style & TITLE_BAR) != 0) {
 			Listener listener = new Listener() {
@@ -263,9 +263,9 @@ public class Section extends ExpandableComposite {
 		Assert.isTrue(descriptionControl != null
 				&& descriptionControl.getParent().equals(this));
 		this.descriptionControl = descriptionControl;
-		// [if] Fix for bug 263025
+		// [if] Fix for bug 263025, 297466
         // some qooxdoo widget with size (0,0) are not invisible
-        this.descriptionControl.setVisible( isExpanded() );
+        this.descriptionControl.setVisible( isExpanded() && getClient() != null );
 	}
 
 	/**
