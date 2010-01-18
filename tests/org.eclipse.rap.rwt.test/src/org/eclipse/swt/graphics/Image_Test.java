@@ -210,6 +210,27 @@ public class Image_Test extends TestCase {
     }
   }
   
+  public void testImageDataConstructorWithIllegalArguments() throws Exception {
+    Display display = new Display();
+    try {
+      new Image( display, ( ImageData )null );
+      fail( "Must not allow null-image-data" );
+    } catch( Exception e ) {
+      // expected
+    }
+  }
+  
+  public void testImageDataConstructor() throws Exception {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    ImageLoader imageLoader = new ImageLoader();
+    ImageData[] imageDatas = imageLoader.load( stream );
+    Display display = new Display();
+    Image image = new Image( display, imageDatas[ 0 ] );
+    assertEquals( 100, image.getBounds().width );
+    assertEquals( 50, image.getBounds().height );
+  }
+  
   public void testDispose() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -219,9 +240,8 @@ public class Image_Test extends TestCase {
     assertTrue( image.isDisposed() );
     try {
       stream.close();
-    }
-    catch(IOException e) {
-      fail("Unable to close input stream.");
+    } catch( IOException e ) {
+      fail( "Unable to close input stream." );
     }
   }
   

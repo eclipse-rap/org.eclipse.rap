@@ -8,10 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
+
+import org.eclipse.swt.internal.SWTEventObject;
 
 
-//import org.eclipse.swt.internal.SWTEventObject;
+
 
 /**
  * Instances of this class are sent as a result of the incremental
@@ -29,9 +31,10 @@ package org.eclipse.swt.internal.graphics;
  * 
  * @see ImageLoader
  * @see ImageLoaderListener
+ * @since 1.3
  */
 
-public class ImageLoaderEvent { // extends SWTEventObject {
+public class ImageLoaderEvent extends SWTEventObject {
 	
 	/**
 	 * if the <code>endOfImage</code> flag is false, then this is a
@@ -57,8 +60,6 @@ public class ImageLoaderEvent { // extends SWTEventObject {
 	
 	static final long serialVersionUID = 3257284738325558065L;
 
-  private final ImageLoader source;
-	
 /**
  * Constructs a new instance of this class given the event source and
  * the values to store in its fields.
@@ -69,8 +70,7 @@ public class ImageLoaderEvent { // extends SWTEventObject {
  * @param endOfImage the end of image flag for the event
  */
 public ImageLoaderEvent(ImageLoader source, ImageData imageData, int incrementCount, boolean endOfImage) {
-  //	super(source);
-  this.source = source;
+  super(source);
 	this.imageData = imageData;
 	this.incrementCount = incrementCount;
 	this.endOfImage = endOfImage;

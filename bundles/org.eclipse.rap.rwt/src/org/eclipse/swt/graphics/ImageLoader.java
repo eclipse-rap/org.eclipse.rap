@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
 
 
 import java.io.*;
@@ -40,6 +40,7 @@ import org.eclipse.swt.internal.image.FileFormat;
  * <li>load interlaced GIF/PNG images</li>
  * <li>load progressive JPEG images</li>
  * </ul>
+ * @since 1.3
  */
  
 public class ImageLoader {

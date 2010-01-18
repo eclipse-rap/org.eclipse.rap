@@ -12,14 +12,15 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -82,8 +83,7 @@ public class ButtonTab extends ExampleTab {
     checkButton1.setText( "Check" );
     checkButton2 = new Button( parent, style | SWT.CHECK );
     checkButton2.setText( "Check with image" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
+    createButtonImage( parent.getDisplay() );
     checkButton2.setImage( buttonImage );
     radioButton1 = new Button( parent, style | SWT.RADIO );
     radioButton1.setText( "Radio 1" );
@@ -128,6 +128,16 @@ public class ButtonTab extends ExampleTab {
     parent.setMenu( menu );
   }
 
+  private void createButtonImage( final Display display ) {
+    if( buttonImage == null ) {
+      ClassLoader classLoader = getClass().getClassLoader();
+      InputStream stream = classLoader.getResourceAsStream( BUTTON_IMAGE_PATH );
+      ImageLoader imageLoader = new ImageLoader();
+      ImageData[] imageData = imageLoader.load( stream );
+      buttonImage = new Image( display, imageData[ 0 ] );
+    }
+  }
+
   private void createImageButton( final Composite parent ) {
     final Button imageButton = new Button( parent, SWT.CHECK );
     imageButton.setText( "Push Button with Image" );
@@ -142,10 +152,7 @@ public class ButtonTab extends ExampleTab {
 
   private void updateButtonImage( final Button button ) {
     if( showImage ) {
-      if( buttonImage == null ) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
-      }
+      createButtonImage( button.getDisplay() );
       button.setImage( buttonImage );
     } else {
       button.setImage( null );

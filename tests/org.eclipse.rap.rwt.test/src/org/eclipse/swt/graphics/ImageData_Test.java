@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
 
 import java.io.InputStream;
 
@@ -20,6 +20,8 @@ import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageDataLoader;
 
 
 public class ImageData_Test extends TestCase {

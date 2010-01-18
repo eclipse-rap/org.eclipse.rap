@@ -12,7 +12,7 @@ package org.eclipse.swt.dnd;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageData;
 
 /**
  * The class <code>ImageTransfer</code> provides a platform specific mechanism

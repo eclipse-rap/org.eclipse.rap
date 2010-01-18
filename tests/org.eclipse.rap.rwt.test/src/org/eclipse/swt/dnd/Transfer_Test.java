@@ -17,7 +17,7 @@ import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 

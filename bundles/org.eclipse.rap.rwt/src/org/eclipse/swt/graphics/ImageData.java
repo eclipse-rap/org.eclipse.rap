@@ -8,14 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
 
 
-import java.io.*;
-import org.eclipse.swt.*;
-//import org.eclipse.swt.internal.CloneableCompatibility;
-//import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
+import java.io.InputStream;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 
 /**
  * Instances of this class are device-independent descriptions
@@ -31,6 +30,7 @@ import org.eclipse.swt.graphics.RGB;
  *
  * @see Image
  * @see ImageLoader
+ * @since 1.3
  */
 
 public final class ImageData implements Cloneable { // implements CloneableCompatibility {

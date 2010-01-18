@@ -8,12 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
 
 
 import org.eclipse.swt.*;
-//import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Instances of this class describe the color data used by an image.
@@ -52,6 +50,7 @@ import org.eclipse.swt.graphics.RGB;
  *
  * @see Image
  * @see RGB
+ * @since 1.3
  */
  
 public final class PaletteData {

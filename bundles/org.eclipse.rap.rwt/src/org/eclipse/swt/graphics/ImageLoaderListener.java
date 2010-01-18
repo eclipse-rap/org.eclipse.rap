@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.swt.graphics;
 
 
 import org.eclipse.swt.internal.SWTEventListener;
@@ -27,6 +27,7 @@ import org.eclipse.swt.internal.SWTEventListener;
  *
  * @see ImageLoader
  * @see ImageLoaderEvent
+ * @since 1.3
  */
 
 public interface ImageLoaderListener extends SWTEventListener {

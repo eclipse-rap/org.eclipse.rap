@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -27,9 +28,13 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  * pixels are specified as being transparent when drawn. Examples
  * of file formats that support transparency are GIF and PNG.</p>
  *
- * <p>In RWT, images are shared among all sessions. Therefore they
- * lack a public constructor. Images can be created using the
- * <code>getImage()</code> methods of class <code>Graphics</code>
+ * <p><strong>Note:</strong> Even though constructors are provided here, it is 
+ * recommended to create images by using one of the <code>getImage</code> 
+ * methods in class <code>Graphics</code>. These factory methods share images 
+ * among all sessions.
+ * Creating images via constructors carelessly may lead to bad performance 
+ * and/or unnecessary memory consumption.
+ * </p>
  *
  * @see org.eclipse.rwt.graphics.Graphics#getImage(String)
  * @see org.eclipse.rwt.graphics.Graphics#getImage(String, ClassLoader)
@@ -132,6 +137,11 @@ public final class Image extends Resource {
    * a single image only. If the specified file contains
    * multiple images, only the first one will be used.
    *
+   * <p><strong>Note</strong>, this constructor is provided for convenience when
+   * single-sourcing code with SWT. For RWT, the recommended way to create images
+   * is to use one of the <code>Graphics#getImage()</code> methods.
+   * </p>
+   *
    * @param device the device on which to create the image
    * @param filename the name of the file to load the image from
    *
@@ -214,6 +224,31 @@ public final class Image extends Resource {
     }
   }
 
+  /**
+   * Constructs an instance of this class from the given
+   * <code>ImageData</code>.
+   *
+   * @param device the device on which to create the image
+   * @param data the image data to create the image from (must not be null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the image data is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_UNSUPPORTED_DEPTH - if the depth of the ImageData is not supported</li>
+   * </ul>
+   * </ul>
+   * @since 1.3
+   */
+  public Image( final Device device, final ImageData imageData ) {
+    super( checkDevice( device ) );
+    if( imageData == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    init( imageData );
+  }
+
   private void init( final String fileName ) {
     try {
       FileInputStream stream = new FileInputStream( fileName );
@@ -233,6 +268,19 @@ public final class Image extends Resource {
     if( size == null ) {
       throw new SWTException( SWT.ERROR_UNSUPPORTED_FORMAT );
     }
+    width = size.x;
+    height = size.y;
+  }
+
+  private void init( final ImageData imageData ) {
+    resourceName = "image-" + String.valueOf( hashCode() );
+    ImageLoader imageLoader = new ImageLoader();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    imageLoader.data = new ImageData[] { imageData };
+    imageLoader.save( outputStream, imageData.type );
+    byte[] bytes = outputStream.toByteArray();
+    InputStream inputStream = new ByteArrayInputStream( bytes );
+    Point size = ResourceFactory.registerImage( resourceName, inputStream );
     width = size.x;
     height = size.y;
   }

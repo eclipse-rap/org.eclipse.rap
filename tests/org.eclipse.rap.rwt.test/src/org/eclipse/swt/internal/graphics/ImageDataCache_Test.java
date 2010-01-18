@@ -20,7 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 
 
 public class ImageDataCache_Test extends TestCase {
@@ -86,7 +86,8 @@ public class ImageDataCache_Test extends TestCase {
     if( inputStream == null ) {
       throw new IllegalArgumentException( "resource could not be found" );
     }
-    ImageData[] datas = ImageDataLoader.load( inputStream );
+    ImageLoader imageLoader = new ImageLoader();
+    ImageData[] datas = imageLoader.load( inputStream );
     inputStream.close();
     return datas[ 0 ];
   }
