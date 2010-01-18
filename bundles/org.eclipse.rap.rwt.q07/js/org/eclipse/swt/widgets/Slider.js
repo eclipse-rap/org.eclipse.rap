@@ -337,13 +337,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         if( this._horizontal ) {
           pxSel = this._thumb.getLeft() + ( this._thumb.getWidth() ) / 2;
           this._mousePos =   evt.getPageX()
-                           - qx.html.Location.getClientBoxLeft( this.getElement() );
+                           - qx.bom.element.Location.getLeft( this.getElement() );
           thumbMov =   this._pageIncrement * this._pxStep
                      + this._thumb.getWidth() / 2;
         } else {
           pxSel = this._thumb.getTop() + ( this._thumb.getHeight() ) / 2;
           this._mousePos =   evt.getPageY()
-                           - qx.html.Location.getClientBoxTop( this.getElement() );
+                           - qx.bom.element.Location.getTop( this.getElement() );
           thumbMov =   this._pageIncrement * this._pxStep
                      + this._thumb.getHeight() / 2;
         }
@@ -377,10 +377,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     _onLineMouseMove : function( evt ) {
       if( this._horizontal ) {
         this._mousePos =   evt.getPageX()
-                         - qx.html.Location.getClientBoxLeft( this.getElement() );
+                         - qx.bom.element.Location.getLeft( this.getElement() );
       } else {
         this._mousePos =   evt.getPageY()
-                         - qx.html.Location.getClientBoxTop( this.getElement() );
+                         - qx.bom.element.Location.getTop( this.getElement() );
       }
     },
 
@@ -501,11 +501,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       if( evt.isLeftButtonPressed() ) {
         if( this._horizontal ) {
           mousePos =   evt.getPageX()
-                     - qx.html.Location.getClientBoxLeft( this.getElement() );
+                     - qx.bom.element.Location.getLeft( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getLeft();
         } else {
           mousePos =   evt.getPageY()
-                     - qx.html.Location.getClientBoxTop( this.getElement() );
+                     - qx.bom.element.Location.getTop( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getTop();
         }
         this._thumb.setCapture( true );
@@ -517,10 +517,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       if( this._thumb.getCapture() ) {
         if( this._horizontal ) {
           mousePos =   evt.getPageX()
-                     - qx.html.Location.getClientBoxLeft( this.getElement() );
+                     - qx.bom.element.Location.getLeft( this.getElement() );
         } else {
           mousePos =   evt.getPageY()
-                     - qx.html.Location.getClientBoxTop( this.getElement() );
+                     - qx.bom.element.Location.getTop( this.getElement() );
         }
         var sel =   this._getSelectionFromThumbPosition( mousePos
                   - this._thumbOffset );

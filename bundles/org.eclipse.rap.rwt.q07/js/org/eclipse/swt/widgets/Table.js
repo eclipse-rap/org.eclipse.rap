@@ -1601,8 +1601,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       for( var i = 0; result === null && i < this._rows.length; i++ ) {
         var row = this._rows[ i ];
         var element = row.getElement();
-        var pageLeft = qx.html.Location.getPageBoxLeft( element );
-        var pageTop = qx.html.Location.getPageBoxTop( element );
+        var pageLeft = qx.bom.element.Location.getLeft( element );
+        var pageTop = qx.bom.element.Location.getTop( element );
         if(    pageX >= pageLeft
             && pageX < pageLeft + row.getWidth()
             && pageY >= pageTop
@@ -1701,7 +1701,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var columns = this.getColumns();
         for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
           var element = columns[ i ].getElement();
-          var pageLeft = qx.html.Location.getPageBoxLeft( element );
+          var pageLeft = qx.bom.element.Location.getLeft( element );
           if(    pageX >= pageLeft
               && pageX < pageLeft + columns[ i ].getWidth() )
           {

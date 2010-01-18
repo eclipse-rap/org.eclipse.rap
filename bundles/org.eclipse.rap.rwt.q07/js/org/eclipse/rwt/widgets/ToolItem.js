@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
       var result = false;
       var node = this.getCellNode( 3 );
       if( node != null ) { 
-        var nodeLeft = qx.html.Location.getClientBoxLeft( node );
+        var nodeLeft = qx.bom.element.Location.getLeft( node );
         var clickLeft = event.getClientX();
         result = clickLeft > nodeLeft;
       }

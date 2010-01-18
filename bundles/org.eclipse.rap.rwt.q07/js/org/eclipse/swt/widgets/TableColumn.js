@@ -225,7 +225,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       var result = false;
       if( this._resizable ) {
         var columnRight 
-          = qx.html.Location.getClientBoxLeft( this.getElement() ) 
+          = qx.bom.element.Location.getLeft( this.getElement() ) 
           + this.getWidth();
         if( pageX >= columnRight - 5 && pageX <= columnRight ) {
           result = true;
