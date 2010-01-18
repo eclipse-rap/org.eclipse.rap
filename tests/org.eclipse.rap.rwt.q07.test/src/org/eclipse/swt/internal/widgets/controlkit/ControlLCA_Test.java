@@ -152,6 +152,7 @@ public class ControlLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
+    button.setSize( 10, 10 );
     shell.open();
     AbstractWidgetLCA lca = WidgetUtil.getLCA( button );
 

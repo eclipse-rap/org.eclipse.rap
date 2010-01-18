@@ -128,7 +128,7 @@ public class ControlLCAUtil {
     adapter.preserve( PROP_TAB_INDEX, new Integer( getTabIndex( control ) ) );
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
-    adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
+    adapter.preserve( Props.VISIBLE, Boolean.valueOf( getVisible( control ) ) );
     WidgetLCAUtil.preserveEnabled( control, control.getEnabled() );
     IControlAdapter controlAdapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
@@ -220,10 +220,17 @@ public class ControlLCAUtil {
   {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
     // contained controls
-    Boolean newValue = Boolean.valueOf( control.getVisible() );
+    Boolean newValue = Boolean.valueOf( getVisible( control ) );
     Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
     JSWriter writer = JSWriter.getWriterFor( control );
     writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
+  }
+
+  // [if] Fix for bug 263025, 297466, 223873 and more
+  // some qooxdoo widget with size (0,0) are not invisible
+  private static boolean getVisible( final Control control ) {
+    Point size = control.getSize();
+    return control.getVisible() && size.x > 0 && size.y > 0;
   }
 
   /**

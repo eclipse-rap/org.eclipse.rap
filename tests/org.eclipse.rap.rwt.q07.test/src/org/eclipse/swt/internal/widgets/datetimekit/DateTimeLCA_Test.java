@@ -197,6 +197,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     // visible
+    dateTime.setSize( 10, 10 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( dateTime );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );

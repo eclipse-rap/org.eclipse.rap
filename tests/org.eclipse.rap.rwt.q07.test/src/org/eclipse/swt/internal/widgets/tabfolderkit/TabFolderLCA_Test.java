@@ -50,6 +50,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     //visible
+    tabfolder.setSize( 10, 10 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tabfolder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
@@ -200,9 +201,9 @@ public class TabFolderLCA_Test extends TestCase {
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
   }
-  
+
   public void testSelectionWithListener() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List events = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -224,7 +225,7 @@ public class TabFolderLCA_Test extends TestCase {
         events.add( event );
       }
     } );
-    
+
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String displayId = DisplayUtil.getAdapter( display ).getId();
@@ -237,13 +238,13 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.executeLifeCycleFromServerThread( );
-    
+
     events.clear();
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
-    
+
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );

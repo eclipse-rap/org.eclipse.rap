@@ -103,6 +103,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     // visible
+    spinner.setSize( 10, 10 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );

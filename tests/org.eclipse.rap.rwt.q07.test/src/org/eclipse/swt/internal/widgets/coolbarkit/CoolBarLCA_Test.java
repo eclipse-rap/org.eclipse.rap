@@ -57,6 +57,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     // visible
+    bar.setSize( 10, 10 );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
@@ -210,12 +211,12 @@ public final class CoolBarLCA_Test extends TestCase {
     // get adapter to set item order
     Object adapter = bar.getAdapter( ICoolBarAdapter.class );
     ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-    
+
     // ensure initial state
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
     assertEquals( 2, bar.getItemOrder()[ 2 ] );
-    
+
     // Simulate that item2 is dragged left of item1
     int newX = item1.getBounds().x - 4;
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item2Id );
@@ -224,7 +225,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 2, bar.getItemOrder()[ 1 ] );
     assertEquals( 1, bar.getItemOrder()[ 2 ] );
-    
+
     // Simulate that item0 is dragged after the last item
     cba.setItemOrder( new int[] { 0, 1, 2, } );
     newX = item2.getBounds().x + item2.getBounds().width + 10;
@@ -234,7 +235,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 2, bar.getItemOrder()[ 1 ] );
     assertEquals( 0, bar.getItemOrder()[ 2 ] );
-    
+
     // Simulate that item0 is dragged onto itself -> nothing should change
     cba.setItemOrder( new int[] { 0, 1, 2, } );
     newX = item0.getBounds().x + 2;
@@ -244,7 +245,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
     assertEquals( 2, bar.getItemOrder()[ 2 ] );
-    
+
     // Simulate that item1 is before the first item
     cba.setItemOrder( new int[] { 0, 1, 2, } );
     newX = item0.getBounds().x - 5;
@@ -255,7 +256,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
     assertEquals( 2, bar.getItemOrder()[ 2 ] );
   }
-   
+
   public void testItemReordering2() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -280,7 +281,7 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.markInitialized( item0.getControl() );
     Fixture.markInitialized( item1 );
     Fixture.markInitialized( item1.getControl() );
-    
+
     // get adapter to set item order
     Object adapter = bar.getAdapter( ICoolBarAdapter.class );
     ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
@@ -295,7 +296,7 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
-    
+
     // Drag item0 and drop it beyond the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
     Fixture.fakeNewRequest();
@@ -307,7 +308,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
   }
-   
+
   public void testSnapBackItemMoved() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -331,11 +332,11 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.markInitialized( item0.getControl() );
     Fixture.markInitialized( item1 );
     Fixture.markInitialized( item1.getControl() );
-    
+
     // get adapter to set item order
     Object adapter = bar.getAdapter( ICoolBarAdapter.class );
     ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-  
+
     // Simulate that fist item is dragged around but dropped at its original
     // position
     cba.setItemOrder( new int[] { 0, 1 } );

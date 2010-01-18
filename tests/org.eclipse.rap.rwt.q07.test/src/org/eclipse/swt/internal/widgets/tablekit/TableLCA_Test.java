@@ -162,6 +162,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     // visible
+    table.setSize( 10, 10 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );

@@ -62,6 +62,7 @@ public class SashLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     //visible
+    sash.setSize( 10, 10 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
@@ -191,7 +192,7 @@ public class SashLCA_Test extends TestCase {
     SashLCA sashLCA = new SashLCA();
     sashLCA.renderChanges( sash );
     assertTrue( Fixture.getAllMarkup()
-      .endsWith( "setSpace( 20, 50, 100, 60 );" ) );
+      .indexOf( "setSpace( 20, 50, 100, 60 );" ) != -1 );
     Fixture.clearPreserved();
     Fixture.fakeResponseWriter();
     Fixture.preserveWidgets();
