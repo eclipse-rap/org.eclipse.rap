@@ -607,7 +607,6 @@ public class Fixture {
     }
 
     public void setCharacterEncoding( String charset ) {
-      throw new UnsupportedOperationException();
     }
   }
   
