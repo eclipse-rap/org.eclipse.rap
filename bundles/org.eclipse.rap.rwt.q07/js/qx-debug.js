@@ -11708,12 +11708,18 @@ getClientAreaRight:function(el){return qx.html.Location.getClientAreaLeft(el)+qx
 getClientAreaBottom:function(el){return qx.html.Location.getClientAreaTop(el)+qx.html.Dimension.getAreaHeight(el);
 },
 getPageAreaLeft:qx.core.Variant.select("qx.client",
-{"gecko":function(el){return el.ownerDocument.getBoxObjectFor(el).x;
+{"gecko":function(el){var result;
+if(el.getBoundingClientRect){result=el.getBoundingClientRect().left;
+}else{result=el.ownerDocument.getBoxObjectFor(el).x;
+}return result;
 },
 "default":function(el){return qx.html.Location.getPageBoxLeft(el)+qx.html.Style.getBorderLeft(el);
 }}),
 getPageAreaTop:qx.core.Variant.select("qx.client",
-{"gecko":function(el){return el.ownerDocument.getBoxObjectFor(el).y;
+{"gecko":function(el){var result;
+if(el.getBoundingClientRect){result=el.getBoundingClientRect().top;
+}else{result=el.ownerDocument.getBoxObjectFor(el).y;
+}return result;
 },
 "default":function(el){return qx.html.Location.getPageBoxTop(el)+qx.html.Style.getBorderTop(el);
 }}),
