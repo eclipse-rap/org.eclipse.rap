@@ -251,6 +251,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this._texts = texts;
       if( this.isCreated() ) {
         this.updateItem();
+        // Fix for bug: 289089
+        this.updateColumnsWidth();
       }
     },
 
