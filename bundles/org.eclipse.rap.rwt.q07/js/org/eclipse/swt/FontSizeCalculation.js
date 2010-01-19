@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
  
 qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
@@ -39,6 +40,9 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       var lbl = org.eclipse.swt.FontSizeCalculation.MEASUREMENT_LABEL;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var measureNode = qx.ui.basic.Label._getMeasureNode();
+      // [if] Move the measure node to the left to prevent text split on
+      // small browser window - see bug 298798
+      measureNode.style.left = -1000;
       if( item[ 6 ] > 0 ) {
         measureNode.style.width = item[ 6 ];
       } else {
