@@ -53,6 +53,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
     this._manager.setDragSelection( false );
+    this._manager.scrollItemIntoView = this._scrollItemIntoView;
     // Do not visualize the focus rectangle around the widget
     this.setHideFocus( true );
     // Add events listeners
@@ -363,12 +364,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           }
         }
         this._manager.setSelectedItem( value );
-        // avoid warning message. scrollIntoView works only for visible widgets
-        // the assumtion is that if 'this' is visible, the item to scroll into
-        // view is also visible
-        if ( this._list.isCreated() && this._list.isDisplayable() ) {
-          this._manager.scrollItemIntoView( value );
-        }
+        this._manager.scrollItemIntoView( value );
       } else {
         if( !this._editable ) {
           this._field.setValue( "" );
@@ -376,6 +372,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._resetListSelection();
       }
       this._sendWidgetSelected();
+    },
+    
+    // [if] avoid warning message - see bug 300038
+    _scrollItemIntoView : function( item, topLeft ) {
+      if( item.isCreated() && item.isDisplayable() ) {
+        item.scrollIntoView( topLeft );
+      }
     },
     
     _formatText : function( value ) {
