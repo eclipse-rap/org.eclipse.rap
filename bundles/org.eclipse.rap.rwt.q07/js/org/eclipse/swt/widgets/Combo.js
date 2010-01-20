@@ -366,7 +366,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         // avoid warning message. scrollIntoView works only for visible widgets
         // the assumtion is that if 'this' is visible, the item to scroll into
         // view is also visible
-        if ( this.isCreated() && this.isDisplayable() ) {
+        if ( this._list.isCreated() && this._list.isDisplayable() ) {
           this._manager.scrollItemIntoView( value );
         }
       } else {
