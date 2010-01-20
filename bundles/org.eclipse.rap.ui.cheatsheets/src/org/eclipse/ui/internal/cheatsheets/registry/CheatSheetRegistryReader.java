@@ -143,7 +143,8 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	protected final static String TAG_TASK_EXPLORER = "taskExplorer"; //$NON-NLS-1$
 	protected final static String trueString = "TRUE"; //$NON-NLS-1$
 	private final static String UNCATEGORIZED_CHEATSHEET_CATEGORY = "org.eclipse.ui.Other"; //$NON-NLS-1$
-	private final static String UNCATEGORIZED_CHEATSHEET_CATEGORY_LABEL = Messages.get().CHEAT_SHEET_OTHER_CATEGORY;
+// RAP [rh]	Can't use NLS mechanism here: this class my be accessed outside the request scope
+//	private final static String UNCATEGORIZED_CHEATSHEET_CATEGORY_LABEL = Messages.get().CHEAT_SHEET_OTHER_CATEGORY;
     public final static String CHEAT_SHEET_CONTENT = "cheatSheetContent"; //$NON-NLS-1$
 	
     /**
@@ -509,8 +510,12 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	protected void moveElementToUncategorizedCategory(CheatSheetCollectionElement root, CheatSheetElement element) {
 		CheatSheetCollectionElement otherCategory = getChildWithID(root, UNCATEGORIZED_CHEATSHEET_CATEGORY);
 
+// RAP [rh] CheatSheetRegistry is only initialized once, therefore we use the 
+//     a hard-coded locale for the uncategorized label
+//		if (otherCategory == null)
+//			otherCategory = createCollectionElement(root, null, UNCATEGORIZED_CHEATSHEET_CATEGORY, UNCATEGORIZED_CHEATSHEET_CATEGORY_LABEL);
 		if (otherCategory == null)
-			otherCategory = createCollectionElement(root, null, UNCATEGORIZED_CHEATSHEET_CATEGORY, UNCATEGORIZED_CHEATSHEET_CATEGORY_LABEL);
+		  otherCategory = createCollectionElement(root, null, UNCATEGORIZED_CHEATSHEET_CATEGORY, "Other"); //$NON-NLS-1$
 
 		otherCategory.add(element);
 	}
