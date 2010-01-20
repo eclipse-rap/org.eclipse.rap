@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
  
- qx.Class.define( "org.eclipse.swt.widgets.Composite", {
+qx.Class.define( "org.eclipse.swt.widgets.Composite", {
   extend : qx.ui.layout.CanvasLayout,
 
   construct : function() {
