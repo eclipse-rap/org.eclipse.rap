@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.service;
 
 import java.io.*;
@@ -33,12 +33,12 @@ import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
-public final class LifeCycleServiceHandlerConfigurer
+public final class RWTLifeCycleServiceHandlerConfigurer
   implements ILifeCycleServiceHandlerConfigurer
 {
 
   private static final String PACKAGE_NAME 
-    = LifeCycleServiceHandlerConfigurer.class.getPackage().getName();
+    = RWTLifeCycleServiceHandlerConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
   
@@ -135,7 +135,7 @@ public final class LifeCycleServiceHandlerConfigurer
     InputStream result = null;
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader buffer = manager.getContextLoader();
-    manager.setContextLoader( LifeCycleServiceHandlerConfigurer.class.getClassLoader() );
+    manager.setContextLoader( RWTLifeCycleServiceHandlerConfigurer.class.getClassLoader() );
     try {        
       result = manager.getResourceAsStream( INDEX_TEMPLATE );
       if ( result == null ) {
@@ -174,7 +174,7 @@ public final class LifeCycleServiceHandlerConfigurer
   private static void fakeWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter original = stateInfo.getResponseWriter();
-    String key = LifeCycleServiceHandlerConfigurer.class.getName();
+    String key = RWTLifeCycleServiceHandlerConfigurer.class.getName();
     stateInfo.setAttribute( key, original );
     HtmlResponseWriter fake = new HtmlResponseWriter();
     stateInfo.setResponseWriter( fake );
@@ -182,7 +182,7 @@ public final class LifeCycleServiceHandlerConfigurer
   
   private static void restoreWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    String key = LifeCycleServiceHandlerConfigurer.class.getName();
+    String key = RWTLifeCycleServiceHandlerConfigurer.class.getName();
     HtmlResponseWriter writer
       = ( HtmlResponseWriter )stateInfo.getAttribute( key );
     stateInfo.setResponseWriter( writer );

@@ -25,7 +25,7 @@ public class BrowserSurvey_Test extends TestCase {
     Fixture.setUp();
     bufferedConfigurer = LifeCycleServiceHandler.configurer; 
     LifeCycleServiceHandler.configurer
-      = new LifeCycleServiceHandlerConfigurer();
+      = new RWTLifeCycleServiceHandlerConfigurer();
   }
   
   protected void tearDown() throws Exception {

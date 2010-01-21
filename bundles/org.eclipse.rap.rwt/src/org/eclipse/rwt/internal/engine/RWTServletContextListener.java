@@ -80,7 +80,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     registerUICallBackServiceHandler();
     registerJSLibraryServiceHandler();
     LifeCycleServiceHandler.configurer 
-      = new LifeCycleServiceHandlerConfigurer();
+      = new RWTLifeCycleServiceHandlerConfigurer();
     ResourceUtil.startJsConcatenation();
   }
 

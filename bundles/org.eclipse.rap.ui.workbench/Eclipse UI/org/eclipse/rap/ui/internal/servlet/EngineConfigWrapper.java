@@ -366,7 +366,7 @@ final class EngineConfigWrapper implements IEngineConfig {
 
   private void registerLifeCycleServiceHandlerConfigurer() {
     LifeCycleServiceHandler.configurer
-      = new LifeCycleServiceHandlerConfigurer();
+      = new RWTLifeCycleServiceHandlerConfigurer();
   }
 
   private static void registerResources() {

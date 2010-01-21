@@ -306,7 +306,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     bufferedConfigurer = LifeCycleServiceHandler.configurer;
     eventLog = new ArrayList();
     LifeCycleServiceHandler.configurer
-      = new LifeCycleServiceHandlerConfigurer();
+      = new RWTLifeCycleServiceHandlerConfigurer();
     Fixture.clearSingletons();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
