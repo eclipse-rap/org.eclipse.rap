@@ -14,15 +14,12 @@ package org.eclipse.rwt.internal.service;
 import java.io.IOException;
 import java.util.*;
 
-import javax.servlet.ServletException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
@@ -105,13 +102,6 @@ public class WrappedRequest_Test extends TestCase {
     LifeCycleServiceHandler.configurer
      = new ILifeCycleServiceHandlerConfigurer()
     {
-      public LifeCycleServiceHandlerSync getSynchronizationHandler() {
-        return new LifeCycleServiceHandlerSync() {
-          public void service() throws ServletException, IOException {
-            doService();
-          }
-        };
-      }
       public TemplateHolder getTemplateOfStartupPage() throws IOException {
         return new TemplateHolder( "Startup Page" );
       }

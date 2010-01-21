@@ -14,14 +14,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
 
 
 
 /** 
- * <p>This class assists in writing markup to the response stream. The 
- * capabilities (XHTML or not) of the detected browser are respected.</p>
+ * <p>This class assists in writing markup to the response stream.</p>
  * <p><b>Note:</b> Dont't use any of the <code>write</code>-Methods to start 
  * or end an <em>element</em>. Doing so will confuse 'outer' rendering code
  * and may lead to orphan closing angle brackets (&gt;). To start and end 
@@ -506,14 +504,13 @@ public class HtmlResponseWriter extends Writer {
 
   /**
    * <p>Writes an attribute to the currently started element. Characters
-   * not allowed IN (X)HTML will be encoded.</p>
+   * not allowed in (X)HTML will be encoded.</p>
    * <p>Example:
    * <pre>
    * writer.startElement("input",null);
    * writer.writeAttribute("hidden",null,null);
    * writer.endElement("input");
-   * // results in &lt;input hidden="hidden" /&gt; on XHTML Browsers
-   * // or &lt;input hidden&gt;&lt;/input&gt; on non-XHTML browsers
+   * // results in &lt;input hidden="hidden" /&gt; 
    * </pre>
    * </p>
    * @param name the attribtues name, must not be <code>null</code>.
@@ -537,11 +534,9 @@ public class HtmlResponseWriter extends Writer {
     if( value == null ) {
       doWrite( " " );
       doWrite( name );
-      if( ContextProvider.getBrowser().isXHTMLCapable() ) {
-        doWrite( "=\"" );
-        doWrite( name );
-        doWrite( "\"" );        
-      }
+      doWrite( "=\"" );
+      doWrite( name );
+      doWrite( "\"" );        
     } else {
       doWrite( " " );
       doWrite( name );
@@ -680,16 +675,13 @@ public class HtmlResponseWriter extends Writer {
    * writer.startElement("div",null);
    * writer.writeAttribute("id","x",null);
    * writer.closeElementIfStarted();
-   * // results in &lt;div id="x" /&gt; on XHTML browsers
-   * // and &lt;div id="x"&gt; on non-XHTML browsers
+   * // results in &lt;div id="x" /&gt; 
    * </pre></p>
    * @throws IOException if an I/O error occurs
    */
   public void closeElementIfStarted() {
     if( elementStarted != null ) {
-      if(    ContextProvider.getBrowser().isXHTMLCapable() 
-          && HtmlResponseWriterUtil.isEmptyTag( elementStarted ) )
-      {
+      if( HtmlResponseWriterUtil.isEmptyTag( elementStarted ) ) {
         doWrite( " />" );
       } else {
         doWrite( ">" );

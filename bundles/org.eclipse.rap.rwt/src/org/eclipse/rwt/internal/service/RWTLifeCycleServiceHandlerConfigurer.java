@@ -22,11 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.browser.Default;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EntitiesUtil;
 import org.eclipse.rwt.internal.util.HTML;
@@ -47,8 +45,6 @@ public final class RWTLifeCycleServiceHandlerConfigurer
   private static int probeCount;
   private static long lastModified = System.currentTimeMillis();
 
-  private static final LifeCycleServiceHandlerSync syncHandler
-    = new RWTLifeCycleServiceHandlerSync();
   private static TemplateHolder template;
   private static final List registeredBrandings = new ArrayList();
   
@@ -58,14 +54,9 @@ public final class RWTLifeCycleServiceHandlerConfigurer
   public TemplateHolder getTemplateOfStartupPage() throws IOException {
     readContent();
     template.reset();
-    setDummyBrowser();
-    try {
-      template.replace( TemplateHolder.VAR_LIBRARIES, getLibraries() );
-      template.replace( TemplateHolder.VAR_APPSCRIPT, getAppScript() );
-      applyBranding();
-    } finally {
-      removeDummyBrowser();
-    }
+    template.replace( TemplateHolder.VAR_LIBRARIES, getLibraries() );
+    template.replace( TemplateHolder.VAR_APPSCRIPT, getAppScript() );
+    applyBranding();
     return template;
   }
 
@@ -103,9 +94,6 @@ public final class RWTLifeCycleServiceHandlerConfigurer
     return result;
   }
 
-  public LifeCycleServiceHandlerSync getSynchronizationHandler() {
-    return syncHandler;
-  }
 
   ///////////////////////////////////////
   // Helping methods to load startup page 
@@ -186,16 +174,6 @@ public final class RWTLifeCycleServiceHandlerConfigurer
     HtmlResponseWriter writer
       = ( HtmlResponseWriter )stateInfo.getAttribute( key );
     stateInfo.setResponseWriter( writer );
-  }
-
-  private static void setDummyBrowser() {
-    String id = ServiceContext.DETECTED_SESSION_BROWSER;
-    ContextProvider.getSession().setAttribute( id, new Default( true ) );
-  }
-  
-  private static void removeDummyBrowser() {
-    String id = ServiceContext.DETECTED_SESSION_BROWSER;
-    ContextProvider.getSession().setAttribute( id, null );
   }
 
   private static String getLibraries() throws IOException {

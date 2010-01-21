@@ -29,11 +29,13 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   public static ILifeCycleServiceHandlerConfigurer configurer
     = new RWTLifeCycleServiceHandlerConfigurer();
+  
+  private static final LifeCycleServiceHandlerSync sync
+    = new RWTLifeCycleServiceHandlerSync();
 
   public interface ILifeCycleServiceHandlerConfigurer {
     TemplateHolder getTemplateOfStartupPage() throws IOException;
     boolean isStartupPageModifiedSince();
-    LifeCycleServiceHandlerSync getSynchronizationHandler();
   }
     
   /**
@@ -59,7 +61,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
 
   public void service() throws IOException, ServletException {
-    configurer.getSynchronizationHandler().service();
+    sync.service();
   }
 
   public static boolean isSessionRestart() {
@@ -126,7 +128,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
   
-  private static void checkRequest( ) {
+  private static void checkRequest() {
     HttpSession session = getRequest().getSession();
     if( isSessionRestart() ) {
       clearSession( session );

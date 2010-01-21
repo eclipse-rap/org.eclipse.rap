@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 
 
 
@@ -73,13 +72,6 @@ public class ServiceHandler_Test extends TestCase {
     LifeCycleServiceHandler.configurer 
       = new ILifeCycleServiceHandlerConfigurer()
     {
-      public LifeCycleServiceHandlerSync getSynchronizationHandler() {
-        return new LifeCycleServiceHandlerSync() {
-          public void service() throws ServletException, IOException {
-            doService();
-          }
-        };
-      }
       public TemplateHolder getTemplateOfStartupPage() throws IOException {
         return new TemplateHolder( "Startup Page" );
       }

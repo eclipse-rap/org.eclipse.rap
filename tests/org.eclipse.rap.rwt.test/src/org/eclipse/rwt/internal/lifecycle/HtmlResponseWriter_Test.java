@@ -86,26 +86,6 @@ public class HtmlResponseWriter_Test extends TestCase {
       result += iterator.next().toString();
     }
     assertTrue( result.equals( "|Token 1|Token 2|ab|cd|Token 3|Token 4" ) );
-    
-//    try {
-//      tokenBuffer.flush();
-//      fail();
-//    } catch( UnsupportedOperationException use ) {
-//    }
-//    try {
-//      tokenBuffer.close();
-//      fail();
-//    } catch( UnsupportedOperationException use ) {
-//    }
-  }
-  
-  public void testInputTagCreationNoXHTML() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    writer.startElement( "input", null );
-    writer.writeAttribute( "type", "text", null );
-    writer.endElement( "input" );
-    String expected = "<input type=\"text\">";
-    assertEquals( expected, getContent( writer ) );
   }
   
   public void testInputTagCreationXHTML() throws IOException {
@@ -206,7 +186,7 @@ public class HtmlResponseWriter_Test extends TestCase {
     assertEquals( expected, getContent( writer ) );
     String enabled = "enabled";
     writer.writeAttribute( enabled, null, null );
-    expected += " " + enabled;
+    expected += " enabled=\"enabled\"";
     assertEquals( expected, getContent( writer ) );
   }
   
@@ -293,16 +273,6 @@ public class HtmlResponseWriter_Test extends TestCase {
     assertEquals( expected, getContent( writer ) );
   }
 
-  public void testEndElementForNonXHTML() throws Exception {
-    Fixture.fakeBrowser( new Default( true, false ) );
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    writer.startElement( "img", null );
-    writer.writeAttribute( "src", "image.gif", null );
-    writer.endElement( "img" );
-    String expected = "<img src=\"image.gif\">";
-    assertEquals( expected, getContent( writer ) );
-  }
-  
   public void testWrite() throws IOException {
     HtmlResponseWriter writer;
     Fixture.fakeBrowser( new Ie6( true ) );
