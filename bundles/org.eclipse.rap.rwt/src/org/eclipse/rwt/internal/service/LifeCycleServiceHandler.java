@@ -33,16 +33,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   private final static DefaultLifeCycleServiceHandlerSync syncHandler
     = new DefaultLifeCycleServiceHandlerSync();
    
-  public static ILifeCycleRunner lifeCycleRunner = new ILifeCycleRunner() {
-    public void init() {
-      // do nothing
-    }
-    public void run() throws ServletException, IOException {
-      LifeCycle lifeCycle = ( LifeCycle )LifeCycleFactory.getLifeCycle();
-      lifeCycle.execute();
-    }
-  };
-  
   public static ILifeCycleServiceHandlerConfigurer configurer 
     = new ILifeCycleServiceHandlerConfigurer()
   {
@@ -165,9 +155,9 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     checkRequest();
     detectBrowser();
     if( isBrowserDetected() ) {
-      lifeCycleRunner.init();
       RequestParameterBuffer.merge();
-      lifeCycleRunner.run();
+      LifeCycle lifeCycle = ( LifeCycle )LifeCycleFactory.getLifeCycle();
+      lifeCycle.execute();
     } else {
       Map parameters = ContextProvider.getRequest().getParameterMap();
       RequestParameterBuffer.store( parameters );
