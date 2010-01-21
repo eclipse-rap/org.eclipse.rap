@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,7 +150,7 @@ public class Display extends Device implements Adaptable {
 
   /**
    * Returns the default display. One is created if it did not already exist.
-   * 
+   *
    * <p><strong>Note:</strong> In RWT, a new display is only created if the
    * calling thread is the user-interface thread.
    * </p>
@@ -159,16 +159,16 @@ public class Display extends Device implements Adaptable {
    */
   public static Display getDefault() {
     Display result = RWTLifeCycle.getSessionDisplay();
-    if( result == null && isUIThread() ) { 
+    if( result == null && isUIThread() ) {
       result = new Display();
     }
     return result;
   }
-  
+
   private static boolean isUIThread() {
-    return 
+    return
          ContextProvider.hasContext()
-      && RWTLifeCycle.getUIThreadHolder() != null   
+      && RWTLifeCycle.getUIThreadHolder() != null
       && RWTLifeCycle.getUIThreadHolder().getThread() != null
       && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }
@@ -512,10 +512,10 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
-  
+
   ///////////
   // Listener
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when an event of the given type occurs. The event
@@ -537,8 +537,8 @@ public class Display extends Device implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #removeListener
-   * 
-   * @since 1.3 
+   *
+   * @since 1.3
    */
   public void addListener( final int eventType, final Listener listener ) {
     checkDevice();
@@ -577,7 +577,7 @@ public class Display extends Device implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #addListener
-   * 
+   *
    * @since 1.3
    */
   public void removeListener( final int eventType, final Listener listener ) {
@@ -600,7 +600,7 @@ public class Display extends Device implements Adaptable {
 
   //////////
   // Dispose
-  
+
   /**
    * Causes the <code>run()</code> method of the runnable to
    * be invoked by the user-interface thread just before the
@@ -608,7 +608,7 @@ public class Display extends Device implements Adaptable {
    * is ignored.
    *
    * @param runnable code to run at dispose time.
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
@@ -639,7 +639,7 @@ public class Display extends Device implements Adaptable {
    * </ul>
    *
    * @see Device#dispose
-   * 
+   *
    * @since 1.3
    */
   public void close() {
@@ -659,7 +659,7 @@ public class Display extends Device implements Adaptable {
       dispose();
     }
   }
-  
+
   protected void release() {
     sendDisposeEvent();
     disposeShells();
@@ -713,7 +713,7 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
-  
+
   /////////////////////
   // Adaptable override
 
@@ -786,7 +786,7 @@ public class Display extends Device implements Adaptable {
         shells.add( activeShell );
       }
       ShellEvent shellEvent;
-      if(    lastActiveShell != null 
+      if(    lastActiveShell != null
           && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 )
       {
         shellEvent = new ShellEvent( lastActiveShell,
@@ -1119,8 +1119,8 @@ public class Display extends Device implements Adaptable {
                                        SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_INFO_BACKGROUND:
-        value = ThemeUtil.getCssValue( "ToolTip",
-                                       "background-color",
+        value = ThemeUtil.getCssValue( "Display",
+                                       "rwt-infobackground-color",
                                        SimpleSelector.DEFAULT );
       break;
       case SWT.COLOR_TITLE_FOREGROUND:
@@ -1759,7 +1759,7 @@ public class Display extends Device implements Adaptable {
     public void setFocusControl( final Control focusControl ) {
       Display.this.setFocusControl( focusControl );
     }
-    
+
     public void invalidateFocus() {
       RWT.getServiceStore().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
     }
