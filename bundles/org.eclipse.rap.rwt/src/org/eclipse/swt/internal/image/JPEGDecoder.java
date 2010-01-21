@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.*;
 
 public class JPEGDecoder {
 	

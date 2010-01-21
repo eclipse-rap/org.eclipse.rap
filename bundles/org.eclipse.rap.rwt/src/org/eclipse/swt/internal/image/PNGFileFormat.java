@@ -13,10 +13,8 @@ package org.eclipse.swt.internal.image;
 
 import java.io.*;
 import org.eclipse.swt.*;
-//import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.*;
-import org.eclipse.swt.internal.graphics.*;
 
 final class PNGFileFormat extends FileFormat {
 	static final int SIGNATURE_LENGTH = 8;
