@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import javax.servlet.ServletException;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -33,7 +33,7 @@ public class BrowserSurvey_Test extends TestCase {
     LifeCycleServiceHandler.configurer = bufferedConfigurer;
   }
 
-  public void testSurveyGeneration() throws ServletException {
+  public void testSurveyGeneration() throws IOException {
     Fixture.fakeResponseWriter();
 //    long start = System.currentTimeMillis();
     BrowserSurvey.sendBrowserSurvey();

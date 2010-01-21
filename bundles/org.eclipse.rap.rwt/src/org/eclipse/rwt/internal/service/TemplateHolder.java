@@ -23,8 +23,6 @@ public final class TemplateHolder {
   private final static String TOKEN_LIBRARIES = "libraries";
   private final static String TOKEN_APPSCRIPT = "appScript";
   private final static String TOKEN_SERVLET = "servlet";
-  private final static String TOKEN_FALLBACK_URL = "fallbackUrl";
-  private final static String TOKEN_ADMIN_OR_STARTUP = "adminOrStartup";
   private final static String TOKEN_ENTRY_POINT = "entrypoint";
   private final static String TOKEN_BODY = "body";
   private final static String TOKEN_TITLE = "title";
@@ -41,10 +39,6 @@ public final class TemplateHolder {
     = new Variable( TOKEN_APPSCRIPT );
   public final static Variable VAR_SERVLET
     = new Variable( TOKEN_SERVLET );
-  public final static Variable VAR_FALLBACK_URL
-    = new Variable( TOKEN_FALLBACK_URL );
-  public final static Variable VAR_ADMIN_OR_STARTUP
-    = new Variable( TOKEN_ADMIN_OR_STARTUP );
   public final static Variable VAR_ENTRY_POINT
     = new Variable( TOKEN_ENTRY_POINT );
   public final static Variable VAR_BODY
@@ -114,8 +108,6 @@ public final class TemplateHolder {
            || nextToken.equals( TOKEN_LIBRARIES.toString() )
            || nextToken.equals( TOKEN_APPSCRIPT.toString() )
            || nextToken.equals( TOKEN_SERVLET.toString() )
-           || nextToken.equals( TOKEN_FALLBACK_URL.toString() )
-           || nextToken.equals( TOKEN_ADMIN_OR_STARTUP.toString() )
            || nextToken.equals( TOKEN_ENTRY_POINT.toString() )
            || nextToken.equals( TOKEN_BODY.toString() )
            || nextToken.equals( TOKEN_TITLE.toString() )

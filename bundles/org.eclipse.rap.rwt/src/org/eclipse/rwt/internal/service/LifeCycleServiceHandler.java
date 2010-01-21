@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import java.io.*;
-import java.text.MessageFormat;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 import javax.servlet.ServletException;
@@ -23,55 +23,12 @@ import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.browser.Browser;
 import org.eclipse.rwt.internal.browser.BrowserLoader;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.internal.util.HTML;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
-  private final static DefaultLifeCycleServiceHandlerSync syncHandler
-    = new DefaultLifeCycleServiceHandlerSync();
-   
-  public static ILifeCycleServiceHandlerConfigurer configurer 
-    = new ILifeCycleServiceHandlerConfigurer()
-  {
-    public TemplateHolder getTemplateOfStartupPage() throws IOException {
-      String resourceName = BrowserSurvey.getResourceName();
-      IResourceManager manager = ResourceManagerImpl.getInstance();
-      InputStream stream = manager.getResourceAsStream( resourceName );
-      if ( stream == null ) {
-        String text =   "Failed to load Browser Survey HTML Page. "
-                      + "Resource {0} could not be found.";
-        Object[] param = new Object[]{ resourceName };
-        String msg = MessageFormat.format( text, param );
-        throw new IOException( msg );
-      }
-      InputStreamReader isr 
-        = new InputStreamReader( stream, HTML.CHARSET_NAME_ISO_8859_1 );
-      BufferedReader reader = new BufferedReader( isr );
-      TemplateHolder result;
-      try {
-        String line = reader.readLine();
-        StringBuffer buffer = new StringBuffer();
-        while( line != null ) {
-          buffer.append( line );
-          buffer.append( "\n" );
-          line = reader.readLine();
-        }
-        result = new TemplateHolder( buffer.toString() );
-      } finally {
-        reader.close();
-      }
-      return result;
-    }
-    public boolean isStartupPageModifiedSince() {
-      return true;
-    }
-    public LifeCycleServiceHandlerSync getSynchronizationHandler() {
-      return syncHandler;
-    }
-  };
+  public static ILifeCycleServiceHandlerConfigurer configurer
+    = new RWTLifeCycleServiceHandlerConfigurer();
 
   public interface ILifeCycleServiceHandlerConfigurer {
     TemplateHolder getTemplateOfStartupPage() throws IOException;
@@ -80,25 +37,9 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
     
   /**
-   * The default implementation of <code>LifeCycleServiceHandlerSync</code>
-   * aquires the session store as synchronization lock, so that
-   * only one request at a time can be executed.   
-   */
-  private final static class DefaultLifeCycleServiceHandlerSync
-    extends LifeCycleServiceHandlerSync
-  {
-    public void service() throws ServletException, IOException {
-      synchronized( ContextProvider.getSession() ) {
-        doService();
-      }
-    }
-  }
-  
-  /**
    * This class handles request synchronization of the 
    * <code>LifeCycleServiceHandler</code>. It was introduced to allow
    * different stratiegies for W4Toolkit and RWT.
-   *  
    */
   public static abstract class LifeCycleServiceHandlerSync {
 

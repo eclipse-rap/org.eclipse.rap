@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,6 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerThemes();
     registerFactories();
     registerResources();
-    registerLifeCycleServiceHandlerConfigurer();
     registerUICallBackServiceHandler();
     registerJSLibraryServiceHandler();
   }
@@ -362,11 +361,6 @@ final class EngineConfigWrapper implements IEngineConfig {
     } finally {
       is.close();
     }
-  }
-
-  private void registerLifeCycleServiceHandlerConfigurer() {
-    LifeCycleServiceHandler.configurer
-      = new RWTLifeCycleServiceHandlerConfigurer();
   }
 
   private static void registerResources() {
