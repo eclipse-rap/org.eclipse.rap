@@ -79,11 +79,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     LifeCycleServiceHandlerSync getSynchronizationHandler();
   }
     
-  public interface ILifeCycleRunner {
-    void init();
-    void run() throws ServletException, IOException;
-  }
-  
   /**
    * The default implementation of <code>LifeCycleServiceHandlerSync</code>
    * aquires the session store as synchronization lock, so that
