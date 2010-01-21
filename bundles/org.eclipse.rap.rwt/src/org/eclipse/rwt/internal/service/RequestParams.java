@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,19 +7,15 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
 /** <p>string constant definitions for reserved request params in the 
   * W4T framework.</p>
   */
-// TODO [rh] prefix all request parameters with 'w4t'
-// TODO [w4t] extract constants that are common to rwt and w4t, then move back
 public interface RequestParams {
  
-  /** <p>Request parameter <em>value</em> used to mark event parameters as 
-   * 'not occured'.</p> */
-  public static final String NOT_OCCURED = "not_occured";
   /** <p>the servlet parameter name for forcing a new session.</p> */  
   final static String STARTUP = "startup";
   /** <p>the servlet parameter name for the scripting support information 
