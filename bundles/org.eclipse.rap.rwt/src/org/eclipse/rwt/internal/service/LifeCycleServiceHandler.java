@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,24 +30,6 @@ import org.eclipse.rwt.resources.IResourceManager;
 
 public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
-  // TODO [rh] Should we have a separate class that contains all logger names?
-  //      e.g. com.w4t.util.LogerNames?
-  public static final String LOG_REQUEST_PARAMS 
-    = LifeCycleServiceHandler.class.getName() + ".requestParams"; 
-  public static final String LOG_REQUEST_HEADER 
-    = LifeCycleServiceHandler.class.getName() + ".requestHeaders"; 
-  public static final String LOG_RESPONSE_CONTENT
-    = LifeCycleServiceHandler.class.getName() + ".responseContent"; 
-  
-  // The log level used by all loggers thoughout this class
-  private static final Level LOG_LEVEL = Level.FINE;
-  private static Logger requestParamsLogger 
-    = Logger.getLogger( LOG_REQUEST_PARAMS );
-  private static Logger requestHeaderLogger 
-    = Logger.getLogger( LOG_REQUEST_HEADER );
-  private static Logger responseContentLogger
-    = Logger.getLogger( LOG_RESPONSE_CONTENT );
-  
   private final static DefaultLifeCycleServiceHandlerSync syncHandler
     = new DefaultLifeCycleServiceHandlerSync();
    
@@ -152,8 +133,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
 
   public void service() throws IOException, ServletException {
-    logRequestHeader();
-    logRequestParams();
     configurer.getSynchronizationHandler().service();
   }
 
@@ -167,13 +146,13 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
   
   public static void initializeStateInfo() {
-    if( getStateInfo() == null ) {
+    if( ContextProvider.getStateInfo() == null ) {
       IServiceStateInfo stateInfo = new ServiceStateInfo();
       ContextProvider.getContext().setStateInfo( stateInfo );
     }
-    if( getStateInfo().getResponseWriter() == null ) {
+    if( ContextProvider.getStateInfo().getResponseWriter() == null ) {
       HtmlResponseWriter htmlResponseWriter = new HtmlResponseWriter();
-      getStateInfo().setResponseWriter( htmlResponseWriter );
+      ContextProvider.getStateInfo().setResponseWriter( htmlResponseWriter );
     }
   }
 
@@ -182,7 +161,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   // helping methods
   
   private static void internalService() throws ServletException, IOException {
-    long startTime = System.currentTimeMillis();
     initializeStateInfo();
     checkRequest();
     detectBrowser();
@@ -195,7 +173,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       RequestParameterBuffer.store( parameters );
       BrowserSurvey.sendBrowserSurvey();
     }
-    appendProcessTime( startTime );
     writeOutput();
   }
   
@@ -255,29 +232,10 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
   
-  private static void appendProcessTime( final long startTime ) {
-    if( getInitProps().isProcessTime() ) {
-      // end point of process time
-      long finish = System.currentTimeMillis();
-      HtmlResponseWriter content = getStateInfo().getResponseWriter();
-      content.appendFoot( getProcessTime( startTime, finish ) );
-    }
-  }
-  
-  private static StringBuffer getProcessTime( final long start, 
-                                              final long finish )
-  {
-    long processTime = finish - start;
-    StringBuffer result = new StringBuffer();
-    result.append( "\nTime to process: " );
-    result.append( processTime );
-    result.append( " ms" );
-    return result;
-  }
-
   public static void writeOutput() throws IOException {
     if( !ContextProvider.getContext().isDisposed() ) {
-      HtmlResponseWriter content = getStateInfo().getResponseWriter();
+      HtmlResponseWriter content
+        = ContextProvider.getStateInfo().getResponseWriter();
       PrintWriter out = getOutputWriter();
       try {
         // send the head to the client
@@ -295,68 +253,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       } finally {
         out.close();
       }
-      logResponseContent();
-    }
-  }
-
-  private static IServiceStateInfo getStateInfo() {
-    return ContextProvider.getStateInfo();
-  }
-  
-
-  //////////////////
-  // Logging methods
-  
-  private static void logRequestHeader() {
-    if( requestHeaderLogger.isLoggable( LOG_LEVEL ) ) {
-      HttpServletRequest request = ContextProvider.getRequest();
-      Enumeration headerNames = request.getHeaderNames();
-      StringBuffer msg = new StringBuffer();
-      msg.append( "Request header:\n" );
-      msg.append( "(method):" );
-      msg.append( request.getMethod() );
-      while( headerNames.hasMoreElements() ) {
-        String headerName = ( String )headerNames.nextElement();
-        msg.append( headerName );
-        msg.append( ": " );
-        msg.append( request.getHeader( headerName ) );
-      }
-      requestHeaderLogger.log( LOG_LEVEL, msg.toString() );
-    }    
-  }
-  
-  private static void logRequestParams() {
-    if( requestParamsLogger.isLoggable( LOG_LEVEL ) ) {
-      StringBuffer msg = new StringBuffer();
-      msg.append( "Request parameters:\n" );
-      HttpServletRequest request = ContextProvider.getRequest();
-      Enumeration parameterNames = request.getParameterNames();
-      while( parameterNames.hasMoreElements() ) {
-        String parameterName = ( String )parameterNames.nextElement();
-        String parameterValue = request.getParameter( parameterName );
-        msg.append( parameterName );
-        msg.append( "=" );
-        msg.append( parameterValue );      
-        msg.append( "\n" );      
-      }
-      requestParamsLogger.log( LOG_LEVEL, msg.toString() );    
-    }
-  }
-  
-  private static void logResponseContent() {
-    if( responseContentLogger.isLoggable( LOG_LEVEL ) ) {
-      HtmlResponseWriter content = getStateInfo().getResponseWriter();
-      StringBuffer msg = new StringBuffer();
-      for( int i = 0; i < content.getHeadSize(); i ++ ) {
-        msg.append( content.getHeadToken( i ) );
-      }
-      for( int i = 0; i < content.getBodySize(); i ++ ) {
-        msg.append( content.getBodyToken( i ) );
-      }
-      for( int i = 0; i < content.getFootSize(); i ++ ) {
-        msg.append( content.getFootToken( i ) );
-      }
-      responseContentLogger.log( LOG_LEVEL, msg.toString() );
     }
   }
 }
