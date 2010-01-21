@@ -32,6 +32,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.localization.LocaleProvider;
 import org.eclipse.rap.ui.internal.SessionLocaleProvider;
+import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
@@ -1106,6 +1107,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
             Object result = super.addingService( reference );
             httpServiceTracker = new HttpServiceTracker(context);
             try {
+              ApplicationRegistry.registerApplicationEntryPoints();
               BrandingExtension.read();
             } catch( final IOException ioe ) {
               WorkbenchPlugin.log( "Unable to read branding extension", ioe ); //$NON-NLS-1$
