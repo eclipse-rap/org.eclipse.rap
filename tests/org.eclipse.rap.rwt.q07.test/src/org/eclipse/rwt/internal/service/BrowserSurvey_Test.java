@@ -15,22 +15,20 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 
 
 public class BrowserSurvey_Test extends TestCase {
-  private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
+  private BrowserSurvey.IStartupPageConfigurer bufferedConfigurer;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    bufferedConfigurer = LifeCycleServiceHandler.configurer; 
-    LifeCycleServiceHandler.configurer
-      = new RWTLifeCycleServiceHandlerConfigurer();
+    bufferedConfigurer = BrowserSurvey.configurer; 
+    BrowserSurvey.configurer = new RWTStartupPageConfigurer();
   }
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    LifeCycleServiceHandler.configurer = bufferedConfigurer;
+    BrowserSurvey.configurer = bufferedConfigurer;
   }
 
   public void testSurveyGeneration() throws IOException {

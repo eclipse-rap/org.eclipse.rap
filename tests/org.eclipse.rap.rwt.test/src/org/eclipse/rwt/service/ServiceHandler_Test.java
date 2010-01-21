@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 
 
 
@@ -67,15 +66,14 @@ public class ServiceHandler_Test extends TestCase {
     ServiceManager.getHandler().service();
     assertEquals( SERVICE_DONE, log );
     // Unregister
-    ILifeCycleServiceHandlerConfigurer bufferedConfigurer 
-      = LifeCycleServiceHandler.configurer;
-    LifeCycleServiceHandler.configurer 
-      = new ILifeCycleServiceHandlerConfigurer()
+    BrowserSurvey.IStartupPageConfigurer bufferedConfigurer 
+      = BrowserSurvey.configurer;
+    BrowserSurvey.configurer = new BrowserSurvey.IStartupPageConfigurer()
     {
-      public TemplateHolder getTemplateOfStartupPage() throws IOException {
+      public TemplateHolder getTemplate() throws IOException {
         return new TemplateHolder( "Startup Page" );
       }
-      public boolean isStartupPageModifiedSince() {
+      public boolean isModifiedSince() {
         return true;
       }
     };
@@ -84,7 +82,7 @@ public class ServiceHandler_Test extends TestCase {
     RWT.getServiceManager().unregisterServiceHandler( PROGRAMATIC_HANDLER_ID );
     ServiceManager.getHandler().service();
     assertEquals( "", log );
-    LifeCycleServiceHandler.configurer = bufferedConfigurer; 
+    BrowserSurvey.configurer = bufferedConfigurer; 
   }
 
   private void initResponseOutputStream() {

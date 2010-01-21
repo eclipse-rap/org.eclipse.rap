@@ -24,19 +24,18 @@ import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EntitiesUtil;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
-public final class RWTLifeCycleServiceHandlerConfigurer
-  implements ILifeCycleServiceHandlerConfigurer
+public final class RWTStartupPageConfigurer
+  implements BrowserSurvey.IStartupPageConfigurer
 {
 
   private static final String PACKAGE_NAME 
-    = RWTLifeCycleServiceHandlerConfigurer.class.getPackage().getName();
+    = RWTStartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
   
@@ -51,7 +50,7 @@ public final class RWTLifeCycleServiceHandlerConfigurer
   ////////////////////////////////////////////////////
   // ILifeCycleServiceHandlerConfigurer implementation 
   
-  public TemplateHolder getTemplateOfStartupPage() throws IOException {
+  public TemplateHolder getTemplate() throws IOException {
     readContent();
     template.reset();
     template.replace( TemplateHolder.VAR_LIBRARIES, getLibraries() );
@@ -60,7 +59,7 @@ public final class RWTLifeCycleServiceHandlerConfigurer
     return template;
   }
 
-  public synchronized boolean isStartupPageModifiedSince() {
+  public synchronized boolean isModifiedSince() {
     boolean result;
 
     int currentProbeCount = TextSizeDetermination.getProbeCount();
@@ -123,7 +122,7 @@ public final class RWTLifeCycleServiceHandlerConfigurer
     InputStream result = null;
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader buffer = manager.getContextLoader();
-    manager.setContextLoader( RWTLifeCycleServiceHandlerConfigurer.class.getClassLoader() );
+    manager.setContextLoader( RWTStartupPageConfigurer.class.getClassLoader() );
     try {        
       result = manager.getResourceAsStream( INDEX_TEMPLATE );
       if ( result == null ) {
@@ -162,7 +161,7 @@ public final class RWTLifeCycleServiceHandlerConfigurer
   private static void fakeWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter original = stateInfo.getResponseWriter();
-    String key = RWTLifeCycleServiceHandlerConfigurer.class.getName();
+    String key = RWTStartupPageConfigurer.class.getName();
     stateInfo.setAttribute( key, original );
     HtmlResponseWriter fake = new HtmlResponseWriter();
     stateInfo.setResponseWriter( fake );
@@ -170,7 +169,7 @@ public final class RWTLifeCycleServiceHandlerConfigurer
   
   private static void restoreWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    String key = RWTLifeCycleServiceHandlerConfigurer.class.getName();
+    String key = RWTStartupPageConfigurer.class.getName();
     HtmlResponseWriter writer
       = ( HtmlResponseWriter )stateInfo.getAttribute( key );
     stateInfo.setResponseWriter( writer );

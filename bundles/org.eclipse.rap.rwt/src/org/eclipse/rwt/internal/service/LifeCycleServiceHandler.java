@@ -27,17 +27,12 @@ import org.eclipse.rwt.internal.lifecycle.*;
 
 public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
-  public static ILifeCycleServiceHandlerConfigurer configurer
-    = new RWTLifeCycleServiceHandlerConfigurer();
-  
+//  public static BrowserSurvey.IStartupPageConfigurer configurer
+//    = new RWTStartupPageConfigurer();
+//  
   private static final LifeCycleServiceHandlerSync sync
     = new RWTLifeCycleServiceHandlerSync();
 
-  public interface ILifeCycleServiceHandlerConfigurer {
-    TemplateHolder getTemplateOfStartupPage() throws IOException;
-    boolean isStartupPageModifiedSince();
-  }
-    
   /**
    * This class handles request synchronization of the 
    * <code>LifeCycleServiceHandler</code>. It was introduced to allow

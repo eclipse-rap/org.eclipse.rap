@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
@@ -97,15 +95,13 @@ public class WrappedRequest_Test extends TestCase {
   
   public void testStartupRequestWithParameter() throws Exception {
     System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
-    ILifeCycleServiceHandlerConfigurer bufferedConfigurer 
-      = LifeCycleServiceHandler.configurer;
-    LifeCycleServiceHandler.configurer
-     = new ILifeCycleServiceHandlerConfigurer()
-    {
-      public TemplateHolder getTemplateOfStartupPage() throws IOException {
+    BrowserSurvey.IStartupPageConfigurer bufferedConfigurer 
+      = BrowserSurvey.configurer;
+    BrowserSurvey.configurer = new BrowserSurvey.IStartupPageConfigurer() {
+      public TemplateHolder getTemplate() throws IOException {
         return new TemplateHolder( "Startup Page" );
       }
-      public boolean isStartupPageModifiedSince() {
+      public boolean isModifiedSince() {
         return true;
       }
     };
@@ -129,7 +125,7 @@ public class WrappedRequest_Test extends TestCase {
     ServiceManager.getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
-    LifeCycleServiceHandler.configurer = bufferedConfigurer;
+    BrowserSurvey.configurer = bufferedConfigurer;
     System.getProperties().remove( "lifecycle" );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }

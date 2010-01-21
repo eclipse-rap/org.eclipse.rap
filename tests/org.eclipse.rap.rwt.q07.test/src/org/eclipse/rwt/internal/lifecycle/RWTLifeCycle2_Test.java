@@ -23,7 +23,6 @@ import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
@@ -48,7 +47,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static java.util.List eventLog;
   private static PhaseId currentPhase;
 
-  private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
+  private BrowserSurvey.IStartupPageConfigurer bufferedConfigurer;
   private TestSession session;
 
   public static final class ExceptionInReadAndDispatchEntryPoint 
@@ -303,10 +302,9 @@ public class RWTLifeCycle2_Test extends TestCase {
     maliciousButtonId = null;
     createUIEntered = false;
     createUIExited = false;
-    bufferedConfigurer = LifeCycleServiceHandler.configurer;
+    bufferedConfigurer = BrowserSurvey.configurer;
     eventLog = new ArrayList();
-    LifeCycleServiceHandler.configurer
-      = new RWTLifeCycleServiceHandlerConfigurer();
+    BrowserSurvey.configurer = new RWTStartupPageConfigurer();
     Fixture.clearSingletons();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
@@ -347,6 +345,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
     LifeCycleFactory.destroy();
     Fixture.clearSingletons();
-    LifeCycleServiceHandler.configurer = bufferedConfigurer;
+    BrowserSurvey.configurer = bufferedConfigurer;
   }
 }

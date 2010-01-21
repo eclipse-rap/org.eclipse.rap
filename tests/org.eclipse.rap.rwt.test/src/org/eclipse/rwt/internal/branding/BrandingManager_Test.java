@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.service.BrowserSurvey;
-import org.eclipse.rwt.internal.service.RWTLifeCycleServiceHandlerConfigurer;
+import org.eclipse.rwt.internal.service.RWTStartupPageConfigurer;
 
 
 public class BrandingManager_Test extends TestCase {
@@ -190,15 +190,15 @@ public class BrandingManager_Test extends TestCase {
     String servletName = BrowserSurvey.getSerlvetName();
     TestBranding branding = new TestBranding( servletName, null, "default" );
     BrandingManager.register( branding );
-    RWTLifeCycleServiceHandlerConfigurer configurer;
+    RWTStartupPageConfigurer configurer;
     // check precondition
     assertEquals( 0, branding.registerResourcesCallCount );
     // access branding for the first time: registerResources must be called
-    configurer = new RWTLifeCycleServiceHandlerConfigurer();
-    configurer.getTemplateOfStartupPage();
+    configurer = new RWTStartupPageConfigurer();
+    configurer.getTemplate();
     assertEquals( 1, branding.registerResourcesCallCount );
     // access branding another time: registerResources must *not* be called
-    configurer.getTemplateOfStartupPage();
+    configurer.getTemplate();
     assertEquals( 1, branding.registerResourcesCallCount );
     // clean up
     BrandingManager.deregister( branding );

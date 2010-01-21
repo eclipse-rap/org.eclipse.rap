@@ -31,12 +31,20 @@ import org.eclipse.rwt.internal.util.HTML;
  */
 public final class BrowserSurvey {
 
+  public interface IStartupPageConfigurer {
+    TemplateHolder getTemplate() throws IOException;
+    boolean isModifiedSince();
+  }
+  
+  public static IStartupPageConfigurer configurer
+    = new RWTStartupPageConfigurer();
+
   /** 
    * <p>Writes a special html page into the passed HtmlResponseWriter,
    * in order to  determine which browser has originated the request.</p> 
    */
   static void sendBrowserSurvey() throws IOException {
-    if( LifeCycleServiceHandler.configurer.isStartupPageModifiedSince() ) {
+    if( configurer.isModifiedSince() ) {
       // send out the survey
       render();
     } else {
@@ -73,8 +81,7 @@ public final class BrowserSurvey {
 
   private static void render() throws IOException {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
-    TemplateHolder template
-      = LifeCycleServiceHandler.configurer.getTemplateOfStartupPage();
+    TemplateHolder template = configurer.getTemplate();
     template.replace( TemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
